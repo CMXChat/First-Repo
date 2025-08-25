@@ -1,49 +1,512 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMX Secure Briefing</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CMX Email OSINT Dashboard</title>
+
+<style>
+  :root {
+    --bg: #0b1320;
+    --bg-grad-a: #0f2027;
+    --bg-grad-b: #203a43;
+    --bg-grad-c: #2c5364;
+    --glass: rgba(255,255,255,0.06);
+    --glass-2: rgba(255,255,255,0.12);
+    --line: rgba(255,255,255,0.12);
+    --text: #e8f3ff;
+    --muted: #9bb3c7;
+    --accent: #00e5ff;
+    --accent2: #17e2e2;
+    --ok: #1ee3a4;
+    --danger: #ff5454;
+    --warn: #ffd166;
+  }
+  :root.light {
+    --bg: #f6fbff;
+    --bg-grad-a: #eaf4ff;
+    --bg-grad-b: #e9f6ff;
+    --bg-grad-c: #e8faff;
+    --glass: rgba(0,0,0,0.04);
+    --glass-2: rgba(0,0,0,0.08);
+    --line: rgba(0,0,0,0.12);
+    --text: #0c1220;
+    --muted: #5d6b7c;
+    --accent: #006dff;
+    --accent2: #0aa2ff;
+    --ok: #0ea36a;
+    --danger: #d33d3d;
+    --warn: #b78700;
+  }
+
+  * { box-sizing: border-box }
+  html, body { height: 100% }
+  body {
+    margin: 0;
+    color: var(--text);
+    background: linear-gradient(135deg, var(--bg-grad-a), var(--bg-grad-b), var(--bg-grad-c));
+    font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px;
+  }
+
+  /* Top bar */
+  .top {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border: 1px solid var(--line);
+    border-radius: 12px; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(255,255,255,0.05));
+    backdrop-filter: blur(6px);
+    margin-bottom: 12px;
+  }
+  .brand { display:flex; align-items:center; gap:10px; font-weight: 800; color: var(--accent) }
+  .dot { width:10px; height:10px; border-radius:999px; background: var(--ok); box-shadow: 0 0 8px var(--ok) }
+  .top .actions { display:flex; gap:8px; align-items:center }
+  .chip {
+    padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--glass); font-size: 13px; color: var(--text);
+  }
+  .btn-ghost {
+    all: unset; cursor:pointer; padding: 8px 10px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--glass); color: var(--text);
+  }
+
+  /* Cards */
+  .grid { display:grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 980px){ .grid { grid-template-columns: 1.2fr 1fr } }
+  .card {
+    border: 1px solid var(--line); background: var(--glass);
+    border-radius: 14px; padding: 14px;
+  }
+  .card h3 { margin: 0 0 10px 0; color: var(--accent); letter-spacing:.2px }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 10px }
+
+  input[type=email], input[type=text] {
+    width: 100%; padding: 12px 12px; border-radius: 12px;
+    background: var(--glass); border: 1px solid var(--line); color: var(--text);
+    outline: none; font-size: 15px;
+  }
+  input::placeholder { color: #8ca5bb }
+  .row { display:grid; grid-template-columns: 1fr; gap: 10px }
+  @media (min-width: 620px){ .row { grid-template-columns: 1fr auto } }
+  .btn {
+    all: unset; cursor: pointer; padding: 12px 16px; border-radius: 12px;
+    background: linear-gradient(180deg, rgba(0,255,255,.15), rgba(0,0,0,.12));
+    border: 1px solid rgba(0,255,255,.35); color: var(--accent); font-weight: 700;
+  }
+  .btn.mono { background: var(--glass); border-color: var(--line); color: var(--text) }
+  .pill { display:inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--glass); font-size: 12px; }
+  .pill.ok { color: var(--ok) } .pill.bad { color: var(--danger) } .pill.unk { color: var(--muted) }
+
+  .info-grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px }
+  @media (max-width: 620px){ .info-grid { grid-template-columns: 1fr } }
+
+  .kv { border: 1px dashed var(--line); border-radius: 10px; padding: 10px; }
+  .kv .k { color: var(--muted); font-size: 12px }
+  .kv .v { font-weight: 700; color: var(--text); word-break: break-all }
+
+  .avatar {
+    width: 88px; height: 88px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--glass-2); display:flex; align-items:center; justify-content:center;
+    overflow: hidden;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover }
+
+  .links { display:grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 680px){ .links { grid-template-columns: 1fr } }
+  .links .group { border: 1px solid var(--line); border-radius: 12px; padding: 10px }
+  .links h4 { margin: 0 0 8px 0; color: var(--accent2) }
+  .linklist a {
+    display:inline-block; margin: 4px 6px 0 0; text-decoration: none;
+    padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line);
+    color: var(--text); background: var(--glass);
+    font-size: 13px;
+  }
+
+  /* Terminal */
+  .terminal {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background:#000; color:#9ee8ff; border-radius: 12px; padding: 10px;
+    border: 1px solid rgba(0,255,255,.25);
+    min-height: 180px; max-height: 280px; overflow-y: auto; white-space: pre-wrap;
+  }
+  .term-input { display:flex; gap: 8px; margin-top: 8px }
+  .term-input input {
+    flex:1; padding: 10px 12px; border-radius: 10px; border:1px solid var(--line);
+    background: var(--glass); color: var(--text);
+  }
+  .cursor::after { content:'▌'; animation: blink 1s step-start infinite; }
+  @keyframes blink { 50% { opacity: 0 } }
+
+  .foot { text-align: right; color: var(--muted); font-size: 12px; margin-top: 10px }
+</style>
 </head>
 <body>
-  <div class="container" id="login-container">
-    <div class="login-box">
-      <h1>CMX Secure Agent Login</h1>
-      <label for="agent">Agent ID</label>
-      <input type="text" id="agent" placeholder="Enter Agent ID">
-      <label for="pass">Security Code</label>
-      <input type="password" id="pass" placeholder="Enter Security Code">
-      <button onclick="authenticate()">Authenticate</button>
-      <div class="output" id="output"></div>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand"><span class="dot"></span> CMX OSINT</div>
+      <div class="actions">
+        <span class="chip">Mode: <b id="mode">Dark</b></span>
+        <button class="btn-ghost" id="toggleTheme">Toggle Theme</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT: Analyzer + Links -->
+      <div class="card">
+        <h3>Email Analyzer</h3>
+        <div class="sub">Enter an email address; we’ll build investigation links and probe Gravatar.</div>
+        <div class="row">
+          <input type="email" id="email" placeholder="name@domain.com" />
+          <button class="btn" id="analyzeBtn">Analyze</button>
+        </div>
+
+        <div class="sub" id="msg" style="margin-top:8px"></div>
+
+        <div class="info-grid" style="margin-top:8px">
+          <div class="kv">
+            <div class="k">Email</div>
+            <div class="v" id="outEmail">—</div>
+          </div>
+          <div class="kv">
+            <div class="k">Domain</div>
+            <div class="v" id="outDomain">—</div>
+          </div>
+          <div class="kv">
+            <div class="k">Provider</div>
+            <div class="v" id="outProvider"><span class="pill unk">unknown</span></div>
+          </div>
+          <div class="kv">
+            <div class="k">MD5 (Gravatar)</div>
+            <div class="v" id="outMD5">—</div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px; margin-top:10px">
+          <div class="avatar" id="gravBox"><span class="sub">No avatar</span></div>
+          <div class="sub">If a public Gravatar exists for this email, it will appear here.</div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
+          <button class="btn mono" id="copyMD5">Copy MD5</button>
+          <a class="btn mono" id="mailto" href="#" target="_blank" rel="noopener">Mailto</a>
+          <button class="btn mono" id="openAll">Open All Links</button>
+        </div>
+
+        <div class="links" style="margin-top:12px" id="linksArea">
+          <!-- groups injected -->
+        </div>
+      </div>
+
+      <!-- RIGHT: Terminal -->
+      <div class="card">
+        <h3>CMX Terminal</h3>
+        <div class="sub">Type commands like <code>help</code>, <code>analyze name@domain.com</code>, <code>links</code>, <code>gravatar</code>, <code>provider</code>, <code>clear</code>.</div>
+        <div class="terminal" id="terminal"></div>
+        <div class="term-input">
+          <input id="termIn" type="text" placeholder="> help" />
+          <button class="btn" id="termBtn">Run</button>
+        </div>
+        <div class="foot">CMX • Email Recon Suite</div>
+      </div>
     </div>
   </div>
 
-  <div class="briefing" id="briefing">
-    <strong>MISSION: CMX OPS 0027</strong><br>
-    OBJECTIVE: Deploy full-stack digital dominance.<br>
-    ASSETS: SEO Agents, Web Dev Units, Discord Surveillance.<br><br>
-    TASKS:
-    <ul>
-      <li>Infiltrate SERP positions</li>
-      <li>Intercept competitor traffic</li>
-      <li>Design covert conversion funnels</li>
-    </ul>
-    INTEL:
-    <ul>
-      <li>Top priority: Founders, Creators, OSINT Nodes</li>
-      <li>Engagement via Platform + Agency Hybrid Protocols</li>
-    </ul>
-  </div>
+<script>
+/* ========= THEME ========= */
+const root = document.documentElement;
+const modeEl = document.getElementById('mode');
+const savedTheme = localStorage.getItem('cmx-theme');
+if(savedTheme === 'light'){ root.classList.add('light'); modeEl.textContent='Light'; }
+document.getElementById('toggleTheme').addEventListener('click', ()=>{
+  root.classList.toggle('light');
+  const isLight = root.classList.contains('light');
+  localStorage.setItem('cmx-theme', isLight?'light':'dark');
+  modeEl.textContent = isLight ? 'Light' : 'Dark';
+});
 
-  <div class="countdown" id="countdown">
-    THIS MESSAGE WILL SELF-DESTRUCT IN 10 SECONDS.
-  </div>
+/* ========= UTIL: MD5 (tiny impl) ========= */
+/* Public-domain style MD5 implementation (trimmed) */
+function md5cycle(x, k) {
+  let [a,b,c,d]=x;
+  a=ff(a,b,c,d,k[0],7,-680876936); d=ff(d,a,b,c,k[1],12,-389564586); c=ff(c,d,a,b,k[2],17,606105819); b=ff(b,c,d,a,k[3],22,-1044525330);
+  a=ff(a,b,c,d,k[4],7,-176418897); d=ff(d,a,b,c,k[5],12,1200080426); c=ff(c,d,a,b,k[6],17,-1473231341); b=ff(b,c,d,a,k[7],22,-45705983);
+  a=ff(a,b,c,d,k[8],7,1770035416); d=ff(d,a,b,c,k[9],12,-1958414417); c=ff(c,d,a,b,k[10],17,-42063); b=ff(b,c,d,a,k[11],22,-1990404162);
+  a=ff(a,b,c,d,k[12],7,1804603682); d=ff(d,a,b,c,k[13],12,-40341101); c=ff(c,d,a,b,k[14],17,-1502002290); b=ff(b,c,d,a,k[15],22,1236535329);
+  a=gg(a,b,c,d,k[1],5,-165796510); d=gg(d,a,b,c,k[6],9,-1069501632); c=gg(c,d,a,b,k[11],14,643717713); b=gg(b,c,d,a,k[0],20,-373897302);
+  a=gg(a,b,c,d,k[5],5,-701558691); d=gg(d,a,b,c,k[10],9,38016083); c=gg(c,d,a,b,k[15],14,-660478335); b=gg(b,c,d,a,k[4],20,-405537848);
+  a=gg(a,b,c,d,k[9],5,568446438); d=gg(d,a,b,c,k[14],9,-1019803690); c=gg(c,d,a,b,k[3],14,-187363961); b=gg(b,c,d,a,k[8],20,1163531501);
+  a=gg(a,b,c,d,k[13],5,-1444681467); d=gg(d,a,b,c,k[2],9,-51403784); c=gg(c,d,a,b,k[7],14,1735328473); b=gg(b,c,d,a,k[12],20,-1926607734);
+  a=hh(a,b,c,d,k[5],4,-378558); d=hh(d,a,b,c,k[8],11,-2022574463); c=hh(c,d,a,b,k[11],16,1839030562); b=hh(b,c,d,a,k[14],23,-35309556);
+  a=hh(a,b,c,d,k[1],4,-1530992060); d=hh(d,a,b,c,k[4],11,1272893353); c=hh(c,d,a,b,k[7],16,-155497632); b=hh(b,c,d,a,k[10],23,-1094730640);
+  a=hh(a,b,c,d,k[13],4,681279174); d=hh(d,a,b,c,k[0],11,-358537222); c=hh(c,d,a,b,k[6],16,-722521979); b=hh(b,c,d,a,k[9],23,76029189);
+  a=ii(a,b,c,d,k[0],6,-198630844); d=ii(d,a,b,c,k[7],10,1126891415); c=ii(c,d,a,b,k[14],15,-1416354905); b=ii(b,c,d,a,k[5],21,-57434055);
+  a=ii(a,b,c,d,k[12],6,1700485571); d=ii(d,a,b,c,k[3],10,-1894986606); c=ii(c,d,a,b,k[10],15,-1051523); b=ii(b,c,d,a,k[1],21,-2054922799);
+  a=ii(a,b,c,d,k[8],6,1873313359); d=ii(d,a,b,c,k[15],10,-30611744); c=ii(c,d,a,b,k[6],15,-1560198380); b=ii(b,c,d,a,k[13],21,1309151649);
+  x[0]=add32(a,x[0]); x[1]=add32(b,x[1]); x[2]=add32(c,x[2]); x[3]=add32(d,x[3]);
+}
+function cmn(q,a,b,x,s,t){ a=add32(add32(a,q),add32(x,t)); return add32((a<<s)|(a>>> (32-s)),b); }
+function ff(a,b,c,d,x,s,t){ return cmn((b & c) | ((~b) & d),a,b,x,s,t); }
+function gg(a,b,c,d,x,s,t){ return cmn((b & d) | (c & (~d)),a,b,x,s,t); }
+function hh(a,b,c,d,x,s,t){ return cmn(b ^ c ^ d,a,b,x,s,t); }
+function ii(a,b,c,d,x,s,t){ return cmn(c ^ (b | (~d)),a,b,x,s,t); }
+function md51(s){
+  const n=s.length, state=[1732584193,-271733879,-1732584194,271733878]; let i;
+  for(i=64;i<=n;i+=64){ md5cycle(state, md5blk(s.substring(i-64,i))); }
+  s=s.substring(i-64);
+  const tail = Array(16).fill(0);
+  for(i=0;i<s.length;i++) tail[i>>2] |= s.charCodeAt(i) << ((i%4)<<3);
+  tail[i>>2] |= 0x80 << ((i%4)<<3);
+  if(i>55){ md5cycle(state, tail); for(i=0;i<16;i++) tail[i]=0; }
+  tail[14]=n*8; md5cycle(state, tail); return state;
+}
+function md5blk(s){ const md5blks=[]; for(let i=0;i<64;i+=4) md5blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24); return md5blks; }
+function rhex(n){ const s='0123456789abcdef'; let j, out=''; for(j=0;j<4;j++) out+=s[(n>>(j*8+4))&0x0F]+s[(n>>(j*8))&0x0F]; return out; }
+function hex(x){ for(let i=0;i<x.length;i++) x[i]=rhex(x[i]); return x.join(''); }
+function md5(s){ return hex(md51(unescape(encodeURIComponent(s))).slice()); }
+function add32(a,b){ return (a + b) & 0xFFFFFFFF; }
 
-  <div class="terminal" id="terminal">
-    Initializing CMX AI Systems...
-  </div>
+/* ========= STATE ========= */
+let CURRENT_EMAIL = '';
+let BUILT_LINKS = [];
 
-  <script src="script.js"></script>
+const emailEl   = document.getElementById('email');
+const outEmail  = document.getElementById('outEmail');
+const outDomain = document.getElementById('outDomain');
+const outProv   = document.getElementById('outProvider');
+const outMD5    = document.getElementById('outMD5');
+const gravBox   = document.getElementById('gravBox');
+const mailto    = document.getElementById('mailto');
+const msg       = document.getElementById('msg');
+const linksArea = document.getElementById('linksArea');
+const copyMD5   = document.getElementById('copyMD5');
+
+/* ========= VALIDATION / PARSE ========= */
+function isValidEmail(e){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e);
+}
+function providerOf(domain){
+  const d = domain.toLowerCase();
+  if(/gmail\.com$/.test(d)) return 'Gmail';
+  if(/yahoo\.(com|co\.\w+)$/.test(d)) return 'Yahoo';
+  if(/(outlook|hotmail|live)\.com$/.test(d)) return 'Outlook/Microsoft';
+  if(/proton\.me$/.test(d)) return 'Proton';
+  if(/icloud\.com$/.test(d)) return 'iCloud';
+  if(/yandex\.(ru|com)$/.test(d)) return 'Yandex';
+  return 'Unknown';
+}
+
+/* ========= ANALYZE ========= */
+async function analyzeEmail(input){
+  const e = (input || emailEl.value || '').trim();
+  if(!e){ toast('Enter an email to analyze.'); return; }
+  if(!isValidEmail(e)){ toast('That doesn’t look like a valid email.', true); return; }
+
+  CURRENT_EMAIL = e;
+  const [local, domain] = e.split('@');
+  const prov = providerOf(domain);
+  outEmail.textContent  = e;
+  outDomain.textContent = domain;
+  outProv.innerHTML     = prov==='Unknown' ? '<span class="pill unk">unknown</span>' : `<span class="pill ok">${prov}</span>`;
+  mailto.href = `mailto:${encodeURIComponent(e)}`;
+
+  // Gravatar hash + probe
+  const hash = md5(e.toLowerCase());
+  outMD5.textContent = hash;
+  gravBox.innerHTML = '<span class="sub">Checking Gravatar…</span>';
+  const img = new Image();
+  img.onload = ()=> { gravBox.innerHTML=''; img.style.borderRadius='12px'; gravBox.appendChild(img); };
+  img.onerror = ()=> { gravBox.innerHTML = '<span class="sub">No avatar</span>'; };
+  img.src = `https://www.gravatar.com/avatar/${hash}?d=404&s=160`;
+
+  buildLinks(e, domain);
+  toast('Analysis complete.');
+}
+
+/* ========= LINKS ========= */
+function sanitize(s){ return encodeURIComponent((s||'').trim()); }
+
+function buildLinks(email, domain){
+  BUILT_LINKS = [];
+  const E = sanitize(email);
+  const D = sanitize(domain);
+
+  const groups = [
+    {
+      title: 'Data Breaches & Reputation',
+      items: [
+        ['Have I Been Pwned', `https://haveibeenpwned.com/account/${E}`],
+        ['Epieos Email OSINT', `https://tools.epieos.com/email.php?email=${E}`],
+        ['DeHashed (login)', `https://www.dehashed.com/search?query=${E}`],
+        ['IntelX', `https://intelx.io/?s=${E}`],
+        ['EmailRep', `https://emailrep.io/${E}`],
+      ]
+    },
+    {
+      title: 'Search Engines / Pastebins',
+      items: [
+        ['Google exact', `https://www.google.com/search?q="%22${E}%22"`],
+        ['DuckDuckGo exact', `https://duckduckgo.com/?q="%22${E}%22"`],
+        ['Bing exact', `https://www.bing.com/search?q="%22${E}%22"`],
+        ['Google Pastebin', `https://www.google.com/search?q="%22${E}%22+site%3Apastebin.com`],
+        ['Google GitHub Gists', `https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
+        ['Skymem', `https://www.skymem.info/srch?q=${E}`],
+      ]
+    },
+    {
+      title: 'Developer / Code',
+      items: [
+        ['GitHub code search', `https://github.com/search?q=${E}`],
+        ['GitLab search', `https://gitlab.com/search?search=${E}`],
+        ['StackOverflow', `https://stackoverflow.com/search?q=${E}`],
+      ]
+    },
+    {
+      title: 'People / Social (search)',
+      items: [
+        ['Reddit', `https://www.reddit.com/search/?q=${E}`],
+        ['X (Twitter)', `https://twitter.com/search?q=${E}&f=live`],
+        ['LinkedIn (Google)', `https://www.google.com/search?q=site%3Alinkedin.com+%22${E}%22`],
+      ]
+    },
+    {
+      title: 'PGP & Crypto Keys',
+      items: [
+        ['keys.openpgp.org', `https://keys.openpgp.org/search?q=${E}`],
+        ['Ubuntu Keyserver', `https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
+      ]
+    },
+    {
+      title: 'Gravatar / Misc',
+      items: [
+        ['Gravatar image', `https://www.gravatar.com/avatar/${md5(email.toLowerCase())}?s=400`],
+        ['Gravatar JSON', `https://www.gravatar.com/${md5(email.toLowerCase())}.json`],
+        ['Hunter Verify (login)', `https://hunter.io/verify/${E}`],
+      ]
+    }
+  ];
+
+  // Build DOM
+  linksArea.innerHTML = '';
+  groups.forEach(g=>{
+    const groupEl = document.createElement('div');
+    groupEl.className = 'group';
+    groupEl.innerHTML = `<h4>${g.title}</h4><div class="linklist"></div>`;
+    const list = groupEl.querySelector('.linklist');
+    g.items.forEach(([label,url])=>{
+      const a = document.createElement('a');
+      a.href = url; a.target='_blank'; a.rel='noopener';
+      a.textContent = label;
+      list.appendChild(a);
+      BUILT_LINKS.push(url);
+    });
+    linksArea.appendChild(groupEl);
+  });
+}
+
+/* ========= TERMINAL ========= */
+const term = document.getElementById('terminal');
+const termIn = document.getElementById('termIn');
+const termBtn = document.getElementById('termBtn');
+
+function tEcho(line = ''){ term.textContent += (term.textContent ? '\n' : '') + line; term.scrollTop = term.scrollHeight; }
+function tPrompt(){ tEcho('>'); }
+
+function tHelp(){
+  tEcho(`Commands:
+  help                         show this help
+  analyze <email>              run analyzer on email
+  links                        rebuild links for current email
+  gravatar                     re-check gravatar
+  provider                     show guessed provider
+  clear                        clear terminal
+  `);
+}
+
+function tAnalyze(cmd){
+  const arg = cmd.split(/\s+/)[1];
+  if(!arg){ tEcho('Usage: analyze <email>'); return; }
+  analyzeEmail(arg);
+}
+
+function tLinks(){
+  if(!CURRENT_EMAIL){ tEcho('No email loaded. Use: analyze <email>'); return; }
+  const [,domain] = CURRENT_EMAIL.split('@');
+  buildLinks(CURRENT_EMAIL, domain);
+  tEcho(`Links rebuilt for ${CURRENT_EMAIL}.`);
+}
+
+function tGravatar(){
+  if(!CURRENT_EMAIL){ tEcho('No email loaded. Use: analyze <email>'); return; }
+  const h = md5(CURRENT_EMAIL.toLowerCase());
+  tEcho(`Gravatar hash: ${h}
+Image: https://www.gravatar.com/avatar/${h}?s=200
+JSON:  https://www.gravatar.com/${h}.json`);
+}
+
+function tProvider(){
+  if(!CURRENT_EMAIL){ tEcho('No email loaded. Use: analyze <email>'); return; }
+  const [,domain] = CURRENT_EMAIL.split('@');
+  tEcho(`Provider guess: ${providerOf(domain)} (domain: ${domain})`);
+}
+
+function tClear(){ term.textContent=''; }
+
+function termRun(){
+  const raw = termIn.value.trim();
+  if(!raw) return;
+  tEcho('> ' + raw);
+  termIn.value = '';
+
+  const lc = raw.toLowerCase();
+  if(lc === 'help') return tHelp();
+  if(lc === 'links') return tLinks();
+  if(lc === 'gravatar') return tGravatar();
+  if(lc === 'provider') return tProvider();
+  if(lc === 'clear') return tClear();
+  if(lc.startsWith('analyze ')) return tAnalyze(raw);
+
+  // Lightweight "AI-ish" helper
+  if(lc.includes('what') && lc.includes('do')){
+    return tEcho('I analyze an email, build OSINT links, probe Gravatar, and guide next steps. Try: analyze alice@example.com');
+  }
+  if(lc.includes('dork')){
+    return tEcho(`Google dorks:\n  "email@example.com" site:pastebin.com\n  "email@example.com" site:gist.github.com\n  "email@example.com" filetype:txt`);
+  }
+
+  tEcho("Unknown command. Type 'help'.");
+}
+
+termBtn.addEventListener('click', termRun);
+termIn.addEventListener('keydown', (e)=>{ if(e.key==='Enter') termRun(); });
+
+/* ========= UI WIRING ========= */
+document.getElementById('analyzeBtn').addEventListener('click', ()=> analyzeEmail());
+emailEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter') analyzeEmail(); });
+
+document.getElementById('openAll').addEventListener('click', ()=>{
+  if(!BUILT_LINKS.length){ toast('No links yet. Analyze an email first.'); return; }
+  BUILT_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
+});
+
+copyMD5.addEventListener('click', ()=>{
+  const v = outMD5.textContent.trim();
+  if(!v || v==='—'){ toast('Nothing to copy.'); return; }
+  navigator.clipboard.writeText(v).then(()=>toast('MD5 copied.'));
+});
+
+/* ========= Toaster ========= */
+function toast(text, isError){
+  msg.innerHTML = `<span class="pill ${isError?'bad':'ok'}">${text}</span>`;
+  setTimeout(()=>{ msg.textContent=''; }, 3500);
+}
+
+/* ========= Boot ========= */
+tEcho('[CMX] Email Recon Suite loaded. Type "help" or start above.');
+</script>
 </body>
 </html>
