@@ -20,16 +20,14 @@
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-
   /* Topbar */
   .topbar{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.65);backdrop-filter:blur(8px)}
   .brand{font-weight:800;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
   .ghost{all:unset;cursor:pointer;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
-
+  .badge{font-size:12px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
   /* Layout */
   .shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px)}
   @media(max-width:980px){.shell{grid-template-columns:1fr}}
-
   /* Sidebar */
   .side{position:sticky;top:58px;height:calc(100vh - 58px);border-right:1px solid var(--line);background:var(--panel);padding:14px;overflow:auto}
   .nav{display:grid;gap:8px}
@@ -43,13 +41,11 @@
     .backdrop{content:"";position:fixed;inset:58px 0 0 0;background:rgba(0,0,0,.4);backdrop-filter:blur(1px);z-index:55;display:none}
     .backdrop.show{display:block}
   }
-
   /* Main */
   .main{padding:14px;overflow:auto}
   .grid{display:grid;gap:14px;grid-template-columns:1fr}
   @media(min-width:1200px){.grid{grid-template-columns:1.2fr 1fr}}
   section{scroll-margin-top:70px}
-
   /* Cards */
   .card{border:1px solid var(--line);background:var(--panel2);border-radius:var(--radius);padding:14px}
   .card h3{margin:0 0 8px}
@@ -58,19 +54,14 @@
   @media(max-width:640px){.row{grid-template-columns:1fr}}
   input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
   .btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:999px;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));font-weight:700}
-
   .kv{border:1px dashed var(--line);border-radius:10px;padding:10px}
   .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12px}
   .pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.unk{color:var(--muted)}
-
-  /* Links groups */
   .links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
   @media(max-width:720px){.links{grid-template-columns:1fr}}
   .links .group{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel)}
   .links .group h4{margin:0 0 6px;color:var(--accent)}
   .linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink);background:var(--panel2);font-size:13px}
-
-  /* Map + terminal */
   #map{height:380px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
   .terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;white-space:pre-wrap}
 </style>
@@ -81,7 +72,10 @@
     <button class="ghost hamburger" id="btnSide">☰</button>
     CMX • OSINT
   </div>
-  <div class="sub">Session <b id="sid"></b></div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <span class="badge" id="modeBadge">Mode: Detecting…</span>
+    <div class="sub">Session <b id="sid"></b></div>
+  </div>
 </header>
 
 <div class="backdrop" id="backdrop"></div>
@@ -108,7 +102,7 @@
       <!-- EMAIL -->
       <section class="card" id="emailCard">
         <h3>Email Intelligence</h3>
-        <div class="sub">Backend aggregates (gravatar, rep, breaches) → shown here.</div>
+        <div class="sub">Automatic: uses your backend if available, otherwise direct/browser lookups.</div>
         <div class="row">
           <input type="email" id="email" placeholder="name@domain.com" />
           <button class="btn" id="analyzeBtn">Analyze</button>
@@ -126,7 +120,7 @@
 
         <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
           <div id="gravBox" style="width:88px;height:88px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="sub">No avatar</span></div>
-          <div class="sub">If Gravatar exists, it will appear.</div>
+          <div class="sub">If a public Gravatar exists, it appears here.</div>
         </div>
 
         <div class="links" id="emailLinks" style="margin-top:12px"></div>
@@ -139,7 +133,7 @@
       <!-- USERNAME -->
       <section class="card" id="userCard">
         <h3>Username Intelligence</h3>
-        <div class="sub">Build quick deep links & show hits the backend can scrape.</div>
+        <div class="sub">Build deep links + show quick hits.</div>
         <div class="row">
           <input type="text" id="user" placeholder="username" />
           <button class="btn" id="userBtn">Build</button>
@@ -150,7 +144,7 @@
       <!-- DOMAIN -->
       <section class="card" id="domainCard">
         <h3>Domain Intelligence</h3>
-        <div class="sub">DoH + WHOIS via backend; results rendered below.</div>
+        <div class="sub">DoH + WHOIS (backend if up, otherwise dns.google + rdap.org).</div>
         <div class="row">
           <input type="text" id="domain" placeholder="example.com" />
           <button class="btn" id="domainBtn">Resolve</button>
@@ -162,7 +156,7 @@
       <!-- IP -->
       <section class="card" id="ipCard">
         <h3>IP Intelligence</h3>
-        <div class="sub">Geo/ASN via backend → center map and print context.</div>
+        <div class="sub">Geo/ASN via backend or direct ipapi.co fallback.</div>
         <div class="row">
           <input type="text" id="ip" placeholder="8.8.8.8" />
           <button class="btn" id="ipBtn">Lookup</button>
@@ -223,7 +217,24 @@
 </div>
 
 <script>
-/* ===== Shell / Sidebar ===== */
+/* ========= Mode Detect (Backend or Direct) ========= */
+let MODE = 'detect';
+const modeBadge = document.getElementById('modeBadge');
+
+async function detectMode(){
+  try{
+    const r = await fetch('/api/health', {cache:'no-store'});
+    if(r.ok){ MODE='backend'; modeBadge.textContent='Mode: Backend'; modeBadge.style.borderColor='var(--ok)'; return; }
+    throw 0;
+  }catch{
+    MODE='direct';
+    modeBadge.textContent='Mode: Direct';
+    modeBadge.style.borderColor='var(--line)';
+  }
+}
+await detectMode();
+
+/* ========= Shell / Sidebar ========= */
 const sid = document.getElementById('sid');
 sid.textContent = Math.random().toString(36).slice(2,10).toUpperCase();
 
@@ -242,28 +253,66 @@ document.querySelectorAll('.nav button').forEach(b=>{
   });
 });
 
-/* ===== Helpers ===== */
+/* ========= Helpers ========= */
 const q = (id)=>document.getElementById(id);
 const toast = (el,msg,isErr)=>{ el.innerHTML = `<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3500); };
 const isValidEmail = (e)=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e);
+function providerOf(domain){
+  const d=(domain||'').toLowerCase();
+  if(/gmail\.com$/.test(d)) return 'Gmail';
+  if(/(outlook|hotmail|live)\.com$/.test(d)) return 'Outlook/Microsoft';
+  if(/yahoo\.(com|co\.\w+)$/.test(d)) return 'Yahoo';
+  if(/proton\.me$/.test(d)) return 'Proton';
+  if(/icloud\.com$/.test(d)) return 'iCloud';
+  if(/yandex\.(ru|com)$/.test(d)) return 'Yandex';
+  return 'Unknown';
+}
+/* Tiny MD5 (email → gravatar) */
+function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);
+a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);
+a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);
+a=ff(a,b,c,d,k[12],7,1804603682);d=ff(d,a,b,c,k[13],12,-40341101);c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22,1236535329);
+a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(b,c,d,a,k[0],20,-373897302);
+a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(b,c,d,a,k[4],20,-405537848);
+a=gg(a,b,c,d,k[9],5,568446438);d=gg(d,a,b,c,k[14],9,-1019803690);c=gg(c,d,a,b,k[3],14,-187363961);b=gg(b,c,d,a,k[8],20,1163531501);
+a=gg(a,b,c,d,k[13],5,-1444681467);d=gg(d,a,b,c,k[2],9,-51403784);c=gg(c,d,a,b,k[7],14,1735328473);b=gg(b,c,d,a,k[12],20,-1926607734);
+a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
+a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);
+a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
+a=ii(a,b,c,d,k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
+a=ii(a,b,c,d,k[12],6,1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);c=ii(c,d,a,b,k[10],15,-1051523);b=ii(b,c,d,a,k[1],21,-2054922799);
+a=ii(a,b,c,d,k[8],6,1873313359);d=ii(d,a,b,c,k[15],10,-30611744);c=ii(c,d,a,b,k[6],15,-1560198380);b=ii(b,c,d,a,k[13],21,1309151649);
+x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}
+function cmn(q,a,b,x,s,t){a=add32(add32(a,q),add32(x,t));return add32((a<<s)|(a>>>(32-s)),b)}
+function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t)}
+function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t)}
+function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t)}
+function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t)}
+function md51(s){const n=s.length,state=[1732584193,-271733879,-1732584194,271733878];let i;for(i=64;i<=n;i+=64){md5cycle(state,md5blk(s.substring(i-64,i)))}s=s.substring(i-64);const tail=Array(16).fill(0);for(i=0;i<s.length;i++)tail[i>>2]|=s.charCodeAt(i)<<((i%4)<<3);tail[i>>2]|=0x80<<((i%4)<<3);if(i>55){md5cycle(state,tail);for(i=0;i<16;i++)tail[i]=0}tail[14]=n*8;md5cycle(state,tail);return state}
+function md5blk(s){const md5blks=[];for(let i=0;i<64;i+=4)md5blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);return md5blks}
+function rhex(n){const s='0123456789abcdef';let j,out='';for(j=0;j<4;j++)out+=s[(n>>(j*8+4))&0x0F]+s[(n>>(j*8))&0x0F];return out}
+function hex(x){for(let i=0;i<x.length;i++)x[i]=rhex(x[i]);return x.join('')}
+function md5(s){return hex(md51(unescape(encodeURIComponent(s))).slice())}
+function add32(a,b){return(a+b)&0xFFFFFFFF}
 
-/* ===== Map ===== */
+/* ========= Map ========= */
 const map = L.map('map', { zoomControl:true, attributionControl:false }).setView([20,0],2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:['a','b','c'],maxZoom:19}).addTo(map);
 function pulse(lat,lng,label){
-  const m = L.circleMarker([lat,lng],{radius:7,color:'#82c8ff',fillColor:'#1d9bf0',fillOpacity:.7,weight:2}).addTo(map);
+  const m = L.circleMarker([lat,lng],{radius:7,color:getCSS('--accent2'),fillColor:getCSS('--accent'),fillOpacity:.7,weight:2}).addTo(map);
   if(label) m.bindTooltip(label);
   setTimeout(()=>{ try{ map.removeLayer(m);}catch(_){} }, 12000);
   return m;
 }
-function arc(a,b,color='#82c8ff'){
+function arc(a,b,color=getCSS('--accent2')){
   const line = L.polyline.antPath([a,b],{delay:380,dashArray:[10,18],weight:3,color,pulseColor:'#fff'}).addTo(map);
   setTimeout(()=>{ try{ map.removeLayer(line);}catch(_){} }, 15000);
 }
+function getCSS(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
-/* ===== EMAIL ===== */
+/* ========= EMAIL ========= */
 async function analyzeEmail(input){
-  const email = (input || q('email').value || '').trim();
+  const email = (q('email').value || input || '').trim();
   const msg = q('emailMsg');
   if(!email){ toast(msg,'Enter an email.'); return; }
   if(!isValidEmail(email)){ toast(msg,'Invalid email.',true); return; }
@@ -274,30 +323,51 @@ async function analyzeEmail(input){
   q('mailto').href = `mailto:${encodeURIComponent(email)}`;
 
   msg.textContent = 'Analyzing…';
-  try{
-    const r = await fetch(`/api/email?email=${encodeURIComponent(email)}`);
-    if(!r.ok) throw 0;
-    const data = await r.json();
 
-    // Provider / MD5 / Gravatar
+  try{
+    let data;
+    if(MODE==='backend'){
+      const r = await fetch(`/api/email?email=${encodeURIComponent(email)}`); if(!r.ok) throw 0;
+      data = await r.json();
+    }else{
+      // Direct mode: build minimal dataset in-browser
+      const prov = providerOf(domain);
+      const hash = md5(email.toLowerCase());
+      data = {
+        provider: prov==='Unknown'?null:prov,
+        md5: hash,
+        gravatar: `https://www.gravatar.com/avatar/${hash}?d=404&s=160`,
+        groups: [
+          { title:'Breach & Reputation', items:[
+            {label:'Have I Been Pwned', url:`https://haveibeenpwned.com/account/${encodeURIComponent(email)}`},
+            {label:'EmailRep', url:`https://emailrep.io/${encodeURIComponent(email)}`}
+          ]},
+          { title:'Search', items:[
+            {label:'Google exact', url:`https://www.google.com/search?q="%22${encodeURIComponent(email)}%22"`},
+            {label:'DuckDuckGo exact', url:`https://duckduckgo.com/?q="%22${encodeURIComponent(email)}%22"`}
+          ]}
+        ]
+      };
+    }
+
     q('outProvider').innerHTML = data.provider ? `<span class="pill ok">${data.provider}</span>` : '<span class="pill unk">unknown</span>';
     q('outMD5').textContent = data.md5 || '—';
+
     if(data.gravatar){
       const img = new Image();
-      img.onload=()=>{ const box=q('gravBox'); box.innerHTML=''; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; box.appendChild(img); };
+      img.onload=()=>{ const box=q('gravBox'); box.innerHTML=''; Object.assign(img.style,{width:'100%',height:'100%',objectFit:'cover'}); box.appendChild(img); };
       img.onerror=()=>{ q('gravBox').innerHTML='<span class="sub">No avatar</span>'; };
       img.src = data.gravatar;
     }else{
       q('gravBox').innerHTML='<span class="sub">No avatar</span>';
     }
 
-    // Links (from backend, already curated)
     const linksWrap = q('emailLinks'); linksWrap.innerHTML='';
     (data.groups||[]).forEach(g=>{
       const wrap=document.createElement('div'); wrap.className='group';
       wrap.innerHTML=`<h4>${g.title}</h4><div class="linklist"></div>`;
       const list=wrap.querySelector('.linklist');
-      g.items.forEach(it=>{
+      (g.items||[]).forEach(it=>{
         const a=document.createElement('a'); a.href=it.url; a.textContent=it.label; a.target='_blank'; a.rel='noopener';
         list.appendChild(a);
       });
@@ -305,60 +375,97 @@ async function analyzeEmail(input){
     });
 
     toast(msg,'Email analysis complete.');
-  }catch(e){ toast(msg,'Backend unavailable.',true); }
+  }catch(e){ toast(msg, MODE==='backend'?'Backend error.':'Lookup failed.', true); }
 }
 q('analyzeBtn').onclick = ()=>analyzeEmail();
 q('email').addEventListener('keydown',e=>{ if(e.key==='Enter') analyzeEmail(); });
 q('copyMD5').onclick = ()=>{ const v=q('outMD5').textContent.trim(); if(v && v!=='—'){ navigator.clipboard.writeText(v); toast(q('emailMsg'),'MD5 copied.'); } };
 
-/* ===== USERNAME ===== */
+/* ========= USERNAME ========= */
 q('userBtn').onclick = async()=>{
   const u = (q('user').value||'').trim(); const out = q('userLinks'); out.innerHTML='';
   if(!u) return;
   try{
-    const r = await fetch(`/api/username?u=${encodeURIComponent(u)}`);
-    const data = await r.json();
-    (data.groups||[]).forEach(g=>{
+    let groups;
+    if(MODE==='backend'){
+      const r = await fetch(`/api/username?u=${encodeURIComponent(u)}`); groups = (await r.json()).groups || [];
+    }else{
+      const enc = encodeURIComponent(u);
+      groups = [
+        ['Profiles', [
+          ['GitHub', `https://github.com/${enc}`],
+          ['Reddit', `https://www.reddit.com/user/${enc}`],
+          ['X (Twitter)', `https://twitter.com/${enc}`],
+          ['Instagram', `https://www.instagram.com/${enc}/`],
+        ]],
+        ['Search', [
+          ['Google', `https://www.google.com/search?q=${enc}`],
+          ['DuckDuckGo', `https://duckduckgo.com/?q=${enc}`],
+        ]]
+      ].map(([title, items])=>({title, items: items.map(([label,url])=>({label,url}))}));
+    }
+    groups.forEach(g=>{
       const wrap=document.createElement('div'); wrap.className='group';
       wrap.innerHTML=`<h4>${g.title}</h4><div class="linklist"></div>`;
       const list=wrap.querySelector('.linklist');
-      g.items.forEach(it=>{
+      (g.items||[]).forEach(it=>{
         const a=document.createElement('a'); a.href=it.url; a.textContent=it.label; a.target='_blank'; a.rel='noopener';
         list.appendChild(a);
       });
       out.appendChild(wrap);
     });
-  }catch(e){ out.innerHTML='<span class="pill bad">Backend error.</span>'; }
+  }catch{ out.innerHTML='<span class="pill bad">Lookup failed.</span>'; }
 };
 
-/* ===== DOMAIN ===== */
+/* ========= DOMAIN ========= */
 q('domainBtn').onclick = async()=>{
   const d = (q('domain').value||'').trim();
   const msg = q('dnsMsg'); const tbl = q('dnsTable');
   if(!d){ toast(msg,'Enter a domain.'); return; }
   msg.textContent='Resolving…'; tbl.innerHTML='';
   try{
-    const r = await fetch(`/api/dns?domain=${encodeURIComponent(d)}`);
-    const data = await r.json();
-    const rows = Object.entries(data.records||{}).map(([k,v])=>`<tr><th style="text-align:left;color:var(--muted);padding:6px 8px;border-bottom:1px dashed var(--line)">${k}</th><td style="padding:6px 8px;border-bottom:1px dashed var(--line)">${Array.isArray(v)?v.join(' | '):v}</td></tr>`).join('');
+    let records = {};
+    if(MODE==='backend'){
+      const r = await fetch(`/api/dns?domain=${encodeURIComponent(d)}`); const data = await r.json();
+      records = data.records || {};
+    }else{
+      // Direct: dns.google for a few common RR types
+      const types = ['A','AAAA','MX','NS','TXT'];
+      const results = await Promise.all(types.map(t=>fetch(`https://dns.google/resolve?name=${encodeURIComponent(d)}&type=${t}`,{cache:'no-store'}).then(x=>x.ok?x.json():{}).catch(_=>({}))));
+      types.forEach((t,i)=>{
+        const ans = (results[i]?.Answer||[]).map(a=>t==='TXT'? String(a.data).replaceAll('"','') : a.data);
+        records[t] = ans.length? ans : ['—'];
+      });
+      // WHOIS/rdap (best-effort)
+      try{
+        const rd = await fetch(`https://rdap.org/domain/${encodeURIComponent(d)}`,{cache:'no-store'}).then(r=>r.ok?r.json():null);
+        if(rd){ records['Registrar'] = [rd?.registrar || rd?.name || rd?.handle || '—']; }
+      }catch{}
+    }
+    const rows = Object.entries(records).map(([k,v])=>`<tr><th style="text-align:left;color:var(--muted);padding:6px 8px;border-bottom:1px dashed var(--line)">${k}</th><td style="padding:6px 8px;border-bottom:1px dashed var(--line)">${Array.isArray(v)?v.join(' | '):v}</td></tr>`).join('');
     tbl.innerHTML = rows || '<tr><td>No data.</td></tr>';
     msg.textContent='DNS resolved.';
-  }catch(e){ toast(msg,'Backend unavailable.',true); }
+  }catch{ toast(msg,'Lookup failed.',true); }
 };
 
-/* ===== IP ===== */
+/* ========= IP ========= */
 q('ipBtn').onclick = async()=>{
   const ip = (q('ip').value||'').trim();
   const out = q('ipInfo'); if(!ip){ toast(out,'Enter an IP.'); return; }
   out.textContent='Querying…';
   try{
-    const r = await fetch(`/api/ip?ip=${encodeURIComponent(ip)}`); const d = await r.json();
+    let d;
+    if(MODE==='backend'){
+      const r = await fetch(`/api/ip?ip=${encodeURIComponent(ip)}`); d = await r.json();
+    }else{
+      d = await fetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`,{cache:'no-store'}).then(r=>r.json());
+    }
     out.innerHTML = `IP: <b>${ip}</b> • ${d.city||'—'}, ${d.region||''} ${d.country_name||d.country||''} • ASN: ${d.asn||'—'} • Org: ${d.org||d.organization||'—'}`;
     if(d.latitude!=null && d.longitude!=null){ map.setView([d.latitude,d.longitude], 6); pulse(d.latitude,d.longitude, `${d.city||''}`.trim()); }
-  }catch(e){ out.textContent='Backend unavailable.'; }
+  }catch{ out.textContent='Lookup failed.'; }
 };
 
-/* ===== TEXT EXTRACTOR ===== */
+/* ========= TEXT EXTRACTOR ========= */
 q('extractBtn').onclick = ()=>{
   const t = q('textBlob').value || '';
   const emails = [...t.matchAll(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/gi)].map(m=>m[0]);
@@ -384,7 +491,7 @@ q('extractOut').addEventListener('click', (e)=>{
   if(act==='url'){ window.open(v,'_blank','noopener'); }
 });
 
-/* ===== FILES ===== */
+/* ========= FILES ========= */
 q('exifFile').addEventListener('change', (e)=>{
   const file=e.target.files[0]; const out=q('exifOut'); out.innerHTML='';
   if(!file) return;
@@ -414,7 +521,7 @@ q('hashFile').addEventListener('change', async (e)=>{
   out.textContent = hex;
 });
 
-/* ===== TERMINAL ===== */
+/* ========= TERMINAL ========= */
 const term = q('terminal'), termIn=q('termIn');
 const tEcho = (line='')=>{ term.textContent += (term.textContent?'\n':'') + line; term.scrollTop = term.scrollHeight; };
 const tClear=()=> term.textContent='';
@@ -446,7 +553,14 @@ function run(cmdRaw){
 q('termBtn').addEventListener('click', ()=>run());
 termIn.addEventListener('keydown', e=>{ if(e.key==='Enter') run(); });
 
-/* Boot note */
+/* ========= Map candy ========= */
+(function demoArcs(){
+  const ny=[40.7128,-74.0060], lon=[51.5074,-0.1278], tk=[35.6895,139.6917];
+  setTimeout(()=>{ pulse(...ny,'New York'); pulse(...lon,'London'); arc(ny,lon); },900);
+  setTimeout(()=>{ pulse(...tk,'Tokyo'); arc(lon,tk); },1800);
+})();
+
+/* ========= Boot note ========= */
 tEcho('CMX OSINT Console ready. Type "help".');
 </script>
 </body>
