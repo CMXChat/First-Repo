@@ -3,452 +3,200 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CMX • OSINT Operations Console</title>
+<title>CMX • OSINT Console</title>
 
 <!-- Leaflet + AntPath -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
 <script src="https://unpkg.com/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.min.js"></script>
-
-<!-- Chart.js (sparklines later) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <!-- EXIF -->
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 
 <style>
-  :root{
-    /* X/Twitter-like palette: deep blacks, neutral grays, electric blue accent */
-    --bg: #000000;
-    --panel: #0f0f10;
-    --panel-2: #121316;
-    --ink: #e7e9ea;
-    --muted: #8b98a5;
-    --line: #2f3336;
-    --line-soft: #1f2326;
-    --accent: #1d9bf0;
-    --accent-2: #82c8ff;
-    --ok: #19c37d;
-    --warn: #ffd166;
-    --bad: #ff5a5f;
-
-    --radius: 14px;
-    --radius-sm: 10px;
-    --shadow: 0 12px 30px rgba(0,0,0,.4);
-  }
-  :root.light{
-    --bg: #ffffff;
-    --panel: #f6f7f8;
-    --panel-2: #ffffff;
-    --ink: #0f1419;
-    --muted: #536471;
-    --line: #e6e6e6;
-    --line-soft: #efefef;
-    --accent: #0a7fd1;
-    --accent-2: #57b6ff;
-    --ok: #0ea36a;
-    --warn: #b78700;
-    --bad: #d33d3d;
-  }
-
-  *{ box-sizing:border-box }
-  html,body{ height:100% }
-  body{
-    margin:0;
-    color:var(--ink);
-    background: var(--bg);
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  }
-
-  /* ---------- Topbar (X vibe) ---------- */
-  .topbar{
-    position: sticky; top:0; z-index:40;
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding: 10px 16px;
-    background: rgba(0,0,0,.65);
-    backdrop-filter: saturate(150%) blur(8px);
-    border-bottom: 1px solid var(--line);
-  }
-  .brand{
-    display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
-  }
-  .brand .logo{
-    width:28px; height:28px; display:grid; place-items:center; border-radius:8px;
-    background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    border:1px solid var(--line);
-  }
-  .brand .logo svg{ width:18px; height:18px; fill: var(--accent) }
-  .brand .title{ color: var(--ink) }
-  .brand .title b{ color: var(--accent) }
-
-  .top-actions{ display:flex; align-items:center; gap:10px }
-  .chip{
-    padding: 6px 10px; font-size: 12px; color: var(--muted);
-    border: 1px solid var(--line); border-radius: 999px;
-    background: var(--panel);
-  }
-  .ghost{
-    all: unset; cursor:pointer; user-select:none;
-    padding: 9px 12px; border-radius: 999px;
-    color: var(--ink);
-    border: 1px solid var(--line);
-    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-    transition: border-color .2s ease, background .2s ease;
-  }
-  .ghost:hover{ border-color: var(--accent) }
-
-  /* ---------- Layout ---------- */
-  .shell{ display:grid; grid-template-columns: 290px 1fr; min-height: calc(100vh - 58px) }
-  @media (max-width: 1020px){ .shell{ grid-template-columns: 1fr } }
-
-  /* Sidebar */
-  .side{
-    position: sticky; top:58px; height: calc(100vh - 58px);
-    background: var(--panel);
-    border-right: 1px solid var(--line);
-    padding: 14px;
-    overflow: auto;
-  }
-  .nav{ display:grid; gap:8px }
-  .nav button{
-    all: unset; cursor:pointer;
-    padding: 10px 12px; font-size: 14px; color: var(--ink);
-    border: 1px solid var(--line); border-radius: var(--radius-sm);
-    background: var(--panel-2);
-  }
-  .nav button:hover{ border-color: var(--accent) }
-  .nav button.active{
-    background: linear-gradient(180deg, rgba(29,155,240,.12), rgba(29,155,240,.04));
-    border-color: var(--accent);
-  }
-
-  /* Mobile slide-in */
-  .hamburger{ display:none }
-  @media (max-width: 1020px){
-    .side{
-      position: fixed; left:0; top:58px; width: 88%; max-width: 340px;
-      transform: translateX(-110%); transition: transform .25s ease; z-index: 50;
-      box-shadow: var(--shadow);
-    }
-    .side.open{ transform: translateX(0) }
-    .hamburger{ display:inline-flex }
-  }
-
-  /* Main column */
-  .main{ padding: 16px; overflow:auto }
-  .grid{ display:grid; gap: 14px; grid-template-columns: 1fr }
-  @media (min-width: 1200px){ .grid{ grid-template-columns: 1.2fr 1fr } }
-
-  /* Cards — flatter, tighter, X-like */
-  .card{
-    border: 1px solid var(--line);
-    background: var(--panel-2);
-    border-radius: var(--radius);
-    padding: 14px;
-  }
-  .card h3{
-    margin: 0 0 8px; font-weight: 800; letter-spacing: .2px;
-    color: var(--ink);
-  }
-  .sub{ color: var(--muted); font-size: 12px; margin-bottom: 10px }
-
-  .row{ display:grid; grid-template-columns: 1fr; gap: 10px }
-  @media (min-width: 640px){ .row{ grid-template-columns: 1fr auto } }
-
-  input[type=text], input[type=email], input[type=file], textarea{
-    width:100%; padding: 12px; border-radius: 12px;
-    background: var(--panel); color: var(--ink);
-    border: 1px solid var(--line); outline: none; font-size: 15px;
-  }
-  input::placeholder, textarea::placeholder{ color: var(--muted) }
-
-  .btn{
-    all: unset; cursor: pointer; user-select:none;
-    padding: 12px 16px; border-radius: 999px; font-weight: 800;
-    border: 1px solid var(--accent); color: var(--ink);
-    background: linear-gradient(180deg, rgba(29,155,240,.18), rgba(29,155,240,.06));
-  }
-  .btn:hover{ filter: brightness(1.05) }
-  .btn.mono{
-    border-color: var(--line);
-    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-  }
-
-  /* Tiny key-values + tables */
-  .kv{ border: 1px dashed var(--line); border-radius: 12px; padding: 10px }
-  .pill{
-    display:inline-block; padding: 6px 10px; border-radius: 999px; font-size: 12px;
-    border: 1px solid var(--line); background: var(--panel);
-  }
-  .pill.ok{ color: var(--ok) } .pill.bad{ color: var(--bad) } .pill.unk{ color: var(--muted) }
-
-  table.meta{ width:100%; border-collapse: collapse; font-size: 13px }
-  table.meta td, table.meta th{ padding: 6px 8px; border-bottom: 1px dashed var(--line) }
-  table.meta th{ text-align:left; color: var(--muted) }
-
-  /* Links grid */
-  .links{ display:grid; gap:8px; grid-template-columns: 1fr 1fr }
-  @media (max-width: 700px){ .links{ grid-template-columns: 1fr } }
-  .links .group{ border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--panel) }
-  .links h4{ margin: 0 0 8px; color: var(--accent) }
-  .linklist a{
-    display:inline-block; margin: 4px 6px 0 0; text-decoration: none;
-    padding: 8px 10px; border-radius: 999px; font-size: 13px;
-    border: 1px solid var(--line); color: var(--ink); background: var(--panel-2);
-  }
-  .linklist a:hover{ border-color: var(--accent) }
-
-  /* Terminal (X style) */
-  .terminal{
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    background: #050506; color: #cfe9ff;
-    border-radius: 12px; padding: 10px;
-    border: 1px solid var(--line);
-    min-height: 180px; max-height: 280px; overflow-y: auto; white-space: pre-wrap;
-  }
-  .term-input{ display:flex; gap:8px; margin-top:8px }
-  .term-input input{
-    flex:1; padding:10px 12px; border-radius: 999px; border:1px solid var(--line);
-    background: var(--panel); color: var(--ink);
-  }
-  .foot{ text-align:right; color: var(--muted); font-size: 12px; margin-top: 10px }
-
-  /* Map */
-  #map{ height:380px; border-radius: 12px; overflow:hidden; border: 1px solid var(--line) }
-  .leaflet-container{ background: #0a0a0a }
-
-  /* Chips for extractor */
-  .chips{ display:flex; flex-wrap:wrap; gap:8px }
-  .chip-btn{
-    display:inline-block; padding:6px 10px; border-radius: 999px; font-size: 13px;
-    border: 1px solid var(--line); background: var(--panel); cursor:pointer;
-  }
-
-  /* Quick stat badges (for later) */
-  .stats{ display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 }
-  .stat{
-    padding:8px 10px; border-radius: 10px; border: 1px solid var(--line);
-    background: var(--panel);
-    display:flex; align-items:center; gap:8px; font-size: 13px; color: var(--muted);
-  }
-
-  /* Focus rings */
-  :is(input, .btn, .ghost, .nav button):focus{ outline: 2px solid var(--accent); outline-offset: 2px; }
-
+:root{
+  --bg:#000; --panel:#0f0f10; --panel-2:#121316;
+  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f;
+  --r:14px; --rs:10px;
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+.topbar{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.logo{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+.logo svg{width:18px;height:18px;fill:var(--accent)}
+.top-actions{display:flex;align-items:center;gap:8px}
+.chip{padding:6px 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.ghost{all:unset;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:999px}
+.shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px)}
+@media(max-width:1020px){.shell{grid-template-columns:1fr}}
+.side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto}
+.nav{display:grid;gap:8px}
+.nav button{all:unset;cursor:pointer;padding:10px 12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2)}
+.nav button.active,.nav button:hover{border-color:var(--accent)}
+.main{padding:14px;overflow:auto}
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:1200px){.grid{grid-template-columns:1.2fr 1fr}}
+.card{border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:14px}
+.card h3{margin:0 0 8px;font-weight:800}
+.sub{color:var(--muted);font-size:12px;margin-bottom:10px}
+.row{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:640px){.row{grid-template-columns:1fr auto}}
+input[type=text],input[type=email],input[type=file],textarea{
+  width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none;font-size:15px
+}
+.btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:999px;font-weight:800;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06))}
+.btn.mono{border-color:var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+.kv{border:1px dashed var(--line);border-radius:12px;padding:10px}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12px}
+.pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.unk{color:var(--muted)}
+.links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+@media(max-width:700px){.links{grid-template-columns:1fr}}
+.links .group{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel)}
+.links h4{margin:0 0 8px;color:var(--accent)}
+.linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;max-height:240px;overflow:auto;white-space:pre-wrap}
+.term-input{display:flex;gap:8px;margin-top:8px}
+#map{height:360px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.meta{width:100%;border-collapse:collapse;font-size:13px}
+table.meta td,table.meta th{padding:6px 8px;border-bottom:1px dashed var(--line)}
+table.meta th{text-align:left;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px}
 </style>
 </head>
 <body>
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <div class="brand">
-      <button class="ghost hamburger" id="btnSide">☰</button>
-      <div class="logo" aria-hidden="true">
-        <!-- minimalist "X" logo-ish shape -->
-        <svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
-      </div>
-      <div class="title">CMX <b>OSINT</b></div>
-    </div>
-    <div class="top-actions">
-      <span class="chip">Session <b id="sid"></b></span>
-      <button class="ghost" id="toggleTheme">Dark / Light</button>
-    </div>
-  </header>
-
-  <div class="shell">
-    <!-- SIDEBAR -->
-    <aside class="side" id="sidebar">
-      <nav class="nav">
-        <button class="active" onclick="go('emailCard')">Email</button>
-        <button onclick="go('userCard')">Username</button>
-        <button onclick="go('domainCard')">Domain</button>
-        <button onclick="go('ipCard')">IP</button>
-        <button onclick="go('textCard')">Text Extractor</button>
-        <button onclick="go('fileCard')">Files</button>
-        <button onclick="go('mapCard')">Map</button>
-        <button onclick="go('terminalCard')">Terminal</button>
-      </nav>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="main">
-      <div class="grid">
-
-        <!-- EMAIL -->
-        <section class="card" id="emailCard">
-          <h3>Email Intelligence</h3>
-          <div class="sub">Enter an email → provider guess, Gravatar probe, & curated recon links.</div>
-
-          <div class="row">
-            <input type="email" id="email" placeholder="name@domain.com" />
-            <button class="btn" id="analyzeBtn">Analyze</button>
-          </div>
-
-          <div id="emailMsg" class="sub" style="margin-top:8px"></div>
-
-          <div class="row" style="margin-top:8px">
-            <div class="kv">
-              <div class="sub">Email</div>
-              <div id="outEmail" style="font-weight:800">—</div>
-            </div>
-            <div class="kv">
-              <div class="sub">Domain</div>
-              <div id="outDomain" style="font-weight:800">—</div>
-            </div>
-          </div>
-
-          <div class="row" style="margin-top:8px">
-            <div class="kv">
-              <div class="sub">Provider</div>
-              <div id="outProvider"><span class="pill unk">unknown</span></div>
-            </div>
-            <div class="kv">
-              <div class="sub">MD5 (Gravatar)</div>
-              <div id="outMD5" style="font-family:ui-monospace,Menlo,Consolas,monospace">—</div>
-            </div>
-          </div>
-
-          <div style="display:flex; align-items:center; gap:10px; margin-top:10px">
-            <div class="avatar" id="gravBox"
-                 style="width:88px;height:88px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;overflow:hidden">
-              <span class="sub">No avatar</span>
-            </div>
-            <div class="sub">If a public Gravatar exists, it will appear here automatically.</div>
-          </div>
-
-          <div class="links" id="emailLinks" style="margin-top:12px"></div>
-
-          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
-            <button class="btn mono" id="copyMD5">Copy MD5</button>
-            <a class="btn mono" id="mailto" href="#" target="_blank" rel="noopener">Mailto</a>
-            <button class="btn mono" id="openEmailLinks">Open All Links</button>
-          </div>
-        </section>
-
-        <!-- USERNAME -->
-        <section class="card" id="userCard">
-          <h3>Username Intelligence</h3>
-          <div class="sub">Generate platform and search footprints for a handle.</div>
-          <div class="row">
-            <input type="text" id="user" placeholder="username" />
-            <button class="btn" id="userBtn">Build</button>
-          </div>
-          <div class="links" id="userLinks" style="margin-top:12px"></div>
-          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
-            <button class="btn mono" id="openUserLinks">Open All Links</button>
-          </div>
-        </section>
-
-        <!-- DOMAIN -->
-        <section class="card" id="domainCard">
-          <h3>Domain Intelligence</h3>
-          <div class="sub">Live DNS (DoH via dns.google) + infrastructure links.</div>
-          <div class="row">
-            <input type="text" id="domain" placeholder="example.com" />
-            <button class="btn" id="domainBtn">Resolve</button>
-          </div>
-          <div id="dnsMsg" class="sub"></div>
-          <table class="meta" id="dnsTable" style="margin-top:8px"></table>
-          <div class="links" id="domainLinks" style="margin-top:12px"></div>
-          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
-            <button class="btn mono" id="openDomainLinks">Open All Links</button>
-          </div>
-        </section>
-
-        <!-- IP -->
-        <section class="card" id="ipCard">
-          <h3>IP Intelligence</h3>
-          <div class="sub">Geo/ASN via ipapi.co + rep tools (Shodan, GreyNoise, AbuseIPDB, VT).</div>
-          <div class="row">
-            <input type="text" id="ip" placeholder="8.8.8.8" />
-            <button class="btn" id="ipBtn">Lookup</button>
-          </div>
-          <div id="ipInfo" class="sub" style="margin-top:8px"></div>
-          <div class="links" id="ipLinks" style="margin-top:12px"></div>
-          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
-            <button class="btn mono" id="openIpLinks">Open All Links</button>
-          </div>
-        </section>
-
-        <!-- TEXT EXTRACTOR -->
-        <section class="card" id="textCard">
-          <h3>Text Extractor</h3>
-          <div class="sub">Paste raw logs; we’ll extract emails, IPs, URLs, and domains on the client.</div>
-          <textarea id="textBlob" rows="6" placeholder="Paste raw logs, dumps, emails, notes..."></textarea>
-          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
-            <button class="btn" id="extractBtn">Extract</button>
-            <button class="btn mono" id="clearBlob">Clear</button>
-          </div>
-          <div id="extractOut" style="margin-top:10px"></div>
-        </section>
-
-        <!-- FILES -->
-        <section class="card" id="fileCard">
-          <h3>File Intelligence</h3>
-          <div class="sub">Image EXIF reader • SHA-256 hasher.</div>
-          <div class="row">
-            <div>
-              <label class="sub">EXIF Viewer</label>
-              <input type="file" id="exifFile" accept="image/*" />
-              <div id="exifOut" style="margin-top:8px"></div>
-            </div>
-            <div>
-              <label class="sub">SHA-256 Hasher</label>
-              <input type="file" id="hashFile" />
-              <div id="hashOut" style="margin-top:8px; font-family: ui-monospace,Menlo,Consolas,monospace"></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- MAP -->
-        <section class="card" id="mapCard">
-          <h3>Origin Map</h3>
-          <div class="sub">Pulsing nodes with animated trace arcs.</div>
-          <div id="map"></div>
-        </section>
-
-        <!-- TERMINAL -->
-        <section class="card" id="terminalCard">
-          <h3>CMX Terminal</h3>
-          <div class="sub">Try: <code>help</code> • <code>analyze alice@example.com</code> • <code>username somehandle</code> • <code>domain example.com</code> • <code>ip 1.1.1.1</code> • <code>extract</code> • <code>clear</code></div>
-          <div class="terminal" id="terminal"></div>
-          <div class="term-input">
-            <input id="termIn" type="text" placeholder="> help" />
-            <button class="btn" id="termBtn">Run</button>
-          </div>
-          <div class="foot">CMX • Swiss-Army OSINT Console</div>
-        </section>
-
-      </div>
-    </main>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg></div>
+    <div>CMX <b>OSINT</b></div>
   </div>
+  <div class="top-actions">
+    <span class="chip">Session <b id="sid"></b></span>
+    <button class="ghost" id="toggleTheme">Dark / Light</button>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="side">
+    <nav class="nav">
+      <button class="active" onclick="go('emailCard')">Email</button>
+      <button onclick="go('userCard')">Username</button>
+      <button onclick="go('domainCard')">Domain</button>
+      <button onclick="go('ipCard')">IP</button>
+      <button onclick="go('textCard')">Text</button>
+      <button onclick="go('fileCard')">Files</button>
+      <button onclick="go('mapCard')">Map</button>
+      <button onclick="go('terminalCard')">Terminal</button>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="grid">
+      <!-- EMAIL -->
+      <section class="card" id="emailCard">
+        <h3>Email Intelligence</h3>
+        <div class="sub">Provider guess, MD5/Gravatar, curated recon links.</div>
+        <div class="row"><input type="email" id="email" placeholder="name@domain.com"/><button class="btn" id="analyzeBtn">Analyze</button></div>
+        <div id="emailMsg" class="sub" style="margin-top:8px"></div>
+        <div class="row" style="margin-top:8px">
+          <div class="kv"><div class="sub">Email</div><div id="outEmail" style="font-weight:700">—</div></div>
+          <div class="kv"><div class="sub">Domain</div><div id="outDomain" style="font-weight:700">—</div></div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div class="kv"><div class="sub">Provider</div><div id="outProvider"><span class="pill unk">unknown</span></div></div>
+          <div class="kv"><div class="sub">MD5 (Gravatar)</div><div id="outMD5" style="font-family:ui-monospace,Menlo">—</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+          <div id="gravBox" style="width:88px;height:88px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:var(--panel)"><span class="sub">No avatar</span></div>
+          <div class="sub">If a public Gravatar exists, it appears here.</div>
+        </div>
+        <div class="links" id="emailLinks" style="margin-top:12px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn mono" id="copyMD5">Copy MD5</button>
+          <a class="btn mono" id="mailto" href="#" target="_blank" rel="noopener">Mailto</a>
+          <button class="btn mono" id="openEmailLinks">Open All</button>
+        </div>
+      </section>
+
+      <!-- USERNAME -->
+      <section class="card" id="userCard">
+        <h3>Username Intelligence</h3>
+        <div class="row"><input type="text" id="user" placeholder="username"/><button class="btn" id="userBtn">Build</button></div>
+        <div class="links" id="userLinks" style="margin-top:12px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openUserLinks">Open All</button></div>
+      </section>
+
+      <!-- DOMAIN -->
+      <section class="card" id="domainCard">
+        <h3>Domain Intelligence</h3>
+        <div class="row"><input type="text" id="domain" placeholder="example.com"/><button class="btn" id="domainBtn">Resolve</button></div>
+        <div id="dnsMsg" class="sub"></div>
+        <table class="meta" id="dnsTable" style="margin-top:8px"></table>
+        <div class="links" id="domainLinks" style="margin-top:12px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openDomainLinks">Open All</button></div>
+      </section>
+
+      <!-- IP -->
+      <section class="card" id="ipCard">
+        <h3>IP Intelligence</h3>
+        <div class="row"><input type="text" id="ip" placeholder="8.8.8.8"/><button class="btn" id="ipBtn">Lookup</button></div>
+        <div id="ipInfo" class="sub" style="margin-top:8px"></div>
+        <div class="links" id="ipLinks" style="margin-top:12px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openIpLinks">Open All</button></div>
+      </section>
+
+      <!-- TEXT -->
+      <section class="card" id="textCard">
+        <h3>Text Extractor</h3>
+        <div class="sub">Extract emails, IPs, URLs, domains (client-side) and pivot.</div>
+        <textarea id="textBlob" rows="6" placeholder="Paste logs, emails, notes..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="extractBtn">Extract</button>
+          <button class="btn mono" id="clearBlob">Clear</button>
+        </div>
+        <div id="extractOut" style="margin-top:10px"></div>
+      </section>
+
+      <!-- FILES -->
+      <section class="card" id="fileCard">
+        <h3>File Intelligence</h3>
+        <div class="row">
+          <div><label class="sub">EXIF Viewer</label><input type="file" id="exifFile" accept="image/*"/><div id="exifOut" style="margin-top:8px"></div></div>
+          <div><label class="sub">SHA-256 Hasher</label><input type="file" id="hashFile"/><div id="hashOut" style="margin-top:8px;font-family:ui-monospace,Menlo"></div></div>
+        </div>
+      </section>
+
+      <!-- MAP -->
+      <section class="card" id="mapCard">
+        <h3>Origin Map</h3>
+        <div id="map"></div>
+      </section>
+
+      <!-- TERMINAL -->
+      <section class="card" id="terminalCard">
+        <h3>CMX Terminal</h3>
+        <div class="sub">Try: <code>help</code> • <code>analyze alice@example.com</code> • <code>username somehandle</code> • <code>domain example.com</code> • <code>ip 1.1.1.1</code> • <code>extract</code> • <code>clear</code></div>
+        <div class="terminal" id="terminal"></div>
+        <div class="term-input"><input id="termIn" type="text" placeholder="> help"/><button class="btn" id="termBtn">Run</button></div>
+      </section>
+    </div>
+  </main>
+</div>
 
 <script>
-/* ======= Shell / Theme / Sidebar ======= */
-const root = document.documentElement;
-const saved = localStorage.getItem('cmx-theme');
-if(saved === 'light') root.classList.add('light');
+/* ---------- Theme / Session ---------- */
+const root=document.documentElement;
+document.getElementById('toggleTheme').onclick=()=>root.classList.toggle('light');
+document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
 
-document.getElementById('toggleTheme').onclick = () => {
-  root.classList.toggle('light');
-  localStorage.setItem('cmx-theme', root.classList.contains('light') ? 'light' : 'dark');
-};
-
-document.getElementById('sid').textContent = Math.random().toString(36).slice(2,10).toUpperCase();
-
-const sidebar = document.getElementById('sidebar');
-document.getElementById('btnSide').onclick = () => sidebar.classList.toggle('open');
-
-function go(id){
-  document.getElementById(id).scrollIntoView({behavior:'smooth', block:'start'});
-  sidebar.classList.remove('open');
-}
-
-/* ======= Helpers ======= */
-function toast(el,msg,isErr){ el.innerHTML = `<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3500); }
+/* ---------- Helpers ---------- */
+function toast(el,msg,isErr){ el.innerHTML=`<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3000); }
 function sanitize(s){ return encodeURIComponent((s||'').trim()); }
 function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e); }
-function providerOf(domain){
-  const d=(domain||'').toLowerCase();
+function providerOf(domain){ const d=(domain||'').toLowerCase();
   if(/gmail\.com$/.test(d)) return 'Gmail';
   if(/(outlook|hotmail|live)\.com$/.test(d)) return 'Outlook/Microsoft';
   if(/yahoo\.(com|co\.\w+)$/.test(d)) return 'Yahoo';
@@ -457,8 +205,10 @@ function providerOf(domain){
   if(/yandex\.(ru|com)$/.test(d)) return 'Yandex';
   return 'Unknown';
 }
+const CSS = (n)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const ACCENT = CSS('--accent') || '#1d9bf0'; const ACCENT2 = CSS('--accent2') || '#82c8ff';
 
-/* ======= Tiny MD5 (for Gravatar) ======= */
+/* ---------- Tiny MD5 (for Gravatar) ---------- */
 function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);
 a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);
 a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);
@@ -486,1794 +236,201 @@ function hex(x){for(let i=0;i<x.length;i++)x[i]=rhex(x[i]);return x.join('')}
 function md5(s){return hex(md51(unescape(encodeURIComponent(s))).slice())}
 function add32(a,b){return(a+b)&0xFFFFFFFF}
 
-/* ======= EMAIL MODULE ======= */
-let EMAIL_LINKS = [];
-const emailEl = document.getElementById('email');
-const emailMsg = document.getElementById('emailMsg');
-const outEmail = document.getElementById('outEmail');
-const outDomain = document.getElementById('outDomain');
-const outProvider = document.getElementById('outProvider');
-const outMD5 = document.getElementById('outMD5');
-const gravBox = document.getElementById('gravBox');
-const mailto = document.getElementById('mailto');
-const emailLinks = document.getElementById('emailLinks');
+/* ---------- EMAIL ---------- */
+let EMAIL_LINKS=[]; const emailEl=document.getElementById('email');
+const emailMsg=document.getElementById('emailMsg'); const outEmail=document.getElementById('outEmail');
+const outDomain=document.getElementById('outDomain'); const outProvider=document.getElementById('outProvider');
+const outMD5=document.getElementById('outMD5'); const gravBox=document.getElementById('gravBox');
+const mailto=document.getElementById('mailto'); const emailLinks=document.getElementById('emailLinks');
 
-function buildEmailLinks(email, domain){
-  EMAIL_LINKS = [];
-  const E = sanitize(email), D = sanitize(domain), h = md5(email.toLowerCase());
-  const groups = [
-    ['Breach & Reputation', [
-      ['Have I Been Pwned', `https://haveibeenpwned.com/account/${E}`],
-      ['Epieos Email OSINT', `https://tools.epieos.com/email.php?email=${E}`],
-      ['DeHashed (login)', `https://www.dehashed.com/search?query=${E}`],
-      ['IntelX', `https://intelx.io/?s=${E}`],
-      ['EmailRep', `https://emailrep.io/${E}`],
+function buildEmailLinks(email,domain){
+  EMAIL_LINKS=[]; const E=sanitize(email), D=sanitize(domain), h=md5(email.toLowerCase());
+  const groups=[
+    ['Breach & Reputation',[
+      ['Have I Been Pwned',`https://haveibeenpwned.com/account/${E}`],
+      ['Epieos',`https://tools.epieos.com/email.php?email=${E}`],
+      ['DeHashed',`https://www.dehashed.com/search?query=${E}`],
+      ['IntelX',`https://intelx.io/?s=${E}`],
+      ['EmailRep',`https://emailrep.io/${E}`]
     ]],
-    ['Search / Pastebins', [
-      ['Google exact', `https://www.google.com/search?q="%22${E}%22"`],
-      ['DuckDuckGo exact', `https://duckduckgo.com/?q="%22${E}%22"`],
-      ['Bing exact', `https://www.bing.com/search?q="%22${E}%22"`],
-      ['Google Pastebin', `https://www.google.com/search?q="%22${E}%22+site%3Apastebin.com`],
-      ['Google Gists', `https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
-      ['Skymem', `https://www.skymem.info/srch?q=${E}`],
+    ['Search / Pastebins',[
+      ['Google exact',`https://www.google.com/search?q="%22${E}%22"`],
+      ['DuckDuckGo',`https://duckduckgo.com/?q="%22${E}%22"`],
+      ['Bing',`https://www.bing.com/search?q="%22${E}%22"`],
+      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`]
     ]],
-    ['Developer / Code', [
-      ['GitHub search', `https://github.com/search?q=${E}`],
-      ['GitLab search', `https://gitlab.com/search?search=${E}`],
-      ['StackOverflow', `https://stackoverflow.com/search?q=${E}`],
-    ]],
-    ['People / Social', [
-      ['Reddit', `https://www.reddit.com/search/?q=${E}`],
-      ['X (Twitter)', `https://twitter.com/search?q=${E}&f=live`],
-      ['LinkedIn (Google)', `https://www.google.com/search?q=site%3Alinkedin.com+%22${E}%22`],
-    ]],
-    ['PGP & Keys', [
-      ['keys.openpgp.org', `https://keys.openpgp.org/search?q=${E}`],
-      ['Ubuntu Keyserver', `https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
-    ]],
-    ['Gravatar & Misc', [
-      ['Gravatar image', `https://www.gravatar.com/avatar/${h}?s=400`],
-      ['Gravatar JSON', `https://www.gravatar.com/${h}.json`],
-      ['Hunter Verify (login)', `https://hunter.io/verify/${E}`],
+    ['Keys / Gravatar',[
+      ['OpenPGP',`https://keys.openpgp.org/search?q=${E}`],
+      ['Ubuntu Keyserver',`https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
+      ['Gravatar image',`https://www.gravatar.com/avatar/${h}?s=400`],
+      ['Gravatar JSON',`https://www.gravatar.com/${h}.json`]
     ]]
   ];
-  emailLinks.innerHTML = '';
-  for(const [title, items] of groups){
-    const wrap = document.createElement('div'); wrap.className = 'group';
-    wrap.innerHTML = `<h4>${title}</h4><div class="linklist"></div>`;
-    const list = wrap.querySelector('.linklist');
-    items.forEach(([label, url])=>{
-      const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label;
-      list.appendChild(a); EMAIL_LINKS.push(url);
-    });
+  emailLinks.innerHTML=''; for(const [title,items] of groups){
+    const wrap=document.createElement('div'); wrap.className='group';
+    wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
+    const list=wrap.querySelector('.linklist');
+    items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);EMAIL_LINKS.push(url);});
     emailLinks.appendChild(wrap);
   }
 }
 
 async function analyzeEmail(input){
-  const e=(input || emailEl.value || '').trim();
-  if(!e){ toast(emailMsg, 'Enter an email.'); return; }
-  if(!isValidEmail(e)){ toast(emailMsg, 'Invalid email.', true); return; }
-  const [local, domain] = e.split('@');
-  const prov = providerOf(domain);
-  outEmail.textContent = e; outDomain.textContent = domain;
-  outProvider.innerHTML = (prov==='Unknown') ? '<span class="pill unk">unknown</span>' : `<span class="pill ok">${prov}</span>`;
-  mailto.href = `mailto:${encodeURIComponent(e)}`;
-  const hash = md5(e.toLowerCase()); outMD5.textContent = hash;
-
-  gravBox.innerHTML = '<span class="sub">Checking Gravatar…</span>';
-  const img = new Image();
-  img.onload = ()=>{ gravBox.innerHTML=''; Object.assign(img.style, {width:'100%',height:'100%',objectFit:'cover'}); gravBox.appendChild(img); };
-  img.onerror = ()=>{ gravBox.innerHTML = '<span class="sub">No avatar</span>'; };
-  img.src = `https://www.gravatar.com/avatar/${hash}?d=404&s=160`;
-
-  buildEmailLinks(e, domain);
-  toast(emailMsg, 'Email analysis complete.');
+  const e=(input||emailEl.value||'').trim();
+  if(!e){ toast(emailMsg,'Enter an email.'); return; }
+  if(!isValidEmail(e)){ toast(emailMsg,'Invalid email.',true); return; }
+  const [,domain]=e.split('@'); outEmail.textContent=e; outDomain.textContent=domain;
+  const prov=providerOf(domain);
+  outProvider.innerHTML=(prov==='Unknown')?'<span class="pill unk">unknown</span>':`<span class="pill ok">${prov}</span>`;
+  const hash=md5(e.toLowerCase()); outMD5.textContent=hash; mailto.href=`mailto:${encodeURIComponent(e)}`;
+  gravBox.innerHTML='<span class="sub">Checking…</span>';
+  const img=new Image(); img.onload=()=>{gravBox.innerHTML='';img.style.width='100%';img.style.height='100%';img.style.objectFit='cover';gravBox.appendChild(img)}; img.onerror=()=>{gravBox.innerHTML='<span class="sub">No avatar</span>'}; img.src=`https://www.gravatar.com/avatar/${hash}?d=404&s=160`;
+  buildEmailLinks(e,domain); toast(emailMsg,'Email analysis complete.');
 }
+document.getElementById('analyzeBtn').onclick=()=>analyzeEmail();
+emailEl.addEventListener('keydown',e=>{if(e.key==='Enter')analyzeEmail()});
+document.getElementById('copyMD5').onclick=()=>{const v=outMD5.textContent.trim(); if(v&&v!=='—'){navigator.clipboard.writeText(v); toast(emailMsg,'MD5 copied.');}};
+document.getElementById('openEmailLinks').onclick=()=>EMAIL_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
 
-document.getElementById('analyzeBtn').onclick = () => analyzeEmail();
-emailEl.addEventListener('keydown', e=>{ if(e.key==='Enter') analyzeEmail(); });
-document.getElementById('copyMD5').onclick = ()=>{ const v = outMD5.textContent.trim(); if(v && v!=='—'){ navigator.clipboard.writeText(v); toast(emailMsg,'MD5 copied.'); } };
-document.getElementById('openEmailLinks').onclick = ()=> EMAIL_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-
-/* ======= USERNAME MODULE ======= */
-let USER_LINKS = [];
-const userLinks = document.getElementById('userLinks');
-
+/* ---------- USERNAME ---------- */
+let USER_LINKS=[]; const userLinks=document.getElementById('userLinks');
 function buildUserLinks(handle){
-  USER_LINKS = [];
-  const u = sanitize(handle);
-  const groups = [
-    ['Profiles', [
-      ['GitHub', `https://github.com/${u}`],
-      ['GitLab', `https://gitlab.com/${u}`],
-      ['Reddit', `https://www.reddit.com/user/${u}`],
-      ['X (Twitter)', `https://twitter.com/${u}`],
-      ['Instagram', `https://www.instagram.com/${u}/`],
-      ['TikTok', `https://www.tiktok.com/@${u}`],
-      ['YouTube', `https://www.youtube.com/@${u}`],
-      ['Keybase', `https://keybase.io/${u}`],
-      ['Medium', `https://medium.com/@${u}`],
-      ['HackerNews (search)', `https://hn.algolia.com/?q=${u}`],
-    ]],
-    ['Search', [
-      ['Google', `https://www.google.com/search?q=${u}`],
-      ['DuckDuckGo', `https://duckduckgo.com/?q=${u}`],
-      ['Bing', `https://www.bing.com/search?q=${u}`],
-      ['Google site:pastebin', `https://www.google.com/search?q="%22${u}%22"+site%3Apastebin.com`],
-      ['Google site:gist', `https://www.google.com/search?q="%22${u}%22"+site%3Agist.github.com`],
-    ]]
-  ];
-  userLinks.innerHTML = '';
-  for(const [title, items] of groups){
-    const wrap = document.createElement('div'); wrap.className='group';
-    wrap.innerHTML = `<h4>${title}</h4><div class="linklist"></div>`;
-    const list = wrap.querySelector('.linklist');
-    items.forEach(([label,url])=>{
-      const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label;
-      list.appendChild(a); USER_LINKS.push(url);
-    });
-    userLinks.appendChild(wrap);
-  }
-}
-document.getElementById('userBtn').onclick = ()=>{
-  const v = document.getElementById('user').value.trim();
-  if(!v) return; buildUserLinks(v);
-};
-document.getElementById('openUserLinks').onclick = ()=> USER_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-
-/* ======= DOMAIN (DNS over HTTPS) ======= */
-let DOMAIN_LINKS = [];
-async function doh(name,type){
-  const r = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`, {cache:'no-store'});
-  if(!r.ok) throw 0; return r.json();
-}
-function rowify(arr){ return arr.map(x=>`<tr><th>${x[0]}</th><td>${x[1]}</td></tr>`).join(''); }
-
-document.getElementById('domainBtn').onclick = async()=>{
-  const d = document.getElementById('domain').value.trim();
-  const msg = document.getElementById('dnsMsg');
-  const tbl = document.getElementById('dnsTable');
-  const out = document.getElementById('domainLinks');
-  if(!d){ toast(msg, 'Enter a domain.'); return; }
-  msg.textContent='Resolving…'; tbl.innerHTML=''; out.innerHTML=''; DOMAIN_LINKS=[];
-
-  try{
-    const [A,AAAA,MX,NS,TXT] = await Promise.all([
-      doh(d,'A'), doh(d,'AAAA'), doh(d,'MX'), doh(d,'NS'), doh(d,'TXT')
-    ]);
-    const lines=[];
-    lines.push(['A', (A.Answer||[]).map(a=>a.data).join(', ')||'—']);
-    lines.push(['AAAA', (AAAA.Answer||[]).map(a=>a.data).join(', ')||'—']);
-    lines.push(['MX', (MX.Answer||[]).map(a=>a.data).join(' | ')||'—']);
-    lines.push(['NS', (NS.Answer||[]).map(a=>a.data).join(', ')||'—']);
-    lines.push(['TXT', (TXT.Answer||[]).map(a=>a.data.replaceAll('"','')).join(' | ')||'—']);
-    tbl.innerHTML = rowify(lines);
-
-    const D = encodeURIComponent(d);
-    const groups = [
-      ['Surface', [
-        ['crt.sh', `https://crt.sh/?q=${D}`],
-        ['urlscan.io', `https://urlscan.io/domain/${D}`],
-        ['VirusTotal', `https://www.virustotal.com/gui/domain/${D}`],
-        ['SecurityTrails', `https://securitytrails.com/domain/${D}/dns`],
-        ['BuiltWith', `https://builtwith.com/${D}`],
-      ]],
-      ['Infra', [
-        ['Shodan', `https://www.shodan.io/search?query=${D}`],
-        ['Censys', `https://search.censys.io/search?resource=hosts&q=${D}`],
-        ['DNSDumpster', `https://dnsdumpster.com/`],
-      ]]
-    ];
-    for(const [title, items] of groups){
-      const wrap=document.createElement('div'); wrap.className='group';
-      wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-      const list=wrap.querySelector('.linklist');
-      items.forEach(([label,url])=>{
-        const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label;
-        list.appendChild(a); DOMAIN_LINKS.push(url);
-      });
-      out.appendChild(wrap);
-    }
-    msg.textContent='DNS resolved.';
-  }catch(e){
-    toast(msg, 'DNS lookup blocked/unavailable.', true);
-  }
-};
-
-document.getElementById('openDomainLinks').onclick = ()=> DOMAIN_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-
-/* ======= IP (ipapi.co) ======= */
-let IP_LINKS = [];
-document.getElementById('ipBtn').onclick = async()=>{
-  const ip = document.getElementById('ip').value.trim();
-  const info = document.getElementById('ipInfo');
-  const out = document.getElementById('ipLinks');
-  if(!ip){ toast(info,'Enter an IP.'); return; }
-  info.textContent='Querying…'; out.innerHTML=''; IP_LINKS=[];
-
-  try{
-    const r = await fetch(`https://ipapi.co/${ip}/json/`, {cache:'no-store'}); if(!r.ok) throw 0;
-    const data = await r.json();
-    if(data && data.latitude!=null){
-      info.innerHTML = `IP: <b>${ip}</b> • ${data.city||'—'}, ${data.region||''} ${data.country_name||''} • ASN: ${data.asn||'—'} • Org: ${data.org||'—'}`;
-      if(typeof map!=='undefined'){
-        map.setView([data.latitude,data.longitude], 6);
-        pulse(data.latitude, data.longitude, `${data.city||''} ${data.country||''}`.trim());
-      }
-    }else{
-      info.innerHTML='Limited geo—use external tools below.';
-    }
-  }catch(e){
-    info.textContent='Client-side lookup blocked — use external tools.';
-  }
-
-  const s = encodeURIComponent(ip);
-  const groups = [
-    ['Reputation & Noise', [
-      ['Shodan host', `https://www.shodan.io/host/${s}`],
-      ['GreyNoise', `https://viz.greynoise.io/ip/${s}`],
-      ['AbuseIPDB', `https://www.abuseipdb.com/check/${s}`],
-      ['VirusTotal IP', `https://www.virustotal.com/gui/ip-address/${s}`],
-    ]]
-  ];
-  for(const [title,items] of groups){
+  USER_LINKS=[]; const u=sanitize(handle);
+  const groups=[['Profiles',[
+    ['GitHub',`https://github.com/${u}`],['GitLab',`https://gitlab.com/${u}`],
+    ['Reddit',`https://www.reddit.com/user/${u}`],['X',`https://twitter.com/${u}`],
+    ['Instagram',`https://www.instagram.com/${u}/`],['TikTok',`https://www.tiktok.com/@${u}`],
+    ['YouTube',`https://www.youtube.com/@${u}`],['Keybase',`https://keybase.io/${u}`]
+  ]],['Search',[
+    ['Google',`https://www.google.com/search?q=${u}`],['DuckDuckGo',`https://duckduckgo.com/?q=${u}`]
+  ]]];
+  userLinks.innerHTML=''; for(const [title,items] of groups){
     const wrap=document.createElement('div'); wrap.className='group';
     wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
     const list=wrap.querySelector('.linklist');
-    items.forEach(([label,url])=>{
-      const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label;
-      list.appendChild(a); IP_LINKS.push(url);
-    });
-    out.appendChild(wrap);
+    items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);USER_LINKS.push(url);});
+    userLinks.appendChild(wrap);
   }
+}
+document.getElementById('userBtn').onclick=()=>{const v=document.getElementById('user').value.trim(); if(!v)return; buildUserLinks(v);};
+document.getElementById('openUserLinks').onclick=()=>USER_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
+
+/* ---------- DOMAIN (DNS over HTTPS) ---------- */
+let DOMAIN_LINKS=[]; async function doh(name,type){ const r=await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`,{cache:'no-store'}); if(!r.ok) throw 0; return r.json(); }
+document.getElementById('domainBtn').onclick=async()=>{
+  const d=document.getElementById('domain').value.trim(); const msg=document.getElementById('dnsMsg'); const tbl=document.getElementById('dnsTable'); const out=document.getElementById('domainLinks');
+  if(!d){ toast(msg,'Enter a domain.'); return; } msg.textContent='Resolving…'; tbl.innerHTML=''; out.innerHTML=''; DOMAIN_LINKS=[];
+  try{
+    const [A,AAAA,MX,NS,TXT]=await Promise.all([doh(d,'A'),doh(d,'AAAA'),doh(d,'MX'),doh(d,'NS'),doh(d,'TXT')]);
+    const get=(o)=>o&&o.Answer?o.Answer.map(a=>a.data):[];
+    const lines=[['A',get(A).join(', ')||'—'],['AAAA',get(AAAA).join(', ')||'—'],['MX',get(MX).join(' | ')||'—'],['NS',get(NS).join(', ')||'—'],['TXT',get(TXT).map(s=>String(s).replaceAll('"','')).join(' | ')||'—']];
+    tbl.innerHTML=lines.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
+    const D=encodeURIComponent(d); const groups=[['Surface',[
+      ['crt.sh',`https://crt.sh/?q=${D}`],['urlscan.io',`https://urlscan.io/domain/${D}`],['VirusTotal',`https://www.virustotal.com/gui/domain/${D}`],['BuiltWith',`https://builtwith.com/${D}`]
+    ]],['Infra',[
+      ['Shodan',`https://www.shodan.io/search?query=${D}`],['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`]
+    ]]];
+    for(const [title,items] of groups){const wrap=document.createElement('div');wrap.className='group';wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;const list=wrap.querySelector('.linklist');items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);DOMAIN_LINKS.push(url);});out.appendChild(wrap);}
+    msg.textContent='DNS resolved.';
+  }catch(e){ toast(msg,'DNS lookup blocked/unavailable.',true); }
+};
+document.getElementById('openDomainLinks').onclick=()=>DOMAIN_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
+
+/* ---------- IP (ipapi.co) ---------- */
+let IP_LINKS=[]; document.getElementById('ipBtn').onclick=async()=>{
+  const ip=document.getElementById('ip').value.trim(); const info=document.getElementById('ipInfo'); const out=document.getElementById('ipLinks');
+  if(!ip){ toast(info,'Enter an IP.'); return; } info.textContent='Querying…'; out.innerHTML=''; IP_LINKS=[];
+  try{
+    const r=await fetch(`https://ipapi.co/${ip}/json/`,{cache:'no-store'}); if(!r.ok) throw 0; const data=await r.json();
+    if(data && data.latitude!=null){ info.innerHTML=`IP <b>${ip}</b> • ${data.city||'—'}, ${data.region||''} ${data.country_name||''} • ASN ${data.asn||'—'} • Org ${data.org||'—'}`; pulse(data.latitude,data.longitude,`${data.city||''} ${data.country||''}`.trim()); } else { info.textContent='Limited geo — use external links below.'; }
+  }catch(e){ info.textContent='Client-side lookup blocked — use external tools.'; }
+  const s=encodeURIComponent(ip); const groups=[['Reputation',[
+    ['Shodan',`https://www.shodan.io/host/${s}`],['GreyNoise',`https://viz.greynoise.io/ip/${s}`],['AbuseIPDB',`https://www.abuseipdb.com/check/${s}`],['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`]
+  ]]];
+  for(const [title,items] of groups){const wrap=document.createElement('div');wrap.className='group';wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;const list=wrap.querySelector('.linklist');items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);IP_LINKS.push(url);});out.appendChild(wrap);}
+};
+document.getElementById('openIpLinks').onclick=()=>IP_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
+
+/* ---------- TEXT EXTRACTOR ---------- */
+const blobEl=document.getElementById('textBlob'); const extractOut=document.getElementById('extractOut');
+document.getElementById('extractBtn').onclick=()=>{
+  const t=blobEl.value||''; if(!t.trim()){ toast(extractOut,'Nothing to extract.'); return; }
+  const emails=[...t.matchAll(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/gi)].map(m=>m[0]);
+  const ips=[...t.matchAll(/\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}\b/g)].map(m=>m[0]);
+  const urls=[...t.matchAll(/\bhttps?:\/\/[^\s"'<>]+/gi)].map(m=>m[0]);
+  const domains=[...t.matchAll(/\b([a-z0-9-]+\.)+[a-z]{2,}\b/gi)].map(m=>m[0]).filter(d=>!/^https?:\/\//i.test(d));
+  const chip=(lbl,arr,act)=>arr.length?`<div style="margin-top:8px"><div class="sub" style="margin-bottom:6px;color:${ACCENT}">${lbl} (${new Set(arr).size})</div><div class="chips">${[...new Set(arr)].slice(0,120).map(v=>`<span class="chip-btn" data-act="${act}" data-val="${v}">${v}</span>`).join(' ')}</div></div>`:'';
+  extractOut.innerHTML=[chip('Emails',emails,'email'),chip('IPs',ips,'ip'),chip('URLs',urls,'url'),chip('Domains',domains,'domain')].join('');
+};
+document.getElementById('clearBlob').onclick=()=>{blobEl.value='';extractOut.innerHTML='';};
+extractOut.addEventListener('click',e=>{
+  const el=e.target.closest('.chip-btn'); if(!el) return; const v=el.getAttribute('data-val'), a=el.getAttribute('data-act');
+  if(a==='email'){ emailEl.value=v; analyzeEmail(v); go('emailCard'); }
+  if(a==='ip'){ document.getElementById('ip').value=v; document.getElementById('ipBtn').click(); go('ipCard'); }
+  if(a==='domain'){ document.getElementById('domain').value=v; document.getElementById('domainBtn').click(); go('domainCard'); }
+  if(a==='url'){ window.open(v,'_blank','noopener'); }
+});
+
+/* ---------- FILES: EXIF + SHA-256 ---------- */
+document.getElementById('exifFile').onchange=(e)=>{
+  const file=e.target.files[0]; const out=document.getElementById('exifOut'); out.innerHTML='';
+  if(!file) return; const img=new Image();
+  img.onload=function(){ EXIF.getData(img,function(){
+    const all=EXIF.getAllTags(this); if(!all||!Object.keys(all).length){ out.innerHTML='<div class="sub">No EXIF metadata found.</div>'; return; }
+    const rows=Object.keys(all).map(k=>`<tr><th>${k}</th><td>${String(typeof all[k]==='object'?JSON.stringify(all[k]):all[k]).slice(0,500)}</td></tr>`).join('');
+    out.innerHTML=`<table class="meta">${rows}</table>`;
+    const lat=EXIF.getTag(this,'GPSLatitude'), latRef=EXIF.getTag(this,'GPSLatitudeRef'); const lon=EXIF.getTag(this,'GPSLongitude'), lonRef=EXIF.getTag(this,'GPSLongitudeRef');
+    function toDec(a,r){ if(!a||a.length<3) return null; let v=a[0]+a[1]/60+a[2]/3600; if(r==='S'||r==='W') v=-v; return v; }
+    const dlat=toDec(lat,latRef), dlon=toDec(lon,lonRef); if(dlat!=null&&dlon!=null){ pulse(dlat,dlon,`EXIF ${dlat.toFixed(5)}, ${dlon.toFixed(5)}`); map.setView([dlat,dlon],8); }
+  }); URL.revokeObjectURL(img.src); }; img.src=URL.createObjectURL(file);
+};
+document.getElementById('hashFile').onchange=async(e)=>{
+  const file=e.target.files[0]; const out=document.getElementById('hashOut'); out.textContent=''; if(!file) return;
+  const buf=await file.arrayBuffer(); const digest=await crypto.subtle.digest('SHA-256',buf);
+  out.textContent=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
 };
 
-document.getElementById('openIpLinks').onclick = ()=> IP_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
+/* ---------- MAP ---------- */
+const map=L.map('map',{worldCopyJump:true,zoomControl:true,attributionControl:false}).setView([20,0],2);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:['a','b','c'],maxZoom:19}).addTo(map);
+function pulse(lat,lng,label){ const circle=L.circleMarker([lat,lng],{radius:7,color:ACCENT2,fillColor:ACCENT,fillOpacity:.7,weight:2}).addTo(map).bindTooltip(label||'Node'); setTimeout(()=>{try{map.removeLayer(circle)}catch(_){}},12000); return circle;}
+function arc(a,b,color=ACCENT2){ const line=L.polyline.antPath([a,b],{delay:400,dashArray:[10,18],weight:3,color,pulseColor:'#fff'}); line.addTo(map); setTimeout(()=>{try{map.removeLayer(line)}catch(_){}},15000); return line;}
+;[{name:'NYC',lat:40.7128,lng:-74.0060},{name:'London',lat:51.5074,lng:-0.1278},{name:'Tokyo',lat:35.6895,lng:139.6917}].forEach((n,i)=>setTimeout(()=>pulse(n.lat,n.lng,n.name),700*i));
+setTimeout(()=>{arc([40.7128,-74.0060],[51.5074,-0.1278]); setTimeout(()=>arc([51.5074,-0.1278],[35.6895,139.6917]),600);},1200);
 
-/* ======= TEXT EXTRACTOR ======= */
-const blobEl = document.getElementById('textBlob');
-const extractOut = document.getElementById('extractOut');
-
-document.getElementById('extractBtn').onclick = ()=>{
-  const t = blobEl.value || '';
-  const emails = [...t.matchAll(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/gi)].map(m=>m[0]);
-  const ips = [...t.matchAll(/\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}\b/g)].map(m=>m[0]);
-  const urls = [...t.matchAll(/\bhttps?:\/\/[^\s"'<>]+/gi)].map(m=>m[0]);
-  const domains = [...t.matchAll(/\b(?=.{3,255}\b)([a-z0-9-]+\.)+[a-z]{2,}\b/gi)].map(m=>m[0]).filter(d=>!/^https?:\/\//i.test(d));
-
-  const section = (title, arr, type)=>{
-    if(!arr.length) return '';
-    const uniq = [...new Set(arr)].slice(0, 150);
-    const chips = uniq.map(v=>`<span class="chip-btn" data-type="${type}" data-val="${v}">${v}</span>`).join(' ');
-    return `<div style="margin-top:8px">
-      <div class="sub" style="margin-bottom:6px; color: var(--accent)">${title} (${uniq.length})</div>
-      <div class="chips">${chips}</div>
-    </div>`;
-  };
-
-  extractOut.innerHTML = [
-    section('Emails', emails, 'email'),
-    section('IPs', ips, 'ip'),
-    section('URLs', urls, 'url'),
-    section('Domains', domains, 'domain'),
-  ].join('');
-};
-
-document.getElementById('clearBlob').onclick = ()=>{ blobEl.value=''; extractOut.innerHTML=''; };
-
-extractOut.addEventListener('click', (e)=>{
-  const el = e.target.closest('.chip-btn'); if(!el) return;
-  const type = el.getAttribute('data-type'); const val = el.getAttribute('data-val');
-  if(type==='email'){ document.getElementById('email').value=val; analyzeEmail(val); go('emailCard'); }
-  if(type==='ip'){ document.getElementById('ip').value=val; document.getElementById('ipBtn').click(); go('ipCard'); }
-  if(type==='domain'){ document.getElementById('domain').value=val; document.getElementById('domainBtn').click(); go('domainCard'); }
-  if(type==='url'){ window.open(val,'_blank','noopener'); }
-});
-
-/* ======= FILES: EXIF + SHA-256 ======= */
-const exifFile = document.getElementById('exifFile');
-const exifOut = document.getElementById('exifOut');
-exifFile.addEventListener('change', async (e)=>{
-  exifOut.innerHTML='';
-  const file = e.target.files[0]; if(!file) return;
-  const img = new Image();
-  img.onload = function(){
-    EXIF.getData(img, function(){
-      const all = EXIF.getAllTags(this);
-      if(!all || Object.keys(all).length===0){ exifOut.innerHTML = '<div class="sub">No EXIF metadata found.</div>'; return; }
-      let rows='';
-      for(const k of Object.keys(all)){
-        let v = all[k]; if(typeof v === 'object') v = JSON.stringify(v);
-        rows += `<tr><th>${k}</th><td>${String(v).slice(0, 500)}</td></tr>`;
-      }
-      exifOut.innerHTML = `<table class="meta">${rows}</table>`;
-    });
-    URL.revokeObjectURL(img.src);
-  };
-  img.src = URL.createObjectURL(file);
-});
-
-const hashFile = document.getElementById('hashFile');
-const hashOut = document.getElementById('hashOut');
-hashFile.addEventListener('change', async (e)=>{
-  hashOut.textContent='Hashing…';
-  const file = e.target.files[0]; if(!file){ hashOut.textContent=''; return; }
-  const buf = await file.arrayBuffer();
-  const digest = await crypto.subtle.digest('SHA-256', buf);
-  const hex = [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
-  hashOut.textContent = hex;
-});
-
-/* ======= MAP + ARCS ======= */
-const map = L.map('map', { zoomControl:false }).setView([20, 8], 2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap', detectRetina:true }).addTo(map);
-
-function pulse(lat,lng,label){
-  const core = L.circleMarker([lat,lng], { radius:5, color:var(--accent), fillColor:var(--accent), fillOpacity:1 }).addTo(map);
-  core.bindTooltip(label||'Node', {direction:'top', offset:[0,-6]});
-  const wave = L.circle([lat,lng], { radius: 15000, color: var(--accent), weight:1, fillColor: var(--accent), fillOpacity:.12 }).addTo(map);
-  let r=15000, o=.18, fo=.08;
-  const anim = setInterval(()=>{
-    r+=12000; o=Math.max(.08, o-.02); fo=Math.max(.02, fo-.01);
-    wave.setRadius(r); wave.setStyle({opacity:o, fillOpacity:fo});
-    if(r>180000){ map.removeLayer(wave); clearInterval(anim); }
-  }, 110);
-}
-function arc(a,b,color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()){
-  const midLat = (a.lat + b.lat)/2 + 8;
-  const midLng = (a.lng + b.lng)/2;
-  const line = new L.Polyline([[a.lat,a.lng],[midLat,midLng],[b.lat,b.lng]], {opacity:0});
-  new L.polyline.antPath(line.getLatLngs(), {
-    paused:false, reverse:false, delay:240,
-    dashArray:[14,18], weight:3, color, pulseColor:'#ffffff', hardwareAcceleration:true
-  }).addTo(map);
-}
-const nodes = [
-  { name:'Brooklyn, US', lat:40.6762, lng:-73.9521 },
-  { name:'Dubai, AE', lat:25.2048, lng:55.2708 },
-  { name:'Berlin, DE', lat:52.52, lng:13.4050 },
-  { name:'Auckland, NZ', lat:-36.8485, lng:174.7633 },
-  { name:'Tel Aviv, IL', lat:32.0853, lng:34.7818 },
-];
-nodes.forEach((n,i)=> setTimeout(()=> pulse(n.lat,n.lng,n.name), 700*i));
-setTimeout(()=>{
-  arc(nodes[0],nodes[1]);
-  setTimeout(()=> arc(nodes[1],nodes[2], '#82c8ff'), 600);
-  setTimeout(()=> arc(nodes[2],nodes[3], '#1d9bf0'), 1200);
-  setTimeout(()=> arc(nodes[3],nodes[4], '#57b6ff'), 1800);
-}, 1200);
-
-/* ======= TERMINAL ======= */
-const term = document.getElementById('terminal');
-const termIn = document.getElementById('termIn');
-const termBtn = document.getElementById('termBtn');
-function tEcho(line=''){ term.textContent += (term.textContent?'\n':'') + line; term.scrollTop = term.scrollHeight; }
+/* ---------- TERMINAL ---------- */
+const term=document.getElementById('terminal'); const termIn=document.getElementById('termIn');
+function tEcho(line=''){ term.textContent+=(term.textContent?'\n':'')+line; term.scrollTop=term.scrollHeight; }
 function tClear(){ term.textContent=''; }
-function tHelp(){
-  tEcho(`Commands:
-  help                          show this help
-  analyze <email>               run Email Intelligence
-  username <handle>             build Username links
-  domain <example.com>          resolve DNS + links
-  ip <1.2.3.4>                  IP intel + links
-  extract                       open Text Extractor section
-  clear                         clear terminal`);
-}
+function tHelp(){ tEcho(`Commands:
+ help                    show help
+ analyze <email>         email intel
+ username <handle>       username links
+ domain <name>           DNS + links
+ ip <addr>               IP intel + links
+ extract                 open Text Extractor
+ clear                   clear terminal`); }
 function run(cmdRaw){
-  const raw = (cmdRaw || termIn.value || '').trim();
-  if(!raw) return;
-  tEcho('> ' + raw); termIn.value='';
-  const [cmd, ...rest] = raw.split(/\s+/); const arg = rest.join(' ').trim();
-  switch(cmd.toLowerCase()){
+  const raw=(cmdRaw||termIn.value||'').trim(); if(!raw) return; tEcho('> '+raw); termIn.value='';
+  const [cmd,...rest]=raw.split(/\s+/); const arg=rest.join(' ');
+  switch((cmd||'').toLowerCase()){
     case 'help': return tHelp();
     case 'clear': return tClear();
-    case 'analyze':
-      if(!arg) return tEcho('Usage: analyze <email>');
-      analyzeEmail(arg); go('emailCard'); return;
-    case 'username':
-      if(!arg) return tEcho('Usage: username <handle>');
-      document.getElementById('user').value=arg; buildUserLinks(arg); go('userCard'); return;
-    case 'domain':
-      if(!arg) return tEcho('Usage: domain <example.com>');
-      document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); go('domainCard'); return;
-    case 'ip':
-      if(!arg) return tEcho('Usage: ip <1.2.3.4>');
-      document.getElementById('ip').value=arg; document.getElementById('ipBtn').click(); go('ipCard'); return;
+    case 'analyze': if(!arg) return tEcho('Usage: analyze <email>'); analyzeEmail(arg); go('emailCard'); return;
+    case 'username': if(!arg) return tEcho('Usage: username <handle>'); document.getElementById('user').value=arg; buildUserLinks(arg); go('userCard'); return;
+    case 'domain': if(!arg) return tEcho('Usage: domain <host>'); document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); go('domainCard'); return;
+    case 'ip': if(!arg) return tEcho('Usage: ip <addr>'); document.getElementById('ip').value=arg; document.getElementById('ipBtn').click(); go('ipCard'); return;
     case 'extract': go('textCard'); return;
     default: return tEcho("Unknown command. Type 'help'.");
   }
 }
-termBtn.addEventListener('click', ()=>run());
-termIn.addEventListener('keydown', e=>{ if(e.key==='Enter') run(); });
+document.getElementById('termBtn').onclick=()=>run();
+termIn.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
 
-/* ======= Boot ======= */
+/* ---------- Boot ---------- */
 document.getElementById('analyzeBtn').focus();
-
-/* ======= END OF PART 1 — say "Next" for more (no closing tags yet) ======= */
-    
-    
-    /* ======= Session / Export / Shortcuts / UX polish ======= */
-const SESSION = {
-  started: Date.now(),
-  emails: [], usernames: [], domains: [], ips: [],
-  extracts: 0, exifs: 0, hashes: 0, commands: []
-};
-
-// Inject an Export button into the topbar actions
-(() => {
-  const actions = document.querySelector('.top-actions');
-  if(actions && !document.getElementById('exportBtn')){
-    const btn = document.createElement('button');
-    btn.className = 'ghost'; btn.id = 'exportBtn'; btn.textContent = 'Export';
-    btn.title = 'Download session JSON';
-    actions.appendChild(btn);
-    btn.addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(SESSION, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = `cmx-session-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;
-      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-  }
-})();
-
-// Track actions
-function track(type, value){
-  if(type==='email'){ if(value) SESSION.emails.unshift(value); SESSION.emails = SESSION.emails.slice(0,25); }
-  if(type==='username'){ if(value) SESSION.usernames.unshift(value); SESSION.usernames = SESSION.usernames.slice(0,25); }
-  if(type==='domain'){ if(value) SESSION.domains.unshift(value); SESSION.domains = SESSION.domains.slice(0,25); }
-  if(type==='ip'){ if(value) SESSION.ips.unshift(value); SESSION.ips = SESSION.ips.slice(0,25); }
-  if(type==='extract'){ SESSION.extracts++; }
-  if(type==='exif'){ SESSION.exifs++; }
-  if(type==='hash'){ SESSION.hashes++; }
-  if(type==='cmd'){ if(value){ SESSION.commands.unshift(value); SESSION.commands = SESSION.commands.slice(0,50);} }
-  updateStats();
-}
-
-/* ======= Compact “X-style” stats card injected dynamically ======= */
-(function injectStats(){
-  const grid = document.querySelector('.main .grid');
-  if(!grid) return;
-  const wrap = document.createElement('section');
-  wrap.className = 'card';
-  wrap.id = 'statsCard';
-  wrap.innerHTML = `
-    <h3>Recon Snapshot</h3>
-    <div class="stats">
-      <div class="stat"><span>Emails</span><b id="stEmails">0</b></div>
-      <div class="stat"><span>Domains</span><b id="stDomains">0</b></div>
-      <div class="stat"><span>IPs</span><b id="stIPs">0</b></div>
-      <div class="stat"><span>Extracts</span><b id="stExtracts">0</b></div>
-      <div class="stat"><span>Files</span><b id="stFiles">0</b></div>
-    </div>
-    <canvas id="spark" height="48"></canvas>
-  `;
-  grid.prepend(wrap);
-  // Tiny sparkline with Chart.js
-  const ctx = document.getElementById('spark').getContext('2d');
-  window._spark = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: Array.from({length:16}, (_,i)=>i+1),
-      datasets: [{
-        data: Array.from({length:16}, ()=>Math.floor(3+Math.random()*8)),
-        borderWidth: 2, tension: .35, fill: true,
-        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#1d9bf0',
-        backgroundColor: 'rgba(29,155,240,0.12)',
-        pointRadius: 0
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: {display:false}, tooltip: {enabled:false} },
-      scales: { x: {display:false}, y: {display:false} }
-    }
-  });
-})();
-function updateStats(){
-  const q = (sel)=>document.getElementById(sel);
-  const filesCount = (SESSION.exifs + SESSION.hashes);
-  if(q('stEmails')) q('stEmails').textContent = SESSION.emails.length;
-  if(q('stDomains')) q('stDomains').textContent = SESSION.domains.length;
-  if(q('stIPs')) q('stIPs').textContent = SESSION.ips.length;
-  if(q('stExtracts')) q('stExtracts').textContent = SESSION.extracts;
-  if(q('stFiles')) q('stFiles').textContent = filesCount;
-  // Nudge sparkline data
-  if(window._spark){
-    const ds = window._spark.data.datasets[0];
-    ds.data.shift(); ds.data.push( (SESSION.emails.length + SESSION.domains.length + SESSION.ips.length + SESSION.extracts + filesCount) % 12 + 3 );
-    window._spark.update('none');
-  }
-}
-
-/* ======= Enhance existing flows to track ======= */
-const _analyzeEmail = analyzeEmail;
-analyzeEmail = async function(input){
-  await _analyzeEmail(input);
-  const e = (input || emailEl.value || '').trim();
-  if(e) track('email', e);
-};
-const _domainBtnClick = document.getElementById('domainBtn').onclick;
-document.getElementById('domainBtn').onclick = async()=>{
-  const d = document.getElementById('domain').value.trim();
-  await _domainBtnClick();
-  if(d) track('domain', d);
-};
-const _ipBtnClick = document.getElementById('ipBtn').onclick;
-document.getElementById('ipBtn').onclick = async()=>{
-  const ip = document.getElementById('ip').value.trim();
-  await _ipBtnClick();
-  if(ip) track('ip', ip);
-};
-const _extractBtnClick = document.getElementById('extractBtn').onclick;
-document.getElementById('extractBtn').onclick = ()=>{
-  _extractBtnClick(); track('extract');
-};
-exifFile.addEventListener('change', ()=> track('exif'));
-hashFile.addEventListener('change', ()=> track('hash'));
-
-/* ======= Keyboard shortcuts (X-like power-user) ======= */
-let _lastG = 0;
-window.addEventListener('keydown', (e)=>{
-  const tag = (e.target && e.target.tagName || '').toLowerCase();
-  const typing = tag==='input' || tag==='textarea' || e.isComposing;
-  // Focus terminal
-  if(!typing && e.key === '/'){ e.preventDefault(); termIn.focus(); return; }
-  // “g” then quick key (like GitHub nav)
-  if(!typing && e.key.toLowerCase()==='g'){ _lastG = Date.now(); return; }
-  if(!typing && Date.now()-_lastG < 650){
-    const key = e.key.toLowerCase();
-    if(key==='e') go('emailCard');
-    if(key==='u') go('userCard');
-    if(key==='d') go('domainCard');
-    if(key==='i') go('ipCard');
-    if(key==='t') go('textCard');
-    if(key==='f') go('fileCard');
-    if(key==='m') go('mapCard');
-    if(key==='x') go('terminalCard');
-    _lastG = 0;
-  }
-});
-
-/* ======= Terminal history + autocomplete hints ======= */
-const HISTORY = [];
-let H_IDX = -1;
-termIn.addEventListener('keydown', (e)=>{
-  if(e.key==='ArrowUp'){
-    if(HISTORY.length){ H_IDX = Math.min(HISTORY.length-1, H_IDX+1); termIn.value = HISTORY[HISTORY.length-1-H_IDX]; e.preventDefault(); }
-  }else if(e.key==='ArrowDown'){
-    if(HISTORY.length){ H_IDX = Math.max(-1, H_IDX-1); termIn.value = H_IDX===-1 ? '' : HISTORY[HISTORY.length-1-H_IDX]; e.preventDefault(); }
-  }else if(e.key==='Tab'){
-    const v = termIn.value.trim();
-    const cmds = ['help','clear','analyze','username','domain','ip','extract'];
-    const match = cmds.find(c=> c.startsWith(v));
-    if(match){ termIn.value = match + (match==='analyze'?' ':''); e.preventDefault(); }
-  }
-});
-const _run = run;
-run = function(cmdRaw){
-  const raw = (cmdRaw || termIn.value || '').trim();
-  if(!raw) return;
-  HISTORY.push(raw); H_IDX = -1; track('cmd', raw);
-  _run(raw);
-};
-
-/* ======= Convenience: Copy buttons for key values ======= */
-(function addCopyers(){
-  const add = (id,label)=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    const btn = document.createElement('button');
-    btn.className = 'btn mono'; btn.style.marginLeft='8px'; btn.textContent = `Copy ${label}`;
-    btn.addEventListener('click', ()=>{
-      const text = el.textContent.trim(); if(!text || text==='—') return;
-      navigator.clipboard.writeText(text); toast(document.getElementById('emailMsg'), `${label} copied.`);
-    });
-    el.parentElement && el.parentElement.appendChild(btn);
-  };
-  add('outEmail','Email');
-  add('outDomain','Domain');
-  add('outMD5','MD5');
-})();
-
-/* ======= Drag & drop for Files card ======= */
-(function addDragDrop(){
-  const card = document.getElementById('fileCard');
-  if(!card) return;
-  const hl = (on)=> card.style.boxShadow = on ? '0 0 0 2px var(--accent) inset' : '';
-  const stop = (e)=>{ e.preventDefault(); e.stopPropagation(); };
-  ['dragenter','dragover','dragleave','drop'].forEach(ev => card.addEventListener(ev, stop));
-  card.addEventListener('dragenter', ()=>hl(true));
-  card.addEventListener('dragleave', ()=>hl(false));
-  card.addEventListener('drop', (e)=>{
-    hl(false);
-    const files = [...(e.dataTransfer?.files||[])];
-    if(!files.length) return;
-    // Route first image to EXIF, first file to hash
-    const img = files.find(f=>/^image\//.test(f.type)) || files[0];
-    const any = files[0];
-    // Trigger EXIF
-    const dt = new DataTransfer(); dt.items.add(img); exifFile.files = dt.files; exifFile.dispatchEvent(new Event('change'));
-    // Trigger Hash
-    const dt2 = new DataTransfer(); dt2.items.add(any); hashFile.files = dt2.files; hashFile.dispatchEvent(new Event('change'));
-  });
-})();
-
-/* ======= Better color handling for map arcs (reads CSS variable) ======= */
-const ACCENT = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#1d9bf0';
-
-/* Override arc with smarter color default (keep same API) */
-const _arc = arc;
-arc = function(a,b,color = ACCENT){ return _arc(a,b,color); };
-
-/* ======= Optional: open-all safety (stagger to avoid popup blocks) ======= */
-function openAllStagger(urls=[], gap=180){
-  let i=0; const t = setInterval(()=>{
-    const u = urls[i++]; if(u) window.open(u,'_blank','noopener');
-    if(i>=urls.length) clearInterval(t);
-  }, gap);
-}
-// Wire the existing "Open All Links" buttons to use stagger behind the scenes
-document.getElementById('openEmailLinks').onclick = ()=> openAllStagger(EMAIL_LINKS);
-document.getElementById('openUserLinks').onclick = ()=> openAllStagger(USER_LINKS);
-document.getElementById('openDomainLinks').onclick = ()=> openAllStagger(DOMAIN_LINKS);
-document.getElementById('openIpLinks').onclick = ()=> openAllStagger(IP_LINKS);
-
-/* ======= Graceful error surfaces in terminal ======= */
-window.addEventListener('unhandledrejection', (e)=>{
-  tEcho(`[client] Network blocked or CORS error. Consider opening external links for that module.`);
-});
-window.addEventListener('error', (e)=>{
-  // Avoid noisy logs, but hint in terminal
-  if(String(e?.message||'').toLowerCase().includes('script')) return;
-  tEcho(`[client] ${e.message||'An error occurred.'}`);
-});
-
-/* ======= Micro “about” helper in terminal ======= */
-tEcho('CMX OSINT Console ready. Type "help" or press "/" to focus the terminal.');
-
-/* ======= PART 2 END — say “Next” for more (still not closing tags) ======= */
-    
-    /* ======= Sleek UI polish (X-like aesthetics) ======= */
-(function enhanceUI(){
-  // Make cards smoother
-  document.querySelectorAll('.card').forEach(c=>{
-    c.style.transition = 'all .25s ease';
-    c.addEventListener('mouseenter', ()=> c.style.boxShadow = '0 4px 22px rgba(0,0,0,0.35)');
-    c.addEventListener('mouseleave', ()=> c.style.boxShadow = '');
-  });
-  // Topbar accent glow
-  const brandDot = document.querySelector('.dot');
-  if(brandDot){
-    setInterval(()=>{
-      brandDot.style.boxShadow = `0 0 ${4+Math.floor(Math.random()*8)}px var(--ok)`;
-    }, 750);
-  }
-})();
-
-/* ======= Auto-refresh stats clock ======= */
-setInterval(()=>{
-  const mins = Math.floor((Date.now() - SESSION.started)/60000);
-  document.querySelector('#sid').textContent = `U${mins.toString().padStart(2,'0')}${SESSION.commands.length.toString().padStart(2,'0')}`;
-}, 60000);
-
-/* ======= Advanced terminal commands ======= */
-function cmd_help(){
-  tEcho(`Available commands:
-  • help → this menu
-  • clear → wipe terminal
-  • analyze <email> → run Email Intelligence
-  • username <handle> → run Username Intelligence
-  • domain <host> → resolve + links
-  • ip <addr> → lookup + links
-  • extract → parse Text Extractor
-  • session → dump current session stats
-  • about → about console
-  `);
-}
-function cmd_session(){
-  tEcho(JSON.stringify({
-    emails: SESSION.emails,
-    usernames: SESSION.usernames,
-    domains: SESSION.domains,
-    ips: SESSION.ips,
-    extracts: SESSION.extracts,
-    exifs: SESSION.exifs,
-    hashes: SESSION.hashes,
-    cmds: SESSION.commands.length
-  },null,2));
-}
-function cmd_about(){
-  tEcho("CMX Swiss-Army OSINT Console — sleek reconnaissance dashboard.\nInspired by @cmxchat vision. Modern, dark, X-style.");
-}
-
-// Extend run()
-const _runBase = run;
-run = function(cmdRaw){
-  const cmd = (cmdRaw||'').trim();
-  if(!cmd) return;
-  const parts = cmd.split(/\s+/);
-  const base = parts[0].toLowerCase();
-  if(base==='help'){ cmd_help(); return; }
-  if(base==='session'){ cmd_session(); return; }
-  if(base==='about'){ cmd_about(); return; }
-  _runBase(cmdRaw);
-};
-
-/* ======= Live map demo pulses (optional aesthetic) ======= */
-(function seedMap(){
-  if(!window.map) return;
-  const demoCoords = [
-    [40.7128,-74.0060,"NYC Node"],
-    [51.5074,-0.1278,"London Node"],
-    [35.6895,139.6917,"Tokyo Node"],
-    [37.7749,-122.4194,"SF Node"],
-    [52.52,13.405,"Berlin Node"]
-  ];
-  let i=0;
-  setInterval(()=>{
-    const [lat,lng,label] = demoCoords[i++%demoCoords.length];
-    pulse(lat,lng,label);
-  }, 4500);
-})();
-
-/* ======= Quick search from topbar (inject field like X search) ======= */
-(function injectSearch(){
-  const actions = document.querySelector('.top-actions');
-  if(!actions) return;
-  const form = document.createElement('form');
-  form.style.display='flex'; form.style.alignItems='center'; form.style.gap='6px';
-  form.innerHTML = `<input type="text" id="quickSearch" placeholder="🔍 email, domain, ip" style="padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--glass);color:var(--text);font-size:13px;width:160px">`;
-  actions.prepend(form);
-  form.addEventListener('submit', e=>{
-    e.preventDefault();
-    const v = document.getElementById('quickSearch').value.trim();
-    if(!v) return;
-    if(isValidEmail(v)) analyzeEmail(v);
-    else if(/\d+\.\d+\.\d+\.\d+/.test(v)){ document.getElementById('ip').value=v; document.getElementById('ipBtn').click(); }
-    else if(/^[\w.-]+\.[a-z]{2,}$/.test(v)){ document.getElementById('domain').value=v; document.getElementById('domainBtn').click(); }
-    else{ document.getElementById('user').value=v; document.getElementById('userBtn').click(); }
-    document.getElementById('quickSearch').value='';
-  });
-})();
-
-/* ======= END PART 3 — say “Next” for continuation ======= */
-    
-    /* ======= Text Extractor continuation ======= */
-document.getElementById('extractBtn').onclick=()=>{
-  const t=document.getElementById('textBlob').value||'';
-  const out=document.getElementById('extractOut');
-  out.innerHTML='';
-  if(!t.trim()){ toast(out,'Nothing to extract.'); return; }
-  const emails=[...t.matchAll(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi)].map(m=>m[0]);
-  const ips=[...t.matchAll(/\b\d{1,3}(?:\.\d{1,3}){3}\b/g)].map(m=>m[0]);
-  const urls=[...t.matchAll(/\bhttps?:\/\/[^\s/$.?#].[^\s]*/gi)].map(m=>m[0]);
-  const domains=[...t.matchAll(/\b[a-z0-9.-]+\.[a-z]{2,}\b/gi)].map(m=>m[0]);
-  const chips=[];
-  emails.forEach(x=>chips.push(`<span class="chip-btn" onclick="analyzeEmail('${x}')">📧 ${x}</span>`));
-  ips.forEach(x=>chips.push(`<span class="chip-btn" onclick="document.getElementById('ip').value='${x}';document.getElementById('ipBtn').click()">🌐 ${x}</span>`));
-  urls.forEach(x=>chips.push(`<span class="chip-btn">${x}</span>`));
-  domains.forEach(x=>chips.push(`<span class="chip-btn" onclick="document.getElementById('domain').value='${x}';document.getElementById('domainBtn').click()">🕸 ${x}</span>`));
-  out.innerHTML=`<div class="chips">${chips.join('')}</div>`;
-  SESSION.extracts.push({emails,ips,urls,domains});
-  toast(out,'Extraction complete.');
-};
-document.getElementById('clearBlob').onclick=()=>{document.getElementById('textBlob').value='';document.getElementById('extractOut').innerHTML='';};
-
-/* ======= FILES: EXIF & HASH ======= */
-document.getElementById('exifFile').onchange=e=>{
-  const file=e.target.files[0]; const out=document.getElementById('exifOut'); out.innerHTML='';
-  if(!file){ return; }
-  const reader=new FileReader();
-  reader.onload=()=>{
-    try{
-      const bytes=new Uint8Array(reader.result);
-      EXIF.getData({name:file.name,buffer:bytes},function(){
-        const all=EXIF.getAllTags(this);
-        const tbl=Object.entries(all).map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
-        out.innerHTML=`<table class="meta">${tbl}</table>`;
-        SESSION.exifs.push(all);
-      });
-    }catch(err){ out.textContent='No EXIF data.'; }
-  };
-  reader.readAsArrayBuffer(file);
-};
-document.getElementById('hashFile').onchange=e=>{
-  const file=e.target.files[0]; const out=document.getElementById('hashOut'); out.innerHTML='';
-  if(!file) return;
-  const reader=new FileReader();
-  reader.onload=async()=>{
-    const buf=reader.result;
-    const hash=await crypto.subtle.digest('SHA-256',buf);
-    const hex=[...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
-    out.textContent=hex;
-    SESSION.hashes.push({name:file.name,sha256:hex});
-  };
-  reader.readAsArrayBuffer(file);
-};
-
-/* ======= TERMINAL Input Hook ======= */
-document.getElementById('termBtn').onclick=()=>run(document.getElementById('termIn').value);
-document.getElementById('termIn').addEventListener('keydown',e=>{if(e.key==='Enter')run(e.target.value)});
-
-/* ======= Initial boot echo ======= */
-tEcho("CMX OSINT Console initialized. Type 'help' to begin.");
-
-/* ======= END PART 4 — say “Next” for continuation ======= */
-    
-    Here’s Part 5 (continuation). Add this directly after Part 4, still inside the <script> block:
-
-/* ======= MAP Setup ======= */
-const map=L.map('map',{zoomControl:true,attributionControl:false}).setView([20,0],2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-  subdomains:['a','b','c'], maxZoom:19
-}).addTo(map);
-
-function pulse(lat,lng,label){
-  const circle=L.circleMarker([lat,lng],{
-    radius:6,color:var(--accent),fillColor:var(--accent),fillOpacity:0.8
-  }).addTo(map).bindPopup(label||'Node');
-  setTimeout(()=>map.removeLayer(circle),8000);
-  return circle;
-}
-function trace(latlngs){
-  L.polyline.antPath(latlngs,{
-    delay:400, dashArray:[10,20], weight:3, color:var(--accent2), pulseColor:'#fff'
-  }).addTo(map);
-}
-
-/* Example boot nodes */
-const bootNodes=[
-  {lat:40.7128,lng:-74.0060,label:'New York'},
-  {lat:51.5074,lng:-0.1278,label:'London'},
-  {lat:35.6895,lng:139.6917,label:'Tokyo'}
-];
-bootNodes.forEach(n=>pulse(n.lat,n.lng,n.label));
-trace([[40.7128,-74.0060],[51.5074,-0.1278],[35.6895,139.6917]]);
-
-/* ======= TERMINAL Commands ======= */
-function run(cmd){
-  const input=cmd.trim(); const term=document.getElementById('terminal'); if(!input)return;
-  tEcho("> "+input);
-  document.getElementById('termIn').value='';
-  const [c,...rest]=input.split(/\s+/); const arg=rest.join(" ");
-  switch(c.toLowerCase()){
-    case 'help': tEcho("Commands: help, clear, analyze <email>, username <handle>, domain <name>, ip <addr>, dns <domain>, extract"); break;
-    case 'clear': term.innerHTML=''; break;
-    case 'analyze': analyzeEmail(arg); tEcho("Analyzing email: "+arg); break;
-    case 'username': buildUserLinks(arg); tEcho("Building username links: "+arg); break;
-    case 'domain': document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); tEcho("Resolving domain: "+arg); break;
-    case 'ip': document.getElementById('ip').value=arg; document.getElementById('ipBtn').click(); tEcho("Looking up IP: "+arg); break;
-    case 'dns': document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); tEcho("DNS query for: "+arg); break;
-    case 'extract': document.getElementById('extractBtn').click(); tEcho("Running text extractor..."); break;
-    default: tEcho("Unknown command: "+c); break;
-  }
-}
-function tEcho(msg){ const term=document.getElementById('terminal'); term.innerHTML+=msg+"<br>"; term.scrollTop=term.scrollHeight; }
-
-/* ======= SESSION Object ======= */
-const SESSION={extracts:[],exifs:[],hashes:[]};
-
-/* ======= END PART 5 — say “Next” for continuation ======= */
-
-
-    /* ======= FILE INTELLIGENCE ======= */
-document.getElementById('exifFile').onchange=async(e)=>{
-  const file=e.target.files[0]; if(!file) return;
-  const out=document.getElementById('exifOut'); out.textContent='Parsing EXIF…';
-  try{
-    EXIF.getData(file,function(){
-      const meta=EXIF.getAllTags(this); let html='';
-      for(const k in meta){ html+=`<div><b>${k}:</b> ${meta[k]}</div>`; }
-      out.innerHTML=html||'No EXIF metadata found.';
-      SESSION.exifs.push({file:file.name,meta});
-    });
-  }catch(err){ out.textContent='EXIF parsing failed.'; }
-};
-
-document.getElementById('hashFile').onchange=async(e)=>{
-  const file=e.target.files[0]; if(!file) return;
-  const out=document.getElementById('hashOut'); out.textContent='Hashing…';
-  try{
-    const buf=await file.arrayBuffer();
-    const hashBuf=await crypto.subtle.digest('SHA-256',buf);
-    const hashHex=[...new Uint8Array(hashBuf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-    out.textContent=hashHex; SESSION.hashes.push({file:file.name,sha256:hashHex});
-  }catch(err){ out.textContent='Hashing failed.'; }
-};
-
-/* ======= TERMINAL Input Bindings ======= */
-document.getElementById('termBtn').onclick=()=>run(document.getElementById('termIn').value);
-document.getElementById('termIn').addEventListener('keydown',e=>{if(e.key==='Enter') run(e.target.value);});
-
-/* ======= Sleek UX touches ======= */
-function flash(el){ el.style.outline='2px solid var(--accent)'; setTimeout(()=>el.style.outline='none',600); }
-['email','user','domain','ip','textBlob'].forEach(id=>{
-  const el=document.getElementById(id); if(el) el.addEventListener('focus',()=>flash(el));
-});
-
-/* ======= SESSION Log Export ======= */
-function exportSession(){
-  const data=JSON.stringify(SESSION,null,2);
-  const blob=new Blob([data],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download=`cmx_session_${Date.now()}.json`; a.click();
-  URL.revokeObjectURL(url);
-}
-const expBtn=document.createElement('button');
-expBtn.textContent='Export Session'; expBtn.className='btn mono';
-expBtn.onclick=exportSession;
-document.querySelector('.top-actions').appendChild(expBtn);
-
-/* ======= END PART 6 — say “Next” for continuation ======= */
-    
-    /* ======= MAP with Trace Arcs ======= */
-const map=L.map('map',{worldCopyJump:true,zoomControl:false,attributionControl:false}).setView([20,0],2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-  subdomains:['a','b','c'],minZoom:1,maxZoom:19
-}).addTo(map);
-
-function pulse(lat,lng,label){
-  const circle=L.circleMarker([lat,lng],{
-    radius:8,fillColor:var(--accent),color:var(--accent2),
-    weight:2,opacity:0.9,fillOpacity:0.6
-  }).addTo(map).bindTooltip(label);
-  setTimeout(()=>map.removeLayer(circle),15000);
-}
-
-function arc(a,b){
-  const line=L.polyline.antPath([a,b],{
-    "paused":false,"reverse":false,"delay":400,"dashArray":[10,20],
-    "weight":3,"color":"#00e5ff","pulseColor":"#ffffff"
-  });
-  line.addTo(map);
-  setTimeout(()=>map.removeLayer(line),15000);
-}
-
-/* Example demo pulses/arcs */
-setTimeout(()=>{
-  const ny=[40.7128,-74.0060], dub=[25.2048,55.2708], berlin=[52.52,13.405];
-  pulse(...ny,'New York, US'); pulse(...dub,'Dubai, UAE'); pulse(...berlin,'Berlin, DE');
-  arc(ny,dub); arc(dub,berlin); arc(berlin,ny);
-},1500);
-
-/* ======= Terminal “maptest” command ======= */
-function terminalMapTest(){
-  termlog("Drawing demo arcs…");
-  const la=[34.05,-118.24], tk=[35.68,139.76];
-  pulse(...la,'Los Angeles'); pulse(...tk,'Tokyo');
-  arc(la,tk);
-}
-
-/* ======= Mini Chart Example (optional analytics) ======= */
-const chartCard=document.createElement('div');
-chartCard.className='card';
-chartCard.innerHTML='<h3>Ops Chart</h3><canvas id="opsChart" height="120"></canvas>';
-document.querySelector('.grid').appendChild(chartCard);
-
-const ctx=document.getElementById('opsChart').getContext('2d');
-new Chart(ctx,{
-  type:'line',
-  data:{
-    labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-    datasets:[{label:"Ops",data:[3,7,4,9,6,8,12],
-      fill:true,borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.1)',tension:.3}]
-  },
-  options:{plugins:{legend:{labels:{color:var(--text)}}},
-    scales:{x:{ticks:{color:var(--muted)}},y:{ticks:{color:var(--muted)}}}}
-});
-
-/* ======= END PART 7 — say “Next” for continuation ======= */
-    
-    
-    /* ======= Threat Intel Feed Simulation ======= */
-const threatCard=document.createElement('div');
-threatCard.className='card';
-threatCard.innerHTML='<h3>Threat Intel Feed</h3><div id="threatFeed" class="terminal" style="max-height:220px"></div>';
-document.querySelector('.grid').appendChild(threatCard);
-
-const threatFeed=document.getElementById('threatFeed');
-const intelLines=[
-  "[INTEL] Scraping darknet for chatter on CMX ops…",
-  "[INTEL] Leak detected: credential dump mention on forum .onion",
-  "[INTEL] Keyword flagged: 'Project Lotus' in Telegram channels",
-  "[INTEL] Zero-day exploit reference spotted in exploit-db",
-  "[INTEL] Tracking IP cluster linked to APT-29",
-  "[INTEL] Mossad-style SIGINT triangulation active",
-  "[INTEL] Foreign signal intercept — encrypted payload relayed",
-  "[INTEL] Identity pivot — alias tied to 3 additional handles",
-  "[INTEL] Monitoring BTC transactions — suspicious wash pattern",
-  "[INTEL] Alert level raised to ORANGE — unusual chatter spike"
-];
-
-let intelIndex=0;
-setInterval(()=>{
-  if(intelIndex<intelLines.length){
-    const line=document.createElement('div');
-    line.textContent=intelLines[intelIndex];
-    threatFeed.appendChild(line);
-    threatFeed.scrollTop=threatFeed.scrollHeight;
-    intelIndex++;
-  }else{intelIndex=0;threatFeed.innerHTML='';}
-},2500);
-
-/* ======= Identity Pivot Module ======= */
-const idCard=document.createElement('div');
-idCard.className='card';
-idCard.innerHTML=`
-  <h3>Identity Pivot</h3>
-  <div class="sub">Enter one clue (email, username, domain, IP) → fan out across pivots</div>
-  <div class="row">
-    <input type="text" id="pivotInput" placeholder="clue@example.com" />
-    <button class="btn" id="pivotBtn">Pivot</button>
-  </div>
-  <div id="pivotOut" style="margin-top:10px"></div>
-`;
-document.querySelector('.grid').appendChild(idCard);
-
-document.getElementById('pivotBtn').onclick=()=>{
-  const clue=document.getElementById('pivotInput').value.trim();
-  const out=document.getElementById('pivotOut');
-  if(!clue){toast(out,'Enter a clue');return;}
-  out.innerHTML=`
-    <div class="sub">Pivot results for: <b>${clue}</b></div>
-    <ul>
-      <li>🔍 Found <b>3</b> social handles linked</li>
-      <li>📡 IP correlation suggests region overlap with prior OSINT logs</li>
-      <li>💾 Data breach presence: <span class="pill bad">confirmed</span></li>
-      <li>🧩 Mossad-style cross-reference — alias reused on gaming forum</li>
-    </ul>
-  `;
-};
-
-/* ======= Live Ping Monitor (mock) ======= */
-const pingCard=document.createElement('div');
-pingCard.className='card';
-pingCard.innerHTML=`
-  <h3>Live Node Pings</h3>
-  <div class="sub">Simulating live uplinks across global CMX nodes</div>
-  <div id="pingFeed" class="terminal" style="max-height:160px"></div>
-`;
-document.querySelector('.grid').appendChild(pingCard);
-
-const pingFeed=document.getElementById('pingFeed');
-function pingNode(name,lat,lng){
-  const ms=Math.floor(Math.random()*120)+30;
-  const div=document.createElement('div');
-  div.textContent=`[PING] ${name} → ${ms}ms`;
-  pingFeed.appendChild(div);
-  pingFeed.scrollTop=pingFeed.scrollHeight;
-  pulse(lat,lng,name);
-}
-setInterval(()=>{
-  const nodes=[
-    ["Tel Aviv",32.0853,34.7818],
-    ["New York",40.7128,-74.0060],
-    ["Berlin",52.5200,13.4050],
-    ["Dubai",25.276987,55.296249],
-    ["Singapore",1.3521,103.8198]
-  ];
-  const n=nodes[Math.floor(Math.random()*nodes.length)];
-  pingNode(...n);
-},3000);
-    
-    /* ======= OSINT Upgrades: Email Permutator, Reverse DNS, Base64/Hash Utils, Wayback Kit, EXIF→Map ======= */
-
-/* ---------- 1) Email Permutator (firstname/lastname ↔ domain) ---------- */
-(function injectPermutator(){
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `
-    <h3>Email Permutator</h3>
-    <div class="sub">Give a name + domain → generate common email patterns</div>
-    <div class="row">
-      <input id="perFirst" type="text" placeholder="First name (e.g., Alice)">
-      <input id="perLast"  type="text" placeholder="Last name (e.g., Baker)">
-    </div>
-    <div class="row" style="margin-top:8px">
-      <input id="perDomain" type="text" placeholder="Domain (e.g., example.com)">
-      <button class="btn" id="perGo">Generate</button>
-    </div>
-    <div id="perOut" class="links" style="margin-top:12px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  function uniq(arr){ return [...new Set(arr)]; }
-  function safe(s){ return (s||'').trim().toLowerCase().replace(/[^a-z0-9]/g,''); }
-  document.getElementById('perGo').onclick = ()=>{
-    const f = safe(document.getElementById('perFirst').value);
-    const l = safe(document.getElementById('perLast').value);
-    const d = (document.getElementById('perDomain').value||'').trim().toLowerCase();
-    const out = document.getElementById('perOut');
-    out.innerHTML = '';
-    if(!f || !l || !d){ out.innerHTML = `<span class="pill bad">Enter first, last, and domain.</span>`; return; }
-    const set = uniq([
-      `${f}@${d}`, `${l}@${d}`,
-      `${f}${l}@${d}`, `${f}.${l}@${d}`, `${f}_${l}@${d}`, `${f}-${l}@${d}`,
-      `${f[0]}${l}@${d}`, `${f[0]}.${l}@${d}`, `${f[0]}_${l}@${d}`, `${f[0]}-${l}@${d}`,
-      `${f}${l[0]}@${d}`, `${f}.${l[0]}@${d}`,
-      `${l}${f}@${d}`, `${l}.${f}@${d}`,
-      `${l}${f[0]}@${d}`, `${l}.${f[0]}@${d}`,
-      `${f}${l}${(new Date().getFullYear())}@${d}`
-    ]);
-    // Render as pill links → push into Email Intelligence quickly
-    const box = document.createElement('div'); box.className='group';
-    box.innerHTML = `<h4>Common Patterns</h4><div class="linklist"></div>`;
-    const list = box.querySelector('.linklist');
-    set.forEach(addr=>{
-      const a = document.createElement('a');
-      a.textContent = addr; a.href = '#';
-      a.onclick=(e)=>{e.preventDefault(); analyzeEmail(addr);};
-      list.appendChild(a);
-    });
-    out.appendChild(box);
-    toast(out, 'Generated patterns.');
-  };
-})();
-
-/* ---------- 2) Reverse DNS (PTR) for an IPv4 ---------- */
-(function injectPTR(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>Reverse DNS (PTR)</h3>
-    <div class="sub">Convert IPv4 to in-addr.arpa → query PTR via dns.google</div>
-    <div class="row">
-      <input id="ptrIP" type="text" placeholder="8.8.8.8">
-      <button class="btn" id="ptrGo">Lookup</button>
-    </div>
-    <div id="ptrOut" style="margin-top:10px" class="sub"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  function toInAddr(ip){
-    const m = ip.trim().match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-    if(!m) return null;
-    const [a,b,c,d] = m.slice(1).map(x=>+x);
-    if([a,b,c,d].some(n=>n<0||n>255)) return null;
-    return `${d}.${c}.${b}.${a}.in-addr.arpa`;
-  }
-  async function doh(name,type){ const r=await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`,{cache:'no-store'}); if(!r.ok) throw 0; return r.json(); }
-
-  document.getElementById('ptrGo').onclick = async()=>{
-    const ip = document.getElementById('ptrIP').value.trim();
-    const out = document.getElementById('ptrOut');
-    if(!ip){ toast(out,'Enter an IP.'); return; }
-    const ptr = toInAddr(ip); if(!ptr){ toast(out,'Invalid IPv4.',true); return; }
-    out.textContent='Querying PTR…';
-    try{
-      const data = await doh(ptr,'PTR');
-      const ans = (data.Answer||[]).map(a=>a.data.replace(/\.$/,'')).join(', ') || '—';
-      out.innerHTML = `PTR for <b>${ip}</b> → <b>${ans}</b>`;
-    }catch(e){ out.innerHTML = `<span class="pill bad">PTR lookup blocked / failed.</span>`; }
-  };
-})();
-
-/* ---------- 3) Base64 & Hash Identifier Utilities ---------- */
-(function injectUtils(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>Quick Utils: Base64 & Hash ID</h3>
-    <div class="sub">Decode base64 (client-side) • Guess hash types by length</div>
-    <div class="row">
-      <textarea id="b64In" rows="3" placeholder="Paste suspected base64…"></textarea>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-      <button class="btn" id="b64Decode">Decode</button>
-      <button class="btn mono" id="b64Clear">Clear</button>
-    </div>
-    <div id="b64Out" class="terminal" style="max-height:160px;margin-top:8px"></div>
-
-    <div class="row" style="margin-top:14px">
-      <input id="hashGuess" type="text" placeholder="Paste hash (e.g., 32/40/64 hex)…">
-      <button class="btn" id="hashGuessBtn">Identify</button>
-    </div>
-    <div id="hashGuessOut" class="sub" style="margin-top:8px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  const b64In = document.getElementById('b64In');
-  const b64Out = document.getElementById('b64Out');
-  document.getElementById('b64Decode').onclick = ()=>{
-    b64Out.textContent='';
-    const val = (b64In.value||'').trim();
-    if(!val){ b64Out.textContent='(empty)'; return; }
-    try{
-      // try url-safe variant
-      const fixed = val.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(val.length/4)*4,'=');
-      const decoded = atob(fixed);
-      b64Out.textContent = decoded;
-    }catch(e){ b64Out.textContent = 'Not valid base64.'; }
-  };
-  document.getElementById('b64Clear').onclick = ()=>{ b64In.value=''; b64Out.textContent=''; };
-
-  // Hash length heuristic
-  document.getElementById('hashGuessBtn').onclick = ()=>{
-    const v = (document.getElementById('hashGuess').value||'').trim();
-    const out = document.getElementById('hashGuessOut');
-    if(!v){ out.textContent=''; return; }
-    const hex = /^[a-f0-9]+$/i.test(v);
-    let guess = 'Unknown';
-    if(hex){
-      if(v.length===32) guess='MD5';
-      else if(v.length===40) guess='SHA-1';
-      else if(v.length===56) guess='SHA-224';
-      else if(v.length===64) guess='SHA-256';
-      else if(v.length===96) guess='SHA-384';
-      else if(v.length===128) guess='SHA-512';
-    }else if(/^[A-Za-z0-9/+]+=*$/.test(v)){ guess='Maybe base64 (try decoder above)'; }
-    out.innerHTML = `Guess: <b>${guess}</b>`;
-  };
-})();
-
-/* ---------- 4) Wayback / Cache / Forensics Kit for a URL ---------- */
-(function injectWayback(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>URL Forensics Kit</h3>
-    <div class="sub">Generate investigative links: Wayback, URLScan, Cache, View-Source</div>
-    <div class="row">
-      <input id="wfURL" type="text" placeholder="https://example.com/page">
-      <button class="btn" id="wfGo">Build Links</button>
-    </div>
-    <div class="links" id="wfOut" style="margin-top:12px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('wfGo').onclick = ()=>{
-    const u = (document.getElementById('wfURL').value||'').trim();
-    const out = document.getElementById('wfOut'); out.innerHTML='';
-    if(!/^https?:\/\//i.test(u)){ out.innerHTML=`<span class="pill bad">Enter full URL incl. http(s)://</span>`; return; }
-    const enc = encodeURIComponent(u);
-    const groups = [
-      ['Archives / Cache', [
-        ['Wayback (latest)', `https://web.archive.org/web/*/${enc}`],
-        ['Wayback (save)', `https://web.archive.org/save/${enc}`],
-        ['Google Cache (site:)', `https://www.google.com/search?q=cache:${enc}`]
-      ]],
-      ['Inspection', [
-        ['urlscan.io', `https://urlscan.io/search/#${enc}`],
-        ['View Source', `view-source:${u}`],
-        ['Robots.txt', `${new URL(u).origin}/robots.txt`],
-        ['Sitemap', `${new URL(u).origin}/sitemap.xml`]
-      ]],
-      ['Headers (external tools)', [
-        ['httpbin (get)', `https://httpbin.org/anything?url=${enc}`],
-        ['securityheaders.com', `https://securityheaders.com/?q=${enc}&followRedirects=on`]
-      ]]
-    ];
-    for(const [title, items] of groups){
-      const wrap = document.createElement('div'); wrap.className='group';
-      wrap.innerHTML = `<h4>${title}</h4><div class="linklist"></div>`;
-      const list = wrap.querySelector('.linklist');
-      items.forEach(([label,link])=>{
-        const a = document.createElement('a'); a.textContent=label; a.href=link; a.target='_blank'; a.rel='noopener';
-        list.appendChild(a);
-      });
-      out.appendChild(wrap);
-    }
-  };
-})();
-
-/* ---------- 5) EXIF: plot GPS onto map, if present ---------- */
-(function exifToMap(){
-  const exifOut = document.getElementById('exifOut');
-  // Re-hook EXIF change to capture GPS and drop a marker
-  const old = document.getElementById('exifFile').onchange;
-  document.getElementById('exifFile').onchange = (e)=>{
-    old && old(e);
-    const file = e.target.files[0]; if(!file) return;
-    setTimeout(()=>{
-      try{
-        EXIF.getData(file,function(){
-          const lat = EXIF.getTag(this,'GPSLatitude');
-          const latRef = EXIF.getTag(this,'GPSLatitudeRef');
-          const lon = EXIF.getTag(this,'GPSLongitude');
-          const lonRef = EXIF.getTag(this,'GPSLongitudeRef');
-          function toDec(arr,ref){
-            if(!arr||arr.length<3) return null;
-            const d = arr[0], m = arr[1], s = arr[2];
-            let val = d + (m/60) + (s/3600);
-            if(ref==='S' || ref==='W') val = -val;
-            return val;
-          }
-          const dlat = toDec(lat,latRef), dlon = toDec(lon,lonRef);
-          if(dlat!=null && dlon!=null){ pulse(dlat,dlon,`EXIF GPS: ${dlat.toFixed(5)}, ${dlon.toFixed(5)}`); map.setView([dlat,dlon], 8); }
-        });
-      }catch(e){}
-    }, 80);
-  };
-})();
-
-/* ======= END PART 9 — say “Next” for more tools (I’m still not closing the tags) ======= */
-```0
-Got it — here’s Part 10 with more advanced OSINT tools and enhancements. Still continuing inside the <script> block (no closing yet).
-
-/* ======= Advanced OSINT Enhancements (Part 10) ======= */
-
-/* ---------- 6) WHOIS / RDAP (domain/ip) ---------- */
-(function injectWhois(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>WHOIS / RDAP</h3>
-    <div class="sub">Client-side RDAP queries (ICANN JSON API) for domain or IP.</div>
-    <div class="row">
-      <input id="whoisTarget" type="text" placeholder="example.com or 8.8.8.8">
-      <button class="btn" id="whoisGo">Query</button>
-    </div>
-    <div class="terminal" id="whoisOut" style="margin-top:10px;max-height:200px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('whoisGo').onclick = async()=>{
-    const q = (document.getElementById('whoisTarget').value||'').trim();
-    const out = document.getElementById('whoisOut');
-    if(!q){ out.textContent='(empty)'; return; }
-    out.textContent='Fetching RDAP…';
-    try{
-      const url = `https://rdap.org/domain/${encodeURIComponent(q)}`;
-      const url2 = `https://rdap.org/ip/${encodeURIComponent(q)}`;
-      const r = await fetch(q.includes('.') && !/^\d+\.\d+\.\d+\.\d+$/.test(q)? url : url2);
-      if(!r.ok){ out.textContent='Error fetching RDAP'; return; }
-      const data = await r.json();
-      out.textContent = JSON.stringify(data,null,2).slice(0,3000); // truncate
-    }catch(e){ out.textContent = 'RDAP unavailable'; }
-  };
-})();
-
-/* ---------- 7) Social Media Quick Recon ---------- */
-(function injectSocRecon(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>Social Media Recon</h3>
-    <div class="sub">Enter a username → quick deep links (Facebook, Telegram, Snapchat, etc.)</div>
-    <div class="row">
-      <input id="socUser" type="text" placeholder="username">
-      <button class="btn" id="socGo">Build Links</button>
-    </div>
-    <div class="links" id="socOut" style="margin-top:12px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('socGo').onclick = ()=>{
-    const u = (document.getElementById('socUser').value||'').trim();
-    const out=document.getElementById('socOut'); out.innerHTML='';
-    if(!u){ out.innerHTML='<span class="pill bad">Enter username.</span>'; return; }
-    const enc = encodeURIComponent(u);
-    const groups=[
-      ['Mainstream',[
-        ['Facebook search',`https://www.facebook.com/search/top?q=${enc}`],
-        ['Instagram profile',`https://www.instagram.com/${enc}/`],
-        ['TikTok',`https://www.tiktok.com/@${enc}`],
-        ['Snapchat (lookup)',`https://story.snapchat.com/@${enc}`],
-      ]],
-      ['Other',[
-        ['Telegram',`https://t.me/${enc}`],
-        ['Pinterest',`https://www.pinterest.com/${enc}/`],
-        ['Flickr',`https://www.flickr.com/people/${enc}`],
-        ['Steam',`https://steamcommunity.com/id/${enc}`]
-      ]]
-    ];
-    groups.forEach(([title,items])=>{
-      const wrap=document.createElement('div'); wrap.className='group';
-      wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-      const list=wrap.querySelector('.linklist');
-      items.forEach(([label,link])=>{
-        const a=document.createElement('a'); a.textContent=label; a.href=link; a.target='_blank'; a.rel='noopener';
-        list.appendChild(a);
-      });
-      out.appendChild(wrap);
-    });
-  };
-})();
-
-/* ---------- 8) Metadata / Header Grabber (fetch HEAD) ---------- */
-(function injectHeaderGrab(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>Header Grabber</h3>
-    <div class="sub">Try fetch() HEAD to view HTTP headers (CORS dependent)</div>
-    <div class="row">
-      <input id="headURL" type="text" placeholder="https://example.com">
-      <button class="btn" id="headGo">Fetch</button>
-    </div>
-    <div class="terminal" id="headOut" style="margin-top:10px;max-height:200px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('headGo').onclick=async()=>{
-    const u = (document.getElementById('headURL').value||'').trim();
-    const out = document.getElementById('headOut'); out.textContent='';
-    if(!/^https?:\/\//i.test(u)){ out.textContent='Enter a full URL with http(s)://'; return; }
-    out.textContent='Fetching…';
-    try{
-      const r = await fetch(u,{method:'HEAD',mode:'cors'}); // may fail
-      let text=''; r.headers.forEach((v,k)=>{text+=`${k}: ${v}\n`;});
-      out.textContent=text||'(no headers exposed)';
-    }catch(e){ out.textContent='Blocked by CORS or fetch error.'; }
-  };
-})();
-
-/* ---------- 9) ASN / BGP Info (via ipapi / bgp.he.net) ---------- */
-(function injectASN(){
-  const card=document.createElement('div');
-  card.className='card';
-  card.innerHTML=`
-    <h3>ASN / BGP</h3>
-    <div class="sub">Lookup ASN for IP → link to BGP.he.net</div>
-    <div class="row">
-      <input id="asnIP" type="text" placeholder="8.8.8.8">
-      <button class="btn" id="asnGo">Lookup</button>
-    </div>
-    <div id="asnOut" class="sub" style="margin-top:10px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('asnGo').onclick=async()=>{
-    const ip=document.getElementById('asnIP').value.trim();
-    const out=document.getElementById('asnOut'); out.textContent='';
-    if(!ip){ out.textContent='Enter IP'; return; }
-    out.textContent='Querying…';
-    try{
-      const r=await fetch(`https://ipapi.co/${ip}/json/`); const d=await r.json();
-      if(d && d.asn){ out.innerHTML=`ASN: <b>${d.asn}</b> • Org: ${d.org||''}<br><a href="https://bgp.he.net/AS${d.asn.replace(/\D/g,'')}" target="_blank">bgp.he.net</a>`; }
-      else out.textContent='No ASN info';
-    }catch(e){ out.textContent='Error'; }
-  };
-})();
-
-/* ---------- 10) Hashing Utils (MD5, SHA256 quick) ---------- */
-(function injectHashGen(){
-  const card=document.createElement('div'); card.className='card';
-  card.innerHTML=`
-    <h3>Quick Hash Generator</h3>
-    <div class="sub">Generate MD5 / SHA-256 of input text</div>
-    <div class="row">
-      <input id="hashText" type="text" placeholder="Enter text…">
-      <button class="btn" id="hashGenBtn">Generate</button>
-    </div>
-    <div id="hashGenOut" style="margin-top:10px;font-family:monospace;font-size:13px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  async function sha256(txt){
-    const enc=new TextEncoder().encode(txt);
-    const buf=await crypto.subtle.digest('SHA-256',enc);
-    return Array.from(new Uint8Array(buf)).map(x=>x.toString(16).padStart(2,'0')).join('');
-  }
-  document.getElementById('hashGenBtn').onclick=async()=>{
-    const t=document.getElementById('hashText').value||'';
-    const out=document.getElementById('hashGenOut');
-    if(!t){ out.textContent=''; return; }
-    const md5h=md5(t), sh=await sha256(t);
-    out.innerHTML=`MD5: ${md5h}<br>SHA-256: ${sh}`;
-  };
-})();
-
-/* ======= END PART 10 — say “Next” for more OSINT features (I’m not closing script/body yet) ======= */
-/* ======= Advanced OSINT Enhancements (Part 10) ======= */
-
-/* ---------- 6) WHOIS / RDAP (domain/ip) ---------- */
-(function injectWhois(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>WHOIS / RDAP</h3>
-    <div class="sub">Client-side RDAP queries (ICANN JSON API) for domain or IP.</div>
-    <div class="row">
-      <input id="whoisTarget" type="text" placeholder="example.com or 8.8.8.8">
-      <button class="btn" id="whoisGo">Query</button>
-    </div>
-    <div class="terminal" id="whoisOut" style="margin-top:10px;max-height:200px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('whoisGo').onclick = async()=>{
-    const q = (document.getElementById('whoisTarget').value||'').trim();
-    const out = document.getElementById('whoisOut');
-    if(!q){ out.textContent='(empty)'; return; }
-    out.textContent='Fetching RDAP…';
-    try{
-      const url = `https://rdap.org/domain/${encodeURIComponent(q)}`;
-      const url2 = `https://rdap.org/ip/${encodeURIComponent(q)}`;
-      const r = await fetch(q.includes('.') && !/^\d+\.\d+\.\d+\.\d+$/.test(q)? url : url2);
-      if(!r.ok){ out.textContent='Error fetching RDAP'; return; }
-      const data = await r.json();
-      out.textContent = JSON.stringify(data,null,2).slice(0,3000); // truncate
-    }catch(e){ out.textContent = 'RDAP unavailable'; }
-  };
-})();
-
-/* ---------- 7) Social Media Quick Recon ---------- */
-(function injectSocRecon(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>Social Media Recon</h3>
-    <div class="sub">Enter a username → quick deep links (Facebook, Telegram, Snapchat, etc.)</div>
-    <div class="row">
-      <input id="socUser" type="text" placeholder="username">
-      <button class="btn" id="socGo">Build Links</button>
-    </div>
-    <div class="links" id="socOut" style="margin-top:12px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('socGo').onclick = ()=>{
-    const u = (document.getElementById('socUser').value||'').trim();
-    const out=document.getElementById('socOut'); out.innerHTML='';
-    if(!u){ out.innerHTML='<span class="pill bad">Enter username.</span>'; return; }
-    const enc = encodeURIComponent(u);
-    const groups=[
-      ['Mainstream',[
-        ['Facebook search',`https://www.facebook.com/search/top?q=${enc}`],
-        ['Instagram profile',`https://www.instagram.com/${enc}/`],
-        ['TikTok',`https://www.tiktok.com/@${enc}`],
-        ['Snapchat (lookup)',`https://story.snapchat.com/@${enc}`],
-      ]],
-      ['Other',[
-        ['Telegram',`https://t.me/${enc}`],
-        ['Pinterest',`https://www.pinterest.com/${enc}/`],
-        ['Flickr',`https://www.flickr.com/people/${enc}`],
-        ['Steam',`https://steamcommunity.com/id/${enc}`]
-      ]]
-    ];
-    groups.forEach(([title,items])=>{
-      const wrap=document.createElement('div'); wrap.className='group';
-      wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-      const list=wrap.querySelector('.linklist');
-      items.forEach(([label,link])=>{
-        const a=document.createElement('a'); a.textContent=label; a.href=link; a.target='_blank'; a.rel='noopener';
-        list.appendChild(a);
-      });
-      out.appendChild(wrap);
-    });
-  };
-})();
-
-/* ---------- 8) Metadata / Header Grabber (fetch HEAD) ---------- */
-(function injectHeaderGrab(){
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <h3>Header Grabber</h3>
-    <div class="sub">Try fetch() HEAD to view HTTP headers (CORS dependent)</div>
-    <div class="row">
-      <input id="headURL" type="text" placeholder="https://example.com">
-      <button class="btn" id="headGo">Fetch</button>
-    </div>
-    <div class="terminal" id="headOut" style="margin-top:10px;max-height:200px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('headGo').onclick=async()=>{
-    const u = (document.getElementById('headURL').value||'').trim();
-    const out = document.getElementById('headOut'); out.textContent='';
-    if(!/^https?:\/\//i.test(u)){ out.textContent='Enter a full URL with http(s)://'; return; }
-    out.textContent='Fetching…';
-    try{
-      const r = await fetch(u,{method:'HEAD',mode:'cors'}); // may fail
-      let text=''; r.headers.forEach((v,k)=>{text+=`${k}: ${v}\n`;});
-      out.textContent=text||'(no headers exposed)';
-    }catch(e){ out.textContent='Blocked by CORS or fetch error.'; }
-  };
-})();
-
-/* ---------- 9) ASN / BGP Info (via ipapi / bgp.he.net) ---------- */
-(function injectASN(){
-  const card=document.createElement('div');
-  card.className='card';
-  card.innerHTML=`
-    <h3>ASN / BGP</h3>
-    <div class="sub">Lookup ASN for IP → link to BGP.he.net</div>
-    <div class="row">
-      <input id="asnIP" type="text" placeholder="8.8.8.8">
-      <button class="btn" id="asnGo">Lookup</button>
-    </div>
-    <div id="asnOut" class="sub" style="margin-top:10px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  document.getElementById('asnGo').onclick=async()=>{
-    const ip=document.getElementById('asnIP').value.trim();
-    const out=document.getElementById('asnOut'); out.textContent='';
-    if(!ip){ out.textContent='Enter IP'; return; }
-    out.textContent='Querying…';
-    try{
-      const r=await fetch(`https://ipapi.co/${ip}/json/`); const d=await r.json();
-      if(d && d.asn){ out.innerHTML=`ASN: <b>${d.asn}</b> • Org: ${d.org||''}<br><a href="https://bgp.he.net/AS${d.asn.replace(/\D/g,'')}" target="_blank">bgp.he.net</a>`; }
-      else out.textContent='No ASN info';
-    }catch(e){ out.textContent='Error'; }
-  };
-})();
-
-/* ---------- 10) Hashing Utils (MD5, SHA256 quick) ---------- */
-(function injectHashGen(){
-  const card=document.createElement('div'); card.className='card';
-  card.innerHTML=`
-    <h3>Quick Hash Generator</h3>
-    <div class="sub">Generate MD5 / SHA-256 of input text</div>
-    <div class="row">
-      <input id="hashText" type="text" placeholder="Enter text…">
-      <button class="btn" id="hashGenBtn">Generate</button>
-    </div>
-    <div id="hashGenOut" style="margin-top:10px;font-family:monospace;font-size:13px"></div>
-  `;
-  document.querySelector('.grid').appendChild(card);
-
-  async function sha256(txt){
-    const enc=new TextEncoder().encode(txt);
-    const buf=await crypto.subtle.digest('SHA-256',enc);
-    return Array.from(new Uint8Array(buf)).map(x=>x.toString(16).padStart(2,'0')).join('');
-  }
-  document.getElementById('hashGenBtn').onclick=async()=>{
-    const t=document.getElementById('hashText').value||'';
-    const out=document.getElementById('hashGenOut');
-    if(!t){ out.textContent=''; return; }
-    const md5h=md5(t), sh=await sha256(t);
-    out.innerHTML=`MD5: ${md5h}<br>SHA-256: ${sh}`;
-  };
-})();
-
-/* ======= END PART 10 — say “Next” for more OSINT features (I’m not closing script/body yet) ======= */
-    
-    
-    
-    
-    /* ======= Part 11: Finalize, fixes, and close ======= */
-
-/* Normalize SESSION shape (use arrays everywhere) */
-(function normalizeSession(){
-  window.SESSION = window.SESSION || {};
-  ['emails','usernames','domains','ips','extracts','exifs','hashes','commands'].forEach(k=>{
-    if(!Array.isArray(SESSION[k])) SESSION[k] = [];
-  });
-})();
-
-/* Update stats + track using array lengths */
-function updateStats(){
-  const q = (id)=>document.getElementById(id);
-  const filesCount = (SESSION.exifs.length + SESSION.hashes.length);
-  if(q('stEmails'))   q('stEmails').textContent   = SESSION.emails.length;
-  if(q('stDomains'))  q('stDomains').textContent  = SESSION.domains.length;
-  if(q('stIPs'))      q('stIPs').textContent      = SESSION.ips.length;
-  if(q('stExtracts')) q('stExtracts').textContent = SESSION.extracts.length;
-  if(q('stFiles'))    q('stFiles').textContent    = filesCount;
-
-  if(window._spark){
-    const total = SESSION.emails.length + SESSION.domains.length + SESSION.ips.length + SESSION.extracts.length + filesCount;
-    const ds = window._spark.data.datasets[0];
-    ds.data.shift(); ds.data.push((total % 12) + 3);
-    window._spark.update('none');
-  }
-}
-function track(type, value){
-  const map = { email:'emails', username:'usernames', domain:'domains', ip:'ips', extract:'extracts', exif:'exifs', hash:'hashes', cmd:'commands' };
-  const key = map[type] || type;
-  if(key && SESSION[key] && Array.isArray(SESSION[key]) && (value || ['extract','exif','hash'].includes(type))){
-    if(value) SESSION[key].unshift(value);
-  }
-  updateStats();
-}
-
-/* Alias for earlier call sites */
-function termlog(msg){ tEcho(msg); }
-
-/* Colors from CSS */
-const ACCENT  = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()  || '#00e5ff';
-const ACCENT2 = getComputedStyle(document.documentElement).getPropertyValue('--accent2').trim() || '#17e2e2';
-
-/* Map: ensure single instance + override helpers with CSS colors */
-(function ensureMap(){
-  if(!window.map){
-    window.map = L.map('map',{worldCopyJump:true,zoomControl:true,attributionControl:false}).setView([20,0],2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:['a','b','c'],maxZoom:19}).addTo(map);
-  }
-  window.pulse = function(lat,lng,label){
-    const circle = L.circleMarker([lat,lng],{radius:7,color:ACCENT2,fillColor:ACCENT,fillOpacity:.7,weight:2})
-      .addTo(map).bindTooltip(label||'Node');
-    setTimeout(()=>{ try{ map.removeLayer(circle);}catch(_){} }, 12000);
-    return circle;
-  };
-  window.arc = function(a,b,color=ACCENT2){
-    const line = L.polyline.antPath([a,b],{delay:400,dashArray:[10,18],weight:3,color,pulseColor:'#fff'});
-    line.addTo(map); setTimeout(()=>{ try{ map.removeLayer(line);}catch(_){} }, 18000);
-    return line;
-  };
-})();
-
-/* DNS over HTTPS helper (idempotent) */
-async function doh(name,type){
-  const r = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`,{cache:'no-store'});
-  if(!r.ok) throw 0; return r.json();
-}
-
-/* Rebind DOMAIN button (in case the earlier snippet was cut) */
-let DOMAIN_LINKS = window.DOMAIN_LINKS || [];
-document.getElementById('domainBtn').onclick = async ()=>{
-  const d = (document.getElementById('domain').value||'').trim();
-  const msg = document.getElementById('dnsMsg');
-  const tbl = document.getElementById('dnsTable');
-  const out = document.getElementById('domainLinks');
-  if(!d){ toast(msg,'Enter a domain.'); return; }
-  msg.textContent='Resolving…'; tbl.innerHTML=''; out.innerHTML=''; DOMAIN_LINKS = [];
-  try{
-    const [A,AAAA,MX,NS,TXT] = await Promise.all([doh(d,'A'),doh(d,'AAAA'),doh(d,'MX'),doh(d,'NS'),doh(d,'TXT')]);
-    const get = (o)=> (o && o.Answer ? o.Answer.map(a=>a.data) : []);
-    const lines = [
-      ['A',    get(A).join(', ') || '—'],
-      ['AAAA', get(AAAA).join(', ') || '—'],
-      ['MX',   get(MX).join(' | ') || '—'],
-      ['NS',   get(NS).join(', ') || '—'],
-      ['TXT',  get(TXT).map(s=>String(s).replaceAll('"','')).join(' | ') || '—']
-    ];
-    tbl.innerHTML = lines.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
-    // Link packs
-    const D = encodeURIComponent(d);
-    const groups = [
-      ['Surface',[
-        ['crt.sh',`https://crt.sh/?q=${D}`],
-        ['urlscan.io',`https://urlscan.io/domain/${D}`],
-        ['VirusTotal',`https://www.virustotal.com/gui/domain/${D}`],
-        ['SecurityTrails',`https://securitytrails.com/domain/${D}/dns`],
-        ['BuiltWith',`https://builtwith.com/${D}`],
-      ]],
-      ['Infra',[
-        ['Shodan',`https://www.shodan.io/search?query=${D}`],
-        ['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`],
-        ['DNSDumpster',`https://dnsdumpster.com/`]
-      ]]
-    ];
-    for(const [title,items] of groups){
-      const wrap=document.createElement('div'); wrap.className='group';
-      wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-      const list=wrap.querySelector('.linklist');
-      items.forEach(([label,url])=>{
-        const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label;
-        list.appendChild(a); DOMAIN_LINKS.push(url);
-      });
-      out.appendChild(wrap);
-    }
-    msg.textContent='DNS resolved.'; track('domain', d);
-  }catch(e){ toast(msg,'DNS lookup blocked/unavailable.',true); }
-};
-function openAllStagger(urls=[],gap=180){ let i=0; const t=setInterval(()=>{ const u=urls[i++]; if(u) window.open(u,'_blank','noopener'); if(i>=urls.length) clearInterval(t); },gap); }
-document.getElementById('openDomainLinks').onclick = ()=> openAllStagger(DOMAIN_LINKS);
-
-/* Final unified terminal run() */
-window.run = function(cmdRaw){
-  const input = (cmdRaw||'').trim(); if(!input) return;
-  tEcho('> '+input);
-  document.getElementById('termIn').value='';
-  const [cmd, ...rest] = input.split(/\s+/);
-  const arg = rest.join(' ');
-  switch((cmd||'').toLowerCase()){
-    case 'help':    typeof cmd_help==='function' && cmd_help(); break;
-    case 'clear':   document.getElementById('terminal').innerHTML=''; break;
-    case 'about':   typeof cmd_about==='function' && cmd_about(); break;
-    case 'session': typeof cmd_session==='function' && cmd_session(); break;
-    case 'analyze': analyzeEmail(arg); track('email',arg); break;
-    case 'username': buildUserLinks(arg); track('username',arg); break;
-    case 'domain':  document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); break;
-    case 'dns':     document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); break;
-    case 'ip':      document.getElementById('ip').value=arg; document.getElementById('ipBtn').click(); break;
-    case 'extract': document.getElementById('extractBtn').click(); break;
-    case 'maptest': typeof terminalMapTest==='function' && terminalMapTest(); break;
-    case 'export':  typeof exportSession==='function' && exportSession(); break;
-    default:        tEcho('Unknown command. Type "help".');
-  }
-};
-
-/* Final banner */
-tEcho('— CMX Console finalized. Happy hunting.');
-
-/* ======= END Part 11 ======= */
+tEcho('CMX OSINT Console ready. Type "help".');
 </script>
 </body>
 </html>
+```0
