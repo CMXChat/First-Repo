@@ -19,11 +19,18 @@
 
   <!-- ======= Secure Login/Briefing Styles ======= -->
   <style>
+    :root{
+      --bg:#000; --panel:#0f0f10; --panel-2:#121316;
+      --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+      --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f;
+      --r:14px; --rs:10px;
+    }
+    /* Login look */
     body {
       margin: 0;
       padding: 0;
       background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-      font-family: 'Segoe UI', sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: #fff;
       min-height: 100vh;
       overflow-y: auto;
@@ -59,89 +66,79 @@
       margin: 2em auto; padding: 1.5em; border-left: 4px solid #00ffbf; background: rgba(255,255,255,0.05);
       text-align: left; font-size: 1em; line-height: 1.6; max-width: 600px; animation: fadeIn 1s ease-in-out;
     }
-    .countdown { text-align: center; font-size: 1.2em; color: red; font-weight: bold; }
+    .briefing ul{ margin: 6px 0 6px 18px }
+    .countdown { text-align: center; font-size: 1.2em; color: #ff5a5f; font-weight: 800; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
 
-  <!-- ======= OSINT Console vendor CSS ======= -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+    /* ===== Console styles ===== */
+    body.console-mode{ background:var(--bg); color:var(--ink); }
+    *{box-sizing:border-box}
+    .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+    .logo svg{width:18px;height:18px;fill:var(--accent)}
+    .top-actions{display:flex;align-items:center;gap:8px}
+    .chip{padding:6px 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+    .ghost{all:unset;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:999px}
 
-  <!-- ======= OSINT Console Styles (unchanged look) ======= -->
-  <style>
-:root{
-  --bg:#000; --panel:#0f0f10; --panel-2:#121316;
-  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
-  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f;
-  --r:14px; --rs:10px;
-}
-body.console-mode{ background:var(--bg); color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial }
-*{box-sizing:border-box}
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800}
-.logo{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
-.logo svg{width:18px;height:18px;fill:var(--accent)}
-.top-actions{display:flex;align-items:center;gap:8px}
-.chip{padding:6px 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:var(--panel)}
-.ghost{all:unset;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:999px}
+    .shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px);position:relative}
+    @media(max-width:1020px){.shell{grid-template-columns:1fr}}
 
-.shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px);position:relative}
-@media(max-width:1020px){.shell{grid-template-columns:1fr}}
+    .side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto;z-index:25}
+    .nav{display:grid;gap:8px}
+    .nav button{all:unset;cursor:pointer;padding:12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2);display:block;text-align:left}
+    .nav button.active,.nav button:hover{border-color:var(--accent)}
 
-.side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto;z-index:25}
-.nav{display:grid;gap:8px}
-.nav button{all:unset;cursor:pointer;padding:12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2);display:block;text-align:left}
-.nav button.active,.nav button:hover{border-color:var(--accent)}
+    .hamburger{display:none}
+    .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:24;opacity:0;pointer-events:none;transition:opacity .2s}
+    @media(max-width:1020px){
+      .hamburger{display:inline-flex}
+      .side{position:fixed;left:0;top:58px;width:min(86vw,340px);transform:translateX(-110%);transition:transform .22s ease;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+      .side.open{transform:translateX(0)}
+      .backdrop.show{opacity:1;pointer-events:auto}
+    }
 
-.hamburger{display:none}
-.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:24;opacity:0;pointer-events:none;transition:opacity .2s}
-@media(max-width:1020px){
-  .hamburger{display:inline-flex}
-  .side{position:fixed;left:0;top:58px;width:min(86vw,340px);transform:translateX(-110%);transition:transform .22s ease;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-  .side.open{transform:translateX(0)}
-  .backdrop.show{opacity:1;pointer-events:auto}
-}
+    .main{padding:14px;overflow:auto}
+    .grid{display:grid;gap:14px;grid-template-columns:1fr}
+    @media(min-width:1200px){.grid{grid-template-columns:1.15fr 1fr}}
+    .card{border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:14px}
+    .card h3{margin:0 0 8px;font-weight:800}
+    .sub{color:var(--muted);font-size:12px;margin-bottom:10px}
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:640px){.row{grid-template-columns:1fr auto}}
 
-.main{padding:14px;overflow:auto}
-.grid{display:grid;gap:14px;grid-template-columns:1fr}
-@media(min-width:1200px){.grid{grid-template-columns:1.15fr 1fr}}
-.card{border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:14px}
-.card h3{margin:0 0 8px;font-weight:800}
-.sub{color:var(--muted);font-size:12px;margin-bottom:10px}
-.row{display:grid;grid-template-columns:1fr;gap:10px}
-@media(min-width:640px){.row{grid-template-columns:1fr auto}}
-
-input[type=text],input[type=email],input[type=file],textarea{
-  width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none;font-size:15px
-}
-.btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:999px;font-weight:800;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06))}
-.btn.mono{border-color:var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
-.kv{border:1px dashed var(--line);border-radius:12px;padding:10px}
-.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12px}
-.pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.unk{color:var(--muted)}
-.links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
-@media(max-width:700px){.links{grid-template-columns:1fr}}
-.links .group{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel)}
-.links h4{margin:0 0 8px;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px}
-.linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
-.disclosure{all:unset;cursor:pointer;font-size:12px;color:var(--muted)}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.badges .pill{border-color:var(--line)}
-.terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;max-height:240px;overflow:auto;white-space:pre-wrap}
-.term-input{display:flex;gap:8px;margin-top:8px}
-#map{height:360px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-table.meta{width:100%;border-collapse:collapse;font-size:13px}
-table.meta td,table.meta th{padding:6px 8px;border-bottom:1px dashed var(--line)}
-table.meta th{text-align:left;color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px}
-.kbd{border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
-.small{font-size:12px;color:var(--muted)}
-.preview{width:120px;height:120px;border:1px solid var(--line);border-radius:12px;object-fit:cover;background:#111}
+    input[type=text],input[type=email],input[type=file],textarea{
+      width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none;font-size:15px
+    }
+    .btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:999px;font-weight:800;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06))}
+    .btn.mono{border-color:var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+    .kv{border:1px dashed var(--line);border-radius:12px;padding:10px}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12px}
+    .pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.unk{color:var(--muted)}
+    .links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+    @media(max-width:700px){.links{grid-template-columns:1fr}}
+    .links .group{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel)}
+    .links h4{margin:0 0 8px;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+    .disclosure{all:unset;cursor:pointer;font-size:12px;color:var(--muted)}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .badges .pill{border-color:var(--line)}
+    .terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;max-height:240px;overflow:auto;white-space:pre-wrap}
+    .term-input{display:flex;gap:8px;margin-top:8px}
+    #map{height:360px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    table.meta{width:100%;border-collapse:collapse;font-size:13px}
+    table.meta td,table.meta th{padding:6px 8px;border-bottom:1px dashed var(--line)}
+    table.meta th{text-align:left;color:var(--muted)}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px}
+    .kbd{border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
+    .small{font-size:12px;color:var(--muted)}
+    .preview{width:120px;height:120px;border:1px solid var(--line);border-radius:12px;object-fit:cover;background:#111}
   </style>
 </head>
 <body>
 
-  <!-- ============ Secure Login + Briefing (exact flow) ============ -->
+  <!-- ============ Secure Login + Briefing ============ -->
   <div class="container" id="login-container">
     <div class="login-box">
       <h1>CMX Secure Agent Login</h1>
@@ -318,11 +315,12 @@ table.meta th{text-align:left;color:var(--muted)}
   </div>
 
   <!-- ======= Vendors ======= -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
   <script src="https://unpkg.com/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 
-  <!-- ======= Secure Login + Briefing Logic (no CMX AI terminal) ======= -->
+  <!-- ======= Secure Login + Briefing Logic ======= -->
   <script>
     const output = document.getElementById('output');
     const loginContainer = document.getElementById('login-container');
@@ -330,16 +328,17 @@ table.meta th{text-align:left;color:var(--muted)}
     const countdownEl = document.getElementById('countdown');
 
     function authenticate() {
-      const id = document.getElementById('agent').value.trim().toLowerCase();
-      const pass = document.getElementById('pass').value.trim();
+      const id = (document.getElementById('agent').value||'').trim().toLowerCase();
+      const pass = (document.getElementById('pass').value||'').trim();
       if (id === (CONFIG.AGENT_ID||'').toLowerCase() && pass === CONFIG.SECURITY_CODE) {
         output.textContent = `Access Granted. Welcome, ${CONFIG.AGENT_ID}.`;
         setTimeout(() => {
+          // Hide login, show briefing + countdown
           loginContainer.style.display = 'none';
           briefing.style.display = 'block';
           countdownEl.style.display = 'block';
           startCountdown();
-        }, 600);
+        }, 500);
       } else {
         output.textContent = 'Access Denied. Check credentials.';
       }
@@ -356,21 +355,22 @@ table.meta th{text-align:left;color:var(--muted)}
           countdownEl.textContent = `THIS MESSAGE WILL SELF-DESTRUCT IN ${timeLeft} SECONDS.`;
         } else {
           clearInterval(interval);
+          // Erase briefing, reveal console
           briefing.style.display = 'none';
           countdownEl.textContent = 'MESSAGE ERASED.';
-          // Brief pause, then reveal the console
-          setTimeout(() => { revealConsole(); }, 800);
+          setTimeout(revealConsole, 700);
         }
       }, 1000);
     }
 
     function revealConsole(){
       document.body.classList.add('console-mode');
-      // Hide briefing UI
+      // Hide any briefing remnants
       briefing.style.display='none';
       countdownEl.style.display='none';
       // Show console
-      document.getElementById('consoleApp').style.display='block';
+      const app = document.getElementById('consoleApp');
+      app.style.display='block';
 
       // Prefill proxycheck key from CONFIG (optional)
       if (CONFIG.PROXYCHECK_DEFAULT_KEY) {
@@ -378,14 +378,14 @@ table.meta th{text-align:left;color:var(--muted)}
         if (pc) pc.value = CONFIG.PROXYCHECK_DEFAULT_KEY;
       }
 
-      // Make sure Leaflet sizes properly after reveal
+      // Ensure Leaflet map sizes correctly after reveal
       setTimeout(() => {
         try { if (window.map && map.invalidateSize) map.invalidateSize(true); } catch(e){}
-      }, 60);
+      }, 80);
     }
   </script>
 
-  <!-- ======= OSINT Console Logic (unchanged behavior) ======= -->
+  <!-- ======= OSINT Console Logic ======= -->
   <script>
 /* ---------- Theme / Session / Mobile menu ---------- */
 const root=document.documentElement;
@@ -462,19 +462,20 @@ function providerOf(domain){ const d=(domain||'').toLowerCase();
   return 'Unknown';
 }
 
-/* Tiny MD5 (for gravatar) */
+/* ---------- MD5 (for Gravatar) ---------- */
 function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);
 a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);
 a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);
 a=ff(a,b,c,d,k[12],7,1804603682);d=ff(d,a,b,c,k[13],12,-40341101);c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22,1236535329);
-a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(c,d,a,b,k[0],20,-373897302);
-a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(c,d,a,b,k[4],20,-405537848);
+a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(b,c,d,a,k[0],20,-373897302);
+a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(b,c,d,a,k[4],20,-405537848);
 a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
 a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);
 a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
 a=ii(a,b,c,d,k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
 a=ii(a,b,c,d,k[12],6,1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);c=ii(c,d,a,b,k[10],15,-1051523);b=ii(b,c,d,a,k[1],21,-2054922799);
 a=ii(a,b,c,d,k[8],6,1873313359);d=ii(d,a,b,c,k[15],10,-30611744);c=ii(c,d,a,b,k[6],15,-1560198380);b=ii(b,c,d,a,k[13],21,1309151649);
+x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}
 function cmn(q,a,b,x,s,t){a=add32(add32(a,q),add32(x,t));return add32((a<<s)|(a>>>(32-s)),b)}
 function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t)}
 function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t)}
@@ -486,10 +487,7 @@ function rhex(n){const s='0123456789abcdef';let j,out='';for(j=0;j<4;j++)out+=s[
 function hex(x){for(let i=0;i<x.length;i++)x[i]=rhex(x[i]);return x.join('')}
 function md5(s){return hex(md51(unescape(encodeURIComponent(s))).slice())}
 function add32(a,b){return(a+b)&0xFFFFFFFF}
-  </script>
 
-  <!-- Map init (console) -->
-  <script>
 /* ---------- Map ---------- */
 let map=null;
 function ensureMap(){
@@ -511,22 +509,19 @@ _mapReadyObserver.observe(document.body,{subtree:true,childList:true,attributes:
 /* Helpers for map decor */
 function pulse(lat,lng,label){
   ensureMap();
-  const circle=L.circleMarker([lat,lng],{radius:7,color:CSS('--accent2')||'#82c8ff',fillColor:CSS('--accent')||'#1d9bf0',fillOpacity:.7,weight:2}).addTo(map);
+  const circle=L.circleMarker([lat,lng],{radius:7,color:ACCENT2,fillColor:ACCENT,fillOpacity:.7,weight:2}).addTo(map);
   if(label) circle.bindTooltip(label);
   setTimeout(()=>{ try{ map.removeLayer(circle);}catch(_){ } },12000);
   return circle;
 }
-function arc(a,b,color=CSS('--accent2')||'#82c8ff'){
+function arc(a,b,color=ACCENT2){
   ensureMap();
   const line=L.polyline.antPath([a,b],{delay:400,dashArray:[10,18],weight:3,color,pulseColor:'#fff'});
   line.addTo(map);
   setTimeout(()=>{ try{ map.removeLayer(line);}catch(_){ } },15000);
   return line;
 }
-  </script>
 
-  <!-- The rest of the console logic (email, username, domain, IP, text, files, RIS, terminal, nav, restore) -->
-  <script>
 /* ---------- EMAIL ---------- */
 let EMAIL_LINKS=[]; const emailEl=document.getElementById('email');
 const emailMsg=document.getElementById('emailMsg'); const outEmail=document.getElementById('outEmail');
@@ -605,7 +600,7 @@ function buildUserLinks(handle){
   groups.forEach(([_,items])=>items.forEach(([__,url])=>USER_LINKS.push(url)));
 }
 document.getElementById('userBtn').onclick=()=>{const v=document.getElementById('user').value.trim(); if(!v)return; buildUserLinks(v); localStorage.setItem('cmx_last_user', v);};
-document.getElementById('openUserLinks').onclick=()=>{ if(USER_LINKS.length && confirm(`Open ${USER_LINKS_LENGTH} links?`)) USER_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
+document.getElementById('openUserLinks').onclick=()=>{ if(USER_LINKS.length && confirm(`Open ${USER_LINKS.length} links?`)) USER_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
 
 /* ---------- DOMAIN (DNS over HTTPS) ---------- */
 let DOMAIN_LINKS=[]; const dnsMsg=document.getElementById('dnsMsg'); const dnsTable=document.getElementById('dnsTable'); const domainLinks=document.getElementById('domainLinks');
@@ -664,7 +659,7 @@ function revNameForIPv4(ip){ return ip.split('.').reverse().join('.')+'.in-addr.
 
 document.getElementById('ipBtn').onclick=async()=>{
   const ip=document.getElementById('ip').value.trim();
-  const key=(document.getElementById('pcKey').value||'').trim();
+  const key=(document.getElementById('pcKey').value||CONFIG.PROXYCHECK_DEFAULT_KEY||'').trim();
   if(!ip){ toast(ipInfo,'Enter an IP.'); return; }
   if(!isValidIPv4(ip)){ toast(ipInfo,'Invalid IPv4.',true); return; }
   ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; ipBadges.innerHTML=''; ipTable.innerHTML=''; IP_LINKS=[];
@@ -689,7 +684,7 @@ document.getElementById('ipBtn').onclick=async()=>{
   const city=d.city||'—', region=d.region||d.province||'—', country=d.country||d.isocode||'—', asn=(d.asn?('AS'+String(d.asn).replace(/^AS/i,'')):'—');
   ipInfo.innerHTML=`IP <b>${ip}</b> • ${city}, ${region} ${country} • ASN ${asn} • Org ${d.organisation||d.organization||d.provider||'—'}`;
 
-  // Table (present fields only)
+  // Table
   function row(k,v){ return `<tr><th>${k}</th><td>${v}</td></tr>`; }
   const coords = (d.latitude!=null && d.longitude!=null) ? `${(+d.latitude).toFixed(4)}, ${(+d.longitude).toFixed(4)}` : '—';
   const tz = d.timezone || '—';
@@ -840,18 +835,20 @@ function run(cmdRaw){
   }
 }
 document.getElementById('termBtn').onclick=()=>run();
-termIn.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
+if(termIn) termIn.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
 
 /* ---------- Active nav highlight ---------- */
 const sections=[...document.querySelectorAll('main section')];
 const navBtns=[...document.querySelectorAll('.nav button')];
-new IntersectionObserver((entries)=>{
-  const vis=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-  if(!vis) return;
-  const id=vis.target.id;
-  navBtns.forEach(b=>b.classList.toggle('active', b.dataset.goto===id));
-},{rootMargin:'-40% 0px -55% 0px',threshold:[0.1,0.25,0.5,0.75,1]}).observe(sections[0]);
-sections.slice(1).forEach(s=>{ new IntersectionObserver(()=>{},{}).observe(s); });
+if (sections.length){
+  const io = new IntersectionObserver((entries)=>{
+    const vis=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(!vis) return;
+    const id=vis.target.id;
+    navBtns.forEach(b=>b.classList.toggle('active', b.dataset.goto===id));
+  },{rootMargin:'-40% 0px -55% 0px',threshold:[0.1,0.25,0.5,0.75,1]});
+  sections.forEach(s=>io.observe(s));
+}
 
 /* ---------- Restore last inputs ---------- */
 (function restore(){
