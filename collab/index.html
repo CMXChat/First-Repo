@@ -1,14 +1,271 @@
-<!DOCTYPE html>
-
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="styles/style.css"/>
-  <title>Hello, World!</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CMX – From Live Platform to Full‑Service Digital Agency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #0b0b0c;
+      --muted: #5f6368;
+      --pill: #f2f4f7;
+      --border: #eceff2;
+      --accent: #2563eb; /* electric blue */
+      --accent-2: #e11d48; /* pinkish for micro accents */
+      --shadow: 0 10px 30px rgba(16,24,40,0.06);
+      --radius: 18px;
+      --radius-lg: 28px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1200px, 92%); margin-inline: auto; }/* Sticky Header */
+header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(180%) blur(8px); background: rgba(255,255,255,0.75); border-bottom: 1px solid var(--border); }
+.nav { display:flex; align-items:center; justify-content:space-between; gap: 16px; padding: 14px 0; }
+.logo { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:0.2px; }
+.logo-dot { width:10px; height:10px; border-radius:999px; background:linear-gradient(135deg,var(--accent),#60a5fa); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+nav ul { list-style:none; display:flex; gap: 22px; align-items:center; padding:0; margin:0; }
+nav a { color:#1f2937; font-weight:500; opacity:.9; }
+nav a:hover { opacity:1; }
+.cta { display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; background: var(--text); color:#fff; font-weight:600; box-shadow: var(--shadow); }
+.cta:hover { transform: translateY(-1px); }
+
+/* Hero */
+.hero { padding: 64px 0 28px; }
+.hero h1 { font-size: clamp(28px, 5vw, 56px); line-height: 1.06; letter-spacing:-0.02em; margin: 0 0 16px; }
+.hero p { color: var(--muted); font-size: clamp(16px, 2.2vw, 18px); line-height:1.7; margin: 0 0 22px; }
+.btn-row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+.btn { display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px; font-weight:600; border:1px solid var(--border); background:#fff; }
+.btn-primary { background: var(--accent); color:#fff; border-color: transparent; }
+.btn-secondary { background:#fff; color:#111827; }
+.btn span.arrow { translate: 0 1px; }
+
+/* Section headings */
+.eyebrow { color: var(--accent-2); font-weight:700; font-size:12px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
+.h2 { font-size: clamp(24px, 4.2vw, 40px); line-height:1.1; margin: 0 0 12px; }
+.lead { color: var(--muted); font-size: 18px; margin: 0 0 22px; }
+
+/* What We Do */
+.pills { display:flex; flex-wrap:wrap; gap:10px; margin: 18px 0 24px; }
+.pill { padding:10px 14px; background: var(--pill); border:1px solid var(--border); border-radius:999px; color:#374151; font-weight:600; font-size: 14px; }
+
+.grid { display:grid; grid-template-columns: repeat(12, 1fr); gap: 22px; }
+.card { grid-column: span 12; display:grid; grid-template-columns: 1fr; border:1px solid var(--border); border-radius: var(--radius-lg); overflow:hidden; background:#fff; box-shadow: var(--shadow); }
+.card-media { position:relative; height: 240px; background: radial-gradient(80% 120% at 20% 20%, #e8f1ff 0%, #fafafa 60%); }
+.card-media::after { content:""; position:absolute; inset: 16px; border-radius: 24px; background: conic-gradient(from 140deg, #93c5fd, #dbeafe, #60a5fa, #bfdbfe, #93c5fd); filter: blur(18px); opacity:.5; }
+.card-body { padding: 22px; }
+.card h3 { margin: 0 0 8px; font-size: 20px; }
+.card p { margin: 0 0 14px; color: var(--muted); }
+.card a { color: var(--accent); font-weight:600; }
+
+@media (min-width: 860px) {
+  .hero { padding: 88px 0 44px; }
+  .card { grid-template-columns: .9fr 1.1fr; }
+  .card-media { height: 100%; min-height: 260px; }
+  .card { grid-column: span 6; }
+}
+
+/* Feature rows */
+.features { display:grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.feature { grid-column: span 12; padding: 18px; border:1px solid var(--border); border-radius: var(--radius); }
+.feature strong { display:block; margin-bottom:6px; }
+@media (min-width: 900px) { .feature { grid-column: span 6; } }
+
+/* Sections */
+section { padding: 50px 0; border-top: 1px solid var(--border); }
+
+/* Footer */
+footer { border-top:1px solid var(--border); padding: 40px 0; color:#6b7280; }
+.foot a { color: #374151; }
+
+/* Smooth anchors */
+html { scroll-behavior: smooth; }
+
+  </style>
 </head>
 <body>
-  <h1>
-    Hello, World!
-  </h1>
-</body>
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <div class="logo"><span class="logo-dot"></span> CMX</div>
+      <nav aria-label="Primary Navigation">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#platform">Platform</a></li>
+          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#chat">Chat</a></li>
+          <li><a class="cta" href="#project">Start a Project ↗</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>  <!-- Hero -->  <main id="home" class="hero">
+    <div class="container">
+      <h1>From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
+      <p>CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#project">Build With CMX <span class="arrow">→</span></a>
+        <a class="btn btn-secondary" href="#chat">Join the Chat ↗</a>
+        <small style="opacity:.75">The CMX platform is still live, and it powers everything we build.</small>
+      </div>
+    </div>
+  </main>  <!-- What We Do Best -->  <section id="services">
+    <div class="container">
+      <div class="eyebrow">What we do best</div>
+      <h2 class="h2">Execution where it matters most.</h2>
+      <div class="pills" aria-label="Service categories">
+        <span class="pill">Web Development</span>
+        <span class="pill">SEO Services</span>
+        <span class="pill">Content & Copywriting</span>
+        <span class="pill">Discord Systems</span>
+        <span class="pill">OSINT & AI</span>
+      </div><div class="grid">
+    <!-- Web Dev -->
+    <article class="card" data-tag="web">
+      <div class="card-media" aria-hidden="true"></div>
+      <div class="card-body">
+        <h3>Web Development for Startups & Creators</h3>
+        <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
+        <a href="#project">Explore this service →</a>
+      </div>
+    </article>
+    <!-- Content -->
+    <article class="card" data-tag="content">
+      <div class="card-media" aria-hidden="true"></div>
+      <div class="card-body">
+        <h3>Content & Copywriting that Drives Traffic</h3>
+        <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
+        <a href="#project">Explore this service →</a>
+      </div>
+    </article>
+    <!-- SEO -->
+    <article class="card" data-tag="seo">
+      <div class="card-media" aria-hidden="true"></div>
+      <div class="card-body">
+        <h3>Technical SEO Services</h3>
+        <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
+        <a href="#project">Explore this service →</a>
+      </div>
+    </article>
+    <!-- Discord -->
+    <article class="card" data-tag="discord">
+      <div class="card-media" aria-hidden="true"></div>
+      <div class="card-body">
+        <h3>Custom Discord Server Builds <small style="color:#6b7280; font-weight:600;">(secondary offer)</small></h3>
+        <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
+        <a href="#project">Explore this service →</a>
+      </div>
+    </article>
+  </div>
+
+  <div style="margin-top: 18px;">
+    <a class="btn" href="#services-all">View All Services →</a>
+  </div>
+</div>
+
+  </section>  <!-- Platform Core -->  <section id="platform">
+    <div class="container">
+      <div class="eyebrow">Platform core</div>
+      <h2 class="h2">The CMX community chat platform is still live — and always evolving.</h2>
+      <p class="lead">We started as a real‑time community chat platform, and it’s still active today, supporting users, testing features, and powering secure online collaboration.</p><div class="features">
+    <div class="feature"><strong>Private and public chatrooms</strong> Flexible spaces for teams, creators, and communities.</div>
+    <div class="feature"><strong>Role‑based permissions & moderation</strong> Keep conversations safe, scoped, and productive.</div>
+    <div class="feature"><strong>AI‑powered chat (Grok, Gemini, GPT)</strong> Research, summarize, and moderate in real time.</div>
+    <div class="feature"><strong>Cross‑server tools & bot support</strong> Images, radio, utilities, and automations.</div>
+    <div class="feature"><strong>Secure access via email verification</strong> Reliability and accountability by default.</div>
+  </div>
+
+  <div class="btn-row" style="margin-top:18px;">
+    <a class="btn btn-primary" href="#chat">Enter the Chat →</a>
+    <a class="btn btn-secondary" href="#platform">Explore the Platform</a>
+  </div>
+</div>
+
+  </section>  <!-- Who We Serve -->  <section id="about">
+    <div class="container">
+      <div class="eyebrow">Who we serve</div>
+      <h2 class="h2">We work with the internet’s next builders.</h2>
+      <ul style="margin:12px 0 0 18px; color: var(--muted); line-height:1.9;">
+        <li>Creators scaling beyond link‑in‑bio tools</li>
+        <li>Startups needing clean infrastructure and fast delivery</li>
+        <li>Communities looking for stable, scalable systems</li>
+        <li>Founders who value copy, design, and real execution</li>
+        <li>Teams replacing duct‑tape workflows with modern infrastructure</li>
+      </ul>
+      <div class="btn-row" style="margin-top:18px;">
+        <a class="btn btn-primary" href="#project">Start a Project →</a>
+      </div>
+    </div>
+  </section>  <!-- Portfolio (Summary) -->  <section id="portfolio">
+    <div class="container">
+      <div class="eyebrow">Portfolio</div>
+      <h2 class="h2">Systems, brands, and platforms we’ve helped shape.</h2>
+      <div class="features">
+        <div class="feature"><strong>CMX Platform Development</strong> Live community hub with AI tools, cross‑server chat, and secure collaboration.</div>
+        <div class="feature"><strong>Cross Chat</strong> Links channels across Discord servers for seamless conversation, serving ~800k users.</div>
+        <div class="feature"><strong>Websites for Clients</strong> Fast, clean, mobile‑first sites tailored to each project’s needs.</div>
+        <div class="feature"><strong>Loraine AI</strong> Always‑on AI assistant for prompts, conversation, and moderation inside CMX.</div>
+      </div>
+      <div class="btn-row" style="margin-top:18px;">
+        <a class="btn" href="#portfolio">View Our Work →</a>
+      </div>
+    </div>
+  </section>  <!-- Why CMX -->  <section id="why">
+    <div class="container">
+      <div class="eyebrow">Why CMX</div>
+      <h2 class="h2">Why teams stick with CMX.</h2>
+      <div class="features">
+        <div class="feature"><strong>Built & tested on our live platform</strong> We ship what we use every day.</div>
+        <div class="feature"><strong>Led and reviewed in‑house</strong> No faceless vendor chain — real accountability.</div>
+        <div class="feature"><strong>Faster than traditional agencies</strong> Write, design, and ship with momentum.</div>
+        <div class="feature"><strong>Human, not a ticket</strong> You’re a build worth remembering.</div>
+      </div>
+      <div class="btn-row" style="margin-top:18px;">
+        <a class="btn btn-primary" href="#project">Book a Strategy Call</a>
+        <a class="btn btn-secondary" href="#project">Start With a Proposal</a>
+      </div>
+    </div>
+  </section>  <!-- CTA Strip -->  <section id="project">
+    <div class="container">
+      <div class="eyebrow">Let’s build</div>
+      <h2 class="h2">If you’re building something real, we’re ready to help.</h2>
+      <p class="lead">We scale systems that already have momentum. We fix the ones that are falling apart. Whether it’s your content, your platform, or your search presence — we’ll clean it up and set it right.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#project">Get a Proposal</a>
+        <a class="btn btn-secondary" href="#project">Start a Project</a>
+      </div>
+    </div>
+  </section>  <footer>
+    <div class="container foot" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+      <div style="display:flex; flex-wrap:wrap; gap:14px;">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#platform">Platform</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#contact">Contact</a>
+        <a href="#terms">Terms</a>
+        <a href="#privacy">Privacy</a>
+      </div>
+      <div>team@cmxchat.com · © 2025 CMX</div>
+    </div>
+  </footer>  <!-- Tiny enhancement: highlight active nav on scroll -->  <script>
+    const sections = [...document.querySelectorAll('main, section')];
+    const links = [...document.querySelectorAll('header nav a')].filter(a => a.getAttribute('href').startsWith('#'));
+    const map = new Map();
+    links.forEach(a => map.set(a.getAttribute('href').slice(1), a));
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = e.target.getAttribute('id') || 'home';
+          links.forEach(l => l.style.opacity = '.9');
+          if (map.get(id)) map.get(id).style.opacity = '1';
+        }
+      });
+    }, { root: null, threshold: .3 });
+    sections.forEach(s => obs.observe(s));
+  </script></body>
 </html>
