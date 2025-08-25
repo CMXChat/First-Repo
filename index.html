@@ -22,19 +22,41 @@
 }
 *{box-sizing:border-box} html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-.topbar{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+
+/* Top bar */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
 .logo{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
 .logo svg{width:18px;height:18px;fill:var(--accent)}
 .top-actions{display:flex;align-items:center;gap:8px}
 .chip{padding:6px 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:var(--panel)}
 .ghost{all:unset;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:999px}
-.shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px)}
+
+/* Layout */
+.shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px);position:relative}
 @media(max-width:1020px){.shell{grid-template-columns:1fr}}
-.side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto}
+
+/* Sidebar (desktop default) */
+.side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto;z-index:25}
 .nav{display:grid;gap:8px}
-.nav button{all:unset;cursor:pointer;padding:10px 12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2)}
+.nav button{all:unset;cursor:pointer;padding:12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2);display:block;text-align:left}
 .nav button.active,.nav button:hover{border-color:var(--accent)}
+
+/* Off-canvas behavior (mobile) */
+.hamburger{display:none}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:24;opacity:0;pointer-events:none;transition:opacity .2s}
+@media(max-width:1020px){
+  .hamburger{display:inline-flex}
+  .side{
+    position:fixed;left:0;top:58px;width:min(86vw,340px);
+    transform:translateX(-110%);transition:transform .22s ease;
+    box-shadow:0 20px 60px rgba(0,0,0,.5)
+  }
+  .side.open{transform:translateX(0)}
+  .backdrop.show{opacity:1;pointer-events:auto}
+}
+
+/* Main */
 .main{padding:14px;overflow:auto}
 .grid{display:grid;gap:14px;grid-template-columns:1fr}
 @media(min-width:1200px){.grid{grid-template-columns:1.2fr 1fr}}
@@ -43,6 +65,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,sy
 .sub{color:var(--muted);font-size:12px;margin-bottom:10px}
 .row{display:grid;grid-template-columns:1fr;gap:10px}
 @media(min-width:640px){.row{grid-template-columns:1fr auto}}
+
+/* Inputs */
 input[type=text],input[type=email],input[type=file],textarea{
   width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none;font-size:15px
 }
@@ -64,11 +88,15 @@ table.meta td,table.meta th{padding:6px 8px;border-bottom:1px dashed var(--line)
 table.meta th{text-align:left;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px}
+
+/* Make anchor scrolls stop below the topbar */
+section{scroll-margin-top:70px}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
+    <button class="ghost hamburger" id="btnSide" aria-label="Open menu">☰</button>
     <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg></div>
     <div>CMX <b>OSINT</b></div>
   </div>
@@ -79,7 +107,7 @@ table.meta th{text-align:left;color:var(--muted)}
 </header>
 
 <div class="shell">
-  <aside class="side">
+  <aside class="side" id="sidebar">
     <nav class="nav">
       <button class="active" onclick="go('emailCard')">Email</button>
       <button onclick="go('userCard')">Username</button>
@@ -91,6 +119,7 @@ table.meta th{text-align:left;color:var(--muted)}
       <button onclick="go('terminalCard')">Terminal</button>
     </nav>
   </aside>
+  <div class="backdrop" id="backdrop"></div>
 
   <main class="main">
     <div class="grid">
@@ -186,11 +215,23 @@ table.meta th{text-align:left;color:var(--muted)}
 </div>
 
 <script>
-/* ---------- Theme / Session ---------- */
+/* ---------- Theme / Session / Mobile menu ---------- */
 const root=document.documentElement;
+const sidebar=document.getElementById('sidebar');
+const backdrop=document.getElementById('backdrop');
 document.getElementById('toggleTheme').onclick=()=>root.classList.toggle('light');
 document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
-function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
+
+const isMobile=()=>window.matchMedia('(max-width:1020px)').matches;
+const closeSide=()=>{sidebar.classList.remove('open');backdrop.classList.remove('show');};
+document.getElementById('btnSide').onclick=()=>{sidebar.classList.add('open');backdrop.classList.add('show');};
+backdrop.addEventListener('click',closeSide);
+window.addEventListener('resize',()=>{ if(!isMobile()) closeSide(); });
+
+function go(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+  if(isMobile()) closeSide();
+}
 
 /* ---------- Helpers ---------- */
 function toast(el,msg,isErr){ el.innerHTML=`<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3000); }
@@ -208,7 +249,7 @@ function providerOf(domain){ const d=(domain||'').toLowerCase();
 const CSS = (n)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const ACCENT = CSS('--accent') || '#1d9bf0'; const ACCENT2 = CSS('--accent2') || '#82c8ff';
 
-/* ---------- Tiny MD5 (for Gravatar) ---------- */
+/* ---------- Tiny MD5 ---------- */
 function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);
 a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);
 a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);
@@ -244,7 +285,7 @@ const outMD5=document.getElementById('outMD5'); const gravBox=document.getElemen
 const mailto=document.getElementById('mailto'); const emailLinks=document.getElementById('emailLinks');
 
 function buildEmailLinks(email,domain){
-  EMAIL_LINKS=[]; const E=sanitize(email), D=sanitize(domain), h=md5(email.toLowerCase());
+  EMAIL_LINKS=[]; const E=sanitize(email), h=md5(email.toLowerCase());
   const groups=[
     ['Breach & Reputation',[
       ['Have I Been Pwned',`https://haveibeenpwned.com/account/${E}`],
@@ -326,7 +367,8 @@ document.getElementById('domainBtn').onclick=async()=>{
     const lines=[['A',get(A).join(', ')||'—'],['AAAA',get(AAAA).join(', ')||'—'],['MX',get(MX).join(' | ')||'—'],['NS',get(NS).join(', ')||'—'],['TXT',get(TXT).map(s=>String(s).replaceAll('"','')).join(' | ')||'—']];
     tbl.innerHTML=lines.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
     const D=encodeURIComponent(d); const groups=[['Surface',[
-      ['crt.sh',`https://crt.sh/?q=${D}`],['urlscan.io',`https://urlscan.io/domain/${D}`],['VirusTotal',`https://www.virustotal.com/gui/domain/${D}`],['BuiltWith',`https://builtwith.com/${D}`]
+      ['crt.sh',`https://crt.sh/?q=${D}`],['urlscan.io',`https://urlscan.io/domain/${D}`],['VirusTotal',`https://www.v
+irustotal.com/gui/domain/${D}`],['BuiltWith',`https://builtwith.com/${D}`]
     ]],['Infra',[
       ['Shodan',`https://www.shodan.io/search?query=${D}`],['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`]
     ]]];
@@ -433,4 +475,3 @@ tEcho('CMX OSINT Console ready. Type "help".');
 </script>
 </body>
 </html>
-```0
