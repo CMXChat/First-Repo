@@ -78,6 +78,8 @@ input[type=text],input[type=email],input[type=file],textarea{
 .links h4{margin:0 0 8px;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
 .disclosure{all:unset;cursor:pointer;font-size:12px;color:var(--muted)}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badges .pill{border-color:var(--line)}
 .terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;max-height:240px;overflow:auto;white-space:pre-wrap}
 .term-input{display:flex;gap:8px;margin-top:8px}
 #map{height:360px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -89,6 +91,7 @@ table.meta th{text-align:left;color:var(--muted)}
 
 section{scroll-margin-top:70px}
 .kbd{border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
+.small{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -168,10 +171,20 @@ section{scroll-margin-top:70px}
       <!-- IP -->
       <section class="card" id="ipCard" aria-labelledby="ipHdr">
         <h3 id="ipHdr">IP Intelligence</h3>
-        <div class="row"><input type="text" id="ip" placeholder="8.8.8.8" inputmode="numeric" autocomplete="off"/><button class="btn" id="ipBtn">Lookup</button></div>
+        <div class="row">
+          <input type="text" id="ip" placeholder="8.8.8.8" inputmode="numeric" autocomplete="off"/>
+          <button class="btn" id="ipBtn">Lookup</button>
+        </div>
+        <div class="small" style="margin-top:6px">
+          Optional proxycheck.io key: <input id="pcKey" type="text" placeholder="API key (optional)" style="max-width:240px;display:inline-block" />
+        </div>
         <div id="ipInfo" class="sub" style="margin-top:8px"></div>
+        <div class="badges" id="ipBadges"></div>
         <div class="links" id="ipLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openIpLinks">Open All</button> <button class="btn mono" id="copyIp">Copy Line</button></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn mono" id="openIpLinks">Open All</button>
+          <button class="btn mono" id="copyIp">Copy Line</button>
+        </div>
       </section>
 
       <!-- TEXT -->
@@ -336,19 +349,27 @@ function buildEmailLinks(email){
       ['Epieos',`https://tools.epieos.com/email.php?email=${E}`],
       ['DeHashed',`https://www.dehashed.com/search?query=${E}`],
       ['IntelX',`https://intelx.io/?s=${E}`],
-      ['EmailRep',`https://emailrep.io/${E}`]
+      ['EmailRep',`https://emailrep.io/${E}`],
+      ['ScamAdviser (search)',`https://www.scamadviser.com/search?search=${E}`]
     ]],
     ['Search / Pastebins',[
       ['Google exact',`https://www.google.com/search?q="%22${E}%22"`],
       ['DuckDuckGo',`https://duckduckgo.com/?q="%22${E}%22"`],
       ['Bing',`https://www.bing.com/search?q="%22${E}%22"`],
-      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`]
+      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
+      ['Pastebin search',`https://pastebin.com/search?q=${E}`],
+      ['StackOverflow users',`https://stackoverflow.com/users/filter?search=${E}`]
     ]],
     ['Keys / Gravatar',[
       ['OpenPGP',`https://keys.openpgp.org/search?q=${E}`],
       ['Ubuntu Keyserver',`https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
       ['Gravatar image',`https://www.gravatar.com/avatar/${h}?s=400`],
       ['Gravatar JSON',`https://www.gravatar.com/${h}.json`]
+    ]],
+    ['Contact Discovery',[
+      ['Hunter (search)',`https://hunter.io/email-finder/${E}`],
+      ['VoilaNorbert',`https://www.voilanorbert.com/verify/${E}`],
+      ['EmailHippo',`https://tools.emailhippo.com/`]
     ]]
   ];
   addLinkGroups(emailLinks, groups);
@@ -383,14 +404,26 @@ document.getElementById('openEmailLinks').onclick=()=>{
 let USER_LINKS=[]; const userLinks=document.getElementById('userLinks');
 function buildUserLinks(handle){
   USER_LINKS=[]; const u=sanitize(handle);
-  const groups=[['Profiles',[
-    ['GitHub',`https://github.com/${u}`],['GitLab',`https://gitlab.com/${u}`],
-    ['Reddit',`https://www.reddit.com/user/${u}`],['X',`https://twitter.com/${u}`],
-    ['Instagram',`https://www.instagram.com/${u}/`],['TikTok',`https://www.tiktok.com/@${u}`],
-    ['YouTube',`https://www.youtube.com/@${u}`],['Keybase',`https://keybase.io/${u}`]
-  ]],['Search',[
-    ['Google',`https://www.google.com/search?q=${u}`],['DuckDuckGo',`https://duckduckgo.com/?q=${u}`]
-  ]]];
+  const groups=[
+    ['Profiles',[
+      ['GitHub',`https://github.com/${u}`],['GitLab',`https://gitlab.com/${u}`],
+      ['Reddit',`https://www.reddit.com/user/${u}`],['X',`https://twitter.com/${u}`],
+      ['Instagram',`https://www.instagram.com/${u}/`],['TikTok',`https://www.tiktok.com/@${u}`],
+      ['YouTube',`https://www.youtube.com/@${u}`],['Keybase',`https://keybase.io/${u}`],
+      ['Steam',`https://steamcommunity.com/id/${u}`]
+    ]],
+    ['Discovery',[
+      ['WhatsMyName',`https://whatsmyname.app/`],
+      ['Namechk',`https://namechk.com/`],
+      ['Namecheckr',`https://www.namecheckr.com/`]
+    ]],
+    ['Search',[
+      ['Google',`https://www.google.com/search?q=${u}`],
+      ['DuckDuckGo',`https://duckduckgo.com/?q=${u}`],
+      ['Bing',`https://www.bing.com/search?q=${u}`],
+      ['Github code search',`https://github.com/search?q=${u}`]
+    ]]
+  ];
   addLinkGroups(userLinks, groups);
   groups.forEach(([_,items])=>items.forEach(([__,url])=>USER_LINKS.push(url)));
 }
@@ -413,11 +446,29 @@ document.getElementById('domainBtn').onclick=async()=>{
     dnsTable.innerHTML=rows.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
 
     const D=encodeURIComponent(d);
-    const groups=[['Surface',[
-      ['crt.sh',`https://crt.sh/?q=${D}`],['urlscan.io',`https://urlscan.io/domain/${D}`],['VirusTotal',`https://www.virustotal.com/gui/domain/${D}`],['BuiltWith',`https://builtwith.com/${D}`]
-    ]],['Infra',[
-      ['Shodan',`https://www.shodan.io/search?query=${D}`],['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`]
-    ]]];
+    const groups=[
+      ['Surface',[
+        ['crt.sh',`https://crt.sh/?q=${D}`],
+        ['urlscan.io',`https://urlscan.io/domain/${D}`],
+        ['VirusTotal',`https://www.virustotal.com/gui/domain/${D}`],
+        ['BuiltWith',`https://builtwith.com/${D}`],
+        ['SecurityTrails',`https://securitytrails.com/domain/${D}`],
+        ['Wayback (latest)',`https://web.archive.org/web/*/${D}`]
+      ]],
+      ['Infra / Ownership',[
+        ['RDAP',`https://rdap.org/domain/${D}`],
+        ['DNSlytics',`https://dnslytics.com/domain/${D}`],
+        ['DNSTwist (online)',`https://dnstwister.report/search?domain=${D}`],
+        ['DNSViz',`https://dnsviz.net/d/${D}/dnssec/`],
+        ['MXToolbox',`https://mxtoolbox.com/SuperTool.aspx?action=mx%3a${D}`]
+      ]],
+      ['Intel',[
+        ['Shodan',`https://www.shodan.io/search?query=${D}`],
+        ['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`],
+        ['RiskIQ Community',`https://community.riskiq.com/search/${D}`],
+        ['ThreatCrowd',`https://www.threatcrowd.org/domain.php?domain=${D}`]
+      ]]
+    ];
     addLinkGroups(domainLinks, groups); groups.forEach(([_,items])=>items.forEach(([__,url])=>DOMAIN_LINKS.push(url)));
 
     localStorage.setItem('cmx_last_domain', d);
@@ -427,23 +478,71 @@ document.getElementById('domainBtn').onclick=async()=>{
 document.getElementById('openDomainLinks').onclick=()=>{ if(DOMAIN_LINKS.length && confirm(`Open ${DOMAIN_LINKS.length} links?`)) DOMAIN_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
 document.getElementById('copyDns').onclick=()=>{ const txt=[...dnsTable.querySelectorAll('tr')].map(tr=>[...tr.children].map(td=>td.textContent).join('\t')).join('\n'); if(txt){ navigator.clipboard.writeText(txt); toast(dnsMsg,'DNS table copied.'); }};
 
-/* ---------- IP (ipapi.co) ---------- */
-let IP_LINKS=[]; const ipInfo=document.getElementById('ipInfo'); const ipLinks=document.getElementById('ipLinks');
+/* ---------- IP (ipapi.co + proxycheck.io) ---------- */
+let IP_LINKS=[]; const ipInfo=document.getElementById('ipInfo'); const ipLinks=document.getElementById('ipLinks'); const ipBadges=document.getElementById('ipBadges');
 document.getElementById('ipBtn').onclick=async()=>{
-  const ip=document.getElementById('ip').value.trim();
+  const ip=document.getElementById('ip').value.trim(); const key=(document.getElementById('pcKey').value||'').trim();
   if(!ip){ toast(ipInfo,'Enter an IP.'); return; }
   if(!isValidIPv4(ip)){ toast(ipInfo,'Invalid IPv4.',true); return; }
-  ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; IP_LINKS=[];
+  ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; ipBadges.innerHTML=''; IP_LINKS=[];
+  let geo={}; let vpnStatus='unknown', vpnReason='';
+
   try{
-    const d=await jfetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
-    ipInfo.innerHTML=`IP <b>${ip}</b> • ${d.city||'—'}, ${d.region||''} ${d.country_name||d.country||''} • ASN ${d.asn||'—'} • Org ${d.org||d.organization||'—'}`;
-    if(d.latitude!=null && d.longitude!=null){ map.flyTo([d.latitude,d.longitude], 6, {duration:0.6}); pulse(d.latitude,d.longitude,`${d.city||''} ${d.country||''}`.trim()); }
+    geo=await jfetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
+    ipInfo.innerHTML=`IP <b>${ip}</b> • ${geo.city||'—'}, ${geo.region||''} ${geo.country_name||geo.country||''} • ASN ${geo.asn||'—'} • Org ${geo.org||geo.organization||'—'}`;
+    if(geo.latitude!=null && geo.longitude!=null){ map.flyTo([geo.latitude,geo.longitude], 6, {duration:0.6}); pulse(geo.latitude,geo.longitude,`${geo.city||''} ${geo.country||''}`.trim()); }
     localStorage.setItem('cmx_last_ip', ip);
-  }catch(e){ ipInfo.textContent='Lookup failed or blocked — use external tools.'; }
-  const s=encodeURIComponent(ip); const groups=[['Reputation',[
-    ['Shodan',`https://www.shodan.io/host/${s}`],['GreyNoise',`https://viz.greynoise.io/ip/${s}`],['AbuseIPDB',`https://www.abuseipdb.com/check/${s}`],['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`]
-  ]]];
-  addLinkGroups(ipLinks, groups); groups.forEach(([_,items])=>items.forEach(([__,url])=>IP_LINKS.push(url)));
+  }catch(e){ ipInfo.textContent='Geo lookup failed or blocked — external links below.'; }
+
+  /* Live VPN/Proxy check (proxycheck.io) */
+  try{
+    const params=new URLSearchParams({vpn:'1',asn:'1'}); if(key) params.set('key',key);
+    const pc=await jfetch(`https://proxycheck.io/v2/${encodeURIComponent(ip)}?${params.toString()}`, {}, 7000);
+    const node=pc && (pc[ip]||pc.status==='denied'?null:pc[ip]); // ensure structure
+    if(pc && pc.status==='ok' && pc[ip]){
+      const d=pc[ip];
+      vpnStatus = (d.proxy==='yes' || d.vpn==='yes') ? 'yes' : (d.proxy==='no' && d.vpn==='no' ? 'no' : 'unknown');
+      vpnReason = d.type ? d.type : '';
+    }
+  }catch(e){
+    // ignore; CORS may block
+  }
+
+  // Badges
+  const pills=[];
+  if(vpnStatus==='yes') pills.push(`<span class="pill bad">VPN/Proxy: YES${vpnReason?` (${vpnReason})`:''}</span>`);
+  else if(vpnStatus==='no') pills.push(`<span class="pill ok">VPN/Proxy: NO</span>`);
+  else pills.push(`<span class="pill unk">VPN/Proxy: unknown</span>`);
+  if(geo.asn){ const asn=(String(geo.asn).replace(/^AS/i,'AS')); pills.push(`<a class="pill" href="https://bgp.he.net/${asn}" target="_blank" rel="noopener">ASN: ${asn}</a>`); }
+  pills.push(`<a class="pill" href="https://rdap.org/ip/${encodeURIComponent(ip)}" target="_blank" rel="noopener">RDAP</a>`);
+  pills.push(`<a class="pill" href="https://stat.ripe.net/${encodeURIComponent(ip)}" target="_blank" rel="noopener">RIPEstat</a>`);
+  ipBadges.innerHTML=pills.join('');
+
+  // External links
+  const s=encodeURIComponent(ip);
+  const groups=[
+    ['Reputation',[
+      ['Shodan',`https://www.shodan.io/host/${s}`],
+      ['GreyNoise',`https://viz.greynoise.io/ip/${s}`],
+      ['AbuseIPDB',`https://www.abuseipdb.com/check/${s}`],
+      ['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`],
+      ['IPQS (IP check)',`https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/${s}`],
+      ['proxycheck.io (web)',`https://proxycheck.io/threats/${s}`]
+    ]],
+    ['Routing / Whois',[
+      ['BGP.HE',`https://bgp.he.net/ip/${s}`],
+      ['PeeringDB (search)',`https://www.peeringdb.com/search?q=${s}`],
+      ['ARIN Whois (NA)',`https://search.arin.net/rdap/?query=${s}`],
+      ['APNIC Whois',`https://wq.apnic.net/static/search.html?query=${s}`]
+    ]],
+    ['Geo / Context',[
+      ['ipinfo.io',`https://ipinfo.io/${s}`],
+      ['IPWHOIS (web)',`https://ipwhois.io/ip/${s}`],
+      ['ipapi (web)',`https://ipapi.co/${s}`]
+    ]]
+  ];
+  addLinkGroups(ipLinks, groups);
+  groups.forEach(([_,items])=>items.forEach(([__,url])=>IP_LINKS.push(url)));
 };
 document.getElementById('openIpLinks').onclick=()=>{ if(IP_LINKS.length && confirm(`Open ${IP_LINKS.length} links?`)) IP_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
 document.getElementById('copyIp').onclick=()=>{ const t=ipInfo.textContent.trim(); if(t){ navigator.clipboard.writeText(t); toast(ipInfo,'Copied.'); }};
@@ -496,7 +595,7 @@ function tHelp(){ tEcho(`Commands:
  analyze <email>         email intel
  username <handle>       username links
  domain <name>           DNS + links
- ip <addr>               IP intel + links
+ ip <addr>               IP intel + links (+proxycheck)
  extract                 open Text Extractor
  clear                   clear terminal`); }
 function run(cmdRaw){
