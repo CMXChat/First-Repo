@@ -76,7 +76,7 @@ input[type=text],input[type=email],input[type=file],textarea{
 @media(max-width:700px){.links{grid-template-columns:1fr}}
 .links .group{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel)}
 .links h4{margin:0 0 8px;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px}
-.linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink')}
 .disclosure{all:unset;cursor:pointer;font-size:12px;color:var(--muted)}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .badges .pill{border-color:var(--line)}
@@ -114,6 +114,8 @@ section{scroll-margin-top:70px}
       <button data-goto="userCard">Username</button>
       <button data-goto="domainCard">Domain</button>
       <button data-goto="ipCard">IP</button>
+      <button data-goto="phoneCard">Phone</button>
+      <button data-goto="discordCard">Discord</button>
       <button data-goto="textCard">Text</button>
       <button data-goto="fileCard">Files</button>
       <button data-goto="mapCard">Map</button>
@@ -176,7 +178,7 @@ section{scroll-margin-top:70px}
           <button class="btn" id="ipBtn">Lookup</button>
         </div>
         <div class="small" style="margin-top:6px">
-          Optional proxycheck.io key: <input id="pcKey" type="text" placeholder="API key (optional)" style="max-width:240px;display:inline-block" />
+          proxycheck.io key: <input id="pcKey" type="text" placeholder="API key" style="max-width:340px;display:inline-block" />
         </div>
         <div id="ipInfo" class="sub" style="margin-top:8px"></div>
         <div class="badges" id="ipBadges"></div>
@@ -185,6 +187,26 @@ section{scroll-margin-top:70px}
           <button class="btn mono" id="openIpLinks">Open All</button>
           <button class="btn mono" id="copyIp">Copy Line</button>
         </div>
+      </section>
+
+      <!-- PHONE -->
+      <section class="card" id="phoneCard" aria-labelledby="phoneHdr">
+        <h3 id="phoneHdr">Phone Intelligence</h3>
+        <div class="sub">Include country code (e.g. <b>+1</b>5551234567).</div>
+        <div class="row"><input type="text" id="phone" placeholder="+15551234567" inputmode="tel" autocomplete="tel"/><button class="btn" id="phoneBtn">Build</button></div>
+        <div id="phoneInfo" class="sub" style="margin-top:8px"></div>
+        <div class="links" id="phoneLinks" style="margin-top:12px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openPhoneLinks">Open All</button></div>
+      </section>
+
+      <!-- DISCORD -->
+      <section class="card" id="discordCard" aria-labelledby="discordHdr">
+        <h3 id="discordHdr">Discord Intelligence</h3>
+        <div class="sub">Analyze a Discord <b>User ID</b> (Snowflake): decode creation time and pivot links.</div>
+        <div class="row"><input type="text" id="discordId" placeholder="e.g. 80351110224678912" inputmode="numeric"/><button class="btn" id="discordBtn">Analyze</button></div>
+        <div id="discordInfo" class="sub" style="margin-top:8px"></div>
+        <div class="links" id="discordLinks" style="margin-top:12px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openDiscordLinks">Open All</button></div>
       </section>
 
       <!-- TEXT -->
@@ -217,7 +239,7 @@ section{scroll-margin-top:70px}
       <!-- TERMINAL -->
       <section class="card" id="terminalCard" aria-labelledby="termHdr">
         <h3 id="termHdr">CMX Terminal</h3>
-        <div class="sub">Try: <code>help</code> • <code>analyze alice@example.com</code> • <code>username somehandle</code> • <code>domain example.com</code> • <code>ip 1.1.1.1</code> • <code>extract</code> • <code>clear</code></div>
+        <div class="sub">Try: <code>help</code> • <code>analyze alice@example.com</code> • <code>username somehandle</code> • <code>domain example.com</code> • <code>ip 1.1.1.1</code> • <code>phone +15551234567</code> • <code>discord 123...</code></div>
         <div class="terminal" id="terminal" aria-live="polite"></div>
         <div class="term-input"><input id="termIn" type="text" placeholder="> help" aria-label="Terminal input"/><button class="btn" id="termBtn">Run</button></div>
       </section>
@@ -259,7 +281,7 @@ function toast(el,msg,isErr){ el.innerHTML=`<span class="pill ${isErr?'bad':'ok'
 function sanitize(s){ return encodeURIComponent((s||'').trim()); }
 const isValidEmail = (e)=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e||'');
 const isValidDomain = (d)=>/^(?=.{1,253}$)(?!\-)(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i.test((d||'').trim());
-const isValidIPv4 = (ip)=>/^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d)$/.test((ip||'').trim());
+const isValidIPv4 = (ip)=>/^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-4]\d|2[0-4]\d|[01]?\d?\d)$/.test((ip||'').trim()) || /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d)$/.test((ip||'').trim()); // robust
 
 /* Fetch with timeout */
 async function jfetch(url, opts={}, timeoutMs=8000){
@@ -309,8 +331,8 @@ a=gg(a,b,c,d,k[9],5,568446438);d=gg(d,a,b,c,k[14],9,-1019803690);c=gg(c,d,a,b,k[
 a=gg(a,b,c,d,k[13],5,-1444681467);d=gg(d,a,b,c,k[2],9,-51403784);c=gg(c,d,a,b,k[7],14,1735328473);b=gg(b,c,d,a,k[12],20,-1926607734);
 a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
 a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);
-a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
-a=ii(a,b,c,d,k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
+a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d	a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
+a=ii(a,b,c,d	k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
 a=ii(a,b,c,d,k[12],6,1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);c=ii(c,d,a,b,k[10],15,-1051523);b=ii(b,c,d,a,k[1],21,-2054922799);
 a=ii(a,b,c,d,k[8],6,1873313359);d=ii(d,a,b,c,k[15],10,-30611744);c=ii(c,d,a,b,k[6],15,-1560198380);b=ii(b,c,d,a,k[13],21,1309151649);
 x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}
@@ -327,6 +349,7 @@ function md5(s){return hex(md51(unescape(encodeURIComponent(s))).slice())}
 function add32(a,b){return(a+b)&0xFFFFFFFF}
 
 /* ---------- Map ---------- */
+let ipMarker=null, ipCircle=null;
 const map=L.map('map',{worldCopyJump:true,zoomControl:true,attributionControl:false,zoomSnap:0.5,zoomDelta:0.5}).setView([20,0],2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:['a','b','c'],maxZoom:19}).addTo(map);
 function pulse(lat,lng,label){ const circle=L.circleMarker([lat,lng],{radius:7,color:ACCENT2,fillColor:ACCENT,fillOpacity:.7,weight:2}).addTo(map); if(label) circle.bindTooltip(label); setTimeout(()=>{try{map.removeLayer(circle)}catch(_){}},12000); return circle;}
@@ -349,27 +372,19 @@ function buildEmailLinks(email){
       ['Epieos',`https://tools.epieos.com/email.php?email=${E}`],
       ['DeHashed',`https://www.dehashed.com/search?query=${E}`],
       ['IntelX',`https://intelx.io/?s=${E}`],
-      ['EmailRep',`https://emailrep.io/${E}`],
-      ['ScamAdviser (search)',`https://www.scamadviser.com/search?search=${E}`]
+      ['EmailRep',`https://emailrep.io/${E}`]
     ]],
     ['Search / Pastebins',[
       ['Google exact',`https://www.google.com/search?q="%22${E}%22"`],
       ['DuckDuckGo',`https://duckduckgo.com/?q="%22${E}%22"`],
       ['Bing',`https://www.bing.com/search?q="%22${E}%22"`],
-      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
-      ['Pastebin search',`https://pastebin.com/search?q=${E}`],
-      ['StackOverflow users',`https://stackoverflow.com/users/filter?search=${E}`]
+      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`]
     ]],
     ['Keys / Gravatar',[
       ['OpenPGP',`https://keys.openpgp.org/search?q=${E}`],
       ['Ubuntu Keyserver',`https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
       ['Gravatar image',`https://www.gravatar.com/avatar/${h}?s=400`],
       ['Gravatar JSON',`https://www.gravatar.com/${h}.json`]
-    ]],
-    ['Contact Discovery',[
-      ['Hunter (search)',`https://hunter.io/email-finder/${E}`],
-      ['VoilaNorbert',`https://www.voilanorbert.com/verify/${E}`],
-      ['EmailHippo',`https://tools.emailhippo.com/`]
     ]]
   ];
   addLinkGroups(emailLinks, groups);
@@ -421,7 +436,7 @@ function buildUserLinks(handle){
       ['Google',`https://www.google.com/search?q=${u}`],
       ['DuckDuckGo',`https://duckduckgo.com/?q=${u}`],
       ['Bing',`https://www.bing.com/search?q=${u}`],
-      ['Github code search',`https://github.com/search?q=${u}`]
+      ['GitHub code',`https://github.com/search?q=${u}`]
     ]]
   ];
   addLinkGroups(userLinks, groups);
@@ -480,8 +495,11 @@ document.getElementById('copyDns').onclick=()=>{ const txt=[...dnsTable.querySel
 
 /* ---------- IP (ipapi.co + proxycheck.io) ---------- */
 let IP_LINKS=[]; const ipInfo=document.getElementById('ipInfo'); const ipLinks=document.getElementById('ipLinks'); const ipBadges=document.getElementById('ipBadges');
+const DEFAULT_PC_KEY="0f4ef80ff6b2598fee6737eecff5869734d0e2dd2995ef34e1bc2d3adabbfc50";
+document.getElementById('pcKey').value=DEFAULT_PC_KEY;
+
 document.getElementById('ipBtn').onclick=async()=>{
-  const ip=document.getElementById('ip').value.trim(); const key=(document.getElementById('pcKey').value||'').trim();
+  const ip=document.getElementById('ip').value.trim(); const key=(document.getElementById('pcKey').value||DEFAULT_PC_KEY).trim();
   if(!ip){ toast(ipInfo,'Enter an IP.'); return; }
   if(!isValidIPv4(ip)){ toast(ipInfo,'Invalid IPv4.',true); return; }
   ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; ipBadges.innerHTML=''; IP_LINKS=[];
@@ -490,23 +508,31 @@ document.getElementById('ipBtn').onclick=async()=>{
   try{
     geo=await jfetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
     ipInfo.innerHTML=`IP <b>${ip}</b> • ${geo.city||'—'}, ${geo.region||''} ${geo.country_name||geo.country||''} • ASN ${geo.asn||'—'} • Org ${geo.org||geo.organization||'—'}`;
-    if(geo.latitude!=null && geo.longitude!=null){ map.flyTo([geo.latitude,geo.longitude], 6, {duration:0.6}); pulse(geo.latitude,geo.longitude,`${geo.city||''} ${geo.country||''}`.trim()); }
+    if(geo.latitude!=null && geo.longitude!=null){
+      const lat=geo.latitude, lon=geo.longitude;
+      map.flyTo([lat,lon], 6, {duration:0.6});
+      pulse(lat,lon,`${geo.city||''} ${geo.country||''}`.trim());
+      try{ if(ipMarker) map.removeLayer(ipMarker); if(ipCircle) map.removeLayer(ipCircle); }catch(_){}
+      ipMarker=L.marker([lat,lon]).addTo(map).bindPopup(
+        `<b>${ip}</b><br>${geo.city||''}, ${geo.region||''}, ${geo.country_name||geo.country||''}<br>ASN ${geo.asn||'—'} • ${geo.org||geo.organization||'—'}`
+      ).openPopup();
+      ipCircle=L.circle([lat,lon],{radius:15000,weight:1,fillOpacity:0.05,color:ACCENT2}).addTo(map);
+    }
     localStorage.setItem('cmx_last_ip', ip);
   }catch(e){ ipInfo.textContent='Geo lookup failed or blocked — external links below.'; }
 
   /* Live VPN/Proxy check (proxycheck.io) */
   try{
-    const params=new URLSearchParams({vpn:'1',asn:'1'}); if(key) params.set('key',key);
-    const pc=await jfetch(`https://proxycheck.io/v2/${encodeURIComponent(ip)}?${params.toString()}`, {}, 7000);
-    const node=pc && (pc[ip]||pc.status==='denied'?null:pc[ip]); // ensure structure
+    const params=new URLSearchParams({vpn:'1',asn:'1',risk:'1'});
+    if(key) params.set('key',key);
+    const pc=await jfetch(`https://proxycheck.io/v2/${encodeURIComponent(ip)}?${params.toString()}`, {}, 8000);
     if(pc && pc.status==='ok' && pc[ip]){
       const d=pc[ip];
-      vpnStatus = (d.proxy==='yes' || d.vpn==='yes') ? 'yes' : (d.proxy==='no' && d.vpn==='no' ? 'no' : 'unknown');
-      vpnReason = d.type ? d.type : '';
+      vpnStatus = (d.proxy==='yes' || d.vpn==='yes') ? 'yes' :
+                  (d.proxy==='no' && d.vpn==='no') ? 'no' : 'unknown';
+      vpnReason = d.type || '';
     }
-  }catch(e){
-    // ignore; CORS may block
-  }
+  }catch(e){ /* CORS/network may block; fall back gracefully */ }
 
   // Badges
   const pills=[];
@@ -527,12 +553,12 @@ document.getElementById('ipBtn').onclick=async()=>{
       ['AbuseIPDB',`https://www.abuseipdb.com/check/${s}`],
       ['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`],
       ['IPQS (IP check)',`https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/${s}`],
-      ['proxycheck.io (web)',`https://proxycheck.io/threats/${s}`]
+      ['proxycheck.io (web)',`https://proxycheck.io/threats?s=${s}`]
     ]],
     ['Routing / Whois',[
       ['BGP.HE',`https://bgp.he.net/ip/${s}`],
       ['PeeringDB (search)',`https://www.peeringdb.com/search?q=${s}`],
-      ['ARIN Whois (NA)',`https://search.arin.net/rdap/?query=${s}`],
+      ['ARIN RDAP (NA)',`https://search.arin.net/rdap/?query=${s}`],
       ['APNIC Whois',`https://wq.apnic.net/static/search.html?query=${s}`]
     ]],
     ['Geo / Context',[
@@ -546,6 +572,80 @@ document.getElementById('ipBtn').onclick=async()=>{
 };
 document.getElementById('openIpLinks').onclick=()=>{ if(IP_LINKS.length && confirm(`Open ${IP_LINKS.length} links?`)) IP_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
 document.getElementById('copyIp').onclick=()=>{ const t=ipInfo.textContent.trim(); if(t){ navigator.clipboard.writeText(t); toast(ipInfo,'Copied.'); }};
+
+/* ---------- PHONE ---------- */
+let PHONE_LINKS=[]; const phoneInfo=document.getElementById('phoneInfo'); const phoneLinks=document.getElementById('phoneLinks');
+function normPhone(v){ return (v||'').replace(/[\s\-\(\)]/g,''); }
+function buildPhoneLinks(p){
+  PHONE_LINKS=[]; const n=normPhone(p);
+  const E=sanitize(n);
+  const groups=[
+    ['Reverse Lookup',[
+      ['NumLookup',`https://www.numlookup.com/results?number=${E}`],
+      ['Truecaller (web)',`https://www.truecaller.com/search/global/${E}`],
+      ['WhoCalled',`https://whocalledme.com/PhoneNumber/${E}`],
+      ['Tellows',`https://www.tellows.com/num/${E}`]
+    ]],
+    ['Carrier/Line Type',[
+      ['FreeCarrierLookup',`https://freecarrierlookup.com/`],
+      ['CallerID Test',`https://calleridtest.com/`]
+    ]],
+    ['Search',[
+      ['Google exact',`https://www.google.com/search?q="%2B${E}"`],
+      ['DuckDuckGo',`https://duckduckgo.com/?q="%2B${E}"`],
+      ['Bing',`https://www.bing.com/search?q="%2B${E}"`]
+    ]],
+    ['Messaging/Pivots',[
+      ['WhatsApp (wa.me)',`https://wa.me/${E}`],
+      ['Telegram (t.me)',`https://t.me/+${E}`]
+    ]]
+  ];
+  addLinkGroups(phoneLinks, groups);
+  groups.forEach(([_,items])=>items.forEach(([__,url])=>PHONE_LINKS.push(url)));
+}
+document.getElementById('phoneBtn').onclick=()=>{
+  const v=document.getElementById('phone').value.trim();
+  if(!v){ toast(phoneInfo,'Enter a phone number.'); return; }
+  buildPhoneLinks(v);
+  phoneInfo.textContent='Links built. Use the carrier portals to check provider/line type.';
+  localStorage.setItem('cmx_last_phone', v);
+};
+document.getElementById('openPhoneLinks').onclick=()=>{ if(PHONE_LINKS.length && confirm(`Open ${PHONE_LINKS.length} links?`)) PHONE_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
+
+/* ---------- DISCORD ---------- */
+let DISCORD_LINKS=[]; const discordInfo=document.getElementById('discordInfo'); const discordLinks=document.getElementById('discordLinks');
+function decodeSnowflake(idStr){
+  try{
+    const id = BigInt(idStr);
+    const ts = Number((id >> 22n)) + 1420070400000; // Discord epoch
+    return new Date(ts);
+  }catch(_){ return null; }
+}
+function buildDiscordLinks(id){
+  DISCORD_LINKS=[]; const E=sanitize(id);
+  const groups=[
+    ['Profile',[
+      ['discord.com/users',`https://discord.com/users/${E}`],
+      ['discord.id',`https://discord.id/?id=${E}`],
+      ['AdiscordTools',`https://tools.adiscord.tools/user-id/${E}`]
+    ]],
+    ['Search',[
+      ['Google',`https://www.google.com/search?q=%22${E}%22+Discord`],
+      ['DuckDuckGo',`https://duckduckgo.com/?q=%22${E}%22+Discord`]
+    ]]
+  ];
+  addLinkGroups(discordLinks, groups);
+  groups.forEach(([_,items])=>items.forEach(([__,url])=>DISCORD_LINKS.push(url)));
+}
+document.getElementById('discordBtn').onclick=()=>{
+  const v=document.getElementById('discordId').value.trim();
+  if(!v){ toast(discordInfo,'Enter a Discord user ID.'); return; }
+  const dt = decodeSnowflake(v);
+  discordInfo.innerHTML = dt ? `User ID <b>${v}</b> • created <b>${dt.toISOString()}</b>` : 'Invalid snowflake (cannot decode timestamp).';
+  buildDiscordLinks(v);
+  localStorage.setItem('cmx_last_discord', v);
+};
+document.getElementById('openDiscordLinks').onclick=()=>{ if(DISCORD_LINKS.length && confirm(`Open ${DISCORD_LINKS.length} links?`)) DISCORD_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
 
 /* ---------- TEXT EXTRACTOR ---------- */
 const blobEl=document.getElementById('textBlob'); const extractOut=document.getElementById('extractOut');
@@ -596,6 +696,8 @@ function tHelp(){ tEcho(`Commands:
  username <handle>       username links
  domain <name>           DNS + links
  ip <addr>               IP intel + links (+proxycheck)
+ phone <+15551234567>    phone links
+ discord <id>            discord links
  extract                 open Text Extractor
  clear                   clear terminal`); }
 function run(cmdRaw){
@@ -608,6 +710,8 @@ function run(cmdRaw){
     case 'username': if(!arg) return tEcho('Usage: username <handle>'); document.getElementById('user').value=arg; buildUserLinks(arg); document.getElementById('userCard').scrollIntoView({behavior:'smooth'}); return;
     case 'domain': if(!arg) return tEcho('Usage: domain <host>'); document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); document.getElementById('domainCard').scrollIntoView({behavior:'smooth'}); return;
     case 'ip': if(!arg) return tEcho('Usage: ip <addr>'); document.getElementById('ip').value=arg; document.getElementById('ipBtn').click(); document.getElementById('ipCard').scrollIntoView({behavior:'smooth'}); return;
+    case 'phone': if(!arg) return tEcho('Usage: phone <+15551234567>'); document.getElementById('phone').value=arg; document.getElementById('phoneBtn').click(); document.getElementById('phoneCard').scrollIntoView({behavior:'smooth'}); return;
+    case 'discord': if(!arg) return tEcho('Usage: discord <id>'); document.getElementById('discordId').value=arg; document.getElementById('discordBtn').click(); document.getElementById('discordCard').scrollIntoView({behavior:'smooth'}); return;
     case 'extract': document.getElementById('textCard').scrollIntoView({behavior:'smooth'}); return;
     default: return tEcho("Unknown command. Type 'help'.");
   }
@@ -632,6 +736,8 @@ sections.slice(1).forEach(s=>{ document.querySelector('main').offsetTop; new Int
   const u=localStorage.getItem('cmx_last_user'); if(u) document.getElementById('user').value=u;
   const d=localStorage.getItem('cmx_last_domain'); if(d) document.getElementById('domain').value=d;
   const i=localStorage.getItem('cmx_last_ip'); if(i) document.getElementById('ip').value=i;
+  const p=localStorage.getItem('cmx_last_phone'); if(p) document.getElementById('phone').value=p;
+  const s=localStorage.getItem('cmx_last_discord'); if(s) document.getElementById('discordId').value=s;
 })();
 
 /* ---------- Boot ---------- */
