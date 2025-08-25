@@ -19,8 +19,6 @@
 }
 *{box-sizing:border-box} html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-
-/* Top bar */
 .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800}
 .logo{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
@@ -29,31 +27,23 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,sy
 .chip{padding:6px 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:var(--panel)}
 .ghost{all:unset;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:999px}
 
-/* Layout */
 .shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px);position:relative}
 @media(max-width:1020px){.shell{grid-template-columns:1fr}}
 
-/* Sidebar */
 .side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto;z-index:25}
 .nav{display:grid;gap:8px}
 .nav button{all:unset;cursor:pointer;padding:12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2);display:block;text-align:left}
 .nav button.active,.nav button:hover{border-color:var(--accent)}
 
-/* Mobile off-canvas */
 .hamburger{display:none}
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:24;opacity:0;pointer-events:none;transition:opacity .2s}
 @media(max-width:1020px){
   .hamburger{display:inline-flex}
-  .side{
-    position:fixed;left:0;top:58px;width:min(86vw,340px);
-    transform:translateX(-110%);transition:transform .22s ease;
-    box-shadow:0 20px 60px rgba(0,0,0,.5)
-  }
+  .side{position:fixed;left:0;top:58px;width:min(86vw,340px);transform:translateX(-110%);transition:transform .22s ease;box-shadow:0 20px 60px rgba(0,0,0,.5)}
   .side.open{transform:translateX(0)}
   .backdrop.show{opacity:1;pointer-events:auto}
 }
 
-/* Main */
 .main{padding:14px;overflow:auto}
 .grid{display:grid;gap:14px;grid-template-columns:1fr}
 @media(min-width:1200px){.grid{grid-template-columns:1.15fr 1fr}}
@@ -63,7 +53,6 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,sy
 .row{display:grid;grid-template-columns:1fr;gap:10px}
 @media(min-width:640px){.row{grid-template-columns:1fr auto}}
 
-/* Inputs */
 input[type=text],input[type=email],input[type=file],textarea{
   width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none;font-size:15px
 }
@@ -88,10 +77,9 @@ table.meta td,table.meta th{padding:6px 8px;border-bottom:1px dashed var(--line)
 table.meta th{text-align:left;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px}
-
-section{scroll-margin-top:70px}
 .kbd{border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
 .small{font-size:12px;color:var(--muted)}
+.preview{width:120px;height:120px;border:1px solid var(--line);border-radius:12px;object-fit:cover;background:#111}
 </style>
 </head>
 <body>
@@ -114,9 +102,9 @@ section{scroll-margin-top:70px}
       <button data-goto="userCard">Username</button>
       <button data-goto="domainCard">Domain</button>
       <button data-goto="ipCard">IP</button>
+      <button data-goto="mapCard">Map</button>
       <button data-goto="textCard">Text</button>
       <button data-goto="fileCard">Files</button>
-      <button data-goto="mapCard">Map</button>
       <button data-goto="terminalCard">Terminal</button>
     </nav>
   </aside>
@@ -127,7 +115,7 @@ section{scroll-margin-top:70px}
       <!-- EMAIL -->
       <section class="card" id="emailCard" aria-labelledby="emailHdr">
         <h3 id="emailHdr">Email Intelligence</h3>
-        <div class="sub">Provider guess, MD5/Gravatar, curated recon links.</div>
+        <div class="sub">Provider guess, MD5/Gravatar, and clean recon links.</div>
         <div class="row"><input type="email" id="email" placeholder="name@domain.com" autocomplete="email"/><button class="btn" id="analyzeBtn">Analyze</button></div>
         <div id="emailMsg" class="sub" style="margin-top:8px"></div>
         <div class="row" style="margin-top:8px">
@@ -176,15 +164,22 @@ section{scroll-margin-top:70px}
           <button class="btn" id="ipBtn">Lookup</button>
         </div>
         <div class="small" style="margin-top:6px">
-          Optional proxycheck.io key: <input id="pcKey" type="text" placeholder="API key (optional)" style="max-width:240px;display:inline-block" />
+          proxycheck.io API key (recommended): <input id="pcKey" type="text" placeholder="YOUR_API_KEY" style="max-width:260px;display:inline-block" />
         </div>
         <div id="ipInfo" class="sub" style="margin-top:8px"></div>
+        <table class="meta" id="ipTable" style="margin-top:8px"></table>
         <div class="badges" id="ipBadges"></div>
         <div class="links" id="ipLinks" style="margin-top:12px"></div>
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
           <button class="btn mono" id="openIpLinks">Open All</button>
           <button class="btn mono" id="copyIp">Copy Line</button>
         </div>
+      </section>
+
+      <!-- MAP (right after IP) -->
+      <section class="card" id="mapCard" aria-labelledby="mapHdr">
+        <h3 id="mapHdr">Origin Map</h3>
+        <div id="map"></div>
       </section>
 
       <!-- TEXT -->
@@ -199,19 +194,24 @@ section{scroll-margin-top:70px}
         <div id="extractOut" style="margin-top:10px"></div>
       </section>
 
-      <!-- FILES -->
+      <!-- FILES (+ reverse image search) -->
       <section class="card" id="fileCard" aria-labelledby="fileHdr">
         <h3 id="fileHdr">File Intelligence</h3>
         <div class="row">
           <div><label class="sub">EXIF Viewer</label><input type="file" id="exifFile" accept="image/*"/><div id="exifOut" style="margin-top:8px"></div></div>
           <div><label class="sub">SHA-256 Hasher</label><input type="file" id="hashFile"/><div id="hashOut" style="margin-top:8px;font-family:ui-monospace,Menlo"></div></div>
         </div>
-      </section>
-
-      <!-- MAP -->
-      <section class="card" id="mapCard" aria-labelledby="mapHdr">
-        <h3 id="mapHdr">Origin Map</h3>
-        <div id="map"></div>
+        <div style="margin-top:14px">
+          <div class="sub">Reverse Image Search</div>
+          <div class="row">
+            <input type="file" id="risFile" accept="image/*" />
+            <button class="btn" id="openRIS">Open Search Engines</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+            <img id="risPreview" class="preview" alt="">
+            <div class="small">Opens Google Lens, Bing Visual Search, Yandex Images, and TinEye in new tabs. Drop the preview image onto those pages to search.</div>
+          </div>
+        </div>
       </section>
 
       <!-- TERMINAL -->
@@ -254,20 +254,21 @@ window.addEventListener('keydown',(e)=>{
 /* ---------- Helpers ---------- */
 const CSS = (n)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const ACCENT = CSS('--accent') || '#1d9bf0'; const ACCENT2 = CSS('--accent2') || '#82c8ff';
-
 function toast(el,msg,isErr){ el.innerHTML=`<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3200); }
 function sanitize(s){ return encodeURIComponent((s||'').trim()); }
 const isValidEmail = (e)=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e||'');
 const isValidDomain = (d)=>/^(?=.{1,253}$)(?!\-)(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i.test((d||'').trim());
 const isValidIPv4 = (ip)=>/^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d)$/.test((ip||'').trim());
+let LAST_GEO=null;
 
-/* Fetch with timeout */
-async function jfetch(url, opts={}, timeoutMs=8000){
+/* Fetch (JSON) with timeout */
+async function jfetch(url, opts={}, timeoutMs=9000){
   const ctrl=new AbortController(); const id=setTimeout(()=>ctrl.abort(),timeoutMs);
   try{
     const r=await fetch(url,{...opts,signal:ctrl.signal,cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status);
-    return await r.json();
+    const ct=r.headers.get('content-type')||'';
+    return ct.includes('application/json') ? await r.json() : await r.text();
   }finally{ clearTimeout(id); }
 }
 
@@ -305,8 +306,6 @@ a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k
 a=ff(a,b,c,d,k[12],7,1804603682);d=ff(d,a,b,c,k[13],12,-40341101);c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22,1236535329);
 a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(b,c,d,a,k[0],20,-373897302);
 a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(b,c,d,a,k[4],20,-405537848);
-a=gg(a,b,c,d,k[9],5,568446438);d=gg(d,a,b,c,k[14],9,-1019803690);c=gg(c,d,a,b,k[3],14,-187363961);b=gg(b,c,d,a,k[8],20,1163531501);
-a=gg(a,b,c,d,k[13],5,-1444681467);d=gg(d,a,b,c,k[2],9,-51403784);c=gg(c,d,a,b,k[7],14,1735328473);b=gg(b,c,d,a,k[12],20,-1926607734);
 a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
 a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);
 a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
@@ -331,8 +330,6 @@ const map=L.map('map',{worldCopyJump:true,zoomControl:true,attributionControl:fa
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:['a','b','c'],maxZoom:19}).addTo(map);
 function pulse(lat,lng,label){ const circle=L.circleMarker([lat,lng],{radius:7,color:ACCENT2,fillColor:ACCENT,fillOpacity:.7,weight:2}).addTo(map); if(label) circle.bindTooltip(label); setTimeout(()=>{try{map.removeLayer(circle)}catch(_){}},12000); return circle;}
 function arc(a,b,color=ACCENT2){ const line=L.polyline.antPath([a,b],{delay:400,dashArray:[10,18],weight:3,color,pulseColor:'#fff'}); line.addTo(map); setTimeout(()=>{try{map.removeLayer(line)}catch(_){}},15000); return line;}
-;[{name:'NYC',lat:40.7128,lng:-74.0060},{name:'London',lat:51.5074,lng:-0.1278},{name:'Tokyo',lat:35.6895,lng:139.6917}].forEach((n,i)=>setTimeout(()=>pulse(n.lat,n.lng,n.name),600*i));
-setTimeout(()=>{arc([40.7128,-74.0060],[51.5074,-0.1278]); setTimeout(()=>arc([51.5074,-0.1278],[35.6895,139.6917]),600);},1100);
 
 /* ---------- EMAIL ---------- */
 let EMAIL_LINKS=[]; const emailEl=document.getElementById('email');
@@ -347,29 +344,18 @@ function buildEmailLinks(email){
     ['Breach & Reputation',[
       ['Have I Been Pwned',`https://haveibeenpwned.com/account/${E}`],
       ['Epieos',`https://tools.epieos.com/email.php?email=${E}`],
-      ['DeHashed',`https://www.dehashed.com/search?query=${E}`],
-      ['IntelX',`https://intelx.io/?s=${E}`],
-      ['EmailRep',`https://emailrep.io/${E}`],
-      ['ScamAdviser (search)',`https://www.scamadviser.com/search?search=${E}`]
+      ['EmailRep',`https://emailrep.io/${E}`]
     ]],
-    ['Search / Pastebins',[
+    ['Search',[
       ['Google exact',`https://www.google.com/search?q="%22${E}%22"`],
       ['DuckDuckGo',`https://duckduckgo.com/?q="%22${E}%22"`],
       ['Bing',`https://www.bing.com/search?q="%22${E}%22"`],
-      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
-      ['Pastebin search',`https://pastebin.com/search?q=${E}`],
-      ['StackOverflow users',`https://stackoverflow.com/users/filter?search=${E}`]
+      ['Pastebin search',`https://pastebin.com/search?q=${E}`]
     ]],
     ['Keys / Gravatar',[
       ['OpenPGP',`https://keys.openpgp.org/search?q=${E}`],
-      ['Ubuntu Keyserver',`https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
       ['Gravatar image',`https://www.gravatar.com/avatar/${h}?s=400`],
       ['Gravatar JSON',`https://www.gravatar.com/${h}.json`]
-    ]],
-    ['Contact Discovery',[
-      ['Hunter (search)',`https://hunter.io/email-finder/${E}`],
-      ['VoilaNorbert',`https://www.voilanorbert.com/verify/${E}`],
-      ['EmailHippo',`https://tools.emailhippo.com/`]
     ]]
   ];
   addLinkGroups(emailLinks, groups);
@@ -393,12 +379,7 @@ async function analyzeEmail(input){
 document.getElementById('analyzeBtn').onclick=()=>analyzeEmail();
 emailEl.addEventListener('keydown',e=>{if(e.key==='Enter')analyzeEmail()});
 document.getElementById('copyMD5').onclick=()=>{const v=outMD5.textContent.trim(); if(v&&v!=='—'){navigator.clipboard.writeText(v); toast(emailMsg,'MD5 copied.');}};
-document.getElementById('openEmailLinks').onclick=()=>{
-  if(!EMAIL_LINKS.length) return;
-  if(confirm(`Open ${EMAIL_LINKS.length} links?`)){
-    EMAIL_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-  }
-};
+document.getElementById('openEmailLinks').onclick=()=>{ if(EMAIL_LINKS.length && confirm(`Open ${EMAIL_LINKS.length} links?`)) EMAIL_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
 
 /* ---------- USERNAME ---------- */
 let USER_LINKS=[]; const userLinks=document.getElementById('userLinks');
@@ -421,7 +402,7 @@ function buildUserLinks(handle){
       ['Google',`https://www.google.com/search?q=${u}`],
       ['DuckDuckGo',`https://duckduckgo.com/?q=${u}`],
       ['Bing',`https://www.bing.com/search?q=${u}`],
-      ['Github code search',`https://github.com/search?q=${u}`]
+      ['GitHub code',`https://github.com/search?q=${u}`]
     ]]
   ];
   addLinkGroups(userLinks, groups);
@@ -452,25 +433,21 @@ document.getElementById('domainBtn').onclick=async()=>{
         ['urlscan.io',`https://urlscan.io/domain/${D}`],
         ['VirusTotal',`https://www.virustotal.com/gui/domain/${D}`],
         ['BuiltWith',`https://builtwith.com/${D}`],
-        ['SecurityTrails',`https://securitytrails.com/domain/${D}`],
         ['Wayback (latest)',`https://web.archive.org/web/*/${D}`]
       ]],
       ['Infra / Ownership',[
         ['RDAP',`https://rdap.org/domain/${D}`],
         ['DNSlytics',`https://dnslytics.com/domain/${D}`],
-        ['DNSTwist (online)',`https://dnstwister.report/search?domain=${D}`],
+        ['DNSTwister',`https://dnstwister.report/search?domain=${D}`],
         ['DNSViz',`https://dnsviz.net/d/${D}/dnssec/`],
         ['MXToolbox',`https://mxtoolbox.com/SuperTool.aspx?action=mx%3a${D}`]
       ]],
       ['Intel',[
         ['Shodan',`https://www.shodan.io/search?query=${D}`],
-        ['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`],
-        ['RiskIQ Community',`https://community.riskiq.com/search/${D}`],
-        ['ThreatCrowd',`https://www.threatcrowd.org/domain.php?domain=${D}`]
+        ['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`]
       ]]
     ];
     addLinkGroups(domainLinks, groups); groups.forEach(([_,items])=>items.forEach(([__,url])=>DOMAIN_LINKS.push(url)));
-
     localStorage.setItem('cmx_last_domain', d);
     dnsMsg.textContent='DNS resolved.';
   }catch(e){ toast(dnsMsg,'DNS lookup blocked/unavailable.',true); }
@@ -478,74 +455,103 @@ document.getElementById('domainBtn').onclick=async()=>{
 document.getElementById('openDomainLinks').onclick=()=>{ if(DOMAIN_LINKS.length && confirm(`Open ${DOMAIN_LINKS.length} links?`)) DOMAIN_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
 document.getElementById('copyDns').onclick=()=>{ const txt=[...dnsTable.querySelectorAll('tr')].map(tr=>[...tr.children].map(td=>td.textContent).join('\t')).join('\n'); if(txt){ navigator.clipboard.writeText(txt); toast(dnsMsg,'DNS table copied.'); }};
 
-/* ---------- IP (ipapi.co + proxycheck.io) ---------- */
-let IP_LINKS=[]; const ipInfo=document.getElementById('ipInfo'); const ipLinks=document.getElementById('ipLinks'); const ipBadges=document.getElementById('ipBadges');
+/* ---------- IP (proxycheck.io primary + PTR + map) ---------- */
+let IP_LINKS=[]; const ipInfo=document.getElementById('ipInfo'); const ipLinks=document.getElementById('ipLinks'); const ipBadges=document.getElementById('ipBadges'); const ipTable=document.getElementById('ipTable');
+function revNameForIPv4(ip){ return ip.split('.').reverse().join('.')+'.in-addr.arpa'; }
+
 document.getElementById('ipBtn').onclick=async()=>{
-  const ip=document.getElementById('ip').value.trim(); const key=(document.getElementById('pcKey').value||'').trim();
+  const ip=document.getElementById('ip').value.trim();
+  const key=(document.getElementById('pcKey').value||'').trim();
   if(!ip){ toast(ipInfo,'Enter an IP.'); return; }
   if(!isValidIPv4(ip)){ toast(ipInfo,'Invalid IPv4.',true); return; }
-  ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; ipBadges.innerHTML=''; IP_LINKS=[];
-  let geo={}; let vpnStatus='unknown', vpnReason='';
+  ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; ipBadges.innerHTML=''; ipTable.innerHTML=''; IP_LINKS=[];
 
+  // rDNS via DoH
+  let ptr='—';
   try{
-    geo=await jfetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
-    ipInfo.innerHTML=`IP <b>${ip}</b> • ${geo.city||'—'}, ${geo.region||''} ${geo.country_name||geo.country||''} • ASN ${geo.asn||'—'} • Org ${geo.org||geo.organization||'—'}`;
-    if(geo.latitude!=null && geo.longitude!=null){ map.flyTo([geo.latitude,geo.longitude], 6, {duration:0.6}); pulse(geo.latitude,geo.longitude,`${geo.city||''} ${geo.country||''}`.trim()); }
-    localStorage.setItem('cmx_last_ip', ip);
-  }catch(e){ ipInfo.textContent='Geo lookup failed or blocked — external links below.'; }
+    const r=await doh(revNameForIPv4(ip),'PTR');
+    ptr=(r && r.Answer && r.Answer[0] && r.Answer[0].data)? String(r.Answer[0].data).replace(/\.$/,'') : '—';
+  }catch(_){}
 
-  /* Live VPN/Proxy check (proxycheck.io) */
+  // proxycheck.io (rich fields, requires/benefits from key)
+  let d={}, status='unknown';
   try{
-    const params=new URLSearchParams({vpn:'1',asn:'1'}); if(key) params.set('key',key);
-    const pc=await jfetch(`https://proxycheck.io/v2/${encodeURIComponent(ip)}?${params.toString()}`, {}, 7000);
-    const node=pc && (pc[ip]||pc.status==='denied'?null:pc[ip]); // ensure structure
-    if(pc && pc.status==='ok' && pc[ip]){
-      const d=pc[ip];
-      vpnStatus = (d.proxy==='yes' || d.vpn==='yes') ? 'yes' : (d.proxy==='no' && d.vpn==='no' ? 'no' : 'unknown');
-      vpnReason = d.type ? d.type : '';
-    }
-  }catch(e){
-    // ignore; CORS may block
+    const params=new URLSearchParams({vpn:'1',asn:'1',risk:'1',seen:'1',days:'30'}); // ask for more context
+    if(key) params.set('key', key);
+    const pc=await jfetch(`https://proxycheck.io/v2/${encodeURIComponent(ip)}?${params.toString()}`, {}, 9000);
+    if(pc && pc.status==='ok' && pc[ip]){ d=pc[ip]; status=(d.proxy==='yes' || d.vpn==='yes')?'yes':(d.proxy==='no' && d.vpn==='no')?'no':'unknown'; }
+  }catch(_){}
+
+  // Human line
+  const city=d.city||'—', region=d.region||d.province||'—', country=d.country||d.isocode||'—', asn=(d.asn?('AS'+String(d.asn).replace(/^AS/i,'')):'—');
+  ipInfo.innerHTML=`IP <b>${ip}</b> • ${city}, ${region} ${country} • ASN ${asn} • Org ${d.organisation||d.organization||d.provider||'—'}`;
+
+  // Table (only useful, present fields)
+  function row(k,v){ return `<tr><th>${k}</th><td>${v}</td></tr>`; }
+  const coords = (d.latitude!=null && d.longitude!=null) ? `${(+d.latitude).toFixed(4)}, ${(+d.longitude).toFixed(4)}` : '—';
+  const tz = d.timezone || '—';
+  const risk = (d.risk!=null)? d.risk : '—';
+  const last = d.last_seen || d.lastseen || '—';
+  const provider = d.provider || '—';
+  const org = d.organisation || d.organization || '—';
+  const type = d.type || '—';
+  const attackHist = d.attack_history || d.attackhistory || '—';
+  const continent = d.continent || '—';
+  const isocode = d.isocode || '—';
+
+  ipTable.innerHTML =
+      row('Reverse DNS', ptr)+
+      row('Proxy/VPN', (status==='yes')?'YES':(status==='no')?'NO':'unknown')+
+      row('Type', type)+
+      row('Risk Score', risk)+
+      row('Seen within (days)', d.days||'—')+
+      row('Last Seen', last)+
+      row('ASN', asn)+
+      row('Provider', provider)+
+      row('Organisation', org)+
+      row('Continent', continent)+
+      row('Country', `${country} (${isocode})`)+
+      row('Region', region)+
+      row('City', city)+
+      row('Timezone', tz)+
+      row('Coordinates', coords);
+
+  // Map focus
+  if(d.latitude!=null && d.longitude!=null){
+    const lat=+d.latitude, lon=+d.longitude;
+    map.flyTo([lat,lon], 6, {duration:0.6}); pulse(lat,lon,`${city||''} ${country||''}`.trim());
+    LAST_GEO={lat,lon,ip,city,country,tz};
   }
 
-  // Badges
+  // Badges + external pivots (kept to known-good)
   const pills=[];
-  if(vpnStatus==='yes') pills.push(`<span class="pill bad">VPN/Proxy: YES${vpnReason?` (${vpnReason})`:''}</span>`);
-  else if(vpnStatus==='no') pills.push(`<span class="pill ok">VPN/Proxy: NO</span>`);
+  if(status==='yes') pills.push(`<span class="pill bad">VPN/Proxy: YES${type&&type!=='—'?` (${type})`:''}</span>`);
+  else if(status==='no') pills.push(`<span class="pill ok">VPN/Proxy: NO</span>`);
   else pills.push(`<span class="pill unk">VPN/Proxy: unknown</span>`);
-  if(geo.asn){ const asn=(String(geo.asn).replace(/^AS/i,'AS')); pills.push(`<a class="pill" href="https://bgp.he.net/${asn}" target="_blank" rel="noopener">ASN: ${asn}</a>`); }
+  if(asn && asn!=='—') pills.push(`<a class="pill" href="https://bgp.he.net/${asn}" target="_blank" rel="noopener">ASN: ${asn}</a>`);
   pills.push(`<a class="pill" href="https://rdap.org/ip/${encodeURIComponent(ip)}" target="_blank" rel="noopener">RDAP</a>`);
   pills.push(`<a class="pill" href="https://stat.ripe.net/${encodeURIComponent(ip)}" target="_blank" rel="noopener">RIPEstat</a>`);
   ipBadges.innerHTML=pills.join('');
 
-  // External links
   const s=encodeURIComponent(ip);
   const groups=[
     ['Reputation',[
       ['Shodan',`https://www.shodan.io/host/${s}`],
       ['GreyNoise',`https://viz.greynoise.io/ip/${s}`],
       ['AbuseIPDB',`https://www.abuseipdb.com/check/${s}`],
-      ['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`],
-      ['IPQS (IP check)',`https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/${s}`],
-      ['proxycheck.io (web)',`https://proxycheck.io/threats/${s}`]
+      ['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`]
     ]],
     ['Routing / Whois',[
       ['BGP.HE',`https://bgp.he.net/ip/${s}`],
-      ['PeeringDB (search)',`https://www.peeringdb.com/search?q=${s}`],
-      ['ARIN Whois (NA)',`https://search.arin.net/rdap/?query=${s}`],
+      ['ARIN RDAP',`https://search.arin.net/rdap/?query=${s}`],
       ['APNIC Whois',`https://wq.apnic.net/static/search.html?query=${s}`]
-    ]],
-    ['Geo / Context',[
-      ['ipinfo.io',`https://ipinfo.io/${s}`],
-      ['IPWHOIS (web)',`https://ipwhois.io/ip/${s}`],
-      ['ipapi (web)',`https://ipapi.co/${s}`]
     ]]
   ];
   addLinkGroups(ipLinks, groups);
   groups.forEach(([_,items])=>items.forEach(([__,url])=>IP_LINKS.push(url)));
 };
 document.getElementById('openIpLinks').onclick=()=>{ if(IP_LINKS.length && confirm(`Open ${IP_LINKS.length} links?`)) IP_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
-document.getElementById('copyIp').onclick=()=>{ const t=ipInfo.textContent.trim(); if(t){ navigator.clipboard.writeText(t); toast(ipInfo,'Copied.'); }};
+document.getElementById('copyIp').onclick=()=>{ const t=document.getElementById('ipInfo').innerText.trim(); if(t){ navigator.clipboard.writeText(t); toast(ipInfo,'Copied.'); }};
 
 /* ---------- TEXT EXTRACTOR ---------- */
 const blobEl=document.getElementById('textBlob'); const extractOut=document.getElementById('extractOut');
@@ -561,7 +567,7 @@ document.getElementById('extractBtn').onclick=()=>{
 document.getElementById('clearBlob').onclick=()=>{blobEl.value='';extractOut.innerHTML='';};
 extractOut.addEventListener('click',e=>{
   const el=e.target.closest('.chip-btn'); if(!el) return; const v=el.getAttribute('data-val'), a=el.getAttribute('data-act');
-  if(a==='email'){ emailEl.value=v; analyzeEmail(v); document.getElementById('emailCard').scrollIntoView({behavior:'smooth'}); }
+  if(a==='email'){ document.getElementById('email').value=v; analyzeEmail(v); document.getElementById('emailCard').scrollIntoView({behavior:'smooth'}); }
   if(a==='ip'){ document.getElementById('ip').value=v; document.getElementById('ipBtn').click(); document.getElementById('ipCard').scrollIntoView({behavior:'smooth'}); }
   if(a==='domain'){ document.getElementById('domain').value=v; document.getElementById('domainBtn').click(); document.getElementById('domainCard').scrollIntoView({behavior:'smooth'}); }
   if(a==='url'){ window.open(v,'_blank','noopener'); }
@@ -575,7 +581,8 @@ document.getElementById('exifFile').onchange=(e)=>{
     const all=EXIF.getAllTags(this); if(!all||!Object.keys(all).length){ out.innerHTML='<div class="sub">No EXIF metadata found.</div>'; return; }
     const rows=Object.keys(all).map(k=>`<tr><th>${k}</th><td>${String(typeof all[k]==='object'?JSON.stringify(all[k]):all[k]).slice(0,500)}</td></tr>`).join('');
     out.innerHTML=`<table class="meta">${rows}</table>`;
-    const lat=EXIF.getTag(this,'GPSLatitude'), latRef=EXIF.getTag(this,'GPSLatitudeRef'); const lon=EXIF.getTag(this,'GPSLongitude'), lonRef=EXIF.getTag(this,'GPSLongitudeRef');
+    const lat=EXIF.getTag(this,'GPSLatitude'), latRef=EXIF.getTag(this,'GPSLatitudeRef');
+    const lon=EXIF.getTag(this,'GPSLongitude'), lonRef=EXIF.getTag(this,'GPSLongitudeRef');
     function toDec(a,r){ if(!a||a.length<3) return null; let v=a[0]+a[1]/60+a[2]/3600; if(r==='S'||r==='W') v=-v; return v; }
     const dlat=toDec(lat,latRef), dlon=toDec(lon,lonRef); if(dlat!=null&&dlon!=null){ map.setView([dlat,dlon],8); pulse(dlat,dlon,`EXIF ${dlat.toFixed(5)}, ${dlon.toFixed(5)}`); }
   }); URL.revokeObjectURL(img.src); }; img.src=URL.createObjectURL(file);
@@ -584,6 +591,24 @@ document.getElementById('hashFile').onchange=async(e)=>{
   const file=e.target.files[0]; const out=document.getElementById('hashOut'); out.textContent=''; if(!file) return;
   const buf=await file.arrayBuffer(); const digest=await crypto.subtle.digest('SHA-256',buf);
   out.textContent=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+};
+
+/* ---------- Reverse Image Search ---------- */
+let risObjectURL=null;
+document.getElementById('risFile').onchange=(e)=>{
+  const f=e.target.files[0]; const prev=document.getElementById('risPreview');
+  if(risObjectURL){ URL.revokeObjectURL(risObjectURL); risObjectURL=null; }
+  if(!f){ prev.removeAttribute('src'); return; }
+  risObjectURL=URL.createObjectURL(f); prev.src=risObjectURL;
+};
+document.getElementById('openRIS').onclick=()=>{
+  const tabs=[
+    'https://lens.google.com/upload',
+    'https://www.bing.com/visualsearch',
+    'https://yandex.com/images/',
+    'https://tineye.com/'
+  ];
+  tabs.forEach(u=>window.open(u,'_blank','noopener'));
 };
 
 /* ---------- TERMINAL ---------- */
@@ -595,7 +620,7 @@ function tHelp(){ tEcho(`Commands:
  analyze <email>         email intel
  username <handle>       username links
  domain <name>           DNS + links
- ip <addr>               IP intel + links (+proxycheck)
+ ip <addr>               IP intel + links (proxycheck)
  extract                 open Text Extractor
  clear                   clear terminal`); }
 function run(cmdRaw){
@@ -624,11 +649,11 @@ new IntersectionObserver((entries)=>{
   const id=vis.target.id;
   navBtns.forEach(b=>b.classList.toggle('active', b.dataset.goto===id));
 },{rootMargin:'-40% 0px -55% 0px',threshold:[0.1,0.25,0.5,0.75,1]}).observe(sections[0]);
-sections.slice(1).forEach(s=>{ document.querySelector('main').offsetTop; new IntersectionObserver(()=>{},{}).observe(s); });
+sections.slice(1).forEach(s=>{ new IntersectionObserver(()=>{},{}).observe(s); });
 
 /* ---------- Restore last inputs ---------- */
 (function restore(){
-  const e=localStorage.getItem('cmx_last_email'); if(e) emailEl.value=e;
+  const e=localStorage.getItem('cmx_last_email'); if(e) document.getElementById('email').value=e;
   const u=localStorage.getItem('cmx_last_user'); if(u) document.getElementById('user').value=u;
   const d=localStorage.getItem('cmx_last_domain'); if(d) document.getElementById('domain').value=d;
   const i=localStorage.getItem('cmx_last_ip'); if(i) document.getElementById('ip').value=i;
