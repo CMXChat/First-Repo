@@ -5,185 +5,179 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>CMX • OSINT Console</title>
 
-<!-- Leaflet + AntPath -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
 <script src="https://unpkg.com/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.min.js"></script>
-
-<!-- EXIF -->
 <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 
 <style>
-:root{
-  --bg:#000; --panel:#0f0f10; --panel-2:#121316;
-  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
-  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f;
-  --r:14px; --rs:10px;
-}
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-
-/* Top bar */
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800}
-.logo{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
-.logo svg{width:18px;height:18px;fill:var(--accent)}
-.top-actions{display:flex;align-items:center;gap:8px}
-.chip{padding:6px 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:var(--panel)}
-.ghost{all:unset;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:999px}
-
-/* Layout */
-.shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px);position:relative}
-@media(max-width:1020px){.shell{grid-template-columns:1fr}}
-
-/* Sidebar (desktop default) */
-.side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto;z-index:25}
-.nav{display:grid;gap:8px}
-.nav button{all:unset;cursor:pointer;padding:12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2);display:block;text-align:left}
-.nav button.active,.nav button:hover{border-color:var(--accent)}
-
-/* Off-canvas behavior (mobile) */
-.hamburger{display:none}
-.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:24;opacity:0;pointer-events:none;transition:opacity .2s}
-@media(max-width:1020px){
-  .hamburger{display:inline-flex}
-  .side{
-    position:fixed;left:0;top:58px;width:min(86vw,340px);
-    transform:translateX(-110%);transition:transform .22s ease;
-    box-shadow:0 20px 60px rgba(0,0,0,.5)
+  :root{
+    --bg:#000; --panel:#0f0f10; --panel2:#121316;
+    --ink:#e7e9ea; --muted:#8b98a5;
+    --line:#2f3336; --accent:#1d9bf0; --accent2:#82c8ff;
+    --ok:#19c37d; --bad:#ff5a5f; --radius:14px;
   }
-  .side.open{transform:translateX(0)}
-  .backdrop.show{opacity:1;pointer-events:auto}
-}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
 
-/* Main */
-.main{padding:14px;overflow:auto}
-.grid{display:grid;gap:14px;grid-template-columns:1fr}
-@media(min-width:1200px){.grid{grid-template-columns:1.2fr 1fr}}
-.card{border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:14px}
-.card h3{margin:0 0 8px;font-weight:800}
-.sub{color:var(--muted);font-size:12px;margin-bottom:10px}
-.row{display:grid;grid-template-columns:1fr;gap:10px}
-@media(min-width:640px){.row{grid-template-columns:1fr auto}}
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.65);backdrop-filter:blur(8px)}
+  .brand{font-weight:800;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
+  .ghost{all:unset;cursor:pointer;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
 
-/* Inputs */
-input[type=text],input[type=email],input[type=file],textarea{
-  width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none;font-size:15px
-}
-.btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:999px;font-weight:800;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06))}
-.btn.mono{border-color:var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
-.kv{border:1px dashed var(--line);border-radius:12px;padding:10px}
-.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12px}
-.pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.unk{color:var(--muted)}
-.links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
-@media(max-width:700px){.links{grid-template-columns:1fr}}
-.links .group{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel)}
-.links h4{margin:0 0 8px;color:var(--accent)}
-.linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
-.terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;max-height:240px;overflow:auto;white-space:pre-wrap}
-.term-input{display:flex;gap:8px;margin-top:8px}
-#map{height:360px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-table.meta{width:100%;border-collapse:collapse;font-size:13px}
-table.meta td,table.meta th{padding:6px 8px;border-bottom:1px dashed var(--line)}
-table.meta th{text-align:left;color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px}
+  /* Layout */
+  .shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px)}
+  @media(max-width:980px){.shell{grid-template-columns:1fr}}
 
-/* Make anchor scrolls stop below the topbar */
-section{scroll-margin-top:70px}
+  /* Sidebar */
+  .side{position:sticky;top:58px;height:calc(100vh - 58px);border-right:1px solid var(--line);background:var(--panel);padding:14px;overflow:auto}
+  .nav{display:grid;gap:8px}
+  .nav button{all:unset;cursor:pointer;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--ink)}
+  .nav button.active{border-color:var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.12),rgba(29,155,240,.04))}
+  .hamburger{display:none}
+  @media(max-width:980px){
+    .side{position:fixed;left:0;top:58px;width:86%;max-width:320px;transform:translateX(-110%);transition:transform .2s ease;z-index:60}
+    .side.open{transform:translateX(0)}
+    .hamburger{display:inline-flex}
+    .backdrop{content:"";position:fixed;inset:58px 0 0 0;background:rgba(0,0,0,.4);backdrop-filter:blur(1px);z-index:55;display:none}
+    .backdrop.show{display:block}
+  }
+
+  /* Main */
+  .main{padding:14px;overflow:auto}
+  .grid{display:grid;gap:14px;grid-template-columns:1fr}
+  @media(min-width:1200px){.grid{grid-template-columns:1.2fr 1fr}}
+  section{scroll-margin-top:70px}
+
+  /* Cards */
+  .card{border:1px solid var(--line);background:var(--panel2);border-radius:var(--radius);padding:14px}
+  .card h3{margin:0 0 8px}
+  .sub{color:var(--muted);font-size:12px;margin-bottom:8px}
+  .row{display:grid;grid-template-columns:1fr auto;gap:8px}
+  @media(max-width:640px){.row{grid-template-columns:1fr}}
+  input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+  .btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:999px;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));font-weight:700}
+
+  .kv{border:1px dashed var(--line);border-radius:10px;padding:10px}
+  .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12px}
+  .pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.unk{color:var(--muted)}
+
+  /* Links groups */
+  .links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+  @media(max-width:720px){.links{grid-template-columns:1fr}}
+  .links .group{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel)}
+  .links .group h4{margin:0 0 6px;color:var(--accent)}
+  .linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink);background:var(--panel2);font-size:13px}
+
+  /* Map + terminal */
+  #map{height:380px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;white-space:pre-wrap}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
-    <button class="ghost hamburger" id="btnSide" aria-label="Open menu">☰</button>
-    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg></div>
-    <div>CMX <b>OSINT</b></div>
+    <button class="ghost hamburger" id="btnSide">☰</button>
+    CMX • OSINT
   </div>
-  <div class="top-actions">
-    <span class="chip">Session <b id="sid"></b></span>
-    <button class="ghost" id="toggleTheme">Dark / Light</button>
-  </div>
+  <div class="sub">Session <b id="sid"></b></div>
 </header>
 
+<div class="backdrop" id="backdrop"></div>
+
 <div class="shell">
+  <!-- SIDEBAR -->
   <aside class="side" id="sidebar">
     <nav class="nav">
-      <button class="active" onclick="go('emailCard')">Email</button>
-      <button onclick="go('userCard')">Username</button>
-      <button onclick="go('domainCard')">Domain</button>
-      <button onclick="go('ipCard')">IP</button>
-      <button onclick="go('textCard')">Text</button>
-      <button onclick="go('fileCard')">Files</button>
-      <button onclick="go('mapCard')">Map</button>
-      <button onclick="go('terminalCard')">Terminal</button>
+      <button class="active" data-target="emailCard">Email</button>
+      <button data-target="userCard">Username</button>
+      <button data-target="domainCard">Domain</button>
+      <button data-target="ipCard">IP</button>
+      <button data-target="textCard">Text</button>
+      <button data-target="fileCard">Files</button>
+      <button data-target="mapCard">Map</button>
+      <button data-target="terminalCard">Terminal</button>
     </nav>
   </aside>
-  <div class="backdrop" id="backdrop"></div>
 
+  <!-- MAIN -->
   <main class="main">
     <div class="grid">
+
       <!-- EMAIL -->
       <section class="card" id="emailCard">
         <h3>Email Intelligence</h3>
-        <div class="sub">Provider guess, MD5/Gravatar, curated recon links.</div>
-        <div class="row"><input type="email" id="email" placeholder="name@domain.com"/><button class="btn" id="analyzeBtn">Analyze</button></div>
-        <div id="emailMsg" class="sub" style="margin-top:8px"></div>
+        <div class="sub">Backend aggregates (gravatar, rep, breaches) → shown here.</div>
+        <div class="row">
+          <input type="email" id="email" placeholder="name@domain.com" />
+          <button class="btn" id="analyzeBtn">Analyze</button>
+        </div>
+        <div id="emailMsg" class="sub" style="margin-top:6px"></div>
+
         <div class="row" style="margin-top:8px">
-          <div class="kv"><div class="sub">Email</div><div id="outEmail" style="font-weight:700">—</div></div>
-          <div class="kv"><div class="sub">Domain</div><div id="outDomain" style="font-weight:700">—</div></div>
+          <div class="kv"><div class="sub">Email</div><div id="outEmail" style="font-weight:800">—</div></div>
+          <div class="kv"><div class="sub">Domain</div><div id="outDomain" style="font-weight:800">—</div></div>
         </div>
         <div class="row" style="margin-top:8px">
           <div class="kv"><div class="sub">Provider</div><div id="outProvider"><span class="pill unk">unknown</span></div></div>
-          <div class="kv"><div class="sub">MD5 (Gravatar)</div><div id="outMD5" style="font-family:ui-monospace,Menlo">—</div></div>
+          <div class="kv"><div class="sub">MD5 (Gravatar)</div><div id="outMD5" style="font-family:ui-monospace,Menlo,Consolas,monospace">—</div></div>
         </div>
+
         <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
-          <div id="gravBox" style="width:88px;height:88px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:var(--panel)"><span class="sub">No avatar</span></div>
-          <div class="sub">If a public Gravatar exists, it appears here.</div>
+          <div id="gravBox" style="width:88px;height:88px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="sub">No avatar</span></div>
+          <div class="sub">If Gravatar exists, it will appear.</div>
         </div>
+
         <div class="links" id="emailLinks" style="margin-top:12px"></div>
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-          <button class="btn mono" id="copyMD5">Copy MD5</button>
-          <a class="btn mono" id="mailto" href="#" target="_blank" rel="noopener">Mailto</a>
-          <button class="btn mono" id="openEmailLinks">Open All</button>
+          <button class="btn" id="copyMD5">Copy MD5</button>
+          <a class="btn" id="mailto" href="#" target="_blank" rel="noopener">Mailto</a>
         </div>
       </section>
 
       <!-- USERNAME -->
       <section class="card" id="userCard">
         <h3>Username Intelligence</h3>
-        <div class="row"><input type="text" id="user" placeholder="username"/><button class="btn" id="userBtn">Build</button></div>
+        <div class="sub">Build quick deep links & show hits the backend can scrape.</div>
+        <div class="row">
+          <input type="text" id="user" placeholder="username" />
+          <button class="btn" id="userBtn">Build</button>
+        </div>
         <div class="links" id="userLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openUserLinks">Open All</button></div>
       </section>
 
       <!-- DOMAIN -->
       <section class="card" id="domainCard">
         <h3>Domain Intelligence</h3>
-        <div class="row"><input type="text" id="domain" placeholder="example.com"/><button class="btn" id="domainBtn">Resolve</button></div>
+        <div class="sub">DoH + WHOIS via backend; results rendered below.</div>
+        <div class="row">
+          <input type="text" id="domain" placeholder="example.com" />
+          <button class="btn" id="domainBtn">Resolve</button>
+        </div>
         <div id="dnsMsg" class="sub"></div>
-        <table class="meta" id="dnsTable" style="margin-top:8px"></table>
-        <div class="links" id="domainLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openDomainLinks">Open All</button></div>
+        <table class="meta" id="dnsTable" style="margin-top:8px;width:100%;border-collapse:collapse"></table>
       </section>
 
       <!-- IP -->
       <section class="card" id="ipCard">
         <h3>IP Intelligence</h3>
-        <div class="row"><input type="text" id="ip" placeholder="8.8.8.8"/><button class="btn" id="ipBtn">Lookup</button></div>
+        <div class="sub">Geo/ASN via backend → center map and print context.</div>
+        <div class="row">
+          <input type="text" id="ip" placeholder="8.8.8.8" />
+          <button class="btn" id="ipBtn">Lookup</button>
+        </div>
         <div id="ipInfo" class="sub" style="margin-top:8px"></div>
-        <div class="links" id="ipLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openIpLinks">Open All</button></div>
       </section>
 
       <!-- TEXT -->
       <section class="card" id="textCard">
         <h3>Text Extractor</h3>
-        <div class="sub">Extract emails, IPs, URLs, domains (client-side) and pivot.</div>
-        <textarea id="textBlob" rows="6" placeholder="Paste logs, emails, notes..."></textarea>
+        <div class="sub">Client-side extraction of emails, IPs, URLs, domains.</div>
+        <textarea id="textBlob" rows="6" placeholder="Paste raw logs, emails, dumps, notes..."></textarea>
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
           <button class="btn" id="extractBtn">Extract</button>
-          <button class="btn mono" id="clearBlob">Clear</button>
+          <button class="btn" id="clearBlob">Clear</button>
         </div>
         <div id="extractOut" style="margin-top:10px"></div>
       </section>
@@ -191,286 +185,268 @@ section{scroll-margin-top:70px}
       <!-- FILES -->
       <section class="card" id="fileCard">
         <h3>File Intelligence</h3>
+        <div class="sub">EXIF (images) • SHA-256 hasher (any file)</div>
         <div class="row">
-          <div><label class="sub">EXIF Viewer</label><input type="file" id="exifFile" accept="image/*"/><div id="exifOut" style="margin-top:8px"></div></div>
-          <div><label class="sub">SHA-256 Hasher</label><input type="file" id="hashFile"/><div id="hashOut" style="margin-top:8px;font-family:ui-monospace,Menlo"></div></div>
+          <div>
+            <label class="sub">EXIF Viewer</label>
+            <input type="file" id="exifFile" accept="image/*" />
+            <div id="exifOut" style="margin-top:8px"></div>
+          </div>
+          <div>
+            <label class="sub">SHA-256 Hasher</label>
+            <input type="file" id="hashFile" />
+            <div id="hashOut" style="margin-top:8px;font-family:ui-monospace,Menlo,Consolas,monospace"></div>
+          </div>
         </div>
       </section>
 
       <!-- MAP -->
       <section class="card" id="mapCard">
         <h3>Origin Map</h3>
+        <div class="sub">Pulsing nodes + animated trace arcs.</div>
         <div id="map"></div>
       </section>
 
       <!-- TERMINAL -->
       <section class="card" id="terminalCard">
         <h3>CMX Terminal</h3>
-        <div class="sub">Try: <code>help</code> • <code>analyze alice@example.com</code> • <code>username somehandle</code> • <code>domain example.com</code> • <code>ip 1.1.1.1</code> • <code>extract</code> • <code>clear</code></div>
+        <div class="sub">help • analyze <i>email</i> • username <i>handle</i> • domain <i>host</i> • ip <i>1.2.3.4</i> • extract • clear</div>
         <div class="terminal" id="terminal"></div>
-        <div class="term-input"><input id="termIn" type="text" placeholder="> help"/><button class="btn" id="termBtn">Run</button></div>
+        <div class="row" style="margin-top:8px">
+          <input id="termIn" type="text" placeholder="> help" />
+          <button class="btn" id="termBtn">Run</button>
+        </div>
       </section>
+
     </div>
   </main>
 </div>
 
 <script>
-/* ---------- Theme / Session / Mobile menu ---------- */
-const root=document.documentElement;
-const sidebar=document.getElementById('sidebar');
-const backdrop=document.getElementById('backdrop');
-document.getElementById('toggleTheme').onclick=()=>root.classList.toggle('light');
-document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
+/* ===== Shell / Sidebar ===== */
+const sid = document.getElementById('sid');
+sid.textContent = Math.random().toString(36).slice(2,10).toUpperCase();
 
-const isMobile=()=>window.matchMedia('(max-width:1020px)').matches;
-const closeSide=()=>{sidebar.classList.remove('open');backdrop.classList.remove('show');};
-document.getElementById('btnSide').onclick=()=>{sidebar.classList.add('open');backdrop.classList.add('show');};
-backdrop.addEventListener('click',closeSide);
-window.addEventListener('resize',()=>{ if(!isMobile()) closeSide(); });
+const sidebar = document.getElementById('sidebar');
+const btnSide  = document.getElementById('btnSide');
+const backdrop = document.getElementById('backdrop');
+btnSide?.addEventListener('click', ()=>{ sidebar.classList.toggle('open'); backdrop.classList.toggle('show'); });
+backdrop?.addEventListener('click', ()=>{ sidebar.classList.remove('open'); backdrop.classList.remove('show'); });
 
-function go(id){
-  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
-  if(isMobile()) closeSide();
-}
-
-/* ---------- Helpers ---------- */
-function toast(el,msg,isErr){ el.innerHTML=`<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3000); }
-function sanitize(s){ return encodeURIComponent((s||'').trim()); }
-function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e); }
-function providerOf(domain){ const d=(domain||'').toLowerCase();
-  if(/gmail\.com$/.test(d)) return 'Gmail';
-  if(/(outlook|hotmail|live)\.com$/.test(d)) return 'Outlook/Microsoft';
-  if(/yahoo\.(com|co\.\w+)$/.test(d)) return 'Yahoo';
-  if(/proton\.me$/.test(d)) return 'Proton';
-  if(/icloud\.com$/.test(d)) return 'iCloud';
-  if(/yandex\.(ru|com)$/.test(d)) return 'Yandex';
-  return 'Unknown';
-}
-const CSS = (n)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const ACCENT = CSS('--accent') || '#1d9bf0'; const ACCENT2 = CSS('--accent2') || '#82c8ff';
-
-/* ---------- Tiny MD5 ---------- */
-function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);
-a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);
-a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);
-a=ff(a,b,c,d,k[12],7,1804603682);d=ff(d,a,b,c,k[13],12,-40341101);c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22,1236535329);
-a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(b,c,d,a,k[0],20,-373897302);
-a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(b,c,d,a,k[4],20,-405537848);
-a=gg(a,b,c,d,k[9],5,568446438);d=gg(d,a,b,c,k[14],9,-1019803690);c=gg(c,d,a,b,k[3],14,-187363961);b=gg(b,c,d,a,k[8],20,1163531501);
-a=gg(a,b,c,d,k[13],5,-1444681467);d=gg(d,a,b,c,k[2],9,-51403784);c=gg(c,d,a,b,k[7],14,1735328473);b=gg(b,c,d,a,k[12],20,-1926607734);
-a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
-a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);
-a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
-a=ii(a,b,c,d,k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
-a=ii(a,b,c,d,k[12],6,1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);c=ii(c,d,a,b,k[10],15,-1051523);b=ii(b,c,d,a,k[1],21,-2054922799);
-a=ii(a,b,c,d,k[8],6,1873313359);d=ii(d,a,b,c,k[15],10,-30611744);c=ii(c,d,a,b,k[6],15,-1560198380);b=ii(b,c,d,a,k[13],21,1309151649);
-x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}
-function cmn(q,a,b,x,s,t){a=add32(add32(a,q),add32(x,t));return add32((a<<s)|(a>>>(32-s)),b)}
-function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t)}
-function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t)}
-function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t)}
-function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t)}
-function md51(s){const n=s.length,state=[1732584193,-271733879,-1732584194,271733878];let i;for(i=64;i<=n;i+=64){md5cycle(state,md5blk(s.substring(i-64,i)))}s=s.substring(i-64);const tail=Array(16).fill(0);for(i=0;i<s.length;i++)tail[i>>2]|=s.charCodeAt(i)<<((i%4)<<3);tail[i>>2]|=0x80<<((i%4)<<3);if(i>55){md5cycle(state,tail);for(i=0;i<16;i++)tail[i]=0}tail[14]=n*8;md5cycle(state,tail);return state}
-function md5blk(s){const md5blks=[];for(let i=0;i<64;i+=4)md5blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);return md5blks}
-function rhex(n){const s='0123456789abcdef';let j,out='';for(j=0;j<4;j++)out+=s[(n>>(j*8+4))&0x0F]+s[(n>>(j*8))&0x0F];return out}
-function hex(x){for(let i=0;i<x.length;i++)x[i]=rhex(x[i]);return x.join('')}
-function md5(s){return hex(md51(unescape(encodeURIComponent(s))).slice())}
-function add32(a,b){return(a+b)&0xFFFFFFFF}
-
-/* ---------- EMAIL ---------- */
-let EMAIL_LINKS=[]; const emailEl=document.getElementById('email');
-const emailMsg=document.getElementById('emailMsg'); const outEmail=document.getElementById('outEmail');
-const outDomain=document.getElementById('outDomain'); const outProvider=document.getElementById('outProvider');
-const outMD5=document.getElementById('outMD5'); const gravBox=document.getElementById('gravBox');
-const mailto=document.getElementById('mailto'); const emailLinks=document.getElementById('emailLinks');
-
-function buildEmailLinks(email,domain){
-  EMAIL_LINKS=[]; const E=sanitize(email), h=md5(email.toLowerCase());
-  const groups=[
-    ['Breach & Reputation',[
-      ['Have I Been Pwned',`https://haveibeenpwned.com/account/${E}`],
-      ['Epieos',`https://tools.epieos.com/email.php?email=${E}`],
-      ['DeHashed',`https://www.dehashed.com/search?query=${E}`],
-      ['IntelX',`https://intelx.io/?s=${E}`],
-      ['EmailRep',`https://emailrep.io/${E}`]
-    ]],
-    ['Search / Pastebins',[
-      ['Google exact',`https://www.google.com/search?q="%22${E}%22"`],
-      ['DuckDuckGo',`https://duckduckgo.com/?q="%22${E}%22"`],
-      ['Bing',`https://www.bing.com/search?q="%22${E}%22"`],
-      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`]
-    ]],
-    ['Keys / Gravatar',[
-      ['OpenPGP',`https://keys.openpgp.org/search?q=${E}`],
-      ['Ubuntu Keyserver',`https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
-      ['Gravatar image',`https://www.gravatar.com/avatar/${h}?s=400`],
-      ['Gravatar JSON',`https://www.gravatar.com/${h}.json`]
-    ]]
-  ];
-  emailLinks.innerHTML=''; for(const [title,items] of groups){
-    const wrap=document.createElement('div'); wrap.className='group';
-    wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-    const list=wrap.querySelector('.linklist');
-    items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);EMAIL_LINKS.push(url);});
-    emailLinks.appendChild(wrap);
-  }
-}
-
-async function analyzeEmail(input){
-  const e=(input||emailEl.value||'').trim();
-  if(!e){ toast(emailMsg,'Enter an email.'); return; }
-  if(!isValidEmail(e)){ toast(emailMsg,'Invalid email.',true); return; }
-  const [,domain]=e.split('@'); outEmail.textContent=e; outDomain.textContent=domain;
-  const prov=providerOf(domain);
-  outProvider.innerHTML=(prov==='Unknown')?'<span class="pill unk">unknown</span>':`<span class="pill ok">${prov}</span>`;
-  const hash=md5(e.toLowerCase()); outMD5.textContent=hash; mailto.href=`mailto:${encodeURIComponent(e)}`;
-  gravBox.innerHTML='<span class="sub">Checking…</span>';
-  const img=new Image(); img.onload=()=>{gravBox.innerHTML='';img.style.width='100%';img.style.height='100%';img.style.objectFit='cover';gravBox.appendChild(img)}; img.onerror=()=>{gravBox.innerHTML='<span class="sub">No avatar</span>'}; img.src=`https://www.gravatar.com/avatar/${hash}?d=404&s=160`;
-  buildEmailLinks(e,domain); toast(emailMsg,'Email analysis complete.');
-}
-document.getElementById('analyzeBtn').onclick=()=>analyzeEmail();
-emailEl.addEventListener('keydown',e=>{if(e.key==='Enter')analyzeEmail()});
-document.getElementById('copyMD5').onclick=()=>{const v=outMD5.textContent.trim(); if(v&&v!=='—'){navigator.clipboard.writeText(v); toast(emailMsg,'MD5 copied.');}};
-document.getElementById('openEmailLinks').onclick=()=>EMAIL_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-
-/* ---------- USERNAME ---------- */
-let USER_LINKS=[]; const userLinks=document.getElementById('userLinks');
-function buildUserLinks(handle){
-  USER_LINKS=[]; const u=sanitize(handle);
-  const groups=[['Profiles',[
-    ['GitHub',`https://github.com/${u}`],['GitLab',`https://gitlab.com/${u}`],
-    ['Reddit',`https://www.reddit.com/user/${u}`],['X',`https://twitter.com/${u}`],
-    ['Instagram',`https://www.instagram.com/${u}/`],['TikTok',`https://www.tiktok.com/@${u}`],
-    ['YouTube',`https://www.youtube.com/@${u}`],['Keybase',`https://keybase.io/${u}`]
-  ]],['Search',[
-    ['Google',`https://www.google.com/search?q=${u}`],['DuckDuckGo',`https://duckduckgo.com/?q=${u}`]
-  ]]];
-  userLinks.innerHTML=''; for(const [title,items] of groups){
-    const wrap=document.createElement('div'); wrap.className='group';
-    wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-    const list=wrap.querySelector('.linklist');
-    items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);USER_LINKS.push(url);});
-    userLinks.appendChild(wrap);
-  }
-}
-document.getElementById('userBtn').onclick=()=>{const v=document.getElementById('user').value.trim(); if(!v)return; buildUserLinks(v);};
-document.getElementById('openUserLinks').onclick=()=>USER_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-
-/* ---------- DOMAIN (DNS over HTTPS) ---------- */
-let DOMAIN_LINKS=[]; async function doh(name,type){ const r=await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`,{cache:'no-store'}); if(!r.ok) throw 0; return r.json(); }
-document.getElementById('domainBtn').onclick=async()=>{
-  const d=document.getElementById('domain').value.trim(); const msg=document.getElementById('dnsMsg'); const tbl=document.getElementById('dnsTable'); const out=document.getElementById('domainLinks');
-  if(!d){ toast(msg,'Enter a domain.'); return; } msg.textContent='Resolving…'; tbl.innerHTML=''; out.innerHTML=''; DOMAIN_LINKS=[];
-  try{
-    const [A,AAAA,MX,NS,TXT]=await Promise.all([doh(d,'A'),doh(d,'AAAA'),doh(d,'MX'),doh(d,'NS'),doh(d,'TXT')]);
-    const get=(o)=>o&&o.Answer?o.Answer.map(a=>a.data):[];
-    const lines=[['A',get(A).join(', ')||'—'],['AAAA',get(AAAA).join(', ')||'—'],['MX',get(MX).join(' | ')||'—'],['NS',get(NS).join(', ')||'—'],['TXT',get(TXT).map(s=>String(s).replaceAll('"','')).join(' | ')||'—']];
-    tbl.innerHTML=lines.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
-    const D=encodeURIComponent(d); const groups=[['Surface',[
-      ['crt.sh',`https://crt.sh/?q=${D}`],['urlscan.io',`https://urlscan.io/domain/${D}`],['VirusTotal',`https://www.v
-irustotal.com/gui/domain/${D}`],['BuiltWith',`https://builtwith.com/${D}`]
-    ]],['Infra',[
-      ['Shodan',`https://www.shodan.io/search?query=${D}`],['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`]
-    ]]];
-    for(const [title,items] of groups){const wrap=document.createElement('div');wrap.className='group';wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;const list=wrap.querySelector('.linklist');items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);DOMAIN_LINKS.push(url);});out.appendChild(wrap);}
-    msg.textContent='DNS resolved.';
-  }catch(e){ toast(msg,'DNS lookup blocked/unavailable.',true); }
-};
-document.getElementById('openDomainLinks').onclick=()=>DOMAIN_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-
-/* ---------- IP (ipapi.co) ---------- */
-let IP_LINKS=[]; document.getElementById('ipBtn').onclick=async()=>{
-  const ip=document.getElementById('ip').value.trim(); const info=document.getElementById('ipInfo'); const out=document.getElementById('ipLinks');
-  if(!ip){ toast(info,'Enter an IP.'); return; } info.textContent='Querying…'; out.innerHTML=''; IP_LINKS=[];
-  try{
-    const r=await fetch(`https://ipapi.co/${ip}/json/`,{cache:'no-store'}); if(!r.ok) throw 0; const data=await r.json();
-    if(data && data.latitude!=null){ info.innerHTML=`IP <b>${ip}</b> • ${data.city||'—'}, ${data.region||''} ${data.country_name||''} • ASN ${data.asn||'—'} • Org ${data.org||'—'}`; pulse(data.latitude,data.longitude,`${data.city||''} ${data.country||''}`.trim()); } else { info.textContent='Limited geo — use external links below.'; }
-  }catch(e){ info.textContent='Client-side lookup blocked — use external tools.'; }
-  const s=encodeURIComponent(ip); const groups=[['Reputation',[
-    ['Shodan',`https://www.shodan.io/host/${s}`],['GreyNoise',`https://viz.greynoise.io/ip/${s}`],['AbuseIPDB',`https://www.abuseipdb.com/check/${s}`],['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`]
-  ]]];
-  for(const [title,items] of groups){const wrap=document.createElement('div');wrap.className='group';wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;const list=wrap.querySelector('.linklist');items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);IP_LINKS.push(url);});out.appendChild(wrap);}
-};
-document.getElementById('openIpLinks').onclick=()=>IP_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-
-/* ---------- TEXT EXTRACTOR ---------- */
-const blobEl=document.getElementById('textBlob'); const extractOut=document.getElementById('extractOut');
-document.getElementById('extractBtn').onclick=()=>{
-  const t=blobEl.value||''; if(!t.trim()){ toast(extractOut,'Nothing to extract.'); return; }
-  const emails=[...t.matchAll(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/gi)].map(m=>m[0]);
-  const ips=[...t.matchAll(/\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}\b/g)].map(m=>m[0]);
-  const urls=[...t.matchAll(/\bhttps?:\/\/[^\s"'<>]+/gi)].map(m=>m[0]);
-  const domains=[...t.matchAll(/\b([a-z0-9-]+\.)+[a-z]{2,}\b/gi)].map(m=>m[0]).filter(d=>!/^https?:\/\//i.test(d));
-  const chip=(lbl,arr,act)=>arr.length?`<div style="margin-top:8px"><div class="sub" style="margin-bottom:6px;color:${ACCENT}">${lbl} (${new Set(arr).size})</div><div class="chips">${[...new Set(arr)].slice(0,120).map(v=>`<span class="chip-btn" data-act="${act}" data-val="${v}">${v}</span>`).join(' ')}</div></div>`:'';
-  extractOut.innerHTML=[chip('Emails',emails,'email'),chip('IPs',ips,'ip'),chip('URLs',urls,'url'),chip('Domains',domains,'domain')].join('');
-};
-document.getElementById('clearBlob').onclick=()=>{blobEl.value='';extractOut.innerHTML='';};
-extractOut.addEventListener('click',e=>{
-  const el=e.target.closest('.chip-btn'); if(!el) return; const v=el.getAttribute('data-val'), a=el.getAttribute('data-act');
-  if(a==='email'){ emailEl.value=v; analyzeEmail(v); go('emailCard'); }
-  if(a==='ip'){ document.getElementById('ip').value=v; document.getElementById('ipBtn').click(); go('ipCard'); }
-  if(a==='domain'){ document.getElementById('domain').value=v; document.getElementById('domainBtn').click(); go('domainCard'); }
-  if(a==='url'){ window.open(v,'_blank','noopener'); }
+document.querySelectorAll('.nav button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.getElementById(b.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'});
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    sidebar.classList.remove('open'); backdrop.classList.remove('show');
+  });
 });
 
-/* ---------- FILES: EXIF + SHA-256 ---------- */
-document.getElementById('exifFile').onchange=(e)=>{
-  const file=e.target.files[0]; const out=document.getElementById('exifOut'); out.innerHTML='';
-  if(!file) return; const img=new Image();
-  img.onload=function(){ EXIF.getData(img,function(){
-    const all=EXIF.getAllTags(this); if(!all||!Object.keys(all).length){ out.innerHTML='<div class="sub">No EXIF metadata found.</div>'; return; }
-    const rows=Object.keys(all).map(k=>`<tr><th>${k}</th><td>${String(typeof all[k]==='object'?JSON.stringify(all[k]):all[k]).slice(0,500)}</td></tr>`).join('');
-    out.innerHTML=`<table class="meta">${rows}</table>`;
-    const lat=EXIF.getTag(this,'GPSLatitude'), latRef=EXIF.getTag(this,'GPSLatitudeRef'); const lon=EXIF.getTag(this,'GPSLongitude'), lonRef=EXIF.getTag(this,'GPSLongitudeRef');
-    function toDec(a,r){ if(!a||a.length<3) return null; let v=a[0]+a[1]/60+a[2]/3600; if(r==='S'||r==='W') v=-v; return v; }
-    const dlat=toDec(lat,latRef), dlon=toDec(lon,lonRef); if(dlat!=null&&dlon!=null){ pulse(dlat,dlon,`EXIF ${dlat.toFixed(5)}, ${dlon.toFixed(5)}`); map.setView([dlat,dlon],8); }
-  }); URL.revokeObjectURL(img.src); }; img.src=URL.createObjectURL(file);
-};
-document.getElementById('hashFile').onchange=async(e)=>{
-  const file=e.target.files[0]; const out=document.getElementById('hashOut'); out.textContent=''; if(!file) return;
-  const buf=await file.arrayBuffer(); const digest=await crypto.subtle.digest('SHA-256',buf);
-  out.textContent=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
-};
+/* ===== Helpers ===== */
+const q = (id)=>document.getElementById(id);
+const toast = (el,msg,isErr)=>{ el.innerHTML = `<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3500); };
+const isValidEmail = (e)=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e);
 
-/* ---------- MAP ---------- */
-const map=L.map('map',{worldCopyJump:true,zoomControl:true,attributionControl:false}).setView([20,0],2);
+/* ===== Map ===== */
+const map = L.map('map', { zoomControl:true, attributionControl:false }).setView([20,0],2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:['a','b','c'],maxZoom:19}).addTo(map);
-function pulse(lat,lng,label){ const circle=L.circleMarker([lat,lng],{radius:7,color:ACCENT2,fillColor:ACCENT,fillOpacity:.7,weight:2}).addTo(map).bindTooltip(label||'Node'); setTimeout(()=>{try{map.removeLayer(circle)}catch(_){}},12000); return circle;}
-function arc(a,b,color=ACCENT2){ const line=L.polyline.antPath([a,b],{delay:400,dashArray:[10,18],weight:3,color,pulseColor:'#fff'}); line.addTo(map); setTimeout(()=>{try{map.removeLayer(line)}catch(_){}},15000); return line;}
-;[{name:'NYC',lat:40.7128,lng:-74.0060},{name:'London',lat:51.5074,lng:-0.1278},{name:'Tokyo',lat:35.6895,lng:139.6917}].forEach((n,i)=>setTimeout(()=>pulse(n.lat,n.lng,n.name),700*i));
-setTimeout(()=>{arc([40.7128,-74.0060],[51.5074,-0.1278]); setTimeout(()=>arc([51.5074,-0.1278],[35.6895,139.6917]),600);},1200);
+function pulse(lat,lng,label){
+  const m = L.circleMarker([lat,lng],{radius:7,color:'#82c8ff',fillColor:'#1d9bf0',fillOpacity:.7,weight:2}).addTo(map);
+  if(label) m.bindTooltip(label);
+  setTimeout(()=>{ try{ map.removeLayer(m);}catch(_){} }, 12000);
+  return m;
+}
+function arc(a,b,color='#82c8ff'){
+  const line = L.polyline.antPath([a,b],{delay:380,dashArray:[10,18],weight:3,color,pulseColor:'#fff'}).addTo(map);
+  setTimeout(()=>{ try{ map.removeLayer(line);}catch(_){} }, 15000);
+}
 
-/* ---------- TERMINAL ---------- */
-const term=document.getElementById('terminal'); const termIn=document.getElementById('termIn');
-function tEcho(line=''){ term.textContent+=(term.textContent?'\n':'')+line; term.scrollTop=term.scrollHeight; }
-function tClear(){ term.textContent=''; }
-function tHelp(){ tEcho(`Commands:
- help                    show help
- analyze <email>         email intel
- username <handle>       username links
- domain <name>           DNS + links
- ip <addr>               IP intel + links
- extract                 open Text Extractor
- clear                   clear terminal`); }
+/* ===== EMAIL ===== */
+async function analyzeEmail(input){
+  const email = (input || q('email').value || '').trim();
+  const msg = q('emailMsg');
+  if(!email){ toast(msg,'Enter an email.'); return; }
+  if(!isValidEmail(email)){ toast(msg,'Invalid email.',true); return; }
+
+  q('outEmail').textContent = email;
+  const domain = email.split('@')[1] || '—';
+  q('outDomain').textContent = domain;
+  q('mailto').href = `mailto:${encodeURIComponent(email)}`;
+
+  msg.textContent = 'Analyzing…';
+  try{
+    const r = await fetch(`/api/email?email=${encodeURIComponent(email)}`);
+    if(!r.ok) throw 0;
+    const data = await r.json();
+
+    // Provider / MD5 / Gravatar
+    q('outProvider').innerHTML = data.provider ? `<span class="pill ok">${data.provider}</span>` : '<span class="pill unk">unknown</span>';
+    q('outMD5').textContent = data.md5 || '—';
+    if(data.gravatar){
+      const img = new Image();
+      img.onload=()=>{ const box=q('gravBox'); box.innerHTML=''; img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; box.appendChild(img); };
+      img.onerror=()=>{ q('gravBox').innerHTML='<span class="sub">No avatar</span>'; };
+      img.src = data.gravatar;
+    }else{
+      q('gravBox').innerHTML='<span class="sub">No avatar</span>';
+    }
+
+    // Links (from backend, already curated)
+    const linksWrap = q('emailLinks'); linksWrap.innerHTML='';
+    (data.groups||[]).forEach(g=>{
+      const wrap=document.createElement('div'); wrap.className='group';
+      wrap.innerHTML=`<h4>${g.title}</h4><div class="linklist"></div>`;
+      const list=wrap.querySelector('.linklist');
+      g.items.forEach(it=>{
+        const a=document.createElement('a'); a.href=it.url; a.textContent=it.label; a.target='_blank'; a.rel='noopener';
+        list.appendChild(a);
+      });
+      linksWrap.appendChild(wrap);
+    });
+
+    toast(msg,'Email analysis complete.');
+  }catch(e){ toast(msg,'Backend unavailable.',true); }
+}
+q('analyzeBtn').onclick = ()=>analyzeEmail();
+q('email').addEventListener('keydown',e=>{ if(e.key==='Enter') analyzeEmail(); });
+q('copyMD5').onclick = ()=>{ const v=q('outMD5').textContent.trim(); if(v && v!=='—'){ navigator.clipboard.writeText(v); toast(q('emailMsg'),'MD5 copied.'); } };
+
+/* ===== USERNAME ===== */
+q('userBtn').onclick = async()=>{
+  const u = (q('user').value||'').trim(); const out = q('userLinks'); out.innerHTML='';
+  if(!u) return;
+  try{
+    const r = await fetch(`/api/username?u=${encodeURIComponent(u)}`);
+    const data = await r.json();
+    (data.groups||[]).forEach(g=>{
+      const wrap=document.createElement('div'); wrap.className='group';
+      wrap.innerHTML=`<h4>${g.title}</h4><div class="linklist"></div>`;
+      const list=wrap.querySelector('.linklist');
+      g.items.forEach(it=>{
+        const a=document.createElement('a'); a.href=it.url; a.textContent=it.label; a.target='_blank'; a.rel='noopener';
+        list.appendChild(a);
+      });
+      out.appendChild(wrap);
+    });
+  }catch(e){ out.innerHTML='<span class="pill bad">Backend error.</span>'; }
+};
+
+/* ===== DOMAIN ===== */
+q('domainBtn').onclick = async()=>{
+  const d = (q('domain').value||'').trim();
+  const msg = q('dnsMsg'); const tbl = q('dnsTable');
+  if(!d){ toast(msg,'Enter a domain.'); return; }
+  msg.textContent='Resolving…'; tbl.innerHTML='';
+  try{
+    const r = await fetch(`/api/dns?domain=${encodeURIComponent(d)}`);
+    const data = await r.json();
+    const rows = Object.entries(data.records||{}).map(([k,v])=>`<tr><th style="text-align:left;color:var(--muted);padding:6px 8px;border-bottom:1px dashed var(--line)">${k}</th><td style="padding:6px 8px;border-bottom:1px dashed var(--line)">${Array.isArray(v)?v.join(' | '):v}</td></tr>`).join('');
+    tbl.innerHTML = rows || '<tr><td>No data.</td></tr>';
+    msg.textContent='DNS resolved.';
+  }catch(e){ toast(msg,'Backend unavailable.',true); }
+};
+
+/* ===== IP ===== */
+q('ipBtn').onclick = async()=>{
+  const ip = (q('ip').value||'').trim();
+  const out = q('ipInfo'); if(!ip){ toast(out,'Enter an IP.'); return; }
+  out.textContent='Querying…';
+  try{
+    const r = await fetch(`/api/ip?ip=${encodeURIComponent(ip)}`); const d = await r.json();
+    out.innerHTML = `IP: <b>${ip}</b> • ${d.city||'—'}, ${d.region||''} ${d.country_name||d.country||''} • ASN: ${d.asn||'—'} • Org: ${d.org||d.organization||'—'}`;
+    if(d.latitude!=null && d.longitude!=null){ map.setView([d.latitude,d.longitude], 6); pulse(d.latitude,d.longitude, `${d.city||''}`.trim()); }
+  }catch(e){ out.textContent='Backend unavailable.'; }
+};
+
+/* ===== TEXT EXTRACTOR ===== */
+q('extractBtn').onclick = ()=>{
+  const t = q('textBlob').value || '';
+  const emails = [...t.matchAll(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/gi)].map(m=>m[0]);
+  const ips    = [...t.matchAll(/\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}\b/g)].map(m=>m[0]);
+  const urls   = [...t.matchAll(/\bhttps?:\/\/[^\s"'<>]+/gi)].map(m=>m[0]);
+  const domains= [...t.matchAll(/\b([a-z0-9-]+\.)+[a-z]{2,}\b/gi)].map(m=>m[0]).filter(d=>!/^https?:\/\//i.test(d));
+
+  const section = (title, arr, action)=>{
+    if(!arr.length) return '';
+    const uniq=[...new Set(arr)].slice(0,150);
+    const chips=uniq.map(v=>`<button class="btn" style="padding:6px 10px;border-radius:10px" data-act="${action}" data-val="${v}">${v}</button>`).join(' ');
+    return `<div style="margin-top:8px"><div class="sub" style="margin-bottom:6px;color:var(--accent)">${title} (${uniq.length})</div>${chips}</div>`;
+  };
+  q('extractOut').innerHTML = section('Emails',emails,'email') + section('IPs',ips,'ip') + section('URLs',urls,'url') + section('Domains',domains,'domain');
+};
+q('clearBlob').onclick = ()=>{ q('textBlob').value=''; q('extractOut').innerHTML=''; };
+q('extractOut').addEventListener('click', (e)=>{
+  const b = e.target.closest('button[data-act]'); if(!b) return;
+  const v=b.dataset.val, act=b.dataset.act;
+  if(act==='email'){ q('email').value=v; analyzeEmail(v); q('emailCard').scrollIntoView({behavior:'smooth'}); }
+  if(act==='ip'){ q('ip').value=v; q('ipBtn').click(); q('ipCard').scrollIntoView({behavior:'smooth'}); }
+  if(act==='domain'){ q('domain').value=v; q('domainBtn').click(); q('domainCard').scrollIntoView({behavior:'smooth'}); }
+  if(act==='url'){ window.open(v,'_blank','noopener'); }
+});
+
+/* ===== FILES ===== */
+q('exifFile').addEventListener('change', (e)=>{
+  const file=e.target.files[0]; const out=q('exifOut'); out.innerHTML='';
+  if(!file) return;
+  const img=new Image();
+  img.onload=function(){
+    EXIF.getData(img, function(){
+      const all=EXIF.getAllTags(this); if(!all || !Object.keys(all).length){ out.innerHTML='<div class="sub">No EXIF metadata found.</div>'; return; }
+      const rows=Object.entries(all).map(([k,v])=>`<tr><th style="text-align:left;color:var(--muted);padding:6px 8px;border-bottom:1px dashed var(--line)">${k}</th><td style="padding:6px 8px;border-bottom:1px dashed var(--line)">${(typeof v==='object')?JSON.stringify(v):String(v)}</td></tr>`).join('');
+      out.innerHTML=`<table class="meta" style="width:100%;border-collapse:collapse">${rows}</table>`;
+      // GPS → map
+      const lat = EXIF.getTag(this,'GPSLatitude'), lon = EXIF.getTag(this,'GPSLongitude');
+      const latRef = EXIF.getTag(this,'GPSLatitudeRef'), lonRef = EXIF.getTag(this,'GPSLongitudeRef');
+      function toDec(a,ref){ if(!a||a.length<3) return null; const d=a[0],m=a[1],s=a[2]; let val=d+(m/60)+(s/3600); if(ref==='S'||ref==='W') val=-val; return val; }
+      const dlat=toDec(lat,latRef), dlon=toDec(lon,lonRef);
+      if(dlat!=null && dlon!=null){ map.setView([dlat,dlon],8); pulse(dlat,dlon,'EXIF GPS'); }
+    });
+    URL.revokeObjectURL(img.src);
+  };
+  img.src = URL.createObjectURL(file);
+});
+q('hashFile').addEventListener('change', async (e)=>{
+  const file=e.target.files[0]; const out=q('hashOut'); out.textContent='';
+  if(!file) return;
+  const buf = await file.arrayBuffer();
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  const hex = [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  out.textContent = hex;
+});
+
+/* ===== TERMINAL ===== */
+const term = q('terminal'), termIn=q('termIn');
+const tEcho = (line='')=>{ term.textContent += (term.textContent?'\n':'') + line; term.scrollTop = term.scrollHeight; };
+const tClear=()=> term.textContent='';
+function tHelp(){
+  tEcho(`Commands:
+  help                          show this help
+  analyze <email>               run Email Intelligence
+  username <handle>             build Username links
+  domain <example.com>          resolve DNS
+  ip <1.2.3.4>                  IP intel
+  extract                       open Text Extractor
+  clear                         clear terminal`);
+}
 function run(cmdRaw){
-  const raw=(cmdRaw||termIn.value||'').trim(); if(!raw) return; tEcho('> '+raw); termIn.value='';
-  const [cmd,...rest]=raw.split(/\s+/); const arg=rest.join(' ');
+  const raw=(cmdRaw||termIn.value||'').trim(); if(!raw) return;
+  tEcho('> '+raw); termIn.value='';
+  const [cmd, ...rest]=raw.split(/\s+/); const arg = rest.join(' ').trim();
   switch((cmd||'').toLowerCase()){
     case 'help': return tHelp();
     case 'clear': return tClear();
-    case 'analyze': if(!arg) return tEcho('Usage: analyze <email>'); analyzeEmail(arg); go('emailCard'); return;
-    case 'username': if(!arg) return tEcho('Usage: username <handle>'); document.getElementById('user').value=arg; buildUserLinks(arg); go('userCard'); return;
-    case 'domain': if(!arg) return tEcho('Usage: domain <host>'); document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); go('domainCard'); return;
-    case 'ip': if(!arg) return tEcho('Usage: ip <addr>'); document.getElementById('ip').value=arg; document.getElementById('ipBtn').click(); go('ipCard'); return;
-    case 'extract': go('textCard'); return;
+    case 'analyze': if(!arg) return tEcho('Usage: analyze <email>'); analyzeEmail(arg); q('emailCard').scrollIntoView({behavior:'smooth'}); return;
+    case 'username': if(!arg) return tEcho('Usage: username <handle>'); q('user').value=arg; q('userBtn').click(); q('userCard').scrollIntoView({behavior:'smooth'}); return;
+    case 'domain': if(!arg) return tEcho('Usage: domain <host>'); q('domain').value=arg; q('domainBtn').click(); q('domainCard').scrollIntoView({behavior:'smooth'}); return;
+    case 'ip': if(!arg) return tEcho('Usage: ip <1.2.3.4>'); q('ip').value=arg; q('ipBtn').click(); q('ipCard').scrollIntoView({behavior:'smooth'}); return;
+    case 'extract': q('textCard').scrollIntoView({behavior:'smooth'}); return;
     default: return tEcho("Unknown command. Type 'help'.");
   }
 }
-document.getElementById('termBtn').onclick=()=>run();
-termIn.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
+q('termBtn').addEventListener('click', ()=>run());
+termIn.addEventListener('keydown', e=>{ if(e.key==='Enter') run(); });
 
-/* ---------- Boot ---------- */
-document.getElementById('analyzeBtn').focus();
+/* Boot note */
 tEcho('CMX OSINT Console ready. Type "help".');
 </script>
 </body>
