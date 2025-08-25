@@ -26,6 +26,7 @@
     --text:#e8f3ff; --muted:#9bb3c7;
     --accent:#00e5ff; --accent2:#17e2e2;
     --ok:#1ee3a4; --warn:#ffd166; --danger:#ff5454;
+    --transition: 0.2s ease;
   }
   :root.light{
     --bg:#f6fbff; --bg-grad-a:#eaf4ff; --bg-grad-b:#e9f6ff; --bg-grad-c:#e8faff;
@@ -35,7 +36,7 @@
     --accent:#006dff; --accent2:#0aa2ff;
     --ok:#0ea36a; --warn:#b78700; --danger:#d33d3d;
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box; transition: var(--transition);}
   html,body{height:100%}
   body{
     margin:0; color:var(--text);
@@ -55,6 +56,7 @@
   .dot{width:10px;height:10px;border-radius:999px;background:var(--ok);box-shadow:0 0 8px var(--ok)}
   .top-actions{display:flex;gap:8px;align-items:center}
   .ghost{all:unset;cursor:pointer;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--glass);color:var(--text);font-size:13px}
+  .ghost:hover{background:var(--glass-2);}
   .chip{padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--glass);font-size:13px;color:var(--text)}
 
   /* Layout */
@@ -63,10 +65,12 @@
     position:sticky;top:58px;height:calc(100vh - 58px);border-right:1px solid var(--line);
     background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(255,255,255,.05));
     padding:14px; overflow:auto;
+    transition: transform var(--transition);
   }
   .nav{display:grid;gap:8px}
   .nav button{all:unset;cursor:pointer;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--glass);color:var(--text);font-size:14px}
-  .nav button.active{background:var(--glass-2);border-color:var(--accent)}
+  .nav button:hover{background:var(--glass-2);}
+  .nav button.active{background:var(--glass-2);border-color:var(--accent);color:var(--accent)}
   .main{padding:14px;overflow:auto}
 
   /* Cards */
@@ -83,6 +87,7 @@
   }
   input::placeholder, textarea::placeholder{color:#8ca5bb}
   .btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:12px;background:linear-gradient(180deg,rgba(0,255,255,.15),rgba(0,0,0,.12));border:1px solid rgba(0,255,255,.35);color:var(--accent);font-weight:700}
+  .btn:hover{opacity:0.9;}
   .btn.mono{background:var(--glass);border-color:var(--line);color:var(--text)}
   .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--glass);font-size:12px}
   .pill.ok{color:var(--ok)} .pill.bad{color:var(--danger)} .pill.unk{color:var(--muted)}
@@ -92,6 +97,7 @@
   .links .group{border:1px solid var(--line);border-radius:12px;padding:10px}
   .links h4{margin:0 0 8px;color:var(--accent2)}
   .linklist a{display:inline-block;margin:4px 6px 0 0;text-decoration:none;padding:8px 10px;border-radius:10px;border:1px solid var(--line);color:var(--text);background:var(--glass);font-size:13px}
+  .linklist a:hover{background:var(--glass-2);}
 
   /* Terminal */
   .terminal{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#000;color:#9ee8ff;border-radius:12px;padding:10px;border:1px solid rgba(0,255,255,.25);min-height:180px;max-height:280px;overflow-y:auto;white-space:pre-wrap}
@@ -112,12 +118,13 @@
   /* Extractor chips */
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip-btn{display:inline-block;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--glass);cursor:pointer;font-size:13px}
+  .chip-btn:hover{background:var(--glass-2);}
 
   /* Mobile sidebar toggle */
   .hamburger{display:none}
   @media(max-width:980px){
     .shell{grid-template-columns:1fr}
-    .side{position:fixed;left:0;top:58px;width:86%;max-width:320px;transform:translateX(-110%);transition:transform .25s ease;z-index:40}
+    .side{position:fixed;left:0;top:58px;width:86%;max-width:320px;transform:translateX(-110%);z-index:40}
     .side.open{transform:translateX(0)}
     .hamburger{display:inline-flex}
   }
@@ -135,15 +142,15 @@
   <div class="shell">
     <!-- Sidebar -->
     <aside class="side" id="sidebar">
-      <div class="nav">
-        <button class="active" onclick="go('emailCard')">Email</button>
-        <button onclick="go('userCard')">Username</button>
-        <button onclick="go('domainCard')">Domain</button>
-        <button onclick="go('ipCard')">IP</button>
-        <button onclick="go('textCard')">Text Extractor</button>
-        <button onclick="go('fileCard')">Files</button>
-        <button onclick="go('mapCard')">Map</button>
-        <button onclick="go('terminalCard')">Terminal</button>
+      <div class="nav" id="nav">
+        <button class="active" data-target="emailCard">Email</button>
+        <button data-target="userCard">Username</button>
+        <button data-target="domainCard">Domain</button>
+        <button data-target="ipCard">IP</button>
+        <button data-target="textCard">Text Extractor</button>
+        <button data-target="fileCard">Files</button>
+        <button data-target="mapCard">Map</button>
+        <button data-target="terminalCard">Terminal</button>
       </div>
     </aside>
 
@@ -270,7 +277,7 @@
         <!-- MAP -->
         <div class="card" id="mapCard">
           <h3>Origin Map</h3>
-          <div class="sub">Pulsing nodes + animated trace arcs</div>
+          <div class="sub">Pulsing nodes + animated trace arcs. Auto-adds from IP/EXIF geo.</div>
           <div id="map"></div>
         </div>
 
@@ -292,184 +299,269 @@
 
 <script>
 /* ======= Shell / Theme / Sidebar ======= */
-const root=document.documentElement;
-const saved=localStorage.getItem('cmx-theme'); if(saved==='light') root.classList.add('light');
-document.getElementById('toggleTheme').onclick=()=>{root.classList.toggle('light');localStorage.setItem('cmx-theme',root.classList.contains('light')?'light':'dark');};
-document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
-const sidebar=document.getElementById('sidebar'); document.getElementById('btnSide').onclick=()=>sidebar.classList.toggle('open');
-function go(id){ document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}); sidebar.classList.remove('open'); }
+const root = document.documentElement;
+const saved = localStorage.getItem('cmx-theme');
+if (saved === 'light') root.classList.add('light');
+document.getElementById('toggleTheme').onclick = () => {
+  root.classList.toggle('light');
+  localStorage.setItem('cmx-theme', root.classList.contains('light') ? 'light' : 'dark');
+};
+document.getElementById('sid').textContent = Math.random().toString(36).slice(2, 10).toUpperCase();
+const sidebar = document.getElementById('sidebar');
+document.getElementById('btnSide').onclick = () => sidebar.classList.toggle('open');
+const navButtons = document.querySelectorAll('.nav button');
+navButtons.forEach(btn => {
+  btn.onclick = () => {
+    const targetId = btn.getAttribute('data-target');
+    go(targetId);
+  };
+});
+function go(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  sidebar.classList.remove('open');
+  navButtons.forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.nav button[data-target="${id}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+}
 
 /* ======= Small helpers ======= */
-function toast(el,msg,isErr){ el.innerHTML=`<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3500); }
-function sanitize(s){ return encodeURIComponent((s||'').trim()); }
-function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e); }
-function providerOf(domain){ const d=(domain||'').toLowerCase();
-  if(/gmail\.com$/.test(d)) return 'Gmail';
-  if(/(outlook|hotmail|live)\.com$/.test(d)) return 'Outlook/Microsoft';
-  if(/yahoo\.(com|co\.\w+)$/.test(d)) return 'Yahoo';
-  if(/proton\.me$/.test(d)) return 'Proton';
-  if(/icloud\.com$/.test(d)) return 'iCloud';
-  if(/yandex\.(ru|com)$/.test(d)) return 'Yandex';
+function toast(el, msg, isErr) {
+  el.innerHTML = `<span class="pill ${isErr ? 'bad' : 'ok'}">${msg}</span>`;
+  setTimeout(() => el.textContent = '', 3500);
+}
+function sanitize(s) {
+  return encodeURIComponent((s || '').trim());
+}
+function isValidEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e);
+}
+function providerOf(domain) {
+  const d = (domain || '').toLowerCase();
+  if (/gmail\.com$/.test(d)) return 'Gmail';
+  if (/(outlook|hotmail|live)\.com$/.test(d)) return 'Outlook/Microsoft';
+  if (/yahoo\.(com|co\.\w+)$/.test(d)) return 'Yahoo';
+  if (/(protonmail|proton)\.(com|me|ch)$/.test(d)) return 'Proton';
+  if (/icloud\.com$/.test(d)) return 'iCloud';
+  if (/yandex\.(ru|com)$/.test(d)) return 'Yandex';
+  if (/aol\.com$/.test(d)) return 'AOL';
+  if (/mail\.ru$/.test(d)) return 'Mail.ru';
   return 'Unknown';
 }
 
 /* ======= MD5 (for Gravatar) ======= */
-function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);
-a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);
-a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);
-a=ff(a,b,c,d,k[12],7,1804603682);d=ff(d,a,b,c,k[13],12,-40341101);c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22,1236535329);
-a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(b,c,d,a,k[0],20,-373897302);
-a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(b,c,d,a,k[4],20,-405537848);
-a=gg(a,b,c,d,k[9],5,568446438);d=gg(d,a,b,c,k[14],9,-1019803690);c=gg(c,d,a,b,k[3],14,-187363961);b=gg(b,c,d,a,k[8],20,1163531501);
-a=gg(a,b,c,d,k[13],5,-1444681467);d=gg(d,a,b,c,k[2],9,-51403784);c=gg(c,d,a,b,k[7],14,1735328473);b=gg(b,c,d,a,k[12],20,-1926607734);
-a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
-a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);
-a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
-a=ii(a,b,c,d,k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
-a=ii(a,b,c,d,k[12],6,1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);c=ii(c,d,a,b,k[10],15,-1051523);b=ii(b,c,d,a,k[1],21,-2054922799);
-a=ii(a,b,c,d,k[8],6,1873313359);d=ii(d,a,b,c,k[15],10,-30611744);c=ii(c,d,a,b,k[6],15,-1560198380);b=ii(b,c,d,a,k[13],21,1309151649);
-x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}
-function cmn(q,a,b,x,s,t){a=add32(add32(a,q),add32(x,t));return add32((a<<s)|(a>>>(32-s)),b)}
-function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t)}
-function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t)}
-function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t)}
-function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t)}
-function md51(s){const n=s.length,state=[1732584193,-271733879,-1732584194,271733878];let i;for(i=64;i<=n;i+=64){md5cycle(state,md5blk(s.substring(i-64,i)))}s=s.substring(i-64);const tail=Array(16).fill(0);for(i=0;i<s.length;i++)tail[i>>2]|=s.charCodeAt(i)<<((i%4)<<3);tail[i>>2]|=0x80<<((i%4)<<3);if(i>55){md5cycle(state,tail);for(i=0;i<16;i++)tail[i]=0}tail[14]=n*8;md5cycle(state,tail);return state}
-function md5blk(s){const md5blks=[];for(let i=0;i<64;i+=4)md5blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);return md5blks}
-function rhex(n){const s='0123456789abcdef';let j,out='';for(j=0;j<4;j++)out+=s[(n>>(j*8+4))&0x0F]+s[(n>>(j*8))&0x0F];return out}
-function hex(x){for(let i=0;i<x.length;i++)x[i]=rhex(x[i]);return x.join('')}
-function md5(s){return hex(md51(unescape(encodeURIComponent(s))).slice())}
-function add32(a,b){return(a+b)&0xFFFFFFFF}
+function md5cycle(x, k) {
+  let [a, b, c, d] = x;
+  a = ff(a, b, c, d, k[0], 7, -680876936); d = ff(d, a, b, c, k[1], 12, -389564586); c = ff(c, d, a, b, k[2], 17, 606105819); b = ff(b, c, d, a, k[3], 22, -1044525330);
+  a = ff(a, b, c, d, k[4], 7, -176418897); d = ff(d, a, b, c, k[5], 12, 1200080426); c = ff(c, d, a, b, k[6], 17, -1473231341); b = ff(b, c, d, a, k[7], 22, -45705983);
+  a = ff(a, b, c, d, k[8], 7, 1770035416); d = ff(d, a, b, c, k[9], 12, -1958414417); c = ff(c, d, a, b, k[10], 17, -42063); b = ff(b, c, d, a, k[11], 22, -1990404162);
+  a = ff(a, b, c, d, k[12], 7, 1804603682); d = ff(d, a, b, c, k[13], 12, -40341101); c = ff(c, d, a, b, k[14], 17, -1502002290); b = ff(b, c, d, a, k[15], 22, 1236535329);
+  a = gg(a, b, c, d, k[1], 5, -165796510); d = gg(d, a, b, c, k[6], 9, -1069501632); c = gg(c, d, a, b, k[11], 14, 643717713); b = gg(b, c, d, a, k[0], 20, -373897302);
+  a = gg(a, b, c, d, k[5], 5, -701558691); d = gg(d, a, b, c, k[10], 9, 38016083); c = gg(c, d, a, b, k[15], 14, -660478335); b = gg(b, c, d, a, k[4], 20, -405537848);
+  a = gg(a, b, c, d, k[9], 5, 568446438); d = gg(d, a, b, c, k[14], 9, -1019803690); c = gg(c, d, a, b, k[3], 14, -187363961); b = gg(b, c, d, a, k[8], 20, 1163531501);
+  a = gg(a, b, c, d, k[13], 5, -1444681467); d = gg(d, a, b, c, k[2], 9, -51403784); c = gg(c, d, a, b, k[7], 14, 1735328473); b = gg(b, c, d, a, k[12], 20, -1926607734);
+  a = hh(a, b, c, d, k[5], 4, -378558); d = hh(d, a, b, c, k[8], 11, -2022574463); c = hh(c, d, a, b, k[11], 16, 1839030562); b = hh(b, c, d, a, k[14], 23, -35309556);
+  a = hh(a, b, c, d, k[1], 4, -1530992060); d = hh(d, a, b, c, k[4], 11, 1272893353); c = hh(c, d, a, b, k[7], 16, -155497632); b = hh(b, c, d, a, k[10], 23, -1094730640);
+  a = hh(a, b, c, d, k[13], 4, 681279174); d = hh(d, a, b, c, k[0], 11, -358537222); c = hh(c, d, a, b, k[6], 16, -722521979); b = hh(b, c, d, a, k[9], 23, 76029189);
+  a = ii(a, b, c, d, k[0], 6, -198630844); d = ii(d, a, b, c, k[7], 10, 1126891415); c = ii(c, d, a, b, k[14], 15, -1416354905); b = ii(b, c, d, a, k[5], 21, -57434055);
+  a = ii(a, b, c, d, k[12], 6, 1700485571); d = ii(d, a, b, c, k[3], 10, -1894986606); c = ii(c, d, a, b, k[10], 15, -1051523); b = ii(b, c, d, a, k[1], 21, -2054922799);
+  a = ii(a, b, c, d, k[8], 6, 1873313359); d = ii(d, a, b, c, k[15], 10, -30611744); c = ii(c, d, a, b, k[6], 15, -1560198380); b = ii(b, c, d, a, k[13], 21, 1309151649);
+  x[0] = add32(a, x[0]); x[1] = add32(b, x[1]); x[2] = add32(c, x[2]); x[3] = add32(d, x[3]);
+}
+function cmn(q, a, b, x, s, t) {
+  a = add32(add32(a, q), add32(x, t));
+  return add32((a << s) | (a >>> (32 - s)), b);
+}
+function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
+function md51(s) {
+  const n = s.length, state = [1732584193, -271733879, -1732584194, 271733878];
+  let i;
+  for (i = 64; i <= n; i += 64) { md5cycle(state, md5blk(s.substring(i - 64, i))); }
+  s = s.substring(i - 64);
+  const tail = Array(16).fill(0);
+  for (i = 0; i < s.length; i++) tail[i >> 2] |= s.charCodeAt(i) << ((i % 4) << 3);
+  tail[i >> 2] |= 0x80 << ((i % 4) << 3);
+  if (i > 55) { md5cycle(state, tail); for (i = 0; i < 16; i++) tail[i] = 0; }
+  tail[14] = n * 8;
+  md5cycle(state, tail);
+  return state;
+}
+function md5blk(s) {
+  const md5blks = [];
+  for (let i = 0; i < 64; i += 4) md5blks[i >> 2] = s.charCodeAt(i) + (s.charCodeAt(i + 1) << 8) + (s.charCodeAt(i + 2) << 16) + (s.charCodeAt(i + 3) << 24);
+  return md5blks;
+}
+function rhex(n) {
+  const s = '0123456789abcdef';
+  let j, out = '';
+  for (j = 0; j < 4; j++) out += s[(n >> (j * 8 + 4)) & 0x0F] + s[(n >> (j * 8)) & 0x0F];
+  return out;
+}
+function hex(x) {
+  for (let i = 0; i < x.length; i++) x[i] = rhex(x[i]);
+  return x.join('');
+}
+function md5(s) { return hex(md51(s)); }
+function add32(a, b) { return (a + b) & 0xFFFFFFFF; }
 
 /* ======= EMAIL ======= */
-let EMAIL_LINKS=[];
-const emailEl=document.getElementById('email'), emailMsg=document.getElementById('emailMsg');
-const outEmail=document.getElementById('outEmail'), outDomain=document.getElementById('outDomain'), outProvider=document.getElementById('outProvider'), outMD5=document.getElementById('outMD5');
-const gravBox=document.getElementById('gravBox'), mailto=document.getElementById('mailto'), emailLinks=document.getElementById('emailLinks');
+let EMAIL_LINKS = [];
+const emailEl = document.getElementById('email'), emailMsg = document.getElementById('emailMsg');
+const outEmail = document.getElementById('outEmail'), outDomain = document.getElementById('outDomain'), outProvider = document.getElementById('outProvider'), outMD5 = document.getElementById('outMD5');
+const gravBox = document.getElementById('gravBox'), mailto = document.getElementById('mailto'), emailLinks = document.getElementById('emailLinks');
 
-function buildEmailLinks(email,domain){
-  EMAIL_LINKS=[];
-  const E=sanitize(email), D=sanitize(domain), h=md5(email.toLowerCase());
-  const groups=[
-    ['Breach & Reputation',[
-      ['Have I Been Pwned',`https://haveibeenpwned.com/account/${E}`],
-      ['Epieos Email OSINT',`https://tools.epieos.com/email.php?email=${E}`],
-      ['DeHashed (login)',`https://www.dehashed.com/search?query=${E}`],
-      ['IntelX',`https://intelx.io/?s=${E}`],
-      ['EmailRep',`https://emailrep.io/${E}`],
+function buildEmailLinks(email, domain) {
+  EMAIL_LINKS = [];
+  const E = sanitize(email), D = sanitize(domain), h = md5(email.toLowerCase());
+  const groups = [
+    ['Breach & Reputation', [
+      ['Have I Been Pwned', `https://haveibeenpwned.com/account/${E}`],
+      ['Epieos Email OSINT', `https://tools.epieos.com/email.php?email=${E}`],
+      ['DeHashed (login)', `https://www.dehashed.com/search?query=${E}`],
+      ['IntelX', `https://intelx.io/?s=${E}`],
+      ['EmailRep', `https://emailrep.io/${E}`],
+      ['LeakCheck', `https://leakcheck.io/search?query=${E}`],
     ]],
-    ['Search / Pastebins',[
-      ['Google exact',`https://www.google.com/search?q="%22${E}%22"`],
-      ['DuckDuckGo exact',`https://duckduckgo.com/?q="%22${E}%22"`],
-      ['Bing exact',`https://www.bing.com/search?q="%22${E}%22"`],
-      ['Google Pastebin',`https://www.google.com/search?q="%22${E}%22+site%3Apastebin.com`],
-      ['Google Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
-      ['Skymem',`https://www.skymem.info/srch?q=${E}`],
+    ['Search / Pastebins', [
+      ['Google exact', `https://www.google.com/search?q="%22${E}%22"`],
+      ['DuckDuckGo exact', `https://duckduckgo.com/?q="%22${E}%22"`],
+      ['Bing exact', `https://www.bing.com/search?q="%22${E}%22"`],
+      ['Google Pastebin', `https://www.google.com/search?q="%22${E}%22+site%3Apastebin.com`],
+      ['Google Gists', `https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
+      ['Skymem', `https://www.skymem.info/srch?q=${E}`],
     ]],
-    ['Developer / Code',[
-      ['GitHub search',`https://github.com/search?q=${E}`],
-      ['GitLab search',`https://gitlab.com/search?search=${E}`],
-      ['StackOverflow',`https://stackoverflow.com/search?q=${E}`],
+    ['Developer / Code', [
+      ['GitHub search', `https://github.com/search?q=${E}`],
+      ['GitLab search', `https://gitlab.com/search?search=${E}`],
+      ['StackOverflow', `https://stackoverflow.com/search?q=${E}`],
+      ['SourceForge', `https://sourceforge.net/directory/?q=${E}`],
     ]],
-    ['People / Social',[
-      ['Reddit',`https://www.reddit.com/search/?q=${E}`],
-      ['X (Twitter)',`https://twitter.com/search?q=${E}&f=live`],
-      ['LinkedIn (Google)',`https://www.google.com/search?q=site%3Alinkedin.com+%22${E}%22`],
+    ['People / Social', [
+      ['Reddit', `https://www.reddit.com/search/?q=${E}`],
+      ['X (Twitter)', `https://twitter.com/search?q=${E}&f=live`],
+      ['LinkedIn (Google)', `https://www.google.com/search?q=site%3Alinkedin.com+%22${E}%22`],
+      ['Facebook (Google)', `https://www.google.com/search?q=site%3Afacebook.com+%22${E}%22`],
     ]],
-    ['PGP & Keys',[
-      ['keys.openpgp.org',`https://keys.openpgp.org/search?q=${E}`],
-      ['Ubuntu Keyserver',`https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
+    ['PGP & Keys', [
+      ['keys.openpgp.org', `https://keys.openpgp.org/search?q=${E}`],
+      ['Ubuntu Keyserver', `https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
+      ['MIT PGP', `https://pgp.mit.edu/pks/lookup?search=${E}&op=index`],
     ]],
-    ['Gravatar & Misc',[
-      ['Gravatar image',`https://www.gravatar.com/avatar/${h}?s=400`],
-      ['Gravatar JSON',`https://www.gravatar.com/${h}.json`],
-      ['Hunter Verify (login)',`https://hunter.io/verify/${E}`],
+    ['Gravatar & Misc', [
+      ['Gravatar image', `https://www.gravatar.com/avatar/${h}?s=400`],
+      ['Gravatar JSON', `https://www.gravatar.com/${h}.json`],
+      ['Hunter Verify (login)', `https://hunter.io/verify/${E}`],
     ]]
   ];
-  emailLinks.innerHTML='';
-  for(const [title,items] of groups){
-    const wrap=document.createElement('div'); wrap.className='group';
-    wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-    const list=wrap.querySelector('.linklist');
-    items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);EMAIL_LINKS.push(url);});
+  emailLinks.innerHTML = '';
+  for (const [title, items] of groups) {
+    const wrap = document.createElement('div'); wrap.className = 'group';
+    wrap.innerHTML = `<h4>${title}</h4><div class="linklist"></div>`;
+    const list = wrap.querySelector('.linklist');
+    items.forEach(([label, url]) => {
+      const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = label;
+      list.appendChild(a); EMAIL_LINKS.push(url);
+    });
     emailLinks.appendChild(wrap);
   }
 }
 
-async function analyzeEmail(input){
-  const e=(input||emailEl.value||'').trim();
-  if(!e){ toast(emailMsg,'Enter an email.'); return; }
-  if(!isValidEmail(e)){ toast(emailMsg,'Invalid email.',true); return; }
-  const [local,domain]=e.split('@'); const prov=providerOf(domain);
-  outEmail.textContent=e; outDomain.textContent=domain;
-  outProvider.innerHTML=prov==='Unknown'?'<span class="pill unk">unknown</span>':`<span class="pill ok">${prov}</span>`;
-  mailto.href=`mailto:${encodeURIComponent(e)}`;
-  const hash=md5(e.toLowerCase()); outMD5.textContent=hash;
-  gravBox.innerHTML='<span class="sub">Checking Gravatar…</span>';
-  const img=new Image(); img.onload=()=>{gravBox.innerHTML='';img.style.width='100%';img.style.height='100%';img.style.objectFit='cover';gravBox.appendChild(img)}; img.onerror=()=>{gravBox.innerHTML='<span class="sub">No avatar</span>'}; img.src=`https://www.gravatar.com/avatar/${hash}?d=404&s=160`;
-  buildEmailLinks(e,domain);
-  toast(emailMsg,'Email analysis complete.');
+async function analyzeEmail(input) {
+  const e = (input || emailEl.value || '').trim();
+  if (!e) { toast(emailMsg, 'Enter an email.'); return; }
+  if (!isValidEmail(e)) { toast(emailMsg, 'Invalid email.', true); return; }
+  const [local, domain] = e.split('@'); const prov = providerOf(domain);
+  outEmail.textContent = e; outDomain.textContent = domain;
+  outProvider.innerHTML = prov === 'Unknown' ? '<span class="pill unk">unknown</span>' : `<span class="pill ok">${prov}</span>`;
+  mailto.href = `mailto:${encodeURIComponent(e)}`;
+  const hash = md5(e.toLowerCase()); outMD5.textContent = hash;
+  gravBox.innerHTML = '<span class="sub">Checking Gravatar…</span>';
+  const img = new Image();
+  img.onload = () => {
+    gravBox.innerHTML = ''; img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover'; gravBox.appendChild(img);
+  };
+  img.onerror = () => { gravBox.innerHTML = '<span class="sub">No avatar</span>'; };
+  img.src = `https://www.gravatar.com/avatar/${hash}?d=404&s=160`;
+  buildEmailLinks(e, domain);
+  toast(emailMsg, 'Email analysis complete.');
 }
-document.getElementById('analyzeBtn').onclick=()=>analyzeEmail();
-emailEl.addEventListener('keydown',e=>{if(e.key==='Enter')analyzeEmail();});
-document.getElementById('copyMD5').onclick=()=>{const v=outMD5.textContent.trim(); if(v&&v!=='—'){navigator.clipboard.writeText(v); toast(emailMsg,'MD5 copied.');} };
-document.getElementById('openEmailLinks').onclick=()=>EMAIL_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
+document.getElementById('analyzeBtn').onclick = () => analyzeEmail();
+emailEl.addEventListener('keydown', e => { if (e.key === 'Enter') analyzeEmail(); });
+document.getElementById('copyMD5').onclick = () => {
+  const v = outMD5.textContent.trim(); if (v && v !== '—') { navigator.clipboard.writeText(v); toast(emailMsg, 'MD5 copied.'); }
+};
+document.getElementById('openEmailLinks').onclick = () => EMAIL_LINKS.forEach(u => window.open(u, '_blank', 'noopener'));
 
 /* ======= USERNAME ======= */
-let USER_LINKS=[];
-const userLinks=document.getElementById('userLinks');
-function buildUserLinks(handle){
-  USER_LINKS=[];
-  const u=sanitize(handle);
-  const groups=[
-    ['Profiles',[
-      ['GitHub',`https://github.com/${u}`],
-      ['GitLab',`https://gitlab.com/${u}`],
-      ['Reddit',`https://www.reddit.com/user/${u}`],
-      ['X (Twitter)',`https://twitter.com/${u}`],
-      ['Instagram',`https://www.instagram.com/${u}/`],
-      ['TikTok',`https://www.tiktok.com/@${u}`],
-      ['YouTube',`https://www.youtube.com/@${u}`],
-      ['Keybase',`https://keybase.io/${u}`],
-      ['Medium',`https://medium.com/@${u}`],
-      ['HackerNews (search)',`https://hn.algolia.com/?q=${u}`],
+let USER_LINKS = [];
+const userLinks = document.getElementById('userLinks');
+function buildUserLinks(handle) {
+  USER_LINKS = [];
+  const u = sanitize(handle);
+  const groups = [
+    ['Profiles', [
+      ['GitHub', `https://github.com/${u}`],
+      ['GitLab', `https://gitlab.com/${u}`],
+      ['Reddit', `https://www.reddit.com/user/${u}`],
+      ['X (Twitter)', `https://twitter.com/${u}`],
+      ['Instagram', `https://www.instagram.com/${u}/`],
+      ['TikTok', `https://www.tiktok.com/@${u}`],
+      ['YouTube', `https://www.youtube.com/@${u}`],
+      ['Keybase', `https://keybase.io/${u}`],
+      ['Medium', `https://medium.com/@${u}`],
+      ['HackerNews (search)', `https://hn.algolia.com/?q=${u}`],
+      ['Twitch', `https://www.twitch.tv/${u}`],
     ]],
-    ['Search',[
-      ['Google',`https://www.google.com/search?q=${u}`],
-      ['DuckDuckGo',`https://duckduckgo.com/?q=${u}`],
-      ['Bing',`https://www.bing.com/search?q=${u}`],
-      ['Google site:pastebin',`https://www.google.com/search?q="%22${u}%22"+site%3Apastebin.com`],
-      ['Google site:gist',`https://www.google.com/search?q="%22${u}%22"+site%3Agist.github.com`],
+    ['Search', [
+      ['Google', `https://www.google.com/search?q=${u}`],
+      ['DuckDuckGo', `https://duckduckgo.com/?q=${u}`],
+      ['Bing', `https://www.bing.com/search?q=${u}`],
+      ['Google site:pastebin', `https://www.google.com/search?q="%22${u}%22"+site%3Apastebin.com`],
+      ['Google site:gist', `https://www.google.com/search?q="%22${u}%22"+site%3Agist.github.com`],
+      ['IntelX', `https://intelx.io/?s=${u}`],
     ]]
   ];
-  userLinks.innerHTML='';
-  for(const [title,items] of groups){
-    const wrap=document.createElement('div'); wrap.className='group';
-    wrap.innerHTML=`<h4>${title}</h4><div class="linklist"></div>`;
-    const list=wrap.querySelector('.linklist');
-    items.forEach(([label,url])=>{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent=label;list.appendChild(a);USER_LINKS.push(url);});
+  userLinks.innerHTML = '';
+  for (const [title, items] of groups) {
+    const wrap = document.createElement('div'); wrap.className = 'group';
+    wrap.innerHTML = `<h4>${title}</h4><div class="linklist"></div>`;
+    const list = wrap.querySelector('.linklist');
+    items.forEach(([label, url]) => {
+      const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = label;
+      list.appendChild(a); USER_LINKS.push(url);
+    });
     userLinks.appendChild(wrap);
   }
 }
-document.getElementById('userBtn').onclick=()=>{const v=document.getElementById('user').value.trim(); if(!v)return; buildUserLinks(v);};
-document.getElementById('openUserLinks').onclick=()=>USER_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
+document.getElementById('userBtn').onclick = () => {
+  const v = document.getElementById('user').value.trim(); if (!v) return; buildUserLinks(v);
+};
+document.getElementById('openUserLinks').onclick = () => USER_LINKS.forEach(u => window.open(u, '_blank', 'noopener'));
 
 /* ======= DOMAIN (DNS over HTTPS) ======= */
-let DOMAIN_LINKS=[];
-async function doh(name,type){ const r=await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`,{cache:'no-store'}); if(!r.ok) throw 0; return r.json(); }
-function rowify(arr){ return arr.map(x=>`<tr><th>${x[0]}</th><td>${x[1]}</td></tr>`).join(''); }
-document.getElementById('domainBtn').onclick=async()=>{
-  const d=document.getElementById('domain').value.trim(); const msg=document.getElementById('dnsMsg'); const tbl=document.getElementById('dnsTable'); const out=document.getElementById('domainLinks');
-  if(!d){ toast(msg,'Enter a domain.'); return; }
-  msg.textContent='Resolving…'; tbl.innerHTML=''; out.innerHTML=''; DOMAIN_LINKS=[];
-  try{
-    const [A,AAAA,MX,NS,TXT]=await Promise.all([doh(d,'A'),doh(d,'AAAA'),doh(d,'MX'),doh(d,'NS'),doh(d,'TXT')]);
-    const lines=[];
-    lines.push(['A', (A.Answer||[]).map(a=>a.data).join(', ')||'—']);
-    lines.push(['AAAA',(AAAA.Answer||[]).map(a=>a.data).join(', ')||'—']);
-    lines.push(['MX', (MX.Answer||[]).map(a=>a.data).join(' | ')||'—']);
-    lines.push(['NS', (NS.Answer||[]).map(a=>a.data).join(', ')||'—']);
-    lines.push(['TXT',(TXT.Answer||[]).map(a=>a.data.replaceAll('"','')).join('' | ')||'—']);
+let DOMAIN_LINKS = [];
+async function doh(name, type) {
+  const r = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`, { cache: 'no-store' });
+  if (!r.ok) throw 0;
+  return r.json();
+}
+function rowify(arr) {
+  return arr.map(x => `<tr><th>${x[0]}</th><td>${x[1]}</td></tr>`).join('');
+}
+document.getElementById('domainBtn').onclick = async () => {
+  const d = document.getElementById('domain').value.trim(); const msg = document.getElementById('dnsMsg'); const tbl = document.getElementById('dnsTable'); const out = document.getElementById('domainLinks');
+  if (!d) { toast(msg, 'Enter a domain.'); return; }
+  msg.textContent = 'Resolving…'; tbl.innerHTML = ''; out.innerHTML = ''; DOMAIN_LINKS = [];
+  try {
+    const [A, AAAA, MX, NS, TXT] = await Promise.all([doh(d, 'A'), doh(d, 'AAAA'), doh(d, 'MX'), doh(d, 'NS'), doh(d, 'TXT')]);
+    const lines = [];
+    lines.push(['A', (A.Answer || []).map(a => a.data).join(', ') || '—']);
+    lines.push(['AAAA', (AAAA.Answer || []).map(a => a.data).join(', ') || '—']);
+    lines.push(['MX', (MX.Answer || []).map(a => a.data).join(' | ') || '—']);
+    lines.push(['NS', (NS.Answer || []).map(a => a.data).join(', ') || '—']);
+    lines.push(['TXT', (TXT.Answer || []).map(a => a.data.replaceAll('"', '')).join(' | ') || '—']);
     tbl.innerHTML = rowify(lines);
 
     // Domain link packs
@@ -481,11 +573,13 @@ document.getElementById('domainBtn').onclick=async()=>{
         ['VirusTotal', `https://www.virustotal.com/gui/domain/${D}`],
         ['SecurityTrails', `https://securitytrails.com/domain/${D}/dns`],
         ['BuiltWith', `https://builtwith.com/${D}`],
+        ['WHOIS (Google)', `https://www.google.com/search?q=whois+${D}`],
       ]],
       ['Infra', [
         ['Shodan', `https://www.shodan.io/search?query=${D}`],
         ['Censys', `https://search.censys.io/search?resource=hosts&q=${D}`],
         ['DNSDumpster', `https://dnsdumpster.com/`],
+        ['ViewDNS', `https://viewdns.info/reverseip/?host=${D}&t=1`],
       ]]
     ];
     for (const [title, items] of groups) {
@@ -520,10 +614,8 @@ document.getElementById('ipBtn').onclick = async () => {
     const data = await r.json();
     if (data && data.latitude != null) {
       info.innerHTML = `IP: <b>${ip}</b> • ${data.city || '—'}, ${data.region || ''} ${data.country_name || ''} • ASN: ${data.asn || '—'} • Org: ${data.org || '—'}`;
-      if (typeof map !== 'undefined') {
-        map.setView([data.latitude, data.longitude], 6);
-        pulse(data.latitude, data.longitude, `${data.city || ''} ${data.country || ''}`.trim());
-      }
+      map.setView([data.latitude, data.longitude], 6);
+      pulse(data.latitude, data.longitude, `${data.city || ''} ${data.country || ''}`.trim() + ` (IP: ${ip})`);
     } else {
       info.innerHTML = 'Limited geo—use external tools below.';
     }
@@ -537,6 +629,7 @@ document.getElementById('ipBtn').onclick = async () => {
       ['GreyNoise', `https://viz.greynoise.io/ip/${s}`],
       ['AbuseIPDB', `https://www.abuseipdb.com/check/${s}`],
       ['VirusTotal IP', `https://www.virustotal.com/gui/ip-address/${s}`],
+      ['ThreatFox', `https://threatfox.abuse.ch/browse.php?search=ioc:${s}`],
     ]]
   ];
   for (const [title, items] of groups) {
@@ -602,6 +695,18 @@ exifFile.addEventListener('change', async (e) => {
         rows += `<tr><th>${k}</th><td>${String(v).slice(0, 400)}</td></tr>`;
       }
       exifOut.innerHTML = `<table class="meta">${rows}</table>`;
+
+      // Add GPS to map if present
+      const gps = all.GPSLatitude && all.GPSLongitude;
+      if (gps) {
+        const latRef = all.GPSLatitudeRef || 'N';
+        const lngRef = all.GPSLongitudeRef || 'E';
+        const lat = (all.GPSLatitude[0] + all.GPSLatitude[1] / 60 + all.GPSLatitude[2] / 3600) * (latRef === 'N' ? 1 : -1);
+        const lng = (all.GPSLongitude[0] + all.GPSLongitude[1] / 60 + all.GPSLongitude[2] / 3600) * (lngRef === 'E' ? 1 : -1);
+        map.setView([lat, lng], 10);
+        pulse(lat, lng, `EXIF GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+        toast(exifOut, 'GPS added to map.', false);
+      }
     });
     URL.revokeObjectURL(img.src);
   };
@@ -652,15 +757,18 @@ const nodes = [
   { name: 'Tel Aviv, IL', lat: 32.0853, lng: 34.7818 },
 ];
 nodes.forEach((n, i) => setTimeout(() => pulse(n.lat, n.lng, n.name), 700 * i));
-setTimeout(() => { arc(nodes[0], nodes[1]); setTimeout(() => arc(nodes[1], nodes[2], '#17e2e2'), 600); setTimeout(() => arc(nodes[2], nodes[3], '#00e5ff'), 1200); setTimeout(() => arc(nodes[3], nodes[4], '#7af7ff'), 1800); }, 1200);
+setTimeout(() => {
+  arc(nodes[0], nodes[1]); setTimeout(() => arc(nodes[1], nodes[2], '#17e2e2'), 600);
+  setTimeout(() => arc(nodes[2], nodes[3], '#00e5ff'), 1200); setTimeout(() => arc(nodes[3], nodes[4], '#7af7ff'), 1800);
+}, 1200);
 
 /* ======= TERMINAL ======= */
 const term = document.getElementById('terminal');
 const termIn = document.getElementById('termIn');
 const termBtn = document.getElementById('termBtn');
-function tEcho(line=''){ term.textContent += (term.textContent ? '\n' : '') + line; term.scrollTop = term.scrollHeight; }
-function tClear(){ term.textContent=''; }
-function tHelp(){
+function tEcho(line = '') { term.textContent += (term.textContent ? '\n' : '') + line; term.scrollTop = term.scrollHeight; }
+function tClear() { term.textContent = ''; }
+function tHelp() {
   tEcho(`Commands:
   help                          show this help
   analyze <email>               run Email Intelligence
@@ -669,27 +777,29 @@ function tHelp(){
   ip <1.2.3.4>                  IP intel + links
   dns <example.com>             alias for 'domain'
   extract                       open Text Extractor section
-  clear                         clear terminal`);
+  clear                         clear terminal
+  map                           open Map section`);
 }
-function run(cmdRaw){
+function run(cmdRaw) {
   const raw = (cmdRaw || termIn.value || '').trim();
-  if(!raw) return;
-  tEcho('> ' + raw); termIn.value='';
+  if (!raw) return;
+  tEcho('> ' + raw); termIn.value = '';
   const [cmd, ...rest] = raw.split(/\s+/); const arg = rest.join(' ').trim();
-  switch(cmd.toLowerCase()){
+  switch (cmd.toLowerCase()) {
     case 'help': return tHelp();
     case 'clear': return tClear();
-    case 'analyze': if(!arg) return tEcho('Usage: analyze <email>'); analyzeEmail(arg); return go('emailCard');
-    case 'username': if(!arg) return tEcho('Usage: username <handle>'); document.getElementById('user').value = arg; buildUserLinks(arg); go('userCard'); return;
+    case 'analyze': if (!arg) return tEcho('Usage: analyze <email>'); analyzeEmail(arg); return go('emailCard');
+    case 'username': if (!arg) return tEcho('Usage: username <handle>'); document.getElementById('user').value = arg; buildUserLinks(arg); go('userCard'); return;
     case 'domain':
-    case 'dns': if(!arg) return tEcho('Usage: domain <example.com>'); document.getElementById('domain').value = arg; document.getElementById('domainBtn').click(); go('domainCard'); return;
-    case 'ip': if(!arg) return tEcho('Usage: ip <1.2.3.4>'); document.getElementById('ip').value = arg; document.getElementById('ipBtn').click(); go('ipCard'); return;
+    case 'dns': if (!arg) return tEcho('Usage: domain <example.com>'); document.getElementById('domain').value = arg; document.getElementById('domainBtn').click(); go('domainCard'); return;
+    case 'ip': if (!arg) return tEcho('Usage: ip <1.2.3.4>'); document.getElementById('ip').value = arg; document.getElementById('ipBtn').click(); go('ipCard'); return;
     case 'extract': go('textCard'); return;
+    case 'map': go('mapCard'); return;
     default: return tEcho("Unknown command. Type 'help'.");
   }
 }
-termBtn.addEventListener('click',()=>run());
-termIn.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
+termBtn.addEventListener('click', () => run());
+termIn.addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
 tEcho('[CMX] OSINT Console ready. Type "help".');
 
 /* ======= BOOT ======= */
@@ -697,4 +807,3 @@ document.getElementById('analyzeBtn').focus();
 </script>
 </body>
 </html>
-```0
