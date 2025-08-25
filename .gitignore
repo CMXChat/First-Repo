@@ -1,0 +1,49 @@
+# Environment variables and API keys
+.env
+.env.local
+.env.production
+*.env
+
+# Configuration files with secrets
+config.js
+config.local.js
+secrets.js
+*.key
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary folders
+tmp/
+temp/
