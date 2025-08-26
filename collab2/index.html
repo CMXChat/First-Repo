@@ -3,35 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CMX – From Live Platform to Full‑Service Digital Agency</title>
-  <meta name="description" content="CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams.">
+  <title>CMX — Digital Agency for Creators & Startups</title>
+  <meta name="description" content="From live community platform to full‑service digital agency for creators, startups, and teams." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #000000;
-      --panel: #0f0f10;
-      --panel-2: #121316;
-      --ink: #e7e9ea;
-      --muted: #8b98a5;
-      --line: #2f3336;
-      --accent: #1d9bf0;
-      --accent2: #82c8ff;
-      --ok: #19c37d;
-      --bad: #ff5a5f;
-      --text: #e7e9ea;
-      --pill: #1a1a1a;
-      --border: #2f3336;
-      --accent-2: #ff5a5f;
-      --accent-3: #19c37d;
-      --accent-4: #8b5cf6;
+      --bg: #ffffff;
+      --text: #0b0f1a;
+      --muted: #5b6473;
+      --line: #e6e9ef;
+      --pill: #f3f5f9;
+      --accent: #2563eb;
+      --accent-2: #22d3ee;
+      --accent-3: #a855f7;
+      --accent-4: #10b981;
       --accent-5: #06b6d4;
-      --shadow: 0 10px 30px rgba(0,0,0,0.3);
-      --shadow-lg: 0 20px 60px rgba(0,0,0,0.4);
-      --shadow-xl: 0 25px 80px rgba(0,0,0,0.5);
-      --radius: 14px;
-      --radius-lg: 18px;
+      --accent2: #60a5fa;
+      --ok: #10b981;
+      --bad: #ef4444;
+      --ink: #0b0f1a;
+      --panel: #ffffff;
+      --panel-2: #f9fafb;
+      --border: #e6e9ef;
+      --shadow-sm: 0 8px 20px rgba(2, 6, 23, .06);
+      --shadow: 0 16px 40px rgba(2, 6, 23, .08);
+      --shadow-lg: 0 20px 60px rgba(2, 6, 23, .1);
+      --shadow-xl: 0 25px 80px rgba(2, 6, 23, .12);
+      --radius: 18px;
+      --radius-lg: 28px;
       --transition: all 0.2s ease;
       --transition-fast: all 0.1s ease;
     }
@@ -50,7 +51,7 @@
     body { 
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; 
       background: var(--bg); 
-      color: var(--ink);
+      color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
     }
@@ -71,15 +72,15 @@
       position: sticky; 
       top: 0; 
       z-index: 50; 
-      backdrop-filter: saturate(180%) blur(20px); 
-      background: rgba(0,0,0,0.6); 
+      backdrop-filter: saturate(160%) blur(10px); 
+      background: rgba(255,255,255,.82); 
       border-bottom: 1px solid var(--line);
       transition: var(--transition);
     }
     
     header.scrolled {
-      background: rgba(0,0,0,0.8);
-      box-shadow: var(--shadow);
+      background: rgba(255,255,255,0.95);
+      box-shadow: var(--shadow-sm);
     }
     
     .nav { 
@@ -87,24 +88,24 @@
       align-items: center; 
       justify-content: space-between; 
       gap: 16px; 
-      padding: 16px 0; 
+      padding: 14px 0; 
     }
     
     .logo { 
       display: flex; 
       align-items: center; 
-      gap: 12px; 
-      font-weight: 800; 
+      gap: 10px; 
+      font-weight: 900; 
       letter-spacing: 0.2px;
       font-size: 1.5rem;
     }
     
     .logo-dot { 
-      width: 12px; 
-      height: 12px; 
+      width: 10px; 
+      height: 10px; 
       border-radius: 999px; 
       background: linear-gradient(135deg, var(--accent), #60a5fa); 
-      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
       animation: pulse 2s infinite;
     }
     
@@ -116,58 +117,40 @@
     nav ul { 
       list-style: none; 
       display: flex; 
-      gap: 28px; 
+      gap: 22px; 
       align-items: center; 
       padding: 0; 
       margin: 0; 
     }
     
     nav a { 
-      color: var(--ink); 
-      font-weight: 500; 
-      opacity: 0.9;
-      position: relative;
-      padding: 8px 0;
+      color: #1f2937; 
+      font-weight: 600; 
+      opacity: 0.9; 
+      padding: 8px 0; 
+      border-bottom: 2px solid transparent;
     }
     
-    nav a:hover { 
-      opacity: 1;
-      color: var(--accent);
-    }
-    
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent);
-      transition: var(--transition);
-    }
-    
-    nav a:hover::after,
-    nav a.active::after {
-      width: 100%;
+    nav a[aria-current="page"], nav a:hover { 
+      opacity: 1; 
+      border-bottom-color: var(--accent); 
     }
     
     .cta { 
       display: inline-flex; 
       align-items: center; 
       gap: 10px; 
-      padding: 12px 20px; 
+      padding: 10px 16px; 
       border-radius: 999px; 
-      background: var(--accent); 
+      background: var(--text); 
       color: #fff; 
-      font-weight: 600; 
-      box-shadow: var(--shadow);
+      font-weight: 700; 
+      box-shadow: var(--shadow-sm);
       transition: var(--transition);
     }
     
     .cta:hover { 
-      transform: translateY(-2px); 
-      box-shadow: var(--shadow-lg);
-      background: var(--accent2);
+      transform: translateY(-1px); 
     }
     
     .mobile-menu-toggle {
@@ -199,88 +182,81 @@
     
     /* Hero */
     .hero { 
-      padding: 80px 0 40px; 
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      position: relative;
-      overflow: hidden;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
+      position: relative; 
+      isolation: isolate; 
+      padding: 84px 0 40px; 
+      overflow: clip; 
     }
     
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(225, 29, 72, 0.1) 0%, transparent 50%);
-      opacity: 0.4;
-      animation: float 20s ease-in-out infinite;
+    .hero .mesh { 
+      content: ""; 
+      position: absolute; 
+      inset: -20% -15% -30% -15%; 
+      background:
+        radial-gradient(60% 50% at 20% 25%, #8ec5ff22 0%, transparent 60%),
+        radial-gradient(55% 55% at 85% 20%, #7cfac522 0%, transparent 55%),
+        radial-gradient(50% 60% at 40% 85%, #ff7ad522 0%, transparent 60%);
+      filter: saturate(120%) blur(8px);
+      z-index: -1; 
     }
     
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      33% { transform: translateY(-20px) rotate(1deg); }
-      66% { transform: translateY(10px) rotate(-1deg); }
+    .grid-hero { 
+      display: grid; 
+      grid-template-columns: 1fr; 
+      gap: 36px; 
+      align-items: center; 
     }
     
-    .hero .container {
-      position: relative;
-      z-index: 1;
+    @media (min-width: 980px) { 
+      .grid-hero { 
+        grid-template-columns: 1.05fr .95fr; 
+        gap: 48px; 
+      } 
     }
     
-    .hero h1 { 
-      font-size: clamp(32px, 6vw, 64px); 
-      line-height: 1.1; 
+    .eyebrow { 
+      color: #e11d48; 
+      font-weight: 800; 
+      font-size: 12px; 
+      letter-spacing: .16em; 
+      text-transform: uppercase; 
+      margin-bottom: 12px; 
+    }
+    
+    .h1 { 
+      font-size: clamp(30px, 5.4vw, 64px); 
+      line-height: 1.06; 
       letter-spacing: -0.02em; 
-      margin: 0 0 24px;
-      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative;
+      margin: 0 0 14px; 
     }
     
-    .hero h1::after {
-      content: '';
-      position: absolute;
-      bottom: -12px;
-      left: 0;
-      width: 100px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
-      border-radius: 2px;
-      animation: shimmer 3s ease-in-out infinite;
+    .spark { 
+      height: 3px; 
+      width: 220px; 
+      border-radius: 999px; 
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3)); 
+      background-size: 200% 100%; 
+      margin: 8px 0 18px; 
+      animation: spark 5s ease-in-out infinite; 
     }
     
-    @keyframes shimmer {
-      0%, 100% { 
-        background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
-        transform: translateX(0);
-      }
-      50% { 
-        background: linear-gradient(90deg, var(--accent-3) 0%, var(--accent) 50%, var(--accent-2) 100%);
-        transform: translateX(20px);
-      }
+    @keyframes spark { 
+      0% { background-position: 0% } 
+      50% { background-position: 100% } 
+      100% { background-position: 0% } 
     }
     
-    .hero p { 
+    .sub { 
       color: var(--muted); 
-      font-size: clamp(18px, 2.5vw, 20px); 
-      line-height: 1.7; 
-      margin: 0 0 32px;
-      max-width: 800px;
+      font-size: clamp(16px, 2.1vw, 18px); 
+      line-height: 1.75; 
+      margin: 0 0 22px; 
     }
     
-    .btn-row { 
+    .buttons { 
       display: flex; 
       flex-wrap: wrap; 
-      gap: 16px; 
+      gap: 12px; 
       align-items: center; 
     }
     
@@ -288,779 +264,302 @@
       display: inline-flex; 
       align-items: center; 
       gap: 10px; 
-      padding: 16px 24px; 
+      padding: 12px 18px; 
       border-radius: 999px; 
-      font-weight: 600; 
-      border: 1px solid var(--border); 
+      border: 1px solid var(--line); 
       background: #fff; 
-      transition: var(--transition);
-      cursor: pointer;
-      font-size: 16px;
+      font-weight: 800; 
+      box-shadow: var(--shadow-sm); 
+      transition: transform .2s ease, box-shadow .2s ease; 
+    }
+    
+    .btn:hover { 
+      transform: translateY(-2px); 
+      box-shadow: var(--shadow); 
     }
     
     .btn-primary { 
-      background: var(--accent); 
+      background: linear-gradient(135deg, var(--accent) 0%, #60a5fa 100%); 
       color: #fff; 
-      border-color: transparent;
-      box-shadow: var(--shadow);
+      border-color: transparent; 
     }
     
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-      background: #1d4ed8;
-    }
-    
-    .btn-secondary { 
+    .btn-ghost { 
       background: #fff; 
-      color: #111827;
-      border-color: var(--border);
+      color: #111827; 
     }
     
-    .btn-secondary:hover {
-      background: var(--pill);
-      border-color: var(--accent);
-      color: var(--accent);
+    .micro { 
+      display: block; 
+      margin-top: 8px; 
+      color: #6b7280; 
+      font-size: 13px; 
     }
     
-    .btn span.arrow { 
-      transition: var(--transition);
+    .chips { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 10px; 
+      margin: 16px 0 6px; 
     }
     
-    .btn:hover span.arrow {
-      transform: translateX(4px);
+    .chip { 
+      padding: 8px 12px; 
+      border-radius: 999px; 
+      background: var(--pill); 
+      border: 1px solid var(--line); 
+      color: #374151; 
+      font-weight: 700; 
+      font-size: 13px; 
+      transition: transform .15s ease; 
+    }
+    
+    .chip:hover { 
+      transform: translateY(-2px); 
+    }
+    
+    .visual { 
+      position: relative; 
+      width: 100%; 
+      aspect-ratio: 4 / 3; 
+      border-radius: var(--radius-lg); 
+      background: radial-gradient(120% 100% at 20% 10%, #e8f1ff 0%, #fafafa 60%); 
+      border: 1px solid var(--line); 
+      box-shadow: var(--shadow); 
+      overflow: hidden; 
+    }
+    
+    .visual .shine { 
+      position: absolute; 
+      inset: -40% -20% auto auto; 
+      width: 80%; 
+      height: 80%; 
+      rotate: -12deg; 
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.32) 50%, rgba(255,255,255,0) 100%); 
+      mix-blend-mode: soft-light; 
+      animation: sweep 6s ease-in-out infinite; 
+    }
+    
+    @keyframes sweep { 
+      0%, 100% { transform: translateX(-40%) translateY(0); } 
+      50% { transform: translateX(20%) translateY(-2%); } 
+    }
+    
+    .visual .mock { 
+      position: absolute; 
+      inset: 0; 
+      display: grid; 
+      place-items: center; 
+    }
+    
+    .mock-art { 
+      width: 78%; 
+      max-width: 520px; 
+      border-radius: 18px; 
+      background: linear-gradient(135deg, #0ea5e9 0%, #22c55e 50%, #a855f7 100%); 
+      opacity: .18; 
+      filter: blur(6px); 
+    }
+    
+    .mock-ui { 
+      position: absolute; 
+      width: min(86%, 620px); 
+      border-radius: 16px; 
+      background: #fff; 
+      border: 1px solid var(--line); 
+      box-shadow: var(--shadow); 
+      overflow: hidden; 
+    }
+    
+    .mock-ui .bar { 
+      display: flex; 
+      gap: 6px; 
+      align-items: center; 
+      padding: 10px; 
+      background: #f9fafb; 
+      border-bottom: 1px solid var(--line); 
+    }
+    
+    .dot { 
+      width: 10px; 
+      height: 10px; 
+      border-radius: 999px; 
+      background: #e5e7eb; 
+    }
+    
+    .mock-ui .body { 
+      padding: 16px; 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 12px; 
+    }
+    
+    .skeleton { 
+      height: 12px; 
+      background: #eef2f7; 
+      border-radius: 8px; 
+    }
+    
+    /* KPI strip */
+    .kpis { 
+      display: grid; 
+      grid-template-columns: repeat(12, 1fr); 
+      gap: 14px; 
+      margin-top: 22px; 
+    }
+    
+    .kpi { 
+      grid-column: span 12; 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 12px 14px; 
+      border: 1px solid var(--line); 
+      border-radius: 14px; 
+      background: #fff; 
+    }
+    
+    .kpi strong { 
+      font-size: 18px; 
+    }
+    
+    @media (min-width: 720px) { 
+      .kpi { 
+        grid-column: span 4; 
+      } 
     }
     
     /* Section headings */
-    .eyebrow { 
-      color: var(--accent-2); 
-      font-weight: 700; 
-      font-size: 14px; 
-      letter-spacing: 0.14em; 
+    section { 
+      padding: 56px 0; 
+      border-top: 1px solid var(--line); 
+    }
+    
+    .eyebrow2 { 
+      color: var(--accent-3); 
+      font-weight: 800; 
+      font-size: 12px; 
+      letter-spacing: .16em; 
       text-transform: uppercase; 
-      margin-bottom: 12px;
-      display: inline-block;
-      padding: 6px 12px;
-      background: rgba(225, 29, 72, 0.1);
-      border-radius: 999px;
+      margin-bottom: 10px; 
     }
     
     .h2 { 
-      font-size: clamp(28px, 5vw, 48px); 
-      line-height: 1.2; 
-      margin: 0 0 16px;
-      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: clamp(24px, 4.4vw, 42px); 
+      line-height: 1.1; 
+      margin: 0 0 12px; 
     }
     
     .lead { 
       color: var(--muted); 
-      font-size: 20px; 
-      margin: 0 0 28px;
-      line-height: 1.6;
+      font-size: 18px; 
+      margin: 0 0 22px; 
     }
     
-    /* Sections */
-    section { 
-      padding: 80px 0; 
-      border-top: 1px solid var(--border);
-      position: relative;
+    /* Cards grid */
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(12, 1fr); 
+      gap: 22px; 
     }
     
-    section:nth-child(even) {
-      background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
-    }
-    
-    /* Alternating Horizontal Cards */
-    .cards-container {
-      margin: 40px 0;
-      position: relative;
-    }
-    
-    .cards-row {
-      display: flex;
-      gap: 24px;
-      margin-bottom: 24px;
-      overflow: hidden;
-    }
-    
-    .cards-row:nth-child(odd) {
-      justify-content: flex-start;
-    }
-    
-    .cards-row:nth-child(even) {
-      justify-content: flex-end;
-    }
-    
-    .card {
-      flex: 0 0 350px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow);
+    .card { 
+      grid-column: span 12; 
+      display: grid; 
+      grid-template-columns: 1fr; 
+      border: 1px solid var(--line); 
+      border-radius: var(--radius-lg); 
+      overflow: hidden; 
+      background: #fff; 
+      box-shadow: var(--shadow-sm); 
       transition: var(--transition);
-      opacity: 0;
-      transform: translateY(40px);
-    }
-    
-    .card.revealed {
-      opacity: 1;
-      transform: translateY(0);
     }
     
     .card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-xl);
-      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
     }
     
-    .card-media {
-      height: 200px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-4) 100%);
-      position: relative;
-      overflow: hidden;
+    .card-media { 
+      position: relative; 
+      height: 200px; 
+      background: radial-gradient(80% 120% at 20% 20%, #e8f1ff 0%, #fafafa 60%); 
     }
     
-    .card-media::after {
-      content: '';
-      position: absolute;
-      inset: 16px;
-      border-radius: 16px;
-      background: conic-gradient(from 140deg, var(--accent), var(--accent-4), var(--accent-3), var(--accent-2), var(--accent));
-      filter: blur(20px);
-      opacity: 0.7;
-      animation: rotate 20s linear infinite;
+    .card-body { 
+      padding: 22px; 
     }
     
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    .card h3 { 
+      margin: 0 0 8px; 
+      font-size: 20px; 
     }
     
-    .card-body {
-      padding: 24px;
+    .card p { 
+      margin: 0 0 14px; 
+      color: var(--muted); 
     }
     
-    .card h3 {
-      margin: 0 0 12px;
-      font-size: 20px;
-      color: var(--text);
+    .card a { 
+      color: var(--accent); 
+      font-weight: 700; 
     }
     
-    .card p {
-      margin: 0 0 16px;
-      color: var(--muted);
-      line-height: 1.6;
+    @media (min-width: 880px) {
+      .card { 
+        grid-template-columns: .9fr 1.1fr; 
+      }
+      .card-media { 
+        min-height: 220px; 
+      }
+      .card { 
+        grid-column: span 6; 
+      }
     }
     
-    .card a {
-      color: var(--accent);
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+    /* Features list */
+    .features { 
+      display: grid; 
+      grid-template-columns: repeat(12, 1fr); 
+      gap: 18px; 
     }
     
-    .card a:hover {
-      gap: 12px;
-    }
-    
-    /* Stats section */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 32px;
-      margin: 40px 0;
-    }
-    
-    .stat {
-      text-align: center;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .stat::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+    .feature { 
+      grid-column: span 12; 
+      padding: 18px; 
+      border: 1px solid var(--line); 
+      border-radius: var(--radius); 
+      background: #fff; 
       transition: var(--transition);
-      z-index: 1;
     }
     
-    .stat:hover::before {
-      left: 100%;
-    }
-    
-    .stat-number {
-      font-size: 3rem;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 8px;
-      position: relative;
-      z-index: 2;
-      display: inline-block;
-      transform: scale(0.8);
-      opacity: 0;
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .stat-number.animate {
-      transform: scale(1);
-      opacity: 1;
-    }
-    
-    .stat-number.counting {
-      animation: numberPulse 0.5s ease-out;
-    }
-    
-    @keyframes numberPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    
-    .stat-label {
-      color: var(--muted);
-      font-weight: 500;
-      position: relative;
-      z-index: 2;
-      transform: translateY(20px);
-      opacity: 0;
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .stat-label.animate {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    
-    /* Floating number particles */
-    .stat-number::after {
-      content: attr(data-suffix);
-      position: absolute;
-      top: 0;
-      right: -20px;
-      font-size: 0.8em;
-      opacity: 0;
-      transform: translateX(10px);
-      transition: all 0.4s ease;
-    }
-    
-    .stat-number.animate::after {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    
-    /* Enhanced stat hover effects */
-    .stat:hover .stat-number {
-      transform: scale(1.05);
-      text-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
-    }
-    
-    .stat:hover .stat-label {
-      color: var(--accent);
+    .feature:hover {
       transform: translateY(-2px);
-    }
-    
-    /* Glowing effect for active stats */
-    .stat.active {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
-      border-radius: var(--radius);
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .stat.active .stat-number {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-3) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    /* Infographic Elements */
-    .stat-icon {
-      font-size: 2.5rem;
-      margin-bottom: 16px;
-      filter: grayscale(0.3);
-      transition: var(--transition);
-      animation: iconFloat 3s ease-in-out infinite;
-    }
-    
-    .stat:nth-child(1) .stat-icon { animation-delay: 0s; }
-    .stat:nth-child(2) .stat-icon { animation-delay: 0.5s; }
-    .stat:nth-child(3) .stat-icon { animation-delay: 1s; }
-    .stat:nth-child(4) .stat-icon { animation-delay: 1.5s; }
-    
-    @keyframes iconFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-8px) rotate(2deg); }
-    }
-    
-    .stat:hover .stat-icon {
-      filter: grayscale(0);
-      transform: scale(1.1);
-    }
-    
-    .stat-chart {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    
-    .chart-bar {
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
-      height: 100%;
-      width: 100%;
-      transform: scaleX(0);
-      transform-origin: left;
-      animation: chartGrow 2s ease-out forwards;
-      animation-delay: 1s;
-    }
-    
-    @keyframes chartGrow {
-      to { transform: scaleX(1); }
-    }
-    
-    .stat:nth-child(1) .chart-bar { animation-delay: 1.2s; }
-    .stat:nth-child(2) .chart-bar { animation-delay: 1.4s; }
-    .stat:nth-child(3) .chart-bar { animation-delay: 1.6s; }
-    .stat:nth-child(4) .chart-bar { animation-delay: 1.8s; }
-    
-    /* Enhanced stat layout */
-    .stat {
-      position: relative;
-      padding: 32px 24px;
-      background: linear-gradient(135deg, rgba(29, 155, 240, 0.05) 0%, rgba(25, 195, 125, 0.03) 100%);
-      border: 1px solid rgba(29, 155, 240, 0.1);
-      border-radius: var(--radius-lg);
-      transition: var(--transition);
-    }
-    
-    .stat:hover {
-      background: linear-gradient(135deg, rgba(29, 155, 240, 0.08) 0%, rgba(25, 195, 125, 0.05) 100%);
+      box-shadow: var(--shadow);
       border-color: var(--accent);
-      transform: translateY(-8px);
     }
     
-    /* Progress rings for percentage stats */
-    .stat[data-suffix="%"] .stat-number {
-      position: relative;
-    }
-    
-    .stat[data-suffix="%"] .stat-number::before {
-      content: '';
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      right: -10px;
-      bottom: -10px;
-      border: 3px solid rgba(29, 155, 240, 0.2);
-      border-top: 3px solid var(--accent);
-      border-radius: 50%;
-      animation: progressRing 2s ease-out forwards;
-      animation-delay: 1.5s;
-    }
-    
-    @keyframes progressRing {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    /* Data visualization enhancements */
-    .stat-number {
-      position: relative;
-      display: inline-block;
-    }
-    
-    .stat-number::after {
-      content: attr(data-suffix);
-      position: absolute;
-      top: 0;
-      right: -30px;
-      font-size: 0.6em;
-      opacity: 0;
-      transform: translateX(10px);
-      transition: all 0.4s ease;
-      color: var(--accent2);
-    }
-    
-    .stat-number.animate::after {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    
-    /* Collaboration indicators */
-    .collab-indicator {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(16, 185, 129, 0.9);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 600;
-      z-index: 1000;
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      animation: slideInRight 0.6s ease-out;
-    }
-    
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    .collab-indicator .pulse {
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    
-    .collab-indicator .user-count {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    
-    /* Live collaboration elements */
-    .live-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(239, 68, 68, 0.1);
-      color: #dc2626;
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-left: 12px;
-    }
-    
-    .live-indicator::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: #dc2626;
-      border-radius: 50%;
-      animation: livePulse 1.5s infinite;
-    }
-    
-    @keyframes livePulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.2); }
-    }
-    
-    /* Collaborative workspace feel */
-    .workspace-header {
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      border-bottom: 2px solid var(--accent);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .workspace-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent-4));
-      animation: workspaceFlow 3s linear infinite;
-    }
-    
-    @keyframes workspaceFlow {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-    
-    /* Team collaboration section */
-    .team-collab {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(16, 185, 129, 0.02) 100%);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      margin: 40px 0;
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .team-collab::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(from 0deg, transparent, rgba(37, 99, 235, 0.1), transparent);
-      animation: rotate 20s linear infinite;
-    }
-    
-    .team-collab-content {
-      position: relative;
-      z-index: 2;
-    }
-    
-    .collab-users {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin: 24px 0;
-      flex-wrap: wrap;
-    }
-    
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-4));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 16px;
-      position: relative;
-      animation: userFloat 3s ease-in-out infinite;
-    }
-    
-    .user-avatar:nth-child(2) { animation-delay: 0.5s; }
-    .user-avatar:nth-child(3) { animation-delay: 1s; }
-    .user-avatar:nth-child(4) { animation-delay: 1.5s; }
-    
-    @keyframes userFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    
-    .user-avatar::after {
-      content: '';
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      width: 12px;
-      height: 12px;
-      background: #10b981;
-      border: 2px solid white;
-      border-radius: 50%;
-    }
-    
-    /* Real-time collaboration feed */
-    .collab-feed {
-      background: white;
-      border-radius: var(--radius);
-      padding: 20px;
-      margin: 24px 0;
-      border: 1px solid var(--border);
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    
-    .collab-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 0;
-      border-bottom: 1px solid #f3f4f6;
-      animation: slideInUp 0.5s ease-out;
-    }
-    
-    .collab-item:last-child {
-      border-bottom: none;
-    }
-    
-    @keyframes slideInUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    
-    .collab-item .user-initial {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    
-    .collab-item .action {
-      color: var(--muted);
-      font-size: 14px;
-    }
-    
-    .collab-item .time {
-      color: #9ca3af;
-      font-size: 12px;
-      margin-left: auto;
-    }
-    
-    /* Circular Progress Metrics */
-    .collab-metrics {
-      display: flex;
-      justify-content: space-around;
-      gap: 20px;
-      margin: 32px 0;
-      flex-wrap: wrap;
-    }
-    
-    .metric-item {
-      text-align: center;
-      flex: 1;
-      min-width: 120px;
-    }
-    
-    .metric-circle {
-      position: relative;
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 12px;
-    }
-    
-    .metric-svg {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-    
-    .metric-svg path:first-child {
-      fill: none;
-      stroke: rgba(29, 155, 240, 0.2);
-      stroke-width: 3;
-    }
-    
-    .metric-progress {
-      fill: none;
-      stroke: var(--accent);
-      stroke-width: 3;
-      stroke-linecap: round;
-      animation: progressFill 2s ease-out forwards;
-      animation-delay: 2s;
-    }
-    
-    @keyframes progressFill {
-      from { stroke-dasharray: 0, 100; }
-      to { stroke-dasharray: var(--stroke-dasharray); }
-    }
-    
-    .metric-value {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 14px;
-      font-weight: 700;
+    .feature strong { 
+      display: block; 
+      margin-bottom: 6px; 
       color: var(--accent);
     }
     
-    .metric-label {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    
-    /* Enhanced hover effects */
-    .metric-item:hover .metric-circle {
-      transform: scale(1.1);
-      transition: transform 0.3s ease;
-    }
-    
-    .metric-item:hover .metric-progress {
-      stroke: var(--accent2);
-      filter: drop-shadow(0 0 8px rgba(29, 155, 240, 0.4));
-    }
-    
-    /* Project Stats Bars */
-    .project-stats {
-      margin: 16px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .stat-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-    }
-    
-    .stat-bar .stat-label {
-      min-width: 60px;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    
-    .stat-bar-container {
-      flex: 1;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .stat-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
-      border-radius: 3px;
-      transform: scaleX(0);
-      transform-origin: left;
-      animation: barFill 1.5s ease-out forwards;
-      animation-delay: 2.5s;
-    }
-    
-    @keyframes barFill {
-      to { transform: scaleX(1); }
-    }
-    
-    .stat-value {
-      min-width: 40px;
-      text-align: right;
-      color: var(--accent);
-      font-weight: 600;
-    }
-    
-    /* Enhanced card hover effects */
-    .card:hover .stat-bar-fill {
-      filter: brightness(1.2);
-      box-shadow: 0 0 8px rgba(29, 155, 240, 0.3);
+    @media (min-width: 900px) { 
+      .feature { 
+        grid-column: span 6; 
+      } 
     }
     
     /* Footer */
     footer { 
-      border-top: 1px solid var(--border); 
-      padding: 60px 0 40px; 
-      color: #6b7280;
-      background: #f8fafc;
+      border-top: 1px solid var(--line); 
+      padding: 40px 0; 
+      color: #6b7280; 
     }
     
     .foot a { 
-      color: #374151;
+      color: #374151; 
       transition: var(--transition);
     }
     
@@ -1083,7 +582,7 @@
         background: white;
         flex-direction: column;
         padding: 20px;
-        border-top: 1px solid var(--border);
+        border-top: 1px solid var(--line);
         box-shadow: var(--shadow);
       }
       
@@ -1091,75 +590,58 @@
         display: flex;
       }
       
-      .hero {
-        padding: 60px 0 40px;
-        min-height: auto;
+      .grid-hero {
+        grid-template-columns: 1fr;
+        gap: 24px;
       }
       
-      .hero h1::after {
-        width: 60px;
-        left: 50%;
-        transform: translateX(-50%);
+      .visual {
+        aspect-ratio: 3 / 2;
       }
       
-      .btn-row {
-        flex-direction: column;
-        align-items: stretch;
+      .kpis {
+        grid-template-columns: 1fr;
       }
       
-      .btn {
-        justify-content: center;
+      .grid {
+        grid-template-columns: 1fr;
       }
       
-      .cards-row {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .card {
-        flex: 0 0 auto;
-        width: 100%;
-        max-width: 350px;
-      }
-      
-      .stats {
+      .features {
         grid-template-columns: 1fr;
       }
     }
     
-    @media (max-width: 480px) {
-      .hero h1 {
-        font-size: clamp(28px, 8vw, 40px);
-      }
-      
-      .hero p {
-        font-size: 16px;
-      }
-      
-      .card {
-        max-width: 100%;
-      }
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) { 
+      .spark, .visual .shine { 
+        animation: none; 
+      } 
+      .btn, .card, .feature { 
+        transition: none; 
+      } 
     }
   </style>
 </head>
 <body>
+  <a class="skip" href="#main">Skip to content</a>
+  
   <!-- Header -->
-  <header id="header" class="workspace-header">
+  <header>
     <div class="container nav">
       <div class="logo">
-        <span class="logo-dot"></span> 
+        <span class="logo-dot" aria-hidden="true"></span> 
         CMX
-        <span class="live-indicator">LIVE</span>
       </div>
       
       <nav aria-label="Primary Navigation">
-        <ul id="nav-menu">
-          <li><a href="#home" class="nav-link">Home</a></li>
-          <li><a href="#services" class="nav-link">Services</a></li>
-          <li><a href="#platform" class="nav-link">Platform</a></li>
-          <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
-          <li><a href="#about" class="nav-link">About</a></li>
-          <li><a href="#chat" class="nav-link">Chat</a></li>
+        <ul>
+          <li><a href="#home" aria-current="page">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#platform">Platform</a></li>
+          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#chat">Chat</a></li>
           <li><a class="cta" href="#project">Start a Project ↗</a></li>
         </ul>
       </nav>
@@ -1171,385 +653,249 @@
       </div>
     </div>
   </header>
-  
-  <!-- Collaboration Indicator -->
-  <div class="collab-indicator" id="collab-indicator">
-    <div class="pulse"></div>
-    <span>Live Collaboration</span>
-    <div class="user-count" id="user-count">12</div>
-  </div>
 
   <!-- Hero -->
-  <main id="home" class="hero">
-    <div class="container">
-      <div class="live-status">🟢 LIVE • 12 creators • 3 active projects</div>
-      <h1>Build, Collaborate, Ship — All in Real-Time</h1>
-      <p>Welcome to CMX, the world's first live collaborative digital agency. We don't just build websites — we build them together with you, in real-time, with live collaboration, instant feedback, and transparent development.</p>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="#project">
-          Build With CMX <span class="arrow">→</span>
-        </a>
-        <a class="btn btn-secondary" href="#chat">
-          Join the Chat ↗
-        </a>
+  <main id="main" class="hero">
+    <div class="mesh" aria-hidden="true"></div>
+    <div class="container grid-hero" id="home">
+      <div>
+        <div class="eyebrow">Built with real users</div>
+        <h1 class="h1">From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
+        <div class="spark" aria-hidden="true"></div>
+        <p class="sub">CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
+        <div class="buttons">
+          <a class="btn btn-primary" href="#project">Build With CMX →</a>
+          <a class="btn btn-ghost" href="#chat">Join the Chat ↗</a>
+        </div>
+        <small class="micro">The CMX platform is still live, and it powers everything we build.</small>
+        <div class="chips" aria-label="Core capabilities">
+          <span class="chip">Web Dev</span>
+          <span class="chip">SEO</span>
+          <span class="chip">Content</span>
+          <span class="chip">Discord</span>
+          <span class="chip">OSINT & AI</span>
+        </div>
       </div>
       
-      <!-- Hero Stats -->
-      <div class="hero-stats" style="margin-top: 60px; text-align: center;">
-        <div class="stats">
-          <div class="stat" data-stat="800000" data-suffix="K+" data-delay="0">
-            <div class="stat-icon">👥</div>
-            <div class="stat-number" data-target="800000" data-suffix="K+">0</div>
-            <div class="stat-label">Users Served</div>
-            <div class="stat-chart">
-              <div class="chart-bar" style="height: 80%"></div>
+      <!-- Visual / symbolic preview -->
+      <div>
+        <figure class="visual" aria-label="Abstract CMX dashboard preview">
+          <div class="shine"></div>
+          <div class="mock">
+            <div class="mock-art" aria-hidden="true"></div>
+            <div class="mock-ui">
+              <div class="bar">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <div class="body">
+                <div class="skeleton" style="grid-column: span 2; height:16px;"></div>
+                <div class="skeleton" style="height:48px;"></div>
+                <div class="skeleton" style="height:48px;"></div>
+                <div class="skeleton" style="grid-column: span 2; height:120px;"></div>
+                <div class="skeleton" style="grid-column: span 2; height:12px; width:60%;"></div>
+              </div>
             </div>
           </div>
-          <div class="stat" data-stat="50" data-suffix="+" data-delay="200">
-            <div class="stat-icon">🚀</div>
-            <div class="stat-number" data-target="50" data-suffix="+">0</div>
-            <div class="stat-label">Projects Delivered</div>
-            <div class="stat-chart">
-              <div class="chart-bar" style="height: 60%"></div>
-            </div>
-          </div>
-          <div class="stat" data-stat="99.9" data-suffix="%" data-delay="400">
-            <div class="stat-icon">⚡</div>
-            <div class="stat-number" data-target="99.9" data-suffix="%">0</div>
-            <div class="stat-label">Uptime</div>
-            <div class="stat-chart">
-              <div class="chart-bar" style="height: 99%"></div>
-            </div>
-          </div>
-          <div class="stat" data-stat="24" data-suffix="/7" data-delay="600">
-            <div class="stat-icon">🕐</div>
-            <div class="stat-number" data-target="24" data-suffix="/7">0</div>
-            <div class="stat-label">Support</div>
-            <div class="stat-chart">
-              <div class="chart-bar" style="height: 100%"></div>
-            </div>
-          </div>
-        </div>
+        </figure>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="container kpis" role="list" aria-label="Key CMX stats">
+      <div class="kpi" role="listitem">
+        <strong>800k+</strong> users reached via Cross Chat & CMX tools
+      </div>
+      <div class="kpi" role="listitem">
+        <strong>200+</strong> shipped builds for creators & startups
+      </div>
+      <div class="kpi" role="listitem">
+        <strong><200ms</strong> typical LCP on production sites
       </div>
     </div>
   </main>
 
-  <!-- Team Collaboration -->
-  <section class="team-collab">
-    <div class="container">
-      <div class="team-collab-content">
-        <h3 style="margin: 0 0 16px; font-size: 24px; color: var(--text);">🚀 Live Development Happening Right Now</h3>
-        <p style="margin: 0 0 24px; color: var(--muted);">Watch as our team builds your project in real-time. Every line of code, every design decision, every iteration happens live in our collaborative workspace.</p>
-        
-        <div class="collab-users">
-          <div class="user-avatar">P</div>
-          <div class="user-avatar">A</div>
-          <div class="user-avatar">M</div>
-          <div class="user-avatar">K</div>
-          <div class="user-avatar">+8</div>
-        </div>
-        
-        <div class="collab-metrics">
-          <div class="metric-item">
-            <div class="metric-circle">
-              <svg viewBox="0 0 36 36" class="metric-svg">
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
-                      stroke-dasharray="85, 100" class="metric-progress"/>
-              </svg>
-              <div class="metric-value">85%</div>
-            </div>
-            <div class="metric-label">Project Completion</div>
-          </div>
-          
-          <div class="metric-item">
-            <div class="metric-circle">
-              <svg viewBox="0 0 36 36" class="metric-svg">
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
-                      stroke-dasharray="92, 100" class="metric-progress"/>
-              </svg>
-              <div class="metric-value">92%</div>
-            </div>
-            <div class="metric-label">Client Satisfaction</div>
-          </div>
-          
-          <div class="metric-item">
-            <div class="metric-circle">
-              <svg viewBox="0 0 36 36" class="metric-svg">
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
-                      stroke-dasharray="78, 100" class="metric-progress"/>
-              </svg>
-              <div class="metric-value">78%</div>
-            </div>
-            <div class="metric-label">Time Efficiency</div>
-          </div>
-        </div>
-        
-        <div class="collab-feed" id="collab-feed">
-          <div class="collab-item">
-            <div class="user-initial">P</div>
-            <div class="action">PhoenixJenn is working on the CMX website design</div>
-            <div class="time">2m ago</div>
-          </div>
-          <div class="collab-item">
-            <div class="user-initial">A</div>
-            <div class="action">Alex joined the development team</div>
-            <div class="time">5m ago</div>
-          </div>
-          <div class="collab-item">
-            <div class="user-initial">M</div>
-            <div class="action">Maria updated the collaboration features</div>
-            <div class="time">8m ago</div>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 24px;">
-          <a class="btn btn-primary" href="#chat">Join the Collaboration →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Live Building -->
+  <!-- What We Do Best -->
   <section id="services">
     <div class="container">
-      <div class="eyebrow">Live Collaboration</div>
-      <h2 class="h2">Watch Your Project Come to Life in Real-Time</h2>
-      
-      <div class="cards-container">
-        <div class="cards-row">
-          <div class="card" data-reveal="1">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Live Web Development Sessions</h3>
-              <p>Join our collaborative coding sessions where you watch, contribute, and approve changes in real-time. No more waiting for updates — see progress as it happens.</p>
-              <a href="#project">Start Live Session <span class="arrow">→</span></a>
-            </div>
+      <div class="eyebrow2">What we do best</div>
+      <h2 class="h2">Execution where it matters most.</h2>
+      <div class="grid">
+        <!-- Web Dev -->
+        <article class="card" data-tag="web">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Web Development for Startups & Creators</h3>
+            <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
+            <a href="#project" aria-label="Explore Web Development service">Explore this service →</a>
           </div>
-          
-          <div class="card" data-reveal="2">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Real-Time Design Collaboration</h3>
-              <p>Work side-by-side with our designers in live Figma sessions. Every color change, every layout adjustment happens with your immediate feedback and approval.</p>
-              <a href="#project">Join Design Session <span class="arrow">→</span></a>
-            </div>
-          </div>
-        </div>
+        </article>
         
-        <div class="cards-row">
-          <div class="card" data-reveal="3">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Live Content Creation</h3>
-              <p>Write content together in real-time. Our copywriters work with you live, incorporating your feedback instantly as we craft compelling copy that converts.</p>
-              <a href="#project">Start Writing <span class="arrow">→</span></a>
-            </div>
+        <!-- Content -->
+        <article class="card" data-tag="content">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Content & Copywriting that Drives Traffic</h3>
+            <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
+            <a href="#project" aria-label="Explore Content & Copywriting service">Explore this service →</a>
           </div>
-          
-          <div class="card" data-reveal="4">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Instant SEO Optimization</h3>
-              <p>Watch as we optimize your site live. See rankings improve in real-time as we implement technical SEO improvements with your team watching every change.</p>
-              <a href="#project">Optimize Live <span class="arrow">→</span></a>
-            </div>
-          </div>
-        </div>
+        </article>
         
-        <div class="cards-row">
-          <div class="card" data-reveal="5">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Live AI Integration</h3>
-              <p>Build AI features together in real-time. Watch as we integrate chatbots, automation, and intelligence systems while you provide instant feedback and direction.</p>
-              <a href="#project">Build AI Live <span class="arrow">→</span></a>
-            </div>
+        <!-- SEO -->
+        <article class="card" data-tag="seo">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Technical SEO Services</h3>
+            <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
+            <a href="#project" aria-label="Explore Technical SEO service">Explore this service →</a>
           </div>
-          
-          <div class="card" data-reveal="6">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Community Platform Building</h3>
-              <p>Create Discord servers, chat platforms, and community tools together. Every feature, every bot, every automation built live with your input.</p>
-              <a href="#project">Build Community <span class="arrow">→</span></a>
-            </div>
+        </article>
+        
+        <!-- Discord -->
+        <article class="card" data-tag="discord">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Custom Discord Server Builds <small style="color:#6b7280; font-weight:600;">(secondary offer)</small></h3>
+            <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
+            <a href="#project" aria-label="Explore Discord Server Builds">Explore this service →</a>
           </div>
-        </div>
+        </article>
+      </div>
+      <div style="margin-top: 18px;">
+        <a class="btn" href="#services-all">View All Services →</a>
       </div>
     </div>
   </section>
 
-  <!-- Collaborative Workspace -->
+  <!-- Platform Core -->
   <section id="platform">
     <div class="container">
-      <div class="eyebrow">Our Workspace</div>
-      <h2 class="h2">The CMX Collaborative Workspace — Where Magic Happens Live</h2>
-      <p class="lead">Our platform isn't just a tool — it's your virtual office where teams collaborate, clients provide feedback, and projects come to life in real-time.</p>
-      
-      <div class="cards-container">
-        <div class="cards-row">
-          <div class="card" data-reveal="7">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Live Project Rooms</h3>
-              <p>Dedicated collaboration spaces where your team, our developers, and stakeholders work together in real-time. Watch progress unfold live.</p>
-            </div>
-          </div>
-          
-          <div class="card" data-reveal="8">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Real-Time Code Collaboration</h3>
-              <p>Multiple developers coding simultaneously, with live previews, instant feedback, and collaborative debugging sessions.</p>
-            </div>
-          </div>
+      <div class="eyebrow2">Platform core</div>
+      <h2 class="h2">The CMX community chat platform is still live — and always evolving.</h2>
+      <p class="lead">We started as a real‑time community chat platform, and it's still active today, supporting users, testing features, and powering secure online collaboration.</p>
+      <div class="features">
+        <div class="feature">
+          <strong>Private and public chatrooms</strong> 
+          Flexible spaces for teams, creators, and communities.
         </div>
-        
-        <div class="cards-row">
-          <div class="card" data-reveal="9">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Live Design Sessions</h3>
-              <p>Interactive design workshops where you guide our designers in real-time. Every pixel, every color, every layout decision made together.</p>
-            </div>
-          </div>
-          
-          <div class="card" data-reveal="10">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Instant Client Feedback</h3>
-              <p>No more email chains or waiting for approvals. Provide feedback instantly and see changes implemented live during our sessions.</p>
-            </div>
-          </div>
+        <div class="feature">
+          <strong>Role‑based permissions & moderation</strong> 
+          Keep conversations safe, scoped, and productive.
         </div>
+        <div class="feature">
+          <strong>AI‑powered chat (Grok, Gemini, GPT)</strong> 
+          Research, summarize, and moderate in real time.
+        </div>
+        <div class="feature">
+          <strong>Cross‑server tools & bot support</strong> 
+          Images, radio, utilities, and automations.
+        </div>
+        <div class="feature">
+          <strong>Secure access via email verification</strong> 
+          Reliability and accountability by default.
+        </div>
+      </div>
+      <div class="buttons" style="margin-top:18px;">
+        <a class="btn btn-primary" href="#chat">Enter the Chat →</a>
+        <a class="btn btn-ghost" href="#platform">Explore the Platform</a>
       </div>
     </div>
   </section>
 
-  <!-- Live Projects -->
-  <section id="portfolio">
-    <div class="container">
-      <div class="eyebrow">Live Projects</div>
-      <h2 class="h2">Projects We're Building Together Right Now</h2>
-      
-      <div class="cards-container">
-        <div class="cards-row">
-                      <div class="card" data-reveal="11">
-              <div class="card-media"></div>
-              <div class="card-body">
-                <h3>E-Commerce Platform (Live Now)</h3>
-                <p>Watch as we build a full e-commerce solution in real-time. Client is actively participating in every development decision.</p>
-                <div class="project-stats">
-                  <div class="stat-bar">
-                    <div class="stat-label">Progress</div>
-                    <div class="stat-bar-container">
-                      <div class="stat-bar-fill" style="width: 75%"></div>
-                    </div>
-                    <div class="stat-value">75%</div>
-                  </div>
-                  <div class="stat-bar">
-                    <div class="stat-label">Team</div>
-                    <div class="stat-bar-container">
-                      <div class="stat-bar-fill" style="width: 100%"></div>
-                    </div>
-                    <div class="stat-value">3 devs</div>
-                  </div>
-                </div>
-                <div style="margin-top: 12px; padding: 8px 12px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; font-size: 12px; color: #10b981;">
-                  🟢 3 developers, 1 client, live collaboration
-                </div>
-              </div>
-            </div>
-          
-          <div class="card" data-reveal="12">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>AI-Powered SaaS Dashboard</h3>
-              <p>Real-time development of an AI dashboard with live client feedback. Every feature built and tested together.</p>
-              <div style="margin-top: 12px; padding: 8px 12px; background: rgba(37, 99, 235, 0.1); border-radius: 6px; font-size: 12px; color: var(--accent);">
-                🔵 2 developers, live AI integration
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="cards-row">
-          <div class="card" data-reveal="13">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Community Platform (Just Launched)</h3>
-              <p>Discord server with custom bots, built entirely through live collaboration sessions with the client team.</p>
-              <div style="margin-top: 12px; padding: 8px 12px; background: rgba(139, 92, 246, 0.1); border-radius: 6px; font-size: 12px; color: #8b5cf6;">
-                🟣 Launched yesterday, 500+ active users
-              </div>
-            </div>
-          </div>
-          
-          <div class="card" data-reveal="14">
-            <div class="card-media"></div>
-            <div class="card-body">
-              <h3>Content Marketing Suite</h3>
-              <p>SEO-optimized content platform built through live writing sessions. Client approved every piece of copy in real-time.</p>
-              <div style="margin-top: 12px; padding: 8px 12px; background: rgba(225, 29, 72, 0.1); border-radius: 6px; font-size: 12px; color: #e11d48;">
-                🔴 Content team + client, live writing
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Collaborative Culture -->
+  <!-- Who We Serve -->
   <section id="about">
     <div class="container">
-      <div class="eyebrow">Our Approach</div>
-      <h2 class="h2">We Don't Just Build — We Build Together</h2>
-      <p style="margin: 0 0 24px; color: var(--muted); font-size: 18px; line-height: 1.6;">Traditional agencies work in silos and deliver finished products. We work in the open, with you, building every step of the way.</p>
-      
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin: 32px 0;">
-        <div style="padding: 20px; background: rgba(37, 99, 235, 0.05); border-radius: var(--radius); border-left: 4px solid var(--accent);">
-          <h4 style="margin: 0 0 12px; color: var(--text);">🚀 Real-Time Collaboration</h4>
-          <p style="margin: 0; color: var(--muted); font-size: 14px;">Watch every decision, every change, every iteration happen live. No more waiting for weekly updates.</p>
-        </div>
-        
-        <div style="padding: 20px; background: rgba(16, 185, 129, 0.05); border-radius: var(--radius); border-left: 4px solid var(--accent-3);">
-          <h4 style="margin: 0 0 12px; color: var(--text);">💡 Instant Feedback Loop</h4>
-          <p style="margin: 0; color: var(--muted); font-size: 14px;">Provide feedback immediately and see changes implemented in real-time. No more email chains or waiting.</p>
-        </div>
-        
-        <div style="padding: 20px; background: rgba(225, 29, 72, 0.05); border-radius: var(--radius); border-left: 4px solid var(--accent-2);">
-          <h4 style="margin: 0 0 12px; color: var(--text);">🤝 True Partnership</h4>
-          <p style="margin: 0; color: var(--muted); font-size: 14px;">We're not just vendors — we're your development partners, working side-by-side to bring your vision to life.</p>
-        </div>
-      </div>
-      
-      <div class="btn-row" style="margin-top: 32px;">
-        <a class="btn btn-primary" href="#project">Join a Live Session <span class="arrow">→</span></a>
-        <a class="btn btn-secondary" href="#chat">See Collaboration in Action</a>
+      <div class="eyebrow2">Who we serve</div>
+      <h2 class="h2">We work with the internet's next builders.</h2>
+      <ul style="margin:12px 0 0 18px; color: var(--muted); line-height:1.9;">
+        <li>Creators scaling beyond link‑in‑bio tools</li>
+        <li>Startups needing clean infrastructure and fast delivery</li>
+        <li>Communities looking for stable, scalable systems</li>
+        <li>Founders who value copy, design, and real execution</li>
+        <li>Teams replacing duct‑tape workflows with modern infrastructure</li>
+      </ul>
+      <div class="buttons" style="margin-top:18px;">
+        <a class="btn btn-primary" href="#project">Start a Project →</a>
       </div>
     </div>
   </section>
 
-  <!-- Join the Collaboration -->
-  <section id="project" style="background: linear-gradient(135deg, var(--text) 0%, #1f2937 100%); color: white; border-top: none;">
+  <!-- Portfolio (Summary) -->
+  <section id="portfolio">
     <div class="container">
-      <div class="eyebrow" style="background: rgba(255,255,255,0.1); color: white;">Ready to collaborate?</div>
-      <h2 class="h2" style="color: white;">Stop Watching From the Sidelines — Join the Build</h2>
-      <p class="lead" style="color: rgba(255,255,255,0.8);">Don't just hire an agency — become part of the development team. Watch your project come to life in real-time, provide instant feedback, and ship faster than ever before.</p>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="#project">Start Live Collaboration</a>
-        <a class="btn btn-secondary" href="#chat" style="background: white; color: var(--text);">Watch a Live Session</a>
+      <div class="eyebrow2">Portfolio</div>
+      <h2 class="h2">Systems, brands, and platforms we've helped shape.</h2>
+      <div class="features">
+        <div class="feature">
+          <strong>CMX Platform Development</strong> 
+          Live community hub with AI tools, cross‑server chat, and secure collaboration.
+        </div>
+        <div class="feature">
+          <strong>Cross Chat</strong> 
+          Links channels across Discord servers for seamless conversation, serving ~800k users.
+        </div>
+        <div class="feature">
+          <strong>Websites for Clients</strong> 
+          Fast, clean, mobile‑first sites tailored to each project's needs.
+        </div>
+        <div class="feature">
+          <strong>Loraine AI</strong> 
+          Always‑on AI assistant for prompts, conversation, and moderation inside CMX.
+        </div>
+      </div>
+      <div class="buttons" style="margin-top:18px;">
+        <a class="btn" href="#portfolio">View Our Work →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why CMX -->
+  <section id="why">
+    <div class="container">
+      <div class="eyebrow2">Why CMX</div>
+      <h2 class="h2">Why teams stick with CMX.</h2>
+      <div class="features">
+        <div class="feature">
+          <strong>Built & tested on our live platform</strong> 
+          We ship what we use every day.
+        </div>
+        <div class="feature">
+          <strong>Led and reviewed in‑house</strong> 
+          No faceless vendor chain — real accountability.
+        </div>
+        <div class="feature">
+          <strong>Faster than traditional agencies</strong> 
+          Write, design, and ship with momentum.
+        </div>
+        <div class="feature">
+          <strong>Human, not a ticket</strong> 
+          You're a build worth remembering.
+        </div>
+      </div>
+      <div class="buttons" style="margin-top:18px;">
+        <a class="btn btn-primary" href="#project">Book a Strategy Call</a>
+        <a class="btn btn-ghost" href="#project">Start With a Proposal</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Strip -->
+  <section id="project">
+    <div class="container">
+      <div class="eyebrow2">Let's build</div>
+      <h2 class="h2">If you're building something real, we're ready to help.</h2>
+      <p class="lead">We scale systems that already have momentum. We fix the ones that are falling apart. Whether it's your content, your platform, or your search presence — we'll clean it up and set it right.</p>
+      <div class="buttons">
+        <a class="btn btn-primary" href="#project">Get a Proposal</a>
+        <a class="btn btn-ghost" href="#project">Start a Project</a>
       </div>
     </div>
   </section>
 
   <footer>
-    <div class="container foot" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between;">
-      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+    <div class="container foot" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+      <div style="display:flex; flex-wrap:wrap; gap:14px;">
         <a href="#home">Home</a>
         <a href="#services">Services</a>
         <a href="#platform">Platform</a>
@@ -1565,7 +911,7 @@
   <script>
     // Mobile menu toggle
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const navMenu = document.getElementById('nav-menu');
+    const navMenu = document.querySelector('nav ul');
     
     mobileMenuToggle.addEventListener('click', () => {
       mobileMenuToggle.classList.toggle('active');
@@ -1573,7 +919,7 @@
     });
     
     // Close mobile menu when clicking on a link
-    document.querySelectorAll('.nav-link').forEach(link => {
+    document.querySelectorAll('nav a').forEach(link => {
       link.addEventListener('click', () => {
         mobileMenuToggle.classList.remove('active');
         navMenu.classList.remove('active');
@@ -1610,122 +956,29 @@
       });
     });
     
-    // Scroll-to-Reveal for Cards
-    function initScrollToReveal() {
-      const cards = document.querySelectorAll('.card[data-reveal]');
-      
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const card = entry.target;
-            const revealOrder = parseInt(card.dataset.reveal);
-            
-            // Stagger the reveal based on order
-            setTimeout(() => {
-              card.classList.add('revealed');
-            }, revealOrder * 150);
-            
-            // Stop observing after reveal
-            observer.unobserve(card);
-          }
-        });
-      }, {
-        threshold: 0.3,
-        rootMargin: '0px 0px -50px 0px'
-      });
-      
-      cards.forEach(card => observer.observe(card));
-    }
+    // Active nav highlight on scroll
+    const sections = [...document.querySelectorAll('main, section')];
+    const links = [...document.querySelectorAll('header nav a')].filter(a => a.getAttribute('href').startsWith('#'));
+    const map = new Map();
     
-         // Initialize scroll-to-reveal when page loads
-     document.addEventListener('DOMContentLoaded', initScrollToReveal);
-     
-     // Collaboration System
-     function initCollaboration() {
-       const userCount = document.getElementById('user-count');
-       const collabFeed = document.getElementById('collab-feed');
-       
-       // Simulate live user count changes
-       let currentUsers = 12;
-       setInterval(() => {
-         const change = Math.random() > 0.5 ? 1 : -1;
-         currentUsers = Math.max(8, Math.min(25, currentUsers + change));
-         userCount.textContent = currentUsers;
-         userCount.style.animation = 'none';
-         userCount.offsetHeight; // Trigger reflow
-         userCount.style.animation = 'numberPulse 0.5s ease-out';
-       }, 8000);
-       
-       // Add new collaboration items
-       const collabActions = [
-         'PhoenixJenn is working on the CMX website design',
-         'Alex joined the development team',
-         'Maria updated the collaboration features',
-         'Kevin deployed the new API endpoints',
-         'Sarah is reviewing the latest changes',
-         'Team is brainstorming new features',
-         'Code review in progress',
-         'New collaboration tools added',
-         'Design system updated',
-         'Performance improvements deployed'
-       ];
-       
-       const userInitials = ['P', 'A', 'M', 'K', 'S', 'T', 'C', 'D', 'N', 'J'];
-       
-       setInterval(() => {
-         const newItem = document.createElement('div');
-         newItem.className = 'collab-item';
-         
-         const randomAction = collabActions[Math.floor(Math.random() * collabActions.length)];
-         const randomUser = userInitials[Math.floor(Math.random() * userInitials.length)];
-         
-         newItem.innerHTML = `
-           <div class="user-initial">${randomUser}</div>
-           <div class="action">${randomAction}</div>
-           <div class="time">just now</div>
-         `;
-         
-         collabFeed.insertBefore(newItem, collabFeed.firstChild);
-         
-         // Remove old items to keep feed manageable
-         if (collabFeed.children.length > 5) {
-           collabFeed.removeChild(collabFeed.lastChild);
-         }
-         
-         // Update timestamps
-         setTimeout(() => {
-           newItem.querySelector('.time').textContent = '1m ago';
-         }, 60000);
-         
-         setTimeout(() => {
-           newItem.querySelector('.time').textContent = '2m ago';
-         }, 120000);
-       }, 15000);
-       
-       // Make stats interactive
-       const stats = document.querySelectorAll('.stat');
-       stats.forEach((stat, index) => {
-         stat.addEventListener('click', () => {
-           stats.forEach(s => s.classList.remove('active'));
-           stat.classList.add('active');
-           
-           // Add collaboration feedback
-           const feedback = document.createElement('div');
-           feedback.className = 'collab-item';
-           feedback.innerHTML = `
-             <div class="user-initial">U</div>
-             <div class="action">User clicked on ${stat.querySelector('.stat-label').textContent}</div>
-             <div class="time">just now</div>
-           `;
-           collabFeed.insertBefore(feedback, collabFeed.firstChild);
-         });
-       });
-     }
-     
-     // Initialize collaboration when page loads
-     document.addEventListener('DOMContentLoaded', initCollaboration);
-     
-     // Add keyboard navigation support
+    links.forEach(a => map.set(a.getAttribute('href').slice(1), a));
+    
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = e.target.getAttribute('id') || 'home';
+          links.forEach(l => l.removeAttribute('aria-current'));
+          if (map.get(id)) map.get(id).setAttribute('aria-current', 'page');
+        }
+      });
+    }, { 
+      root: null, 
+      threshold: .3 
+    });
+    
+    sections.forEach(s => obs.observe(s));
+    
+    // Add keyboard navigation support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         mobileMenuToggle.classList.remove('active');
