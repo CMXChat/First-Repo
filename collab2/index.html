@@ -473,12 +473,51 @@
       background: #fff; 
       box-shadow: var(--shadow-sm); 
       transition: var(--transition);
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    
+    .card.revealed {
+      opacity: 1;
+      transform: translateY(0);
     }
     
     .card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-lg);
     }
+    
+    /* Scroll-to-Reveal System */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .reveal-on-scroll.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Staggered reveal delays */
+    .reveal-on-scroll:nth-child(1) { transition-delay: 0.1s; }
+    .reveal-on-scroll:nth-child(2) { transition-delay: 0.2s; }
+    .reveal-on-scroll:nth-child(3) { transition-delay: 0.3s; }
+    .reveal-on-scroll:nth-child(4) { transition-delay: 0.4s; }
+    .reveal-on-scroll:nth-child(5) { transition-delay: 0.5s; }
+    .reveal-on-scroll:nth-child(6) { transition-delay: 0.6s; }
+    
+    /* Special staggered delays for grid items */
+    .grid .card:nth-child(1) { transition-delay: 0.1s; }
+    .grid .card:nth-child(2) { transition-delay: 0.2s; }
+    .grid .card:nth-child(3) { transition-delay: 0.3s; }
+    .grid .card:nth-child(4) { transition-delay: 0.4s; }
+    
+    .features .feature:nth-child(1) { transition-delay: 0.1s; }
+    .features .feature:nth-child(2) { transition-delay: 0.2s; }
+    .features .feature:nth-child(3) { transition-delay: 0.3s; }
+    .features .feature:nth-child(4) { transition-delay: 0.4s; }
+    .features .feature:nth-child(5) { transition-delay: 0.5s; }
     
     .card-media { 
       position: relative; 
@@ -659,16 +698,16 @@
     <div class="mesh" aria-hidden="true"></div>
     <div class="container grid-hero" id="home">
       <div>
-        <div class="eyebrow">Built with real users</div>
-        <h1 class="h1">From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
-        <div class="spark" aria-hidden="true"></div>
-        <p class="sub">CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
-        <div class="buttons">
+        <div class="eyebrow reveal-on-scroll">Built with real users</div>
+        <h1 class="h1 reveal-on-scroll">From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
+        <div class="spark reveal-on-scroll" aria-hidden="true"></div>
+        <p class="sub reveal-on-scroll">CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
+        <div class="buttons reveal-on-scroll">
           <a class="btn btn-primary" href="#project">Build With CMX →</a>
           <a class="btn btn-ghost" href="#chat">Join the Chat ↗</a>
         </div>
-        <small class="micro">The CMX platform is still live, and it powers everything we build.</small>
-        <div class="chips" aria-label="Core capabilities">
+        <small class="micro reveal-on-scroll">The CMX platform is still live, and it powers everything we build.</small>
+        <div class="chips reveal-on-scroll" aria-label="Core capabilities">
           <span class="chip">Web Dev</span>
           <span class="chip">SEO</span>
           <span class="chip">Content</span>
@@ -679,7 +718,7 @@
       
       <!-- Visual / symbolic preview -->
       <div>
-        <figure class="visual" aria-label="Abstract CMX dashboard preview">
+        <figure class="visual reveal-on-scroll" aria-label="Abstract CMX dashboard preview">
           <div class="shine"></div>
           <div class="mock">
             <div class="mock-art" aria-hidden="true"></div>
@@ -704,13 +743,13 @@
 
     <!-- KPI strip -->
     <div class="container kpis" role="list" aria-label="Key CMX stats">
-      <div class="kpi" role="listitem">
+      <div class="kpi reveal-on-scroll" role="listitem">
         <strong>800k+</strong> users reached via Cross Chat & CMX tools
       </div>
-      <div class="kpi" role="listitem">
+      <div class="kpi reveal-on-scroll" role="listitem">
         <strong>200+</strong> shipped builds for creators & startups
       </div>
-      <div class="kpi" role="listitem">
+      <div class="kpi reveal-on-scroll" role="listitem">
         <strong><200ms</strong> typical LCP on production sites
       </div>
     </div>
@@ -719,8 +758,8 @@
   <!-- What We Do Best -->
   <section id="services">
     <div class="container">
-      <div class="eyebrow2">What we do best</div>
-      <h2 class="h2">Execution where it matters most.</h2>
+      <div class="eyebrow2 reveal-on-scroll">What we do best</div>
+      <h2 class="h2 reveal-on-scroll">Execution where it matters most.</h2>
       <div class="grid">
         <!-- Web Dev -->
         <article class="card" data-tag="web">
@@ -985,6 +1024,28 @@
         navMenu.classList.remove('active');
       }
     });
+    
+    // Scroll-to-Reveal System
+    function initScrollToReveal() {
+      const elements = document.querySelectorAll('.card, .feature, .kpi, .reveal-on-scroll');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.3,
+        rootMargin: '0px 0px -50px 0px'
+      });
+      
+      elements.forEach(element => observer.observe(element));
+    }
+    
+    // Initialize scroll-to-reveal when page loads
+    document.addEventListener('DOMContentLoaded', initScrollToReveal);
     
     // Add focus management for accessibility
     document.querySelectorAll('a, button').forEach(element => {
