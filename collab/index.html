@@ -2,98 +2,134 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CMX – From Live Platform to Full‑Service Digital Agency</title>
+  <title>CMX — Digital Agency for Creators & Startups</title>
+  <meta name="description" content="From live community platform to full‑service digital agency: web development, SEO, content, and Discord systems — all powered by the CMX chat platform." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #ffffff;
-      --text: #0b0b0c;
-      --muted: #5f6368;
-      --pill: #f2f4f7;
-      --border: #eceff2;
+      --text: #0b0f1a;
+      --muted: #5b6473;
+      --line: #e6e9ef;
+      --pill: #f3f5f9;
       --accent: #2563eb; /* electric blue */
-      --accent-2: #e11d48; /* pinkish for micro accents */
-      --shadow: 0 10px 30px rgba(16,24,40,0.06);
+      --accent-2: #22d3ee; /* cyan */
+      --accent-3: #a855f7; /* violet */
+      --accent-4: #10b981; /* teal */
+      --shadow-sm: 0 8px 20px rgba(2, 6, 23, .06);
+      --shadow: 0 16px 40px rgba(2, 6, 23, .08);
       --radius: 18px;
       --radius-lg: 28px;
     }
     * { box-sizing: border-box; }
     html, body { margin:0; padding:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
     a { color: inherit; text-decoration: none; }
-    .container { width: min(1200px, 92%); margin-inline: auto; }/* Sticky Header */
-header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(180%) blur(8px); background: rgba(255,255,255,0.75); border-bottom: 1px solid var(--border); }
+    img { max-width: 100%; display:block; }
+    .container { width: min(1200px, 92%); margin-inline: auto; }/* ===== Skip link ===== */
+.skip { position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden; }
+.skip:focus { position:static; width:auto; height:auto; padding:12px 16px; background:#fff; border:1px solid var(--line); border-radius:10px; z-index:9999; }
+
+/* ===== Header ===== */
+header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(160%) blur(10px); background: rgba(255,255,255,.82); border-bottom:1px solid var(--line); }
 .nav { display:flex; align-items:center; justify-content:space-between; gap: 16px; padding: 14px 0; }
-.logo { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:0.2px; }
+.logo { display:flex; align-items:center; gap:10px; font-weight:900; letter-spacing:0.2px; }
 .logo-dot { width:10px; height:10px; border-radius:999px; background:linear-gradient(135deg,var(--accent),#60a5fa); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 nav ul { list-style:none; display:flex; gap: 22px; align-items:center; padding:0; margin:0; }
-nav a { color:#1f2937; font-weight:500; opacity:.9; }
-nav a:hover { opacity:1; }
-.cta { display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; background: var(--text); color:#fff; font-weight:600; box-shadow: var(--shadow); }
+nav a { color:#1f2937; font-weight:600; opacity:.9; padding:8px 0; border-bottom:2px solid transparent; }
+nav a[aria-current="page"], nav a:hover { opacity:1; border-bottom-color: var(--accent); }
+.cta { display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; background: var(--text); color:#fff; font-weight:700; box-shadow: var(--shadow-sm); }
 .cta:hover { transform: translateY(-1px); }
 
-/* Hero */
-.hero { padding: 64px 0 28px; }
-.hero h1 { font-size: clamp(28px, 5vw, 56px); line-height: 1.06; letter-spacing:-0.02em; margin: 0 0 16px; }
-.hero p { color: var(--muted); font-size: clamp(16px, 2.2vw, 18px); line-height:1.7; margin: 0 0 22px; }
-.btn-row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
-.btn { display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px; font-weight:600; border:1px solid var(--border); background:#fff; }
-.btn-primary { background: var(--accent); color:#fff; border-color: transparent; }
-.btn-secondary { background:#fff; color:#111827; }
-.btn span.arrow { translate: 0 1px; }
+/* ===== Hero ===== */
+.hero { position: relative; isolation:isolate; padding: 84px 0 40px; overflow: clip; }
+.hero .mesh { content:""; position:absolute; inset:-20% -15% -30% -15%; background:
+  radial-gradient(60% 50% at 20% 25%, #8ec5ff22 0%, transparent 60%),
+  radial-gradient(55% 55% at 85% 20%, #7cfac522 0%, transparent 55%),
+  radial-gradient(50% 60% at 40% 85%, #ff7ad522 0%, transparent 60%);
+  filter: saturate(120%) blur(8px);
+  z-index:-1; }
+
+.grid-hero { display:grid; grid-template-columns: 1fr; gap: 36px; align-items:center; }
+@media (min-width: 980px) { .grid-hero { grid-template-columns: 1.05fr .95fr; gap: 48px; } }
+
+.eyebrow { color: #e11d48; font-weight: 800; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 12px; }
+.h1 { font-size: clamp(30px, 5.4vw, 64px); line-height: 1.06; letter-spacing: -0.02em; margin: 0 0 14px; }
+.spark { height:3px; width:220px; border-radius:999px; background: linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3)); background-size:200% 100%; margin: 8px 0 18px; animation: spark 5s ease-in-out infinite; }
+@keyframes spark { 0%{background-position:0%} 50%{background-position:100%} 100%{background-position:0%} }
+.sub { color: var(--muted); font-size: clamp(16px, 2.1vw, 18px); line-height: 1.75; margin: 0 0 22px; }
+
+.buttons { display:flex; flex-wrap:wrap; gap: 12px; align-items:center; }
+.btn { display:inline-flex; align-items:center; gap:10px; padding: 12px 18px; border-radius: 999px; border:1px solid var(--line); background:#fff; font-weight:800; box-shadow: var(--shadow-sm); transition: transform .2s ease, box-shadow .2s ease; }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn-primary { background: linear-gradient(135deg, var(--accent) 0%, #60a5fa 100%); color: #fff; border-color: transparent; }
+.btn-ghost { background: #fff; color:#111827; }
+.micro { display:block; margin-top: 8px; color:#6b7280; font-size: 13px; }
+
+.chips { display:flex; flex-wrap:wrap; gap:10px; margin: 16px 0 6px; }
+.chip { padding:8px 12px; border-radius:999px; background: var(--pill); border:1px solid var(--line); color:#374151; font-weight:700; font-size: 13px; transition: transform .15s ease; }
+.chip:hover { transform: translateY(-2px); }
+
+.visual { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius-lg); background: radial-gradient(120% 100% at 20% 10%, #e8f1ff 0%, #fafafa 60%); border: 1px solid var(--line); box-shadow: var(--shadow); overflow:hidden; }
+.visual .shine { position:absolute; inset:-40% -20% auto auto; width:80%; height:80%; rotate: -12deg; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.32) 50%, rgba(255,255,255,0) 100%); mix-blend-mode: soft-light; animation: sweep 6s ease-in-out infinite; }
+@keyframes sweep { 0%,100% { transform: translateX(-40%) translateY(0); } 50% { transform: translateX(20%) translateY(-2%); } }
+.visual .mock { position:absolute; inset:0; display:grid; place-items:center; }
+.mock-art { width: 78%; max-width: 520px; border-radius: 18px; background: linear-gradient(135deg, #0ea5e9 0%, #22c55e 50%, #a855f7 100%); opacity:.18; filter: blur(6px); }
+.mock-ui { position:absolute; width:min(86%, 620px); border-radius:16px; background:#fff; border:1px solid var(--line); box-shadow: var(--shadow); overflow:hidden; }
+.mock-ui .bar { display:flex; gap:6px; align-items:center; padding:10px; background:#f9fafb; border-bottom:1px solid var(--line); }
+.dot { width:10px; height:10px; border-radius:999px; background:#e5e7eb; }
+.mock-ui .body { padding:16px; display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+.skeleton { height: 12px; background: #eef2f7; border-radius: 8px; }
+
+/* KPI strip */
+.kpis { display:grid; grid-template-columns: repeat(12, 1fr); gap: 14px; margin-top: 22px; }
+.kpi { grid-column: span 12; display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius: 14px; background:#fff; }
+.kpi strong { font-size: 18px; }
+@media (min-width: 720px) { .kpi { grid-column: span 4; } }
 
 /* Section headings */
-.eyebrow { color: var(--accent-2); font-weight:700; font-size:12px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px; }
-.h2 { font-size: clamp(24px, 4.2vw, 40px); line-height:1.1; margin: 0 0 12px; }
+section { padding: 56px 0; border-top: 1px solid var(--line); }
+.eyebrow2 { color: var(--accent-3); font-weight:800; font-size:12px; letter-spacing:.16em; text-transform:uppercase; margin-bottom:10px; }
+.h2 { font-size: clamp(24px, 4.4vw, 42px); line-height:1.1; margin: 0 0 12px; }
 .lead { color: var(--muted); font-size: 18px; margin: 0 0 22px; }
 
-/* What We Do */
-.pills { display:flex; flex-wrap:wrap; gap:10px; margin: 18px 0 24px; }
-.pill { padding:10px 14px; background: var(--pill); border:1px solid var(--border); border-radius:999px; color:#374151; font-weight:600; font-size: 14px; }
-
+/* Cards grid */
 .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap: 22px; }
-.card { grid-column: span 12; display:grid; grid-template-columns: 1fr; border:1px solid var(--border); border-radius: var(--radius-lg); overflow:hidden; background:#fff; box-shadow: var(--shadow); }
-.card-media { position:relative; height: 240px; background: radial-gradient(80% 120% at 20% 20%, #e8f1ff 0%, #fafafa 60%); }
-.card-media::after { content:""; position:absolute; inset: 16px; border-radius: 24px; background: conic-gradient(from 140deg, #93c5fd, #dbeafe, #60a5fa, #bfdbfe, #93c5fd); filter: blur(18px); opacity:.5; }
+.card { grid-column: span 12; display:grid; grid-template-columns: 1fr; border:1px solid var(--line); border-radius: var(--radius-lg); overflow:hidden; background:#fff; box-shadow: var(--shadow-sm); }
+.card-media { position:relative; height: 200px; background: radial-gradient(80% 120% at 20% 20%, #e8f1ff 0%, #fafafa 60%); }
 .card-body { padding: 22px; }
 .card h3 { margin: 0 0 8px; font-size: 20px; }
 .card p { margin: 0 0 14px; color: var(--muted); }
-.card a { color: var(--accent); font-weight:600; }
-
-@media (min-width: 860px) {
-  .hero { padding: 88px 0 44px; }
+.card a { color: var(--accent); font-weight:700; }
+@media (min-width: 880px) {
   .card { grid-template-columns: .9fr 1.1fr; }
-  .card-media { height: 100%; min-height: 260px; }
+  .card-media { min-height: 220px; }
   .card { grid-column: span 6; }
 }
 
-/* Feature rows */
+/* Features list */
 .features { display:grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
-.feature { grid-column: span 12; padding: 18px; border:1px solid var(--border); border-radius: var(--radius); }
+.feature { grid-column: span 12; padding: 18px; border:1px solid var(--line); border-radius: var(--radius); background:#fff; }
 .feature strong { display:block; margin-bottom:6px; }
 @media (min-width: 900px) { .feature { grid-column: span 6; } }
 
-/* Sections */
-section { padding: 50px 0; border-top: 1px solid var(--border); }
-
 /* Footer */
-footer { border-top:1px solid var(--border); padding: 40px 0; color:#6b7280; }
+footer { border-top:1px solid var(--line); padding: 40px 0; color:#6b7280; }
 .foot a { color: #374151; }
 
-/* Smooth anchors */
-html { scroll-behavior: smooth; }
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) { .spark, .visual .shine { animation: none; } .btn { transition: none; } }
 
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
+  <a class="skip" href="#main">Skip to content</a>  <!-- Header -->  <header>
     <div class="container nav">
-      <div class="logo"><span class="logo-dot"></span> CMX</div>
+      <div class="logo"><span class="logo-dot" aria-hidden="true"></span> CMX</div>
       <nav aria-label="Primary Navigation">
         <ul>
-          <li><a href="#home">Home</a></li>
+          <li><a href="#home" aria-current="page">Home</a></li>
           <li><a href="#services">Services</a></li>
           <li><a href="#platform">Platform</a></li>
           <li><a href="#portfolio">Portfolio</a></li>
@@ -103,91 +139,120 @@ html { scroll-behavior: smooth; }
         </ul>
       </nav>
     </div>
-  </header>  <!-- Hero -->  <main id="home" class="hero">
-    <div class="container">
-      <h1>From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
-      <p>CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="#project">Build With CMX <span class="arrow">→</span></a>
-        <a class="btn btn-secondary" href="#chat">Join the Chat ↗</a>
-        <small style="opacity:.75">The CMX platform is still live, and it powers everything we build.</small>
+  </header>  <!-- Hero -->  <main id="main" class="hero">
+    <div class="mesh" aria-hidden="true"></div>
+    <div class="container grid-hero" id="home">
+      <div>
+        <div class="eyebrow">Built with real users</div>
+        <h1 class="h1">From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
+        <div class="spark" aria-hidden="true"></div>
+        <p class="sub">CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
+        <div class="buttons">
+          <a class="btn btn-primary" href="#project">Build With CMX →</a>
+          <a class="btn btn-ghost" href="#chat">Join the Chat ↗</a>
+        </div>
+        <small class="micro">The CMX platform is still live, and it powers everything we build.</small>
+        <div class="chips" aria-label="Core capabilities">
+          <span class="chip">Web Dev</span>
+          <span class="chip">SEO</span>
+          <span class="chip">Content</span>
+          <span class="chip">Discord</span>
+          <span class="chip">OSINT & AI</span>
+        </div>
+      </div><!-- Visual / symbolic preview -->
+  <div>
+    <figure class="visual" aria-label="Abstract CMX dashboard preview">
+      <div class="shine"></div>
+      <div class="mock">
+        <div class="mock-art" aria-hidden="true"></div>
+        <div class="mock-ui">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="body">
+            <div class="skeleton" style="grid-column: span 2; height:16px;"></div>
+            <div class="skeleton" style="height:48px;"></div>
+            <div class="skeleton" style="height:48px;"></div>
+            <div class="skeleton" style="grid-column: span 2; height:120px;"></div>
+            <div class="skeleton" style="grid-column: span 2; height:12px; width:60%;"></div>
+          </div>
+        </div>
       </div>
-    </div>
+    </figure>
+  </div>
+</div>
+
+<!-- KPI strip -->
+<div class="container kpis" role="list" aria-label="Key CMX stats">
+  <div class="kpi" role="listitem"><strong>800k+</strong> users reached via Cross Chat & CMX tools</div>
+  <div class="kpi" role="listitem"><strong>200+</strong> shipped builds for creators & startups</div>
+  <div class="kpi" role="listitem"><strong><200ms</strong> typical LCP on production sites</div>
+</div>
+
   </main>  <!-- What We Do Best -->  <section id="services">
     <div class="container">
-      <div class="eyebrow">What we do best</div>
+      <div class="eyebrow2">What we do best</div>
       <h2 class="h2">Execution where it matters most.</h2>
-      <div class="pills" aria-label="Service categories">
-        <span class="pill">Web Development</span>
-        <span class="pill">SEO Services</span>
-        <span class="pill">Content & Copywriting</span>
-        <span class="pill">Discord Systems</span>
-        <span class="pill">OSINT & AI</span>
-      </div><div class="grid">
-    <!-- Web Dev -->
-    <article class="card" data-tag="web">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-        <h3>Web Development for Startups & Creators</h3>
-        <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
-        <a href="#project">Explore this service →</a>
+      <div class="grid">
+        <!-- Web Dev -->
+        <article class="card" data-tag="web">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Web Development for Startups & Creators</h3>
+            <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
+            <a href="#project" aria-label="Explore Web Development service">Explore this service →</a>
+          </div>
+        </article>
+        <!-- Content -->
+        <article class="card" data-tag="content">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Content & Copywriting that Drives Traffic</h3>
+            <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
+            <a href="#project" aria-label="Explore Content & Copywriting service">Explore this service →</a>
+          </div>
+        </article>
+        <!-- SEO -->
+        <article class="card" data-tag="seo">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Technical SEO Services</h3>
+            <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
+            <a href="#project" aria-label="Explore Technical SEO service">Explore this service →</a>
+          </div>
+        </article>
+        <!-- Discord -->
+        <article class="card" data-tag="discord">
+          <div class="card-media" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3>Custom Discord Server Builds <small style="color:#6b7280; font-weight:600;">(secondary offer)</small></h3>
+            <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
+            <a href="#project" aria-label="Explore Discord Server Builds">Explore this service →</a>
+          </div>
+        </article>
       </div>
-    </article>
-    <!-- Content -->
-    <article class="card" data-tag="content">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-        <h3>Content & Copywriting that Drives Traffic</h3>
-        <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
-        <a href="#project">Explore this service →</a>
+      <div style="margin-top: 18px;">
+        <a class="btn" href="#services-all">View All Services →</a>
       </div>
-    </article>
-    <!-- SEO -->
-    <article class="card" data-tag="seo">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-        <h3>Technical SEO Services</h3>
-        <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
-        <a href="#project">Explore this service →</a>
-      </div>
-    </article>
-    <!-- Discord -->
-    <article class="card" data-tag="discord">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-        <h3>Custom Discord Server Builds <small style="color:#6b7280; font-weight:600;">(secondary offer)</small></h3>
-        <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
-        <a href="#project">Explore this service →</a>
-      </div>
-    </article>
-  </div>
-
-  <div style="margin-top: 18px;">
-    <a class="btn" href="#services-all">View All Services →</a>
-  </div>
-</div>
-
+    </div>
   </section>  <!-- Platform Core -->  <section id="platform">
     <div class="container">
-      <div class="eyebrow">Platform core</div>
+      <div class="eyebrow2">Platform core</div>
       <h2 class="h2">The CMX community chat platform is still live — and always evolving.</h2>
-      <p class="lead">We started as a real‑time community chat platform, and it’s still active today, supporting users, testing features, and powering secure online collaboration.</p><div class="features">
-    <div class="feature"><strong>Private and public chatrooms</strong> Flexible spaces for teams, creators, and communities.</div>
-    <div class="feature"><strong>Role‑based permissions & moderation</strong> Keep conversations safe, scoped, and productive.</div>
-    <div class="feature"><strong>AI‑powered chat (Grok, Gemini, GPT)</strong> Research, summarize, and moderate in real time.</div>
-    <div class="feature"><strong>Cross‑server tools & bot support</strong> Images, radio, utilities, and automations.</div>
-    <div class="feature"><strong>Secure access via email verification</strong> Reliability and accountability by default.</div>
-  </div>
-
-  <div class="btn-row" style="margin-top:18px;">
-    <a class="btn btn-primary" href="#chat">Enter the Chat →</a>
-    <a class="btn btn-secondary" href="#platform">Explore the Platform</a>
-  </div>
-</div>
-
+      <p class="lead">We started as a real‑time community chat platform, and it’s still active today, supporting users, testing features, and powering secure online collaboration.</p>
+      <div class="features">
+        <div class="feature"><strong>Private and public chatrooms</strong> Flexible spaces for teams, creators, and communities.</div>
+        <div class="feature"><strong>Role‑based permissions & moderation</strong> Keep conversations safe, scoped, and productive.</div>
+        <div class="feature"><strong>AI‑powered chat (Grok, Gemini, GPT)</strong> Research, summarize, and moderate in real time.</div>
+        <div class="feature"><strong>Cross‑server tools & bot support</strong> Images, radio, utilities, and automations.</div>
+        <div class="feature"><strong>Secure access via email verification</strong> Reliability and accountability by default.</div>
+      </div>
+      <div class="buttons" style="margin-top:18px;">
+        <a class="btn btn-primary" href="#chat">Enter the Chat →</a>
+        <a class="btn btn-ghost" href="#platform">Explore the Platform</a>
+      </div>
+    </div>
   </section>  <!-- Who We Serve -->  <section id="about">
     <div class="container">
-      <div class="eyebrow">Who we serve</div>
+      <div class="eyebrow2">Who we serve</div>
       <h2 class="h2">We work with the internet’s next builders.</h2>
       <ul style="margin:12px 0 0 18px; color: var(--muted); line-height:1.9;">
         <li>Creators scaling beyond link‑in‑bio tools</li>
@@ -196,13 +261,13 @@ html { scroll-behavior: smooth; }
         <li>Founders who value copy, design, and real execution</li>
         <li>Teams replacing duct‑tape workflows with modern infrastructure</li>
       </ul>
-      <div class="btn-row" style="margin-top:18px;">
+      <div class="buttons" style="margin-top:18px;">
         <a class="btn btn-primary" href="#project">Start a Project →</a>
       </div>
     </div>
   </section>  <!-- Portfolio (Summary) -->  <section id="portfolio">
     <div class="container">
-      <div class="eyebrow">Portfolio</div>
+      <div class="eyebrow2">Portfolio</div>
       <h2 class="h2">Systems, brands, and platforms we’ve helped shape.</h2>
       <div class="features">
         <div class="feature"><strong>CMX Platform Development</strong> Live community hub with AI tools, cross‑server chat, and secure collaboration.</div>
@@ -210,13 +275,13 @@ html { scroll-behavior: smooth; }
         <div class="feature"><strong>Websites for Clients</strong> Fast, clean, mobile‑first sites tailored to each project’s needs.</div>
         <div class="feature"><strong>Loraine AI</strong> Always‑on AI assistant for prompts, conversation, and moderation inside CMX.</div>
       </div>
-      <div class="btn-row" style="margin-top:18px;">
+      <div class="buttons" style="margin-top:18px;">
         <a class="btn" href="#portfolio">View Our Work →</a>
       </div>
     </div>
   </section>  <!-- Why CMX -->  <section id="why">
     <div class="container">
-      <div class="eyebrow">Why CMX</div>
+      <div class="eyebrow2">Why CMX</div>
       <h2 class="h2">Why teams stick with CMX.</h2>
       <div class="features">
         <div class="feature"><strong>Built & tested on our live platform</strong> We ship what we use every day.</div>
@@ -224,19 +289,19 @@ html { scroll-behavior: smooth; }
         <div class="feature"><strong>Faster than traditional agencies</strong> Write, design, and ship with momentum.</div>
         <div class="feature"><strong>Human, not a ticket</strong> You’re a build worth remembering.</div>
       </div>
-      <div class="btn-row" style="margin-top:18px;">
+      <div class="buttons" style="margin-top:18px;">
         <a class="btn btn-primary" href="#project">Book a Strategy Call</a>
-        <a class="btn btn-secondary" href="#project">Start With a Proposal</a>
+        <a class="btn btn-ghost" href="#project">Start With a Proposal</a>
       </div>
     </div>
   </section>  <!-- CTA Strip -->  <section id="project">
     <div class="container">
-      <div class="eyebrow">Let’s build</div>
+      <div class="eyebrow2">Let’s build</div>
       <h2 class="h2">If you’re building something real, we’re ready to help.</h2>
       <p class="lead">We scale systems that already have momentum. We fix the ones that are falling apart. Whether it’s your content, your platform, or your search presence — we’ll clean it up and set it right.</p>
-      <div class="btn-row">
+      <div class="buttons">
         <a class="btn btn-primary" href="#project">Get a Proposal</a>
-        <a class="btn btn-secondary" href="#project">Start a Project</a>
+        <a class="btn btn-ghost" href="#project">Start a Project</a>
       </div>
     </div>
   </section>  <footer>
@@ -261,8 +326,8 @@ html { scroll-behavior: smooth; }
       entries.forEach(e => {
         if (e.isIntersecting) {
           const id = e.target.getAttribute('id') || 'home';
-          links.forEach(l => l.style.opacity = '.9');
-          if (map.get(id)) map.get(id).style.opacity = '1';
+          links.forEach(l => l.removeAttribute('aria-current'));
+          if (map.get(id)) map.get(id).setAttribute('aria-current','page');
         }
       });
     }, { root: null, threshold: .3 });
