@@ -638,6 +638,145 @@
       color: var(--accent);
     }
     
+    /* Horizontal Scroll Containers */
+    .horizontal-scroll-container {
+      position: relative;
+      margin: 40px 0;
+      overflow: hidden;
+      padding: 20px 0;
+    }
+    
+    .scroll-track {
+      display: flex;
+      gap: 24px;
+      transition: transform 0.3s ease;
+      will-change: transform;
+    }
+    
+    .scroll-item {
+      flex: 0 0 350px;
+      min-width: 350px;
+    }
+    
+    .portfolio-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      height: 100%;
+    }
+    
+    .portfolio-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--accent);
+    }
+    
+    .portfolio-media {
+      height: 200px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-4) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .portfolio-media::after {
+      content: '';
+      position: absolute;
+      inset: 16px;
+      border-radius: 16px;
+      background: conic-gradient(from 140deg, var(--accent), var(--accent-4), var(--accent-3), var(--accent-2), var(--accent));
+      filter: blur(20px);
+      opacity: 0.7;
+      animation: rotate 20s linear infinite;
+    }
+    
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .tech-tag {
+      padding: 4px 12px;
+      background: var(--pill);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: var(--transition);
+    }
+    
+         .tech-tag:hover {
+       background: var(--accent);
+       color: white;
+       border-color: var(--accent);
+     }
+     
+     /* Feature Cards */
+     .feature-card {
+       background: #fff;
+       border: 1px solid var(--border);
+       border-radius: var(--radius);
+       padding: 24px;
+       text-align: center;
+       transition: var(--transition);
+       height: 100%;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+     }
+     
+     .feature-card:hover {
+       transform: translateY(-4px);
+       box-shadow: var(--shadow-lg);
+       border-color: var(--accent);
+       background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+     }
+     
+     .feature-icon {
+       font-size: 3rem;
+       margin-bottom: 16px;
+       filter: grayscale(0.3);
+       transition: var(--transition);
+     }
+     
+     .feature-card:hover .feature-icon {
+       filter: grayscale(0);
+       transform: scale(1.1);
+     }
+     
+     .feature-card h4 {
+       margin: 0 0 12px;
+       font-size: 18px;
+       color: var(--text);
+       font-weight: 600;
+     }
+     
+     .feature-card p {
+       margin: 0;
+       color: var(--muted);
+       font-size: 14px;
+       line-height: 1.5;
+     }
+     
+     /* Content-Based Scroll Directions */
+     .services-scroll .scroll-track {
+       flex-direction: row-reverse;
+     }
+     
+     .features-scroll .scroll-track {
+       flex-direction: row;
+     }
+     
+     .portfolio-scroll .scroll-track {
+       flex-direction: row;
+     }
+    
     /* Hero Stats */
     .hero-stats {
       position: relative;
@@ -756,6 +895,17 @@
       .stats {
         grid-template-columns: 1fr;
       }
+      
+      /* Horizontal scroll mobile adjustments */
+      .scroll-item {
+        flex: 0 0 280px;
+        min-width: 280px;
+      }
+      
+      .horizontal-scroll-container {
+        margin: 30px 0;
+        padding: 15px 0;
+      }
     }
     
     @media (max-width: 480px) {
@@ -779,7 +929,53 @@
       .stat-number {
         font-size: 1.8rem;
       }
-    }
+      
+      /* Enhanced mobile scroll */
+      .scroll-item {
+        flex: 0 0 250px;
+        min-width: 250px;
+      }
+      
+      .portfolio-card .card-body {
+        padding: 16px;
+      }
+      
+      .portfolio-card h3 {
+        font-size: 18px;
+      }
+      
+      .portfolio-card p {
+        font-size: 14px;
+      }
+      
+      .tech-stack {
+        gap: 6px;
+      }
+      
+             .tech-tag {
+         padding: 3px 10px;
+         font-size: 11px;
+       }
+       
+       /* Feature cards mobile */
+       .feature-card {
+         padding: 16px;
+       }
+       
+       .feature-icon {
+         font-size: 2.5rem;
+         margin-bottom: 12px;
+       }
+       
+       .feature-card h4 {
+         font-size: 16px;
+         margin-bottom: 8px;
+       }
+       
+       .feature-card p {
+         font-size: 13px;
+       }
+     }
     
     /* Loading animation */
     .loading {
@@ -883,47 +1079,65 @@
         <span class="pill">OSINT & AI</span>
       </div>
       
-      <div class="grid">
-    <!-- Web Dev -->
-        <article class="card loading" data-tag="web">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-        <h3>Web Development for Startups & Creators</h3>
-        <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
-            <a href="#project">Explore this service <span class="arrow">→</span></a>
+            <!-- Horizontal Scroll Services -->
+      <div class="horizontal-scroll-container services-scroll">
+        <div class="scroll-track">
+          <div class="scroll-item">
+            <article class="card loading" data-tag="web">
+              <div class="card-media" aria-hidden="true"></div>
+              <div class="card-body">
+                <h3>Web Development for Startups & Creators</h3>
+                <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
+                <a href="#project">Explore this service <span class="arrow">→</span></a>
+              </div>
+            </article>
+          </div>
+          
+          <div class="scroll-item">
+            <article class="card loading" data-tag="content">
+              <div class="card-media" aria-hidden="true"></div>
+              <div class="card-body">
+                <h3>Content & Copywriting that Drives Traffic</h3>
+                <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
+                <a href="#project">Explore this service <span class="arrow">→</span></a>
+              </div>
+            </article>
+          </div>
+          
+          <div class="scroll-item">
+            <article class="card loading" data-tag="seo">
+              <div class="card-media" aria-hidden="true"></div>
+              <div class="card-body">
+                <h3>Technical SEO Services</h3>
+                <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
+                <a href="#project">Explore this service <span class="arrow">→</span></a>
+              </div>
+            </article>
+          </div>
+          
+          <div class="scroll-item">
+            <article class="card loading" data-tag="discord">
+              <div class="card-media" aria-hidden="true"></div>
+              <div class="card-body">
+                <h3>Custom Discord Server Builds <small style="color: #6b7280; font-weight: 600;">(secondary offer)</small></h3>
+                <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
+                <a href="#project">Explore this service <span class="arrow">→</span></a>
+              </div>
+            </article>
+          </div>
+          
+          <div class="scroll-item">
+            <article class="card loading" data-tag="ai">
+              <div class="card-media" aria-hidden="true"></div>
+              <div class="card-body">
+                <h3>AI Integration & Automation</h3>
+                <p>Custom AI solutions, chatbots, and automation systems that streamline operations and enhance user experiences.</p>
+                <a href="#project">Explore this service <span class="arrow">→</span></a>
+              </div>
+            </article>
+          </div>
+        </div>
       </div>
-    </article>
-        
-    <!-- Content -->
-        <article class="card loading" data-tag="content">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-        <h3>Content & Copywriting that Drives Traffic</h3>
-        <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
-            <a href="#project">Explore this service <span class="arrow">→</span></a>
-      </div>
-    </article>
-        
-    <!-- SEO -->
-        <article class="card loading" data-tag="seo">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-        <h3>Technical SEO Services</h3>
-        <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
-            <a href="#project">Explore this service <span class="arrow">→</span></a>
-      </div>
-    </article>
-        
-    <!-- Discord -->
-        <article class="card loading" data-tag="discord">
-      <div class="card-media" aria-hidden="true"></div>
-      <div class="card-body">
-            <h3>Custom Discord Server Builds <small style="color: #6b7280; font-weight: 600;">(secondary offer)</small></h3>
-        <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
-            <a href="#project">Explore this service <span class="arrow">→</span></a>
-      </div>
-    </article>
-  </div>
 
       <div style="margin-top: 32px; text-align: center;">
         <a class="btn" href="#services-all">View All Services <span class="arrow">→</span></a>
@@ -938,28 +1152,58 @@
       <h2 class="h2 loading">The CMX community chat platform is still live — and always evolving.</h2>
       <p class="lead loading">We started as a real‑time community chat platform, and it's still active today, supporting users, testing features, and powering secure online collaboration.</p>
       
-      <div class="features">
-        <div class="feature loading">
-          <strong>Private and public chatrooms</strong> 
-          Flexible spaces for teams, creators, and communities.
+            <!-- Horizontal Scroll Features -->
+      <div class="horizontal-scroll-container features-scroll">
+        <div class="scroll-track">
+          <div class="scroll-item">
+            <div class="feature-card">
+              <div class="feature-icon">💬</div>
+              <h4>Private and public chatrooms</h4>
+              <p>Flexible spaces for teams, creators, and communities.</p>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="feature-card">
+              <div class="feature-icon">🛡️</div>
+              <h4>Role‑based permissions & moderation</h4>
+              <p>Keep conversations safe, scoped, and productive.</p>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="feature-card">
+              <div class="feature-icon">🤖</div>
+              <h4>AI‑powered chat (Grok, Gemini, GPT)</h4>
+              <p>Research, summarize, and moderate in real time.</p>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="feature-card">
+              <div class="feature-icon">🔧</div>
+              <h4>Cross‑server tools & bot support</h4>
+              <p>Images, radio, utilities, and automations.</p>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="feature-card">
+              <div class="feature-icon">✅</div>
+              <h4>Secure access via email verification</h4>
+              <p>Reliability and accountability by default.</p>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h4>Real-time collaboration</h4>
+              <p>Instant updates and seamless teamwork.</p>
+            </div>
+          </div>
         </div>
-        <div class="feature loading">
-          <strong>Role‑based permissions & moderation</strong> 
-          Keep conversations safe, scoped, and productive.
-        </div>
-        <div class="feature loading">
-          <strong>AI‑powered chat (Grok, Gemini, GPT)</strong> 
-          Research, summarize, and moderate in real time.
-        </div>
-        <div class="feature loading">
-          <strong>Cross‑server tools & bot support</strong> 
-          Images, radio, utilities, and automations.
-        </div>
-        <div class="feature loading">
-          <strong>Secure access via email verification</strong> 
-          Reliability and accountability by default.
-        </div>
-  </div>
+      </div>
 
       <div class="btn-row" style="margin-top: 32px;">
         <a class="btn btn-primary" href="#chat">Enter the Chat <span class="arrow">→</span></a>
@@ -1016,24 +1260,87 @@
     <div class="container">
       <div class="eyebrow loading">Portfolio</div>
       <h2 class="h2 loading">Systems, brands, and platforms we've helped shape.</h2>
-      <div class="features">
-        <div class="feature loading">
-          <strong>CMX Platform Development</strong> 
-          Live community hub with AI tools, cross‑server chat, and secure collaboration.
-        </div>
-        <div class="feature loading">
-          <strong>Cross Chat</strong> 
-          Links channels across Discord servers for seamless conversation, serving ~800k users.
-        </div>
-        <div class="feature loading">
-          <strong>Websites for Clients</strong> 
-          Fast, clean, mobile‑first sites tailored to each project's needs.
-        </div>
-        <div class="feature loading">
-          <strong>Loraine AI</strong> 
-          Always‑on AI assistant for prompts, conversation, and moderation inside CMX.
+      
+      <!-- Horizontal Scroll Portfolio -->
+      <div class="horizontal-scroll-container portfolio-scroll">
+        <div class="scroll-track">
+          <div class="scroll-item">
+            <div class="portfolio-card">
+              <div class="card-media portfolio-media"></div>
+              <div class="card-body">
+                <h3>CMX Platform Development</h3>
+                <p>Live community hub with AI tools, cross‑server chat, and secure collaboration.</p>
+                <div class="tech-stack">
+                  <span class="tech-tag">Node.js</span>
+                  <span class="tech-tag">WebSocket</span>
+                  <span class="tech-tag">AI Integration</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="portfolio-card">
+              <div class="card-media portfolio-media"></div>
+              <div class="card-body">
+                <h3>Cross Chat</h3>
+                <p>Links channels across Discord servers for seamless conversation, serving ~800k users.</p>
+                <div class="tech-stack">
+                  <span class="tech-tag">Discord API</span>
+                  <span class="tech-tag">Real-time</span>
+                  <span class="tech-tag">Scalable</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="portfolio-card">
+              <div class="card-media portfolio-media"></div>
+              <div class="card-body">
+                <h3>Websites for Clients</h3>
+                <p>Fast, clean, mobile‑first sites tailored to each project's needs.</p>
+                <div class="tech-stack">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">Performance</span>
+                  <span class="tech-tag">SEO</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="portfolio-card">
+              <div class="card-media portfolio-media"></div>
+              <div class="card-body">
+                <h3>Loraine AI</h3>
+                <p>Always‑on AI assistant for prompts, conversation, and moderation inside CMX.</p>
+                <div class="tech-stack">
+                  <span class="tech-tag">OpenAI</span>
+                  <span class="tech-tag">GPT-4</span>
+                  <span class="tech-tag">Moderation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="scroll-item">
+            <div class="portfolio-card">
+              <div class="card-media portfolio-media"></div>
+              <div class="card-body">
+                <h3>OSINT Console</h3>
+                <p>Advanced intelligence gathering platform with real-time data analysis.</p>
+                <div class="tech-stack">
+                  <span class="tech-tag">OSINT</span>
+                  <span class="tech-tag">Data Analysis</span>
+                  <span class="tech-tag">Security</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      
       <div class="btn-row" style="margin-top: 32px;">
         <a class="btn" href="#portfolio">View Our Work <span class="arrow">→</span></a>
       </div>
@@ -1276,10 +1583,101 @@
        animation.onfinish = () => particle.remove();
      }
      
-     // Create particles periodically
+          // Create particles periodically
      setInterval(createParticle, 3000);
-    
-    // Add click tracking for analytics (placeholder)
+     
+     // Horizontal Scroll Functionality
+     function initHorizontalScroll() {
+       const scrollContainers = document.querySelectorAll('.horizontal-scroll-container');
+       
+       scrollContainers.forEach((container, index) => {
+         const track = container.querySelector('.scroll-track');
+         let isDown = false;
+         let startX;
+         let scrollLeft;
+         
+         // Mouse events
+         track.addEventListener('mousedown', (e) => {
+           isDown = true;
+           track.style.cursor = 'grabbing';
+           startX = e.pageX - track.offsetLeft;
+           scrollLeft = track.scrollLeft;
+         });
+         
+         track.addEventListener('mouseleave', () => {
+           isDown = false;
+           track.style.cursor = 'grab';
+         });
+         
+         track.addEventListener('mouseup', () => {
+           isDown = false;
+           track.style.cursor = 'grab';
+         });
+         
+         track.addEventListener('mousemove', (e) => {
+           if (!isDown) return;
+           e.preventDefault();
+           const x = e.pageX - track.offsetLeft;
+           const walk = (x - startX) * 2;
+           track.scrollLeft = scrollLeft - walk;
+         });
+         
+         // Touch events for mobile
+         track.addEventListener('touchstart', (e) => {
+           startX = e.touches[0].pageX - track.offsetLeft;
+           scrollLeft = track.scrollLeft;
+         });
+         
+         track.addEventListener('touchmove', (e) => {
+           e.preventDefault();
+           if (!startX) return;
+           const x = e.touches[0].pageX - track.offsetLeft;
+           const walk = (x - startX) * 2;
+           track.scrollLeft = scrollLeft - walk;
+         });
+         
+         // Content-based scroll behaviors
+         if (container.classList.contains('portfolio-scroll')) {
+           // Portfolio: Left to right (progression/evolution)
+           let scrollDirection = 1;
+           setInterval(() => {
+             if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
+               scrollDirection = -1;
+             } else if (track.scrollLeft <= 0) {
+               scrollDirection = 1;
+             }
+             track.scrollLeft += scrollDirection * 1.5;
+           }, 60);
+         } else if (container.classList.contains('services-scroll')) {
+           // Services: Right to left (different approaches/options)
+           let scrollDirection = -1;
+           setInterval(() => {
+             if (track.scrollLeft <= 0) {
+               scrollDirection = 1;
+             } else if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
+               scrollDirection = -1;
+             }
+             track.scrollLeft += scrollDirection * 2;
+           }, 50);
+         } else if (container.classList.contains('features-scroll')) {
+           // Features: Left to right (building momentum)
+           let scrollDirection = 1;
+           setInterval(() => {
+             if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
+               scrollDirection = -1;
+             } else if (track.scrollLeft <= 0) {
+               scrollDirection = 1;
+             }
+             track.scrollLeft += scrollDirection * 1;
+           }, 80);
+         }
+       });
+     }
+     
+     // Initialize horizontal scroll when page loads
+     document.addEventListener('DOMContentLoaded', initHorizontalScroll);
+     
+     // Add click tracking for analytics (placeholder)
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', () => {
         // Track internal link clicks
