@@ -27,9 +27,6 @@
       --radius-lg: 28px;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-      --mesh-gradient-1: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.06) 50%, rgba(225, 29, 72, 0.08) 100%);
-      --mesh-gradient-2: linear-gradient(45deg, rgba(139, 92, 246, 0.06) 0%, rgba(6, 182, 212, 0.08) 100%);
-      --mesh-gradient-3: linear-gradient(225deg, rgba(37, 99, 235, 0.05) 0%, rgba(225, 29, 72, 0.04) 100%);
     }
     
     * { 
@@ -62,7 +59,7 @@
       margin-inline: auto; 
     }
     
-    /* Sticky Header */
+    /* Header */
     header { 
       position: sticky; 
       top: 0; 
@@ -192,11 +189,11 @@
     .mobile-menu-toggle.active span:nth-child(3) {
       transform: rotate(-45deg) translate(6px, -6px);
     }
-
-/* Hero */
+    
+    /* Hero */
     .hero { 
       padding: 80px 0 40px; 
-      background: var(--mesh-gradient-1);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       position: relative;
       overflow: hidden;
       min-height: 100vh;
@@ -214,22 +211,9 @@
       background: 
         radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(225, 29, 72, 0.1) 0%, transparent 50%),
-        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="%23e2e8f0" stroke-width="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        radial-gradient(circle at 40% 40%, rgba(225, 29, 72, 0.1) 0%, transparent 50%);
       opacity: 0.4;
       animation: float 20s ease-in-out infinite;
-    }
-    
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: var(--mesh-gradient-2);
-      opacity: 0.3;
-      animation: float 25s ease-in-out infinite reverse;
     }
     
     @keyframes float {
@@ -339,8 +323,8 @@
     .btn:hover span.arrow {
       transform: translateX(4px);
     }
-
-/* Section headings */
+    
+    /* Section headings */
     .eyebrow { 
       color: var(--accent-2); 
       font-weight: 700; 
@@ -370,217 +354,8 @@
       margin: 0 0 28px;
       line-height: 1.6;
     }
-
-/* What We Do */
-    .pills { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 12px; 
-      margin: 24px 0 32px; 
-    }
     
-    .pill { 
-      padding: 12px 18px; 
-      background: var(--pill); 
-      border: 1px solid var(--border); 
-      border-radius: 999px; 
-      color: #374151; 
-      font-weight: 600; 
-      font-size: 14px;
-      transition: var(--transition);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .pill::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: var(--transition);
-    }
-    
-    .pill:hover {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-4) 100%);
-      color: white;
-      border-color: var(--accent);
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .pill:hover::before {
-      left: 100%;
-    }
-    
-    .pill:active {
-      transform: translateY(-1px) scale(1.02);
-    }
-    
-    .grid { 
-      display: grid; 
-      grid-template-columns: repeat(12, 1fr); 
-      gap: 28px; 
-    }
-    
-    .card { 
-      border: 1px solid var(--border); 
-      border-radius: var(--radius-lg); 
-      overflow: hidden; 
-      background: #fff; 
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      cursor: pointer;
-      position: relative;
-      height: 100%;
-    }
-    
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
-      transform: scaleX(0);
-      transition: var(--transition);
-      transform-origin: left;
-    }
-    
-    .card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: var(--shadow-xl);
-      border-color: var(--accent);
-    }
-    
-    .card:hover::before {
-      transform: scaleX(1);
-    }
-    
-    .card-media { 
-      position: relative; 
-      height: 240px; 
-      background: radial-gradient(80% 120% at 20% 20%, #e8f1ff 0%, #fafafa 60%);
-      overflow: hidden;
-    }
-    
-    .card-media::after { 
-      content: ""; 
-      position: absolute; 
-      inset: 16px; 
-      border-radius: 24px; 
-      background: conic-gradient(from 140deg, var(--accent), var(--accent-4), var(--accent-3), var(--accent-2), var(--accent)); 
-      filter: blur(18px); 
-      opacity: 0.6;
-      animation: rotate 15s linear infinite;
-    }
-    
-    .card-media::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 30% 70%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
-      opacity: 0;
-      transition: var(--transition);
-    }
-    
-    .card:hover .card-media::before {
-      opacity: 1;
-    }
-    
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    
-    .card-body { 
-      padding: 28px; 
-    }
-    
-    .card h3 { 
-      margin: 0 0 12px; 
-      font-size: 22px;
-      color: var(--text);
-    }
-    
-    .card p { 
-      margin: 0 0 20px; 
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    
-    .card a { 
-      color: var(--accent); 
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .card a:hover {
-      gap: 12px;
-    }
-
-@media (min-width: 860px) {
-      .hero { padding: 120px 0 60px; }
-    }
-
-/* Feature rows */
-    .features { 
-      display: grid; 
-      grid-template-columns: repeat(12, 1fr); 
-      gap: 24px; 
-    }
-    
-    .feature { 
-      grid-column: span 12; 
-      padding: 24px; 
-      border: 1px solid var(--border); 
-      border-radius: var(--radius);
-      background: #fff;
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .feature::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.05), transparent);
-      transition: var(--transition);
-    }
-    
-    .feature:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px) scale(1.01);
-      box-shadow: var(--shadow-lg);
-      background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
-    }
-    
-    .feature:hover::before {
-      left: 100%;
-    }
-    
-    .feature strong { 
-      display: block; 
-      margin-bottom: 8px;
-      color: var(--accent);
-      font-size: 18px;
-    }
-    
-    @media (min-width: 900px) { 
-      .feature { grid-column: span 6; } 
-    }
-
-/* Sections */
+    /* Sections */
     section { 
       padding: 80px 0; 
       border-top: 1px solid var(--border);
@@ -589,6 +364,101 @@
     
     section:nth-child(even) {
       background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+    
+    /* Alternating Horizontal Cards */
+    .cards-container {
+      margin: 40px 0;
+      position: relative;
+    }
+    
+    .cards-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    
+    .cards-row:nth-child(odd) {
+      justify-content: flex-start;
+    }
+    
+    .cards-row:nth-child(even) {
+      justify-content: flex-end;
+    }
+    
+    .card {
+      flex: 0 0 350px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    
+    .card.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--accent);
+    }
+    
+    .card-media {
+      height: 200px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-4) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-media::after {
+      content: '';
+      position: absolute;
+      inset: 16px;
+      border-radius: 16px;
+      background: conic-gradient(from 140deg, var(--accent), var(--accent-4), var(--accent-3), var(--accent-2), var(--accent));
+      filter: blur(20px);
+      opacity: 0.7;
+      animation: rotate 20s linear infinite;
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .card-body {
+      padding: 24px;
+    }
+    
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      color: var(--text);
+    }
+    
+    .card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    
+    .card a {
+      color: var(--accent);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card a:hover {
+      gap: 12px;
     }
     
     /* Stats section */
@@ -615,8 +485,8 @@
       color: var(--muted);
       font-weight: 500;
     }
-
-/* Footer */
+    
+    /* Footer */
     footer { 
       border-top: 1px solid var(--border); 
       padding: 60px 0 40px; 
@@ -631,263 +501,6 @@
     
     .foot a:hover {
       color: var(--accent);
-    }
-    
-    /* Scroll-to-Reveal Containers */
-    .horizontal-scroll-container {
-      position: relative;
-      margin: 40px 0;
-      overflow: hidden;
-      padding: 20px 0;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(16, 185, 129, 0.02) 100%);
-      border-radius: var(--radius);
-    }
-    
-    .scroll-track {
-      display: flex;
-      gap: 24px;
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform;
-      min-width: max-content;
-    }
-    
-    .scroll-item {
-      flex: 0 0 350px;
-      min-width: 350px;
-      opacity: 0;
-      transform: translateY(40px) scale(0.95);
-      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .scroll-item.revealed {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-    
-    .scroll-item.revealed:nth-child(1) { transition-delay: 0.1s; }
-    .scroll-item.revealed:nth-child(2) { transition-delay: 0.2s; }
-    .scroll-item.revealed:nth-child(3) { transition-delay: 0.3s; }
-    .scroll-item.revealed:nth-child(4) { transition-delay: 0.4s; }
-    .scroll-item.revealed:nth-child(5) { transition-delay: 0.5s; }
-    
-    /* Enhanced reveal animations */
-    .scroll-item.revealed .card,
-    .scroll-item.revealed .portfolio-card,
-    .scroll-item.revealed .feature-card {
-      animation: cardReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-    
-    @keyframes cardReveal {
-      0% {
-        transform: translateY(20px);
-        opacity: 0.8;
-      }
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-    
-    /* Scroll progress indicator */
-    .scroll-progress {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      width: 60px;
-      height: 4px;
-      background: rgba(37, 99, 235, 0.2);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    
-    .scroll-progress-bar {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      transition: width 0.3s ease;
-      width: 0%;
-    }
-    
-    .scroll-direction-indicator {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: var(--accent);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      z-index: 10;
-      box-shadow: var(--shadow);
-    }
-    
-    .portfolio-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      height: 100%;
-    }
-    
-    .portfolio-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-xl);
-      border-color: var(--accent);
-    }
-    
-    .portfolio-media {
-      height: 200px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-4) 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .portfolio-media::after {
-      content: '';
-      position: absolute;
-      inset: 16px;
-      border-radius: 16px;
-      background: conic-gradient(from 140deg, var(--accent), var(--accent-4), var(--accent-3), var(--accent-2), var(--accent));
-      filter: blur(20px);
-      opacity: 0.7;
-      animation: rotate 20s linear infinite;
-    }
-    
-    .tech-stack {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
-    }
-    
-    .tech-tag {
-      padding: 4px 12px;
-      background: var(--pill);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-      transition: var(--transition);
-    }
-    
-         .tech-tag:hover {
-       background: var(--accent);
-       color: white;
-       border-color: var(--accent);
-     }
-     
-     /* Feature Cards */
-     .feature-card {
-       background: #fff;
-       border: 1px solid var(--border);
-       border-radius: var(--radius);
-       padding: 24px;
-       text-align: center;
-       transition: var(--transition);
-       height: 100%;
-       display: flex;
-       flex-direction: column;
-       align-items: center;
-       justify-content: center;
-     }
-     
-     .feature-card:hover {
-       transform: translateY(-4px);
-       box-shadow: var(--shadow-lg);
-       border-color: var(--accent);
-       background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
-     }
-     
-     .feature-icon {
-       font-size: 3rem;
-       margin-bottom: 16px;
-       filter: grayscale(0.3);
-       transition: var(--transition);
-     }
-     
-     .feature-card:hover .feature-icon {
-       filter: grayscale(0);
-       transform: scale(1.1);
-     }
-     
-     .feature-card h4 {
-       margin: 0 0 12px;
-       font-size: 18px;
-       color: var(--text);
-       font-weight: 600;
-     }
-     
-     .feature-card p {
-       margin: 0;
-       color: var(--muted);
-       font-size: 14px;
-       line-height: 1.5;
-     }
-     
-     /* Content-Based Scroll Directions */
-     .services-scroll .scroll-track {
-       flex-direction: row-reverse;
-     }
-     
-     .features-scroll .scroll-track {
-       flex-direction: row;
-     }
-     
-     .portfolio-scroll .scroll-track {
-       flex-direction: row;
-     }
-    
-    /* Hero Stats */
-    .hero-stats {
-      position: relative;
-      z-index: 2;
-    }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 30px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
-    .stat-item {
-      text-align: center;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: var(--radius);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      transition: var(--transition);
-      cursor: pointer;
-    }
-    
-    .stat-item:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: var(--shadow-xl);
-    }
-    
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
-    }
-    
-    .stat-label {
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
     }
     
     /* Mobile responsiveness */
@@ -933,42 +546,19 @@
         justify-content: center;
       }
       
-      .pills {
-        justify-content: center;
-        gap: 8px;
+      .cards-row {
+        flex-direction: column;
+        align-items: center;
       }
       
-      .pill {
-        padding: 10px 14px;
-        font-size: 13px;
-      }
-      
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-      }
-      
-      .stat-item {
-        padding: 15px;
-      }
-      
-      .stat-number {
-        font-size: 2rem;
+      .card {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 350px;
       }
       
       .stats {
         grid-template-columns: 1fr;
-      }
-      
-      /* Horizontal scroll mobile adjustments */
-      .scroll-item {
-        flex: 0 0 280px;
-        min-width: 280px;
-      }
-      
-      .horizontal-scroll-container {
-        margin: 30px 0;
-        padding: 15px 0;
       }
     }
     
@@ -981,84 +571,9 @@
         font-size: 16px;
       }
       
-      .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
+      .card {
+        max-width: 100%;
       }
-      
-      .stat-item {
-        padding: 12px;
-      }
-      
-      .stat-number {
-        font-size: 1.8rem;
-      }
-      
-      /* Enhanced mobile scroll */
-      .scroll-item {
-        flex: 0 0 250px;
-        min-width: 250px;
-      }
-      
-      .portfolio-card .card-body {
-        padding: 16px;
-      }
-      
-      .portfolio-card h3 {
-        font-size: 18px;
-      }
-      
-      .portfolio-card p {
-        font-size: 14px;
-      }
-      
-      .tech-stack {
-        gap: 6px;
-      }
-      
-             .tech-tag {
-         padding: 3px 10px;
-         font-size: 11px;
-       }
-       
-       /* Feature cards mobile */
-       .feature-card {
-         padding: 16px;
-       }
-       
-       .feature-icon {
-         font-size: 2.5rem;
-         margin-bottom: 12px;
-       }
-       
-       .feature-card h4 {
-         font-size: 16px;
-         margin-bottom: 8px;
-       }
-       
-       .feature-card p {
-         font-size: 13px;
-       }
-     }
-    
-    /* Loading animation */
-    .loading {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.6s ease forwards;
-    }
-    
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    /* Smooth scrolling for older browsers */
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      * { animation-duration: 0.01ms !important; }
     }
   </style>
 </head>
@@ -1094,34 +609,33 @@
   <!-- Hero -->
   <main id="home" class="hero">
     <div class="container">
-      <h1 class="loading">From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
-      <p class="loading">CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
+      <h1>From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
+      <p>CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
       <div class="btn-row">
-        <a class="btn btn-primary loading" href="#project">
+        <a class="btn btn-primary" href="#project">
           Build With CMX <span class="arrow">→</span>
         </a>
-        <a class="btn btn-secondary loading" href="#chat">
+        <a class="btn btn-secondary" href="#chat">
           Join the Chat ↗
         </a>
-        <small style="opacity: 0.75; margin-top: 8px;">The CMX platform is still live, and it powers everything we build.</small>
       </div>
       
-      <!-- Logo/KPI Strip -->
+      <!-- Hero Stats -->
       <div class="hero-stats" style="margin-top: 60px; text-align: center;">
-        <div class="stats-grid">
-          <div class="stat-item">
+        <div class="stats">
+          <div class="stat">
             <div class="stat-number">800K+</div>
             <div class="stat-label">Users Served</div>
           </div>
-          <div class="stat-item">
+          <div class="stat">
             <div class="stat-number">50+</div>
             <div class="stat-label">Projects Delivered</div>
           </div>
-          <div class="stat-item">
+          <div class="stat">
             <div class="stat-number">99.9%</div>
             <div class="stat-label">Uptime</div>
           </div>
-          <div class="stat-item">
+          <div class="stat">
             <div class="stat-number">24/7</div>
             <div class="stat-label">Support</div>
           </div>
@@ -1130,196 +644,180 @@
     </div>
   </main>
 
-  <!-- What We Do Best -->
+  <!-- Services -->
   <section id="services">
     <div class="container">
-      <div class="eyebrow loading">What we do best</div>
-      <h2 class="h2 loading">Execution where it matters most.</h2>
-      <div class="pills" aria-label="Service categories">
-        <span class="pill">Web Development</span>
-        <span class="pill">SEO Services</span>
-        <span class="pill">Content & Copywriting</span>
-        <span class="pill">Discord Systems</span>
-        <span class="pill">OSINT & AI</span>
-      </div>
+      <div class="eyebrow">What we do best</div>
+      <h2 class="h2">Execution where it matters most.</h2>
       
-            <!-- Horizontal Scroll Services -->
-      <div class="horizontal-scroll-container services-scroll">
-        <div class="scroll-direction-indicator">📱 Scroll to reveal services</div>
-        <div class="scroll-progress">
-          <div class="scroll-progress-bar"></div>
-        </div>
-        <div class="scroll-track">
-          <div class="scroll-item">
-            <article class="card loading" data-tag="web">
-              <div class="card-media" aria-hidden="true"></div>
-              <div class="card-body">
-                <h3>Web Development for Startups & Creators</h3>
-                <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
-                <a href="#project">Explore this service <span class="arrow">→</span></a>
-              </div>
-            </article>
-          </div>
-          
-          <div class="scroll-item">
-            <article class="card loading" data-tag="content">
-              <div class="card-media" aria-hidden="true"></div>
-              <div class="card-body">
-                <h3>Content & Copywriting that Drives Traffic</h3>
-                <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
-                <a href="#project">Explore this service <span class="arrow">→</span></a>
-              </div>
-            </article>
-          </div>
-          
-          <div class="scroll-item">
-            <article class="card loading" data-tag="seo">
-              <div class="card-media" aria-hidden="true"></div>
-              <div class="card-body">
-                <h3>Technical SEO Services</h3>
-                <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
-                <a href="#project">Explore this service <span class="arrow">→</span></a>
-              </div>
-            </article>
-          </div>
-          
-          <div class="scroll-item">
-            <article class="card loading" data-tag="discord">
-              <div class="card-media" aria-hidden="true"></div>
-              <div class="card-body">
-                <h3>Custom Discord Server Builds <small style="color: #6b7280; font-weight: 600;">(secondary offer)</small></h3>
-                <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
-                <a href="#project">Explore this service <span class="arrow">→</span></a>
-              </div>
-            </article>
-          </div>
-          
-          <div class="scroll-item">
-            <article class="card loading" data-tag="ai">
-              <div class="card-media" aria-hidden="true"></div>
-              <div class="card-body">
-                <h3>AI Integration & Automation</h3>
-                <p>Custom AI solutions, chatbots, and automation systems that streamline operations and enhance user experiences.</p>
-                <a href="#project">Explore this service <span class="arrow">→</span></a>
-              </div>
-            </article>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: 32px; text-align: center;">
-        <a class="btn" href="#services-all">View All Services <span class="arrow">→</span></a>
-  </div>
-</div>
-  </section>
-
-  <!-- Platform Core -->
-  <section id="platform">
-    <div class="container">
-      <div class="eyebrow loading">Platform core</div>
-      <h2 class="h2 loading">The CMX community chat platform is still live — and always evolving.</h2>
-      <p class="lead loading">We started as a real‑time community chat platform, and it's still active today, supporting users, testing features, and powering secure online collaboration.</p>
-      
-            <!-- Horizontal Scroll Features -->
-      <div class="horizontal-scroll-container features-scroll">
-        <div class="scroll-direction-indicator">🚀 Scroll to reveal features</div>
-        <div class="scroll-progress">
-          <div class="scroll-progress-bar"></div>
-        </div>
-        <div class="scroll-track">
-          <div class="scroll-item">
-            <div class="feature-card">
-              <div class="feature-icon">💬</div>
-              <h4>Private and public chatrooms</h4>
-              <p>Flexible spaces for teams, creators, and communities.</p>
+      <div class="cards-container">
+        <div class="cards-row">
+          <div class="card" data-reveal="1">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Web Development for Startups & Creators</h3>
+              <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
+              <a href="#project">Explore this service <span class="arrow">→</span></a>
             </div>
           </div>
           
-          <div class="scroll-item">
-            <div class="feature-card">
-              <div class="feature-icon">🛡️</div>
-              <h4>Role‑based permissions & moderation</h4>
-              <p>Keep conversations safe, scoped, and productive.</p>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="feature-card">
-              <div class="feature-icon">🤖</div>
-              <h4>AI‑powered chat (Grok, Gemini, GPT)</h4>
-              <p>Research, summarize, and moderate in real time.</p>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="feature-card">
-              <div class="feature-icon">🔧</div>
-              <h4>Cross‑server tools & bot support</h4>
-              <p>Images, radio, utilities, and automations.</p>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="feature-card">
-              <div class="feature-icon">✅</div>
-              <h4>Secure access via email verification</h4>
-              <p>Reliability and accountability by default.</p>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="feature-card">
-              <div class="feature-icon">🚀</div>
-              <h4>Real-time collaboration</h4>
-              <p>Instant updates and seamless teamwork.</p>
+          <div class="card" data-reveal="2">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Content & Copywriting that Drives Traffic</h3>
+              <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
+              <a href="#project">Explore this service <span class="arrow">→</span></a>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="btn-row" style="margin-top: 32px;">
-        <a class="btn btn-primary" href="#chat">Enter the Chat <span class="arrow">→</span></a>
-    <a class="btn btn-secondary" href="#platform">Explore the Platform</a>
-  </div>
-</div>
-  </section>
-
-  <!-- Stats Section -->
-  <section id="stats" style="background: linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%); color: white; border-top: none;">
-    <div class="container">
-      <h2 class="h2 loading" style="color: white; text-align: center; margin-bottom: 40px;">Our Impact in Numbers</h2>
-      <div class="stats">
-        <div class="stat loading">
-          <div class="stat-number">800K+</div>
-          <div class="stat-label">Users Served</div>
+        
+        <div class="cards-row">
+          <div class="card" data-reveal="3">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Technical SEO Services</h3>
+              <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
+              <a href="#project">Explore this service <span class="arrow">→</span></a>
+            </div>
+          </div>
+          
+          <div class="card" data-reveal="4">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Custom Discord Server Builds</h3>
+              <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
+              <a href="#project">Explore this service <span class="arrow">→</span></a>
+            </div>
+          </div>
         </div>
-        <div class="stat loading">
-          <div class="stat-number">50+</div>
-          <div class="stat-label">Projects Completed</div>
-        </div>
-        <div class="stat loading">
-          <div class="stat-number">99.9%</div>
-          <div class="stat-label">Uptime</div>
-        </div>
-        <div class="stat loading">
-          <div class="stat-number">24/7</div>
-          <div class="stat-label">Support</div>
+        
+        <div class="cards-row">
+          <div class="card" data-reveal="5">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>AI Integration & Automation</h3>
+              <p>Custom AI solutions, chatbots, and automation systems that streamline operations and enhance user experiences.</p>
+              <a href="#project">Explore this service <span class="arrow">→</span></a>
+            </div>
+          </div>
+          
+          <div class="card" data-reveal="6">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>OSINT & Intelligence</h3>
+              <p>Advanced intelligence gathering platforms with real-time data analysis and comprehensive reporting tools.</p>
+              <a href="#project">Explore this service <span class="arrow">→</span></a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Who We Serve -->
+  <!-- Platform -->
+  <section id="platform">
+    <div class="container">
+      <div class="eyebrow">Platform core</div>
+      <h2 class="h2">The CMX community chat platform is still live — and always evolving.</h2>
+      <p class="lead">We started as a real‑time community chat platform, and it's still active today, supporting users, testing features, and powering secure online collaboration.</p>
+      
+      <div class="cards-container">
+        <div class="cards-row">
+          <div class="card" data-reveal="7">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Private and Public Chatrooms</h3>
+              <p>Flexible spaces for teams, creators, and communities with role-based access control.</p>
+            </div>
+          </div>
+          
+          <div class="card" data-reveal="8">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>AI-Powered Chat (Grok, Gemini, GPT)</h3>
+              <p>Research, summarize, and moderate in real time with advanced AI integration.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cards-row">
+          <div class="card" data-reveal="9">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Cross-Server Tools & Bot Support</h3>
+              <p>Images, radio, utilities, and automations that work across multiple Discord servers.</p>
+            </div>
+          </div>
+          
+          <div class="card" data-reveal="10">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Secure Access via Email Verification</h3>
+              <p>Reliability and accountability by default with enterprise-grade security.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="eyebrow">Portfolio</div>
+      <h2 class="h2">Systems, brands, and platforms we've helped shape.</h2>
+      
+      <div class="cards-container">
+        <div class="cards-row">
+          <div class="card" data-reveal="11">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>CMX Platform Development</h3>
+              <p>Live community hub with AI tools, cross‑server chat, and secure collaboration.</p>
+            </div>
+          </div>
+          
+          <div class="card" data-reveal="12">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Cross Chat</h3>
+              <p>Links channels across Discord servers for seamless conversation, serving ~800k users.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cards-row">
+          <div class="card" data-reveal="13">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Websites for Clients</h3>
+              <p>Fast, clean, mobile‑first sites tailored to each project's needs.</p>
+            </div>
+          </div>
+          
+          <div class="card" data-reveal="14">
+            <div class="card-media"></div>
+            <div class="card-body">
+              <h3>Loraine AI</h3>
+              <p>Always‑on AI assistant for prompts, conversation, and moderation inside CMX.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
   <section id="about">
     <div class="container">
-      <div class="eyebrow loading">Who we serve</div>
-      <h2 class="h2 loading">We work with the internet's next builders.</h2>
+      <div class="eyebrow">Who we serve</div>
+      <h2 class="h2">We work with the internet's next builders.</h2>
       <ul style="margin: 16px 0 0 24px; color: var(--muted); line-height: 1.9; font-size: 18px;">
-        <li class="loading">Creators scaling beyond link‑in‑bio tools</li>
-        <li class="loading">Startups needing clean infrastructure and fast delivery</li>
-        <li class="loading">Communities looking for stable, scalable systems</li>
-        <li class="loading">Founders who value copy, design, and real execution</li>
-        <li class="loading">Teams replacing duct‑tape workflows with modern infrastructure</li>
+        <li>Creators scaling beyond link‑in‑bio tools</li>
+        <li>Startups needing clean infrastructure and fast delivery</li>
+        <li>Communities looking for stable, scalable systems</li>
+        <li>Founders who value copy, design, and real execution</li>
+        <li>Teams replacing duct‑tape workflows with modern infrastructure</li>
       </ul>
       <div class="btn-row" style="margin-top: 32px;">
         <a class="btn btn-primary" href="#project">Start a Project <span class="arrow">→</span></a>
@@ -1327,138 +825,12 @@
     </div>
   </section>
 
-  <!-- Portfolio (Summary) -->
-  <section id="portfolio">
-    <div class="container">
-      <div class="eyebrow loading">Portfolio</div>
-      <h2 class="h2 loading">Systems, brands, and platforms we've helped shape.</h2>
-      
-      <!-- Horizontal Scroll Portfolio -->
-      <div class="horizontal-scroll-container portfolio-scroll">
-        <div class="scroll-direction-indicator">💼 Scroll to reveal portfolio</div>
-        <div class="scroll-progress">
-          <div class="scroll-progress-bar"></div>
-        </div>
-        <div class="scroll-track">
-          <div class="scroll-item">
-            <div class="portfolio-card">
-              <div class="card-media portfolio-media"></div>
-              <div class="card-body">
-                <h3>CMX Platform Development</h3>
-                <p>Live community hub with AI tools, cross‑server chat, and secure collaboration.</p>
-                <div class="tech-stack">
-                  <span class="tech-tag">Node.js</span>
-                  <span class="tech-tag">WebSocket</span>
-                  <span class="tech-tag">AI Integration</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="portfolio-card">
-              <div class="card-media portfolio-media"></div>
-              <div class="card-body">
-                <h3>Cross Chat</h3>
-                <p>Links channels across Discord servers for seamless conversation, serving ~800k users.</p>
-                <div class="tech-stack">
-                  <span class="tech-tag">Discord API</span>
-                  <span class="tech-tag">Real-time</span>
-                  <span class="tech-tag">Scalable</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="portfolio-card">
-              <div class="card-media portfolio-media"></div>
-              <div class="card-body">
-                <h3>Websites for Clients</h3>
-                <p>Fast, clean, mobile‑first sites tailored to each project's needs.</p>
-                <div class="tech-stack">
-                  <span class="tech-tag">React</span>
-                  <span class="tech-tag">Performance</span>
-                  <span class="tech-tag">SEO</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="portfolio-card">
-              <div class="card-media portfolio-media"></div>
-              <div class="card-body">
-                <h3>Loraine AI</h3>
-                <p>Always‑on AI assistant for prompts, conversation, and moderation inside CMX.</p>
-                <div class="tech-stack">
-                  <span class="tech-tag">OpenAI</span>
-                  <span class="tech-tag">GPT-4</span>
-                  <span class="tech-tag">Moderation</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="scroll-item">
-            <div class="portfolio-card">
-              <div class="card-media portfolio-media"></div>
-              <div class="card-body">
-                <h3>OSINT Console</h3>
-                <p>Advanced intelligence gathering platform with real-time data analysis.</p>
-                <div class="tech-stack">
-                  <span class="tech-tag">OSINT</span>
-                  <span class="tech-tag">Data Analysis</span>
-                  <span class="tech-tag">Security</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="btn-row" style="margin-top: 32px;">
-        <a class="btn" href="#portfolio">View Our Work <span class="arrow">→</span></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Why CMX -->
-  <section id="why">
-    <div class="container">
-      <div class="eyebrow loading">Why CMX</div>
-      <h2 class="h2 loading">Why teams stick with CMX.</h2>
-      <div class="features">
-        <div class="feature loading">
-          <strong>Built & tested on our live platform</strong> 
-          We ship what we use every day.
-        </div>
-        <div class="feature loading">
-          <strong>Led and reviewed in‑house</strong> 
-          No faceless vendor chain — real accountability.
-        </div>
-        <div class="feature loading">
-          <strong>Faster than traditional agencies</strong> 
-          Write, design, and ship with momentum.
-        </div>
-        <div class="feature loading">
-          <strong>Human, not a ticket</strong> 
-          You're a build worth remembering.
-        </div>
-      </div>
-      <div class="btn-row" style="margin-top: 32px;">
-        <a class="btn btn-primary" href="#project">Book a Strategy Call</a>
-        <a class="btn btn-secondary" href="#project">Start With a Proposal</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Strip -->
+  <!-- CTA -->
   <section id="project" style="background: linear-gradient(135deg, var(--text) 0%, #1f2937 100%); color: white; border-top: none;">
     <div class="container">
-      <div class="eyebrow loading" style="background: rgba(255,255,255,0.1); color: white;">Let's build</div>
-      <h2 class="h2 loading" style="color: white;">If you're building something real, we're ready to help.</h2>
-      <p class="lead loading" style="color: rgba(255,255,255,0.8);">We scale systems that already have momentum. We fix the ones that are falling apart. Whether it's your content, your platform, or your search presence — we'll clean it up and set it right.</p>
+      <div class="eyebrow" style="background: rgba(255,255,255,0.1); color: white;">Let's build</div>
+      <h2 class="h2" style="color: white;">If you're building something real, we're ready to help.</h2>
+      <p class="lead" style="color: rgba(255,255,255,0.8);">We scale systems that already have momentum. We fix the ones that are falling apart. Whether it's your content, your platform, or your search presence — we'll clean it up and set it right.</p>
       <div class="btn-row">
         <a class="btn btn-primary" href="#project">Get a Proposal</a>
         <a class="btn btn-secondary" href="#project" style="background: white; color: var(--text);">Start a Project</a>
@@ -1481,7 +853,6 @@
     </div>
   </footer>
 
-  <!-- Enhanced JavaScript -->
   <script>
     // Mobile menu toggle
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
@@ -1530,285 +901,39 @@
       });
     });
     
-    // Intersection Observer for animations and active nav
-    const sections = [...document.querySelectorAll('main, section')];
-    const links = [...document.querySelectorAll('header nav a')].filter(a => a.getAttribute('href').startsWith('#'));
-    const map = new Map();
-    
-    links.forEach(a => map.set(a.getAttribute('href').slice(1), a));
-    
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          const id = e.target.getAttribute('id') || 'home';
-          
-          // Update active nav
-          links.forEach(l => l.classList.remove('active'));
-          if (map.get(id)) map.get(id).classList.add('active');
-          
-          // Add loading animation
-          const elements = e.target.querySelectorAll('.loading');
-          elements.forEach((el, index) => {
-            setTimeout(() => {
-              el.style.animationDelay = `${index * 0.1}s`;
-            }, 100);
-          });
-        }
-      });
-    }, { 
-      root: null, 
-      threshold: 0.3,
-      rootMargin: '-50px 0px -100px 0px'
-    });
-    
-    sections.forEach(s => obs.observe(s));
-    
-    // Add stagger animation to cards
-    const cards = document.querySelectorAll('.card');
-    cards.forEach((card, index) => {
-      card.style.animationDelay = `${index * 0.1}s`;
-    });
-    
-    // Add stagger animation to features
-    const features = document.querySelectorAll('.feature');
-    features.forEach((feature, index) => {
-      feature.style.animationDelay = `${index * 0.05}s`;
-    });
-    
-    // Add stagger animation to pills
-    const pills = document.querySelectorAll('.pill');
-    pills.forEach((pill, index) => {
-      pill.style.animationDelay = `${index * 0.05}s`;
-    });
-    
-    // Add stagger animation to stats
-    const stats = document.querySelectorAll('.stat');
-    stats.forEach((stat, index) => {
-      stat.style.animationDelay = `${index * 0.1}s`;
-    });
-    
-    // Add stagger animation to list items
-    const listItems = document.querySelectorAll('#about ul li');
-    listItems.forEach((item, index) => {
-      item.style.animationDelay = `${index * 0.1}s`;
-    });
-    
-         // Enhanced hover effects for cards
-     cards.forEach(card => {
-       card.addEventListener('mouseenter', () => {
-         card.style.transform = 'translateY(-8px) scale(1.02)';
-         card.style.zIndex = '10';
-       });
-       
-       card.addEventListener('mouseleave', () => {
-         card.style.transform = 'translateY(0) scale(1)';
-         card.style.zIndex = '1';
-       });
-     });
-     
-     // Enhanced hover effects for features
-     features.forEach(feature => {
-       feature.addEventListener('mouseenter', () => {
-         feature.style.transform = 'translateY(-4px) scale(1.01)';
-         feature.style.zIndex = '5';
-       });
-       
-       feature.addEventListener('mouseleave', () => {
-         feature.style.transform = 'translateY(0) scale(1)';
-         feature.style.zIndex = '1';
-       });
-     });
-     
-     // Add parallax effect to hero stats
-     window.addEventListener('scroll', () => {
-       const scrolled = window.pageYOffset;
-       const heroStats = document.querySelector('.hero-stats');
-       if (heroStats) {
-         const rate = scrolled * -0.5;
-         heroStats.style.transform = `translateY(${rate}px)`;
-       }
-     });
-     
-     // Add floating particles effect
-     function createParticle() {
-       const particle = document.createElement('div');
-       particle.style.cssText = `
-         position: fixed;
-         width: 4px;
-         height: 4px;
-         background: var(--accent);
-         border-radius: 50%;
-         pointer-events: none;
-         z-index: 1;
-         opacity: 0.6;
-       `;
-       
-       particle.style.left = Math.random() * window.innerWidth + 'px';
-       particle.style.top = window.innerHeight + 'px';
-       
-       document.body.appendChild(particle);
-       
-       const animation = particle.animate([
-         { transform: 'translateY(0px)', opacity: 0.6 },
-         { transform: `translateY(-${window.innerHeight + 100}px)`, opacity: 0 }
-       ], {
-         duration: Math.random() * 3000 + 2000,
-         easing: 'linear'
-       });
-       
-       animation.onfinish = () => particle.remove();
-     }
-     
-          // Create particles periodically
-     setInterval(createParticle, 3000);
-     
-     // Scroll-to-Reveal Functionality
-     function initScrollToReveal() {
-       const scrollContainers = document.querySelectorAll('.horizontal-scroll-container');
-       
-       scrollContainers.forEach((container) => {
-         const track = container.querySelector('.scroll-track');
-         const items = container.querySelectorAll('.scroll-item');
-         
-         // Initial reveal of first few items
-         setTimeout(() => {
-           items[0]?.classList.add('revealed');
-           items[1]?.classList.add('revealed');
-           items[2]?.classList.add('revealed');
-         }, 500);
-         
-         // Intersection Observer for scroll-triggered reveals
-         const observer = new IntersectionObserver((entries) => {
-           entries.forEach((entry) => {
-             if (entry.isIntersecting) {
-               // Reveal items progressively as container comes into view
-               items.forEach((item, index) => {
-                 setTimeout(() => {
-                   item.classList.add('revealed');
-                 }, index * 200);
-               });
-               
-               // Once revealed, stop observing
-               observer.unobserve(entry.target);
-             }
-           });
-         }, {
-           threshold: 0.3,
-           rootMargin: '0px 0px -100px 0px'
-         });
-         
-         observer.observe(container);
-         
-         // Add manual scroll reveal for remaining items
-         let revealedCount = 3;
-         
-         // Add scroll event to reveal more items and update progress
-         track.addEventListener('scroll', () => {
-           const scrollProgress = track.scrollLeft / (track.scrollWidth - track.clientWidth);
-           
-           // Update progress bar
-           const progressBar = container.querySelector('.scroll-progress-bar');
-           if (progressBar) {
-             progressBar.style.width = `${scrollProgress * 100}%`;
-           }
-           
-           if (scrollProgress > 0.3 && revealedCount < items.length) {
-             items[revealedCount]?.classList.add('revealed');
-             revealedCount++;
-           }
-           
-           if (scrollProgress > 0.6 && revealedCount < items.length) {
-             items[revealedCount]?.classList.add('revealed');
-             revealedCount++;
-           }
-           
-           if (scrollProgress > 0.9 && revealedCount < items.length) {
-             items[revealedCount]?.classList.add('revealed');
-             revealedCount++;
-           }
-         });
-         
-         // Mouse and touch events for manual scrolling
-         let isDown = false;
-         let startX;
-         let scrollLeft;
-         
-         // Mouse events
-         track.addEventListener('mousedown', (e) => {
-           isDown = true;
-           track.style.cursor = 'grabbing';
-           startX = e.pageX - track.offsetLeft;
-           scrollLeft = track.scrollLeft;
-         });
-         
-         track.addEventListener('mouseleave', () => {
-           isDown = false;
-           track.style.cursor = 'grab';
-         });
-         
-         track.addEventListener('mouseup', () => {
-           isDown = false;
-           track.style.cursor = 'grab';
-         });
-         
-         track.addEventListener('mousemove', (e) => {
-           if (!isDown) return;
-           e.preventDefault();
-           const x = e.pageX - track.offsetLeft;
-           const walk = (x - startX) * 2;
-           track.scrollLeft = scrollLeft - walk;
-         });
-         
-         // Touch events for mobile
-         track.addEventListener('touchstart', (e) => {
-           startX = e.touches[0].pageX - track.offsetLeft;
-           scrollLeft = track.scrollLeft;
-         });
-         
-         track.addEventListener('touchmove', (e) => {
-           e.preventDefault();
-           if (!startX) return;
-           const x = e.touches[0].pageX - track.offsetLeft;
-           const walk = (x - startX) * 2;
-           track.scrollLeft = scrollLeft - walk;
-         });
-       });
-     }
-     
-     // Initialize scroll-to-reveal when page loads
-     document.addEventListener('DOMContentLoaded', initScrollToReveal);
-     
-     // Add click tracking for analytics (placeholder)
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-      link.addEventListener('click', () => {
-        // Track internal link clicks
-        console.log('Internal link clicked:', link.getAttribute('href'));
-      });
-    });
-    
-    // Performance optimization: Lazy load images if added later
-    if ('IntersectionObserver' in window) {
-      const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
+    // Scroll-to-Reveal for Cards
+    function initScrollToReveal() {
+      const cards = document.querySelectorAll('.card[data-reveal]');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const img = entry.target;
-            img.src = img.dataset.src;
-            img.classList.remove('lazy');
-            observer.unobserve(img);
+            const card = entry.target;
+            const revealOrder = parseInt(card.dataset.reveal);
+            
+            // Stagger the reveal based on order
+            setTimeout(() => {
+              card.classList.add('revealed');
+            }, revealOrder * 150);
+            
+            // Stop observing after reveal
+            observer.unobserve(card);
           }
         });
+      }, {
+        threshold: 0.3,
+        rootMargin: '0px 0px -50px 0px'
       });
       
-      // Apply to any lazy-loaded images
-      document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-      });
+      cards.forEach(card => observer.observe(card));
     }
+    
+    // Initialize scroll-to-reveal when page loads
+    document.addEventListener('DOMContentLoaded', initScrollToReveal);
     
     // Add keyboard navigation support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        // Close mobile menu on escape
         mobileMenuToggle.classList.remove('active');
         navMenu.classList.remove('active');
       }
