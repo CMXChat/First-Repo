@@ -427,9 +427,6 @@
     }
     
     .card { 
-      grid-column: span 12; 
-      display: grid; 
-      grid-template-columns: 1fr; 
       border: 1px solid var(--border); 
       border-radius: var(--radius-lg); 
       overflow: hidden; 
@@ -438,6 +435,7 @@
       transition: var(--transition);
       cursor: pointer;
       position: relative;
+      height: 100%;
     }
     
     .card::before {
@@ -529,10 +527,7 @@
 
 @media (min-width: 860px) {
       .hero { padding: 120px 0 60px; }
-      .card { grid-template-columns: 0.9fr 1.1fr; }
-      .card-media { height: 100%; min-height: 280px; }
-  .card { grid-column: span 6; }
-}
+    }
 
 /* Feature rows */
     .features { 
@@ -638,24 +633,93 @@
       color: var(--accent);
     }
     
-    /* Horizontal Scroll Containers */
+    /* Scroll-to-Reveal Containers */
     .horizontal-scroll-container {
       position: relative;
       margin: 40px 0;
       overflow: hidden;
       padding: 20px 0;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(16, 185, 129, 0.02) 100%);
+      border-radius: var(--radius);
     }
     
     .scroll-track {
       display: flex;
       gap: 24px;
-      transition: transform 0.3s ease;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       will-change: transform;
+      min-width: max-content;
     }
     
     .scroll-item {
       flex: 0 0 350px;
       min-width: 350px;
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .scroll-item.revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    
+    .scroll-item.revealed:nth-child(1) { transition-delay: 0.1s; }
+    .scroll-item.revealed:nth-child(2) { transition-delay: 0.2s; }
+    .scroll-item.revealed:nth-child(3) { transition-delay: 0.3s; }
+    .scroll-item.revealed:nth-child(4) { transition-delay: 0.4s; }
+    .scroll-item.revealed:nth-child(5) { transition-delay: 0.5s; }
+    
+    /* Enhanced reveal animations */
+    .scroll-item.revealed .card,
+    .scroll-item.revealed .portfolio-card,
+    .scroll-item.revealed .feature-card {
+      animation: cardReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    
+    @keyframes cardReveal {
+      0% {
+        transform: translateY(20px);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Scroll progress indicator */
+    .scroll-progress {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      width: 60px;
+      height: 4px;
+      background: rgba(37, 99, 235, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    
+    .scroll-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    
+    .scroll-direction-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--accent);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 10;
+      box-shadow: var(--shadow);
     }
     
     .portfolio-card {
@@ -1081,6 +1145,10 @@
       
             <!-- Horizontal Scroll Services -->
       <div class="horizontal-scroll-container services-scroll">
+        <div class="scroll-direction-indicator">📱 Scroll to reveal services</div>
+        <div class="scroll-progress">
+          <div class="scroll-progress-bar"></div>
+        </div>
         <div class="scroll-track">
           <div class="scroll-item">
             <article class="card loading" data-tag="web">
@@ -1154,6 +1222,10 @@
       
             <!-- Horizontal Scroll Features -->
       <div class="horizontal-scroll-container features-scroll">
+        <div class="scroll-direction-indicator">🚀 Scroll to reveal features</div>
+        <div class="scroll-progress">
+          <div class="scroll-progress-bar"></div>
+        </div>
         <div class="scroll-track">
           <div class="scroll-item">
             <div class="feature-card">
@@ -1263,6 +1335,10 @@
       
       <!-- Horizontal Scroll Portfolio -->
       <div class="horizontal-scroll-container portfolio-scroll">
+        <div class="scroll-direction-indicator">💼 Scroll to reveal portfolio</div>
+        <div class="scroll-progress">
+          <div class="scroll-progress-bar"></div>
+        </div>
         <div class="scroll-track">
           <div class="scroll-item">
             <div class="portfolio-card">
@@ -1586,12 +1662,73 @@
           // Create particles periodically
      setInterval(createParticle, 3000);
      
-     // Horizontal Scroll Functionality
-     function initHorizontalScroll() {
+     // Scroll-to-Reveal Functionality
+     function initScrollToReveal() {
        const scrollContainers = document.querySelectorAll('.horizontal-scroll-container');
        
-       scrollContainers.forEach((container, index) => {
+       scrollContainers.forEach((container) => {
          const track = container.querySelector('.scroll-track');
+         const items = container.querySelectorAll('.scroll-item');
+         
+         // Initial reveal of first few items
+         setTimeout(() => {
+           items[0]?.classList.add('revealed');
+           items[1]?.classList.add('revealed');
+           items[2]?.classList.add('revealed');
+         }, 500);
+         
+         // Intersection Observer for scroll-triggered reveals
+         const observer = new IntersectionObserver((entries) => {
+           entries.forEach((entry) => {
+             if (entry.isIntersecting) {
+               // Reveal items progressively as container comes into view
+               items.forEach((item, index) => {
+                 setTimeout(() => {
+                   item.classList.add('revealed');
+                 }, index * 200);
+               });
+               
+               // Once revealed, stop observing
+               observer.unobserve(entry.target);
+             }
+           });
+         }, {
+           threshold: 0.3,
+           rootMargin: '0px 0px -100px 0px'
+         });
+         
+         observer.observe(container);
+         
+         // Add manual scroll reveal for remaining items
+         let revealedCount = 3;
+         
+         // Add scroll event to reveal more items and update progress
+         track.addEventListener('scroll', () => {
+           const scrollProgress = track.scrollLeft / (track.scrollWidth - track.clientWidth);
+           
+           // Update progress bar
+           const progressBar = container.querySelector('.scroll-progress-bar');
+           if (progressBar) {
+             progressBar.style.width = `${scrollProgress * 100}%`;
+           }
+           
+           if (scrollProgress > 0.3 && revealedCount < items.length) {
+             items[revealedCount]?.classList.add('revealed');
+             revealedCount++;
+           }
+           
+           if (scrollProgress > 0.6 && revealedCount < items.length) {
+             items[revealedCount]?.classList.add('revealed');
+             revealedCount++;
+           }
+           
+           if (scrollProgress > 0.9 && revealedCount < items.length) {
+             items[revealedCount]?.classList.add('revealed');
+             revealedCount++;
+           }
+         });
+         
+         // Mouse and touch events for manual scrolling
          let isDown = false;
          let startX;
          let scrollLeft;
@@ -1635,47 +1772,11 @@
            const walk = (x - startX) * 2;
            track.scrollLeft = scrollLeft - walk;
          });
-         
-         // Content-based scroll behaviors
-         if (container.classList.contains('portfolio-scroll')) {
-           // Portfolio: Left to right (progression/evolution)
-           let scrollDirection = 1;
-           setInterval(() => {
-             if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
-               scrollDirection = -1;
-             } else if (track.scrollLeft <= 0) {
-               scrollDirection = 1;
-             }
-             track.scrollLeft += scrollDirection * 1.5;
-           }, 60);
-         } else if (container.classList.contains('services-scroll')) {
-           // Services: Right to left (different approaches/options)
-           let scrollDirection = -1;
-           setInterval(() => {
-             if (track.scrollLeft <= 0) {
-               scrollDirection = 1;
-             } else if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
-               scrollDirection = -1;
-             }
-             track.scrollLeft += scrollDirection * 2;
-           }, 50);
-         } else if (container.classList.contains('features-scroll')) {
-           // Features: Left to right (building momentum)
-           let scrollDirection = 1;
-           setInterval(() => {
-             if (track.scrollLeft >= track.scrollWidth - track.clientWidth) {
-               scrollDirection = -1;
-             } else if (track.scrollLeft <= 0) {
-               scrollDirection = 1;
-             }
-             track.scrollLeft += scrollDirection * 1;
-           }, 80);
-         }
        });
      }
      
-     // Initialize horizontal scroll when page loads
-     document.addEventListener('DOMContentLoaded', initHorizontalScroll);
+     // Initialize scroll-to-reveal when page loads
+     document.addEventListener('DOMContentLoaded', initScrollToReveal);
      
      // Add click tracking for analytics (placeholder)
     document.querySelectorAll('a[href^="#"]').forEach(link => {
