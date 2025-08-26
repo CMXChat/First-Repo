@@ -519,6 +519,99 @@
     .features .feature:nth-child(4) { transition-delay: 0.4s; }
     .features .feature:nth-child(5) { transition-delay: 0.5s; }
     
+    /* Alternating Horizontal Slide Animations */
+    .slide-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .slide-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .slide-left.revealed,
+    .slide-right.revealed {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    /* Infographic Animations */
+    .stat-number {
+      display: inline-block;
+      position: relative;
+    }
+    
+    .stat-number.animate {
+      animation: countUp 2s ease-out forwards;
+    }
+    
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Progress Ring Animation */
+    .progress-ring {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .progress-ring::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      border: 3px solid var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: ringPulse 2s ease-out 0.5s forwards;
+    }
+    
+    @keyframes ringPulse {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); opacity: 0.6; }
+      100% { transform: scale(1); opacity: 0.3; }
+    }
+    
+    /* Animated Icons */
+    .stat-icon {
+      display: inline-block;
+      margin-right: 8px;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    /* Chart Bar Animation */
+    .chart-bar {
+      height: 4px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    
+    .chart-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: barFill 1.5s ease-out 0.8s forwards;
+    }
+    
+    @keyframes barFill {
+      to { transform: scaleX(1); }
+    }
+    
     .card-media { 
       position: relative; 
       height: 200px; 
@@ -744,13 +837,25 @@
     <!-- KPI strip -->
     <div class="container kpis" role="list" aria-label="Key CMX stats">
       <div class="kpi reveal-on-scroll" role="listitem">
-        <strong>800k+</strong> users reached via Cross Chat & CMX tools
+        <span class="stat-icon">🚀</span>
+        <strong class="stat-number progress-ring">800k+</strong> users reached via Cross Chat & CMX tools
+        <div class="chart-bar">
+          <div class="chart-bar-fill" style="width: 100%;"></div>
+        </div>
       </div>
       <div class="kpi reveal-on-scroll" role="listitem">
-        <strong>200+</strong> shipped builds for creators & startups
+        <span class="stat-icon">⚡</span>
+        <strong class="stat-number progress-ring">200+</strong> shipped builds for creators & startups
+        <div class="chart-bar">
+          <div class="chart-bar-fill" style="width: 85%;"></div>
+        </div>
       </div>
       <div class="kpi reveal-on-scroll" role="listitem">
-        <strong><200ms</strong> typical LCP on production sites
+        <span class="stat-icon">⚡</span>
+        <strong class="stat-number progress-ring"><200ms</strong> typical LCP on production sites
+        <div class="chart-bar">
+          <div class="chart-bar-fill" style="width: 95%;"></div>
+        </div>
       </div>
     </div>
   </main>
@@ -762,41 +867,53 @@
       <h2 class="h2 reveal-on-scroll">Execution where it matters most.</h2>
       <div class="grid">
         <!-- Web Dev -->
-        <article class="card" data-tag="web">
+        <article class="card slide-left" data-tag="web">
           <div class="card-media" aria-hidden="true"></div>
           <div class="card-body">
             <h3>Web Development for Startups & Creators</h3>
             <p>Mobile‑first, custom websites designed for clarity, speed, and scale — built to convert and perform across devices.</p>
+            <div class="chart-bar">
+              <div class="chart-bar-fill" style="width: 95%;"></div>
+            </div>
             <a href="#project" aria-label="Explore Web Development service">Explore this service →</a>
           </div>
         </article>
         
         <!-- Content -->
-        <article class="card" data-tag="content">
+        <article class="card slide-right" data-tag="content">
           <div class="card-media" aria-hidden="true"></div>
           <div class="card-body">
             <h3>Content & Copywriting that Drives Traffic</h3>
             <p>SEO blog posts, landing pages, brand messaging, and internal docs — written to match your voice and grow your audience.</p>
+            <div class="chart-bar">
+              <div class="chart-bar-fill" style="width: 88%;"></div>
+            </div>
             <a href="#project" aria-label="Explore Content & Copywriting service">Explore this service →</a>
           </div>
         </article>
         
         <!-- SEO -->
-        <article class="card" data-tag="seo">
+        <article class="card slide-left" data-tag="seo">
           <div class="card-media" aria-hidden="true"></div>
           <div class="card-body">
             <h3>Technical SEO Services</h3>
             <p>On‑page improvements, indexing fixes, metadata optimization, and search‑focused strategies that lift your rankings.</p>
+            <div class="chart-bar">
+              <div class="chart-bar-fill" style="width: 92%;"></div>
+            </div>
             <a href="#project" aria-label="Explore Technical SEO service">Explore this service →</a>
           </div>
         </article>
         
         <!-- Discord -->
-        <article class="card" data-tag="discord">
+        <article class="card slide-right" data-tag="discord">
           <div class="card-media" aria-hidden="true"></div>
           <div class="card-body">
             <h3>Custom Discord Server Builds <small style="color:#6b7280; font-weight:600;">(secondary offer)</small></h3>
             <p>Private or public communities with roles, bots, automations, and moderation systems tailored to your needs.</p>
+            <div class="chart-bar">
+              <div class="chart-bar-fill" style="width: 85%;"></div>
+            </div>
             <a href="#project" aria-label="Explore Discord Server Builds">Explore this service →</a>
           </div>
         </article>
@@ -814,25 +931,45 @@
       <h2 class="h2">The CMX community chat platform is still live — and always evolving.</h2>
       <p class="lead">We started as a real‑time community chat platform, and it's still active today, supporting users, testing features, and powering secure online collaboration.</p>
       <div class="features">
-        <div class="feature">
+        <div class="feature slide-left">
+          <span class="stat-icon">💬</span>
           <strong>Private and public chatrooms</strong> 
           Flexible spaces for teams, creators, and communities.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 90%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-right">
+          <span class="stat-icon">🛡️</span>
           <strong>Role‑based permissions & moderation</strong> 
           Keep conversations safe, scoped, and productive.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 95%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-left">
+          <span class="stat-icon">🤖</span>
           <strong>AI‑powered chat (Grok, Gemini, GPT)</strong> 
           Research, summarize, and moderate in real time.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 88%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-right">
+          <span class="stat-icon">🔗</span>
           <strong>Cross‑server tools & bot support</strong> 
           Images, radio, utilities, and automations.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 92%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-left">
+          <span class="stat-icon">🔐</span>
           <strong>Secure access via email verification</strong> 
           Reliability and accountability by default.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 100%;"></div>
+          </div>
         </div>
       </div>
       <div class="buttons" style="margin-top:18px;">
@@ -863,24 +1000,40 @@
   <!-- Portfolio (Summary) -->
   <section id="portfolio">
     <div class="container">
-      <div class="eyebrow2">Portfolio</div>
-      <h2 class="h2">Systems, brands, and platforms we've helped shape.</h2>
+      <div class="eyebrow2 reveal-on-scroll">Portfolio</div>
+      <h2 class="h2 reveal-on-scroll">Systems, brands, and platforms we've helped shape.</h2>
       <div class="features">
-        <div class="feature">
+        <div class="feature slide-left">
+          <span class="stat-icon">🏗️</span>
           <strong>CMX Platform Development</strong> 
           Live community hub with AI tools, cross‑server chat, and secure collaboration.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 100%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-right">
+          <span class="stat-icon">💬</span>
           <strong>Cross Chat</strong> 
           Links channels across Discord servers for seamless conversation, serving ~800k users.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 95%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-left">
+          <span class="stat-icon">🌐</span>
           <strong>Websites for Clients</strong> 
           Fast, clean, mobile‑first sites tailored to each project's needs.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 90%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-right">
+          <span class="stat-icon">🤖</span>
           <strong>Loraine AI</strong> 
           Always‑on AI assistant for prompts, conversation, and moderation inside CMX.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 88%;"></div>
+          </div>
         </div>
       </div>
       <div class="buttons" style="margin-top:18px;">
@@ -892,24 +1045,40 @@
   <!-- Why CMX -->
   <section id="why">
     <div class="container">
-      <div class="eyebrow2">Why CMX</div>
-      <h2 class="h2">Why teams stick with CMX.</h2>
+      <div class="eyebrow2 reveal-on-scroll">Why CMX</div>
+      <h2 class="h2 reveal-on-scroll">Why teams stick with CMX.</h2>
       <div class="features">
-        <div class="feature">
+        <div class="feature slide-left">
+          <span class="stat-icon">✅</span>
           <strong>Built & tested on our live platform</strong> 
           We ship what we use every day.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 100%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-right">
+          <span class="stat-icon">👥</span>
           <strong>Led and reviewed in‑house</strong> 
           No faceless vendor chain — real accountability.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 95%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-left">
+          <span class="stat-icon">⚡</span>
           <strong>Faster than traditional agencies</strong> 
           Write, design, and ship with momentum.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 90%;"></div>
+          </div>
         </div>
-        <div class="feature">
+        <div class="feature slide-right">
+          <span class="stat-icon">💝</span>
           <strong>Human, not a ticket</strong> 
           You're a build worth remembering.
+          <div class="chart-bar">
+            <div class="chart-bar-fill" style="width: 85%;"></div>
+          </div>
         </div>
       </div>
       <div class="buttons" style="margin-top:18px;">
@@ -922,10 +1091,10 @@
   <!-- CTA Strip -->
   <section id="project">
     <div class="container">
-      <div class="eyebrow2">Let's build</div>
-      <h2 class="h2">If you're building something real, we're ready to help.</h2>
-      <p class="lead">We scale systems that already have momentum. We fix the ones that are falling apart. Whether it's your content, your platform, or your search presence — we'll clean it up and set it right.</p>
-      <div class="buttons">
+      <div class="eyebrow2 reveal-on-scroll">Let's build</div>
+      <h2 class="h2 reveal-on-scroll">If you're building something real, we're ready to help.</h2>
+      <p class="lead reveal-on-scroll">We scale systems that already have momentum. We fix the ones that are falling apart. Whether it's your content, your platform, or your search presence — we'll clean it up and set it right.</p>
+      <div class="buttons reveal-on-scroll">
         <a class="btn btn-primary" href="#project">Get a Proposal</a>
         <a class="btn btn-ghost" href="#project">Start a Project</a>
       </div>
@@ -1025,14 +1194,20 @@
       }
     });
     
-    // Scroll-to-Reveal System
+    // Scroll-to-Reveal System with Alternating Slides
     function initScrollToReveal() {
-      const elements = document.querySelectorAll('.card, .feature, .kpi, .reveal-on-scroll');
+      const elements = document.querySelectorAll('.card, .feature, .kpi, .reveal-on-scroll, .slide-left, .slide-right');
       
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('revealed');
+            
+            // Add infographic animations
+            if (entry.target.classList.contains('kpi')) {
+              animateInfographics(entry.target);
+            }
+            
             observer.unobserve(entry.target);
           }
         });
@@ -1042,6 +1217,33 @@
       });
       
       elements.forEach(element => observer.observe(element));
+    }
+    
+    // Infographic Animation System
+    function animateInfographics(element) {
+      // Animate stat numbers
+      const statNumbers = element.querySelectorAll('.stat-number');
+      statNumbers.forEach((stat, index) => {
+        setTimeout(() => {
+          stat.classList.add('animate');
+        }, index * 200);
+      });
+      
+      // Animate progress rings
+      const progressRings = element.querySelectorAll('.progress-ring');
+      progressRings.forEach((ring, index) => {
+        setTimeout(() => {
+          ring.style.animationDelay = `${index * 0.3}s`;
+        }, index * 100);
+      });
+      
+      // Animate chart bars
+      const chartBars = element.querySelectorAll('.chart-bar-fill');
+      chartBars.forEach((bar, index) => {
+        setTimeout(() => {
+          bar.style.animationDelay = `${index * 0.2}s`;
+        }, index * 150);
+      });
     }
     
     // Initialize scroll-to-reveal when page loads
