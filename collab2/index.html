@@ -472,6 +472,24 @@
     .stat {
       text-align: center;
       padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+      transition: var(--transition);
+      z-index: 1;
+    }
+    
+    .stat:hover::before {
+      left: 100%;
     }
     
     .stat-number {
@@ -479,11 +497,302 @@
       font-weight: 800;
       color: var(--accent);
       margin-bottom: 8px;
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      transform: scale(0.8);
+      opacity: 0;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .stat-number.animate {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    .stat-number.counting {
+      animation: numberPulse 0.5s ease-out;
+    }
+    
+    @keyframes numberPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
     
     .stat-label {
       color: var(--muted);
       font-weight: 500;
+      position: relative;
+      z-index: 2;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .stat-label.animate {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    /* Floating number particles */
+    .stat-number::after {
+      content: attr(data-suffix);
+      position: absolute;
+      top: 0;
+      right: -20px;
+      font-size: 0.8em;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all 0.4s ease;
+    }
+    
+    .stat-number.animate::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    /* Enhanced stat hover effects */
+    .stat:hover .stat-number {
+      transform: scale(1.05);
+      text-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+    }
+    
+    .stat:hover .stat-label {
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    /* Glowing effect for active stats */
+    .stat.active {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+      border-radius: var(--radius);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .stat.active .stat-number {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Collaboration indicators */
+    .collab-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(16, 185, 129, 0.9);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: slideInRight 0.6s ease-out;
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .collab-indicator .pulse {
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    .collab-indicator .user-count {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    
+    /* Live collaboration elements */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 12px;
+    }
+    
+    .live-indicator::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #dc2626;
+      border-radius: 50%;
+      animation: livePulse 1.5s infinite;
+    }
+    
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+    
+    /* Collaborative workspace feel */
+    .workspace-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-bottom: 2px solid var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .workspace-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent-4));
+      animation: workspaceFlow 3s linear infinite;
+    }
+    
+    @keyframes workspaceFlow {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    /* Team collaboration section */
+    .team-collab {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(16, 185, 129, 0.02) 100%);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin: 40px 0;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .team-collab::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+      animation: rotate 20s linear infinite;
+    }
+    
+    .team-collab-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .collab-users {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-4));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      position: relative;
+      animation: userFloat 3s ease-in-out infinite;
+    }
+    
+    .user-avatar:nth-child(2) { animation-delay: 0.5s; }
+    .user-avatar:nth-child(3) { animation-delay: 1s; }
+    .user-avatar:nth-child(4) { animation-delay: 1.5s; }
+    
+    @keyframes userFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    .user-avatar::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      background: #10b981;
+      border: 2px solid white;
+      border-radius: 50%;
+    }
+    
+    /* Real-time collaboration feed */
+    .collab-feed {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .collab-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+      animation: slideInUp 0.5s ease-out;
+    }
+    
+    .collab-item:last-child {
+      border-bottom: none;
+    }
+    
+    @keyframes slideInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .collab-item .user-initial {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .collab-item .action {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    
+    .collab-item .time {
+      color: #9ca3af;
+      font-size: 12px;
+      margin-left: auto;
     }
     
     /* Footer */
@@ -579,11 +888,12 @@
 </head>
 <body>
   <!-- Header -->
-  <header id="header">
+  <header id="header" class="workspace-header">
     <div class="container nav">
       <div class="logo">
         <span class="logo-dot"></span> 
         CMX
+        <span class="live-indicator">LIVE</span>
       </div>
       
       <nav aria-label="Primary Navigation">
@@ -605,12 +915,20 @@
       </div>
     </div>
   </header>
+  
+  <!-- Collaboration Indicator -->
+  <div class="collab-indicator" id="collab-indicator">
+    <div class="pulse"></div>
+    <span>Live Collaboration</span>
+    <div class="user-count" id="user-count">12</div>
+  </div>
 
   <!-- Hero -->
   <main id="home" class="hero">
     <div class="container">
       <h1>From live community platform to full‑service digital agency for creators, startups, and teams.</h1>
       <p>CMX Chat was built in real time with real users. Today, we design clean, high‑performance websites, write SEO‑optimized content that ranks, and improve search visibility for creators, founders, and online teams — all powered by our original community chat platform.</p>
+      <p style="margin: 16px 0 0; font-size: 16px; color: var(--accent); font-weight: 500;">🚀 <strong>Live Collaboration:</strong> Join our real-time workspace where we build together, iterate together, and ship together.</p>
       <div class="btn-row">
         <a class="btn btn-primary" href="#project">
           Build With CMX <span class="arrow">→</span>
@@ -623,26 +941,66 @@
       <!-- Hero Stats -->
       <div class="hero-stats" style="margin-top: 60px; text-align: center;">
         <div class="stats">
-          <div class="stat">
-            <div class="stat-number">800K+</div>
+          <div class="stat" data-stat="800000" data-suffix="K+" data-delay="0">
+            <div class="stat-number" data-target="800000" data-suffix="K+">0</div>
             <div class="stat-label">Users Served</div>
           </div>
-          <div class="stat">
-            <div class="stat-number">50+</div>
+          <div class="stat" data-stat="50" data-suffix="+" data-delay="200">
+            <div class="stat-number" data-target="50" data-suffix="+">0</div>
             <div class="stat-label">Projects Delivered</div>
           </div>
-          <div class="stat">
-            <div class="stat-number">99.9%</div>
+          <div class="stat" data-stat="99.9" data-suffix="%" data-delay="400">
+            <div class="stat-number" data-target="99.9" data-suffix="%">0</div>
             <div class="stat-label">Uptime</div>
           </div>
-          <div class="stat">
-            <div class="stat-number">24/7</div>
+          <div class="stat" data-stat="24" data-suffix="/7" data-delay="600">
+            <div class="stat-number" data-target="24" data-suffix="/7">0</div>
             <div class="stat-label">Support</div>
           </div>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Team Collaboration -->
+  <section class="team-collab">
+    <div class="container">
+      <div class="team-collab-content">
+        <h3 style="margin: 0 0 16px; font-size: 24px; color: var(--text);">🤝 Building Together in Real-Time</h3>
+        <p style="margin: 0 0 24px; color: var(--muted);">Join our live collaborative workspace where creators, developers, and teams work together to build amazing things.</p>
+        
+        <div class="collab-users">
+          <div class="user-avatar">P</div>
+          <div class="user-avatar">A</div>
+          <div class="user-avatar">M</div>
+          <div class="user-avatar">K</div>
+          <div class="user-avatar">+8</div>
+        </div>
+        
+        <div class="collab-feed" id="collab-feed">
+          <div class="collab-item">
+            <div class="user-initial">P</div>
+            <div class="action">PhoenixJenn is working on the CMX website design</div>
+            <div class="time">2m ago</div>
+          </div>
+          <div class="collab-item">
+            <div class="user-initial">A</div>
+            <div class="action">Alex joined the development team</div>
+            <div class="time">5m ago</div>
+          </div>
+          <div class="collab-item">
+            <div class="user-initial">M</div>
+            <div class="action">Maria updated the collaboration features</div>
+            <div class="time">8m ago</div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 24px;">
+          <a class="btn btn-primary" href="#chat">Join the Collaboration →</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Services -->
   <section id="services">
@@ -928,10 +1286,95 @@
       cards.forEach(card => observer.observe(card));
     }
     
-    // Initialize scroll-to-reveal when page loads
-    document.addEventListener('DOMContentLoaded', initScrollToReveal);
-    
-    // Add keyboard navigation support
+         // Initialize scroll-to-reveal when page loads
+     document.addEventListener('DOMContentLoaded', initScrollToReveal);
+     
+     // Collaboration System
+     function initCollaboration() {
+       const userCount = document.getElementById('user-count');
+       const collabFeed = document.getElementById('collab-feed');
+       
+       // Simulate live user count changes
+       let currentUsers = 12;
+       setInterval(() => {
+         const change = Math.random() > 0.5 ? 1 : -1;
+         currentUsers = Math.max(8, Math.min(25, currentUsers + change));
+         userCount.textContent = currentUsers;
+         userCount.style.animation = 'none';
+         userCount.offsetHeight; // Trigger reflow
+         userCount.style.animation = 'numberPulse 0.5s ease-out';
+       }, 8000);
+       
+       // Add new collaboration items
+       const collabActions = [
+         'PhoenixJenn is working on the CMX website design',
+         'Alex joined the development team',
+         'Maria updated the collaboration features',
+         'Kevin deployed the new API endpoints',
+         'Sarah is reviewing the latest changes',
+         'Team is brainstorming new features',
+         'Code review in progress',
+         'New collaboration tools added',
+         'Design system updated',
+         'Performance improvements deployed'
+       ];
+       
+       const userInitials = ['P', 'A', 'M', 'K', 'S', 'T', 'C', 'D', 'N', 'J'];
+       
+       setInterval(() => {
+         const newItem = document.createElement('div');
+         newItem.className = 'collab-item';
+         
+         const randomAction = collabActions[Math.floor(Math.random() * collabActions.length)];
+         const randomUser = userInitials[Math.floor(Math.random() * userInitials.length)];
+         
+         newItem.innerHTML = `
+           <div class="user-initial">${randomUser}</div>
+           <div class="action">${randomAction}</div>
+           <div class="time">just now</div>
+         `;
+         
+         collabFeed.insertBefore(newItem, collabFeed.firstChild);
+         
+         // Remove old items to keep feed manageable
+         if (collabFeed.children.length > 5) {
+           collabFeed.removeChild(collabFeed.lastChild);
+         }
+         
+         // Update timestamps
+         setTimeout(() => {
+           newItem.querySelector('.time').textContent = '1m ago';
+         }, 60000);
+         
+         setTimeout(() => {
+           newItem.querySelector('.time').textContent = '2m ago';
+         }, 120000);
+       }, 15000);
+       
+       // Make stats interactive
+       const stats = document.querySelectorAll('.stat');
+       stats.forEach((stat, index) => {
+         stat.addEventListener('click', () => {
+           stats.forEach(s => s.classList.remove('active'));
+           stat.classList.add('active');
+           
+           // Add collaboration feedback
+           const feedback = document.createElement('div');
+           feedback.className = 'collab-item';
+           feedback.innerHTML = `
+             <div class="user-initial">U</div>
+             <div class="action">User clicked on ${stat.querySelector('.stat-label').textContent}</div>
+             <div class="time">just now</div>
+           `;
+           collabFeed.insertBefore(feedback, collabFeed.firstChild);
+         });
+       });
+     }
+     
+     // Initialize collaboration when page loads
+     document.addEventListener('DOMContentLoaded', initCollaboration);
+     
+     // Add keyboard navigation support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         mobileMenuToggle.classList.remove('active');
