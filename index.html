@@ -3,640 +3,151 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CMX • OSINT Console</title>
+<title>CMX • Secure Briefing → Redirect</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
-<script src="https://unpkg.com/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+<!-- ========= EASY CONFIG ========= -->
+<script>
+  const CONFIG = {
+    AGENT_ID: 'agent47',                 // <-- change me
+    SECURITY_CODE: 'classified',         // <-- change me
+    REDIRECT_URL: 'https://db.cmxchat.com/osint',
+    BRIEF_SECONDS: 7                     // how long to show the brief before redirect
+  };
+</script>
 
 <style>
-:root{
-  --bg:#000; --panel:#0f0f10; --panel-2:#121316;
-  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
-  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f;
-  --r:14px; --rs:10px;
-}
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-
-/* Top bar */
-.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800}
-.logo{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
-.logo svg{width:18px;height:18px;fill:var(--accent)}
-.top-actions{display:flex;align-items:center;gap:8px}
-.chip{padding:6px 10px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;background:var(--panel)}
-.ghost{all:unset;cursor:pointer;padding:9px 12px;border:1px solid var(--line);border-radius:999px}
-
-/* Layout */
-.shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 58px);position:relative}
-@media(max-width:1020px){.shell{grid-template-columns:1fr}}
-
-/* Sidebar */
-.side{position:sticky;top:58px;height:calc(100vh - 58px);background:var(--panel);border-right:1px solid var(--line);padding:14px;overflow:auto;z-index:25}
-.nav{display:grid;gap:8px}
-.nav button{all:unset;cursor:pointer;padding:12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2);display:block;text-align:left}
-.nav button.active,.nav button:hover{border-color:var(--accent)}
-
-/* Mobile off-canvas */
-.hamburger{display:none}
-.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:24;opacity:0;pointer-events:none;transition:opacity .2s}
-@media(max-width:1020px){
-  .hamburger{display:inline-flex}
-  .side{
-    position:fixed;left:0;top:58px;width:min(86vw,340px);
-    transform:translateX(-110%);transition:transform .22s ease;
-    box-shadow:0 20px 60px rgba(0,0,0,.5)
+  :root{
+    --bg1:#0f2027; --bg2:#203a43; --bg3:#2c5364;
+    --panel:#0b0d10; --panel2:#15181c;
+    --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+    --accent:#00f2ff; --ok:#19c37d; --bad:#ff5a5f;
+    --r:16px;
   }
-  .side.open{transform:translateX(0)}
-  .backdrop.show{opacity:1;pointer-events:auto}
-}
-
-/* Main */
-.main{padding:14px;overflow:auto}
-.grid{display:grid;gap:14px;grid-template-columns:1fr}
-@media(min-width:1200px){.grid{grid-template-columns:1.15fr 1fr}}
-.card{border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:14px}
-.card h3{margin:0 0 8px;font-weight:800}
-.sub{color:var(--muted);font-size:12px;margin-bottom:10px}
-.row{display:grid;grid-template-columns:1fr;gap:10px}
-@media(min-width:640px){.row{grid-template-columns:1fr auto}}
-
-/* Inputs */
-input[type=text],input[type=email],input[type=file],textarea{
-  width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none;font-size:15px
-}
-.btn{all:unset;cursor:pointer;padding:12px 16px;border-radius:999px;font-weight:800;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06))}
-.btn.mono{border-color:var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
-.kv{border:1px dashed var(--line);border-radius:12px;padding:10px}
-.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:12px}
-.pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.unk{color:var(--muted)}
-.links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
-@media(max-width:700px){.links{grid-template-columns:1fr}}
-.links .group{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--panel)}
-.links h4{margin:0 0 8px;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:8px}
-.linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
-.disclosure{all:unset;cursor:pointer;font-size:12px;color:var(--muted)}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.badges .pill{border-color:var(--line)}
-.terminal{font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:160px;max-height:240px;overflow:auto;white-space:pre-wrap}
-.term-input{display:flex;gap:8px;margin-top:8px}
-#map{height:360px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-table.meta{width:100%;border-collapse:collapse;font-size:13px}
-table.meta td,table.meta th{padding:6px 8px;border-bottom:1px dashed var(--line)}
-table.meta th{text-align:left;color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:13px}
-
-section{scroll-margin-top:70px}
-.kbd{border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
-.small{font-size:12px;color:var(--muted)}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3)); color:var(--ink);
+    display:grid; place-items:center; padding:20px;
+  }
+  .wrap{width:min(92vw,540px)}
+  .card{
+    background:rgba(0,0,0,.75); border:1px solid #000; border-radius:var(--r);
+    box-shadow:0 24px 60px rgba(0,0,0,.45); padding:24px;
+  }
+  h1{margin:0 0 12px; font-size:1.6rem; color:var(--accent)}
+  label{display:block; margin-top:10px; font-weight:600}
+  input{
+    width:100%; margin-top:6px; padding:12px; border-radius:12px;
+    border:1px solid var(--line); background:#121417; color:#fff; outline:none;
+  }
+  button{
+    width:100%; margin-top:16px; padding:12px; border:0; border-radius:999px;
+    background:var(--accent); color:#000; font-weight:800; cursor:pointer;
+  }
+  button:hover{filter:brightness(1.05)}
+  .out{min-height:24px; margin-top:10px; color:var(--ok)}
+  .err{color:var(--bad)}
+  .brief{display:none; line-height:1.6}
+  .panel{background:var(--panel2); border:1px solid var(--line); border-left:4px solid var(--accent); padding:14px; border-radius:12px}
+  ul{margin:8px 0 0 18px}
+  .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+  .ghost{
+    all:unset; cursor:pointer; padding:10px 14px; border-radius:999px; font-weight:800;
+    border:1px solid var(--line); background:#14181c; color:#e7e9ea;
+  }
+  .count{font-weight:800; color:var(--bad)}
+  .small{color:var(--muted); font-size:.9rem}
 </style>
 </head>
 <body>
-<header class="topbar" role="banner">
-  <div class="brand">
-    <button class="ghost hamburger" id="btnSide" aria-label="Open menu">☰</button>
-    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg></div>
-    <div>CMX <b>OSINT</b></div>
+
+<div class="wrap">
+  <!-- LOGIN -->
+  <div id="login" class="card" role="dialog" aria-labelledby="hdr">
+    <h1 id="hdr">CMX Secure Agent Login</h1>
+    <label for="agent">Agent ID</label>
+    <input id="agent" type="text" placeholder="Enter Agent ID" autocomplete="username" />
+    <label for="pass">Security Code</label>
+    <input id="pass" type="password" placeholder="Enter Security Code" autocomplete="current-password" />
+    <button id="authBtn">Authenticate</button>
+    <div id="out" class="out" aria-live="polite"></div>
+    <div class="small">Tip: Press <kbd>Enter</kbd> to submit.</div>
   </div>
-  <div class="top-actions">
-    <span class="chip">Session <b id="sid"></b></span>
-    <button class="ghost" id="toggleTheme" aria-label="Toggle theme">Dark / Light</button>
-  </div>
-</header>
 
-<div class="shell">
-  <aside class="side" id="sidebar" aria-label="Sidebar">
-    <nav class="nav">
-      <button class="active" data-goto="emailCard">Email</button>
-      <button data-goto="userCard">Username</button>
-      <button data-goto="domainCard">Domain</button>
-      <button data-goto="ipCard">IP</button>
-      <button data-goto="textCard">Text</button>
-      <button data-goto="fileCard">Files</button>
-      <button data-goto="mapCard">Map</button>
-      <button data-goto="terminalCard">Terminal</button>
-    </nav>
-  </aside>
-  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
-
-  <main class="main" id="main" role="main">
-    <div class="grid">
-      <!-- EMAIL -->
-      <section class="card" id="emailCard" aria-labelledby="emailHdr">
-        <h3 id="emailHdr">Email Intelligence</h3>
-        <div class="sub">Provider guess, MD5/Gravatar, curated recon links.</div>
-        <div class="row"><input type="email" id="email" placeholder="name@domain.com" autocomplete="email"/><button class="btn" id="analyzeBtn">Analyze</button></div>
-        <div id="emailMsg" class="sub" style="margin-top:8px"></div>
-        <div class="row" style="margin-top:8px">
-          <div class="kv"><div class="sub">Email</div><div id="outEmail" style="font-weight:700">—</div></div>
-          <div class="kv"><div class="sub">Domain</div><div id="outDomain" style="font-weight:700">—</div></div>
-        </div>
-        <div class="row" style="margin-top:8px">
-          <div class="kv"><div class="sub">Provider</div><div id="outProvider"><span class="pill unk">unknown</span></div></div>
-          <div class="kv"><div class="sub">MD5 (Gravatar)</div><div id="outMD5" style="font-family:ui-monospace,Menlo">—</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
-          <div id="gravBox" style="width:88px;height:88px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:var(--panel)"><span class="sub">No avatar</span></div>
-          <div class="sub">If a public Gravatar exists, it appears here.</div>
-        </div>
-        <div class="links" id="emailLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-          <button class="btn mono" id="copyMD5">Copy MD5</button>
-          <a class="btn mono" id="mailto" href="#" target="_blank" rel="noopener">Mailto</a>
-          <button class="btn mono" id="openEmailLinks">Open All</button>
-        </div>
-      </section>
-
-      <!-- USERNAME -->
-      <section class="card" id="userCard" aria-labelledby="userHdr">
-        <h3 id="userHdr">Username Intelligence</h3>
-        <div class="row"><input type="text" id="user" placeholder="username" autocomplete="off"/><button class="btn" id="userBtn">Build</button></div>
-        <div class="links" id="userLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openUserLinks">Open All</button></div>
-      </section>
-
-      <!-- DOMAIN -->
-      <section class="card" id="domainCard" aria-labelledby="domainHdr">
-        <h3 id="domainHdr">Domain Intelligence</h3>
-        <div class="row"><input type="text" id="domain" placeholder="example.com" inputmode="url" autocomplete="off"/><button class="btn" id="domainBtn">Resolve</button></div>
-        <div id="dnsMsg" class="sub"></div>
-        <table class="meta" id="dnsTable" style="margin-top:8px"></table>
-        <div class="links" id="domainLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn mono" id="openDomainLinks">Open All</button> <button class="btn mono" id="copyDns">Copy Table</button></div>
-      </section>
-
-      <!-- IP -->
-      <section class="card" id="ipCard" aria-labelledby="ipHdr">
-        <h3 id="ipHdr">IP Intelligence</h3>
-        <div class="row">
-          <input type="text" id="ip" placeholder="8.8.8.8" inputmode="numeric" autocomplete="off"/>
-          <button class="btn" id="ipBtn">Lookup</button>
-        </div>
-        <div class="small" style="margin-top:6px">
-          Optional proxycheck.io key: <input id="pcKey" type="text" placeholder="API key (optional)" style="max-width:240px;display:inline-block" />
-        </div>
-        <div id="ipInfo" class="sub" style="margin-top:8px"></div>
-        <div class="badges" id="ipBadges"></div>
-        <div class="links" id="ipLinks" style="margin-top:12px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-          <button class="btn mono" id="openIpLinks">Open All</button>
-          <button class="btn mono" id="copyIp">Copy Line</button>
-        </div>
-      </section>
-
-      <!-- TEXT -->
-      <section class="card" id="textCard" aria-labelledby="textHdr">
-        <h3 id="textHdr">Text Extractor</h3>
-        <div class="sub">Extract emails, IPs, URLs, domains (client-side) and pivot. <span class="kbd">/</span> focuses search • <span class="kbd">?</span> terminal help</div>
-        <textarea id="textBlob" rows="6" placeholder="Paste logs, emails, notes..."></textarea>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-          <button class="btn" id="extractBtn">Extract</button>
-          <button class="btn mono" id="clearBlob">Clear</button>
-        </div>
-        <div id="extractOut" style="margin-top:10px"></div>
-      </section>
-
-      <!-- FILES -->
-      <section class="card" id="fileCard" aria-labelledby="fileHdr">
-        <h3 id="fileHdr">File Intelligence</h3>
-        <div class="row">
-          <div><label class="sub">EXIF Viewer</label><input type="file" id="exifFile" accept="image/*"/><div id="exifOut" style="margin-top:8px"></div></div>
-          <div><label class="sub">SHA-256 Hasher</label><input type="file" id="hashFile"/><div id="hashOut" style="margin-top:8px;font-family:ui-monospace,Menlo"></div></div>
-        </div>
-      </section>
-
-      <!-- MAP -->
-      <section class="card" id="mapCard" aria-labelledby="mapHdr">
-        <h3 id="mapHdr">Origin Map</h3>
-        <div id="map"></div>
-      </section>
-
-      <!-- TERMINAL -->
-      <section class="card" id="terminalCard" aria-labelledby="termHdr">
-        <h3 id="termHdr">CMX Terminal</h3>
-        <div class="sub">Try: <code>help</code> • <code>analyze alice@example.com</code> • <code>username somehandle</code> • <code>domain example.com</code> • <code>ip 1.1.1.1</code> • <code>extract</code> • <code>clear</code></div>
-        <div class="terminal" id="terminal" aria-live="polite"></div>
-        <div class="term-input"><input id="termIn" type="text" placeholder="> help" aria-label="Terminal input"/><button class="btn" id="termBtn">Run</button></div>
-      </section>
+  <!-- BRIEF -->
+  <div id="brief" class="card brief" role="region" aria-label="Mission Brief">
+    <h1>MISSION: CMX OPS 0027</h1>
+    <div class="panel">
+      <strong>OBJECTIVE:</strong> Deploy full-stack digital dominance.<br>
+      <strong>ASSETS:</strong> SEO Agents, Web Dev Units, Discord Surveillance.
+      <ul>
+        <li>Infiltrate SERP positions</li>
+        <li>Intercept competitor traffic</li>
+        <li>Design covert conversion funnels</li>
+      </ul>
+      <div style="margin-top:10px">
+        <strong>INTEL:</strong>
+        <ul>
+          <li>Top priority: Founders, Creators, OSINT Nodes</li>
+          <li>Engagement via Platform + Agency Hybrid Protocols</li>
+        </ul>
+      </div>
     </div>
-  </main>
+
+    <div class="row">
+      <button id="goNow" class="ghost">Continue Now →</button>
+      <span class="small">Auto-redirect in <span id="count" class="count"></span>…</span>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ---------- Theme / Session / Mobile menu ---------- */
-const root=document.documentElement;
-const sidebar=document.getElementById('sidebar');
-const backdrop=document.getElementById('backdrop');
-document.getElementById('toggleTheme').onclick=()=>root.classList.toggle('light');
-document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
+(function(){
+  const out = document.getElementById('out');
+  const login = document.getElementById('login');
+  const brief = document.getElementById('brief');
+  const countEl = document.getElementById('count');
+  const btn = document.getElementById('authBtn');
+  const goNow = document.getElementById('goNow');
 
-const isMobile=()=>window.matchMedia('(max-width:1020px)').matches;
-const closeSide=()=>{sidebar.classList.remove('open');backdrop.classList.remove('show');};
-document.getElementById('btnSide').onclick=()=>{sidebar.classList.add('open');backdrop.classList.add('show');};
-backdrop.addEventListener('click',closeSide);
-window.addEventListener('resize',()=>{ if(!isMobile()) closeSide(); });
-document.querySelectorAll('.nav button').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.getElementById(b.dataset.goto).scrollIntoView({behavior:'smooth',block:'start'});
-    if(isMobile()) closeSide();
-  });
-});
+  function redirect(){ window.location.href = CONFIG.REDIRECT_URL; }
 
-/* ---------- Keyboard shortcuts ---------- */
-window.addEventListener('keydown',(e)=>{
-  if(e.key==='/'){ e.preventDefault(); (document.querySelector('input:focus')||document.getElementById('email')).focus(); }
-  if(e.key==='?'){ e.preventDefault(); tHelp(); document.getElementById('terminalCard').scrollIntoView({behavior:'smooth'}); }
-});
-
-/* ---------- Helpers ---------- */
-const CSS = (n)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const ACCENT = CSS('--accent') || '#1d9bf0'; const ACCENT2 = CSS('--accent2') || '#82c8ff';
-
-function toast(el,msg,isErr){ el.innerHTML=`<span class="pill ${isErr?'bad':'ok'}">${msg}</span>`; setTimeout(()=>el.textContent='',3200); }
-function sanitize(s){ return encodeURIComponent((s||'').trim()); }
-const isValidEmail = (e)=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e||'');
-const isValidDomain = (d)=>/^(?=.{1,253}$)(?!\-)(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i.test((d||'').trim());
-const isValidIPv4 = (ip)=>/^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d)$/.test((ip||'').trim());
-
-/* Fetch with timeout */
-async function jfetch(url, opts={}, timeoutMs=8000){
-  const ctrl=new AbortController(); const id=setTimeout(()=>ctrl.abort(),timeoutMs);
-  try{
-    const r=await fetch(url,{...opts,signal:ctrl.signal,cache:'no-store'});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    return await r.json();
-  }finally{ clearTimeout(id); }
-}
-
-/* Collapsible link groups */
-function addLinkGroups(container, groups){
-  container.innerHTML='';
-  for(const [title, items] of groups){
-    const wrap=document.createElement('div'); wrap.className='group';
-    const btn=document.createElement('button'); btn.className='disclosure'; btn.textContent='▼';
-    const h=document.createElement('h4'); h.append(title, btn);
-    const list=document.createElement('div'); list.className='linklist';
-    items.forEach(([label,url])=>{
-      const a=document.createElement('a'); a.href=url; a.target='_blank'; a.rel='noopener'; a.textContent=label; list.appendChild(a);
-    });
-    btn.onclick=()=>{ const open=list.style.display!=='none'; list.style.display=open?'none':''; btn.textContent=open?'►':'▼'; };
-    wrap.append(h,list); container.appendChild(wrap);
+  function showBrief(){
+    login.style.display = 'none';
+    brief.style.display = 'block';
+    let t = Math.max(1, (CONFIG.BRIEF_SECONDS|0) || 5);
+    countEl.textContent = t + 's';
+    const timer = setInterval(()=>{
+      t--;
+      if (t <= 0) { clearInterval(timer); redirect(); }
+      else countEl.textContent = t + 's';
+    }, 1000);
+    goNow.onclick = ()=>{ clearInterval(timer); redirect(); };
   }
-}
 
-/* Provider guess */
-function providerOf(domain){ const d=(domain||'').toLowerCase();
-  if(/gmail\.com$/.test(d)) return 'Gmail';
-  if(/(outlook|hotmail|live)\.com$/.test(d)) return 'Outlook/Microsoft';
-  if(/yahoo\.(com|co\.\w+)$/.test(d)) return 'Yahoo';
-  if(/proton\.me$/.test(d)) return 'Proton';
-  if(/icloud\.com$/.test(d)) return 'iCloud';
-  if(/yandex\.(ru|com)$/.test(d)) return 'Yandex';
-  return 'Unknown';
-}
-
-/* Tiny MD5 (for gravatar) */
-function md5cycle(x,k){let[a,b,c,d]=x;a=ff(a,b,c,d,k[0],7,-680876936);d=ff(d,a,b,c,k[1],12,-389564586);c=ff(c,d,a,b,k[2],17,606105819);b=ff(b,c,d,a,k[3],22,-1044525330);
-a=ff(a,b,c,d,k[4],7,-176418897);d=ff(d,a,b,c,k[5],12,1200080426);c=ff(c,d,a,b,k[6],17,-1473231341);b=ff(b,c,d,a,k[7],22,-45705983);
-a=ff(a,b,c,d,k[8],7,1770035416);d=ff(d,a,b,c,k[9],12,-1958414417);c=ff(c,d,a,b,k[10],17,-42063);b=ff(b,c,d,a,k[11],22,-1990404162);
-a=ff(a,b,c,d,k[12],7,1804603682);d=ff(d,a,b,c,k[13],12,-40341101);c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22,1236535329);
-a=gg(a,b,c,d,k[1],5,-165796510);d=gg(d,a,b,c,k[6],9,-1069501632);c=gg(c,d,a,b,k[11],14,643717713);b=gg(b,c,d,a,k[0],20,-373897302);
-a=gg(a,b,c,d,k[5],5,-701558691);d=gg(d,a,b,c,k[10],9,38016083);c=gg(c,d,a,b,k[15],14,-660478335);b=gg(b,c,d,a,k[4],20,-405537848);
-a=gg(a,b,c,d,k[9],5,568446438);d=gg(d,a,b,c,k[14],9,-1019803690);c=gg(c,d,a,b,k[3],14,-187363961);b=gg(b,c,d,a,k[8],20,1163531501);
-a=gg(a,b,c,d,k[13],5,-1444681467);d=gg(d,a,b,c,k[2],9,-51403784);c=gg(c,d,a,b,k[7],14,1735328473);b=gg(b,c,d,a,k[12],20,-1926607734);
-a=hh(a,b,c,d,k[5],4,-378558);d=hh(d,a,b,c,k[8],11,-2022574463);c=hh(c,d,a,b,k[11],16,1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
-a=hh(a,b,c,d,k[1],4,-1530992060);d=hh(d,a,b,c,k[4],11,1272893353);c=hh(c,d,a,b,k[7],16,-155497632);b=hh(b,c,d,a,k[10],23,-1094730640);
-a=hh(a,b,c,d,k[13],4,681279174);d=hh(d,a,b,c,k[0],11,-358537222);c=hh(c,d,a,b,k[6],16,-722521979);b=hh(b,c,d,a,k[9],23,76029189);
-a=ii(a,b,c,d,k[0],6,-198630844);d=ii(d,a,b,c,k[7],10,1126891415);c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
-a=ii(a,b,c,d,k[12],6,1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);c=ii(c,d,a,b,k[10],15,-1051523);b=ii(b,c,d,a,k[1],21,-2054922799);
-a=ii(a,b,c,d,k[8],6,1873313359);d=ii(d,a,b,c,k[15],10,-30611744);c=ii(c,d,a,b,k[6],15,-1560198380);b=ii(b,c,d,a,k[13],21,1309151649);
-x[0]=add32(a,x[0]);x[1]=add32(b,x[1]);x[2]=add32(c,x[2]);x[3]=add32(d,x[3])}
-function cmn(q,a,b,x,s,t){a=add32(add32(a,q),add32(x,t));return add32((a<<s)|(a>>>(32-s)),b)}
-function ff(a,b,c,d,x,s,t){return cmn((b&c)|((~b)&d),a,b,x,s,t)}
-function gg(a,b,c,d,x,s,t){return cmn((b&d)|(c&(~d)),a,b,x,s,t)}
-function hh(a,b,c,d,x,s,t){return cmn(b^c^d,a,b,x,s,t)}
-function ii(a,b,c,d,x,s,t){return cmn(c^(b|(~d)),a,b,x,s,t)}
-function md51(s){const n=s.length,state=[1732584193,-271733879,-1732584194,271733878];let i;for(i=64;i<=n;i+=64){md5cycle(state,md5blk(s.substring(i-64,i)))}s=s.substring(i-64);const tail=Array(16).fill(0);for(i=0;i<s.length;i++)tail[i>>2]|=s.charCodeAt(i)<<((i%4)<<3);tail[i>>2]|=0x80<<((i%4)<<3);if(i>55){md5cycle(state,tail);for(i=0;i<16;i++)tail[i]=0}tail[14]=n*8;md5cycle(state,tail);return state}
-function md5blk(s){const md5blks=[];for(let i=0;i<64;i+=4)md5blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);return md5blks}
-function rhex(n){const s='0123456789abcdef';let j,out='';for(j=0;j<4;j++)out+=s[(n>>(j*8+4))&0x0F]+s[(n>>(j*8))&0x0F];return out}
-function hex(x){for(let i=0;i<x.length;i++)x[i]=rhex(x[i]);return x.join('')}
-function md5(s){return hex(md51(unescape(encodeURIComponent(s))).slice())}
-function add32(a,b){return(a+b)&0xFFFFFFFF}
-
-/* ---------- Map ---------- */
-const map=L.map('map',{worldCopyJump:true,zoomControl:true,attributionControl:false,zoomSnap:0.5,zoomDelta:0.5}).setView([20,0],2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{subdomains:['a','b','c'],maxZoom:19}).addTo(map);
-function pulse(lat,lng,label){ const circle=L.circleMarker([lat,lng],{radius:7,color:ACCENT2,fillColor:ACCENT,fillOpacity:.7,weight:2}).addTo(map); if(label) circle.bindTooltip(label); setTimeout(()=>{try{map.removeLayer(circle)}catch(_){}},12000); return circle;}
-function arc(a,b,color=ACCENT2){ const line=L.polyline.antPath([a,b],{delay:400,dashArray:[10,18],weight:3,color,pulseColor:'#fff'}); line.addTo(map); setTimeout(()=>{try{map.removeLayer(line)}catch(_){}},15000); return line;}
-;[{name:'NYC',lat:40.7128,lng:-74.0060},{name:'London',lat:51.5074,lng:-0.1278},{name:'Tokyo',lat:35.6895,lng:139.6917}].forEach((n,i)=>setTimeout(()=>pulse(n.lat,n.lng,n.name),600*i));
-setTimeout(()=>{arc([40.7128,-74.0060],[51.5074,-0.1278]); setTimeout(()=>arc([51.5074,-0.1278],[35.6895,139.6917]),600);},1100);
-
-/* ---------- EMAIL ---------- */
-let EMAIL_LINKS=[]; const emailEl=document.getElementById('email');
-const emailMsg=document.getElementById('emailMsg'); const outEmail=document.getElementById('outEmail');
-const outDomain=document.getElementById('outDomain'); const outProvider=document.getElementById('outProvider');
-const outMD5=document.getElementById('outMD5'); const gravBox=document.getElementById('gravBox');
-const mailto=document.getElementById('mailto'); const emailLinks=document.getElementById('emailLinks');
-
-function buildEmailLinks(email){
-  EMAIL_LINKS=[]; const E=sanitize(email), h=md5(email.toLowerCase());
-  const groups=[
-    ['Breach & Reputation',[
-      ['Have I Been Pwned',`https://haveibeenpwned.com/account/${E}`],
-      ['Epieos',`https://tools.epieos.com/email.php?email=${E}`],
-      ['DeHashed',`https://www.dehashed.com/search?query=${E}`],
-      ['IntelX',`https://intelx.io/?s=${E}`],
-      ['EmailRep',`https://emailrep.io/${E}`],
-      ['ScamAdviser (search)',`https://www.scamadviser.com/search?search=${E}`]
-    ]],
-    ['Search / Pastebins',[
-      ['Google exact',`https://www.google.com/search?q="%22${E}%22"`],
-      ['DuckDuckGo',`https://duckduckgo.com/?q="%22${E}%22"`],
-      ['Bing',`https://www.bing.com/search?q="%22${E}%22"`],
-      ['Gists',`https://www.google.com/search?q="%22${E}%22+site%3Agist.github.com`],
-      ['Pastebin search',`https://pastebin.com/search?q=${E}`],
-      ['StackOverflow users',`https://stackoverflow.com/users/filter?search=${E}`]
-    ]],
-    ['Keys / Gravatar',[
-      ['OpenPGP',`https://keys.openpgp.org/search?q=${E}`],
-      ['Ubuntu Keyserver',`https://keyserver.ubuntu.com/pks/lookup?search=${E}&fingerprint=on&op=index`],
-      ['Gravatar image',`https://www.gravatar.com/avatar/${h}?s=400`],
-      ['Gravatar JSON',`https://www.gravatar.com/${h}.json`]
-    ]],
-    ['Contact Discovery',[
-      ['Hunter (search)',`https://hunter.io/email-finder/${E}`],
-      ['VoilaNorbert',`https://www.voilanorbert.com/verify/${E}`],
-      ['EmailHippo',`https://tools.emailhippo.com/`]
-    ]]
-  ];
-  addLinkGroups(emailLinks, groups);
-  groups.forEach(([_,items])=>items.forEach(([__,url])=>EMAIL_LINKS.push(url)));
-}
-
-async function analyzeEmail(input){
-  const e=(input||emailEl.value||'').trim();
-  if(!e){ toast(emailMsg,'Enter an email.'); return; }
-  if(!isValidEmail(e)){ toast(emailMsg,'Invalid email.',true); return; }
-  const [,domain]=e.split('@'); outEmail.textContent=e; outDomain.textContent=domain;
-  const prov=providerOf(domain);
-  outProvider.innerHTML=(prov==='Unknown')?'<span class="pill unk">unknown</span>':`<span class="pill ok">${prov}</span>`;
-  const hash=md5(e.toLowerCase()); outMD5.textContent=hash; mailto.href=`mailto:${encodeURIComponent(e)}`;
-  gravBox.innerHTML='<span class="sub">Checking…</span>';
-  const img=new Image(); img.onload=()=>{gravBox.innerHTML='';Object.assign(img.style,{width:'100%',height:'100%',objectFit:'cover'});gravBox.appendChild(img)}; img.onerror=()=>{gravBox.innerHTML='<span class="sub">No avatar</span>'}; img.src=`https://www.gravatar.com/avatar/${hash}?d=404&s=160`;
-  buildEmailLinks(e);
-  localStorage.setItem('cmx_last_email', e);
-  toast(emailMsg,'Email analysis complete.');
-}
-document.getElementById('analyzeBtn').onclick=()=>analyzeEmail();
-emailEl.addEventListener('keydown',e=>{if(e.key==='Enter')analyzeEmail()});
-document.getElementById('copyMD5').onclick=()=>{const v=outMD5.textContent.trim(); if(v&&v!=='—'){navigator.clipboard.writeText(v); toast(emailMsg,'MD5 copied.');}};
-document.getElementById('openEmailLinks').onclick=()=>{
-  if(!EMAIL_LINKS.length) return;
-  if(confirm(`Open ${EMAIL_LINKS.length} links?`)){
-    EMAIL_LINKS.forEach(u=>window.open(u,'_blank','noopener'));
-  }
-};
-
-/* ---------- USERNAME ---------- */
-let USER_LINKS=[]; const userLinks=document.getElementById('userLinks');
-function buildUserLinks(handle){
-  USER_LINKS=[]; const u=sanitize(handle);
-  const groups=[
-    ['Profiles',[
-      ['GitHub',`https://github.com/${u}`],['GitLab',`https://gitlab.com/${u}`],
-      ['Reddit',`https://www.reddit.com/user/${u}`],['X',`https://twitter.com/${u}`],
-      ['Instagram',`https://www.instagram.com/${u}/`],['TikTok',`https://www.tiktok.com/@${u}`],
-      ['YouTube',`https://www.youtube.com/@${u}`],['Keybase',`https://keybase.io/${u}`],
-      ['Steam',`https://steamcommunity.com/id/${u}`]
-    ]],
-    ['Discovery',[
-      ['WhatsMyName',`https://whatsmyname.app/`],
-      ['Namechk',`https://namechk.com/`],
-      ['Namecheckr',`https://www.namecheckr.com/`]
-    ]],
-    ['Search',[
-      ['Google',`https://www.google.com/search?q=${u}`],
-      ['DuckDuckGo',`https://duckduckgo.com/?q=${u}`],
-      ['Bing',`https://www.bing.com/search?q=${u}`],
-      ['Github code search',`https://github.com/search?q=${u}`]
-    ]]
-  ];
-  addLinkGroups(userLinks, groups);
-  groups.forEach(([_,items])=>items.forEach(([__,url])=>USER_LINKS.push(url)));
-}
-document.getElementById('userBtn').onclick=()=>{const v=document.getElementById('user').value.trim(); if(!v)return; buildUserLinks(v); localStorage.setItem('cmx_last_user', v);};
-document.getElementById('openUserLinks').onclick=()=>{ if(USER_LINKS.length && confirm(`Open ${USER_LINKS.length} links?`)) USER_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
-
-/* ---------- DOMAIN (DNS over HTTPS) ---------- */
-let DOMAIN_LINKS=[]; const dnsMsg=document.getElementById('dnsMsg'); const dnsTable=document.getElementById('dnsTable'); const domainLinks=document.getElementById('domainLinks');
-async function doh(name,type){ return jfetch(`https://dns.google/resolve?name=${encodeURIComponent(name)}&type=${type}`); }
-
-document.getElementById('domainBtn').onclick=async()=>{
-  const d=document.getElementById('domain').value.trim();
-  if(!d){ toast(dnsMsg,'Enter a domain.'); return; }
-  if(!isValidDomain(d)){ toast(dnsMsg,'Invalid domain.',true); return; }
-  dnsMsg.textContent='Resolving…'; dnsTable.innerHTML=''; domainLinks.innerHTML=''; DOMAIN_LINKS=[];
-  try{
-    const [A,AAAA,MX,NS,TXT]=await Promise.allSettled([doh(d,'A'),doh(d,'AAAA'),doh(d,'MX'),doh(d,'NS'),doh(d,'TXT')]);
-    const get=(p)=>p.status==='fulfilled' && p.value && p.value.Answer ? p.value.Answer.map(a=>a.data) : [];
-    const rows=[['A',get(A).join(', ')||'—'],['AAAA',get(AAAA).join(', ')||'—'],['MX',get(MX).join(' | ')||'—'],['NS',get(NS).join(', ')||'—'],['TXT',get(TXT).map(s=>String(s).replaceAll('"','')).join(' | ')||'—']];
-    dnsTable.innerHTML=rows.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
-
-    const D=encodeURIComponent(d);
-    const groups=[
-      ['Surface',[
-        ['crt.sh',`https://crt.sh/?q=${D}`],
-        ['urlscan.io',`https://urlscan.io/domain/${D}`],
-        ['VirusTotal',`https://www.virustotal.com/gui/domain/${D}`],
-        ['BuiltWith',`https://builtwith.com/${D}`],
-        ['SecurityTrails',`https://securitytrails.com/domain/${D}`],
-        ['Wayback (latest)',`https://web.archive.org/web/*/${D}`]
-      ]],
-      ['Infra / Ownership',[
-        ['RDAP',`https://rdap.org/domain/${D}`],
-        ['DNSlytics',`https://dnslytics.com/domain/${D}`],
-        ['DNSTwist (online)',`https://dnstwister.report/search?domain=${D}`],
-        ['DNSViz',`https://dnsviz.net/d/${D}/dnssec/`],
-        ['MXToolbox',`https://mxtoolbox.com/SuperTool.aspx?action=mx%3a${D}`]
-      ]],
-      ['Intel',[
-        ['Shodan',`https://www.shodan.io/search?query=${D}`],
-        ['Censys',`https://search.censys.io/search?resource=hosts&q=${D}`],
-        ['RiskIQ Community',`https://community.riskiq.com/search/${D}`],
-        ['ThreatCrowd',`https://www.threatcrowd.org/domain.php?domain=${D}`]
-      ]]
-    ];
-    addLinkGroups(domainLinks, groups); groups.forEach(([_,items])=>items.forEach(([__,url])=>DOMAIN_LINKS.push(url)));
-
-    localStorage.setItem('cmx_last_domain', d);
-    dnsMsg.textContent='DNS resolved.';
-  }catch(e){ toast(dnsMsg,'DNS lookup blocked/unavailable.',true); }
-};
-document.getElementById('openDomainLinks').onclick=()=>{ if(DOMAIN_LINKS.length && confirm(`Open ${DOMAIN_LINKS.length} links?`)) DOMAIN_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
-document.getElementById('copyDns').onclick=()=>{ const txt=[...dnsTable.querySelectorAll('tr')].map(tr=>[...tr.children].map(td=>td.textContent).join('\t')).join('\n'); if(txt){ navigator.clipboard.writeText(txt); toast(dnsMsg,'DNS table copied.'); }};
-
-/* ---------- IP (ipapi.co + proxycheck.io) ---------- */
-let IP_LINKS=[]; const ipInfo=document.getElementById('ipInfo'); const ipLinks=document.getElementById('ipLinks'); const ipBadges=document.getElementById('ipBadges');
-document.getElementById('ipBtn').onclick=async()=>{
-  const ip=document.getElementById('ip').value.trim(); const key=(document.getElementById('pcKey').value||'').trim();
-  if(!ip){ toast(ipInfo,'Enter an IP.'); return; }
-  if(!isValidIPv4(ip)){ toast(ipInfo,'Invalid IPv4.',true); return; }
-  ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; ipBadges.innerHTML=''; IP_LINKS=[];
-  let geo={}; let vpnStatus='unknown', vpnReason='';
-
-  try{
-    geo=await jfetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
-    ipInfo.innerHTML=`IP <b>${ip}</b> • ${geo.city||'—'}, ${geo.region||''} ${geo.country_name||geo.country||''} • ASN ${geo.asn||'—'} • Org ${geo.org||geo.organization||'—'}`;
-    if(geo.latitude!=null && geo.longitude!=null){ map.flyTo([geo.latitude,geo.longitude], 6, {duration:0.6}); pulse(geo.latitude,geo.longitude,`${geo.city||''} ${geo.country||''}`.trim()); }
-    localStorage.setItem('cmx_last_ip', ip);
-  }catch(e){ ipInfo.textContent='Geo lookup failed or blocked — external links below.'; }
-
-  /* Live VPN/Proxy check (proxycheck.io) */
-  try{
-    const params=new URLSearchParams({vpn:'1',asn:'1'}); if(key) params.set('key',key);
-    const pc=await jfetch(`https://proxycheck.io/v2/${encodeURIComponent(ip)}?${params.toString()}`, {}, 7000);
-    const node=pc && (pc[ip]||pc.status==='denied'?null:pc[ip]); // ensure structure
-    if(pc && pc.status==='ok' && pc[ip]){
-      const d=pc[ip];
-      vpnStatus = (d.proxy==='yes' || d.vpn==='yes') ? 'yes' : (d.proxy==='no' && d.vpn==='no' ? 'no' : 'unknown');
-      vpnReason = d.type ? d.type : '';
+  function auth(){
+    const id = (document.getElementById('agent').value||'').trim().toLowerCase();
+    const pass = (document.getElementById('pass').value||'').trim();
+    if (id === (CONFIG.AGENT_ID||'').toLowerCase() && pass === (CONFIG.SECURITY_CODE||'')) {
+      out.classList.remove('err');
+      out.textContent = 'Access Granted. Welcome, ' + CONFIG.AGENT_ID + '.';
+      setTimeout(showBrief, 350);
+    } else {
+      out.classList.add('err');
+      out.textContent = 'Access Denied. Check credentials.';
     }
-  }catch(e){
-    // ignore; CORS may block
   }
 
-  // Badges
-  const pills=[];
-  if(vpnStatus==='yes') pills.push(`<span class="pill bad">VPN/Proxy: YES${vpnReason?` (${vpnReason})`:''}</span>`);
-  else if(vpnStatus==='no') pills.push(`<span class="pill ok">VPN/Proxy: NO</span>`);
-  else pills.push(`<span class="pill unk">VPN/Proxy: unknown</span>`);
-  if(geo.asn){ const asn=(String(geo.asn).replace(/^AS/i,'AS')); pills.push(`<a class="pill" href="https://bgp.he.net/${asn}" target="_blank" rel="noopener">ASN: ${asn}</a>`); }
-  pills.push(`<a class="pill" href="https://rdap.org/ip/${encodeURIComponent(ip)}" target="_blank" rel="noopener">RDAP</a>`);
-  pills.push(`<a class="pill" href="https://stat.ripe.net/${encodeURIComponent(ip)}" target="_blank" rel="noopener">RIPEstat</a>`);
-  ipBadges.innerHTML=pills.join('');
+  btn.addEventListener('click', auth);
+  document.getElementById('pass').addEventListener('keydown', e => { if(e.key === 'Enter') auth(); });
+  document.getElementById('agent').addEventListener('keydown', e => { if(e.key === 'Enter') auth(); });
 
-  // External links
-  const s=encodeURIComponent(ip);
-  const groups=[
-    ['Reputation',[
-      ['Shodan',`https://www.shodan.io/host/${s}`],
-      ['GreyNoise',`https://viz.greynoise.io/ip/${s}`],
-      ['AbuseIPDB',`https://www.abuseipdb.com/check/${s}`],
-      ['VirusTotal',`https://www.virustotal.com/gui/ip-address/${s}`],
-      ['IPQS (IP check)',`https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/${s}`],
-      ['proxycheck.io (web)',`https://proxycheck.io/threats/${s}`]
-    ]],
-    ['Routing / Whois',[
-      ['BGP.HE',`https://bgp.he.net/ip/${s}`],
-      ['PeeringDB (search)',`https://www.peeringdb.com/search?q=${s}`],
-      ['ARIN Whois (NA)',`https://search.arin.net/rdap/?query=${s}`],
-      ['APNIC Whois',`https://wq.apnic.net/static/search.html?query=${s}`]
-    ]],
-    ['Geo / Context',[
-      ['ipinfo.io',`https://ipinfo.io/${s}`],
-      ['IPWHOIS (web)',`https://ipwhois.io/ip/${s}`],
-      ['ipapi (web)',`https://ipapi.co/${s}`]
-    ]]
-  ];
-  addLinkGroups(ipLinks, groups);
-  groups.forEach(([_,items])=>items.forEach(([__,url])=>IP_LINKS.push(url)));
-};
-document.getElementById('openIpLinks').onclick=()=>{ if(IP_LINKS.length && confirm(`Open ${IP_LINKS.length} links?`)) IP_LINKS.forEach(u=>window.open(u,'_blank','noopener')); };
-document.getElementById('copyIp').onclick=()=>{ const t=ipInfo.textContent.trim(); if(t){ navigator.clipboard.writeText(t); toast(ipInfo,'Copied.'); }};
-
-/* ---------- TEXT EXTRACTOR ---------- */
-const blobEl=document.getElementById('textBlob'); const extractOut=document.getElementById('extractOut');
-document.getElementById('extractBtn').onclick=()=>{
-  const t=blobEl.value||''; if(!t.trim()){ toast(extractOut,'Nothing to extract.'); return; }
-  const emails=[...t.matchAll(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/gi)].map(m=>m[0]);
-  const ips=[...t.matchAll(/\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}\b/g)].map(m=>m[0]);
-  const urls=[...t.matchAll(/\bhttps?:\/\/[^\s"'<>]+/gi)].map(m=>m[0]);
-  const domains=[...t.matchAll(/\b([a-z0-9-]+\.)+[a-z]{2,}\b/gi)].map(m=>m[0]).filter(d=>!/^https?:\/\//i.test(d));
-  const chip=(lbl,arr,act)=>arr.length?`<div style="margin-top:8px"><div class="sub" style="margin-bottom:6px;color:${ACCENT}">${lbl} (${new Set(arr).size})</div><div class="chips">${[...new Set(arr)].slice(0,150).map(v=>`<span class="chip-btn" data-act="${act}" data-val="${v}">${v}</span>`).join(' ')}</div></div>`:'';
-  extractOut.innerHTML=[chip('Emails',emails,'email'),chip('IPs',ips,'ip'),chip('URLs',urls,'url'),chip('Domains',domains,'domain')].join('');
-};
-document.getElementById('clearBlob').onclick=()=>{blobEl.value='';extractOut.innerHTML='';};
-extractOut.addEventListener('click',e=>{
-  const el=e.target.closest('.chip-btn'); if(!el) return; const v=el.getAttribute('data-val'), a=el.getAttribute('data-act');
-  if(a==='email'){ emailEl.value=v; analyzeEmail(v); document.getElementById('emailCard').scrollIntoView({behavior:'smooth'}); }
-  if(a==='ip'){ document.getElementById('ip').value=v; document.getElementById('ipBtn').click(); document.getElementById('ipCard').scrollIntoView({behavior:'smooth'}); }
-  if(a==='domain'){ document.getElementById('domain').value=v; document.getElementById('domainBtn').click(); document.getElementById('domainCard').scrollIntoView({behavior:'smooth'}); }
-  if(a==='url'){ window.open(v,'_blank','noopener'); }
-});
-
-/* ---------- FILES: EXIF + SHA-256 ---------- */
-document.getElementById('exifFile').onchange=(e)=>{
-  const file=e.target.files[0]; const out=document.getElementById('exifOut'); out.innerHTML='';
-  if(!file) return; const img=new Image();
-  img.onload=function(){ EXIF.getData(img,function(){
-    const all=EXIF.getAllTags(this); if(!all||!Object.keys(all).length){ out.innerHTML='<div class="sub">No EXIF metadata found.</div>'; return; }
-    const rows=Object.keys(all).map(k=>`<tr><th>${k}</th><td>${String(typeof all[k]==='object'?JSON.stringify(all[k]):all[k]).slice(0,500)}</td></tr>`).join('');
-    out.innerHTML=`<table class="meta">${rows}</table>`;
-    const lat=EXIF.getTag(this,'GPSLatitude'), latRef=EXIF.getTag(this,'GPSLatitudeRef'); const lon=EXIF.getTag(this,'GPSLongitude'), lonRef=EXIF.getTag(this,'GPSLongitudeRef');
-    function toDec(a,r){ if(!a||a.length<3) return null; let v=a[0]+a[1]/60+a[2]/3600; if(r==='S'||r==='W') v=-v; return v; }
-    const dlat=toDec(lat,latRef), dlon=toDec(lon,lonRef); if(dlat!=null&&dlon!=null){ map.setView([dlat,dlon],8); pulse(dlat,dlon,`EXIF ${dlat.toFixed(5)}, ${dlon.toFixed(5)}`); }
-  }); URL.revokeObjectURL(img.src); }; img.src=URL.createObjectURL(file);
-};
-document.getElementById('hashFile').onchange=async(e)=>{
-  const file=e.target.files[0]; const out=document.getElementById('hashOut'); out.textContent=''; if(!file) return;
-  const buf=await file.arrayBuffer(); const digest=await crypto.subtle.digest('SHA-256',buf);
-  out.textContent=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
-};
-
-/* ---------- TERMINAL ---------- */
-const term=document.getElementById('terminal'); const termIn=document.getElementById('termIn');
-function tEcho(line=''){ term.textContent+=(term.textContent?'\n':'')+line; term.scrollTop=term.scrollHeight; }
-function tClear(){ term.textContent=''; }
-function tHelp(){ tEcho(`Commands:
- help                    show help
- analyze <email>         email intel
- username <handle>       username links
- domain <name>           DNS + links
- ip <addr>               IP intel + links (+proxycheck)
- extract                 open Text Extractor
- clear                   clear terminal`); }
-function run(cmdRaw){
-  const raw=(cmdRaw||termIn.value||'').trim(); if(!raw) return; tEcho('> '+raw); termIn.value='';
-  const [cmd,...rest]=raw.split(/\s+/); const arg=rest.join(' ');
-  switch((cmd||'').toLowerCase()){
-    case 'help': return tHelp();
-    case 'clear': return tClear();
-    case 'analyze': if(!arg) return tEcho('Usage: analyze <email>'); analyzeEmail(arg); document.getElementById('emailCard').scrollIntoView({behavior:'smooth'}); return;
-    case 'username': if(!arg) return tEcho('Usage: username <handle>'); document.getElementById('user').value=arg; buildUserLinks(arg); document.getElementById('userCard').scrollIntoView({behavior:'smooth'}); return;
-    case 'domain': if(!arg) return tEcho('Usage: domain <host>'); document.getElementById('domain').value=arg; document.getElementById('domainBtn').click(); document.getElementById('domainCard').scrollIntoView({behavior:'smooth'}); return;
-    case 'ip': if(!arg) return tEcho('Usage: ip <addr>'); document.getElementById('ip').value=arg; document.getElementById('ipBtn').click(); document.getElementById('ipCard').scrollIntoView({behavior:'smooth'}); return;
-    case 'extract': document.getElementById('textCard').scrollIntoView({behavior:'smooth'}); return;
-    default: return tEcho("Unknown command. Type 'help'.");
-  }
-}
-document.getElementById('termBtn').onclick=()=>run();
-termIn.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
-
-/* ---------- Active nav highlight ---------- */
-const sections=[...document.querySelectorAll('main section')];
-const navBtns=[...document.querySelectorAll('.nav button')];
-new IntersectionObserver((entries)=>{
-  const vis=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-  if(!vis) return;
-  const id=vis.target.id;
-  navBtns.forEach(b=>b.classList.toggle('active', b.dataset.goto===id));
-},{rootMargin:'-40% 0px -55% 0px',threshold:[0.1,0.25,0.5,0.75,1]}).observe(sections[0]);
-sections.slice(1).forEach(s=>{ document.querySelector('main').offsetTop; new IntersectionObserver(()=>{},{}).observe(s); });
-
-/* ---------- Restore last inputs ---------- */
-(function restore(){
-  const e=localStorage.getItem('cmx_last_email'); if(e) emailEl.value=e;
-  const u=localStorage.getItem('cmx_last_user'); if(u) document.getElementById('user').value=u;
-  const d=localStorage.getItem('cmx_last_domain'); if(d) document.getElementById('domain').value=d;
-  const i=localStorage.getItem('cmx_last_ip'); if(i) document.getElementById('ip').value=i;
+  // focus first field
+  document.getElementById('agent').focus();
 })();
-
-/* ---------- Boot ---------- */
-document.getElementById('analyzeBtn').focus();
-tEcho('CMX OSINT Console ready. Type "help".');
 </script>
+
 </body>
 </html>
+```0
