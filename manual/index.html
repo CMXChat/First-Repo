@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>CMX • OSINT Field Manual</title>
+
+<style>
+/* ====== Theme ====== */
+:root{
+  --bg:#000; --panel:#0b0c0e; --panel-2:#111317;
+  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f; --warn:#f6c76f;
+  --r:16px; --rs:12px;
+  --maxw:960px;         /* tighter for mobile legibility */
+  --pad:clamp(12px,2.6vw,20px);
+  --fs-xl:clamp(28px,6vw,44px);
+  --fs-lg:clamp(18px,3.5vw,22px);
+  --fs-body:clamp(16px,3.6vw,18px);
+  --fs-small:clamp(12px,2.6vw,13.5px);
+  --fs-badge:clamp(11px,2.3vw,12px);
+  --lh:1.6;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  line-height:var(--lh);font-size:var(--fs-body); -webkit-text-size-adjust:100%;
+}
+a{color:inherit;text-decoration:none}
+code,kbd,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* ====== Top bar ====== */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:var(--pad);background:rgba(0,0,0,.75);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.2px}
+.brand .logo{width:30px;height:30px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.brand .logo svg{width:18px;height:18px;fill:var(--accent)}
+.brand .title{font-size:clamp(18px,5vw,22px)}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{
+  padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  color:var(--muted);font-size:var(--fs-small)
+}
+.btn{
+  all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 18px;border-radius:999px;font-weight:900;letter-spacing:.2px;
+  border:1px solid var(--accent);
+  background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ====== Layout ====== */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+.shell{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 64px)}
+@media(max-width:1024px){.shell{grid-template-columns:1fr}}
+
+/* ====== Sidebar (mobile-first floating) ====== */
+.side-launcher{
+  position:fixed;left:10px;top:82px;z-index:45;
+  width:60px;height:60px;border-radius:28px;border:1px solid var(--accent);
+  background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));
+  display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5);
+  transition:transform .18s, opacity .2s;
+}
+.side-launcher.hidden{transform:translateY(-10px);opacity:.15;pointer-events:none}
+.side-launcher svg{width:26px;height:26px;stroke:var(--accent)}
+.side-close{
+  position:fixed;left:86px;top:92px;z-index:45;
+  width:36px;height:36px;border-radius:12px;border:1px solid var(--line);
+  background:var(--panel);display:none;place-items:center;color:#7fb8ff;font-weight:900
+}
+.side-close.show{display:grid}
+
+.side{
+  position:fixed;left:0;top:64px;height:calc(100vh - 64px);z-index:44;
+  width:min(86vw,340px);transform:translateX(-110%);
+  background:var(--panel);border-right:1px solid var(--line);box-shadow:0 20px 60px rgba(0,0,0,.55);
+  overflow:auto;padding:var(--pad);transition:transform .22s ease;
+}
+.side.open{transform:translateX(0)}
+.nav{display:grid;gap:10px}
+.nav button{
+  all:unset;cursor:pointer;display:block;text-align:left;line-height:1.25;
+  padding:12px;border:1px solid var(--line);border-radius:var(--rs);background:var(--panel-2);
+  font-weight:700;font-size:var(--fs-body)
+}
+.nav button.active,.nav button:hover{border-color:var(--accent)}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(2px);z-index:43;opacity:0;pointer-events:none;transition:opacity .2s}
+.backdrop.show{opacity:1;pointer-events:auto}
+
+/* ====== Main ====== */
+.main{padding:var(--pad)}
+.grid{display:grid;gap:clamp(12px,2.2vw,16px);grid-template-columns:1fr}
+@media(min-width:1220px){.grid{grid-template-columns:1.15fr 1fr}}
+.card{
+  border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:var(--pad)
+}
+.card h2{margin:.1rem 0 .6rem;font-size:var(--fs-xl);line-height:1.15}
+.card h3{margin:1.1rem 0 .4rem;font-size:var(--fs-lg)}
+.card h4{margin:1rem 0 .3rem}
+.lede{color:#cfe9ff}
+.sub{color:var(--muted);font-size:var(--fs-small);margin-bottom:10px}
+.kv{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:.5rem 0}
+.badge{display:inline-block;margin:.1rem .35rem .35rem 0;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:var(--fs-badge)}
+.ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
+hr.sep{border:0;border-top:1px dashed var(--line);margin:12px 0}
+section{scroll-margin-top:78px}
+
+/* ====== Search ====== */
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:.6rem 0}
+.controls input[type=text]{
+  flex:1;min-width:220px;padding:12px;border-radius:12px;background:var(--panel);
+  color:var(--ink);border:1px solid var(--line);outline:none;font-size:var(--fs-body)
+}
+
+/* ====== Accordion ====== */
+.acc{border:1px solid var(--line);border-radius:12px;margin:10px 0;background:var(--panel)}
+.acc summary{cursor:pointer;list-style:none;padding:12px 14px;border-radius:12px;font-weight:800}
+.acc summary::-webkit-details-marker{display:none}
+.acc[open] summary{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+.acc .acc-body{padding:12px 14px;border-top:1px dashed var(--line)}
+ul{margin:6px 0 6px 18px}
+ol{margin:6px 0 6px 20px}
+
+/* ====== Terminal (notes / snippets) ====== */
+.terminal{
+  font-family:ui-monospace,Menlo,Consolas,monospace;background:#050506;color:#cfe9ff;
+  border:1px solid var(--line);border-radius:12px;padding:10px;min-height:140px;max-height:240px;
+  overflow:auto;white-space:pre-wrap
+}
+.term-input{display:flex;gap:8px;margin-top:8px}
+.term-input input{
+  flex:1;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);outline:none
+}
+
+/* ====== Copy / Buttons ====== */
+.copybar{display:flex;gap:8px;align-items:center;margin:.4rem 0 0}
+.copy{all:unset;cursor:pointer;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+small{font-size:var(--fs-small)}
+
+/* ====== Print (PDF) ====== */
+@media print{
+  .topbar,.side,.side-launcher,.side-close,.backdrop{display:none!important}
+  .container{max-width:100%;padding:0}
+  body{background:#fff;color:#000}
+  .card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Top bar ===== -->
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
+    </div>
+    <div class="title">CMX • OSINT Field Manual</div>
+  </div>
+  <div class="top-actions">
+    <span class="chip">Session <b id="sid"></b></span>
+    <button class="btn" id="btnExport">Export → PDF</button>
+  </div>
+</header>
+
+<!-- ===== Floating menu trigger ===== -->
+<button class="side-launcher" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+</button>
+<button class="side-close" id="menuClose" aria-label="Close menu" hidden>X</button>
+
+<!-- ===== Off-canvas sidebar ===== -->
+<aside class="side" id="sidebar" aria-label="Sidebar">
+  <nav class="nav" id="nav">
+    <button data-goto="preface" class="active">Agent Preface</button>
+    <button data-goto="rules">Rules of the Road</button>
+    <button data-goto="cmx">CMX Ecosystem</button>
+    <button data-goto="playbook">OSINT Playbook</button>
+    <button data-goto="surface">Surface Web TTPs</button>
+    <button data-goto="social">Social/People OSINT</button>
+    <button data-goto="infra">Domain/IP/Infra</button>
+    <button data-goto="images">Images & Media</button>
+    <button data-goto="automation">Automation</button>
+    <button data-goto="cases">Case Files (CXI)</button>
+    <button data-goto="ops">Ops & Reporting</button>
+    <button data-goto="appendix">Appendix: Tools & Glossary</button>
+  </nav>
+</aside>
+<div class="backdrop" id="backdrop"></div>
+
+<!-- ===== Main ===== -->
+<div class="container main">
+  <div class="grid">
+
+    <!-- Preface -->
+    <section class="card" id="preface">
+      <h2>Agent Preface</h2>
+      <p class="lede">
+        This is the longform playbook for CMX operators—mobile-first, heavy-duty, and obsessively practical. You’ll find doctrine, tradecraft, and live checklists, plus how all of it snaps into the CMX ecosystem. Keep it lawful, reproducible, and fast. Everything you do should be reproducible by another analyst from your notes alone.
+      </p>
+      <div class="controls">
+        <input id="search" type="text" placeholder="Search this manual (instant, client-side)"/>
+      </div>
+      <small>Hotkeys: <kbd>/</kbd> focus search • <kbd>Esc</kbd> clear • <kbd>t</kbd> top</small>
+      <div class="kv"><b>Mission:</b> equip an OSINT army—precision research, safe operations, and high-quality reporting that turns raw signal into decisions.</div>
+    </section>
+
+    <!-- Rules -->
+    <section class="card" id="rules">
+      <h2>Rules of the Road</h2>
+      <p><b>Public data only.</b> We operate with open sources, authorized tools, and consented access. No intrusion, no doxxing, no social-engineering for secrets. If it’s gated or private, don’t touch it.</p>
+      <p><b>Reproducibility.</b> Cite sources, timestamp everything, log queries. Screenshots with URLs, archive links, and hashes where relevant.</p>
+      <p><b>Safety.</b> Personal info is handled with care; victims first. If a target is a private person, treat with extra caution. Escalate threats to CXI, and document calmly.</p>
+      <div class="kv">
+        <b>Report upward instantly if you detect:</b>
+        <ul>
+          <li>Threats to life, minors, or physical safety (notify CXI immediately).</li>
+          <li>Coordinated harassment or stalking patterns, spoofing, and real-world escalation.</li>
+          <li>Signals of compromised systems, impersonation of officials, or extortion attempts.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CMX Ecosystem -->
+    <section class="card" id="cmx">
+      <h2>CMX Ecosystem: where your work lands</h2>
+      <p><b>Platform.</b> Public chat rooms + publishing + tools. The platform evolves in fast cycles—editor upgrades, content systems, and moderation layers to keep things readable and safe. Operators benefit from a stable surface to ship reports and briefs.</p>
+      <p><b>Agency.</b> Services arm for OSINT, web/dev, creative, and operational help. It’s how complex investigations and launches get real resources and timelines.</p>
+      <p><b>Echo.</b> Near-real-time threat and incident feed—built to capture, archive, and replay harassment campaigns or emergent risks. It’s training data and legal memory, designed to freeze the facts before they’re edited or deleted.</p>
+      <p><b>CXI.</b> Investigations with a protection mindset. Pattern-stalking, spoofing, identity theft, and real-world intimidation are handled with disciplined documentation and coordinated escalation paths.</p>
+      <div class="kv">
+        <b>Near-term platform track:</b>
+        <ul>
+          <li>Cleaner authoring and cross-posting—reports published once, syndicated to the right channels.</li>
+          <li>Operator UX: faster navigation, safe defaults, and lower-friction export to PDF for briefs.</li>
+          <li>AI-assisted tooling where it helps (entity extraction, dedupe, clustering) with human review required.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Playbook -->
+    <section class="card" id="playbook">
+      <h2>OSINT Playbook</h2>
+      <p><b>Pillars.</b> People, Platforms, Infrastructure, and Media. Every task sits somewhere on that map. Work in layers: baseline → pivot → verify → package.</p>
+      <details class="acc"><summary>Task framing (before you touch the keyboard)</summary>
+        <div class="acc-body">
+          <ul>
+            <li><b>Objective:</b> What outcome matters? (identify, attribute, map assets, timelines, threat pattern, or reputational triage).</li>
+            <li><b>Scope:</b> Public sources only, within timeframe X, in languages A/B.</li>
+            <li><b>Exit:</b> When do you stop? (confidence threshold, time budget, decision deadline).</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Evidence discipline</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Every claim gets: URL + timestamp + archive link + screenshot if likely to be edited/deleted.</li>
+            <li>Keep a running log: search strings, filters, site: queries, usernames tested, hashes computed.</li>
+            <li>Prefer primary sources; treat reposts and anonymous claims as rumor until verified.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Attribution sanity check</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Identity ≠ handle. Prove control across time (posts, cross-links, unique photos, old caches).</li>
+            <li>Beware AI-altered audio/video and staged “leaks.” Cross-validate with independent traces.</li>
+            <li>If harm could follow, reduce precision and escalate to CXI for red-team review.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- Surface web -->
+    <section class="card" id="surface">
+      <h2>Surface Web TTPs</h2>
+      <p class="sub">Fast pivots you’ll use daily. Tune to your target with dates, site scoping, and minus terms.</p>
+      <details class="acc"><summary>Search patterns</summary>
+        <div class="acc-body">
+          <ul>
+            <li><b>Exact phrases:</b> <code>"full name" "city"</code> • <code>"email" filetype:pdf</code></li>
+            <li><b>Site scope:</b> <code>site:linkedin.com/in "Name" "City"</code> • <code>site:reddit.com u/handle</code></li>
+            <li><b>Cache & archives:</b> web archives, search engine caches, and result “view source.”</li>
+            <li><b>Local media:</b> regional outlets and community boards beat national sources for first sightings.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Contact intelligence</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Email footprints (gravatar hash, public PGP keys, forum posts).</li>
+            <li>Phone digits as exact searches; look for country patterns, marketplace listings, resume PDFs.</li>
+            <li>Cross-link by recovery emails shown partially, profile reuse, and unique avatars.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Time & place</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Reverse image for landmarks; street furniture and signage narrow locations quickly.</li>
+            <li>Event pages, meetups, and livestream chat logs create reliable timelines.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- Social / People -->
+    <section class="card" id="social">
+      <h2>Social & People OSINT</h2>
+      <p><b>Identity graph.</b> Build a small graph: person ↔ emails ↔ usernames ↔ domains ↔ devices ↔ locations. The trick is reuse—people reuse handles, avatars, phrases, bios, and time-of-day posting habits.</p>
+      <details class="acc"><summary>Handle & profile triage</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Check standard platforms (GitHub/Reddit/X/Instagram/YouTube/TikTok/Keybase/Steam) for the same handle. Capture profile IDs, not just vanity URLs.</li>
+            <li>Look for cross-posted links (“my site,” Linktree, Carrd, itch.io, code repos).</li>
+            <li>Language and emoji patterns are fingerprints—same with typos and punctuation style.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Community & context</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Which subreddits, Discords, or forums? Who replies regularly? Map influence (who amplifies who).</li>
+            <li>Use time windows—compare posting hours to likely timezones. Holidays and sports talk give away countries.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Harassment diagnostics (for CXI handoff)</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Pattern stalking: repeated contact after blocks, burner rotation, identity theft, or impersonation of officials.</li>
+            <li>Escalation markers: mentions of minors, doxx threats, real-world photos, “men are coming” language.</li>
+            <li>On handoff include: timeline bullets, call screenshots, numbers used, links to posts, and your brief assessment.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- Infra -->
+    <section class="card" id="infra">
+      <h2>Domains • IP • Infrastructure</h2>
+      <p><b>Ownership and routing tell stories.</b> Track DNS history, certificates, hosting changes, and ASNs. Pivot from domains to IPs and back; watch for clumsy opsec like shared analytics IDs and reused CDN buckets.</p>
+      <details class="acc"><summary>Quick path</summary>
+        <div class="acc-body">
+          <ol>
+            <li>Resolve DNS (A/AAAA/MX/NS/TXT). Note SPF/DKIM/DMARC for mail posture.</li>
+            <li>Pull certs (crt.sh) for subdomains and previous names.</li>
+            <li>Check passive DNS / scanners (urlscan, VirusTotal, Censys/Shodan) for exposed services.</li>
+            <li>ASN + route history (BGP tools) to identify providers and geo drift.</li>
+          </ol>
+        </div>
+      </details>
+      <details class="acc"><summary>Risk hints</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Disposable hosting, frequent nameserver churn, typo-squat clusters, and recently issued certs on new domains.</li>
+            <li>Login portals exposed to the open internet with default banners—capture versions, not just screenshots.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- Images -->
+    <section class="card" id="images">
+      <h2>Images, Video, & Audio</h2>
+      <p><b>Prove authenticity before you reason from it.</b> Reverse search, frame-grab, and metadata. For audio, assume AI edits are possible; look for background room tone mismatches and compression artifacts between segments.</p>
+      <details class="acc"><summary>Workflow</summary>
+        <div class="acc-body">
+          <ol>
+            <li>Hash + filename capture. If EXIF exists, extract and map GPS carefully (never publish exact home coordinates).</li>
+            <li>Reverse: multiple engines; drop-in search on each; compare near-duplicates and earliest sightings.</li>
+            <li>Video: key frame every ~2–3 seconds for search; match clothing, weather, and sun angle for date/time checks.</li>
+          </ol>
+        </div>
+      </details>
+    </section>
+
+    <!-- Automation -->
+    <section class="card" id="automation">
+      <h2>Automation & Speed</h2>
+      <p><b>Stay client-side where possible.</b> Small scripts, saved searches, keyboard macros. Automate repetitive pivots but keep a human in the loop for interpretation and ethics.</p>
+      <details class="acc"><summary>Saved queries</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Maintain a personal library of <code>site:</code> and <code>filetype:</code> searches for your verticals.</li>
+            <li>Keep “collections” of link hubs for email/username/domain/IP checks so you can open batches fast.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Notes & reproducibility</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Use consistent headings: Objective → Steps → Findings → Confidence → Next actions.</li>
+            <li>Always include a “How to reproduce” block at the end for another analyst.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- Cases / CXI -->
+    <section class="card" id="cases">
+      <h2>CXI Case Files: patterns we care about</h2>
+      <p><b>Scope.</b> CXI handles coordinated harassment, identity theft, spoofing operations, and real-world escalation tied to online activity. Operators collect public evidence and escalate when thresholds are met.</p>
+      <details class="acc"><summary>Pattern: coordinated harassment & identity theft</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Signals: rotating burner accounts, impersonation of friends/family, AI-edited media, threats mentioning addresses or children.</li>
+            <li>What we document: numbers/handles used, timestamps, call/text screenshots, URLs, and a clear timeline of escalation.</li>
+            <li>Why it matters: public documentation preserves the truth and prepares legal handoff.</li>
+          </ul>
+          <div class="kv"><b>Note:</b> When summarizing public allegations, attribute to the published report and avoid asserting unverified claims as facts.</div>
+        </div>
+      </details>
+      <details class="acc"><summary>Echo feed → training data</summary>
+        <div class="acc-body">
+          <p>Echo is the live memory: a running log of threats and incidents, archived for training and forensics. It turns chaotic inputs into organized, searchable signal for future analysts.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- Ops & Reporting -->
+    <section class="card" id="ops">
+      <h2>Operations & Reporting</h2>
+      <p><b>Deliverables.</b> Executive one-pager, investigative brief, or longform report. Each has a different audience; the core evidence is shared and reproducible.</p>
+      <details class="acc"><summary>Executive one-pager (template)</summary>
+        <div class="acc-body">
+          <ul>
+            <li><b>Situation:</b> one paragraph in plain language.</li>
+            <li><b>Key Findings:</b> 3–5 bullets with links and timestamps.</li>
+            <li><b>Risk:</b> what could happen next; who is impacted.</li>
+            <li><b>Actions:</b> concrete steps (contact, platform reports, legal options).</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Investigative brief (template)</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Objective & scope, background, methods, findings per source, attribution analysis, confidence, and appendix with raw links.</li>
+            <li>Include archive URLs and hashes for any media likely to be removed.</li>
+          </ul>
+        </div>
+      </details>
+      <details class="acc"><summary>Quality bar</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Every claim tied to evidence. Distinguish <i>observed</i> vs <i>inferred</i>.</li>
+            <li>Bias control: explicitly list alternative explanations you ruled out.</li>
+            <li>Redaction: remove sensitive home addresses for private individuals unless there’s an urgent safety reason to include for law enforcement.</li>
+          </ul>
+        </div>
+      </details>
+      <div class="copybar">
+        <button class="copy" data-copy="template-brief">Copy brief template</button>
+        <small>Copies a markdown outline to your clipboard.</small>
+      </div>
+      <div id="template-brief" style="display:none">
+Situation
+- 
+
+Key Findings
+- 
+
+Risk
+- 
+
+Actions
+- 
+
+Methods
+- Queries:
+- Sources (URL + time):
+- Notes:
+
+Confidence
+- 
+
+Appendix
+- Archive links:
+- Screens
+      </div>
+    </section>
+
+    <!-- Appendix -->
+    <section class="card" id="appendix">
+      <h2>Appendix: Tools, Hubs & Glossary</h2>
+      <details class="acc"><summary>Link hubs you’ll open daily</summary>
+        <div class="acc-body">
+          <p class="sub">Email: pwned checks, gravatar, key servers, and paste search</p>
+          <div>
+            <span class="badge">Have I Been Pwned</span>
+            <span class="badge">EmailRep</span>
+            <span class="badge">OpenPGP key search</span>
+            <span class="badge">Gravatar (MD5)</span>
+            <span class="badge">Pastebin search</span>
+          </div>
+          <hr class="sep">
+          <p class="sub">Username & social pivots</p>
+          <div>
+            <span class="badge">GitHub</span><span class="badge">GitLab</span><span class="badge">Reddit</span>
+            <span class="badge">X/Twitter</span><span class="badge">Instagram</span><span class="badge">TikTok</span>
+            <span class="badge">YouTube</span><span class="badge">Keybase</span>
+          </div>
+          <hr class="sep">
+          <p class="sub">Domains & infra</p>
+          <div>
+            <span class="badge">crt.sh</span><span class="badge">urlscan</span><span class="badge">VirusTotal</span>
+            <span class="badge">BuiltWith</span><span class="badge">RDAP</span><span class="badge">BGP tools</span>
+            <span class="badge">Shodan</span><span class="badge">Censys</span>
+          </div>
+        </div>
+      </details>
+
+      <details class="acc"><summary>CMX OSINT Services (what clients ask for)</summary>
+        <div class="acc-body">
+          <ul>
+            <li>Person & organization dossiers with public-only sources, timelines, and confidence ratings.</li>
+            <li>Threat/harassment triage with escalation support to CXI.</li>
+            <li>Brand/domain exposure audits: surface web + certificates + passive DNS + scanner footprint.</li>
+            <li>Reporting packages (briefs + exhibits) ready for decision-makers.</li>
+          </ul>
+          <small>We balance speed with care: public evidence, clear sourcing, and strong redaction where appropriate.</small>
+        </div>
+      </details>
+
+      <details class="acc"><summary>Glossary</summary>
+        <div class="acc-body">
+          <ul>
+            <li><b>Attribution:</b> linking handles/assets to a real person with evidence over time.</li>
+            <li><b>Passive DNS:</b> historical resolutions cached by third parties.</li>
+            <li><b>ASN:</b> an autonomous system number—useful for provider/route history.</li>
+            <li><b>Pivot:</b> using one clue (email, hash, string) to find adjacent data.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ===== Session & Export ===== */
+const sidEl=document.getElementById('sid');
+sidEl.textContent=Math.random().toString(36).slice(2,10).toUpperCase();
+document.getElementById('btnExport').onclick=()=>window.print();
+
+/* ===== Off-canvas menu (fixed) ===== */
+const sidebar=document.getElementById('sidebar');
+const launcher=document.getElementById('menuBtn');
+const closer=document.getElementById('menuClose');
+const backdrop=document.getElementById('backdrop');
+
+function positionCloser(){
+  // Keep the close button aligned just outside the open sidebar
+  if(!sidebar.classList.contains('open')) return;
+  const w = sidebar.offsetWidth || 280;
+  closer.style.left = (w + 8) + 'px';
+  closer.hidden = false;
+}
+
+function openMenu(){
+  sidebar.classList.add('open');
+  backdrop.classList.add('show');
+  closer.classList.add('show');
+  launcher.classList.add('hidden');
+  launcher.setAttribute('aria-expanded','true');
+  document.body.style.overflow='hidden'; // lock scroll
+  positionCloser();
+}
+function closeMenu(){
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('show');
+  closer.classList.remove('show');
+  launcher.classList.remove('hidden');
+  launcher.setAttribute('aria-expanded','false');
+  document.body.style.overflow='';
+  closer.hidden = true;
+}
+launcher.addEventListener('click',openMenu);
+closer.addEventListener('click',closeMenu);
+backdrop.addEventListener('click',closeMenu);
+window.addEventListener('resize',positionCloser);
+window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeMenu(); });
+
+/* Auto-hide launcher on scroll to keep mobile clear */
+let lastY=0;
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  if(y>lastY+8){ launcher.classList.add('hidden'); }
+  else if(y<lastY-8 && !sidebar.classList.contains('open')){ launcher.classList.remove('hidden'); }
+  lastY=y;
+});
+
+/* ===== Nav buttons + active highlight ===== */
+const navBtns=[...document.querySelectorAll('#nav button')];
+navBtns.forEach(b=>b.addEventListener('click',()=>{
+  document.getElementById(b.dataset.goto).scrollIntoView({behavior:'smooth',block:'start'});
+  navBtns.forEach(x=>x.classList.toggle('active', x===b));
+  closeMenu();
+}));
+const io=new IntersectionObserver((entries)=>{
+  const vis=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+  if(!vis) return;
+  const id=vis.target.id;
+  navBtns.forEach(b=>b.classList.toggle('active', b.dataset.goto===id));
+},{rootMargin:'-50% 0px -45% 0px',threshold:[0.25,0.5,0.75,1]});
+document.querySelectorAll('section.card').forEach(s=>io.observe(s));
+
+/* ===== Search (instant filter of sections) ===== */
+const search=document.getElementById('search');
+search.addEventListener('input',()=>{
+  const q=(search.value||'').trim().toLowerCase();
+  document.querySelectorAll('section.card').forEach(sec=>{
+    if(!q){ sec.style.display=''; return; }
+    sec.style.display = sec.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+window.addEventListener('keydown',(e)=>{
+  if(e.key==='/'){ e.preventDefault(); search.focus(); }
+  if(e.key==='Escape'){ search.value=''; search.dispatchEvent(new Event('input')); }
+  if(e.key.toLowerCase()==='t'){ window.scrollTo({top:0,behavior:'smooth'}); }
+});
+
+/* ===== Copy brief template ===== */
+document.querySelectorAll('.copy').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const id=btn.getAttribute('data-copy'); const src=document.getElementById(id);
+    if(!src) return;
+    const txt=src.innerText.trim();
+    navigator.clipboard.writeText(txt).then(()=>{ btn.textContent='Copied ✓'; setTimeout(()=>btn.textContent='Copy brief template',1200); });
+  });
+});
+</script>
+</body>
+</html>
