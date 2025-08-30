@@ -3,15 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CMX • Secure Briefing → Redirect</title>
+<title>CMX • Secure Agent Login</title>
 
 <!-- ========= EASY CONFIG ========= -->
 <script>
   const CONFIG = {
     AGENT_ID: 'agent47',                 // <-- change me
     SECURITY_CODE: 'classified',         // <-- change me
-    REDIRECT_URL: 'https://db.cmxchat.com/osint',
-    BRIEF_SECONDS: 7                     // how long to show the brief before redirect
+    REDIRECT_URL: 'https://db.cmxchat.com/menu'
   };
 </script>
 
@@ -48,15 +47,6 @@
   button:hover{filter:brightness(1.05)}
   .out{min-height:24px; margin-top:10px; color:var(--ok)}
   .err{color:var(--bad)}
-  .brief{display:none; line-height:1.6}
-  .panel{background:var(--panel2); border:1px solid var(--line); border-left:4px solid var(--accent); padding:14px; border-radius:12px}
-  ul{margin:8px 0 0 18px}
-  .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-  .ghost{
-    all:unset; cursor:pointer; padding:10px 14px; border-radius:999px; font-weight:800;
-    border:1px solid var(--line); background:#14181c; color:#e7e9ea;
-  }
-  .count{font-weight:800; color:var(--bad)}
   .small{color:var(--muted); font-size:.9rem}
 </style>
 </head>
@@ -74,65 +64,22 @@
     <div id="out" class="out" aria-live="polite"></div>
     <div class="small">Tip: Press <kbd>Enter</kbd> to submit.</div>
   </div>
-
-  <!-- BRIEF -->
-  <div id="brief" class="card brief" role="region" aria-label="Mission Brief">
-    <h1>MISSION: CMX OPS 0027</h1>
-    <div class="panel">
-      <strong>OBJECTIVE:</strong> Deploy full-stack digital dominance.<br>
-      <strong>ASSETS:</strong> SEO Agents, Web Dev Units, Discord Surveillance.
-      <ul>
-        <li>Infiltrate SERP positions</li>
-        <li>Intercept competitor traffic</li>
-        <li>Design covert conversion funnels</li>
-      </ul>
-      <div style="margin-top:10px">
-        <strong>INTEL:</strong>
-        <ul>
-          <li>Top priority: Founders, Creators, OSINT Nodes</li>
-          <li>Engagement via Platform + Agency Hybrid Protocols</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="row">
-      <button id="goNow" class="ghost">Continue Now →</button>
-      <span class="small">Auto-redirect in <span id="count" class="count"></span>…</span>
-    </div>
-  </div>
 </div>
 
 <script>
 (function(){
   const out = document.getElementById('out');
-  const login = document.getElementById('login');
-  const brief = document.getElementById('brief');
-  const countEl = document.getElementById('count');
   const btn = document.getElementById('authBtn');
-  const goNow = document.getElementById('goNow');
 
   function redirect(){ window.location.href = CONFIG.REDIRECT_URL; }
-
-  function showBrief(){
-    login.style.display = 'none';
-    brief.style.display = 'block';
-    let t = Math.max(1, (CONFIG.BRIEF_SECONDS|0) || 5);
-    countEl.textContent = t + 's';
-    const timer = setInterval(()=>{
-      t--;
-      if (t <= 0) { clearInterval(timer); redirect(); }
-      else countEl.textContent = t + 's';
-    }, 1000);
-    goNow.onclick = ()=>{ clearInterval(timer); redirect(); };
-  }
 
   function auth(){
     const id = (document.getElementById('agent').value||'').trim().toLowerCase();
     const pass = (document.getElementById('pass').value||'').trim();
     if (id === (CONFIG.AGENT_ID||'').toLowerCase() && pass === (CONFIG.SECURITY_CODE||'')) {
       out.classList.remove('err');
-      out.textContent = 'Access Granted. Welcome, ' + CONFIG.AGENT_ID + '.';
-      setTimeout(showBrief, 350);
+      out.textContent = 'Access Granted. Redirecting…';
+      setTimeout(redirect, 600);
     } else {
       out.classList.add('err');
       out.textContent = 'Access Denied. Check credentials.';
