@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>CMX • OSINT Resources Console</title>
+<meta name="color-scheme" content="dark">
+
+<style>
+:root{
+  --bg:#000; --panel:#0b0c0e; --panel-2:#111317;
+  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f; --warn:#f6c76f;
+  --r:16px; --rs:12px;
+  --maxw:1080px;
+  --pad:clamp(12px,2.6vw,20px);
+  --fs-xl:clamp(24px,6vw,40px);
+  --fs-lg:clamp(18px,3.5vw,22px);
+  --fs:clamp(14px,3.3vw,16px);
+  --fs-sm:clamp(12px,2.6vw,13.5px);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:
+    radial-gradient(1200px 600px at 20% -10%,rgba(29,155,240,.08),transparent),
+    radial-gradient(1200px 600px at 120% 100%,rgba(130,200,255,.06),transparent),
+    var(--bg);
+  color:var(--ink);
+  font:400 var(--fs)/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  -webkit-text-size-adjust:100%;
+}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+
+/* Top bar */
+.topbar{
+  position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:var(--pad);background:rgba(0,0,0,.72);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.2px}
+.logo{width:30px;height:30px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.logo svg{width:18px;height:18px;fill:var(--accent)}
+.title{font-size:var(--fs-lg)}
+.chip{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:var(--fs-sm)}
+
+/* Hero */
+.hero{padding:calc(var(--pad) + 8px) 0}
+.hero h1{margin:.2rem 0 .5rem;font-size:var(--fs-xl);line-height:1.15}
+.sub{color:var(--muted);font-size:var(--fs-sm)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.btn{
+  all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  padding:14px 18px;border-radius:999px;font-weight:900;letter-spacing:.2px;
+  border:1px solid var(--accent);
+  background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));
+}
+.btn:active{transform:translateY(1px)}
+.btn.main{width:100%;justify-content:center;font-size:var(--fs-lg)}
+.badge{display:inline-block;margin:.15rem .35rem .35rem 0;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:var(--fs-sm)}
+
+/* Search */
+.searchbar{display:flex;gap:8px;align-items:center;margin-top:12px;width:100%}
+.searchbar input{
+  flex:1;min-width:220px;padding:12px;border-radius:12px;background:var(--panel);
+  color:var(--ink);border:1px solid var(--line);outline:none
+}
+.searchbar .disclosure{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+
+/* Resource cards */
+.grid{display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:1fr}
+@media(min-width:1100px){.grid{grid-template-columns:1fr 1fr}}
+.card{
+  border:1px solid var(--line);background:var(--panel-2);border-radius:18px;padding:var(--pad);
+  transition:border-color .18s ease, box-shadow .18s ease;
+}
+.card h2{margin:.2rem 0;font-size:var(--fs-lg)}
+.card p{margin:.2rem 0 .6rem}
+.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 .4rem}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+small{font-size:var(--fs-sm);color:var(--muted)}
+.card:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.card.active{border-color:var(--accent2);box-shadow:0 16px 44px rgba(130,200,255,.12)}
+
+/* Collapsible behavior */
+.card .body{margin-top:.25rem}
+.card.collapsed .body{display:none}
+.card .head{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+.head .chev{width:22px;height:22px;stroke:var(--accent);opacity:.8;transition:transform .18s}
+.card:not(.collapsed) .head .chev{transform:rotate(90deg)}
+.head .subtitle{color:var(--muted);font-size:var(--fs-sm)}
+
+/* Link items with descriptions */
+.items{display:grid;gap:10px}
+.item{
+  border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--panel);
+}
+.item .top{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:0;border:0;background:transparent;backdrop-filter:none
+}
+.item .title{
+  display:flex;align-items:center;gap:10px;font-weight:800
+}
+.item .title svg{width:16px;height:16px;stroke:var(--accent)}
+.item .desc{color:var(--muted);font-size:var(--fs-sm);margin-top:6px}
+.item .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:#0e1013;font-size:11.5px;color:#cfe9ff}
+
+/* Footer */
+.footer{padding:var(--pad);display:flex;justify-content:center;color:var(--muted);font-size:var(--fs-sm)}
+
+/* Print */
+@media print{ .topbar{position:static} .btn{display:none!important} }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
+    </div>
+    <div class="title">CMX • OSINT Resources Console</div>
+  </div>
+  <span class="chip">Session <b id="sid"></b></span>
+</header>
+
+<main class="container">
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Main Library, then drill down</h1>
+    <p class="sub">One jump to the public superlist, then curated categories with descriptions and tags for rapid pivots.</p>
+    <div class="cta">
+      <a class="btn main" href="https://start.me/p/L1rEYQ/osint4all" target="_blank" rel="noopener">Open Main Library, start.me/osint4all →</a>
+      <div class="searchbar">
+        <input id="search" placeholder="Quick filter, type to match categories, tools, or tags" aria-label="Filter resources">
+        <button id="clear" class="disclosure" type="button" title="Clear search">Clear</button>
+      </div>
+      <small>Hotkeys, press <kbd>/</kbd> to focus search, press <kbd>Esc</kbd> to clear</small>
+    </div>
+  </section>
+
+  <!-- Resources -->
+  <section id="resources" class="grid" aria-label="OSINT resource categories">
+
+    <!-- Meta & Learning -->
+    <article class="card collapsed" data-cat="meta learning framework bellingcat osint combine sans nist" id="cat-meta">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-meta">
+        <div>
+          <h2>Meta directories and learning</h2>
+          <div class="subtitle">Broad coverage, patterns, and training</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-meta">
+        <div class="row"><div class="actions">
+          <button class="disclosure open-all" type="button">Open all links</button>
+        </div></div>
+        <div class="items">
+          <div class="item">
+            <div class="top">
+              <div class="title">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+                <a href="https://osintframework.com/" target="_blank" rel="noopener"><span>OSINT Framework</span></a>
+              </div>
+            </div>
+            <div class="desc">Clickable mind map of discovery paths, organized by pivots like username, email, domain, and social, good as a starting compass when you are stuck.</div>
+            <div class="tags"><span class="tag">Directory</span><span class="tag">Getting started</span><span class="tag">Mind map</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div class="title">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+                <a href="https://www.bellingcat.com/resources/" target="_blank" rel="noopener"><span>Bellingcat, Resources</span></a>
+              </div>
+            </div>
+            <div class="desc">Field-tested guides on geolocation, chronolocation, and media verification, strong for case-study style learning with repeatable steps.</div>
+            <div class="tags"><span class="tag">Training</span><span class="tag">Verification</span><span class="tag">Case studies</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div class="title">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+                <a href="https://www.osintcombine.com/tools" target="_blank" rel="noopener"><span>OSINT Combine, Tools</span></a>
+              </div>
+            </div>
+            <div class="desc">Collection of focused utilities, helpful for quick pivots like username sweeps, platform lookups, and mapping tasks without heavy setup.</div>
+            <div class="tags"><span class="tag">Utilities</span><span class="tag">Rapid pivots</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div class="title">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+                <a href="https://digital-forensics.sans.org/community/posters" target="_blank" rel="noopener"><span>SANS DFIR, Posters</span></a>
+              </div>
+            </div>
+            <div class="desc">Printable technique sheets for forensics and incident response, useful for memory aids during live analysis or when crafting methods sections.</div>
+            <div class="tags"><span class="tag">Cheat sheets</span><span class="tag">DFIR</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top">
+              <div class="title">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+                <a href="https://www.nist.gov/itl/ssd/software-quality-group/national-software-reference-library-nsrl" target="_blank" rel="noopener"><span>NIST NSRL, Hash Sets</span></a>
+              </div>
+            </div>
+            <div class="desc">Reference hashes for known files, good for excluding benign artifacts when hashing media or binaries as part of triage.</div>
+            <div class="tags"><span class="tag">Hashes</span><span class="tag">Reference</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Search -->
+    <article class="card collapsed" data-cat="search engines operators google bing ddg millionshort" id="cat-search">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-search">
+        <div>
+          <h2>Search engines and operators</h2>
+          <div class="subtitle">Break bubbles, find long tail results</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-search">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://www.google.com/advanced_search" target="_blank" rel="noopener">Google Advanced Search</a>
+            </div></div>
+            <div class="desc">UI for exact phrases, date ranges, and file types, ideal when you need reproducible inputs in your notes.</div>
+            <div class="tags"><span class="tag">Advanced</span><span class="tag">Filetype</span><span class="tag">Dates</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://support.google.com/websearch/answer/2466433" target="_blank" rel="noopener">Google Operators Help</a>
+            </div></div>
+            <div class="desc">Official operator list, useful to teach or justify queries like site, filetype, and minus terms.</div>
+            <div class="tags"><span class="tag">Operators</span><span class="tag">Docs</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://duckduckgo.com/" target="_blank" rel="noopener">DuckDuckGo</a>
+            </div></div>
+            <div class="desc">Different ranking inputs and bangs, handy for quick jumps to site searches and privacy-first runs.</div>
+            <div class="tags"><span class="tag">Alt engine</span><span class="tag">Bangs</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://millionshort.com/" target="_blank" rel="noopener">Million Short</a>
+            </div></div>
+            <div class="desc">Removes top ranked sites to reveal the long tail, useful for niche or older traces.</div>
+            <div class="tags"><span class="tag">Discovery</span><span class="tag">Long tail</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- People & usernames -->
+    <article class="card collapsed" data-cat="people username handles profiles sherlock whatsmyname" id="cat-people">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-people">
+        <div>
+          <h2>People and username discovery</h2>
+          <div class="subtitle">Handle reuse and cross platform hints</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-people">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://whatsmyname.app/" target="_blank" rel="noopener">WhatsMyName</a>
+            </div></div>
+            <div class="desc">Searches many platforms for a handle, returns positives and negatives for pattern checks.</div>
+            <div class="tags"><span class="tag">Usernames</span><span class="tag">Sweep</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://namechk.com/" target="_blank" rel="noopener">Namechk</a>
+            </div></div>
+            <div class="desc">Availability and footprint checks for handles, fast for first pass scanning.</div>
+            <div class="tags"><span class="tag">Usernames</span><span class="tag">Availability</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://usersearch.org/" target="_blank" rel="noopener">UserSearch</a>
+            </div></div>
+            <div class="desc">Aggregates a variety of footprint checks, good for quick pivots off a single handle or email.</div>
+            <div class="tags"><span class="tag">Aggregator</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://github.com/sherlock-project/sherlock" target="_blank" rel="noopener">Sherlock, GitHub</a>
+            </div></div>
+            <div class="desc">CLI tool that checks many sites for a given username, scriptable for repeatable sweeps and results export.</div>
+            <div class="tags"><span class="tag">CLI</span><span class="tag">Automation</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://keybase.io/" target="_blank" rel="noopener">Keybase</a>
+            </div></div>
+            <div class="desc">Profiles with cryptographic proofs linking accounts, helpful for strong cross-platform attribution when present.</div>
+            <div class="tags"><span class="tag">Proofs</span><span class="tag">Attribution</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Email -->
+    <article class="card collapsed" data-cat="email leaks rep gravatar pgp hunter" id="cat-email">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-email">
+        <div>
+          <h2>Email intelligence</h2>
+          <div class="subtitle">Breach exposure and crypto keys</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-email">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item">
+            <div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener">Have I Been Pwned</a></div></div>
+            <div class="desc">Checks breach exposure for an email, good for timeline clues and password reuse warnings in your findings.</div>
+            <div class="tags"><span class="tag">Breaches</span><span class="tag">Exposure</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://emailrep.io/" target="_blank" rel="noopener">EmailRep</a></div></div>
+            <div class="desc">Reputation signals and risk indicators for emails, helpful to triage spam or burner patterns.</div>
+            <div class="tags"><span class="tag">Reputation</span><span class="tag">Risk</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://keys.openpgp.org/" target="_blank" rel="noopener">OpenPGP Keys</a></div></div>
+            <div class="desc">Search for public PGP keys tied to an email, good for proof of control and historical artifacts.</div>
+            <div class="tags"><span class="tag">PGP</span><span class="tag">Keys</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://www.gravatar.com/" target="_blank" rel="noopener">Gravatar</a></div></div>
+            <div class="desc">Avatars keyed by MD5 of email, useful for face or logo reuse and cross-site pivots.</div>
+            <div class="tags"><span class="tag">Avatar</span><span class="tag">MD5</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://hunter.io/" target="_blank" rel="noopener">Hunter</a></div></div>
+            <div class="desc">Email patterns and discovery for domains, handy for contact pattern mapping and guess verification.</div>
+            <div class="tags"><span class="tag">Pattern</span><span class="tag">Discovery</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Phone -->
+    <article class="card collapsed" data-cat="phone carrier number lookup sms" id="cat-phone">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-phone">
+        <div>
+          <h2>Phone checks</h2>
+          <div class="subtitle">Carrier info and region hints</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-phone">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item">
+            <div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://freecarrierlookup.com/" target="_blank" rel="noopener">Free Carrier Lookup</a></div></div>
+            <div class="desc">Basic carrier and region info from a number, useful for initial sanity checks before deeper pivots.</div>
+            <div class="tags"><span class="tag">Carrier</span><span class="tag">Region</span></div>
+          </div>
+
+          <div class="item">
+            <div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              <a href="https://numverify.com/documentation" target="_blank" rel="noopener">numverify, Docs</a></div></div>
+            <div class="desc">API reference for number validation and line type, good if you are scripting repeatable checks.</div>
+            <div class="tags"><span class="tag">API</span><span class="tag">Validation</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Domains & infra -->
+    <article class="card collapsed" data-cat="domain web infra certificates dns scanners vt shodan censys" id="cat-domain">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-domain">
+        <div>
+          <h2>Domains and infrastructure</h2>
+          <div class="subtitle">Ownership, tech stacks, exposed services</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-domain">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://crt.sh/" target="_blank" rel="noopener">crt.sh</a></div></div>
+            <div class="desc">Certificate transparency search for domains and subdomains, strong for finding related assets and historical CNs.</div>
+            <div class="tags"><span class="tag">Certificates</span><span class="tag">Subdomains</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://urlscan.io/" target="_blank" rel="noopener">urlscan</a></div></div>
+            <div class="desc">Scans a URL and shows HTTP requests, screenshots, and links, great for quick tech stack clues and artifact capture.</div>
+            <div class="tags"><span class="tag">Scanner</span><span class="tag">Artifacts</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://securitytrails.com/" target="_blank" rel="noopener">SecurityTrails</a></div></div>
+            <div class="desc">Historical DNS data and footprints, helpful for ownership patterns and infrastructure drift.</div>
+            <div class="tags"><span class="tag">Passive DNS</span><span class="tag">History</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://builtwith.com/" target="_blank" rel="noopener">BuiltWith</a></div></div>
+            <div class="desc">Technology fingerprinting for domains, quick way to see frameworks, analytics IDs, and contact pixels.</div>
+            <div class="tags"><span class="tag">Tech stack</span><span class="tag">Fingerprint</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://search.censys.io/" target="_blank" rel="noopener">Censys</a></div></div>
+            <div class="desc">Search the internet-facing surface by certificates and banners, helpful for exposed services and versioning.</div>
+            <div class="tags"><span class="tag">Exposure</span><span class="tag">Services</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.shodan.io/" target="_blank" rel="noopener">Shodan</a></div></div>
+            <div class="desc">Indexed banners and service metadata, good for quick perimeter checks and screenshots of device panels.</div>
+            <div class="tags"><span class="tag">Banners</span><span class="tag">Perimeter</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://community.riskiq.com/" target="_blank" rel="noopener">RiskIQ Community</a></div></div>
+            <div class="desc">Community view into RiskIQ datasets, useful for quick enrichment on domains, IPs, and hosts.</div>
+            <div class="tags"><span class="tag">Enrichment</span><span class="tag">Community</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://dnslytics.com/" target="_blank" rel="noopener">DNSlytics</a></div></div>
+            <div class="desc">Reverse DNS, shared analytics IDs, and IP tools, good for clustering related sites.</div>
+            <div class="tags"><span class="tag">Reverse</span><span class="tag">Analytics ID</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://dnsviz.net/" target="_blank" rel="noopener">DNSViz</a></div></div>
+            <div class="desc">Visualizes DNS and DNSSEC, helpful during troubleshooting or when noting misconfigurations in findings.</div>
+            <div class="tags"><span class="tag">DNSSEC</span><span class="tag">Visualization</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://mxtoolbox.com/" target="_blank" rel="noopener">MXToolbox</a></div></div>
+            <div class="desc">Mail records, blacklists, and SMTP diagnostics, good for mail posture sections like SPF, DKIM, and DMARC.</div>
+            <div class="tags"><span class="tag">Mail</span><span class="tag">Diagnostics</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://lookup.icann.org/en" target="_blank" rel="noopener">ICANN Lookup</a></div></div>
+            <div class="desc">Official registration data, helpful for ownership checks and registrar notes.</div>
+            <div class="tags"><span class="tag">WHOIS</span><span class="tag">ICANN</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- IP & routing -->
+    <article class="card collapsed" data-cat="ip asn routing reputation ripe bgp peering abuse greynoise rdap vt" id="cat-ip">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-ip">
+        <div>
+          <h2>IP, routing, and reputation</h2>
+          <div class="subtitle">Geo, ASN, and abuse context</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-ip">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://ipinfo.io/" target="_blank" rel="noopener">ipinfo</a></div></div>
+            <div class="desc">IP context like geo, ASN, and hosting, good for quick enrichment and initial risk notes.</div>
+            <div class="tags"><span class="tag">Geo</span><span class="tag">ASN</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://stat.ripe.net/" target="_blank" rel="noopener">RIPEstat</a></div></div>
+            <div class="desc">Routing and allocation data, helpful for regional ownership and history.</div>
+            <div class="tags"><span class="tag">Routing</span><span class="tag">RIR</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://bgp.he.net/" target="_blank" rel="noopener">BGP Toolkit</a></div></div>
+            <div class="desc">ASNs, prefixes, and peers, strong for network maps and changes over time.</div>
+            <div class="tags"><span class="tag">BGP</span><span class="tag">Peers</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.peeringdb.com/" target="_blank" rel="noopener">PeeringDB</a></div></div>
+            <div class="desc">IXPs, facilities, and networks, helpful for understanding interconnection context.</div>
+            <div class="tags"><span class="tag">IXP</span><span class="tag">Facilities</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://rdap.org/" target="_blank" rel="noopener">RDAP</a></div></div>
+            <div class="desc">Registration Data Access Protocol, structured ownership and contact data for IP and domains.</div>
+            <div class="tags"><span class="tag">Ownership</span><span class="tag">Contacts</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.abuseipdb.com/" target="_blank" rel="noopener">AbuseIPDB</a></div></div>
+            <div class="desc">Reputation reports for IPs, useful for quick screenings and notes about probable noise.</div>
+            <div class="tags"><span class="tag">Reputation</span><span class="tag">Abuse</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://viz.greynoise.io/" target="_blank" rel="noopener">GreyNoise</a></div></div>
+            <div class="desc">Separates internet background noise from targeted activity, good for context before raising alarms.</div>
+            <div class="tags"><span class="tag">Noise</span><span class="tag">Context</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.virustotal.com/gui/home/search" target="_blank" rel="noopener">VirusTotal, Search</a></div></div>
+            <div class="desc">Hashes, URLs, and IPs with community notes, helpful to cross-reference indicators and samples.</div>
+            <div class="tags"><span class="tag">Indicators</span><span class="tag">Community</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://proxycheck.io/" target="_blank" rel="noopener">proxycheck</a></div></div>
+            <div class="desc">Detects proxies and VPNs, useful to note probable anonymization in timeline analysis.</div>
+            <div class="tags"><span class="tag">VPN</span><span class="tag">Proxy</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Archives -->
+    <article class="card collapsed" data-cat="archive caching wayback memento ghostarchive" id="cat-archive">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-archive">
+        <div>
+          <h2>Web archives and caches</h2>
+          <div class="subtitle">Freeze pages for evidence and reproducibility</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-archive">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://web.archive.org/" target="_blank" rel="noopener">Wayback Machine</a></div></div>
+            <div class="desc">Archive snapshots for websites, core to preserving volatile claims and source pages.</div>
+            <div class="tags"><span class="tag">Archive</span><span class="tag">Snapshots</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://archive.today/" target="_blank" rel="noopener">archive.today</a></div></div>
+            <div class="desc">Creates single page snapshots with media in place, helpful when dynamic content breaks elsewhere.</div>
+            <div class="tags"><span class="tag">Snapshot</span><span class="tag">Static</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="http://timetravel.mementoweb.org/" target="_blank" rel="noopener">Memento Time Travel</a></div></div>
+            <div class="desc">Finds archived versions across many archives at a point in time, good for earliest sighting checks.</div>
+            <div class="tags"><span class="tag">Meta</span><span class="tag">Earliest</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://ghostarchive.org/" target="_blank" rel="noopener">GhostArchive</a></div></div>
+            <div class="desc">Focus on social media, useful for capturing posts that often vanish or get edited.</div>
+            <div class="tags"><span class="tag">Social</span><span class="tag">Evidence</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Paste & code -->
+    <article class="card collapsed" data-cat="paste code search github grep gitlab" id="cat-code">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-code">
+        <div>
+          <h2>Paste and code search</h2>
+          <div class="subtitle">Leaks, tokens, and mentions</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-code">
+        <div class="row"><div class="actions"><button class="disclosure open-all
+          <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://github.com/search" target="_blank" rel="noopener">GitHub Code Search</a>
+          </div></div>
+            <div class="desc">Repository and code search, useful for exposed tokens and references to domains or emails.</div>
+            <div class="tags"><span class="tag">Code</span><span class="tag">Tokens</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://grep.app/" target="_blank" rel="noopener">grep.app</a>
+          </div></div>
+            <div class="desc">Regex search across many repos, strong for hunting hardcoded secrets or reused strings.</div>
+            <div class="tags"><span class="tag">Regex</span><span class="tag">Search</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://gitlab.com/search" target="_blank" rel="noopener">GitLab Search</a>
+          </div></div>
+            <div class="desc">Search GitLab repos for strings and file names, good for mirrors or alt orgs.</div>
+            <div class="tags"><span class="tag">Code</span><span class="tag">Mirror</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://pastebin.com/search" target="_blank" rel="noopener">Pastebin Search</a>
+          </div></div>
+            <div class="desc">Public pastes that may contain indicators or credentials, treat with caution and never use live credentials.</div>
+            <div class="tags"><span class="tag">Pastes</span><span class="tag">Indicators</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Social direct search -->
+    <article class="card collapsed" data-cat="social reddit twitter x youtube tiktok instagram steam" id="cat-social">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-social">
+        <div>
+          <h2>Social platforms, direct search</h2>
+          <div class="subtitle">Native search for timing and context</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-social">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.reddit.com/search/" target="_blank" rel="noopener">Reddit, Search</a></div></div>
+            <div class="desc">Search by keywords, users, and time windows, comments often hold key context.</div>
+            <div class="tags"><span class="tag">Threads</span><span class="tag">Context</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://twitter.com/search-advanced" target="_blank" rel="noopener">X, Advanced Search</a></div></div>
+            <div class="desc">Filters by dates, accounts, and engagement, core to timeline building and quote chain checks.</div>
+            <div class="tags"><span class="tag">Timeline</span><span class="tag">Filters</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.youtube.com/results?search_query=" target="_blank" rel="noopener">YouTube, Search</a></div></div>
+            <div class="desc">Video timelines, descriptions, and comments, subtitles can hold names and places.</div>
+            <div class="tags"><span class="tag">Video</span><span class="tag">Subs</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.tiktok.com/search?q=" target="_blank" rel="noopener">TikTok, Search</a></div></div>
+            <div class="desc">Short video search, look at sounds, captions, and linked profiles.</div>
+            <div class="tags"><span class="tag">Shorts</span><span class="tag">Captions</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram, Profiles</a></div></div>
+            <div class="desc">Bio links, story highlights, and tagged photos, watch for locations and recurring faces.</div>
+            <div class="tags"><span class="tag">Stories</span><span class="tag">Tags</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Media forensics -->
+    <article class="card collapsed" data-cat="images video audio exif reverse tineye yandex forensically invid" id="cat-media">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-media">
+        <div>
+          <h2>Images, video, and media forensics</h2>
+          <div class="subtitle">Reverse search and manipulation detection</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-media">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://images.google.com/" target="_blank" rel="noopener">Google Images</a></div></div>
+            <div class="desc">Reverse image and visually similar matches, find earliest appearances and near-duplicates.</div>
+            <div class="tags"><span class="tag">Reverse</span><span class="tag">Similar</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.bing.com/visualsearch" target="_blank" rel="noopener">Bing Visual Search</a></div></div>
+            <div class="desc">Visual search with different coverage, helpful as a second engine to confirm or expand.</div>
+            <div class="tags"><span class="tag">Visual</span><span class="tag">Coverage</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://yandex.com/images/" target="_blank" rel="noopener">Yandex Images</a></div></div>
+            <div class="desc">Often returns matches missed elsewhere, useful for Cyrillic web and alt-site coverage.</div>
+            <div class="tags"><span class="tag">Alt index</span><span class="tag">International</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://tineye.com/" target="_blank" rel="noopener">TinEye</a></div></div>
+            <div class="desc">Reverse image with strong earliest-match surfacing, good for provenance checks.</div>
+            <div class="tags"><span class="tag">Provenance</span><span class="tag">Reverse</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://29a.ch/photo-forensics/" target="_blank" rel="noopener">Forensically</a></div></div>
+            <div class="desc">Error level analysis and cloning detection, treat as hints and confirm with context.</div>
+            <div class="tags"><span class="tag">ELA</span><span class="tag">Clones</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://exif.tools/" target="_blank" rel="noopener">EXIF.tools</a></div></div>
+            <div class="desc">Reads embedded metadata when available, handle GPS with care, avoid publishing home coordinates.</div>
+            <div class="tags"><span class="tag">EXIF</span><span class="tag">Metadata</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.weverify.eu/tools/" target="_blank" rel="noopener">WeVerify, InVID</a></div></div>
+            <div class="desc">Browser tools for keyframe extraction and reverse video search, strong for fast video triage.</div>
+            <div class="tags"><span class="tag">Video</span><span class="tag">Keyframes</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Maps & chrono -->
+    <article class="card collapsed" data-cat="maps geo chrono suncalc flight maritime" id="cat-maps">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-maps">
+        <div>
+          <h2>Maps and chronolocation</h2>
+          <div class="subtitle">Landmarks, satellite, sun angle, and transit</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-maps">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a></div></div>
+            <div class="desc">Community maintained map data, often better detail for paths and landmarks than commercial maps.</div>
+            <div class="tags"><span class="tag">OSM</span><span class="tag">Landmarks</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://maps.google.com/" target="_blank" rel="noopener">Google Maps</a></div></div>
+            <div class="desc">Street View and recent imagery, strong for angle and skyline checks.</div>
+            <div class="tags"><span class="tag">Street View</span><span class="tag">Imagery</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.suncalc.org/" target="_blank" rel="noopener">SunCalc</a></div></div>
+            <div class="desc">Sun angle per time and place, useful for determining probable capture time in photos or video.</div>
+            <div class="tags"><span class="tag">Sun angle</span><span class="tag">Timing</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://globe.adsbexchange.com/" target="_blank" rel="noopener">ADS-B Exchange</a></div></div>
+            <div class="desc">Unfiltered flight data, great for correlating aircraft presence with recorded media.</div>
+            <div class="tags"><span class="tag">Flights</span><span class="tag">Telemetry</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.marinetraffic.com/" target="_blank" rel="noopener">MarineTraffic</a></div></div>
+            <div class="desc">AIS ship positions and tracks, helpful for port timelines and vessel attribution.</div>
+            <div class="tags"><span class="tag">Maritime</span><span class="tag">AIS</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Companies -->
+    <article class="card collapsed" data-cat="companies corporate filings ownership edgar lei uk" id="cat-companies">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-companies">
+        <div>
+          <h2>Companies, filings, and ownership</h2>
+          <div class="subtitle">Official registries and disclosures</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-companies">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://opencorporates.com/" target="_blank" rel="noopener">OpenCorporates</a></div></div>
+            <div class="desc">Global company registry aggregator, handy for officers, addresses, and cross-jurisdiction checks.</div>
+            <div class="tags"><span class="tag">Registry</span><span class="tag">Global</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://find-and-update.company-information.service.gov.uk/" target="_blank" rel="noopener">UK Companies House</a></div></div>
+            <div class="desc">Official UK filings, strong for PDFs of accounts and officer changes over time.</div>
+            <div class="tags"><span class="tag">UK</span><span class="tag">Filings</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.sec.gov/edgar/search/" target="_blank" rel="noopener">SEC EDGAR</a></div></div>
+            <div class="desc">US public company filings, check 8-K for incidents, 10-K for risk language, and exhibits for contracts.</div>
+            <div class="tags"><span class="tag">US</span><span class="tag">Filings</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://search.gleif.org/" target="_blank" rel="noopener">GLEIF, LEI Search</a></div></div>
+            <div class="desc">Legal Entity Identifiers and relationships, useful for cross-border naming and hierarchy puzzles.</div>
+            <div class="tags"><span class="tag">LEI</span><span class="tag">Hierarchy</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Malware & URLs -->
+    <article class="card collapsed" data-cat="malware urls sandbox analysis hybrid anyrun urlhaus bazaar unfurl" id="cat-malware">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-malware">
+        <div>
+          <h2>Malware, URLs, and files</h2>
+          <div class="subtitle">Sandboxes and intel aggregation</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-malware">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.virustotal.com/" target="_blank" rel="noopener">VirusTotal</a></div></div>
+            <div class="desc">Hashes, URLs, and file analysis with multiple AV engines and community notes.</div>
+            <div class="tags"><span class="tag">AV</span><span class="tag">Hashes</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.hybrid-analysis.com/" target="_blank" rel="noopener">Hybrid Analysis</a></div></div>
+            <div class="desc">Sandbox runs with behavior traces, screenshots, and indicators, good for mapping TTPs.</div>
+            <div class="tags"><span class="tag">Sandbox</span><span class="tag">Behavior</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://any.run/" target="_blank" rel="noopener">ANY.RUN</a></div></div>
+            <div class="desc">Interactive sandboxing for hands-on detonation and observation in a controlled environment.</div>
+            <div class="tags"><span class="tag">Interactive</span><span class="tag">Detonation</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://urlhaus.abuse.ch/" target="_blank" rel="noopener">URLhaus</a></div></div>
+            <div class="desc">Community feeds of malicious URLs, quick pivot point for recent campaigns.</div>
+            <div class="tags"><span class="tag">Feeds</span><span class="tag">Malicious URLs</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://bazaar.abuse.ch/" target="_blank" rel="noopener">MalwareBazaar</a></div></div>
+            <div class="desc">Repository of samples, hashes, and intelligence for malware families.</div>
+            <div class="tags"><span class="tag">Samples</span><span class="tag">Families</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://dfir.blog/unfurl/" target="_blank" rel="noopener">Unfurl, URL parser</a></div></div>
+            <div class="desc">Parses URLs into components, great for trackers, timestamps in query strings, and redirect chains.</div>
+            <div class="tags"><span class="tag">Parser</span><span class="tag">Timestamps</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Crypto -->
+    <article class="card collapsed" data-cat="crypto blockchain wallets etherscan breadcrumbs chainabuse" id="cat-crypto">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-crypto">
+        <div>
+          <h2>Crypto and blockchain explorers</h2>
+          <div class="subtitle">Funds tracing and clustering</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-crypto">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://etherscan.io/" target="_blank" rel="noopener">Etherscan</a></div></div>
+            <div class="desc">Ethereum block explorer, transactions, token transfers, and contract reads, strong for flows.</div>
+            <div class="tags"><span class="tag">ETH</span><span class="tag">Explorer</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.blockchain.com/explorer" target="_blank" rel="noopener">Blockchain.com Explorer</a></div></div>
+            <div class="desc">BTC and more, balances and flows, useful for quick confirmations and wallet history.</div>
+            <div class="tags"><span class="tag">BTC</span><span class="tag">Balances</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.walletexplorer.com/" target="_blank" rel="noopener">WalletExplorer</a></div></div>
+            <div class="desc">Heuristic clustering of BTC addresses by wallet, treat as indicative and cross-check.</div>
+            <div class="tags"><span class="tag">Clustering</span><span class="tag">Heuristics</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.breadcrumbs.app/" target="_blank" rel="noopener">Breadcrumbs</a></div></div>
+            <div class="desc">Visual transaction graphs, helpful for reports and stakeholder understanding.</div>
+            <div class="tags"><span class="tag">Graphs</span><span class="tag">Visualization</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.chainabuse.com/" target="_blank" rel="noopener">Chainabuse</a></div></div>
+            <div class="desc">Community reported crypto scams, good for quick risk notes and victim reports.</div>
+            <div class="tags"><span class="tag">Reports</span><span class="tag">Scams</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Utilities -->
+    <article class="card collapsed" data-cat="utilities decode hash exif regex json" id="cat-utils">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-utils">
+        <div>
+          <h2>Utilities and data processing</h2>
+          <div class="subtitle">Decode, transform, hash, and visualize</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-utils">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://gchq.github.io/CyberChef/" target="_blank" rel="noopener">CyberChef</a></div></div>
+            <div class="desc">Drag and drop data conversions, from base encodings to hashing and extraction, great for method repeatability.</div>
+            <div class="tags"><span class="tag">Transforms</span><span class="tag">Recipes</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://regex101.com/" target="_blank" rel="noopener">Regex101</a></div></div>
+            <div class="desc">Regex builder with explanations, ideal for extracting structured bits from messy text.</div>
+            <div class="tags"><span class="tag">Regex</span><span class="tag">Extraction</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://jsoncrack.com/" target="_blank" rel="noopener">JSON Crack</a></div></div>
+            <div class="desc">Visualizes JSON as graphs, helpful when exploring nested structures and relationships.</div>
+            <div class="tags"><span class="tag">JSON</span><span class="tag">Graphs</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://exiftool.org/" target="_blank" rel="noopener">ExifTool, Docs</a></div></div>
+            <div class="desc">CLI for reading and writing metadata, the standard for deep EXIF work across formats.</div>
+            <div class="tags"><span class="tag">EXIF</span><span class="tag">CLI</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://hashcat.net/wiki/" target="_blank" rel="noopener">Hashcat, Docs</a></div></div>
+            <div class="desc">Modes and examples for hashing and recovery, useful for understanding hash types and formats.</div>
+            <div class="tags"><span class="tag">Hashes</span><span class="tag">Reference</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Link analysis -->
+    <article class="card collapsed" data-cat="graph link analysis maltego gephi yed" id="cat-graph">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-graph">
+        <div>
+          <h2>Graphing and link analysis</h2>
+          <div class="subtitle">Clusters and intermediaries at a glance</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-graph">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.maltego.com/" target="_blank" rel="noopener">Maltego</a></div></div>
+            <div class="desc">Transform-based link analysis, helpful for quickly visualizing entities and edges with data sources.</div>
+            <div class="tags"><span class="tag">Transforms</span><span class="tag">Visualization</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://gephi.org/" target="_blank" rel="noopener">Gephi</a></div></div>
+            <div class="desc">Open-source graph visualization, useful for layout and modularity analysis in larger datasets.</div>
+            <div class="tags"><span class="tag">Graph</span><span class="tag">Open-source</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.yworks.com/products/yed" target="_blank" rel="noopener">yEd</a></div></div>
+            <div class="desc">Clean diagramming for polished briefs and executive visuals, quick to learn and export.</div>
+            <div class="tags"><span class="tag">Diagram</span><span class="tag">Export</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- SaaS portals -->
+    <article class="card collapsed" data-cat="saas intelx onyphe fofa spyse" id="cat-saas">
+      <div class="head" tabindex="0" role="button" aria-expanded="false" aria-controls="body-saas">
+        <div>
+          <h2>SaaS and freemium portals</h2>
+          <div class="subtitle">Bigger datasets with free windows</div>
+        </div>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+      <div class="body" id="body-saas">
+        <div class="row"><div class="actions"><button class="disclosure open-all" type="button">Open all links</button></div></div>
+        <div class="items">
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://intelx.io/" target="_blank" rel="noopener">IntelX</a></div></div>
+            <div class="desc">Aggregated search across leaks and public sources, strong for cross-pivoting indicators.</div>
+            <div class="tags"><span class="tag">Aggregator</span><span class="tag">Leaks</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://www.onyphe.io/" target="_blank" rel="noopener">Onyphe</a></div></div>
+            <div class="desc">Internet-wide datasets and enrichment, helpful for context around IPs and hosts.</div>
+            <div class="tags"><span class="tag">Enrichment</span><span class="tag">Datasets</span></div>
+          </div>
+
+          <div class="item"><div class="top"><div class="title"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+            <a href="https://en.fofa.info/" target="_blank" rel="noopener">Fofa</a></div></div>
+            <div class="desc">Search internet-facing assets by banner and fingerprints, complements Shodan and Censys.</div>
+            <div class="tags"><span class="tag">Exposure</span><span class="tag">Banners</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<footer class="footer">© CMX</footer>
+
+<script>
+/* Session token */
+document.getElementById('sid').textContent = Math.random().toString(36).slice(2,10).toUpperCase();
+
+/* Search filter */
+const searchInput = document.getElementById('search');
+const clearBtn = document.getElementById('clear');
+const cards = [...document.querySelectorAll('.card')];
+
+function filter(){
+  const needle = (searchInput.value||'').toLowerCase().trim();
+  cards.forEach(c=>{
+    if(!needle){ c.style.display=''; return; }
+    const hay = (c.innerText + ' ' + (c.dataset.cat||'')).toLowerCase();
+    c.style.display = hay.includes(needle) ? '' : 'none';
+  });
+}
+searchInput.addEventListener('input', filter);
+clearBtn.onclick = ()=>{ searchInput.value=''; filter(); };
+window.addEventListener('keydown',e=>{
+  if(e.key==='/'){ e.preventDefault(); searchInput.focus(); }
+  if(e.key==='Escape'){ searchInput.value=''; filter(); }
+});
+
+/* Collapsible cards: click head or press Enter/Space */
+function toggleCard(card){
+  const collapsed = card.classList.toggle('collapsed');
+  card.classList.toggle('active', !collapsed);
+  const head = card.querySelector('.head');
+  if(head) head.setAttribute('aria-expanded', String(!collapsed));
+}
+cards.forEach(card=>{
+  const head = card.querySelector('.head');
+  if(!head) return;
+  head.addEventListener('click', ()=> toggleCard(card));
+  head.addEventListener('keydown', e=>{
+    if(e.key==='Enter' || e.key===' '){
+      e.preventDefault();
+      toggleCard(card);
+    }
+  });
+});
+
+/* Open all links in a category */
+document.querySelectorAll('.open-all').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    const card = e.target.closest('.card');
+    if(!card) return;
+    const links = card.querySelectorAll('.items a[href]');
+    links.forEach(a=> window.open(a.href, '_blank', 'noopener'));
+  });
+});
+</script>
+</body>
+</html>
