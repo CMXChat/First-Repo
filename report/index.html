@@ -79,7 +79,7 @@ textarea{resize:vertical;min-height:110px}
 /* Preview */
 .preview{white-space:pre-wrap;background:#050506;border:1px solid var(--line);padding:12px;border-radius:14px;min-height:180px}
 
-/* Print only preview */
+/* Print only preview (original) */
 @media print{
   body{background:#fff;color:#000}
   .top,.card.form,.actions-top{display:none!important}
@@ -240,12 +240,165 @@ $('btnEmail').onclick=()=>{
 };
 
 /* pdf */
-$('btnPdf').onclick=()=>{ render(); window.print(); };
+$('btnPdf').onclick=()=>{ 
+  render(); 
+  if (window.__assemblePdf) { window.__assemblePdf(); }
+  window.print(); 
+};
 
 /* convenience: Ctrl+Enter generates */
 window.addEventListener('keydown',e=>{
   if((e.ctrlKey||e.metaKey) && e.key==='Enter'){ $('btnGen').click(); }
 });
 </script>
+
+<!-- ===== Polished PDF layer (drop-in) ===== -->
+<style>
+  /* Screen: keep live UI, hide pdf shell */
+  #pdf-report-shell{display:none}
+  /* Print: show SEO-styled report, hide everything else */
+  @media print{
+    body{background:#fff !important;color:#111 !important}
+    #pdf-report-shell{display:block !important}
+    #pdf-report{max-width:840px;margin:0 auto;padding:28px 22px;font:400 15px/1.65 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:#111}
+    #pdf-cover{border:2px solid #e5e7eb;border-radius:14px;padding:22px 20px;margin-bottom:18px;background:#f8fafc}
+    #pdf-h1{margin:0 0 4px;font-size:28px;line-height:1.2;font-weight:900;color:#0b1220;letter-spacing:.2px}
+    #pdf-meta{display:flex;flex-wrap:wrap;gap:10px 14px;color:#374151;font-size:13px}
+    #pdf-meta .chip{border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;background:#fff}
+    .pdf-section{margin:18px 0 14px}
+    .pdf-section h2{margin:0 0 8px;font-size:18px;line-height:1.3;color:#0b1220}
+    .pdf-section h3{margin:14px 0 6px;font-size:15px;color:#111}
+    .pdf-kv{display:grid;grid-template-columns:180px 1fr;gap:6px 14px;border:1px solid #e5e7eb;border-radius:12px;padding:12px;background:#fff}
+    .pdf-kv div.key{color:#374151}
+    .pdf-box{border:1px solid #e5e7eb;border-radius:12px;background:#fff;padding:12px}
+    .pdf-list{margin:6px 0 0 18px}
+    .pdf-grid{display:grid;gap:10px}
+    .pdf-grid.cols-2{grid-template-columns:1fr 1fr}
+    .muted{color:#6b7280}
+    .mono{font:500 13px/1.6 ui-monospace,Menlo,Consolas,monospace;color:#0b1220;word-break:break-word;white-space:pre-wrap}
+
+    /* Hide the live UI when printing */
+    body > *:not(#pdf-report-shell){display:none !important}
+  }
+</style>
+
+<div id="pdf-report-shell" aria-hidden="true">
+  <article id="pdf-report">
+    <header id="pdf-cover">
+      <h1 id="pdf-h1">Intelligence Report</h1>
+      <div id="pdf-meta">
+        <span class="chip" id="pdf-case">Title: N/A</span>
+        <span class="chip" id="pdf-date">Date: N/A</span>
+        <span class="chip" id="pdf-author">Agent: N/A</span>
+        <span class="chip" id="pdf-confidence">Scope: N/A</span>
+      </div>
+    </header>
+
+    <section class="pdf-section" id="pdf-summary-sec">
+      <h2>Executive Summary</h2>
+      <div class="pdf-box" id="pdf-summary">N/A</div>
+    </section>
+
+    <section class="pdf-section" id="pdf-entities-sec">
+      <h2>Entities</h2>
+      <div class="pdf-grid cols-2">
+        <div>
+          <h3>People</h3>
+          <div class="pdf-box mono" id="pdf-people">N/A</div>
+        </div>
+        <div>
+          <h3>Handles</h3>
+          <div class="pdf-box mono" id="pdf-handles">N/A</div>
+        </div>
+        <div>
+          <h3>Emails</h3>
+          <div class="pdf-box mono" id="pdf-emails">N/A</div>
+        </div>
+        <div>
+          <h3>Domains</h3>
+          <div class="pdf-box mono" id="pdf-domains">N/A</div>
+        </div>
+        <div>
+          <h3>IP / ASN</h3>
+          <div class="pdf-box mono" id="pdf-ips">N/A</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pdf-section" id="pdf-findings-sec">
+      <h2>Key Findings</h2>
+      <ol class="pdf-list" id="pdf-findings"><li>N/A</li></ol>
+    </section>
+
+    <section class="pdf-section" id="pdf-actions-sec">
+      <h2>Recommended Actions</h2>
+      <div class="pdf-box" id="pdf-actions">N/A</div>
+    </section>
+
+    <section class="pdf-section" id="pdf-notes-sec">
+      <h2>Notes</h2>
+      <div class="pdf-box mono" id="pdf-notes">N/A</div>
+    </section>
+
+    <footer class="pdf-section" style="margin-top:22px">
+      <div class="muted">© CMX, public sources only, reproducible methods.</div>
+    </footer>
+  </article>
+</div>
+
+<script>
+/* Build the polished PDF view from your existing fields, without touching on-screen output */
+(function(){
+  function val(id){ const el=document.getElementById(id); return el ? (el.value||'').trim() : ''; }
+  function set(id,txt){ const el=document.getElementById(id); if(el) el.textContent = (txt&&txt.trim())? txt.trim() : 'N/A'; }
+  function bullets(text){
+    const lines=(text||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    const items=lines.map(L=> (L.match(/^(\*|-|\d+\.)\s+(.*)$/)? RegExp.$2 : L));
+    return items;
+  }
+
+  function assemble(){
+    set('pdf-h1', val('title') || 'Intelligence Report');
+    document.getElementById('pdf-case').textContent = 'Title: ' + (val('title') || 'N/A');
+    document.getElementById('pdf-date').textContent = 'Date: ' + (val('date') || new Date().toLocaleDateString());
+    document.getElementById('pdf-author').textContent = 'Agent: ' + (val('agent') || 'N/A');
+    document.getElementById('pdf-confidence').textContent = 'Scope: ' + (val('scope') || 'N/A');
+
+    set('pdf-summary', val('summary'));
+    set('pdf-people',  val('ent_persons'));
+    set('pdf-handles', val('ent_handles'));
+    set('pdf-emails',  val('ent_emails'));
+    set('pdf-domains', val('ent_domains'));
+    set('pdf-ips',     val('ent_ips'));
+
+    // findings as proper list
+    const ul=document.getElementById('pdf-findings');
+    ul.innerHTML='';
+    const items=bullets(val('findings'));
+    if(items.length){
+      items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
+    }else{
+      const li=document.createElement('li'); li.textContent='N/A'; ul.appendChild(li);
+    }
+
+    set('pdf-actions', val('actions'));
+    set('pdf-notes',   val('notes'));
+  }
+
+  /* expose for the button */
+  window.__assemblePdf = assemble;
+
+  /* call before any print, across browsers */
+  if('onbeforeprint' in window){
+    window.addEventListener('beforeprint', assemble);
+  }
+  const mq = window.matchMedia && window.matchMedia('print');
+  if(mq && mq.addEventListener){
+    mq.addEventListener('change', e => { if(e.matches) assemble(); });
+  }
+})();
+</script>
+<!-- ===== /Polished PDF layer ===== -->
+
 </body>
 </html>
