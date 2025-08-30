@@ -57,7 +57,7 @@ body{
 .card:hover{transform:translateY(-2px); border-color:var(--accent); box-shadow:0 14px 40px rgba(0,0,0,.45)}
 .card:focus-visible{outline:2px solid var(--accent)}
 .card h2{margin:0 0 .25rem;font-size:clamp(20px,4.6vw,26px);letter-spacing:.2px}
-.card p{margin:.25rem 0 0;color:var(--muted)}
+.card p{margin:.25rem 0 0;color:var(--muted);font-size:var(--fs-sm);line-height:1.5}
 .card .tag{display:inline-block;margin-top:.7rem;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:var(--fs-sm)}
 .card .chev{position:absolute;right:16px;bottom:14px;opacity:.7}
 .card .chev svg{width:22px;height:22px;stroke:var(--accent)}
@@ -86,21 +86,28 @@ body{
   <div class="wrap">
     <section class="head" aria-labelledby="hdr">
       <h1 id="hdr">Select your channel</h1>
-      <p class="sub">Two paths, one stack. Keep it lawful and reproducible. <span class="hide-xs">Hotkeys: <kbd>1</kbd> OSINT • <kbd>2</kbd> Manual • <kbd>Enter</kbd> to open highlighted.</span></p>
+      <p class="sub">Choose your node. Three paths active. <span class="hide-xs">Hotkeys: <kbd>1</kbd> OSINT • <kbd>2</kbd> Manual • <kbd>3</kbd> Report • <kbd>Enter</kbd> to launch.</span></p>
     </section>
 
     <nav class="cards" aria-label="Destinations">
       <a class="card active" id="card-osint" href="https://db.cmxchat.com/osint">
         <h2>OSINT Console</h2>
-        <p>Operate fast. Tools, pivots, and casework.</p>
+        <p>Live tools, pivot maps, trace engines. Run fast, leave a clean footprint.</p>
         <span class="tag">db.cmxchat.com/osint</span>
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
       <a class="card" id="card-manual" href="https://db.cmxchat.com/manual">
         <h2>Field Manual</h2>
-        <p>Doctrine, checklists, reporting standards.</p>
+        <p>Doctrine, redlines, and checklists. Tradecraft compressed into ops-ready briefs.</p>
         <span class="tag">db.cmxchat.com/manual</span>
+        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </a>
+
+      <a class="card" id="card-report" href="https://db.cmxchat.com/report">
+        <h2>Create Report</h2>
+        <p>Draft intel packets, format for Discord or PDF, ship to command without delay.</p>
+        <span class="tag">db.cmxchat.com/report</span>
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
     </nav>
@@ -115,8 +122,8 @@ body{
 /* Session chip */
 document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 
-/* Keyboard nav: 1/2 switch active, Enter opens */
-const cards=[document.getElementById('card-osint'), document.getElementById('card-manual')];
+/* Keyboard nav */
+const cards=[document.getElementById('card-osint'), document.getElementById('card-manual'), document.getElementById('card-report')];
 let idx=0;
 function setActive(i){
   idx=(i+cards.length)%cards.length;
@@ -127,12 +134,11 @@ cards.forEach(c=>c.setAttribute('tabindex','0'));
 window.addEventListener('keydown',e=>{
   if(e.key==='1'){ setActive(0); }
   else if(e.key==='2'){ setActive(1); }
+  else if(e.key==='3'){ setActive(2); }
   else if(e.key==='ArrowRight' || e.key==='ArrowDown'){ setActive(idx+1); }
   else if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ setActive(idx-1); }
   else if(e.key==='Enter'){ window.location.href = cards[idx].href; }
 });
-
-/* Touch affordance: tap anywhere on a card edge still works */
 cards.forEach(c=>{
   c.addEventListener('focus',()=>{ cards.forEach(x=>x.classList.toggle('active', x===c)); idx=cards.indexOf(c); });
 });
