@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>CMX • Case Workspace</title>
 <meta name="color-scheme" content="dark">
-
 <style>
 :root{
   --bg:#000; --panel:#0b0c0e; --panel-2:#111317; --panel-3:#0a0c10;
@@ -19,7 +18,7 @@
   --maxw:1260px;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%;overscroll-behavior:contain}
 body{
   margin:0;background:
     radial-gradient(1200px 600px at 20% -10%,rgba(29,155,240,.08),transparent),
@@ -34,7 +33,7 @@ kbd{border:1px solid var(--line);border-bottom-color:#1a1d22;background:#0d0f12;
 hr{border:none;border-top:1px solid var(--line);margin:14px 0}
 .hide{display:none}
 
-/* ===== Topbar (mobile-first, no overflow) ===== */
+/* ===== Topbar ===== */
 .topbar{
   position:sticky;top:0;z-index:70;
   display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
@@ -52,18 +51,48 @@ hr{border:none;border-top:1px solid var(--line);margin:14px 0}
 .seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .seg button{all:unset;cursor:pointer;padding:8px 14px;font-weight:800}
 .seg button.active{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-left:1px solid var(--line);border-right:1px solid var(--line)}
-.menu{position:relative;display:inline-flex}
-.menu button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
+button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
+
+/* ===== Export menu (centered modal) ===== */
+.menu{position:relative;display:inline-flex;z-index:1000}
 .menu .sheet{
-  position:absolute;right:0;top:calc(100% + 6px);min-width:240px;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--panel-2);
-  display:none;box-shadow:0 18px 40px rgba(0,0,0,.45)
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(640px,92vw); max-height:min(88dvh,720px);
+  display:none; overflow:hidden; border-radius:16px;
+  border:1px solid var(--line); background:var(--panel-2); z-index:1002;
+  box-shadow:0 30px 120px rgba(0,0,0,.65);
 }
-.menu.open .sheet{display:block}
-.menu .sheet .item{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer}
+.menu.open .sheet{display:flex;flex-direction:column}
+.menu .backdrop{
+  position:fixed;inset:0;display:none;z-index:1001;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
+}
+.menu.open .backdrop{display:block}
+.menu .sheet .header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel-2)
+}
+.menu .sheet .header .title{font-weight:900}
+.menu .sheet .header .close{all:unset;cursor:pointer;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
+.menu .sheet .inner{
+  overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+}
+.menu .sheet .footer{
+  display:flex;justify-content:flex-end;gap:8px;
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);background:var(--panel-2)
+}
+.menu .sheet .item{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:8px;border:1px solid transparent;cursor:pointer}
 .menu .sheet .item:hover{border-color:var(--line);background:var(--panel)}
+.menu .sheet hr{border:none;border-top:1px solid var(--line);margin:8px 0}
+
+/* When modal open: lock scroll + hide dock */
+body.sheet-open{overflow:hidden}
+body.sheet-open .dock{transform:translateY(120%); opacity:.01; pointer-events:none;}
 
 /* ===== Container + hero ===== */
-.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad) calc(var(--pad) + env(safe-area-inset-bottom,0px))} /* space for dock */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad) calc(var(--pad) + env(safe-area-inset-bottom,0px))}
 .hero{padding:calc(var(--pad) + 4px) 0 var(--pad)}
 .hero h1{margin:.2rem 0 .35rem;font-size:var(--fs-xl);line-height:1.15}
 .sub{color:var(--muted);font-size:var(--fs-sm)}
@@ -72,7 +101,7 @@ hr{border:none;border-top:1px solid var(--line);margin:14px 0}
 .view{display:none}
 .view.is-active{display:block}
 
-/* ===== Grid columns ===== */
+/* ===== Grid ===== */
 .grid{display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:minmax(280px,360px) 1fr}
 @media(max-width:1100px){.grid{grid-template-columns:1fr}}
 
@@ -111,8 +140,9 @@ small.muted{color:var(--muted);font-size:var(--fs-sm)}
     linear-gradient(#0e1117,#0e1117) padding-box,
     radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px) border-box;
   background-size:20px 20px;
+  touch-action:none;
 }
-svg#canvas{width:100%;height:100%;display:block;touch-action:none}
+svg#canvas{width:100%;height:100%;display:block}
 .snap-hint{position:absolute;left:10px;bottom:10px;font-size:12px;color:#9fb3c9;background:#0b0d12;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
 
 /* Node visuals */
@@ -125,6 +155,9 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
 .node .tag-bg{fill:#0e1013;stroke:#2f3336;rx:10}
 .photo image{rx:12;ry:12}
 .resize{fill:#1d9bf0;stroke:#0a0c10;stroke-width:2;cursor:nwse-resize}
+
+/* Lasso rectangle */
+.lasso{fill:rgba(130,200,255,.12);stroke:#82c8ff;stroke-dasharray:4 4}
 
 /* Links */
 .link{stroke:#ff5a5f;stroke-width:2;fill:none}
@@ -150,18 +183,19 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
 .event .rowtop{display:flex;justify-content:space-between;gap:8px;align-items:center}
 .event .badges{display:flex;gap:6px;flex-wrap:wrap}
 .badge{padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:#0e1013;font-size:11.5px;color:#cfe9ff}
-.event .desc{color:var(--muted);font-size:var(--fs-sm);margin-top:6px}
+.event .desc{color:#9fb3c9;font-size:var(--fs-sm);margin-top:6px}
 .event a.link{color:#9fd1ff;text-decoration:underline}
 .event .meta{color:#9fb3c9;font-size:11.5px;margin-top:6px}
 
-/* ===== Bottom Dock (mobile-safe, no overlap) ===== */
+/* ===== Bottom Dock ===== */
 .dock{
   position:sticky;bottom:0;z-index:65;background:rgba(10,12,16,.9);backdrop-filter:blur(10px);
   border-top:1px solid var(--line);padding:8px calc(var(--pad)) calc(8px + env(safe-area-inset-bottom,0px));
+  transition:transform .2s ease, opacity .2s ease;
 }
 .dock .row{display:flex;gap:8px}
 .dock .btn{flex:1 1 auto;text-align:center}
-@media(min-width:960px){.dock{display:none}} /* desktop hides dock */
+@media(min-width:960px){.dock{display:none}}
 
 /* ===== Print ===== */
 @media print{
@@ -171,26 +205,23 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
   .badge{border-color:#ddd;background:#fff;color:#000}
   .event{break-inside:avoid;border-color:#ddd}
 
-  /* Exhibit (Board only) – A3 landscape for space */
   body[data-print="exhibit"] #boardView{display:block}
   body[data-print="exhibit"] #timeView{display:none}
   body[data-print="exhibit"] .board{height:auto;min-height:0}
   @page { size: A3 landscape; margin: 12mm; }
 
-  /* Chronology (Timeline only) – A4 portrait */
   body[data-print="chrono"] #timeView{display:block}
   body[data-print="chrono"] #boardView{display:none}
   body[data-print="chrono"] h1{font-size:20pt;margin:0 0 8pt}
   body[data-print="chrono"] h2{font-size:14pt;margin:14pt 6pt 8pt}
   body[data-print="chrono"] .event{padding:10pt}
 
-  /* Combined – Cover (page 1), Board (page 2), Timeline (rest) */
   .print-cover{display:block;break-after:page}
   #boardView{break-after:page}
   @page { size: A4 portrait; margin: 12mm; }
 }
 
-/* Cover (hidden on screen) */
+/* Cover */
 .print-cover{display:none;border:1px solid #ddd;border-radius:12px;padding:18px}
 .print-cover h1{margin:0 0 6px}
 .print-kv{display:grid;grid-template-columns:1fr 2fr;gap:6px}
@@ -198,11 +229,10 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
 
 /* Autosave toast */
 .toast{
-  position:fixed;left:50%;transform:translateX(-50%);
-  bottom:16px;background:#0b0d12;border:1px solid var(--line);border-radius:12px;
-  padding:8px 12px;font-size:12.5px;color:#cfe9ff;display:none;z-index:80
+  position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#0b0d12;border:1px solid var(--line);border-radius:12px;
+  padding:8px 12px;font-size:12.5px;color:#cfe9ff;display:none;z-index:90
 }
-.toast.show{display:block;animation:fade 2.6s ease both}
+.toast.show{display:block;animation:fade 2.2s ease both}
 @keyframes fade{0%{opacity:0;transform:translate(-50%,6px)}10%{opacity:1;transform:translate(-50%,0)}90%{opacity:1}100%{opacity:0;transform:translate(-50%,-6px)}}
 </style>
 </head>
@@ -222,16 +252,29 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
       <button id="tabTime" role="tab" aria-selected="false">Timeline</button>
     </div>
 
+    <button class="trigger" id="toggleMulti" aria-pressed="false">Multi-select: <b id="multiState">Off</b></button>
+    <button class="trigger" id="toggleLasso" aria-pressed="false">Lasso</button>
+
     <div class="menu" id="exportMenu">
-      <button class="trigger" aria-expanded="false">Export / Print</button>
-      <div class="sheet" role="menu" aria-label="Exports">
-        <button class="item" data-export="combined">Cover + Board + Timeline (PDF)</button>
-        <button class="item" data-export="exhibit">Exhibit (Board • A3 landscape PDF)</button>
-        <button class="item" data-export="chrono">Chronology (Timeline • A4 PDF)</button>
-        <hr>
-        <button class="item" id="btnExportPNG">Board → PNG</button>
-        <button class="item" id="btnExportJSON">State → JSON</button>
-        <button class="item" id="btnExportMD">Timeline → Markdown</button>
+      <button class="trigger" aria-expanded="false" aria-haspopup="dialog">Export / Print</button>
+      <div class="backdrop" id="sheetBackdrop"></div>
+      <div class="sheet" role="dialog" aria-modal="true" aria-label="Export and Print">
+        <div class="header">
+          <div class="title">Export / Print</div>
+          <button class="close" id="closeSheet" aria-label="Close export menu">✕</button>
+        </div>
+        <div class="inner" id="sheetInner" tabindex="-1">
+          <button class="item" data-export="combined">Cover + Board + Timeline (PDF)</button>
+          <button class="item" data-export="exhibit">Exhibit (Board • A3 landscape PDF)</button>
+          <button class="item" data-export="chrono">Chronology (Timeline • A4 PDF)</button>
+          <hr>
+          <button class="item" id="btnExportPNG">Board → PNG</button>
+          <button class="item" id="btnExportJSON">State → JSON</button>
+          <button class="item" id="btnExportMD">Timeline → Markdown</button>
+        </div>
+        <div class="footer">
+          <button class="btn ghost" id="sheetDone">Done</button>
+        </div>
       </div>
     </div>
   </div>
@@ -240,7 +283,10 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
 <main class="container">
   <section class="hero">
     <h1 id="caseTitle">Case Workspace</h1>
-    <p class="sub">Unified board + timeline. <b>Hotkeys:</b> <kbd>N</kbd> note • <kbd>I</kbd> image • <kbd>L</kbd> arrow • <kbd>G</kbd> string • <kbd>Del</kbd> delete • <kbd>0</kbd> reset view • <kbd>/</kbd> search timeline.</p>
+    <p class="sub">
+      Unified board + timeline. <b>Hotkeys:</b> <kbd>N</kbd> note • <kbd>I</kbd> image • <kbd>L</kbd> arrow • <kbd>G</kbd> string • <kbd>Del</kbd> delete • <kbd>0</kbd> reset view • <kbd>/</kbd> search timeline.<br>
+      <span class="note-inline">Mobile: tap to select when Multi-select is ON • long-press a node to toggle selection • two-finger tap toggles Multi-select • long-press empty space to start a lasso.</span>
+    </p>
   </section>
 
   <!-- Cover for combined print -->
@@ -296,7 +342,7 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
           <button class="btn" id="btnLinkArrow">Connect selected, arrow</button>
           <button class="btn ghost" id="btnLinkString">Connect selected, string</button>
         </div>
-        <small class="muted">Select two nodes (Shift+Tap on mobile). Drag the cyan handle to bend the curve.</small>
+        <small class="muted">Pick two nodes. Tap to multi-select when Multi-select is ON or long-press nodes.</small>
 
         <hr>
 
@@ -342,6 +388,7 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
             <g id="viewport" transform="translate(0,0) scale(1)">
               <g id="links"></g>
               <g id="nodes"></g>
+              <rect id="lasso" class="lasso" x="0" y="0" width="0" height="0" rx="6" ry="6" visibility="hidden"/>
             </g>
           </svg>
 
@@ -386,7 +433,7 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
           <button class="btn ok" id="evSave">Save event</button>
           <button class="btn ghost" id="evClear">Clear form</button>
         </div>
-        <small class="muted">Tip: tap an event to load it here for editing.</small>
+        <small class="muted">Tap an event to load it here for editing.</small>
 
         <hr>
 
@@ -420,11 +467,13 @@ svg#canvas{width:100%;height:100%;display:block;touch-action:none}
   </section>
 </main>
 
-<!-- Bottom Dock (never overlaps content; uses safe-area) -->
+<!-- Bottom Dock -->
 <nav class="dock" aria-label="Quick actions">
   <div class="row">
     <button class="btn" id="dockAddNote">+ Note</button>
     <button class="btn ghost" id="dockAddEvent">+ Event</button>
+    <button class="btn" id="dockMulti">Select +</button>
+    <button class="btn" id="dockLasso">Lasso</button>
     <button class="btn" id="dockExport">Export / Print</button>
   </div>
 </nav>
@@ -439,12 +488,12 @@ $('#sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 const nodesG=$('#nodes'), linksG=$('#links'), viewport=$('#viewport'), canvas=$('#canvas'), board=$('#board'), mini=$('#mini');
 
 /* ===== State / persistence ===== */
-const LS_KEY='cmx.caseworkspace.v3';
+const LS_KEY='cmx.caseworkspace.v7';
 let state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
 try{const raw=localStorage.getItem(LS_KEY); if(raw) state=JSON.parse(raw);}catch(e){}
 function debounce(fn,ms){let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a),ms)}}
-function pingToast(msg){const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400)}
-const save=debounce(()=>{ localStorage.setItem(LS_KEY, JSON.stringify(state)); pingToast('Saved'); pushUndo(); },350);
+function pingToast(msg){const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1900)}
+const save=debounce(()=>{ localStorage.setItem(LS_KEY, JSON.stringify(state)); document.dispatchEvent(new Event('cmx-saved')); },320);
 
 function freshId(){return Math.random().toString(36).slice(2,10)}
 function toTags(s){return (s||'').split(',').map(t=>t.trim()).filter(Boolean)}
@@ -456,6 +505,7 @@ function pushUndo(){ undo.push(JSON.stringify(state)); if(undo.length>50) undo.s
 function doUndo(){ if(!undo.length) return; const cur=JSON.stringify(state); redo.push(cur); const prev=undo.pop(); if(prev){state=JSON.parse(prev); localStorage.setItem(LS_KEY,prev); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();}}
 function doRedo(){ if(!redo.length) return; const next=redo.pop(); if(next){ undo.push(JSON.stringify(state)); state=JSON.parse(next); localStorage.setItem(LS_KEY,next); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();}}
 $('#btnUndo').onclick=doUndo; $('#btnRedo').onclick=doRedo;
+document.addEventListener('cmx-saved',()=>{ pushUndo(); $('#autosaveHint').textContent='(saved)'; pingToast('Saved'); });
 
 /* ===== Tabs ===== */
 function show(v){ $$('#boardView,#timeView').forEach(el=>el.classList.remove('is-active')); $('#'+v+'View').classList.add('is-active'); }
@@ -463,13 +513,38 @@ $('#tabBoard').onclick=()=>{show('board'); $('#tabBoard').classList.add('active'
 $('#tabTime').onclick =()=>{show('time');  $('#tabTime').classList.add('active');  $('#tabBoard').classList.remove('active');};
 show('board');
 
-/* ===== Export menu ===== */
+/* ===== Export modal ===== */
 const menu=$('#exportMenu');
-menu.querySelector('.trigger').onclick=()=>{menu.classList.toggle('open'); menu.querySelector('.trigger').setAttribute('aria-expanded',menu.classList.contains('open')?'true':'false');};
-document.addEventListener('click',e=>{ if(!menu.contains(e.target) && !$('#dockExport').contains(e.target)) menu.classList.remove('open');});
-$('#dockExport').onclick=()=>{ menu.classList.add('open'); menu.querySelector('.trigger').focus(); };
+const sheet=menu.querySelector('.sheet');
+const backdrop=$('#sheetBackdrop');
+const trig=menu.querySelector('.trigger');
+const sheetInner=$('#sheetInner');
+const closeSheetBtn=$('#closeSheet');
+const doneSheetBtn=$('#sheetDone');
 
-/* ===== Viewport / pan / zoom (mouse + touch) ===== */
+function openSheet(){
+  menu.classList.add('open');
+  trig.setAttribute('aria-expanded','true');
+  document.body.classList.add('sheet-open');
+  sheetInner.scrollTop = 0;
+  sheetInner.focus({preventScroll:true});
+}
+function closeSheet(){
+  menu.classList.remove('open');
+  trig.setAttribute('aria-expanded','false');
+  document.body.classList.remove('sheet-open');
+}
+trig.onclick=()=> openSheet();
+closeSheetBtn.onclick=()=> closeSheet();
+doneSheetBtn.onclick=()=> closeSheet();
+backdrop.onclick=()=> closeSheet();
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSheet(); }});
+document.addEventListener('click',e=>{
+  if(!menu.contains(e.target) && !$('#dockExport').contains(e.target)){ closeSheet(); }
+});
+$('#dockExport').onclick=()=>{ openSheet(); trig.focus(); };
+
+/* ===== Viewport / pan / zoom ===== */
 function applyView(){const {x,y,k}=state.view; viewport.setAttribute('transform',`translate(${x},${y}) scale(${k})`); drawMini();}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function zoomBy(factor,cx,cy){
@@ -482,16 +557,18 @@ $('#zoomOut').onclick =()=>zoomBy(1/1.15, window.innerWidth/2, window.innerHeigh
 $('#zoomReset').onclick=()=>{state.view={x:0,y:0,k:1}; applyView(); save();};
 
 let panning=false, panOX=0, panOY=0;
-canvas.addEventListener('pointerdown',e=>{ if(e.target===canvas){ panning=true; panOX=e.clientX; panOY=e.clientY; canvas.setPointerCapture(e.pointerId);} });
+canvas.addEventListener('pointerdown',e=>{ if(e.target===canvas && !lassoMode){ panning=true; panOX=e.clientX; panOY=e.clientY; canvas.setPointerCapture(e.pointerId);} });
 canvas.addEventListener('pointermove',e=>{ if(!panning) return; state.view.x += (e.clientX - panOX); state.view.y += (e.clientY - panOY); panOX=e.clientX; panOY=e.clientY; applyView(); });
 canvas.addEventListener('pointerup',e=>{ if(panning){ panning=false; canvas.releasePointerCapture(e.pointerId); save(); }});
 canvas.addEventListener('wheel',e=>{ e.preventDefault(); zoomBy(e.deltaY<0?1.1:0.9, e.clientX, e.clientY); }, {passive:false});
 
-/* Pinch zoom (touch) */
+/* Pinch + two-finger multi-select toggle */
 let pinch=null;
 canvas.addEventListener('touchstart',e=>{
   if(e.touches.length===2){
-    const [a,b]=e.touches; pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY), cx:(a.clientX+b.clientX)/2, cy:(a.clientY+b.clientY)/2};
+    setAddMode(!addMode);
+    const [a,b]=e.touches;
+    pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY), cx:(a.clientX+b.clientX)/2, cy:(a.clientY+b.clientY)/2};
   }
 },{passive:true});
 canvas.addEventListener('touchmove',e=>{
@@ -504,9 +581,75 @@ canvas.addEventListener('touchend',()=>{pinch=null});
 
 /* ===== Board: nodes & links ===== */
 let sel=new Set(); let drag=null; let resizing=null;
-const SNAP=10; // snap-to-grid px
+const SNAP=10;
 function screenToWorld(px,py){const {x,y,k}=state.view; const rect=canvas.getBoundingClientRect(); return {x:(px-rect.left-x)/k, y:(py-rect.top-y)/k};}
 
+/* Multi-select mode */
+let addMode=false;
+function setAddMode(v){
+  addMode=!!v;
+  $('#toggleMulti').setAttribute('aria-pressed', addMode?'true':'false');
+  $('#multiState').textContent = addMode ? 'On' : 'Off';
+  $('#dockMulti').textContent  = addMode ? 'Select ✓' : 'Select +';
+  pingToast('Multi-select ' + (addMode?'ON':'OFF'));
+}
+$('#toggleMulti').onclick = ()=>setAddMode(!addMode);
+$('#dockMulti').onclick   = ()=>setAddMode(!addMode);
+
+function toggleSelection(id){ if(sel.has(id)) sel.delete(id); else sel.add(id); renderAll(); }
+
+/* Lasso mode */
+let lassoMode=false, lassoStart=null;
+const lassoRect=$('#lasso');
+function setLassoMode(v){
+  lassoMode=!!v; $('#toggleLasso').setAttribute('aria-pressed', lassoMode?'true':'false');
+  $('#dockLasso').classList.toggle('ok', lassoMode);
+  $('#dockLasso').textContent = lassoMode ? 'Lasso ✓' : 'Lasso';
+  if(!lassoMode){ lassoRect.setAttribute('visibility','hidden'); }
+}
+$('#toggleLasso').onclick=()=>setLassoMode(!lassoMode);
+$('#dockLasso').onclick  =()=>setLassoMode(!lassoMode);
+
+/* long-press empty area to start lasso */
+let bgPressTimer=null;
+canvas.addEventListener('pointerdown',e=>{
+  if(e.target!==canvas || lassoMode) return;
+  bgPressTimer=setTimeout(()=>{ setLassoMode(true); const p=screenToWorld(e.clientX,e.clientY); beginLasso(p.x,p.y); },400);
+});
+canvas.addEventListener('pointerup',()=>{ clearTimeout(bgPressTimer); });
+
+function beginLasso(x,y){
+  lassoStart={x,y};
+  lassoRect.setAttribute('x',x); lassoRect.setAttribute('y',y);
+  lassoRect.setAttribute('width',0); lassoRect.setAttribute('height',0);
+  lassoRect.setAttribute('visibility','visible');
+}
+function updateLasso(x,y){
+  if(!lassoStart) return;
+  const x1=Math.min(lassoStart.x,x), y1=Math.min(lassoStart.y,y);
+  const w=Math.abs(x-lassoStart.x), h=Math.abs(y-lassoStart.y);
+  lassoRect.setAttribute('x',x1); lassoRect.setAttribute('y',y1);
+  lassoRect.setAttribute('width',w); lassoRect.setAttribute('height',h);
+}
+function endLasso(x,y){
+  if(!lassoStart) return;
+  const x1=Math.min(lassoStart.x,x), y1=Math.min(lassoStart.y,y);
+  const x2=Math.max(lassoStart.x,x), y2=Math.max(lassoStart.y,y);
+  state.nodes.forEach(n=>{
+    const nx1=n.x, ny1=n.y, nx2=n.x+n.w, ny2=n.y+n.h;
+    if(nx1>=x1 && ny1>=y1 && nx2<=x2 && ny2<=y2){ toggleSelection(n.id); }
+  });
+  lassoStart=null; lassoRect.setAttribute('visibility','hidden'); setLassoMode(false);
+}
+canvas.addEventListener('pointermove',e=>{
+  if(!lassoMode || !lassoStart) return;
+  const p=screenToWorld(e.clientX,e.clientY); updateLasso(p.x,p.y);
+});
+canvas.addEventListener('pointerup',e=>{
+  if(lassoMode && lassoStart){ const p=screenToWorld(e.clientX,e.clientY); endLasso(p.x,p.y); }
+});
+
+/* Add nodes */
 function addNoteAt(x,y){
   const node={id:freshId(),type:'note',x,y,w:260,h:160,title:$('#title').value.trim()||'Note',details:$('#details').value.trim(),tags:toTags($('#tags').value),color:$('#color').value||'#1d9bf0'};
   state.nodes.push(node); save(); renderAll(); refreshNodeOptions();
@@ -515,8 +658,10 @@ function addImageAt(x,y,url){
   const node={id:freshId(),type:'image',x,y,w:280,h:180,title:$('#title').value.trim()||'Image',details:$('#details').value.trim(),tags:toTags($('#tags').value),color:$('#color').value||'#1d9bf0',url};
   state.nodes.push(node); save(); renderAll(); refreshNodeOptions();
 }
+
+/* Links */
 function startLink(mode){
-  if(sel.size!==2){ alert('Select two nodes (Shift+click/tap), then choose a link type.'); return; }
+  if(sel.size!==2){ alert('Select two nodes, then choose link type.'); return; }
   const [a,b]=[...sel]; if(a===b) return;
   const A=state.nodes.find(n=>n.id===a), B=state.nodes.find(n=>n.id===b);
   const link={id:freshId(),a,b,kind:mode,cx:(A.x+B.x)/2,cy:(A.y+B.y)/2};
@@ -536,18 +681,24 @@ function wrapText(text,x,y,maxWidth,lineHeight,cls){
   const tspan=(txt,dy)=>{const s=document.createElementNS('http://www.w3.org/2000/svg','tspan'); s.setAttribute('x',x); if(dy!==0) s.setAttribute('dy',dy); s.textContent=txt; node.appendChild(s);};
   const meas=s=>s.length*6.8;
   words.forEach((w,i)=>{const test=(line?line+' ':'')+w; if(meas(test)>maxWidth && line){ tspan(line, i===0?0:lineHeight); lines++; line=w; } else { line=test; }});
-  if(line){ tspan(line, lines?lineHeight:0); lines++; } return {node,lines};
+  if(line){ tspan(line, lines?lineHeight:0); lines++; } 
+  return {node,lines};
 }
 
-/* Render board */
+/* -------- Render board -------- */
 function renderAll(){
   nodesG.innerHTML=''; linksG.innerHTML='';
+
+  /* links */
   state.links.forEach(L=>{
     const a=state.nodes.find(n=>n.id===L.a), b=state.nodes.find(n=>n.id===L.b); if(!a||!b) return;
     const ax=a.x+a.w/2, ay=a.y+a.h/2, bx=b.x+b.w/2, by=b.y+b.h/2;
     const mx=L.cx??(ax+bx)/2, my=L.cy??(ay+by)/2;
-    const p=el('path',{d:`M ${ax} ${ay} Q ${mx} ${my} ${bx} ${by}`, class:`link ${L.kind==='arrow'?'arrow':''}`}); linksG.appendChild(p);
-    const h=el('circle',{cx:mx, cy:my, r:6, class:'handle'}); h.addEventListener('pointerdown',e=>{
+    const p=el('path',{d:`M ${ax} ${ay} Q ${mx} ${my} ${bx} ${by}`, class:`link ${L.kind==='arrow'?'arrow':''}`}); 
+    linksG.appendChild(p);
+
+    const h=el('circle',{cx:mx, cy:my, r:6, class:'handle'}); 
+    h.addEventListener('pointerdown',e=>{
       e.stopPropagation(); const start={x:e.clientX,y:e.clientY}, ocx=L.cx??mx, ocy=L.cy??my;
       function move(ev){const dx=(ev.clientX-start.x)/state.view.k, dy=(ev.clientY-start.y)/state.view.k; L.cx=ocx+dx; L.cy=ocy+dy; renderAll();}
       function up(){window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); save();}
@@ -556,8 +707,9 @@ function renderAll(){
     linksG.appendChild(h);
   });
 
+  /* nodes */
   state.nodes.forEach(N=>{
-    const g=el('g',{class:`node ${N.type==='note'?'note':'photo'}${sel.has(N.id)?' selected':''}`, transform:`translate(${N.x},${N.y})`});
+    const g=el('g',{class:`node ${N.type==='note'?'note':'photo'}${sel.has(N.id)?' selected':''}`, transform:`translate(${N.x},${N.y})`, 'data-id':N.id});
     if(N.type==='note'){
       g.appendChild(el('rect',{x:0,y:0,width:N.w,height:N.h,rx:12}));
       g.appendChild(el('rect',{x:0,y:0,width:N.w,height:8,rx:12,fill:N.color}));
@@ -571,29 +723,33 @@ function renderAll(){
       g.appendChild(el('rect',{x:0,y:N.h-28,width:N.w,height:28,fill:'rgba(0,0,0,.55)'}));
       g.appendChild(el('text',{x:10,y:N.h-10,class:'title'},N.title||'Image'));
     }
-    // resize handle
     const rz=el('rect',{x:N.w-10,y:N.h-10,width:10,height:10,class:'resize'}); g.appendChild(rz);
 
-    // interactions
+    let pressTimer=null;
     g.addEventListener('pointerdown',e=>{
       e.stopPropagation();
-      const target=e.target; const isResize=target.classList.contains('resize');
-      if(!e.shiftKey && !isResize){ sel.clear(); }
-      sel.add(N.id); renderAll();
+      const isResize=e.target.classList.contains('resize');
       const start={x:e.clientX,y:e.clientY}; const k=state.view.k;
+
+      pressTimer=setTimeout(()=>{ toggleSelection(N.id); }, 350);
+
+      if(!addMode && !e.shiftKey && !isResize){ sel.clear(); sel.add(N.id); renderAll(); }
+
       if(isResize){
-        resizing={id:N.id, ow:N.w, oh:N.h, sx:start.x, sy:start.y};
-        function move(ev){ const dx=(ev.clientX-resizing.sx)/k, dy=(ev.clientY-resizing.sy)/k; const n=state.nodes.find(n=>n.id===resizing.id); n.w=Math.max(160, Math.round((resizing.ow+dx)/SNAP)*SNAP); n.h=Math.max(120, Math.round((resizing.oh+dy)/SNAP)*SNAP); renderAll();}
-        function up(){window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); resizing=null; save();}
+        const startW=N.w, startH=N.h;
+        function move(ev){ clearTimeout(pressTimer); const dx=(ev.clientX-start.x)/k, dy=(ev.clientY-start.y)/k; N.w=Math.max(160, Math.round((startW+dx)/SNAP)*SNAP); N.h=Math.max(120, Math.round((startH+dy)/SNAP)*SNAP); renderAll(); }
+        function up(){ window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); save(); }
         window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
       }else{
-        drag={id:N.id, ox:N.x, oy:N.y, sx:start.x, sy:start.y};
-        function move(ev){const n=state.nodes.find(n=>n.id===drag.id); if(!n) return; const dx=(ev.clientX-drag.sx)/k, dy=(ev.clientY-drag.sy)/k; n.x=Math.round((drag.ox+dx)/SNAP)*SNAP; n.y=Math.round((drag.oy+dy)/SNAP)*SNAP; renderAll();}
-        function up(){window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); drag=null; save();}
+        const startX=N.x, startY=N.y;
+        function move(ev){ clearTimeout(pressTimer); const dx=(ev.clientX-start.x)/k, dy=(ev.clientY-start.y)/k; N.x=Math.round((startX+dx)/SNAP)*SNAP; N.y=Math.round((startY+dy)/SNAP)*SNAP; renderAll(); }
+        function up(){ window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); save(); }
         window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
       }
+
       g.setPointerCapture?.(e.pointerId);
     });
+    g.addEventListener('pointerup',()=>clearTimeout(pressTimer));
 
     nodesG.appendChild(g);
   });
@@ -601,7 +757,7 @@ function renderAll(){
   applyView(); updateCaseTitle(); drawMini();
 }
 
-/* Mini map */
+/* -------- Mini map -------- */
 function drawMini(){
   const W=180,H=110; mini.setAttribute('viewBox',`0 0 ${W} ${H}`); mini.innerHTML='';
   let minX=0,minY=0,maxX=1200,maxY=800;
@@ -617,11 +773,11 @@ function drawMini(){
   state.nodes.forEach(n=>{const p=toMini(n.x,n.y); mini.appendChild(el('rect',{x:p.x,y:p.y,width:n.w*s,height:n.h*s,fill:'#111317',stroke:'#2f3336',rx:4}));});
 }
 
-/* Board quick add */
-board.addEventListener('dblclick',e=>{const pt=screenToWorld(e.clientX,e.clientY); addNoteAt(pt.x-130,pt.y-80);});
-canvas.addEventListener('pointerdown',e=>{ if(e.target===canvas){ sel.clear(); renderAll(); }});
+/* Board quick add / clear selection */
+board.addEventListener('dblclick',e=>{const rect=canvas.getBoundingClientRect(); const pt=screenToWorld(e.clientX,e.clientY); if(e.target===canvas && e.clientY-rect.top>0){ addNoteAt(pt.x-130,pt.y-80); }});
+canvas.addEventListener('pointerdown',e=>{ if(e.target===canvas && !lassoMode){ sel.clear(); renderAll(); }});
 
-/* ===== Buttons (Board) ===== */
+/* ---- Buttons (Board) ---- */
 $('#btnAddNote').onclick =()=>addNoteAt(60,60);
 $('#btnAddImage').onclick=()=>{const url=$('#imgUrl').value.trim(); if(!url){alert('Paste an image URL first.');return;} addImageAt(80,80,url);};
 $('#btnLinkArrow').onclick=()=>startLink('arrow');
@@ -633,12 +789,12 @@ $('#btnMakeString').onclick=()=>startLink('string');
 $('#btnDelete').onclick  =deleteSelected;
 
 /* Save/Load/Clear */
-$('#btnSave').onclick =()=>{localStorage.setItem(LS_KEY,JSON.stringify(state)); pingToast('Saved');};
+$('#btnSave').onclick =()=>{localStorage.setItem(LS_KEY,JSON.stringify(state)); document.dispatchEvent(new Event('cmx-saved'));};
 $('#btnLoad').onclick =()=>{try{const raw=localStorage.getItem(LS_KEY); if(raw){state=JSON.parse(raw); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); pingToast('Reloaded');}}catch(e){}};
 $('#btnClear').onclick=()=>{
   if(confirm('Clear board, links, and timeline? This cannot be undone.')){
     state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
-    save(); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();
+    document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();
   }
 };
 /* Import/Export JSON */
@@ -646,7 +802,7 @@ $('#btnExportJSON').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,
 $('#btnImportJSON').onclick=()=>$('#fileInput').click();
 $('#fileInput').addEventListener('change',async e=>{
   const f=e.target.files[0]; if(!f) return; const txt=await f.text();
-  try{ state=JSON.parse(txt); save(); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); pingToast('Imported'); }
+  try{ state=JSON.parse(txt); document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); pingToast('Imported'); }
   catch(err){ alert('Invalid JSON'); }
 });
 
@@ -683,6 +839,7 @@ $('#btnExportMD').onclick=()=>{
 
 /* Print / PDF */
 function doPrint(mode){
+  closeSheet();
   document.body.dataset.print=mode;
   $('#pTitle').textContent=state.meta.title||'Untitled case';
   $('#pAgent').textContent=state.meta.investigator||'—';
