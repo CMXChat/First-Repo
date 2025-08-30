@@ -86,7 +86,7 @@ body{
   <div class="wrap">
     <section class="head" aria-labelledby="hdr">
       <h1 id="hdr">Select your channel</h1>
-      <p class="sub">Choose your node. Three paths active. <span class="hide-xs">Hotkeys: <kbd>1</kbd> OSINT • <kbd>2</kbd> Manual • <kbd>3</kbd> Report • <kbd>Enter</kbd> to launch.</span></p>
+      <p class="sub">Choose your node. Five paths active. <span class="hide-xs">Hotkeys: <kbd>1</kbd> OSINT • <kbd>2</kbd> Manual • <kbd>3</kbd> Report • <kbd>4</kbd> Resources • <kbd>5</kbd> Workspace • <kbd>Enter</kbd> to launch.</span></p>
     </section>
 
     <nav class="cards" aria-label="Destinations">
@@ -111,11 +111,18 @@ body{
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
-      <!-- NEW: Resource Library card -->
       <a class="card" id="card-resources" href="https://db.cmxchat.com/resources">
         <h2>Resource Library</h2>
         <p>Curated OSINT directories, tool indexes, and training links. One hub for pivots.</p>
         <span class="tag">db.cmxchat.com/resources</span>
+        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </a>
+
+      <!-- NEW: Workspace card -->
+      <a class="card" id="card-workspace" href="https://db.cmxchat.com/workspace">
+        <h2>Case Workspace</h2>
+        <p>Board + timeline builder. Nodes, red string, events; export gorgeous PDFs.</p>
+        <span class="tag">db.cmxchat.com/workspace</span>
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
       <!-- /NEW -->
@@ -132,18 +139,27 @@ body{
 document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 
 /* Keyboard nav */
-const cards=[document.getElementById('card-osint'), document.getElementById('card-manual'), document.getElementById('card-report')];
+const cards=[
+  document.getElementById('card-osint'),
+  document.getElementById('card-manual'),
+  document.getElementById('card-report'),
+  document.getElementById('card-resources'),
+  document.getElementById('card-workspace')
+];
 let idx=0;
 function setActive(i){
   idx=(i+cards.length)%cards.length;
   cards.forEach((c,j)=>c.classList.toggle('active', j===idx));
   cards[idx].focus({preventScroll:true});
 }
+window.setActive=setActive; // expose for any future add-ons
 cards.forEach(c=>c.setAttribute('tabindex','0'));
 window.addEventListener('keydown',e=>{
   if(e.key==='1'){ setActive(0); }
   else if(e.key==='2'){ setActive(1); }
   else if(e.key==='3'){ setActive(2); }
+  else if(e.key==='4'){ setActive(3); }
+  else if(e.key==='5'){ setActive(4); }
   else if(e.key==='ArrowRight' || e.key==='ArrowDown'){ setActive(idx+1); }
   else if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ setActive(idx-1); }
   else if(e.key==='Enter'){ window.location.href = cards[idx].href; }
@@ -151,28 +167,6 @@ window.addEventListener('keydown',e=>{
 cards.forEach(c=>{
   c.addEventListener('focus',()=>{ cards.forEach(x=>x.classList.toggle('active', x===c)); idx=cards.indexOf(c); });
 });
-</script>
-
-<!-- Add-on script to include the new Resource card in nav without changing existing code -->
-<script>
-(function(){
-  const res = document.getElementById('card-resources');
-  if(!res) return;
-  res.setAttribute('tabindex','0');
-  // include in rotation
-  if(Array.isArray(window.cards)) window.cards.push(res);
-  // optional hotkey: 4 selects Resource Library
-  window.addEventListener('keydown', e=>{
-    if(e.key==='4'){
-      const i = window.cards.indexOf(res);
-      if(i>-1){ 
-        // use existing helper if present
-        if(typeof window.setActive==='function'){ window.setActive(i); }
-        else { res.focus(); }
-      }
-    }
-  });
-})();
 </script>
 </body>
 </html>
