@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>CMX • Timeline Builder</title>
+<meta name="color-scheme" content="dark">
+
+<style>
+:root{
+  --bg:#000; --panel:#0b0c0e; --panel-2:#111317;
+  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f; --warn:#f6c76f;
+  --r:16px; --pad:clamp(12px,2.8vw,20px);
+  --fs-xl:clamp(24px,6vw,40px);
+  --fs-lg:clamp(18px,3.4vw,22px);
+  --fs:clamp(14px,3.2vw,16px);
+  --fs-sm:clamp(12px,2.6vw,13.5px);
+  --maxw:1080px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:
+    radial-gradient(1200px 600px at 20% -10%,rgba(29,155,240,.08),transparent),
+    radial-gradient(1200px 600px at 120% 100%,rgba(130,200,255,.06),transparent),
+    var(--bg);
+  color:var(--ink);
+  font:400 var(--fs)/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  -webkit-text-size-adjust:100%;
+}
+a{color:inherit}
+
+/* Top bar */
+.topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:var(--pad);background:rgba(0,0,0,.7);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.2px}
+.logo{width:30px;height:30px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.logo svg{width:18px;height:18px;fill:var(--accent)}
+.title{font-size:var(--fs-lg)}
+.chip{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:var(--fs-sm)}
+
+/* Layout */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad) var(--pad)}
+.hero{padding:calc(var(--pad) + 6px) 0 var(--pad)}
+.hero h1{margin:.2rem 0 .4rem;font-size:var(--fs-xl);line-height:1.15}
+.sub{color:var(--muted);font-size:var(--fs-sm)}
+.grid{display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:1fr}
+@media(min-width:1000px){.grid{grid-template-columns:380px 1fr}}
+
+/* Cards, inputs */
+.card{border:1px solid var(--line);background:var(--panel-2);border-radius:16px;padding:16px}
+.card h2{margin:.2rem 0 .6rem;font-size:var(--fs-lg)}
+label{display:block;margin:10px 0 6px;font-weight:800}
+input,textarea,select{
+  width:100%;padding:11px 12px;border-radius:12px;background:var(--panel);
+  border:1px solid var(--line);color:var(--ink);outline:none
+}
+input::placeholder,textarea::placeholder{color:#6f7a86}
+textarea{resize:vertical;min-height:96px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row > *{flex:1}
+.help{color:var(--muted);font-size:var(--fs-sm);margin-top:6px}
+
+/* Buttons */
+.btn{
+  all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  padding:11px 14px;border-radius:999px;font-weight:900;letter-spacing:.2px;
+  border:1px solid var(--accent);
+  background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));
+}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;border-color:var(--line)}
+.btn.danger{border-color:#ff5a5f;background:linear-gradient(180deg,rgba(255,90,95,.18),rgba(255,90,95,.06))}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* Filters */
+.filters{display:grid;gap:10px;margin-top:10px}
+.filters .row{align-items:center}
+.badge{display:inline-block;margin:.2rem .35rem .35rem 0;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:var(--fs-sm)}
+
+/* Timeline */
+.tl-wrap{position:relative}
+.tl{
+  position:relative;margin:6px 0 0;padding:0 0 0 18px;list-style:none;
+  counter-reset:ev;
+}
+.tl::before{
+  content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
+}
+.ev{
+  position:relative;margin:0 0 12px;border:1px solid var(--line);background:var(--panel);
+  border-radius:14px;padding:12px;transition:border-color .18s ease, box-shadow .18s ease;
+}
+.ev[draggable="true"]{cursor:grab}
+.ev.dragging{opacity:.6;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.dot{
+  position:absolute;left:-18px;top:14px;width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--accent);background:#05121b;
+}
+.ev h3{margin:0 0 2px;font-size:16px;display:flex;align-items:center;gap:8px}
+.ev .meta{color:var(--muted);font-size:var(--fs-sm);display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.tag{padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#0e1013;font-size:11.5px;color:#cfe9ff}
+.ev .desc{white-space:pre-wrap}
+.ev .links{margin-top:6px;font-size:var(--fs-sm)}
+.ev .links a{color:#aad7ff;text-decoration:underline}
+.ev .controls{display:flex;gap:6px;margin-top:10px}
+
+/* Empty state */
+.empty{
+  border:1px dashed var(--line);border-radius:14px;padding:16px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;text-align:center;min-height:120px
+}
+
+/* Print layout */
+@media print{
+  body{background:#fff;color:#000}
+  .topbar,.actions,.filters,.form-card{display:none!important}
+  .container{max-width:100%;padding:0 24px 24px}
+  .card{border:0;background:#fff;padding:0}
+  .hero{padding:8px 0 12px}
+  .title, h1, h2{color:#000}
+  .tl::before{background:#000}
+  .ev{border-color:#000;background:#fff}
+  .dot{border-color:#000;background:#fff}
+}
+
+/* Small helpers */
+kbd{border:1px solid var(--line);border-bottom-color:#1a1d22;background:#0d0f12;border-radius:6px;padding:2px 5px;font-size:11px}
+footer{color:var(--muted);font-size:var(--fs-sm);text-align:center;padding:20px}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
+    </div>
+    <div class="title">CMX • Timeline Builder</div>
+  </div>
+  <span class="chip">Session <b id="sid"></b></span>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <h1>Build a clean, exportable timeline</h1>
+    <p class="sub">
+      Add events, drag to reorder, filter by date and tags, copy for Discord or export JSON and CSV. 
+      Saved locally, refresh will keep your data on this device, Clear will wipe it.
+    </p>
+    <div class="badge">Hotkeys, Ctrl or Cmd S to save, / to focus search, P to print</div>
+  </section>
+
+  <section class="grid">
+    <!-- Form -->
+    <aside class="card form-card" aria-labelledby="hdr-form">
+      <h2 id="hdr-form">Add or edit event</h2>
+
+      <label for="evTitle">Title</label>
+      <input id="evTitle" placeholder="Example, Video posted referencing incident">
+
+      <div class="row">
+        <div>
+          <label for="evDate">Date</label>
+          <input id="evDate" type="date">
+        </div>
+        <div>
+          <label for="evTime">Time, optional</label>
+          <input id="evTime" type="time">
+        </div>
+      </div>
+
+      <label for="evTags">Tags, comma separated</label>
+      <input id="evTags" placeholder="media, claim, confirmation">
+
+      <label for="evLink">Reference link, optional</label>
+      <input id="evLink" placeholder="https://example.com/source">
+
+      <label for="evDesc">Details</label>
+      <textarea id="evDesc" placeholder="What happened, who, where, confidence signals, add concise quotes or artifacts."></textarea>
+
+      <div class="actions">
+        <button class="btn" id="btnAdd">Add event</button>
+        <button class="btn ghost" id="btnUpdate" style="display:none">Update selected</button>
+        <button class="btn danger" id="btnCancelEdit" style="display:none">Cancel edit</button>
+      </div>
+
+      <div class="help">Tip, select an event to edit, Enter will confirm add or update.</div>
+
+      <hr style="border:none;border-top:1px solid var(--line);margin:14px 0">
+
+      <h2 style="margin-top:0">Filters</h2>
+      <div class="filters">
+        <div class="row">
+          <input id="q" placeholder="Search title, details, tags" aria-label="Search">
+          <button class="btn ghost" id="btnClearSearch">Clear</button>
+        </div>
+        <div class="row">
+          <div>
+            <label for="from">From</label>
+            <input id="from" type="date">
+          </div>
+          <div>
+            <label for="to">To</label>
+            <input id="to" type="date">
+          </div>
+        </div>
+        <div class="row">
+          <input id="tagFilter" placeholder="Filter by tag, single tag" aria-label="Tag filter">
+          <button class="btn ghost" id="btnResetFilters">Reset filters</button>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--line);margin:14px 0">
+
+      <h2 style="margin-top:0">Exports</h2>
+      <div class="actions">
+        <button class="btn" id="btnCopyDiscord">Copy, Discord</button>
+        <button class="btn" id="btnJSON">Download JSON</button>
+        <button class="btn" id="btnCSV">Download CSV</button>
+        <button class="btn" id="btnICS">Download .ics</button>
+        <button class="btn" id="btnPrint">Print or PDF</button>
+      </div>
+
+      <div class="actions" style="margin-top:8px">
+        <button class="btn danger" id="btnClearAll">Clear all, local</button>
+        <button class="btn ghost" id="btnDemo">Load demo</button>
+      </div>
+
+      <p class="help">Data lives in your browser only, use exports for sharing or backup.</p>
+    </aside>
+
+    <!-- Timeline -->
+    <section class="card tl-wrap">
+      <h2 style="margin-top:0">Timeline</h2>
+      <ul id="tl" class="tl" aria-live="polite"></ul>
+      <div id="empty" class="empty" style="display:none">No events yet, add your first event on the left.</div>
+    </section>
+  </section>
+</main>
+
+<footer>© CMX</footer>
+
+<script>
+/* Session chip */
+document.getElementById('sid').textContent = Math.random().toString(36).slice(2,10).toUpperCase();
+
+/* State */
+const LS_KEY = 'cmx.timeline.v1';
+let events = [];        // array of {id,title,date,time,tags[],link,desc}
+let editingId = null;   // currently editing event id or null
+const $ = id => document.getElementById(id);
+const tl = $('tl'), empty = $('empty');
+
+/* Load, Save */
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    events = raw ? JSON.parse(raw) : [];
+  }catch(e){ events = []; }
+}
+function save(){
+  localStorage.setItem(LS_KEY, JSON.stringify(events));
+}
+
+/* Utilities */
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function parseTags(s){ return (s||'').split(',').map(x=>x.trim()).filter(Boolean); }
+function formatDate(d){ if(!d) return ''; try{ return new Date(d).toLocaleDateString(); }catch(e){ return d; } }
+function withinRange(d, from, to){
+  if(!d) return false;
+  const t = new Date(d).setHours(0,0,0,0);
+  if(from){ const f = new Date(from).setHours(0,0,0,0); if(t < f) return false; }
+  if(to){ const tt = new Date(to).setHours(0,0,0,0); if(t > tt) return false; }
+  return true;
+}
+
+/* Render */
+function render(){
+  tl.innerHTML = '';
+  const needle = ($('q').value||'').toLowerCase().trim();
+  const from = $('from').value || null;
+  const to = $('to').value || null;
+  const tag = ($('tagFilter').value||'').trim().toLowerCase();
+
+  let list = events.slice();
+
+  // Filter
+  list = list.filter(ev=>{
+    let ok = true;
+    if(needle){
+      const hay = [ev.title, ev.desc, (ev.tags||[]).join(' '), ev.link].join(' ').toLowerCase();
+      ok = hay.includes(needle);
+    }
+    if(ok && (from || to)) ok = withinRange(ev.date, from, to);
+    if(ok && tag) ok = (ev.tags||[]).map(t=>t.toLowerCase()).includes(tag);
+    return ok;
+  });
+
+  // Sort by date then manual order, manual order is preserved by storage order
+  list.sort((a,b)=>{
+    const da = a.date ? new Date(a.date).getTime() : 0;
+    const db = b.date ? new Date(b.date).getTime() : 0;
+    if(da !== db) return da - db;
+    return events.indexOf(a) - events.indexOf(b);
+  });
+
+  if(list.length === 0){ empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+
+  list.forEach(ev=>{
+    const li = document.createElement('li');
+    li.className = 'ev';
+    li.draggable = true;
+    li.dataset.id = ev.id;
+
+    li.innerHTML = `
+      <span class="dot" aria-hidden="true"></span>
+      <h3><span>${escapeHtml(ev.title || 'Untitled')}</span></h3>
+      <div class="meta">
+        <span>${ev.date ? formatDate(ev.date) : 'No date'}</span>
+        ${ev.time ? `<span>${escapeHtml(ev.time)}</span>` : ''}
+        ${(ev.tags||[]).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}
+      </div>
+      <div class="desc">${escapeHtml(ev.desc || '')}</div>
+      <div class="links">${ev.link ? `Ref, <a href="${escapeAttr(ev.link)}" target="_blank" rel="noopener">${escapeHtml(ev.link)}</a>` : ''}</div>
+      <div class="controls">
+        <button class="btn ghost btnEdit">Edit</button>
+        <button class="btn danger btnDelete">Delete</button>
+      </div>
+    `;
+
+    // Controls
+    li.querySelector('.btnEdit').onclick = ()=> startEdit(ev.id);
+    li.querySelector('.btnDelete').onclick = ()=> removeEvent(ev.id);
+
+    // Drag handlers
+    li.addEventListener('dragstart', onDragStart);
+    li.addEventListener('dragend', onDragEnd);
+    li.addEventListener('dragover', onDragOver);
+
+    tl.appendChild(li);
+  });
+}
+
+/* Escape helpers */
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
+
+/* Add, Edit, Remove */
+function clearForm(){
+  $('evTitle').value = '';
+  $('evDate').value = '';
+  $('evTime').value = '';
+  $('evTags').value = '';
+  $('evLink').value = '';
+  $('evDesc').value = '';
+}
+function fillForm(ev){
+  $('evTitle').value = ev.title || '';
+  $('evDate').value = ev.date || '';
+  $('evTime').value = ev.time || '';
+  $('evTags').value = (ev.tags||[]).join(', ');
+  $('evLink').value = ev.link || '';
+  $('evDesc').value = ev.desc || '';
+}
+function addEvent(){
+  const ev = {
+    id: uid(),
+    title: $('evTitle').value.trim(),
+    date: $('evDate').value || '',
+    time: $('evTime').value || '',
+    tags: parseTags($('evTags').value),
+    link: $('evLink').value.trim(),
+    desc: $('evDesc').value.trim()
+  };
+  events.push(ev);
+  save();
+  clearForm();
+  render();
+}
+function startEdit(id){
+  const ev = events.find(x=>x.id===id); if(!ev) return;
+  editingId = id;
+  fillForm(ev);
+  $('btnAdd').style.display = 'none';
+  $('btnUpdate').style.display = '';
+  $('btnCancelEdit').style.display = '';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function cancelEdit(){
+  editingId = null;
+  clearForm();
+  $('btnAdd').style.display = '';
+  $('btnUpdate').style.display = 'none';
+  $('btnCancelEdit').style.display = 'none';
+}
+function updateEvent(){
+  if(!editingId) return;
+  const i = events.findIndex(x=>x.id===editingId); if(i<0) return;
+  events[i] = {
+    ...events[i],
+    title: $('evTitle').value.trim(),
+    date: $('evDate').value || '',
+    time: $('evTime').value || '',
+    tags: parseTags($('evTags').value),
+    link: $('evLink').value.trim(),
+    desc: $('evDesc').value.trim()
+  };
+  save();
+  cancelEdit();
+  render();
+}
+function removeEvent(id){
+  if(!confirm('Delete this event, action cannot be undone on this device')) return;
+  events = events.filter(x=>x.id!==id);
+  save();
+  render();
+}
+
+/* Drag and drop reorder, manual order persists by array order */
+let dragId = null;
+function onDragStart(e){
+  dragId = e.currentTarget.dataset.id;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnd(e){
+  e.currentTarget.classList.remove('dragging');
+  dragId = null;
+  save();
+  render();
+}
+function onDragOver(e){
+  e.preventDefault();
+  const over = e.currentTarget;
+  const overId = over.dataset.id;
+  if(!dragId || dragId===overId) return;
+  const a = events.findIndex(x=>x.id===dragId);
+  const b = events.findIndex(x=>x.id===overId);
+  if(a<0 || b<0) return;
+  // insert before or after based on pointer position
+  const rect = over.getBoundingClientRect();
+  const before = (e.clientY - rect.top) < rect.height/2;
+  const item = events.splice(a,1)[0];
+  const newIndex = (a<b ? (before? b-1 : b) : (before? b : b+1));
+  events.splice(newIndex,0,item);
+}
+
+/* Filters, search */
+function resetFilters(){
+  $('q').value=''; $('from').value=''; $('to').value=''; $('tagFilter').value='';
+  render();
+}
+
+/* Exports */
+function toDiscord(){
+  const list = currentList();
+  if(list.length===0) return 'No events';
+  const lines = [];
+  lines.push('**CMX TIMELINE**');
+  list.forEach((ev,i)=>{
+    const dt = [ev.date, ev.time].filter(Boolean).join(' ');
+    lines.push(`**${i+1}. ${ev.title || 'Untitled'}**`);
+    if(dt) lines.push(`- ${dt}`);
+    if(ev.tags && ev.tags.length) lines.push(`- Tags, ${ev.tags.join(', ')}`);
+    if(ev.link) lines.push(`- Ref, ${ev.link}`);
+    if(ev.desc) lines.push(ev.desc);
+    lines.push(''); // spacer
+  });
+  return lines.join('\n').trim();
+}
+function toJSON(){
+  return JSON.stringify(currentList(), null, 2);
+}
+function toCSV(){
+  const list = currentList();
+  const esc = s => `"${String(s||'').replace(/"/g,'""')}"`;
+  const rows = [['Title','Date','Time','Tags','Link','Details']];
+  list.forEach(ev=>{
+    rows.push([ev.title, ev.date, ev.time, (ev.tags||[]).join('; '), ev.link, ev.desc].map(esc));
+  });
+  return rows.map(r=>r.join(',')).join('\n');
+}
+function toICS(){
+  const list = currentList();
+  const pad2 = n => String(n).padStart(2,'0');
+  function dtstamp(d,t){
+    if(!d) return '';
+    const date = new Date(d + 'T' + (t||'00:00'));
+    return date.getUTCFullYear()
+      + pad2(date.getUTCMonth()+1)
+      + pad2(date.getUTCDate())
+      + 'T'
+      + pad2(date.getUTCHours())
+      + pad2(date.getUTCMinutes())
+      + pad2(date.getUTCSeconds())
+      + 'Z';
+  }
+  const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//CMX//Timeline//EN'];
+  list.forEach(ev=>{
+    const start = dtstamp(ev.date, ev.time || '00:00');
+    lines.push('BEGIN:VEVENT');
+    lines.push('UID:' + ev.id + '@cmx');
+    if(start) lines.push('DTSTART:' + start);
+    lines.push('SUMMARY:' + icsEscape(ev.title||'Untitled'));
+    const desc = [ev.desc||'', ev.link?('Ref, ' + ev.link):'', ev.tags && ev.tags.length?('Tags, ' + ev.tags.join(', ')):''].filter(Boolean).join('\\n');
+    lines.push('DESCRIPTION:' + icsEscape(desc));
+    lines.push('END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  return lines.join('\r\n');
+
+  function icsEscape(s){
+    return String(s||'').replace(/([,;])/g,'\\$1').replace(/\n/g,'\\n');
+  }
+}
+function currentList(){
+  // Apply current filters and sorted, same as render
+  const needle = ($('q').value||'').toLowerCase().trim();
+  const from = $('from').value || null;
+  const to = $('to').value || null;
+  const tag = ($('tagFilter').value||'').trim().toLowerCase();
+  let list = events.slice();
+  list = list.filter(ev=>{
+    let ok = true;
+    if(needle){
+      const hay = [ev.title, ev.desc, (ev.tags||[]).join(' '), ev.link].join(' ').toLowerCase();
+      ok = hay.includes(needle);
+    }
+    if(ok && (from || to)) ok = withinRange(ev.date, from, to);
+    if(ok && tag) ok = (ev.tags||[]).map(t=>t.toLowerCase()).includes(tag);
+    return ok;
+  });
+  list.sort((a,b)=>{
+    const da = a.date ? new Date(a.date).getTime() : 0;
+    const db = b.date ? new Date(b.date).getTime() : 0;
+    if(da !== db) return da - db;
+    return events.indexOf(a) - events.indexOf(b);
+  });
+  return list;
+}
+
+/* Downloads and clipboard */
+function download(name, content, type){
+  const blob = new Blob([content], {type});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+
+/* Print */
+function doPrint(){
+  window.print();
+}
+
+/* Demo data */
+function loadDemo(){
+  if(!confirm('Load demo events, this will append to your current timeline')) return;
+  const now = new Date();
+  function dOff(days){
+    const d = new Date(now); d.setDate(d.getDate()+days);
+    return d.toISOString().slice(0,10);
+  }
+  const demo = [
+    {title:'Rumor emerges on forum', date:dOff(-5), time:'09:10', tags:['seed','rumor'], link:'https://example.com/thread', desc:'Unverified claim posted by new user, low karma, partial match to prior cases.'},
+    {title:'First social post with media', date:dOff(-4), time:'19:44', tags:['media','claim'], link:'https://example.com/post', desc:'Short clip, angle suggests location near river footbridge, accents consistent with region.'},
+    {title:'Counter-claim by local official', date:dOff(-3), time:'11:00', tags:['official','statement'], link:'https://example.com/press', desc:'Denies incident, provides alternate timeline, no evidence attached.'},
+    {title:'Independent video confirms location', date:dOff(-2), time:'13:25', tags:['media','confirmation'], link:'https://example.com/video', desc:'Landmarks match 100 percent, shadows align with SunCalc for 13,20 local.'},
+    {title:'Press outlet publishes summary', date:dOff(-1), time:'08:05', tags:['press','summary'], link:'https://example.com/article', desc:'Roundup with partial sources, missing the earliest forum thread.'}
+  ].map(e=>({id:uid(), ...e}));
+  events.push(...demo);
+  save();
+  render();
+}
+
+/* Wire up form buttons */
+$('btnAdd').onclick = addEvent;
+$('btnUpdate').onclick = updateEvent;
+$('btnCancelEdit').onclick = cancelEdit;
+
+/* Wire up filters and search */
+$('btnClearSearch').onclick = ()=>{ $('q').value=''; render(); };
+$('btnResetFilters').onclick = resetFilters;
+['q','from','to','tagFilter'].forEach(id=>$(id).addEventListener('input', render));
+
+/* Exports buttons */
+$('btnCopyDiscord').onclick = ()=>{
+  const txt = toDiscord();
+  navigator.clipboard.writeText(txt).then(()=>alert('Copied for Discord'));
+};
+$('btnJSON').onclick = ()=> download('cmx_timeline.json', toJSON(), 'application/json');
+$('btnCSV').onclick = ()=> download('cmx_timeline.csv', toCSV(), 'text/csv');
+$('btnICS').onclick = ()=> download('cmx_timeline.ics', toICS(), 'text/calendar');
+$('btnPrint').onclick = doPrint;
+
+/* Danger, clear all */
+$('btnClearAll').onclick = ()=>{
+  if(!confirm('Clear all events from this device, cannot be undone')) return;
+  events = []; save(); render();
+};
+
+/* Demo */
+$('btnDemo').onclick = loadDemo;
+
+/* Keyboard helpers */
+window.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); save(); alert('Saved locally'); }
+  if(e.key==='/'){ e.preventDefault(); $('q').focus(); }
+  if(e.key.toLowerCase()==='p'){ e.preventDefault(); doPrint(); }
+  if(e.key==='Enter' && (document.activeElement === $('evTitle') || document.activeElement === $('evDesc') || document.activeElement === $('evTags') || document.activeElement === $('evLink') || document.activeElement === $('evDate') || document.activeElement === $('evTime'))){
+    e.preventDefault();
+    if(editingId) updateEvent(); else addEvent();
+  }
+});
+
+/* Init */
+load();
+render();
+</script>
+</body>
+</html>
