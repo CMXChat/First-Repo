@@ -110,6 +110,15 @@ body{
         <span class="tag">db.cmxchat.com/report</span>
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
+
+      <!-- NEW: Resource Library card -->
+      <a class="card" id="card-resources" href="https://db.cmxchat.com/resources">
+        <h2>Resource Library</h2>
+        <p>Curated OSINT directories, tool indexes, and training links. One hub for pivots.</p>
+        <span class="tag">db.cmxchat.com/resources</span>
+        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </a>
+      <!-- /NEW -->
     </nav>
 
     <p class="keyhint">Tip: on mobile, long-press a card to open in a new tab.</p>
@@ -142,6 +151,28 @@ window.addEventListener('keydown',e=>{
 cards.forEach(c=>{
   c.addEventListener('focus',()=>{ cards.forEach(x=>x.classList.toggle('active', x===c)); idx=cards.indexOf(c); });
 });
+</script>
+
+<!-- Add-on script to include the new Resource card in nav without changing existing code -->
+<script>
+(function(){
+  const res = document.getElementById('card-resources');
+  if(!res) return;
+  res.setAttribute('tabindex','0');
+  // include in rotation
+  if(Array.isArray(window.cards)) window.cards.push(res);
+  // optional hotkey: 4 selects Resource Library
+  window.addEventListener('keydown', e=>{
+    if(e.key==='4'){
+      const i = window.cards.indexOf(res);
+      if(i>-1){ 
+        // use existing helper if present
+        if(typeof window.setActive==='function'){ window.setActive(i); }
+        else { res.focus(); }
+      }
+    }
+  });
+})();
 </script>
 </body>
 </html>
