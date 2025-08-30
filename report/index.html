@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>CMX • Field Report Generator</title>
+
+<!-- ====== CONFIG ====== -->
+<script>
+  // Daily message for agents (edit here)
+  const DAILY_MESSAGE = "Agents, log clean, cite sources, and ship concise findings. Reports are ephemeral in browser memory.";
+  // Optional Formspree endpoint; leave blank to disable direct email POST
+  // Example: "https://formspree.io/f/xxxxabcd"
+  const FORMSPREE_ENDPOINT = "";
+  // Default mailto recipient
+  const MAIL_TO = "ops@cmxchat.com";
+</script>
+
+<style>
+:root{
+  --bg:#000; --panel:#0b0c0e; --panel-2:#111317;
+  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f; --warn:#f6c76f;
+  --r:16px; --rs:12px;
+  --maxw:900px;
+  --pad:clamp(12px,3.2vw,20px);
+  --fs-h1:clamp(26px,6vw,40px);
+  --fs-h2:clamp(18px,4vw,22px);
+  --fs-b:clamp(15px,3.5vw,17px);
+  --fs-s:clamp(12px,2.8vw,13.5px);
+  --lh:1.6;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  line-height:var(--lh);font-size:var(--fs-b);-webkit-text-size-adjust:100%;
+}
+a{color:inherit;text-decoration:none}
+code,kbd,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* Header */
+.topbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:var(--pad);background:rgba(0,0,0,.72);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900}
+.logo{width:30px;height:30px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.logo svg{width:18px;height:18px;fill:var(--accent)}
+.title{font-size:clamp(18px,5vw,22px)}
+.badge{display:inline-block;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:var(--fs-s);color:var(--muted)}
+
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+
+/* Cards */
+.card{border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:var(--pad);margin:var(--pad) auto}
+.card h1{margin:.2rem 0 .6rem;font-size:var(--fs-h1);line-height:1.2}
+.card h2{margin:.8rem 0 .4rem;font-size:var(--fs-h2)}
+.sub{color:var(--muted);font-size:var(--fs-s);margin:.2rem 0 .6rem}
+.kv{border:1px dashed var(--line);border-radius:12px;padding:10px;margin:.4rem 0}
+.note{border-left:4px solid var(--warn);background:rgba(246,199,111,.06);padding:12px;border-radius:12px;border:1px solid var(--line)}
+
+/* Form */
+.grid{display:grid;gap:12px}
+@media(min-width:860px){.grid.two{grid-template-columns:1fr 1fr}}
+label{font-weight:800;display:block;margin:.2rem 0}
+input[type=text],input[type=datetime-local],textarea{
+  width:100%;padding:12px;border-radius:12px;background:var(--panel);color:var(--ink);
+  border:1px solid var(--line);outline:none;font-size:var(--fs-b)
+}
+textarea{min-height:110px;resize:vertical}
+
+/* Buttons */
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{
+  all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 16px;border-radius:999px;font-weight:900;border:1px solid var(--accent);
+  background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));
+  -webkit-tap-highlight-color:transparent
+}
+.btn.alt{border-color:var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+.btn.warn{border-color:var(--warn)}
+.btn.ok{border-color:var(--ok)}
+.small{font-size:var(--fs-s);color:var(--muted)}
+
+/* Output */
+.output{border:1px solid var(--line);border-radius:12px;background:#0a0c0f;padding:12px;white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace}
+.tabs{display:flex;gap:6px;margin:.6rem 0}
+.tab{all:unset;cursor:pointer;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:var(--fs-s)}
+.tab.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(29,155,240,.12) inset}
+
+/* Print */
+@media print{
+  .topbar,.actions,.tabs,.note{display:none!important}
+  .card{break-inside:avoid}
+  body{background:#fff;color:#000}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
+    </div>
+    <div class="title">CMX Field Report Generator</div>
+  </div>
+  <span class="badge">Session <b id="sid"></b></span>
+</header>
+
+<main class="container">
+  <!-- Agent Message -->
+  <section class="card">
+    <h1>Agent Brief</h1>
+    <div class="kv" id="dailyBox"></div>
+    <div class="note">
+      This report is stored only in your browser memory. If you refresh or close without saving or sending, it will self destruct. Copy, download, print to PDF, or email before you leave.
+    </div>
+  </section>
+
+  <!-- Form -->
+  <section class="card">
+    <h2>Report Details</h2>
+    <div class="grid two">
+      <div>
+        <label for="title">Case Title</label>
+        <input id="title" type="text" placeholder="Example, CXI-2419 Harassment cluster triage">
+      </div>
+      <div>
+        <label for="agent">Agent</label>
+        <input id="agent" type="text" placeholder="Callsign or Name">
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div>
+        <label for="date">Date & Time</label>
+        <input id="date" type="datetime-local">
+      </div>
+      <div>
+        <label for="scope">Scope</label>
+        <input id="scope" type="text" placeholder="Public sources only, timeframe, languages">
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label for="summary">Executive Summary</label>
+        <textarea id="summary" placeholder="One paragraph in plain language with the decision point."></textarea>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div>
+        <label for="entities">Entities</label>
+        <textarea id="entities" placeholder="People, orgs, usernames, emails, phones, domains. One per line."></textarea>
+      </div>
+      <div>
+        <label for="evidence">Evidence Links</label>
+        <textarea id="evidence" placeholder="Direct URLs with context. One per line. Include archives if possible."></textarea>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div>
+        <label for="timeline">Timeline</label>
+        <textarea id="timeline" placeholder="YYYY-MM-DD HH:MM — event. One line per event."></textarea>
+      </div>
+      <div>
+        <label for="findings">Findings</label>
+        <textarea id="findings" placeholder="Numbered bullets with citations."></textarea>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div>
+        <label for="risk">Risk & Impact</label>
+        <textarea id="risk" placeholder="What could happen next, who is impacted, severity."></textarea>
+      </div>
+      <div>
+        <label for="actions">Recommended Actions</label>
+        <textarea id="actions" placeholder="Concrete steps for decision makers."></textarea>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label for="notes">Notes</label>
+        <textarea id="notes" placeholder="Assumptions, alt explanations considered, confidence rationale."></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn ok" id="btnGen">Generate Report</button>
+      <button class="btn" id="btnCopyDiscord">Copy as Discord</button>
+      <button class="btn alt" id="btnCopyText">Copy Plain Text</button>
+      <button class="btn alt" id="btnHTML">Download HTML</button>
+      <button class="btn alt" id="btnTXT">Download TXT</button>
+      <button class="btn alt" id="btnPDF">Print to PDF</button>
+      <button class="btn warn" id="btnEmail">Email via Mail</button>
+      <button class="btn warn" id="btnFormspree" title="Uses Formspree if configured">Send via Formspree</button>
+    </div>
+    <div class="small">Tip, press Enter inside any field to generate, then copy or send.</div>
+  </section>
+
+  <!-- Output -->
+  <section class="card">
+    <h2>Preview</h2>
+    <div class="tabs">
+      <button class="tab active" data-mode="discord">Discord</button>
+      <button class="tab" data-mode="text">Plain Text</button>
+      <button class="tab" data-mode="html">HTML</button>
+    </div>
+    <div class="output" id="out"></div>
+  </section>
+
+  <!-- Resources -->
+  <section class="card">
+    <h2>Quick References</h2>
+    <div class="kv">
+      <b>Discord formatting cheats</b>
+      <ul>
+        <li><code>**bold**</code>, <code>*italic*</code>, <code>__underline__</code>, <code>~~strike~~</code></li>
+        <li>Inline code <code>`like this`</code>, code block with triple backticks</li>
+        <li>Quote with <code>&gt; text</code></li>
+        <li>Bullets with <code>-</code> or <code>*</code>, numbered lists with <code>1.</code></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<script>
+/* Session + daily message */
+document.getElementById('sid').textContent = Math.random().toString(36).slice(2,10).toUpperCase();
+document.getElementById('dailyBox').textContent = DAILY_MESSAGE;
+
+/* Helpers */
+const $ = (id)=>document.getElementById(id);
+const nl = (s)=>String(s||"").trim();
+function lines(s){return nl(s).split(/\r?\n/).map(x=>x.trim()).filter(Boolean);}
+function bulletify(arr, prefix="- "){return arr.length?arr.map(x=>prefix+x).join("\n"):"";}
+
+/* Build sections */
+function buildDiscordReport(data){
+  const now = new Date();
+  const ts = now.toISOString().replace("T"," ").replace("Z","");
+  return [
+`**CMX FIELD REPORT**  |  **${data.title||"Untitled"}**
+**Agent**: ${data.agent||"Unknown"}  |  **Date**: ${data.date||ts}
+**Scope**: ${data.scope||"Public sources only"}
+
+**Executive Summary**
+${data.summary||"N/A"}
+
+**Entities**
+${bulletify(lines(data.entities))}
+
+**Evidence**
+${bulletify(lines(data.evidence))}
+
+**Timeline**
+${bulletify(lines(data.timeline),"1. ")}
+
+**Findings**
+${bulletify(lines(data.findings),"1. ")}
+
+**Risk & Impact**
+${data.risk||"N/A"}
+
+**Recommended Actions**
+${bulletify(lines(data.actions),"- ")}
+
+**Notes**
+${data.notes||"N/A"}
+
+> Report is ephemeral in browser memory. Save, download, print to PDF, or email now.`
+  ].join("\n\n");
+}
+
+function buildTextReport(data){
+  const now = new Date();
+  const ts = now.toISOString().replace("T"," ").replace("Z","");
+  return [
+`CMX FIELD REPORT  |  ${data.title||"Untitled"}
+Agent: ${data.agent||"Unknown"}  |  Date: ${data.date||ts}
+Scope: ${data.scope||"Public sources only"}
+
+Executive Summary
+${data.summary||"N/A"}
+
+Entities
+${bulletify(lines(data.entities))}
+
+Evidence
+${bulletify(lines(data.evidence))}
+
+Timeline
+${bulletify(lines(data.timeline),"1. ")}
+
+Findings
+${bulletify(lines(data.findings),"1. ")}
+
+Risk & Impact
+${data.risk||"N/A"}
+
+Recommended Actions
+${bulletify(lines(data.actions),"- ")}
+
+Notes
+${data.notes||"N/A"}
+
+Report is ephemeral in browser memory. Save, download, print to PDF, or email now.`
+  ].join("\n\n");
+}
+
+function buildHTMLReport(data){
+  const esc=(s)=>String(s||"").replace(/[&<>]/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;" }[m]));
+  const li=(arr)=>arr.length?("<ul>"+arr.map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>"):"<p>N/A</p>";
+  const now = new Date();
+  const ts = now.toISOString().replace("T"," ").replace("Z","");
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${esc(data.title||"CMX Field Report")}</title>
+  <style>
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.55;margin:24px;color:#111}
+  h1{margin:0 0 6px} h2{margin:18px 0 8px}
+  .muted{color:#444} .kv{border:1px solid #ddd;border-radius:10px;padding:12px;background:#fafafa}
+  </style></head><body>
+  <h1>CMX Field Report</h1>
+  <div class="kv"><b>Title:</b> ${esc(data.title||"Untitled")}<br>
+  <b>Agent:</b> ${esc(data.agent||"Unknown")}<br>
+  <b>Date:</b> ${esc(data.date||ts)}<br>
+  <b>Scope:</b> ${esc(data.scope||"Public sources only")}</div>
+
+  <h2>Executive Summary</h2><p>${esc(data.summary||"N/A")}</p>
+
+  <h2>Entities</h2>${li(lines(data.entities))}
+  <h2>Evidence</h2>${li(lines(data.evidence))}
+  <h2>Timeline</h2>${lines(data.timeline).length?("<ol>"+lines(data.timeline).map(esc).map(x=>`<li>${x}</li>`).join("")+"</ol>"):"<p>N/A</p>"}
+  <h2>Findings</h2>${lines(data.findings).length?("<ol>"+lines(data.findings).map(esc).map(x=>`<li>${x}</li>`).join("")+"</ol>"):"<p>N/A</p>"}
+  <h2>Risk & Impact</h2><p>${esc(data.risk||"N/A")}</p>
+  <h2>Recommended Actions</h2>${li(lines(data.actions))}
+  <h2>Notes</h2><p>${esc(data.notes||"N/A")}</p>
+
+  <p class="muted">Report is ephemeral in browser memory. Save, download, print to PDF, or email now.</p>
+  </body></html>`;
+}
+
+/* Collect form data */
+function collect(){
+  return {
+    title: nl($("title").value),
+    agent: nl($("agent").value),
+    date: nl($("date").value),
+    scope: nl($("scope").value),
+    summary: nl($("summary").value),
+    entities: nl($("entities").value),
+    evidence: nl($("evidence").value),
+    timeline: nl($("timeline").value),
+    findings: nl($("findings").value),
+    risk: nl($("risk").value),
+    actions: nl($("actions").value),
+    notes: nl($("notes").value)
+  };
+}
+
+/* State */
+let currentMode = "discord"; // discord | text | html
+let currentText = "";
+
+/* Generate */
+function generate(){
+  const data = collect();
+  const discord = buildDiscordReport(data);
+  const plain = buildTextReport(data);
+  const html = buildHTMLReport(data);
+  if(currentMode === "discord"){ $("out").textContent = discord; currentText = discord; }
+  if(currentMode === "text"){ $("out").textContent = plain; currentText = plain; }
+  if(currentMode === "html"){ $("out").textContent = html; currentText = html; }
+}
+
+/* Copy helpers */
+async function copyText(s){
+  try{ await navigator.clipboard.writeText(s); return true; }catch(e){ return false; }
+}
+
+/* Downloads */
+function download(filename, content, mime){
+  const blob = new Blob([content], {type:mime});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+
+/* Email */
+function emailMailto(){
+  const data = collect();
+  const subject = encodeURIComponent(`CMX Report, ${data.title||"Untitled"}`);
+  const body = encodeURIComponent(buildDiscordReport(data));
+  const href = `mailto:${encodeURIComponent(MAIL_TO)}?subject=${subject}&body=${body}`;
+  window.location.href = href;
+}
+
+async function emailFormspree(){
+  if(!FORMSPREE_ENDPOINT){ alert("Formspree endpoint not configured in CONFIG."); return; }
+  const data = collect();
+  const payload = {
+    subject: `CMX Report, ${data.title||"Untitled"}`,
+    agent: data.agent,
+    date: data.date || new Date().toISOString(),
+    scope: data.scope,
+    summary: data.summary,
+    entities: data.entities,
+    evidence: data.evidence,
+    timeline: data.timeline,
+    findings: data.findings,
+    risk: data.risk,
+    actions: data.actions,
+    notes: data.notes,
+    rendered_discord: buildDiscordReport(data),
+    rendered_text: buildTextReport(data)
+  };
+  try{
+    const r = await fetch(FORMSPREE_ENDPOINT, {
+      method:"POST",
+      headers:{ "Accept":"application/json","Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+    if(r.ok){ alert("Report sent via Formspree. Thank you."); }
+    else{ alert("Formspree error. Check endpoint or CORS."); }
+  }catch(e){
+    alert("Network error. Could not send to Formspree.");
+  }
+}
+
+/* Wire up */
+$("btnGen").addEventListener("click", generate);
+["title","agent","date","scope","summary","entities","evidence","timeline","findings","risk","actions","notes"].forEach(id=>{
+  $(id).addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); generate(); } });
+});
+
+$("btnCopyDiscord").addEventListener("click", async ()=>{
+  currentMode = "discord"; generate();
+  const ok = await copyText(currentText);
+  alert(ok?"Copied as Discord markdown":"Copy failed");
+});
+$("btnCopyText").addEventListener("click", async ()=>{
+  currentMode = "text"; generate();
+  const ok = await copyText(currentText);
+  alert(ok?"Copied plain text":"Copy failed");
+});
+$("btnHTML").addEventListener("click", ()=>{
+  currentMode = "html"; generate();
+  const data = collect();
+  download((data.title||"cmx-report")+".html", currentText, "text/html;charset=utf-8");
+});
+$("btnTXT").addEventListener("click", ()=>{
+  currentMode = "text"; generate();
+  const data = collect();
+  download((data.title||"cmx-report")+".txt", currentText, "text/plain;charset=utf-8");
+});
+$("btnPDF").addEventListener("click", ()=>{
+  // Switch preview to HTML for a nicer print
+  currentMode = "html"; generate();
+  setTimeout(()=>window.print(), 50);
+});
+$("btnEmail").addEventListener("click", emailMailto);
+$("btnFormspree").addEventListener("click", emailFormspree);
+
+/* Tabs */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    currentMode = t.getAttribute("data-mode");
+    generate();
+  });
+});
+
+/* Defaults */
+(function init(){
+  // preset date to now
+  const pad=(n)=>String(n).padStart(2,"0");
+  const d = new Date();
+  const local = d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+"T"+pad(d.getHours())+":"+pad(d.getMinutes());
+  $("date").value = local;
+  generate();
+
+  // unload warning if text present and not saved
+  let dirty = false;
+  document.querySelectorAll("input,textarea").forEach(el=>{
+    el.addEventListener("input",()=>{ dirty = true; });
+  });
+  window.addEventListener("beforeunload",(e)=>{
+    if(dirty){
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
+```0
