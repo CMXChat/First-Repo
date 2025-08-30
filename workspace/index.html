@@ -53,11 +53,11 @@ hr{border:none;border-top:1px solid var(--line);margin:14px 0}
 .seg button.active{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-left:1px solid var(--line);border-right:1px solid var(--line)}
 button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
 
-/* ===== Export menu (centered modal) ===== */
+/* ===== Export menu (CENTERED MODAL) ===== */
 .menu{position:relative;display:inline-flex;z-index:1000}
 .menu .sheet{
   position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:min(640px,92vw); max-height:min(88dvh,720px);
+  width:min(640px,92vw); max-height:min(94dvh,760px);
   display:none; overflow:hidden; border-radius:16px;
   border:1px solid var(--line); background:var(--panel-2); z-index:1002;
   box-shadow:0 30px 120px rgba(0,0,0,.65);
@@ -70,15 +70,16 @@ button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--
 .menu.open .backdrop{display:block}
 .menu .sheet .header{
   display:flex;align-items:center;justify-content:space-between;
-  padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel-2)
+  padding:10px 12px;border-bottom:1px solid var(--line)
 }
 .menu .sheet .header .title{font-weight:900}
 .menu .sheet .header .close{all:unset;cursor:pointer;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
 .menu .sheet .inner{
-  overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;
-  padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  overflow:auto;-webkit-overflow-scrolling:touch;
+  padding:12px 12px calc(96px + env(safe-area-inset-bottom,0px)); /* big bottom pad so last item is never hidden */
 }
 .menu .sheet .footer{
+  position:sticky;bottom:0;left:0;right:0;
   display:flex;justify-content:flex-end;gap:8px;
   padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
   border-top:1px solid var(--line);background:var(--panel-2)
@@ -87,7 +88,7 @@ button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--
 .menu .sheet .item:hover{border-color:var(--line);background:var(--panel)}
 .menu .sheet hr{border:none;border-top:1px solid var(--line);margin:8px 0}
 
-/* When modal open: lock scroll + hide dock */
+/* Lock scroll + hide dock while sheet open */
 body.sheet-open{overflow:hidden}
 body.sheet-open .dock{transform:translateY(120%); opacity:.01; pointer-events:none;}
 
@@ -134,14 +135,19 @@ small.muted{color:var(--muted);font-size:var(--fs-sm)}
 .board-wrap{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0a0c10}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid var(--line);background:#0b0d12}
 .zoom{margin-left:auto;display:flex;gap:8px}
+
+/* size tuning */
 .board{
-  position:relative;height:72vh;min-height:560px;
+  position:relative;height:68vh;min-height:560px;
   background:
     linear-gradient(#0e1117,#0e1117) padding-box,
     radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px) border-box;
   background-size:20px 20px;
   touch-action:none;
 }
+@media(min-width:1200px){ .board{height:72vh} }
+@media(max-width:720px){ .board{height:62vh;min-height:420px} }
+
 svg#canvas{width:100%;height:100%;display:block}
 .snap-hint{position:absolute;left:10px;bottom:10px;font-size:12px;color:#9fb3c9;background:#0b0d12;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
 
@@ -488,7 +494,7 @@ $('#sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 const nodesG=$('#nodes'), linksG=$('#links'), viewport=$('#viewport'), canvas=$('#canvas'), board=$('#board'), mini=$('#mini');
 
 /* ===== State / persistence ===== */
-const LS_KEY='cmx.caseworkspace.v7';
+const LS_KEY='cmx.caseworkspace.v8';
 let state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
 try{const raw=localStorage.getItem(LS_KEY); if(raw) state=JSON.parse(raw);}catch(e){}
 function debounce(fn,ms){let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a),ms)}}
