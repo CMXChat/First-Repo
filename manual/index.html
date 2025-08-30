@@ -67,8 +67,11 @@ code,kbd,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
   background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));
   display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5);
   transition:transform .18s, opacity .2s;
+  /* ——— Made invisible but still present in DOM ——— */
+  opacity:0;
+  pointer-events:none;
 }
-.side-launcher.hidden{transform:translateY(-10px);opacity:.15;pointer-events:none}
+.side-launcher.hidden{transform:translateY(-10px);opacity:0;pointer-events:none}
 .side-launcher svg{width:26px;height:26px;stroke:var(--accent)}
 .side-close{
   position:fixed;left:86px;top:92px;z-index:45;
@@ -169,7 +172,7 @@ small{font-size:var(--fs-small)}
   </div>
 </header>
 
-<!-- ===== Floating menu trigger ===== -->
+<!-- ===== Floating menu trigger (kept, but invisible above) ===== -->
 <button class="side-launcher" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
   <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
 </button>
@@ -549,27 +552,25 @@ const sidEl=document.getElementById('sid');
 sidEl.textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 document.getElementById('btnExport').onclick=()=>window.print();
 
-/* ===== Off-canvas menu (fixed) ===== */
+/* ===== Off-canvas menu (unchanged logic) ===== */
 const sidebar=document.getElementById('sidebar');
 const launcher=document.getElementById('menuBtn');
 const closer=document.getElementById('menuClose');
 const backdrop=document.getElementById('backdrop');
 
 function positionCloser(){
-  // Keep the close button aligned just outside the open sidebar
   if(!sidebar.classList.contains('open')) return;
   const w = sidebar.offsetWidth || 280;
   closer.style.left = (w + 8) + 'px';
   closer.hidden = false;
 }
-
 function openMenu(){
   sidebar.classList.add('open');
   backdrop.classList.add('show');
   closer.classList.add('show');
   launcher.classList.add('hidden');
   launcher.setAttribute('aria-expanded','true');
-  document.body.style.overflow='hidden'; // lock scroll
+  document.body.style.overflow='hidden';
   positionCloser();
 }
 function closeMenu(){
@@ -587,7 +588,7 @@ backdrop.addEventListener('click',closeMenu);
 window.addEventListener('resize',positionCloser);
 window.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeMenu(); });
 
-/* Auto-hide launcher on scroll to keep mobile clear */
+/* Auto-hide launcher logic remains; button is invisible anyway */
 let lastY=0;
 window.addEventListener('scroll',()=>{
   const y=window.scrollY;
