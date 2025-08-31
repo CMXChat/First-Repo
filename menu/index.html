@@ -86,7 +86,14 @@ body{
   <div class="wrap">
     <section class="head" aria-labelledby="hdr">
       <h1 id="hdr">Select your channel</h1>
-      <p class="sub">Choose your node. Five paths active. <span class="hide-xs">Hotkeys: <kbd>1</kbd> OSINT • <kbd>2</kbd> Manual • <kbd>3</kbd> Report • <kbd>4</kbd> Resources • <kbd>5</kbd> Workspace • <kbd>Enter</kbd> to launch.</span></p>
+      <p class="sub">
+        Choose your node. <b>Six</b> paths active.
+        <span class="hide-xs">Hotkeys:
+          <kbd>1</kbd> OSINT • <kbd>2</kbd> Manual • <kbd>3</kbd> Report •
+          <kbd>4</kbd> Resources • <kbd>5</kbd> Workspace • <kbd>6</kbd> Metadata •
+          <kbd>Enter</kbd> to launch.
+        </span>
+      </p>
     </section>
 
     <nav class="cards" aria-label="Destinations">
@@ -118,11 +125,18 @@ body{
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
-      <!-- NEW: Workspace card -->
       <a class="card" id="card-workspace" href="https://db.cmxchat.com/workspace">
         <h2>Case Workspace</h2>
         <p>Board + timeline builder. Nodes, red string, events; export gorgeous PDFs.</p>
         <span class="tag">db.cmxchat.com/workspace</span>
+        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </a>
+
+      <!-- NEW: Metadata Extractor -->
+      <a class="card" id="card-metadata" href="https://db.cmxchat.com/metadata">
+        <h2>Metadata Extractor</h2>
+        <p>Inspect EXIF/GPS, media specs, PDF info, and file headers—private, in-browser.</p>
+        <span class="tag">db.cmxchat.com/metadata</span>
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
       <!-- /NEW -->
@@ -144,7 +158,8 @@ const cards=[
   document.getElementById('card-manual'),
   document.getElementById('card-report'),
   document.getElementById('card-resources'),
-  document.getElementById('card-workspace')
+  document.getElementById('card-workspace'),
+  document.getElementById('card-metadata')
 ];
 let idx=0;
 function setActive(i){
@@ -152,7 +167,7 @@ function setActive(i){
   cards.forEach((c,j)=>c.classList.toggle('active', j===idx));
   cards[idx].focus({preventScroll:true});
 }
-window.setActive=setActive; // expose for any future add-ons
+window.setActive=setActive;
 cards.forEach(c=>c.setAttribute('tabindex','0'));
 window.addEventListener('keydown',e=>{
   if(e.key==='1'){ setActive(0); }
@@ -160,6 +175,7 @@ window.addEventListener('keydown',e=>{
   else if(e.key==='3'){ setActive(2); }
   else if(e.key==='4'){ setActive(3); }
   else if(e.key==='5'){ setActive(4); }
+  else if(e.key==='6'){ setActive(5); }
   else if(e.key==='ArrowRight' || e.key==='ArrowDown'){ setActive(idx+1); }
   else if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ setActive(idx-1); }
   else if(e.key==='Enter'){ window.location.href = cards[idx].href; }
@@ -170,3 +186,4 @@ cards.forEach(c=>{
 </script>
 </body>
 </html>
+```0
