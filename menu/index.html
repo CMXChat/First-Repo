@@ -89,8 +89,8 @@ body{
       <p class="sub">
         Choose your node. <b>Seven</b> paths active.
         <span class="hide-xs">Hotkeys:
-          <kbd>1</kbd> OSINT • <kbd>2</kbd> Workspace • <kbd>3</kbd> Metadata •
-          <kbd>4</kbd> Manual • <kbd>5</kbd> Report • <kbd>6</kbd> Resources • <kbd>7</kbd> Phone Intel •
+          <kbd>1</kbd> OSINT • <kbd>2</kbd> Phone Intel • <kbd>3</kbd> Workspace • <kbd>4</kbd> Metadata •
+          <kbd>5</kbd> Manual • <kbd>6</kbd> Report • <kbd>7</kbd> Resources •
           <kbd>Enter</kbd> to launch.
         </span>
       </p>
@@ -105,7 +105,15 @@ body{
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
-      <!-- 2. Workspace -->
+      <!-- 2. Phone Intel -->
+      <a class="card" id="card-phone" href="https://db.cmxchat.com/phone">
+        <h2>Phone Intel</h2>
+        <p>Parse, enrich, and pivot numbers. Identify type, country, risk flags, and traces.</p>
+        <span class="tag">db.cmxchat.com/phone</span>
+        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+      </a>
+
+      <!-- 3. Workspace -->
       <a class="card" id="card-workspace" href="https://db.cmxchat.com/workspace">
         <h2>Case Workspace</h2>
         <p>Board + timeline builder. Nodes, red string, events; export gorgeous PDFs.</p>
@@ -113,7 +121,7 @@ body{
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
-      <!-- 3. Metadata -->
+      <!-- 4. Metadata -->
       <a class="card" id="card-metadata" href="https://db.cmxchat.com/metadata">
         <h2>Metadata Extractor</h2>
         <p>Inspect EXIF/GPS, media specs, PDF info, and file headers—private, in-browser.</p>
@@ -121,7 +129,7 @@ body{
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
-      <!-- 4. Manual -->
+      <!-- 5. Manual -->
       <a class="card" id="card-manual" href="https://db.cmxchat.com/manual">
         <h2>Field Manual</h2>
         <p>Doctrine, redlines, and checklists. Tradecraft compressed into ops-ready briefs.</p>
@@ -129,7 +137,7 @@ body{
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
-      <!-- 5. Report -->
+      <!-- 6. Report -->
       <a class="card" id="card-report" href="https://db.cmxchat.com/report">
         <h2>Create Report</h2>
         <p>Draft intel packets, format for Discord or PDF, ship to command without delay.</p>
@@ -137,19 +145,11 @@ body{
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
 
-      <!-- 6. Resources -->
+      <!-- 7. Resources -->
       <a class="card" id="card-resources" href="https://db.cmxchat.com/resources">
         <h2>Resource Library</h2>
         <p>Curated OSINT directories, tool indexes, and training links. One hub for pivots.</p>
         <span class="tag">db.cmxchat.com/resources</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-
-      <!-- 7. Phone Intel -->
-      <a class="card" id="card-phone" href="https://db.cmxchat.com/phone">
-        <h2>Phone Intel</h2>
-        <p>Parse, enrich, and pivot numbers. Identify type, country, risk flags, and traces.</p>
-        <span class="tag">db.cmxchat.com/phone</span>
         <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
       </a>
     </nav>
@@ -167,12 +167,12 @@ document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10
 /* Keyboard nav */
 const cards=[
   document.getElementById('card-osint'),     // 1
-  document.getElementById('card-workspace'), // 2
-  document.getElementById('card-metadata'),  // 3
-  document.getElementById('card-manual'),    // 4
-  document.getElementById('card-report'),    // 5
-  document.getElementById('card-resources'), // 6
-  document.getElementById('card-phone')      // 7
+  document.getElementById('card-phone'),     // 2
+  document.getElementById('card-workspace'), // 3
+  document.getElementById('card-metadata'),  // 4
+  document.getElementById('card-manual'),    // 5
+  document.getElementById('card-report'),    // 6
+  document.getElementById('card-resources')  // 7
 ];
 let idx=0;
 function setActive(i){
