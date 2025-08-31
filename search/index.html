@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>CMX • OSINT Lab — Dorking+</title>
+<meta name="color-scheme" content="dark">
+<style>
+:root{
+  --bg:#000; --panel:#0b0c0e; --panel-2:#111317; --panel-3:#0a0c10;
+  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f; --warn:#f6c76f;
+  --r:18px; --pad:clamp(12px,3vw,22px);
+  --fs-xl:clamp(24px,6vw,40px); --fs-lg:clamp(17px,3.2vw,22px);
+  --fs:clamp(14px,3vw,16px); --fs-sm:clamp(12px,2.6vw,13.5px);
+  --maxw:1100px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+html{scroll-behavior:smooth;overscroll-behavior:contain}
+body{
+  margin:0;background:
+    radial-gradient(1200px 600px at 20% -10%,rgba(29,155,240,.08),transparent),
+    radial-gradient(1200px 600px at 120% 100%,rgba(130,200,255,.06),transparent),
+    var(--bg);
+  color:var(--ink);
+  font:400 var(--fs)/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  -webkit-text-size-adjust:100%;
+}
+a{color:#cfe9ff;text-decoration:none} a:hover{text-decoration:underline}
+kbd{border:1px solid var(--line);border-bottom-color:#1a1d22;background:#0d0f12;border-radius:6px;padding:2px 5px;font-size:11px}
+hr{border:none;border-top:1px solid var(--line);margin:14px 0}
+.small{font-size:var(--fs-sm);color:var(--muted)}
+.hide{display:none}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:var(--pad);background:rgba(0,0,0,.72);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.2px;min-width:0}
+.logo{flex:0 0 30px;height:30px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.logo svg{width:18px;height:18px;fill:var(--accent)}
+.title{font-size:var(--fs-lg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:var(--fs-sm);white-space:nowrap}
+
+/* Layout */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad) calc(var(--pad) + env(safe-area-inset-bottom,0px))}
+.hero{padding:calc(var(--pad) + 6px) 0 var(--pad)}
+.hero h1{margin:.2rem 0 .35rem;font-size:var(--fs-xl);line-height:1.15}
+.hero .sub{color:var(--muted);font-size:var(--fs-sm)}
+.quicknav{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.qbtn{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-weight:800}
+
+/* Cards & grids */
+.grid{display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:1fr}
+@media(min-width:980px){.grid{grid-template-columns:1fr 1fr}}
+.card{border:1px solid var(--line);background:var(--panel-2);border-radius:16px;padding:16px}
+.card h2{margin:.2rem 0 .6rem;font-size:var(--fs-lg)}
+.card h3{margin:.2rem 0 .4rem}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 180px}
+.panel{border:1px dashed var(--line);border-radius:14px;background:var(--panel-3);padding:12px}
+.badge{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#0e1013;font-size:12px}
+
+/* Inputs & buttons */
+label{display:block;margin:8px 0 6px;font-weight:800}
+input,select,textarea{
+  width:100%;padding:12px 14px;border-radius:14px;background:var(--panel);
+  border:1px solid var(--line);color:var(--ink);outline:none;font-size:var(--fs)
+}
+.btn{
+  --b:var(--accent); --bg1:rgba(29,155,240,.22); --bg2:rgba(29,155,240,.08);
+  all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 16px;border-radius:999px;font-weight:900;letter-spacing:.2px;
+  border:1px solid var(--b); background:linear-gradient(180deg,var(--bg1),var(--bg2)); color:var(--ink);
+  transition:transform .12s ease, border-color .12s ease, box-shadow .12s ease; text-align:center
+}
+.btn:active{transform:translateY(1px)}
+.btn.primary{--b:var(--accent);--bg1:rgba(29,155,240,.28)}
+.btn.ok{--b:var(--ok);--bg1:rgba(25,195,125,.22);--bg2:rgba(25,195,125,.08)}
+.btn.ghost{--b:var(--line);--bg1:transparent;--bg2:transparent}
+.btn.block{width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#0e1013;cursor:pointer;font-size:13px}
+.chip-btn.active{outline:2px solid #2563eb66}
+
+/* Evidence locker table */
+.table-wrap{border:1px solid var(--line);border-radius:12px;background:#0a0c10;overflow:hidden}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+thead th{position:sticky;top:0;background:#0b0d12}
+@media(max-width:760px){
+  table, thead, tbody, th, td, tr{display:block}
+  thead{display:none}
+  tbody tr{border-bottom:1px dashed var(--line);padding:8px 10px}
+  td{border:none;padding:6px 0}
+  td[data-label]::before{content:attr(data-label) ": "; color:var(--muted);font-weight:700}
+}
+
+/* Toast */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#0b0d12;border:1px solid var(--line);border-radius:12px;
+  padding:8px 12px;font-size:12.5px;color:#cfe9ff;display:none;z-index:90
+}
+.toast.show{display:block;animation:fade 2.2s ease both}
+@keyframes fade{0%{opacity:0;transform:translate(-50%,6px)}10%{opacity:1;transform:translate(-50%,0)}90%{opacity:1}100%{opacity:0;transform:translate(-50%,-6px)}}
+
+footer{text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px}
+
+/* Print */
+@media print{
+  .topbar,.btn,.chips{display:none!important}
+  a{color:#000;text-decoration:underline}
+  body{background:#fff;color:#000}
+  .card{background:#fff;border-color:#ddd}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
+    </div>
+    <div class="title">CMX • OSINT Lab — Dorking+</div>
+  </div>
+  <span class="chip">Session <b id="sid"></b></span>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <h1>Smarter Google dorks. Fewer clicks. Mobile-first.</h1>
+    <p class="sub">Enter what you know, choose a preset, and open batches. PII masking is on by default.</p>
+    <div class="quicknav">
+      <button class="qbtn" data-goto="#inputs">Inputs</button>
+      <button class="qbtn" data-goto="#dorking">Dorking+</button>
+      <button class="qbtn" data-goto="#locker">Evidence Locker</button>
+      <button class="qbtn" data-goto="#help">Help</button>
+    </div>
+  </section>
+
+  <!-- INPUTS -->
+  <section class="card" id="inputs">
+    <h2>Inputs</h2>
+    <div class="grid">
+      <div>
+        <label for="fullName">Full name</label>
+        <input id="fullName" placeholder='e.g., "Jordan Avery"'>
+      </div>
+      <div>
+        <label for="aliases">Aliases / nicknames (comma)</label>
+        <input id="aliases" placeholder="J. Avery, Jordy, Jordan A.">
+      </div>
+      <div>
+        <label for="usernames">Usernames / handles (comma)</label>
+        <input id="usernames" placeholder="@jordy.a, jordan_22, javery">
+      </div>
+      <div>
+        <label for="locations">Cities / regions (comma)</label>
+        <input id="locations" placeholder="Tel Aviv, NYC">
+      </div>
+      <div>
+        <label for="keywords">Keywords (school, employer, hobby)</label>
+        <input id="keywords" placeholder='e.g., "PSU", barista, volleyball'>
+      </div>
+      <div>
+        <label for="age">Age / year (optional)</label>
+        <input id="age" placeholder="22 or 2002">
+      </div>
+      <div>
+        <label for="email">Email (optional)</label>
+        <input id="email" placeholder="j.avery@example.com">
+      </div>
+      <div>
+        <label for="phone">Phone (optional)</label>
+        <input id="phone" placeholder="+1 555 123 4567">
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:10px">
+      <h3 style="margin-top:0">One-click presets</h3>
+      <div class="chips" id="presets">
+        <span class="chip-btn" data-preset="basic">Basic web</span>
+        <span class="chip-btn" data-preset="social">Social sweep</span>
+        <span class="chip-btn" data-preset="rosters">School/roster docs</span>
+        <span class="chip-btn" data-preset="official">Gov/official</span>
+      </div>
+      <p class="small" style="margin-top:6px">Presets set site packs & operators for Dorking+ (you can still tweak).</p>
+    </div>
+
+    <div class="row" style="margin-top:12px;align-items:center">
+      <label style="display:inline-flex;gap:10px;align-items:center;flex:2">
+        <input type="checkbox" id="maskPII" checked>
+        <span class="badge">Mask PII in display</span>
+      </label>
+      <button class="btn primary" id="runAll" style="flex:1">Run All</button>
+      <button class="btn ghost" id="clearAll" style="flex:1">Clear</button>
+    </div>
+  </section>
+
+  <!-- DORKING+ -->
+  <section class="card" id="dorking">
+    <h2>Dorking+ Matrix (packs • operators • batches)</h2>
+    <p class="small">Pick site packs & operators, generate ranked queries, and open in batches.</p>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Site packs</h3>
+        <div class="chips" id="packChips">
+          <span class="chip-btn" data-pack="social">Social</span>
+          <span class="chip-btn" data-pack="forums">Forums</span>
+          <span class="chip-btn" data-pack="news">News</span>
+          <span class="chip-btn" data-pack="edu">.edu / academic</span>
+          <span class="chip-btn" data-pack="gov">.gov / official</span>
+          <span class="chip-btn" data-pack="code">Dev/code</span>
+          <span class="chip-btn" data-pack="cloud">Cloud/files</span>
+          <span class="chip-btn" data-pack="images">Image hosts</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Operators</h3>
+        <div class="chips" id="opsChips">
+          <span class="chip-btn" data-op="intitle:">intitle:</span>
+          <span class="chip-btn" data-op="inurl:">inurl:</span>
+          <span class="chip-btn" data-op="-pinterest -aliexpress -depositphotos">de-spam</span>
+          <span class="chip-btn" data-op="filetype:pdf">filetype:pdf</span>
+          <span class="chip-btn" data-op="filetype:xls OR filetype:xlsx">filetype:xls/xlsx</span>
+          <span class="chip-btn" data-op="cache:">cache:</span>
+          <span class="chip-btn" data-op="related:">related:</span>
+        </div>
+        <label for="extraOps">Extra operators (freeform)</label>
+        <input id="extraOps" placeholder='e.g., intitle:directory OR "class roster"'>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label for="batchSize">Batch open size</label>
+        <select id="batchSize"><option>4</option><option selected>6</option><option>8</option><option>10</option></select>
+      </div>
+      <div>
+        <label for="maxQueries">Max queries</label>
+        <select id="maxQueries"><option>20</option><option selected>40</option><option>60</option></select>
+      </div>
+      <button class="btn primary" id="buildDorks">Build queries</button>
+      <button class="btn ghost" id="copyAllDorks">Copy all</button>
+      <button class="btn ok" id="openNext">Open next batch</button>
+      <button class="btn ghost" id="clearDorks">Clear</button>
+    </div>
+
+    <div id="dorkOut" class="panel" style="margin-top:10px">
+      <span class="small">Your queries will appear here. Each row has <b>Open</b>, <b>Copy</b>, <b>Explain</b>, and <b>Save</b>.</span>
+    </div>
+  </section>
+
+  <!-- EVIDENCE LOCKER -->
+  <section class="card" id="locker">
+    <h2>Evidence Locker</h2>
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table aria-label="Locker">
+          <thead><tr><th>Type</th><th>Label</th><th>Value</th><th>Actions</th></tr></thead>
+          <tbody id="lockerBody">
+            <tr><td data-label="Type">—</td><td data-label="Label">—</td><td data-label="Value">—</td><td data-label="Actions">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn ghost" id="lockerCopy">Copy all</button>
+      <button class="btn ghost" id="lockerClear">Clear</button>
+    </div>
+    <p class="small" style="margin-top:8px">Tip: Use “Save” on queries to add them here.</p>
+  </section>
+
+  <!-- HELP -->
+  <section class="card" id="help">
+    <h2>Quick help</h2>
+    <div class="panel">
+      <ol class="small" style="margin:0;padding-left:18px">
+        <li>Fill any of: <b>name</b>, <b>aliases</b>, <b>usernames</b>, <b>cities</b>, <b>keywords</b>.</li>
+        <li>Click a <b>preset</b> (e.g., Social sweep).</li>
+        <li>Press <b>Build queries</b> → <b>Open next batch</b> until finished.</li>
+        <li>Copy/Save useful results to the <b>Locker</b>.</li>
+        <li>PII mask hides email/phone in the UI; copying asks before revealing.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>© CMX</footer>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+/* Utils */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+$('#sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
+function toast(msg){const t=$('#toast');t.textContent=msg||'Done';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function fold(s){return (s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();}
+function uniq(arr){return [...new Set((arr||[]).filter(Boolean))];}
+function q(s){return s?`"${s}"`:''}
+function maskEmail(e){return e.replace(/(^.).*(@.*$)/,'$1****$2')}
+function maskPhone(p){return p.replace(/(\+\d)\d+(?=\d{2}$)/,'$1***').replace(/\d(?=\d{4})/g,'*')}
+
+/* Smooth scroll */
+$$('.qbtn').forEach(b=> b.onclick=()=>{ const id=b.getAttribute('data-goto'); const el=document.querySelector(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); });
+
+/* Packs & operators */
+const PACKS = {
+  social: ['site:facebook.com','site:instagram.com','site:linkedin.com','site:tiktok.com','site:reddit.com','site:twitter.com'],
+  forums: ['site:forums.*','site:boards.*','site:discourse.*','site:stackexchange.com','site:quora.com'],
+  news:   ['site:news.google.com','site:nytimes.com','site:bbc.co.uk','site:reuters.com','site:apnews.com'],
+  edu:    ['site:.edu','site:academia.edu','site:researchgate.net'],
+  gov:    ['site:.gov','site:.gov.*','site:data.gov','site:opencorporates.com'],
+  code:   ['site:github.com','site:gitlab.com','site:stackoverflow.com'],
+  cloud:  ['site:drive.google.com','site:docs.google.com','site:dropbox.com','site:onedrive.live.com'],
+  images: ['site:flickr.com','site:imgur.com','site:commons.wikimedia.org']
+};
+const PRESETS = {
+  basic:   {packs:['news'], ops:['-pinterest -aliexpress -depositphotos']},
+  social:  {packs:['social','forums'], ops:['intitle:','inurl:']},
+  rosters: {packs:['edu','cloud'], ops:['filetype:pdf','filetype:xls OR filetype:xlsx','intitle:directory']},
+  official:{packs:['gov'], ops:['intitle:']}
+};
+
+/* State */
+let selectedPacks = new Set();
+let selectedOps   = new Set();
+let builtQueries = [];
+let nextIndex = 0;
+
+/* Chip toggles */
+function toggleChip(el, set, key){
+  const active = el.classList.toggle('active');
+  active ? set.add(key) : set.delete(key);
+}
+$('#packChips').addEventListener('click', e=>{
+  const c=e.target.closest('.chip-btn'); if(!c) return;
+  toggleChip(c, selectedPacks, c.dataset.pack);
+});
+$('#opsChips').addEventListener('click', e=>{
+  const c=e.target.closest('.chip-btn'); if(!c) return;
+  toggleChip(c, selectedOps, c.dataset.op);
+});
+
+/* Presets */
+$('#presets').addEventListener('click', e=>{
+  const c=e.target.closest('.chip-btn'); if(!c) return;
+  $$('#packChips .chip-btn, #opsChips .chip-btn').forEach(x=>x.classList.remove('active'));
+  selectedPacks.clear(); selectedOps.clear();
+  const p = PRESETS[c.dataset.preset] || {};
+  (p.packs||[]).forEach(k=>{ const el=$(`#packChips .chip-btn[data-pack="${k}"]`); if(el){el.classList.add('active'); selectedPacks.add(k);} });
+  (p.ops||[]).forEach(k=>{ const el=$(`#opsChips .chip-btn[data-op="${k}"]`); if(el){el.classList.add('active'); selectedOps.add(k);} });
+  toast('Preset loaded');
+});
+
+/* Build tokens from inputs */
+function parseComma(id){return uniq((($('#'+id).value)||'').split(',').map(s=>fold(s))).filter(Boolean);}
+function buildCoreTokens(){
+  const name = fold($('#fullName').value);
+  const aliases = parseComma('aliases');
+  const handles = parseComma('usernames').map(v=>v.replace(/^@/,''));
+  const locs = parseComma('locations');
+  const kws  = parseComma('keywords');
+  const age  = fold($('#age').value);
+  const email= fold($('#email').value);
+  const phone= fold($('#phone').value);
+
+  const nameParts = uniq([name, ...aliases]).filter(Boolean);
+  const personExact = name ? q(name) : '';
+  const personLoose = name ? name.split(' ').filter(Boolean).join(' ') : '';
+
+  return {nameParts, handles, locs, kws, age, email, phone, personExact, personLoose};
+}
+
+/* Rank helper */
+function scoreFor(q){
+  let s=0;
+  if(q.includes('"')) s+=2;
+  if(q.match(/site:/)) s+=1;
+  if(q.match(/filetype:/)) s+=1;
+  if(q.match(/-pinterest|-aliexpress|-depositphotos/)) s+=1;
+  return s;
+}
+
+/* Build query list */
+function buildQueryList(){
+  const {nameParts, handles, locs, kws, age, email, phone, personExact, personLoose} = buildCoreTokens();
+  const ops = [...selectedOps];
+  const extraOps = fold($('#extraOps').value);
+  if(extraOps) ops.push(extraOps);
+
+  const sites = [...selectedPacks].flatMap(k=>PACKS[k]||[]);
+  if(sites.length===0) sites.push(''); // plain web
+
+  const baseStrings = [];
+  if(personExact) baseStrings.push(personExact);
+  if(personLoose && !personExact) baseStrings.push(personLoose);
+  nameParts.slice(0,3).forEach(n=> baseStrings.push(q(n)));
+
+  handles.slice(0,5).forEach(h=>{
+    sites.push('site:instagram.com', 'site:twitter.com', 'site:tiktok.com', 'site:reddit.com', 'site:github.com');
+    baseStrings.push(`"${h}"`);
+  });
+
+  if(email) baseStrings.push(q(email));
+  if(phone) baseStrings.push(q(phone));
+
+  const locBlock = locs.length? '('+locs.slice(0,3).map(q).join(' OR ')+')' : '';
+  const kwBlock  = kws.length? '('+kws.slice(0,3).map(q).join(' OR ')+')' : '';
+  const ageToken = age? age : '';
+
+  const combos=[];
+  baseStrings.forEach(bs=>{
+    sites.forEach(site=>{
+      const parts=[site, bs, locBlock, kwBlock, ageToken].filter(Boolean).join(' ').trim();
+      const withOps = ops.length? (parts+' '+ops.join(' ')).trim() : parts;
+      if(withOps) combos.push(withOps);
+    });
+  });
+
+  // unique + ranked
+  const unique = uniq(combos).map(qs=>({qs, score:scoreFor(qs)}));
+  unique.sort((a,b)=>b.score-a.score);
+  const limit = parseInt($('#maxQueries').value,10)||40;
+  return unique.slice(0,limit).map(x=>x.qs);
+}
+
+/* Render query rows */
+function renderQueries(list){
+  const out=$('#dorkOut'); out.innerHTML='';
+  if(!list.length){ out.innerHTML='<span class="small">Nothing to show — add inputs and select a preset or packs.</span>'; return; }
+  list.forEach((qs,i)=>{
+    const href=`https://www.google.com/search?q=${encodeURIComponent(qs)}`;
+    const row=document.createElement('div'); row.className='row'; row.style.alignItems='center';
+    const tag=document.createElement('span'); tag.className='badge'; tag.textContent=String(i+1).padStart(2,'0');
+    const text=document.createElement('span'); text.className='small'; text.style.flex='1'; text.textContent=qs;
+    const open=document.createElement('a'); open.className='btn'; open.textContent='Open'; open.href=href; open.target='_blank'; open.rel='noopener';
+    const copy=document.createElement('button'); copy.className='btn ghost'; copy.textContent='Copy';
+    copy.onclick=()=>navigator.clipboard.writeText(qs).then(()=>toast('Query copied'));
+    const xpl=document.createElement('button'); xpl.className='btn ghost'; xpl.textContent='Explain';
+    xpl.onclick=()=>alert('Why this:\n• Sites/packs selected\n• Exact tokens and optional city/keywords/age\n• Operators for precision or de-spam.');
+    const save=document.createElement('button'); save.className='btn ghost'; save.textContent='Save';
+    save.onclick=()=>addLocker('query','Google',qs);
+    row.append(tag, text, open, copy, xpl, save);
+    out.appendChild(row);
+  });
+}
+
+/* Evidence locker */
+function addLocker(type,label,value){
+  const tb=$('#lockerBody');
+  if(tb.children.length && tb.children[0].querySelector('td')?.textContent==='—'){ tb.innerHTML=''; }
+  const tr=document.createElement('tr');
+  const mask=$('#maskPII').checked;
+  const valMasked = mask ? value.replace(/[\w.+-]+@[\w.-]+/g, m=>maskEmail(m)).replace(/\+?\d[\d\s\-().]{6,}\d/g, m=>maskPhone(m)) : value;
+  tr.innerHTML=`<td data-label="Type">${type}</td><td data-label="Label">${label}</td><td data-label="Value">${valMasked}</td><td data-label="Actions"></td>`;
+  const td=tr.lastElementChild;
+  const btnC=document.createElement('button'); btnC.className='btn ghost'; btnC.textContent='Copy';
+  btnC.onclick=()=>{
+    if(mask && /[*]/.test(valMasked)){
+      if(!confirm('Copy will reveal PII. Continue?')) return;
+    }
+    navigator.clipboard.writeText(value).then(()=>toast('Copied'));
+  };
+  const btnX=document.createElement('button'); btnX.className='btn ghost'; btnX.textContent='Remove';
+  btnX.onclick=()=>{ tr.remove(); };
+  td.append(btnC, btnX);
+  tb.appendChild(tr);
+}
+
+/* Actions */
+$('#buildDorks').onclick=()=>{
+  builtQueries = buildQueryList(); nextIndex=0; renderQueries(builtQueries);
+  toast(`${builtQueries.length} queries built`);
+};
+$('#copyAllDorks').onclick=()=>{
+  if(!builtQueries.length) return toast('Build queries first');
+  navigator.clipboard.writeText(builtQueries.join('\n')).then(()=>toast('All queries copied'));
+};
+$('#openNext').onclick=()=>{
+  if(!builtQueries.length){ toast('Build queries first'); return; }
+  const size=parseInt($('#batchSize').value,10)||6;
+  const slice=builtQueries.slice(nextIndex, nextIndex+size);
+  if(!slice.length){ toast('No more queries'); return; }
+  slice.forEach(qs=>window.open(`https://www.google.com/search?q=${encodeURIComponent(qs)}`,'_blank','noopener'));
+  nextIndex+=slice.length;
+};
+$('#clearDorks').onclick=()=>{ builtQueries=[]; nextIndex=0; $('#dorkOut').innerHTML='<span class="small">Cleared.</span>'; };
+
+$('#lockerCopy').onclick=()=>{
+  const rows=[...$('#lockerBody').querySelectorAll('tr')].map(tr=>[...tr.children].slice(0,3).map(td=>td.textContent).join('\t')).join('\n');
+  if(!rows.trim()) return toast('Locker empty');
+  navigator.clipboard.writeText(rows).then(()=>toast('Locker copied'));
+};
+$('#lockerClear').onclick=()=>{ $('#lockerBody').innerHTML='<tr><td data-label="Type">—</td><td data-label="Label">—</td><td data-label="Value">—</td><td data-label="Actions">—</td></tr>'; };
+
+$('#runAll').onclick=()=>{ $('#buildDorks').click(); $('#openNext').click(); };
+$('#clearAll').onclick=()=>{
+  ['fullName','aliases','usernames','locations','keywords','age','email','phone','extraOps'].forEach(id=>$('#'+id).value='');
+  selectedPacks.clear(); selectedOps.clear();
+  $$('#packChips .chip-btn, #opsChips .chip-btn, #presets .chip-btn').forEach(x=>x.classList.remove('active'));
+  $('#clearDorks').click(); $('#lockerClear').click();
+  toast('Inputs cleared');
+};
+</script>
+</body>
+</html>
+```0
