@@ -93,7 +93,14 @@ section{scroll-margin-top:70px}
 .kbd{border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
 .small{font-size:12px;color:var(--muted)}
 
-  /* --- Mobile size fixes (non-destructive) --- */
+/* --- DNS table mobile wrap fix --- */
+table.meta td{
+  white-space:pre-wrap;            /* keep spacing/pipes but allow wraps */
+  overflow-wrap:anywhere;          /* break very long tokens (SPF/verification strings) */
+  word-break:break-word;
+}
+
+/* --- Mobile size fixes (non-destructive) --- */
 @media (max-width: 480px){
   html,body{font-size:15px}
   .topbar{padding:8px 10px}
@@ -112,21 +119,23 @@ section{scroll-margin-top:70px}
   input[type=text],input[type=email],input[type=file],textarea{padding:10px;font-size:14px}
   .btn{padding:10px 14px;font-size:14px}
 
-  .links{grid-template-columns:1fr}   /* keep link groups single column */
+  .links{grid-template-columns:1fr}
   #gravBox{width:72px;height:72px}
   #map{height:280px}
 
   .terminal{min-height:120px;max-height:200px;font-size:13px}
   .chip-btn{padding:5px 8px;font-size:12px}
+
+  /* Keep DNS table inside the card bounds while still wrapping */
+  table.meta{max-width:100%; overflow-x:auto}
 }
 
 /* ultra-small devices */
 @media (max-width: 360px){
-  .chip{display:none}                 /* hide session chip to save space */
+  .chip{display:none}
   .top-actions{gap:6px}
 }
-  
-  </style>
+</style>
 </head>
 <body>
 <header class="topbar" role="banner">
