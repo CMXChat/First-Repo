@@ -10,15 +10,14 @@
   --bg:#000; --panel:#0b0c0e; --panel-2:#111317; --panel-3:#0a0c10;
   --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
   --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f; --warn:#f6c76f; --vio:#b072ff;
-  --r:16px; --pad:clamp(12px,2.6vw,22px);
-  --fs-xl:clamp(22px,5.6vw,42px);
-  --fs-lg:clamp(17px,3.2vw,22px);
-  --fs:clamp(14px,3vw,16px);
-  --fs-sm:clamp(12px,2.5vw,13.5px);
+  --r:16px; --pad:clamp(12px,2.8vw,22px);
+  --fs-xl:clamp(22px,5.6vw,42px); --fs-lg:clamp(17px,3.2vw,22px);
+  --fs:clamp(14px,3vw,16px); --fs-sm:clamp(12px,2.5vw,13.5px);
   --maxw:1260px;
 }
 *{box-sizing:border-box}
-html,body{height:100%;overscroll-behavior:contain}
+html,body{height:100%}
+html{overscroll-behavior:contain}
 body{
   margin:0;background:
     radial-gradient(1200px 600px at 20% -10%,rgba(29,155,240,.08),transparent),
@@ -37,7 +36,8 @@ hr{border:none;border-top:1px solid var(--line);margin:14px 0}
 .topbar{
   position:sticky;top:0;z-index:70;
   display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
-  padding:var(--pad);background:rgba(0,0,0,.72);backdrop-filter:blur(8px);
+  padding:var(--pad);
+  background:rgba(0,0,0,.72);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line)
 }
 .brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.2px;min-width:0}
@@ -53,7 +53,7 @@ hr{border:none;border-top:1px solid var(--line);margin:14px 0}
 .seg button.active{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-left:1px solid var(--line);border-right:1px solid var(--line)}
 button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
 
-/* ===== Centered modal for Export ===== */
+/* ===== Centered modal (Export) ===== */
 .menu{position:relative;display:inline-flex;z-index:1000}
 .modal-backdrop{
   position:fixed;inset:0;display:none;z-index:1001;
@@ -66,8 +66,7 @@ button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--
   box-shadow:0 30px 120px rgba(0,0,0,.65);
   display:none; z-index:1002;
 }
-.modal.open{display:block}
-.modal-backdrop.open{display:block}
+.modal.open{display:block} .modal-backdrop.open{display:block}
 .modal header{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
   padding:10px 12px;border-bottom:1px solid var(--line);background:#0b0d12;border-radius:16px 16px 0 0
@@ -89,8 +88,7 @@ body.modal-open{overflow:hidden}
 .sub{color:var(--muted);font-size:var(--fs-sm)}
 
 /* ===== Views ===== */
-.view{display:none}
-.view.is-active{display:block}
+.view{display:none} .view.is-active{display:block}
 
 /* ===== Grid ===== */
 .grid{display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:minmax(280px,360px) 1fr}
@@ -121,7 +119,7 @@ textarea{resize:vertical;min-height:96px}
 small.muted{color:var(--muted);font-size:var(--fs-sm)}
 .note-inline{color:#cfe9ff}
 
-/* ===== Board (balanced size) ===== */
+/* ===== Board ===== */
 .board-wrap{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0a0c10}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid var(--line);background:#0b0d12}
 .zoom{margin-left:auto;display:flex;gap:8px}
@@ -131,7 +129,9 @@ small.muted{color:var(--muted);font-size:var(--fs-sm)}
     linear-gradient(#0e1117,#0e1117) padding-box,
     radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px) border-box;
   background-size:20px 20px;
-  touch-action:none; /* enables custom pan/zoom/drag/lasso */
+  touch-action:none; /* custom pan/zoom/drag */
+  -webkit-user-select:none; user-select:none;
+  -webkit-tap-highlight-color:transparent;
 }
 @media(min-width:1200px){ .board{height:70vh;min-height:560px} }
 @media(max-width:720px){ .board{height:60vh;min-height:420px} }
@@ -190,6 +190,8 @@ svg#canvas{width:100%;height:100%;display:block}
 .dock .btn{flex:1 1 auto;text-align:center}
 @media(min-width:960px){.dock{display:none}}
 
+footer{ text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px }
+
 /* ===== Print ===== */
 @media print{
   body{background:#fff;color:#000}
@@ -214,21 +216,18 @@ svg#canvas{width:100%;height:100%;display:block}
   @page { size: A4 portrait; margin: 12mm; }
 }
 
-/* Cover */
+/* Cover for combined print */
 .print-cover{display:none;border:1px solid #ddd;border-radius:12px;padding:18px}
 .print-cover h1{margin:0 0 6px}
 .print-kv{display:grid;grid-template-columns:1fr 2fr;gap:6px}
 .print-kv div{padding:6px;border-bottom:1px solid #eee}
 
-/* Toast */
+/* ===== Toast ===== */
 .toast{
   position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#0b0d12;border:1px solid var(--line);border-radius:12px;
   padding:8px 12px;font-size:12.5px;color:#cfe9ff;display:none;z-index:90
 }
 .toast.show{display:block;animation:fade 2.2s ease both}
-.toast.ok{border-color:var(--ok)}
-.toast.warn{border-color:var(--warn)}
-.toast.bad{border-color:var(--bad)}
 @keyframes fade{0%{opacity:0;transform:translate(-50%,6px)}10%{opacity:1;transform:translate(-50%,0)}90%{opacity:1}100%{opacity:0;transform:translate(-50%,-6px)}}
 </style>
 </head>
@@ -283,7 +282,7 @@ svg#canvas{width:100%;height:100%;display:block}
     <h1 id="caseTitle">Case Workspace</h1>
     <p class="sub">
       Unified board + timeline. <b>Hotkeys:</b> <kbd>N</kbd> note • <kbd>I</kbd> image • <kbd>L</kbd> arrow • <kbd>G</kbd> string • <kbd>Del</kbd> delete • <kbd>0</kbd> reset view • <kbd>/</kbd> search timeline.<br>
-      <span class="note-inline">Mobile: tap to select when Multi-select is ON • long-press a node to toggle selection • two-finger tap toggles Multi-select • long-press empty space to start a lasso.</span>
+      <span class="note-inline">Mobile: when Multi-select is <b>ON</b>, <b>tap</b> notes to add/remove them • when it's <b>OFF</b>, <b>long-press</b> a note to toggle selection • two-finger tap toggles Multi-select • long-press empty space to start a lasso.</span>
     </p>
   </section>
 
@@ -340,7 +339,7 @@ svg#canvas{width:100%;height:100%;display:block}
           <button class="btn" id="btnLinkArrow">Connect selected, arrow</button>
           <button class="btn ghost" id="btnLinkString">Connect selected, string</button>
         </div>
-        <small class="muted">Pick two nodes. Tap to multi-select when Multi-select is ON or long-press nodes.</small>
+        <small class="muted">Pick two nodes. Tap when Multi-select is ON or long-press nodes when it's OFF.</small>
 
         <hr>
 
@@ -476,8 +475,8 @@ svg#canvas{width:100%;height:100%;display:block}
   </div>
 </nav>
 
-<footer style="text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px">© CMX</footer>
-<div class="toast" id="toast" role="status" aria-live="polite">Saved</div>
+<footer>© CMX</footer>
+<div class="toast" id="toast">Saved</div>
 
 <script>
 /* ===== DOM utils ===== */
@@ -485,22 +484,12 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 $('#sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 const nodesG=$('#nodes'), linksG=$('#links'), viewport=$('#viewport'), canvas=$('#canvas'), board=$('#board'), mini=$('#mini');
 
-/* ===== Toast helper ===== */
-function toast(msg, variant=''){
-  const t=$('#toast');
-  t.textContent=msg;
-  t.className='toast show'+(variant?(' '+variant):'');
-  // tap to dismiss early
-  const hide=()=>t.classList.remove('show');
-  t.onclick=hide;
-  setTimeout(hide,2200);
-}
-
 /* ===== State / persistence ===== */
-const LS_KEY='cmx.caseworkspace.v12';
+const LS_KEY='cmx.caseworkspace.v13';
 let state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
 try{const raw=localStorage.getItem(LS_KEY); if(raw) state=JSON.parse(raw);}catch(e){}
 function debounce(fn,ms){let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a),ms)}}
+function pingToast(msg){const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1900)}
 const save=debounce(()=>{ localStorage.setItem(LS_KEY, JSON.stringify(state)); document.dispatchEvent(new Event('cmx-saved')); },320);
 
 function freshId(){return Math.random().toString(36).slice(2,10)}
@@ -513,7 +502,7 @@ function pushUndo(){ undo.push(JSON.stringify(state)); if(undo.length>50) undo.s
 function doUndo(){ if(!undo.length) return; const cur=JSON.stringify(state); redo.push(cur); const prev=undo.pop(); if(prev){state=JSON.parse(prev); localStorage.setItem(LS_KEY,prev); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();}}
 function doRedo(){ if(!redo.length) return; const next=redo.pop(); if(next){ undo.push(JSON.stringify(state)); state=JSON.parse(next); localStorage.setItem(LS_KEY,next); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();}}
 $('#btnUndo').onclick=doUndo; $('#btnRedo').onclick=doRedo;
-document.addEventListener('cmx-saved',()=>{ pushUndo(); $('#autosaveHint').textContent='(saved)'; toast('Saved','ok'); });
+document.addEventListener('cmx-saved',()=>{ pushUndo(); $('#autosaveHint').textContent='(saved)'; pingToast('Saved'); });
 
 /* ===== Tabs ===== */
 function show(v){ $$('#boardView,#timeView').forEach(el=>el.classList.remove('is-active')); $('#'+v+'View').classList.add('is-active'); }
@@ -522,32 +511,22 @@ $('#tabTime').onclick =()=>{show('time');  $('#tabTime').classList.add('active')
 show('board');
 
 /* ===== Export modal ===== */
-const openExportBtn=$('#openExport');
-const modal=$('#exportModal');
-const modalBg=$('#modalBg');
-const modalInner=$('#modalInner');
-const closeModalBtn=$('#closeModal');
-const doneModalBtn=$('#doneModal');
-function openModal(){
-  if(modal.classList.contains('open')) return;
+const openExportBtn=$('#openExport'), modal=$('#exportModal'), modalBg=$('#modalBg'), modalInner=$('#modalInner'), closeModalBtn=$('#closeModal'), doneModalBtn=$('#doneModal');
+function openModal(){ if(modal.classList.contains('open')) return;
   document.body.classList.add('modal-open');
   modal.hidden=false; modalBg.hidden=false;
   modal.classList.add('open'); modalBg.classList.add('open');
   openExportBtn.setAttribute('aria-expanded','true');
   modalInner.scrollTop=0; modalInner.focus({preventScroll:true});
 }
-function closeModal(){
-  if(!modal.classList.contains('open')) return;
+function closeModal(){ if(!modal.classList.contains('open')) return;
   document.body.classList.remove('modal-open');
   modal.classList.remove('open'); modalBg.classList.remove('open');
   modal.hidden=true; modalBg.hidden=true;
   openExportBtn.setAttribute('aria-expanded','false');
 }
-openExportBtn.onclick=()=>openModal();
-$('#dockExport').onclick=()=>openModal();
-closeModalBtn.onclick=()=>closeModal();
-doneModalBtn.onclick=()=>closeModal();
-modalBg.onclick=()=>closeModal();
+openExportBtn.onclick=()=>openModal(); $('#dockExport').onclick=()=>openModal();
+closeModalBtn.onclick=()=>closeModal(); doneModalBtn.onclick=()=>closeModal(); modalBg.onclick=()=>closeModal();
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 /* ===== Viewport / pan / zoom ===== */
@@ -562,17 +541,18 @@ $('#zoomIn').onclick =()=>zoomBy(1.15, window.innerWidth/2, window.innerHeight/2
 $('#zoomOut').onclick =()=>zoomBy(1/1.15, window.innerWidth/2, window.innerHeight/2);
 $('#zoomReset').onclick=()=>{state.view={x:0,y:0,k:1}; applyView(); save();};
 
+/* Pan background */
 let panning=false, panOX=0, panOY=0;
 canvas.addEventListener('pointerdown',e=>{ if(e.target===canvas && !lassoMode){ panning=true; panOX=e.clientX; panOY=e.clientY; canvas.setPointerCapture(e.pointerId);} });
 canvas.addEventListener('pointermove',e=>{ if(!panning) return; state.view.x += (e.clientX - panOX); state.view.y += (e.clientY - panOY); panOX=e.clientX; panOY=e.clientY; applyView(); });
 canvas.addEventListener('pointerup',e=>{ if(panning){ panning=false; canvas.releasePointerCapture(e.pointerId); save(); }});
 canvas.addEventListener('wheel',e=>{ e.preventDefault(); zoomBy(e.deltaY<0?1.1:0.9, e.clientX, e.clientY); }, {passive:false});
 
-/* Pinch + two-finger multi-select toggle */
+/* Pinch + two-finger Multi-select toggle */
 let pinch=null;
 canvas.addEventListener('touchstart',e=>{
   if(e.touches.length===2){
-    setAddMode(!addMode);  // two-finger tap toggles multi-select
+    setAddMode(!addMode);
     const [a,b]=e.touches;
     pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY), cx:(a.clientX+b.clientX)/2, cy:(a.clientY+b.clientY)/2};
   }
@@ -586,7 +566,8 @@ canvas.addEventListener('touchmove',e=>{
 canvas.addEventListener('touchend',()=>{pinch=null});
 
 /* ===== Board: nodes & links ===== */
-let sel=new Set(); const SNAP=10;
+let sel=new Set();
+const SNAP=10;
 function screenToWorld(px,py){const {x,y,k}=state.view; const rect=canvas.getBoundingClientRect(); return {x:(px-rect.left-x)/k, y:(py-rect.top-y)/k};}
 
 /* Multi-select mode */
@@ -596,7 +577,7 @@ function setAddMode(v){
   $('#toggleMulti').setAttribute('aria-pressed', addMode?'true':'false');
   $('#multiState').textContent = addMode ? 'On' : 'Off';
   $('#dockMulti').textContent  = addMode ? 'Select ✓' : 'Select +';
-  toast('Multi-select ' + (addMode?'ON':'OFF'), addMode?'ok':'');
+  pingToast('Multi-select ' + (addMode?'ON':'OFF'));
 }
 $('#toggleMulti').onclick = ()=>setAddMode(!addMode);
 $('#dockMulti').onclick   = ()=>setAddMode(!addMode);
@@ -657,35 +638,45 @@ canvas.addEventListener('pointerup',e=>{
 /* Add nodes */
 function addNoteAt(x,y){
   const node={id:freshId(),type:'note',x,y,w:260,h:160,title:$('#title').value.trim()||'Note',details:$('#details').value.trim(),tags:toTags($('#tags').value),color:$('#color').value||'#1d9bf0'};
-  state.nodes.push(node); save(); renderAll(); refreshNodeOptions(); toast('Note added','ok');
+  state.nodes.push(node); save(); renderAll(); refreshNodeOptions();
 }
 function addImageAt(x,y,url){
   const node={id:freshId(),type:'image',x,y,w:280,h:180,title:$('#title').value.trim()||'Image',details:$('#details').value.trim(),tags:toTags($('#tags').value),color:$('#color').value||'#1d9bf0',url};
-  state.nodes.push(node); save(); renderAll(); refreshNodeOptions(); toast('Image added','ok');
+  state.nodes.push(node); save(); renderAll(); refreshNodeOptions();
 }
 
-/* Links */
-function startLink(mode){
-  if(sel.size!==2){ alert('Select two nodes, then choose link type.'); return; }
-  const [a,b]=[...sel]; if(a===b) return;
-  const A=state.nodes.find(n=>n.id===a), B=state.nodes.find(n=>n.id===b);
-  const link={id:freshId(),a,b,kind:mode,cx:(A.x+B.x)/2,cy:(A.y+B.y)/2};
-  state.links.push(link); save(); renderAll(); toast('Nodes connected','ok');
+/* Link two selected nodes */
+function startLink(kind){
+  if(sel.size!==2){ alert('Select two nodes first.'); return; }
+  const [a,b]=[...sel];
+  const A=state.nodes.find(n=>n.id===a), B=state.nodes.find(n=>n.id===b); if(!A||!B) return;
+  const link={id:freshId(),a,b,kind,cx:(A.x+B.x)/2,cy:(A.y+B.y)/2};
+  state.links.push(link); save(); renderAll();
 }
 function deleteSelected(){
   if(sel.size===0) return;
-  const ids=[...sel]; state.links=state.links.filter(L=>!ids.includes(L.a)&&!ids.includes(L.b));
-  state.nodes=state.nodes.filter(n=>!ids.includes(n.id)); sel.clear(); save(); renderAll(); refreshNodeOptions(); toast('Deleted','warn');
+  const ids=[...sel];
+  state.links=state.links.filter(L=>!ids.includes(L.a)&&!ids.includes(L.b));
+  state.nodes=state.nodes.filter(n=>!ids.includes(n.id));
+  sel.clear(); save(); renderAll(); refreshNodeOptions();
 }
 
 /* SVG helpers */
-function el(name,attrs,text){const n=document.createElementNS('http://www.w3.org/2000/svg',name); for(const k in attrs){ n.setAttribute(k,attrs[k]); } if(text!=null) n.textContent=text; return n;}
+function el(name,attrs,text){
+  const n=document.createElementNS('http://www.w3.org/2000/svg',name);
+  for(const k in attrs) n.setAttribute(k,attrs[k]);
+  if(text!=null) n.textContent=text;
+  return n;
+}
 function wrapText(text,x,y,maxWidth,lineHeight,cls){
-  const node = document.createElementNS('http://www.w3.org/2000/svg','text'); node.setAttribute('x',x); node.setAttribute('y',y); node.setAttribute('class',cls);
+  const node=document.createElementNS('http://www.w3.org/2000/svg','text');
+  node.setAttribute('x',x); node.setAttribute('y',y); node.setAttribute('class',cls);
   const words=String(text||'').split(/\s+/); let line='', lines=0;
   const tspan=(txt,dy)=>{const s=document.createElementNS('http://www.w3.org/2000/svg','tspan'); s.setAttribute('x',x); if(dy!==0) s.setAttribute('dy',dy); s.textContent=txt; node.appendChild(s);};
   const meas=s=>s.length*6.8;
-  words.forEach((w,i)=>{const test=(line?line+' ':'')+w; if(meas(test)>maxWidth && line){ tspan(line, i===0?0:lineHeight); lines++; line=w; } else { line=test; }});
+  words.forEach((w,i)=>{ const test=(line?line+' ':'')+w;
+    if(meas(test)>maxWidth && line){ tspan(line, i===0?0:lineHeight); lines++; line=w; } else { line=test; }
+  });
   if(line){ tspan(line, lines?lineHeight:0); lines++; }
   return {node,lines};
 }
@@ -694,7 +685,7 @@ function wrapText(text,x,y,maxWidth,lineHeight,cls){
 function renderAll(){
   nodesG.innerHTML=''; linksG.innerHTML='';
 
-  /* links */
+  /* links first (under nodes) */
   state.links.forEach(L=>{
     const a=state.nodes.find(n=>n.id===L.a), b=state.nodes.find(n=>n.id===L.b); if(!a||!b) return;
     const ax=a.x+a.w/2, ay=a.y+a.h/2, bx=b.x+b.w/2, by=b.y+b.h/2;
@@ -702,26 +693,34 @@ function renderAll(){
     const p=el('path',{d:`M ${ax} ${ay} Q ${mx} ${my} ${bx} ${by}`, class:`link ${L.kind==='arrow'?'arrow':''}`});
     linksG.appendChild(p);
 
+    /* draggable midpoint handle */
     const h=el('circle',{cx:mx, cy:my, r:6, class:'handle'});
     h.addEventListener('pointerdown',e=>{
-      e.stopPropagation(); const start={x:e.clientX,y:e.clientY}, ocx=L.cx??mx, ocy=L.cy??my;
-      function move(ev){const dx=(ev.clientX-start.x)/state.view.k, dy=(ev.clientY-start.y)/state.view.k; L.cx=ocx+dx; L.cy=ocy+dy; renderAll();}
-      function up(){window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); save();}
-      window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
+      e.stopPropagation();
+      const start={x:e.clientX,y:e.clientY}; const k=state.view.k;
+      const ocx=L.cx??mx, ocy=L.cy??my;
+      function move(ev){ const dx=(ev.clientX-start.x)/k, dy=(ev.clientY-start.y)/k; L.cx=ocx+dx; L.cy=ocy+dy; renderAll(); }
+      function up(){ window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); save(); }
+      window.addEventListener('pointermove',move,{passive:true}); window.addEventListener('pointerup',up,{once:true});
     });
     linksG.appendChild(h);
   });
 
   /* nodes */
   state.nodes.forEach(N=>{
-    const g=el('g',{class:`node ${N.type==='note'?'note':'photo'}${sel.has(N.id)?' selected':''}`, transform:`translate(${N.x},${N.y})`, 'data-id':N.id});
+    const g=el('g',{class:`node ${N.type==='note'?'note':'photo'}${sel.has(N.id)?' selected':''}`, transform:`translate(${N.x},${N.y})`, 'data-id':N.id, style:'touch-action:none'});
     if(N.type==='note'){
       g.appendChild(el('rect',{x:0,y:0,width:N.w,height:N.h,rx:12}));
       g.appendChild(el('rect',{x:0,y:0,width:N.w,height:8,rx:12,fill:N.color}));
       g.appendChild(el('text',{x:12,y:26,class:'title'},N.title||'Note'));
       const body=wrapText(N.details,12,46,N.w-24,16,'txt'); g.appendChild(body.node);
       const tagY=Math.max(60, 46+body.lines*16+6); let tx=12;
-      (N.tags||[]).slice(0,4).forEach(t=>{ const w=8+t.length*6.6+8; g.appendChild(el('rect',{x:tx,y:tagY,width:w,height:18,class:'tag-bg'})); g.appendChild(el('text',{x:tx+8,y:tagY+13,class:'tag'},t)); tx+=w+6; });
+      (N.tags||[]).slice(0,4).forEach(t=>{
+        const w=8+t.length*6.6+8;
+        g.appendChild(el('rect',{x:tx,y:tagY,width:w,height:18,class:'tag-bg'}));
+        g.appendChild(el('text',{x:tx+8,y:tagY+13,class:'tag'},t));
+        tx+=w+6;
+      });
     }else{
       g.appendChild(el('rect',{x:0,y:0,width:N.w,height:N.h,rx:12}));
       g.appendChild(el('image',{href:N.url||'',x:0,y:0,width:N.w,height:N.h,preserveAspectRatio:'xMidYMid slice'}));
@@ -730,37 +729,61 @@ function renderAll(){
     }
     const rz=el('rect',{x:N.w-10,y:N.h-10,width:10,height:10,class:'resize'}); g.appendChild(rz);
 
-    /* selection / drag / resize with mobile-friendly multi-select */
-    let pressTimer=null;
+    /* unified pointer handling for drag/resize/tap/long-press */
+    let pressTimer=null, moved=false;
     g.addEventListener('pointerdown',e=>{
-      e.stopPropagation();
+      e.stopPropagation(); e.preventDefault();
       const isResize=e.target.classList.contains('resize');
-      const start={x:e.clientX,y:e.clientY}; const k=state.view.k;
+      const start={x:e.clientX,y:e.clientY,t:Date.now()};
+      const k=state.view.k;
+      moved=false;
 
-      // long-press always toggles (useful on touch)
-      pressTimer=setTimeout(()=>{ toggleSelection(N.id); }, 350);
+      /* long-press toggles when addMode is OFF */
+      pressTimer=setTimeout(()=>{ if(!addMode) toggleSelection(N.id); }, 400);
 
-      // single tap behavior:
-      if(!isResize){
-        if(addMode || e.shiftKey){
-          // in multi-select mode, a single tap toggles immediately
-          toggleSelection(N.id);
-        }else{
-          // normal: replace selection
-          sel.clear(); sel.add(N.id); renderAll();
-        }
+      /* when addMode is OFF and not resizing, single-select immediately (desktop-like) */
+      if(!addMode && !e.shiftKey && !isResize){
+        sel.clear(); sel.add(N.id); renderAll();
       }
 
       if(isResize){
         const startW=N.w, startH=N.h;
-        function move(ev){ clearTimeout(pressTimer); const dx=(ev.clientX-start.x)/k, dy=(ev.clientY-start.y)/k; N.w=Math.max(160, Math.round((startW+dx)/SNAP)*SNAP); N.h=Math.max(120, Math.round((startH+dy)/SNAP)*SNAP); renderAll(); }
-        function up(){ window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); save(); }
-        window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
+        function move(ev){
+          if(Math.hypot(ev.clientX-start.x,ev.clientY-start.y)>4) moved=true;
+          clearTimeout(pressTimer);
+          const dx=(ev.clientX-start.x)/k, dy=(ev.clientY-start.y)/k;
+          N.w=Math.max(160, Math.round((startW+dx)/SNAP)*SNAP);
+          N.h=Math.max(120, Math.round((startH+dy)/SNAP)*SNAP);
+          renderAll();
+        }
+        function up(){
+          window.removeEventListener('pointermove',move);
+          window.removeEventListener('pointerup',up);
+          save();
+        }
+        window.addEventListener('pointermove',move,{passive:true});
+        window.addEventListener('pointerup',up,{once:true});
       }else{
         const startX=N.x, startY=N.y;
-        function move(ev){ clearTimeout(pressTimer); const dx=(ev.clientX-start.x)/k, dy=(ev.clientY-start.y)/k; N.x=Math.round((startX+dx)/SNAP)*SNAP; N.y=Math.round((startY+dy)/SNAP)*SNAP; renderAll(); }
-        function up(){ window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); save(); }
-        window.addEventListener('pointermove',move); window.addEventListener('pointerup',up);
+        function move(ev){
+          if(Math.hypot(ev.clientX-start.x,ev.clientY-start.y)>4) moved=true;
+          clearTimeout(pressTimer);
+          const dx=(ev.clientX-start.x)/k, dy=(ev.clientY-start.y)/k;
+          N.x=Math.round((startX+dx)/SNAP)*SNAP;
+          N.y=Math.round((startY+dy)/SNAP)*SNAP;
+          renderAll();
+        }
+        function up(ev){
+          window.removeEventListener('pointermove',move);
+          /* Treat short tap as toggle when addMode ON */
+          if(addMode && !moved && Date.now()-start.t<300){
+            toggleSelection(N.id);
+          }else{
+            save();
+          }
+        }
+        window.addEventListener('pointermove',move,{passive:true});
+        window.addEventListener('pointerup',up,{once:true});
       }
 
       g.setPointerCapture?.(e.pointerId);
@@ -773,11 +796,16 @@ function renderAll(){
   applyView(); updateCaseTitle(); drawMini();
 }
 
-/* -------- Mini map -------- */
+/* -------- Minimap -------- */
 function drawMini(){
   const W=180,H=110; mini.setAttribute('viewBox',`0 0 ${W} ${H}`); mini.innerHTML='';
   let minX=0,minY=0,maxX=1200,maxY=800;
-  if(state.nodes.length){minX=Math.min(...state.nodes.map(n=>n.x))-120; minY=Math.min(...state.nodes.map(n=>n.y))-120; maxX=Math.max(...state.nodes.map(n=>n.x+n.w))+120; maxY=Math.max(...state.nodes.map(n=>n.y+n.h))+120;}
+  if(state.nodes.length){
+    minX=Math.min(...state.nodes.map(n=>n.x))-120;
+    minY=Math.min(...state.nodes.map(n=>n.y))-120;
+    maxX=Math.max(...state.nodes.map(n=>n.x+n.w))+120;
+    maxY=Math.max(...state.nodes.map(n=>n.y+n.h))+120;
+  }
   const vw=maxX-minX, vh=maxY-minY, s=Math.min(W/vw,H/vh);
   const toMini=(x,y)=>({x:(x-minX)*s, y:(y-minY)*s});
   mini.appendChild(el('rect',{x:0,y:0,width:W,height:H,fill:'#0a0c10',stroke:'#2f3336'}));
@@ -789,8 +817,12 @@ function drawMini(){
   state.nodes.forEach(n=>{const p=toMini(n.x,n.y); mini.appendChild(el('rect',{x:p.x,y:p.y,width:n.w*s,height:n.h*s,fill:'#111317',stroke:'#2f3336',rx:4}));});
 }
 
-/* Board quick add / clear selection */
-board.addEventListener('dblclick',e=>{const rect=canvas.getBoundingClientRect(); const pt=screenToWorld(e.clientX,e.clientY); if(e.target===canvas && e.clientY-rect.top>0){ addNoteAt(pt.x-130,pt.y-80); }});
+/* Quick add and clear selection */
+board.addEventListener('dblclick',e=>{
+  const rect=canvas.getBoundingClientRect();
+  const pt=screenToWorld(e.clientX,e.clientY);
+  if(e.target===canvas && e.clientY-rect.top>0){ addNoteAt(pt.x-130,pt.y-80); }
+});
 canvas.addEventListener('pointerdown',e=>{ if(e.target===canvas && !lassoMode){ sel.clear(); renderAll(); }});
 
 /* ---- Buttons (Board) ---- */
@@ -806,21 +838,24 @@ $('#btnDelete').onclick  =deleteSelected;
 
 /* Save/Load/Clear */
 $('#btnSave').onclick =()=>{localStorage.setItem(LS_KEY,JSON.stringify(state)); document.dispatchEvent(new Event('cmx-saved'));};
-$('#btnLoad').onclick =()=>{try{const raw=localStorage.getItem(LS_KEY); if(raw){state=JSON.parse(raw); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); toast('Reloaded','ok');}}catch(e){}};
+$('#btnLoad').onclick =()=>{try{const raw=localStorage.getItem(LS_KEY); if(raw){state=JSON.parse(raw); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); pingToast('Reloaded');}}catch(e){}};
 $('#btnClear').onclick=()=>{
   if(confirm('Clear board, links, and timeline? This cannot be undone.')){
     state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
     document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();
-    toast('Workspace cleared','warn');
   }
 };
+
 /* Import/Export JSON */
-$('#btnExportJSON').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cmx-case.json'; a.click(); URL.revokeObjectURL(a.href); toast('JSON exported','ok');};
+$('#btnExportJSON').onclick=()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cmx-case.json'; a.click(); URL.revokeObjectURL(a.href);
+};
 $('#btnImportJSON').onclick=()=>$('#fileInput').click();
 $('#fileInput').addEventListener('change',async e=>{
   const f=e.target.files[0]; if(!f) return; const txt=await f.text();
-  try{ state=JSON.parse(txt); document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); toast('Imported','ok'); }
-  catch(err){ toast('Invalid JSON','bad'); }
+  try{ state=JSON.parse(txt); document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); pingToast('Imported'); }
+  catch(err){ alert('Invalid JSON'); }
 });
 
 /* Export PNG (board) */
@@ -834,8 +869,7 @@ $('#btnExportPNG').onclick=async ()=>{
     const c=document.createElement('canvas'); c.width=w; c.height=h;
     const ctx=c.getContext('2d'); ctx.fillStyle='#0a0c10'; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0,w,h);
     const url=c.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='cmx-board.png'; a.click();
-    toast('PNG exported','ok');
-  }catch(e){ toast('PNG export failed (CORS). Use Print→PDF.','bad'); }
+  }catch(e){ alert('PNG export failed (likely due to external image CORS). Use Print→PDF instead.'); }
 };
 
 /* Export Timeline → Markdown */
@@ -853,7 +887,6 @@ $('#btnExportMD').onclick=()=>{
     if(E.ref) lines.push(`  - Linked node: ${E.ref}`);
   });
   const blob=new Blob([lines.join('\n')],{type:'text/markdown'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='timeline.md'; a.click();
-  toast('Markdown exported','ok');
 };
 
 /* Print / PDF */
@@ -906,7 +939,7 @@ $('#sortDesc').onclick=()=>{ $('#sortDesc').dataset.active='1'; renderTimeline()
 $('#evSave').onclick=()=>{
   const E={id:editingEventId||freshId(), t:$('#evDate').value? new Date($('#evDate').value).getTime() : Date.now(), title:$('#evTitle').value.trim()||'Untitled', details:$('#evDetails').value.trim(), tags:toTags($('#evTags').value), link:$('#evLink').value.trim(), ref:$('#evRef').value||''};
   const idx=state.events.findIndex(x=>x.id===E.id); if(idx>=0) state.events[idx]=E; else state.events.push(E);
-  editingEventId=null; save(); renderTimeline(); $('#evClear').click(); toast('Event saved','ok');
+  editingEventId=null; save(); renderTimeline(); $('#evClear').click();
 };
 $('#evClear').onclick=()=>{ editingEventId=null; ['evTitle','evDate','evDetails','evTags','evLink'].forEach(id=>$('#'+id).value=''); $('#evRef').value=''; };
 
@@ -926,13 +959,11 @@ function refreshNodeOptions(){
   if(cur) selEl.value=cur;
 }
 
-/* Case title sync */
+/* Case title sync + meta */
 function updateCaseTitle(){ const t=state.meta.title||'Case Workspace'; $('#caseTitle').textContent=t; }
-
-/* Meta save */
 $('#metaSave').onclick=()=>{
   state.meta={title:$('#metaTitle').value.trim(), investigator:$('#metaAgent').value.trim(), scope:$('#metaScope').value.trim(), summary:$('#metaSummary').value.trim()};
-  save(); updateCaseTitle(); toast('Meta saved','ok');
+  save(); updateCaseTitle(); pingToast('Meta saved');
 };
 function updateMetaUI(){
   $('#metaTitle').value=state.meta.title||'';
