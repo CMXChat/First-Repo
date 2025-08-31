@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>CMX • Image-Led Missing Person Guide</title>
+<meta name="color-scheme" content="dark">
+<style>
+:root{
+  --bg:#000; --panel:#0b0c0e; --panel-2:#111317; --panel-3:#0a0c10;
+  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
+  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --bad:#ff5a5f; --warn:#f6c76f; --vio:#b072ff;
+  --r:16px; --pad:clamp(12px,2.8vw,22px);
+  --fs-xl:clamp(22px,5.6vw,40px); --fs-lg:clamp(17px,3.2vw,22px);
+  --fs:clamp(14px,3vw,16px); --fs-sm:clamp(12px,2.6vw,13.5px);
+  --maxw:1200px;
+}
+*{box-sizing:border-box}
+html,body{height:100%} html{overscroll-behavior:contain; scroll-behavior:smooth}
+body{
+  margin:0;background:
+    radial-gradient(1200px 600px at 20% -10%,rgba(29,155,240,.08),transparent),
+    radial-gradient(1200px 600px at 120% 100%,rgba(130,200,255,.06),transparent),
+    var(--bg);
+  color:var(--ink);
+  font:400 var(--fs)/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  -webkit-text-size-adjust:100%;
+}
+a{color:#cfe9ff;text-decoration:none} a:hover{text-decoration:underline}
+kbd{border:1px solid var(--line);border-bottom-color:#1a1d22;background:#0d0f12;border-radius:6px;padding:2px 5px;font-size:11px}
+hr{border:none;border-top:1px solid var(--line);margin:14px 0}
+.small{font-size:var(--fs-sm);color:var(--muted)}
+.hide{display:none}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:var(--pad);
+  background:rgba(0,0,0,.72);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.2px;min-width:0}
+.logo{flex:0 0 30px;height:30px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.logo svg{width:18px;height:18px;fill:var(--accent)}
+.title{font-size:var(--fs-lg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:var(--fs-sm);white-space:nowrap}
+
+/* Layout */
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad) calc(var(--pad) + env(safe-area-inset-bottom,0px))}
+.hero{padding:calc(var(--pad) + 4px) 0 var(--pad)}
+.hero h1{margin:.2rem 0 .35rem;font-size:var(--fs-xl);line-height:1.15}
+.hero .sub{color:var(--muted);font-size:var(--fs-sm)}
+.quicknav{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.qbtn{all:unset;cursor:pointer;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-weight:800}
+
+/* Pivots */
+.pivots{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.pivots a{display:inline-block;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#0e1013}
+
+/* Cards & grids */
+.grid{display:grid;gap:clamp(12px,2vw,16px);grid-template-columns:1fr}
+@media(min-width:980px){.grid{grid-template-columns:1.1fr .9fr}}
+.card{border:1px solid var(--line);background:var(--panel-2);border-radius:16px;padding:16px}
+.card h2{margin:.2rem 0 .6rem;font-size:var(--fs-lg)}
+.card h3{margin:.2rem 0 .5rem}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 160px}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#0e1013;font-size:12px}
+.pill.ok{color:var(--ok)} .pill.bad{color:var(--bad)} .pill.warn{color:var(--warn)} .pill.muted{color:var(--muted)}
+
+/* Inputs */
+label{display:block;margin:10px 0 6px;font-weight:800}
+input,textarea,select{
+  width:100%;padding:12px 14px;border-radius:14px;background:var(--panel);
+  border:1px solid var(--line);color:var(--ink);outline:none;font-size:var(--fs)
+}
+textarea{resize:vertical;min-height:96px}
+.btn{
+  all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 16px;border-radius:999px;font-weight:900;letter-spacing:.2px;
+  border:1px solid var(--accent);
+  background:linear-gradient(180deg,rgba(29,155,240,.18),rgba(29,155,240,.06));
+}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;border-color:var(--line)}
+.btn.ok{border-color:var(--ok);background:linear-gradient(180deg,rgba(25,195,125,.18),rgba(25,195,125,.06))}
+.btn.warn{border-color:var(--warn);background:linear-gradient(180deg,rgba(246,199,111,.18),rgba(246,199,111,.06))}
+.btn.danger{border-color:var(--bad);background:linear-gradient(180deg,rgba(255,90,95,.18),rgba(255,90,95,.06))}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-btn{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#0e1013;cursor:pointer;font-size:13px}
+
+/* Link grids */
+.links{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+@media(max-width:880px){.links{grid-template-columns:1fr}}
+.link-group{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px}
+.link-group h4{margin:0 0 6px;color:#9fd1ff;font-size:14px}
+.linklist a{display:inline-block;margin:4px 6px 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.note{color:#9fb3c9}
+
+/* Accordions */
+.details{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px}
+.details summary{cursor:pointer;font-weight:800}
+.details .inner{margin-top:8px}
+
+/* Accordion grid for Fieldcraft */
+.accord-grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:980px){.accord-grid{grid-template-columns:1fr 1fr}}
+
+/* Toast */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#0b0d12;border:1px solid var(--line);border-radius:12px;
+  padding:8px 12px;font-size:12.5px;color:#cfe9ff;display:none;z-index:90
+}
+.toast.show{display:block;animation:fade 2.2s ease both}
+@keyframes fade{0%{opacity:0;transform:translate(-50%,6px)}10%{opacity:1;transform:translate(-50%,0)}90%{opacity:1}100%{opacity:0;transform:translate(-50%,-6px)}}
+
+/* Footer / print */
+footer{text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px}
+@media print{
+  .topbar,.quicknav,.btn,.chips{display:none!important}
+  a{color:#000;text-decoration:underline}
+  body{background:#fff;color:#000}
+  .card{background:#fff;border-color:#ddd}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
+    </div>
+    <div class="title">CMX • Image-Led Missing Person Guide</div>
+  </div>
+  <span class="chip">Session <b id="sid"></b></span>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <h1>Find a person from a photo — safely, quickly, methodically</h1>
+    <p class="sub">
+      Mobile-first playbook: variant strategy, reverse image pivots, regional engines, geo-intel, and a
+      <b>Google Dorking Workbench</b> to search names/aliases/usernames at speed.
+    </p>
+    <div class="quicknav">
+      <button class="qbtn" data-goto="#step1">1) Prep & Variants</button>
+      <button class="qbtn" data-goto="#step2">2) Core Engines</button>
+      <button class="qbtn" data-goto="#dork">Google Dorking</button>
+      <button class="qbtn" data-goto="#site">Site Explorer</button>
+      <button class="qbtn" data-goto="#geo">Geo-intel</button>
+      <button class="qbtn" data-goto="#official">Official & NGO</button>
+      <button class="qbtn" data-goto="#fieldcraft">Fieldcraft</button>
+      <button class="qbtn" data-goto="#resources">Resource Index</button>
+    </div>
+    <div class="pivots">
+      <a href="https://db.cmxchat.com/osint" target="_blank" rel="noopener">OSINT Console</a>
+      <a href="https://db.cmxchat.com/phone" target="_blank" rel="noopener">Phone Intel</a>
+      <a href="https://db.cmxchat.com/metadata" target="_blank" rel="noopener">Image Metadata</a>
+      <a href="https://db.cmxchat.com/workspace" target="_blank" rel="noopener">Case Workspace</a>
+      <a href="https://db.cmxchat.com/report" target="_blank" rel="noopener">Create Report</a>
+    </div>
+  </section>
+
+  <section class="grid">
+    <!-- LEFT: Prep -->
+    <section class="card" id="step1">
+      <h2>1) Prepare the asset & create variants</h2>
+      <ul>
+        <li><b>Face-tight crop</b> • minimal background</li>
+        <li><b>Upper body</b> • clothing/insignia</li>
+        <li><b>Signage-only</b> • shops, route numbers, URLs</li>
+        <li><b>Background-only</b> • skyline/landmarks</li>
+        <li><b>Full frame</b> • original (optionally low-res)</li>
+      </ul>
+      <p class="note">If you already have a hosted image URL, paste below to auto-build URL-based reverse-image links.</p>
+
+      <label for="imgUrl">Image URL (optional)</label>
+      <input id="imgUrl" placeholder="https://example.com/photo.jpg">
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="buildLinks">Build URL pivots</button>
+        <button class="btn ghost" id="clearUrl">Clear</button>
+      </div>
+      <div id="urlMsg" class="small" style="margin-top:6px"></div>
+
+      <hr>
+      <h3>Query recipes (copy)</h3>
+      <div class="chips" id="recipes">
+        <span class="chip-btn" data-copy='"<store name>" "<street" OR "avenue" OR "st" OR "ave"> "<city>"'>Storefront → address</span>
+        <span class="chip-btn" data-copy='"route" OR "bus" "<number>" "<city guess>"'>Transit route lookup</span>
+        <span class="chip-btn" data-copy='"<unique object>" -pinterest -stock -aliexpress'>Object de-spam</span>
+        <span class="chip-btn" data-copy='"<hotel name>" "<country>" site:booking.* OR site:tripadvisor.*'>Lodging triangulation</span>
+      </div>
+    </section>
+
+    <!-- RIGHT: Engines -->
+    <aside class="card" id="step2">
+      <h2>2) Reverse image engines</h2>
+      <div class="links">
+        <div class="link-group">
+          <h4>Upload workflows</h4>
+          <div class="linklist">
+            <a href="https://lens.google.com/" target="_blank" rel="noopener">Google Lens</a>
+            <a href="https://yandex.com/images/" target="_blank" rel="noopener">Yandex Images</a>
+            <a href="https://www.bing.com/visualsearch" target="_blank" rel="noopener">Bing Visual</a>
+            <a href="https://tineye.com/" target="_blank" rel="noopener">TinEye</a>
+            <a href="https://images.baidu.com/" target="_blank" rel="noopener">Baidu Images</a>
+          </div>
+          <p class="small">Start with face crop (Lens/Yandex), then signage/background on others.</p>
+          <div class="row" style="margin-top:6px">
+            <button class="btn ghost open-all" data-scope="upload">Open all upload pages</button>
+          </div>
+        </div>
+
+        <div class="link-group" id="urlGroup">
+          <h4>URL-based (paste image URL above)</h4>
+          <div class="linklist" id="urlLinks"></div>
+          <p class="small">If an engine rejects the URL, use its upload page and paste URL (when supported).</p>
+          <div class="row" style="margin-top:6px">
+            <button class="btn ghost" id="openAllUrl" disabled>Open all URL pivots</button>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <h3>Face comparison tools (use with care)</h3>
+      <div class="linklist">
+        <a href="https://facecheck.id/" target="_blank" rel="noopener">FaceCheck</a>
+        <a href="https://facecomparison.toolpie.com/" target="_blank" rel="noopener">Face Comparison (Toolpie)</a>
+      </div>
+      <p class="small">Avoid uploading sensitive images to public services; prefer official channels for minors/medical cases.</p>
+    </aside>
+  </section>
+
+  <!-- Google Dorking Workbench -->
+  <section class="card" id="dork" style="margin-top:12px">
+    <h2>Google Dorking Workbench (names, aliases, usernames)</h2>
+    <p class="note">Enter what you know. We’ll craft smart queries and pivots. Try different spellings, maiden names, nicknames, initials, and city/region variations.</p>
+
+    <div class="grid grid-inner" style="grid-template-columns:1fr 1fr">
+      <div>
+        <label for="fullName">Full name</label>
+        <input id="fullName" placeholder='e.g., "Alexandra Marie Smith"'>
+      </div>
+      <div>
+        <label for="aliases">Aliases / nicknames (comma-sep)</label>
+        <input id="aliases" placeholder="Lexi, Alex M, A. M. Smith">
+      </div>
+      <div>
+        <label for="age">Age (approx)</label>
+        <input id="age" placeholder="e.g., 22">
+      </div>
+      <div>
+        <label for="locations">City / region (comma-sep)</label>
+        <input id="locations" placeholder="Portland OR, Vancouver WA">
+      </div>
+      <div>
+        <label for="usernames">Usernames/handles (comma-sep)</label>
+        <input id="usernames" placeholder="@lexi.s, lexi_22, asmith">
+      </div>
+      <div>
+        <label for="keywords">Keywords (school, employer, hobbies)</label>
+        <input id="keywords" placeholder='e.g., "PSU", barista, volleyball'>
+      </div>
+      <div>
+        <label for="email">Email (optional)</label>
+        <input id="email" placeholder="alex@example.com">
+      </div>
+      <div>
+        <label for="phone">Phone (optional)</label>
+        <input id="phone" placeholder="+1 555 123 4567">
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="buildDorks">Build queries</button>
+      <button class="btn ghost" id="clearDorks">Clear</button>
+      <button class="btn ok" id="openAllDorks" disabled>Open all (safe cap)</button>
+    </div>
+
+    <div id="dorkOut" style="margin-top:10px"></div>
+    <p class="small" style="margin-top:6px">Tip: run multiple variations. Mix exact quotes for the full name with unquoted tokens and site filters (<code>site:facebook.com</code>, <code>site:linkedin.com</code>, <code>site:reddit.com</code>). Use a time range if recency matters.</p>
+  </section>
+
+  <!-- Site Explorer -->
+  <section class="card" id="site" style="margin-top:12px">
+    <h2>Site Explorer (search inside a website)</h2>
+    <p class="note">Target a domain for rosters, PDFs, cached copies, and related sites.</p>
+    <div class="grid grid-inner" style="grid-template-columns:1fr 1fr">
+      <div>
+        <label for="siteDom">Website</label>
+        <input id="siteDom" placeholder="example.edu (no http)">
+      </div>
+      <div>
+        <label for="siteText">Text to find</label>
+        <input id="siteText" placeholder='"Alex Smith" OR @alex-smith'>
+      </div>
+      <div>
+        <label for="siteFiles">Filetypes (comma)</label>
+        <input id="siteFiles" placeholder="pdf, xls, csv">
+      </div>
+      <div>
+        <label for="siteOps">Operators (optional)</label>
+        <input id="siteOps" placeholder="intitle:directory OR inurl:uploads">
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="buildSite">Build queries</button>
+      <button class="btn ghost" id="clearSite">Clear</button>
+      <button class="btn ok" id="openSite" disabled>Open all (safe cap)</button>
+    </div>
+    <div id="siteOut" style="margin-top:10px"></div>
+  </section>
+
+  <!-- Geo -->
+  <section class="card" id="geo" style="margin-top:12px">
+    <h2>Geo-intel micro-pivots</h2>
+    <div class="grid grid-inner" style="grid-template-columns:1fr 1fr">
+      <div>
+        <h3>Transit & signage</h3>
+        <label for="transit">Route / operator / line</label>
+        <input id="transit" placeholder="e.g., 240 Kulshan, MTR Tsuen Wan">
+        <div class="row" style="margin-top:8px">
+          <button class="btn ghost" data-act="q" data-qtype="transit">Google</button>
+          <button class="btn ghost" data-act="qbing" data-qtype="transit">Bing</button>
+          <button class="btn ghost" data-act="qduck" data-qtype="transit">DuckDuckGo</button>
+        </div>
+        <div class="small" style="margin-top:6px">Try route shields, road prefixes (M-, A-, I-), and language/script cues.</div>
+      </div>
+
+      <div>
+        <h3>Sun/shadows & uniforms</h3>
+        <div class="chips">
+          <a class="chip-btn" href="https://www.suncalc.org/" target="_blank" rel="noopener">SunCalc</a>
+          <a class="chip-btn" href="https://www.shadowcalculator.eu/" target="_blank" rel="noopener">ShadowCalculator</a>
+        </div>
+
+        <h3 style="margin-top:14px">Plate & sign standards</h3>
+        <div class="chips">
+          <a class="chip-btn" href="https://www.worldlicenseplates.com/" target="_blank" rel="noopener">Plate atlas</a>
+          <a class="chip-btn" href="https://mutcd.fhwa.dot.gov/" target="_blank" rel="noopener">US MUTCD</a>
+        </div>
+
+        <h3 style="margin-top:14px">Pivot to Phone Intel</h3>
+        <label for="ph">Phone number spotted</label>
+        <input id="ph" placeholder="+1 555 123 4567">
+        <div class="row" style="margin-top:8px">
+          <a id="toPhone" class="btn ok" href="https://db.cmxchat.com/phone" target="_blank" rel="noopener">Open Phone Intel</a>
+          <button class="btn ghost" id="copyPhone">Copy number</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Official -->
+  <section class="card" id="official" style="margin-top:12px">
+    <h2>Official & NGO channels (use early for urgent cases)</h2>
+    <div class="links">
+      <div class="link-group">
+        <h4>Global / Cross-border</h4>
+        <div class="linklist">
+          <a href="https://www.icrc.org/en/what-we-do/restoring-family-links" target="_blank" rel="noopener">ICRC – Restoring Family Links</a>
+          <a href="https://yellownotice.interpol.int/" target="_blank" rel="noopener">INTERPOL – Yellow Notices</a>
+        </div>
+      </div>
+      <div class="link-group">
+        <h4>United States / EU</h4>
+        <div class="linklist">
+          <a href="https://www.missingkids.org/" target="_blank" rel="noopener">NCMEC (US)</a>
+          <a href="https://116000.eu/" target="_blank" rel="noopener">EU 116000 Hotline</a>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:6px">
+      <button class="btn ghost open-all" data-scope="official">Open all official portals</button>
+    </div>
+    <div class="details" style="margin-top:10px">
+      <summary>Safety, legality, and data minimization</summary>
+      <div class="inner small" style="margin-top:6px">
+        • Don’t publish medical/PII; avoid contacting minors directly.<br>
+        • Keep an audit trail (URLs, timestamps).<br>
+        • Prefer official portals for sensitive images rather than public engines.<br>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fieldcraft (dropdown cards) -->
+  <section class="card" id="fieldcraft" style="margin-top:12px">
+    <h2>Fieldcraft Playbook (high-impact habits)</h2>
+    <div class="accord-grid">
+      <details class="details" open>
+        <summary>1) Triage the image</summary>
+        <div class="inner">
+          <ul>
+            <li>Identify <b>unique anchors</b>: storefront names, route numbers, rare clothing, tattoos, skyline.</li>
+            <li>Extract text by eye first; then try Lens’ text selection to copy signage and search it as text.</li>
+            <li>Generate <b>four variants</b> (face, signage, background, full) and search each separately.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="details" open>
+        <summary>2) Validate hits</summary>
+        <div class="inner">
+          <ul>
+            <li><b>Source order</b>: primary/original &gt; repost &gt; aggregator. Prefer earliest timestamp.</li>
+            <li><b>Geo-time fit</b>: uniforms/seasons/weather match the claim; compare to local imagery.</li>
+            <li><b>Repeatability</b>: aim for ≥2 engines or variants producing the same lead.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="details">
+        <summary>3) Deconflict & handoff</summary>
+        <div class="inner">
+          <ul>
+            <li>Maintain a simple note: engine • query • outcome • link (your Workspace/Report pages help).</li>
+            <li>When credible: route via <b>Official & NGO</b> portals; avoid contacting minors directly.</li>
+            <li>Capture URLs + dates, not bulk downloads. Respect local laws/ToS.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="details" open>
+        <summary>Smart pivots</summary>
+        <div class="inner">
+          <ul>
+            <li><b>Object → vendor</b>: “<code>brand model</code>” + country (find regional distributors/shops).</li>
+            <li><b>Venue → events</b>: “<code>venue name</code>” + photos tab + month/year guess.</li>
+            <li><b>Transit → route map</b>: “<code>bus ###</code>” OR “<code>Line X</code>” + city guess.</li>
+            <li><b>Language cues</b>: script (Hangul/Cyrillic/Arabic) narrows continents instantly.</li>
+            <li><b>Reverse phone</b>: number → Phone Intel page (above) then cross-check on social.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="details">
+        <summary>Ethics & safety</summary>
+        <div class="inner">
+          <ul>
+            <li>Assume the subject (or family) will read your work; write accordingly.</li>
+            <li>Blur faces of minors/medical cases in public shareouts; send originals only to authorities.</li>
+            <li>Use paywalled face search responsibly and verify with context/timeline before escalation.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Resources -->
+  <section class="card" id="resources" style="margin-top:12px">
+    <h2>Resource index</h2>
+    <div class="links">
+      <div class="link-group">
+        <h4>Core reverse image</h4>
+        <div class="linklist">
+          <a href="https://lens.google.com/" target="_blank" rel="noopener">Google Lens</a>
+          <a href="https://yandex.com/images/" target="_blank" rel="noopener">Yandex Images</a>
+          <a href="https://www.bing.com/visualsearch" target="_blank" rel="noopener">Bing Visual</a>
+          <a href="https://tineye.com/" target="_blank" rel="noopener">TinEye</a>
+        </div>
+      </div>
+      <div class="link-group">
+        <h4>Geo & mapping</h4>
+        <div class="linklist">
+          <a href="https://overpass-turbo.eu/" target="_blank" rel="noopener">Overpass Turbo</a>
+          <a href="https://transit.land/" target="_blank" rel="noopener">Transitland</a>
+          <a href="https://www.transitfeeds.com/" target="_blank" rel="noopener">OpenMobilityData</a>
+          <a href="https://www.suncalc.org/" target="_blank" rel="noopener">SunCalc</a>
+          <a href="https://www.shadowcalculator.eu/" target="_blank" rel="noopener">ShadowCalculator</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© CMX</footer>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+/* utils */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+$('#sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
+function toast(msg){const t=$('#toast');t.textContent=msg||'Done';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function isValidUrl(s){try{new URL(s);return true}catch{return false}}
+$$('.qbtn').forEach(b=> b.onclick=()=>{ const id=b.getAttribute('data-goto'); const el=document.querySelector(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); });
+
+/* URL-based pivots */
+const urlLinksEl=$('#urlLinks'), urlMsg=$('#urlMsg'), openAllUrlBtn=$('#openAllUrl');
+function buildUrlLinks(){
+  const raw=$('#imgUrl').value.trim(); urlLinksEl.innerHTML=''; openAllUrlBtn.disabled=true;
+  if(!raw){urlMsg.textContent='Paste a direct image URL (.jpg/.png/.webp/CDN).';return}
+  if(!isValidUrl(raw)){urlMsg.innerHTML='<span class="pill bad">Invalid URL</span>';return}
+  const enc=encodeURIComponent(raw);
+  const links=[
+    ['Google Images (URL)',`https://www.google.com/searchbyimage?image_url=${enc}`],
+    ['Yandex (URL)',`https://yandex.com/images/search?rpt=imageview&url=${enc}`],
+    ['TinEye (URL)',`https://tineye.com/search?url=${enc}`],
+    ['Bing Visual (hub)',`https://www.bing.com/visualsearch`]
+  ];
+  links.forEach(([label,href])=>{
+    const a=document.createElement('a'); a.textContent=label; a.href=href; a.target='_blank'; a.rel='noopener'; urlLinksEl.appendChild(a);
+  });
+  urlMsg.innerHTML='<span class="pill ok">URL recognized</span> — compare earliest appearance and domain types.';
+  openAllUrlBtn.disabled=false;
+}
+$('#buildLinks').onclick=buildUrlLinks;
+$('#clearUrl').onclick=()=>{ $('#imgUrl').value=''; urlLinksEl.innerHTML=''; urlMsg.textContent=''; openAllUrlBtn.disabled=true; };
+openAllUrlBtn.onclick=()=>{ $$('#urlLinks a').forEach(a=>window.open(a.href,'_blank','noopener')); };
+
+/* open-all for groups */
+$$('.open-all').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const scope=btn.dataset.scope;
+    let selector='';
+    if(scope==='upload'){selector='#step2 .link-group:first-child .linklist a';}
+    else if(scope==='official'){selector='#official .linklist a';}
+    if(selector){ $$(selector).forEach(a=>window.open(a.href,'_blank','noopener')); }
+  });
+});
+
+/* copy chips */
+$('#recipes').addEventListener('click',e=>{
+  const el=e.target.closest('.chip-btn'); if(!el) return;
+  navigator.clipboard.writeText(el.getAttribute('data-copy')).then(()=>toast('Recipe copied'));
+});
+
+/* transit queries */
+function openSearch(which, field){
+  const v=$(field).value.trim(); if(!v){ toast('Add a transit/signage term'); return; }
+  const q=encodeURIComponent(v);
+  if(which==='google') window.open(`https://www.google.com/search?q=${q}`,'_blank','noopener');
+  if(which==='bing')   window.open(`https://www.bing.com/search?q=${q}`,'_blank','noopener');
+  if(which==='duck')   window.open(`https://duckduckgo.com/?q=${q}`,'_blank','noopener');
+}
+$$('[data-act="q"]').forEach(b=> b.onclick=()=>openSearch('google','#transit'));
+$$('[data-act="qbing"]').forEach(b=> b.onclick=()=>openSearch('bing','#transit'));
+$$('[data-act="qduck"]').forEach(b=> b.onclick=()=>openSearch('duck','#transit'));
+
+/* Overpass helper (optional chips) */
+$('#geo').addEventListener('click',e=>{
+  const el=e.target.closest('[data-overpass]'); if(!el) return;
+  const tpl=el.getAttribute('data-overpass');
+  const city=prompt('City name to inject into Overpass query (e.g., "Lisbon", "Chicago")'); if(!city) return;
+  const q=tpl.replace(/CITY/g,city);
+  window.open('https://overpass-turbo.eu/?Q='+encodeURIComponent(q),'_blank','noopener');
+});
+
+/* phone pivot */
+$('#copyPhone').onclick=()=>{ const v=$('#ph').value.trim(); if(!v) return toast('Add a number'); navigator.clipboard.writeText(v).then(()=>toast('Number copied')); };
+$('#ph').addEventListener('input',()=>{ const v=$('#ph').value.trim(); const a=$('#toPhone'); const base='https://db.cmxchat.com/phone'; a.href=v?`${base}?n=${encodeURIComponent(v)}`:base; });
+
+/* Dorking Workbench */
+function uniq(arr){return [...new Set(arr.filter(Boolean).map(s=>s.trim()).filter(Boolean))];}
+function q(s){return s ? `"${s}"` : ''; }
+function buildDorkQueries(){
+  const name=$('#fullName').value.trim();
+  const aliases=uniq(($('#aliases').value||'').split(','));
+  const locs=uniq(($('#locations').value||'').split(','));
+  const users=uniq(($('#usernames').value||'').split(','));
+  const kw=uniq(($('#keywords').value||'').split(','));
+  const age=$('#age').value.trim();
+  const email=$('#email').value.trim();
+  const phone=$('#phone').value.trim();
+
+  if(!name && !aliases.length && !users.length && !email && !phone && !kw.length){
+    toast('Add at least a name/alias/username/email/phone/keyword'); return [];
+  }
+
+  const nameExact = q(name);
+  const aliasOR   = aliases.length? '('+aliases.map(a=>q(a)).join(' OR ')+')' : '';
+  const locOR     = locs.length? '('+locs.map(a=>q(a)).join(' OR ')+')' : '';
+  const kwOR      = kw.length? '('+kw.map(a=>q(a)).join(' OR ')+')' : '';
+
+  const core = [nameExact, aliasOR, locOR, kwOR].filter(Boolean).join(' ');
+  const plusAge = age? (core+' '+age) : core;
+
+  const siteSets = [
+    ['Google (web)',  ''],
+    ['Facebook',      'site:facebook.com'],
+    ['Instagram',     'site:instagram.com'],
+    ['LinkedIn',      'site:linkedin.com'],
+    ['TikTok',        'site:tiktok.com'],
+    ['Reddit',        'site:reddit.com']
+  ];
+
+  const queries = [];
+  siteSets.forEach(([label,site])=>{
+    const s = site? (plusAge? `${site} ${plusAge}` : `${site} ${core}`) : (plusAge||core);
+    if(s.trim()) queries.push([`${label}`, s.trim()]);
+  });
+
+  users.forEach(u=>{
+    const handle = u.startsWith('@')? u.slice(1) : u;
+    ['site:instagram.com','site:twitter.com','site:tiktok.com','site:reddit.com','site:github.com'].forEach(site=>{
+      queries.push([`Username ${u}`, `${site} "${handle}" ${locOR}`.trim()]);
+    });
+  });
+
+  if(email) queries.push(['Email', `"${email}"`+(locOR? ' '+locOR : '')]);
+  if(phone) queries.push(['Phone', `"${phone}"`+(locOR? ' '+locOR : '')]);
+
+  return queries;
+}
+
+function renderDorks(){
+  const qs = buildDorkQueries(); const out=$('#dorkOut');
+  out.innerHTML='';
+  if(!qs.length){ $('#openAllDorks').disabled=true; return; }
+
+  const maxOpen=8; // keep popup blockers happy
+  const urls=[];
+  qs.forEach(([label,query],i)=>{
+    const href=`https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    const row=document.createElement('div'); row.className='row'; row.style.alignItems='center';
+    const tag=document.createElement('span'); tag.className='pill'; tag.style.minWidth='140px'; tag.textContent=label+(i>=maxOpen?' (copy only)':'');
+    const link=document.createElement('a'); link.className='linklist'; link.style.padding='0'; link.href=href; link.target='_blank'; link.rel='noopener'; link.textContent='Open';
+    if(i>=maxOpen){ link.onclick=(ev)=>{ev.preventDefault(); navigator.clipboard.writeText(query).then(()=>toast('Query copied'));}; }
+    const text=document.createElement('span'); text.className='small'; text.style.flex='1'; text.textContent=query;
+    const copy=document.createElement('button'); copy.className='btn ghost'; copy.textContent='Copy'; copy.onclick=()=>{navigator.clipboard.writeText(query).then(()=>toast('Query copied'))};
+    row.append(tag, link, text, copy); out.appendChild(row);
+    if(i<maxOpen) urls.push(href);
+  });
+  $('#openAllDorks').dataset.urls = JSON.stringify(urls);
+  $('#openAllDorks').disabled = urls.length===0;
+}
+$('#buildDorks').onclick=renderDorks;
+$('#clearDorks').onclick=()=>{ ['fullName','aliases','age','locations','usernames','keywords','email','phone'].forEach(id=>$('#'+id).value=''); $('#dorkOut').innerHTML=''; $('#openAllDorks').disabled=true; };
+$('#openAllDorks').onclick=()=>{ try{ const urls=JSON.parse($('#openAllDorks').dataset.urls||'[]'); urls.forEach(u=>window.open(u,'_blank','noopener')); }catch{} };
+
+/* Site Explorer */
+function buildSite(){
+  const dom=($('#siteDom').value||'').trim().replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+  const txt=($('#siteText').value||'').trim();
+  const files=($('#siteFiles').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const ops=($('#siteOps').value||'').trim();
+
+  const out=$('#siteOut'); out.innerHTML='';
+  if(!dom||!txt){ out.innerHTML='<div class="small">Add a domain and some text.</div>'; $('#openSite').disabled=true; return; }
+
+  const base = `site:${dom} ${txt} ${ops}`.trim();
+  const blocks=[
+    ['All pages', base],
+    ...(files.length? [['By filetype', `${base} (${files.map(f=>`filetype:${f}`).join(' OR ')})`]]:[]),
+    ['Cached copy', `cache:${dom} ${txt}`],
+    ['Related sites', `related:${dom} ${txt}`]
+  ];
+
+  const urls=[];
+  blocks.forEach(([label,q],i)=>{
+    const row=document.createElement('div'); row.className='row'; row.style.alignItems='center';
+    const tag=document.createElement('span'); tag.className='pill'; tag.style.minWidth='140px'; tag.textContent=label;
+    const href=`https://www.google.com/search?q=${encodeURIComponent(q)}`;
+    const link=document.createElement('a'); link.className='linklist'; link.style.padding='0'; link.href=href; link.target='_blank'; link.rel='noopener'; link.textContent='Open';
+    const text=document.createElement('span'); text.className='small'; text.style.flex='1'; text.textContent=q;
+    const copy=document.createElement('button'); copy.className='btn ghost'; copy.textContent='Copy'; copy.onclick=()=>{navigator.clipboard.writeText(q).then(()=>toast('Query copied'))};
+    row.append(tag, link, text, copy); out.appendChild(row);
+    if(i<8) urls.push(href);
+  });
+  $('#openSite').dataset.urls=JSON.stringify(urls);
+  $('#openSite').disabled=urls.length===0;
+}
+$('#buildSite').onclick=buildSite;
+$('#clearSite').onclick=()=>{ ['siteDom','siteText','siteFiles','siteOps'].forEach(id=>$('#'+id).value=''); $('#siteOut').innerHTML=''; $('#openSite').disabled=true; };
+$('#openSite').onclick=()=>{ try{ const urls=JSON.parse($('#openSite').dataset.urls||'[]'); urls.forEach(u=>window.open(u,'_blank','noopener')); }catch{} };
+</script>
+</body>
+</html>
