@@ -92,7 +92,41 @@ table.meta th{text-align:left;color:var(--muted)}
 section{scroll-margin-top:70px}
 .kbd{border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
 .small{font-size:12px;color:var(--muted)}
-</style>
+
+  /* --- Mobile size fixes (non-destructive) --- */
+@media (max-width: 480px){
+  html,body{font-size:15px}
+  .topbar{padding:8px 10px}
+  .logo{width:24px;height:24px}
+  .logo svg{width:16px;height:16px}
+  .chip{padding:4px 8px;font-size:11px}
+  .ghost{padding:7px 10px}
+
+  .main{padding:10px}
+  .grid{gap:12px}
+  .card{padding:12px}
+  .card h3{font-size:18px}
+  .sub{font-size:11px}
+
+  .row{gap:8px}
+  input[type=text],input[type=email],input[type=file],textarea{padding:10px;font-size:14px}
+  .btn{padding:10px 14px;font-size:14px}
+
+  .links{grid-template-columns:1fr}   /* keep link groups single column */
+  #gravBox{width:72px;height:72px}
+  #map{height:280px}
+
+  .terminal{min-height:120px;max-height:200px;font-size:13px}
+  .chip-btn{padding:5px 8px;font-size:12px}
+}
+
+/* ultra-small devices */
+@media (max-width: 360px){
+  .chip{display:none}                 /* hide session chip to save space */
+  .top-actions{gap:6px}
+}
+  
+  </style>
 </head>
 <body>
 <header class="topbar" role="banner">
@@ -260,6 +294,7 @@ function sanitize(s){ return encodeURIComponent((s||'').trim()); }
 const isValidEmail = (e)=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(e||'');
 const isValidDomain = (d)=>/^(?=.{1,253}$)(?!\-)(?:[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i.test((d||'').trim());
 const isValidIPv4 = (ip)=>/^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d)$/.test((ip||'').trim());
+const isBogon = (ip)=>/^(10\.|127\.|172\.(1[6-9]|2\d|3[0-1])\.|192\.168\.|0\.|255\.)/.test(ip);
 
 /* Fetch with timeout */
 async function jfetch(url, opts={}, timeoutMs=8000){
@@ -440,9 +475,18 @@ document.getElementById('domainBtn').onclick=async()=>{
   if(!isValidDomain(d)){ toast(dnsMsg,'Invalid domain.',true); return; }
   dnsMsg.textContent='Resolving…'; dnsTable.innerHTML=''; domainLinks.innerHTML=''; DOMAIN_LINKS=[];
   try{
-    const [A,AAAA,MX,NS,TXT]=await Promise.allSettled([doh(d,'A'),doh(d,'AAAA'),doh(d,'MX'),doh(d,'NS'),doh(d,'TXT')]);
+    const [A,AAAA,MX,NS,TXT,CAA,SOA]=await Promise.allSettled([doh(d,'A'),doh(d,'AAAA'),doh(d,'MX'),doh(d,'NS'),doh(d,'TXT'),doh(d,'CAA'),doh(d,'SOA')]);
     const get=(p)=>p.status==='fulfilled' && p.value && p.value.Answer ? p.value.Answer.map(a=>a.data) : [];
-    const rows=[['A',get(A).join(', ')||'—'],['AAAA',get(AAAA).join(', ')||'—'],['MX',get(MX).join(' | ')||'—'],['NS',get(NS).join(', ')||'—'],['TXT',get(TXT).map(s=>String(s).replaceAll('"','')).join(' | ')||'—']];
+    const pretty=(arr)=>arr.map(s=>String(s).replaceAll('"','').replace(/\.$/,'')).join(' | ')||'—';
+    const rows=[
+      ['A',pretty(get(A).map(x=>x))],
+      ['AAAA',pretty(get(AAAA))],
+      ['MX',pretty(get(MX))],
+      ['NS',pretty(get(NS))],
+      ['TXT',pretty(get(TXT))],
+      ['CAA',pretty(get(CAA))],
+      ['SOA',pretty(get(SOA))]
+    ];
     dnsTable.innerHTML=rows.map(([k,v])=>`<tr><th>${k}</th><td>${v}</td></tr>`).join('');
 
     const D=encodeURIComponent(d);
@@ -484,6 +528,7 @@ document.getElementById('ipBtn').onclick=async()=>{
   const ip=document.getElementById('ip').value.trim(); const key=(document.getElementById('pcKey').value||'').trim();
   if(!ip){ toast(ipInfo,'Enter an IP.'); return; }
   if(!isValidIPv4(ip)){ toast(ipInfo,'Invalid IPv4.',true); return; }
+  if(isBogon(ip)) toast(ipInfo,'RFC1918/bogon ranges may have limited intel.');
   ipInfo.textContent='Querying…'; ipLinks.innerHTML=''; ipBadges.innerHTML=''; IP_LINKS=[];
   let geo={}; let vpnStatus='unknown', vpnReason='';
 
@@ -498,15 +543,12 @@ document.getElementById('ipBtn').onclick=async()=>{
   try{
     const params=new URLSearchParams({vpn:'1',asn:'1'}); if(key) params.set('key',key);
     const pc=await jfetch(`https://proxycheck.io/v2/${encodeURIComponent(ip)}?${params.toString()}`, {}, 7000);
-    const node=pc && (pc[ip]||pc.status==='denied'?null:pc[ip]); // ensure structure
     if(pc && pc.status==='ok' && pc[ip]){
       const d=pc[ip];
       vpnStatus = (d.proxy==='yes' || d.vpn==='yes') ? 'yes' : (d.proxy==='no' && d.vpn==='no' ? 'no' : 'unknown');
       vpnReason = d.type ? d.type : '';
     }
-  }catch(e){
-    // ignore; CORS may block
-  }
+  }catch(e){}
 
   // Badges
   const pills=[];
