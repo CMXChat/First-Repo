@@ -53,44 +53,34 @@ hr{border:none;border-top:1px solid var(--line);margin:14px 0}
 .seg button.active{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-left:1px solid var(--line);border-right:1px solid var(--line)}
 button.trigger{all:unset;cursor:pointer;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
 
-/* ===== Export menu (CENTERED MODAL) ===== */
+/* ===== Centered modal for Export ===== */
 .menu{position:relative;display:inline-flex;z-index:1000}
-.menu .sheet{
-  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:min(640px,92vw); max-height:min(94dvh,760px);
-  display:none; overflow:hidden; border-radius:16px;
-  border:1px solid var(--line); background:var(--panel-2); z-index:1002;
-  box-shadow:0 30px 120px rgba(0,0,0,.65);
-}
-.menu.open .sheet{display:flex;flex-direction:column}
-.menu .backdrop{
+.modal-backdrop{
   position:fixed;inset:0;display:none;z-index:1001;
   background:rgba(0,0,0,.55);backdrop-filter:blur(2px);
 }
-.menu.open .backdrop{display:block}
-.menu .sheet .header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 12px;border-bottom:1px solid var(--line)
+.modal{
+  position:fixed;inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(640px,92vw); max-height:min(86dvh,760px);
+  border:1px solid var(--line);border-radius:16px;background:var(--panel-2);
+  box-shadow:0 30px 120px rgba(0,0,0,.65);
+  display:none; z-index:1002;
 }
-.menu .sheet .header .title{font-weight:900}
-.menu .sheet .header .close{all:unset;cursor:pointer;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
-.menu .sheet .inner{
-  overflow:auto;-webkit-overflow-scrolling:touch;
-  padding:12px 12px calc(96px + env(safe-area-inset-bottom,0px)); /* big bottom pad so last item is never hidden */
+.modal.open{display:block}
+.modal-backdrop.open{display:block}
+.modal header{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:10px 12px;border-bottom:1px solid var(--line);background:#0b0d12;border-radius:16px 16px 0 0
 }
-.menu .sheet .footer{
-  position:sticky;bottom:0;left:0;right:0;
-  display:flex;justify-content:flex-end;gap:8px;
-  padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));
-  border-top:1px solid var(--line);background:var(--panel-2)
-}
-.menu .sheet .item{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:8px;border:1px solid transparent;cursor:pointer}
-.menu .sheet .item:hover{border-color:var(--line);background:var(--panel)}
-.menu .sheet hr{border:none;border-top:1px solid var(--line);margin:8px 0}
+.modal header .title{font-weight:900}
+.modal header .close{all:unset;cursor:pointer;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:800}
+.modal .inner{padding:12px;overflow:auto;max-height:calc(min(86dvh,760px) - 102px)}
+.modal .item{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:8px;border:1px solid transparent;cursor:pointer}
+.modal .item:hover{border-color:var(--line);background:var(--panel)}
+.modal .footer{display:flex;justify-content:flex-end;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--panel-2);border-radius:0 0 16px 16px}
 
-/* Lock scroll + hide dock while sheet open */
-body.sheet-open{overflow:hidden}
-body.sheet-open .dock{transform:translateY(120%); opacity:.01; pointer-events:none;}
+/* prevent background scroll while modal open */
+body.modal-open{overflow:hidden}
 
 /* ===== Container + hero ===== */
 .container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad) calc(var(--pad) + env(safe-area-inset-bottom,0px))}
@@ -131,22 +121,20 @@ textarea{resize:vertical;min-height:96px}
 small.muted{color:var(--muted);font-size:var(--fs-sm)}
 .note-inline{color:#cfe9ff}
 
-/* ===== Board ===== */
+/* ===== Board (balanced size) ===== */
 .board-wrap{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#0a0c10}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid var(--line);background:#0b0d12}
 .zoom{margin-left:auto;display:flex;gap:8px}
-
-/* size tuning */
 .board{
-  position:relative;height:68vh;min-height:560px;
+  position:relative;height:66vh;min-height:500px;
   background:
     linear-gradient(#0e1117,#0e1117) padding-box,
     radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px) border-box;
   background-size:20px 20px;
   touch-action:none;
 }
-@media(min-width:1200px){ .board{height:72vh} }
-@media(max-width:720px){ .board{height:62vh;min-height:420px} }
+@media(min-width:1200px){ .board{height:70vh;min-height:560px} }
+@media(max-width:720px){ .board{height:60vh;min-height:420px} }
 
 svg#canvas{width:100%;height:100%;display:block}
 .snap-hint{position:absolute;left:10px;bottom:10px;font-size:12px;color:#9fb3c9;background:#0b0d12;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
@@ -197,7 +185,6 @@ svg#canvas{width:100%;height:100%;display:block}
 .dock{
   position:sticky;bottom:0;z-index:65;background:rgba(10,12,16,.9);backdrop-filter:blur(10px);
   border-top:1px solid var(--line);padding:8px calc(var(--pad)) calc(8px + env(safe-area-inset-bottom,0px));
-  transition:transform .2s ease, opacity .2s ease;
 }
 .dock .row{display:flex;gap:8px}
 .dock .btn{flex:1 1 auto;text-align:center}
@@ -262,29 +249,31 @@ svg#canvas{width:100%;height:100%;display:block}
     <button class="trigger" id="toggleLasso" aria-pressed="false">Lasso</button>
 
     <div class="menu" id="exportMenu">
-      <button class="trigger" aria-expanded="false" aria-haspopup="dialog">Export / Print</button>
-      <div class="backdrop" id="sheetBackdrop"></div>
-      <div class="sheet" role="dialog" aria-modal="true" aria-label="Export and Print">
-        <div class="header">
-          <div class="title">Export / Print</div>
-          <button class="close" id="closeSheet" aria-label="Close export menu">✕</button>
-        </div>
-        <div class="inner" id="sheetInner" tabindex="-1">
-          <button class="item" data-export="combined">Cover + Board + Timeline (PDF)</button>
-          <button class="item" data-export="exhibit">Exhibit (Board • A3 landscape PDF)</button>
-          <button class="item" data-export="chrono">Chronology (Timeline • A4 PDF)</button>
-          <hr>
-          <button class="item" id="btnExportPNG">Board → PNG</button>
-          <button class="item" id="btnExportJSON">State → JSON</button>
-          <button class="item" id="btnExportMD">Timeline → Markdown</button>
-        </div>
-        <div class="footer">
-          <button class="btn ghost" id="sheetDone">Done</button>
-        </div>
-      </div>
+      <button class="trigger" id="openExport" aria-expanded="false" aria-haspopup="dialog">Export / Print</button>
     </div>
   </div>
 </header>
+
+<!-- Centered Export Modal -->
+<div class="modal-backdrop" id="modalBg" hidden></div>
+<div class="modal" id="exportModal" role="dialog" aria-modal="true" aria-label="Export and Print" hidden>
+  <header>
+    <div class="title">Export / Print</div>
+    <button class="close" id="closeModal" aria-label="Close export menu">✕</button>
+  </header>
+  <div class="inner" id="modalInner" tabindex="-1">
+    <button class="item" data-export="combined">Cover + Board + Timeline (PDF)</button>
+    <button class="item" data-export="exhibit">Exhibit (Board • A3 landscape PDF)</button>
+    <button class="item" data-export="chrono">Chronology (Timeline • A4 PDF)</button>
+    <hr>
+    <button class="item" id="btnExportPNG">Board → PNG</button>
+    <button class="item" id="btnExportJSON">State → JSON</button>
+    <button class="item" id="btnExportMD">Timeline → Markdown</button>
+  </div>
+  <div class="footer">
+    <button class="btn ghost" id="doneModal">Done</button>
+  </div>
+</div>
 
 <main class="container">
   <section class="hero">
@@ -494,7 +483,7 @@ $('#sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 const nodesG=$('#nodes'), linksG=$('#links'), viewport=$('#viewport'), canvas=$('#canvas'), board=$('#board'), mini=$('#mini');
 
 /* ===== State / persistence ===== */
-const LS_KEY='cmx.caseworkspace.v8';
+const LS_KEY='cmx.caseworkspace.v12';
 let state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
 try{const raw=localStorage.getItem(LS_KEY); if(raw) state=JSON.parse(raw);}catch(e){}
 function debounce(fn,ms){let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a),ms)}}
@@ -520,35 +509,33 @@ $('#tabTime').onclick =()=>{show('time');  $('#tabTime').classList.add('active')
 show('board');
 
 /* ===== Export modal ===== */
-const menu=$('#exportMenu');
-const sheet=menu.querySelector('.sheet');
-const backdrop=$('#sheetBackdrop');
-const trig=menu.querySelector('.trigger');
-const sheetInner=$('#sheetInner');
-const closeSheetBtn=$('#closeSheet');
-const doneSheetBtn=$('#sheetDone');
-
-function openSheet(){
-  menu.classList.add('open');
-  trig.setAttribute('aria-expanded','true');
-  document.body.classList.add('sheet-open');
-  sheetInner.scrollTop = 0;
-  sheetInner.focus({preventScroll:true});
+const openExportBtn = $('#openExport');
+const modal = $('#exportModal');
+const modalBg = $('#modalBg');
+const modalInner = $('#modalInner');
+const closeModalBtn = $('#closeModal');
+const doneModalBtn = $('#doneModal');
+function openModal(){
+  if(modal.classList.contains('open')) return;
+  document.body.classList.add('modal-open');
+  modal.hidden=false; modalBg.hidden=false;
+  modal.classList.add('open'); modalBg.classList.add('open');
+  openExportBtn.setAttribute('aria-expanded','true');
+  modalInner.scrollTop=0; modalInner.focus({preventScroll:true});
 }
-function closeSheet(){
-  menu.classList.remove('open');
-  trig.setAttribute('aria-expanded','false');
-  document.body.classList.remove('sheet-open');
+function closeModal(){
+  if(!modal.classList.contains('open')) return;
+  document.body.classList.remove('modal-open');
+  modal.classList.remove('open'); modalBg.classList.remove('open');
+  modal.hidden=true; modalBg.hidden=true;
+  openExportBtn.setAttribute('aria-expanded','false');
 }
-trig.onclick=()=> openSheet();
-closeSheetBtn.onclick=()=> closeSheet();
-doneSheetBtn.onclick=()=> closeSheet();
-backdrop.onclick=()=> closeSheet();
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSheet(); }});
-document.addEventListener('click',e=>{
-  if(!menu.contains(e.target) && !$('#dockExport').contains(e.target)){ closeSheet(); }
-});
-$('#dockExport').onclick=()=>{ openSheet(); trig.focus(); };
+openExportBtn.onclick=()=>openModal();
+$('#dockExport').onclick=()=>openModal();
+closeModalBtn.onclick=()=>closeModal();
+doneModalBtn.onclick=()=>closeModal();
+modalBg.onclick=()=>closeModal();
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 /* ===== Viewport / pan / zoom ===== */
 function applyView(){const {x,y,k}=state.view; viewport.setAttribute('transform',`translate(${x},${y}) scale(${k})`); drawMini();}
@@ -586,7 +573,7 @@ canvas.addEventListener('touchmove',e=>{
 canvas.addEventListener('touchend',()=>{pinch=null});
 
 /* ===== Board: nodes & links ===== */
-let sel=new Set(); let drag=null; let resizing=null;
+let sel=new Set(); let resizing=null;
 const SNAP=10;
 function screenToWorld(px,py){const {x,y,k}=state.view; const rect=canvas.getBoundingClientRect(); return {x:(px-rect.left-x)/k, y:(py-rect.top-y)/k};}
 
@@ -845,7 +832,7 @@ $('#btnExportMD').onclick=()=>{
 
 /* Print / PDF */
 function doPrint(mode){
-  closeSheet();
+  closeModal();
   document.body.dataset.print=mode;
   $('#pTitle').textContent=state.meta.title||'Untitled case';
   $('#pAgent').textContent=state.meta.investigator||'—';
@@ -902,45 +889,54 @@ $('#promoteSel').onclick=()=>{
   if(sel.size!==1){ alert('Select a single node on the Board to promote.'); return; }
   const id=[...sel][0]; const N=state.nodes.find(n=>n.id===id); if(!N) return;
   $('#evTitle').value=N.title|| (N.type==='image'?'Image':'Note');
-  $('#evDetails').value=N.details||''; $('#evTags').value=(N.tags||[]).join(', '); $('#evRef').value=N.id;
-  $('#evDate').value=new Date().toISOString().slice(0,16);
-  show('time'); $('#tabTime').classList.add('active'); $('#tabBoard').classList.remove('active'); $('#evTitle').focus();
+  $('#evDetails').value=N.details||''; $('#evTags').value=(N.tags||[]).join(', ');
+  $('#evRef').value=N.id; show('time'); $('#tabTime').classList.add('active'); $('#tabBoard').classList.remove('active');
 };
 
-/* Node options for event ref */
+/* Node dropdown for events */
 function refreshNodeOptions(){
-  const selEl=$('#evRef'); const keep=selEl.value;
-  selEl.innerHTML='<option value="">— none —</option>' + state.nodes.map(n=>`<option value="${n.id}">${esc(n.title||n.id)} (${n.type})</option>`).join('');
-  selEl.value=keep||'';
+  const selEl=$('#evRef'); const cur=selEl.value;
+  selEl.innerHTML='<option value="">— none —</option>' + state.nodes.map(n=>`<option value="${n.id}">${esc(n.title||n.id)}</option>`).join('');
+  if(cur) selEl.value=cur;
 }
 
-/* Meta + page title */
-function updateMetaUI(){ $('#metaTitle').value=state.meta.title||''; $('#metaAgent').value=state.meta.investigator||''; $('#metaScope').value=state.meta.scope||''; $('#metaSummary').value=state.meta.summary||''; updateCaseTitle(); }
-function updateCaseTitle(){ $('#caseTitle').textContent=state.meta.title||'Case Workspace'; }
-$('#metaSave').onclick=()=>{ state.meta.title=$('#metaTitle').value.trim(); state.meta.investigator=$('#metaAgent').value.trim(); state.meta.scope=$('#metaScope').value.trim(); state.meta.summary=$('#metaSummary').value.trim(); save(); updateCaseTitle(); pingToast('Meta saved'); };
+/* Case title sync */
+function updateCaseTitle(){ const t=state.meta.title||'Case Workspace'; $('#caseTitle').textContent=t; }
 
-/* ===== Keyboard & Dock ===== */
-window.addEventListener('keydown',e=>{
-  const tag=(e.target.tagName||'').toLowerCase();
-  if(tag==='input'||tag==='textarea'||e.metaKey||e.ctrlKey) return;
-  if(e.key==='0'){ state.view={x:0,y:0,k:1}; applyView(); save(); }
-  else if(e.key.toLowerCase()==='n'){ addNoteAt(60,60); }
-  else if(e.key.toLowerCase()==='i'){ const u=prompt('Image URL'); if(u) addImageAt(80,80,u.trim()); }
-  else if(e.key.toLowerCase()==='l'){ startLink('arrow'); }
-  else if(e.key.toLowerCase()==='g'){ startLink('string'); }
-  else if(e.key==='Delete'){ deleteSelected(); }
-  else if(e.key==='/'){ show('time'); $('#tabTime').classList.add('active'); $('#tabBoard').classList.remove('active'); $('#tSearch').focus(); e.preventDefault(); }
+/* Meta save */
+$('#metaSave').onclick=()=>{
+  state.meta={title:$('#metaTitle').value.trim(), investigator:$('#metaAgent').value.trim(), scope:$('#metaScope').value.trim(), summary:$('#metaSummary').value.trim()};
+  save(); updateCaseTitle(); pingToast('Meta saved');
+};
+function updateMetaUI(){
+  $('#metaTitle').value=state.meta.title||'';
+  $('#metaAgent').value=state.meta.investigator||'';
+  $('#metaScope').value=state.meta.scope||'';
+  $('#metaSummary').value=state.meta.summary||'';
+  updateCaseTitle();
+}
+
+/* Autosave hook */
+document.addEventListener('cmx-saved',()=>{ pushUndo(); $('#autosaveHint').textContent='(saved)'; });
+
+/* Keyboard shortcuts */
+document.addEventListener('keydown',e=>{
+  if(e.target.matches('input,textarea')) return;
+  if(e.key==='0') $('#zoomReset').click();
+  if(e.key.toLowerCase()==='n') $('#btnNewNote').click();
+  if(e.key.toLowerCase()==='i') $('#btnNewImage').click();
+  if(e.key.toLowerCase()==='l') $('#btnMakeArrow').click();
+  if(e.key.toLowerCase()==='g') $('#btnMakeString').click();
+  if(e.key==='Delete' || e.key==='Backspace') $('#btnDelete').click();
+  if(e.key==='/'){ e.preventDefault(); $('#tSearch').focus(); }
 });
-$('#dockAddNote').onclick =()=>{ show('board'); $('#tabBoard').classList.add('active'); $('#tabTime').classList.remove('active'); addNoteAt(60,60); };
-$('#dockAddEvent').onclick=()=>{ show('time'); $('#tabTime').classList.add('active'); $('#tabBoard').classList.remove('active'); $('#evTitle').focus(); };
 
-/* ===== Init ===== */
+/* Dock shortcuts */
+$('#dockAddNote').onclick =()=>addNoteAt(60,60);
+$('#dockAddEvent').onclick=()=>{ show('time'); $('#tabTime').classList.add('active'); $('#tabBoard').classList.remove('active'); };
+
+/* Initial render */
 renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();
-
-/* Autosave hint – mark “dirty” on changes in form fields */
-['title','details','tags','color','imgUrl','evTitle','evDate','evDetails','evTags','evLink','metaTitle','metaAgent','metaScope','metaSummary']
-  .forEach(id=>{ const el=$('#'+id); if(el) el.addEventListener('input',()=>$('#autosaveHint').textContent='(pending…)'); });
-document.addEventListener('cmx-saved',()=>$('#autosaveHint').textContent='(saved)');
 </script>
 </body>
 </html>
