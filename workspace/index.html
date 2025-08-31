@@ -131,7 +131,7 @@ small.muted{color:var(--muted);font-size:var(--fs-sm)}
     linear-gradient(#0e1117,#0e1117) padding-box,
     radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px) border-box;
   background-size:20px 20px;
-  touch-action:none;
+  touch-action:none; /* enables custom pan/zoom/drag/lasso */
 }
 @media(min-width:1200px){ .board{height:70vh;min-height:560px} }
 @media(max-width:720px){ .board{height:60vh;min-height:420px} }
@@ -220,12 +220,15 @@ svg#canvas{width:100%;height:100%;display:block}
 .print-kv{display:grid;grid-template-columns:1fr 2fr;gap:6px}
 .print-kv div{padding:6px;border-bottom:1px solid #eee}
 
-/* Autosave toast */
+/* Toast */
 .toast{
   position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:#0b0d12;border:1px solid var(--line);border-radius:12px;
   padding:8px 12px;font-size:12.5px;color:#cfe9ff;display:none;z-index:90
 }
 .toast.show{display:block;animation:fade 2.2s ease both}
+.toast.ok{border-color:var(--ok)}
+.toast.warn{border-color:var(--warn)}
+.toast.bad{border-color:var(--bad)}
 @keyframes fade{0%{opacity:0;transform:translate(-50%,6px)}10%{opacity:1;transform:translate(-50%,0)}90%{opacity:1}100%{opacity:0;transform:translate(-50%,-6px)}}
 </style>
 </head>
@@ -474,7 +477,7 @@ svg#canvas{width:100%;height:100%;display:block}
 </nav>
 
 <footer style="text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px">© CMX</footer>
-<div class="toast" id="toast">Saved</div>
+<div class="toast" id="toast" role="status" aria-live="polite">Saved</div>
 
 <script>
 /* ===== DOM utils ===== */
@@ -482,12 +485,22 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 $('#sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
 const nodesG=$('#nodes'), linksG=$('#links'), viewport=$('#viewport'), canvas=$('#canvas'), board=$('#board'), mini=$('#mini');
 
+/* ===== Toast helper ===== */
+function toast(msg, variant=''){
+  const t=$('#toast');
+  t.textContent=msg;
+  t.className='toast show'+(variant?(' '+variant):'');
+  // tap to dismiss early
+  const hide=()=>t.classList.remove('show');
+  t.onclick=hide;
+  setTimeout(hide,2200);
+}
+
 /* ===== State / persistence ===== */
 const LS_KEY='cmx.caseworkspace.v12';
 let state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
 try{const raw=localStorage.getItem(LS_KEY); if(raw) state=JSON.parse(raw);}catch(e){}
 function debounce(fn,ms){let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a),ms)}}
-function pingToast(msg){const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1900)}
 const save=debounce(()=>{ localStorage.setItem(LS_KEY, JSON.stringify(state)); document.dispatchEvent(new Event('cmx-saved')); },320);
 
 function freshId(){return Math.random().toString(36).slice(2,10)}
@@ -500,7 +513,7 @@ function pushUndo(){ undo.push(JSON.stringify(state)); if(undo.length>50) undo.s
 function doUndo(){ if(!undo.length) return; const cur=JSON.stringify(state); redo.push(cur); const prev=undo.pop(); if(prev){state=JSON.parse(prev); localStorage.setItem(LS_KEY,prev); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();}}
 function doRedo(){ if(!redo.length) return; const next=redo.pop(); if(next){ undo.push(JSON.stringify(state)); state=JSON.parse(next); localStorage.setItem(LS_KEY,next); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();}}
 $('#btnUndo').onclick=doUndo; $('#btnRedo').onclick=doRedo;
-document.addEventListener('cmx-saved',()=>{ pushUndo(); $('#autosaveHint').textContent='(saved)'; pingToast('Saved'); });
+document.addEventListener('cmx-saved',()=>{ pushUndo(); $('#autosaveHint').textContent='(saved)'; toast('Saved','ok'); });
 
 /* ===== Tabs ===== */
 function show(v){ $$('#boardView,#timeView').forEach(el=>el.classList.remove('is-active')); $('#'+v+'View').classList.add('is-active'); }
@@ -509,12 +522,12 @@ $('#tabTime').onclick =()=>{show('time');  $('#tabTime').classList.add('active')
 show('board');
 
 /* ===== Export modal ===== */
-const openExportBtn = $('#openExport');
-const modal = $('#exportModal');
-const modalBg = $('#modalBg');
-const modalInner = $('#modalInner');
-const closeModalBtn = $('#closeModal');
-const doneModalBtn = $('#doneModal');
+const openExportBtn=$('#openExport');
+const modal=$('#exportModal');
+const modalBg=$('#modalBg');
+const modalInner=$('#modalInner');
+const closeModalBtn=$('#closeModal');
+const doneModalBtn=$('#doneModal');
 function openModal(){
   if(modal.classList.contains('open')) return;
   document.body.classList.add('modal-open');
@@ -559,7 +572,7 @@ canvas.addEventListener('wheel',e=>{ e.preventDefault(); zoomBy(e.deltaY<0?1.1:0
 let pinch=null;
 canvas.addEventListener('touchstart',e=>{
   if(e.touches.length===2){
-    setAddMode(!addMode);
+    setAddMode(!addMode);  // two-finger tap toggles multi-select
     const [a,b]=e.touches;
     pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY), cx:(a.clientX+b.clientX)/2, cy:(a.clientY+b.clientY)/2};
   }
@@ -573,8 +586,7 @@ canvas.addEventListener('touchmove',e=>{
 canvas.addEventListener('touchend',()=>{pinch=null});
 
 /* ===== Board: nodes & links ===== */
-let sel=new Set(); let resizing=null;
-const SNAP=10;
+let sel=new Set(); const SNAP=10;
 function screenToWorld(px,py){const {x,y,k}=state.view; const rect=canvas.getBoundingClientRect(); return {x:(px-rect.left-x)/k, y:(py-rect.top-y)/k};}
 
 /* Multi-select mode */
@@ -584,7 +596,7 @@ function setAddMode(v){
   $('#toggleMulti').setAttribute('aria-pressed', addMode?'true':'false');
   $('#multiState').textContent = addMode ? 'On' : 'Off';
   $('#dockMulti').textContent  = addMode ? 'Select ✓' : 'Select +';
-  pingToast('Multi-select ' + (addMode?'ON':'OFF'));
+  toast('Multi-select ' + (addMode?'ON':'OFF'), addMode?'ok':'');
 }
 $('#toggleMulti').onclick = ()=>setAddMode(!addMode);
 $('#dockMulti').onclick   = ()=>setAddMode(!addMode);
@@ -645,11 +657,11 @@ canvas.addEventListener('pointerup',e=>{
 /* Add nodes */
 function addNoteAt(x,y){
   const node={id:freshId(),type:'note',x,y,w:260,h:160,title:$('#title').value.trim()||'Note',details:$('#details').value.trim(),tags:toTags($('#tags').value),color:$('#color').value||'#1d9bf0'};
-  state.nodes.push(node); save(); renderAll(); refreshNodeOptions();
+  state.nodes.push(node); save(); renderAll(); refreshNodeOptions(); toast('Note added','ok');
 }
 function addImageAt(x,y,url){
   const node={id:freshId(),type:'image',x,y,w:280,h:180,title:$('#title').value.trim()||'Image',details:$('#details').value.trim(),tags:toTags($('#tags').value),color:$('#color').value||'#1d9bf0',url};
-  state.nodes.push(node); save(); renderAll(); refreshNodeOptions();
+  state.nodes.push(node); save(); renderAll(); refreshNodeOptions(); toast('Image added','ok');
 }
 
 /* Links */
@@ -658,12 +670,12 @@ function startLink(mode){
   const [a,b]=[...sel]; if(a===b) return;
   const A=state.nodes.find(n=>n.id===a), B=state.nodes.find(n=>n.id===b);
   const link={id:freshId(),a,b,kind:mode,cx:(A.x+B.x)/2,cy:(A.y+B.y)/2};
-  state.links.push(link); save(); renderAll();
+  state.links.push(link); save(); renderAll(); toast('Nodes connected','ok');
 }
 function deleteSelected(){
   if(sel.size===0) return;
   const ids=[...sel]; state.links=state.links.filter(L=>!ids.includes(L.a)&&!ids.includes(L.b));
-  state.nodes=state.nodes.filter(n=>!ids.includes(n.id)); sel.clear(); save(); renderAll(); refreshNodeOptions();
+  state.nodes=state.nodes.filter(n=>!ids.includes(n.id)); sel.clear(); save(); renderAll(); refreshNodeOptions(); toast('Deleted','warn');
 }
 
 /* SVG helpers */
@@ -674,7 +686,7 @@ function wrapText(text,x,y,maxWidth,lineHeight,cls){
   const tspan=(txt,dy)=>{const s=document.createElementNS('http://www.w3.org/2000/svg','tspan'); s.setAttribute('x',x); if(dy!==0) s.setAttribute('dy',dy); s.textContent=txt; node.appendChild(s);};
   const meas=s=>s.length*6.8;
   words.forEach((w,i)=>{const test=(line?line+' ':'')+w; if(meas(test)>maxWidth && line){ tspan(line, i===0?0:lineHeight); lines++; line=w; } else { line=test; }});
-  if(line){ tspan(line, lines?lineHeight:0); lines++; } 
+  if(line){ tspan(line, lines?lineHeight:0); lines++; }
   return {node,lines};
 }
 
@@ -687,10 +699,10 @@ function renderAll(){
     const a=state.nodes.find(n=>n.id===L.a), b=state.nodes.find(n=>n.id===L.b); if(!a||!b) return;
     const ax=a.x+a.w/2, ay=a.y+a.h/2, bx=b.x+b.w/2, by=b.y+b.h/2;
     const mx=L.cx??(ax+bx)/2, my=L.cy??(ay+by)/2;
-    const p=el('path',{d:`M ${ax} ${ay} Q ${mx} ${my} ${bx} ${by}`, class:`link ${L.kind==='arrow'?'arrow':''}`}); 
+    const p=el('path',{d:`M ${ax} ${ay} Q ${mx} ${my} ${bx} ${by}`, class:`link ${L.kind==='arrow'?'arrow':''}`});
     linksG.appendChild(p);
 
-    const h=el('circle',{cx:mx, cy:my, r:6, class:'handle'}); 
+    const h=el('circle',{cx:mx, cy:my, r:6, class:'handle'});
     h.addEventListener('pointerdown',e=>{
       e.stopPropagation(); const start={x:e.clientX,y:e.clientY}, ocx=L.cx??mx, ocy=L.cy??my;
       function move(ev){const dx=(ev.clientX-start.x)/state.view.k, dy=(ev.clientY-start.y)/state.view.k; L.cx=ocx+dx; L.cy=ocy+dy; renderAll();}
@@ -718,15 +730,26 @@ function renderAll(){
     }
     const rz=el('rect',{x:N.w-10,y:N.h-10,width:10,height:10,class:'resize'}); g.appendChild(rz);
 
+    /* selection / drag / resize with mobile-friendly multi-select */
     let pressTimer=null;
     g.addEventListener('pointerdown',e=>{
       e.stopPropagation();
       const isResize=e.target.classList.contains('resize');
       const start={x:e.clientX,y:e.clientY}; const k=state.view.k;
 
+      // long-press always toggles (useful on touch)
       pressTimer=setTimeout(()=>{ toggleSelection(N.id); }, 350);
 
-      if(!addMode && !e.shiftKey && !isResize){ sel.clear(); sel.add(N.id); renderAll(); }
+      // single tap behavior:
+      if(!isResize){
+        if(addMode || e.shiftKey){
+          // in multi-select mode, a single tap toggles immediately
+          toggleSelection(N.id);
+        }else{
+          // normal: replace selection
+          sel.clear(); sel.add(N.id); renderAll();
+        }
+      }
 
       if(isResize){
         const startW=N.w, startH=N.h;
@@ -783,20 +806,21 @@ $('#btnDelete').onclick  =deleteSelected;
 
 /* Save/Load/Clear */
 $('#btnSave').onclick =()=>{localStorage.setItem(LS_KEY,JSON.stringify(state)); document.dispatchEvent(new Event('cmx-saved'));};
-$('#btnLoad').onclick =()=>{try{const raw=localStorage.getItem(LS_KEY); if(raw){state=JSON.parse(raw); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); pingToast('Reloaded');}}catch(e){}};
+$('#btnLoad').onclick =()=>{try{const raw=localStorage.getItem(LS_KEY); if(raw){state=JSON.parse(raw); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); toast('Reloaded','ok');}}catch(e){}};
 $('#btnClear').onclick=()=>{
   if(confirm('Clear board, links, and timeline? This cannot be undone.')){
     state={view:{x:0,y:0,k:1},nodes:[],links:[],events:[],meta:{title:'',investigator:'',scope:'',summary:''}};
     document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI();
+    toast('Workspace cleared','warn');
   }
 };
 /* Import/Export JSON */
-$('#btnExportJSON').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cmx-case.json'; a.click(); URL.revokeObjectURL(a.href);};
+$('#btnExportJSON').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cmx-case.json'; a.click(); URL.revokeObjectURL(a.href); toast('JSON exported','ok');};
 $('#btnImportJSON').onclick=()=>$('#fileInput').click();
 $('#fileInput').addEventListener('change',async e=>{
   const f=e.target.files[0]; if(!f) return; const txt=await f.text();
-  try{ state=JSON.parse(txt); document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); pingToast('Imported'); }
-  catch(err){ alert('Invalid JSON'); }
+  try{ state=JSON.parse(txt); document.dispatchEvent(new Event('cmx-saved')); renderAll(); renderTimeline(); refreshNodeOptions(); updateMetaUI(); toast('Imported','ok'); }
+  catch(err){ toast('Invalid JSON','bad'); }
 });
 
 /* Export PNG (board) */
@@ -810,7 +834,8 @@ $('#btnExportPNG').onclick=async ()=>{
     const c=document.createElement('canvas'); c.width=w; c.height=h;
     const ctx=c.getContext('2d'); ctx.fillStyle='#0a0c10'; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0,w,h);
     const url=c.toDataURL('image/png'); const a=document.createElement('a'); a.href=url; a.download='cmx-board.png'; a.click();
-  }catch(e){ alert('PNG export failed (likely due to external image CORS). Use Print→PDF instead.'); }
+    toast('PNG exported','ok');
+  }catch(e){ toast('PNG export failed (CORS). Use Print→PDF.','bad'); }
 };
 
 /* Export Timeline → Markdown */
@@ -828,6 +853,7 @@ $('#btnExportMD').onclick=()=>{
     if(E.ref) lines.push(`  - Linked node: ${E.ref}`);
   });
   const blob=new Blob([lines.join('\n')],{type:'text/markdown'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='timeline.md'; a.click();
+  toast('Markdown exported','ok');
 };
 
 /* Print / PDF */
@@ -880,7 +906,7 @@ $('#sortDesc').onclick=()=>{ $('#sortDesc').dataset.active='1'; renderTimeline()
 $('#evSave').onclick=()=>{
   const E={id:editingEventId||freshId(), t:$('#evDate').value? new Date($('#evDate').value).getTime() : Date.now(), title:$('#evTitle').value.trim()||'Untitled', details:$('#evDetails').value.trim(), tags:toTags($('#evTags').value), link:$('#evLink').value.trim(), ref:$('#evRef').value||''};
   const idx=state.events.findIndex(x=>x.id===E.id); if(idx>=0) state.events[idx]=E; else state.events.push(E);
-  editingEventId=null; save(); renderTimeline(); $('#evClear').click();
+  editingEventId=null; save(); renderTimeline(); $('#evClear').click(); toast('Event saved','ok');
 };
 $('#evClear').onclick=()=>{ editingEventId=null; ['evTitle','evDate','evDetails','evTags','evLink'].forEach(id=>$('#'+id).value=''); $('#evRef').value=''; };
 
@@ -906,7 +932,7 @@ function updateCaseTitle(){ const t=state.meta.title||'Case Workspace'; $('#case
 /* Meta save */
 $('#metaSave').onclick=()=>{
   state.meta={title:$('#metaTitle').value.trim(), investigator:$('#metaAgent').value.trim(), scope:$('#metaScope').value.trim(), summary:$('#metaSummary').value.trim()};
-  save(); updateCaseTitle(); pingToast('Meta saved');
+  save(); updateCaseTitle(); toast('Meta saved','ok');
 };
 function updateMetaUI(){
   $('#metaTitle').value=state.meta.title||'';
@@ -915,9 +941,6 @@ function updateMetaUI(){
   $('#metaSummary').value=state.meta.summary||'';
   updateCaseTitle();
 }
-
-/* Autosave hook */
-document.addEventListener('cmx-saved',()=>{ pushUndo(); $('#autosaveHint').textContent='(saved)'; });
 
 /* Keyboard shortcuts */
 document.addEventListener('keydown',e=>{
