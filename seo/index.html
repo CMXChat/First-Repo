@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CMX Pricing Calculator</title>
+<style>
+  :root{
+    --bg:#f7f9fc; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+    --brand:#111827; --brand2:#1f3a8a; --accent:#2563eb; --accent-ink:#0b1c3f;
+    --chip:#e5e7eb; --ring:#c7d2fe; --shadow:0 10px 24px rgba(0,0,0,.08);
+  }
+  [data-theme="dark"]{
+    --bg:#0b0f14; --card:#0f1620; --text:#e5e7eb; --muted:#96a0ab;
+    --brand:#e5e7eb; --brand2:#8ab4ff; --accent:#2f81f7; --accent-ink:#0b2a66;
+    --chip:#1f2937; --ring:#253858; --shadow:0 16px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg); color:var(--text); margin:0; padding:20px}
+  h1{color:var(--brand); text-align:center; margin:0 0 4px; font-weight:800; letter-spacing:.2px}
+  h2{color:var(--brand2); margin:0 0 14px; font-weight:700}
+  .section{background:var(--card); padding:20px; margin:16px auto; border-radius:16px; max-width:720px; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.06)}
+  label{display:block; margin:8px 0 6px; font-weight:600}
+  .row{display:flex; gap:12px; align-items:center; justify-content:space-between; margin:8px 0; flex-wrap:wrap}
+  input[type=range]{width:100%}
+  input[type=number], select{width:100%; padding:12px 12px; border:1px solid var(--chip); border-radius:12px; background:transparent; color:var(--text)}
+  input[type=checkbox]{transform:scale(1.1)}
+  .value{font-weight:700; color:var(--muted)}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  @media (max-width:560px){ .grid{grid-template-columns:1fr} }
+
+  /* Segmented controls */
+  .seg{display:inline-flex; gap:0; background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.04));
+       border:1px solid var(--chip); border-radius:14px; padding:6px; box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .seg button{appearance:none; border:none; padding:10px 14px; font-weight:700; letter-spacing:.1px;
+    color:var(--muted); background:transparent; border-radius:10px; cursor:pointer; transition:.2s ease;
+    position:relative; min-width:108px}
+  .seg button:hover{color:var(--text)}
+  .seg button.active{color:#fff; background:linear-gradient(180deg,var(--accent),#1d4ed8);
+    box-shadow:0 6px 14px rgba(37,99,235,.35), inset 0 0 0 1px rgba(255,255,255,.18)}
+  .seg button.active::after{content:""; position:absolute; inset:-2px; border-radius:12px; box-shadow:0 0 0 2px var(--ring); opacity:.45}
+
+  /* Pills */
+  .pills{display:flex; gap:10px; flex-wrap:wrap}
+  .pill{border:none; padding:12px 16px; border-radius:14px; cursor:pointer; font-weight:800;
+        color:#fff; background:linear-gradient(180deg,var(--accent),#1d4ed8);
+        box-shadow:0 10px 18px rgba(37,99,235,.25); transition:.2s transform}
+  .pill:active{transform:translateY(1px)}
+
+  .hint{font-size:.92em; color:var(--muted); margin:6px 0 0}
+  .divider{height:1px; background:var(--chip); margin:14px 0}
+  .total{font-size:1.8em; margin-top:6px; color:var(--brand2); font-weight:900; text-align:center}
+  .sub{font-size:.95em; color:var(--muted); text-align:center; margin-top:4px}
+</style>
+</head>
+<body>
+
+<h1>CMX Service Pricing Calculator</h1>
+
+<!-- Theme + Payment -->
+<div class="section">
+  <h2>Preferences</h2>
+  <div class="row" style="gap:16px; justify-content:flex-start">
+    <div class="seg" role="tablist" aria-label="Theme">
+      <button id="lightBtn" class="active" role="tab" aria-selected="true">Light</button>
+      <button id="darkBtn"  role="tab" aria-selected="false">Dark</button>
+    </div>
+    <div class="seg" role="tablist" aria-label="Payment">
+      <button id="oneBtn" class="active" role="tab" aria-selected="true">One-Time</button>
+      <button id="monthlyBtn" role="tab" aria-selected="false">Monthly (3×)</button>
+    </div>
+  </div>
+  <p class="hint">Use monthly to make budgets feel lighter without changing your rate card.</p>
+</div>
+
+<!-- Quick Packages -->
+<div class="section">
+  <h2>Quick Packages</h2>
+  <div class="pills">
+    <button class="pill" onclick="loadPreset('starter')">Starter</button>
+    <button class="pill" onclick="loadPreset('growth')">Growth</button>
+    <button class="pill" onclick="loadPreset('scale')">Scale</button>
+  </div>
+  <p class="hint">Presets are editable — switch on/off items after loading.</p>
+</div>
+
+<!-- SEO & Content -->
+<div class="section">
+  <h2>SEO & Content</h2>
+  <div class="row"><label><input type="checkbox" id="seoResearch"> SEO Research & Audit — $1,000</label></div>
+  <div class="row"><label><input type="checkbox" id="seoOnsite"> On-Site SEO — $2,500</label></div>
+
+  <div class="row"><label>Off-Site Campaigns</label></div>
+  <input type="range" id="seoOffsite" min="0" max="3" value="0">
+  <p id="seoOffsiteVal" class="value">0 campaigns → $0</p>
+
+  <div class="row"><label><input type="checkbox" id="localSeo"> Local SEO — $750</label></div>
+
+  <div class="row"><label>Blog Posts / mo.</label></div>
+  <input type="range" id="blogs" min="0" max="10" value="0">
+  <p id="blogsVal" class="value">0 posts → $0</p>
+</div>
+
+<!-- Landing Pages -->
+<div class="section">
+  <h2>Landing Pages</h2>
+  <div class="grid">
+    <div>
+      <label>Number of Landing Pages</label>
+      <input type="number" id="lpCount" min="0" value="0"/>
+    </div>
+    <div>
+      <label>Price per LP</label>
+      <select id="lpRate">
+        <option value="300">$300 (template)</option>
+        <option value="350" selected>$350 (standard)</option>
+        <option value="400">$400 (custom layout)</option>
+        <option value="450">$450 (conversion + forms/A/B)</option>
+      </select>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="grid">
+    <div><label><input type="checkbox" id="lpCopy"> Include Copywriting ($120/page)</label></div>
+    <div><label><input type="checkbox" id="lpForms"> Forms/Integrations Setup ($80/page)</label></div>
+  </div>
+  <p id="lpVal" class="value">0 pages × $350 = $0</p>
+</div>
+
+<!-- Analytics & Reporting -->
+<div class="section">
+  <h2>Analytics & Reporting</h2>
+  <div class="row"><label><input type="checkbox" id="dashboards"> Reporting Dashboard — $750</label></div>
+</div>
+
+<!-- ROI -->
+<div class="section">
+  <h2>ROI Snapshot</h2>
+  <div class="grid">
+    <div>
+      <label>Avg. Value per Client ($)</label>
+      <input type="number" id="clientValue" value="500">
+    </div>
+    <div>
+      <label>Estimated Leads from Work</label>
+      <input type="number" id="leads" value="10">
+    </div>
+  </div>
+  <p id="roiVal" class="value">Potential ROI: $5,000</p>
+  <p class="hint">Client-facing: what they should know about their investment.</p>
+</div>
+
+<!-- Totals -->
+<div class="section">
+  <h2>Summary</h2>
+  <div class="total" id="total">Total: $0</div>
+  <div class="sub" id="monthlyNote" style="display:none;">Shown as monthly over 3 payments.</div>
+</div>
+
+<script>
+let mode = "one"; // one-time or monthly
+const el = id => document.getElementById(id);
+
+function setActive(groupBtns, activeBtn){
+  groupBtns.forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  activeBtn.classList.add('active'); activeBtn.setAttribute('aria-selected','true');
+}
+
+// Theme
+const lightBtn = el('lightBtn'), darkBtn = el('darkBtn');
+lightBtn.onclick = () => { document.documentElement.setAttribute('data-theme','light'); setActive([lightBtn,darkBtn], lightBtn); };
+darkBtn.onclick  = () => { document.documentElement.setAttribute('data-theme','dark');  setActive([lightBtn,darkBtn], darkBtn); };
+
+// Payment mode
+const oneBtn = el('oneBtn'), monthlyBtn = el('monthlyBtn');
+oneBtn.onclick = () => { mode='one'; setActive([oneBtn,monthlyBtn], oneBtn); update(); };
+monthlyBtn.onclick = () => { mode='monthly'; setActive([oneBtn,monthlyBtn], monthlyBtn); update(); };
+
+// Calc
+function update(){
+  let total = 0;
+
+  // SEO
+  if(el("seoResearch").checked) total += 1000;
+  if(el("seoOnsite").checked)   total += 2500;
+
+  const offsite = Number(el("seoOffsite").value);
+  const offsiteCost = offsite * 1500;
+  el("seoOffsiteVal").innerText = `${offsite} campaigns → $${offsiteCost.toLocaleString()}`;
+  total += offsiteCost;
+
+  if(el("localSeo").checked) total += 750;
+
+  const blogs = Number(el("blogs").value);
+  const blogCost = blogs * 300;
+  el("blogsVal").innerText = `${blogs} posts → $${blogCost.toLocaleString()}`;
+  total += blogCost;
+
+  // Landing pages
+  const lpCount = Math.max(0, Number(el("lpCount").value || 0));
+  const lpRate  = Number(el("lpRate").value);
+  const lpCopy  = el("lpCopy").checked ? 120 : 0;
+  const lpForms = el("lpForms").checked ? 80  : 0;
+  const lpPerPage = lpRate + lpCopy + lpForms;
+  const lpCost = lpCount * lpPerPage;
+  el("lpVal").innerText = `${lpCount} pages × $${lpRate}${(lpCopy||lpForms)?` (+${lpCopy? 'copy':''}${(lpCopy&&lpForms)?' + ':''}${lpForms? 'forms':''})`:''} = $${lpCost.toLocaleString()}`;
+  total += lpCost;
+
+  // Analytics
+  if(el("dashboards").checked) total += 750;
+
+  // ROI
+  const clientValue = parseFloat(el("clientValue").value) || 0;
+  const leads = parseFloat(el("leads").value) || 0;
+  const roi = clientValue * leads;
+  el("roiVal").innerText = `Potential ROI: $${roi.toLocaleString()}`;
+
+  // Payment display
+  let displayTotal = total;
+  const monthlyNote = el("monthlyNote");
+  if(mode === "monthly"){
+    displayTotal = Math.round(total/3);
+    monthlyNote.style.display = 'block';
+  } else {
+    monthlyNote.style.display = 'none';
+  }
+  el("total").innerText = (mode==='monthly' ? 'Monthly: $' : 'Total: $') + displayTotal.toLocaleString();
+}
+
+// Presets
+function loadPreset(name){
+  document.querySelectorAll("input[type=checkbox]").forEach(c=>c.checked=false);
+  el("seoOffsite").value = 0; el("blogs").value = 0;
+  el("lpCount").value = 0; el("lpRate").value = "350"; el("lpCopy").checked=false; el("lpForms").checked=false;
+  el("dashboards").checked=false;
+
+  if(name==='starter'){
+    el("seoResearch").checked = true;
+    el("localSeo").checked   = true;
+    el("blogs").value        = 1;
+    el("lpCount").value      = 1;
+  }
+  if(name==='growth'){
+    el("seoResearch").checked = true;
+    el("seoOnsite").checked   = true;
+    el("seoOffsite").value    = 2;
+    el("blogs").value         = 4;
+    el("lpCount").value       = 2;
+    el("lpRate").value        = "350";
+    el("lpCopy").checked      = true;
+    el("lpForms").checked     = true;
+  }
+  if(name==='scale'){
+    el("seoResearch").checked = true;
+    el("seoOnsite").checked   = true;
+    el("seoOffsite").value    = 3;
+    el("blogs").value         = 6;
+    el("dashboards").checked  = true;
+    el("lpCount").value       = 3;
+    el("lpRate").value        = "400";
+    el("lpCopy").checked      = true;
+    el("lpForms").checked     = true;
+  }
+  update();
+}
+
+document.querySelectorAll("input, select").forEach(i=>i.addEventListener('input', update));
+update();
+</script>
+</body>
+</html>
