@@ -7,70 +7,67 @@
 <style>
   :root{
     --bg:#f7f9fc; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
-    --brand:#111827; --brand2:#1f3a8a; --accent:#2563eb; --accent-ink:#0b1c3f;
+    --brand:#111827; --brand2:#1f3a8a; --accent:#2563eb;
     --chip:#e5e7eb; --ring:#c7d2fe; --shadow:0 10px 24px rgba(0,0,0,.08);
   }
   [data-theme="dark"]{
     --bg:#0b0f14; --card:#0f1620; --text:#e5e7eb; --muted:#96a0ab;
-    --brand:#e5e7eb; --brand2:#8ab4ff; --accent:#2f81f7; --accent-ink:#0b2a66;
+    --brand:#e5e7eb; --brand2:#8ab4ff; --accent:#2f81f7;
     --chip:#1f2937; --ring:#253858; --shadow:0 16px 30px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box}
   body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg); color:var(--text); margin:0; padding:20px}
   h1{color:var(--brand); text-align:center; margin:0 0 4px; font-weight:800; letter-spacing:.2px}
   h2{color:var(--brand2); margin:0 0 14px; font-weight:700}
-  .section{background:var(--card); padding:20px; margin:16px auto; border-radius:16px; max-width:720px; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.06)}
+  .section{background:var(--card); padding:20px; margin:16px auto; border-radius:16px; max-width:760px; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.06)}
   label{display:block; margin:8px 0 6px; font-weight:600}
   .row{display:flex; gap:12px; align-items:center; justify-content:space-between; margin:8px 0; flex-wrap:wrap}
   input[type=range]{width:100%}
-  input[type=number], select{width:100%; padding:12px 12px; border:1px solid var(--chip); border-radius:12px; background:transparent; color:var(--text)}
+  input[type=number], select{width:100%; padding:12px; border:1px solid var(--chip); border-radius:12px; background:transparent; color:var(--text)}
   input[type=checkbox]{transform:scale(1.1)}
   .value{font-weight:700; color:var(--muted)}
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
   @media (max-width:560px){ .grid{grid-template-columns:1fr} }
 
   /* Segmented controls */
-  .seg{display:inline-flex; gap:0; background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.04));
-       border:1px solid var(--chip); border-radius:14px; padding:6px; box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-  .seg button{appearance:none; border:none; padding:10px 14px; font-weight:700; letter-spacing:.1px;
-    color:var(--muted); background:transparent; border-radius:10px; cursor:pointer; transition:.2s ease;
-    position:relative; min-width:108px}
+  .seg{display:inline-flex; gap:0; border:1px solid var(--chip); border-radius:14px; padding:6px}
+  .seg button{border:none; padding:10px 14px; font-weight:700; color:var(--muted); background:transparent; border-radius:10px; cursor:pointer; transition:.2s ease; min-width:108px}
   .seg button:hover{color:var(--text)}
-  .seg button.active{color:#fff; background:linear-gradient(180deg,var(--accent),#1d4ed8);
-    box-shadow:0 6px 14px rgba(37,99,235,.35), inset 0 0 0 1px rgba(255,255,255,.18)}
-  .seg button.active::after{content:""; position:absolute; inset:-2px; border-radius:12px; box-shadow:0 0 0 2px var(--ring); opacity:.45}
+  .seg button.active{color:#fff; background:linear-gradient(180deg,var(--accent),#1d4ed8);}
 
   /* Pills */
   .pills{display:flex; gap:10px; flex-wrap:wrap}
   .pill{border:none; padding:12px 16px; border-radius:14px; cursor:pointer; font-weight:800;
         color:#fff; background:linear-gradient(180deg,var(--accent),#1d4ed8);
-        box-shadow:0 10px 18px rgba(37,99,235,.25); transition:.2s transform}
+        box-shadow:0 10px 18px rgba(37,99,235,.25)}
   .pill:active{transform:translateY(1px)}
 
   .hint{font-size:.92em; color:var(--muted); margin:6px 0 0}
   .divider{height:1px; background:var(--chip); margin:14px 0}
   .total{font-size:1.8em; margin-top:6px; color:var(--brand2); font-weight:900; text-align:center}
   .sub{font-size:.95em; color:var(--muted); text-align:center; margin-top:4px}
+  .note{font-size:.95em; color:var(--muted); text-align:center; margin-top:6px}
+  .kicker{font-size:.9em; color:var(--muted); margin-top:6px}
 </style>
 </head>
 <body>
 
-<h1>CMX SEO Services Pricing Calculator</h1>
+<h1>CMX Service Pricing Calculator</h1>
 
 <!-- Theme + Payment -->
 <div class="section">
   <h2>Preferences</h2>
   <div class="row" style="gap:16px; justify-content:flex-start">
-    <div class="seg" role="tablist" aria-label="Theme">
-      <button id="lightBtn" class="active" role="tab" aria-selected="true">Light</button>
-      <button id="darkBtn"  role="tab" aria-selected="false">Dark</button>
+    <div class="seg">
+      <button id="lightBtn" class="active">Light</button>
+      <button id="darkBtn">Dark</button>
     </div>
-    <div class="seg" role="tablist" aria-label="Payment">
-      <button id="oneBtn" class="active" role="tab" aria-selected="true">One-Time</button>
-      <button id="monthlyBtn" role="tab" aria-selected="false">Monthly (3×)</button>
+    <div class="seg">
+      <button id="oneBtn" class="active">One-Time</button>
+      <button id="monthlyBtn">Monthly (3×)</button>
     </div>
   </div>
-  <p class="hint">Use monthly to make budgets feel lighter without changing your rate card.</p>
+  <p class="hint">Choose one-time or spread across 3 payments for flexibility.</p>
 </div>
 
 <!-- Quick Packages -->
@@ -88,7 +85,11 @@
 <div class="section">
   <h2>SEO & Content</h2>
   <div class="row"><label><input type="checkbox" id="seoResearch"> SEO Research & Audit — $1,000</label></div>
-  <div class="row"><label><input type="checkbox" id="seoOnsite"> On-Site SEO — $2,500</label></div>
+
+  <div class="row" style="align-items:flex-start; gap:10px; flex-direction:column">
+    <label><input type="checkbox" id="seoOnsite"> On-Site SEO — $2,500</label>
+    <div class="kicker">Includes <strong>2 landing pages</strong> as part of optimization.</div>
+  </div>
 
   <div class="row"><label>Off-Site Campaigns</label></div>
   <input type="range" id="seoOffsite" min="0" max="3" value="0">
@@ -97,40 +98,84 @@
   <div class="row"><label><input type="checkbox" id="localSeo"> Local SEO — $750</label></div>
 
   <div class="row"><label>Blog Posts / mo.</label></div>
-  <input type="range" id="blogs" min="0" max="10" value="0">
-  <p id="blogsVal" class="value">0 posts → $0</p>
+  <div class="grid">
+    <select id="blogsType">
+      <option value="0" selected>None</option>
+      <option value="80">Lite ($80)</option>
+      <option value="150">Standard ($150)</option>
+      <option value="250">Premium ($250)</option>
+    </select>
+    <input type="number" id="blogsCount" min="0" value="0"/>
+  </div>
+  <p id="blogsVal" class="value">0 posts = $0</p>
 </div>
 
 <!-- Landing Pages -->
 <div class="section">
   <h2>Landing Pages</h2>
-  <div class="grid">
+  <div class="kicker">On-Site SEO already includes 2 pages. Add extras below if needed.</div>
+
+  <div class="grid" style="margin-top:8px">
     <div>
-      <label>Number of Landing Pages</label>
-      <input type="number" id="lpCount" min="0" value="0"/>
+      <label>Extra Landing Pages (beyond included)</label>
+      <input type="number" id="lpExtra" min="0" value="0"/>
     </div>
     <div>
-      <label>Price per LP</label>
-      <select id="lpRate">
-        <option value="300">$300 (template)</option>
-        <option value="350" selected>$350 (standard)</option>
-        <option value="400">$400 (custom layout)</option>
-        <option value="450">$450 (conversion + forms/A/B)</option>
-      </select>
+      <label>Rate (fixed)</label>
+      <input type="text" value="$250 / page" disabled>
     </div>
   </div>
+
   <div class="divider"></div>
   <div class="grid">
-    <div><label><input type="checkbox" id="lpCopy"> Include Copywriting ($120/page)</label></div>
-    <div><label><input type="checkbox" id="lpForms"> Forms/Integrations Setup ($80/page)</label></div>
+    <div><label><input type="checkbox" id="lpCopy"> Copywriting for extra pages (+$80/page)</label></div>
+    <div><label><input type="checkbox" id="lpForms"> Forms/Integrations for extra pages (+$80/page)</label></div>
   </div>
-  <p id="lpVal" class="value">0 pages × $350 = $0</p>
+  <p id="lpVal" class="value">0 extra pages × $250 = $0</p>
+
+  <div class="divider"></div>
+  <h3 style="margin:0 0 8px; color:var(--brand2); font-size:1.05rem">Landing Page Monthly Add-On</h3>
+  <div class="grid">
+    <div>
+      <label>Ongoing pages each month (recurring)</label>
+      <select id="lpPlan">
+        <option value="0" selected>None</option>
+        <option value="150">$150 / mo → 1 page / month</option>
+        <option value="250">$250 / mo → 2 pages / month</option>
+      </select>
+    </div>
+    <div class="note">Shown separately under recurring totals.</div>
+  </div>
 </div>
 
 <!-- Analytics & Reporting -->
 <div class="section">
   <h2>Analytics & Reporting</h2>
   <div class="row"><label><input type="checkbox" id="dashboards"> Reporting Dashboard — $750</label></div>
+</div>
+
+<!-- Upsells -->
+<div class="section">
+  <h2>Optional Add-Ons</h2>
+  <div class="grid">
+    <div><label><input type="checkbox" id="rush"> Rush Delivery (+20% one-time)</label></div>
+    <div>
+      <label>Extra Revision Rounds ($50 each)</label>
+      <input type="number" id="revisions" min="0" value="0"/>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="grid">
+    <div>
+      <label>Monthly Maintenance (recurring)</label>
+      <select id="maintenance">
+        <option value="0" selected>$0 / mo</option>
+        <option value="150">$150 / mo</option>
+        <option value="300">$300 / mo</option>
+      </select>
+    </div>
+    <div class="note">Maintenance appears as a separate monthly line item.</div>
+  </div>
 </div>
 
 <!-- ROI -->
@@ -153,61 +198,65 @@
 <!-- Totals -->
 <div class="section">
   <h2>Summary</h2>
-  <div class="total" id="total">Total: $0</div>
-  <div class="sub" id="monthlyNote" style="display:none;">Shown as monthly over 3 payments.</div>
+  <div class="total" id="total">Total Investment: $0</div>
+  <div class="sub" id="splitNote" style="display:none;">Shown as monthly over 3 payments.</div>
+  <div class="divider"></div>
+  <div class="sub" id="recurringBlock" style="display:none;">
+    <div id="maintLine" style="display:none;">Maintenance: $0/mo</div>
+    <div id="lpPlanLine" style="display:none;">LP Add-On: $0/mo</div>
+  </div>
 </div>
 
 <script>
-let mode = "one"; // one-time or monthly
+let mode = "one";
 const el = id => document.getElementById(id);
 
-function setActive(groupBtns, activeBtn){
-  groupBtns.forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-  activeBtn.classList.add('active'); activeBtn.setAttribute('aria-selected','true');
-}
-
-// Theme
-const lightBtn = el('lightBtn'), darkBtn = el('darkBtn');
-lightBtn.onclick = () => { document.documentElement.setAttribute('data-theme','light'); setActive([lightBtn,darkBtn], lightBtn); };
-darkBtn.onclick  = () => { document.documentElement.setAttribute('data-theme','dark');  setActive([lightBtn,darkBtn], darkBtn); };
-
-// Payment mode
-const oneBtn = el('oneBtn'), monthlyBtn = el('monthlyBtn');
-oneBtn.onclick = () => { mode='one'; setActive([oneBtn,monthlyBtn], oneBtn); update(); };
-monthlyBtn.onclick = () => { mode='monthly'; setActive([oneBtn,monthlyBtn], monthlyBtn); update(); };
-
-// Calc
 function update(){
   let total = 0;
 
   // SEO
   if(el("seoResearch").checked) total += 1000;
-  if(el("seoOnsite").checked)   total += 2500;
 
+  if(el("seoOnsite").checked){
+    total += 2500; // includes 2 LPs implicitly
+  }
+
+  // Off-Site
   const offsite = Number(el("seoOffsite").value);
-  const offsiteCost = offsite * 1500;
+  const offsiteCost = offsite * 1200; // $1200 per campaign
   el("seoOffsiteVal").innerText = `${offsite} campaigns → $${offsiteCost.toLocaleString()}`;
   total += offsiteCost;
 
   if(el("localSeo").checked) total += 750;
 
-  const blogs = Number(el("blogs").value);
-  const blogCost = blogs * 300;
-  el("blogsVal").innerText = `${blogs} posts → $${blogCost.toLocaleString()}`;
+  // Blogs (priced as current month one-time in this quote)
+  const blogRate  = Number(el("blogsType").value);
+  const blogCount = Number(el("blogsCount").value);
+  const blogCost  = blogRate * blogCount;
+  el("blogsVal").innerText = `${blogCount} posts @ $${blogRate} = $${blogCost.toLocaleString()}`;
   total += blogCost;
 
-  // Landing pages
-  const lpCount = Math.max(0, Number(el("lpCount").value || 0));
-  const lpRate  = Number(el("lpRate").value);
-  const lpCopy  = el("lpCopy").checked ? 120 : 0;
-  const lpForms = el("lpForms").checked ? 80  : 0;
-  const lpPerPage = lpRate + lpCopy + lpForms;
-  const lpCost = lpCount * lpPerPage;
-  el("lpVal").innerText = `${lpCount} pages × $${lpRate}${(lpCopy||lpForms)?` (+${lpCopy? 'copy':''}${(lpCopy&&lpForms)?' + ':''}${lpForms? 'forms':''})`:''} = $${lpCost.toLocaleString()}`;
+  // Extra Landing Pages beyond included 2
+  const lpExtra = Math.max(0, Number(el("lpExtra").value || 0));
+  const lpRate  = 250;
+  const lpCopy  = el("lpCopy").checked ? 80 : 0;
+  const lpForms = el("lpForms").checked ? 80 : 0;
+  const lpPer   = lpRate + lpCopy + lpForms;
+  const lpCost  = lpExtra * lpPer;
+  el("lpVal").innerText = `${lpExtra} extra pages × $${lpRate}${(lpCopy||lpForms)?` (+${lpCopy? 'copy':''}${(lpCopy&&lpForms)?' + ':''}${lpForms? 'forms':''})`:''} = $${lpCost.toLocaleString()}`;
   total += lpCost;
 
   // Analytics
   if(el("dashboards").checked) total += 750;
+
+  // Upsells
+  const revisions = Math.max(0, Number(el("revisions").value || 0)) * 50;
+  total += revisions;
+
+  // Rush (+20%) on one-time subtotal
+  if(el("rush").checked){
+    total = Math.round(total * 1.2);
+  }
 
   // ROI
   const clientValue = parseFloat(el("clientValue").value) || 0;
@@ -215,51 +264,87 @@ function update(){
   const roi = clientValue * leads;
   el("roiVal").innerText = `Potential ROI: $${roi.toLocaleString()}`;
 
-  // Payment display
-  let displayTotal = total;
-  const monthlyNote = el("monthlyNote");
-  if(mode === "monthly"){
-    displayTotal = Math.round(total/3);
-    monthlyNote.style.display = 'block';
+  // Recurring: Maintenance + LP monthly plan
+  const maintenance = Number(el("maintenance").value) || 0;
+  const lpPlan = Number(el("lpPlan").value) || 0;
+
+  const recurringBlock = el("recurringBlock");
+  const maintLine = el("maintLine");
+  const lpPlanLine = el("lpPlanLine");
+
+  // Update recurring lines visibility/text
+  let hasRecurring = false;
+  if(maintenance > 0){
+    maintLine.style.display = 'block';
+    maintLine.innerText = `Maintenance: $${maintenance.toLocaleString()}/mo`;
+    hasRecurring = true;
   } else {
-    monthlyNote.style.display = 'none';
+    maintLine.style.display = 'none';
   }
-  el("total").innerText = (mode==='monthly' ? 'Monthly: $' : 'Total: $') + displayTotal.toLocaleString();
+
+  if(lpPlan > 0){
+    lpPlanLine.style.display = 'block';
+    lpPlanLine.innerText = `LP Add-On: $${lpPlan.toLocaleString()}/mo`;
+    hasRecurring = true;
+  } else {
+    lpPlanLine.style.display = 'none';
+  }
+
+  recurringBlock.style.display = hasRecurring ? 'block' : 'none';
+
+  // Payment display (one-time vs split across 3)
+  let displayTotal = total;
+  if(mode === "monthly"){
+    displayTotal = Math.round(total / 3);
+    el("splitNote").style.display = 'block';
+  } else {
+    el("splitNote").style.display = 'none';
+  }
+  el("total").innerText = (mode==='monthly' ? 'Monthly Investment (3×): $' : 'Total Investment: $') + displayTotal.toLocaleString();
 }
+
+// Theme
+el('lightBtn').onclick = () => { document.documentElement.setAttribute('data-theme','light'); el('lightBtn').classList.add('active'); el('darkBtn').classList.remove('active'); };
+el('darkBtn').onclick  = () => { document.documentElement.setAttribute('data-theme','dark');  el('darkBtn').classList.add('active'); el('lightBtn').classList.remove('active'); };
+
+// Payment
+el('oneBtn').onclick = () => { mode='one'; el('oneBtn').classList.add('active'); el('monthlyBtn').classList.remove('active'); update(); };
+el('monthlyBtn').onclick = () => { mode='monthly'; el('monthlyBtn').classList.add('active'); el('oneBtn').classList.remove('active'); update(); };
 
 // Presets
 function loadPreset(name){
+  // reset
   document.querySelectorAll("input[type=checkbox]").forEach(c=>c.checked=false);
-  el("seoOffsite").value = 0; el("blogs").value = 0;
-  el("lpCount").value = 0; el("lpRate").value = "350"; el("lpCopy").checked=false; el("lpForms").checked=false;
+  el("seoOffsite").value = 0;
+  el("blogsCount").value = 0; el("blogsType").value = "150";
+  el("lpExtra").value = 0; el("lpCopy").checked=false; el("lpForms").checked=false; el("lpPlan").value = "0";
   el("dashboards").checked=false;
+  el("rush").checked=false; el("revisions").value = 0; el("maintenance").value = "0";
 
   if(name==='starter'){
     el("seoResearch").checked = true;
     el("localSeo").checked   = true;
-    el("blogs").value        = 1;
-    el("lpCount").value      = 1;
+    el("blogsCount").value   = 1;
+    el("blogsType").value    = "150";
+    // On-site not included by default in starter to keep budget low
   }
   if(name==='growth'){
     el("seoResearch").checked = true;
-    el("seoOnsite").checked   = true;
+    el("seoOnsite").checked   = true;   // includes 2 LPs
     el("seoOffsite").value    = 2;
-    el("blogs").value         = 4;
-    el("lpCount").value       = 2;
-    el("lpRate").value        = "350";
-    el("lpCopy").checked      = true;
-    el("lpForms").checked     = true;
+    el("blogsCount").value    = 4;
+    el("blogsType").value     = "150";
+    el("lpPlan").value        = "150";  // 1 LP/mo
   }
   if(name==='scale'){
     el("seoResearch").checked = true;
-    el("seoOnsite").checked   = true;
+    el("seoOnsite").checked   = true;   // includes 2 LPs
     el("seoOffsite").value    = 3;
-    el("blogs").value         = 6;
+    el("blogsCount").value    = 6;
+    el("blogsType").value     = "250";
     el("dashboards").checked  = true;
-    el("lpCount").value       = 3;
-    el("lpRate").value        = "400";
-    el("lpCopy").checked      = true;
-    el("lpForms").checked     = true;
+    el("lpPlan").value        = "250";  // 2 LP/mo
+    el("maintenance").value   = "150";
   }
   update();
 }
