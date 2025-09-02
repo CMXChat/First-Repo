@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>LifeUnscripted – Personal Growth, Self-Discovery & Mental Health Blog</title>
+  <meta name="description" content="LifeUnscripted — Navigating the complexities of personal growth and mental health. A journey of self-discovery with insights, experiences, and inspiration." />
+  <link rel="canonical" href="https://simplicitymatters.blog/">
+  <meta name="robots" content="index,follow" />
+  <meta name="color-scheme" content="light dark" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LifeUnscripted">
+  <meta property="og:title" content="LifeUnscripted – Navigating the Complexities of Personal Growth and Mental Health">
+  <meta property="og:description" content="Welcome to my little corner of the internet. Join the journey of self-discovery, learning, and growth.">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <style>
+    /* =========================
+       DESIGN TOKENS & THEMES
+       ========================= */
+    :root{
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --elev-1: #f6f7f9;
+      --text: #101114;
+      --muted: #5f6671;
+      --accent: #a32545;   /* raspberry / wine */
+      --accent-2: #2b66f6; /* secondary accent for small details */
+      --border: #e6e8ee;
+      --ring: #8fb1ff;
+
+      --radius: 22px;
+      --shadow-sm: 0 4px 16px rgba(0,0,0,.06);
+      --shadow-md: 0 12px 36px rgba(0,0,0,.10);
+
+      --container-pad: clamp(16px, 5vw, 48px);
+      --maxw: 1160px;
+
+      --h1: clamp(34px, 7vw, 52px);
+      --h2: clamp(22px, 4vw, 32px);
+      --h3: clamp(18px, 3vw, 22px);
+      --body: clamp(16px, 2.4vw, 18px);
+      --lead: clamp(17px, 2.6vw, 20px);
+      --lh: 1.6;
+      --gap: clamp(14px, 2.8vw, 22px);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0f1217;
+        --surface: #121720;
+        --elev-1: #0b0f16;
+        --text: #e9edf3;
+        --muted: #aab2bd;
+        --accent: #e04e78;
+        --accent-2: #9abdff;
+        --border: #1d2532;
+        --ring: #b7ccff;
+      }
+    }
+    /* Manual override via [data-theme] */
+    html[data-theme="light"]{
+      --bg:#ffffff; --surface:#ffffff; --elev-1:#f6f7f9; --text:#101114; --muted:#5f6671;
+      --accent:#a32545; --accent-2:#2b66f6; --border:#e6e8ee; --ring:#8fb1ff;
+    }
+    html[data-theme="dark"]{
+      --bg:#0f1217; --surface:#121720; --elev-1:#0b0f16; --text:#e9edf3; --muted:#aab2bd;
+      --accent:#e04e78; --accent-2:#9abdff; --border:#1d2532; --ring:#b7ccff;
+    }
+
+    /* =========================
+       BASE & ACCESSIBILITY
+       ========================= */
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(1100px 520px at -10% -10%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 60%),
+        radial-gradient(900px 520px at 110% -10%, color-mix(in oklab, var(--accent-2) 18%, transparent), transparent 60%),
+        var(--bg);
+      font: 400 var(--body)/var(--lh) ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    a{ color:var(--accent-2); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+    img{ max-width:100%; display:block; }
+    :focus-visible{ outline:3px solid var(--ring); outline-offset:2px; border-radius:8px; }
+
+    .container{ width:min(var(--maxw), 100% - 2*var(--container-pad)); margin-inline:auto; }
+
+    /* =========================
+       HEADER
+       ========================= */
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: saturate(160%) blur(8px);
+      background-color: color-mix(in oklab, var(--bg) 86%, transparent);
+      border-bottom:1px solid var(--border);
+    }
+    .nav{
+      display:flex; align-items:center; gap:12px;
+      padding:10px 0;
+    }
+    .brand{
+      font-weight:800; letter-spacing:.2px; font-size:18px;
+    }
+    .spacer{ flex:1; }
+    .chip, .icon-btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      height:42px; min-width:42px; padding:0 14px; gap:8px;
+      border-radius:999px; border:1px solid var(--border); background:var(--surface);
+      box-shadow:var(--shadow-sm); color:var(--text); cursor:pointer;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .chip:hover, .icon-btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow-md); }
+    .icon-btn svg{ width:20px; height:20px; }
+
+    .skip-link{
+      position:absolute; left:var(--container-pad); top:-200px;
+      background:var(--surface); padding:10px 14px; border:1px solid var(--border);
+      border-radius:10px; box-shadow:var(--shadow-sm);
+    }
+    .skip-link:focus{ top:10px; }
+
+    /* =========================
+       HERO (split layout w/ ambient blob)
+       ========================= */
+    .hero{
+      margin:18px 0 8px;
+      position:relative;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background:
+        linear-gradient(180deg, color-mix(in oklab, var(--elev-1) 92%, transparent), var(--surface));
+      box-shadow:var(--shadow-md);
+      overflow:hidden;
+    }
+    .hero-inner{
+      display:grid; gap:var(--gap);
+      grid-template-columns: 1fr;
+      padding: clamp(16px, 3.5vw, 28px);
+    }
+    @media (min-width: 900px){
+      .hero-inner{ grid-template-columns: 1.2fr .8fr; align-items:center; }
+    }
+    .hero h1{ margin:0 0 6px; font-size:var(--h1); line-height:1.15; letter-spacing:-.02em; }
+    .subhead{ font-size:var(--h2); color:var(--muted); margin:0 0 16px; }
+    .welcome{ font-size:var(--lead); max-width:72ch; }
+
+    /* gradient hairline rule that animates in */
+    .inkrule{
+      height:2px; width:0%;
+      background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 40%, var(--accent-2)));
+      border-radius:999px; margin:10px 0 16px;
+      opacity:.8; transform-origin:left center;
+      transition: width .8s cubic-bezier(.2,.6,.2,1);
+    }
+    .hero.is-visible .inkrule{ width:100%; }
+
+    /* Ambient blob (decorative) */
+    .blob{
+      position:absolute; right:-8%; top:-10%;
+      width: 42vw; max-width:520px; aspect-ratio:1/1;
+      background:
+        radial-gradient(40% 40% at 35% 35%, color-mix(in oklab, var(--accent) 35%, transparent), transparent 60%),
+        radial-gradient(45% 45% at 70% 60%, color-mix(in oklab, var(--accent-2) 35%, transparent), transparent 60%);
+      filter: blur(24px) saturate(130%);
+      opacity:.5; border-radius:50%;
+      transform: translate3d(0,0,0);
+      animation: float 12s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    @keyframes float{
+      from{ transform: translate3d(0,0,0) scale(1); }
+      to{   transform: translate3d(-10px,6px,0) scale(1.03); }
+    }
+
+    .social{ margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* =========================
+       CALLOUT (Daily Blog Challenge)
+       ========================= */
+    .callout{
+      margin-top: 26px;
+      border:1px dashed color-mix(in oklab, var(--accent) 40%, var(--border));
+      background:
+        linear-gradient(180deg, color-mix(in oklab, var(--elev-1) 85%, transparent), transparent),
+        var(--surface);
+      border-radius: calc(var(--radius) - 6px);
+      padding: clamp(14px, 3vw, 18px);
+      box-shadow:var(--shadow-sm);
+    }
+    .callout h2{ margin:0; font-size:var(--h2); letter-spacing:.2px; }
+
+    /* =========================
+       POSTS GRID (feature + cards)
+       ========================= */
+    .section{ margin-top: 34px; }
+    .cards{
+      display:grid; gap:var(--gap);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 760px){
+      .cards{ grid-template-columns: 1.4fr 1fr; }
+      .cards .card:nth-child(1){ grid-column: span 2; display:grid; grid-template-columns: 1fr .9fr; }
+    }
+    @media (min-width: 1080px){
+      .cards{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .cards .card:nth-child(1){ grid-column: span 3; grid-template-columns: 1.2fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background:var(--surface);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-sm);
+      overflow:hidden;
+      display:flex; flex-direction:column; gap:10px;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .card:hover{ transform: translateY(-2px); box-shadow:var(--shadow-md); }
+
+    .thumb{
+      width:100%; aspect-ratio: 16/9; background:
+        linear-gradient(135deg, color-mix(in oklab, var(--accent) 30%, transparent), transparent 40%),
+        linear-gradient(315deg, color-mix(in oklab, var(--accent-2) 30%, transparent), transparent 40%),
+        color-mix(in oklab, var(--elev-1) 90%, var(--surface));
+    }
+    .card-body{ padding: clamp(14px, 3vw, 18px); display:flex; flex-direction:column; gap:8px; }
+    .card h3{ margin:0; font-size:var(--h3); line-height:1.35; letter-spacing:.1px; }
+    .excerpt{ margin:2px 0 6px; }
+    .meta{ color:var(--muted); font-size:14px; letter-spacing:.2px; }
+
+    .readmore{
+      display:inline-block; font-weight:700; align-self:flex-start;
+      border-bottom:2px solid color-mix(in oklab, var(--accent) 70%, transparent);
+      text-underline-offset: 3px; transition: border-color .16s ease;
+    }
+    .readmore:hover{ border-color: var(--accent); }
+
+    /* Reveal-on-scroll utility */
+    .reveal{ opacity:0; transform: translateY(16px); transition: opacity .28s ease, transform .28s ease; }
+    .is-visible{ opacity:1; transform: translateY(0); }
+
+    /* Utilities */
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .blob{ animation:none; }
+      .reveal{ transition:none; transform:none; opacity:1; }
+      .chip, .icon-btn, .card{ transition:none; }
+    }
+  </style>
+
+  <!-- JSON-LD: Blog + 3 BlogPosting entries (homepage previews) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "LifeUnscripted",
+    "url": "https://simplicitymatters.blog/",
+    "description": "Navigating the Complexities of Personal Growth and Mental Health",
+    "blogPost": [
+      {
+        "@type": "BlogPosting",
+        "headline": "4 Things I’d Change About Modern Society!",
+        "mainEntityOfPage": "https://simplicitymatters.blog/2023/07/25/4-things-id-change-about-modern-society/",
+        "datePublished": "2023-07-25",
+        "url": "https://simplicitymatters.blog/2023/07/25/4-things-id-change-about-modern-society/",
+        "description": "What would you change about modern society? I love modern society, but like everything else, it has its downfalls. These are my top four ideas for change: 1. Understanding True Equality Throughout many generations, women have fought tirelessly for their rights, and progress has been made. It’s incredible to see how far women have come…"
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "Is Mental Health Disorder All in Your Head? A Personal Account of Anxiety and Somatic Symptoms",
+        "mainEntityOfPage": "https://simplicitymatters.blog/2023/05/24/is-mental-health-disorder-all-in-your-head-a-personal-account-of-anxiety-and-somatic-symptoms/",
+        "datePublished": "2023-05-24",
+        "url": "https://simplicitymatters.blog/2023/05/24/is-mental-health-disorder-all-in-your-head-a-personal-account-of-anxiety-and-somatic-symptoms/",
+        "description": "My Experience with Somatic Symptoms: Hey there, lovely readers! Today, I want to share my personal journey with anxiety and how it has impacted my life. It’s important for me to talk openly about this topic because, for a long time, I felt like I was the only one struggling. But here’s the truth: if…"
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "9 Powerful Ways to Really Connect With Your Blog’s Readers",
+        "mainEntityOfPage": "https://simplicitymatters.blog/2023/04/25/9-powerful-ways-to-really-connect-with-your-blogs-readers/",
+        "datePublished": "2023-04-25",
+        "url": "https://simplicitymatters.blog/2023/04/25/9-powerful-ways-to-really-connect-with-your-blogs-readers/",
+        "description": "This is a very insightful post for new bloggers like myself!"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav" role="navigation" aria-label="Primary">
+      <div class="brand" aria-label="Site title">LifeUnscripted</div>
+      <div class="spacer"></div>
+
+      <!-- Instagram (keeps the same word) -->
+      <a class="chip" href="https://instagram.com/" target="_blank" rel="noopener nofollow" aria-label="Instagram">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+          <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+        </svg>
+        Instagram
+      </a>
+
+      <!-- Theme toggle -->
+      <button id="themeToggle" class="icon-btn" type="button" aria-pressed="false" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg id="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg id="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none">
+          <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main id="content" class="container" role="main">
+    <!-- HERO -->
+    <section class="hero reveal" aria-labelledby="home-title">
+      <div class="blob" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div>
+          <h1 id="home-title">LifeUnscripted</h1>
+          <p class="subhead">Navigating the Complexities of Personal Growth and Mental Health</p>
+          <div class="inkrule" aria-hidden="true"></div>
+          <p class="welcome"><strong>Welcome to my little corner of the internet friends! I am a visionary dreamer and a thoughtful inquirer. As someone with a deep passion for understanding and learning, I’ve embarked on a journey to self-discovery that has led me to some incredible insights and experiences. Join me on this journey as we delve into the depths of human experiences, learn new things, and grow together. Whether you’re here to share your own experiences or simply soak up some inspiration, I hope you’ll find something here that speaks to you. Thanks for stopping by!</strong></p>
+          <div class="social">
+            <a class="chip" href="https://instagram.com/" target="_blank" rel="noopener nofollow" aria-label="Instagram">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+              </svg>
+              Instagram
+            </a>
+          </div>
+        </div>
+        <!-- Decorative right column (kept visual-only so no new words) -->
+        <div aria-hidden="true">
+          <div class="thumb" style="border-radius: calc(var(--radius) - 8px); height:100%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Daily Blog Challenge (callout) -->
+    <section class="callout reveal" aria-labelledby="dbc-title">
+      <h2 id="dbc-title"><strong>Daily Blog Challenge!</strong></h2>
+      <!-- Intentionally no body content to preserve original words -->
+    </section>
+
+    <!-- POSTS -->
+    <section class="section" aria-label="Posts">
+      <div class="cards">
+        <!-- FEATURED -->
+        <article class="card reveal" aria-labelledby="p1-title">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3 id="p1-title"><a href="https://simplicitymatters.blog/2023/07/25/4-things-id-change-about-modern-society/">4 Things I’d Change About Modern Society!</a></h3>
+            <div class="excerpt">
+              <p>What would you change about modern society? I love modern society, but like everything else, it has its downfalls. These are my top four ideas for change: 1. Understanding True Equality Throughout many generations, women have fought tirelessly for their rights, and progress has been made. It’s incredible to see how far women have come… <a class="readmore" href="https://simplicitymatters.blog/2023/07/25/4-things-id-change-about-modern-society/">Read more</a></p>
+            </div>
+            <div class="meta">July 25, 2023</div>
+          </div>
+        </article>
+
+        <!-- CARD 2 -->
+        <article class="card reveal" aria-labelledby="p2-title">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3 id="p2-title"><a href="https://simplicitymatters.blog/2023/05/24/is-mental-health-disorder-all-in-your-head-a-personal-account-of-anxiety-and-somatic-symptoms/">Is Mental Health Disorder All in Your Head? A Personal Account of Anxiety and Somatic Symptoms</a></h3>
+            <div class="excerpt">
+              <p>My Experience with Somatic Symptoms: Hey there, lovely readers! Today, I want to share my personal journey with anxiety and how it has impacted my life. It’s important for me to talk openly about this topic because, for a long time, I felt like I was the only one struggling. But here’s the truth: if… <a class="readmore" href="https://simplicitymatters.blog/2023/05/24/is-mental-health-disorder-all-in-your-head-a-personal-account-of-anxiety-and-somatic-symptoms/">Read more</a></p>
+            </div>
+            <div class="meta">May 24, 2023</div>
+          </div>
+        </article>
+
+        <!-- CARD 3 -->
+        <article class="card reveal" aria-labelledby="p3-title">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="card-body">
+            <h3 id="p3-title"><a href="https://simplicitymatters.blog/2023/04/25/9-powerful-ways-to-really-connect-with-your-blogs-readers/">9 Powerful Ways to Really Connect With Your Blog’s Readers</a></h3>
+            <div class="excerpt">
+              <p>This is a very insightful post for new bloggers like myself! <a class="readmore" href="https://simplicitymatters.blog/2023/04/25/9-powerful-ways-to-really-connect-with-your-blogs-readers/">Read more</a></p>
+            </div>
+            <div class="meta">April 25, 2023</div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ===== Theme logic (auto + toggle with persistence)
+    (function(){
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const iconSun = document.getElementById('icon-sun');
+      const iconMoon = document.getElementById('icon-moon');
+      const STORAGE_KEY = 'theme';
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      function applyTheme(theme){
+        root.setAttribute('data-theme', theme);
+        const eff = theme === 'auto' ? (prefersDark ? 'dark' : 'light') : theme;
+        const isDark = eff === 'dark';
+        btn.setAttribute('aria-pressed', String(isDark));
+        iconSun.style.display = isDark ? 'none' : 'block';
+        iconMoon.style.display = isDark ? 'block' : 'none';
+      }
+      function loadTheme(){ return localStorage.getItem(STORAGE_KEY) || 'auto'; }
+      function saveTheme(t){ localStorage.setItem(STORAGE_KEY, t); }
+
+      applyTheme(loadTheme());
+      const cycle = { auto:'dark', dark:'light', light:'auto' };
+      btn.addEventListener('click', () => {
+        const next = cycle[root.getAttribute('data-theme') || 'auto'];
+        applyTheme(next); saveTheme(next);
+      });
+
+      if(window.matchMedia){
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq.addEventListener?.('change', () => {
+          if((localStorage.getItem(STORAGE_KEY) || 'auto') === 'auto') applyTheme('auto');
+        });
+      }
+    })();
+
+    // ===== Reveal-on-scroll (intersection observer)
+    (function(){
+      const els = document.querySelectorAll('.reveal');
+      if(!('IntersectionObserver' in window)){ els.forEach(e => e.classList.add('is-visible')); return; }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if(en.isIntersecting){
+            en.target.classList.add('is-visible');
+            if(en.target.classList.contains('hero')) en.target.classList.add('is-visible'); // triggers inkrule too
+            io.unobserve(en.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: .2 });
+      els.forEach(e => io.observe(e));
+    })();
+  </script>
+</body>
+</html>
