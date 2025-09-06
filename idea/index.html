@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en" class="no-js" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pitch-to-Play — Drop Your Game Idea</title>
+  <meta name="description" content="Tell us your dream game. We prototype it for real. Mobile-first form that adapts to your favorite games.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- RESET / BASE ---------- */
+    *,*::before,*::after{ box-sizing:border-box }
+    html,body{ height:100% }
+    :root{
+      --bg:#0b0d12; --card:#121622; --ink:#ecf0ff; --muted:#9aa3b2;
+      --brand:#6ea8ff; --accent:#7af0b9; --danger:#ff7a9e;
+      --ring:rgba(126,178,255,.45); --shadow:0 8px 30px rgba(0,0,0,.35);
+      --radius:18px; --link: color-mix(in oklab, var(--brand) 85%, white);
+      --safe: max(env(safe-area-inset-left), 12px);
+    }
+    [data-theme="light"]:root{
+      --bg:#f6f8ff; --card:#ffffff; --ink:#0f172a; --muted:#55607a;
+      --brand:#2563eb; --accent:#10b981; --danger:#ef476f;
+      --ring:rgba(37,99,235,.25); --shadow:0 8px 30px rgba(2,6,23,.08);
+      --link:#1e40af;
+    }
+    body{
+      margin:0; overflow-x:hidden;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 500px at 80% -10%, rgba(110,168,255,.10), transparent 60%),
+        radial-gradient(700px 400px at -10% 10%, rgba(122,240,185,.10), transparent 55%),
+        var(--bg);
+      color:var(--ink); line-height:1.6;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{ color:var(--link); text-underline-offset:2px }
+    .container{ width:min(1100px, 100%); padding-inline: clamp(12px, 4vw, 24px); margin-inline:auto; max-width:100vw }
+    .row{ display:grid; gap:16px }
+    .card{ background:var(--card); border:1px solid color-mix(in oklab, var(--ink) 10%, transparent); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative }
+    .card.pad{ padding:clamp(16px,4vw,28px) }
+
+    .badge{ display:inline-flex; align-items:center; gap:.45rem; padding:.35rem .7rem; border-radius:999px; font-size:.78rem; background:color-mix(in oklab, var(--brand) 10%, transparent); color:var(--ink); border:1px solid color-mix(in oklab, var(--brand) 25%, transparent) }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+      border:1px solid transparent; padding:.8rem 1rem; border-radius:999px;
+      font-weight:700; cursor:pointer; text-decoration:none; color:#fff;
+      background:linear-gradient(135deg,var(--brand),#5ec3ff); box-shadow:var(--shadow);
+      transition:transform .06s ease; white-space:nowrap; max-width:100%;
+    }
+    .btn:active{ transform:translateY(1px) scale(.99) }
+    .btn.secondary{ background:transparent; color:var(--ink); border-color:color-mix(in oklab, var(--ink) 22%, transparent) }
+    .btn.ghost{ background:transparent; color:var(--ink); border-color:transparent }
+
+    .chip{ padding:.44rem .7rem; border-radius:999px; border:1px solid color-mix(in oklab, var(--ink) 18%, transparent); cursor:pointer; user-select:none; display:inline-flex; gap:.45rem; align-items:center }
+    .chip.active{ background:color-mix(in oklab, var(--brand) 20%, transparent); border-color:color-mix(in oklab, var(--brand) 50%, transparent) }
+    .chips{ display:flex; flex-wrap:wrap; gap:.5rem }
+    .pill{ border:1px dashed color-mix(in oklab, var(--ink) 20%, transparent); padding:.55rem .75rem; border-radius:999px; font-size:.85rem; color:var(--muted); max-width:100% }
+    .sub{ color:var(--muted); font-size:.98rem }
+    .progress{ height:10px; background:color-mix(in oklab, var(--ink) 8%, transparent); border-radius:999px; overflow:hidden; margin:12px 0 14px; }
+    .progress>i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--brand)); transition:width .25s ease }
+
+    /* header */
+    header.site{ position:sticky; top:0; z-index:60; backdrop-filter:saturate(120%) blur(10px); background: color-mix(in oklab, var(--bg) 85%, transparent); border-bottom:1px solid color-mix(in oklab, var(--ink) 12%, transparent) }
+    .nav{ display:flex; align-items:center; justify-content:space-between; padding:10px 0; gap:8px }
+    .brand{ display:flex; align-items:center; gap:.6rem; font-weight:800; letter-spacing:.2px; text-decoration:none; color:var(--ink) }
+    .toggle{ inline-size:46px; block-size:28px; border-radius:999px; border:1px solid color-mix(in oklab, var(--ink) 15%, transparent); background:var(--card); position:relative; cursor:pointer; flex:0 0 auto }
+    .toggle::after{ content:""; position:absolute; inset:3px auto auto 3px; inline-size:22px; block-size:22px; border-radius:999px; background:var(--brand); transition:transform .25s ease }
+    [data-theme="light"] .toggle::after{ transform:translateX(18px); background:var(--accent) }
+    .menu-btn{ display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:10px; border:1px solid color-mix(in oklab, var(--ink) 15%, transparent); background:var(--card) }
+    .links{ display:none }
+    @media (min-width:880px){ .links{ display:flex; gap:.9rem; align-items:center } .menu-btn,.toggle.sm{ display:none } }
+
+    /* mobile sheet */
+    .sheet{ position:fixed; inset:auto 0 0 0; transform:translateY(110%); background:var(--card); border-top-left-radius:18px; border-top-right-radius:18px; box-shadow:0 -20px 50px rgba(0,0,0,.35); padding:16px max(var(--safe),16px) calc(16px + env(safe-area-inset-bottom)); transition:transform .25s ease; z-index:70 }
+    .sheet.open{ transform:translateY(0) }
+    .sheet a{ display:block; padding:12px 10px; border-radius:12px; border:1px solid color-mix(in oklab, var(--ink) 12%, transparent); color:var(--ink); text-decoration:none; font-weight:700; background:color-mix(in oklab, var(--bg) 90%, transparent) }
+
+    /* hero + sections */
+    .hero{ padding: clamp(22px, 5vw + 6px, 60px) 0 24px }
+    .hero h1{ font-size: clamp(1.6rem, 3.6vw + .9rem, 3rem); line-height:1.08; margin:6px 0 }
+    section{ padding: clamp(24px,6vw,56px) 0 }
+    h2{ font-size: clamp(1.25rem, 2.2vw + .8rem, 2rem); margin:0 0 12px }
+
+    /* subtle hero art */
+    .hero .card::before{
+      content:""; position:absolute; right:-60px; top:-60px; width:220px; height:220px;
+      background: radial-gradient(closest-side, color-mix(in oklab, var(--brand) 30%, transparent) 0%, transparent 70%);
+      filter: blur(2px);
+    }
+    .hero .card::after{
+      content:""; position:absolute; left:-80px; bottom:-80px; width:260px; height:260px;
+      background: radial-gradient(closest-side, color-mix(in oklab, var(--accent) 26%, transparent) 0%, transparent 70%);
+      filter: blur(2px);
+    }
+
+    /* inputs */
+    .field{ display:grid; gap:6px }
+    .input,textarea,select{
+      width:100%; padding:.9rem .95rem; border-radius:12px;
+      border:1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+      background:var(--card); color:var(--ink); outline:none; min-height:44px;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    .input:focus,textarea:focus,select:focus{ border-color:color-mix(in oklab, var(--brand) 60%, transparent); box-shadow:0 0 0 6px var(--ring) }
+
+    .grid{ display:grid; gap:12px }
+    @media (min-width:860px){ .cols-2{ grid-template-columns:1fr 1fr } }
+
+    /* scroller cards */
+    .scroller{ display:grid; grid-auto-flow:column; grid-auto-columns: 90%; gap:12px; overflow-x:auto; padding-bottom:8px; scroll-snap-type:x mandatory; max-width:100vw; -webkit-overflow-scrolling:touch }
+    .scroller .card{ scroll-snap-align:start; min-height:132px }
+    .tag{ font-size:.75rem; padding:.2rem .5rem; border-radius:999px; border:1px solid color-mix(in oklab, var(--ink) 18%, transparent); display:inline-flex; gap:.4rem; align-items:center }
+
+    .price{ font-weight:800 }
+    .center{ text-align:center }
+
+    /* toasts */
+    .toast-wrap{ position:fixed; left:50%; bottom: calc(12px + env(safe-area-inset-bottom)); transform:translateX(-50%); display:grid; gap:8px; z-index:80; width:min(92vw, 520px); pointer-events:none }
+    .toast{ pointer-events:auto; background: color-mix(in oklab, var(--bg) 70%, transparent); border:1px solid color-mix(in oklab, var(--ink) 18%, transparent); color:var(--ink); padding:.85rem 1rem; border-radius:12px; box-shadow:var(--shadow); display:flex; align-items:center; gap:.6rem; animation:slidein .18s ease }
+    .toast svg{ flex:0 0 auto }
+    @keyframes slidein{ from{ transform:translate(-50%, 8px); opacity:.0 } to{ transform:translate(-50%,0); opacity:1 } }
+
+    footer{ padding:26px 0 40px; color:var(--muted); font-size:.9rem }
+
+    /* utilities */
+    .mt-1{ margin-top:.35rem } .mt-2{ margin-top:.6rem } .mt-3{ margin-top:.9rem } .mt-4{ margin-top:1.2rem } .mt-6{ margin-top:1.6rem } .mt-8{ margin-top:2rem }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site">
+    <div class="container nav">
+      <a class="brand" href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="28" height="28"><path d="M4 12a8 8 0 1 1 16 0v6.5a1.5 1.5 0 0 1-2.2 1.3l-3.6-2a1.5 1.5 0 0 0-1.4 0l-3.6 2A1.5 1.5 0 0 1 6 18.5V12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="10.2" r="2.2" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Pitch-to-Play</span>
+        <span class="badge">Safe • Kind • Creative</span>
+      </a>
+      <nav class="links">
+        <a href="#quest">Quest Form</a>
+        <a href="#work">Work</a>
+        <a href="#faq">FAQ</a>
+        <button id="themeToggle" class="toggle" aria-label="Toggle theme"></button>
+        <a class="btn" href="#quest">Start</a>
+      </nav>
+      <div class="right">
+        <button id="themeToggleSm" class="toggle sm" aria-label="Toggle theme (mobile)"></button>
+        <button id="menuOpen" class="menu-btn" aria-label="Open menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- mobile sheet -->
+  <aside id="sheet" class="sheet" aria-hidden="true">
+    <div class="container">
+      <button id="menuClose" class="menu-btn" aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <a href="#quest">Quest Form</a>
+      <a href="#work">Work</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn" href="#quest">Start your project</a>
+    </div>
+  </aside>
+
+  <!-- Toasts -->
+  <div id="toasts" class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Hero -->
+  <section class="hero container">
+    <div class="row">
+      <div class="card pad">
+        <div class="pill">From idea to playable prototype • iOS • Android • Web</div>
+        <h1>Tell us your dream game. <span style="background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;">We will build it for real.</span></h1>
+        <p class="sub">Kid and teen friendly, parent approved. You share the fantasy; we help shape it into a prototype with pro art, code, and sound.</p>
+        <div class="progress" aria-label="Form progress"><i id="bar"></i></div>
+
+        <div class="mt-2" style="display:flex; gap:.6rem; flex-wrap:wrap;">
+          <a class="btn" href="#quest">Start the Quest</a>
+          <a class="btn secondary" href="#estimate">See price range</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quest Form -->
+  <section id="quest" class="container">
+    <div class="row grid cols-2">
+      <!-- Left: Form -->
+      <div class="card pad">
+        <h2>Quest Board: Share your idea</h2>
+        <p class="sub">This form adapts based on what you love. Pick your favorites and we will ask smarter questions.</p>
+
+        <form id="ideaForm" onsubmit="event.preventDefault(); submitIdea();" class="grid">
+          <!-- STEP 1 -->
+          <div class="card pad">
+            <h3 style="margin:0 0 .6rem">Step 1 - What games do you like?</h3>
+            <p class="sub">Tap a few favorites. Examples: GTA, Fortnite, Minecraft, Roblox, Zelda, Pokemon, Call of Duty, Genshin Impact, Mario Kart, Rocket League, FIFA or EA FC, Among Us.</p>
+            <div id="favChips" class="chips mt-2"></div>
+
+            <div class="field mt-3">
+              <label>Favorite genres</label>
+              <div id="genreChips" class="chips"></div>
+            </div>
+
+            <div class="grid mt-2">
+              <div class="field">
+                <label>Age range of players</label>
+                <select id="ageRange">
+                  <option value="8-11">8-11</option>
+                  <option value="12-14">12-14</option>
+                  <option value="15-17">15-17</option>
+                  <option value="18+">18+</option>
+                </select>
+                <p class="sub">We adjust themes and content accordingly.</p>
+              </div>
+              <div class="field">
+                <label>Vibe</label>
+                <select id="vibe">
+                  <option value="wholesome">Wholesome and cozy</option>
+                  <option value="adventure">Adventure and mystery</option>
+                  <option value="competitive">Competitive</option>
+                  <option value="chaos">Open world sandbox</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Tailored questions -->
+          <div id="tailored" class="card pad">
+            <h3 style="margin:0 0 .6rem">Step 2 - Smart questions</h3>
+            <div id="tailoredWrap" class="grid"></div>
+          </div>
+
+          <!-- STEP 3: Core concept -->
+          <div class="card pad">
+            <h3 style="margin:0 0 .6rem">Step 3 - Your game concept</h3>
+            <div class="field">
+              <label for="title">Working title</label>
+              <input id="title" class="input" placeholder="e.g., City Rushers: Street Legends" required>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="elevator">Elevator pitch <span class="sub" id="pitchCount">(0/160)</span></label>
+                <textarea id="elevator" maxlength="160" rows="3" placeholder="One or two sentences that would hype your friend to try it." required></textarea>
+              </div>
+              <div class="field">
+                <label>Platforms</label>
+                <div id="platforms" class="chips">
+                  <span class="chip" data-value="iOS">iOS</span>
+                  <span class="chip" data-value="Android">Android</span>
+                  <span class="chip" data-value="Web">Web</span>
+                  <span class="chip" data-value="PC">PC</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label>Camera</label>
+                <div id="cameraChips" class="chips">
+                  <span class="chip" data-value="First-person">First-person</span>
+                  <span class="chip" data-value="Third-person">Third-person</span>
+                  <span class="chip" data-value="Top-down/Isometric">Top-down / Iso</span>
+                  <span class="chip" data-value="Side-scroller">Side-scroller</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Art style</label>
+                <div id="artChips" class="chips">
+                  <span class="chip" data-value="Stylized">Stylized</span>
+                  <span class="chip" data-value="Voxel/Blocky">Voxel / Blocky</span>
+                  <span class="chip" data-value="Cartoony">Cartoony</span>
+                  <span class="chip" data-value="Realistic">Realistic</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label>Average session length</label>
+                <select id="session">
+                  <option value="1-3 min">1-3 min</option>
+                  <option value="5-10 min">5-10 min</option>
+                  <option value="15-30 min">15-30 min</option>
+                  <option value="30+ min">30+ min</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Multiplayer</label>
+                <select id="multiplayer">
+                  <option value="solo">Solo only</option>
+                  <option value="asynchronous">Asynchronous</option>
+                  <option value="co-op">Co-op</option>
+                  <option value="pvp">Real-time PvP</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Monetization</label>
+              <div id="moneyChips" class="chips">
+                <span class="chip" data-value="Premium">Premium (one-time)</span>
+                <span class="chip" data-value="Cosmetics">Cosmetics only</span>
+                <span class="chip" data-value="Battle Pass">Battle Pass</span>
+                <span class="chip" data-value="Rewarded Ads">Rewarded ads</span>
+                <span class="chip" data-value="Gacha">Gacha / Character pulls</span>
+              </div>
+              <p class="sub">We will guide toward fair options.</p>
+            </div>
+
+            <div class="field">
+              <label for="loop">Core loop</label>
+              <textarea id="loop" rows="4" placeholder="Collect - Upgrade - Express yourself; Complete missions; Explore; Build; Trade; Compete ..." required></textarea>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" class="input" type="email" placeholder="you@email.com" required>
+              </div>
+              <div class="field">
+                <label class="inline"><input type="checkbox" id="nda"> Check here if you want an NDA before sharing details</label>
+              </div>
+            </div>
+
+            <div class="mt-2" style="display:flex; gap:.6rem; flex-wrap:wrap;">
+              <button class="btn" type="submit">Submit idea</button>
+              <a class="btn ghost" href="#estimate">See estimator</a>
+            </div>
+            <p class="sub" id="ideaStatus" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right: Estimator / Inspiration -->
+      <div id="estimate" class="card pad">
+        <h2>Prototype Estimator</h2>
+        <p class="sub">Ballpark range for a 4-12 week playable build.</p>
+        <div class="grid">
+          <div>
+            <label>Feature scope</label>
+            <input class="input" id="scope" type="range" min="1" max="5" value="2">
+            <p class="sub">1 = tiny core, 5 = content rich with meta</p>
+          </div>
+          <div>
+            <label>Art polish</label>
+            <input class="input" id="art" type="range" min="1" max="5" value="2">
+            <p class="sub">1 = temp art, 5 = bespoke polished</p>
+          </div>
+          <div>
+            <label>Online systems</label>
+            <input class="input" id="net" type="range" min="0" max="5" value="1">
+            <p class="sub">0 = offline, 5 = real-time multiplayer plus backend</p>
+          </div>
+          <div class="card pad center">
+            <div class="price" id="price" style="font-size:1.6rem">$28k - $42k</div>
+            <p class="sub">We will give a precise quote after discovery.</p>
+          </div>
+        </div>
+
+        <h2 class="mt-6">Idea Starters</h2>
+        <div id="starters" class="chips mt-2"></div>
+
+        <h2 class="mt-6">Trending Mechanics</h2>
+        <div id="trendWrap" class="chips mt-2" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Showcase -->
+  <section id="work" class="container">
+    <div class="row">
+      <div class="card pad">
+        <h2>Recent work and concept riffs</h2>
+        <div class="scroller mt-2">
+          <article class="card pad"><div class="tag">Cozy Tycoon</div><h3>Cat Cafe Pocket</h3><p class="sub">Build a tiny cafe, hire kittens, bake treats, decorate for vibes.</p></article>
+          <article class="card pad"><div class="tag">RPG Idle</div><h3>Dungeon AFK</h3><p class="sub">Auto battles with prestige resets and cosmetic upgrades.</p></article>
+          <article class="card pad"><div class="tag">Sandbox</div><h3>City Blocks</h3><p class="sub">Open world mini missions, vehicles, photo ops, playful mayhem.</p></article>
+        </div>
+        <div class="mt-3 center"><a class="btn secondary" href="#quest">Your turn - pitch it</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="container">
+    <div class="row">
+      <div class="card pad">
+        <h2>FAQ</h2>
+        <details class="mt-2"><summary>Do you work with kids and teens?</summary><p>Yes. Friendly explanations and we can include a parent or guardian on messages.</p></details>
+        <details class="mt-2"><summary>Which engines?</summary><p>Unity and Unreal for most projects. Godot or WebGL for lightweight 2D or demos.</p></details>
+        <details class="mt-2"><summary>Who owns the idea?</summary><p>You do. IP assignment in writing, including code, art, and assets, delivered at payment.</p></details>
+        <details class="mt-2"><summary>Safety</summary><p>We never publish without consent. We can design for no chat, strict filters, and avoid predatory monetization.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+    <div class="row">
+      <div class="card pad center">
+        <p class="sub">© <span id="year"></span> Pitch-to-Play</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ====== UTIL ====== */
+    const $ = (s,el=document)=>el.querySelector(s);
+    const $$ = (s,el=document)=>Array.from(el.querySelectorAll(s));
+    const toasts = $('#toasts');
+    function toast(msg){
+      const d=document.createElement('div'); d.className='toast';
+      d.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 5v8l-9 5-9-5V8l9-5z" stroke="currentColor" stroke-width="1.5"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div>'+msg+'</div>';
+      toasts.appendChild(d);
+      setTimeout(()=>{ d.style.opacity='.0'; d.style.transform='translate(-50%, 8px)'; setTimeout(()=>d.remove(),180); }, 2500);
+    }
+
+    /* ====== THEME + MENU ====== */
+    (function(){
+      const root=document.documentElement, t1=$('#themeToggle'), t2=$('#themeToggleSm');
+      const saved=localStorage.getItem('theme');
+      if(saved){ root.setAttribute('data-theme', saved); }
+      else root.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+      function flip(){ const nxt=root.getAttribute('data-theme')==='light'?'dark':'light'; root.setAttribute('data-theme',nxt); localStorage.setItem('theme',nxt); }
+      [t1,t2].forEach(b=>b&&b.addEventListener('click',flip));
+      const sheet=$('#sheet'), openBtn=$('#menuOpen'), closeBtn=$('#menuClose'), links=$$('#sheet a');
+      function open(){ sheet.classList.add('open'); sheet.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+      function close(){ sheet.classList.remove('open'); sheet.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+      openBtn.addEventListener('click', open); closeBtn.addEventListener('click', close); links.forEach(a=>a.addEventListener('click', close));
+    })();
+
+    /* ====== CHIPS ====== */
+    function chipGroup(el){ el.addEventListener('click',e=>{ const c=e.target.closest('.chip'); if(!c) return; c.classList.toggle('active'); }); return ()=>$$('.chip.active',el).map(x=>x.dataset.value||x.textContent.trim()) }
+
+    /* ====== FAVORITES / GENRES ====== */
+    const FAVES = [
+      'GTA','Fortnite','Minecraft','Roblox','Zelda','Pokemon','Call of Duty','Genshin Impact','Mario Kart','Rocket League','FIFA / EA FC','Among Us','Clash of Clans','Brawl Stars','Stardew Valley','Animal Crossing'
+    ];
+    const GENRES = ['Sandbox','Survival / Craft','Adventure','Open World','Shooter','RPG','Roguelite','Sports / Racing','Tycoon / Sim','Puzzle','Party / Social','Platformer'];
+
+    const favChips = $('#favChips'); FAVES.forEach(n=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=n; s.dataset.value=n; favChips.appendChild(s); });
+    const genreChipsEl = $('#genreChips'); GENRES.forEach(n=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=n; s.dataset.value=n; genreChipsEl.appendChild(s); });
+    const getFavs = chipGroup(favChips); const getGenres = chipGroup(genreChipsEl);
+
+    /* ====== TAILORED QUESTIONS ====== */
+    const QUESTION_BANK = {
+      'GTA': [{q:'What kind of city? coastal, neon, desert, snowy'}, {q:'Vehicles you want'}, {q:'Missions: story, mini games, or sandbox'}],
+      'Fortnite': [{q:'Battle royale or creative'}, {q:'Cosmetics style'}, {q:'Movement ideas: sprint, build, grapple'}],
+      'Minecraft': [{q:'Building focus or survival nights'}, {q:'Block style or smooth low poly'}, {q:'Logic system like redstone or simple crafting'}],
+      'Roblox': [{q:'UGC tools for players'}, {q:'One hub with many mini games or one polished mode'}, {q:'Safety: no chat, filtered chat, or friends only'}],
+      'Zelda': [{q:'Exploration puzzles or story dungeons'}, {q:'Gadgets or powers to experiment with'}, {q:'Boss fights: pattern based or physics sandbox'}],
+      'Pokemon': [{q:'Creatures to collect or partner pets'}, {q:'Turn based battling or action'}, {q:'Trading or simple evolution'}],
+      'Call of Duty': [{q:'Mode: extraction, team deathmatch, or battle royale'}, {q:'Gunfeel: arcadey or realistic'}, {q:'Time to kill: fast or tactical'}],
+      'Genshin Impact': [{q:'Characters with element combos'}, {q:'Open world exploration focus'}, {q:'Pull system or cosmetics only'}],
+      'Mario Kart': [{q:'Track themes'}, {q:'Items: more chaos or more skill'}, {q:'Physics: drift heavy or simple'}],
+      'Rocket League': [{q:'Car ball or other physics sport'}, {q:'Arenas: 1v1, 2v2, 3v3, party'}, {q:'Ranked ladder or casual only'}],
+      'FIFA / EA FC': [{q:'Arcade or sim feel'}, {q:'Team builder or card collecting'}, {q:'Real licenses or fantasy clubs'}],
+      'Among Us': [{q:'Online social deduction or couch co-op'}, {q:'Roles and tasks variety'}, {q:'Match length target'}],
+      'Clash of Clans': [{q:'Base building vs raiding emphasis'}, {q:'Clan wars or solo progression'}, {q:'Acceptable timer length'}],
+      'Brawl Stars': [{q:'Brawler abilities and ult ideas'}, {q:'Modes: gem, showdown, football, heist'}, {q:'Match time target'}],
+      'Stardew Valley': [{q:'Farming plus relationships or cozy tasks only'}, {q:'Seasons or events you want'}, {q:'Decor and pets importance'}],
+      'Animal Crossing': [{q:'Daily routine loop ideas'}, {q:'Town customization depth'}, {q:'Multiplayer visits'}],
+      'Sandbox': [{q:'What freedoms matter most: build, drive, fly, mod'}, {q:'NPC reactions or physics toys'}],
+      'Survival / Craft': [{q:'Hunger or temperature systems, or chill creative'}, {q:'Crafting depth and tech tree'}],
+      'Shooter': [{q:'Aim style: assist or high skill'}, {q:'Maps: tight arenas or big zones'}],
+      'RPG': [{q:'Progression fantasy: power, fashion, story'}, {q:'Co-op dungeons or solo quests'}],
+      'Sports / Racing': [{q:'Arcade boosts or sim handling'}, {q:'Teams, seasons, tournaments'}],
+      'Tycoon / Sim': [{q:'Theme: cafe, park, streamer life'}, {q:'Automation vs hands-on play'}],
+      'Puzzle': [{q:'Match-3, merge, physics, word, or logic'}, {q:'Meta layer like decor or story'}],
+      'Party / Social': [{q:'Mini games set count and vibe'}, {q:'Voice or text chat rules'}],
+      'Platformer': [{q:'Movement tech: dash, grapple, wall jump'}, {q:'Level length and checkpoint style'}]
+    };
+
+    function renderTailored(){
+      const wrap = $('#tailoredWrap'); wrap.innerHTML='';
+      const picks = new Set([...getFavs(), ...getGenres()]);
+      if(picks.size===0){ wrap.innerHTML = '<p class="sub">Pick a favorite game or genre above to unlock smart questions.</p>'; updateProgress(); return; }
+      const chosen = [];
+      FAVES.forEach(f=>picks.has(f)&&chosen.push(f));
+      GENRES.forEach(g=>picks.has(g)&&chosen.push(g));
+      chosen.slice(0,6).forEach(key=>{
+        const box=document.createElement('div'); box.className='card pad';
+        const list=(QUESTION_BANK[key]||[{q:'What makes this fun for you'}]).slice(0,3);
+        box.innerHTML=`<div class="badge">${key}</div>
+          <div class="grid mt-2">
+            ${list.map((o,i)=>`<div class="field"><label>${o.q}</label><input class="input" placeholder="Your answer" data-tailored="${key}-${i}"></div>`).join('')}
+          </div>`;
+        wrap.appendChild(box);
+      });
+      toast('Smart questions unlocked based on your picks.');
+      updateProgress();
+    }
+
+    /* ====== STARTERS / TRENDS ====== */
+    const STARTERS=[
+      'Open world scooters with delivery races in a neon mini city.',
+      'Pet rescue sim where you build habitats and teach tricks.',
+      'Party mini games with playful physics and power ups.',
+      'Roguelite dungeon runs that last 3 minutes max.',
+      'Build a sky island cafe and deliver by glider.'
+    ];
+    const TRENDS=['Idle merge with decoration','Short run roguelite','Cozy farming and crafting','Arcade extraction','Auto battler squads','UGC level sharing','Photo mode quests','Rhythm micro challenges','Battle pass cosmetic only','Crossplay co-op','AR pet care','Daily missions with streaks'];
+    STARTERS.forEach(s=>{ const chip=document.createElement('span'); chip.className='chip'; chip.textContent=s; chip.addEventListener('click',()=>{ const el=$('#elevator'); el.value=s; el.dispatchEvent(new Event('input')); toast('Starter added to your pitch.'); }); $('#starters').appendChild(chip); });
+    TRENDS.forEach(t=>{ const chip=document.createElement('span'); chip.className='chip'; chip.textContent=t; $('#trendWrap').appendChild(chip); });
+
+    /* ====== FORM BEHAVIOR ====== */
+    const pitch=$('#elevator'), pitchCount=$('#pitchCount'); pitch.addEventListener('input',()=>pitchCount.textContent=`(${pitch.value.length}/160)`);
+    const getPlatforms = chipGroup($('#platforms'));
+    const getMoney = chipGroup($('#moneyChips'));
+    const getCamera = chipGroup($('#cameraChips'));
+    const getArt = chipGroup($('#artChips'));
+
+    favChips.addEventListener('click', e=>{ if(e.target.closest('.chip')) renderTailored(); });
+    genreChipsEl.addEventListener('click', e=>{ if(e.target.closest('.chip')) renderTailored(); });
+
+    /* ====== PROGRESS ====== */
+    function updateProgress(){
+      let p=0;
+      if(getFavs().length>0||getGenres().length>0) p+=20;
+      if($('#tailoredWrap').children.length>0) p+=20;
+      if($('#title').value.trim()) p+=10;
+      if(pitch.value.trim().length>20) p+=10;
+      if($('#loop').value.trim()) p+=10;
+      if(getCamera().length) p+=5;
+      if(getArt().length) p+=5;
+      if(getPlatforms().length) p+=5;
+      if($('#session').value) p+=5;
+      if($('#multiplayer').value) p+=5;
+      if(getMoney().length) p+=5;
+      $('#bar').style.width = Math.min(100, p) + '%';
+    }
+    ['input','change','keyup'].forEach(evt=>{
+      document.addEventListener(evt, e=>{
+        if(e.target && (e.target.matches('input,textarea,select') || e.target.classList?.contains('chip'))) updateProgress();
+      });
+    });
+
+    /* ====== ESTIMATOR ====== */
+    const scope=$('#scope'), art=$('#art'), net=$('#net'), priceEl=$('#price');
+    function estimate(){
+      let base=18; base+=(parseInt(scope.value)-1)*6; base+=(parseInt(art.value)-1)*3; base+=parseInt(net.value)*4;
+      const low=Math.round(base*1.2), high=Math.round(base*1.8);
+      priceEl.textContent=`$${low.toLocaleString()}k - $${high.toLocaleString()}k`;
+    }
+    [scope,art,net].forEach(i=>i.addEventListener('input',estimate)); estimate();
+
+    /* ====== SUBMIT ====== */
+    function collectTailoredAnswers(){
+      const inputs = $$('input[data-tailored]');
+      const answers = {};
+      inputs.forEach(i=>{ if(i.value.trim()) answers[i.getAttribute('data-tailored')] = i.value.trim(); });
+      return answers;
+    }
+    function submitIdea(){
+      const payload={
+        favorites:getFavs(), genres:getGenres(), ageRange:$('#ageRange').value, vibe:$('#vibe').value,
+        title:$('#title').value.trim(), pitch:$('#elevator').value.trim(), platforms:getPlatforms(),
+        camera:getCamera(), art:getArt(), session:$('#session').value, multiplayer:$('#multiplayer').value,
+        monetization:getMoney(), loop:$('#loop').value.trim(), email:$('#email').value.trim(),
+        nda:$('#nda').checked, tailored:collectTailoredAnswers(), submittedAt:new Date().toISOString()
+      };
+      if(!payload.title || !payload.pitch || !payload.loop || !payload.email){ toast('Please fill the required fields.'); return; }
+      const store=JSON.parse(localStorage.getItem('youth_pitches')||'[]'); store.push(payload); localStorage.setItem('youth_pitches', JSON.stringify(store));
+      $('#ideaStatus').textContent='Saved locally. We will reach out by email.';
+      toast('Idea received. Nice work.');
+      document.getElementById('ideaForm').reset(); $('#pitchCount').textContent='(0/160)'; $('#tailoredWrap').innerHTML='';
+      $$('.chip.active').forEach(c=>c.classList.remove('active'));
+      updateProgress();
+    }
+    window.submitIdea=submitIdea;
+
+    /* ====== YEAR ====== */
+    $('#year').textContent=new Date().getFullYear();
+
+    /* initial tailored prompt */
+    renderTailored();
+  </script>
+</body>
+</html>
