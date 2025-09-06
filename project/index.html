@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Callmax SEO Master Plan, Interactive Report</title>
+
+<!--
+  Notes
+  - Mobile first with clamp based sizing.
+  - Competitor matrix becomes cards on phones.
+  - Charts are SVG, no external libs, redraw on resize.
+  - Phase 1 filter uses data attributes for reliable mobile behavior.
+  - Edit points:
+      * Footer email — search TEAM_EMAIL
+      * Silo structure — search SILO
+      * Competitor rows — search COMPETITOR TABLE BODY
+      * Keyword examples — search KW
+-->
+
+<style>
+  :root{
+    /* Light theme */
+    --deck-bg:#f7f9ff;
+    --deck-ink:#0f172a;
+    --deck-muted:#5b647b;
+    --deck-card:#ffffff;
+    --deck-brand:#2563eb;
+    --deck-brand2:#38bdf8;
+    --deck-accent:#10b981;
+    --deck-warn:#f59e0b;
+    --deck-danger:#ef4444;
+    --deck-line:rgba(17,24,39,.12);
+    --deck-shadow:0 10px 40px rgba(2,6,23,.08);
+
+    --swatch-1:#2563eb;
+    --swatch-2:#38bdf8;
+    --swatch-3:#10b981;
+    --swatch-4:#f59e0b;
+    --swatch-5:#ef4444;
+
+    --chip-bg:rgba(37,99,235,.12);
+    --table-th:#eef2ff;
+    --grid-line:#e5e7eb;
+
+    --card-gradient:linear-gradient(180deg,rgba(17,24,39,.04),transparent);
+
+    --fs-1:clamp(22px,4.5vw,40px);
+    --fs-2:clamp(18px,2.8vw,26px);
+    --fs-3:clamp(15px,2.2vw,18px);
+
+    --radius-xl:18px;
+    --radius-md:12px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--deck-bg); color:var(--deck-ink);
+    font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* Layout */
+  .deck{
+    max-width:1150px;
+    margin:max(14px, env(safe-area-inset-top)) auto 56px;
+    padding:clamp(12px,3vw,24px);
+  }
+
+  .topbar{
+    display:flex;gap:12px;justify-content:space-between;align-items:center;margin-bottom:12px
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(45deg,var(--deck-brand),var(--deck-brand2))}
+  .cta-row{display:flex;gap:8px;flex-wrap:wrap}
+
+  .btn{
+    border:1px solid var(--deck-line);cursor:pointer;border-radius:999px;
+    padding:.82rem 1.05rem;font-weight:800;min-height:42px;
+    background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2));color:#fff;
+    box-shadow:var(--deck-shadow);
+    touch-action:manipulation;
+  }
+  .ghost{
+    background:var(--deck-card);color:var(--deck-ink);
+    border:1px solid var(--deck-line)
+  }
+
+  .slides{display:grid;gap:14px}
+  .slide{
+    background:var(--deck-card);border-radius:var(--radius-xl);box-shadow:var(--deck-shadow);
+    padding:clamp(16px,3.5vw,30px);display:none;position:relative;min-height:58vh
+  }
+  .slide.active{display:block;animation:fade .22s ease-out}
+  .slide::after{content:"";position:absolute;bottom:0;left:0;right:0;height:56px;background:linear-gradient(to bottom,transparent,rgba(0,0,0,.04))}
+  @keyframes fade{from{opacity:.5;transform:translateY(5px)} to{opacity:1;transform:translateY(0)}}
+
+  h1{font-size:var(--fs-1);margin:.2rem 0 1rem}
+  h2{font-size:var(--fs-2);margin:.75rem 0 .5rem}
+  p{margin:.35rem 0}
+  .lead{color:var(--deck-muted);font-size:var(--fs-3)}
+  .muted{color:var(--deck-muted)}
+
+  .grid{display:grid;gap:12px}
+  .cols-2{grid-template-columns:1fr}
+  .cols-3{grid-template-columns:1fr}
+  @media(min-width:920px){
+    .cols-2{grid-template-columns:1fr 1fr}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+  }
+  .card{background:var(--card-gradient);border:1px solid var(--deck-line);border-radius:var(--radius-md);padding:12px 14px}
+
+  .kicker{font-size:.85rem;letter-spacing:.3px;font-weight:800;color:var(--deck-muted);text-transform:uppercase}
+
+  /* Navigator */
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+  .index{display:flex;gap:6px;flex-wrap:wrap}
+  .dot-step{width:10px;height:10px;border-radius:50%;background:rgba(37,99,235,.20)}
+  .dot-step.active{background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2))}
+
+  /* Tree */
+  .tree-wrap{border:1px solid var(--deck-line);border-radius:var(--radius-xl);padding:clamp(10px,2vw,18px);background:var(--deck-card)}
+  .toolbar{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+  .chip{padding:.52rem .7rem;border-radius:999px;background:var(--chip-bg);font-weight:700;font-size:.95rem;cursor:pointer;user-select:none;min-height:40px;display:inline-flex;align-items:center}
+  .chip:active{transform:translateY(1px)}
+  .legend{color:var(--deck-muted);font-size:.92rem}
+  .tree{list-style:none;margin:0;padding:0;font-size:15px}
+  .tree li{margin:6px 0;padding-left:14px}
+  .rowx{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.55rem .7rem;border-radius:10px;background:rgba(17,24,39,.03)}
+  .slug{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86em;color:var(--deck-muted);word-break:break-word}
+  .star{color:var(--deck-warn);font-weight:bold}
+  .tag{font-size:.75em;padding:.15rem .45rem;border-radius:999px;background:rgba(16,185,129,.15);color:var(--deck-accent)}
+  .caret{width:20px;height:20px;border-radius:6px;display:inline-grid;place-items:center;background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2));color:#fff;cursor:pointer}
+  .collapsed > .branch{display:none}
+  .branch{margin-left:14px;padding-left:14px;border-left:2px solid rgba(37,99,235,.25)}
+
+  /* Charts */
+  .chart {display:block;width:100%;height:300px;border:1px solid var(--deck-line);border-radius:var(--radius-md);background:#fff}
+  .legend-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .lg{display:inline-flex;align-items:center;gap:6px;font-size:.95rem;color:var(--deck-muted)}
+  .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+  /* Inputs / stats */
+  .row {display:flex;gap:10px;flex-wrap:wrap}
+  .input{display:flex;align-items:center;gap:10px;border:1px solid var(--deck-line);border-radius:12px;padding:10px 12px;background:#fff}
+  .input input[type="number"]{width:120px}
+  .range {display:flex;align-items:center;gap:10px}
+  .stat {padding:12px;border-radius:12px;border:1px solid var(--deck-line);background:#fff;min-width:160px}
+  .stat.good{border-color:rgba(16,185,129,.4)}
+  .stat.mid{border-color:rgba(245,158,11,.4)}
+  .stat.bad{border-color:rgba(239,68,68,.4)}
+  .stat .big{font-size:1.4rem;font-weight:900}
+
+  /* Tables */
+  table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--deck-line);border-radius:12px;overflow:hidden;background:#fff}
+  th,td{padding:12px;border-bottom:1px solid var(--deck-line);vertical-align:top}
+  th{background:var(--table-th);text-align:left;font-weight:800;color:var(--deck-ink);position:sticky;top:0;z-index:1}
+  tr:last-child td{border-bottom:0}
+  .table-wrap{overflow:auto;max-height:420px;border-radius:12px}
+
+  /* Competitor Matrix responsive */
+  @media(max-width:720px){
+    #cmpTable{display:none}
+    .cmp-cards{display:grid;gap:10px}
+    .cmp-card{
+      border:1px solid var(--deck-line);border-radius:12px;background:#fff;
+      padding:12px
+    }
+    .cmp-card h3{margin:0 0 .25rem 0;font-size:1.05rem}
+    .cmp-card .small{color:var(--deck-muted);font-size:.95rem;margin:.15rem 0}
+  }
+  @media(min-width:721px){
+    .cmp-cards{display:none}
+  }
+
+  /* Footer */
+  footer{max-width:1150px;margin:20px auto 40px;padding:0 20px;color:var(--deck-muted);font-size:.95rem}
+</style>
+</head>
+<body>
+
+  <div class="deck">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Callmax SEO Master Plan</div>
+      <div class="cta-row">
+        <button class="btn ghost" id="prev">◀ Prev</button>
+        <button class="btn" id="next">Next ▶</button>
+      </div>
+    </div>
+
+    <div class="slides" id="slides">
+      <!-- 0) Executive overview -->
+      <section class="slide active">
+        <h1>Executive Overview</h1>
+        <p class="lead">
+          We win organic buyers by focusing on bottom funnel searches and a clean interlinked structure.
+          The foundation is two hubs, Services and Industries, supported by Pricing, Comparisons, Integrations, and Resources.
+          We publish money pages first, then expand into high value verticals and proof content.
+        </p>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Why this wins</h2>
+            <ul>
+              <li>Captures people already shopping for outsourcing</li>
+              <li>Dual hubs build breadth and depth for topical authority</li>
+              <li>Support hubs serve evaluators who want costs, comparisons, and platform know how</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Optional enhancements, budget dependent</h2>
+            <ul>
+              <li>Cost estimator and coverage planner on key pages</li>
+              <li>Honest alternatives and versus pages</li>
+              <li>Integration playbooks for Zendesk, Gorgias, Shopify, and WooCommerce</li>
+            </ul>
+          </div>
+        </div>
+        <p class="lead muted">Note, keywords shown later are examples. We will finalize during research.</p>
+      </section>
+
+      <!-- 1) Competitors -->
+      <section class="slide">
+        <h1>Competitors, quick read</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>What most do</h2>
+            <ul>
+              <li>Service hub and Industry hub</li>
+              <li>Brand heavy content with limited workflow detail</li>
+              <li>Very few practical tools for late stage buyers</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Our angle</h2>
+            <ul>
+              <li>Two hubs with deeper tasks and use cases</li>
+              <li>Tools that help buyers make decisions and convert, optional based on budget</li>
+              <li>Platform playbooks and honest comparisons</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h2>Competitor matrix</h2>
+          <div class="row" style="margin:8px 0 12px">
+            <div class="input" style="flex:1"><input id="cmpSearch" placeholder="Filter competitors by name" aria-label="Filter competitors" /></div>
+            <div class="input"><label><input type="checkbox" id="cmpShowGaps" checked /> show gaps column</label></div>
+          </div>
+
+          <!-- Table view for tablet and desktop -->
+          <div class="table-wrap">
+            <table id="cmpTable" aria-label="Competitor comparison">
+              <thead>
+                <tr>
+                  <th style="min-width:150px">Brand</th>
+                  <th style="min-width:260px">Positioning</th>
+                  <th style="min-width:180px">Architecture</th>
+                  <th class="cmp-gaps-col" style="min-width:240px">Gaps we can use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- COMPETITOR TABLE BODY -->
+                <tr>
+                  <td>TaskUs</td>
+                  <td>Digital customer experience with strong AI and trust messaging</td>
+                  <td>Solutions hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Few granular workflow pages and limited local proof</td>
+                </tr>
+                <tr>
+                  <td>SupportNinja</td>
+                  <td>Outsourced support for SaaS and e commerce</td>
+                  <td>Services hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Lighter depth in regulated verticals</td>
+                </tr>
+                <tr>
+                  <td>Helpware</td>
+                  <td>People as a service across CX and back office</td>
+                  <td>Services hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Broad pages and thin bottom of funnel detail</td>
+                </tr>
+                <tr>
+                  <td>Teleperformance</td>
+                  <td>Global enterprise focus</td>
+                  <td>Solutions grid with vertical menus</td>
+                  <td class="cmp-gaps-col">Broad copy that misses task level intent</td>
+                </tr>
+                <tr>
+                  <td>IntouchCX</td>
+                  <td>Modern product style language</td>
+                  <td>Solutions hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Fewer specialized sub industry pages</td>
+                </tr>
+                <tr>
+                  <td>Concentrix</td>
+                  <td>Customer experience transformation</td>
+                  <td>Extensive solutions and industries</td>
+                  <td class="cmp-gaps-col">Enterprise tilt with little SMB focus</td>
+                </tr>
+                <tr>
+                  <td>Alorica</td>
+                  <td>Verticalized messaging with outcomes</td>
+                  <td>Solutions hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Limited task level content</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Card view for phones, built from table rows -->
+          <div class="cmp-cards" id="cmpCards" aria-label="Competitor cards"></div>
+        </div>
+      </section>
+
+      <!-- 2) Silo Map -->
+      <section class="slide">
+        <h1>Silo map</h1>
+        <p class="lead">Use the controls to expand or collapse, and show only Phase 1 pages marked with <span class="star">★</span>. Works well on phones and desktops.</p>
+        <div class="tree-wrap">
+          <div class="toolbar">
+            <div class="row" style="gap:8px">
+              <span class="chip" id="toggleAll" tabindex="0" role="button" aria-controls="treeRoot">Collapse All</span>
+              <span class="chip" id="togglePhase" tabindex="0" role="button" aria-controls="treeRoot">Show Phase 1 Only</span>
+            </div>
+            <div class="legend"><span class="star">★</span> Phase 1, <span class="tag">Hub</span> structural page</div>
+          </div>
+          <ul class="tree" id="treeRoot"></ul>
+        </div>
+      </section>
+
+      <!-- 3) Build order -->
+      <section class="slide">
+        <h1>Build order</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Phase 1, weeks 1 to 4</h2>
+            <ul>
+              <li>Customer Service pillar and subs, live chat, email, phone, social</li>
+              <li>Technical Support and IT Help Desk</li>
+              <li>Pricing, cost page with calculator version 1</li>
+              <li>Industries, e commerce and SaaS and technology</li>
+              <li>Trust pages, home, about, contact, legal</li>
+            </ul>
+            <p class="muted">Money pages can rank and convert now. Launch the Services hub once five to six are live.</p>
+          </div>
+          <div class="card">
+            <h2>Phase 2, weeks 5 to 8</h2>
+            <ul>
+              <li>Back Office and subs, data entry, HR and scheduling, accounting and bookkeeping</li>
+              <li>AI Customer Support and subs, workflow, analytics, hybrid</li>
+              <li>Industries, healthcare and real estate</li>
+              <li>Comparisons, SupportNinja and Influx alternatives</li>
+              <li>Integrations, Zendesk and Gorgias</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h2>Phase 3, weeks 9 to 12</h2>
+          <ul>
+            <li>Remaining industries, insurance, telecom, construction, logistics, virtual assistant</li>
+            <li>More integrations and competitor pages</li>
+            <li>Playbooks, guides, testimonials and case studies, blog</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 4) First pages and why -->
+      <section class="slide">
+        <h1>First pages, and why</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Customer Service pillar and four subs</h2>
+            <ul>
+              <li>Largest pool of buyer ready keywords</li>
+              <li>Cross links into industries and back</li>
+              <li>Sets up the Services hub to route traffic</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Technical Support plus Help Desk</h2>
+            <ul>
+              <li>Strong intent for SaaS and software buyers</li>
+              <li>Competitors stay broad, we are specific on tasks and tools</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Pricing, cost page with calculator</h2>
+            <ul>
+              <li>Late stage visitors want a range</li>
+              <li>Tool helps estimate and drives quotes, optional if budget allows</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Industry starters, e commerce and SaaS</h2>
+            <ul>
+              <li>Proves fit for real buying segments</li>
+              <li>Home for case snapshots and integration links</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5) Interactive KPIs -->
+      <section class="slide">
+        <h1>Forecast, sample data</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Traffic to money pages</h2>
+            <svg id="trafficChart" class="chart" role="img" aria-label="Traffic forecast line chart"></svg>
+            <div class="legend-row">
+              <span class="lg"><span class="sw" style="background:var(--swatch-1)"></span> Organic sessions</span>
+              <span class="lg"><span class="sw" style="background:var(--swatch-3)"></span> Goal</span>
+            </div>
+            <p class="muted">Months 1 to 6 after launch. Values are placeholders.</p>
+          </div>
+          <div class="card">
+            <h2>Keyword positions</h2>
+            <svg id="rankChart" class="chart" role="img" aria-label="Ranking distribution bar chart"></svg>
+            <div class="legend-row">
+              <span class="lg"><span class="sw" style="background:var(--swatch-3)"></span> Top 1 to 3</span>
+              <span class="lg"><span class="sw" style="background:var(--swatch-1)"></span> Top 4 to 10</span>
+              <span class="lg"><span class="sw" style="background:var(--swatch-4)"></span> Top 11 to 20</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid cols-3" style="margin-top:12px">
+          <div class="card">
+            <h2>Leads from cost page</h2>
+            <svg id="leadsChart" class="chart" role="img" aria-label="Leads line chart"></svg>
+            <p class="muted">Based on calculator interactions and quote submits</p>
+          </div>
+          <div class="card">
+            <h2>Content velocity</h2>
+            <ul class="muted">
+              <li>Pages per week target, 2 to 3</li>
+              <li>Blogs per month target, 2 to 4</li>
+              <li>Playbooks per quarter target, 1</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Tracking plan</h2>
+            <ul class="muted">
+              <li>Quote submits, call and email clicks</li>
+              <li>Calendar bookings</li>
+              <li>Calculator usage events</li>
+              <li>Playbook downloads</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6) ROI estimator -->
+      <section class="slide">
+        <h1>ROI estimator, sample values</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Inputs</h2>
+            <div class="row">
+              <div class="input"><label>Seats <input id="seats" type="number" min="1" value="6"></label></div>
+              <div class="input"><label>Hours per day <input id="hours" type="number" min="1" max="24" value="8"></label></div>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <div class="input"><label>In house hourly cost $<input id="inRate" type="number" min="1" value="28"></label></div>
+              <div class="input"><label>Outsource hourly $<input id="outRate" type="number" min="1" value="18"></label></div>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <div class="range">
+                <label>Productivity gain %</label>
+                <input id="prod" type="range" min="0" max="30" step="1" value="10">
+                <span id="prodVal" class="muted">10%</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Result, per month</h2>
+            <div class="row">
+              <div class="stat"><div class="muted">In house cost</div><div id="inCost" class="big">$0</div></div>
+              <div class="stat"><div class="muted">Outsource cost</div><div id="outCost" class="big">$0</div></div>
+              <div class="stat good"><div class="muted">Estimated savings</div><div id="save" class="big">$0</div></div>
+            </div>
+            <p class="muted" style="margin-top:8px">Assumes 22 working days. Productivity gain lowers required hours. Edit the sliders to see the change.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7) Content tracker -->
+      <section class="slide">
+        <h1>Content tracker</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Phase 1 list</h2>
+            <ul id="todo">
+              <li><label><input type="checkbox" /> Customer Service pillar</label></li>
+              <li><label><input type="checkbox" /> Live Chat</label></li>
+              <li><label><input type="checkbox" /> Email Support</label></li>
+              <li><label><input type="checkbox" /> Phone Answering</label></li>
+              <li><label><input type="checkbox" /> Social Support</label></li>
+              <li><label><input type="checkbox" /> Technical Support</label></li>
+              <li><label><input type="checkbox" /> IT Help Desk</label></li>
+              <li><label><input type="checkbox" /> E commerce industry page</label></li>
+              <li><label><input type="checkbox" /> SaaS industry page</label></li>
+              <li><label><input type="checkbox" /> Pricing, cost page with calculator v1</label></li>
+              <li><label><input type="checkbox" /> About, Contact, Legal</label></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Progress</h2>
+            <div style="background:#eef2ff;border:1px solid var(--deck-line);border-radius:12px;height:16px;overflow:hidden">
+              <div id="bar" style="height:100%;width:0;background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2))"></div>
+            </div>
+            <p class="muted" id="barText" style="margin-top:8px">0 of 11 complete</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8) Keyword examples with filter -->
+      <section class="slide">
+        <h1>Keyword examples</h1>
+        <p class="lead"><strong>Note</strong> these are example keywords. We will finalize during research.</p>
+        <div class="card">
+          <div class="row" style="margin-bottom:10px">
+            <div class="input" style="flex:1"><input id="kwSearch" placeholder="Filter keywords or slugs" /></div>
+          </div>
+          <div class="table-wrap" style="max-height:380px">
+            <table id="kwTable" aria-label="Keyword list">
+              <thead>
+                <tr>
+                  <th>Page</th>
+                  <th>Slug</th>
+                  <th>Example keywords</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="muted" id="kwCount" style="margin-top:8px"></p>
+        </div>
+      </section>
+
+      <!-- 9) Internal linking rules -->
+      <section class="slide">
+        <h1>Internal linking</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Services and Industries</h2>
+            <ul>
+              <li>Each industry page links to the best fit services with short use case blocks</li>
+              <li>Each service page links back to the best fit industries</li>
+              <li>Use FAQ anchors for rich results and jump links</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Support hubs</h2>
+            <ul>
+              <li>Pricing, comparisons, and integrations link back to core service pillars and Get a Quote</li>
+              <li>Playbooks and the blog link into both hubs to support clusters</li>
+              <li>Testimonials and case studies link from the related industry and service pages</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10) Next actions -->
+      <section class="slide">
+        <h1>Next actions</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Content and pages</h2>
+            <ul>
+              <li>Approve Phase 1 copy frames for Customer Service and subs, Technical Support and IT Help Desk</li>
+              <li>Publish the cost page with calculator version 1</li>
+              <li>Publish e commerce and SaaS industry starters</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Proof and tracking</h2>
+            <ul>
+              <li>Start a steady review cadence and surface quotes on money pages</li>
+              <li>Wire GA4 events and goals</li>
+              <li>Draft comparison and integration pages</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Navigator -->
+    <div class="nav">
+      <button class="btn ghost" id="prev2">◀ Prev</button>
+      <div class="index" id="dots"></div>
+      <button class="btn" id="next2">Next ▶</button>
+    </div>
+  </div>
+
+  <footer>
+    Questions or updates, email <!-- TEAM_EMAIL --> <a href="mailto:team@cmxchat.com">team@cmxchat.com</a>.
+  </footer>
+
+<script>
+/* Slides and dots */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dotsWrap = document.getElementById('dots'); let i = 0;
+function renderDots(){
+  dotsWrap.innerHTML='';
+  slides.forEach((_, idx)=>{
+    const d=document.createElement('span');
+    d.className='dot-step'+(idx===i?' active':'');
+    d.addEventListener('click',()=>go(idx), {passive:true});
+    dotsWrap.appendChild(d);
+  });
+}
+function show(){
+  slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  renderDots();
+  // avoid invalid behavior value that can break scripts on some browsers
+  window.scrollTo(0,0);
+}
+function go(n){ i = Math.max(0, Math.min(slides.length-1, n)); show(); }
+function next(){ go(i+1); } function prev(){ go(i-1); }
+document.getElementById('next').onclick = next; document.getElementById('prev').onclick = prev;
+document.getElementById('next2').onclick = next; document.getElementById('prev2').onclick = prev;
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); }, {passive:true});
+renderDots(); show();
+
+/* Competitor Matrix: build phone cards from table rows and filter */
+const cmpInput = document.getElementById('cmpSearch');
+const cmpShowGaps = document.getElementById('cmpShowGaps');
+const cmpTable = document.getElementById('cmpTable');
+const cmpCards = document.getElementById('cmpCards');
+
+function buildCardsFromTable(){
+  if(!cmpTable) return;
+  cmpCards.innerHTML = '';
+  const rows = Array.from(cmpTable.querySelectorAll('tbody tr'));
+  rows.forEach(tr=>{
+    const [brand, pos, arch, gapCell] = tr.children;
+    const card = document.createElement('div');
+    card.className = 'cmp-card';
+    card.dataset.brand = brand.textContent.trim().toLowerCase();
+    card.innerHTML = `
+      <h3>${brand.textContent.trim()}</h3>
+      <div class="small"><strong>Positioning</strong>, ${pos.textContent.trim()}</div>
+      <div class="small"><strong>Architecture</strong>, ${arch.textContent.trim()}</div>
+      <div class="small cmp-gap"><strong>Gaps we can use</strong>, ${gapCell ? gapCell.textContent.trim() : ''}</div>
+    `;
+    cmpCards.appendChild(card);
+  });
+}
+buildCardsFromTable();
+
+function filterCompetitors(){
+  const q = (cmpInput.value||'').toLowerCase().trim();
+  cmpTable.querySelectorAll('tbody tr').forEach(tr=>{
+    const name = tr.cells[0].textContent.toLowerCase();
+    tr.style.display = name.includes(q) ? '' : 'none';
+  });
+  Array.from(cmpCards.children).forEach(card=>{
+    card.style.display = card.dataset.brand.includes(q) ? '' : 'none';
+  });
+}
+cmpInput.addEventListener('input', filterCompetitors, {passive:true});
+cmpShowGaps.addEventListener('change', ()=>{
+  const show = cmpShowGaps.checked;
+  document.querySelectorAll('.cmp-gaps-col').forEach(c=> c.style.display = show ? '' : 'none');
+  cmpCards.querySelectorAll('.cmp-gap').forEach(c=> c.style.display = show ? '' : 'none');
+}, {passive:true});
+
+/* Silo data with Legal included */
+const SILO = {
+  title:"/", slug:"/", phase:true, hub:false, children:[
+    { title:"Services", slug:"/services", hub:true, children:[
+      { title:"Customer Service Outsourcing", slug:"/customer-service-outsourcing", phase:true, children:[
+        { title:"Live Chat Outsourcing", slug:"/live-chat-outsourcing", phase:true },
+        { title:"Email Support Outsourcing", slug:"/email-support-outsourcing", phase:true },
+        { title:"Phone Answering Outsourcing", slug:"/phone-answering-outsourcing", phase:true },
+        { title:"Social Media Customer Support Outsourcing", slug:"/social-media-customer-support-outsourcing", phase:true }
+      ]},
+      { title:"Technical Support Outsourcing", slug:"/technical-support-outsourcing", phase:true, children:[
+        { title:"IT Help Desk Outsourcing", slug:"/it-help-desk-outsourcing", phase:true },
+        { title:"Tier 1 and 2 Tech Support Outsourcing", slug:"/tier-1-2-tech-support-outsourcing" }
+      ]},
+      { title:"Back Office Outsourcing", slug:"/back-office-outsourcing", children:[
+        { title:"Data Entry Outsourcing", slug:"/data-entry-outsourcing" },
+        { title:"HR and Scheduling Outsourcing", slug:"/hr-scheduling-outsourcing" },
+        { title:"Accounting and Bookkeeping Outsourcing", slug:"/accounting-bookkeeping-outsourcing" }
+      ]},
+      { title:"AI Customer Support Solutions", slug:"/ai-customer-support-solutions", children:[
+        { title:"Workflow Automation Outsourcing", slug:"/workflow-automation-outsourcing" },
+        { title:"AI Analytics Outsourcing", slug:"/ai-analytics-outsourcing" },
+        { title:"Hybrid AI plus Human Support Outsourcing", slug:"/hybrid-ai-human-support-outsourcing" }
+      ]}
+    ]},
+    { title:"Industries", slug:"/industries", hub:true, children:[
+      { title:"E commerce Customer Service Outsourcing", slug:"/ecommerce-customer-service-outsourcing", phase:true },
+      { title:"SaaS and Technology Support Outsourcing", slug:"/saas-technology-support-outsourcing", phase:true },
+      { title:"Healthcare BPO Outsourcing", slug:"/healthcare-bpo-outsourcing" },
+      { title:"Real Estate and Property Management Outsourcing", slug:"/real-estate-property-management-outsourcing" },
+      { title:"Insurance Outsourcing Services", slug:"/insurance-outsourcing-services" },
+      { title:"Telecom Customer Support Outsourcing", slug:"/telecom-customer-support-outsourcing" },
+      { title:"Construction Outsourcing Services", slug:"/construction-outsourcing-services" },
+      { title:"Logistics and Supply Chain Outsourcing", slug:"/logistics-supply-chain-outsourcing" },
+      { title:"Virtual Assistant and Professional Outsourcing", slug:"/virtual-assistant-professional-outsourcing" }
+    ]},
+    { title:"Pricing", slug:"/pricing", hub:true, children:[
+      { title:"Cost of Outsourced Customer Service", slug:"/cost-of-outsourced-customer-service", phase:true },
+      { title:"Get a Quote", slug:"/get-a-quote", phase:true }
+    ]},
+    { title:"Comparisons", slug:"/comparisons", hub:true, children:[
+      { title:"SupportNinja Alternatives", slug:"/comparisons/supportninja-alternatives" },
+      { title:"PartnerHero Alternatives", slug:"/comparisons/partnerhero-alternatives" },
+      { title:"Influx Alternatives", slug:"/comparisons/influx-alternatives" },
+      { title:"Callmax vs Competitor", slug:"/comparisons/callmax-vs-competitor" }
+    ]},
+    { title:"Integrations", slug:"/integrations", hub:true, children:[
+      { title:"Zendesk Outsourcing Support", slug:"/integrations/zendesk-outsourcing-support" },
+      { title:"Gorgias Customer Service Outsourcing", slug:"/integrations/gorgias-customer-service-outsourcing" },
+      { title:"Shopify Customer Service Outsourcing", slug:"/integrations/shopify-customer-service-outsourcing" },
+      { title:"WooCommerce Customer Service Outsourcing", slug:"/integrations/woocommerce-customer-service-outsourcing" }
+    ]},
+    { title:"Resources", slug:"/resources", hub:true, children:[
+      { title:"Blog", slug:"/blog" },
+      { title:"Playbooks and Guides", slug:"/resources/playbooks", hub:true, children:[
+        { title:"Two Week Launch Playbook", slug:"/resources/playbooks/2-week-launch" },
+        { title:"E commerce Peak Season Playbook", slug:"/resources/playbooks/ecommerce-peak-season" },
+        { title:"SaaS Escalation Playbook", slug:"/resources/playbooks/saas-escalation" }
+      ]}
+    ]},
+    { title:"Company", slug:"/company", hub:true, children:[
+      { title:"About Us", slug:"/about", phase:true },
+      { title:"Our Process", slug:"/our-process" },
+      { title:"Why Callmax", slug:"/why-callmax", phase:true },
+      { title:"Testimonials and Case Studies", slug:"/case-studies" },
+      { title:"Careers", slug:"/careers" }
+    ]},
+    { title:"Contact", slug:"/contact", phase:true },
+    { title:"Legal", slug:"/legal", hub:true, children:[
+      { title:"Privacy Policy", slug:"/privacy-policy" },
+      { title:"Terms of Service", slug:"/terms-of-service" },
+      { title:"Cookie Policy", slug:"/cookie-policy" }
+    ]}
+  ]
+};
+
+/* Render the tree with star propagation for mobile Phase 1 filter */
+const rootEl = document.getElementById('treeRoot');
+function nodeRow(n){
+  return `<div class="rowx">
+    ${n.children ? '<span class="caret" data-caret>▾</span>' : '<span style="width:20px;display:inline-block"></span>'}
+    <strong>${n.title}</strong> <span class="slug">${n.slug}</span>${n.phase?' <span class="star">★</span>':''}${n.hub?' <span class="tag">Hub</span>':''}
+  </div>`;
+}
+function renderBranch(n){
+  const li = document.createElement('li');
+  li.innerHTML = nodeRow(n);
+  let hasStar = !!n.phase;
+  if(n.children && n.children.length){
+    const ul = document.createElement('ul');
+    ul.className = 'branch';
+    n.children.forEach(ch => {
+      const child = renderBranch(ch);
+      if(child.dataset.hasstar === '1') hasStar = true;
+      ul.appendChild(child);
+    });
+    li.appendChild(ul);
+  }
+  li.dataset.hasstar = hasStar ? '1' : '0';
+  return li;
+}
+rootEl.appendChild(renderBranch(SILO));
+
+/* Caret toggle */
+rootEl.addEventListener('click', (e)=>{
+  const caret = e.target.closest('[data-caret]');
+  if(!caret) return;
+  const li = caret.closest('li');
+  li.classList.toggle('collapsed');
+  caret.textContent = li.classList.contains('collapsed') ? '▸' : '▾';
+}, {passive:true});
+
+/* Collapse or expand all */
+const toggleAllBtn = document.getElementById('toggleAll');
+toggleAllBtn.addEventListener('click', ()=>{
+  const list = rootEl.querySelectorAll('li');
+  const anyOpen = [...list].some(li => !li.classList.contains('collapsed') && li.querySelector('.branch'));
+  list.forEach(li=>{
+    if(li.querySelector('.branch')){
+      li.classList.toggle('collapsed', anyOpen);
+      const c = li.querySelector('[data-caret]'); if(c) c.textContent = li.classList.contains('collapsed') ? '▸' : '▾';
+    }
+  });
+  toggleAllBtn.textContent = anyOpen ? 'Expand All' : 'Collapse All';
+}, {passive:true});
+
+/* Phase 1 filter */
+const togglePhaseBtn = document.getElementById('togglePhase'); let phaseOnly = false;
+function applyPhaseFilter(){
+  rootEl.querySelectorAll('li').forEach(li=>{
+    const ok = li.dataset.hasstar === '1';
+    li.style.display = (phaseOnly && !ok) ? 'none' : '';
+  });
+  togglePhaseBtn.textContent = phaseOnly ? 'Show All Pages' : 'Show Phase 1 Only';
+}
+togglePhaseBtn.addEventListener('click', ()=>{ phaseOnly = !phaseOnly; applyPhaseFilter(); }, {passive:true});
+
+/* SVG chart helpers */
+function cssVar(name){ return getComputedStyle(document.body).getPropertyValue(name).trim(); }
+
+function drawLine(svg, xs, ys, color, yMax){
+  const w = svg.clientWidth || 600, h = svg.clientHeight || 300, pad = 36;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const grid = cssVar('--grid-line');
+  for(let g=0; g<5; g++){
+    const y = pad + (h-2*pad) * g/4;
+    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1', pad); l.setAttribute('x2', w-pad);
+    l.setAttribute('y1', y);   l.setAttribute('y2', y);
+    l.setAttribute('stroke', grid); l.setAttribute('stroke-width', '1');
+    svg.appendChild(l);
+  }
+
+  const maxY = yMax ?? Math.max(...ys)*1.2;
+  function sx(i){ return pad + (w-2*pad) * (xs[i]-xs[0]) / (xs[xs.length-1]-xs[0]); }
+  function sy(v){ return h-pad - (h-2*pad) * (v/maxY); }
+
+  const axis = cssVar('--deck-line');
+  const ax = document.createElementNS('http://www.w3.org/2000/svg','line');
+  ax.setAttribute('x1', pad); ax.setAttribute('x2', pad);
+  ax.setAttribute('y1', pad); ax.setAttribute('y2', h-pad);
+  ax.setAttribute('stroke', axis); ax.setAttribute('stroke-width', '1.5');
+  svg.appendChild(ax);
+
+  const ay = document.createElementNS('http://www.w3.org/2000/svg','line');
+  ay.setAttribute('x1', pad); ay.setAttribute('x2', w-pad);
+  ay.setAttribute('y1', h-pad); ay.setAttribute('y2', h-pad);
+  ay.setAttribute('stroke', axis); ay.setAttribute('stroke-width', '1.5');
+  svg.appendChild(ay);
+
+  let d = '';
+  for(let i=0;i<xs.length;i++){
+    const x = sx(i), y = sy(ys[i]);
+    d += (i===0?`M ${x} ${y}`:` L ${x} ${y}`);
+  }
+  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d', d);
+  p.setAttribute('fill', 'none');
+  p.setAttribute('stroke', color);
+  p.setAttribute('stroke-width', '3');
+  svg.appendChild(p);
+
+  for(let i=0;i<xs.length;i++){
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx', sx(i)); c.setAttribute('cy', sy(ys[i])); c.setAttribute('r', 3.5);
+    c.setAttribute('fill', color);
+    svg.appendChild(c);
+  }
+}
+
+function drawBars(svg, labels, series, colors){
+  const w = svg.clientWidth || 600, h = svg.clientHeight || 300, pad = 36, gap=12;
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const grid = cssVar('--grid-line');
+  for(let g=0; g<5; g++){
+    const y = pad + (h-2*pad) * g/4;
+    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1', pad); l.setAttribute('x2', w-pad);
+    l.setAttribute('y1', y);   l.setAttribute('y2', y);
+    l.setAttribute('stroke', grid); l.setAttribute('stroke-width', '1');
+    svg.appendChild(l);
+  }
+
+  const innerW = w-2*pad;
+  const groups = series[0].length;
+  const sCount = series.length;
+  const groupW = (innerW - gap*(groups-1)) / groups;
+  const barW = Math.max(groupW / sCount - 4, 4);
+  const max = Math.max(...series.flat()) * 1.25;
+
+  function sy(v){ return h-pad - (h-2*pad)*(v/max); }
+
+  const axis = cssVar('--deck-line');
+  const ay = document.createElementNS('http://www.w3.org/2000/svg','line');
+  ay.setAttribute('x1', pad); ay.setAttribute('x2', w-pad);
+  ay.setAttribute('y1', h-pad); ay.setAttribute('y2', h-pad);
+  ay.setAttribute('stroke', axis); ay.setAttribute('stroke-width', '1.5');
+  svg.appendChild(ay);
+
+  for(let g=0; g<groups; g++){
+    const gx = pad + g*(groupW + gap);
+    for(let s=0; s<sCount; s++){
+      const val = series[s][g];
+      const x = gx + s*(barW+4) + 2;
+      const y = sy(val);
+      const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x', x);
+      rect.setAttribute('y', y);
+      rect.setAttribute('width', barW);
+      rect.setAttribute('height', Math.max((h-pad) - y, 0));
+      rect.setAttribute('fill', colors[s] || cssVar('--swatch-1'));
+      svg.appendChild(rect);
+    }
+    const tx = document.createElementNS('http://www.w3.org/2000/svg','text');
+    tx.setAttribute('x', gx + groupW/2);
+    tx.setAttribute('y', h-pad+16);
+    tx.setAttribute('text-anchor', 'middle');
+    tx.setAttribute('font-size', '12');
+    tx.setAttribute('fill', cssVar('--deck-muted'));
+    tx.textContent = labels[g];
+    svg.appendChild(tx);
+  }
+}
+
+/* Render sample charts */
+function renderCharts(){
+  const traffic = document.getElementById('trafficChart');
+  const rank = document.getElementById('rankChart');
+  const leads = document.getElementById('leadsChart');
+
+  if(!(traffic && rank && leads)) return;
+
+  drawLine(traffic, [1,2,3,4,5,6], [120, 180, 260, 340, 420, 520], cssVar('--swatch-1'));
+  // goal line
+  const w = traffic.clientWidth || 600, h = traffic.clientHeight || 300, pad = 36;
+  const sx = m=> pad + (w-2*pad)*(m-1)/5;
+  const maxY = 520*1.2, sy = v => h-pad - (h-2*pad)*(v/maxY);
+  const goal = document.createElementNS('http://www.w3.org/2000/svg','path');
+  goal.setAttribute('d', `M ${sx(1)} ${sy(150)} L ${sx(6)} ${sy(500)}`);
+  goal.setAttribute('fill','none'); goal.setAttribute('stroke',cssVar('--swatch-3')); goal.setAttribute('stroke-width','2'); goal.setAttribute('stroke-dasharray','6 6');
+  traffic.appendChild(goal);
+
+  drawBars(rank, ['M1','M2','M3','M4','M5','M6'],
+    [
+      [1,2,3,4,5,6],    // top 1 to 3
+      [3,5,6,7,8,9],    // 4 to 10
+      [6,7,8,9,10,10]   // 11 to 20
+    ],
+    [cssVar('--swatch-3'), cssVar('--swatch-1'), cssVar('--swatch-4')]
+  );
+
+  drawLine(leads, [1,2,3,4,5,6], [2,4,6,9,12,16], cssVar('--swatch-1'));
+}
+renderCharts();
+window.addEventListener('resize', renderCharts, {passive:true});
+
+/* ROI calculator */
+function calcROI(){
+  const seats = +document.getElementById('seats').value || 0;
+  const hours = +document.getElementById('hours').value || 0;
+  const inRate = +document.getElementById('inRate').value || 0;
+  const outRate = +document.getElementById('outRate').value || 0;
+  const prod = +document.getElementById('prod').value || 0;
+
+  const days = 22;
+  const inHours = seats * hours * days;
+  const outHours = seats * hours * days * (1 - prod/100);
+
+  const inCost = inHours * inRate;
+  const outCost = outHours * outRate;
+  const savings = Math.max(inCost - outCost, 0);
+
+  const fmt = v=>'$' + Math.round(v).toLocaleString();
+  document.getElementById('inCost').textContent = fmt(inCost);
+  document.getElementById('outCost').textContent = fmt(outCost);
+  document.getElementById('save').textContent = fmt(savings);
+
+  document.getElementById('prodVal').textContent = prod + '%';
+}
+;['seats','hours','inRate','outRate','prod'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', calcROI, {passive:true});
+});
+calcROI();
+
+/* Content tracker progress */
+const todo = document.getElementById('todo');
+const bar = document.getElementById('bar');
+const barText = document.getElementById('barText');
+function updateProgress(){
+  const items = Array.from(todo.querySelectorAll('input[type="checkbox"]'));
+  const done = items.filter(i=>i.checked).length;
+  const pct = Math.round(100 * done / items.length);
+  bar.style.width = pct + '%';
+  barText.textContent = `${done} of ${items.length} complete`;
+}
+todo.addEventListener('change', updateProgress, {passive:true});
+updateProgress();
+
+/* Keyword table and filter */
+const KW = [
+  {page:'Customer Service Outsourcing', slug:'/customer-service-outsourcing', kws:'customer service outsourcing company, outsourced customer support services'},
+  {page:'Live Chat Outsourcing', slug:'/live-chat-outsourcing', kws:'outsourced live chat support services, live chat outsourcing company'},
+  {page:'Email Support Outsourcing', slug:'/email-support-outsourcing', kws:'email support outsourcing, ticket management outsourcing'},
+  {page:'Phone Answering Outsourcing', slug:'/phone-answering-outsourcing', kws:'outsourced call answering, inbound call center outsourcing'},
+  {page:'Social Media Support', slug:'/social-media-customer-support-outsourcing', kws:'social media customer support outsourcing'},
+  {page:'Technical Support Outsourcing', slug:'/technical-support-outsourcing', kws:'technical support outsourcing, IT help desk outsourcing'},
+  {page:'IT Help Desk', slug:'/it-help-desk-outsourcing', kws:'help desk outsourcing provider, outsourced IT support desk'},
+  {page:'E commerce Industry', slug:'/ecommerce-customer-service-outsourcing', kws:'ecommerce customer service outsourcing company'},
+  {page:'SaaS and Technology', slug:'/saas-technology-support-outsourcing', kws:'saas customer support outsourcing'},
+  {page:'Pricing, cost page', slug:'/cost-of-outsourced-customer-service', kws:'outsourced customer service pricing, call center outsourcing cost'},
+  {page:'Back Office Outsourcing', slug:'/back-office-outsourcing', kws:'back office outsourcing services'},
+  {page:'Data Entry', slug:'/data-entry-outsourcing', kws:'data entry outsourcing company'},
+  {page:'HR and Scheduling', slug:'/hr-scheduling-outsourcing', kws:'employee scheduling outsourcing company'},
+  {page:'Accounting and Bookkeeping', slug:'/accounting-bookkeeping-outsourcing', kws:'outsourced accounting services'},
+  {page:'Zendesk Integration', slug:'/integrations/zendesk-outsourcing-support', kws:'zendesk outsourcing support services'},
+  {page:'Gorgias Integration', slug:'/integrations/gorgias-customer-service-outsourcing', kws:'gorgias customer service outsourcing'}
+];
+const kwBody = document.querySelector('#kwTable tbody');
+function renderKW(list){
+  kwBody.innerHTML = '';
+  list.forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.page}</td><td><span class="slug">${r.slug}</span></td><td>${r.kws}</td>`;
+    kwBody.appendChild(tr);
+  });
+  document.getElementById('kwCount').textContent = list.length + ' rows';
+}
+renderKW(KW);
+document.getElementById('kwSearch').addEventListener('input', (e)=>{
+  const q = e.target.value.toLowerCase();
+  const filtered = KW.filter(r => r.page.toLowerCase().includes(q) || r.slug.toLowerCase().includes(q) || r.kws.toLowerCase().includes(q));
+  renderKW(filtered);
+}, {passive:true});
+
+/* Build competitor cards after DOM ready */
+document.addEventListener('DOMContentLoaded', buildCardsFromTable, {once:true});
+</script>
+</body>
+</html>
