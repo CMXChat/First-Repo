@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<!-- keep it off Google -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+<meta name="robots" content="noimageindex" />
+<title>For Crystal</title>
+
+<style>
+  :root{
+    --ink:#1f2937; --muted:#6b7280; --bg:#fff8fb; --card:#ffffff; --line:rgba(31,41,55,.12);
+    --pink:#ec4899; --pink2:#f472b6; --gold:#b88a3b; --gold2:#e7c888; --shadow:0 18px 48px rgba(15,23,42,.10);
+    --r-xl:24px; --r-md:16px; --fs-1:clamp(28px,5.4vw,56px); --fs-2:clamp(18px,3.2vw,28px); --fs-3:clamp(15px,2.2vw,18px);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,"Noto Sans",sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  }
+  h1{font:700 var(--fs-1)/1.1 Georgia,"Times New Roman",serif;margin:.2rem 0 .6rem}
+  h2{font:700 var(--fs-2)/1.2 Georgia,"Times New Roman",serif;margin:.8rem 0 .5rem}
+  .lead{color:var(--muted);font-size:var(--fs-3)}
+  p{margin:.35rem 0}
+  .wrap{max-width:1100px;margin:max(14px,env(safe-area-inset-top)) auto 46px;padding:clamp(14px,3vw,24px)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow);padding:clamp(18px,3.2vw,28px);position:relative;overflow:hidden}
+  .card + .card{margin-top:14px}
+  .rule{height:2px;border:0;background:linear-gradient(90deg,transparent,var(--gold2),transparent);margin:12px 0}
+
+  /* HERO */
+  .hero::before{
+    content:"";position:absolute;inset:-1px;
+    background:
+      radial-gradient(1200px 600px at -10% -20%, rgba(236,72,153,.10), transparent 60%),
+      radial-gradient(1000px 500px at 110% -10%, rgba(231,200,136,.12), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,.4), transparent 50%);
+    pointer-events:none;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;opacity:.35;
+    background-image:
+      radial-gradient(circle at 10px 10px, rgba(184,138,59,.08) 1.2px, transparent 1.3px),
+      radial-gradient(circle at 30px 30px, rgba(236,72,153,.06) 1.2px, transparent 1.3px);
+    background-size:40px 40px;mask-image:linear-gradient(to bottom, rgba(0,0,0,.45), rgba(0,0,0,0));
+    pointer-events:none;
+  }
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:.5rem}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:.5rem .85rem;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:800;color:#7c2d58}
+  .pill .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--pink),var(--pink2))}
+
+  /* one-liner band */
+  .band{border:1px solid var(--line);border-radius:16px;padding:10px 12px;font-weight:900;letter-spacing:.2px;
+        background:linear-gradient(90deg,rgba(236,72,153,.12),rgba(231,200,136,.12));color:#7b3a5a}
+
+  /* TIMELINE */
+  .timeline{position:relative;padding-left:14px}
+  .timeline::before{content:"";position:absolute;left:6px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold2),transparent)}
+  .tl{position:relative;padding:10px 0 10px 14px}
+  .tl::before{content:"";position:absolute;left:-1px;top:18px;width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--pink),var(--pink2));border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+  .t{font-weight:900}.n{color:var(--muted);font-size:.95rem}
+
+  /* board / mock store */
+  .board{display:grid;gap:12px;grid-template-columns:1fr}
+  @media(min-width:900px){.board{grid-template-columns:1.2fr .8fr}}
+  .swatches{display:flex;flex-wrap:wrap;gap:10px}
+  .sw{flex:1 0 110px;min-width:110px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+  .sw-top{height:70px}.sw-meta{padding:8px 10px;font-size:.92rem;color:var(--muted)}
+  .mock{display:grid;gap:10px}
+  .heroMock,.cardsMock{border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--shadow);padding:12px}
+  .heroBanner{border-radius:14px;height:110px;background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(231,200,136,.18));display:grid;place-items:center;font-weight:900;color:#7c2d58}
+  .gridCards{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:680px){.gridCards{grid-template-columns:repeat(3,1fr)}}
+  .cardGhost{border:1px solid var(--line);border-radius:14px;padding:10px;min-height:120px;display:grid;gap:8px}
+  .ghostImg{height:56px;border-radius:10px;background:linear-gradient(90deg,#fff0f7,#ffeaf3)}
+  .ghostLine{height:10px;border-radius:6px;background:#f3e8ef}.ghostLine.sm{width:60%}
+
+  /* image placeholders gallery */
+  .gallery{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+  .frame{position:relative;border-radius:16px;border:1px solid var(--line);overflow:hidden;background:#fff;box-shadow:var(--shadow);min-height:180px;display:grid;place-items:center}
+  .frame .note{color:#7b3a5a;font-weight:800;background:linear-gradient(90deg,rgba(236,72,153,.12),rgba(231,200,136,.12));padding:.4rem .6rem;border-radius:999px}
+  .frame .shine{position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(231,200,136,.18),transparent);opacity:.0;transition:opacity .2s}
+  .frame:hover .shine{opacity:.7}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:.72rem 1rem;border-radius:999px;font-weight:900;cursor:pointer;border:1px solid var(--line);background:#fff;color:#fff}
+  .btn{color:var(--ink)}
+  .btn-primary{color:#fff;border-color:transparent;background:linear-gradient(90deg,var(--pink),var(--pink2));box-shadow:0 10px 24px rgba(236,72,153,.25)}
+  .btn:hover{box-shadow:0 8px 18px rgba(0,0,0,.08)}
+
+  /* coupons */
+  .coupons{display:grid;gap:12px;grid-template-columns:1fr}
+  @media(min-width:760px){.coupons{grid-template-columns:repeat(2,1fr)}}
+  .coupon{position:relative;background:#fff;border:1px dashed rgba(184,138,59,.6);border-radius:18px;padding:16px 14px;box-shadow:var(--shadow);transition:transform .12s ease,box-shadow .12s ease}
+  .coupon:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(0,0,0,.12)}
+  .mark{font-weight:900;letter-spacing:.6px;font-size:.9rem;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tag{font-size:.75rem;padding:.18rem .5rem;border-radius:999px;background:#fff5f9;color:#8a2c57;border:1px solid rgba(236,72,153,.25);font-weight:800}
+  .coupon .cta{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+  .coupon.redeemed{opacity:.72}
+  .stamp{position:absolute;right:10px;bottom:10px;padding:.24rem .5rem;border-radius:999px;font-weight:900;font-size:.78rem;letter-spacing:.3px;color:#fff;background:linear-gradient(90deg,var(--pink),var(--pink2));display:none}
+  .coupon.redeemed .stamp{display:inline-block}
+
+  /* countdown fills full column */
+  .countdown-box{
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border:1px solid var(--line);
+    border-radius:var(--r-xl);
+    background:#fff;
+    box-shadow:var(--shadow);
+    padding:16px;
+    max-width:720px;
+    margin-inline:auto;
+    gap:6px;
+  }
+  .countdown-title{
+    margin:0;
+    text-align:center;
+    color:var(--muted);
+    font-size:clamp(14px,3.2vw,18px);
+  }
+  .countdown-number{
+    text-align:center;
+    font-weight:900;
+    letter-spacing:.3px;
+    font-size:clamp(18px,4.8vw,32px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background:linear-gradient(90deg,var(--pink),var(--gold2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:pulse 2s infinite;
+  }
+
+  footer{color:#6b7280;font-size:.95rem;text-align:center;margin:26px 0 6px}
+
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <!-- HERO -->
+    <section class="card hero">
+      <h1>Crystal, happy birthday.</h1>
+      <p class="lead">No condom, no flowers. Just us.</p>
+      <div class="badge-row">
+        <span class="pill"><span class="dot"></span> Sep 14 • you</span>
+        <span class="pill"><span class="dot"></span> Sep 15 • me</span>
+        <span class="pill"><span class="dot"></span> five years orbit</span>
+      </div>
+      <div class="band" style="margin-top:12px">You said I was your boyfriend before I knew. I’m still catching up.</div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="card">
+      <h2>Timeline</h2>
+      <hr class="rule" />
+      <div class="timeline">
+        <div class="tl"><div class="t">Dec 2020 — first messages</div><div class="n">Rude and cute. Funny. Meant to be.</div></div>
+        <div class="tl"><div class="t">Dec 7 — official</div><div class="n">You told people I’m your boyfriend. I didnt know it yet. I loved that.</div></div>
+        <div class="tl"><div class="t">New Year — locked in</div><div class="n">Phone fucking till stupid oclock. 🔥</div></div>
+        <div class="tl"><div class="t">Year 2–3</div><div class="n">You spot what I need and just do it.</div></div>
+        <div class="tl"><div class="t">Year 4</div><div class="n">We built cmx together, you made it real.</div></div>
+        <div class="tl"><div class="t">Now</div><div class="n">Yeah we get jealous. Still choose each other.</div></div>
+        <div class="tl"><div class="t">Next</div><div class="n">Win with the agency → work from anywhere → New Zealand, or wherever we feel like.</div></div>
+      </div>
+    </section>
+
+    <!-- OUR PHOTOS (placeholders) -->
+    <section class="card">
+      <h2>Our photos (soon)</h2>
+      <hr class="rule" />
+      <p class="lead">We’ll add real shots together. Your bracelets. Us. Cozy stuff. This stays our thing.</p>
+      <div class="gallery">
+        <div class="frame"><span class="note">bracelet close-up</span><span class="shine"></span></div>
+        <div class="frame"><span class="note">coffee + sketchpad</span><span class="shine"></span></div>
+        <div class="frame"><span class="note">city lights</span><span class="shine"></span></div>
+        <div class="frame"><span class="note">two hands</span><span class="shine"></span></div>
+      </div>
+    </section>
+
+    <!-- DESIGN BOARD -->
+    <section class="card">
+      <h2>Your site</h2>
+      <hr class="rule" />
+      <div class="board">
+        <div>
+          <ul class="lead" style="margin:0;padding-left:1.1rem">
+            <li>Pink core. Soft gold edges.</li>
+            <li>Big type. White space.</li>
+            <li>Bracelets on white. Clean close-ups.</li>
+            <li>Two-click checkout. Mobile first.</li>
+            <li>Story page that sounds like you.</li>
+          </ul>
+          <div class="swatches" style="margin-top:10px">
+            <div class="sw"><div class="sw-top" style="background:#ec4899"></div><div class="sw-meta">Primary • Pink</div></div>
+            <div class="sw"><div class="sw-top" style="background:#f472b6"></div><div class="sw-meta">Accent • Light pink</div></div>
+            <div class="sw"><div class="sw-top" style="background:#e7c888"></div><div class="sw-meta">Highlight • Soft gold</div></div>
+            <div class="sw"><div class="sw-top" style="background:#ffffff"></div><div class="sw-meta">Base • White</div></div>
+            <div class="sw"><div class="sw-top" style="background:#1f2937"></div><div class="sw-meta">Ink • Charcoal</div></div>
+          </div>
+          <div class="mock" style="margin-top:12px">
+            <div class="heroMock">
+              <div class="heroBanner">CRYSTAL — HANDMADE BRACELETS</div>
+              <p class="lead" style="margin-top:8px">Clean hero. Short line. Your photo.</p>
+            </div>
+            <div class="cardsMock">
+              <div class="gridCards">
+                <div class="cardGhost"><div class="ghostImg"></div><div class="ghostLine"></div><div class="ghostLine sm"></div></div>
+                <div class="cardGhost"><div class="ghostImg"></div><div class="ghostLine"></div><div class="ghostLine sm"></div></div>
+                <div class="cardGhost"><div class="ghostImg"></div><div class="ghostLine"></div><div class="ghostLine sm"></div></div>
+              </div>
+              <p class="lead" style="margin-top:6px">Simple cards. Add to cart. Done.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="coupon" style="border-style:solid;border-color:rgba(184,138,59,.7)">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+              <div class="mark">SITE BLUEPRINT</div>
+              <span class="tag">HOME • SHOP • STORY • CONTACT</span>
+            </div>
+            <p class="lead">I’ll design it. Write it. Ship it.</p>
+            <div class="cta"><button class="btn btn-primary" id="revealGift">Show gift card</button></div>
+          </div>
+          <div id="giftWrap" style="display:none;margin-top:12px">
+            <div class="coupon" id="giftCard" style="border-style:solid;border-color:rgba(184,138,59,.7)">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+                <div class="mark">CUSTOM WEBSITE</div><span class="tag">CRYSTAL • ONE OF ONE</span>
+              </div>
+              <p class="lead">Full build. No expiry. Redeem by kiss or text.</p>
+              <div class="cta">
+                <button class="btn btn-primary" data-save-gift>Save as image</button>
+                <button class="btn" data-redeem-gift>Redeem</button>
+              </div>
+              <span class="stamp">Saved</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUPONS -->
+    <section class="card">
+      <h2>Coupons</h2>
+      <hr class="rule" />
+      <div class="coupons" id="couponGrid"></div>
+      <p class="lead" style="margin-top:6px">“Save” downloads a PNG. “Redeem” marks it on this device.</p>
+    </section>
+
+    <!-- COUNTDOWN -->
+    <section class="card">
+      <h2>Time until our birthdays</h2>
+      <hr class="rule" />
+      <div class="countdown-box">
+        <p class="countdown-title" id="bannerLead">Countdown (New Zealand)</p>
+        <div class="countdown-number" id="countNum">--:--:--</div>
+        <p class="lead" id="afterText" style="display:none;text-align:center">Happy Birthday, Crystal.</p>
+      </div>
+    </section>
+
+    <!-- PROMISES -->
+    <section class="card">
+      <h2>Promises for you</h2>
+      <hr class="rule" />
+      <ul class="lead" style="margin:0;padding-left:1.1rem">
+        <li>I build it and you shine.</li>
+        <li>I show up, boring days included.</li>
+        <li>Honest talks, not guessing games.</li>
+        <li>Win the agency → come to you. Or bring you with me.</li>
+        <li>It’s you. Every time.</li>
+      </ul>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn btn-primary" id="confettiOnce">Celebrate</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>Made by me for you.</footer>
+
+<script>
+/* -------- keep crawlers away -------- */
+(function(){
+  const m=document.querySelector('meta[name="robots"]');
+  if(m) m.setAttribute('content','noindex, nofollow, noarchive, nosnippet, noimageindex');
+})();
+
+/* helpers */
+function saveBlob(filename, blob){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+function confetti(n=140){
+  for(let i=0;i<n;i++){
+    const p=document.createElement('div'), size=Math.random()*6+4;
+    p.style.cssText=`position:fixed;left:${Math.random()*100}vw;top:-10px;width:${size}px;height:${size}px;background:hsl(${Math.random()*360} 80% 60%);opacity:.95;border-radius:2px;transform:rotate(${Math.random()*360}deg);transition:transform 2.4s linear, top 2.4s ease-out;z-index:9999;pointer-events:none;`;
+    document.body.appendChild(p);
+    requestAnimationFrame(()=>{ p.style.top='105vh'; p.style.transform+=` translateY(100vh)`; });
+    setTimeout(()=>p.remove(),2600);
+  }
+}
+document.getElementById('confettiOnce').addEventListener('click',()=>confetti(220));
+
+/* countdown (NZ midnight Sep 14) */
+const NZ_TZ='Pacific/Auckland';
+function getTzOffsetMinutes(tz, date){
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'shortOffset',hour:'2-digit'}).formatToParts(date);
+  const off=parts.find(p=>p.type==='timeZoneName')?.value||'GMT+0';
+  const m=off.match(/GMT([+-]\d{1,2})(?::(\d{2}))?/); if(!m) return 0;
+  return (parseInt(m[1],10)*60) + (m[2]?parseInt(m[2],10):0);
+}
+function nextNZBirthdayEpoch(){
+  const now=new Date();
+  const year=new Intl.DateTimeFormat('en-US',{timeZone:NZ_TZ,year:'numeric'}).format(now);
+  let y=+year;
+  const nzNowParts=new Intl.DateTimeFormat('en-US',{timeZone:NZ_TZ,month:'2-digit',day:'2-digit'}).format(now).split('/');
+  const nzMonth=+nzNowParts[0], nzDay=+nzNowParts[1];
+  if(nzMonth>9 || (nzMonth===9 && nzDay>=14)) y++;
+  const at=new Date(Date.UTC(y,8,14,0,0,0)); // Sep is month 8
+  const offMin=getTzOffsetMinutes(NZ_TZ, at);
+  return at.getTime()-offMin*60000;
+}
+const targetEpoch=nextNZBirthdayEpoch();
+const countEl=document.getElementById('countNum'), afterText=document.getElementById('afterText');
+function tick(){
+  const diff=targetEpoch-Date.now();
+  if(diff<=0){ countEl.textContent="It's your day."; afterText.style.display='block'; return; }
+  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+  const daysPart = d > 0 ? `${d}d ` : '';
+  countEl.textContent=`${daysPart}${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+tick(); setInterval(tick,1000);
+
+/* gift card */
+const giftWrap=document.getElementById('giftWrap'); const revealGiftBtn=document.getElementById('revealGift');
+if(revealGiftBtn){ revealGiftBtn.addEventListener('click',()=>{ giftWrap.style.display='block'; confetti(160); }); }
+document.addEventListener('click',(e)=>{
+  if(e.target.matches('[data-redeem-gift]')){ const c=document.getElementById('giftCard'); c.classList.add('redeemed'); c.querySelector('.stamp').textContent='Redeemed'; }
+  if(e.target.matches('[data-save-gift]')){ const canvas=renderCouponPNG({title:'Custom Website',code:'CRYSTAL-ONE',detail:'Design, pages, photos, copy, checkout. No expiry.'}); canvas.toBlob(b=>saveBlob('CRYSTAL_website_gift.png',b)); const c=document.getElementById('giftCard'); c.classList.add('redeemed'); c.querySelector('.stamp').textContent='Saved'; }
+});
+
+/* coupons */
+const coupons=[{id:'kiss',title:'Kiss credit',note:'Anytime, any timezone.',code:'KISS-∞',detail:'One long kiss. No timer.'},
+{id:'cuddle',title:'Cuddle reserve',note:'Next time same room.',code:'CUDDLE-∞',detail:'Blankets + movie + heater (me).'},
+{id:'call',title:'Late-night call',note:'You talk. I listen.',code:'CALL-1',detail:'No multitask. Full attention.'},
+{id:'weekend',title:'Private weekend',note:'When we meet.',code:'WKND-1',detail:'Phones down. (opposite of distance)'},
+{id:'site',title:'Website session',note:'Pick name + colors.',code:'SITE-1',detail:'We set the plan and start building.'}];
+const grid=document.getElementById('couponGrid'); let saved={}; try{ saved=JSON.parse(localStorage.getItem('crystal.coupons')||'{}'); }catch{ saved={}; }
+function renderCoupons(){
+  grid.innerHTML='';
+  coupons.forEach(c=>{
+    const div=document.createElement('div'); div.className='coupon'+(saved[c.id]?.redeemed?' redeemed':''); div.dataset.id=c.id;
+    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <div class="mark">${c.title.toUpperCase()}</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="tag">${c.code}</span>${saved[c.id]?.time?`<span class="tag">redeemed ${new Date(saved[c.id].time).toLocaleDateString()}</span>`:''}
+      </div></div>
+      <p class="lead">${c.note}</p>
+      <details><summary style="cursor:pointer;font-weight:800">Details</summary><p style="margin:.4rem 0 0">${c.detail}</p></details>
+      <div class="cta"><button class="btn btn-primary" data-save>Save</button><button class="btn" data-redeem>Redeem</button></div>
+      <span class="stamp">Redeemed</span>`;
+    grid.appendChild(div);
+  });
+}
+renderCoupons();
+grid.addEventListener('click',e=>{
+  const card=e.target.closest('.coupon'); if(!card) return; const id=card.dataset.id; const c=coupons.find(x=>x.id===id);
+  if(e.target.matches('[data-save]')){ const canvas=renderCouponPNG({title:c.title,code:c.code,detail:c.detail}); canvas.toBlob(b=>saveBlob(`${c.title.replace(/\s+/g,'_')}.png`,b)); }
+  if(e.target.matches('[data-redeem]')){ card.classList.add('redeemed'); saved[id]={redeemed:true,time:Date.now()}; localStorage.setItem('crystal.coupons',JSON.stringify(saved)); confetti(120); renderCoupons(); }
+});
+
+/* coupon PNG renderer */
+function renderCouponPNG({title,code,detail}){
+  const scale=2,w=700,h=360; const c=document.createElement('canvas'); c.width=w*scale; c.height=h*scale;
+  const x=c.getContext('2d'); x.scale(scale,scale);
+  const grd=x.createLinearGradient(0,0,w,0); grd.addColorStop(0,'#fff'); grd.addColorStop(1,'#fff7fb'); x.fillStyle=grd; x.fillRect(0,0,w,h);
+  x.strokeStyle='rgba(184,138,59,.7)'; x.lineWidth=2; x.setLineDash([8,6]); roundRect(x,14,14,w-28,h-28,16); x.stroke(); x.setLineDash([]);
+  x.fillStyle='#7b3a5a'; x.font='700 22px Inter, sans-serif'; x.fillText(title.toUpperCase(),32,58);
+  x.fillStyle='#fff5f9'; x.strokeStyle='rgba(236,72,153,.35)'; x.lineWidth=1; roundRect(x,w-210,30,170,28,14); x.fill(); x.stroke();
+  x.fillStyle='#8a2c57'; x.font='800 14px Inter, sans-serif'; x.fillText(code,w-195,49);
+  x.fillStyle='#44505e'; x.font='16px Inter, sans-serif'; wrap(x,detail,32,100,w-64,22);
+  x.fillStyle='#9aa3af'; x.font='12px Inter, sans-serif'; x.fillText(`For Crystal • ${new Date().toLocaleDateString()}`,32,h-32);
+  const g=x.createLinearGradient(0,0,0,20); g.addColorStop(0,'#ec4899'); g.addColorStop(1,'#f472b6'); x.fillStyle=g; x.fillRect(w-140,h-48,108,28);
+  x.fillStyle='#fff'; x.font='900 12px Inter, sans-serif'; x.fillText('CRYSTAL',w-112,h-29); return c;
+  function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+  function wrap(ctx, text, x, y, maxW, lh){const words=text.split(' '); let line=''; for(let n=0;n<words.length;n++){const test=line+words[n]+' '; if(ctx.measureText(test).width>maxW && n>0){ctx.fillText(line,x,y); line=words[n]+' '; y+=lh;}else{line=test;}} ctx.fillText(line,x,y);}
+}
+</script>
+</body>
+</html>
