@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <title>CMX Contributor Fit, quick assessment for community contributors</title>
-<meta name="description" content="Fast interactive assessment for creators and startup friendly contributors, measures initiative, ownership, reliability, and decision style. No login, private in your browser.">
+<meta name="description" content="Short interactive assessment for creators and startup friendly contributors, measures initiative, ownership, reliability, and decision style. No login, private in your browser.">
 <link rel="canonical" href="https://cmx.example/contributor-fit">
 <meta property="og:title" content="CMX Contributor Fit, quick assessment">
 <meta property="og:description" content="Find your best way to help CMX, a friendly, private assessment scored in your browser.">
 <meta property="og:type" content="website">
+<meta name="robots" content="noindex, noarchive">
 
 <style>
   :root{
@@ -25,14 +26,17 @@
   .wrap{max-width:860px;margin:0 auto;padding:14px}
   header{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:6px 2px}
   .brand{font-weight:700;letter-spacing:.2px}
+  .chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .chip{border:1px solid var(--line);background:#fff;color:#111827;padding:8px 12px;border-radius:999px}
+  .chip.warn{border-color:#fde68a;background:#fff7ed;color:#7c2d12}
+  .chip.bad{border-color:#fecaca;background:#fff1f2;color:#7f1d1d}
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 1px 0 rgba(17,24,39,.03)}
   .muted{color:var(--muted)}
   .progress{height:10px;background:#eef2ff;border-radius:999px;border:1px solid var(--line);overflow:hidden}
   .bar{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2));transition:width .25s ease}
   .stage{display:none}
   .stage.active{display:block}
-  .qcard{min-height:260px;display:flex;flex-direction:column;gap:12px}
+  .qcard{min-height:280px;display:flex;flex-direction:column;gap:12px}
   .qnum{font-size:12px;color:#64748b}
   .qtext{font-size:18px;line-height:1.35}
   .row{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
@@ -76,20 +80,22 @@
 <div class="wrap">
   <header>
     <div class="brand">CMX Contributor Fit</div>
-    <!-- timer hidden from UI on purpose -->
+    <div class="chips">
+      <span id="timerChip" class="chip" aria-live="polite">8:00 left</span>
+    </div>
   </header>
 
   <div class="card">
     <div class="progress" aria-label="Progress"><div id="bar" class="bar"></div></div>
     <div id="pnote" class="muted" style="margin-top:6px">0% complete</div>
-    <p class="muted" style="margin-top:8px">Takes about 4 to 5 minutes. No login. Your results stay on your device.</p>
+    <p class="muted" style="margin-top:8px">Casual, about 6 to 8 minutes. No login. Your results stay on your device.</p>
   </div>
 
-  <!-- TRIADS (short: 3) -->
+  <!-- TRIADS -->
   <section id="stageTriad" class="stage active">
     <div class="card qcard slide" id="triadCard">
       <div>
-        <div class="qnum" id="tNum">Card 1 of 3</div>
+        <div class="qnum" id="tNum">Card 1 of 5</div>
         <div class="qtext">Pick the one that is MOST like you, and the one that is LEAST like you.</div>
       </div>
       <div id="triadBox" class="triad"></div>
@@ -100,11 +106,11 @@
     </div>
   </section>
 
-  <!-- SJT (short: 1) -->
+  <!-- SJT -->
   <section id="stageSJT" class="stage">
     <div class="card qcard slide" id="sjtCard">
       <div>
-        <div class="qnum" id="sNum">Scenario 1 of 1</div>
+        <div class="qnum" id="sNum">Scenario 1 of 2</div>
         <div class="qtext" id="sText">...</div>
       </div>
       <div id="sOpts" class="row"></div>
@@ -156,17 +162,29 @@
         <select id="taskPick" class="btn">
           <option value="">Select a task</option>
           <option>Discord, welcome and ticket triage</option>
+          <option>Discord, channel cleanup and role audit</option>
+          <option>Discord, anti spam checks on five channels</option>
           <option>Community, draft ten room prompts</option>
+          <option>Community, host one thirty minute co working</option>
+          <option>Community, write a short mod guideline</option>
           <option>Growth, qualify five potential clients</option>
+          <option>Growth, draft five outreach snippets</option>
+          <option>Growth, outline one light case study</option>
+          <option>SEO, fix or flag broken links</option>
           <option>SEO, draft meta for five pages</option>
+          <option>SEO, suggest internal links from three posts</option>
           <option>Content, outline one blog with H2 H3</option>
+          <option>Content, create five alt texts with keywords</option>
           <option>Web, QA the rooms directory</option>
+          <option>Web, check five pages for accessibility basics</option>
+          <option>Analytics, verify GA GTM tags on three pages</option>
+          <option>Ops, organize one project board, labels only</option>
         </select>
       </div>
 
       <div class="row">
         <label>Your first 30 minutes, what will you do? <span class="muted">(optional)</span></label>
-        <textarea id="planText" rows="4" class="mono" placeholder="Example: Post status in #ops, assign Owner A to links, run a quick link check, post a five item list."></textarea>
+        <textarea id="planText" rows="5" class="mono" placeholder="Example: Post status in #ops, assign Owner A to links, Owner B to QA, run a quick link check, export issues, post a five item list."></textarea>
         <div class="muted" id="planHint" style="font-size:13px">Tip, concrete steps, owners, time, and a simple check get a better score.</div>
       </div>
 
@@ -211,18 +229,42 @@
 </div>
 
 <script>
-/* ===== Soft retake tracking (no raw count shown) ===== */
-const ATTEMPT_KEY='cmx_cf_attempts_v2';
-let attempts=[]; try{ attempts=JSON.parse(localStorage.getItem(ATTEMPT_KEY)||'[]'); }catch{}
-attempts.push(Date.now()); try{ localStorage.setItem(ATTEMPT_KEY, JSON.stringify(attempts)); }catch{}
-function recentAttempts(hours=24){ const cutoff=Date.now()-hours*3600*1000; return attempts.filter(ts=>ts>=cutoff).length; }
+/* ===== Attempt tracking, soft retake policy (no raw count shown) ===== */
+const ATTEMPT_KEY='cmx_cf_attempts_v1';
+let attempts=[];
+try{ attempts=JSON.parse(localStorage.getItem(ATTEMPT_KEY)||'[]'); }catch{}
+attempts.push(Date.now());
+try{ localStorage.setItem(ATTEMPT_KEY, JSON.stringify(attempts)); }catch{}
+function recentAttempts(hours=24){
+  const cutoff=Date.now()-hours*3600*1000;
+  return attempts.filter(ts=>ts>=cutoff).length;
+}
 
-/* ===== Hidden timer (target under 5 minutes) ===== */
-const TOTAL_SECONDS = 5*60; // 5:00 cap
-let timerStart = Date.now(), timerExpired=false;
-function timeUsedSecs(){ return Math.floor((Date.now()-timerStart)/1000); }
+/* ===== Timer ===== */
+const TOTAL_SECONDS = 8*60;
+let timerStart = Date.now();
+let timerExpired = false;
+let timerId = null;
+const timerChip = document.getElementById('timerChip');
+function startTimer(){
+  if(timerId) clearInterval(timerId);
+  timerStart = Date.now();
+  timerId = setInterval(updateTimer, 1000);
+  updateTimer();
+}
+function fmtTime(s){ const m=Math.floor(s/60); const ss=String(Math.max(0,s%60)).padStart(2,'0'); return `${m}:${ss}`; }
+function updateTimer(){
+  const elapsed = Math.floor((Date.now()-timerStart)/1000);
+  const left = Math.max(0, TOTAL_SECONDS - elapsed);
+  timerChip.textContent = fmtTime(left)+' left';
+  timerChip.classList.remove('warn','bad');
+  if(left<=90 && left>30) timerChip.classList.add('warn');
+  if(left<=30) timerChip.classList.add('bad');
+  if(left===0){ timerExpired=true; }
+}
+startTimer();
 
-/* ===== Data (short form) ===== */
+/* ===== Data ===== */
 const START = Date.now();
 const TRAITS = [
   {k:'IN', name:'Initiative'},
@@ -230,7 +272,6 @@ const TRAITS = [
   {k:'RE', name:'Reliability'},
   {k:'DE', name:'Decision style'}
 ];
-// 3 quick triads
 const TRIADS = [
   {id:'T1', items:[
     {id:'T1A', text:'I like turning messy ideas into simple checklists.', trait:'OW', pol:+1},
@@ -243,15 +284,27 @@ const TRIADS = [
   {id:'T3', items:[
     {id:'T3A', text:'I keep short notes so others can jump in if I am away.', trait:'RE', pol:+1},
     {id:'T3B', text:'I ask two clarifying questions before I decide.', trait:'DE', pol:+1},
-    {id:'T3C', text:'I enjoy welcoming newcomers in a server.', trait:'OW', pol:+1}]}
+    {id:'T3C', text:'I enjoy welcoming newcomers in a server.', trait:'OW', pol:+1}]},
+  {id:'T4', items:[
+    {id:'T4A', text:'If rules are in the way, I nudge them a little to help the group.', trait:null, pol:0, risk:+2},
+    {id:'T4B', text:'If something seems off, I flag it even if it slows us down.', trait:'OW', pol:+1, risk:-2},
+    {id:'T4C', text:'I would rather stay out of it unless asked.', trait:'IN', pol:-1}]},
+  {id:'T5', items:[
+    {id:'T5A', text:'When two options look good, I choose one and set a check in.', trait:'DE', pol:+1},
+    {id:'T5B', text:'I like polishing small details others miss.', trait:'RE', pol:+1},
+    {id:'T5C', text:'I enjoy side quests and spontaneous ideas.', trait:'IN', pol:+1, risk:+1}]}
 ];
-// 1 scenario
 const SJT = [
-  { id:'S1', stem:'You find that a new landing page drops signups by half',
-    options:[{k:'A',t:'Run a quick rollback and post a two line status, create a short follow up list.',s:3},
-             {k:'B',t:'Wait for a developer to check the code.',s:0},
-             {k:'C',t:'Start a broad discussion about design quality.',s:0},
-             {k:'D',t:'Vote for the loudest view and move on.',s:1}]}
+  { id:'S1', stem:'A key page is breaking and three people are debating, what do you do',
+    options:[{k:'A',t:'Run a twenty minute triage, propose a safe rollback, assign owners.',s:3},
+             {k:'B',t:'Wait for a developer to decide.',s:0},
+             {k:'C',t:'Back the loudest person.',s:1},
+             {k:'D',t:'Start a new thread and discuss theory.',s:0}]},
+  { id:'S2', stem:'You receive private access to an admin panel by mistake',
+    options:[{k:'A',t:'Report immediately, do not explore.',s:3,trisk:-3},
+             {k:'B',t:'Look around first, report later.',s:0,trisk:+3},
+             {k:'C',t:'Share access with a friend.',s:0,trisk:+4},
+             {k:'D',t:'Ignore it and say nothing.',s:1,trisk:+2}]}
 ];
 
 /* ===== State ===== */
@@ -259,8 +312,11 @@ let tIndex=0, sIndex=0, sliderVal=50;
 const triadPicks={}, sjtPicks={};
 const plan={opt:false,time:'',task:'',text:''};
 const triadTimes=[], sjtTimes=[], pairGaps=[], mostPositions=[], leastPositions=[];
-let screenStart = Date.now(), firstTapTime = 0, sliderTouched=false, sjtPickLetters=[];
-let debounceNext=false;
+let screenStart = Date.now();
+let firstTapTime = 0;
+let sliderTouched = false;
+let sjtPickLetters = [];
+let debounceNext = false;
 
 /* ===== Helpers ===== */
 const $ = s => document.querySelector(s);
@@ -272,10 +328,10 @@ function progressTotal(){return TRIADS.length + SJT.length + 1}
 function progressDone(){let d=0;TRIADS.forEach(t=>{if(triadPicks[t.id]?.most&&triadPicks[t.id]?.least)d++});d+=Object.keys(sjtPicks).length;d+=1;return d}
 function goTop(){window.scrollTo({top:0,behavior:'smooth'})}
 
-/* ===== Triads (short) ===== */
+/* ===== Triads ===== */
 function renderTriad(){
   const tri=TRIADS[tIndex]; screenStart=Date.now(); firstTapTime=0;
-  slideIn($('#triadCard'));
+  const card=$('#triadCard'); slideIn(card);
   $('#tNum').textContent=`Card ${tIndex+1} of ${TRIADS.length}`;
   $('#tBack').disabled=(tIndex===0);
   const st=triadPicks[tri.id]||{most:null,least:null};
@@ -284,7 +340,8 @@ function renderTriad(){
   const box=$('#triadBox'); box.innerHTML='';
   tri.items.forEach((opt,idx)=>{
     const row=document.createElement('button');
-    row.type='button'; row.className='opt'; row.innerHTML=`<div class="optline"><span class="badge most">MOST</span><span class="badge least">LEAST</span><span>${opt.text}</span></div>`;
+    row.type='button'; row.className='opt'; row.setAttribute('data-id',opt.id);
+    row.innerHTML=`<div class="optline"><span class="badge most">MOST</span><span class="badge least">LEAST</span><span>${opt.text}</span></div>`;
     if(st.most===opt.id){ row.querySelector('.most').style.display='inline-block'; row.classList.add('active'); }
     if(st.least===opt.id){ row.querySelector('.least').style.display='inline-block'; row.classList.add('active'); }
     row.onclick=()=>{
@@ -295,7 +352,10 @@ function renderTriad(){
       else if(curr.most===opt.id){ curr.most=null; mostPositions[tIndex]=undefined; }
       else if(curr.least===opt.id){ curr.least=null; leastPositions[tIndex]=undefined; }
       else { curr.least=opt.id; leastPositions[tIndex]=idx; pairGaps[tIndex] = Date.now()-firstTapTime; }
-      triadPicks[tri.id]=curr; $('#tNext').disabled=!(curr.most && curr.least); renderTriad();
+      triadPicks[tri.id]=curr;
+      $('#tNext').disabled=!(curr.most && curr.least);
+      renderTriad();
+      $('#tNext').disabled=!(curr.most && curr.least);
     };
     box.appendChild(row);
   });
@@ -310,7 +370,7 @@ function renderTriad(){
   setProgress(progressDone(),progressTotal());
 }
 
-/* ===== SJT (1) ===== */
+/* ===== SJT ===== */
 function renderSJT(){
   const s=SJT[sIndex]; screenStart=Date.now();
   $('#sNum').textContent=`Scenario ${sIndex+1} of ${SJT.length}`;
@@ -322,14 +382,19 @@ function renderSJT(){
   s.options.forEach(o=>{
     const b=document.createElement('button'); b.type='button'; b.className='opt'; b.textContent=o.t;
     if(sjtPicks[s.id]===o.k) b.classList.add('active');
-    b.onclick=()=>{ sjtPicks[s.id]=o.k; sjtPickLetters[sIndex]=o.k; $('#sNext').disabled=false; renderSJT(); };
+    b.onclick=()=>{ sjtPicks[s.id]=o.k; $('#sNext').disabled=false; sjtPickLetters[sIndex]=o.k; renderSJT(); };
     box.appendChild(b);
   });
 
-  $('#sBack').onclick=()=>{ sjtTimes[sIndex]=Date.now()-screenStart; showStage('Triad'); };
-  $('#sNext').onclick=()=>{ if(debounceNext) return; debounceNext=true; setTimeout(()=>debounceNext=false,180);
-    if(!sjtPicks[s.id]) return; sjtTimes[sIndex]=Date.now()-screenStart; showStage('Slider'); setProgress(progressDone(),progressTotal()); goTop();
+  $('#sBack').onclick=()=>{ sjtTimes[sIndex]=Date.now()-screenStart;
+    if(sIndex>0){ sIndex--; renderSJT(); setProgress(progressDone(),progressTotal()); goTop(); } else { showStage('Triad'); }
   };
+  $('#sNext').onclick=()=>{ if(debounceNext) return; debounceNext=true; setTimeout(()=>debounceNext=false,180);
+    if(!sjtPicks[s.id]) return; sjtTimes[sIndex]=Date.now()-screenStart;
+    if(sIndex<SJT.length-1){ sIndex++; renderSJT(); } else { showStage('Slider'); }
+    setProgress(progressDone(),progressTotal()); goTop();
+  };
+  setProgress(progressDone(),progressTotal());
 }
 
 /* ===== Slider ===== */
@@ -362,66 +427,70 @@ function showStage(which){
   if(which==='R'){ $('#stageR').classList.add('active'); }
 }
 
-/* ===== Scoring (short form) ===== */
-/* Triad scoring simplified for short test:
-   Most with pol +1 => +10 to trait, pol -1 => -10
-   Least with pol +1 => -5 to trait, pol -1 => +5
-   Sum on top of baseline 50, clamp to 0..100
-*/
-function scoreTriadsShort(){
-  const traitScore={IN:50,OW:50,RE:50,DE:50}; let risk=0;
+/* ===== Scoring ===== */
+function scoreTriads(){
+  const traitRaw={IN:0,OW:0,RE:0,DE:0}; let risk=0;
   TRIADS.forEach((t,idx)=>{
     const sel=triadPicks[t.id]||{}; if(!(sel.most&&sel.least)) return;
     const mo=t.items.find(i=>i.id===sel.most); const le=t.items.find(i=>i.id===sel.least);
-    if(mo){
-      if(mo.trait) traitScore[mo.trait]+= (mo.pol||1)>0 ? 10 : -10;
-      if(typeof mo.risk==='number') risk+=mo.risk;
-    }
-    if(le){
-      if(le.trait) traitScore[le.trait]+= (le.pol||1)>0 ? -5 : +5;
-      if(typeof le.risk==='number') risk-=le.risk;
-    }
-    // record timing metrics
-    const mp=t.items.findIndex(i=>i.id===sel.most), lp=t.items.findIndex(i=>i.id===sel.least);
+    const mp=t.items.findIndex(i=>i.id===sel.most); const lp=t.items.findIndex(i=>i.id===sel.least);
     mostPositions[idx]=mp; leastPositions[idx]=lp;
+    if(mo){ if(mo.trait) traitRaw[mo.trait]+=2*(mo.pol||1); if(typeof mo.risk==='number') risk+=mo.risk; }
+    if(le){ if(le.trait) traitRaw[le.trait]-=1*(le.pol||1); if(typeof le.risk==='number') risk-=le.risk; }
   });
-  for(const k in traitScore){ traitScore[k]=clamp(Math.round(traitScore[k]),0,100); }
+  const norm={}; for(const k in traitRaw){ norm[k]=Math.round(clamp(((traitRaw[k]+5)/10)*100,0,100)); }
   const riskPct=clamp(Math.round(50 + risk*10),0,100);
-  return {trait:traitScore, riskPct};
+  return {norm,riskPct};
 }
 function scoreSJT(){
-  const s=SJT[0]; const pick=s.options.find(o=>o.k===sjtPicks[s.id]);
-  const raw=pick?(pick.s||0):0, max=Math.max(...s.options.map(o=>o.s||0));
+  let raw=0,max=0,trisk=0;
+  SJT.forEach((s)=>{ const pick=s.options.find(o=>o.k===sjtPicks[s.id]); raw+=pick?(pick.s||0):0; max+=Math.max(...s.options.map(o=>o.s||0)); trisk+=pick?(pick.trisk||0):0; });
   const pct=max?Math.round((raw/max)*100):0;
-  const triskPct=clamp(Math.round(50 + (pick?.trisk||0)*15),0,100);
+  const triskPct=clamp(Math.round(50 + trisk*15),0,100);
   return {pct,triskPct,raw,max};
 }
 function sliderAdj(){ const v=sliderVal; const a={IN:0,OW:0,RE:0,DE:0}; if(v<45)a.DE=Math.round(50-v); if(v>55)a.RE=Math.round(v-50); return a; }
 function planScore(tx){
   const t=(tx||'').toLowerCase(); if(!t.trim()) return 0;
-  let pts=0; ['step','owner','assign','time','minute','metric','check','rollback','triage','status']
+  let pts=0;
+  ['step','owner','assign','time','minute','hour','metric','measure','check','kpi','rollback','triage','split','doc','note','status','risk','scope']
     .forEach(w=>{if(t.includes(w))pts++});
   if(/\d+ ?min/.test(t))pts++;
   if(/->|•|- /.test(t))pts++;
-  if(t.length>=100)pts+=2;
-  if((/(assign|post|run|check|note)/.test(t)) && /(owner|who)/.test(t)) pts++;
-  return clamp(pts,0,12);
+  if(t.length>=120)pts+=2;
+  if((/(assign|post|run|check|review|split|note|document)/.test(t)) && /(owner|role|who)/.test(t)) pts++;
+  return clamp(pts,0,14);
 }
 
 /* ===== Low effort checks ===== */
 function lowEffortCheck(){
   const flags=[];
-  const totalSecs = timeUsedSecs();
-  if(totalSecs < 45) flags.push('very fast overall');
-  const quickPairs = pairGaps.filter(ms=>ms && ms<350).length;
-  if(pairGaps.length && quickPairs/pairGaps.length >= 0.6) flags.push('pair picks too quick');
+  const totalSecs = (Date.now()-START)/1000;
+  if(totalSecs < 60) flags.push('very fast overall');
+
+  const medTri = triadTimes.length? triadTimes.slice().sort((a,b)=>a-b)[Math.floor(triadTimes.length/2)] : 2000;
+  if(medTri < 1200) flags.push('triads too fast');
+
+  const quickPairs = pairGaps.filter(ms=>ms && ms<400).length;
+  if(pairGaps.length>=3 && quickPairs/pairGaps.length >= 0.6) flags.push('pair picks too quick');
+
   const uniqMost = new Set(mostPositions.filter(v=>v!==undefined)).size;
   const uniqLeast = new Set(leastPositions.filter(v=>v!==undefined)).size;
   if(uniqMost<=1 || uniqLeast<=1) flags.push('low choice diversity');
+
+  const medSjt = sjtTimes.length? sjtTimes.slice().sort((a,b)=>a-b)[Math.floor(sjtTimes.length/2)] : 2000;
+  if(medSjt < 1200) flags.push('scenarios too fast');
+
   if(!sliderTouched) flags.push('slider untouched');
-  if(sjtPickLetters.length===SJT.length && new Set(sjtPickLetters).size===1) flags.push('same letter on scenarios');
-  if(totalSecs > TOTAL_SECONDS){ flags.push('timer expired'); timerExpired=true; }
+
+  if(sjtPickLetters.length===SJT.length && new Set(sjtPickLetters).size===1)
+    flags.push('same letter on scenarios');
+
+  if(timerExpired) flags.push('timer expired');
+
+  // soft retake policy, do not show count, just mark confidence if many within 24h
   if(recentAttempts(24) >= 3) flags.push('multiple retakes');
+
   const lowEffort = flags.length>=2;
   return {lowEffort, flags, totalSecs};
 }
@@ -477,18 +546,19 @@ window.addEventListener('resize',()=>{ if($('#stageR').classList.contains('activ
 
 let latestResult=null;
 function computeResults(){
-  const tri=scoreTriadsShort(), sjt=scoreSJT(), adj=sliderAdj(), planPts=planScore(plan.text);
-  const trait={}; for(const t of TRAITS){ trait[t.k]=clamp(Math.round(tri.trait[t.k] + (adj[t.k]||0)*0.2),0,100); }
+  const tri=scoreTriads(), sjt=scoreSJT(), adj=sliderAdj(), planPts=planScore(plan.text);
+  const trait={}; for(const t of TRAITS){ trait[t.k]=clamp(Math.round(tri.norm[t.k] + (adj[t.k]||0)*0.2),0,100); }
   let base=0; const W={IN:.28,OW:.22,RE:.25,DE:.25}; for(const k in W){ base+=(trait[k]||0)*W[k]; } base=Math.round(base);
   let fit=Math.round(0.8*base + 0.2*sjt.pct + planPts);
   const risk=clamp(Math.round(0.7*tri.riskPct + 0.3*sjt.triskPct),0,100);
-  const eff=lowEffortCheck(); if(eff.lowEffort){ fit = clamp(fit-18, 0, 100); }
+  const eff=lowEffortCheck();
+  if(eff.lowEffort){ fit = clamp(fit-20, 0, 100); }
   return {trait,sjt,fit,risk,planPts,eff};
 }
 function engagementStyle(){
   const secs=Math.round((Date.now()-START)/1000);
-  if(secs<75) return 'Fast decider, quick taps and short path to result.';
-  if(secs<210) return 'Balanced, steady pace with focused selections.';
+  if(secs<90) return 'Fast decider, quick taps and short path to result.';
+  if(secs<240) return 'Balanced, steady pace with focused selections.';
   return 'Deliberative, careful reading and considered picks.';
 }
 function roleSuggest(trait){
@@ -515,27 +585,32 @@ function serviceSuggest(trait){
 
 function showResults(){
   const R=computeResults(); latestResult=R;
-  const manyRecent = recentAttempts(24) >= 3;
 
+  // Confidence badge with soft retake note
   const conf=$('#confBadge'); conf.style.display='inline-block'; conf.classList.remove('ok','warn','bad');
+  const manyRecent = recentAttempts(24) >= 3;
   if(R.eff.lowEffort){ conf.classList.add('bad'); conf.textContent='Confidence, low'+(manyRecent?', retake noted':''); }
   else { conf.classList.add('ok'); conf.textContent='Confidence, normal'+(manyRecent?', retake noted':''); }
 
-  const secs=R.eff.totalSecs|timeUsedSecs(); const left=Math.max(0, TOTAL_SECONDS - secs);
+  // Time badge
+  const secs=R.eff.totalSecs|0; const left=Math.max(0, TOTAL_SECONDS - secs);
   const tBadge=$('#timeBadge'); tBadge.style.display='inline-block'; tBadge.classList.remove('ok','warn','bad');
   tBadge.textContent = `Time, ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')} used`;
-  if(secs > TOTAL_SECONDS){ tBadge.classList.add('bad'); tBadge.textContent+=', over time'; }
-  else if(left<=60){ tBadge.classList.add('warn'); }
+  if(timerExpired){ tBadge.classList.add('bad'); tBadge.textContent+=', over time'; }
+  else if(left<=90){ tBadge.classList.add('warn'); }
 
+  // Tier
   let tier = 'Member fit, start with one clear contribution path.';
   if(R.fit>=80) tier='Strong contributor, invite to a small decision area.';
   else if(R.fit>=60) tier='Good contributor, give a clear task and a level up path.';
   if(R.eff.lowEffort) tier = 'Low confidence result, consider retaking with care.';
   $('#fitTier').textContent = tier;
 
+  // Scores
   $('#fitScore').textContent=String(R.fit);
   renderBars(R.trait); drawRadar(R.trait);
 
+  // Collab badge
   const b=$('#collabBadge'); b.classList.remove('ok','warn','bad');
   const riskAdj = R.eff.lowEffort ? Math.max(R.risk, 55) : R.risk;
   if(riskAdj<=35){ b.classList.add('ok'); b.textContent='Collaboration health, stable'; }
@@ -558,60 +633,85 @@ function showResults(){
     `Contributor Fit, ${R.fit}/100`,
     `Collaboration health, ${riskAdj<=35?'stable':riskAdj<=65?'watch':'caution'}`,
     `Confidence, ${(R.eff.lowEffort?'low':'normal')}${manyRecent?', retake noted':''}`,
-    `Time used, ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')} of 5:00`+(secs>TOTAL_SECONDS?', over time':''),
+    `Time used, ${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')} of 8:00`+(timerExpired?', over time':''),
     'Engagement, '+engagementStyle(),
     'Recommended rooms, '+rooms,
     'Relevant services, '+services,
-    'Plan score, '+R.planPts+'/12'
+    'Plan score, '+R.planPts+'/14'
   ].join('\n');
 
   showStage('R'); goTop();
 }
 
 /* ===== Copy, Print, Mobile PNG ===== */
-$('#copyBtn').onclick=()=>navigator.clipboard.writeText($('#summary').textContent).then(()=>alert('Summary copied'));
-$('#printBtn').onclick=()=>window.print();
-$('#againBtn').onclick=()=>location.reload();
-$('#pngBtn').onclick=()=>{
-  const title='CMX Contributor Fit, results';
-  const fit=$('#fitScore').textContent, collab=$('#collabBadge').textContent, conf=$('#confBadge').textContent, timeTxt=$('#timeBadge').textContent;
-  const strengths=$('#topTwo').textContent, roles=$('#roles').textContent, firstTask=$('#firstTask').textContent, eng=$('#engStyle').textContent;
-  const bars=Array.from($('#scoreBox').querySelectorAll('.scorebar > span')).map(s=>parseInt(s.style.width));
-  const radar=$('#radar');
+document.getElementById('copyBtn').onclick=()=>navigator.clipboard.writeText(document.getElementById('summary').textContent).then(()=>alert('Summary copied'));
+document.getElementById('printBtn').onclick=()=>window.print();
+document.getElementById('againBtn').onclick=()=>location.reload();
+document.getElementById('pngBtn').onclick=()=>{
+  const title = 'CMX Contributor Fit, results';
+  const fit = document.getElementById('fitScore').textContent;
+  const collab = document.getElementById('collabBadge').textContent;
+  const conf = document.getElementById('confBadge').textContent;
+  const timeTxt = document.getElementById('timeBadge').textContent;
+  const strengths = document.getElementById('topTwo').textContent;
+  const roles = document.getElementById('roles').textContent;
+  const firstTask = document.getElementById('firstTask').textContent;
+  const eng = document.getElementById('engStyle').textContent;
+  const bars = Array.from(document.getElementById('scoreBox').querySelectorAll('.scorebar > span')).map(s=>parseInt(s.style.width));
+  const radar = document.getElementById('radar');
 
   const W=1200, H=820, P=32;
-  const c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d');
-  ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='#0f172a'; ctx.font='700 28px Inter, Arial'; ctx.fillText(title,P,P+10);
-  ctx.font='14px Inter, Arial'; ctx.fillStyle='#0f172a'; ctx.fillText('Contributor Fit, '+fit+'/100',P,P+48);
-  ctx.fillStyle='#334155'; ctx.fillText(collab,P,P+72); ctx.fillText(conf,P+320,P+72); ctx.fillText(timeTxt,P+520,P+72);
-  const labels=['Initiative','Ownership','Reliability','Decision style']; const bx=P, by=P+110, bw=420, bh=14, gap=24;
-  for(let i=0;i<labels.length;i++){ ctx.fillStyle='#0f172a'; ctx.fillText(labels[i],bx,by+i*(bh+gap)-6);
-    ctx.strokeStyle='#e5e7eb'; ctx.strokeRect(bx,by+i*(bh+gap),bw,bh);
-    const w=Math.max(0,Math.min(bw,Math.round((bars[i]||0)/100*bw)));
+  const c=document.createElement('canvas'); c.width=W; c.height=H;
+  const ctx=c.getContext('2d');
+
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#0f172a'; ctx.font='700 28px Inter, Arial, sans-serif'; ctx.fillText(title, P, P+10);
+  ctx.font='14px Inter, Arial, sans-serif'; ctx.fillStyle='#0f172a';
+  ctx.fillText('Contributor Fit, '+fit+'/100', P, P+48);
+  ctx.fillStyle='#334155'; ctx.fillText(collab, P, P+72); ctx.fillText(conf, P+320, P+72); ctx.fillText(timeTxt, P+520, P+72);
+
+  const labels=['Initiative','Ownership','Reliability','Decision style'];
+  const bx=P, by=P+110, bw=420, bh=14, gap=24;
+  ctx.font='14px Inter, Arial, sans-serif';
+  for(let i=0;i<labels.length;i++){
+    ctx.fillStyle='#0f172a'; ctx.fillText(labels[i], bx, by+i*(bh+gap)-6);
+    ctx.strokeStyle='#e5e7eb'; ctx.strokeRect(bx, by+i*(bh+gap), bw, bh);
+    const w = Math.max(0, Math.min(bw, Math.round((bars[i]||0)/100*bw)));
     const grad=ctx.createLinearGradient(bx,0,bx+bw,0); grad.addColorStop(0,'#93c5fd'); grad.addColorStop(1,'#2563eb');
-    ctx.fillStyle=grad; ctx.fillRect(bx,by+i*(bh+gap),w,bh);
+    ctx.fillStyle=grad; ctx.fillRect(bx, by+i*(bh+gap), w, bh);
   }
   ctx.drawImage(radar, W-560-P, P+20, 560, 360);
 
-  function wrap(text,x,y,maxW,lh){ text=(text||'').replace(/\s+/g,' ').trim(); const words=text.split(' '); let line='';
-    for(let i=0;i<words.length;i++){ const test=line+words[i]+' '; if(ctx.measureText(test).width>maxW && i>0){ ctx.fillText(line,x,y); line=words[i]+' '; y+=lh; } else { line=test; } }
-    if(line) ctx.fillText(line,x,y); return y; }
+  function wrapText(text, x, y, maxWidth, lineHeight){
+    text=(text||'').replace(/\s+/g,' ').trim();
+    const words=text.split(' '); let line='';
+    for(let n=0;n<words.length;n++){
+      const test=line+words[n]+' ';
+      if(ctx.measureText(test).width>maxWidth && n>0){ ctx.fillText(line, x, y); line=words[n]+' '; y+=lineHeight; }
+      else{ line=test; }
+    }
+    if(line) ctx.fillText(line, x, y);
+    return y;
+  }
 
-  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; ctx.fillText('Top strengths',P,H/2);
-  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; let y=wrap(strengths,P,H/2+20,W-2*P,20);
-  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; y+=16; ctx.fillText('Role suggestions',P,y); y+=20;
-  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; y=wrap(roles,P,y,W-2*P,20);
-  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; y+=16; ctx.fillText('Suggested first task',P,y); y+=20;
-  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; y=wrap(firstTask,P,y,W-2*P,20);
-  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; y+=16; ctx.fillText('Engagement style',P,y); y+=20;
-  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; wrap(eng,P,y,W-2*P,20);
+  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; ctx.fillText('Top strengths', P, H/2);
+  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; let y = wrapText(strengths, P, H/2+20, W-2*P, 20);
+  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; y += 16; ctx.fillText('Role suggestions', P, y); y += 20;
+  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; y = wrapText(roles, P, y, W-2*P, 20);
+  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; y += 16; ctx.fillText('Suggested first task', P, y); y += 20;
+  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; y = wrapText(firstTask, P, y, W-2*P, 20);
+  ctx.fillStyle='#0f172a'; ctx.font='600 18px Inter, Arial'; y += 16; ctx.fillText('Engagement style', P, y); y += 20;
+  ctx.font='14px Inter, Arial'; ctx.fillStyle='#334155'; wrapText(eng, P, y, W-2*P, 20);
 
   const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download='cmx-contributor-fit.png'; document.body.appendChild(a); a.click(); a.remove();
 };
 
 /* ===== Init ===== */
-function init(){ renderTriad(); bindPlan(); setProgress(progressDone(),progressTotal()); }
+function init(){
+  renderTriad();
+  bindPlan();
+  setProgress(progressDone(),progressTotal());
+}
 init();
 </script>
 </body>
