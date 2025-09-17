@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Callmax Solutions • SEO Master Plan, Interactive Report</title>
+
+<meta name="description" content="Interactive SEO plan for Callmax Solutions covering competitors, silo structure, build pacing, Phase 1 keyword targets, and internal linking." />
+<meta property="og:title" content="Callmax Solutions • SEO Master Plan, Interactive Report" />
+<meta property="og:description" content="Competitor matrix, Services and Industries silo, build modes, Phase 1 keywords, and clear internal linking rules." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://dummyimage.com/1200x630/2563eb/ffffff&text=Callmax+SEO+Plan" />
+<meta property="og:url" content="https://example.com/seo-plan" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Callmax Solutions • SEO Master Plan, Interactive Report" />
+<meta name="twitter:description" content="Interactive plan with competitors, structure, pacing, keywords, and linking." />
+<meta name="twitter:image" content="https://dummyimage.com/1200x630/2563eb/ffffff&text=Callmax+SEO+Plan" />
+
+<meta name="robots" content="noindex, nofollow" />
+<meta name="googlebot" content="noindex, nofollow" />
+
+<style>
+  :root{
+    --deck-bg:#f7f9ff;
+    --deck-ink:#0f172a;
+    --deck-muted:#5b647b;
+    --deck-card:#ffffff;
+    --deck-brand:#2563eb;
+    --deck-brand2:#38bdf8;
+    --deck-accent:#10b981;
+    --deck-warn:#f59e0b;
+    --deck-danger:#ef4444;
+    --deck-line:rgba(17,24,39,.12);
+    --deck-shadow:0 10px 40px rgba(2,6,23,.08);
+    --table-th:#eef2ff;
+    --card-gradient:linear-gradient(180deg,rgba(17,24,39,.04),transparent);
+    --fs-1:clamp(22px,4.5vw,40px);
+    --fs-2:clamp(18px,2.8vw,26px);
+    --fs-3:clamp(15px,2.2vw,18px);
+    --radius-xl:18px;
+    --radius-md:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--deck-bg); color:var(--deck-ink);
+    font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .deck{
+    max-width:1150px;
+    margin:max(14px, env(safe-area-inset-top)) auto 24px;
+    padding:clamp(12px,3vw,24px);
+  }
+  .topbar{
+    display:flex;gap:12px;justify-content:space-between;align-items:center;margin-bottom:12px
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;flex-wrap:wrap}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(45deg,var(--deck-brand),var(--deck-brand2))}
+  .cta-row{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{
+    border:1px solid var(--deck-line);cursor:pointer;border-radius:999px;
+    padding:.82rem 1.05rem;font-weight:800;min-height:42px;
+    background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2));color:#fff;
+    box-shadow:var(--deck-shadow);
+    touch-action:manipulation;
+  }
+  .ghost{
+    background:var(--deck-card);color:var(--deck-ink);
+    border:1px solid var(--deck-line)
+  }
+  .slides{display:grid;gap:14px}
+  .slide{
+    background:var(--deck-card);border-radius:var(--radius-xl);box-shadow:var(--deck-shadow);
+    padding:clamp(16px,3.5vw,30px);display:none;position:relative;min-height:58vh
+  }
+  .slide.active{display:block;animation:fade .22s ease-out}
+  .slide::after{content:none}
+  @keyframes fade{from{opacity:.5;transform:translateY(5px)} to{opacity:1;transform:translateY(0)}}
+  h1{font-size:var(--fs-1);margin:.2rem 0 1rem}
+  h2{font-size:var(--fs-2);margin:.75rem 0 .5rem}
+  p{margin:.35rem 0}
+  .lead{color:var(--deck-muted);font-size:var(--fs-3)}
+  .muted{color:var(--deck-muted)}
+  .grid{display:grid;gap:12px}
+  .cols-2{grid-template-columns:1fr}
+  .cols-3{grid-template-columns:1fr}
+  @media(min-width:920px){
+    .cols-2{grid-template-columns:1fr 1fr}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+  }
+  .card{background:var(--card-gradient);border:1px solid var(--deck-line);border-radius:var(--radius-md);padding:12px 14px}
+  .kicker{font-size:.85rem;letter-spacing:.3px;font-weight:800;color:var(--deck-muted);text-transform:uppercase}
+  .nav{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    margin-top:10px;padding-bottom:calc(8px + env(safe-area-inset-bottom));
+  }
+  .index{display:flex;gap:6px;flex-wrap:wrap}
+  .dot-step{width:10px;height:10px;border-radius:50%;background:rgba(37,99,235,.20)}
+  .dot-step.active{background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2))}
+  .tree-wrap{border:1px solid var(--deck-line);border-radius:var(--radius-xl);padding:clamp(10px,2vw,18px);background:var(--deck-card)}
+  .toolbar{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+  .chip{padding:.52rem .7rem;border-radius:999px;background:rgba(37,99,235,.12);font-weight:700;font-size:.95rem;cursor:pointer;user-select:none;min-height:40px;display:inline-flex;align-items:center}
+  .chip:active{transform:translateY(1px)}
+  .legend{color:var(--deck-muted);font-size:.92rem}
+  .tree{list-style:none;margin:0;padding:0;font-size:15px}
+  .tree li{margin:6px 0;padding-left:14px}
+  .rowx{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.55rem .7rem;border-radius:10px;background:rgba(17,24,39,.03)}
+  .slug{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86em;color:var(--deck-muted);word-break:break-word}
+  .star{color:var(--deck-warn);font-weight:bold}
+  .tag{font-size:.75em;padding:.15rem .45rem;border-radius:999px;background:rgba(16,185,129,.15);color:#065f46}
+  .caret{width:20px;height:20px;border-radius:6px;display:inline-grid;place-items:center;background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2));color:#fff;cursor:pointer}
+  .collapsed > .branch{display:none}
+  .branch{margin-left:14px;padding-left:14px;border-left:2px solid rgba(37,99,235,.25)}
+  table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--deck-line);border-radius:12px;overflow:hidden;background:#fff}
+  th,td{padding:12px;border-bottom:1px solid var(--deck-line);vertical-align:top}
+  th{background:var(--table-th);text-align:left;font-weight:800;color:var(--deck-ink);position:sticky;top:0;z-index:1}
+  tr:last-child td{border-bottom:0}
+  .table-wrap{overflow:auto;max-height:420px;border-radius:12px}
+  .pill{display:inline-block;font-size:.8rem;padding:.2rem .5rem;border-radius:999px;background:#eef2ff;color:#334155}
+  .pill.green{background:rgba(16,185,129,.15);color:#047857}
+  .pill.blue{background:rgba(37,99,235,.12);color:#1e40af}
+  @media(max-width:720px){
+    .kw-table{display:none}
+    .kw-cards{display:grid;gap:10px}
+    .kw-card{border:1px solid var(--deck-line);border-radius:12px;background:#fff;padding:12px}
+    .kw-card h3{margin:.1rem 0 .2rem 0;font-size:1.05rem}
+    .kw-meta{display:flex;gap:6px;flex-wrap:wrap;margin:.25rem 0}
+    .kw-meta .pill{padding:.18rem .45rem}
+  }
+  @media(min-width:721px){
+    .kw-cards{display:none}
+  }
+  @media(max-width:720px){
+    #cmpTable{display:none}
+    .cmp-cards{display:grid;gap:10px}
+    .cmp-card{border:1px solid var(--deck-line);border-radius:12px;background:#fff;padding:12px}
+    .cmp-card h3{margin:0 0 .25rem 0;font-size:1.05rem}
+    .cmp-card .small{color:var(--deck-muted);font-size:.95rem;margin:.15rem 0}
+  }
+  @media(min-width:721px){
+    .cmp-cards{display:none}
+  }
+  footer{max-width:1150px;margin:8px auto 20px;padding:0 20px;color:var(--deck-muted);font-size:.95rem}
+</style>
+</head>
+<body>
+
+  <div class="deck">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Callmax Solutions • SEO Plan <span class="muted" style="font-weight:600;margin-left:8px">CMX Global SEO Team</span></div>
+      <div class="cta-row">
+        <button class="btn ghost" id="prev">◀ Prev</button>
+        <button class="btn" id="next">Next ▶</button>
+      </div>
+    </div>
+
+    <div class="slides" id="slides">
+      <section class="slide active">
+        <h1>Executive overview</h1>
+        <p class="lead">
+          The site has two live pages. That narrows what Google can learn about the business and it limits the ways people discover us. We open this up by publishing the pages buyers look for, one intent per page, and we connect related pages so authority flows in a clean way. We add proof where it matters. The result is more entry points, clearer paths, and fewer dead ends when someone is ready to talk.
+        </p>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Plan to move first</h2>
+            <ul>
+              <li>Publish the Customer Service parent page. Under it, add Live Chat, Email Support, Email Answering Service, and Phone Answering as focused child pages.</li>
+              <li>Stand up a second parent for Technical Support and add IT Help Desk under it with task level details.</li>
+              <li>Bring Pricing and Get a Quote online so late stage visitors have a clear next step without guessing.</li>
+              <li>Follow with Ecommerce and SaaS industry pages to show fit and connect use cases back to services.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Why this order helps</h2>
+            <ul>
+              <li>One page per intent improves topical relevance and rankings.</li>
+              <li>A simple structure passes authority between related pages and makes crawling straightforward.</li>
+              <li>Pricing, comparisons, and integrations answer common questions and help people decide faster.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>Quick audit and setup</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Search Console and tracking</h2>
+            <ul>
+              <li>GSC is live. After the first crawl we will baseline coverage and watch how queries shift to the new pages.</li>
+              <li>GA4 events to wire now include quote submits, call and email clicks, and calendar bookings so we can see real outcomes.</li>
+            </ul>
+            <h2>Indexation clean up</h2>
+            <p>There are stray results tied to other hosts. We will remove them from GSC, fix DNS or hosting where needed, block what is not ours, and submit a clean sitemap that lists only indexable URLs.</p>
+          </div>
+          <div class="card">
+            <h2>On-page basics</h2>
+            <ul>
+              <li>Every page ships with a unique title and a meta description that is written to earn the click.</li>
+              <li>Money pages include an FAQ block for rich results and quick jump links for the items people scan for.</li>
+              <li>We set up a blog hub for long tail questions and we post simple weekly updates in Google Business Profile.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>Competitors at a glance</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>What most brands do</h2>
+            <ul>
+              <li>They organize around a Services hub and an Industries hub.</li>
+              <li>They lead with brand language and light workflow details.</li>
+              <li>They offer few tools that help a late stage buyer decide with confidence.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Where we lean in</h2>
+            <ul>
+              <li>We keep the two hubs but add more task detail and practical use cases that make options clear.</li>
+              <li>We publish honest comparison pages and simple platform playbooks that people actually search for.</li>
+              <li>We include a straightforward cost range to move interested visitors into a quote without delay.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h2>Competitor matrix</h2>
+          <div class="row" style="margin:8px 0 12px">
+            <div class="input" style="flex:1"><input id="cmpSearch" placeholder="Filter competitors by name" aria-label="Filter competitors" /></div>
+            <div class="input"><label><input type="checkbox" id="cmpShowGaps" checked /> show gaps column</label></div>
+          </div>
+
+          <div class="table-wrap">
+            <table id="cmpTable" aria-label="Competitor comparison">
+              <thead>
+                <tr>
+                  <th style="min-width:150px">Brand</th>
+                  <th style="min-width:260px">Positioning</th>
+                  <th style="min-width:180px">Architecture</th>
+                  <th class="cmp-gaps-col" style="min-width:240px">Gaps we can use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>SupportYourApp</td>
+                  <td>Customer support and tech support outsourcing, 24/7, 60+ languages</td>
+                  <td>Services hub with service variants, Help Desk, call center and BPO cluster</td>
+                  <td class="cmp-gaps-col">Light SMB pricing clarity, limited task level playbooks</td>
+                </tr>
+                <tr>
+                  <td>TaskUs</td>
+                  <td>Digital CX and AI driven services, scaling and trust and safety</td>
+                  <td>Services and Solutions plus Industries hubs</td>
+                  <td class="cmp-gaps-col">Few workflow pages and light local proof</td>
+                </tr>
+                <tr>
+                  <td>SupportNinja</td>
+                  <td>Full lifecycle CX for SaaS and ecommerce</td>
+                  <td>Services hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Limited depth in regulated verticals</td>
+                </tr>
+                <tr>
+                  <td>Helpware</td>
+                  <td>CX and Tech with dedicated teams</td>
+                  <td>Services hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Broad copy and thin bottom funnel detail</td>
+                </tr>
+                <tr>
+                  <td>Teleperformance</td>
+                  <td>Global enterprise CX with AI enabled solutions</td>
+                  <td>Solutions grid with vertical menus</td>
+                  <td class="cmp-gaps-col">Misses task level intent</td>
+                </tr>
+                <tr>
+                  <td>IntouchCX</td>
+                  <td>Modern product style language, digital CX</td>
+                  <td>Solutions and Industries</td>
+                  <td class="cmp-gaps-col">Fewer specialized sub industry pages</td>
+                </tr>
+                <tr>
+                  <td>Concentrix</td>
+                  <td>Technology led CX transformation</td>
+                  <td>Extensive solutions and industries</td>
+                  <td class="cmp-gaps-col">Enterprise tilt with little SMB focus</td>
+                </tr>
+                <tr>
+                  <td>Alorica</td>
+                  <td>Vertical outcomes and case proof</td>
+                  <td>Services hub and Industries hub</td>
+                  <td class="cmp-gaps-col">Limited task level content</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cmp-cards" id="cmpCards" aria-label="Competitor cards"></div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>Silo map</h1>
+        <p class="lead">Use the controls to collapse sections or show only Phase 1 pages marked with a star. The structure keeps navigation simple and helps authority flow to the right places.</p>
+        <div class="tree-wrap">
+          <div class="toolbar">
+            <div class="row" style="gap:8px">
+              <span class="chip" id="toggleAll" tabindex="0" role="button" aria-controls="treeRoot">Collapse All</span>
+              <span class="chip" id="togglePhase" tabindex="0" role="button" aria-controls="treeRoot">Show Phase 1 Only</span>
+            </div>
+            <div class="legend"><span class="star">★</span> Phase 1, <span class="tag">Hub</span> structural page</div>
+          </div>
+          <ul class="tree" id="treeRoot"></ul>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>Build order and pace</h1>
+        <div class="card" style="margin-bottom:12px">
+          <div class="row">
+            <div class="input"><label for="mode">Mode</label>
+              <select id="mode" aria-label="Build mode">
+                <option value="lite">Lite 2 pages per month</option>
+                <option value="std" selected>Standard 3 to 4 per month</option>
+                <option value="heavy">Heavy 6 to 8 per month</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Phase 1</h2>
+            <ul id="phase1List">
+              <li>Customer Service parent page</li>
+              <li>Live Chat, Email Support, Email Answering Service, and Phone Answering as children</li>
+              <li>Technical Support parent plus IT Help Desk</li>
+              <li>Call Center Outsourcing with Order Taking as a child</li>
+              <li>Pricing and Get a Quote</li>
+              <li>About, Contact, and the basic Legal pages</li>
+            </ul>
+            <p class="muted">Once five or six pages are live we publish the Services hub so it can route traffic and pass context.</p>
+          </div>
+          <div class="card">
+            <h2>Phase 2</h2>
+            <ul>
+              <li>Ecommerce and SaaS industry pages</li>
+              <li>Back Office with Data Entry, HR and Scheduling, and Accounting and Bookkeeping</li>
+              <li>Competitor alternative pages for SupportNinja and Influx</li>
+              <li>Integrations for Zendesk and Gorgias</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h2>Phase 3</h2>
+          <ul>
+            <li>Remaining industries like Insurance, Telecom, Construction, Logistics, and Virtual Assistant</li>
+            <li>More integrations and comparison pages</li>
+            <li>Playbooks, guides, testimonials, case notes, and the blog engine</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>First pages and why</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Customer Service pillar</h2>
+            <p>This is where the largest pool of buyer terms lives in the sheet. One clear intent per page raises topical relevance and improves click through. The pillar links out to every industry page and brings people back to services when they are ready to talk. It becomes the main path for new traffic.</p>
+          </div>
+          <div class="card">
+            <h2>Technical Support pillar</h2>
+            <p>There is strong intent from SaaS and software buyers. Most competitors keep this broad. We go deeper on tasks and tools so use cases are obvious and comparison is easy.</p>
+          </div>
+          <div class="card">
+            <h2>Pricing and conversion pages</h2>
+            <p>People want a range and they want a clear way to engage. We answer cost in plain language and give two paths to act. A quote form and a calendar booking. These pages shorten the path from research to contact.</p>
+          </div>
+          <div class="card">
+            <h2>Industry starters</h2>
+            <p>Ecommerce and SaaS show real fit. Each page can hold short case snapshots and the integrations that matter, and they link back to the right services. The cross links guide users and pass authority in a straight line.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>Phase 1 keyword opportunities</h1>
+        <p class="lead">These terms match the first build. Search volume is healthy, difficulty is realistic, and the intent is commercial or transactional. Every row is mapped to a page so the content team knows exactly what to draft first.</p>
+
+        <div class="card">
+          <div class="row" style="margin-bottom:10px">
+            <div class="input" style="flex:1"><input id="kwFilter" placeholder="Filter by keyword or page" aria-label="Filter keywords" /></div>
+            <div class="input"><label><input type="checkbox" id="p1Only" checked /> show Priority 1 only</label></div>
+          </div>
+
+          <div class="table-wrap kw-table">
+            <table aria-label="Phase 1 keyword opportunities">
+              <thead>
+                <tr>
+                  <th style="min-width:240px">Keyword</th>
+                  <th>Vol</th>
+                  <th>KD</th>
+                  <th>Intent</th>
+                  <th>Priority</th>
+                  <th style="min-width:220px">Mapped page</th>
+                </tr>
+              </thead>
+              <tbody id="kwRows"></tbody>
+            </table>
+          </div>
+
+          <div class="kw-cards" id="kwCards" aria-label="Keyword cards"></div>
+          <p class="muted" id="kwCount" style="margin-top:8px"></p>
+        </div>
+
+        <div class="grid cols-2" style="margin-top:12px">
+          <div class="card">
+            <h2>Why these first</h2>
+            <ul>
+              <li>They line up with the first six pages in the build list so we publish with purpose.</li>
+              <li>Competitors already surface these topics in navigation and footers which sets user expectations.</li>
+              <li>They support the Pricing and Get a Quote paths without extra tools or heavy features.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>How we track progress</h2>
+            <ul>
+              <li>Clicks for these queries in Search Console and sessions to the mapped pages in analytics.</li>
+              <li>Form fills, call and email clicks, and calendar bookings from Pricing and Get a Quote.</li>
+              <li>Rank spread for each primary term and a small set of supportive terms per page.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>Content tracker</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Phase 1 checklist</h2>
+            <ul id="todo">
+              <li><label><input type="checkbox" /> Customer Service parent</label></li>
+              <li><label><input type="checkbox" /> Live Chat</label></li>
+              <li><label><input type="checkbox" /> Email Support</label></li>
+              <li><label><input type="checkbox" /> Email Answering Service</label></li>
+              <li><label><input type="checkbox" /> Phone Answering</label></li>
+              <li><label><input type="checkbox" /> Technical Support parent</label></li>
+              <li><label><input type="checkbox" /> IT Help Desk</label></li>
+              <li><label><input type="checkbox" /> Ecommerce industry</label></li>
+              <li><label><input type="checkbox" /> SaaS industry</label></li>
+              <li><label><input type="checkbox" /> Call Center Outsourcing</label></li>
+              <li><label><input type="checkbox" /> Pricing and Get a Quote</label></li>
+              <li><label><input type="checkbox" /> About, Contact, Legal</label></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Progress</h2>
+            <div style="background:#eef2ff;border:1px solid var(--deck-line);border-radius:12px;height:16px;overflow:hidden">
+              <div id="bar" style="height:100%;width:0;background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2))"></div>
+            </div>
+            <p class="muted" id="barText" style="margin-top:8px">0 of 12 complete</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <h1>Internal linking</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Services and Industries</h2>
+            <ul>
+              <li>Each industry page links to the best fit services with short use case blocks that make the path obvious.</li>
+              <li>Each service page points back to the right industries so visitors can see fit from both directions.</li>
+              <li>We use FAQ anchors for rich results and clear jumps to the questions people care about.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Support hubs</h2>
+            <ul>
+              <li>Pricing, comparisons, and integrations link back to service pillars and Get a Quote to keep momentum.</li>
+              <li>Playbooks and the blog support both hubs and feed the clusters around them.</li>
+              <li>Testimonials and case notes live on or next to the pages they support so proof is never far away.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="nav">
+      <button class="btn ghost" id="prev2">◀ Prev</button>
+      <div class="index" id="dots"></div>
+      <button class="btn" id="next2">Next ▶</button>
+    </div>
+  </div>
+
+  <footer>
+    Questions or updates, email <a href="mailto:team@cmxchat.com">team@cmxchat.com</a>.
+  </footer>
+
+<script>
+/* Slides and dots */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dotsWrap = document.getElementById('dots'); let i = 0;
+function renderDots(){
+  dotsWrap.innerHTML='';
+  slides.forEach((_, idx)=>{
+    const d=document.createElement('span');
+    d.className='dot-step'+(idx===i?' active':'');
+    d.addEventListener('click',()=>go(idx), {passive:true});
+    dotsWrap.appendChild(d);
+  });
+}
+function show(){
+  slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  renderDots();
+  window.scrollTo(0,0);
+}
+function go(n){ i = Math.max(0, Math.min(slides.length-1, n)); show(); }
+function next(){ go(i+1); } function prev(){ go(i-1); }
+document.getElementById('next').onclick = next; document.getElementById('prev').onclick = prev;
+document.getElementById('next2').onclick = next; document.getElementById('prev2').onclick = prev;
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); }, {passive:true});
+renderDots(); show();
+
+/* Competitor cards from table + filter */
+const cmpInput = document.getElementById('cmpSearch');
+const cmpShowGaps = document.getElementById('cmpShowGaps');
+const cmpTable = document.getElementById('cmpTable');
+const cmpCards = document.getElementById('cmpCards');
+
+function buildCardsFromTable(){
+  if(!cmpTable) return;
+  cmpCards.innerHTML = '';
+  const rows = Array.from(cmpTable.querySelectorAll('tbody tr'));
+  rows.forEach(tr=>{
+    const [brand, pos, arch, gapCell] = tr.children;
+    const card = document.createElement('div');
+    card.className = 'cmp-card';
+    card.dataset.brand = brand.textContent.trim().toLowerCase();
+    card.innerHTML = `
+      <h3>${brand.textContent.trim()}</h3>
+      <div class="small"><strong>Positioning</strong>, ${pos.textContent.trim()}</div>
+      <div class="small"><strong>Architecture</strong>, ${arch.textContent.trim()}</div>
+      <div class="small cmp-gap"><strong>Gaps we can use</strong>, ${gapCell ? gapCell.textContent.trim() : ''}</div>
+    `;
+    cmpCards.appendChild(card);
+  });
+}
+buildCardsFromTable();
+
+function filterCompetitors(){
+  const q = (cmpInput.value||'').toLowerCase().trim();
+  cmpTable.querySelectorAll('tbody tr').forEach(tr=>{
+    const name = tr.cells[0].textContent.toLowerCase();
+    tr.style.display = name.includes(q) ? '' : 'none';
+  });
+  Array.from(cmpCards.children).forEach(card=>{
+    card.style.display = card.dataset.brand.includes(q) ? '' : 'none';
+  });
+}
+cmpInput.addEventListener('input', filterCompetitors, {passive:true});
+cmpShowGaps.addEventListener('change', ()=>{
+  const show = cmpShowGaps.checked;
+  document.querySelectorAll('.cmp-gaps-col').forEach(c=> c.style.display = show ? '' : 'none');
+  cmpCards.querySelectorAll('.cmp-gap').forEach(c=> c.style.display = show ? '' : 'none');
+}, {passive:true});
+
+/* Silo data */
+const SILO = {
+  title:"/", slug:"/", phase:true, hub:false, children:[
+    { title:"Services", slug:"/services", hub:true, children:[
+      { title:"Customer Service Outsourcing", slug:"/customer-service-outsourcing", phase:true, children:[
+        { title:"Live Chat Outsourcing", slug:"/live-chat-outsourcing", phase:true },
+        { title:"Email Support Outsourcing", slug:"/email-support-outsourcing", phase:true },
+        { title:"Email Answering Service", slug:"/email-answering-service", phase:true },
+        { title:"Phone Answering Outsourcing", slug:"/phone-answering-outsourcing", phase:true }
+      ]},
+      { title:"Technical Support Outsourcing", slug:"/technical-support-outsourcing", phase:true, children:[
+        { title:"IT Help Desk Outsourcing", slug:"/it-help-desk-outsourcing", phase:true },
+        { title:"Tier 1 and 2 Tech Support Outsourcing", slug:"/tier-1-2-tech-support-outsourcing" }
+      ]},
+      { title:"Call Center Outsourcing", slug:"/call-center-outsourcing", phase:true, children:[
+        { title:"Inbound Call Center Services", slug:"/inbound-call-center-services" },
+        { title:"Order Taking Service", slug:"/order-taking-service" },
+        { title:"B2B Call Centers", slug:"/b2b-call-centers" }
+      ]},
+      { title:"Back Office Outsourcing", slug:"/back-office-outsourcing", children:[
+        { title:"Data Entry Outsourcing", slug:"/data-entry-outsourcing" },
+        { title:"HR and Scheduling Outsourcing", slug:"/hr-scheduling-outsourcing" },
+        { title:"Accounting and Bookkeeping Outsourcing", slug:"/accounting-bookkeeping-outsourcing" }
+      ]},
+      { title:"AI Customer Support Solutions", slug:"/ai-customer-support-solutions", children:[
+        { title:"Workflow Automation Outsourcing", slug:"/workflow-automation-outsourcing" },
+        { title:"AI Analytics Outsourcing", slug:"/ai-analytics-outsourcing" },
+        { title:"Hybrid AI plus Human Support Outsourcing", slug:"/hybrid-ai-human-support-outsourcing" }
+      ]}
+    ]},
+    { title:"Industries", slug:"/industries", hub:true, children:[
+      { title:"E-commerce Customer Service Outsourcing", slug:"/ecommerce-customer-service-outsourcing", phase:true },
+      { title:"SaaS and Technology Support Outsourcing", slug:"/saas-technology-support-outsourcing", phase:true },
+      { title:"Healthcare BPO Outsourcing", slug:"/healthcare-bpo-outsourcing" },
+      { title:"Real Estate and Property Management Outsourcing", slug:"/real-estate-property-management-outsourcing" },
+      { title:"Insurance Outsourcing Services", slug:"/insurance-outsourcing-services" },
+      { title:"Telecom Customer Support Outsourcing", slug:"/telecom-customer-support-outsourcing" },
+      { title:"Construction Outsourcing Services", slug:"/construction-outsourcing-services" },
+      { title:"Logistics and Supply Chain Outsourcing", slug:"/logistics-supply-chain-outsourcing" },
+      { title:"Virtual Assistant and Professional Outsourcing", slug:"/virtual-assistant-professional-outsourcing" }
+    ]},
+    { title:"Pricing", slug:"/pricing", hub:true, children:[
+      { title:"Cost of Outsourced Customer Service", slug:"/cost-of-outsourced-customer-service", phase:true },
+      { title:"Get a Quote", slug:"/get-a-quote", phase:true }
+    ]},
+    { title:"Comparisons", slug:"/comparisons", hub:true, children:[
+      { title:"SupportNinja Alternatives", slug:"/comparisons/supportninja-alternatives" },
+      { title:"PartnerHero Alternatives", slug:"/comparisons/partnerhero-alternatives" },
+      { title:"Influx Alternatives", slug:"/comparisons/influx-alternatives" },
+      { title:"Callmax vs Competitor", slug:"/comparisons/callmax-vs-competitor" }
+    ]},
+    { title:"Integrations", slug:"/integrations", hub:true, children:[
+      { title:"Zendesk Outsourcing Support", slug:"/integrations/zendesk-outsourcing-support" },
+      { title:"Gorgias Customer Service Outsourcing", slug:"/integrations/gorgias-customer-service-outsourcing" },
+      { title:"Shopify Customer Service Outsourcing", slug:"/integrations/shopify-customer-service-outsourcing" },
+      { title:"WooCommerce Customer Service Outsourcing", slug:"/integrations/woocommerce-customer-service-outsourcing" }
+    ]},
+    { title:"Resources", slug:"/resources", hub:true, children:[
+      { title:"Blog", slug:"/blog" },
+      { title:"Playbooks and Guides", slug:"/resources/playbooks", hub:true, children:[
+        { title:"Two Week Launch Playbook", slug:"/resources/playbooks/2-week-launch" },
+        { title:"E-commerce Peak Season Playbook", slug:"/resources/playbooks/ecommerce-peak-season" },
+        { title:"SaaS Escalation Playbook", slug:"/resources/playbooks/saas-escalation" }
+      ]}
+    ]},
+    { title:"Company", slug:"/company", hub:true, children:[
+      { title:"About Us", slug:"/about", phase:true },
+      { title:"Our Process", slug:"/our-process" },
+      { title:"Why Callmax", slug:"/why-callmax", phase:true },
+      { title:"Testimonials and Case Studies", slug:"/case-studies" },
+      { title:"Careers", slug:"/careers" }
+    ]},
+    { title:"Contact", slug:"/contact", phase:true },
+    { title:"Legal", slug:"/legal", hub:true, children:[
+      { title:"Privacy Policy", slug:"/privacy-policy" },
+      { title:"Terms of Service", slug:"/terms-of-service" },
+      { title:"Cookie Policy", slug:"/cookie-policy" }
+    ]}
+  ]
+};
+
+const rootEl = document.getElementById('treeRoot');
+function nodeRow(n){
+  return `<div class="rowx">
+    ${n.children ? '<span class="caret" data-caret>▾</span>' : '<span style="width:20px;display:inline-block"></span>'}
+    <strong>${n.title}</strong> <span class="slug">${n.slug}</span>${n.phase?' <span class="star">★</span>':''}${n.hub?' <span class="tag">Hub</span>':''}
+  </div>`;
+}
+function renderBranch(n){
+  const li = document.createElement('li');
+  li.innerHTML = nodeRow(n);
+  let hasStar = !!n.phase;
+  if(n.children && n.children.length){
+    const ul = document.createElement('ul');
+    ul.className = 'branch';
+    n.children.forEach(ch => {
+      const child = renderBranch(ch);
+      if(child.dataset.hasstar === '1') hasStar = true;
+      ul.appendChild(child);
+    });
+    li.appendChild(ul);
+  }
+  li.dataset.hasstar = hasStar ? '1' : '0';
+  return li;
+}
+rootEl.appendChild(renderBranch(SILO));
+
+/* Caret toggle */
+rootEl.addEventListener('click', (e)=>{
+  const caret = e.target.closest('[data-caret]');
+  if(!caret) return;
+  const li = caret.closest('li');
+  li.classList.toggle('collapsed');
+  caret.textContent = li.classList.contains('collapsed') ? '▸' : '▾';
+}, {passive:true});
+
+/* Collapse or expand all */
+const toggleAllBtn = document.getElementById('toggleAll');
+toggleAllBtn.addEventListener('click', ()=>{
+  const list = rootEl.querySelectorAll('li');
+  const anyOpen = [...list].some(li => !li.classList.contains('collapsed') && li.querySelector('.branch'));
+  list.forEach(li=>{
+    if(li.querySelector('.branch')){
+      li.classList.toggle('collapsed', anyOpen);
+      const c = li.querySelector('[data-caret]');
+      if(c) c.textContent = li.classList.contains('collapsed') ? '▸' : '▾';
+    }
+  });
+  toggleAllBtn.textContent = anyOpen ? 'Expand All' : 'Collapse All';
+}, {passive:true});
+
+/* Phase 1 filter */
+const togglePhaseBtn = document.getElementById('togglePhase'); let phaseOnly = false;
+function applyPhaseFilter(){
+  rootEl.querySelectorAll('li').forEach(li=>{
+    const ok = li.dataset.hasstar === '1';
+    li.style.display = (phaseOnly && !ok) ? 'none' : '';
+  });
+  togglePhaseBtn.textContent = phaseOnly ? 'Show All Pages' : 'Show Phase 1 Only';
+}
+togglePhaseBtn.addEventListener('click', ()=>{ phaseOnly = !phaseOnly; applyPhaseFilter(); }, {passive:true});
+
+/* Build mode tweaks for Phase 1 list */
+const modeSel = document.getElementById('mode');
+const phase1List = document.getElementById('phase1List');
+function applyMode(){
+  const v = modeSel?.value || 'std';
+  const items = {
+    lite:[
+      'Customer Service parent',
+      'One child page, Live Chat or Email Support or Email Answering Service',
+      'Technical Support parent',
+      'About and Contact'
+    ],
+    std:[
+      'Customer Service parent page',
+      'Live Chat, Email Support, Email Answering Service, and Phone Answering as children',
+      'Technical Support parent plus IT Help Desk',
+      'Call Center Outsourcing with Order Taking as a child',
+      'Pricing and Get a Quote',
+      'About, Contact, and the basic Legal pages'
+    ],
+    heavy:[
+      'Customer Service parent page',
+      'Live Chat, Email Support, Email Answering Service, and Phone Answering as children',
+      'Technical Support parent plus IT Help Desk',
+      'Call Center Outsourcing',
+      'Ecommerce and SaaS industry pages',
+      'About, Contact, and full Legal'
+    ]
+  }[v];
+  if(phase1List) phase1List.innerHTML = items.map(t=>`<li>${t}</li>`).join('');
+}
+if(modeSel){ modeSel.addEventListener('change', applyMode, {passive:true}); applyMode(); }
+
+/* Content tracker progress */
+const todo = document.getElementById('todo');
+const bar = document.getElementById('bar');
+const barText = document.getElementById('barText');
+function updateProgress(){
+  if(!todo) return;
+  const items = Array.from(todo.querySelectorAll('input[type="checkbox"]'));
+  const done = items.filter(i=>i.checked).length;
+  const pct = Math.round(100 * done / items.length);
+  if(bar) bar.style.width = pct + '%';
+  if(barText) barText.textContent = `${done} of ${items.length} complete`;
+}
+if(todo) todo.addEventListener('change', updateProgress, {passive:true});
+updateProgress();
+
+/* Phase 1 keyword data */
+const KW_PHASE1 = [
+  {kw:'customer support outsourcing companies', vol:2700, kd:23, intent:'Commercial', prio:'P1', page:'Customer Service Outsourcing'},
+  {kw:'customer service outsourcing', vol:2600, kd:20, intent:'Commercial', prio:'P1', page:'Customer Service Outsourcing'},
+  {kw:'outsourcing customer service', vol:1300, kd:20, intent:'Commercial', prio:'P1', page:'Customer Service Outsourcing'},
+  {kw:'technical support outsourcing', vol:1200, kd:8, intent:'Commercial', prio:'P1', page:'Technical Support Outsourcing'},
+  {kw:'outsourced tech support', vol:900, kd:4, intent:'Commercial', prio:'P1', page:'Technical Support Outsourcing'},
+  {kw:'it help desk outsourcing', vol:450, kd:10, intent:'Commercial', prio:'P1', page:'IT Help Desk'},
+  {kw:'call center outsourcing', vol:900, kd:18, intent:'Commercial', prio:'P1', page:'Call Center Outsourcing'},
+  {kw:'email answering service', vol:500, kd:8, intent:'Commercial', prio:'P1', page:'Email Answering Service'},
+  {kw:'live chat outsourcing', vol:150, kd:15, intent:'Commercial', prio:'P1', page:'Live Chat Outsourcing'},
+  {kw:'ecommerce customer service outsourcing', vol:600, kd:4, intent:'Commercial', prio:'P1', page:'E-commerce Customer Service Outsourcing'},
+  {kw:'saas customer support outsourcing', vol:90, kd:2, intent:'Commercial', prio:'P1', page:'SaaS and Technology Support Outsourcing'},
+  {kw:'outsourced receptionist', vol:500, kd:0, intent:'Commercial', prio:'P1', page:'Outsourced Receptionist'},
+  {kw:'outsourced customer service pricing', vol:400, kd:18, intent:'Transactional', prio:'P1', page:'Pricing'},
+  {kw:'call center outsourcing cost', vol:350, kd:18, intent:'Transactional', prio:'P1', page:'Pricing'},
+  {kw:'bpo call center', vol:1100, kd:11, intent:'Commercial', prio:'P2', page:'BPO Call Centers'},
+  {kw:'help desk outsourcing', vol:400, kd:0, intent:'Commercial', prio:'P2', page:'IT Help Desk'},
+  {kw:'email support outsourcing', vol:350, kd:6, intent:'Commercial', prio:'P2', page:'Email Support Outsourcing'},
+  {kw:'b2b call center', vol:200, kd:0, intent:'Commercial', prio:'P2', page:'B2B Call Centers'},
+  {kw:'supportninja alternatives', vol:150, kd:20, intent:'Transactional', prio:'P2', page:'SupportNinja Alternatives'},
+  {kw:'influx alternatives', vol:120, kd:22, intent:'Transactional', prio:'P2', page:'Influx Alternatives'}
+];
+
+const kwRows = document.getElementById('kwRows');
+const kwCards = document.getElementById('kwCards');
+const kwCount = document.getElementById('kwCount');
+const kwFilter = document.getElementById('kwFilter');
+const p1Only = document.getElementById('p1Only');
+
+function renderKW(){
+  const q = (kwFilter?.value || '').toLowerCase().trim();
+  const only = p1Only?.checked ?? true;
+  const list = KW_PHASE1.filter(r=>{
+    const ok = !only || r.prio === 'P1';
+    const hit = r.kw.toLowerCase().includes(q) || r.page.toLowerCase().includes(q);
+    return ok && hit;
+  });
+
+  if(kwRows){
+    kwRows.innerHTML = list.map(r=>`
+      <tr>
+        <td>${r.kw}</td>
+        <td>${r.vol.toLocaleString()}</td>
+        <td>${r.kd}</td>
+        <td><span class="pill blue">${r.intent}</span></td>
+        <td><span class="pill green">${r.prio}</span></td>
+        <td>${r.page}</td>
+      </tr>
+    `).join('');
+  }
+
+  if(kwCards){
+    kwCards.innerHTML = list.map(r=>`
+      <div class="kw-card">
+        <h3>${r.kw}</h3>
+        <div class="kw-meta">
+          <span class="pill">Vol ${r.vol.toLocaleString()}</span>
+          <span class="pill">KD ${r.kd}</span>
+          <span class="pill blue">${r.intent}</span>
+          <span class="pill green">${r.prio}</span>
+        </div>
+        <div class="muted">Mapped page: <strong>${r.page}</strong></div>
+      </div>
+    `).join('');
+  }
+
+  if(kwCount) kwCount.textContent = list.length + ' rows';
+}
+if(kwFilter) kwFilter.addEventListener('input', renderKW, {passive:true});
+if(p1Only) p1Only.addEventListener('change', renderKW, {passive:true});
+renderKW();
+
+/* Build competitor cards after DOM ready */
+document.addEventListener('DOMContentLoaded', buildCardsFromTable, {once:true});
+</script>
+</body>
+</html>
