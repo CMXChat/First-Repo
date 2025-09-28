@@ -6,6 +6,7 @@
 
   <title>About Callmax Solutions | BPO & Outsourcing Partner for Scalable Growth</title>
   <meta name="description" content="Callmax Solutions builds dedicated BPO teams that integrate AI solutions to support people, streamline operations, improve reliability, and drive growth.">
+  <!-- Prevent indexing while staging -->
   <meta name="robots" content="noindex, nofollow" />
 
   <!-- Open Graph -->
@@ -37,7 +38,6 @@
   </script>
 
   <style>
-    /* --------- Light theme only --------- */
     :root{
       --bg:#fbfdff;
       --card:#ffffff;
@@ -50,29 +50,18 @@
       --radius:16px;
       --max:1100px;
     }
-
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,Helvetica,sans-serif;
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
       color:var(--text);
       background:
         radial-gradient(1000px 420px at 20% -10%, rgba(11,102,255,0.07), transparent 60%),
         radial-gradient(900px 520px at 90% -20%, rgba(18,214,223,0.07), transparent 60%),
         var(--bg);
-      letter-spacing:.2px;
     }
-    a{color:inherit;text-decoration:none}
     .container{max-width:var(--max);margin:0 auto;padding:0 20px}
-
-    /* Header (no nav menu) */
-    header{
-      padding:28px 0 8px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));
-      backdrop-filter:saturate(120%) blur(4px);
-    }
+    header{padding:28px 0 8px;border-bottom:1px solid var(--line)}
     .brand{display:flex;align-items:center;gap:12px;font-weight:800}
     .brand-badge{
       width:36px;height:36px;border-radius:10px;
@@ -80,51 +69,22 @@
       background:linear-gradient(135deg,var(--brand),var(--accent));
       box-shadow:var(--shadow)
     }
-
-    /* Hero meta */
-    .meta{color:var(--muted);font-size:14px;margin:2px 0}
-    .sub{color:var(--muted);margin:8px 0 0}
-
-    /* Sections */
-    main{padding:24px 0 60px}
-    section{scroll-margin-top:80px;margin:22px 0}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:26px;
-    }
-    h1{font-size:clamp(26px,4.6vw,40px);margin:8px 0 6px}
-    h2{font-size:clamp(22px,3.2vw,32px);margin:0 0 10px}
+    h1{font-size:clamp(26px,4.6vw,40px)}
+    h2{font-size:clamp(22px,3.2vw,32px)}
     p{margin:0 0 12px}
-    .stack{display:grid;gap:12px}
+    main{padding:24px 0 60px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;margin:22px 0}
     .grid{display:grid;gap:14px}
-    @media (min-width: 860px){ .grid.two{grid-template-columns:1fr 1fr} }
-
-    /* Bullets */
+    @media (min-width:860px){.grid.two{grid-template-columns:1fr 1fr}}
     .bullets{display:grid;gap:12px;margin:6px 0 0;padding:0}
-    .bullets li{
-      list-style:none;display:flex;gap:12px;align-items:flex-start;
-      padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff
-    }
-    .tick{
-      flex:0 0 28px;height:28px;border-radius:8px;
-      display:grid;place-items:center;color:#fff;
-      background:linear-gradient(135deg,var(--brand),var(--accent));
-      box-shadow:var(--shadow)
-    }
-
+    .bullets li{list-style:none;display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .tick{flex:0 0 28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--brand),var(--accent));box-shadow:var(--shadow)}
     footer{margin:40px 0 80px;color:var(--muted);text-align:center}
-    .tagline{
-      margin-top:6px;font-weight:800;font-size:clamp(16px,2.2vw,20px);
-      background: linear-gradient(135deg,var(--brand),var(--accent));
-      -webkit-background-clip:text;background-clip:text;color:transparent
-    }
+    .tagline{margin-top:6px;font-weight:800;font-size:clamp(16px,2.2vw,20px);background:linear-gradient(135deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .meta{color:var(--muted);font-size:14px;margin:2px 0}
   </style>
 </head>
 <body>
-  <!-- Minimal light header (no menu) -->
   <header>
     <div class="container">
       <div class="brand">
@@ -133,6 +93,7 @@
       </div>
       <h1>About Callmax Solutions</h1>
       <p class="sub">Human powered. AI enabled. Partner driven.</p>
+      <!-- Visible meta reference -->
       <p class="meta">SEO title: About Callmax Solutions | BPO &amp; Outsourcing Partner for Scalable Growth</p>
       <p class="meta">Meta description: Callmax Solutions builds dedicated BPO teams that integrate AI solutions to support people, streamline operations, improve reliability, and drive growth.</p>
     </div>
@@ -140,41 +101,41 @@
 
   <main class="container">
     <!-- The Callmax Advantage -->
-    <section id="advantage" class="card stack">
+    <section class="card">
       <h2>The Callmax Advantage</h2>
       <p>Great companies don’t try to do everything themselves. They focus on what they do best and choose the right partners for the rest. At Callmax Solutions, we create dedicated outsourcing teams that keep operations running faster, smoother, and more reliable, giving our clients the freedom to focus on growth.</p>
     </section>
 
     <!-- Why Callmax Was Created -->
-    <section id="created" class="card stack">
+    <section class="card">
       <h2>Why Callmax Was Created</h2>
       <p>Too many businesses were stuck choosing between low-cost providers that cut corners and expensive firms that shut smaller companies out. Callmax was created to break that cycle.</p>
       <p>With years of experience leading BPO teams across major outsourcing hubs worldwide, including onshore, nearshore, and offshore support, our leadership designed a model that delivers both quality and value without compromise.</p>
     </section>
 
     <!-- How We Drive Results -->
-    <section id="results" class="card stack">
+    <section class="card">
       <h2>How We Drive Results</h2>
       <div class="grid two">
-        <div class="stack">
+        <div>
           <p>We do more than add people to your processes. We take the time to understand how your business works, remove what slows it down, and create systems that deliver better results. That means faster response times, smoother operations, and teams that feel like part of your company.</p>
           <p>We integrate AI solutions that support our people by automating reports, reducing errors, and speeding up workflows. This allows our teams to focus on complex, high-value work while technology handles repetitive tasks.</p>
-          <p>To keep performance consistent, we build structure around the work by creating SOPs, tracking KPIs, and designing training modules, while our management ensures every process is executed, measured, and continually improved. The result is a balance of people, process, and technology working in harmony.</p>
+          <p>To keep performance consistent, we build structure around the work by creating SOPs, tracking KPIs, and designing training modules, while our management ensures every process is executed, measured, and continually improved. The result is consistent, accountable workflows that give you clarity and control. This creates a balance of people, process, and technology working in harmony.</p>
         </div>
-        <div class="stack">
+        <div>
           <ul class="bullets">
             <li><div class="tick">✓</div><div>Faster response times</div></li>
             <li><div class="tick">✓</div><div>Smoother operations</div></li>
             <li><div class="tick">✓</div><div>Teams that feel like part of your company</div></li>
-            <li><div class="tick">✓</div><div>SOPs, KPI tracking, and training modules</div></li>
-            <li><div class="tick">✓</div><div>Measured and continually improved processes</div></li>
+            <li><div class="tick">✓</div><div>SOPs, KPI tracking, and training modules that keep teams accountable</div></li>
+            <li><div class="tick">✓</div><div>Processes that are measured and continually improved</div></li>
           </ul>
         </div>
       </div>
     </section>
 
     <!-- Why Businesses Count on Us -->
-    <section id="trust" class="card stack">
+    <section class="card">
       <h2>Why Businesses Count on Us</h2>
       <ul class="bullets">
         <li><div class="tick">✓</div><div>Leadership with decades of operational experience</div></li>
@@ -185,13 +146,14 @@
     </section>
 
     <!-- A Partnership That Grows With You -->
-    <section id="partnership" class="card stack">
+    <section class="card">
       <h2>A Partnership That Grows With You</h2>
       <p>Outsourcing is more than a transaction. It is a partnership. We are committed to long-term relationships that give companies the freedom to focus on growth while we handle operations with precision and care. As industries change, Callmax will continue to evolve as a future ready outsourcing partner, integrating AI where it streamlines workflows and improves outcomes while always keeping people at the center.</p>
+      <p>We free you from operational burdens so you can grow with confidence.</p>
     </section>
 
     <!-- Tagline -->
-    <section class="card stack">
+    <section class="card">
       <h2>Tagline</h2>
       <p class="tagline">Human powered. AI enabled. Partner driven.</p>
     </section>
