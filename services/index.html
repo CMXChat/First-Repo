@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Services — CMX</title>
+<meta name="description" content="CMX services hub. Fast WordPress builds, evidence-based SEO, content, and design. Creator-friendly ops with security and privacy by default." />
+
+<style>
+  :root{
+    /* CMX gradient blues (lighter, brandy) */
+    --g1:#0ea5e9; /* sky-500 */
+    --g2:#38bdf8; /* sky-400 */
+
+    --ink:#0f172a;
+    --muted:#64748b;
+    --bg:#f8fafc;
+    --card:#ffffff;
+    --line:rgba(15,23,42,.10);
+    --shadow:0 10px 30px rgba(2,6,23,.06);
+
+    --chip-bg:#f1f5f9;
+    --chip-ink:#0f172a;
+
+    --r-pill:999px;
+    --r-xl:22px;
+    --r-md:14px;
+
+    --fs-1:clamp(28px,6vw,48px);
+    --fs-2:clamp(18px,3.6vw,28px);
+    --fs-3:clamp(15px,2.6vw,18px);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  a{color:inherit;text-decoration:none}
+
+  .wrap{max-width:1120px;margin:max(16px, env(safe-area-inset-top)) auto 96px;padding:clamp(14px,3vw,24px)}
+
+  /* ========= Gradient TEXT (mobile-safe) ========= */
+  .gtext{
+    background:linear-gradient(90deg,var(--g1),var(--g2));
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; color:transparent;
+    display:inline-block; /* helps on mobile */
+  }
+  h1.gtext{ color:transparent !important; font-weight:900 }
+  .gfill{ background:linear-gradient(90deg,var(--g1),var(--g2)); color:#fff; }
+  .text-balance{ text-wrap:balance }
+
+  /* ========= HERO ========= */
+  .hero{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-xl);
+    box-shadow:var(--shadow); padding:clamp(18px,3.8vw,32px);
+    position:relative; overflow:hidden;
+  }
+  .hero::before{
+    content:""; position:absolute; inset:-1px; border-radius:calc(var(--r-xl) + 2px);
+    background:linear-gradient(90deg,rgba(14,165,233,.18),rgba(56,189,248,.10) 40%,transparent 60%);
+    z-index:-1;
+  }
+  .hero::after{
+    content:""; position:absolute; inset:-40% -10% auto -10%; height:280px;
+    background:
+      radial-gradient(40% 60% at 20% 40%, rgba(14,165,233,.10), transparent 60%),
+      radial-gradient(50% 70% at 80% 30%, rgba(56,189,248,.10), transparent 60%);
+    filter:blur(6px); pointer-events:none;
+  }
+  h1{font-size:var(--fs-1);margin:0 0 .6rem}
+  .lead{color:var(--muted);font-size:var(--fs-3);margin:0}
+
+  /* ========= Quick paths (white cards + gradient accents; no blue fills) ========= */
+  .mosaic{ display:grid; gap:12px; grid-template-columns:1fr; margin-top:16px }
+  @media(min-width:720px){ .mosaic{ grid-template-columns:repeat(2,1fr) } }
+  .tile{
+    position:relative; overflow:hidden;
+    border-radius:18px; padding:16px 16px 14px;
+    background:var(--card); border:1px solid var(--line);
+    transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    will-change:transform, box-shadow;
+  }
+  .tile::before{
+    content:""; position:absolute; left:12px; right:12px; top:8px; height:3px;
+    border-radius:999px; background:linear-gradient(90deg,var(--g1),var(--g2));
+  }
+  .tile::after{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(120px 120px at 15% 10%, rgba(14,165,233,.08), transparent 60%),
+      radial-gradient(140px 140px at 85% 25%, rgba(56,189,248,.08), transparent 60%);
+    pointer-events:none;
+  }
+  .tile:hover{ transform:translateY(-2px); border-color:rgba(14,165,233,.35); box-shadow:0 10px 26px rgba(14,165,233,.16) }
+  .tile h3{ margin:2px 0 6px; font-size:1.08rem }
+  .tile p{ margin:0; color:var(--muted); font-size:.96rem }
+  .tile .arrow{ position:absolute; right:14px; bottom:12px; font-weight:900 }
+
+  /* ========= Controls ========= */
+  .controls{display:grid;gap:10px;grid-template-columns:1fr;margin-top:18px}
+  @media(min-width:720px){ .controls{grid-template-columns:1fr 260px} }
+  .input,select{
+    width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;
+    padding:12px 14px;font-size:1rem
+  }
+
+  /* ========= Sticky filters ========= */
+  .sticky-filters{
+    position:sticky; top:calc(8px + env(safe-area-inset-top)); z-index:20;
+    background:var(--bg); padding:8px 0; backdrop-filter:saturate(140%) blur(4px);
+  }
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  @media(max-width:719px){
+    .filters{overflow-x:auto;white-space:nowrap;padding-bottom:6px;margin-right:-10px}
+    .filters .chip{display:inline-block}
+  }
+
+  /* ========= Chips ========= */
+  .chip{
+    background:#fff; color:var(--chip-ink);
+    border:1px solid var(--line);
+    border-radius:var(--r-pill); padding:.6rem 1rem; font-weight:900; cursor:pointer; user-select:none; min-height:44px
+  }
+  .chip.active{
+    color:#fff; background:linear-gradient(90deg,var(--g1),var(--g2));
+    border-color:transparent; box-shadow:0 2px 6px rgba(14,165,233,.25)
+  }
+
+  /* ========= Section headers ========= */
+  .section{ margin:28px 0 8px }
+  .section .kicker{ font-size:.78rem; letter-spacing:.2em; text-transform:uppercase; color:var(--muted) }
+  .section h2{ margin:.2rem 0 8px; font-size:var(--fs-2) }
+  .section .rule{
+    height:3px; width:120px; border-radius:999px;
+    background:linear-gradient(90deg,var(--g1),var(--g2));
+    box-shadow:0 4px 12px rgba(14,165,233,.30);
+  }
+
+  /* ========= Grid & cards ========= */
+  .grid{display:grid;gap:12px}
+  .cols-3{grid-template-columns:1fr}
+  @media(min-width:760px){ .cols-3{grid-template-columns:repeat(2,1fr)} }
+  @media(min-width:1040px){ .cols-3{grid-template-columns:repeat(3,1fr)} }
+
+  .card{
+    position:relative;
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-md);
+    padding:14px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:10px;
+    content-visibility:auto; contain-intrinsic-size:280px;
+    transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    will-change:transform, box-shadow;
+  }
+  .card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(2,6,23,.10); border-color:rgba(14,165,233,.25) }
+
+  /* Nicer image frame: soft glowing gradient edge (not a hard border) */
+  .thumb{
+    width:100%; aspect-ratio:16/9; border-radius:14px; background:#fff;
+    position:relative; overflow:hidden;
+  }
+  .thumb::before{
+    content:""; position:absolute; inset:0; border-radius:14px; padding:2px;
+    background:linear-gradient(135deg,var(--g1),var(--g2));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    filter:blur(2px);
+  }
+  .thumb::after{
+    content:""; position:absolute; inset:0;
+    background-image: radial-gradient(rgba(2,6,23,.06) 1px, transparent 1px);
+    background-size:18px 18px; opacity:.4;
+  }
+
+  /* Category pill — compact filled gradient badge */
+  .pill{
+    position:absolute; top:12px; left:14px; z-index:2;
+    display:inline-flex; align-items:center;
+    padding:.30rem .66rem; border-radius:999px;
+    background:linear-gradient(90deg,var(--g1),var(--g2));
+    color:#fff; font-weight:900; font-size:.78rem; line-height:1;
+    box-shadow:0 2px 8px rgba(14,165,233,.22);
+  }
+
+  .card h3{margin:0;font-size:1.08rem}
+  .meta{color:var(--muted);font-size:.96rem}
+
+  .cta-row{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+  /* ========= Buttons ========= */
+  .btn{
+    border-radius:var(--r-pill); font-weight:900; cursor:pointer;
+    padding:.78rem 1.1rem; min-height:46px; line-height:1;
+    transition:box-shadow .2s ease, transform .05s ease, background-color .2s ease;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .btn:active{ transform:translateY(1px) }
+  .btn:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(56,189,248,.35) }
+
+  .btn-primary{ color:#fff; background:linear-gradient(90deg,var(--g1),var(--g2)) }
+  .btn-primary:hover{ box-shadow:0 8px 20px rgba(14,165,233,.28) }
+
+  .btn-ghost{
+    color:var(--ink);
+    background:linear-gradient(0deg, rgba(14,165,233,.10), rgba(56,189,248,.10));
+    box-shadow:inset 0 0 0 1px rgba(14,165,233,.25);
+  }
+  .btn-ghost:hover{ background:linear-gradient(0deg, rgba(14,165,233,.14), rgba(56,189,248,.14)) }
+
+  /* Load more — gradient border + soft hover */
+  #loadMore{
+    background:#fff;
+    border:2px solid transparent;
+    border-radius:var(--r-pill);
+    background-image:linear-gradient(#fff,#fff),linear-gradient(90deg,var(--g1),var(--g2));
+    background-origin:border-box;
+    background-clip:padding-box,border-box;
+    font-weight:900;
+    padding:.78rem 1.2rem;
+  }
+  #loadMore:hover{ box-shadow:0 6px 16px rgba(14,165,233,.20) }
+
+  /* ========= Value band & footer ========= */
+  .cta-band{
+    margin-top:22px;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r-xl); box-shadow:var(--shadow);
+    padding:18px; display:grid; gap:12px; grid-template-columns:1fr;
+  }
+  @media(min-width:900px){ .cta-band{grid-template-columns:1.2fr .8fr} }
+  .cta-list{display:grid;gap:8px}
+  .tick{ display:inline-block; width:22px; height:22px; border-radius:999px;
+    background:linear-gradient(90deg,var(--g1),var(--g2)); color:#fff; text-align:center; line-height:22px; font-weight:900; margin-right:6px;
+  }
+
+  .result-bar{ display:flex; align-items:center; gap:10px; color:var(--muted); font-size:.95rem; margin:12px 6px }
+
+  footer{margin:28px 0 6px;color:var(--muted);font-size:.95rem;text-align:center}
+  footer a{ text-decoration:underline; }
+
+  /* Sticky bottom CTA */
+  .bottom-cta{
+    position:fixed; left:0; right:0; bottom:0;
+    transform:translateY(100%); transition:transform .25s ease;
+    background:var(--card); border-top:1px solid var(--line);
+    box-shadow:0 -10px 30px rgba(2,6,23,.08);
+    padding:10px max(12px, env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
+    display:flex; gap:8px; z-index:50;
+  }
+  .bottom-cta.show{ transform:translateY(0) }
+  .bottom-cta .btn{ flex:1 }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation:none!important; transition:none!important } }
+</style>
+</head>
+<body>
+  <main class="wrap" aria-labelledby="title">
+    <!-- HERO -->
+    <header class="hero">
+      <p class="gtext" style="margin:0 0 6px; font-weight:900; letter-spacing:.15em; text-transform:uppercase;">CMX Services</p>
+      <h1 id="title" class="gtext text-balance">Build fast. Rank smart. Convert better.</h1>
+      <p class="lead">Choose a path below. Everything is built for speed, readability, and results.</p>
+
+      <!-- Quick paths -->
+      <nav class="mosaic" aria-label="Quick paths">
+        <a class="tile" href="/website-development/">
+          <h3 class="gtext">Web Development</h3>
+          <p>Fast WordPress builds with clean components.</p>
+          <span class="arrow gtext" aria-hidden="true">→</span>
+        </a>
+        <a class="tile" href="/seo-services/">
+          <h3 class="gtext">SEO Services</h3>
+          <p>Evidence-led ranking for money pages.</p>
+          <span class="arrow gtext" aria-hidden="true">→</span>
+        </a>
+        <a class="tile" href="/content-writing-services/">
+          <h3 class="gtext">Content &amp; Writing</h3>
+          <p>Explain, persuade, and convert.</p>
+          <span class="arrow gtext" aria-hidden="true">→</span>
+        </a>
+        <a class="tile" href="/design-services/">
+          <h3 class="gtext">Design</h3>
+          <p>Readable layouts that actually sell.</p>
+          <span class="arrow gtext" aria-hidden="true">→</span>
+        </a>
+      </nav>
+
+      <!-- Controls -->
+      <div class="controls" role="search">
+        <label class="sr" for="search">Search services</label>
+        <input id="search" class="input" placeholder="Search services…" aria-controls="grid-core grid-addons" />
+        <label class="sr" for="cat">Filter by category</label>
+        <select id="cat" aria-label="Filter by category">
+          <option value="">All categories</option>
+          <option>Web</option>
+          <option>SEO</option>
+          <option>Content</option>
+          <option>Design</option>
+          <option>Community</option>
+        </select>
+      </div>
+
+      <!-- Sticky quick filters -->
+      <div class="sticky-filters">
+        <div class="filters" id="chips" aria-label="Quick filters">
+          <button class="chip active" data-cat="" aria-pressed="true">All</button>
+          <button class="chip" data-cat="Web" aria-pressed="false">Web</button>
+          <button class="chip" data-cat="SEO" aria-pressed="false">SEO</button>
+          <button class="chip" data-cat="Content" aria-pressed="false">Content</button>
+          <button class="chip" data-cat="Design" aria-pressed="false">Design</button>
+          <button class="chip" data-cat="Community" aria-pressed="false">Community</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <a href="/contact/" class="btn btn-primary gfill">Start a project</a>
+        <a href="/about/" class="btn btn-ghost">How we work</a>
+      </div>
+    </header>
+
+    <div class="result-bar" aria-live="polite" id="resultBar">
+      Showing <span class="gtext">0</span> of <span class="gtext">0</span> services
+    </div>
+
+    <!-- CORE -->
+    <section class="section" aria-label="Core services">
+      <div class="kicker">Primary</div>
+      <h2 class="gtext text-balance">Core</h2>
+      <div class="rule"></div>
+    </section>
+    <section class="grid cols-3" id="grid-core"></section>
+
+    <!-- ADD-ONS -->
+    <section class="section" aria-label="Add-on services">
+      <div class="kicker">Specialists</div>
+      <h2 class="gtext text-balance">Add-ons &amp; Specialists</h2>
+      <div class="rule"></div>
+    </section>
+    <section class="grid cols-3" id="grid-addons"></section>
+
+    <div style="display:flex;justify-content:center;margin:14px 0">
+      <button class="btn" id="loadMore" hidden>Load more</button>
+    </div>
+
+    <!-- Value band -->
+    <aside class="cta-band" aria-label="What you get with CMX">
+      <div>
+        <h3 class="gtext text-balance" style="margin:0 0 .6rem">What you get with CMX</h3>
+        <div class="cta-list meta">
+          <div><span class="tick">✓</span> Clean, readable builds with component consistency</div>
+          <div><span class="tick">✓</span> GA4, GSC, and structured data wired from day one</div>
+          <div><span class="tick">✓</span> Security &amp; backups; least-privilege access</div>
+          <div><span class="tick">✓</span> Weekly async updates; clear milestones</div>
+        </div>
+      </div>
+      <div style="align-self:center;justify-self:end;display:flex;gap:10px;flex-wrap:wrap">
+        <a href="/contact/" class="btn btn-primary gfill">Book a discovery call</a>
+        <a href="/blog/" class="btn btn-ghost">See insights</a>
+      </div>
+    </aside>
+
+    <footer>Questions? <a class="gtext" href="mailto:team@cmxchat.com">team@cmxchat.com</a></footer>
+
+    <!-- Sticky bottom CTA -->
+    <nav class="bottom-cta" id="bottomCta" aria-label="Start a project">
+      <a href="/contact/" class="btn btn-primary gfill">Start a project</a>
+      <a href="/about/" class="btn btn-ghost">How we work</a>
+    </nav>
+  </main>
+
+<script>
+/* --- Data --- */
+const SERVICES = [
+  /* CORE */
+  {title:'Web Development', cat:'Web', type:'core',
+   summary:'Fast, maintainable WordPress builds with clear components and Core Web Vitals best practices.',
+   bullets:['Theme components for consistent UI','Speed first (images, fonts, caching)','Accessible, easy-to-edit pages'],
+   href:'/website-development/'},
+  {title:'SEO Services', cat:'SEO', type:'core',
+   summary:'Evidence-based SEO focused on money pages, internal linking, and structured data.',
+   bullets:['Keyword mapping to services','Schema (Org/Service/FAQ/Article)','Internal link architecture'],
+   href:'/seo-services/'},
+  {title:'Content / Writing', cat:'Content', type:'core',
+   summary:'Helpful explainers, how-tos, and case studies that build trust and rank.',
+   bullets:['Service explainers & briefs','How-tos and playbooks','Case studies & testimonials'],
+   href:'/content-writing-services/'},
+  {title:'Design Services', cat:'Design', type:'core',
+   summary:'Clean, brand-fit designs that emphasize readability and conversion.',
+   bullets:['Component library & tokens','Responsive, accessible layouts','Conversion-aware blocks'],
+   href:'/design-services/'},
+
+  /* ADD-ONS */
+  {title:'Digital Marketing', cat:'SEO', type:'addon',
+   summary:'Campaigns that support your money pages (email, social, paid experiments).',
+   bullets:['Landing pages that match intent','UTM discipline & dashboards','Iterate with evidence'],
+   href:'/digital-marketing/'},
+  {title:'Discord Server Support', cat:'Community', type:'addon',
+   summary:'Healthy community ops tied to site funnels; bots and moderation practices.',
+   bullets:['Intake → /chat → services routing','Moderation & anti-abuse basics','Simple funnels & automations'],
+   href:'/discord-server-support/'},
+  {title:'AI Tools', cat:'Web', type:'addon',
+   summary:'Lightweight internal tools (checklists, ROI calculators) to help convert.',
+   bullets:['Lead assist & estimators','Exporter-friendly data','Embed on key pages'],
+   href:'/ai-tools/'},
+  {title:'Collaboration Hub', cat:'Web', type:'addon',
+   summary:'Central place for file handoffs, tickets, and async updates for clients.',
+   bullets:['Weekly summaries & milestones','Clear responsibilities','Faster iterations'],
+   href:'/collaboration-hub/'}
+];
+
+/* --- DOM refs --- */
+const coreWrap   = document.getElementById('grid-core');
+const addonWrap  = document.getElementById('grid-addons');
+const search     = document.getElementById('search');
+const catSelect  = document.getElementById('cat');
+const chips      = document.getElementById('chips');
+const resultBar  = document.getElementById('resultBar');
+const loadMoreBtn= document.getElementById('loadMore');
+const bottomCta  = document.getElementById('bottomCta');
+
+/* --- Helpers --- */
+function cardHTML(s){
+  return `
+    <article class="card" data-title="${s.title.toLowerCase()}" data-cat="${s.cat}">
+      <div class="thumb" aria-hidden="true"></div>
+      <div class="pill" aria-hidden="true">${s.cat}</div>
+      <h3 class="gtext">${s.title}</h3>
+      <p class="meta">${s.summary}</p>
+      <ul class="meta" style="margin:2px 0 4px 18px">
+        ${s.bullets.map(b=>`<li>${b}</li>`).join('')}
+      </ul>
+      <div class="cta-row">
+        <a class="btn btn-primary gfill" href="${s.href}">Learn more</a>
+        <a class="btn btn-ghost" href="/contact/">Get a quote</a>
+      </div>
+    </article>
+  `;
+}
+
+const PAGE_SIZE = 6;
+let visibleCap = PAGE_SIZE;
+
+function applyFilters(){
+  const q = (search.value||'').toLowerCase();
+  const cat = catSelect.value;
+  return SERVICES.filter(s=>{
+    const qOk = !q || s.title.toLowerCase().includes(q) || s.summary.toLowerCase().includes(q);
+    const cOk = !cat || s.cat === cat;
+    return qOk && cOk;
+  });
+}
+
+function render(){
+  const list = applyFilters();
+  const core  = list.filter(s=>s.type==='core');
+  const addons= list.filter(s=>s.type==='addon');
+
+  const coreOut  = core.slice(0, Math.min(core.length, visibleCap));
+  const remain   = Math.max(0, visibleCap - coreOut.length);
+  const addonOut = addons.slice(0, remain);
+
+  coreWrap.innerHTML  = coreOut.map(cardHTML).join('');
+  addonWrap.innerHTML = addonOut.map(cardHTML).join('');
+
+  const shown = coreOut.length + addonOut.length;
+  resultBar.innerHTML = `Showing <span class="gtext">${shown}</span> of <span class="gtext">${list.length}</span> services`;
+  loadMoreBtn.hidden = shown >= list.length;
+}
+
+function loadMore(){ visibleCap += PAGE_SIZE; render(); }
+
+/* --- Interactions --- */
+let debounce;
+search.addEventListener('input', ()=>{
+  clearTimeout(debounce);
+  debounce = setTimeout(()=>{ visibleCap = PAGE_SIZE; render(); }, 120);
+}, {passive:true});
+
+catSelect.addEventListener('change', e=>{
+  // sync chips state
+  if (chips) {
+    chips.querySelectorAll('.chip').forEach(c=>{
+      const match = (c.dataset.cat||'') === (e.target.value||'');
+      c.classList.toggle('active', match);
+      c.setAttribute('aria-pressed', match ? 'true' : 'false');
+    });
+  }
+  visibleCap = PAGE_SIZE; render();
+}, {passive:true});
+
+chips?.addEventListener('click', e=>{
+  const btn = e.target.closest('.chip'); if(!btn) return;
+  chips.querySelectorAll('.chip').forEach(c=>{ c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+  btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+  catSelect.value = btn.dataset.cat || '';
+  visibleCap = PAGE_SIZE; render();
+}, {passive:true});
+
+loadMoreBtn.addEventListener('click', loadMore);
+
+// Sticky bottom CTA reveal
+function onScroll(){
+  const y = window.scrollY || 0;
+  const hero = document.querySelector('.hero');
+  const passedHero = hero ? (y > hero.offsetTop + hero.offsetHeight - 40) : (y > 320);
+  if (bottomCta) bottomCta.classList.toggle('show', passedHero);
+}
+addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+
+/* Initial render */
+render();
+</script>
+</body>
+</html>
