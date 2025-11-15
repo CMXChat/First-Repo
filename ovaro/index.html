@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Ovaro • Agency Master Plan, Interactive Report</title>
+
+<meta name="description" content="Ovaro — Web & Strategy Agency for brands built to outperform. Interactive master plan covering positioning, silo structure, build pacing, Phase 1 keyword targets, and internal linking." />
+<meta property="og:title" content="Ovaro • Agency Master Plan, Interactive Report" />
+<meta property="og:description" content="Web & Strategy Agency for brands built to outperform. See the interactive plan with competitors, structure, pacing, keywords, and internal linking for Ovaro." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://dummyimage.com/1200x630/2563eb/ffffff&text=Ovaro+Agency+Plan" />
+<meta property="og:url" content="https://example.com/ovaro-plan" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Ovaro • Agency Master Plan, Interactive Report" />
+<meta name="twitter:description" content="Ovaro’s Web & Strategy blueprint — competitors, services silo, build modes, Phase 1 keywords, and linking rules in one interactive deck." />
+<meta name="twitter:image" content="https://dummyimage.com/1200x630/2563eb/ffffff&text=Ovaro+Agency+Plan" />
+
+<!-- Make sure this does NOT index, but still shows rich link preview -->
+<meta name="robots" content="noindex, nofollow" />
+<meta name="googlebot" content="noindex, nofollow" />
+
+<style>
+  :root{
+    --deck-bg:#f7f9ff;
+    --deck-ink:#0f172a;
+    --deck-muted:#5b647b;
+    --deck-card:#ffffff;
+    --deck-brand:#2563eb;
+    --deck-brand2:#38bdf8;
+    --deck-accent:#10b981;
+    --deck-warn:#f59e0b;
+    --deck-danger:#ef4444;
+    --deck-line:rgba(17,24,39,.12);
+    --deck-shadow:0 10px 40px rgba(2,6,23,.08);
+    --table-th:#eef2ff;
+    --card-gradient:linear-gradient(180deg,rgba(17,24,39,.04),transparent);
+    --fs-1:clamp(22px,4.5vw,40px);
+    --fs-2:clamp(18px,2.8vw,26px);
+    --fs-3:clamp(15px,2.2vw,18px);
+    --radius-xl:18px;
+    --radius-md:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--deck-bg); color:var(--deck-ink);
+    font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .deck{
+    max-width:1150px;
+    margin:max(14px, env(safe-area-inset-top)) auto 24px;
+    padding:clamp(12px,3vw,24px);
+  }
+  .topbar{
+    display:flex;gap:12px;justify-content:space-between;align-items:center;margin-bottom:12px
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;flex-wrap:wrap}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(45deg,var(--deck-brand),var(--deck-brand2))}
+  .cta-row{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{
+    border:1px solid var(--deck-line);cursor:pointer;border-radius:999px;
+    padding:.82rem 1.05rem;font-weight:800;min-height:42px;
+    background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2));color:#fff;
+    box-shadow:var(--deck-shadow);
+    touch-action:manipulation;
+  }
+  .ghost{
+    background:var(--deck-card);color:var(--deck-ink);
+    border:1px solid var(--deck-line)
+  }
+  .slides{display:grid;gap:14px}
+  .slide{
+    background:var(--deck-card);border-radius:var(--radius-xl);box-shadow:var(--deck-shadow);
+    padding:clamp(16px,3.5vw,30px);display:none;position:relative;min-height:58vh
+  }
+  .slide.active{display:block;animation:fade .22s ease-out}
+  .slide::after{content:none}
+  @keyframes fade{from{opacity:.5;transform:translateY(5px)} to{opacity:1;transform:translateY(0)}}
+  h1{font-size:var(--fs-1);margin:.2rem 0 1rem}
+  h2{font-size:var(--fs-2);margin:.75rem 0 .5rem}
+  p{margin:.35rem 0}
+  .lead{color:var(--deck-muted);font-size:var(--fs-3)}
+  .muted{color:var(--deck-muted)}
+  .kicker{
+    font-size:.85rem;
+    letter-spacing:.3px;
+    font-weight:800;
+    color:var(--deck-muted);
+    text-transform:uppercase;
+    margin-bottom:.35rem;
+  }
+  .grid{display:grid;gap:12px}
+  .cols-2{grid-template-columns:1fr}
+  .cols-3{grid-template-columns:1fr}
+  @media(min-width:920px){
+    .cols-2{grid-template-columns:1fr 1fr}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+  }
+  .card{background:var(--card-gradient);border:1px solid var(--deck-line);border-radius:var(--radius-md);padding:12px 14px}
+  .nav{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    margin-top:10px;padding-bottom:calc(8px + env(safe-area-inset-bottom));
+  }
+  .index{display:flex;gap:6px;flex-wrap:wrap}
+  .dot-step{width:10px;height:10px;border-radius:50%;background:rgba(37,99,235,.20)}
+  .dot-step.active{background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2))}
+  .tree-wrap{border:1px solid var(--deck-line);border-radius:var(--radius-xl);padding:clamp(10px,2vw,18px);background:var(--deck-card)}
+  .toolbar{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+  .chip{padding:.52rem .7rem;border-radius:999px;background:rgba(37,99,235,.12);font-weight:700;font-size:.95rem;cursor:pointer;user-select:none;min-height:40px;display:inline-flex;align-items:center}
+  .chip:active{transform:translateY(1px)}
+  .legend{color:var(--deck-muted);font-size:.92rem}
+  .tree{list-style:none;margin:0;padding:0;font-size:15px}
+  .tree li{margin:6px 0;padding-left:14px}
+  .rowx{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.55rem .7rem;border-radius:10px;background:rgba(17,24,39,.03)}
+  .slug{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86em;color:var(--deck-muted);word-break:break-word}
+  .star{color:var(--deck-warn);font-weight:bold}
+  .tag{font-size:.75em;padding:.15rem .45rem;border-radius:999px;background:rgba(16,185,129,.15);color:#065f46}
+  .caret{width:20px;height:20px;border-radius:6px;display:inline-grid;place-items:center;background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2));color:#fff;cursor:pointer}
+  .collapsed > .branch{display:none}
+  .branch{margin-left:14px;padding-left:14px;border-left:2px solid rgba(37,99,235,.25)}
+  table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--deck-line);border-radius:12px;overflow:hidden;background:#fff}
+  th,td{padding:12px;border-bottom:1px solid var(--deck-line);vertical-align:top}
+  th{background:var(--table-th);text-align:left;font-weight:800;color:var(--deck-ink);position:sticky;top:0;z-index:1}
+  tr:last-child td{border-bottom:0}
+  .table-wrap{overflow:auto;max-height:420px;border-radius:12px}
+  .pill{display:inline-block;font-size:.8rem;padding:.2rem .5rem;border-radius:999px;background:#eef2ff;color:#334155}
+  .pill.green{background:rgba(16,185,129,.15);color:#047857}
+  .pill.blue{background:rgba(37,99,235,.12);color:#1e40af}
+  @media(max-width:720px){
+    .kw-table{display:none}
+    .kw-cards{display:grid;gap:10px}
+    .kw-card{border:1px solid var(--deck-line);border-radius:12px;background:#fff;padding:12px}
+    .kw-card h3{margin:.1rem 0 .2rem 0;font-size:1.05rem}
+    .kw-meta{display:flex;gap:6px;flex-wrap:wrap;margin:.25rem 0}
+    .kw-meta .pill{padding:.18rem .45rem}
+  }
+  @media(min-width:721px){
+    .kw-cards{display:none}
+  }
+  @media(max-width:720px){
+    #cmpTable{display:none}
+    .cmp-cards{display:grid;gap:10px}
+    .cmp-card{border:1px solid var(--deck-line);border-radius:12px;background:#fff;padding:12px}
+    .cmp-card h3{margin:0 0 .25rem 0;font-size:1.05rem}
+    .cmp-card .small{color:var(--deck-muted);font-size:.95rem;margin:.15rem 0}
+  }
+  @media(min-width:721px){
+    .cmp-cards{display:none}
+  }
+  footer{max-width:1150px;margin:8px auto 20px;padding:0 20px;color:var(--deck-muted);font-size:.95rem}
+  input,select{
+    border-radius:999px;
+    border:1px solid var(--deck-line);
+    padding:.45rem .7rem;
+    font:inherit;
+  }
+  .row{display:flex;align-items:center}
+</style>
+</head>
+<body>
+
+  <div class="deck">
+    <div class="topbar">
+      <div class="brand"><span class="dot"></span> Ovaro • Agency Master Plan <span class="muted" style="font-weight:600;margin-left:8px">CMX Global Strategy</span></div>
+      <div class="cta-row">
+        <button class="btn ghost" id="prev">◀ Prev</button>
+        <button class="btn" id="next">Next ▶</button>
+      </div>
+    </div>
+
+    <div class="slides" id="slides">
+      <!-- Slide 1: Executive overview -->
+      <section class="slide active">
+        <div class="kicker">Ovaro — Web &amp; Strategy Agency for brands built to outperform.</div>
+        <h1>Executive overview</h1>
+        <p class="lead">
+          Ovaro is built to be a calm, technical partner for founders and marketing leads. To match that, the site needs a simple structure, one clear intent per page, and proof that shows we can actually ship. We do this by building a services spine, connecting it to the right use cases, and wiring tracking so every visit has a job.
+        </p>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Plan to move first</h2>
+            <ul>
+              <li>Launch a focused Services hub with Web Design &amp; Development and SEO as the core entry points, with Paid campaigns used to test and accelerate the best ideas.</li>
+              <li>Give each core service its own pillar page and break out high value variants, like Landing Pages and SEO for Startups.</li>
+              <li>Bring simple Pricing, a Discovery Call page, and a short “Why Ovaro” story online so late-stage visitors have a clean next step.</li>
+              <li>Add three to four starter industry pages that line up with current Ovaro targets, such as Startups &amp; SaaS, Healthcare, Local Services, and Professional Services.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Why this order helps</h2>
+            <ul>
+              <li>We lead with what Ovaro sells now instead of listing everything we could do later.</li>
+              <li>Single-intent pages for core services line up with how people search, which lifts relevance and click through.</li>
+              <li>Pricing, process, and case proof remove friction and let serious buyers move straight into a call.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 2: Audit & setup -->
+      <section class="slide">
+        <h1>Quick audit and setup</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Analytics and search setup</h2>
+            <ul>
+              <li>Wire Google Analytics 4 and Tag Manager for form submissions, click-to-call, email clicks, and calendar bookings.</li>
+              <li>Verify the primary domain in Search Console, submit a clean XML sitemap, and remove stray test or staging URLs.</li>
+              <li>Tag key funnels, for example Home → Services → Discovery Call, so we can see how people actually move.</li>
+            </ul>
+            <h2>Technical hygiene</h2>
+            <p>Keep one canonical domain and protocol, enforce HTTPS, and avoid duplicate routes for the same content. This keeps crawling efficient and avoids splitting authority between lookalike URLs.</p>
+          </div>
+          <div class="card">
+            <h2>On-page basics</h2>
+            <ul>
+              <li>Every service and industry page gets a unique title and meta description designed to win the click.</li>
+              <li>Primary pages ship with FAQ blocks and internal jumps so people can skim and still get what they came for.</li>
+              <li>We set up a simple blog hub and publish useful, non-fluffy content that backs up the sales pages.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 3: Competitors -->
+      <section class="slide">
+        <h1>Competitors at a glance</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>What most agencies do</h2>
+            <ul>
+              <li>They group work under a Services hub, with optional Industries or “Work” sections.</li>
+              <li>They talk about results but hide details on process, pricing, and what happens month by month.</li>
+              <li>They rarely show how web, SEO, and paid connect, so clients still have to guess what to do first.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Where Ovaro leans in</h2>
+            <ul>
+              <li>We keep the classic structure but add more practical detail on what we will ship in the first 90 days.</li>
+              <li>We publish simple starting ranges and scope examples so people can self-qualify before they book.</li>
+              <li>We show how tracking and reporting tie together, so decision makers can see how it all connects.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h2>Competitor matrix</h2>
+          <div class="row" style="margin:8px 0 12px;gap:10px;flex-wrap:wrap">
+            <div class="input" style="flex:1"><input id="cmpSearch" placeholder="Filter competitors by name" aria-label="Filter competitors" /></div>
+            <div class="input"><label><input type="checkbox" id="cmpShowGaps" checked /> show gaps column</label></div>
+          </div>
+
+          <div class="table-wrap">
+            <table id="cmpTable" aria-label="Competitor comparison">
+              <thead>
+                <tr>
+                  <th style="min-width:150px">Brand</th>
+                  <th style="min-width:260px">Positioning</th>
+                  <th style="min-width:180px">Architecture</th>
+                  <th class="cmp-gaps-col" style="min-width:240px">Gaps we can use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WebFX</td>
+                  <td>Full-service internet marketing and web design company focused on SEO, web design, and conversion-driven digital marketing.</td>
+                  <td>Classic enterprise-style layout with channel-based services, industry pages, case studies, and a large resource library.</td>
+                  <td class="cmp-gaps-col">Feels large and process-heavy, less appealing to founder-led teams that want a tight, high-context relationship and someone in their stack and ops.</td>
+                </tr>
+                <tr>
+                  <td>SmartSites</td>
+                  <td>Award-winning digital marketing agency focused on SEO, PPC, email, and web design with strong social proof and review-driven positioning.</td>
+                  <td>Services segmented by channel, industry-specific inner pages, and a deep list of case studies and testimonials.</td>
+                  <td class="cmp-gaps-col">Very strong at “we run your campaigns,” less centered on a single Web &amp; Strategy spine that connects site, SEO, and measurement for smaller teams.</td>
+                </tr>
+                <tr>
+                  <td>Cardinal Digital Marketing</td>
+                  <td>Performance marketing agency specializing in PPC, SEO, web design, and analytics with a heavy focus on healthcare and multi-location brands.</td>
+                  <td>Channel-based services, industry hubs (especially healthcare and multi-location), plus detailed case studies and resources.</td>
+                  <td class="cmp-gaps-col">Tilted toward healthcare and large multi-location clients, less tuned for lean founder teams outside those verticals.</td>
+                </tr>
+                <tr>
+                  <td>DAVID.MARKET</td>
+                  <td>Brooklyn-based agency focused on digital marketing and web design for creative brands, ecommerce, and B2B.</td>
+                  <td>Services for PPC, SEO, and web design with creative-brand oriented case examples and blog content.</td>
+                  <td class="cmp-gaps-col">Great fit for creative brands, less positioned as a long-term Web &amp; Strategy partner for non-creative or more technical verticals.</td>
+                </tr>
+                <tr>
+                  <td>Winston Digital Marketing</td>
+                  <td>Performance marketing and AI strategy agency helping businesses grow with SEO, paid media, and AI transformation.</td>
+                  <td>Services centered on SEO, paid media, and AI, plus vertical examples and educational content.</td>
+                  <td class="cmp-gaps-col">Strong performance and AI narrative, less emphasis on custom web builds, UX, and a joined-up web and measurement spine.</td>
+                </tr>
+                <tr>
+                  <td>Thrive Internet Marketing (Brooklyn)</td>
+                  <td>Award-winning Brooklyn digital marketing agency covering SEO, PPC, social media, content, and online reputation management.</td>
+                  <td>Broad “everything digital” services menu with SEO, PPC, social, content, ORM, and web design supported by case studies and testimonials.</td>
+                  <td class="cmp-gaps-col">Wide channel list that can feel like a menu, fewer signals of a tight Web &amp; Strategy offer built for long-term partnership.</td>
+                </tr>
+                <tr>
+                  <td>Comrade Digital Marketing (Brooklyn)</td>
+                  <td>Full-service digital marketing agency offering SEO, PPC, social, content marketing, and web design and development for Brooklyn businesses.</td>
+                  <td>Channel-based services, local-focused messaging, industry examples, and FAQs.</td>
+                  <td class="cmp-gaps-col">Solid local full-service positioning, but not as clearly framed as a Web &amp; Strategy Agency built around a single growth spine.</td>
+                </tr>
+                <tr>
+                  <td>Blacksmith Agency</td>
+                  <td>Premium web design agency delivering custom websites and UX for brands across multiple industries.</td>
+                  <td>Web design and UX-focused services supported by in-depth case studies and process breakdowns.</td>
+                  <td class="cmp-gaps-col">Very strong on bespoke design, less explicit about long-term SEO, performance, and integrated growth strategy beyond the build.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cmp-cards" id="cmpCards" aria-label="Competitor cards"></div>
+        </div>
+      </section>
+
+      <!-- Slide 4: Silo -->
+      <section class="slide">
+        <h1>Silo map</h1>
+        <p class="lead">Use the controls to collapse sections or show only Phase 1 pages marked with a star. The structure keeps navigation simple and pushes authority into the pages that actually sell.</p>
+        <div class="tree-wrap">
+          <div class="toolbar">
+            <div class="row" style="gap:8px">
+              <span class="chip" id="toggleAll" tabindex="0" role="button" aria-controls="treeRoot">Collapse All</span>
+              <span class="chip" id="togglePhase" tabindex="0" role="button" aria-controls="treeRoot">Show Phase 1 Only</span>
+            </div>
+            <div class="legend"><span class="star">★</span> Phase 1, <span class="tag">Hub</span> structural page</div>
+          </div>
+          <ul class="tree" id="treeRoot"></ul>
+        </div>
+      </section>
+
+      <!-- Slide 5: Build order -->
+      <section class="slide">
+        <h1>Build order and pace</h1>
+        <div class="card" style="margin-bottom:12px">
+          <div class="row" style="gap:12px;flex-wrap:wrap">
+            <div class="input"><label for="mode">Mode</label>
+              <select id="mode" aria-label="Build mode">
+                <option value="lite">Lite 2 pages per month</option>
+                <option value="std" selected>Standard 3 to 4 per month</option>
+                <option value="heavy">Heavy 6 to 8 per month</option>
+              </select>
+            </div>
+            <p class="muted" style="margin:0">Mode changes how aggressive Phase 1 is, the spine stays the same.</p>
+          </div>
+        </div>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Phase 1</h2>
+            <ul id="phase1List">
+              <li>Home and Services hub</li>
+              <li>Web Design and Development pillar with Landing Page and Website Redesign support</li>
+              <li>SEO pillar with “SEO for Startups” and “Local SEO” subpages</li>
+              <li>PPC and Paid Media pillar focused on Google Ads</li>
+              <li>About, Contact, and basic Legal pages</li>
+            </ul>
+            <p class="muted">Once the first six to eight URLs are live, we can confidently add industry pages and case snapshots.</p>
+          </div>
+          <div class="card">
+            <h2>Phase 2</h2>
+            <ul>
+              <li>Content and Copy pillar, including Blog Strategy and Website Copy pages.</li>
+              <li>Analytics and Measurement, with a simple “Analytics Setup” offer page.</li>
+              <li>Industry pages for Startups &amp; SaaS, Healthcare &amp; Clinics, Local Services, and Professional Services.</li>
+              <li>Dedicated “Why Ovaro” and “Our Process” pages for deeper sales conversations.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h2>Phase 3</h2>
+          <ul>
+            <li>Additional Industries such as Ecommerce &amp; DTC and any new verticals we prove out.</li>
+            <li>Playbooks, calculators, and tools that plug into services and bring in long-tail traffic.</li>
+            <li>Case studies, testimonial clusters, and deep dives into systems and automation work.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Slide 6: First pages -->
+      <section class="slide">
+        <h1>First pages and why</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Web Design and Development pillar</h2>
+            <p>Most conversations start from “our site doesn’t match where we are now.” This pillar explains how Ovaro fixes that and pushes people into Discovery Calls, with clear examples of the work and process.</p>
+          </div>
+          <div class="card">
+            <h2>SEO pillar</h2>
+            <p>For decision makers who care about inbound, the SEO pillar explains how strategy, content, and technical work fit together in a 90-day plan. Subpages like “SEO for Startups” let us speak directly to our main ICP.</p>
+          </div>
+          <div class="card">
+            <h2>PPC and Paid Media pillar</h2>
+            <p>Founders who are already spending need a safe pair of hands, not more buzzwords. This page focuses on how we protect spend, clean up tracking, and test our way into reliable acquisition.</p>
+          </div>
+          <div class="card">
+            <h2>Pricing and Why Ovaro</h2>
+            <p>Simple ranges, clear starting points, and a short “Why Ovaro” narrative help people understand fit fast. These pages keep serious buyers from bouncing to another tab before they talk to us.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 7: Keywords -->
+      <section class="slide">
+        <h1>Phase 1 keyword opportunities</h1>
+        <p class="lead">These terms line up with the first build. Volumes are healthy, difficulty is realistic, and intent is commercial or transactional. Each row maps to a page so drafting and optimisation stay focused.</p>
+
+        <div class="card">
+          <div class="row" style="margin-bottom:10px;gap:10px;flex-wrap:wrap">
+            <div class="input" style="flex:1"><input id="kwFilter" placeholder="Filter by keyword or page" aria-label="Filter keywords" /></div>
+            <div class="input"><label><input type="checkbox" id="p1Only" checked /> show Priority 1 only</label></div>
+          </div>
+
+          <div class="table-wrap kw-table">
+            <table aria-label="Phase 1 keyword opportunities">
+              <thead>
+                <tr>
+                  <th style="min-width:240px">Keyword</th>
+                  <th>Vol</th>
+                  <th>KD</th>
+                  <th>Intent</th>
+                  <th>Priority</th>
+                  <th style="min-width:220px">Mapped page</th>
+                </tr>
+              </thead>
+              <tbody id="kwRows"></tbody>
+            </table>
+          </div>
+
+          <div class="kw-cards" id="kwCards" aria-label="Keyword cards"></div>
+          <p class="muted" id="kwCount" style="margin-top:8px"></p>
+        </div>
+
+        <div class="grid cols-2" style="margin-top:12px">
+          <div class="card">
+            <h2>Why these first</h2>
+            <ul>
+              <li>They match the first service pillars and give us a clear reason for every new URL.</li>
+              <li>They hit the language founders and marketing leads already use when they search for help.</li>
+              <li>They support Pricing and Discovery Call paths without needing heavy tools on day one.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>How we track progress</h2>
+            <ul>
+              <li>Clicks for these queries in Search Console and sessions to their mapped pages in analytics.</li>
+              <li>Discovery Call bookings, form submissions, and email or phone clicks from service and pricing pages.</li>
+              <li>Rank spread across primary and supporting terms per page, not just a single vanity keyword.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 8: Content tracker -->
+      <section class="slide">
+        <h1>Content tracker</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Phase 1 checklist</h2>
+            <ul id="todo">
+              <li><label><input type="checkbox" /> Home</label></li>
+              <li><label><input type="checkbox" /> Services hub</label></li>
+              <li><label><input type="checkbox" /> Web Design and Development pillar</label></li>
+              <li><label><input type="checkbox" /> Landing Page Design subpage</label></li>
+              <li><label><input type="checkbox" /> SEO Services pillar</label></li>
+              <li><label><input type="checkbox" /> SEO for Startups subpage</label></li>
+              <li><label><input type="checkbox" /> PPC and Paid Media pillar</label></li>
+              <li><label><input type="checkbox" /> About Ovaro</label></li>
+              <li><label><input type="checkbox" /> Contact</label></li>
+              <li><label><input type="checkbox" /> Pricing and Discovery Call</label></li>
+              <li><label><input type="checkbox" /> Blog hub</label></li>
+              <li><label><input type="checkbox" /> Legal bundle (Privacy, Terms)</label></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Progress</h2>
+            <div style="background:#eef2ff;border:1px solid var(--deck-line);border-radius:12px;height:16px;overflow:hidden">
+              <div id="bar" style="height:100%;width:0;background:linear-gradient(90deg,var(--deck-brand),var(--deck-brand2))"></div>
+            </div>
+            <p class="muted" id="barText" style="margin-top:8px">0 of 12 complete</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 9: Internal linking -->
+      <section class="slide">
+        <h1>Internal linking</h1>
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Services, Industries, and Proof</h2>
+            <ul>
+              <li>Each Industry page links to the core services that solve problems for that vertical with short use case blocks.</li>
+              <li>Each Service pillar links back to the best-fit Industries and relevant case snapshots.</li>
+              <li>Blog posts and playbooks link up to the relevant services, not just to the homepage.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Pricing and Discovery</h2>
+            <ul>
+              <li>Pricing, Discovery Call, and “Why Ovaro” link back to the pillars they support so visitors can move sideways without starting over.</li>
+              <li>FAQ blocks link to deeper resources and use anchors for rich results and quick jumps.</li>
+              <li>Case studies live next to the pages they support so proof is always one click away.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="nav">
+      <button class="btn ghost" id="prev2">◀ Prev</button>
+      <div class="index" id="dots"></div>
+      <button class="btn" id="next2">Next ▶</button>
+    </div>
+  </div>
+
+  <footer>
+    Questions or updates, email <a href="mailto:team@cmxchat.com">team@cmxchat.com</a>.
+  </footer>
+
+<script>
+/* Slides and dots */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dotsWrap = document.getElementById('dots'); let i = 0;
+function renderDots(){
+  dotsWrap.innerHTML='';
+  slides.forEach((_, idx)=>{
+    const d=document.createElement('span');
+    d.className='dot-step'+(idx===i?' active':'');
+    d.addEventListener('click',()=>go(idx), {passive:true});
+    dotsWrap.appendChild(d);
+  });
+}
+function show(){
+  slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  renderDots();
+  window.scrollTo(0,0);
+}
+function go(n){ i = Math.max(0, Math.min(slides.length-1, n)); show(); }
+function next(){ go(i+1); } function prev(){ go(i-1); }
+document.getElementById('next').onclick = next; document.getElementById('prev').onclick = prev;
+document.getElementById('next2').onclick = next; document.getElementById('prev2').onclick = prev;
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); }, {passive:true});
+renderDots(); show();
+
+/* Competitor cards from table + filter */
+const cmpInput = document.getElementById('cmpSearch');
+const cmpShowGaps = document.getElementById('cmpShowGaps');
+const cmpTable = document.getElementById('cmpTable');
+const cmpCards = document.getElementById('cmpCards');
+
+function buildCardsFromTable(){
+  if(!cmpTable) return;
+  cmpCards.innerHTML = '';
+  const rows = Array.from(cmpTable.querySelectorAll('tbody tr'));
+  rows.forEach(tr=>{
+    const [brand, pos, arch, gapCell] = tr.children;
+    const card = document.createElement('div');
+    card.className = 'cmp-card';
+    card.dataset.brand = brand.textContent.trim().toLowerCase();
+    card.innerHTML = `
+      <h3>${brand.textContent.trim()}</h3>
+      <div class="small"><strong>Positioning</strong>, ${pos.textContent.trim()}</div>
+      <div class="small"><strong>Architecture</strong>, ${arch.textContent.trim()}</div>
+      <div class="small cmp-gap"><strong>Gaps we can use</strong>, ${gapCell ? gapCell.textContent.trim() : ''}</div>
+    `;
+    cmpCards.appendChild(card);
+  });
+}
+buildCardsFromTable();
+
+function filterCompetitors(){
+  const q = (cmpInput.value||'').toLowerCase().trim();
+  cmpTable.querySelectorAll('tbody tr').forEach(tr=>{
+    const name = tr.cells[0].textContent.toLowerCase();
+    tr.style.display = name.includes(q) ? '' : 'none';
+  });
+  Array.from(cmpCards.children).forEach(card=>{
+    card.style.display = card.dataset.brand.includes(q) ? '' : 'none';
+  });
+}
+cmpInput.addEventListener('input', filterCompetitors, {passive:true});
+cmpShowGaps.addEventListener('change', ()=>{
+  const show = cmpShowGaps.checked;
+  document.querySelectorAll('.cmp-gaps-col').forEach(c=> c.style.display = show ? '' : 'none');
+  cmpCards.querySelectorAll('.cmp-gap').forEach(c=> c.style.display = show ? '' : 'none');
+}, {passive:true});
+
+/* Ovaro SILO data */
+const SILO = {
+  title:"/", slug:"/", phase:true, hub:false, children:[
+    { title:"Home", slug:"/", phase:true },
+    { title:"Services", slug:"/services", hub:true, phase:true, children:[
+      { title:"Web Design & Development", slug:"/services/web-design-development", phase:true, children:[
+        { title:"Website Redesign", slug:"/services/web-design-development/website-redesign", phase:true },
+        { title:"Landing Page Design", slug:"/services/web-design-development/landing-page-design", phase:true },
+        { title:"Conversion-Focused Websites", slug:"/services/web-design-development/conversion-websites" }
+      ]},
+      { title:"SEO Services", slug:"/services/seo", phase:true, children:[
+        { title:"SEO for Startups", slug:"/services/seo/seo-for-startups", phase:true },
+        { title:"Local SEO", slug:"/services/seo/local-seo", phase:true },
+        { title:"Technical SEO Audits", slug:"/services/seo/technical-seo-audits" }
+      ]},
+      { title:"PPC & Paid Media", slug:"/services/ppc-paid-media", phase:true, children:[
+        { title:"Google Ads Management", slug:"/services/ppc-paid-media/google-ads-management", phase:true },
+        { title:"Meta Ads Management", slug:"/services/ppc-paid-media/meta-ads-management" },
+        { title:"Retargeting Campaigns", slug:"/services/ppc-paid-media/retargeting-campaigns" }
+      ]},
+      { title:"Content & Copy", slug:"/services/content-copy", children:[
+        { title:"Website Copywriting", slug:"/services/content-copy/website-copywriting", phase:true },
+        { title:"Blog Strategy & Articles", slug:"/services/content-copy/blog-strategy" },
+        { title:"Email & Lifecycle Copy", slug:"/services/content-copy/email-lifecycle-copy" }
+      ]},
+      { title:"Branding & Visual Identity", slug:"/services/branding", children:[
+        { title:"Brand Strategy", slug:"/services/branding/brand-strategy" },
+        { title:"Visual Identity Systems", slug:"/services/branding/visual-identity-systems" }
+      ]},
+      { title:"Systems & Integrations", slug:"/services/systems-integrations", children:[
+        { title:"CRM & Pipeline Setup", slug:"/services/systems-integrations/crm-pipeline-setup" },
+        { title:"Marketing Automation", slug:"/services/systems-integrations/marketing-automation" }
+      ]},
+      { title:"Analytics & Measurement", slug:"/services/analytics-measurement", children:[
+        { title:"Analytics Setup", slug:"/services/analytics-measurement/analytics-setup", phase:true },
+        { title:"Reporting & Dashboards", slug:"/services/analytics-measurement/reporting-dashboards" }
+      ]},
+      { title:"Advisory & Retainers", slug:"/services/advisory-retainers", children:[
+        { title:"Growth Advisory", slug:"/services/advisory-retainers/growth-advisory" },
+        { title:"Fractional Marketing Support", slug:"/services/advisory-retainers/fractional-marketing-support" }
+      ]}
+    ]},
+    { title:"Industries", slug:"/industries", hub:true, children:[
+      { title:"Startups & SaaS", slug:"/industries/startups-saas", phase:true },
+      { title:"Healthcare & Clinics", slug:"/industries/healthcare-clinics", phase:true },
+      { title:"Local Services", slug:"/industries/local-services", phase:true },
+      { title:"Professional Services", slug:"/industries/professional-services", phase:true },
+      { title:"Ecommerce & DTC", slug:"/industries/ecommerce-dtc" }
+    ]},
+    { title:"Pricing", slug:"/pricing", hub:true, phase:true, children:[
+      { title:"Website & Build Packages", slug:"/pricing/website-packages", phase:true },
+      { title:"SEO & Content Retainers", slug:"/pricing/seo-content-retainers", phase:true },
+      { title:"Paid Media Management", slug:"/pricing/paid-media-management" },
+      { title:"Discovery Call & Proposal", slug:"/get-a-proposal", phase:true }
+    ]},
+    { title:"Resources", slug:"/resources", hub:true, children:[
+      { title:"Blog", slug:"/blog", phase:true },
+      { title:"Playbooks & Guides", slug:"/resources/playbooks", hub:true, children:[
+        { title:"90-Day Website Refresh Plan", slug:"/resources/playbooks/90-day-website-refresh" },
+        { title:"Founders’ SEO Starter Playbook", slug:"/resources/playbooks/founders-seo-starter" }
+      ]},
+      { title:"Case Studies & Results", slug:"/resources/case-studies" }
+    ]},
+    { title:"Company", slug:"/company", hub:true, children:[
+      { title:"About Ovaro", slug:"/about", phase:true },
+      { title:"Our Process", slug:"/our-process", phase:true },
+      { title:"Why Ovaro", slug:"/why-ovaro", phase:true },
+      { title:"Team", slug:"/team" },
+      { title:"Careers", slug:"/careers" }
+    ]},
+    { title:"Contact", slug:"/contact", phase:true },
+    { title:"Legal", slug:"/legal", hub:true, children:[
+      { title:"Privacy Policy", slug:"/privacy-policy", phase:true },
+      { title:"Terms of Service", slug:"/terms-of-service", phase:true },
+      { title:"Cookie Policy", slug:"/cookie-policy", phase:true }
+    ]}
+  ]
+};
+
+const rootEl = document.getElementById('treeRoot');
+function nodeRow(n){
+  return `<div class="rowx">
+    ${n.children ? '<span class="caret" data-caret>▾</span>' : '<span style="width:20px;display:inline-block"></span>'}
+    <strong>${n.title}</strong> <span class="slug">${n.slug}</span>${n.phase?' <span class="star">★</span>':''}${n.hub?' <span class="tag">Hub</span>':''}
+  </div>`;
+}
+function renderBranch(n){
+  const li = document.createElement('li');
+  li.innerHTML = nodeRow(n);
+  let hasStar = !!n.phase;
+  if(n.children && n.children.length){
+    const ul = document.createElement('ul');
+    ul.className = 'branch';
+    n.children.forEach(ch => {
+      const child = renderBranch(ch);
+      if(child.dataset.hasstar === '1') hasStar = true;
+      ul.appendChild(child);
+    });
+    li.appendChild(ul);
+  }
+  li.dataset.hasstar = hasStar ? '1' : '0';
+  return li;
+}
+rootEl.appendChild(renderBranch(SILO));
+
+/* Caret toggle */
+rootEl.addEventListener('click', (e)=>{
+  const caret = e.target.closest('[data-caret]');
+  if(!caret) return;
+  const li = caret.closest('li');
+  li.classList.toggle('collapsed');
+  caret.textContent = li.classList.contains('collapsed') ? '▸' : '▾';
+}, {passive:true});
+
+/* Collapse or expand all */
+const toggleAllBtn = document.getElementById('toggleAll');
+toggleAllBtn.addEventListener('click', ()=>{
+  const list = rootEl.querySelectorAll('li');
+  const anyOpen = [...list].some(li => !li.classList.contains('collapsed') && li.querySelector('.branch'));
+  list.forEach(li=>{
+    if(li.querySelector('.branch')){
+      li.classList.toggle('collapsed', anyOpen);
+      const c = li.querySelector('[data-caret]');
+      if(c) c.textContent = li.classList.contains('collapsed') ? '▸' : '▾';
+    }
+  });
+  toggleAllBtn.textContent = anyOpen ? 'Expand All' : 'Collapse All';
+}, {passive:true});
+
+/* Phase 1 filter */
+const togglePhaseBtn = document.getElementById('togglePhase'); let phaseOnly = false;
+function applyPhaseFilter(){
+  rootEl.querySelectorAll('li').forEach(li=>{
+    const ok = li.dataset.hasstar === '1';
+    li.style.display = (phaseOnly && !ok) ? 'none' : '';
+  });
+  togglePhaseBtn.textContent = phaseOnly ? 'Show All Pages' : 'Show Phase 1 Only';
+}
+togglePhaseBtn.addEventListener('click', ()=>{ phaseOnly = !phaseOnly; applyPhaseFilter(); }, {passive:true});
+
+/* Build mode tweaks for Phase 1 list */
+const modeSel = document.getElementById('mode');
+const phase1List = document.getElementById('phase1List');
+function applyMode(){
+  const v = modeSel?.value || 'std';
+  const items = {
+    lite:[
+      'Home',
+      'Services hub',
+      'One core pillar (Web or SEO)',
+      'About and Contact',
+      'Basic Legal bundle'
+    ],
+    std:[
+      'Home and Services hub',
+      'Web Design and Development pillar with Landing Page and Website Redesign support',
+      'SEO pillar with “SEO for Startups” and “Local SEO” subpages',
+      'PPC and Paid Media pillar focused on Google Ads',
+      'About, Contact, and basic Legal pages'
+    ],
+    heavy:[
+      'Home and Services hub',
+      'Web, SEO, and PPC pillars with at least one subpage each',
+      'Pricing and Discovery Call page',
+      'About Ovaro, Our Process, and Why Ovaro',
+      'Blog hub and Legal bundle'
+    ]
+  }[v];
+  if(phase1List) phase1List.innerHTML = items.map(t=>`<li>${t}</li>`).join('');
+}
+if(modeSel){ modeSel.addEventListener('change', applyMode, {passive:true}); applyMode(); }
+
+/* Content tracker progress */
+const todo = document.getElementById('todo');
+const bar = document.getElementById('bar');
+const barText = document.getElementById('barText');
+function updateProgress(){
+  if(!todo) return;
+  const items = Array.from(todo.querySelectorAll('input[type="checkbox"]'));
+  const done = items.filter(i=>i.checked).length;
+  const pct = Math.round(100 * done / items.length);
+  if(bar) bar.style.width = pct + '%';
+  if(barText) barText.textContent = `${done} of ${items.length} complete`;
+}
+if(todo) todo.addEventListener('change', updateProgress, {passive:true});
+updateProgress();
+
+/* Phase 1 keyword data for Ovaro */
+const KW_PHASE1 = [
+  {kw:'web design agency', vol:5400, kd:38, intent:'Commercial', prio:'P1', page:'Web Design & Development'},
+  {kw:'website redesign services', vol:1900, kd:26, intent:'Commercial', prio:'P1', page:'Website Redesign'},
+  {kw:'landing page design agency', vol:900, kd:22, intent:'Commercial', prio:'P1', page:'Landing Page Design'},
+  {kw:'seo agency for startups', vol:400, kd:18, intent:'Commercial', prio:'P1', page:'SEO for Startups'},
+  {kw:'local seo services', vol:2900, kd:32, intent:'Commercial', prio:'P1', page:'Local SEO'},
+  {kw:'technical seo audit', vol:1300, kd:28, intent:'Commercial', prio:'P1', page:'Technical SEO Audits'},
+  {kw:'ppc management services', vol:1600, kd:30, intent:'Commercial', prio:'P1', page:'PPC & Paid Media'},
+  {kw:'google ads management', vol:2400, kd:34, intent:'Commercial', prio:'P1', page:'Google Ads Management'},
+  {kw:'digital marketing agency pricing', vol:500, kd:24, intent:'Transactional', prio:'P1', page:'Pricing'},
+  {kw:'marketing agency retainers', vol:250, kd:20, intent:'Transactional', prio:'P1', page:'SEO & Content Retainers'},
+  {kw:'startup marketing agency', vol:700, kd:21, intent:'Commercial', prio:'P1', page:'Startups & SaaS'},
+  {kw:'healthcare marketing agency', vol:650, kd:25, intent:'Commercial', prio:'P1', page:'Healthcare & Clinics'},
+  {kw:'b2b seo agency', vol:500, kd:23, intent:'Commercial', prio:'P2', page:'SEO Services'},
+  {kw:'content marketing agency', vol:2000, kd:36, intent:'Commercial', prio:'P2', page:'Content & Copy'},
+  {kw:'cro and landing page optimization', vol:400, kd:27, intent:'Commercial', prio:'P2', page:'Conversion-Focused Websites'},
+  {kw:'marketing analytics consulting', vol:250, kd:19, intent:'Commercial', prio:'P2', page:'Analytics & Measurement'},
+  {kw:'fractional cmo services', vol:300, kd:22, intent:'Commercial', prio:'P2', page:'Advisory & Retainers'}
+];
+
+const kwRows = document.getElementById('kwRows');
+const kwCards = document.getElementById('kwCards');
+const kwCount = document.getElementById('kwCount');
+const kwFilter = document.getElementById('kwFilter');
+const p1Only = document.getElementById('p1Only');
+
+function renderKW(){
+  const q = (kwFilter?.value || '').toLowerCase().trim();
+  const only = p1Only?.checked ?? true;
+  const list = KW_PHASE1.filter(r=>{
+    const ok = !only || r.prio === 'P1';
+    const hit = r.kw.toLowerCase().includes(q) || r.page.toLowerCase().includes(q);
+    return ok && hit;
+  });
+
+  if(kwRows){
+    kwRows.innerHTML = list.map(r=>`
+      <tr>
+        <td>${r.kw}</td>
+        <td>${r.vol.toLocaleString()}</td>
+        <td>${r.kd}</td>
+        <td><span class="pill blue">${r.intent}</span></td>
+        <td><span class="pill green">${r.prio}</span></td>
+        <td>${r.page}</td>
+      </tr>
+    `).join('');
+  }
+
+  if(kwCards){
+    kwCards.innerHTML = list.map(r=>`
+      <div class="kw-card">
+        <h3>${r.kw}</h3>
+        <div class="kw-meta">
+          <span class="pill">Vol ${r.vol.toLocaleString()}</span>
+          <span class="pill">KD ${r.kd}</span>
+          <span class="pill blue">${r.intent}</span>
+          <span class="pill green">${r.prio}</span>
+        </div>
+        <div class="muted">Mapped page: <strong>${r.page}</strong></div>
+      </div>
+    `).join('');
+  }
+
+  if(kwCount) kwCount.textContent = list.length + ' rows';
+}
+if(kwFilter) kwFilter.addEventListener('input', renderKW, {passive:true});
+if(p1Only) p1Only.addEventListener('change', renderKW, {passive:true});
+renderKW();
+
+/* Build competitor cards after DOM ready */
+document.addEventListener('DOMContentLoaded', buildCardsFromTable, {once:true});
+</script>
+</body>
+</html>
