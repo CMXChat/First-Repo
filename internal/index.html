@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CMX + Ovaro Internal Vision Map</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="An internal vision map for the CMX and Ovaro ecosystem that explains the origin, structure, layers and long term direction, including the link to the full Ovaro web strategy." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="CMX + Ovaro Internal Vision Map" />
+  <meta property="og:description" content="A private view into how CMX and Ovaro fit together as one ecosystem, including layers, timeline and the link to the full Ovaro web strategy." />
+  <meta property="og:image" content="https://cmxchat.com/assets/cmx-ovaro-vision.png" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CMX + Ovaro Internal Vision Map" />
+  <meta name="twitter:description" content="A private structural overview of the CMX and Ovaro ecosystem with layered design and a guided timeline." />
+  <meta name="twitter:image" content="https://cmxchat.com/assets/cmx-ovaro-vision.png" />
+
+  <style>
+    :root {
+      --bg-main: #05060a;
+      --bg-alt: #0b0e16;
+      --bg-soft: #10141f;
+      --text-main: #f5f5f7;
+      --text-muted: #a4a7b5;
+      --accent: #7fd1ff;
+      --accent-soft: rgba(127, 209, 255, 0.12);
+      --border-soft: rgba(255, 255, 255, 0.06);
+
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "SF Pro Display", "Segoe UI", sans-serif;
+      --font-size-base: 18px;
+      --radius-xl: 24px;
+
+      --container-width: 960px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #141821 0, #020309 55%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: var(--font-size-base);
+      line-height: 1.7;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        to bottom,
+        rgba(5, 6, 10, 0.9),
+        rgba(5, 6, 10, 0.7),
+        rgba(5, 6, 10, 0.0)
+      );
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .top-nav-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 14px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .brand-badge {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: rgba(15, 18, 28, 0.9);
+    }
+
+    .brand-badge span {
+      color: var(--accent);
+    }
+
+    .nav-title {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .nav-link:hover {
+      border-color: var(--border-soft);
+      color: var(--text-main);
+    }
+
+    .nav-link.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(127, 209, 255, 0.1);
+    }
+
+    .nav-cta {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      font-size: 13px;
+      color: var(--accent);
+      background: rgba(10, 20, 30, 0.9);
+      cursor: pointer;
+    }
+
+    .nav-cta:hover {
+      background: rgba(127, 209, 255, 0.12);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .section {
+      padding: 70px 20px;
+    }
+
+    .section-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 28px;
+    }
+
+    .section-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .section-subtitle {
+      font-size: 17px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      max-width: 640px;
+    }
+
+    .lead {
+      font-size: 20px;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin-top: 18px;
+    }
+
+    .entry-frame {
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+
+    .entry-shell {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 32px 26px 30px;
+      border-radius: 26px;
+      border: 1px solid rgba(127, 209, 255, 0.18);
+      background: radial-gradient(
+          circle at top left,
+          rgba(127, 209, 255, 0.12),
+          transparent 55%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(155, 135, 255, 0.07),
+          transparent 55%
+        ),
+        rgba(7, 9, 15, 0.96);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.64);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .entry-shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background-image: radial-gradient(
+        circle at 20% 0,
+        rgba(127, 209, 255, 0.1),
+        transparent 60%
+      );
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .entry-heading {
+      position: relative;
+      z-index: 1;
+    }
+
+    .entry-kicker {
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .entry-title {
+      font-size: 38px;
+      letter-spacing: -0.03em;
+      margin: 0 0 10px;
+    }
+
+    .entry-note {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 640px;
+    }
+
+    .entry-meta {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(8, 10, 16, 0.9);
+      border: 1px solid var(--border-soft);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .entry-meta-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(127, 209, 255, 0.5);
+    }
+
+    .entry-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.25;
+      background-image: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0.06) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px
+        );
+      background-size: 42px 42px;
+      pointer-events: none;
+      mask-image: radial-gradient(circle at center, black, transparent 70%);
+    }
+
+    .entry-map-orb {
+      position: absolute;
+      right: -80px;
+      bottom: -80px;
+      width: 260px;
+      height: 260px;
+      border-radius: 100%;
+      background: radial-gradient(
+        circle at 30% 20%,
+        rgba(127, 209, 255, 0.85),
+        rgba(30, 40, 70, 0.7) 45%,
+        rgba(7, 9, 16, 0.5) 75%
+      );
+      filter: blur(0.3px);
+      opacity: 0.9;
+      box-shadow: 0 0 120px rgba(127, 209, 255, 0.8);
+    }
+
+    .entry-map-ring {
+      position: absolute;
+      right: 20px;
+      bottom: 40px;
+      width: 190px;
+      height: 190px;
+      border-radius: 100%;
+      border: 1px solid rgba(245, 245, 247, 0.18);
+      box-shadow: 0 0 40px rgba(127, 209, 255, 0.4);
+      backdrop-filter: blur(4px);
+      background: radial-gradient(
+        circle at 30% 30%,
+        rgba(5, 6, 10, 0.2),
+        rgba(5, 6, 10, 0.8)
+      );
+    }
+
+    .entry-map-ring::before,
+    .entry-map-ring::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(127, 209, 255, 0.68);
+      inset: 26%;
+      opacity: 0.4;
+    }
+
+    .entry-map-ring::after {
+      inset: 40%;
+      border-color: rgba(127, 209, 255, 0.3);
+    }
+
+    .entry-map-label {
+      position: absolute;
+      top: 24px;
+      left: 26px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+    }
+
+    .entry-scroll-hint {
+      position: relative;
+      margin-top: 26px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: default;
+    }
+
+    .entry-scroll-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .entry-scroll-dot span {
+      animation: bounce 1.6s infinite ease-in-out;
+      display: inline-block;
+    }
+
+    @keyframes bounce {
+      0%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.65;
+      }
+      50% {
+        transform: translateY(2px);
+        opacity: 1;
+      }
+    }
+
+    .overview-section {
+      background: radial-gradient(circle at top, #141824 0, #04050a 60%);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 32px;
+      align-items: flex-start;
+    }
+
+    .two-col p {
+      margin-top: 0;
+      color: var(--text-muted);
+    }
+
+    .map-panel {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      padding: 20px 18px 18px;
+      background: radial-gradient(
+          circle at top left,
+          rgba(127, 209, 255, 0.12),
+          transparent 60%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(134, 120, 255, 0.12),
+          transparent 60%
+        ),
+        var(--bg-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-diagram {
+      position: relative;
+      height: 210px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.18),
+        rgba(10, 14, 23, 0.92)
+      );
+      backdrop-filter: blur(4px);
+    }
+
+    .circle.cmx {
+      width: 170px;
+      height: 170px;
+      left: 18%;
+    }
+
+    .circle.ovaro {
+      width: 170px;
+      height: 170px;
+      right: 18%;
+    }
+
+    .circle.center-blend {
+      width: 160px;
+      height: 160px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(
+        circle at 50% 40%,
+        rgba(127, 209, 255, 0.4),
+        rgba(9, 12, 21, 0.95)
+      );
+      border-color: rgba(127, 209, 255, 0.6);
+      box-shadow: 0 0 45px rgba(127, 209, 255, 0.65);
+      opacity: 0.92;
+    }
+
+    .map-label {
+      position: absolute;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .map-label.cmx-label {
+      left: 26%;
+      top: 26%;
+    }
+
+    .map-label.ovaro-label {
+      right: 26%;
+      top: 26%;
+    }
+
+    .map-label.center-label {
+      top: 54%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .map-caption {
+      margin-top: 18px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .layers-section {
+      background: radial-gradient(circle at center, #0c111c 0, #05060a 70%);
+    }
+
+    .layers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .layer-row {
+      border-radius: 16px;
+      border: 1px solid var(--border-soft);
+      background: linear-gradient(
+        to right,
+        rgba(15, 18, 28, 0.96),
+        rgba(10, 13, 22, 0.92)
+      );
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.5fr) minmax(0, 1.8fr);
+      gap: 18px;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    .layer-row::before {
+      content: "";
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 46px;
+      border-radius: 999px;
+      background: linear-gradient(
+        to bottom,
+        rgba(127, 209, 255, 0.9),
+        rgba(127, 209, 255, 0.1)
+      );
+      opacity: 0.8;
+    }
+
+    .layer-tagline {
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-left: 14px;
+    }
+
+    .layer-text {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .origin-section {
+      background: radial-gradient(circle at top, #101523 0, #05060a 65%);
+    }
+
+    .origin-block {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      padding: 24px 22px;
+      background: linear-gradient(
+        135deg,
+        rgba(8, 10, 20, 0.96),
+        rgba(4, 7, 14, 0.98)
+      );
+    }
+
+    .origin-block p {
+      margin-top: 0;
+      color: var(--text-muted);
+    }
+
+    .origin-tech-title {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .origin-tech-subtitle {
+      margin-top: 4px;
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+
+    .origin-tech-group-title {
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .origin-tech-list {
+      margin: 6px 0 0 18px;
+      padding: 0;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    .split-two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 26px;
+      margin-top: 22px;
+    }
+
+    .split-card {
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      background: linear-gradient(
+        145deg,
+        rgba(8, 10, 18, 0.96),
+        rgba(8, 11, 21, 0.96)
+      );
+      padding: 18px 18px 16px;
+    }
+
+    .split-card-title {
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .split-card p {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .timeline-section {
+      background: radial-gradient(circle at center, #060815 0, #020308 70%);
+      position: relative;
+    }
+
+    .timeline-shell {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      background: radial-gradient(
+          circle at top left,
+          rgba(127, 209, 255, 0.18),
+          transparent 60%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(134, 120, 255, 0.18),
+          transparent 60%
+        ),
+        rgba(5, 7, 12, 0.98);
+      padding: 22px 18px 24px;
+      overflow: hidden;
+    }
+
+    .timeline-frame {
+      position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .timeline-track {
+      position: relative;
+      display: flex;
+      gap: 48px;
+      padding: 18px 40px 26px;
+      width: max-content;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        to right,
+        rgba(127, 209, 255, 0.1),
+        rgba(127, 209, 255, 0.65),
+        rgba(127, 209, 255, 0.1)
+      );
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .timeline-phase {
+      min-width: 210px;
+      max-width: 220px;
+      background: rgba(5, 7, 14, 0.96);
+      border-radius: 16px;
+      border: 1px solid var(--border-soft);
+      padding: 12px 12px 12px;
+      position: relative;
+      scroll-snap-align: center;
+    }
+
+    .timeline-frame {
+      scroll-snap-type: x mandatory;
+    }
+
+    .timeline-phase-indicator {
+      position: absolute;
+      top: -13px;
+      left: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 20px rgba(127, 209, 255, 0.7);
+    }
+
+    .timeline-phase-label {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .timeline-phase-title {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .timeline-phase-body {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .timeline-progress-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(180, 185, 205, 0.4);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(127, 209, 255, 0.7);
+    }
+
+    .purpose-section {
+      background: radial-gradient(circle at top, #0f1421 0, #040509 60%);
+    }
+
+    .purpose-block {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      background: linear-gradient(
+        140deg,
+        rgba(6, 9, 16, 0.97),
+        rgba(5, 7, 12, 0.99)
+      );
+      padding: 22px 20px;
+    }
+
+    .purpose-block p {
+      margin-top: 0;
+      color: var(--text-muted);
+    }
+
+    .footer-section {
+      background: #020309;
+      border-top: 1px solid var(--border-soft);
+      padding: 30px 20px 34px;
+    }
+
+    .footer-inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .footer-link-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      padding: 6px 10px;
+      background: rgba(8, 10, 18, 0.94);
+    }
+
+    .footer-link-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+    }
+
+    .footer-link-url {
+      font-size: 14px;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+
+    .back-to-top {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 40;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: rgba(8, 10, 16, 0.92);
+      color: var(--text-muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease, background 0.15s ease;
+    }
+
+    .back-to-top span.icon {
+      font-size: 13px;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .back-to-top:hover {
+      background: rgba(127, 209, 255, 0.1);
+      color: var(--accent);
+    }
+
+    @media (max-width: 900px) {
+      .top-nav-inner {
+        padding-inline: 14px;
+      }
+
+      .two-col,
+      .split-two-col {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .entry-shell {
+        padding: 24px 18px 26px;
+      }
+
+      .entry-title {
+        font-size: 30px;
+      }
+
+      .layer-row {
+        grid-template-columns: minmax(0, 1fr);
+        padding-left: 22px;
+      }
+
+      .layer-row::before {
+        left: 14px;
+        height: 34px;
+      }
+
+      .timeline-track {
+        padding-inline: 26px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .entry-title {
+        font-size: 27px;
+      }
+
+      .section-title {
+        font-size: 26px;
+      }
+
+      .lead {
+        font-size: 18px;
+      }
+
+      .top-nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+
+      .timeline-phase {
+        min-width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="top-nav">
+      <div class="top-nav-inner">
+        <div class="nav-left">
+          <div class="brand-badge">
+            <span>CMX</span> + Ovaro
+          </div>
+          <div class="nav-title">Internal vision map</div>
+        </div>
+        <nav class="nav-links">
+          <button class="nav-link active" data-target="intro">Intro</button>
+          <button class="nav-link" data-target="overview">Overview</button>
+          <button class="nav-link" data-target="origin">Origin</button>
+          <button class="nav-link" data-target="cmx">CMX Today</button>
+          <button class="nav-link" data-target="ovaro">Ovaro</button>
+          <button class="nav-link" data-target="structure">Structure</button>
+          <button class="nav-link" data-target="timeline">Timeline</button>
+          <button class="nav-link" data-target="purpose">Purpose</button>
+          <button class="nav-cta" data-target="footer">Ovaro web strategy</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="intro" class="section entry-frame">
+        <div class="section-inner">
+          <div class="entry-shell">
+            <div class="entry-grid"></div>
+
+            <div class="entry-heading">
+              <div class="entry-kicker">CMX + Ovaro</div>
+              <h1 class="entry-title">Internal vision map</h1>
+              <p class="entry-note">
+                A clear view of how CMX and Ovaro developed, how they share the same architecture and how they now operate together as one ecosystem.
+              </p>
+              <div class="entry-meta">
+                <div class="entry-meta-dot"></div>
+                <span>Reference document for internal use</span>
+              </div>
+              <div class="entry-scroll-hint">
+                <div class="entry-scroll-dot"><span>↓</span></div>
+                <span>Scroll to walk through the map</span>
+              </div>
+            </div>
+
+            <div class="entry-map-orb"></div>
+            <div class="entry-map-ring">
+              <div class="entry-map-label">System view</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="overview" class="section overview-section">
+        <div class="section-inner">
+          <div class="section-header">
+            <div class="section-label">Overview</div>
+            <h2 class="section-title">Two names inside one system</h2>
+            <p class="section-subtitle">
+              CMX and Ovaro grew from the same foundation. One became an environment for clarity and systems. The other became the execution layer that delivers finished work.
+            </p>
+          </div>
+
+          <div class="two-col">
+            <div>
+              <p>
+                The goal of this map is simple. Anyone who reads it should understand how CMX and Ovaro relate, which part does what and why the structure looks the way it does.
+              </p>
+              <p>
+                CMX is the environment. Ovaro is the builder. The shared architecture between them is what makes the system durable over time.
+              </p>
+              <p>
+                The rest of the page walks through origin, current shape, structural layers and the timeline that led here, then links to the full Ovaro web strategy.
+              </p>
+            </div>
+
+            <aside class="map-panel">
+              <div class="map-diagram">
+                <div class="circle cmx"></div>
+                <div class="circle ovaro"></div>
+                <div class="circle center-blend"></div>
+
+                <div class="map-label cmx-label">CMX</div>
+                <div class="map-label ovaro-label">Ovaro</div>
+                <div class="map-label center-label">
+                  Shared architecture and lessons
+                </div>
+              </div>
+              <div class="map-caption">
+                CMX and Ovaro are separate in function but share the same structural thinking. The overlap is where strategy, systems and experience live.
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="origin" class="section origin-section">
+        <div class="section-inner">
+          <div class="section-header">
+            <div class="section-label">Origin</div>
+            <h2 class="section-title">Where CMX came from</h2>
+            <p class="section-subtitle">
+              CMX did not start as an agency or a content brand. It started as a live environment that had to work under real usage and real pressure.
+            </p>
+          </div>
+
+          <div class="origin-block">
+            <p>
+              The first version of CMX ran on a hosted engine so the focus could stay on behavior and community. As the needs grew, the platform was rebuilt from scratch as a custom real time environment with its own routing, logic and interface, engineered in house so AI integrations, cross chat behavior and deeper control were possible without external limits.
+            </p>
+            <p>
+              The system was kept intentionally lightweight so it could handle continuous activity without collapsing. Over time this environment revealed something important. When a digital space is structured and predictable, people move with more confidence. When it becomes chaotic, energy drops and progress slows down.
+            </p>
+            <p>
+              CMX became a place to observe digital behavior. It showed how structure, clarity and architecture directly influence whether people build or stall. Those observations sit under everything that exists in the ecosystem now.
+            </p>
+
+            <div>
+              <div class="origin-tech-title">Technical foundation of CMX</div>
+              <div class="origin-tech-subtitle">
+                A lean, real time stack built for stability, observability and control.
+              </div>
+
+              <div class="origin-tech-group">
+                <div class="origin-tech-group-title">Application layer</div>
+                <ul class="origin-tech-list">
+                  <li>Node and Express for routing and APIs</li>
+                  <li>React for the interface and state management</li>
+                  <li>MongoDB for rooms, messages and history</li>
+                </ul>
+              </div>
+
+              <div class="origin-tech-group">
+                <div class="origin-tech-group-title">Real time layer</div>
+                <ul class="origin-tech-list">
+                  <li>Golang WebSocket engine for high concurrency and low latency</li>
+                  <li>Redis for presence, caching and rate control</li>
+                </ul>
+              </div>
+
+              <div class="origin-tech-group">
+                <div class="origin-tech-group-title">Infrastructure and security</div>
+                <ul class="origin-tech-list">
+                  <li>Containerized services orchestrated with Kubernetes</li>
+                  <li>Global delivery through CDN and edge caching</li>
+                  <li>Token based authentication and role based access control</li>
+                  <li>Input sanitization and sensible limits to protect the system</li>
+                </ul>
+              </div>
+
+              <p class="origin-tech-subtitle" style="margin-top:10px;">
+                This foundation lets CMX absorb growth and experimentation without losing stability.
+              </p>
+            </div>
+
+            <div class="split-two-col">
+              <div class="split-card">
+                <div class="split-card-title">Practical insight</div>
+                <p>
+                  The early period of CMX produced concrete lessons about architecture, engagement and the effect of design on momentum. These were not theory exercises. They came from watching people under real conditions.
+                </p>
+              </div>
+              <div class="split-card">
+                <div class="split-card-title">From platform to laboratory</div>
+                <p>
+                  CMX gradually shifted from being just a chat space to acting as a test bed. Every structural change gave feedback. That feedback shaped the frameworks and systems that later informed both CMX and Ovaro.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cmx" class="section layers-section">
+        <div class="section-inner">
+          <div class="section-header">
+            <div class="section-label">CMX</div>
+            <h2 class="section-title">CMX as an environment</h2>
+            <p class="section-subtitle">
+              CMX now acts as the environmental layer of the system. It is not a single product but a set of connected parts that all support clarity and structure.
+            </p>
+          </div>
+
+          <div class="layers-list">
+            <div class="layer-row">
+              <div class="layer-tagline">Platform layer</div>
+              <div class="layer-text">
+                The real time communication system at the core of CMX. It is designed intentionally to keep flow clear and predictable. The focus is on stability, readable structure and low friction interactions.
+              </div>
+            </div>
+            <div class="layer-row">
+              <div class="layer-tagline">Knowledge layer</div>
+              <div class="layer-text">
+                A growing library that documents digital architecture, search behavior, brand structure, workflow design and strategy. It is based on lived experience from running CMX rather than abstract theory.
+              </div>
+            </div>
+            <div class="layer-row">
+              <div class="layer-tagline">Systems layer</div>
+              <div class="layer-text">
+                A guided workspace that helps people move from ideas to structured plans. Frameworks, templates and workflows sit here so that projects can be shaped with clear steps instead of guesswork.
+              </div>
+            </div>
+            <div class="layer-row">
+              <div class="layer-tagline">AI and automation</div>
+              <div class="layer-text">
+                Supportive tools that help maintain consistency. They assist with planning, reminders, checks and small repetitive actions. They are used to reduce friction, not to replace creative or strategic thinking.
+              </div>
+            </div>
+          </div>
+
+          <p style="margin-top:18px; font-size:15px; color:var(--text-muted); max-width:720px;">
+            Over time CMX earned strong search positioning for creator and founder focused keywords. That position is being repurposed to bring the right people into the community, the live platform and eventually the systems layer.
+          </p>
+
+          <p class="lead">
+            The role of CMX is to give people a structured environment where digital work becomes understandable and actionable instead of confusing and scattered.
+          </p>
+        </div>
+      </section>
+
+      <section id="ovaro" class="section">
+        <div class="section-inner">
+          <div class="section-header">
+            <div class="section-label">Ovaro</div>
+            <h2 class="section-title">Why Ovaro exists</h2>
+            <p class="section-subtitle">
+              CMX can explain structure. At some point people still need experienced hands to build the actual systems, sites and workflows they depend on.
+            </p>
+          </div>
+
+          <div class="two-col">
+            <div>
+              <p>
+                As CMX matured it became clear that many people understood the frameworks but did not have the time or experience to execute them. They needed proper websites, reliable SEO systems, brand identity work, content architecture and operational structures.
+              </p>
+              <p>
+                Ovaro was created to handle that kind of work. It takes the architecture that CMX defines and implements it through senior level digital execution.
+              </p>
+            </div>
+            <div>
+              <div class="split-card">
+                <div class="split-card-title">Core focus areas</div>
+                <p>
+                  Ovaro is responsible for work that needs a high standard of quality.
+                </p>
+                <ul style="margin: 10px 0 0 18px; padding: 0; color: var(--text-muted); font-size: 15px;">
+                  <li>Web development and interface design</li>
+                  <li>SEO systems and structured content</li>
+                  <li>Brand identity and message architecture</li>
+                  <li>Content and information structure</li>
+                  <li>Technical integrations and operations</li>
+                </ul>
+                <p style="margin-top: 10px;">
+                  CMX shows what a system should look like. Ovaro builds that system, deploys it and maintains it.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="structure" class="section layers-section">
+        <div class="section-inner">
+          <div class="section-header">
+            <div class="section-label">Structure</div>
+            <h2 class="section-title">How the ecosystem is organized</h2>
+            <p class="section-subtitle">
+              CMX and Ovaro are not two separate worlds. They are linked through a layered structure that keeps each part focused while allowing them to work together.
+            </p>
+          </div>
+
+          <div class="layers-list">
+            <div class="layer-row">
+              <div class="layer-tagline">Ovaro layer</div>
+              <div class="layer-text">
+                Ovaro acts as the execution layer. It delivers client work, builds assets and creates the external output that supports the rest of the system.
+              </div>
+            </div>
+            <div class="layer-row">
+              <div class="layer-tagline">CMX layer</div>
+              <div class="layer-text">
+                CMX is the environment layer. It holds communication, knowledge and system thinking. It is where structure is understood before it is built.
+              </div>
+            </div>
+            <div class="layer-row">
+              <div class="layer-tagline">Hub layer</div>
+              <div class="layer-text">
+                The hub is the systems layer. It contains tools, workflows and planning utilities that help people move from scattered thought to clear plans and repeatable processes.
+              </div>
+            </div>
+            <div class="layer-row">
+              <div class="layer-tagline">Support layer</div>
+              <div class="layer-text">
+                AI and automation provide a support layer that helps maintain consistency. They highlight blind spots, reduce manual effort and keep structure intact over time.
+              </div>
+            </div>
+            <div class="layer-row">
+              <div class="layer-tagline">Community layer</div>
+              <div class="layer-text">
+                The people who use the system create the community layer. Creators, founders and operators bring the structure to life and give feedback that shapes the next iteration.
+              </div>
+            </div>
+          </div>
+
+          <p class="lead">
+            Each layer stands on its own but becomes more effective when the other layers are active. The aim is a system where ideas, structure and execution are connected instead of isolated.
+          </p>
+        </div>
+      </section>
+
+      <section id="timeline" class="section timeline-section">
+        <div class="section-inner">
+          <div class="section-header">
+            <div class="section-label">Timeline</div>
+            <h2 class="section-title">How the ecosystem evolved</h2>
+            <p class="section-subtitle">
+              The current structure went through a series of phases where each decision came from observation and need.
+            </p>
+          </div>
+
+          <div class="timeline-shell">
+            <div class="timeline-frame" id="timelineFrame">
+              <div class="timeline-track" id="timelineTrack">
+                <div class="timeline-line"></div>
+
+                <article class="timeline-phase">
+                  <div class="timeline-phase-indicator"></div>
+                  <div class="timeline-phase-label">Phase one</div>
+                  <div class="timeline-phase-title">Foundation</div>
+                  <div class="timeline-phase-body">
+                    The first CMX environment runs on a hosted engine and is later rebuilt as a custom real time platform. Early user behavior reveals how structure affects momentum.
+                  </div>
+                </article>
+
+                <article class="timeline-phase">
+                  <div class="timeline-phase-indicator"></div>
+                  <div class="timeline-phase-label">Phase two</div>
+                  <div class="timeline-phase-title">Pattern recognition</div>
+                  <div class="timeline-phase-body">
+                    Clear structural patterns appear. Architecture and clarity become central. The knowledge layer starts to take shape around these lessons.
+                  </div>
+                </article>
+
+                <article class="timeline-phase">
+                  <div class="timeline-phase-indicator"></div>
+                  <div class="timeline-phase-label">Phase three</div>
+                  <div class="timeline-phase-title">Execution demand</div>
+                  <div class="timeline-phase-body">
+                    Users understand the frameworks but need help executing them. The need for a dedicated execution branch leads to the creation of Ovaro.
+                  </div>
+                </article>
+
+                <article class="timeline-phase">
+                  <div class="timeline-phase-indicator"></div>
+                  <div class="timeline-phase-label">Phase four</div>
+                  <div class="timeline-phase-title">Role definition</div>
+                  <div class="timeline-phase-body">
+                    CMX and Ovaro define their roles. CMX focuses on environment and structure. Ovaro focuses on delivery. The hub concept appears.
+                  </div>
+                </article>
+
+                <article class="timeline-phase">
+                  <div class="timeline-phase-indicator"></div>
+                  <div class="timeline-phase-label">Phase five</div>
+                  <div class="timeline-phase-title">Systemization</div>
+                  <div class="timeline-phase-body">
+                    Tools, workflows and planning utilities evolve into a clear system. AI and automation are introduced carefully to support, not replace, human work.
+                  </div>
+                </article>
+
+                <article class="timeline-phase">
+                  <div class="timeline-phase-indicator"></div>
+                  <div class="timeline-phase-label">Phase six</div>
+                  <div class="timeline-phase-title">Deliberate expansion</div>
+                  <div class="timeline-phase-body">
+                    The ecosystem grows gradually. New layers and tools are added based on real need, keeping the whole structure stable and aligned.
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div class="timeline-progress-dots" id="timelineDots">
+              <div class="dot active"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="purpose" class="section purpose-section">
+        <div class="section-inner">
+          <div class="section-header">
+            <div class="section-label">Purpose</div>
+            <h2 class="section-title">What the structure is meant to achieve</h2>
+          </div>
+          <div class="purpose-block">
+            <p>
+              The combined direction of CMX and Ovaro is to create an environment where a person or team can move from idea to clarity to structure to execution without losing control of the process.
+            </p>
+            <p>
+              CMX helps them understand their digital world. It shows how architecture, search, content and operations connect. Ovaro turns that understanding into real platforms, sites, systems and workflows.
+            </p>
+            <p>
+              The hub ties the two together by giving people a place to plan, organize and track work inside defined frameworks. AI and automation reduce friction so that consistency is easier to maintain.
+            </p>
+            <p>
+              The result should be a long term environment that does not depend on one trend or channel but on a stable way of thinking about digital work and execution.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="footer" class="footer-section">
+      <div class="footer-inner">
+        <div class="footer-link-box">
+          <div class="footer-link-label">Next reference</div>
+          <a
+            class="footer-link-url"
+            href="https://db.cmxchat.com/ovaro"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Full Ovaro web strategy and architecture
+          </a>
+        </div>
+        <div>
+          This page is meant as an internal structural reference. The link above contains the detailed strategy for how Ovaro is presented and built on the web, including service layout, SEO structure and supporting systems.
+        </div>
+      </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop">
+      <span class="icon">↑</span>
+      <span>Top</span>
+    </button>
+  </div>
+
+  <script>
+    // Smooth nav scroll
+    const navLinks = document.querySelectorAll(".nav-link, .nav-cta");
+    navLinks.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-target");
+        const el = document.getElementById(id);
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const offset = window.scrollY + rect.top - 64;
+        window.scrollTo({ top: offset, behavior: "smooth" });
+      });
+    });
+
+    // Active nav highlighting based on scroll
+    const sectionIds = [
+      "intro",
+      "overview",
+      "origin",
+      "cmx",
+      "ovaro",
+      "structure",
+      "timeline",
+      "purpose",
+      "footer",
+    ];
+    const sectionMap = sectionIds.map((id) => ({
+      id,
+      el: document.getElementById(id),
+    }));
+
+    function updateActiveNav() {
+      let currentId = "intro";
+      const buffer = window.innerHeight * 0.27;
+
+      sectionMap.forEach(({ id, el }) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        if (rect.top - buffer <= 0) {
+          currentId = id;
+        }
+      });
+
+      navLinks.forEach((btn) => {
+        const target = btn.getAttribute("data-target");
+        if (target === currentId) {
+          btn.classList.add("active");
+        } else if (!btn.classList.contains("nav-cta")) {
+          btn.classList.remove("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveNav);
+    window.addEventListener("load", updateActiveNav);
+
+    // Back to top visibility and behavior
+    const backToTop = document.getElementById("backToTop");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 260) {
+        backToTop.classList.add("show");
+      } else {
+        backToTop.classList.remove("show");
+      }
+    });
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // Timeline: swipe + clickable dots
+    const timelineFrame = document.getElementById("timelineFrame");
+    const timelineTrack = document.getElementById("timelineTrack");
+    const phases = timelineTrack
+      ? timelineTrack.querySelectorAll(".timeline-phase")
+      : [];
+    const dots = document.querySelectorAll("#timelineDots .dot");
+
+    function setActiveDotByIndex(index) {
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.add("active");
+        } else {
+          dot.classList.remove("active");
+        }
+      });
+    }
+
+    // Dot clicks scroll to phase
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        if (!timelineFrame || !phases[index]) return;
+        const target = phases[index];
+        const offset = target.offsetLeft - 40; // account for padding
+        timelineFrame.scrollTo({ left: offset, behavior: "smooth" });
+        setActiveDotByIndex(index);
+      });
+    });
+
+    // Update active dot based on scroll position
+    if (timelineFrame && phases.length > 0) {
+      timelineFrame.addEventListener("scroll", () => {
+        const center =
+          timelineFrame.scrollLeft + timelineFrame.clientWidth / 2;
+        let closestIndex = 0;
+        let closestDistance = Infinity;
+
+        phases.forEach((phase, index) => {
+          const phaseCenter =
+            phase.offsetLeft + phase.offsetWidth / 2;
+          const dist = Math.abs(phaseCenter - center);
+          if (dist < closestDistance) {
+            closestDistance = dist;
+            closestIndex = index;
+          }
+        });
+
+        setActiveDotByIndex(closestIndex);
+      });
+    }
+  </script>
+</body>
+</html>
