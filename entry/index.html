@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CMX • Workspace</title>
+
+<title>CMX Workspace</title>
+<meta name="description" content="Private access to internal materials." />
+<meta name="robots" content="noindex, nofollow" />
 
 <style>
 :root{
@@ -32,8 +35,10 @@ body{
   color:var(--ink);
   display:grid;
   place-items:center;
-  padding-block:32px;
+  padding:32px 16px;
 }
+
+/* ===== LAYOUT ===== */
 
 .wrap{
   width:min(1100px,92vw);
@@ -42,8 +47,14 @@ body{
 .header{
   display:flex;
   align-items:center;
-  gap:14px;
+  justify-content:space-between;
   margin-bottom:28px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
 }
 
 .logo{
@@ -55,7 +66,6 @@ body{
   place-items:center;
   color:#020617;
   font-weight:900;
-  letter-spacing:.5px;
 }
 
 .header h1{
@@ -65,13 +75,28 @@ body{
 
 .header p{
   margin:2px 0 0;
-  color:var(--muted);
   font-size:.9rem;
+  color:var(--muted);
 }
+
+.tools-btn{
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--glass-border);
+  color:var(--ink);
+  padding:10px 16px;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+.tools-btn:hover{
+  background:rgba(255,255,255,.12);
+}
+
+/* ===== MAIN CARDS ===== */
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns:repeat(auto-fit, minmax(320px,1fr));
   gap:22px;
 }
 
@@ -82,60 +107,95 @@ body{
   -webkit-backdrop-filter: blur(26px) saturate(180%);
   border:1px solid var(--glass-border);
   border-radius:var(--r);
-  padding:26px;
+  padding:28px;
+  text-decoration:none;
+  color:inherit;
+  transition:transform .25s ease, box-shadow .25s ease;
   box-shadow:
     0 40px 120px rgba(0,0,0,.85),
     inset 0 1px 0 rgba(255,255,255,.08);
-  cursor:pointer;
-  transition:transform .25s ease, box-shadow .25s ease;
-  text-decoration:none;
-  color:inherit;
-  display:block;
-}
-
-.card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 45%);
-  pointer-events:none;
 }
 
 .card:hover{
   transform:translateY(-4px);
-  box-shadow:
-    0 60px 160px rgba(0,0,0,.9),
-    inset 0 1px 0 rgba(255,255,255,.1);
 }
 
 .card h2{
-  margin:0 0 8px;
-  font-size:1.2rem;
+  margin:0 0 10px;
+  font-size:1.3rem;
 }
 
 .card p{
   margin:0;
   color:var(--muted);
-  font-size:.9rem;
+  font-size:.95rem;
   line-height:1.45;
 }
 
-.tag{
-  display:inline-block;
-  margin-top:14px;
-  font-size:.75rem;
-  padding:6px 10px;
-  border-radius:999px;
-  background:rgba(56,189,248,.15);
-  color:#7dd3fc;
+/* ===== OSINT DRAWER ===== */
+
+.drawer{
+  position:fixed;
+  inset:0;
+  background:rgba(2,6,23,.65);
+  backdrop-filter: blur(6px);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:50;
 }
 
-.footer{
-  margin-top:28px;
-  text-align:center;
-  font-size:.75rem;
+.drawer.active{
+  display:flex;
+}
+
+.drawer-panel{
+  width:min(900px,100%);
+  background:var(--glass);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border:1px solid var(--glass-border);
+  border-radius:22px 22px 0 0;
+  padding:26px;
+  animation:slideUp .25s ease-out;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(40px); opacity:0}
+  to{transform:translateY(0); opacity:1}
+}
+
+.drawer-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.drawer-header h3{
+  margin:0;
+  font-size:1.2rem;
+}
+
+.close{
+  cursor:pointer;
+  font-size:.85rem;
   color:var(--muted);
+}
+
+.drawer-link{
+  display:block;
+  padding:16px 18px;
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--glass-border);
+  color:var(--ink);
+  text-decoration:none;
+  font-size:.95rem;
+}
+
+.drawer-link:hover{
+  background:rgba(255,255,255,.1);
 }
 </style>
 </head>
@@ -145,40 +205,71 @@ body{
 <div class="wrap">
 
   <div class="header">
-    <div class="logo">CMX</div>
-    <div>
-      <h1>Workspace</h1>
-      <p>Select an environment to continue</p>
+    <div class="brand">
+      <div class="logo">CMX</div>
+      <div>
+        <h1>Workspace</h1>
+        <p>Select an environment</p>
+      </div>
     </div>
+
+    <button class="tools-btn" onclick="openDrawer()">Tools</button>
   </div>
 
   <div class="grid">
-
     <a class="card" href="https://db.cmxchat.com/internal">
-      <h2>CMX Internal</h2>
+      <h2>Internal</h2>
       <p>
-        Strategy, SEO systems, execution playbooks,
-        operating docs, internal tools, and infrastructure.
+        Internal documentation, SOPs, operational decisions,
+        notes, and long-term system knowledge.
       </p>
-      <span class="tag">Internal</span>
     </a>
 
     <a class="card" href="https://db.cmxchat.com/ovaro">
       <h2>Ovaro</h2>
       <p>
-        Web systems, growth infrastructure,
-        agency frameworks, and client delivery.
+        Agency execution layer including client delivery,
+        frameworks, systems, and infrastructure.
       </p>
-      <span class="tag">Agency</span>
     </a>
-
-  </div>
-
-  <div class="footer">
-    Authorized internal access only
   </div>
 
 </div>
+
+<!-- ===== OSINT DRAWER ===== -->
+<div class="drawer" id="drawer">
+  <div class="drawer-panel">
+    <div class="drawer-header">
+      <h3>Tools</h3>
+      <span class="close" onclick="closeDrawer()">Close</span>
+    </div>
+
+    <a
+      class="drawer-link"
+      href="https://db.cmxchat.com/menu/"
+      target="_blank"
+      rel="noopener"
+    >
+      Open OSINT Tool Menu
+    </a>
+  </div>
+</div>
+
+<script>
+const drawer = document.getElementById('drawer');
+
+function openDrawer(){
+  drawer.classList.add('active');
+}
+
+function closeDrawer(){
+  drawer.classList.remove('active');
+}
+
+drawer.addEventListener('click', e=>{
+  if(e.target === drawer) closeDrawer();
+});
+</script>
 
 </body>
 </html>
