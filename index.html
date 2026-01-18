@@ -2,98 +2,211 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>CMX • Secure Agent Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CMX • Secure Login</title>
 
-<!-- ========= EASY CONFIG ========= -->
 <script>
   const CONFIG = {
-    AGENT_ID: 'agent47',                 // <-- change me
-    SECURITY_CODE: 'classified',         // <-- change me
-    REDIRECT_URL: 'https://db.cmxchat.com/menu'
+    USERNAME: 'admin',
+    PASSWORD: 'internal',
+    REDIRECT_URL: 'https://db.cmxchat.com/entry'
   };
 </script>
 
 <style>
-  :root{
-    --bg1:#0f2027; --bg2:#203a43; --bg3:#2c5364;
-    --panel:#0b0d10; --panel2:#15181c;
-    --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
-    --accent:#00f2ff; --ok:#19c37d; --bad:#ff5a5f;
-    --r:16px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3)); color:var(--ink);
-    display:grid; place-items:center; padding:20px;
-  }
-  .wrap{width:min(92vw,540px)}
-  .card{
-    background:rgba(0,0,0,.75); border:1px solid #000; border-radius:var(--r);
-    box-shadow:0 24px 60px rgba(0,0,0,.45); padding:24px;
-  }
-  h1{margin:0 0 12px; font-size:1.6rem; color:var(--accent)}
-  label{display:block; margin-top:10px; font-weight:600}
-  input{
-    width:100%; margin-top:6px; padding:12px; border-radius:12px;
-    border:1px solid var(--line); background:#121417; color:#fff; outline:none;
-  }
-  button{
-    width:100%; margin-top:16px; padding:12px; border:0; border-radius:999px;
-    background:var(--accent); color:#000; font-weight:800; cursor:pointer;
-  }
-  button:hover{filter:brightness(1.05)}
-  .out{min-height:24px; margin-top:10px; color:var(--ok)}
-  .err{color:var(--bad)}
-  .small{color:var(--muted); font-size:.9rem}
+:root{
+  --bg:#020617;
+  --glass:rgba(255,255,255,.045);
+  --glass-border:rgba(255,255,255,.18);
+  --ink:#f1f5f9;
+  --muted:#9ca3af;
+  --accent:#38bdf8;
+  --ok:#34d399;
+  --bad:#fb7185;
+  --r:22px;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  min-height:100svh;
+  margin:0;
+}
+
+body{
+  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(900px 500px at 80% 10%, rgba(15,23,42,.9), transparent 65%),
+    linear-gradient(180deg,var(--bg),var(--bg));
+  color:var(--ink);
+
+  /* 🔑 correct centering */
+  display:grid;
+  place-items:center;
+
+  /* vertical breathing room only */
+  padding-block:24px;
+  padding-inline:0;
+}
+
+.wrap{
+  width:min(92vw,520px);
+  margin-inline:auto;
+}
+
+.card{
+  position:relative;
+  background:var(--glass);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r);
+  padding:32px 30px 30px;
+  box-shadow:
+    0 40px 120px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 45%);
+  pointer-events:none;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:22px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#38bdf8,#22d3ee);
+  display:grid;
+  place-items:center;
+  color:#020617;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+
+h1{
+  margin:0;
+  font-size:1.45rem;
+}
+
+.subtitle{
+  font-size:.9rem;
+  color:var(--muted);
+}
+
+label{
+  display:block;
+  margin-top:18px;
+  font-size:.85rem;
+  color:#c7d2fe;
+}
+
+input{
+  width:100%;
+  margin-top:6px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.7));
+  color:#fff;
+  outline:none;
+}
+
+input::placeholder{color:#94a3b8}
+input:focus{border-color:var(--accent)}
+
+button{
+  width:100%;
+  margin-top:24px;
+  padding:15px;
+  border-radius:999px;
+  border:0;
+  background:linear-gradient(135deg,#38bdf8,#22d3ee);
+  color:#020617;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 18px 50px rgba(56,189,248,.45);
+}
+
+button:hover{filter:brightness(1.05)}
+
+.out{
+  min-height:22px;
+  margin-top:14px;
+  font-size:.9rem;
+  color:var(--ok);
+}
+
+.err{color:var(--bad)}
+
+.footer{
+  margin-top:18px;
+  text-align:center;
+  font-size:.75rem;
+  color:var(--muted);
+}
 </style>
 </head>
-<body>
 
-<div class="wrap">
-  <!-- LOGIN -->
-  <div id="login" class="card" role="dialog" aria-labelledby="hdr">
-    <h1 id="hdr">CMX Secure Agent Login</h1>
-    <label for="agent">Agent ID</label>
-    <input id="agent" type="text" placeholder="Enter Agent ID" autocomplete="username" />
-    <label for="pass">Security Code</label>
-    <input id="pass" type="password" placeholder="Enter Security Code" autocomplete="current-password" />
-    <button id="authBtn">Authenticate</button>
-    <div id="out" class="out" aria-live="polite"></div>
-    <div class="small">Tip: Press <kbd>Enter</kbd> to submit.</div>
+<body>
+  <div class="wrap">
+    <div class="card" role="dialog">
+      <div class="brand">
+        <div class="logo">CMX</div>
+        <div>
+          <h1>Secure Access</h1>
+          <div class="subtitle">Internal documentation & systems</div>
+        </div>
+      </div>
+
+      <label for="user">Username</label>
+      <input id="user" type="text" placeholder="username" autocomplete="username" />
+
+      <label for="pass">Password</label>
+      <input id="pass" type="password" placeholder="••••••••" autocomplete="current-password" />
+
+      <button id="authBtn">Authenticate</button>
+      <div id="out" class="out"></div>
+
+      <div class="footer">Press Enter to continue</div>
+    </div>
   </div>
-</div>
 
 <script>
 (function(){
   const out = document.getElementById('out');
   const btn = document.getElementById('authBtn');
 
-  function redirect(){ window.location.href = CONFIG.REDIRECT_URL; }
-
   function auth(){
-    const id = (document.getElementById('agent').value||'').trim().toLowerCase();
-    const pass = (document.getElementById('pass').value||'').trim();
-    if (id === (CONFIG.AGENT_ID||'').toLowerCase() && pass === (CONFIG.SECURITY_CODE||'')) {
+    const u = document.getElementById('user').value.trim().toLowerCase();
+    const p = document.getElementById('pass').value.trim();
+
+    if (u === CONFIG.USERNAME && p === CONFIG.PASSWORD) {
       out.classList.remove('err');
-      out.textContent = 'Access Granted. Redirecting…';
-      setTimeout(redirect, 600);
+      out.textContent = 'Access granted. Loading workspace…';
+      setTimeout(()=>location.href = CONFIG.REDIRECT_URL, 700);
     } else {
       out.classList.add('err');
-      out.textContent = 'Access Denied. Check credentials.';
+      out.textContent = 'Invalid credentials.';
     }
   }
 
-  btn.addEventListener('click', auth);
-  document.getElementById('pass').addEventListener('keydown', e => { if(e.key === 'Enter') auth(); });
-  document.getElementById('agent').addEventListener('keydown', e => { if(e.key === 'Enter') auth(); });
-
-  // focus first field
-  document.getElementById('agent').focus();
+  btn.onclick = auth;
+  document.addEventListener('keydown', e => e.key === 'Enter' && auth());
+  document.getElementById('user').focus();
 })();
 </script>
-
 </body>
 </html>
