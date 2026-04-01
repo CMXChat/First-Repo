@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>CMX Secure Case Access</title>
+
+  <style>
+    :root{
+      --lite-bg:#f6f8fc;
+      --lite-bg-2:#eef3fb;
+      --lite-panel:#ffffff;
+      --lite-line:#dbe4f0;
+      --lite-text:#0f172a;
+      --lite-muted:#64748b;
+      --lite-blue:#2563eb;
+      --lite-blue-soft:#dbeafe;
+      --lite-shadow:0 18px 40px rgba(15,23,42,.08);
+
+      --dark-bg:#020617;
+      --dark-glass:rgba(255,255,255,.045);
+      --dark-glass-border:rgba(255,255,255,.18);
+      --dark-ink:#f1f5f9;
+      --dark-muted:#94a3b8;
+      --dark-accent:#38bdf8;
+      --dark-accent-2:#22d3ee;
+      --dark-bad:#fb7185;
+      --dark-shadow:0 40px 120px rgba(0,0,0,.85);
+
+      --r:22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{min-height:100svh;margin:0}
+    body{
+      font-family:ui-sans-serif,system-ui;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.07), transparent 24%),
+        radial-gradient(circle at top right, rgba(14,165,233,.08), transparent 20%),
+        linear-gradient(180deg,#fbfdff 0%, var(--lite-bg) 100%);
+      color:var(--lite-text);
+    }
+
+    .login-screen{
+      position:fixed;inset:0;display:grid;place-items:center;padding:24px;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,.18), transparent 60%),
+        linear-gradient(180deg,var(--dark-bg),var(--dark-bg));
+      z-index:1000;
+    }
+    .login-screen.hidden{display:none}
+
+    .card{
+      width:min(92vw,520px);
+      background:var(--dark-glass);
+      border:1px solid var(--dark-glass-border);
+      border-radius:var(--r);
+      padding:30px;
+      backdrop-filter:blur(26px);
+      color:var(--dark-ink);
+      box-shadow:var(--dark-shadow);
+    }
+
+    .brand{display:flex;gap:12px;margin-bottom:20px}
+    .logo{
+      width:46px;height:46px;border-radius:14px;
+      background:linear-gradient(135deg,var(--dark-accent),var(--dark-accent-2));
+      display:grid;place-items:center;font-weight:900;color:#020617;
+    }
+
+    input{
+      width:100%;margin-top:10px;padding:14px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:#020617;color:#fff;
+    }
+
+    button{
+      width:100%;margin-top:18px;padding:14px;border-radius:999px;
+      border:0;background:linear-gradient(135deg,var(--dark-accent),var(--dark-accent-2));
+      font-weight:800;cursor:pointer;
+    }
+
+    .out{margin-top:10px;text-align:center;font-size:13px}
+    .err{color:var(--dark-bad)}
+
+    .dashboard{display:none;max-width:900px;margin:auto;padding:30px}
+    .dashboard.show{display:block}
+
+    .hero{
+      border:1px solid var(--lite-line);
+      border-radius:24px;
+      padding:24px;
+      margin-bottom:18px;
+      background:#fff;
+      box-shadow:var(--lite-shadow);
+    }
+
+    .links{display:grid;gap:14px}
+
+    .link-card{
+      border:1px solid var(--lite-line);
+      border-radius:20px;
+      padding:20px;
+      background:#fff;
+      box-shadow:var(--lite-shadow);
+    }
+
+    .label{font-size:11px;color:var(--lite-blue);text-transform:uppercase}
+    .title{font-size:20px;font-weight:800;margin:6px 0}
+    .meta{color:var(--lite-muted);font-size:14px;margin-bottom:12px}
+
+    .open{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:12px;
+      background:var(--lite-blue-soft);
+      font-weight:600;
+      color:var(--lite-text);
+    }
+  </style>
+</head>
+
+<body>
+<script>
+  const PASSWORD = "case";
+</script>
+
+<div class="login-screen" id="login">
+  <div class="card">
+    <div class="brand">
+      <div class="logo">CMX</div>
+      <div>
+        <strong>Secure Access</strong><br>
+        <small style="color:#94a3b8">Restricted</small>
+      </div>
+    </div>
+
+    <input id="pass" type="password" placeholder="password" />
+    <button onclick="auth()">Enter</button>
+    <div id="out" class="out"></div>
+  </div>
+</div>
+
+<main class="dashboard" id="app">
+  <section class="hero">
+    <strong>Case Materials</strong>
+    <p style="color:#64748b;margin-top:6px">
+      Start with the overview, then review the full dataset and evidence.
+    </p>
+  </section>
+
+  <section class="links">
+
+    <!-- 1. REPORT FIRST -->
+    <div class="link-card">
+      <div class="label">Start Here</div>
+      <div class="title">Case Overview Report</div>
+      <div class="meta">
+        Structured overview of the full case.<br>
+        Password: <strong>case</strong>
+      </div>
+      <a class="open" href="https://cmxchat.com/cxi-report-harassment-jay-cmx-chat/" target="_blank">
+        Open Report
+      </a>
+    </div>
+
+    <!-- 2. SPREADSHEET SECOND -->
+    <div class="link-card">
+      <div class="label">Full Data</div>
+      <div class="title">Master Spreadsheet</div>
+      <div class="meta">
+        Full timeline and evidence log.<br>
+        Review all tabs.
+      </div>
+      <a class="open" href="https://docs.google.com/spreadsheets/d/1AkWjNP6uY-e_7C86v6REpj67qIwck2n4QFoEJ55clDQ/edit?usp=sharing" target="_blank">
+        Open Spreadsheet
+      </a>
+    </div>
+
+    <!-- 3. DRIVE -->
+    <div class="link-card">
+      <div class="label">Evidence</div>
+      <div class="title">Google Drive Folder</div>
+      <div class="meta">
+        Raw files and supporting materials.
+      </div>
+      <a class="open" href="https://drive.google.com/drive/folders/1cXJjM1L6eNv4qdM4vfV8grxKQH2O5Tu6" target="_blank">
+        Open Folder
+      </a>
+    </div>
+
+  </section>
+</main>
+
+<script>
+function auth(){
+  const val = document.getElementById("pass").value.trim();
+  const out = document.getElementById("out");
+
+  if(val === PASSWORD){
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("app").classList.add("show");
+  } else {
+    out.innerText = "Invalid password";
+    out.classList.add("err");
+  }
+}
+
+document.addEventListener("keydown", e=>{
+  if(e.key==="Enter") auth();
+});
+</script>
+
+</body>
+</html>
