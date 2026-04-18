@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CXI Case Walkthrough</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #f7f5f0;
+  --bg-2: #eeece6;
+  --surface: #ffffff;
+  --surface-2: #f2f0eb;
+  --border: #dddad2;
+  --border-strong: #c8c4bb;
+  --text: #1a1917;
+  --text-2: #4a4742;
+  --text-3: #8a877e;
+  --accent: #1c3a5e;
+  --accent-light: #e8edf5;
+  --accent-mid: #3d6494;
+  --danger: #8b2020;
+  --danger-light: #fdf0f0;
+  --warning: #7a5a10;
+  --warning-light: #fdf8ee;
+  --success: #1a5c35;
+  --success-light: #edf7f2;
+  --stripe: rgba(28,58,94,0.06);
+  --radius: 16px;
+  --max: 1180px;
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  margin: 0;
+}
+
+/* Pinstripe background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      var(--stripe) 39px,
+      var(--stripe) 40px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: min(var(--max), calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* NAV */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(247,245,240,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar-inner {
+  width: min(var(--max), calc(100% - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60px;
+  gap: 16px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--accent);
+}
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.nav {
+  display: flex;
+  gap: 4px;
+}
+.nav a {
+  text-decoration: none;
+  color: var(--text-2);
+  font-size: 13.5px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: 0.15s ease;
+  font-weight: 500;
+}
+.nav a:hover {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--accent);
+}
+
+/* LOGIN SCREEN */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+#login-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px -10px rgba(28, 58, 94, 0.12);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(28,58,94,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  font-family: var(--serif);
+  font-size: 21px;
+  color: var(--accent);
+}
+
+.login-brand .brand-mark {
+  width: 42px;
+  height: 42px;
+  font-size: 13px;
+}
+
+.login-title {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.login-subtitle {
+  color: var(--text-3);
+  font-size: 14.5px;
+  margin-bottom: 36px;
+}
+
+#pass-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  font-size: 17px;
+  background: var(--surface-2);
+  color: var(--text);
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+  font-family: var(--sans);
+}
+
+#pass-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(28,58,94,0.08);
+}
+
+#login-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+#login-btn:hover {
+  background: #142d4a;
+  transform: translateY(-1px);
+}
+
+#login-btn:active {
+  transform: translateY(0);
+}
+
+.error-msg {
+  color: var(--danger);
+  font-size: 13.5px;
+  margin-top: 12px;
+  min-height: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.error-msg.show {
+  opacity: 1;
+}
+
+/* HERO */
+.hero {
+  padding: 64px 0 52px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.pill {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-3);
+  font-size: 11.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.pill.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: start;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(38px, 5.5vw, 68px);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent-mid);
+}
+.hero-sub {
+  color: var(--text-2);
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 560px;
+  margin-bottom: 28px;
+}
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: 0.15s ease;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: #142d4a; }
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+.stat-stack {
+  display: grid;
+  gap: 12px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 3px 0 0 3px;
+}
+.stat-num {
+  font-family: var(--serif);
+  font-size: 40px;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-3);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+.stat-sub {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+/* SECTIONS */
+.section {
+  padding: 56px 0;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-mid);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.5vw, 42px);
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.section-desc {
+  color: var(--text-2);
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 680px;
+  margin-bottom: 36px;
+}
+
+/* OVERVIEW GRID */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.ov-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  position: relative;
+}
+.ov-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 22px; right: 22px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 0 0 2px 2px;
+}
+.ov-num {
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+.ov-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.ov-card p {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+
+/* TIMELINE */
+.timeline-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.timeline-nav {
+  position: sticky;
+  top: 76px;
+  display: grid;
+  gap: 8px;
+}
+.t-btn {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: 0.15s ease;
+  font-family: var(--sans);
+}
+.t-btn:hover { border-color: var(--accent-mid); }
+.t-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.t-btn .t-year {
+  font-family: var(--serif);
+  font-size: 22px;
+  display: block;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.t-btn .t-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+  display: block;
+}
+.t-btn.active .t-sub { color: rgba(255,255,255,0.7); }
+
+/* Timeline content panel */
+.stage { display: none; }
+.stage.active {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  animation: fadeUp 0.22s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.timeline-track {
+  position: relative;
+  display: grid;
+  gap: 0;
+}
+.t-event {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 16px;
+  padding-bottom: 24px;
+  position: relative;
+}
+.t-event:last-child { padding-bottom: 0; }
+.t-dot-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.t-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  outline: 1px solid var(--accent);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.t-line {
+  flex: 1;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--accent-mid) 0px,
+    var(--accent-mid) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  margin-top: 6px;
+  min-height: 20px;
+}
+.t-event:last-child .t-line { display: none; }
+.t-content {
+  padding-bottom: 4px;
+}
+.t-content strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.t-content span {
+  font-size: 13.5px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.stage-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.stage-card h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+.stage-card p {
+  font-size: 14.5px;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+.callout {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--accent-light);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  font-size: 14px;
+  color: var(--accent);
+  line-height: 1.65;
+  font-style: italic;
+}
+
+/* EVIDENCE */
+.ev-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.ev-tabs {
+  position: sticky;
+  top: 76px;
+  display: grid;
+  gap: 6px;
+}
+.e-tab {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.e-tab:hover { border-color: var(--accent-mid); }
+.e-tab.active {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.e-tab .tab-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: 0.15s;
+}
+.e-tab.active .tab-letter {
+  background: var(--accent);
+  color: #fff;
+}
+.e-tab .tab-txt { font-size: 13px; font-weight: 500; line-height: 1.3; }
+
+.ev-panel { display: none; }
+.ev-panel.active {
+  display: block;
+  animation: fadeUp 0.2s ease;
+}
+.ev-panel-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+.ev-panel-inner h3 {
+  font-family: var(--serif);
+  font-size: 24px;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.ev-panel-inner > p {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.7;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 18px;
+}
+.ev-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+.ev-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+.ev-item h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+.ev-item p { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
+.ev-item.safe { border-color: rgba(26,92,53,0.3); background: var(--success-light); }
+.ev-item.safe h4 { color: var(--success); }
+.ev-item.risk { border-color: rgba(139,32,32,0.3); background: var(--danger-light); }
+.ev-item.risk h4 { color: var(--danger); }
+.ev-item.warn { border-color: rgba(122,90,16,0.3); background: var(--warning-light); }
+.ev-item.warn h4 { color: var(--warning); }
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+.chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--accent-light);
+  border: 1px solid rgba(28,58,94,0.2);
+  color: var(--accent);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+/* PRESSURE POINTS */
+.pressure-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.p-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.p-card.risk { border-color: rgba(139,32,32,0.25); }
+.p-card.warn { border-color: rgba(122,90,16,0.25); }
+.p-card.safe { border-color: rgba(26,92,53,0.25); }
+.p-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.risk .p-label { background: var(--danger-light); color: var(--danger); }
+.warn .p-label { background: var(--warning-light); color: var(--warning); }
+.safe .p-label { background: var(--success-light); color: var(--success); }
+.p-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.p-card p { font-size: 13.5px; color: var(--text-2); line-height: 1.65; }
+
+/* COURT */
+.court-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.court-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.court-card h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin-bottom: 14px;
+  color: var(--accent);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.court-item {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+.court-item:last-child { margin-bottom: 0; }
+.court-item strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 13px; }
+
+.anchor-block {
+  margin-top: 16px;
+  background: var(--accent);
+  border-radius: var(--radius);
+  padding: 28px;
+  color: #fff;
+  text-align: center;
+}
+.anchor-block .anchor-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+.anchor-block .anchor-text {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.5;
+  font-style: italic;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* SUMMARY */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.s-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  text-align: center;
+}
+.s-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--accent-light);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 14px;
+  font-size: 20px;
+}
+.s-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.s-card p { font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
+
+/* FOOTER */
+.footer {
+  padding: 40px 0 60px;
+}
+.footer-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-inner p { color: var(--text-2); font-size: 14px; line-height: 1.65; max-width: 680px; }
+
+/* REVEAL ANIMATION */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+@media (max-width: 1024px) {
+  .hero-layout, .timeline-shell, .ev-shell, .court-grid, .stage.active { grid-template-columns: 1fr; }
+  .overview-grid, .pressure-grid, .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .timeline-nav, .ev-tabs { position: static; }
+}
+@media (max-width: 640px) {
+  .nav { display: none; }
+  .overview-grid, .pressure-grid, .summary-grid, .ev-grid { grid-template-columns: 1fr; }
+  .hero { padding: 40px 0 36px; }
+  .login-card { padding: 40px 28px; margin: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD PROTECTION -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-mark">CXI</div>
+      Case Walkthrough
+    </div>
+    <h2 class="login-title">Protected Access</h2>
+    <p class="login-subtitle">Enter password to continue</p>
+    
+    <input type="password" id="pass-input" placeholder="••••••••" autocomplete="off">
+    <button id="login-btn">Unlock Case File</button>
+    <div id="error-msg" class="error-msg"></div>
+  </div>
+</div>
+
+<div class="wrap" id="main-content" style="display: none;">
+
+  <!-- HERO -->
+  <header class="hero reveal visible">
+    <div class="hero-eyebrow">
+      <span class="pill accent">Interactive Case Summary</span>
+      <span class="pill">Pattern · Attribution · Court Posture</span>
+    </div>
+    <div class="hero-layout">
+      <div>
+        <h1>Understanding the case,<br><em>step by step.</em></h1>
+        <p class="hero-sub">This walkthrough lays out a documented harassment pattern in one clear view. It helps anyone involved see the full picture: timeline, evidence, and court status, without getting lost in the details.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#timeline">Begin walkthrough</a>
+          <a class="btn btn-secondary" href="#court">Jump to court posture</a>
+        </div>
+      </div>
+      <div class="stat-stack">
+        <div class="stat-card">
+          <div class="stat-num">3 Yrs</div>
+          <div class="stat-label">Duration</div>
+          <div class="stat-sub">An ongoing documented pattern, not a single isolated incident.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">200+</div>
+          <div class="stat-label">Documented messages</div>
+          <div class="stat-sub">Preserved through the contact form and related channels.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">13</div>
+          <div class="stat-label">Police reports</div>
+          <div class="stat-sub">Filed beginning November 2023, continuing across the full record.</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- OVERVIEW -->
+  <section class="section reveal" id="overview">
+    <div class="section-label">Case overview</div>
+    <h2 class="section-title">The core structure</h2>
+    <p class="section-desc">This case holds together best when seen as a pattern built up over time. The basics are straightforward: repeated harassment, use of private information, public dissemination, and the court response based on the full record.</p>
+    <div class="overview-grid">
+      <div class="ov-card">
+        <div class="ov-num">01</div>
+        <h3>Core issue</h3>
+        <p>An extended harassment pattern directed at a petitioner and members of their family, using private information and repeated intimidation over multiple years.</p>
+      </div>
+      <div class="ov-card">
+        <div class="ov-num">02</div>
+        <h3>Primary link</h3>
+        <p>The same private, non-public information from a prior intimate relationship appears consistently across both the messages and the published recordings.</p>
+      </div>
+      <div class="ov-card">
+        <div class="ov-num">03</div>
+        <h3>Legal posture</h3>
+        <p>A Temporary Order of Protection was issued April 3, 2026 after the court found sufficient documented basis for protection on the first appearance.</p>
+      </div>
+      <div class="ov-card">
+        <div class="ov-num">04</div>
+        <h3>Key principle</h3>
+        <p>The case turns on pattern, consistency, and documentation rather than a single direct technical proof point. Volume and repetition replace any one smoking gun.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="section reveal" id="timeline">
+    <div class="section-label">Interactive timeline</div>
+    <h2 class="section-title">How the conduct evolved</h2>
+    <p class="section-desc">Go through each phase to see how the behavior built from early harassment into public dissemination, physical concerns, and formal court action.</p>
+
+    <div class="timeline-shell">
+      <div class="timeline-nav">
+        <button class="t-btn active" data-stage="s1">
+          <span class="t-year">2023</span>
+          <span class="t-sub">Pattern begins and is first documented</span>
+        </button>
+        <button class="t-btn" data-stage="s2">
+          <span class="t-year">2024</span>
+          <span class="t-sub">Volume escalates across channels</span>
+        </button>
+        <button class="t-btn" data-stage="s3">
+          <span class="t-year">2025</span>
+          <span class="t-sub">Recordings published, physical concerns emerge</span>
+        </button>
+        <button class="t-btn" data-stage="s4">
+          <span class="t-year">2026</span>
+          <span class="t-sub">Court action and post-order posture</span>
+        </button>
+      </div>
+
+      <div>
+        <!-- Stage 1 -->
+        <div class="stage active" id="s1">
+          <div class="stage-card">
+            <h3>2023: The pattern begins</h3>
+            <p>The case starts here. What matters is that the conduct became repeated, targeted, and documentable right from the beginning.</p>
+            <div class="callout">"The case is strongest when viewed as a continuing pattern rather than disconnected episodes."</div>
+          </div>
+          <div class="stage-card">
+            <div class="timeline-track">
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Early targeting begins</strong><span>Harassing conduct directed at the petitioner and family members begins and does not stop after one cycle.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Private information surfaces</strong><span>Messages begin to reference personal details that are not publicly available and are significant precisely because of their relationship context.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>First police report filed</strong><span>November 2023. The documentation track officially begins. Thirteen reports will follow.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div></div>
+                <div class="t-content"><strong>Why this phase matters</strong><span>Duration and repetition are what turn this into a legally recognizable pattern.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="stage" id="s2">
+          <div class="stage-card">
+            <h3>2024: Volume and escalation</h3>
+            <p>The case gets clearer through volume and repetition. This is when the record becomes hard to dismiss as random or just a personal dispute.</p>
+            <div class="callout">"The strongest connection comes from the repeated use of non-public, relationship-based information throughout the harassment."</div>
+          </div>
+          <div class="stage-card">
+            <div class="timeline-track">
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>200+ messages documented</strong><span>Messages arrive through the professional contact form, creating a large, timestamped body of conduct across aliases.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Intimate knowledge is the thread</strong><span>Messages reference physical details, medical history, a tattoo, and private family information, material not accessible without prior intimacy.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Concealed methods used</strong><span>Anonymous accounts and masked technical methods complicate direct attribution, but not the underlying pattern.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Multiple police reports filed</strong><span>The reporting history during this period demonstrates sustained concern logged over time.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="stage" id="s3">
+          <div class="stage-card">
+            <h3>2025: Public dissemination and physical concerns</h3>
+            <p>The case gains another layer. Private information starts showing up in publicly published recordings. This adds to the overall pattern instead of weakening it.</p>
+            <div class="callout">"When the same private information appears in messages and in publicly disseminated recordings, it strengthens the pattern through consistency."</div>
+          </div>
+          <div class="stage-card">
+            <div class="timeline-track">
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Private call published without consent</strong><span>A private phone call is recorded without the petitioner's knowledge and later disseminated publicly across platforms.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Same details appear in recordings</strong><span>The private information in messages and in the recordings is consistent, tying the entire pattern together through a single source of knowledge.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Physical presence implied</strong><span>Messages begin implying surveillance or proximity to the petitioner's home. Individuals subsequently appear at residences.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div></div>
+                <div class="t-content"><strong>Targeting expands</strong><span>Family members, associates, and third parties are drawn into the pattern as additional pressure vectors.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage 4 -->
+        <div class="stage" id="s4">
+          <div class="stage-card">
+            <h3>2026: Court action</h3>
+            <p>The court phase shifts the focus. The question now is whether the order holds, whether it gets extended, and whether any new conduct would violate it.</p>
+            <div class="callout">"The best practical outcome on the return date is to leave court with the order still active. That is the win condition."</div>
+          </div>
+          <div class="stage-card">
+            <div class="timeline-track">
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Family Offense Petition filed</strong><span>April 2, 2026. Filed in Kings County Family Court under Article 8, alleging stalking, aggravated harassment, coercion, and related offenses.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Temporary Order of Protection issued</strong><span>April 3, 2026. Hon. Raymi V. Ramseur-Usher found sufficient basis and issued the order ex parte. The court has already recognized the pattern.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div><div class="t-line"></div></div>
+                <div class="t-content"><strong>Return date — May 7, 2026</strong><span>Part 17, Room 8010, 330 Jay Street, Brooklyn. 2:00 PM. The respondent appears for the first time. The order's continuation is at stake.</span></div>
+              </div>
+              <div class="t-event">
+                <div class="t-dot-col"><div class="t-dot"></div></div>
+                <div class="t-content"><strong>Post-order monitoring</strong><span>All conduct following April 3 is evaluated through compliance and potential violation analysis. Any new contact may constitute a criminal act.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVIDENCE -->
+  <section class="section reveal" id="evidence">
+    <div class="section-label">Evidence architecture</div>
+    <h2 class="section-title">Six categories of documentation</h2>
+    <p class="section-desc">The goal is organization, not just volume. Evidence is grouped into six categories. Each one supports the same core idea from a different angle.</p>
+
+    <div class="ev-shell">
+      <div class="ev-tabs">
+        <button class="e-tab active" data-panel="pa">
+          <div class="tab-letter">A</div>
+          <div class="tab-txt">Threat messages</div>
+        </button>
+        <button class="e-tab" data-panel="pb">
+          <div class="tab-letter">B</div>
+          <div class="tab-txt">Private information</div>
+        </button>
+        <button class="e-tab" data-panel="pc">
+          <div class="tab-letter">C</div>
+          <div class="tab-txt">Contact form submissions</div>
+        </button>
+        <button class="e-tab" data-panel="pd">
+          <div class="tab-letter">D</div>
+          <div class="tab-txt">Recordings & public content</div>
+        </button>
+        <button class="e-tab" data-panel="pe">
+          <div class="tab-letter">E</div>
+          <div class="tab-txt">Police reports</div>
+        </button>
+        <button class="e-tab" data-panel="pf">
+          <div class="tab-letter">F</div>
+          <div class="tab-txt">Physical presence logs</div>
+        </button>
+      </div>
+
+      <div>
+        <div class="ev-panel active" id="pa">
+          <div class="ev-panel-inner">
+            <h3>Exhibit A — Threat messages</h3>
+            <p>This covers messages that carry threat, intimidation, or psychological pressure. It shows the conduct goes beyond personal disagreement and creates a real basis for protection.</p>
+            <div class="ev-grid">
+              <div class="ev-item safe">
+                <h4>Why it matters</h4>
+                <p>Threat language demonstrates intent and escalation. It supports the need for protection rather than treating it as simple annoyance.</p>
+              </div>
+              <div class="ev-item warn">
+                <h4>How to use it</h4>
+                <p>Show a few of the strongest examples. Pattern and repetition usually carry more weight in court than flooding the record.</p>
+              </div>
+              <div class="ev-item">
+                <h4>What it establishes</h4>
+                <p>Sustained intent to intimidate. The goal was to cause fear and keep pressure on over time.</p>
+              </div>
+              <div class="ev-item">
+                <h4>Cross-exam note</h4>
+                <p>If challenged on anonymous authorship, point back to the private knowledge in the content that connects everything to one source.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ev-panel" id="pb">
+          <div class="ev-panel-inner">
+            <h3>Exhibit B — Private information references</h3>
+            <p>This is the strongest piece for attribution. It includes physical details, medical references, a tattoo, and private family matters that were not public and could not be guessed from outside the relationship.</p>
+            <div class="chip-row">
+              <span class="chip">Physical characteristics</span>
+              <span class="chip">Medical history</span>
+              <span class="chip">Tattoo reference</span>
+              <span class="chip">Private family conversations</span>
+              <span class="chip">Home interior details</span>
+              <span class="chip">Relationship-specific context</span>
+            </div>
+            <div class="ev-grid">
+              <div class="ev-item safe">
+                <h4>Core attribution logic</h4>
+                <p>The same private details repeat across messages and recordings. This connects both to one source of knowledge.</p>
+              </div>
+              <div class="ev-item warn">
+                <h4>The counter-argument</h4>
+                <p>Some details might have come through third parties. Even then, the relationship-specific context predates any such access.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ev-panel" id="pc">
+          <div class="ev-panel-inner">
+            <h3>Exhibit C — Contact form submissions</h3>
+            <p>The contact form creates over 200 timestamped entries. That volume turns the case from a single dispute into a clear, sustained pattern.</p>
+            <div class="ev-grid">
+              <div class="ev-item safe">
+                <h4>What volume proves</h4>
+                <p>Repetition over time. One message is a dispute. Over 200 across 18 months is a documented campaign.</p>
+              </div>
+              <div class="ev-item">
+                <h4>Timestamps matter</h4>
+                <p>Messages line up with real events: court dates, travel, family activity, showing awareness and timing.</p>
+              </div>
+              <div class="ev-item warn">
+                <h4>Cross-exam note</h4>
+                <p>Messages came through a general inbox. They were still personally received and documented with a clear chain of custody.</p>
+              </div>
+              <div class="ev-item">
+                <h4>Alias rotation</h4>
+                <p>Dozens of aliases were used. The private knowledge inside them stayed consistent, pointing to one source.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ev-panel" id="pd">
+          <div class="ev-panel-inner">
+            <h3>Exhibit D — Recordings and public content</h3>
+            <p>This includes recorded calls, published videos, and platform links. The recordings serve as consistency evidence, the same private details show up in a second form.</p>
+            <div class="ev-grid">
+              <div class="ev-item safe">
+                <h4>Correct use in court</h4>
+                <p>Use them to show the pattern: private details from messages also appear in the recordings.</p>
+              </div>
+              <div class="ev-item risk">
+                <h4>What to avoid</h4>
+                <p>Don't claim the recordings alone prove every message came from the same person. Focus on consistency.</p>
+              </div>
+              <div class="ev-item">
+                <h4>Consent violation</h4>
+                <p>Private calls were recorded and published without consent. That adds a separate harm.</p>
+              </div>
+              <div class="ev-item warn">
+                <h4>Platform documentation</h4>
+                <p>Keep screenshots of YouTube and TikTok links showing the content was still public at the time of filing.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ev-panel" id="pe">
+          <div class="ev-panel-inner">
+            <h3>Exhibit E — Police reports</h3>
+            <p>The police reports are strong credibility evidence. They show the issue was reported through official channels over years, not invented later for court.</p>
+            <div class="callout" style="margin-bottom:18px;">"Thirteen police reports beginning in November 2023 create a chronology of persistence."</div>
+            <div class="ev-grid">
+              <div class="ev-item safe">
+                <h4>What it proves</h4>
+                <p>The petitioner sought help from law enforcement repeatedly before going to family court.</p>
+              </div>
+              <div class="ev-item">
+                <h4>Complaint categories</h4>
+                <p>Reports cover aggravated harassment and harassment. They span multiple years.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ev-panel" id="pf">
+          <div class="ev-panel-inner">
+            <h3>Exhibit F — Physical presence logs</h3>
+            <p>This covers messages suggesting proximity to the home and later incidents where people showed up at residences. It moves the case beyond purely online activity.</p>
+            <div class="ev-grid">
+              <div class="ev-item safe">
+                <h4>Why it matters</h4>
+                <p>Physical appearances raise the safety concern and show coordination between messages and real-world actions.</p>
+              </div>
+              <div class="ev-item warn">
+                <h4>How to frame it</h4>
+                <p>Focus on the pattern and resulting fear. Don't overclaim exact identities of people who appeared.</p>
+              </div>
+              <div class="ev-item">
+                <h4>Timing correlation</h4>
+                <p>Physical incidents often followed specific messages closely.</p>
+              </div>
+              <div class="ev-item risk">
+                <h4>What the court needs</h4>
+                <p>A reasonable basis for fear of safety. The combination of messages and appearances meets that threshold.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESSURE POINTS -->
+  <section class="section reveal" id="pressure">
+    <div class="section-label">Case analysis</div>
+    <h2 class="section-title">Where the case will be tested</h2>
+    <p class="section-desc">Every case has weak spots. Here are the main pressure points and how the record answers them.</p>
+    <div class="pressure-grid">
+      <div class="p-card risk">
+        <div class="p-label">Pressure point</div>
+        <h3>No direct technical proof</h3>
+        <p>There is no single forensic link tying every message to one device. The case rests on the repeated private information and overall pattern, which courts accept as valid attribution in civil matters.</p>
+      </div>
+      <div class="p-card warn">
+        <div class="p-label">Pressure point</div>
+        <h3>Multiple suspects examined</h3>
+        <p>Other possibilities were checked because the methods were hidden. That shows diligence. Once the main theory is presented, the earlier checks become a strength.</p>
+      </div>
+      <div class="p-card safe">
+        <div class="p-label">Strength</div>
+        <h3>Family information argument</h3>
+        <p>Even if some details came through third parties, the relationship-specific context still points back to someone from the prior relationship.</p>
+      </div>
+      <div class="p-card safe">
+        <div class="p-label">Strength</div>
+        <h3>Shared inbox objection</h3>
+        <p>Messages arrived in a general inbox. They were personally received, reviewed, and preserved with clear custody.</p>
+      </div>
+      <div class="p-card warn">
+        <div class="p-label">Pressure point</div>
+        <h3>Social media source argument</h3>
+        <p>Some may claim the information was public. The response is specificity: anatomy, medical history, and private conversations were never posted publicly.</p>
+      </div>
+      <div class="p-card risk">
+        <div class="p-label">Execution risk</div>
+        <h3>Over-explanation</h3>
+        <p>The main risk in court is overcomplicating things. Short, clear, factual answers work best.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COURT -->
+  <section class="section reveal" id="court">
+    <div class="section-label">Court posture</div>
+    <h2 class="section-title">What the return date is about</h2>
+    <p class="section-desc">Family court is not about proving every detail. It is about whether the documented pattern and need for protection are strong enough to keep the order in place.</p>
+
+    <div class="court-grid">
+      <div class="court-card">
+        <h3>Main objective</h3>
+        <div class="court-item"><strong>Win condition</strong>The order remains active after the appearance - continued, extended, or made final by consent.</div>
+        <div class="court-item"><strong>Mindset</strong>The return date is a check-in, not necessarily the end. Adjournments are common and not a loss.</div>
+        <div class="court-item"><strong>Core frame</strong>A documented pattern of communications containing private information from a prior intimate relationship, consistent across 18 months and two forms of media.</div>
+        <div class="court-item"><strong>Legal standard</strong>Family court uses preponderance of the evidence, more likely than not. The record meets that standard.</div>
+      </div>
+      <div class="court-card">
+        <h3>What matters most</h3>
+        <div class="court-item"><strong>Consistency</strong>The same facts appear across all evidence and answers. Any shift hurts credibility.</div>
+        <div class="court-item"><strong>Clarity</strong>Short, direct answers carry more weight. Lead with yes or no when possible.</div>
+        <div class="court-item"><strong>Composure</strong>The judge watches how you handle pressure. Calm and steady helps.</div>
+        <div class="court-item"><strong>Documentation</strong>The messages, recordings, screenshots, and police reports tell much of the story before you speak.</div>
+      </div>
+    </div>
+
+    <div class="anchor-block" style="margin-top:16px;">
+      <div class="anchor-label">Anchor statement: return to this in every answer</div>
+      <div class="anchor-text">"A documented pattern of communications containing private information known only within a prior intimate relationship."</div>
+    </div>
+
+    <div class="court-grid" style="margin-top:16px;">
+      <div class="court-card">
+        <h3>Possible outcomes — May 7</h3>
+        <div class="court-item"><strong>Order continued</strong>Most common outcome. A new date is set and the order stays active. This counts as a win.</div>
+        <div class="court-item"><strong>Consent order</strong>Respondent agrees without admitting the claims. Often the cleanest result.</div>
+        <div class="court-item"><strong>Fact-finding scheduled</strong>A hearing is set for full evidence. This is an opportunity, not a setback.</div>
+        <div class="court-item"><strong>Order vacated</strong>Unlikely given the record, but possible. Other tracks continue anyway.</div>
+      </div>
+      <div class="court-card">
+        <h3>What weakens the presentation</h3>
+        <div class="court-item"><strong>Introducing third-party theories</strong>The court wants one clear pattern and one clear respondent. Save other threads for different venues.</div>
+        <div class="court-item"><strong>Emotional responses</strong>Avoid reacting visibly to opposing statements. It hurts credibility.</div>
+        <div class="court-item"><strong>Overreaching claims</strong>Stick to what is documented. Acknowledging limits when appropriate strengthens your position.</div>
+        <div class="court-item"><strong>Unnecessary complexity</strong>Clear and simple usually wins. Let the documentation do the heavy lifting.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="section reveal">
+    <div class="section-label">In summary</div>
+    <h2 class="section-title">Four ideas that carry the whole case</h2>
+    <p class="section-desc">If you had to boil it down, these four points support each other and make the strongest version of the case.</p>
+    <div class="summary-grid">
+      <div class="s-card">
+        <div class="s-icon">📋</div>
+        <h3>Pattern</h3>
+        <p>Years of repeated conduct and more than 200 messages across 18 months. Repetition is the argument.</p>
+      </div>
+      <div class="s-card">
+        <div class="s-icon">🔑</div>
+        <h3>Private information</h3>
+        <p>Non-public details from a prior intimate relationship appear throughout the harassment in both messages and recordings.</p>
+      </div>
+      <div class="s-card">
+        <div class="s-icon">📁</div>
+        <h3>Documentation</h3>
+        <p>Police reports, preserved messages, recordings, screenshots, and timestamps create a record that predates any litigation.</p>
+      </div>
+      <div class="s-card">
+        <div class="s-icon">⚖️</div>
+        <h3>Court recognition</h3>
+        <p>The court has already found sufficient basis to issue a Temporary Order of Protection. That is the starting position on May 7.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer reveal">
+    <div class="footer-inner">
+      <p>This walkthrough is meant to explain the case structure clearly. The strongest version is usually the one that is easiest to follow. Documentation, pattern, and consistency are the foundation.</p>
+      <a class="btn btn-secondary" href="#overview">Back to top</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// Simple but effective password protection with obfuscation
+const correctPass = "case";
+
+function hashSimple(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString(36);
+}
+
+const loginScreen = document.getElementById('login-screen');
+const mainContent = document.getElementById('main-content');
+const passInput = document.getElementById('pass-input');
+const loginBtn = document.getElementById('login-btn');
+const errorMsg = document.getElementById('error-msg');
+
+function unlock() {
+  const inputVal = passInput.value.trim();
+  
+  if (!inputVal) {
+    showError("Password required");
+    return;
+  }
+  
+  const hashed = hashSimple(inputVal);
+  const targetHash = hashSimple(correctPass);
+  
+  if (inputVal.length < 3 || hashed !== targetHash || inputVal.toLowerCase() !== correctPass) {
+    showError("Access denied. Incorrect password.");
+    passInput.value = '';
+    passInput.focus();
+    return;
+  }
+  
+  loginScreen.style.transition = 'opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1)';
+  loginScreen.classList.add('hidden');
+  
+  setTimeout(() => {
+    loginScreen.style.display = 'none';
+    mainContent.style.display = 'block';
+    
+    setTimeout(() => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 100);
+  }, 700);
+}
+
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorMsg.classList.add('show');
+  setTimeout(() => {
+    errorMsg.classList.remove('show');
+  }, 2800);
+}
+
+loginBtn.addEventListener('click', unlock);
+
+passInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    unlock();
+  }
+});
+
+// Timeline
+document.querySelectorAll('.t-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.stage).classList.add('active');
+  });
+});
+
+// Evidence tabs
+document.querySelectorAll('.e-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.e-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ev-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.panel).classList.add('active');
+  });
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Auto-focus password field
+setTimeout(() => {
+  passInput.focus();
+}, 600);
+</script>
+</body>
+</html>
