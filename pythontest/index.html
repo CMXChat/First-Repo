@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CMX • Python Test</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Python test terminal on db.cmxchat.com" />
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0c0c0c;
+    --term-bg: #0d1117;
+    --green: #3fb950;
+    --cyan: #58a6ff;
+    --purple: #a371f7;
+    --yellow: #d29922;
+    --red: #f85149;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --border: #30363d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100svh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 139, 253, 0.09), transparent),
+      var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+  }
+
+  .window {
+    width: 100%;
+    max-width: 900px;
+    background: var(--term-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 20px 50px -12px rgba(0,0,0,0.7),
+      0 0 80px -20px rgba(63, 185, 80, 0.18);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #161b22;
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+
+  .titlebar-text {
+    flex: 1;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .terminal {
+    padding: 22px 24px 32px;
+    min-height: 480px;
+  }
+
+  .line { margin-bottom: 7px; white-space: pre-wrap; word-break: break-word; }
+
+  .prompt { color: var(--green); }
+  .prompt .user { color: var(--cyan); }
+  .prompt .path { color: var(--purple); }
+  .prompt .symbol { color: var(--green); }
+
+  .cmd { color: var(--text); }
+  .output { color: var(--muted); }
+  .output.success { color: var(--green); }
+  .output.info { color: var(--cyan); }
+  .output.warn { color: var(--yellow); }
+  .comment { color: #6e7681; font-style: italic; }
+
+  .section {
+    margin: 26px 0 12px;
+    color: var(--yellow);
+    font-weight: 600;
+  }
+
+  .code-block {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 10px 0 18px;
+    overflow-x: auto;
+  }
+
+  .code-block .kw { color: #ff7b72; }
+  .code-block .fn { color: #d2a8ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .num { color: #79c0ff; }
+  .code-block .cm { color: #8b949e; }
+
+  .cursor {
+    display: inline-block;
+    width: 9px;
+    height: 16px;
+    background: var(--green);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1.05s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .footer-bar {
+    margin-top: 28px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .footer-bar a { color: var(--cyan); text-decoration: none; }
+  .footer-bar a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+  <div class="window">
+    <div class="titlebar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <div class="titlebar-text">jay@cmx:~/pythontest — python3</div>
+    </div>
+
+    <div class="terminal">
+      <div class="line">
+        <span class="prompt"><span class="user">jay</span>@<span class="path">cmx</span>:<span class="path">~/pythontest</span><span class="symbol">$</span></span>
+        <span class="cmd"> python3 test.py</span>
+      </div>
+
+      <div class="line output success">
+[OK] Python test page is live on db.cmxchat.com/pythontest
+      </div>
+      <div class="line output info">
+[INFO] Static page served via GitHub Pages + custom domain
+      </div>
+
+      <div class="section">── Basic Python Test Script ───────────────────────────</div>
+
+      <div class="line comment"># Save this as test.py and run it locally</div>
+
+      <div class="code-block">
+<span class="cm">#!/usr/bin/env python3</span>
+<span class="str">"""Basic connectivity + page test for db.cmxchat.com/pythontest"""</span>
+
+<span class="kw">import</span> urllib.request
+<span class="kw">import</span> ssl
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+URL = <span class="str">"https://db.cmxchat.com/pythontest/"</span>
+
+<span class="kw">def</span> <span class="fn">test_page</span>():
+    <span class="kw">print</span>(<span class="str">f"[{datetime.now().strftime('%H:%M:%S')}] Testing {URL}"</span>)
+    <span class="kw">try</span>:
+        ctx = ssl.create_default_context()
+        <span class="kw">with</span> urllib.request.urlopen(URL, context=ctx, timeout=<span class="num">10</span>) <span class="kw">as</span> r:
+            status = r.status
+            body = r.read().decode(<span class="str">"utf-8"</span>, errors=<span class="str">"ignore"</span>)
+            <span class="kw">print</span>(<span class="str">f"Status : {status}"</span>)
+            <span class="kw">if</span> <span class="str">"Python test page is live"</span> <span class="kw">in</span> body:
+                <span class="kw">print</span>(<span class="str">"Result : PASS ✓  Page content looks good"</span>)
+            <span class="kw">else</span>:
+                <span class="kw">print</span>(<span class="str">"Result : WARN  Page loaded but expected text missing"</span>)
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="kw">print</span>(<span class="str">f"Result : FAIL ✗  {type(e).__name__}: {e}"</span>)
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    test_page()
+      </div>
+
+      <div class="section">── Quick Local Usage ──────────────────────────────────</div>
+
+      <div class="line">
+        <span class="prompt"><span class="user">jay</span>@<span class="path">cmx</span>:<span class="path">~</span><span class="symbol">$</span></span>
+        <span class="cmd"> curl -I https://db.cmxchat.com/pythontest/</span>
+      </div>
+      <div class="line output">HTTP/2 200</div>
+
+      <div class="line" style="margin-top: 8px;">
+        <span class="prompt"><span class="user">jay</span>@<span class="path">cmx</span>:<span class="path">~</span><span class="symbol">$</span></span>
+        <span class="cmd"> python3 test.py</span>
+      </div>
+      <div class="line output success">[OK] Status : 200</div>
+      <div class="line output success">[OK] Result : PASS ✓  Page content looks good</div>
+
+      <div class="line" style="margin-top: 24px;">
+        <span class="prompt"><span class="user">jay</span>@<span class="path">cmx</span>:<span class="path">~/pythontest</span><span class="symbol">$</span></span>
+        <span class="cmd"> # Page is ready.</span><span class="cursor"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    CMX • Python Test Terminal •
+    <a href="https://db.cmxchat.com/entry">← Entry</a>
+  </div>
+
+</body>
+</html>
