@@ -2,80 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#020711" />
+  <meta name="theme-color" content="#050b14" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
   <title>CMX Command Node</title>
   <meta name="description" content="Private CMX command node, terminal launcher, and daily physical protocol tracker." />
-  <link rel="stylesheet" href="/assets/cmx-command.css?v=20260729-2" />
+  <link rel="stylesheet" href="/assets/cmx-kali-mobile.css?v=20260729-1" />
 </head>
 <body>
   <div id="boot" aria-live="polite">
-    <div class="boot-window">
+    <section class="boot-window" aria-label="CMX startup sequence">
       <div class="window-bar">
-        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-        <span class="window-title">cmx-init — secure command node bootstrap</span>
+        <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
+        <span class="window-title">cmx-init · secure node bootstrap</span>
       </div>
       <div id="bootBody" class="boot-body"></div>
-    </div>
+    </section>
   </div>
 
   <main id="gate" class="hidden">
     <section class="gate-shell" aria-labelledby="gateTitle">
       <div class="window-bar">
-        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-        <span class="window-title">root@db.cmxchat.com: ~/auth</span>
+        <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
+        <span class="window-title">db.cmxchat.com · local authentication</span>
       </div>
       <div class="gate-body">
-        <div class="gate-brand">
+        <header class="gate-brand">
           <div class="gate-emblem" aria-hidden="true">CMX</div>
           <div class="gate-brand-copy">
             <div class="gate-kicker">Private command node</div>
             <div class="gate-host">db.cmxchat.com</div>
           </div>
-        </div>
+        </header>
+
         <h1 id="gateTitle" class="gate-title">Authentication required</h1>
-        <p id="gateCopy" class="gate-copy">Unlock the local CMX control shell.</p>
+        <p id="gateCopy" class="gate-copy">Unlock your CMX workspace on this device.</p>
 
         <div id="setupFields" class="hidden">
           <div class="field">
             <label for="setupUser">Operator callsign</label>
-            <div class="input-shell"><span class="input-prefix">user@cmx:~$</span><input id="setupUser" maxlength="24" autocomplete="username" spellcheck="false" placeholder="jay" /></div>
+            <div class="input-shell"><span class="input-prefix">user</span><input id="setupUser" maxlength="24" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="jay" /></div>
           </div>
           <div class="field">
-            <label for="setupPassword">Create password, minimum 12 characters</label>
-            <div class="input-shell"><span class="input-prefix">passwd</span><input id="setupPassword" type="password" minlength="12" autocomplete="new-password" placeholder="enter a strong password" /></div>
+            <label for="setupPassword">Create password · minimum 12 characters</label>
+            <div class="input-shell"><span class="input-prefix">key</span><input id="setupPassword" type="password" minlength="12" autocomplete="new-password" placeholder="strong passphrase" /></div>
           </div>
           <div class="field">
             <label for="setupConfirm">Confirm password</label>
-            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="repeat password" /></div>
+            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="repeat passphrase" /></div>
           </div>
-          <div class="gate-actions">
-            <button id="createVaultBtn" class="btn primary" type="button">Create local access</button>
+          <div class="gate-actions single">
+            <button id="createVaultBtn" class="btn primary" type="button">Initialize local vault</button>
           </div>
         </div>
 
         <div id="loginFields" class="hidden">
           <div class="field">
             <label for="loginUser">Operator</label>
-            <div class="input-shell"><span class="input-prefix">login</span><input id="loginUser" maxlength="24" autocomplete="username" spellcheck="false" /></div>
+            <div class="input-shell"><span class="input-prefix">login</span><input id="loginUser" maxlength="24" autocomplete="username" autocapitalize="off" spellcheck="false" /></div>
           </div>
           <div class="field">
             <label for="loginPassword">Password</label>
-            <div class="input-shell"><span class="input-prefix">••••</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="password" /></div>
+            <div class="input-shell"><span class="input-prefix">key</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="password" /></div>
           </div>
           <div class="gate-actions">
             <button id="unlockBtn" class="btn primary" type="button">Authenticate</button>
-            <button id="resetVaultBtn" class="btn ghost" type="button">Reset this device</button>
+            <button id="resetVaultBtn" class="btn ghost" type="button">Reset device</button>
           </div>
         </div>
 
         <div id="gateOutput" class="gate-output" role="status"></div>
-        <div class="security-note">LOCAL STATIC MODE: Your password is not stored in plaintext. This browser stores a salted verifier only. Full route protection will be added when the command node moves to the planned FastAPI server.</div>
+        <details class="security-note">
+          <summary>Current security mode</summary>
+          <p>Your password is stored only as a salted PBKDF2 verifier in this browser. This is stronger than a visible password in the page source, but real route protection still requires the planned FastAPI server.</p>
+        </details>
       </div>
     </section>
   </main>
@@ -84,60 +88,32 @@
     <section class="app-shell">
       <header class="topbar">
         <div class="brand">
-          <div class="brand-mark">λ</div>
+          <div class="brand-mark">CMX</div>
           <div class="brand-text">
-            <div class="brand-title">CMX COMMAND NODE</div>
-            <div class="brand-sub">db.cmxchat.com // mobile command interface // Python-ready</div>
+            <div class="brand-title">COMMAND NODE</div>
+            <div class="brand-sub">db.cmxchat.com</div>
           </div>
         </div>
         <div class="top-spacer"></div>
         <div class="status-row">
-          <span class="status-chip"><span class="status-light"></span><span>ONLINE</span></span>
-          <span class="status-chip" id="clockChip">--:--:--</span>
+          <span class="status-chip node-chip"><span class="status-light"></span><span>ONLINE</span></span>
+          <span class="status-chip" id="clockChip">--:--</span>
           <span class="status-chip" id="sessionChip">SESSION --</span>
           <button class="icon-btn" id="fullscreenBtn" type="button" aria-label="Toggle fullscreen">⛶</button>
-          <button class="icon-btn" id="lockBtn" type="button" aria-label="Lock terminal">⌁</button>
+          <button class="icon-btn" id="lockBtn" type="button" aria-label="Lock command node">⌁</button>
         </div>
       </header>
 
       <div class="main-grid">
-        <section class="terminal-pane" aria-label="CMX terminal">
-          <div class="pane-head">
-            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-            <span id="terminalTitle">operator@cmx:~ — zsh</span>
-            <div class="right">
-              <button class="mini-action" id="helpBtn" type="button">HELP</button>
-              <button class="mini-action" id="clearBtn" type="button">CLEAR</button>
-            </div>
-          </div>
-          <div id="terminalOutput" role="log" aria-live="polite"></div>
-          <form id="terminalForm" class="terminal-input-row" autocomplete="off">
-            <label class="sr-only" for="commandInput">Terminal command</label>
-            <span class="prompt"><span class="u" id="promptUser">jay</span>@<span class="h">cmx</span>:<span class="p">~</span>$</span>
-            <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type help" />
-          </form>
-        </section>
-
         <aside class="dashboard">
-          <section class="card">
-            <div class="card-head">Operator profile <span class="right" id="rankLabel">BOOT SEQUENCE</span></div>
-            <div class="card-body">
-              <div class="metric-grid">
-                <div class="metric"><div class="metric-label">Total XP</div><div class="metric-value" id="totalXp">0</div></div>
-                <div class="metric"><div class="metric-label">Level</div><div class="metric-value" id="levelValue">01</div></div>
-                <div class="metric"><div class="metric-label">Streak</div><div class="metric-value" id="streakValue">0D</div></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="card">
-            <div class="card-head">Daily physical protocol <span class="right" id="todayLabel">TODAY</span></div>
+          <section class="card workout-card">
+            <div class="card-head"><span>Daily physical protocol</span><span class="right" id="todayLabel">TODAY</span></div>
             <div class="card-body">
               <div class="progress-layout">
                 <div class="progress-ring" id="progressRing"><strong id="progressPercent">0%</strong></div>
                 <div>
                   <div class="mission-title">60 pushups + 60 situps</div>
-                  <div class="mission-copy">4 × 15 pushups. 3 × 20 situps. Complete all seven sets to close today’s protocol and earn the mission bonus.</div>
+                  <div class="mission-copy">Four sets of 15 pushups. Three sets of 20 situps. Close all seven sets.</div>
                   <div class="bar"><div class="bar-fill" id="workoutBar"></div></div>
                 </div>
               </div>
@@ -154,33 +130,60 @@
 
               <div class="workout-actions">
                 <button class="small-btn" id="restBtn" type="button">START 60S REST</button>
-                <button class="small-btn" id="undoWorkoutBtn" type="button">RESET TODAY</button>
+                <button class="small-btn danger" id="undoWorkoutBtn" type="button">RESET TODAY</button>
               </div>
               <div class="rest-box"><span>REST TIMER</span><span id="restTime">IDLE</span></div>
               <div class="history-grid" id="historyGrid" aria-label="Seven day workout history"></div>
             </div>
           </section>
 
-          <section class="card">
-            <div class="card-head">Quick launch</div>
+          <section class="card quick-card">
+            <div class="card-head"><span>Quick launch</span><span class="right">TOOLS</span></div>
+            <div class="card-body"><div class="quick-grid" id="quickGrid"></div></div>
+          </section>
+
+          <section class="card profile-card">
+            <div class="card-head"><span>Operator profile</span><span class="right" id="rankLabel">BOOT SEQUENCE</span></div>
             <div class="card-body">
-              <div class="quick-grid" id="quickGrid"></div>
+              <div class="metric-grid">
+                <div class="metric"><div class="metric-label">Total XP</div><div class="metric-value" id="totalXp">0</div></div>
+                <div class="metric"><div class="metric-label">Level</div><div class="metric-value" id="levelValue">01</div></div>
+                <div class="metric"><div class="metric-label">Streak</div><div class="metric-value" id="streakValue">0D</div></div>
+              </div>
             </div>
           </section>
 
-          <section class="card">
-            <div class="card-head">Current focus <span class="right">LOCAL</span></div>
+          <section class="card focus-card">
+            <div class="card-head"><span>Current focus</span><span class="right">LOCAL</span></div>
             <div class="card-body">
-              <textarea id="focusInput" class="focus-input" maxlength="420" placeholder="Write the one thing that matters right now..."></textarea>
-              <div class="tiny" style="margin-top:8px">Autosaved on this device. Terminal commands: <strong>focus</strong>, <strong>focus your text</strong>, <strong>note text</strong>, and <strong>notes</strong>.</div>
+              <textarea id="focusInput" class="focus-input" maxlength="420" placeholder="What matters most right now?"></textarea>
+              <div class="tiny">Autosaved on this device. Terminal commands: <strong>focus</strong>, <strong>note</strong>, and <strong>notes</strong>.</div>
             </div>
           </section>
         </aside>
+
+        <section class="terminal-pane" aria-label="CMX terminal">
+          <div class="pane-head">
+            <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
+            <span id="terminalTitle">operator@cmx:~ · cmx-shell</span>
+            <div class="right">
+              <button class="mini-action" id="helpBtn" type="button">HELP</button>
+              <button class="mini-action" id="clearBtn" type="button">CLEAR</button>
+            </div>
+          </div>
+          <div id="terminalOutput" role="log" aria-live="polite"></div>
+          <form id="terminalForm" class="terminal-input-row" autocomplete="off">
+            <label class="sr-only" for="commandInput">Terminal command</label>
+            <span class="prompt"><span class="prompt-mobile">$</span><span class="prompt-full"><span class="u" id="promptUser">jay</span>@<span class="h">cmx</span>:<span class="p">~</span>$</span></span>
+            <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="help" />
+          </form>
+        </section>
       </div>
     </section>
   </main>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="/assets/cmx-command.js?v=20260729-2" defer></script>
+  <script src="/assets/cmx-command.js?v=20260729-3" defer></script>
+  <script src="/assets/cmx-route-filter.js?v=20260729-1" defer></script>
 </body>
 </html>
