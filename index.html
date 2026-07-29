@@ -4,13 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#020711" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
   <title>CMX Command Node</title>
   <meta name="description" content="Private CMX command node, terminal launcher, and daily physical protocol tracker." />
-  <link rel="stylesheet" href="/assets/cmx-command.css" />
+  <link rel="stylesheet" href="/assets/cmx-command.css?v=20260729-2" />
 </head>
 <body>
   <div id="boot" aria-live="polite">
@@ -30,13 +31,13 @@
         <span class="window-title">root@db.cmxchat.com: ~/auth</span>
       </div>
       <div class="gate-body">
-        <pre class="ascii" aria-hidden="true"> ██████╗███╗   ███╗██╗  ██╗
-██╔════╝████╗ ████║╚██╗██╔╝
-██║     ██╔████╔██║ ╚███╔╝
-██║     ██║╚██╔╝██║ ██╔██╗
-╚██████╗██║ ╚═╝ ██║██╔╝ ██╗
- ╚═════╝╚═╝     ╚═╝╚═╝  ╚═╝</pre>
-        <div class="gate-kicker">Private command node</div>
+        <div class="gate-brand">
+          <div class="gate-emblem" aria-hidden="true">CMX</div>
+          <div class="gate-brand-copy">
+            <div class="gate-kicker">Private command node</div>
+            <div class="gate-host">db.cmxchat.com</div>
+          </div>
+        </div>
         <h1 id="gateTitle" class="gate-title">Authentication required</h1>
         <p id="gateCopy" class="gate-copy">Unlock the local CMX control shell.</p>
 
@@ -54,7 +55,7 @@
             <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="repeat password" /></div>
           </div>
           <div class="gate-actions">
-            <button id="createVaultBtn" class="btn primary" type="button">Initialize encrypted local vault</button>
+            <button id="createVaultBtn" class="btn primary" type="button">Create local access</button>
           </div>
         </div>
 
@@ -74,7 +75,7 @@
         </div>
 
         <div id="gateOutput" class="gate-output" role="status"></div>
-        <div class="security-note">STATIC SECURITY MODE: Your password is never stored in plaintext. This page stores a salted PBKDF2 verifier in this browser. Because GitHub Pages is static, a technical visitor can still bypass client-side controls with developer tools. Real protection requires the planned FastAPI server and route-level authentication.</div>
+        <div class="security-note">LOCAL STATIC MODE: Your password is not stored in plaintext. This browser stores a salted verifier only. Full route protection will be added when the command node moves to the planned FastAPI server.</div>
       </div>
     </section>
   </main>
@@ -86,12 +87,12 @@
           <div class="brand-mark">λ</div>
           <div class="brand-text">
             <div class="brand-title">CMX COMMAND NODE</div>
-            <div class="brand-sub">db.cmxchat.com // browser shell // Python-ready architecture</div>
+            <div class="brand-sub">db.cmxchat.com // mobile command interface // Python-ready</div>
           </div>
         </div>
         <div class="top-spacer"></div>
         <div class="status-row">
-          <span class="status-chip"><span class="status-light"></span><span>NODE ONLINE</span></span>
+          <span class="status-chip"><span class="status-light"></span><span>ONLINE</span></span>
           <span class="status-chip" id="clockChip">--:--:--</span>
           <span class="status-chip" id="sessionChip">SESSION --</span>
           <button class="icon-btn" id="fullscreenBtn" type="button" aria-label="Toggle fullscreen">⛶</button>
@@ -113,7 +114,7 @@
           <form id="terminalForm" class="terminal-input-row" autocomplete="off">
             <label class="sr-only" for="commandInput">Terminal command</label>
             <span class="prompt"><span class="u" id="promptUser">jay</span>@<span class="h">cmx</span>:<span class="p">~</span>$</span>
-            <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type help and press Enter" />
+            <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type help" />
           </form>
         </section>
 
@@ -180,6 +181,6 @@
   </main>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="/assets/cmx-command.js" defer></script>
+  <script src="/assets/cmx-command.js?v=20260729-2" defer></script>
 </body>
 </html>
