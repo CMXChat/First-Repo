@@ -1,229 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<!-- ===== PRIMARY META ===== -->
-<title>CMX Internal Access • Secure Workspace Login</title>
-<meta name="description" content="Private access to internal materials." />
-
-<!-- 🚫 SEARCH ENGINES -->
-<meta name="robots" content="noindex, nofollow" />
-
-<!-- ===== OPEN GRAPH / SOCIAL ===== -->
-<meta property="og:type" content="website" />
-<meta property="og:title" content="CMX Internal Access • Secure" />
-<meta property="og:description" content="Private access to internal materials." />
-<meta property="og:url" content="https://db.cmxchat.com/" />
-<meta property="og:image" content="https://iili.io/fUerhtR.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-
-<!-- ===== TWITTER ===== -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="CMX Internal Access • Secure" />
-<meta name="twitter:description" content="Private access to internal materials." />
-<meta name="twitter:image" content="https://iili.io/fUerhtR.png" />
-
-<script>
-  const CONFIG = {
-    USERNAME: 'admin',
-    PASSWORD: 'access',
-    REDIRECT_URL: 'https://db.cmxchat.com/entry'
-  };
-</script>
-
-<style>
-:root{
-  --bg:#020617;
-  --glass:rgba(255,255,255,.045);
-  --glass-border:rgba(255,255,255,.18);
-  --ink:#f1f5f9;
-  --muted:#9ca3af;
-  --accent:#38bdf8;
-  --ok:#34d399;
-  --bad:#fb7185;
-  --r:22px;
-}
-
-*{box-sizing:border-box}
-
-html,body{
-  min-height:100svh;
-  margin:0;
-}
-
-body{
-  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,.18), transparent 60%),
-    radial-gradient(900px 500px at 80% 10%, rgba(15,23,42,.9), transparent 65%),
-    linear-gradient(180deg,var(--bg),var(--bg));
-  color:var(--ink);
-  display:grid;
-  place-items:center;
-  padding-block:24px;
-  padding-inline:0;
-}
-
-.wrap{
-  width:min(92vw,520px);
-  margin-inline:auto;
-}
-
-.card{
-  position:relative;
-  background:var(--glass);
-  backdrop-filter: blur(26px) saturate(180%);
-  -webkit-backdrop-filter: blur(26px) saturate(180%);
-  border:1px solid var(--glass-border);
-  border-radius:var(--r);
-  padding:32px 30px 30px;
-  box-shadow:
-    0 40px 120px rgba(0,0,0,.85),
-    inset 0 1px 0 rgba(255,255,255,.08);
-}
-
-.card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 45%);
-  pointer-events:none;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:22px;
-}
-
-.logo{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  background:linear-gradient(135deg,#38bdf8,#22d3ee);
-  display:grid;
-  place-items:center;
-  color:#020617;
-  font-weight:900;
-  letter-spacing:.5px;
-}
-
-h1{
-  margin:0;
-  font-size:1.45rem;
-}
-
-.subtitle{
-  font-size:.9rem;
-  color:var(--muted);
-}
-
-label{
-  display:block;
-  margin-top:18px;
-  font-size:.85rem;
-  color:#c7d2fe;
-}
-
-input{
-  width:100%;
-  margin-top:6px;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.16);
-  background:linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,.7));
-  color:#fff;
-  outline:none;
-}
-
-input::placeholder{color:#94a3b8}
-input:focus{border-color:var(--accent)}
-
-button{
-  width:100%;
-  margin-top:24px;
-  padding:15px;
-  border-radius:999px;
-  border:0;
-  background:linear-gradient(135deg,#38bdf8,#22d3ee);
-  color:#020617;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 18px 50px rgba(56,189,248,.45);
-}
-
-button:hover{filter:brightness(1.05)}
-
-.out{
-  min-height:22px;
-  margin-top:14px;
-  font-size:.9rem;
-  color:var(--ok);
-}
-
-.err{color:var(--bad)}
-
-.footer{
-  margin-top:18px;
-  text-align:center;
-  font-size:.75rem;
-  color:var(--muted);
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
+  <title>CMX Command Node</title>
+  <meta name="description" content="Private CMX command node, terminal launcher, and daily physical protocol tracker." />
+  <link rel="stylesheet" href="/assets/cmx-command.css" />
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="card" role="dialog">
-      <div class="brand">
-        <div class="logo">CMX</div>
-        <div>
-          <h1>Secure Access</h1>
-          <div class="subtitle">Internal documentation & systems</div>
-        </div>
+  <div id="boot" aria-live="polite">
+    <div class="boot-window">
+      <div class="window-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="window-title">cmx-init — secure command node bootstrap</span>
       </div>
-
-      <label for="user">Username</label>
-      <input id="user" type="text" placeholder="username" autocomplete="username" />
-
-      <label for="pass">Password</label>
-      <input id="pass" type="password" placeholder="••••••••" autocomplete="current-password" />
-
-      <button id="authBtn">Authenticate</button>
-      <div id="out" class="out"></div>
-
-      <div class="footer">Press Enter to continue</div>
+      <div id="bootBody" class="boot-body"></div>
     </div>
   </div>
 
-<script>
-(function(){
-  const out = document.getElementById('out');
-  const btn = document.getElementById('authBtn');
+  <main id="gate" class="hidden">
+    <section class="gate-shell" aria-labelledby="gateTitle">
+      <div class="window-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="window-title">root@db.cmxchat.com: ~/auth</span>
+      </div>
+      <div class="gate-body">
+        <pre class="ascii" aria-hidden="true"> ██████╗███╗   ███╗██╗  ██╗
+██╔════╝████╗ ████║╚██╗██╔╝
+██║     ██╔████╔██║ ╚███╔╝
+██║     ██║╚██╔╝██║ ██╔██╗
+╚██████╗██║ ╚═╝ ██║██╔╝ ██╗
+ ╚═════╝╚═╝     ╚═╝╚═╝  ╚═╝</pre>
+        <div class="gate-kicker">Private command node</div>
+        <h1 id="gateTitle" class="gate-title">Authentication required</h1>
+        <p id="gateCopy" class="gate-copy">Unlock the local CMX control shell.</p>
 
-  function auth(){
-    const u = document.getElementById('user').value.trim().toLowerCase();
-    const p = document.getElementById('pass').value.trim();
+        <div id="setupFields" class="hidden">
+          <div class="field">
+            <label for="setupUser">Operator callsign</label>
+            <div class="input-shell"><span class="input-prefix">user@cmx:~$</span><input id="setupUser" maxlength="24" autocomplete="username" spellcheck="false" placeholder="jay" /></div>
+          </div>
+          <div class="field">
+            <label for="setupPassword">Create password, minimum 12 characters</label>
+            <div class="input-shell"><span class="input-prefix">passwd</span><input id="setupPassword" type="password" minlength="12" autocomplete="new-password" placeholder="enter a strong password" /></div>
+          </div>
+          <div class="field">
+            <label for="setupConfirm">Confirm password</label>
+            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="repeat password" /></div>
+          </div>
+          <div class="gate-actions">
+            <button id="createVaultBtn" class="btn primary" type="button">Initialize encrypted local vault</button>
+          </div>
+        </div>
 
-    if (u === CONFIG.USERNAME && p === CONFIG.PASSWORD) {
-      out.classList.remove('err');
-      out.textContent = 'Access granted. Loading workspace…';
-      setTimeout(()=>location.href = CONFIG.REDIRECT_URL, 700);
-    } else {
-      out.classList.add('err');
-      out.textContent = 'Invalid credentials.';
-    }
-  }
+        <div id="loginFields" class="hidden">
+          <div class="field">
+            <label for="loginUser">Operator</label>
+            <div class="input-shell"><span class="input-prefix">login</span><input id="loginUser" maxlength="24" autocomplete="username" spellcheck="false" /></div>
+          </div>
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <div class="input-shell"><span class="input-prefix">••••</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="password" /></div>
+          </div>
+          <div class="gate-actions">
+            <button id="unlockBtn" class="btn primary" type="button">Authenticate</button>
+            <button id="resetVaultBtn" class="btn ghost" type="button">Reset this device</button>
+          </div>
+        </div>
 
-  btn.onclick = auth;
-  document.addEventListener('keydown', e => e.key === 'Enter' && auth());
-  document.getElementById('user').focus();
-})();
-</script>
+        <div id="gateOutput" class="gate-output" role="status"></div>
+        <div class="security-note">STATIC SECURITY MODE: Your password is never stored in plaintext. This page stores a salted PBKDF2 verifier in this browser. Because GitHub Pages is static, a technical visitor can still bypass client-side controls with developer tools. Real protection requires the planned FastAPI server and route-level authentication.</div>
+      </div>
+    </section>
+  </main>
+
+  <main id="app" class="hidden">
+    <section class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">λ</div>
+          <div class="brand-text">
+            <div class="brand-title">CMX COMMAND NODE</div>
+            <div class="brand-sub">db.cmxchat.com // browser shell // Python-ready architecture</div>
+          </div>
+        </div>
+        <div class="top-spacer"></div>
+        <div class="status-row">
+          <span class="status-chip"><span class="status-light"></span><span>NODE ONLINE</span></span>
+          <span class="status-chip" id="clockChip">--:--:--</span>
+          <span class="status-chip" id="sessionChip">SESSION --</span>
+          <button class="icon-btn" id="fullscreenBtn" type="button" aria-label="Toggle fullscreen">⛶</button>
+          <button class="icon-btn" id="lockBtn" type="button" aria-label="Lock terminal">⌁</button>
+        </div>
+      </header>
+
+      <div class="main-grid">
+        <section class="terminal-pane" aria-label="CMX terminal">
+          <div class="pane-head">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span id="terminalTitle">operator@cmx:~ — zsh</span>
+            <div class="right">
+              <button class="mini-action" id="helpBtn" type="button">HELP</button>
+              <button class="mini-action" id="clearBtn" type="button">CLEAR</button>
+            </div>
+          </div>
+          <div id="terminalOutput" role="log" aria-live="polite"></div>
+          <form id="terminalForm" class="terminal-input-row" autocomplete="off">
+            <label class="sr-only" for="commandInput">Terminal command</label>
+            <span class="prompt"><span class="u" id="promptUser">jay</span>@<span class="h">cmx</span>:<span class="p">~</span>$</span>
+            <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type help and press Enter" />
+          </form>
+        </section>
+
+        <aside class="dashboard">
+          <section class="card">
+            <div class="card-head">Operator profile <span class="right" id="rankLabel">BOOT SEQUENCE</span></div>
+            <div class="card-body">
+              <div class="metric-grid">
+                <div class="metric"><div class="metric-label">Total XP</div><div class="metric-value" id="totalXp">0</div></div>
+                <div class="metric"><div class="metric-label">Level</div><div class="metric-value" id="levelValue">01</div></div>
+                <div class="metric"><div class="metric-label">Streak</div><div class="metric-value" id="streakValue">0D</div></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">Daily physical protocol <span class="right" id="todayLabel">TODAY</span></div>
+            <div class="card-body">
+              <div class="progress-layout">
+                <div class="progress-ring" id="progressRing"><strong id="progressPercent">0%</strong></div>
+                <div>
+                  <div class="mission-title">60 pushups + 60 situps</div>
+                  <div class="mission-copy">4 × 15 pushups. 3 × 20 situps. Complete all seven sets to close today’s protocol and earn the mission bonus.</div>
+                  <div class="bar"><div class="bar-fill" id="workoutBar"></div></div>
+                </div>
+              </div>
+
+              <div class="exercise">
+                <div class="exercise-head"><span class="exercise-name">PUSHUPS</span><span class="exercise-count" id="pushupCount">0 / 60</span></div>
+                <div class="sets" id="pushupSets"></div>
+              </div>
+
+              <div class="exercise">
+                <div class="exercise-head"><span class="exercise-name">SITUPS</span><span class="exercise-count" id="situpCount">0 / 60</span></div>
+                <div class="sets three" id="situpSets"></div>
+              </div>
+
+              <div class="workout-actions">
+                <button class="small-btn" id="restBtn" type="button">START 60S REST</button>
+                <button class="small-btn" id="undoWorkoutBtn" type="button">RESET TODAY</button>
+              </div>
+              <div class="rest-box"><span>REST TIMER</span><span id="restTime">IDLE</span></div>
+              <div class="history-grid" id="historyGrid" aria-label="Seven day workout history"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">Quick launch</div>
+            <div class="card-body">
+              <div class="quick-grid" id="quickGrid"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">Current focus <span class="right">LOCAL</span></div>
+            <div class="card-body">
+              <textarea id="focusInput" class="focus-input" maxlength="420" placeholder="Write the one thing that matters right now..."></textarea>
+              <div class="tiny" style="margin-top:8px">Autosaved on this device. Terminal commands: <strong>focus</strong>, <strong>focus your text</strong>, <strong>note text</strong>, and <strong>notes</strong>.</div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/assets/cmx-command.js" defer></script>
 </body>
 </html>
