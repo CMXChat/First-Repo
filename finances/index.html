@@ -3,290 +3,289 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CMX • Finances</title>
+<title>CMX • Python Terminal</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="description" content="Private finances dashboard" />
+<meta name="description" content="Interactive Linux terminal style Python tutorial" />
 
 <style>
-:root{
-  --bg:#020617;
-  --glass:rgba(255,255,255,.045);
-  --glass-border:rgba(255,255,255,.14);
-  --ink:#f1f5f9;
-  --muted:#94a3b8;
-  --accent:#38bdf8;
-  --green:#34d399;
-  --red:#fb7185;
-  --purple:#a78bfa;
-  --r:18px;
-}
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100svh;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--ink)}
+  :root {
+    --bg: #0c0c0c;
+    --term-bg: #0d1117;
+    --green: #3fb950;
+    --green-dim: #238636;
+    --cyan: #58a6ff;
+    --purple: #a371f7;
+    --yellow: #d29922;
+    --red: #f85149;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --border: #30363d;
+  }
 
-body{
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(56,189,248,.12), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, rgba(167,139,250,.08), transparent 50%),
-    linear-gradient(180deg,#020617,#0a0f1c);
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:20px 28px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  backdrop-filter:blur(12px);
-}
+  html, body {
+    min-height: 100svh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+  }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
+  body {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 139, 253, 0.08), transparent),
+      var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+  }
 
-.logo{
-  width:36px;height:36px;border-radius:10px;
-  background:linear-gradient(135deg,#38bdf8,#22d3ee);
-  display:grid;place-items:center;
-  color:#020617;font-weight:900;font-size:.85rem;
-}
+  .window {
+    width: 100%;
+    max-width: 920px;
+    background: var(--term-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 20px 50px -12px rgba(0,0,0,0.7),
+      0 0 80px -20px rgba(63, 185, 80, 0.15);
+    overflow: hidden;
+  }
 
-.brand h1{font-size:1.15rem;font-weight:700}
-.brand span{font-size:.75rem;color:var(--muted);display:block}
+  .titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #161b22;
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+  }
 
-.nav{display:flex;gap:8px}
-.nav a{
-  color:var(--muted);text-decoration:none;font-size:.85rem;
-  padding:8px 14px;border-radius:999px;transition:.15s;
-}
-.nav a:hover,.nav a.active{background:rgba(255,255,255,.06);color:var(--ink)}
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
 
-.main{padding:28px;max-width:1280px;margin:0 auto}
+  .titlebar-text {
+    flex: 1;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
 
-.grid{display:grid;gap:18px}
-.cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .terminal {
+    padding: 20px 22px 28px;
+    min-height: 520px;
+  }
 
-.card{
-  background:var(--glass);
-  border:1px solid var(--glass-border);
-  border-radius:var(--r);
-  padding:22px;
-  backdrop-filter:blur(20px);
-  position:relative;
-  overflow:hidden;
-}
+  .line {
+    margin-bottom: 6px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
 
-.card::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 40%);
-  pointer-events:none;
-}
+  .prompt {
+    color: var(--green);
+  }
+  .prompt .user { color: var(--cyan); }
+  .prompt .path { color: var(--purple); }
+  .prompt .symbol { color: var(--green); }
 
-.card .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
-.card .value{font-size:1.75rem;font-weight:700;letter-spacing:-.02em}
-.card .sub{font-size:.8rem;color:var(--muted);margin-top:6px}
-.card .delta{font-size:.8rem;margin-top:4px}
-.delta.up{color:var(--green)}
-.delta.down{color:var(--red)}
+  .cmd { color: var(--text); }
+  .output { color: var(--muted); }
+  .output.success { color: var(--green); }
+  .output.info { color: var(--cyan); }
+  .output.warn { color: var(--yellow); }
+  .output.error { color: var(--red); }
+  .comment { color: #6e7681; font-style: italic; }
 
-.section-title{
-  font-size:.9rem;font-weight:600;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.05em;
-  margin:32px 0 14px;
-}
+  .section {
+    margin: 22px 0 10px;
+    color: var(--yellow);
+    font-weight: 600;
+  }
 
-.two-col{grid-template-columns:1.4fr 1fr}
-@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+  .code-block {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 10px 0 16px;
+    overflow-x: auto;
+  }
 
-.table{width:100%;border-collapse:collapse;font-size:.9rem}
-.table th{
-  text-align:left;padding:10px 12px;color:var(--muted);
-  font-weight:500;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.table td{padding:14px 12px;border-bottom:1px solid rgba(255,255,255,.04)}
-.table tr:last-child td{border-bottom:0}
-.table .amount{font-weight:600;font-variant-numeric:tabular-nums}
-.table .amount.in{color:var(--green)}
-.table .amount.out{color:var(--red)}
+  .code-block .kw { color: #ff7b72; }
+  .code-block .fn { color: #d2a8ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .num { color: #79c0ff; }
+  .code-block .cm { color: #8b949e; }
+  .code-block .op { color: #ff7b72; }
 
-.tag{
-  display:inline-block;padding:3px 10px;border-radius:999px;
-  font-size:.7rem;font-weight:600;
-  background:rgba(56,189,248,.12);color:var(--accent);
-}
-.tag.purple{background:rgba(167,139,250,.12);color:var(--purple)}
-.tag.green{background:rgba(52,211,153,.12);color:var(--green)}
+  .cursor {
+    display: inline-block;
+    width: 9px;
+    height: 16px;
+    background: var(--green);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1.05s step-end infinite;
+  }
 
-.chart-placeholder{
-  height:220px;display:grid;place-items:center;
-  color:var(--muted);font-size:.85rem;
-  border:1px dashed rgba(255,255,255,.1);border-radius:12px;
-  margin-top:12px;
-}
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
 
-.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-.btn{
-  padding:10px 18px;border-radius:999px;border:0;
-  font-weight:600;font-size:.85rem;cursor:pointer;
-  transition:.15s;
-}
-.btn-primary{
-  background:linear-gradient(135deg,#38bdf8,#22d3ee);
-  color:#020617;
-}
-.btn-ghost{
-  background:rgba(255,255,255,.06);
-  color:var(--ink);border:1px solid rgba(255,255,255,.1);
-}
-.btn:hover{filter:brightness(1.08)}
+  .footer-bar {
+    margin-top: 28px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
 
-.footer{
-  text-align:center;padding:40px 20px 30px;
-  font-size:.75rem;color:var(--muted);
-}
+  .footer-bar a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+  .footer-bar a:hover { text-decoration: underline; }
+
+  /* subtle scanline effect */
+  .terminal::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    border-radius: 0 0 12px 12px;
+  }
+
+  .window { position: relative; }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="brand">
-    <div class="logo">CMX</div>
-    <div>
-      <h1>Finances</h1>
-      <span>Private dashboard</span>
+  <div class="window">
+    <div class="titlebar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <div class="titlebar-text">jay@cmx:~/python-tutorial — bash</div>
     </div>
-  </div>
-  <nav class="nav">
-    <a href="../entry/">Home</a>
-    <a href="#" class="active">Finances</a>
-    <a href="../case/">Case</a>
-    <a href="../osint/">OSINT</a>
-  </nav>
-</header>
 
-<main class="main">
+    <div class="terminal">
+      <div class="line">
+        <span class="prompt"><span class="user">jay</span>@<span class="path">cmx</span>:<span class="path">~</span><span class="symbol">$</span></span>
+        <span class="cmd"> cat welcome.txt</span>
+      </div>
+      <div class="line output success">
+        ╔══════════════════════════════════════════════════╗
+        ║   CMX Python Terminal Tutorial                   ║
+        ║   Learn by doing — no fluff, just the signal     ║
+        ╚══════════════════════════════════════════════════╝
+      </div>
 
-  <!-- Overview Cards -->
-  <div class="grid cards">
-    <div class="card">
-      <div class="label">Total Balance</div>
-      <div class="value">$48,290</div>
-      <div class="delta up">+12.4% this month</div>
-    </div>
-    <div class="card">
-      <div class="label">Income (MTD)</div>
-      <div class="value">$18,450</div>
-      <div class="sub">Callmax + Ovaro + CMX</div>
-    </div>
-    <div class="card">
-      <div class="label">Expenses (MTD)</div>
-      <div class="value">$6,820</div>
-      <div class="delta down">-8% vs last month</div>
-    </div>
-    <div class="card">
-      <div class="label">Runway</div>
-      <div class="value">11.2 mo</div>
-      <div class="sub">at current burn</div>
-    </div>
-  </div>
+      <div class="line comment"># Session started — Python 3.12.3 | Linux x86_64</div>
 
-  <div class="section-title">Cash Flow</div>
-  <div class="grid two-col">
-    <div class="card">
-      <div class="label">Monthly Overview</div>
-      <div class="chart-placeholder">chart coming — income vs expenses</div>
-    </div>
-    <div class="card">
-      <div class="label">Breakdown</div>
-      <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:.9rem">Client Work</span>
-          <span style="font-weight:600;color:var(--green)">$12,400</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:.9rem">Retainers</span>
-          <span style="font-weight:600;color:var(--green)">$4,800</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:.9rem">Ops / Tools</span>
-          <span style="font-weight:600;color:var(--red)">$1,940</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:.9rem">Personal</span>
-          <span style="font-weight:600;color:var(--red)">$2,680</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:.9rem">Legal / Safety</span>
-          <span style="font-weight:600;color:var(--red)">$1,200</span>
-        </div>
+      <div class="section">── 1. The Basics ──────────────────────────────────────</div>
+
+      <div class="line">
+        <span class="prompt"><span class="user">jay</span>@<span class="path">cmx</span>:<span class="path">~</span><span class="symbol">$</span></span>
+        <span class="cmd"> python3</span>
+      </div>
+      <div class="line output">Python 3.12.3 (main, Apr 2024) [GCC 13.2.0] on linux</div>
+      <div class="line output">Type "help", "copyright", "credits" or "license" for more information.</div>
+
+      <div class="code-block">
+<span class="cm"># Variables & types</span>
+<span class="kw">name</span> = <span class="str">"Jay"</span>
+<span class="kw">age</span>  = <span class="num">32</span>
+<span class="kw">skills</span> = [<span class="str">"SEO"</span>, <span class="str">"OSINT"</span>, <span class="str">"Python"</span>, <span class="str">"Systems"</span>]
+
+<span class="kw">print</span>(<span class="str">f"Hello, {name}. You have {len(skills)} core skills."</span>)
+<span class="cm"># → Hello, Jay. You have 4 core skills.</span>
+      </div>
+
+      <div class="section">── 2. Control Flow ────────────────────────────────────</div>
+
+      <div class="code-block">
+<span class="cm"># Decision making</span>
+<span class="kw">if</span> age >= <span class="num">30</span>:
+    <span class="kw">print</span>(<span class="str">"Experience unlocked."</span>)
+<span class="kw">else</span>:
+    <span class="kw">print</span>(<span class="str">"Still grinding."</span>)
+
+<span class="cm"># Loop with enumerate</span>
+<span class="kw">for</span> i, skill <span class="kw">in</span> <span class="fn">enumerate</span>(skills, <span class="num">1</span>):
+    <span class="kw">print</span>(<span class="str">f"{i}. {skill}"</span>)
+      </div>
+
+      <div class="section">── 3. Functions & Comprehensions ──────────────────────</div>
+
+      <div class="code-block">
+<span class="kw">def</span> <span class="fn">power_level</span>(xp: <span class="kw">int</span>) -> <span class="kw">str</span>:
+    <span class="kw">if</span> xp > <span class="num">9000</span>:
+        <span class="kw">return</span> <span class="str">"Over 9000"</span>
+    <span class="kw">return</span> <span class="str">f"{xp} XP"</span>
+
+<span class="cm"># List comprehension — clean & fast</span>
+upper_skills = [s.upper() <span class="kw">for</span> s <span class="kw">in</span> skills]
+print(upper_skills)
+<span class="cm"># → ['SEO', 'OSINT', 'PYTHON', 'SYSTEMS']</span>
+      </div>
+
+      <div class="section">── 4. File & Data Handling ────────────────────────────</div>
+
+      <div class="code-block">
+<span class="cm"># Read a file the modern way</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"notes.txt"</span>, <span class="str">"r"</span>) <span class="kw">as</span> f:
+    content = f.read()
+
+<span class="cm"># Dict of dicts — quick lookup</span>
+projects = {
+    <span class="str">"callmax"</span>: {<span class="str">"status"</span>: <span class="str">"active"</span>, <span class="str">"focus"</span>: <span class="str">"medical BPO"</span>},
+    <span class="str">"ovaro"</span>:   {<span class="str">"status"</span>: <span class="str">"building"</span>, <span class="str">"focus"</span>: <span class="str">"agency"</span>},
+    <span class="str">"cmx"</span>:     {<span class="str">"status"</span>: <span class="str">"core"</span>,    <span class="str">"focus"</span>: <span class="str">"systems"</span>},
+}
+
+<span class="kw">for</span> name, data <span class="kw">in</span> projects.items():
+    <span class="kw">print</span>(<span class="str">f"{name:8} → {data['status']:8} | {data['focus']}"</span>)
+      </div>
+
+      <div class="section">── 5. Quick Challenges ────────────────────────────────</div>
+
+      <div class="line output info">Try these in your own terminal:</div>
+      <div class="line output">1. Write a function that takes a list of numbers and returns only the even ones.</div>
+      <div class="line output">2. Build a simple CLI todo list that saves to a .json file.</div>
+      <div class="line output">3. Scrape a public page with requests + BeautifulSoup (ethically).</div>
+
+      <div class="line" style="margin-top: 24px;">
+        <span class="prompt"><span class="user">jay</span>@<span class="path">cmx</span>:<span class="path">~/python-tutorial</span><span class="symbol">$</span></span>
+        <span class="cmd"> # Ready when you are.</span><span class="cursor"></span>
       </div>
     </div>
   </div>
 
-  <div class="section-title">Recent Activity</div>
-  <div class="card" style="padding:8px 0">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th style="text-align:right">Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Jul 21</td>
-          <td>Callmax — medical billing support</td>
-          <td><span class="tag green">Income</span></td>
-          <td class="amount in" style="text-align:right">+$4,200</td>
-        </tr>
-        <tr>
-          <td>Jul 19</td>
-          <td>Ovaro Agency retainer</td>
-          <td><span class="tag green">Income</span></td>
-          <td class="amount in" style="text-align:right">+$2,500</td>
-        </tr>
-        <tr>
-          <td>Jul 18</td>
-          <td>Cloudflare + hosting</td>
-          <td><span class="tag">Ops</span></td>
-          <td class="amount out" style="text-align:right">-$187</td>
-        </tr>
-        <tr>
-          <td>Jul 15</td>
-          <td>Legal — protective order filing</td>
-          <td><span class="tag purple">Legal</span></td>
-          <td class="amount out" style="text-align:right">-$850</td>
-        </tr>
-        <tr>
-          <td>Jul 12</td>
-          <td>ThreadRally SEO project</td>
-          <td><span class="tag green">Income</span></td>
-          <td class="amount in" style="text-align:right">+$3,800</td>
-        </tr>
-        <tr>
-          <td>Jul 10</td>
-          <td>Software stack (Ahrefs, tools)</td>
-          <td><span class="tag">Ops</span></td>
-          <td class="amount out" style="text-align:right">-$420</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="footer-bar">
+    CMX Internal • Python Terminal Tutorial •
+    <a href="../entry/">← Back to Entry</a>
   </div>
-
-  <div class="actions">
-    <button class="btn btn-primary">+ Add Transaction</button>
-    <button class="btn btn-ghost">Export CSV</button>
-    <button class="btn btn-ghost">Set Goal</button>
-  </div>
-
-</main>
-
-<div class="footer">CMX Internal • Finances • Private</div>
 
 </body>
 </html>
