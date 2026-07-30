@@ -12,7 +12,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
   <title>Restricted Node</title>
   <meta name="description" content="Restricted operator interface." />
-  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260730-1" />
+  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260730-2" />
 </head>
 <body>
   <div id="boot" aria-live="polite">
@@ -43,22 +43,11 @@
         <h1 id="gateTitle" class="gate-title">Authentication required</h1>
         <p id="gateCopy" class="gate-copy">Authenticate to continue.</p>
 
-        <div id="setupFields" class="hidden">
-          <div class="field">
-            <label for="setupUser">Operator</label>
-            <div class="input-shell"><span class="input-prefix">user</span><input id="setupUser" value="admin" readonly aria-readonly="true" /></div>
-          </div>
-          <div class="field">
-            <label for="setupPassword">Create password · minimum 6 characters</label>
-            <div class="input-shell"><span class="input-prefix">key</span><input id="setupPassword" type="password" minlength="6" autocomplete="new-password" placeholder="6 or more characters" /></div>
-          </div>
-          <div class="field">
-            <label for="setupConfirm">Confirm password</label>
-            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="6" autocomplete="new-password" placeholder="repeat password" /></div>
-          </div>
-          <div class="gate-actions single">
-            <button id="createVaultBtn" class="btn primary" type="button">Initialize access</button>
-          </div>
+        <div id="setupFields" class="hidden" hidden aria-hidden="true">
+          <input id="setupUser" value="admin" readonly tabindex="-1" />
+          <input id="setupPassword" type="password" tabindex="-1" />
+          <input id="setupConfirm" type="password" tabindex="-1" />
+          <button id="createVaultBtn" type="button" tabindex="-1">Unavailable</button>
         </div>
 
         <div id="loginFields" class="hidden">
@@ -104,10 +93,10 @@
   </main>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="/assets/cmx-ops-core.js?v=20260730-1" defer></script>
-  <script src="/assets/cmx-auth-policy.js?v=20260730-1" defer></script>
-  <script src="/assets/cmx-ops-site.js?v=20260730-1" defer></script>
-  <script src="/assets/cmx-ops-intel.js?v=20260730-1" defer></script>
-  <script src="/assets/cmx-ops-runtime.js?v=20260730-1" defer></script>
+  <script src="/assets/cmx-ops-core.js?v=20260730-2" defer></script>
+  <script src="/assets/cmx-auth-policy.js?v=20260730-2" defer></script>
+  <script src="/assets/cmx-ops-site.js?v=20260730-2" defer></script>
+  <script src="/assets/cmx-ops-intel.js?v=20260730-2" defer></script>
+  <script src="/assets/cmx-ops-runtime.js?v=20260730-2" defer></script>
 </body>
 </html>
