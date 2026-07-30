@@ -1,56 +1,59 @@
 'use strict';
 
 const MANUAL = {
-  help: ['Show the operator-console systems.', 'Usage: help [command]'],
-  site: ['Inspect and maintain pages on db.cmxchat.com.', 'Usage: site <status|routes|check|indexability|robots|sitemap|broken-links> [target]'],
-  tools: ['List, test, describe, or open CMX tools.', 'Usage: tools <list|status|open|describe> [tool]'],
-  monitor: ['Run current health checks across known CMX tool routes.', 'Usage: monitor <status|tools|all>'],
-  repo: ['Read current public GitHub repository and latest-commit information.', 'Usage: repo <status|latest>'],
-  termux: ['Inspect the planned private Termux agent bridge.', 'Usage: termux <status|capabilities|architecture>'],
-  intel: ['Build a responsible investigation plan for a target.', 'Usage: intel <domain|website|phone|email|username|image|file> <target>'],
-  search: ['Build and open a focused public web search.', 'Usage: search <exact|site|username|email|domain|documents|images|mentions> <target>'],
-  query: ['Generate platform-specific research queries.', 'Usage: query <google|github|reddit|linkedin|wayback|crt|shodan|censys> <target>'],
-  osint: ['List or open existing CMX OSINT tools.', 'Usage: osint <list|open|phone|metadata|search|missing|resources|workspace|timeline|report>'],
-  runbook: ['Display permanent CMX operational procedures.', 'Usage: runbook list | runbook <name>'],
+  help: ['Show available operator systems.', 'Usage: help [command]'],
+  site: ['Inspect approved local tool routes.', 'Usage: site <check|indexability> [approved-tool]'],
+  tools: ['List, test, describe, or open approved tools.', 'Usage: tools <list|status|open|describe> [tool]'],
+  monitor: ['Run health checks across approved tools.', 'Usage: monitor <status|tools|all>'],
+  intel: ['Build a public-source research workflow.', 'Usage: intel <domain|website|phone|email|username|image|file> <target>'],
+  search: ['Build and open a focused public search.', 'Usage: search <exact|site|username|email|domain|documents|images|mentions> <target>'],
+  query: ['Generate research queries.', 'Usage: query <google|github|reddit|linkedin|wayback|crt> <target>'],
+  osint: ['Open an approved CMX intelligence tool.', 'Usage: osint <list|open|phone|metadata|search|missing|resources|workspace|timeline|report>'],
+  runbook: ['Display permanent operational procedures.', 'Usage: runbook list | runbook <name>'],
   url: ['Inspect, encode, or decode a URL.', 'Usage: url <inspect|encode|decode> <value>'],
   hash: ['Generate a cryptographic digest from text.', 'Usage: hash <sha1|sha256|sha384|sha512> <text>'],
   base64: ['Encode or decode UTF-8 Base64 data.', 'Usage: base64 <encode|decode> <text>'],
   json: ['Format, validate, or minify JSON.', 'Usage: json <format|validate|minify> <json>'],
   timestamp: ['Show or convert timestamps.', 'Usage: timestamp now | timestamp convert <value>'],
-  uuid: ['Generate a cryptographically random UUID.', 'Usage: uuid'],
+  uuid: ['Generate a random UUID.', 'Usage: uuid'],
   random: ['Generate a random URL-safe string.', 'Usage: random [length]'],
-  diff: ['Compare two short text values word by word.', 'Usage: diff <first> -- <second>'],
-  status: ['Show console, route, request, and Termux bridge status.', 'Usage: status'],
-  open: ['Open a known CMX tool route.', 'Usage: open <tool>'],
+  diff: ['Compare two short text values.', 'Usage: diff <first> -- <second>'],
+  ls: ['Display the restricted node namespace.', 'Usage: ls [-la] [path]'],
+  tree: ['Display the restricted namespace map.', 'Usage: tree'],
+  cd: ['Request access to a namespace.', 'Usage: cd <path>'],
+  cat: ['Request a readable virtual resource.', 'Usage: cat <path>'],
+  status: ['Show current session health.', 'Usage: status'],
   lock: ['Lock the console immediately.', 'Usage: lock']
 };
+
+const RESTRICTED_PATHS = new Set(['.vault', '.core', '.signals', '.archive', 'secrets', 'keys', 'config', 'private']);
+let shellPath = '/srv/node';
 
 function commandNames() {
   return [
     'help', 'man', 'commands', 'examples',
-    'site', 'tools', 'monitor', 'repo', 'termux',
-    'intel', 'search', 'query', 'osint',
+    'site', 'tools', 'monitor', 'intel', 'search', 'query', 'osint',
     'url', 'hash', 'base64', 'json', 'timestamp', 'uuid', 'random', 'diff',
-    'runbook', 'open', 'status', 'whoami', 'date', 'hostname',
-    'clear', 'lock', 'reboot', 'fullscreen', 'matrix'
+    'runbook', 'ls', 'tree', 'pwd', 'cd', 'cat', 'open',
+    'status', 'whoami', 'date', 'clear', 'lock', 'reboot', 'fullscreen', 'matrix'
   ];
 }
 
 function help(command) {
   if (command) return manual(command);
-  line('CMX OPERATOR CONSOLE', 'success');
+  line('CMX RESTRICTED OPERATOR NODE', 'success');
   line('OPERATIONS', 'warning');
-  line('site · tools · monitor · repo · termux');
+  line('site · tools · monitor');
   line('INTELLIGENCE', 'warning');
   line('intel · search · query · osint');
   line('DATA', 'warning');
   line('url · hash · base64 · json · timestamp · uuid · random · diff');
   line('KNOWLEDGE', 'warning');
   line('runbook · man · commands · examples');
-  line('NAVIGATION', 'warning');
-  line('menu · phone · metadata · workspace · report · resources · missing · timeline');
+  line('NODE', 'warning');
+  line('ls · tree · pwd · cd · cat · open');
   line('SYSTEM', 'warning');
-  line('status · whoami · date · hostname · clear · lock · reboot · fullscreen');
+  line('status · whoami · date · clear · lock · reboot · fullscreen');
   line('Use ↑/↓ for session history, Tab for autocomplete, Ctrl+L to clear, Ctrl+K to lock, and && to chain.', 'dim');
 }
 
@@ -64,48 +67,95 @@ function manual(name) {
 
 function examples() {
   printRows([
-    ['Check the root page', 'site check /'],
-    ['Check every tool route', 'tools status'],
-    ['Inspect indexing', 'site indexability /metadata'],
-    ['Inspect robots file', 'site robots'],
-    ['Find broken links', 'site broken-links /menu'],
+    ['Check an approved tool', 'site check metadata'],
+    ['Check tool health', 'tools status'],
+    ['Inspect indexing', 'site indexability metadata'],
     ['Open a tool', 'tools open metadata'],
     ['View a procedure', 'runbook website-audit'],
     ['Inspect a URL', 'url inspect https://example.com/page?id=4'],
     ['Hash text', 'hash sha256 "CMX Chat"'],
     ['Format JSON', 'json format "{\\"name\\":\\"CMX\\"}"'],
     ['Build a username search', 'search username example123'],
-    ['Generate GitHub queries', 'query github example.com'],
     ['Plan domain research', 'intel domain example.com'],
-    ['Read Termux bridge plan', 'termux architecture'],
-    ['Check deployment source', 'repo status']
+    ['Inspect node namespace', 'ls -la'],
+    ['Review restricted map', 'tree']
   ], ['GOAL', 'COMMAND']);
 }
 
 function statusCommand() {
   printRows([
-    ['Console', 'CMX Operator Console v3.0.0'],
-    ['Host', location.host],
-    ['Operator', user],
-    ['Known routes', String(Object.keys(ROUTES).length)],
-    ['Active requests', String(activeRequests)],
-    ['Uptime', formatDuration(Date.now() - STARTED_AT)],
-    ['Authentication', `PBKDF2-SHA256 / ${ITERATIONS.toLocaleString()} iterations`],
-    ['Idle lock', '20 minutes'],
-    ['Termux agent', 'DISCONNECTED'],
-    ['Backend relay', 'not deployed']
+    ['Node', 'ONLINE'],
+    ['Operator', 'admin'],
+    ['Session', 'authenticated'],
+    ['Policy', 'enforced'],
+    ['Active checks', String(activeRequests)],
+    ['Uptime', formatDuration(Date.now() - STARTED_AT)]
   ], ['FIELD', 'VALUE']);
 }
 
 function osintCommand(args) {
   const action = (args[0] || 'list').toLowerCase();
-  if (action === 'list') return printRows(routeRows(), ['TOOL', 'ROUTE', 'FUNCTION']);
+  if (action === 'list') return toolsCommand(['list']);
   if (action === 'open' || action === 'menu') return openRoute('menu');
   return openRoute(action);
 }
 
+function virtualLs(args) {
+  const long = args.includes('-la') || args.includes('-al') || args.includes('-a');
+  if (long) {
+    return [
+      'drwxr-x---  tools/',
+      'drwxr-x---  logs/',
+      'drwx------  .vault/       [restricted]',
+      'drwx------  .core/        [restricted]',
+      'drwx------  .signals/     [restricted]',
+      'drwx------  .archive/     [restricted]'
+    ].forEach((item) => line(item));
+  }
+  line('tools/   logs/');
+}
+
+function virtualTree() {
+  [
+    '/srv/node',
+    '├── tools/',
+    '├── logs/',
+    '├── .vault/      [policy restricted]',
+    '├── .core/       [policy restricted]',
+    '├── .signals/    [policy restricted]',
+    '└── .archive/    [policy restricted]'
+  ].forEach((item, index) => line(item, index === 0 ? 'success' : ''));
+}
+
+function accessDenied(target) {
+  line(`access denied: ${target}`, 'error');
+  line('[SEC] authorization boundary enforced', 'warning');
+}
+
+function virtualCd(args) {
+  const target = (args[0] || '').replace(/^\.\//, '').replace(/\/$/, '');
+  if (!target || target === '~' || target === '/srv/node') { shellPath = '/srv/node'; return line(shellPath, 'info'); }
+  if (target === 'tools' || target === '/srv/node/tools') { shellPath = '/srv/node/tools'; return line(shellPath, 'info'); }
+  if (target === 'logs' || target === '/srv/node/logs') { shellPath = '/srv/node/logs'; return line(shellPath, 'info'); }
+  const leaf = target.split('/').filter(Boolean).pop() || target;
+  if (RESTRICTED_PATHS.has(leaf) || target.startsWith('.')) return accessDenied(target);
+  line(`cd: no such namespace: ${target}`, 'error');
+}
+
+function virtualCat(args) {
+  const target = args.join(' ').trim();
+  if (!target) return line('Usage: cat <path>', 'error');
+  const lower = target.toLowerCase();
+  if ([...RESTRICTED_PATHS].some((name) => lower.includes(name)) || /shadow|passwd|\.env|credential|token|secret|key/i.test(lower)) return accessDenied(target);
+  if (lower.includes('logs')) {
+    line('Log stream requires elevated policy scope.', 'warning');
+    return;
+  }
+  line(`cat: ${target}: unavailable`, 'error');
+}
+
 function suggestion(input) {
-  const candidates = [...new Set([...commandNames(), ...Object.keys(ROUTES)])];
+  const candidates = [...new Set([...commandNames(), ...Object.keys(ROUTES), ...Object.keys(RUNBOOKS)])];
   let best = null;
   for (const candidate of candidates) {
     const distance = levenshtein(input, candidate);
@@ -142,8 +192,6 @@ async function execute(raw) {
     case 'site': return siteCommand(args);
     case 'tools': return toolsCommand(args);
     case 'monitor': return monitorCommand(args);
-    case 'repo': return repoCommand(args);
-    case 'termux': return termuxCommand(args);
     case 'intel': return intelCommand(args);
     case 'search': return searchCommand(args);
     case 'query': return queryCommand(args);
@@ -157,11 +205,15 @@ async function execute(raw) {
     case 'uuid': return uuidCommand();
     case 'random': return randomCommand(args);
     case 'diff': return diffCommand(args);
+    case 'ls': return virtualLs(args);
+    case 'tree': return virtualTree();
+    case 'pwd': return line(shellPath, 'info');
+    case 'cd': return virtualCd(args);
+    case 'cat': return virtualCat(args);
     case 'open': return openRoute(args[0]);
     case 'status': return statusCommand();
-    case 'whoami': return line(`${user} // authenticated CMX operator`, 'success');
+    case 'whoami': return line('admin // authorized operator', 'success');
     case 'date': return line(new Date().toString(), 'info');
-    case 'hostname': return line(location.host);
     case 'clear':
     case 'cls': return clearTerminal();
     case 'lock': return showGate();
@@ -170,10 +222,11 @@ async function execute(raw) {
     case 'matrix':
       document.body.classList.toggle('matrix-mode');
       return line(`Matrix display ${document.body.classList.contains('matrix-mode') ? 'enabled' : 'disabled'}.`, 'success');
-    case 'sudo': return line(`${user} is not in the sudoers file. Good.`, 'warning');
+    case 'sudo': return accessDenied('privileged execution');
     default:
       if (ROUTES[base]) return openRoute(base);
-      line(`cmx-console: command not found: ${base}`, 'error');
+      if (RESTRICTED_PATHS.has(base) || base.startsWith('.')) return accessDenied(base);
+      line(`restricted-shell: command not found: ${base}`, 'error');
       {
         const match = suggestion(base);
         if (match && match.distance <= Math.max(2, Math.floor(base.length / 3))) line(`Did you mean: ${match.candidate}?`, 'dim');
@@ -187,7 +240,7 @@ async function run(raw) {
   if (!command) return;
   echo(command);
   history.push(command);
-  history = history.slice(-80);
+  history = history.slice(-60);
   historyIndex = history.length;
   for (const segment of splitChain(command)) await execute(segment);
 }
@@ -209,45 +262,36 @@ async function fullscreen() {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
     else await document.documentElement.requestFullscreen();
-  } catch {
-    toast('Fullscreen is unavailable in this browser.');
-  }
+  } catch { toast('Fullscreen unavailable.'); }
 }
 
 async function boot() {
   const steps = [
-    ['[  OK  ]', 'Starting CMX operator console...'],
-    ['[  OK  ]', 'Mounting local authentication vault...'],
-    ['[  OK  ]', 'Loading Web Crypto module...'],
-    ['[  OK  ]', 'Registering website operations system...'],
-    ['[  OK  ]', 'Registering tool-control and monitoring systems...'],
-    ['[  OK  ]', 'Loading runbooks and data utilities...'],
-    ['[  OK  ]', 'Registering intelligence and search builders...'],
-    ['[ INFO ]', 'Termux agent bridge: disconnected...'],
-    ['[ WARN ]', 'Remote execution disabled until private relay pairing...'],
-    ['[  OK  ]', 'CMX console ready.']
+    ['[  OK  ]', 'Starting restricted node...'],
+    ['[  OK  ]', 'Validating policy boundary...'],
+    ['[  OK  ]', 'Mounting approved tool registry...'],
+    ['[  OK  ]', 'Loading operator systems...'],
+    ['[  OK  ]', 'Sealing restricted namespaces...'],
+    ['[  OK  ]', 'Node ready.']
   ];
   const body = $('#bootBody');
   body.innerHTML = '';
   for (const [tag, text] of steps) {
     const element = document.createElement('div');
     element.className = 'boot-line';
-    const className = tag.includes('OK') ? 'ok' : tag.includes('WARN') ? 'warn' : 'info';
-    element.innerHTML = `<span class="${className}">${escapeHtml(tag)}</span> ${escapeHtml(text)}`;
+    element.innerHTML = `<span class="ok">${escapeHtml(tag)}</span> ${escapeHtml(text)}`;
     body.appendChild(element);
-    await new Promise((resolve) => setTimeout(resolve, 82));
+    await new Promise((resolve) => setTimeout(resolve, 90));
   }
-  await new Promise((resolve) => setTimeout(resolve, 210));
+  await new Promise((resolve) => setTimeout(resolve, 180));
   $('#boot').classList.add('done');
   const session = readJson(sessionStorage, KEY.session, null);
-  const auth = authData();
-  if (session?.username && auth?.username === session.username) launch(session.username);
+  if (session?.username === ADMIN_USERNAME && authData()) launch();
   else showGate();
 }
 
 $('#createVaultBtn').onclick = createVault;
 $('#unlockBtn').onclick = unlock;
-$('#resetVaultBtn').onclick = resetVault;
 $('#clearBtn').onclick = clearTerminal;
 $('#helpBtn').onclick = () => help();
 
@@ -284,13 +328,27 @@ $('#commandInput').onkeydown = (event) => {
 ['setupPassword', 'setupConfirm'].forEach((id) => {
   $(`#${id}`).onkeydown = (event) => { if (event.key === 'Enter') createVault(); };
 });
+$('#loginPassword').onkeydown = (event) => { if (event.key === 'Enter') unlock(); };
 
-['loginUser', 'loginPassword'].forEach((id) => {
-  $(`#${id}`).onkeydown = (event) => { if (event.key === 'Enter') unlock(); };
+document.addEventListener('contextmenu', (event) => {
+  if (event.target.closest('#gate, #app')) {
+    event.preventDefault();
+    toast('Restricted interface.');
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  const key = event.key.toLowerCase();
+  const blocked = event.key === 'F12' || (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].includes(key)) || (event.ctrlKey && key === 'u');
+  if (blocked) {
+    event.preventDefault();
+    toast('Restricted interface.');
+  }
 });
 
 document.addEventListener('click', (event) => {
   if (!$('#app').classList.contains('hidden') && !event.target.closest('button,a,input,textarea')) $('#commandInput').focus();
 });
 
+window.addEventListener('pagehide', () => sessionStorage.removeItem(KEY.session));
 boot();
