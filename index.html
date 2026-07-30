@@ -10,8 +10,8 @@
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
   <title>CMX Command Node</title>
-  <meta name="description" content="Private CMX command node, terminal launcher, and daily physical protocol tracker." />
-  <link rel="stylesheet" href="/assets/cmx-kali-mobile.css?v=20260729-1" />
+  <meta name="description" content="Private CMX terminal and command launcher." />
+  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260729-1" />
 </head>
 <body>
   <div id="boot" aria-live="polite">
@@ -40,7 +40,7 @@
         </header>
 
         <h1 id="gateTitle" class="gate-title">Authentication required</h1>
-        <p id="gateCopy" class="gate-copy">Unlock your CMX workspace on this device.</p>
+        <p id="gateCopy" class="gate-copy">Unlock the local CMX control shell.</p>
 
         <div id="setupFields" class="hidden">
           <div class="field">
@@ -78,7 +78,7 @@
         <div id="gateOutput" class="gate-output" role="status"></div>
         <details class="security-note">
           <summary>Current security mode</summary>
-          <p>Your password is stored only as a salted PBKDF2 verifier in this browser. This is stronger than a visible password in the page source, but real route protection still requires the planned FastAPI server.</p>
+          <p>Your password is stored only as a salted PBKDF2 verifier in this browser. Real route protection still requires the planned FastAPI server.</p>
         </details>
       </div>
     </section>
@@ -86,82 +86,7 @@
 
   <main id="app" class="hidden">
     <section class="app-shell">
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-mark">CMX</div>
-          <div class="brand-text">
-            <div class="brand-title">COMMAND NODE</div>
-            <div class="brand-sub">db.cmxchat.com</div>
-          </div>
-        </div>
-        <div class="top-spacer"></div>
-        <div class="status-row">
-          <span class="status-chip node-chip"><span class="status-light"></span><span>ONLINE</span></span>
-          <span class="status-chip" id="clockChip">--:--</span>
-          <span class="status-chip" id="sessionChip">SESSION --</span>
-          <button class="icon-btn" id="fullscreenBtn" type="button" aria-label="Toggle fullscreen">⛶</button>
-          <button class="icon-btn" id="lockBtn" type="button" aria-label="Lock command node">⌁</button>
-        </div>
-      </header>
-
       <div class="main-grid">
-        <aside class="dashboard">
-          <section class="card workout-card">
-            <div class="card-head"><span>Daily physical protocol</span><span class="right" id="todayLabel">TODAY</span></div>
-            <div class="card-body">
-              <div class="progress-layout">
-                <div class="progress-ring" id="progressRing"><strong id="progressPercent">0%</strong></div>
-                <div>
-                  <div class="mission-title">60 pushups + 60 situps</div>
-                  <div class="mission-copy">Four sets of 15 pushups. Three sets of 20 situps. Close all seven sets.</div>
-                  <div class="bar"><div class="bar-fill" id="workoutBar"></div></div>
-                </div>
-              </div>
-
-              <div class="exercise">
-                <div class="exercise-head"><span class="exercise-name">PUSHUPS</span><span class="exercise-count" id="pushupCount">0 / 60</span></div>
-                <div class="sets" id="pushupSets"></div>
-              </div>
-
-              <div class="exercise">
-                <div class="exercise-head"><span class="exercise-name">SITUPS</span><span class="exercise-count" id="situpCount">0 / 60</span></div>
-                <div class="sets three" id="situpSets"></div>
-              </div>
-
-              <div class="workout-actions">
-                <button class="small-btn" id="restBtn" type="button">START 60S REST</button>
-                <button class="small-btn danger" id="undoWorkoutBtn" type="button">RESET TODAY</button>
-              </div>
-              <div class="rest-box"><span>REST TIMER</span><span id="restTime">IDLE</span></div>
-              <div class="history-grid" id="historyGrid" aria-label="Seven day workout history"></div>
-            </div>
-          </section>
-
-          <section class="card quick-card">
-            <div class="card-head"><span>Quick launch</span><span class="right">TOOLS</span></div>
-            <div class="card-body"><div class="quick-grid" id="quickGrid"></div></div>
-          </section>
-
-          <section class="card profile-card">
-            <div class="card-head"><span>Operator profile</span><span class="right" id="rankLabel">BOOT SEQUENCE</span></div>
-            <div class="card-body">
-              <div class="metric-grid">
-                <div class="metric"><div class="metric-label">Total XP</div><div class="metric-value" id="totalXp">0</div></div>
-                <div class="metric"><div class="metric-label">Level</div><div class="metric-value" id="levelValue">01</div></div>
-                <div class="metric"><div class="metric-label">Streak</div><div class="metric-value" id="streakValue">0D</div></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="card focus-card">
-            <div class="card-head"><span>Current focus</span><span class="right">LOCAL</span></div>
-            <div class="card-body">
-              <textarea id="focusInput" class="focus-input" maxlength="420" placeholder="What matters most right now?"></textarea>
-              <div class="tiny">Autosaved on this device. Terminal commands: <strong>focus</strong>, <strong>note</strong>, and <strong>notes</strong>.</div>
-            </div>
-          </section>
-        </aside>
-
         <section class="terminal-pane" aria-label="CMX terminal">
           <div class="pane-head">
             <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
@@ -183,7 +108,6 @@
   </main>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="/assets/cmx-command.js?v=20260729-3" defer></script>
-  <script src="/assets/cmx-route-filter.js?v=20260729-1" defer></script>
+  <script src="/assets/cmx-terminal.js?v=20260729-1" defer></script>
 </body>
 </html>
