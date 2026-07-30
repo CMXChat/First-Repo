@@ -1,0 +1,113 @@
+name: Remove report generator
+
+on:
+  push:
+    paths:
+      - '.github/workflows/remove-report-generator.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Remove report generator and every active reference
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          core = Path('assets/cmx-ops-core.js')
+          text = core.read_text(encoding='utf-8')
+          text = text.replace("  report: { path: '/report', label: 'Field report generator' },\n", '')
+          core.write_text(text, encoding='utf-8')
+
+          runtime = Path('assets/cmx-ops-runtime.js')
+          text = runtime.read_text(encoding='utf-8')
+          text = text.replace('|workspace|timeline|report>', '|workspace|timeline>')
+          text = text.replace('|timeline|report>', '|timeline>')
+          runtime.write_text(text, encoding='utf-8')
+
+          menu = Path('menu/index.html')
+          text = menu.read_text(encoding='utf-8')
+          text = text.replace('Choose your node. <b>Nine</b> paths active.', 'Choose your node. <b>Eight</b> paths active.')
+          text = text.replace(
+              '<kbd>4</kbd> Metadata • <kbd>5</kbd> Manual • <kbd>6</kbd> Report •\n'
+              '          <kbd>7</kbd> Resources • <kbd>8</kbd> Missing Persons • <kbd>9</kbd> Advanced Search •',
+              '<kbd>4</kbd> Metadata • <kbd>5</kbd> Manual • <kbd>6</kbd> Resources •\n'
+              '          <kbd>7</kbd> Missing Persons • <kbd>8</kbd> Advanced Search •'
+          )
+          text = re.sub(
+              r'\n\s*<!-- 6\. Report -->\s*<a class="card" id="card-report".*?</a>\s*',
+              '\n\n',
+              text,
+              flags=re.S,
+          )
+          text = text.replace("  document.getElementById('card-report'),    // 6\n", '')
+          text = text.replace("  document.getElementById('card-resources'), // 7", "  document.getElementById('card-resources'), // 6")
+          text = text.replace("  document.getElementById('card-missing'),   // 8", "  document.getElementById('card-missing'),   // 7")
+          text = text.replace("  document.getElementById('card-adv')        // 9", "  document.getElementById('card-adv')        // 8")
+          text = text.replace("  else if(e.key==='9'){ setActive(8); }\n", '')
+          text = text.replace('<!-- 7. Resources -->', '<!-- 6. Resources -->')
+          text = text.replace('<!-- 8. Missing Persons -->', '<!-- 7. Missing Persons -->')
+          text = text.replace('<!-- 9. Advanced Search -->', '<!-- 8. Advanced Search -->')
+          menu.write_text(text, encoding='utf-8')
+
+          missing = Path('missing/index.html')
+          text = missing.read_text(encoding='utf-8')
+          text = re.sub(
+              r'\s*<a href="https://db\.cmxchat\.com/report"[^>]*>Create Report</a>',
+              '',
+              text,
+          )
+          missing.write_text(text, encoding='utf-8')
+
+          report = Path('report/index.html')
+          if report.exists():
+              report.unlink()
+          report_dir = Path('report')
+          if report_dir.exists() and not any(report_dir.iterdir()):
+              report_dir.rmdir()
+
+          workflow = Path('.github/workflows/remove-report-generator.yml')
+          if workflow.exists():
+              workflow.unlink()
+
+          checks = {
+              'route registry': "path: '/report'",
+              'menu card': 'card-report',
+              'direct link': 'db.cmxchat.com/report',
+              'help reference': '|timeline|report>',
+          }
+          remaining = []
+          for path in Path('.').rglob('*'):
+              if not path.is_file() or '.git' in path.parts:
+                  continue
+              try:
+                  body = path.read_text(encoding='utf-8')
+              except UnicodeDecodeError:
+                  continue
+              for label, needle in checks.items():
+                  if needle in body:
+                      remaining.append(f'{label}: {path}')
+          if remaining:
+              raise SystemExit('Cleanup incomplete:\n' + '\n'.join(remaining))
+          PY
+
+      - name: Commit cleanup
+        shell: bash
+        run: |
+          git config user.name "CMX Cleanup"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No cleanup changes found."
+            exit 0
+          fi
+          git commit -m "Remove report generator from site"
+          git push
