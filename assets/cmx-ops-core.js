@@ -20,7 +20,6 @@ const ROUTES = {
   phone: { path: '/phone', label: 'Phone intelligence' },
   workspace: { path: '/workspace', label: 'Case workspace' },
   metadata: { path: '/metadata', label: 'Metadata extractor' },
-  report: { path: '/report', label: 'Field report generator' },
   resources: { path: '/resources', label: 'OSINT resource library' },
   missing: { path: '/missing', label: 'Missing-person workflow' },
   search: { path: '/search', label: 'Advanced search workbench' },

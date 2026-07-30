@@ -8,7 +8,7 @@ const MANUAL = {
   intel: ['Build a public-source research workflow.', 'Usage: intel <domain|website|phone|email|username|image|file> <target>'],
   search: ['Build and open a focused public search.', 'Usage: search <exact|site|username|email|domain|documents|images|mentions> <target>'],
   query: ['Generate research queries.', 'Usage: query <google|github|reddit|linkedin|wayback|crt> <target>'],
-  osint: ['Open an approved CMX intelligence tool.', 'Usage: osint <list|open|phone|metadata|search|missing|resources|workspace|timeline|report>'],
+  osint: ['Open an approved CMX intelligence tool.', 'Usage: osint <list|open|phone|metadata|search|missing|resources|workspace|timeline>'],
   runbook: ['Display permanent operational procedures.', 'Usage: runbook list | runbook <name>'],
   url: ['Inspect, encode, or decode a URL.', 'Usage: url <inspect|encode|decode> <value>'],
   hash: ['Generate a cryptographic digest from text.', 'Usage: hash <sha1|sha256|sha384|sha512> <text>'],
