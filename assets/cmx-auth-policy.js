@@ -3,9 +3,11 @@
 const ACCESS_AUTH_KEY = 'cmx_auth_v6';
 const ACCESS_AUTH_VERSION = 6;
 
-/* Retire the previous 16-character policy and its active session. */
-localStorage.removeItem('cmx_auth_v5');
-sessionStorage.removeItem('cmx_session_v4');
+/* Retire the previous 16-character policy once without clearing new sessions. */
+if (localStorage.getItem('cmx_auth_v5')) {
+  localStorage.removeItem('cmx_auth_v5');
+  sessionStorage.removeItem(KEY.session);
+}
 
 strongPassphrase = function passwordAccepted(password) {
   return typeof password === 'string' && password.length >= 6;
