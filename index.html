@@ -12,7 +12,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
   <title>Restricted Node</title>
   <meta name="description" content="Restricted operator interface." />
-  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260729-2" />
+  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260729-3" />
 </head>
 <body>
   <div id="boot" aria-live="polite">
@@ -49,12 +49,12 @@
             <div class="input-shell"><span class="input-prefix">user</span><input id="setupUser" value="admin" readonly aria-readonly="true" /></div>
           </div>
           <div class="field">
-            <label for="setupPassword">Create passphrase · minimum 16 characters</label>
-            <div class="input-shell"><span class="input-prefix">key</span><input id="setupPassword" type="password" minlength="16" autocomplete="new-password" placeholder="strong private passphrase" /></div>
+            <label for="setupPassword">Create password · minimum 6 characters</label>
+            <div class="input-shell"><span class="input-prefix">key</span><input id="setupPassword" type="password" minlength="6" autocomplete="new-password" placeholder="6 or more characters" /></div>
           </div>
           <div class="field">
-            <label for="setupConfirm">Confirm passphrase</label>
-            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="16" autocomplete="new-password" placeholder="repeat passphrase" /></div>
+            <label for="setupConfirm">Confirm password</label>
+            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="6" autocomplete="new-password" placeholder="repeat password" /></div>
           </div>
           <div class="gate-actions single">
             <button id="createVaultBtn" class="btn primary" type="button">Initialize access</button>
@@ -67,8 +67,8 @@
             <div class="input-shell"><span class="input-prefix">login</span><input id="loginUser" value="admin" readonly aria-readonly="true" /></div>
           </div>
           <div class="field">
-            <label for="loginPassword">Passphrase</label>
-            <div class="input-shell"><span class="input-prefix">key</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="passphrase" /></div>
+            <label for="loginPassword">Password</label>
+            <div class="input-shell"><span class="input-prefix">key</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="password" /></div>
           </div>
           <div class="gate-actions single">
             <button id="unlockBtn" class="btn primary" type="button">Authenticate</button>
@@ -104,9 +104,10 @@
   </main>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="/assets/cmx-ops-core.js?v=20260729-2" defer></script>
-  <script src="/assets/cmx-ops-site.js?v=20260729-2" defer></script>
-  <script src="/assets/cmx-ops-intel.js?v=20260729-2" defer></script>
-  <script src="/assets/cmx-ops-runtime.js?v=20260729-2" defer></script>
+  <script src="/assets/cmx-ops-core.js?v=20260729-3" defer></script>
+  <script src="/assets/cmx-auth-policy.js?v=20260729-3" defer></script>
+  <script src="/assets/cmx-ops-site.js?v=20260729-3" defer></script>
+  <script src="/assets/cmx-ops-intel.js?v=20260729-3" defer></script>
+  <script src="/assets/cmx-ops-runtime.js?v=20260729-3" defer></script>
 </body>
 </html>
