@@ -10,14 +10,6 @@ const MANUAL = {
   query: ['Generate research queries.', 'Usage: query <google|github|reddit|linkedin|wayback|crt> <target>'],
   osint: ['Open an approved CMX intelligence tool.', 'Usage: osint <list|open|phone|metadata|search|missing|resources|workspace|timeline>'],
   runbook: ['Display permanent operational procedures.', 'Usage: runbook list | runbook <name>'],
-  url: ['Inspect, encode, or decode a URL.', 'Usage: url <inspect|encode|decode> <value>'],
-  hash: ['Generate a cryptographic digest from text.', 'Usage: hash <sha1|sha256|sha384|sha512> <text>'],
-  base64: ['Encode or decode UTF-8 Base64 data.', 'Usage: base64 <encode|decode> <text>'],
-  json: ['Format, validate, or minify JSON.', 'Usage: json <format|validate|minify> <json>'],
-  timestamp: ['Show or convert timestamps.', 'Usage: timestamp now | timestamp convert <value>'],
-  uuid: ['Generate a random UUID.', 'Usage: uuid'],
-  random: ['Generate a random URL-safe string.', 'Usage: random [length]'],
-  diff: ['Compare two short text values.', 'Usage: diff <first> -- <second>'],
   ls: ['Display the restricted node namespace.', 'Usage: ls [-la] [path]'],
   tree: ['Display the restricted namespace map.', 'Usage: tree'],
   cd: ['Request access to a namespace.', 'Usage: cd <path>'],
@@ -33,7 +25,6 @@ function commandNames() {
   return [
     'help', 'man', 'commands', 'examples',
     'site', 'tools', 'monitor', 'intel', 'search', 'query', 'osint',
-    'url', 'hash', 'base64', 'json', 'timestamp', 'uuid', 'random', 'diff',
     'runbook', 'ls', 'tree', 'pwd', 'cd', 'cat', 'open',
     'status', 'whoami', 'date', 'clear', 'lock', 'reboot', 'fullscreen', 'matrix'
   ];
@@ -46,8 +37,6 @@ function help(command) {
   line('site · tools · monitor');
   line('INTELLIGENCE', 'warning');
   line('intel · search · query · osint');
-  line('DATA', 'warning');
-  line('url · hash · base64 · json · timestamp · uuid · random · diff');
   line('KNOWLEDGE', 'warning');
   line('runbook · man · commands · examples');
   line('NODE', 'warning');
@@ -72,10 +61,8 @@ function examples() {
     ['Inspect indexing', 'site indexability metadata'],
     ['Open a tool', 'tools open metadata'],
     ['View a procedure', 'runbook website-audit'],
-    ['Inspect a URL', 'url inspect https://example.com/page?id=4'],
-    ['Hash text', 'hash sha256 "CMX Chat"'],
-    ['Format JSON', 'json format "{\\"name\\":\\"CMX\\"}"'],
     ['Build a username search', 'search username example123'],
+    ['Generate public queries', 'query github example.com'],
     ['Plan domain research', 'intel domain example.com'],
     ['Inspect node namespace', 'ls -la'],
     ['Review restricted map', 'tree']
@@ -134,9 +121,18 @@ function accessDenied(target) {
 
 function virtualCd(args) {
   const target = (args[0] || '').replace(/^\.\//, '').replace(/\/$/, '');
-  if (!target || target === '~' || target === '/srv/node') { shellPath = '/srv/node'; return line(shellPath, 'info'); }
-  if (target === 'tools' || target === '/srv/node/tools') { shellPath = '/srv/node/tools'; return line(shellPath, 'info'); }
-  if (target === 'logs' || target === '/srv/node/logs') { shellPath = '/srv/node/logs'; return line(shellPath, 'info'); }
+  if (!target || target === '~' || target === '/srv/node') {
+    shellPath = '/srv/node';
+    return line(shellPath, 'info');
+  }
+  if (target === 'tools' || target === '/srv/node/tools') {
+    shellPath = '/srv/node/tools';
+    return line(shellPath, 'info');
+  }
+  if (target === 'logs' || target === '/srv/node/logs') {
+    shellPath = '/srv/node/logs';
+    return line(shellPath, 'info');
+  }
   const leaf = target.split('/').filter(Boolean).pop() || target;
   if (RESTRICTED_PATHS.has(leaf) || target.startsWith('.')) return accessDenied(target);
   line(`cd: no such namespace: ${target}`, 'error');
@@ -147,10 +143,7 @@ function virtualCat(args) {
   if (!target) return line('Usage: cat <path>', 'error');
   const lower = target.toLowerCase();
   if ([...RESTRICTED_PATHS].some((name) => lower.includes(name)) || /shadow|passwd|\.env|credential|token|secret|key/i.test(lower)) return accessDenied(target);
-  if (lower.includes('logs')) {
-    line('Log stream requires elevated policy scope.', 'warning');
-    return;
-  }
+  if (lower.includes('logs')) return line('Log stream requires elevated policy scope.', 'warning');
   line(`cat: ${target}: unavailable`, 'error');
 }
 
@@ -197,14 +190,6 @@ async function execute(raw) {
     case 'query': return queryCommand(args);
     case 'osint': return osintCommand(args);
     case 'runbook': return runbookCommand(args);
-    case 'url': return urlCommand(args);
-    case 'hash': return hashCommand(args);
-    case 'base64': return base64Command(args);
-    case 'json': return jsonCommand(args);
-    case 'timestamp': return timestampCommand(args);
-    case 'uuid': return uuidCommand();
-    case 'random': return randomCommand(args);
-    case 'diff': return diffCommand(args);
     case 'ls': return virtualLs(args);
     case 'tree': return virtualTree();
     case 'pwd': return line(shellPath, 'info');
@@ -262,7 +247,9 @@ async function fullscreen() {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
     else await document.documentElement.requestFullscreen();
-  } catch { toast('Fullscreen unavailable.'); }
+  } catch {
+    toast('Fullscreen unavailable.');
+  }
 }
 
 async function boot() {
