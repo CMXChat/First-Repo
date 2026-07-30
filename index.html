@@ -8,17 +8,18 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
-  <title>CMX Operator Console</title>
-  <meta name="description" content="Private CMX operator console for website operations, tool control, runbooks, data utilities, and intelligence workflows." />
-  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260729-1" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <title>Restricted Node</title>
+  <meta name="description" content="Restricted operator interface." />
+  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260729-2" />
 </head>
 <body>
   <div id="boot" aria-live="polite">
-    <section class="boot-window" aria-label="CMX startup sequence">
+    <section class="boot-window" aria-label="Node startup sequence">
       <div class="window-bar">
         <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
-        <span class="window-title">cmx-init · operator console bootstrap</span>
+        <span class="window-title">node-init · restricted bootstrap</span>
       </div>
       <div id="bootBody" class="boot-body"></div>
     </section>
@@ -28,58 +29,53 @@
     <section class="gate-shell" aria-labelledby="gateTitle">
       <div class="window-bar">
         <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
-        <span class="window-title">db.cmxchat.com · local authentication</span>
+        <span class="window-title">restricted node · authentication</span>
       </div>
       <div class="gate-body">
         <header class="gate-brand">
           <div class="gate-emblem" aria-hidden="true">CMX</div>
           <div class="gate-brand-copy">
-            <div class="gate-kicker">Private operator console</div>
-            <div class="gate-host">db.cmxchat.com</div>
+            <div class="gate-kicker">Restricted operator node</div>
+            <div class="gate-host">authorization required</div>
           </div>
         </header>
 
         <h1 id="gateTitle" class="gate-title">Authentication required</h1>
-        <p id="gateCopy" class="gate-copy">Unlock the CMX operator console.</p>
+        <p id="gateCopy" class="gate-copy">Authenticate to continue.</p>
 
         <div id="setupFields" class="hidden">
           <div class="field">
-            <label for="setupUser">Operator callsign</label>
-            <div class="input-shell"><span class="input-prefix">user</span><input id="setupUser" maxlength="24" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="jay" /></div>
+            <label for="setupUser">Operator</label>
+            <div class="input-shell"><span class="input-prefix">user</span><input id="setupUser" value="admin" readonly aria-readonly="true" /></div>
           </div>
           <div class="field">
-            <label for="setupPassword">Create password · minimum 12 characters</label>
-            <div class="input-shell"><span class="input-prefix">key</span><input id="setupPassword" type="password" minlength="12" autocomplete="new-password" placeholder="strong passphrase" /></div>
+            <label for="setupPassword">Create passphrase · minimum 16 characters</label>
+            <div class="input-shell"><span class="input-prefix">key</span><input id="setupPassword" type="password" minlength="16" autocomplete="new-password" placeholder="strong private passphrase" /></div>
           </div>
           <div class="field">
-            <label for="setupConfirm">Confirm password</label>
-            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="12" autocomplete="new-password" placeholder="repeat passphrase" /></div>
+            <label for="setupConfirm">Confirm passphrase</label>
+            <div class="input-shell"><span class="input-prefix">verify</span><input id="setupConfirm" type="password" minlength="16" autocomplete="new-password" placeholder="repeat passphrase" /></div>
           </div>
           <div class="gate-actions single">
-            <button id="createVaultBtn" class="btn primary" type="button">Initialize local vault</button>
+            <button id="createVaultBtn" class="btn primary" type="button">Initialize access</button>
           </div>
         </div>
 
         <div id="loginFields" class="hidden">
           <div class="field">
             <label for="loginUser">Operator</label>
-            <div class="input-shell"><span class="input-prefix">login</span><input id="loginUser" maxlength="24" autocomplete="username" autocapitalize="off" spellcheck="false" /></div>
+            <div class="input-shell"><span class="input-prefix">login</span><input id="loginUser" value="admin" readonly aria-readonly="true" /></div>
           </div>
           <div class="field">
-            <label for="loginPassword">Password</label>
-            <div class="input-shell"><span class="input-prefix">key</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="password" /></div>
+            <label for="loginPassword">Passphrase</label>
+            <div class="input-shell"><span class="input-prefix">key</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="passphrase" /></div>
           </div>
-          <div class="gate-actions">
+          <div class="gate-actions single">
             <button id="unlockBtn" class="btn primary" type="button">Authenticate</button>
-            <button id="resetVaultBtn" class="btn ghost" type="button">Reset device</button>
           </div>
         </div>
 
         <div id="gateOutput" class="gate-output" role="status"></div>
-        <details class="security-note">
-          <summary>Current security mode</summary>
-          <p>Your password is stored only as a salted PBKDF2 verifier in this browser. Direct route protection and the planned Termux agent require a private authenticated backend.</p>
-        </details>
       </div>
     </section>
   </main>
@@ -87,10 +83,10 @@
   <main id="app" class="hidden">
     <section class="app-shell">
       <div class="main-grid">
-        <section class="terminal-pane" aria-label="CMX operator console">
+        <section class="terminal-pane" aria-label="Restricted operator console">
           <div class="pane-head">
             <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
-            <span id="terminalTitle">operator@cmx:~ · operator-console</span>
+            <span id="terminalTitle">admin@node:~ · restricted-shell</span>
             <div class="right">
               <button class="mini-action" id="helpBtn" type="button">HELP</button>
               <button class="mini-action" id="clearBtn" type="button">CLEAR</button>
@@ -99,7 +95,7 @@
           <div id="terminalOutput" role="log" aria-live="polite"></div>
           <form id="terminalForm" class="terminal-input-row" autocomplete="off">
             <label class="sr-only" for="commandInput">Terminal command</label>
-            <span class="prompt"><span class="prompt-mobile">$</span><span class="prompt-full"><span class="u" id="promptUser">jay</span>@<span class="h">cmx</span>:<span class="p">~</span>$</span></span>
+            <span class="prompt"><span class="prompt-mobile">$</span><span class="prompt-full"><span class="u" id="promptUser">admin</span>@<span class="h">node</span>:<span class="p">~</span>$</span></span>
             <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="help" />
           </form>
         </section>
@@ -108,9 +104,9 @@
   </main>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="/assets/cmx-ops-core.js?v=20260729-1" defer></script>
-  <script src="/assets/cmx-ops-site.js?v=20260729-1" defer></script>
-  <script src="/assets/cmx-ops-intel.js?v=20260729-1" defer></script>
-  <script src="/assets/cmx-ops-runtime.js?v=20260729-1" defer></script>
+  <script src="/assets/cmx-ops-core.js?v=20260729-2" defer></script>
+  <script src="/assets/cmx-ops-site.js?v=20260729-2" defer></script>
+  <script src="/assets/cmx-ops-intel.js?v=20260729-2" defer></script>
+  <script src="/assets/cmx-ops-runtime.js?v=20260729-2" defer></script>
 </body>
 </html>
