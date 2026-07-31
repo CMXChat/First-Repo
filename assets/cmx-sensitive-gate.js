@@ -48,8 +48,73 @@
     return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
   }
 
-  function unlock() {
+  function sessionKeeperScript() {
+    return `<script>(()=>{const k='${STORAGE_KEY}',limit=${IDLE_LIMIT_MS};let last=Date.now(),timer;const touch=()=>{last=Date.now();clearTimeout(timer);timer=setTimeout(()=>{try{sessionStorage.setItem(k,JSON.stringify({lastSeen:Date.now()}))}catch{}},200)};['pointerdown','keydown','scroll','touchstart'].forEach(e=>addEventListener(e,touch,{passive:true}));touch();setInterval(()=>{if(Date.now()-last>=limit){try{sessionStorage.removeItem(k)}catch{}location.reload()}},30000)})()<\/script>`;
+  }
+
+  function transformBuild(html) {
+    const routes = [
+      ['/', 'Restricted Node', 'Operational', 'Active', 'Directory-visible'],
+      ['/build', 'Build Lab', 'Operational', 'Active', 'Direct-link-only'],
+      ['/directory', 'Operations Directory', 'Operational', 'Active', 'Directory-visible'],
+      ['/osint', 'OSINT Console', 'Operational', 'Active', 'Directory-visible'],
+      ['/phone', 'Phone Intelligence', 'Operational', 'Active', 'Directory-visible'],
+      ['/metadata', 'Metadata Extractor', 'Operational', 'Active', 'Directory-visible'],
+      ['/search', 'Advanced Search', 'Operational', 'Active', 'Directory-visible'],
+      ['/missing', 'Missing Person Workflow', 'Operational', 'Active', 'Directory-visible'],
+      ['/resources', 'Resource Library', 'Operational', 'Active', 'Directory-visible'],
+      ['/internal', 'CMX + Ovaro Vision Map', 'Internal', 'Active', 'Direct-link-only'],
+      ['/project', 'Callmax SEO Master Plan', 'Client', 'Active', 'Build-only'],
+      ['/callmax', 'Callmax Page', 'Client', 'Needs Review', 'Build-only'],
+      ['/ovaro', 'Ovaro Page', 'Internal', 'Needs Review', 'Direct-link-only'],
+      ['/collab1', 'CMX Agency Concept 1', 'Experimental', 'Experimental', 'Direct-link-only'],
+      ['/collab2', 'CMX Agency Concept 2', 'Experimental', 'Experimental', 'Direct-link-only'],
+      ['/collab3', 'CMX Agency Concept 3', 'Experimental', 'Experimental', 'Direct-link-only'],
+      ['/services', 'CMX Services Hub', 'Business', 'Needs Review', 'Direct-link-only'],
+      ['/seo', 'CMX Pricing Calculator', 'Experimental', 'Needs Review', 'Direct-link-only'],
+      ['/entry', 'Legacy Workspace', 'Legacy', 'Legacy', 'Legacy'],
+      ['/404.html', 'Custom 404 Page', 'System', 'Active', 'System']
+    ];
+    const routeBlock = `    const ROUTES = [\n${routes.map(([path, name, category, status, visibility]) => `      { path: '${path}', name: '${name.replaceAll("'", "\\'")}', category: '${category}', status: '${status}', visibility: '${visibility}' },`).join('\n')}\n    ];`;
+
+    html = html.replace(/    const ROUTES = \[.*?\n    \];/s, routeBlock);
+    html = html.replace('<th>Project status</th>', '<th>Project status</th>\n                    <th>Visibility</th>');
+    html = html.replace(
+      '            <td><span class="badge ${projectStatusClass(route.status)}">${route.status}</span></td>',
+      '            <td><span class="badge ${projectStatusClass(route.status)}">${route.status}</span></td>\n            <td><span class="badge visibility-${slug(route.visibility)}">${route.visibility}</span></td>'
+    );
+
+    const visibilityCss = `\n    .badge.visibility-directory-visible{color:var(--green);border-color:rgba(53,230,109,.3);background:var(--green-soft)}\n    .badge.visibility-direct-link-only{color:var(--cyan);border-color:rgba(85,217,198,.3);background:rgba(85,217,198,.08)}\n    .badge.visibility-build-only{color:var(--red);border-color:rgba(255,119,119,.35);background:rgba(255,119,119,.08)}\n    .badge.visibility-legacy,.badge.visibility-system{color:var(--muted)}\n`;
+    html = html.replace('</style>', `${visibilityCss}</style>`);
+    return html;
+  }
+
+  async function loadProtectedDocument(message) {
+    const source = root.dataset.cmxLoadUrl;
+    if (!source) return false;
+
+    if (message) {
+      message.className = 'is-success';
+      message.textContent = 'Authorization accepted. Loading protected resource…';
+    }
+
+    const response = await fetch(source, { cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer' });
+    if (!response.ok) throw new Error(`Protected resource returned HTTP ${response.status}`);
+
+    let html = await response.text();
+    if (root.dataset.cmxTransform === 'build') html = transformBuild(html);
+    html = html.replace('</body>', `${sessionKeeperScript()}</body>`);
+
+    document.open();
+    document.write(html);
+    document.close();
+    return true;
+  }
+
+  async function unlock(message) {
     touchSession();
+    if (await loadProtectedDocument(message)) return;
+
     root.classList.remove('cmx-gate-pending');
     document.getElementById('cmx-sensitive-gate')?.remove();
 
@@ -156,18 +221,16 @@
         input.value = '';
         if (valid) {
           clearFailures();
-          message.className = 'is-success';
-          message.textContent = 'Authorization accepted.';
-          window.setTimeout(unlock, 180);
+          await unlock(message);
           return;
         }
 
         const state = recordFailure();
         message.className = 'is-error';
         message.textContent = state.lockUntil ? 'Access denied. Temporary lock applied.' : 'Access denied.';
-      } catch {
+      } catch (error) {
         message.className = 'is-error';
-        message.textContent = 'Authorization could not be verified in this browser.';
+        message.textContent = error?.message || 'Authorization could not be verified in this browser.';
       } finally {
         button.disabled = false;
         updateLockState();
@@ -179,7 +242,10 @@
   }
 
   if (hasActiveSession()) {
-    unlock();
+    document.addEventListener('DOMContentLoaded', () => unlock().catch(() => {
+      clearSession();
+      renderGate();
+    }), { once: true });
     return;
   }
 
