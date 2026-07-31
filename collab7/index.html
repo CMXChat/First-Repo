@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>CMX · Digital Agency for Creators & Startups</title>
+<meta name="description" content="CMX builds clean, fast websites, search-ready content, and reliable systems. Born from a live community platform, now a full service digital agency." />
+
+<!-- OG/Twitter -->
+<meta property="og:title" content="CMX · Digital Agency for Creators & Startups">
+<meta property="og:description" content="Fast websites, search-ready content, and reliable systems. Built from a live community platform.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://your-cdn.com/cmx-social.jpg">
+<meta property="og:url" content="https://cmxchat.com/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://cmxchat.com/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#ffffff; --ink:#0b0f1a; --muted:#5b6473; --line:#e6e9ef; --pill:#f3f5f9;
+    --brand:#2563eb; --brand2:#22d3ee; --brand3:#a855f7; --ok:#10b981;
+    --shadow-sm:0 6px 16px rgba(2,6,23,.06); --shadow:0 18px 48px rgba(2,6,23,.10);
+    --r:16px; --r-lg:26px; --max:1200px; --space:56px; --surface:#fff; --thumb:#f3f6fb;
+    --tap:44px;
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;min-width:0}
+  html,body{margin:0;padding:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-text-size-adjust:100%}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .container{width:min(var(--max),92%);margin-inline:auto}
+  .skip{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
+  .skip:focus{position:fixed;left:12px;top:12px;width:auto;height:auto;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;z-index:9999}
+
+  /* Header */
+  header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.9);border-bottom:1px solid var(--line);backdrop-filter:saturate(140%) blur(6px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.2px;white-space:nowrap}
+  .logo-dot{width:10px;height:10px;border-radius:999px;background:linear-gradient(135deg,var(--brand),#60a5fa);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .nav-desktop ul{list-style:none;display:flex;gap:22px;align-items:center;margin:0;padding:0}
+  .nav-desktop a{font-weight:600;opacity:.95;padding:8px 0;border-bottom:2px solid transparent}
+  .nav-desktop a[aria-current="page"], .nav-desktop a:hover{opacity:1;border-bottom-color:var(--brand)}
+  @media (max-width: 880px){ .nav-desktop{display:none} }
+
+  /* Hamburger */
+  .menu-toggle{display:none;appearance:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px}
+  .menu-toggle .bar{display:block;width:18px;height:2px;background:currentColor;margin:3px 0;border-radius:2px}
+  @media (max-width: 880px){ .menu-toggle{display:inline-block} }
+
+  /* Mobile drawer */
+  .nav-drawer[hidden]{display:none}
+  .nav-drawer{position:fixed;left:0;right:0;top:56px;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(2,6,23,.06);z-index:58}
+  .nav-drawer ul{list-style:none;margin:0;padding:12px}
+  .nav-drawer li{border-top:1px solid var(--line)}
+  .nav-drawer li:first-child{border-top:0}
+  .nav-drawer a{display:block;padding:16px 6px;font-weight:700;min-height:var(--tap)}
+
+  /* Hero */
+  .hero{position:relative;isolation:isolate;padding:84px 0 32px}
+  .mesh{position:absolute;inset:0;z-index:-1;filter:saturate(120%);background:
+      radial-gradient(60% 50% at 20% 25%, #8ec5ff22 0%, transparent 60%),
+      radial-gradient(55% 55% at 85% 20%, #7cfac522 0%, transparent 55%),
+      radial-gradient(50% 60% at 40% 85%, #ff7ad522 0%, transparent 60%);
+    pointer-events:none}
+  .grid-hero{display:grid;grid-template-columns:1fr;gap:26px;align-items:center}
+  @media (min-width: 980px){ .grid-hero{grid-template-columns:1.05fr .95fr;gap:48px} }
+  .eyebrow{color:#e11d48;font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px}
+  .h1{font-size:clamp(28px,5.2vw,64px);line-height:1.06;letter-spacing:-.02em;margin:0 0 14px}
+  .spark{height:3px;width:220px;border-radius:999px;background:linear-gradient(90deg,var(--brand),var(--brand2),var(--brand3));background-size:200% 100%;margin:10px 0 18px}
+  .sub{color:var(--muted);font-size:clamp(15px,2.2vw,18px);line-height:1.7;margin:0 0 14px}
+
+  /* Buttons – meet-in-the-middle style */
+  .buttons{display:flex;flex-wrap:wrap;gap:12px;align-items:center;width:100%}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:18px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:800;box-shadow:var(--shadow-sm);transition:transform .18s ease, box-shadow .18s ease, background .18s ease;min-height:var(--tap)}
+  .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .btn-primary{background:linear-gradient(135deg,var(--brand) 0%,#60a5fa 100%);color:#fff;border-color:transparent}
+  .btn-ghost{background:#fff;border-color:var(--line);box-shadow:inset 0 -1px 0 rgba(2,6,23,.04), var(--shadow-sm)}
+  .micro{display:block;margin-top:6px;color:#6b7280;font-size:13px}
+  @media (max-width:520px){
+    .buttons .btn{flex:1 0 100%;justify-content:center}
+  }
+  @media (min-width:521px) and (max-width:760px){
+    .buttons .btn{flex:1 1 calc(50% - 6px);justify-content:center}
+  }
+
+  /* Passive & interactive chip systems */
+  .chips.title{margin:16px 0 6px;color:#6b7280;font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+  .chips.inline{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{padding:9px 12px;border-radius:999px;background:var(--pill);border:1px solid var(--line);color:#364152;font-weight:700;font-size:14px;min-height:var(--tap);display:inline-flex;align-items:center;max-width:100%}
+  .chip.passive{opacity:.92}
+
+  /* Interactive rails – safe edges + scroll */
+  .chip-rail{display:flex;gap:10px;overflow-x:auto;padding:8px 4px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;contain:layout paint}
+  .chip-rail::-webkit-scrollbar{display:none}
+  .chip-action,.chip-toggle{flex:0 0 auto;scroll-snap-align:start;white-space:nowrap;max-width:88vw}
+  .chip-action{position:relative;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-weight:900;letter-spacing:.1px;transition:transform .12s ease,box-shadow .12s ease,background .2s ease}
+  .chip-action:active{transform:translateY(1px) scale(.985)}
+  .chip-action:hover{box-shadow:var(--shadow)}
+  .chip-action svg{width:14px;height:14px;margin-left:6px;opacity:.7;transition:transform .2s ease,opacity .2s ease;flex:0 0 auto}
+  .chip-toggle{position:relative;background:var(--surface);border:1px solid var(--line);padding-left:38px;transition:box-shadow .2s ease,background .2s ease,border-color .2s ease}
+  .chip-toggle::before{content:"";position:absolute;left:12px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:999px;border:2px solid #aab2c2;background:transparent;transition:all .2s ease}
+  .chip-toggle[aria-pressed="true"]{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--brand),#60a5fa);box-shadow:var(--shadow)}
+  .chip-toggle[aria-pressed="true"]::before{border-color:#fff;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.25)}
+
+  /* Visual mock */
+  .visual{position:relative;width:100%;aspect-ratio:4/3;border-radius:22px;background:radial-gradient(120% 100% at 20% 10%, #e8f1ff 0%, #fafafa 60%);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;contain:paint}
+  .visual .shine{position:absolute;inset:-40% -20% auto auto;width:80%;height:80%;rotate:-12deg;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.22) 50%,rgba(255,255,255,0) 100%);mix-blend-mode:soft-light}
+  .visual .mock{position:absolute;inset:0;display:grid;place-items:center}
+  .mock-art{width:78%;max-width:520px;border-radius:18px;background:linear-gradient(135deg,#0ea5e9 0%,#22c55e 50%,#a855f7 100%);opacity:.18;filter:blur(6px)}
+  .mock-ui{position:absolute;width:min(86%,620px);border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+  .mock-ui .bar{display:flex;gap:6px;align-items:center;padding:10px;background:#f9fafb;border-bottom:1px solid var(--line)}
+  .dot{width:10px;height:10px;border-radius:999px;background:#e5e7eb}
+  .mock-ui .body{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .skeleton{height:12px;background:#eef2f7;border-radius:8px}
+
+  /* KPI strip */
+  .kpis{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:16px}
+  .kpi{grid-column:span 12;display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+  .kpi strong{font-size:18px}
+  .kpi .suffix{margin-left:4px;color:var(--muted);font-weight:700}
+  @media (min-width:720px){ .kpi{grid-column:span 4} }
+
+  /* Sections */
+  section{padding:var(--space) 0;border-top:1px solid var(--line)}
+  .eyebrow2{color:var(--brand3);font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px}
+  .h2{font-size:clamp(24px,4.2vw,42px);line-height:1.1;margin:0 0 12px}
+  .grad{background:linear-gradient(90deg,var(--brand),var(--brand2),var(--brand3));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%}
+  .lead{color:var(--muted);font-size:18px;margin:0 0 20px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+  @media (max-width:420px){ .lead{font-size:16px} .chip{font-size:13px} }
+
+  /* Cards */
+  .card{grid-column:span 12;display:grid;grid-template-columns:1fr;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm);transition:transform .2s ease}
+  .card-media{position:relative;height:190px;background:radial-gradient(80% 120% at 20% 20%, #e8f1ff 0%, #fafafa 60%)}
+  .card-body{padding:20px}
+  .card h3{margin:0 0 8px;font-size:20px}
+  .card p{margin:0 0 14px;color:var(--muted);word-break:break-word}
+  .card a{color:var(--brand);font-weight:700}
+  @media (min-width: 900px){ .card{grid-template-columns:.9fr 1.1fr;grid-column:span 6} .card-media{min-height:220px} }
+
+  /* Tabs */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+  .tab{padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-weight:700;cursor:pointer;min-height:var(--tap)}
+  .tab[aria-selected="true"]{background:linear-gradient(135deg,var(--brand),#60a5fa);color:#fff;border-color:transparent}
+
+  /* Outcomes mini-grid */
+  .outcomes{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin:18px 0 4px}
+  .out{grid-column:span 12;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:14px;display:flex;align-items:center;gap:10px;font-weight:800}
+  .out .bubble{width:12px;height:12px;border-radius:999px;background:linear-gradient(135deg,var(--brand),var(--brand2))}
+  @media (min-width:760px){ .out{grid-column:span 4} }
+
+  /* Features list */
+  .features{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+  .feature{grid-column:span 12;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+  .feature strong{display:block;margin-bottom:6px}
+  @media (min-width:900px){ .feature{grid-column:span 6} }
+
+  /* Portfolio filter */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+  .filter{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-weight:700;cursor:pointer;min-height:var(--tap)}
+  .filter[aria-pressed="true"]{background:#111;color:#fff;border-color:#111}
+  .work-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width:760px){ .work-grid{grid-template-columns:repeat(3,1fr)} }
+  .work{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);cursor:pointer}
+  .work .thumb{aspect-ratio:16/10;background:var(--thumb)}
+  .work .meta{padding:12px}
+  .tag{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:999px;background:var(--pill);border:1px solid var(--line);font-size:12px;color:#3b3f46}
+
+  /* Insights */
+  .insights{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width:900px){ .insights{grid-template-columns:repeat(3,1fr)} }
+  .insight{border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+  .insight .thumb{aspect-ratio:16/9;background:var(--thumb)}
+  .insight .meta{padding:14px}
+  .insight h3{margin:.2rem 0 .4rem;font-size:18px}
+  .insight .more{color:var(--brand);font-weight:800}
+
+  /* FAQ */
+  .accordion{display:grid;gap:10px}
+  details{border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-sm);padding:12px}
+  summary{cursor:pointer;font-weight:800;list-style:none}
+  summary::-webkit-details-marker{display:none}
+
+  /* Testimonials */
+  .marquee{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+  .rail{display:flex;gap:18px;padding:14px}
+  .quote{min-width:320px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface);transition:box-shadow .2s ease, transform .2s ease}
+  .quote:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+
+  /* Process timeline */
+  .process-wrap{position:relative}
+  .timeline{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:var(--shadow-sm)}
+  .timeline-rail{position:absolute;left:0;right:0;top:48px;height:4px;background:#eef2f7;border-radius:999px;overflow:hidden}
+  .timeline-rail .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--brand),var(--brand2),var(--brand3));transition:width .6s ease}
+  .timeline-stops{display:flex;justify-content:space-between;position:relative;padding:10px 6px 0}
+  .stop{position:relative;width:24px;height:24px;border-radius:999px;background:var(--surface);border:3px solid #cfd7e6;box-shadow:0 0 0 4px rgba(207,215,230,.4);cursor:pointer}
+  .stop.active{border-color:var(--brand);box-shadow:0 0 0 6px rgba(37,99,235,.25)}
+  .timeline-cards{display:grid;grid-template-columns:1fr;gap:14px;padding:16px}
+  @media (min-width:900px){ .timeline-cards{grid-template-columns:repeat(4,1fr)} }
+  .tcard{padding:16px;border:1px solid var(--line);border-radius:16px;background:var(--surface);transition:transform .25s ease, box-shadow .25s ease}
+  .tcard:focus-within,.tcard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .tcard .n{font-size:13px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#6b7280}
+  .tcard h3{margin:.25rem 0 .35rem 0;font-size:18px}
+  .tcard p{color:var(--muted);margin:0}
+  .tcard .cta-minor{margin-top:10px;font-weight:800;color:var(--brand)}
+
+  /* Affirmed list */
+  .affirm-list{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:12px}
+  .affirm{display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--line);background:color-mix(in srgb, var(--pill) 70%, var(--surface) 30%);border-radius:999px;box-shadow:var(--shadow-sm);font-weight:700}
+  .affirm .check{flex:0 0 22px;height:22px;display:grid;place-items:center;border-radius:6px;background:var(--ok)}
+  .affirm .check svg{width:14px;height:14px;fill:#fff}
+
+  /* Security strip */
+  .trust-list{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+  .trust{grid-column:span 12;display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:14px}
+  .trust .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2))}
+  @media (min-width:900px){ .trust{grid-column:span 6} }
+
+  /* Sticky CTA (desktop only) */
+  .sticky-cta{position:fixed;right:24px;bottom:24px;z-index:70;display:none}
+  @media (min-width:980px){ .sticky-cta{display:block} }
+  .sticky-cta .btn{box-shadow:var(--shadow)}
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .timeline-rail .fill{transition:none}
+  }
+</style>
+
+<!-- Schema -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"CMX","url":"https://cmxchat.com/","logo":"https://your-cdn.com/cmx-logo.png","sameAs":["https://twitter.com/yourhandle","https://www.linkedin.com/company/yourcompany"]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What do we need to start","acceptedAnswer":{"@type":"Answer","text":"Goal, target users, must-have pages, and access to current tools."}},
+{"@type":"Question","name":"How soon can we launch","acceptedAnswer":{"@type":"Answer","text":"Small sites in weeks. Larger builds in phases with a clear plan."}},
+{"@type":"Question","name":"Do you work with existing teams","acceptedAnswer":{"@type":"Answer","text":"Yes. We can join current workflows or run a parallel track and hand off clean."}},
+{"@type":"Question","name":"How do you price","acceptedAnswer":{"@type":"Answer","text":"Fixed scopes for projects. Monthly for ongoing growth."}}
+]}
+</script>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" aria-hidden="true" style="position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2),var(--brand3));z-index:80"></div>
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <div class="container nav">
+    <div class="logo">
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </button>
+      <span class="logo-dot" aria-hidden="true"></span> CMX
+    </div>
+    <nav class="nav-desktop" aria-label="Primary">
+      <ul>
+        <li><a href="#home" aria-current="page">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#platform">Platform</a></li>
+        <li><a href="#insights">Insights</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#portfolio">Work</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a class="cta btn" href="#project">Start a Project ↗</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Mobile drawer -->
+  <nav class="nav-drawer" aria-label="Mobile" hidden>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#platform">Platform</a></li>
+      <li><a href="#insights">Insights</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#portfolio">Work</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a class="cta btn" href="#project">Start a Project ↗</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <div class="mesh" aria-hidden="true"></div>
+    <div class="container grid-hero">
+      <div>
+        <div class="eyebrow">Built with real users</div>
+        <h1 class="h1 grad">From live community platform to full-service digital agency for creators and startups.</h1>
+        <div class="spark" aria-hidden="true"></div>
+        <p class="sub">We design fast websites, write search-ready content, and improve search visibility for founders and online teams. Everything is powered by our original community chat platform.</p>
+
+        <div class="buttons magnetize">
+          <a class="btn btn-primary" href="#project">Build with CMX</a>
+          <a class="btn btn-ghost" href="#chat">Join the Chat</a>
+        </div>
+        <small class="micro">Email team@cmxchat.com for direct requests.</small>
+
+        <!-- Core capabilities (passive) -->
+        <div class="chips inline" aria-label="Core capabilities">
+          <span class="chip passive">Web Dev</span>
+          <span class="chip passive">SEO</span>
+          <span class="chip passive">Content</span>
+          <span class="chip passive">AI</span>
+        </div>
+
+        <!-- Jobs-to-be-done (interactive actions) -->
+        <div class="chips title">Start here</div>
+        <div class="chip-rail" id="jobsChips" aria-label="Quick actions">
+          <button class="chip chip-action" data-job="web">Launch site
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.2 5.5a1 1 0 0 1 1.6-.8l6 4.5a1 1 0 0 1 0 1.6l-6 4.5a1 1 0 0 1-1.6-.8V12H5a1 1 0 1 1 0-2h8.2V5.5Z"/></svg>
+          </button>
+          <button class="chip chip-action" data-job="content">Migrate content
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 4a1 1 0 0 1 1 1v3h3a1 1 0 0 1 0 2h-3v3a1 1 0 1 1-2 0V10H9a1 1 0 1 1 0-2h3V5a1 1 0 0 1 1-1Z"/></svg>
+          </button>
+          <button class="chip chip-action" data-job="seo">Improve rankings
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 13a1 1 0 0 1 1-1h4l2-3 3 5 2-3h3a1 1 0 1 1 0 2h-2.4l-2.5 3.7a1 1 0 0 1-1.7-.03L10 12.9 9 14H5a1 1 0 0 1-1-1Z"/></svg>
+          </button>
+          <button class="chip chip-action" data-job="web">Speed up page load
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 12a9 9 0 1 1 18 0 1 1 0 0 1-2 0 7 7 0 1 0-7 7 1 1 0 1 1 0 2C7.373 21 3 16.627 3 12Zm9-6a1 1 0 0 1 1 1v3.586l2.121 2.121a1 1 0 0 1-1.414 1.414l-2.414-2.414A1 1 0 0 1 11 11V7a1 1 0 0 1 1-1Z"/></svg>
+          </button>
+        </div>
+
+        <!-- Industries (toggle group) -->
+        <div class="chips title">Industries</div>
+        <div class="chip-rail" id="industryChips" aria-label="Industries">
+          <button class="chip chip-toggle" data-industry="all" aria-pressed="true">All</button>
+          <button class="chip chip-toggle" data-industry="saas" aria-pressed="false">SaaS</button>
+          <button class="chip chip-toggle" data-industry="creators" aria-pressed="false">Creator Economy</button>
+          <button class="chip chip-toggle" data-industry="marketplace" aria-pressed="false">Marketplaces</button>
+          <button class="chip chip-toggle" data-industry="ai" aria-pressed="false">AI Tools</button>
+        </div>
+      </div>
+
+      <div>
+        <figure class="visual" aria-label="Symbolic CMX dashboard preview">
+          <div class="shine"></div>
+          <div class="mock">
+            <div class="mock-art" aria-hidden="true"></div>
+            <div class="mock-ui" aria-hidden="true">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="body">
+                <div class="skeleton" style="grid-column: span 2; height:16px;"></div>
+                <div class="skeleton" style="height:48px;"></div>
+                <div class="skeleton" style="height:48px;"></div>
+                <div class="skeleton" style="grid-column: span 2; height:120px;"></div>
+                <div class="skeleton" style="grid-column: span 2; height:12px; width:60%;"></div>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="container kpis" role="list" aria-label="Key CMX stats">
+      <div class="kpi" role="listitem"><strong data-count="800000">0</strong><span class="suffix">+</span> users reached via Cross Chat and CMX tools</div>
+      <div class="kpi" role="listitem"><strong data-count="200">0</strong><span class="suffix">+</span> shipped builds for creators and startups</div>
+      <div class="kpi" role="listitem"><strong data-count="200">0</strong><span class="suffix"> ms</span> typical LCP on production sites</div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container">
+      <div class="eyebrow2">What we do best</div>
+      <h2 class="h2 grad">Execution that moves metrics.</h2>
+      <p class="lead">Switch tabs to see how we ship websites, content, and search improvements.</p>
+
+      <div class="tabs" role="tablist" aria-label="Services">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="tab-web" id="tabbtn-web" data-tab="web">Web</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="tab-content" id="tabbtn-content" data-tab="content">Content</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="tab-seo" id="tabbtn-seo" data-tab="seo">SEO</button>
+      </div>
+
+      <div id="tab-web" role="tabpanel" aria-labelledby="tabbtn-web">
+        <div class="grid">
+          <article class="card">
+            <div class="card-media" aria-hidden="true"></div>
+            <div class="card-body">
+              <h3>Web development for clarity and speed</h3>
+              <p>Mobile-first builds that load fast and explain value in seconds. Clean structure and real conversion paths.</p>
+              <div class="buttons magnetize">
+                <a class="btn" href="#project">Start a scope</a>
+                <a class="btn" href="#portfolio">See example builds</a>
+              </div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-media" aria-hidden="true"></div>
+            <div class="card-body">
+              <h3>Design system starter</h3>
+              <p>Token-based colors and spacing, reusable sections, and tidy CSS so updates are predictable and safe.</p>
+              <a class="btn" href="#project">Add a system</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div id="tab-content" role="tabpanel" aria-labelledby="tabbtn-content" hidden>
+        <div class="grid">
+          <article class="card">
+            <div class="card-media" aria-hidden="true"></div>
+            <div class="card-body">
+              <h3>Content and copywriting</h3>
+              <p>Blog posts, landing pages, and brand voice. Written to match your tone and target search intent.</p>
+              <a class="btn" href="#project">Plan topics</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-media" aria-hidden="true"></div>
+            <div class="card-body">
+              <h3>Editorial calendar</h3>
+              <p>Quarterly sprint with keywords, briefs, and internal links so the site grows in the right directions.</p>
+              <a class="btn" href="#project">Get a calendar</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div id="tab-seo" role="tabpanel" aria-labelledby="tabbtn-seo" hidden>
+        <div class="grid">
+          <article class="card">
+            <div class="card-media" aria-hidden="true"></div>
+            <div class="card-body">
+              <h3>Technical SEO</h3>
+              <p>Indexing fixes, metadata, schema, and internal links that lift rankings and improve crawl health.</p>
+              <a class="btn" href="#project">Run a health check</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-media" aria-hidden="true"></div>
+            <div class="card-body">
+              <h3>Local and product feeds</h3>
+              <p>Profiles, citations, and shopping feeds tuned for Merchant Center and organic shopping units.</p>
+              <a class="btn" href="#project">Optimize listings</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Outcomes mini-grid -->
+      <div class="outcomes">
+        <div class="out"><span class="bubble"></span> +48% organic clicks in 90 days</div>
+        <div class="out"><span class="bubble"></span> Typical LCP under 200 ms</div>
+        <div class="out"><span class="bubble"></span> Ship in 2–6 weeks depending on scope</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORM -->
+  <section id="platform">
+    <div class="container">
+      <div class="eyebrow2">Platform core</div>
+      <h2 class="h2 grad">The CMX community chat is live and evolving.</h2>
+      <p class="lead">Private and public rooms, role-based permissions, and AI helpers for research and moderation.</p>
+      <div class="features">
+        <div class="feature"><strong>Rooms and roles</strong> Spaces for teams, creators, and communities.</div>
+        <div class="feature"><strong>AI in the loop</strong> Summaries, moderation, and search helpers.</div>
+        <div class="feature"><strong>Cross-server tools</strong> Images, radio, and utility bots.</div>
+        <div class="feature"><strong>Secure access</strong> Email verification and audit trails.</div>
+      </div>
+      <div class="buttons" style="margin-top:18px">
+        <a class="btn btn-primary" href="#chat">Enter the Chat</a>
+        <a class="btn btn-ghost" href="#platform">Platform overview</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS rail -->
+  <section id="insights">
+    <div class="container">
+      <div class="eyebrow2">Insights</div>
+      <h2 class="h2 grad">Short reads that help you ship.</h2>
+      <div class="insights">
+        <article class="insight">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta">
+            <h3>Site structure that ranks and converts</h3>
+            <div class="lead" style="font-size:14px">A simple map for product, solutions, and resources.</div>
+            <a class="more" href="#insights">Read →</a>
+          </div>
+        </article>
+        <article class="insight">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta">
+            <h3>How to cut your LCP under 200 ms</h3>
+            <div class="lead" style="font-size:14px">Real levers across hosting, assets, and HTML.</div>
+            <a class="more" href="#insights">Read →</a>
+          </div>
+        </article>
+        <article class="insight">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta">
+            <h3>Content sprints that compound</h3>
+            <div class="lead" style="font-size:14px">Briefs, internal links, and cadence that grows traffic.</div>
+            <a class="more" href="#insights">Read →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="container process-wrap">
+      <div class="eyebrow2">How we work</div>
+      <h2 class="h2 grad">Simple steps that remove risk.</h2>
+      <p class="lead">It plays automatically. Tap a step to jump.</p>
+
+      <div class="timeline">
+        <div class="timeline-stops" aria-hidden="true">
+          <div class="stop active" data-step="1" aria-label="Step 1"></div>
+          <div class="stop" data-step="2" aria-label="Step 2"></div>
+          <div class="stop" data-step="3" aria-label="Step 3"></div>
+          <div class="stop" data-step="4" aria-label="Step 4"></div>
+        </div>
+        <div class="timeline-rail" role="progressbar" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-label="Process progress">
+          <div class="fill" style="width:0%"></div>
+        </div>
+
+        <div class="timeline-cards" id="timelineCards">
+          <article class="tcard" tabindex="0" data-step="1">
+            <div class="n">Step 1</div>
+            <h3>Discovery</h3>
+            <p>Short call, current state review, quick wins, and a scope. We collect only what we need to move fast.</p>
+            <a class="cta-minor" href="#project">Start here →</a>
+          </article>
+          <article class="tcard" tabindex="0" data-step="2">
+            <div class="n">Step 2</div>
+            <h3>Plan</h3>
+            <p>Page map, content plan, search targets, timeline, and owners. No fluff. Clear tasks.</p>
+            <a class="cta-minor" href="#project">See a sample plan →</a>
+          </article>
+          <article class="tcard" tabindex="0" data-step="3">
+            <div class="n">Step 3</div>
+            <h3>Build</h3>
+            <p>Design, copy, and code ship in tight loops with real reviews. We demo in plain language.</p>
+            <a class="cta-minor" href="#portfolio">View live builds →</a>
+          </article>
+          <article class="tcard" tabindex="0" data-step="4">
+            <div class="n">Step 4</div>
+            <h3>Grow</h3>
+            <p>Publish, measure, and expand with a quarterly roadmap. Keep compounding results.</p>
+            <a class="cta-minor" href="#project">Work a growth plan →</a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="eyebrow2">Work</div>
+      <h2 class="h2 grad">Systems and brands we help shape.</h2>
+      <div class="filters" role="group" aria-label="Filter work">
+        <button class="filter" aria-pressed="true" data-filter="all" type="button">All</button>
+        <button class="filter" aria-pressed="false" data-filter="web" type="button">Web</button>
+        <button class="filter" aria-pressed="false" data-filter="content" type="button">Content</button>
+        <button class="filter" aria-pressed="false" data-filter="seo" type="button">SEO</button>
+        <button class="filter" aria-pressed="false" data-filter="platform" type="button">Platform</button>
+      </div>
+      <div class="work-grid" id="workGrid">
+        <article class="work" data-industries="platform,ai">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta"><strong>CMX Platform</strong><div>Community chat with AI helpers and roles.</div><span class="tag">Platform</span></div>
+        </article>
+        <article class="work" data-industries="saas,web">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta"><strong>Creator Site</strong><div>Mobile-first pages with clear copy paths.</div><span class="tag">Web</span></div>
+        </article>
+        <article class="work" data-industries="saas,seo">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta"><strong>Index Health</strong><div>Fixes that stabilized crawl and rankings.</div><span class="tag">SEO</span></div>
+        </article>
+        <article class="work" data-industries="creators,content">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta"><strong>Editorial Sprint</strong><div>Topics and briefs for non-branded growth.</div><span class="tag">Content</span></div>
+        </article>
+        <article class="work" data-industries="saas,web,seo">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta"><strong>Startup Launch</strong><div>Design system and search setup.</div><span class="tag">Web</span> <span class="tag">SEO</span></div>
+        </article>
+        <article class="work" data-industries="marketplace,platform,content">
+          <div class="thumb" aria-hidden="true"></div>
+          <div class="meta"><strong>Cross Chat</strong><div>Linked channels across servers.</div><span class="tag">Platform</span> <span class="tag">Content</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case study modal -->
+  <dialog id="caseModal" style="border:none;border-radius:18px;max-width:min(680px,92%);box-shadow:0 24px 60px rgba(2,6,23,.22);padding:0">
+    <div style="padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
+      <strong id="csTitle">Case study</strong>
+      <button id="csClose" class="btn">Close</button>
+    </div>
+    <div style="padding:18px">
+      <div class="grid" style="gap:12px">
+        <div class="feature" style="grid-column:span 12"><strong>Baseline</strong><div id="csBaseline">—</div></div>
+        <div class="feature" style="grid-column:span 12"><strong>Intervention</strong><div id="csIntervention">—</div></div>
+        <div class="feature" style="grid-column:span 12"><strong>Result</strong><div id="csResult">—</div></div>
+        <div class="feature" style="grid-column:span 12"><strong>Stack</strong><div id="csStack">—</div></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- SOCIAL PROOF -->
+  <section id="social">
+    <div class="container">
+      <div class="eyebrow2">What people say</div>
+      <h2 class="h2 grad">Notes from clients and partners.</h2>
+      <div class="marquee" aria-label="Client quotes">
+        <div class="rail">
+          <div class="quote"><strong>Fast and calm.</strong><div>They cleaned our site and traffic climbed within weeks.</div></div>
+          <div class="quote"><strong>Clear copy.</strong><div>Explains value right away. Calls convert better now.</div></div>
+          <div class="quote"><strong>Good process.</strong><div>Small loops with reviews. Ship without drama.</div></div>
+          <div class="quote"><strong>Reliable.</strong><div>They answer and they fix. Simple as that.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE SERVE -->
+  <section id="about">
+    <div class="container">
+      <div class="eyebrow2">Who we serve</div>
+      <h2 class="h2 grad">We work with the internet’s next builders.</h2>
+
+      <ul class="affirm-list" aria-label="Who we serve">
+        <li class="affirm">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20.285 6.708a1.2 1.2 0 0 1 0 1.697l-9.23 9.23a1.2 1.2 0 0 1-1.697 0l-4.643-4.643a1.2 1.2 0 1 1 1.697-1.697l3.795 3.795 8.382-8.382a1.2 1.2 0 0 1 1.696 0z"/></svg>
+          </span>
+          Creators scaling beyond link-in-bio tools
+        </li>
+        <li class="affirm">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20.285 6.708a1.2 1.2 0 0 1 0 1.697l-9.23 9.23a1.2 1.2 0 0 1-1.697 0l-4.643-4.643a1.2 1.2 0 1 1 1.697-1.697l3.795 3.795 8.382-8.382a1.2 1.2 0 0 1 1.696 0z"/></svg>
+          </span>
+          Startups that want clean infrastructure
+        </li>
+        <li class="affirm">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20.285 6.708a1.2 1.2 0 0 1 0 1.697l-9.23 9.23a1.2 1.2 0 0 1-1.697 0l-4.643-4.643a1.2 1.2 0 1 1 1.697-1.697l3.795 3.795 8.382-8.382a1.2 1.2 0 0 1 1.696 0z"/></svg>
+          </span>
+          Communities that need stable systems
+        </li>
+        <li class="affirm">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20.285 6.708a1.2 1.2 0 0 1 0 1.697l-9.23 9.23a1.2 1.2 0 0 1-1.697 0l-4.643-4.643a1.2 1.2 0 1 1 1.697-1.697l3.795 3.795 8.382-8.382a1.2 1.2 0 0 1 1.696 0z"/></svg>
+          </span>
+          Founders who value copy and design
+        </li>
+        <li class="affirm">
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20.285 6.708a1.2 1.2 0 0 1 0 1.697l-9.23 9.23a1.2 1.2 0 0 1-1.697 0l-4.643-4.643a1.2 1.2 0 1 1 1.697-1.697l3.795 3.795 8.382-8.382a1.2 1.2 0 0 1 1.696 0z"/></svg>
+          </span>
+          Teams replacing messy workflows
+        </li>
+      </ul>
+
+      <div class="buttons" style="margin-top:18px">
+        <a class="btn btn-primary" href="#project">Start a Project</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <div class="eyebrow2">FAQ</div>
+      <h2 class="h2 grad">Common questions.</h2>
+      <div class="accordion">
+        <details>
+          <summary>What do we need to start</summary>
+          <div>Goal, target users, a list of must-have pages, and access to current tools. We can help gather anything missing.</div>
+        </details>
+        <details>
+          <summary>How soon can we launch</summary>
+          <div>Small sites can go live in weeks. Larger builds run in phases. You always see a clear plan.</div>
+        </details>
+        <details>
+          <summary>Do you work with existing teams</summary>
+          <div>Yes. We can join your workflows or run a parallel track that hands off clean.</div>
+        </details>
+        <details>
+          <summary>How do you price</summary>
+          <div>Fixed scopes for clear projects. Monthly for ongoing growth. We align on scope and owners before work starts.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section id="trust">
+    <div class="container">
+      <div class="eyebrow2">Security & reliability</div>
+      <h2 class="h2 grad">Built for teams that care about process.</h2>
+      <div class="trust-list">
+        <div class="trust"><span class="dot" aria-hidden="true"></span> No PII logging in demos. Access scoped to the project.</div>
+        <div class="trust"><span class="dot" aria-hidden="true"></span> Signed SOWs, tracked deliverables, version-controlled deploys.</div>
+        <div class="trust"><span class="dot" aria-hidden="true"></span> Minimal integrations by default, explicit approvals for new ones.</div>
+        <div class="trust"><span class="dot" aria-hidden="true"></span> Monitoring on performance and uptime with real alerts.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="project">
+    <div class="container">
+      <div class="eyebrow2">Let’s build</div>
+      <h2 class="h2 grad">If you’re building something real, we are ready to help.</h2>
+      <p class="lead">We scale systems with momentum and fix the ones that wobble. Content, platform, and search included.</p>
+      <div class="buttons magnetize">
+        <a class="btn btn-primary" href="mailto:team@cmxchat.com?subject=CMX%20Project%20Request">Get a proposal</a>
+        <a class="btn btn-ghost" href="#chat">Join the Chat</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+    <div style="display:flex;flex-wrap:wrap;gap:14px">
+      <a href="#home">Home</a>
+      <a href="#services">Services</a>
+      <a href="#platform">Platform</a>
+      <a href="#insights">Insights</a>
+      <a href="#process">Process</a>
+      <a href="#portfolio">Work</a>
+      <a href="#faq">FAQ</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#terms">Terms</a>
+    </div>
+    <div>team@cmxchat.com · © 2025 CMX</div>
+  </div>
+</footer>
+
+<!-- Sticky CTA (desktop only) -->
+<div class="sticky-cta" id="stickyCta" aria-hidden="true">
+  <a class="btn btn-primary" href="#project">Start a Project</a>
+</div>
+
+<script>
+/* Mobile drawer */
+const toggleBtn=document.querySelector('.menu-toggle');
+const drawer=document.querySelector('.nav-drawer');
+toggleBtn?.addEventListener('click',()=>{const isOpen=drawer.hasAttribute('hidden')?false:true;drawer.toggleAttribute('hidden');toggleBtn.setAttribute('aria-expanded',(!isOpen).toString());});
+
+/* Tabs */
+const tabBtns=[...document.querySelectorAll('.tab')];
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const id=btn.dataset.tab;
+    tabBtns.forEach(b=>b.setAttribute('aria-selected','false'));
+    btn.setAttribute('aria-selected','true');
+    ['web','content','seo'].forEach(t=>{
+      const el=document.getElementById('tab-'+t);
+      if(el){ t===id ? el.removeAttribute('hidden') : el.setAttribute('hidden',''); }
+    });
+  });
+});
+
+/* Interactive chips */
+document.getElementById('jobsChips')?.addEventListener('click',e=>{
+  const b=e.target.closest('.chip-action');
+  if(!b) return;
+  const job=b.dataset.job;
+  if(job==='web') location.hash='#project';
+  if(job==='content'){ tabBtns.find(b=>b.dataset.tab==='content')?.click(); location.hash='#services'; }
+  if(job==='seo'){ tabBtns.find(b=>b.dataset.tab==='seo')?.click(); location.hash='#services'; }
+});
+
+const industryRail=document.getElementById('industryChips');
+industryRail?.addEventListener('click',e=>{
+  const t=e.target.closest('.chip-toggle'); if(!t) return;
+  [...industryRail.querySelectorAll('.chip-toggle')].forEach(x=>x.setAttribute('aria-pressed','false'));
+  t.setAttribute('aria-pressed','true');
+  const val=t.dataset.industry;
+  filterWork(val);
+});
+
+/* ----- FIX: make portfolio filter buttons work on mobile ----- */
+const filterWrap=document.querySelector('.filters');
+filterWrap?.addEventListener('click',e=>{
+  const btn=e.target.closest('.filter'); if(!btn) return;
+  filterWrap.querySelectorAll('.filter').forEach(b=>b.setAttribute('aria-pressed','false'));
+  btn.setAttribute('aria-pressed','true');
+  filterWork(btn.dataset.filter);
+});
+filterWrap?.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ') && e.target.classList.contains('filter')){
+    e.preventDefault(); e.target.click();
+  }
+});
+
+function filterWork(val){
+  document.querySelectorAll('#workGrid .work').forEach(card=>{
+    const tags=(card.getAttribute('data-industries')||'').split(',');
+    const show=val==='all' || tags.includes(val);
+    card.style.display=show?'block':'none';
+  });
+}
+filterWork('all');
+
+/* KPI counter on view */
+const kpiObs = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      en.target.querySelectorAll('strong[data-count]').forEach(el=>{
+        const target=+el.getAttribute('data-count');
+        const dur=1200; const start=performance.now();
+        function tick(now){
+          const p=Math.min((now-start)/dur,1);
+          const val=Math.floor(target*p);
+          el.textContent=val.toLocaleString();
+          if(p<1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+      kpiObs.unobserve(en.target);
+    }
+  });
+},{threshold:.3});
+document.querySelectorAll('.kpis').forEach(k=>kpiObs.observe(k));
+
+/* Timeline autoplay + stop controls */
+const stops=[...document.querySelectorAll('.stop')];
+const fill=document.querySelector('.timeline-rail .fill');
+let step=1, playInt;
+function setStep(n){
+  step=n; stops.forEach(s=>s.classList.toggle('active',+s.dataset.step===n));
+  fill.style.width=((n-1)/3*100)+'%';
+  document.querySelectorAll('.tcard').forEach(c=>c.style.outline=(+c.dataset.step===n)?'2px solid rgba(37,99,235,.35)':'none');
+}
+function play(){ clearInterval(playInt); playInt=setInterval(()=>{ setStep(step%4+1); },2600); }
+stops.forEach(s=>s.addEventListener('click',()=>{ setStep(+s.dataset.step); play(); }));
+setStep(1); play();
+
+/* Case study modal demo */
+const modal=document.getElementById('caseModal');
+document.getElementById('workGrid')?.addEventListener('click',e=>{
+  const card=e.target.closest('.work'); if(!card) return;
+  document.getElementById('csTitle').textContent=card.querySelector('strong')?.textContent||'Case study';
+  document.getElementById('csBaseline').textContent='Traffic flat; index bloat.';
+  document.getElementById('csIntervention').textContent='Fix IA, internal links, metadata, and deploy tidy build.';
+  document.getElementById('csResult').textContent='+48% organic clicks in 90 days.';
+  document.getElementById('csStack').textContent='Static hosting, edge cache, schema, Analytics.';
+  modal?.showModal();
+});
+document.getElementById('csClose')?.addEventListener('click',()=>modal?.close());
+
+/* Sticky CTA + progress bar */
+const sticky=document.getElementById('stickyCta');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  const docH=document.documentElement.scrollHeight - window.innerHeight;
+  const p=(docH>0? (y/docH)*100 : 0);
+  document.getElementById('progressBar').style.width=p+'%';
+  if(y>600){ sticky?.removeAttribute('aria-hidden'); sticky?.classList.add('show'); }
+  else{ sticky?.setAttribute('aria-hidden','true'); sticky?.classList.remove('show'); }
+});
+</script>
+</body>
+</html>
