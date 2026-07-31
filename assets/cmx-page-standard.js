@@ -23,7 +23,6 @@
     `<span>v${escapeHtml(version)}</span>`,
     '<span class="cmx-standard-sep">|</span>',
     '<a href="/directory/">Directory</a>',
-    '<a href="/build/">Build</a>',
     '<span class="cmx-standard-private">Private · No indexing</span>'
   ].join('');
   document.body.appendChild(bar);
