@@ -18,12 +18,10 @@ const ROUTES = {
   menu: { path: '/menu', label: 'OSINT visual menu' },
   osint: { path: '/osint', label: 'OSINT console' },
   phone: { path: '/phone', label: 'Phone intelligence' },
-  workspace: { path: '/workspace', label: 'Case workspace' },
   metadata: { path: '/metadata', label: 'Metadata extractor' },
   resources: { path: '/resources', label: 'OSINT resource library' },
   missing: { path: '/missing', label: 'Missing-person workflow' },
-  search: { path: '/search', label: 'Advanced search workbench' },
-  timeline: { path: '/timeline', label: 'Timeline builder' }
+  search: { path: '/search', label: 'Advanced search workbench' }
 };
 
 let user = ADMIN_USERNAME;
