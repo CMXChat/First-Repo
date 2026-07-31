@@ -6,7 +6,7 @@ const MANUAL = {
   tools: ['List, test, describe, or open approved tools.', 'Usage: tools <list|status|open|describe> [tool]'],
   monitor: ['Run live health checks across approved tools.', 'Usage: monitor <status|tools|all>'],
   search: ['Build and open a focused public search.', 'Usage: search <exact|site|username|email|domain|documents|images|mentions> <target>'],
-  osint: ['List or open an approved CMX intelligence tool.', 'Usage: osint <list|open|phone|metadata|search|missing|resources|workspace|timeline>'],
+  osint: ['List or open an approved CMX intelligence tool.', 'Usage: osint <list|open|phone|metadata|search|missing|resources>'],
   open: ['Open an approved tool directly.', 'Usage: open <tool>'],
   status: ['Show current console activity and uptime.', 'Usage: status'],
   lock: ['Lock the console immediately.', 'Usage: lock'],
