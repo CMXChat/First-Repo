@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050807" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <title>CMX Build Lab</title>
+  <meta name="description" content="Private project control dashboard for db.cmxchat.com." />
+  <style>
+    :root {
+      --bg: #050807;
+      --surface: #0a0f0d;
+      --surface-2: #0d1411;
+      --surface-3: #111a16;
+      --line: #1d2a23;
+      --line-strong: #2d4938;
+      --text: #edf7f0;
+      --muted: #8ba094;
+      --green: #35e66d;
+      --green-soft: rgba(53, 230, 109, .12);
+      --cyan: #55d9c6;
+      --amber: #f0c96a;
+      --purple: #b990ff;
+      --red: #ff7777;
+      --radius: 16px;
+      --shadow: 0 22px 70px rgba(0, 0, 0, .38);
+      --sidebar: 232px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(53, 230, 109, .065), transparent 26%),
+        radial-gradient(circle at 92% 18%, rgba(85, 217, 198, .045), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.5;
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--line);
+      background: rgba(5, 8, 7, .92);
+      backdrop-filter: blur(18px);
+      z-index: 20;
+    }
+
+    .brand {
+      padding: 22px 18px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-mark {
+      font: 800 30px/1 var(--mono);
+      color: var(--green);
+      letter-spacing: -2px;
+    }
+
+    .brand-sub {
+      margin-top: 6px;
+      font: 700 11px/1.2 var(--mono);
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .nav-label {
+      padding: 18px 18px 8px;
+      color: var(--muted);
+      font: 700 10px/1 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .nav {
+      display: grid;
+      gap: 5px;
+      padding: 0 10px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #c7d7cc;
+      font-size: 13px;
+      transition: .16s ease;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: var(--green-soft);
+      border-color: rgba(53, 230, 109, .18);
+      color: var(--text);
+    }
+
+    .nav-icon {
+      width: 18px;
+      color: var(--green);
+      text-align: center;
+      font-family: var(--mono);
+    }
+
+    .quick {
+      margin-top: auto;
+      padding: 14px 10px 18px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+    }
+
+    .quick button,
+    .quick a {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .quick button:hover,
+    .quick a:hover { border-color: var(--green); }
+
+    .main { min-width: 0; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 15;
+      display: grid;
+      grid-template-columns: minmax(220px, 1.2fr) minmax(180px, .7fr) minmax(190px, .8fr) auto;
+      align-items: stretch;
+      border-bottom: 1px solid var(--line);
+      background: rgba(5, 8, 7, .88);
+      backdrop-filter: blur(18px);
+    }
+
+    .top-cell {
+      min-height: 78px;
+      padding: 15px 20px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .top-title {
+      font: 700 clamp(21px, 2vw, 29px)/1.05 var(--mono);
+      letter-spacing: -.04em;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font: 700 10px/1 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 7px;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      font: 700 12px/1.25 var(--mono);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 14px currentColor;
+      flex: 0 0 auto;
+    }
+
+    .top-time {
+      font: 500 12px/1.45 var(--mono);
+      color: #cbd7cf;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--text);
+      font: 700 11px/1 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      cursor: pointer;
+    }
+
+    .button.primary {
+      background: var(--green);
+      border-color: var(--green);
+      color: #031107;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+
+    .content {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.1fr) repeat(4, minmax(140px, .55fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .hero-copy {
+      padding: 18px 16px;
+      border-left: 2px solid var(--green);
+      min-height: 128px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      color: var(--green);
+      font: 800 clamp(28px, 3vw, 42px)/1 var(--mono);
+      letter-spacing: -.05em;
+    }
+
+    .hero-copy p {
+      margin: 8px 0 0;
+      color: #c6d6cc;
+      max-width: 580px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(17, 26, 22, .96), rgba(9, 14, 12, .96));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .metric {
+      min-height: 128px;
+      padding: 17px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font: 700 10px/1 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .metric-value {
+      font: 700 clamp(25px, 3vw, 37px)/1 var(--mono);
+      letter-spacing: -.04em;
+    }
+
+    .metric-sub {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .metric-sub.good { color: var(--green); }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(300px, .88fr) minmax(300px, .9fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .span-2 { grid-column: span 2; }
+    .full { grid-column: 1 / -1; }
+
+    .panel-head {
+      min-height: 46px;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(255, 255, 255, .012);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font: 700 13px/1 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .035em;
+    }
+
+    .panel-body { padding: 14px; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td {
+      padding: 10px 11px;
+      border-bottom: 1px solid #15201a;
+      text-align: left;
+      font: 500 11px/1.35 var(--mono);
+      white-space: nowrap;
+    }
+    th {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .055em;
+      font-size: 9px;
+    }
+    tbody tr:hover { background: rgba(53, 230, 109, .035); }
+
+    .route-link { color: var(--text); }
+    .route-link:hover { color: var(--green); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 23px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font: 700 9px/1 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--muted);
+    }
+
+    .badge.active,
+    .badge.online { color: var(--green); border-color: rgba(53, 230, 109, .3); background: var(--green-soft); }
+    .badge.experimental { color: var(--purple); border-color: rgba(185, 144, 255, .3); background: rgba(185, 144, 255, .08); }
+    .badge.internal { color: var(--cyan); border-color: rgba(85, 217, 198, .3); background: rgba(85, 217, 198, .08); }
+    .badge.client { color: var(--amber); border-color: rgba(240, 201, 106, .3); background: rgba(240, 201, 106, .08); }
+    .badge.legacy { color: #a8b0aa; }
+    .badge.failed { color: var(--red); border-color: rgba(255, 119, 119, .35); background: rgba(255, 119, 119, .08); }
+    .badge.checking { color: var(--amber); border-color: rgba(240, 201, 106, .35); }
+
+    .tree {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font: 500 11px/1.75 var(--mono);
+      color: #c7d5cc;
+    }
+    .tree ul { list-style: none; margin: 0; padding-left: 20px; }
+    .tree .folder { color: var(--amber); }
+    .tree .root { color: var(--green); }
+    .tree .planned { color: var(--purple); }
+    .tree .muted { color: var(--muted); }
+
+    .stack { display: grid; gap: 10px; }
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
+      background: var(--surface);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+    }
+    .task h3 {
+      margin: 0;
+      font: 700 12px/1.3 var(--mono);
+    }
+    .task p {
+      grid-column: 1 / -1;
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .priority {
+      align-self: start;
+      padding: 5px 7px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font: 700 8px/1 var(--mono);
+      text-transform: uppercase;
+    }
+    .priority.high { color: var(--red); border-color: rgba(255, 119, 119, .35); }
+    .priority.medium { color: var(--amber); border-color: rgba(240, 201, 106, .35); }
+    .priority.low { color: var(--green); border-color: rgba(53, 230, 109, .35); }
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .progress-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--surface);
+    }
+
+    .progress-card h3 {
+      margin: 0 0 8px;
+      font: 700 12px/1 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .progress-card.frontend { border-color: rgba(53, 230, 109, .42); }
+    .progress-card.backend { border-color: rgba(240, 201, 106, .42); }
+    .progress-card.deploy { border-color: rgba(185, 144, 255, .42); }
+
+    .progress-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0;
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .progress-list li::before {
+      content: "○";
+      color: currentColor;
+      margin-right: 7px;
+      font-family: var(--mono);
+    }
+    .progress-list li.done { color: var(--green); }
+    .progress-list li.done::before { content: "✓"; }
+
+    .bar {
+      height: 5px;
+      border-radius: 999px;
+      background: #17211c;
+      overflow: hidden;
+    }
+    .bar span { display: block; height: 100%; background: currentColor; }
+
+    .api-list { display: grid; gap: 7px; }
+    .api-row {
+      display: grid;
+      grid-template-columns: 58px minmax(160px, .8fr) 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #15201a;
+      font: 500 11px/1.4 var(--mono);
+    }
+    .method {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 22px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      font-size: 9px;
+      font-weight: 800;
+    }
+    .method.get { color: var(--green); border-color: rgba(53, 230, 109, .35); }
+    .method.post { color: var(--amber); border-color: rgba(240, 201, 106, .35); }
+    .api-desc { color: var(--muted); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 8px;
+    }
+    .step {
+      position: relative;
+      min-height: 92px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--surface);
+    }
+    .step-num {
+      color: var(--green);
+      font: 800 10px/1 var(--mono);
+      margin-bottom: 8px;
+    }
+    .step strong { display: block; font: 700 11px/1.3 var(--mono); }
+    .step span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+
+    .notice {
+      border: 1px solid rgba(240, 201, 106, .25);
+      background: rgba(240, 201, 106, .055);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #dbc98f;
+      font-size: 11px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 22px 26px;
+      color: var(--muted);
+      font: 500 10px/1.4 var(--mono);
+    }
+
+    .mobile-toggle { display: none; }
+
+    @media (max-width: 1220px) {
+      .hero { grid-template-columns: 1fr repeat(2, minmax(160px, .5fr)); }
+      .hero-copy { grid-row: span 2; }
+      .grid-main { grid-template-columns: minmax(0, 1fr) minmax(300px, .85fr); }
+      .span-2 { grid-column: span 1; }
+      .grid-main > .card:first-child { grid-column: 1 / -1; }
+      .steps { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: min(82vw, 280px);
+        transform: translateX(-105%);
+        transition: transform .2s ease;
+        box-shadow: 30px 0 80px rgba(0, 0, 0, .55);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--surface);
+        color: var(--text);
+      }
+      .topbar { grid-template-columns: auto 1fr auto; }
+      .top-cell:first-of-type { padding-left: 8px; }
+      .topbar .status-cell,
+      .topbar .time-cell { display: none; }
+      .content { padding: 14px; }
+      .hero { grid-template-columns: repeat(2, 1fr); }
+      .hero-copy { grid-column: 1 / -1; grid-row: auto; }
+      .grid-main { grid-template-columns: 1fr; }
+      .grid-main > * { grid-column: auto !important; }
+      .progress-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .topbar { grid-template-columns: auto 1fr; }
+      .top-actions { display: none; }
+      .top-title { font-size: 20px; }
+      .hero { grid-template-columns: 1fr 1fr; }
+      .metric { min-height: 110px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .api-row { grid-template-columns: 48px 1fr auto; }
+      .api-desc { grid-column: 2 / -1; }
+      .footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">CMX</div>
+        <div class="brand-sub">Build Lab</div>
+      </div>
+
+      <div class="nav-label">Navigation</div>
+      <nav class="nav">
+        <a class="active" href="#overview"><span class="nav-icon">⌂</span>Overview</a>
+        <a href="#routes"><span class="nav-icon">◎</span>Route Health</a>
+        <a href="#structure"><span class="nav-icon">⌘</span>Project Structure</a>
+        <a href="#backlog"><span class="nav-icon">☷</span>Feature Backlog</a>
+        <a href="#apis"><span class="nav-icon">⇄</span>API Plans</a>
+        <a href="#learning"><span class="nav-icon">◇</span>Learning Path</a>
+        <a href="#deployment"><span class="nav-icon">⇧</span>Deployment</a>
+      </nav>
+
+      <div class="quick">
+        <button id="checkAllSide" type="button">↻ Check all routes</button>
+        <a href="/directory">Open directory</a>
+        <a href="/">Open terminal</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;padding-left:12px">
+          <button class="mobile-toggle" id="mobileToggle" type="button" aria-label="Open navigation">☰</button>
+        </div>
+        <div class="top-cell">
+          <div class="top-title">CMX BUILD LAB</div>
+          <div style="color:var(--muted);font-size:11px;margin-top:5px">Project control center</div>
+        </div>
+        <div class="top-cell status-cell">
+          <div class="eyebrow">System status</div>
+          <div class="status-line" id="systemStatus"><span class="dot"></span>Waiting for check</div>
+        </div>
+        <div class="top-cell time-cell">
+          <div class="eyebrow">Local time</div>
+          <div class="top-time" id="clock">—</div>
+        </div>
+        <div class="top-actions">
+          <a class="button" href="/">Terminal</a>
+          <a class="button primary" href="/directory">Directory</a>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="hero" id="overview">
+          <div class="hero-copy">
+            <h1>CMX Build Lab</h1>
+            <p>Plan, inspect and prepare every page on db.cmxchat.com before the Python backend arrives.</p>
+          </div>
+
+          <article class="card metric">
+            <div class="metric-label">Registered pages</div>
+            <div class="metric-value" id="pageCount">0</div>
+            <div class="metric-sub">Current static routes</div>
+          </article>
+
+          <article class="card metric">
+            <div class="metric-label">Routes online</div>
+            <div class="metric-value" id="onlineCount">—</div>
+            <div class="metric-sub good" id="onlinePercent">Run a check</div>
+          </article>
+
+          <article class="card metric">
+            <div class="metric-label">Average response</div>
+            <div class="metric-value" id="averageResponse">—</div>
+            <div class="metric-sub">Browser observed</div>
+          </article>
+
+          <article class="card metric">
+            <div class="metric-label">Last check</div>
+            <div class="metric-value" id="lastCheck" style="font-size:24px">—</div>
+            <div class="metric-sub">This device only</div>
+          </article>
+        </section>
+
+        <div class="grid-main">
+          <section class="card full" id="routes">
+            <div class="panel-head">
+              <h2>Route Health Overview</h2>
+              <button class="button" id="checkAll" type="button">Check all routes</button>
+            </div>
+            <div class="panel-body table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Route</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Project status</th>
+                    <th>Live check</th>
+                    <th>Response</th>
+                    <th>Last checked</th>
+                  </tr>
+                </thead>
+                <tbody id="routeRows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card" id="structure">
+            <div class="panel-head"><h2>Project Structure</h2><span class="badge">Documented</span></div>
+            <div class="panel-body">
+              <ul class="tree">
+                <li><span class="root">▣ db.cmxchat.com/</span>
+                  <ul>
+                    <li><span class="folder">▰ assets/</span><ul><li class="muted">CSS, JavaScript and social image</li></ul></li>
+                    <li><span class="folder">▰ operational/</span><ul><li>directory, osint, phone, metadata, search, missing, resources</li></ul></li>
+                    <li><span class="folder">▰ internal/</span><ul><li>internal, project, callmax, ovaro</li></ul></li>
+                    <li><span class="folder">▰ concepts/</span><ul><li>collab1, collab2, collab3, services, seo</li></ul></li>
+                    <li><span class="root">▣ build/</span><ul><li>This project dashboard</li></ul></li>
+                    <li><span class="planned">▰ api/ planned</span><ul><li class="muted">FastAPI endpoints after migration</li></ul></li>
+                    <li>404.html <span class="muted">custom unknown-route page</span></li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="notice" style="margin-top:14px">This is project documentation, not a live Linux filesystem browser.</div>
+            </div>
+          </section>
+
+          <section class="card" id="backlog">
+            <div class="panel-head"><h2>Feature Backlog</h2><span class="badge">Current plan</span></div>
+            <div class="panel-body stack">
+              <article class="task">
+                <h3>FastAPI foundation</h3><span class="priority high">High</span>
+                <p>Serve existing pages, add real APIs and preserve current URLs.</p>
+              </article>
+              <article class="task">
+                <h3>Server-side route protection</h3><span class="priority high">High</span>
+                <p>Replace the client-side gate with real authentication and protected routes.</p>
+              </article>
+              <article class="task">
+                <h3>Staging deployment</h3><span class="priority high">High</span>
+                <p>Test every approved change before production deployment.</p>
+              </article>
+              <article class="task">
+                <h3>PostgreSQL integration</h3><span class="priority medium">Medium</span>
+                <p>Store route history, projects and future tool results.</p>
+              </article>
+              <article class="task">
+                <h3>MCP sandbox workflow</h3><span class="priority low">Later</span>
+                <p>Let AI revise branches, run tests and prepare staging previews safely.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="card span-2">
+            <div class="panel-head"><h2>Build Progress</h2><span class="badge active">Frontend phase</span></div>
+            <div class="panel-body progress-grid">
+              <article class="progress-card frontend" style="color:var(--green)">
+                <h3>Frontend</h3>
+                <div style="font:700 25px/1 var(--mono);color:var(--text)">Active</div>
+                <ul class="progress-list">
+                  <li class="done">Build Lab shell</li>
+                  <li class="done">Route registry</li>
+                  <li class="done">Browser route checks</li>
+                  <li>Link audit</li>
+                  <li>Mobile review</li>
+                </ul>
+                <div class="bar"><span style="width:65%"></span></div>
+              </article>
+
+              <article class="progress-card backend" style="color:var(--amber)">
+                <h3>Backend</h3>
+                <div style="font:700 25px/1 var(--mono);color:var(--text)">Waiting</div>
+                <ul class="progress-list">
+                  <li>FastAPI setup</li>
+                  <li>Authentication</li>
+                  <li>Database models</li>
+                  <li>Approved tool APIs</li>
+                  <li>Background checks</li>
+                </ul>
+                <div class="bar"><span style="width:5%"></span></div>
+              </article>
+
+              <article class="progress-card deploy" style="color:var(--purple)">
+                <h3>Deployment</h3>
+                <div style="font:700 25px/1 var(--mono);color:var(--text)">Waiting</div>
+                <ul class="progress-list">
+                  <li>Docker setup</li>
+                  <li>Linux server</li>
+                  <li>Cloudflare Access</li>
+                  <li>Staging environment</li>
+                  <li>Backups and rollback</li>
+                </ul>
+                <div class="bar"><span style="width:0%"></span></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="card" id="apis">
+            <div class="panel-head"><h2>Planned API Endpoints</h2><span class="badge experimental">Not connected</span></div>
+            <div class="panel-body api-list">
+              <div class="api-row"><span class="method get">GET</span><code>/api/health</code><span class="api-desc">Application health</span><span class="badge experimental">Planned</span></div>
+              <div class="api-row"><span class="method get">GET</span><code>/api/routes</code><span class="api-desc">Approved route registry</span><span class="badge experimental">Planned</span></div>
+              <div class="api-row"><span class="method post">POST</span><code>/api/routes/check</code><span class="api-desc">Real server-side checks</span><span class="badge experimental">Planned</span></div>
+              <div class="api-row"><span class="method get">GET</span><code>/api/routes/history</code><span class="api-desc">Stored uptime history</span><span class="badge experimental">Planned</span></div>
+              <div class="api-row"><span class="method post">POST</span><code>/api/metadata/extract</code><span class="api-desc">Approved file analysis</span><span class="badge experimental">Planned</span></div>
+              <div class="api-row"><span class="method post">POST</span><code>/api/domain/inspect</code><span class="api-desc">Domain intelligence</span><span class="badge experimental">Planned</span></div>
+            </div>
+          </section>
+
+          <section class="card full" id="learning">
+            <div class="panel-head"><h2>Learning Path</h2><span class="badge">Project first</span></div>
+            <div class="panel-body steps">
+              <article class="step"><div class="step-num">01</div><strong>Python basics</strong><span>Variables, functions, files and errors.</span></article>
+              <article class="step"><div class="step-num">02</div><strong>FastAPI</strong><span>Routes, requests, responses and validation.</span></article>
+              <article class="step"><div class="step-num">03</div><strong>Frontend fetch</strong><span>Connect buttons and forms to Python APIs.</span></article>
+              <article class="step"><div class="step-num">04</div><strong>Linux</strong><span>Files, processes, ports, SSH and logs.</span></article>
+              <article class="step"><div class="step-num">05</div><strong>Docker</strong><span>Run the same app in development and production.</span></article>
+              <article class="step"><div class="step-num">06</div><strong>Deployment</strong><span>Staging, approval, production and rollback.</span></article>
+            </div>
+          </section>
+
+          <section class="card full" id="deployment">
+            <div class="panel-head"><h2>Future Deployment Path</h2><span class="badge experimental">After server setup</span></div>
+            <div class="panel-body">
+              <div class="steps">
+                <article class="step"><div class="step-num">01</div><strong>GitHub branch</strong><span>AI or developer prepares a controlled change.</span></article>
+                <article class="step"><div class="step-num">02</div><strong>Automated tests</strong><span>Validate code, dependencies and routes.</span></article>
+                <article class="step"><div class="step-num">03</div><strong>Docker sandbox</strong><span>Run code away from production.</span></article>
+                <article class="step"><div class="step-num">04</div><strong>Staging preview</strong><span>Review at staging.db.cmxchat.com.</span></article>
+                <article class="step"><div class="step-num">05</div><strong>Approval</strong><span>Production requires explicit approval.</span></article>
+                <article class="step"><div class="step-num">06</div><strong>Production</strong><span>Deploy behind Cloudflare and server auth.</span></article>
+              </div>
+              <div class="notice" style="margin-top:14px">The current GitHub Pages login is a browser deterrent only. Sensitive data must wait for real server-side protection.</div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span>Build in private. Launch in silence. Let the results make the noise.</span>
+        <span>CMX Build Lab v1.0.0</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    'use strict';
+
+    const ROUTES = [
+      { path: '/', name: 'Restricted Node', category: 'Operational', status: 'Active' },
+      { path: '/build', name: 'Build Lab', category: 'Operational', status: 'Active' },
+      { path: '/directory', name: 'Operations Directory', category: 'Operational', status: 'Active' },
+      { path: '/osint', name: 'OSINT Console', category: 'Operational', status: 'Active' },
+      { path: '/phone', name: 'Phone Intelligence', category: 'Operational', status: 'Active' },
+      { path: '/metadata', name: 'Metadata Extractor', category: 'Operational', status: 'Active' },
+      { path: '/search', name: 'Advanced Search', category: 'Operational', status: 'Active' },
+      { path: '/missing', name: 'Missing Person Workflow', category: 'Operational', status: 'Active' },
+      { path: '/resources', name: 'Resource Library', category: 'Operational', status: 'Active' },
+      { path: '/internal', name: 'CMX + Ovaro Vision Map', category: 'Internal', status: 'Active' },
+      { path: '/project', name: 'Callmax SEO Master Plan', category: 'Client', status: 'Active' },
+      { path: '/callmax', name: 'Callmax Page', category: 'Client', status: 'Needs Review' },
+      { path: '/ovaro', name: 'Ovaro Page', category: 'Internal', status: 'Needs Review' },
+      { path: '/collab1', name: 'CMX Agency Concept 1', category: 'Experimental', status: 'Experimental' },
+      { path: '/collab2', name: 'CMX Agency Concept 2', category: 'Experimental', status: 'Experimental' },
+      { path: '/collab3', name: 'CMX Agency Concept 3', category: 'Experimental', status: 'Experimental' },
+      { path: '/services', name: 'CMX Services Hub', category: 'Business', status: 'Needs Review' },
+      { path: '/seo', name: 'CMX Pricing Calculator', category: 'Experimental', status: 'Needs Review' },
+      { path: '/entry', name: 'Legacy Workspace', category: 'Legacy', status: 'Legacy' },
+      { path: '/404.html', name: 'Custom 404 Page', category: 'System', status: 'Active' }
+    ];
+
+    const routeRows = document.getElementById('routeRows');
+    const pageCount = document.getElementById('pageCount');
+    const onlineCount = document.getElementById('onlineCount');
+    const onlinePercent = document.getElementById('onlinePercent');
+    const averageResponse = document.getElementById('averageResponse');
+    const lastCheck = document.getElementById('lastCheck');
+    const systemStatus = document.getElementById('systemStatus');
+
+    function slug(value) {
+      return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function categoryClass(category) {
+      const value = category.toLowerCase();
+      if (value === 'operational') return 'active';
+      if (value === 'experimental') return 'experimental';
+      if (value === 'internal') return 'internal';
+      if (value === 'client') return 'client';
+      if (value === 'legacy') return 'legacy';
+      return '';
+    }
+
+    function projectStatusClass(status) {
+      if (status === 'Active') return 'active';
+      if (status === 'Experimental') return 'experimental';
+      if (status === 'Legacy') return 'legacy';
+      return '';
+    }
+
+    function renderRoutes() {
+      routeRows.innerHTML = ROUTES.map((route) => {
+        const id = slug(route.path === '/' ? 'root' : route.path);
+        return `
+          <tr data-route="${route.path}">
+            <td><a class="route-link" href="${route.path}">${route.path}</a></td>
+            <td>${route.name}</td>
+            <td><span class="badge ${categoryClass(route.category)}">${route.category}</span></td>
+            <td><span class="badge ${projectStatusClass(route.status)}">${route.status}</span></td>
+            <td><span class="badge" id="live-${id}">Not checked</span></td>
+            <td id="time-${id}">—</td>
+            <td id="checked-${id}">—</td>
+          </tr>
+        `;
+      }).join('');
+      pageCount.textContent = ROUTES.length;
+    }
+
+    async function checkRoute(route) {
+      const id = slug(route.path === '/' ? 'root' : route.path);
+      const live = document.getElementById(`live-${id}`);
+      const timing = document.getElementById(`time-${id}`);
+      const checked = document.getElementById(`checked-${id}`);
+
+      live.className = 'badge checking';
+      live.textContent = 'Checking';
+      timing.textContent = '—';
+
+      const started = performance.now();
+      try {
+        const separator = route.path.includes('?') ? '&' : '?';
+        const response = await fetch(`${route.path}${separator}_cmx_check=${Date.now()}`, {
+          method: 'GET',
+          cache: 'no-store',
+          credentials: 'same-origin',
+          redirect: 'follow'
+        });
+        const duration = Math.round(performance.now() - started);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        live.className = 'badge online';
+        live.textContent = 'Online';
+        timing.textContent = `${duration} ms`;
+        checked.textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+        return { online: true, duration };
+      } catch (error) {
+        const duration = Math.round(performance.now() - started);
+        live.className = 'badge failed';
+        live.textContent = 'Failed';
+        timing.textContent = error.message || `${duration} ms`;
+        checked.textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+        return { online: false, duration };
+      }
+    }
+
+    async function checkAllRoutes() {
+      const buttons = [document.getElementById('checkAll'), document.getElementById('checkAllSide')];
+      buttons.forEach((button) => { button.disabled = true; button.textContent = 'Checking routes'; });
+      systemStatus.innerHTML = '<span class="dot" style="color:var(--amber)"></span>Checking routes';
+      systemStatus.style.color = 'var(--amber)';
+
+      const results = [];
+      const batchSize = 4;
+      for (let index = 0; index < ROUTES.length; index += batchSize) {
+        const batch = ROUTES.slice(index, index + batchSize);
+        const batchResults = await Promise.all(batch.map(checkRoute));
+        results.push(...batchResults);
+      }
+
+      const online = results.filter((result) => result.online);
+      const average = online.length
+        ? Math.round(online.reduce((sum, result) => sum + result.duration, 0) / online.length)
+        : 0;
+      const now = new Date();
+
+      onlineCount.textContent = `${online.length}/${ROUTES.length}`;
+      onlinePercent.textContent = `${Math.round((online.length / ROUTES.length) * 100)}% responding`;
+      averageResponse.textContent = online.length ? `${average}ms` : '—';
+      lastCheck.textContent = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+      if (online.length === ROUTES.length) {
+        systemStatus.innerHTML = '<span class="dot"></span>All registered routes online';
+        systemStatus.style.color = 'var(--green)';
+      } else {
+        systemStatus.innerHTML = `<span class="dot"></span>${ROUTES.length - online.length} route check${ROUTES.length - online.length === 1 ? '' : 's'} failed`;
+        systemStatus.style.color = 'var(--red)';
+      }
+
+      buttons.forEach((button) => { button.disabled = false; button.textContent = button.id === 'checkAll' ? 'Check all routes' : '↻ Check all routes'; });
+    }
+
+    function updateClock() {
+      document.getElementById('clock').textContent = new Date().toLocaleString([], {
+        weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
+        hour: 'numeric', minute: '2-digit', second: '2-digit'
+      });
+    }
+
+    const sidebar = document.getElementById('sidebar');
+    document.getElementById('mobileToggle').addEventListener('click', () => sidebar.classList.toggle('open'));
+    document.querySelectorAll('.nav a').forEach((link) => link.addEventListener('click', () => sidebar.classList.remove('open')));
+    document.getElementById('checkAll').addEventListener('click', checkAllRoutes);
+    document.getElementById('checkAllSide').addEventListener('click', checkAllRoutes);
+
+    renderRoutes();
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
