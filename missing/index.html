@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-cmx-title="CMX Missing-Person Research" data-cmx-category="OSINT" data-cmx-status="Active" data-cmx-version="1.0" data-cmx-standard="on">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>CMX • Image-Led Missing Person Guide</title>
 <meta name="color-scheme" content="dark">
 <style>
 :root{
@@ -124,6 +123,31 @@ footer{text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px}
   .card{background:#fff;border-color:#ddd}
 }
 </style>
+
+  <!-- CMX SITE STANDARD: START -->
+  <title>CMX Missing-Person Research</title>
+  <meta name="description" content="Private CMX workflow for structured, lawful and source-based missing-person research." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <link rel="canonical" href="https://db.cmxchat.com/missing/" />
+  <meta property="og:title" content="CMX Missing-Person Research" />
+  <meta property="og:description" content="Private CMX workflow for structured, lawful and source-based missing-person research." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CMX Restricted Node" />
+  <meta property="og:url" content="https://db.cmxchat.com/missing/" />
+  <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta property="og:image:secure_url" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CMX Missing-Person Research private CMX interface" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CMX Missing-Person Research" />
+  <meta name="twitter:description" content="Private CMX workflow for structured, lawful and source-based missing-person research." />
+  <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta name="twitter:image:alt" content="CMX Missing-Person Research private CMX interface" />
+  <!-- CMX SITE STANDARD: END -->
+  <link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260731-1" />
 </head>
 <body>
 <header class="topbar">
@@ -663,5 +687,6 @@ $('#buildSite').onclick=buildSite;
 $('#clearSite').onclick=()=>{ ['siteDom','siteText','siteFiles','siteOps'].forEach(id=>$('#'+id).value=''); $('#siteOut').innerHTML=''; $('#openSite').disabled=true; };
 $('#openSite').onclick=()=>{ try{ const urls=JSON.parse($('#openSite').dataset.urls||'[]'); urls.forEach(u=>window.open(u,'_blank','noopener')); }catch{} };
 </script>
+  <script src="/assets/cmx-page-standard.js?v=20260731-1" defer></script>
 </body>
 </html>
