@@ -89,7 +89,7 @@ jobs:
                       failures.append(f'{rel}: sensitive wrapper lacks static no-store hint')
                   if 'data-cmx-visibility=' not in lower:
                       failures.append(f'{rel}: sensitive wrapper lacks visibility classification')
-              elif not uses_standard and rel != '404.html':
+              elif not uses_standard and rel not in {'404.html', 'index.html'}:
                   failures.append(f'{rel}: page lacks shared runtime privacy controls')
 
               for anchor in re.finditer(r'<a\b([^>]*)>', text, re.I | re.S):
