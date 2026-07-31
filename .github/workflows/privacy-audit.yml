@@ -1,0 +1,127 @@
+name: CMX Privacy Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate private-site rules
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import re
+          import sys
+
+          failures = []
+          root = Path('.')
+          sensitive = {'build/index.html', 'callmax/index.html', 'project/index.html'}
+          forbidden_destinations = {'/build', '/callmax', '/project'}
+          removed_destinations = {
+              '/manual', '/menu', '/workspace', '/collab6', '/collab7',
+              '/pythontest', '/test.html', '/report'
+          }
+
+          def normalize_href(value):
+              value = value.strip()
+              if value.startswith(('mailto:', 'tel:', 'javascript:', '#')):
+                  return None
+              parsed = urlparse(value)
+              if parsed.netloc and parsed.netloc != 'db.cmxchat.com':
+                  return None
+              path = parsed.path or '/'
+              if path != '/':
+                  path = path.rstrip('/')
+              return path
+
+          html_files = [p for p in root.glob('**/*.html') if '.git' not in p.parts]
+          for path in html_files:
+              rel = path.as_posix()
+              text = path.read_text(encoding='utf-8', errors='ignore')
+              lower = text.lower()
+
+              required = {
+                  'robots noindex': ('name="robots"', 'noindex'),
+                  'googlebot noindex': ('name="googlebot"', 'noindex'),
+                  'meta title': ('<title>', '</title>'),
+                  'description': ('name="description"', 'content='),
+                  'no-referrer': ('name="referrer"', 'no-referrer'),
+                  'no-store hint': ('http-equiv="cache-control"', 'no-store'),
+                  'visibility classification': ('data-cmx-visibility=', ''),
+              }
+              for label, needles in required.items():
+                  if any(needle and needle not in lower for needle in needles):
+                      failures.append(f'{rel}: missing {label}')
+
+              for anchor in re.finditer(r'<a\b([^>]*)>', text, re.I | re.S):
+                  attrs = anchor.group(1)
+                  href_match = re.search(r'\bhref\s*=\s*(["\'])(.*?)\1', attrs, re.I | re.S)
+                  if href_match:
+                      destination = normalize_href(href_match.group(2))
+                      if destination in removed_destinations:
+                          failures.append(f'{rel}: links to removed route {destination}')
+                      if rel != 'build/index.html' and destination in forbidden_destinations:
+                          failures.append(f'{rel}: exposes sensitive route {destination}')
+
+                  if re.search(r'\btarget\s*=\s*(["\'])_blank\1', attrs, re.I):
+                      rel_match = re.search(r'\brel\s*=\s*(["\'])(.*?)\1', attrs, re.I | re.S)
+                      tokens = set(rel_match.group(2).split()) if rel_match else set()
+                      if not {'noopener', 'noreferrer'}.issubset(tokens):
+                          failures.append(f'{rel}: target=_blank link lacks noopener noreferrer')
+
+          for rel in sensitive:
+              path = Path(rel)
+              if not path.exists():
+                  failures.append(f'{rel}: sensitive page missing')
+                  continue
+              text = path.read_text(encoding='utf-8', errors='ignore')
+              if 'data-cmx-gated="true"' not in text:
+                  failures.append(f'{rel}: temporary gate missing')
+              if '/assets/cmx-sensitive-gate.css' not in text or '/assets/cmx-sensitive-gate.js' not in text:
+                  failures.append(f'{rel}: gate assets missing')
+              if '<title>CMX Restricted Resource</title>' not in text:
+                  failures.append(f'{rel}: static title reveals page identity')
+              if 'content="Authorization required to access this private CMX resource."' not in text:
+                  failures.append(f'{rel}: static description is not generic')
+
+          build = Path('build/index.html').read_text(encoding='utf-8', errors='ignore')
+          for label in ('Directory-visible', 'Direct-link-only', 'Build-only'):
+              if label not in build:
+                  failures.append(f'build/index.html: missing visibility class {label}')
+          if '<th>Visibility</th>' not in build:
+              failures.append('build/index.html: visibility column missing')
+
+          directory = Path('directory/index.html').read_text(encoding='utf-8', errors='ignore')
+          if '/manual' in directory or 'card-manual' in directory:
+              failures.append('directory/index.html: obsolete manual card remains')
+
+          error_page = Path('404.html').read_text(encoding='utf-8', errors='ignore').lower()
+          for term in ('/build', '/callmax', '/project', '/directory', 'available routes', 'suggested route'):
+              if term in error_page:
+                  failures.append(f'404.html: discloses route information through {term!r}')
+
+          forbidden_public_files = [
+              'robots.txt', 'sitemap.xml', 'route-manifest.json',
+              'site-manifest.json', 'routes.json'
+          ]
+          for name in forbidden_public_files:
+              if Path(name).exists():
+                  failures.append(f'{name}: public discovery file must not be published')
+
+          if failures:
+              print('CMX privacy audit failed:')
+              print('\n'.join(f' - {item}' for item in failures))
+              sys.exit(1)
+          print(f'CMX privacy audit passed for {len(html_files)} HTML files.')
+          PY
