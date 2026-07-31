@@ -1,0 +1,54 @@
+name: Apply CMX Site Standards
+
+on:
+  push:
+    branches:
+      - site-wide-standards
+    paths:
+      - '.site-standardization-trigger'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  standardize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Apply metadata, navigation and route standards
+        run: python scripts/apply_site_standards.py
+
+      - name: Validate required noindex metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          failures = []
+          for path in Path('.').glob('**/*.html'):
+              if '.git' in path.parts:
+                  continue
+              text = path.read_text(encoding='utf-8', errors='ignore').lower()
+              if 'name="robots"' not in text or 'noindex' not in text:
+                  failures.append(f'{path}: missing noindex')
+              if '<title>' not in text or 'name="description"' not in text:
+                  failures.append(f'{path}: missing title or description')
+          if failures:
+              print('\n'.join(failures))
+              sys.exit(1)
+          PY
+
+      - name: Commit standardized pages
+        run: |
+          if git diff --quiet; then
+            echo "No page changes were required."
+            exit 0
+          fi
+          git config user.name "cmx-site-standards"
+          git config user.email "actions@users.noreply.github.com"
+          git add '*.html' '**/*.html' assets/cmx-page-standard.css assets/cmx-page-standard.js
+          git commit -m "Standardize private page metadata and navigation"
+          git push
