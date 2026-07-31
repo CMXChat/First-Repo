@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - privacy-hardening-20260731
+      - main
     paths:
       - '.privacy-hardening-trigger'
+      - '.privacy-hardening-trigger-main'
   workflow_dispatch:
 
 permissions:
@@ -25,7 +27,6 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
           import sys
 
           failures = []
