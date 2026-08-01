@@ -1,0 +1,27 @@
+name: Clean Access Language
+on:
+  push:
+    paths:
+      - '.access-language-trigger'
+permissions:
+  contents: write
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python scripts/clean_access_language.py
+      - run: |
+          if git grep -in 'oper''ator' -- . ':!scripts/clean_access_language.py' ':!.github/workflows/clean-access-language.yml' ':!.access-language-trigger'; then
+            echo 'Disallowed wording remains.'
+            exit 1
+          fi
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Remove user-role wording across site" || exit 0
+          git push
