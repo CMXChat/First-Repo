@@ -1,0 +1,149 @@
+name: CMX Static Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate JavaScript syntax
+        run: |
+          node --check assets/cmx-backend-blueprint-data.js
+          node --check assets/cmx-ai-blueprint-extension.js
+          node --check assets/cmx-ai-platform-extension.js
+          node --check assets/cmx-backend-blueprint.js
+          node --check assets/cmx-build-lab.js
+          node --check assets/updates-data.js
+          node --check assets/updates.js
+
+      - name: Validate JSON and registered routes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import sys
+
+          failures = []
+          path = Path('assets/cmx-routes.json')
+          try:
+              registry = json.loads(path.read_text(encoding='utf-8'))
+          except Exception as exc:
+              print(f'Invalid route registry JSON: {exc}')
+              sys.exit(1)
+
+          routes = registry.get('routes')
+          if not isinstance(routes, list):
+              failures.append('routes must be a list')
+              routes = []
+
+          paths = [route.get('path') for route in routes]
+          if len(paths) != len(set(paths)):
+              failures.append('route paths must be unique')
+
+          required = {'/', '/directory/', '/build/', '/backend/', '/ai/', '/updates/', '/404.html'}
+          missing = sorted(required - set(paths))
+          if missing:
+              failures.append(f'missing required routes: {missing}')
+
+          for route in routes:
+              for field in ('path', 'name', 'description', 'category', 'status', 'visibility', 'directory', 'gated'):
+                  if field not in route:
+                      failures.append(f"{route.get('path', '<unknown>')}: missing {field}")
+
+          if registry.get('version', 0) < 7:
+              failures.append('route registry version must be at least 7')
+
+          if failures:
+              print('\n'.join(f' - {failure}' for failure in failures))
+              sys.exit(1)
+
+          print(f'Route registry valid: version {registry.get("version")} with {len(routes)} routes.')
+          PY
+
+      - name: Validate HTML structure and local assets
+        run: |
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import re
+          import sys
+
+          targets = [
+              Path('backend/index.html'),
+              Path('ai/index.html'),
+              Path('assets/cmx-build-lab.html'),
+              Path('assets/cmx-updates.html'),
+          ]
+          failures = []
+
+          class Parser(HTMLParser):
+              pass
+
+          for path in targets:
+              if not path.exists():
+                  failures.append(f'{path}: missing')
+                  continue
+              text = path.read_text(encoding='utf-8')
+              try:
+                  parser = Parser()
+                  parser.feed(text)
+                  parser.close()
+              except Exception as exc:
+                  failures.append(f'{path}: HTML parser error: {exc}')
+                  continue
+
+              lower = text.lower()
+              for required in ('<!doctype html>', '<html', '<head', '<body', '</html>'):
+                  if required not in lower:
+                      failures.append(f'{path}: missing {required}')
+
+              for match in re.finditer(r'(?:src|href)=["\'](/assets/[^"\'?#]+)', text, re.I):
+                  asset = Path(match.group(1).lstrip('/'))
+                  if not asset.exists():
+                      failures.append(f'{path}: referenced asset missing: {asset}')
+
+          if failures:
+              print('\n'.join(f' - {failure}' for failure in failures))
+              sys.exit(1)
+
+          print(f'HTML and local asset validation passed for {len(targets)} pages.')
+          PY
+
+      - name: Validate planning data loads
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          backend = Path('backend/index.html').read_text(encoding='utf-8')
+          required_scripts = [
+              '/assets/cmx-backend-blueprint-data.js',
+              '/assets/cmx-ai-blueprint-extension.js',
+              '/assets/cmx-ai-platform-extension.js',
+              '/assets/cmx-backend-blueprint.js',
+          ]
+          missing = [script for script in required_scripts if script not in backend]
+          if missing:
+              print(f'Backend Blueprint is missing scripts: {missing}')
+              sys.exit(1)
+
+          updates = Path('assets/updates-data.js').read_text(encoding='utf-8')
+          for term in ('/build/', '/backend/', '/ai/', 'project briefing'):
+              if term.lower() not in updates.lower():
+                  print(f'Updates briefing is missing required reference: {term}')
+                  sys.exit(1)
+
+          print('Planning data wiring validated.')
+          PY
