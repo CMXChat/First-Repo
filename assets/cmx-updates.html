@@ -9,34 +9,49 @@
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
 
-  <title>CMX Updates</title>
-  <meta name="description" content="Private CMX status and change log." />
+  <title>CMX Platform Brief & Updates</title>
+  <meta name="description" content="Private CMX platform briefing, current status and change log." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <link rel="canonical" href="https://db.cmxchat.com/updates/" />
-  <meta property="og:title" content="CMX Updates" />
-  <meta property="og:description" content="Private CMX status and change log." />
+  <meta property="og:title" content="CMX Platform Brief & Updates" />
+  <meta property="og:description" content="Private briefing and change log for the CMX Restricted Node platform." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://db.cmxchat.com/updates/" />
   <meta property="og:site_name" content="CMX Restricted Node" />
 
-  <link rel="stylesheet" href="/assets/updates.css?v=20260801-3" />
+  <link rel="stylesheet" href="/assets/updates.css?v=20260801-5" />
 </head>
 <body>
-  <a class="skip-link" href="#feed">Skip to change log</a>
+  <a class="skip-link" href="#brief">Skip to project brief</a>
 
   <main class="terminal" aria-labelledby="pageTitle">
     <header class="terminal-header">
-      <p class="command-line"><span aria-hidden="true">$</span> python3 updates.py</p>
-      <h1 id="pageTitle">CMX UPDATES</h1>
-      <p id="summaryLine">Loading change log...</p>
+      <p class="command-line"><span aria-hidden="true">$</span> python3 platform_brief.py</p>
+      <h1 id="pageTitle">CMX PLATFORM BRIEF</h1>
+      <p id="summaryLine">Loading project briefing...</p>
+      <nav class="header-links" aria-label="Project pages">
+        <a href="/build/">/build</a>
+        <a href="/backend/">/backend</a>
+        <a href="/ai/">/ai</a>
+        <a href="/architecture/">/architecture</a>
+        <a href="/directory/">/directory</a>
+      </nav>
     </header>
 
+    <section id="brief" class="brief" aria-labelledby="briefTitle">
+      <h2 id="briefTitle">PROJECT BRIEF</h2>
+      <p id="briefSummary"></p>
+      <div id="briefSections" class="brief-sections"></div>
+      <div id="briefLinks" class="link-group"></div>
+    </section>
+
     <section id="status" class="status" aria-labelledby="statusTitle">
-      <h2 id="statusTitle">NOW</h2>
+      <h2 id="statusTitle">CURRENT STATUS</h2>
       <p id="statusTimestamp"></p>
       <p id="statusHeadline"></p>
       <div id="statusLines"></div>
+      <div id="statusLinks" class="link-group"></div>
     </section>
 
     <h2 class="feed-label">CHANGE LOG</h2>
@@ -56,8 +71,8 @@
     </footer>
   </main>
 
-  <noscript>This page needs JavaScript to print the change log.</noscript>
-  <script src="/assets/updates-data.js?v=20260801-4" defer></script>
-  <script src="/assets/updates.js?v=20260801-3" defer></script>
+  <noscript>This page needs JavaScript to print the project briefing and change log.</noscript>
+  <script src="/assets/updates-data.js?v=20260801-6" defer></script>
+  <script src="/assets/updates.js?v=20260801-5" defer></script>
 </body>
 </html>
