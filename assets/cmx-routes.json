@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "updated": "2026-07-31",
+  "routes": [
+    {"path":"/","name":"Restricted Node","description":"Private operator entry point for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
+    {"path":"/directory/","name":"Operations Directory","description":"Approved directory for active operator tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
+    {"path":"/osint/","name":"OSINT Console","description":"Research workflows, pivot maps and investigation resources.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"1","gated":false},
+    {"path":"/phone/","name":"Phone Intelligence","description":"Phone-number parsing, enrichment and investigation pivots.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"2","gated":false},
+    {"path":"/metadata/","name":"Metadata Extractor","description":"Inspect media, document and file metadata in the browser.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"3","gated":false},
+    {"path":"/resources/","name":"Resource Library","description":"Curated investigation directories, references and training links.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"4","gated":false},
+    {"path":"/missing/","name":"Missing Person Workflow","description":"Focused missing-person research workflows and search planning.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"5","gated":false},
+    {"path":"/search/","name":"Advanced Search","description":"Advanced query builder for names, usernames, websites and evidence searches.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"6","gated":false},
+    {"path":"/build/","name":"Build Lab","description":"Route monitoring, project structure and backend deployment planning.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
+    {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference.","category":"Internal","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
+    {"path":"/project/","name":"Callmax SEO Master Plan","description":"Client project planning resource.","category":"Client","status":"Active","visibility":"Build-only","directory":false,"gated":true},
+    {"path":"/callmax/","name":"Callmax Workspace","description":"Callmax project workspace requiring review.","category":"Client","status":"Needs Review","visibility":"Build-only","directory":false,"gated":true},
+    {"path":"/ovaro/","name":"Ovaro Workspace","description":"Internal Ovaro planning resource.","category":"Internal","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/collab1/","name":"CMX Agency Concept 1","description":"Experimental CMX agency concept page.","category":"Experimental","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/collab2/","name":"CMX Agency Concept 2","description":"Experimental CMX agency concept page.","category":"Experimental","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/collab3/","name":"CMX Agency Concept 3","description":"Experimental CMX agency concept page.","category":"Experimental","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/services/","name":"CMX Services Hub","description":"CMX service positioning and offer reference.","category":"Business","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/seo/","name":"CMX Pricing Calculator","description":"Experimental SEO pricing reference.","category":"Experimental","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/entry/","name":"Legacy Workspace","description":"Legacy route retained for compatibility.","category":"Legacy","status":"Legacy","visibility":"Legacy","directory":false,"gated":false},
+    {"path":"/404.html","name":"Custom 404 Page","description":"System fallback for unknown routes.","category":"System","status":"Active","visibility":"System","directory":false,"gated":false}
+  ]
+}
