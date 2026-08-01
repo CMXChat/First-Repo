@@ -24,6 +24,7 @@ jobs:
           node --check assets/cmx-backend-blueprint.js
           node --check assets/cmx-build-lab.js
           node --check assets/updates-data.js
+          node --check assets/updates-notes.js
           node --check assets/updates.js
 
       - name: Validate JSON and registered routes
@@ -119,7 +120,7 @@ jobs:
           print(f'HTML and local asset validation passed for {len(targets)} pages.')
           PY
 
-      - name: Validate planning data loads
+      - name: Validate planning and notes data loads
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -152,5 +153,17 @@ jobs:
                   print(f'Updates briefing is missing required reference: {term}')
                   sys.exit(1)
 
-          print('Planning data wiring validated.')
+          notes = Path('assets/updates-notes.js').read_text(encoding='utf-8')
+          for term in ('window.CMX_DAILY_NOTES', 'DAILY NOTE EDITING', 'timestamp', 'body', 'links'):
+              if term not in notes:
+                  print(f'Daily notes file is missing required structure: {term}')
+                  sys.exit(1)
+
+          updates_page = Path('assets/cmx-updates.html').read_text(encoding='utf-8')
+          for term in ('/assets/updates-notes.js', 'id="daily-notes"', 'id="noteComposer"', 'id="commandForm"'):
+              if term not in updates_page:
+                  print(f'Updates page is missing notes feature: {term}')
+                  sys.exit(1)
+
+          print('Planning data and daily notes wiring validated.')
           PY
