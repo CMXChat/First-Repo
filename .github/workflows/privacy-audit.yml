@@ -20,12 +20,10 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          from urllib.parse import urlparse
           import json
           import re
           import sys
 
-          root = Path('.')
           failures = []
           registry_path = Path('assets/cmx-routes.json')
 
@@ -52,16 +50,6 @@ jobs:
                   return Path('404.html')
               return Path(route_path.strip('/')) / 'index.html'
 
-          def normalize_href(value):
-              value = value.strip()
-              if value.startswith(('mailto:', 'tel:', 'javascript:', '#')):
-                  return None
-              parsed = urlparse(value)
-              if parsed.netloc and parsed.netloc != 'db.cmxchat.com':
-                  return None
-              path = parsed.path or '/'
-              return path if path == '/' else path.rstrip('/') + ('/' if parsed.path.endswith('/') else '')
-
           for route in routes:
               path = route.get('path')
               if not isinstance(path, str) or not path.startswith('/'):
@@ -75,11 +63,11 @@ jobs:
 
               text = file_path.read_text(encoding='utf-8', errors='ignore')
               lower = text.lower()
+              uses_standard = '/assets/cmx-page-standard.js' in text
 
               for label, needles in {
                   'robots noindex': ('name="robots"', 'noindex'),
                   'meta title': ('<title>', '</title>'),
-                  'no-referrer': ('name="referrer"', 'no-referrer'),
               }.items():
                   if any(needle not in lower for needle in needles):
                       failures.append(f'{file_path.as_posix()}: missing {label}')
@@ -94,13 +82,14 @@ jobs:
                       failures.append(f'{file_path.as_posix()}: gated route lacks shared gate assets')
                   if 'http-equiv="cache-control"' not in lower or 'no-store' not in lower:
                       failures.append(f'{file_path.as_posix()}: gated route lacks static no-store hint')
+                  if 'name="referrer"' not in lower or 'no-referrer' not in lower:
+                      failures.append(f'{file_path.as_posix()}: gated route lacks no-referrer policy')
 
               for anchor in re.finditer(r'<a\b([^>]*)>', text, re.I | re.S):
                   attrs = anchor.group(1)
                   if re.search(r'\btarget\s*=\s*(["\'])_blank\1', attrs, re.I):
                       rel_match = re.search(r'\brel\s*=\s*(["\'])(.*?)\1', attrs, re.I | re.S)
                       tokens = set(rel_match.group(2).split()) if rel_match else set()
-                      uses_standard = '/assets/cmx-page-standard.js' in text
                       if 'noopener' not in tokens and not uses_standard:
                           failures.append(f'{file_path.as_posix()}: target=_blank link lacks noopener')
 
@@ -130,10 +119,12 @@ jobs:
                   failures.append(f'{name}: public root discovery file must not be published')
 
           gate_script = Path('assets/cmx-sensitive-gate.js')
-          if gate_script.exists():
-              gate_text = gate_script.read_text(encoding='utf-8', errors='ignore')
-              if 'client-side deterrent' not in gate_text.lower() and 'not server-side' not in gate_text.lower():
-                  failures.append('assets/cmx-sensitive-gate.js: must clearly identify the browser gate as temporary, not real server authorization')
+          if not gate_script.exists():
+              failures.append('assets/cmx-sensitive-gate.js: temporary gate script is missing')
+          else:
+              gate_text = gate_script.read_text(encoding='utf-8', errors='ignore').lower()
+              if 'temporary client-side deterrent' not in gate_text or 'not server-side authorization' not in gate_text:
+                  failures.append('assets/cmx-sensitive-gate.js: must clearly identify the browser gate as temporary and not server authorization')
 
           if failures:
               print('CMX privacy audit failed:')
