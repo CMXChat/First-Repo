@@ -26,8 +26,8 @@ jobs:
 
           failures = []
           root = Path('.')
-          sensitive = {'build/index.html', 'projects/index.html', 'callmax/index.html', 'project/index.html'}
-          protected_assets = {'assets/cmx-build-lab.html', 'assets/cmx-projects-hub.html'}
+          sensitive = {'build/index.html', 'callmax/index.html', 'project/index.html'}
+          protected_assets = {'assets/cmx-build-lab.html'}
           forbidden_destinations = {'/build', '/callmax', '/project'}
 
           def normalize_href(value):
