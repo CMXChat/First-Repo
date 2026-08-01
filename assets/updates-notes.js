@@ -22,6 +22,25 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-01-build-ai-terminal-design',
+    timestamp: '2026-08-01T19:48:00-04:00',
+    title: 'Build Lab and AI Blueprint moved to the terminal notebook design system',
+    status: 'complete',
+    body: [
+      'Build Lab and AI Control Blueprint now use the same black, white and gray terminal language as Platform Notes.',
+      'The glossy blue dashboard backgrounds, rounded cards, gradients and colored status panels were removed.',
+      'Restrained blue remains only for links and clickable controls so navigation is still easy to identify.',
+      'All route checks, tables, workflows, AI planning details and security information remain intact.'
+    ],
+    links: [
+      { url: '/build/', label: 'Open Build Lab' },
+      { url: '/ai/', label: 'Open AI Blueprint' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['build', 'ai', 'design'],
+    pinned: true
+  },
+  {
     id: '2026-08-01-terminal-notes-restored',
     timestamp: '2026-08-01T19:38:00-04:00',
     title: 'Terminal notes layout restored without removing the platform plan',
@@ -38,7 +57,7 @@ window.CMX_DAILY_NOTES = [
       { url: '/backend/', label: 'Open Backend Blueprint' }
     ],
     tags: ['updates', 'design', 'workflow'],
-    pinned: true
+    pinned: false
   },
   {
     id: '2026-08-01-platform-planning-layer',
