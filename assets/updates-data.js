@@ -15,11 +15,11 @@
 
 window.CMX_UPDATES = {
   status: {
-    timestamp: '2026-08-01T11:31:00-04:00',
+    timestamp: '2026-08-01T11:35:00-04:00',
     headline: 'Linux and FastAPI environment setup in progress',
     lines: [
       'Current static pages remain live until protected staging is ready.',
-      'GitHub remains the source of truth.'
+      'All website changes continue to be managed through GitHub.'
     ]
   },
 
