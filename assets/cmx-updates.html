@@ -4,119 +4,58 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#020817" />
+  <meta name="theme-color" content="#000000" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
 
-  <title>CMX Platform Plan & Updates</title>
-  <meta name="description" content="Complete private briefing for the CMX backend, AI-assisted development, infrastructure, operations, security, and implementation plan." />
+  <title>CMX Platform Brief & Updates</title>
+  <meta name="description" content="Private CMX platform briefing, current status and change log." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <link rel="canonical" href="https://db.cmxchat.com/updates/" />
-  <meta property="og:title" content="CMX Platform Plan & Updates" />
-  <meta property="og:description" content="Complete private briefing for the CMX Restricted Node platform." />
+  <meta property="og:title" content="CMX Platform Brief & Updates" />
+  <meta property="og:description" content="Private briefing and change log for the CMX Restricted Node platform." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://db.cmxchat.com/updates/" />
   <meta property="og:site_name" content="CMX Restricted Node" />
 
-  <link rel="stylesheet" href="/assets/updates.css?v=20260801-7" />
+  <link rel="stylesheet" href="/assets/updates.css?v=20260801-5" />
 </head>
 <body>
-  <a class="skip-link" href="#platformMap">Skip to platform map</a>
+  <a class="skip-link" href="#brief">Skip to project brief</a>
 
   <main class="terminal" aria-labelledby="pageTitle">
     <header class="terminal-header">
-      <p class="command-line"><span aria-hidden="true">$</span> python3 cmx_platform_plan.py</p>
-      <p class="eyebrow">CMX RESTRICTED NODE · SOURCE BRIEF</p>
-      <h1 id="pageTitle">PLATFORM PLAN & UPDATES</h1>
-      <p class="hero-copy">The complete readable plan for turning db.cmxchat.com into a secure Python-powered platform with controlled AI-assisted development, user-facing AI, approved integrations, staging, and human-governed production releases.</p>
-      <p id="summaryLine">Loading platform plan...</p>
-      <nav class="header-links" aria-label="Major project pages">
-        <a href="/build/">Build Lab</a>
-        <a href="/backend/">Backend Blueprint</a>
-        <a href="/ai/">AI Control Blueprint</a>
-        <a href="/architecture/">Architecture & Learning</a>
-        <a href="/directory/">Operations Directory</a>
+      <p class="command-line"><span aria-hidden="true">$</span> python3 platform_brief.py</p>
+      <h1 id="pageTitle">CMX PLATFORM BRIEF</h1>
+      <p id="summaryLine">Loading project briefing...</p>
+      <nav class="header-links" aria-label="Project pages">
+        <a href="/build/">/build</a>
+        <a href="/backend/">/backend</a>
+        <a href="/ai/">/ai</a>
+        <a href="/architecture/">/architecture</a>
+        <a href="/directory/">/directory</a>
       </nav>
     </header>
 
-    <section id="platformMap" class="major-section" aria-labelledby="platformMapTitle">
-      <div class="section-heading">
-        <p class="eyebrow">DIRECT LINKS AND RESPONSIBILITIES</p>
-        <h2 id="platformMapTitle">CORE PROJECT PAGES</h2>
-        <p>Each page has a separate job. These cards are real links and remain visible even before the detailed briefing loads.</p>
-      </div>
-      <div id="platformCards" class="platform-cards">
-        <a class="platform-card" href="/build/"><code>/build/</code><strong>Build Lab</strong><span>Operate and observe the platform.</span></a>
-        <a class="platform-card" href="/backend/"><code>/backend/</code><strong>Backend Blueprint</strong><span>Define every core and AI API, service, permission, and infrastructure requirement.</span></a>
-        <a class="platform-card" href="/ai/"><code>/ai/</code><strong>AI Control Blueprint</strong><span>Define natural-language development, user AI, MCP, approvals, and automation.</span></a>
-        <a class="platform-card" href="/architecture/"><code>/architecture/</code><strong>Architecture & Learning</strong><span>Explain how the complete platform works and what we are learning.</span></a>
-      </div>
-    </section>
-
-    <section id="brief" class="major-section brief" aria-labelledby="briefTitle">
-      <div class="section-heading">
-        <p class="eyebrow">DURABLE PROJECT DIRECTION</p>
-        <h2 id="briefTitle">COMPLETE PROJECT BRIEF</h2>
-      </div>
-      <p id="briefSummary" class="lead-copy"></p>
+    <section id="brief" class="brief" aria-labelledby="briefTitle">
+      <h2 id="briefTitle">PROJECT BRIEF</h2>
+      <p id="briefSummary"></p>
       <div id="briefSections" class="brief-sections"></div>
-      <div id="briefLinks" class="link-group primary-links"></div>
+      <div id="briefLinks" class="link-group"></div>
     </section>
 
-    <section id="aiPlan" class="major-section" aria-labelledby="aiPlanTitle">
-      <div class="section-heading">
-        <p class="eyebrow">NORMAL LANGUAGE TO CONTROLLED ACTION</p>
-        <h2 id="aiPlanTitle">AI-ASSISTED DEVELOPMENT WORKFLOW</h2>
-        <p>This is the intended path from an ordinary-language request to a reviewed production release.</p>
-      </div>
-      <div id="aiWorkflow" class="workflow-grid"></div>
-    </section>
-
-    <section id="apiCoverage" class="major-section" aria-labelledby="apiCoverageTitle">
-      <div class="section-heading">
-        <p class="eyebrow">WHAT THE BACKEND MUST SUPPORT</p>
-        <h2 id="apiCoverageTitle">CORE AND AI API COVERAGE</h2>
-        <p>The detailed endpoint contracts live in <a href="/backend/#apis">the Backend API Registry</a>. This section explains the full coverage at a glance.</p>
-      </div>
-      <div id="coverageGrid" class="coverage-grid"></div>
-      <div class="link-group primary-links">
-        <a class="entry-link" href="/backend/">Open complete Backend Blueprint</a>
-        <a class="entry-link" href="/backend/#apis">Open all planned API contracts</a>
-        <a class="entry-link" href="/backend/#ai">Open AI control architecture</a>
-        <a class="entry-link" href="/backend/#infrastructure">Open infrastructure plan</a>
-        <a class="entry-link" href="/backend/#permissions">Open permissions and approval model</a>
-      </div>
-    </section>
-
-    <section id="implementation" class="major-section" aria-labelledby="implementationTitle">
-      <div class="section-heading">
-        <p class="eyebrow">BUILD ORDER</p>
-        <h2 id="implementationTitle">IMPLEMENTATION PHASES</h2>
-        <p>The platform should gain authority gradually. Identity, staging, logging, and recovery come before advanced AI actions.</p>
-      </div>
-      <div id="implementationPhases" class="phase-list"></div>
-    </section>
-
-    <section id="status" class="major-section status" aria-labelledby="statusTitle">
-      <div class="section-heading">
-        <p class="eyebrow">IMPLEMENTATION TRUTH</p>
-        <h2 id="statusTitle">CURRENT STATUS</h2>
-      </div>
+    <section id="status" class="status" aria-labelledby="statusTitle">
+      <h2 id="statusTitle">CURRENT STATUS</h2>
       <p id="statusTimestamp"></p>
-      <p id="statusHeadline" class="status-headline"></p>
+      <p id="statusHeadline"></p>
       <div id="statusLines"></div>
-      <div id="statusLinks" class="link-group primary-links"></div>
+      <div id="statusLinks" class="link-group"></div>
     </section>
 
-    <section class="major-section" aria-labelledby="changeLogTitle">
-      <div class="section-heading">
-        <p class="eyebrow">COMPLETED PLANNING WORK</p>
-        <h2 id="changeLogTitle">CHANGE LOG</h2>
-      </div>
-      <section id="feed" class="feed" aria-label="CMX change log" aria-live="polite"></section>
-    </section>
+    <h2 class="feed-label">CHANGE LOG</h2>
+    <section id="feed" class="feed" aria-label="CMX change log" aria-live="polite"></section>
 
     <section class="prompt-area" aria-label="Terminal command input">
       <div id="commandOutput" class="command-output" role="status" aria-live="polite"></div>
@@ -128,19 +67,12 @@
     </section>
 
     <footer>
-      <span>CMX Platform Plan & Updates</span>
-      <a href="/">exit to restricted node</a>
+      <a href="/">exit</a>
     </footer>
   </main>
 
-  <noscript>
-    <section class="terminal noscript-message">
-      <h2>JavaScript is required for the full briefing.</h2>
-      <p>The major planning pages remain available:</p>
-      <p><a href="/build/">Build Lab</a> · <a href="/backend/">Backend Blueprint</a> · <a href="/ai/">AI Control Blueprint</a> · <a href="/architecture/">Architecture & Learning</a></p>
-    </section>
-  </noscript>
+  <noscript>This page needs JavaScript to print the project briefing and change log.</noscript>
   <script src="/assets/updates-data.js?v=20260801-8" defer></script>
-  <script src="/assets/updates.js?v=20260801-7" defer></script>
+  <script src="/assets/updates.js?v=20260801-8" defer></script>
 </body>
 </html>
