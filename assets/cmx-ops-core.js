@@ -184,8 +184,8 @@ function launch() {
   $('#promptUser').textContent = ADMIN_USERNAME;
   $('#terminalTitle').textContent = 'admin@node:~ · restricted-shell';
   clearTerminal();
-  line('RESTRICTED OPERATOR NODE', 'success');
-  line('Operator authenticated: admin', 'info');
+  line('RESTRICTED USER NODE', 'success');
+  line('User authenticated: admin', 'info');
   line('Policy controls active.', 'info');
   line('Type "help" for available systems.', 'dim');
   line('');

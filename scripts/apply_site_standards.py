@@ -9,7 +9,7 @@ BASE = "https://db.cmxchat.com"
 SOCIAL = f"{BASE}/assets/cmx-restricted-node-social.png"
 
 PAGES = {
-    "index.html": ("CMX Restricted Node", "Private operator access to CMX research and operational tools.", "Operator", "Active", False),
+    "index.html": ("CMX Restricted Node", "Private private access to CMX research and operational tools.", "User", "Active", False),
     "directory/index.html": ("CMX Operations Directory", "Private directory for CMX research, operational, project and internal tools.", "Operations", "Active", True),
     "build/index.html": ("CMX Build Lab", "Private project control dashboard for db.cmxchat.com routes, standards and planned infrastructure.", "Operations", "Active", False),
     "entry/index.html": ("CMX Workspace", "Private legacy workspace entry for CMX internal pages and operational resources.", "Legacy", "Review", True),

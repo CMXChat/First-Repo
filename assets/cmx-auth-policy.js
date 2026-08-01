@@ -6,7 +6,7 @@ const FIXED_GATE_ITERATIONS = 600000;
 
 /*
  * The password itself is not stored as readable text. These chunks contain a
- * PBKDF2-SHA256 salt and verifier for the fixed operator credential.
+ * PBKDF2-SHA256 salt and verifier for the fixed user credential.
  * This is only a client-side deterrent, not server-side access control.
  */
 const FIXED_GATE_SALT = ['AZ4QJPMRsGl0B1pJ', 'V+4Yzut/sDzFl++Z', 'oeMAfrO5ieo='].join('');

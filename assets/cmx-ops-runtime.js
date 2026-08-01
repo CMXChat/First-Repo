@@ -24,7 +24,7 @@ function commandNames() {
 function help(command) {
   if (command) return manual(command);
 
-  line('CMX OPERATOR CONSOLE', 'success');
+  line('CMX USER CONSOLE', 'success');
   line('OPERATIONS', 'warning');
   line('site · tools · monitor · open');
   line('SEARCH', 'warning');
@@ -60,7 +60,7 @@ function examples() {
 
 function statusCommand() {
   printRows([
-    ['Operator', 'admin'],
+    ['User', 'admin'],
     ['Session', 'authenticated'],
     ['Active checks', String(activeRequests)],
     ['Console uptime', formatDuration(Date.now() - STARTED_AT)]
@@ -133,7 +133,7 @@ async function execute(raw) {
     case 'fullscreen': return fullscreen();
     default:
       if (ROUTES[base]) return openRoute(base);
-      line(`operator-console: command not found: ${base}`, 'error');
+      line(`user-console: command not found: ${base}`, 'error');
       {
         const match = suggestion(base);
         if (match && match.distance <= Math.max(2, Math.floor(base.length / 3))) line(`Did you mean: ${match.candidate}?`, 'dim');
@@ -180,7 +180,7 @@ async function fullscreen() {
 
 async function boot() {
   const steps = [
-    ['[  OK  ]', 'Starting operator console...'],
+    ['[  OK  ]', 'Starting user console...'],
     ['[  OK  ]', 'Loading approved tool registry...'],
     ['[  OK  ]', 'Initializing session controls...'],
     ['[  OK  ]', 'Console ready.']

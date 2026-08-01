@@ -235,7 +235,7 @@ python: validate, request, inspect redirects, headers and metadata
 output: structured findings shown on the page</pre>
 
 <h3>private knowledge assistant</h3>
-<pre>input: operator question
+<pre>input: user question
 python: check permission and retrieve approved CMX records
 ai: answer only from retrieved material
 output: response with citations and source references</pre>
@@ -258,7 +258,7 @@ output: results page and export</pre>
 python: gather approved website data
 rules: identify technical and content issues
 ai: turn verified findings into readable copy
-output: operator-reviewed client brief</pre>
+output: user-reviewed client brief</pre>
 
 <h3>controlled AI code assistant</h3>
 <pre>input: natural-language change request
@@ -272,7 +272,7 @@ human: approve production deployment</pre>
 <h2>explain_ai_layer()</h2>
 <p>AI is an optional reasoning layer. Python remains responsible for access checks, approved context, tool permissions, input validation, logging and final action boundaries.</p>
 
-<pre>operator request
+<pre>user request
   -> FastAPI authorization
   -> Python selects approved context
   -> optional retrieval from CMX records

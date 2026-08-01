@@ -37,6 +37,6 @@ Status: Planned
 
 Create a readable project change history showing dates, affected pages, decisions and meaningful implementation notes.
 
-## Deferred: Operator Handbook
+## Deferred: User Handbook
 
 No handbook page is currently approved. Operating instructions can remain inside the Build Lab, repository documentation and relevant architecture sections until the project becomes complex enough to justify a separate handbook.

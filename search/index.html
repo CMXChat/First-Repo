@@ -211,7 +211,7 @@ footer{text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px}
         <span class="chip-btn" data-preset="rosters">School/roster docs</span>
         <span class="chip-btn" data-preset="official">Gov/official</span>
       </div>
-      <p class="small" style="margin-top:6px">Presets set site packs & operators for Dorking+ (you can still tweak).</p>
+      <p class="small" style="margin-top:6px">Presets set site packs & users for Dorking+ (you can still tweak).</p>
     </div>
 
     <div class="row" style="margin-top:12px;align-items:center">
@@ -226,8 +226,8 @@ footer{text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px}
 
   <!-- DORKING+ -->
   <section class="card" id="dorking">
-    <h2>Dorking+ Matrix (packs • operators • batches)</h2>
-    <p class="small">Pick site packs & operators, generate ranked queries, and open in batches.</p>
+    <h2>Dorking+ Matrix (packs • users • batches)</h2>
+    <p class="small">Pick site packs & users, generate ranked queries, and open in batches.</p>
 
     <div class="grid">
       <div class="panel">
@@ -245,7 +245,7 @@ footer{text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px}
       </div>
 
       <div class="panel">
-        <h3>Operators</h3>
+        <h3>Users</h3>
         <div class="chips" id="opsChips">
           <span class="chip-btn" data-op="intitle:">intitle:</span>
           <span class="chip-btn" data-op="inurl:">inurl:</span>
@@ -255,7 +255,7 @@ footer{text-align:center;color:var(--muted);font-size:var(--fs-sm);padding:12px}
           <span class="chip-btn" data-op="cache:">cache:</span>
           <span class="chip-btn" data-op="related:">related:</span>
         </div>
-        <label for="extraOps">Extra operators (freeform)</label>
+        <label for="extraOps">Extra users (freeform)</label>
         <input id="extraOps" placeholder='e.g., intitle:directory OR "class roster"'>
       </div>
     </div>
@@ -332,7 +332,7 @@ function maskPhone(p){return p.replace(/(\+\d)\d+(?=\d{2}$)/,'$1***').replace(/\
 /* Smooth scroll */
 $$('.qbtn').forEach(b=> b.onclick=()=>{ const id=b.getAttribute('data-goto'); const el=document.querySelector(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); });
 
-/* Packs & operators */
+/* Packs & users */
 const PACKS = {
   social: ['site:facebook.com','site:instagram.com','site:linkedin.com','site:tiktok.com','site:reddit.com','site:twitter.com'],
   forums: ['site:forums.*','site:boards.*','site:discourse.*','site:stackexchange.com','site:quora.com'],
@@ -466,7 +466,7 @@ function renderQueries(list){
     const copy=document.createElement('button'); copy.className='btn ghost'; copy.textContent='Copy';
     copy.onclick=()=>navigator.clipboard.writeText(qs).then(()=>toast('Query copied'));
     const xpl=document.createElement('button'); xpl.className='btn ghost'; xpl.textContent='Explain';
-    xpl.onclick=()=>alert('Why this:\n• Sites/packs selected\n• Exact tokens and optional city/keywords/age\n• Operators for precision or de-spam.');
+    xpl.onclick=()=>alert('Why this:\n• Sites/packs selected\n• Exact tokens and optional city/keywords/age\n• Users for precision or de-spam.');
     const save=document.createElement('button'); save.className='btn ghost'; save.textContent='Save';
     save.onclick=()=>addLocker('query','Google',qs);
     row.append(tag, text, open, copy, xpl, save);

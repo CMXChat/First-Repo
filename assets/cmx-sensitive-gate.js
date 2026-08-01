@@ -53,7 +53,7 @@
 
     if (message) {
       message.className = 'is-success';
-      message.textContent = 'Authorization accepted. Loading operator resource…';
+      message.textContent = 'Authorization accepted. Loading user resource…';
     }
 
     const response = await fetch(source, {
@@ -130,11 +130,11 @@
         <div class="cmx-gate-body">
           <div class="cmx-gate-brand">
             <div class="cmx-gate-emblem">CMX</div>
-            <div><small>POLICY BOUNDARY</small><strong>PRIVATE OPERATOR RESOURCE</strong></div>
+            <div><small>POLICY BOUNDARY</small><strong>PRIVATE USER RESOURCE</strong></div>
           </div>
           <p class="cmx-gate-code">AUTHORIZATION // REQUIRED</p>
           <h1 id="cmx-gate-title">Restricted access</h1>
-          <p class="cmx-gate-copy">Enter the operator passphrase to continue.</p>
+          <p class="cmx-gate-copy">Enter the user passphrase to continue.</p>
           <form id="cmx-gate-form" autocomplete="off">
             <label for="cmx-gate-password">Passphrase</label>
             <div class="cmx-gate-inputrow">

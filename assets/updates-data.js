@@ -41,7 +41,7 @@ window.CMX_UPDATES = {
       title: 'Updates route protected',
       summary: 'Moved /updates behind the shared CMX authorization gate and removed a retired project.',
       details: [
-        'The feed now loads only after operator authorization.',
+        'The feed now loads only after authorization.',
         'The route registry marks /updates as gated and direct-link-only.'
       ],
       pinned: false
