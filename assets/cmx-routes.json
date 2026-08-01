@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "updated": "2026-07-31",
+  "version": 2,
+  "updated": "2026-08-01",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private operator entry point for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
     {"path":"/directory/","name":"Operations Directory","description":"Approved directory for active operator tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -12,6 +12,7 @@
     {"path":"/search/","name":"Advanced Search","description":"Advanced query builder for names, usernames, websites and evidence searches.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"6","gated":false},
     {"path":"/build/","name":"Build Lab","description":"Route monitoring, project structure and backend deployment planning.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/architecture/","name":"Architecture & Learning Center","description":"Technical platform map with practical CMX lessons for HTML, JavaScript, FastAPI, Python, databases, AI and deployment.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
+    {"path":"/updates/","name":"CMX Updates","description":"Private update feed for CMX changes, builds, research and operational notes.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference.","category":"Internal","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/project/","name":"Callmax SEO Master Plan","description":"Client project planning resource.","category":"Client","status":"Active","visibility":"Build-only","directory":false,"gated":true},
     {"path":"/callmax/","name":"Callmax Workspace","description":"Callmax project workspace requiring review.","category":"Client","status":"Needs Review","visibility":"Build-only","directory":false,"gated":true},
