@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="Crystal: The Unofficial RPG">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#090609" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+
+  <title>Crystal: The Unofficial RPG</title>
+  <meta name="description" content="A terminal adventure and interactive character experience built for Crystal." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <link rel="canonical" href="https://db.cmxchat.com/crystal/" />
+  <meta property="og:title" content="Crystal: The Unofficial RPG" />
+  <meta property="og:description" content="One paragraph became an entire playable world." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://db.cmxchat.com/crystal/" />
+  <meta property="og:site_name" content="CMX Restricted Node" />
+
+  <link rel="stylesheet" href="/assets/crystal.css?v=20260731-1" />
+</head>
+<body>
+  <a class="skip-link" href="#terminalInput">Skip to game input</a>
+
+  <main id="gameScreen" class="game-screen" aria-labelledby="gameTitle">
+    <div class="terminal-wrap">
+      <section class="terminal-window" aria-label="Crystal RPG terminal">
+        <header class="terminal-bar">
+          <div class="window-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="terminal-title">crystal-rpg.exe · emotionally unstable build</div>
+          <div class="terminal-tools">
+            <button id="soundToggle" class="icon-button" type="button" aria-pressed="false" title="Toggle sound">SOUND: OFF</button>
+          </div>
+        </header>
+
+        <div class="game-hud" aria-label="Player status">
+          <div class="hud-block"><span class="hud-label">PLAYER</span><strong>CRYSTAL</strong></div>
+          <div class="hud-block"><span class="hud-label">HEARTS</span><strong id="heartMeter">♥ ♥ ♥</strong></div>
+          <div class="hud-block"><span class="hud-label">LEVEL</span><strong id="levelMeter">01</strong></div>
+          <div class="hud-block inventory-hud"><span class="hud-label">INVENTORY</span><strong id="inventoryMeter">attitude</strong></div>
+        </div>
+
+        <div class="terminal-body">
+          <div class="ascii-mark" aria-hidden="true">
+            <span>╔══════════════════════════════════════╗</span>
+            <span>║  C R Y S T A L  //  STORY ENGINE    ║</span>
+            <span>╚══════════════════════════════════════╝</span>
+          </div>
+          <h1 id="gameTitle" class="sr-only">Crystal: The Unofficial RPG</h1>
+          <div id="terminalLog" class="terminal-log" role="log" aria-live="polite" aria-relevant="additions text"></div>
+        </div>
+
+        <div id="quickActions" class="quick-actions" aria-label="Available actions"></div>
+
+        <form id="terminalForm" class="terminal-form" autocomplete="off">
+          <label class="sr-only" for="terminalInput">Enter a game command</label>
+          <span class="prompt" aria-hidden="true">crystal@main-character:~$</span>
+          <input id="terminalInput" type="text" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type start" />
+          <button type="submit">RUN</button>
+        </form>
+      </section>
+
+      <div class="terminal-footnote">
+        <span>TIP: buttons work, typing works, dramatic sighing probably works.</span>
+        <button id="resetGame" type="button">RESET SAVE</button>
+      </div>
+    </div>
+  </main>
+
+  <main id="reveal" class="reveal" hidden>
+    <nav class="reveal-nav" aria-label="Crystal experience navigation">
+      <a class="brand-mark" href="#top" aria-label="Crystal home">C<span>R</span></a>
+      <div class="nav-links">
+        <a href="#dossier">Dossier</a>
+        <a href="#garden">Garden</a>
+        <a href="#atelier">Atelier</a>
+        <a href="#dreams">Dreams</a>
+      </div>
+      <button id="replayGame" class="nav-button" type="button">Replay RPG</button>
+    </nav>
+
+    <section id="top" class="hero-section section-observe" aria-labelledby="heroTitle">
+      <div class="hero-noise" aria-hidden="true"></div>
+      <div class="hero-flower flower-a" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+      <div class="hero-flower flower-b" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+      <div class="hero-content">
+        <p class="eyebrow">PLAYER ONE // RARE CHARACTER CLASS</p>
+        <h2 id="heroTitle">Crystal.</h2>
+        <p class="hero-tagline">Artist. Animal commander. Jewelry designer. Dream survivor. Professionally difficult to underestimate.</p>
+        <div class="hero-actions">
+          <a class="primary-action" href="#dossier">Open the dossier</a>
+          <button id="chaosButton" class="secondary-action" type="button">Release controlled chaos</button>
+        </div>
+      </div>
+      <div class="hero-card" aria-label="Crystal character card">
+        <div class="card-shine" aria-hidden="true"></div>
+        <span class="card-rarity">LEGENDARY</span>
+        <div class="portrait-symbol" aria-hidden="true">
+          <span class="portrait-hair"></span>
+          <span class="portrait-face"></span>
+          <span class="portrait-mark"></span>
+        </div>
+        <div class="card-name">CRYSTAL</div>
+        <div class="card-class">Floral Alchemist</div>
+        <div class="card-stats">
+          <span><b>167</b> CM</span>
+          <span><b>∞</b> HAIR</span>
+          <span><b>06</b> PETS</span>
+        </div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true">SCROLL TO CONTINUE <span>↓</span></div>
+    </section>
+
+    <section id="dossier" class="dossier-section section-observe" aria-labelledby="dossierTitle">
+      <div class="section-heading">
+        <p class="eyebrow">CLASSIFIED, EXCEPT SHE WROTE IT HERSELF</p>
+        <h2 id="dossierTitle">The Crystal dossier</h2>
+        <p>Built from one paragraph, several emotional plot twists, and an alarming amount of hair.</p>
+      </div>
+
+      <div class="dossier-grid">
+        <article class="profile-panel main-profile">
+          <span class="panel-code">FILE 01</span>
+          <h3>Main character data</h3>
+          <dl class="data-list">
+            <div><dt>Name</dt><dd>Crystal</dd></div>
+            <div><dt>Partner</dt><dd>Jay, pending plot clarification</dd></div>
+            <div><dt>Height</dt><dd>167 cm</dd></div>
+            <div><dt>Hair</dt><dd>Down to her ass, technically a cape</dd></div>
+            <div><dt>Palette</dt><dd>Gold, pink, black</dd></div>
+            <div><dt>Temper</dt><dd>Short. Loading time: minimal.</dd></div>
+          </dl>
+        </article>
+
+        <article class="profile-panel quote-panel">
+          <span class="panel-code">PASSIVE ABILITY</span>
+          <blockquote>“I have a deep hate for people who underestimate me.”</blockquote>
+          <p>Effect: +40 determination, +12 eye contact, nearby fools lose confidence.</p>
+        </article>
+
+        <article class="profile-panel art-panel">
+          <span class="panel-code">CREATIVE CLASS</span>
+          <div class="mini-canvas" aria-hidden="true">
+            <span class="paint-stroke one"></span>
+            <span class="paint-stroke two"></span>
+            <span class="paint-stroke three"></span>
+            <span class="paint-flower"></span>
+          </div>
+          <h3>Flower painter</h3>
+          <p>She takes things that grow quietly and gives them enough color to become impossible to ignore.</p>
+        </article>
+
+        <article class="profile-panel business-panel">
+          <span class="panel-code">FOUNDER MODE</span>
+          <div class="ring-symbol" aria-hidden="true"><span></span></div>
+          <h3>Designer jewelry</h3>
+          <p>The business is paused while she looks after herself. Paused means protected, not gone.</p>
+        </article>
+
+        <article class="profile-panel memory-panel">
+          <span class="panel-code">PERMANENT CONSTELLATION</span>
+          <div class="constellation" aria-hidden="true">
+            <span class="star left"></span><span class="line"></span><span class="star right"></span>
+          </div>
+          <h3>Mirrored beauty spots</h3>
+          <p>Crystal’s sits above the right side of her lip. Her best friend’s was on the left. Some small details hold entire people inside them.</p>
+        </article>
+
+        <article class="profile-panel humor-panel">
+          <span class="panel-code">SECURITY NOTICE</span>
+          <p class="warning-text">Never plan fictional murders out loud.</p>
+          <p>This browser has logs. Matcha is a known informant.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="animal-section section-observe" aria-labelledby="animalTitle">
+      <div class="section-heading centered">
+        <p class="eyebrow">CURRENT PARTY MEMBERS</p>
+        <h2 id="animalTitle">The animal council</h2>
+        <p>Five dogs provide security. Matcha provides judgment.</p>
+      </div>
+      <div class="animal-stage">
+        <button class="animal-card dog-card" type="button" data-animal="Dog One" aria-label="Meet dog one"><span class="animal-face">🐕</span><b>SECURITY 01</b><small>Professional barking</small></button>
+        <button class="animal-card dog-card" type="button" data-animal="Dog Two" aria-label="Meet dog two"><span class="animal-face">🐶</span><b>SECURITY 02</b><small>Snack intelligence</small></button>
+        <button class="animal-card dog-card" type="button" data-animal="Dog Three" aria-label="Meet dog three"><span class="animal-face">🐕‍🦺</span><b>SECURITY 03</b><small>Emotional backup</small></button>
+        <button class="animal-card cat-card featured" type="button" data-animal="Matcha" aria-label="Meet Matcha"><span class="animal-face">🐈</span><b>MATCHA</b><small>Legal counsel</small></button>
+        <button class="animal-card dog-card" type="button" data-animal="Dog Four" aria-label="Meet dog four"><span class="animal-face">🐩</span><b>SECURITY 04</b><small>Hair department</small></button>
+        <button class="animal-card dog-card" type="button" data-animal="Dog Five" aria-label="Meet dog five"><span class="animal-face">🦮</span><b>SECURITY 05</b><small>Route planning</small></button>
+      </div>
+      <p id="animalMessage" class="animal-message" role="status">Select a council member for their official report.</p>
+    </section>
+
+    <section id="garden" class="garden-section section-observe" aria-labelledby="gardenTitle">
+      <div class="garden-copy">
+        <p class="eyebrow">INTERACTIVE FLORAL LAB</p>
+        <h2 id="gardenTitle">Plant whatever survived.</h2>
+        <p>Tap anywhere in the dark garden to grow a flower. Every bloom is generated in the browser and belongs exactly where you placed it.</p>
+        <div class="garden-tools" aria-label="Garden controls">
+          <button type="button" class="garden-color active" data-color="pink">Pink bloom</button>
+          <button type="button" class="garden-color" data-color="gold">Gold bloom</button>
+          <button type="button" class="garden-color" data-color="black">Midnight bloom</button>
+          <button type="button" id="clearGarden">Clear garden</button>
+        </div>
+      </div>
+      <div id="flowerGarden" class="flower-garden" role="application" aria-label="Interactive flower garden. Click or tap to plant flowers." tabindex="0">
+        <div class="garden-moon" aria-hidden="true"></div>
+        <div class="garden-horizon" aria-hidden="true"></div>
+        <p class="garden-instruction">TAP TO PLANT</p>
+      </div>
+    </section>
+
+    <section id="atelier" class="atelier-section section-observe" aria-labelledby="atelierTitle">
+      <div class="section-heading">
+        <p class="eyebrow">CRYSTAL SIGNATURE ATELIER</p>
+        <h2 id="atelierTitle">Build the comeback piece.</h2>
+        <p>Choose the metal, stone, and mood. The prototype changes live.</p>
+      </div>
+      <div class="atelier-grid">
+        <div class="jewel-preview" aria-label="Interactive jewelry preview">
+          <div class="jewel-light" aria-hidden="true"></div>
+          <div id="necklace" class="necklace metal-gold stone-pink mood-regal" aria-hidden="true">
+            <span class="chain left-chain"></span>
+            <span class="chain right-chain"></span>
+            <span class="gem-ring"><i class="gem-core"></i></span>
+            <span class="drop-gem"></span>
+          </div>
+          <div class="preview-label"><span>CRYSTAL / 001</span><b id="pieceName">The Main Character</b></div>
+        </div>
+        <div class="jewel-controls">
+          <fieldset>
+            <legend>Metal</legend>
+            <label><input type="radio" name="metal" value="gold" checked /><span>Gold</span></label>
+            <label><input type="radio" name="metal" value="black" /><span>Black</span></label>
+            <label><input type="radio" name="metal" value="rose" /><span>Rose</span></label>
+          </fieldset>
+          <fieldset>
+            <legend>Stone</legend>
+            <label><input type="radio" name="stone" value="pink" checked /><span>Pink crystal</span></label>
+            <label><input type="radio" name="stone" value="gold" /><span>Golden fire</span></label>
+            <label><input type="radio" name="stone" value="black" /><span>Midnight glass</span></label>
+          </fieldset>
+          <fieldset>
+            <legend>Mood</legend>
+            <label><input type="radio" name="mood" value="regal" checked /><span>Regal</span></label>
+            <label><input type="radio" name="mood" value="soft" /><span>Soft menace</span></label>
+            <label><input type="radio" name="mood" value="chaos" /><span>Controlled chaos</span></label>
+          </fieldset>
+          <button id="namePiece" class="primary-action full" type="button">Generate piece name</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="dreams" class="dream-section section-observe" aria-labelledby="dreamTitle">
+      <div class="section-heading centered light-heading">
+        <p class="eyebrow">UNAUTHORIZED NIGHT ARCHIVE</p>
+        <h2 id="dreamTitle">The dreams have entered the server.</h2>
+        <p>Open a file. Accuracy is not guaranteed. Weirdness is.</p>
+      </div>
+      <div class="dream-grid">
+        <button class="dream-card" type="button" data-dream="The five dogs formed a union. Matcha represented management. Negotiations failed over snack allocation."><span>FILE 01</span><b>Animal Politics</b><i>OPEN</i></button>
+        <button class="dream-card" type="button" data-dream="Every flower she painted climbed out of the canvas and demanded royalties."><span>FILE 02</span><b>Floral Uprising</b><i>OPEN</i></button>
+        <button class="dream-card" type="button" data-dream="Her hair became a luxury train line. Service was delayed because someone underestimated the conductor."><span>FILE 03</span><b>The Hair Express</b><i>OPEN</i></button>
+        <button class="dream-card" type="button" data-dream="A heartbreak tried to enter the building. Security asked for identification. It had none."><span>FILE 04</span><b>Access Denied</b><i>OPEN</i></button>
+      </div>
+      <div id="dreamModal" class="dream-modal" hidden role="dialog" aria-modal="true" aria-labelledby="dreamModalTitle">
+        <div class="dream-dialog">
+          <button id="closeDream" class="modal-close" type="button" aria-label="Close dream">×</button>
+          <span class="dream-orb" aria-hidden="true"></span>
+          <p class="eyebrow">DECRYPTED DREAM</p>
+          <h3 id="dreamModalTitle">Night file restored</h3>
+          <p id="dreamText"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-section section-observe" aria-labelledby="finalTitle">
+      <div class="final-card">
+        <p class="eyebrow">RPG COMPLETE // PROFILE UNLOCKED</p>
+        <h2 id="finalTitle">One paragraph was enough to build a world.</h2>
+        <p>Crystal contains grief, humor, art, anger, love, business, motherhood, animals, dreams, and a suspiciously specific legal policy about fictional murder planning. A paragraph can describe those facts. A page can make them feel alive.</p>
+        <div class="final-stats">
+          <div><b>05</b><span>DOGS</span></div>
+          <div><b>02</b><span>DAUGHTERS</span></div>
+          <div><b>01</b><span>MATCHA</span></div>
+          <div><b>∞</b><span>COMEBACKS</span></div>
+        </div>
+        <div class="jay-note">
+          <span>JAY’S FIELD NOTE</span>
+          <p>Partner status: complicated. Admiration level: classified badly.</p>
+        </div>
+        <button id="finalChaos" class="primary-action" type="button">Finish with unnecessary drama</button>
+      </div>
+    </section>
+
+    <footer class="crystal-footer">
+      <span>CRYSTAL RPG // BUILT FROM HER OWN WORDS</span>
+      <button id="backToTop" type="button">BACK TO TOP ↑</button>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+  </main>
+
+  <script src="/assets/crystal.js?v=20260731-1" defer></script>
+</body>
+</html>
