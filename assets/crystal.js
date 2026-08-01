@@ -11,7 +11,7 @@
   const inventoryMeter = document.getElementById('inventoryMeter');
   const soundToggle = document.getElementById('soundToggle');
 
-  const saveKey = 'crystal-jay-hearing-v2';
+  const saveKey = 'crystal-jay-hearing-v4';
   const defaultState = {
     scene: 0,
     question: 0,
@@ -29,18 +29,18 @@
   const verdicts = {
     soft: {
       title: 'JAY SURVIVES ON A TECHNICALITY',
-      note: 'Crystal allows continued breathing. Conditions: better snacks, fewer monologues, and zero use of the word “technically.”',
-      condition: 'Alive. Grateful. Already drafting the paragraph that will get him back in trouble.'
+      note: 'Crystal lets him live. Conditions apply.',
+      condition: 'Alive. About to explain himself again.'
     },
     harsh: {
       title: 'JAY SURVIVES, BUT IN RESTRICTED MODE',
-      note: 'Indoor privileges revoked. Five dogs now have admin access to his location. The couch filed the paperwork itself.',
-      condition: 'Alive. On the couch. Writing a defense nobody asked for and everyone will ignore.'
+      note: 'Indoor privileges revoked. He has the couch.',
+      condition: 'Alive. On the couch. Still typing.'
     },
     matcha: {
-      title: 'MISTRIAL: MATCHA REFUSED THE PAPERWORK',
-      note: 'Jay lives because the cat looked at the stack of evidence, yawned, and left. Strongest defense he has ever had.',
-      condition: 'Alive by pure feline negligence. Humbled for approximately forty minutes.'
+      title: 'MISTRIAL: MATCHA LEFT',
+      note: 'Jay wins by default. Matcha could not be bothered.',
+      condition: 'Alive. Matcha does not care.'
     }
   };
 
@@ -49,38 +49,38 @@
       actions: ['start', 'about'],
       lines: [
         ['system', 'Opening CASE 00-JAY...'],
-        ['system', 'Judge: Crystal. Defendant: Jay. State witness who does not care: Matcha.'],
-        ['story', 'CHARGE: being Jay at the wrong emotional volume for several consecutive days.'],
-        ['story', 'Three questions. Answer wrong and the rest of the page stays locked. Answer right and you still get roasted.'],
-        ['system', 'Fictional tribunal. Jay has water. He also has a keyboard and that is the real problem.'],
-        ['story', 'Type START. Or stall. Stalling is noted.']
+        ['system', 'Judge: Crystal. Defendant: Jay. Witness: Matcha.'],
+        ['story', 'CHARGE: being Jay.'],
+        ['story', 'Three questions. Pick carefully.'],
+        ['system', 'Jay has water. Unfortunately, he also has Wi-Fi.'],
+        ['story', 'Type START.']
       ]
     },
     one: {
       actions: ['hear him out', 'leave on read', 'ask matcha'],
       lines: [
-        ['system', 'QUESTION 01/03 // THE 11:47 PM TEXT'],
-        ['story', 'Jay has been weird all day. At 11:47 he sends “Can we talk?”'],
-        ['story', 'The typing indicator appears, disappears, appears again. This is somehow more damning than the message.'],
-        ['story', 'Options: HEAR HIM OUT, LEAVE ON READ, or ASK MATCHA.']
+        ['system', 'QUESTION 01/03 // 11:47 PM'],
+        ['story', 'Jay sends: “Can we talk?”'],
+        ['story', 'Typing. Stops. Typing again.'],
+        ['story', 'HEAR HIM OUT, LEAVE ON READ, or ASK MATCHA.']
       ]
     },
     two: {
       actions: ['accept apology', 'cross examine', 'order food'],
       lines: [
-        ['system', 'QUESTION 02/03 // THE APOLOGY THAT CONTAINS JAY'],
-        ['story', 'Jay submits an apology. It includes the phrase “I’m sorry you feel that way” and then, for some reason, a paragraph about Jay.'],
-        ['story', 'The court requests calm. Nobody is calm. The request was aspirational.'],
-        ['story', 'Pick one: ACCEPT APOLOGY, CROSS EXAMINE, or ORDER FOOD.']
+        ['system', 'QUESTION 02/03 // THE APOLOGY'],
+        ['story', 'Jay apologizes. Somehow it becomes about Jay.'],
+        ['story', 'The court is tired.'],
+        ['story', 'ACCEPT APOLOGY, CROSS EXAMINE, or ORDER FOOD.']
       ]
     },
     three: {
       actions: ['spare jay', 'delete jay', 'let matcha decide'],
       lines: [
         ['system', 'QUESTION 03/03 // SENTENCING'],
-        ['story', 'Jay somehow made it this far. The evidence is confused.'],
-        ['story', 'Does he walk out as boyfriend, couch resident, or a contact that suddenly stops existing?'],
-        ['story', 'SPARE JAY, DELETE JAY, or LET MATCHA DECIDE. The court has dinner plans.']
+        ['story', 'He made it.'],
+        ['story', 'Boyfriend, couch, or deleted contact?'],
+        ['story', 'SPARE JAY, DELETE JAY, or LET MATCHA DECIDE.']
       ]
     }
   };
@@ -101,7 +101,7 @@
     try {
       localStorage.setItem(saveKey, JSON.stringify(state));
     } catch (_) {
-      // Storage is optional. Poor decisions remain available in memory.
+      // The page still works without storage.
     }
   }
 
@@ -142,7 +142,7 @@
 
   function updateHud() {
     levelMeter.textContent = `${String(state.question).padStart(2, '0')}/03`;
-    inventoryMeter.textContent = state.complete ? state.verdictKey : state.started ? 'deliberating' : 'pending';
+    inventoryMeter.textContent = state.complete ? state.verdictKey : state.started ? 'deciding' : 'pending';
     soundToggle.textContent = state.sound ? 'SOUND: ON' : 'SOUND: OFF';
     soundToggle.setAttribute('aria-pressed', String(state.sound));
   }
@@ -172,7 +172,12 @@
 
   function advance(sceneName) {
     saveState();
-    window.setTimeout(() => setScene(sceneName), 720);
+    setActions([]);
+    terminalInput.disabled = true;
+    window.setTimeout(() => {
+      terminalInput.disabled = false;
+      setScene(sceneName);
+    }, 2000);
   }
 
   function runCommand(rawCommand) {
@@ -182,7 +187,7 @@
     terminalInput.value = '';
 
     if (['help', '?'].includes(command)) {
-      line('system', 'Use the buttons or type an exact choice. Other commands: STATUS, JAY, MATCHA, LOVE, SCREENSHOTS, RESET.');
+      line('system', 'Use the buttons. Other commands: STATUS, JAY, MATCHA, LOVE, SCREENSHOTS, RESET.');
       return;
     }
     if (command === 'clear') {
@@ -194,46 +199,46 @@
       return;
     }
     if (command === 'status') {
-      line('reward', `QUESTION ${state.question}/3 // JAY: alive // CRYSTAL: considering options // MATCHA: refusing discovery requests`);
+      line('reward', `QUESTION ${state.question}/3 // JAY: alive // CRYSTAL: deciding // MATCHA: absent`);
       return;
     }
     if (command === 'about') {
-      line('story', 'Crystal wrote one paragraph about herself. Jay somehow became the defendant. This was always going to happen.');
+      line('story', 'Crystal wrote one paragraph. Jay ended up on trial.');
       return;
     }
     if (['murder', 'kill jay', 'plan murder', 'murders'].includes(command)) {
-      line('error', 'Wrong terminal. This one is for relationship admin, not actual crimes. Try DELETE JAY when the court is feeling dramatic.');
+      line('error', 'No actual crimes. Use DELETE JAY.');
       jolt();
       beep(130, 0.1);
       return;
     }
     if (command === 'jay') {
       const reports = [
-        'JAY STATUS: alive, slightly confused, currently typing and deleting the same sentence.',
-        'JAY STATUS: building a defense that starts with “Okay but listen” and goes nowhere useful.',
-        'JAY STATUS: refreshed the page twice to see if the verdict got nicer. It did not.'
+        'JAY STATUS: alive. Typing and deleting.',
+        'JAY STATUS: starting with “Okay, but listen.”',
+        'JAY STATUS: refreshed the page. Nothing changed.'
       ];
       line('story', reports[Math.floor(Math.random() * reports.length)]);
       return;
     }
     if (command === 'matcha') {
-      line('story', 'MATCHA: “I read the screenshots. Both of you need a handler. I am not volunteering.”');
+      line('story', 'MATCHA: “Both of you are exhausting.”');
       return;
     }
     if (command === 'love') {
-      line('error', 'LOVE DETECTED. Extremely inconvenient. Prosecution just got harder and everyone is annoyed about it.');
+      line('error', 'LOVE DETECTED. Annoying.');
       return;
     }
     if (command === 'screenshots') {
-      line('story', '47 attachments located. The court has cancelled lunch and is reconsidering one friendship.');
+      line('story', '47 screenshots. Nobody is innocent.');
       return;
     }
     if (command === 'sorry') {
-      line('story', 'The word “sorry” was received. Evidence of actual change is still loading. Please wait.');
+      line('story', 'Sorry received. Change pending.');
       return;
     }
     if (command === 'lawyer') {
-      line('story', 'COUNSEL ASSIGNED: Matcha. Retainer is one tuna pouch. Attorney-client privilege does not exist in this house.');
+      line('story', 'Matcha wants tuna up front.');
       return;
     }
 
@@ -244,16 +249,16 @@
         state.question = 1;
         setScene('one');
       } else {
-        line('error', 'Hearing has not started. Type START. Jay would like the delay entered into the record. Denied.');
+        line('error', 'Type START. Jay is stalling.');
       }
       return;
     }
 
     if (state.scene === 1) {
       const responses = {
-        'hear him out': 'Against every good instinct, Jay is allowed to speak. He starts with “Basically...” and then uses 600 words to dodge a single concrete noun.',
-        'leave on read': 'The message sits on delivered so long it starts paying rent.',
-        'ask matcha': 'Matcha looks at one screenshot, knocks the phone off the table, and invoices Crystal for “emotional labor.”'
+        'hear him out': 'Jay starts with “Basically.” It gets worse.',
+        'leave on read': 'Left on delivered. Peace returns briefly.',
+        'ask matcha': 'Matcha sees the screenshot and leaves.'
       };
       if (responses[command]) {
         line('success', responses[command]);
@@ -264,16 +269,16 @@
         state.question = 2;
         advance('two');
       } else {
-        line('error', 'The court is staring. Pick HEAR HIM OUT, LEAVE ON READ, or ASK MATCHA. There is no fourth option that makes this less awkward.');
+        line('error', 'Pick one of the three options.');
       }
       return;
     }
 
     if (state.scene === 2) {
       const responses = {
-        'accept apology': 'Suspiciously mature. The court briefly checks whether Crystal has been replaced by a well-mannered impostor.',
-        'cross examine': 'First question: how is Jay incapable of a normal text but can locate any specific reel in under four seconds?',
-        'order food': 'Court is recessed. Nobody makes good rulings on an empty stomach. Especially not Crystal.'
+        'accept apology': 'Accepted. Suspicious, but accepted.',
+        'cross examine': 'Jay gets one direct question. He answers a different one.',
+        'order food': 'Court paused. Food first.'
       };
       if (responses[command]) {
         line('success', responses[command]);
@@ -284,16 +289,16 @@
         state.question = 3;
         advance('three');
       } else {
-        line('error', 'Objection sustained. Choose ACCEPT APOLOGY, CROSS EXAMINE, or ORDER FOOD. The court is hungry and losing patience.');
+        line('error', 'Pick one of the three options.');
       }
       return;
     }
 
     if (state.scene === 3) {
       const responses = {
-        'spare jay': 'Jay is spared. This is not forgiveness. This is mercy that still has conditions and a memory.',
-        'delete jay': 'DELETE accepted by the interface. Immediately rejected by reality, the dogs, and every adult in a three-mile radius. Sentence: couch.',
-        'let matcha decide': 'Matcha looks at Jay. Looks at Crystal. Leaves the room. Mistrial by pure indifference. Nobody feels better.'
+        'spare jay': 'Jay lives. Conditions apply.',
+        'delete jay': 'Request denied. Couch approved.',
+        'let matcha decide': 'Matcha leaves. Mistrial.'
       };
       if (responses[command]) {
         line('success', responses[command]);
@@ -305,7 +310,7 @@
         if (command === 'let matcha decide') state.matcha += 3;
         finishHearing();
       } else {
-        line('error', 'Last chance: SPARE JAY, DELETE JAY, or LET MATCHA DECIDE. The court has actual plans after this.');
+        line('error', 'Pick one of the three options.');
       }
     }
   }
@@ -322,12 +327,13 @@
     saveState();
     updateHud();
     setActions([]);
-    line('system', 'Calculating sentence...', 520);
+    terminalInput.disabled = true;
+    line('system', 'Calculating...', 520);
     line('reward', verdict.title, 900);
     line('story', verdict.note, 1140);
-    line('system', 'Opening the Crystal file before Jay appeals...', 1450);
+    line('system', 'Opening Crystal’s file...', 1550);
     beep(820, 0.15);
-    window.setTimeout(showReveal, 2200);
+    window.setTimeout(showReveal, 2700);
   }
 
   function resetGame() {
@@ -337,6 +343,7 @@
       // Continue with an in-memory reset.
     }
     state = { ...defaultState };
+    terminalInput.disabled = false;
     clearLog();
     setScene('intro', false);
   }
@@ -428,12 +435,12 @@
   }
 
   const animalReports = {
-    'Dog One': 'WITNESS 01: Jay approached the door. I barked. Case closed. I am very good at this.',
-    'Dog Two': 'WITNESS 02: I will change any testimony for cheese. This is not corruption. This is negotiation.',
-    'Dog Three': 'WITNESS 03: Crystal was upset. I sat next to her. Jay tried to speak. I made eye contact that said “do not.”',
-    'Matcha': 'MATCHA: I reviewed the messages. Both of you need supervision. I am not applying for the job.',
-    'Dog Four': 'WITNESS 04: The hair is still elite. Jay’s explanation is not.',
-    'Dog Five': 'WITNESS 05: I know exactly where Jay sleeps. This is not a threat. It is just information I happen to have.'
+    'Dog One': 'Jay came near the door. I barked.',
+    'Dog Two': 'Cheese may affect my statement.',
+    'Dog Three': 'Crystal was upset. I stayed. Jay should have been quiet.',
+    'Matcha': 'Both of you need supervision. Not from me.',
+    'Dog Four': 'Hair good. Explanation bad.',
+    'Dog Five': 'I know where Jay sleeps.'
   };
 
   document.querySelectorAll('.animal-card').forEach(card => {
@@ -490,7 +497,7 @@
     garden.querySelectorAll('.planted-flower').forEach(flower => flower.remove());
     const instruction = garden.querySelector('.garden-instruction');
     if (instruction) instruction.hidden = false;
-    toast('Evidence erased. The flowers still know. They just can’t prove it anymore.');
+    toast('Gone.');
   });
 
   const necklace = document.getElementById('necklace');
@@ -504,16 +511,16 @@
   });
 
   const pieceNames = {
-    regal: ['Probable Cause', 'Too Expensive to Forgive', 'The Last Nerve'],
-    soft: ['I Said I’m Fine', 'Soft Menace', 'Apology Still Buffering'],
-    chaos: ['Exhibit A', 'Do Not Put That in Writing', 'Matcha Already Saw It']
+    regal: ['Last Nerve', 'Read Receipt', 'For Now'],
+    soft: ['Fine', 'Still Here', 'Do Not Ask'],
+    chaos: ['Bad Idea', 'Do Not Text', 'Matcha Saw It']
   };
 
   document.getElementById('namePiece').addEventListener('click', () => {
     const names = pieceNames[selected.mood];
     const name = names[Math.floor(Math.random() * names.length)];
     document.getElementById('pieceName').textContent = name;
-    toast(`Evidence labeled: ${name}`);
+    toast(`Named: ${name}`);
     burstConfetti(14);
   });
 
@@ -563,7 +570,7 @@
   function controlledChaos() {
     reveal.classList.add('chaos-flash');
     burstConfetti(48);
-    toast('Jay has started apologizing for things that have not happened yet.');
+    toast('Jay is apologizing early.');
     window.setTimeout(() => reveal.classList.remove('chaos-flash'), 1000);
   }
 
