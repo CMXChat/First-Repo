@@ -116,12 +116,13 @@
     feed.textContent = '';
 
     const mode = state.category !== 'all' ? `category=${state.category}` : state.query ? `find=${state.query}` : 'all';
-    summaryLine.textContent = `${entries.length} of ${sortedEntries.length} entries shown · ${mode}`;
+    const noun = sortedEntries.length === 1 ? 'change' : 'changes';
+    summaryLine.textContent = `${entries.length}/${sortedEntries.length} ${noun} shown · ${mode} · type help for commands`;
 
     if (!entries.length) {
       const empty = document.createElement('p');
       empty.className = 'empty-state';
-      empty.textContent = 'No matching entries.';
+      empty.textContent = 'No matching changes.';
       feed.appendChild(empty);
       return;
     }
@@ -176,13 +177,13 @@
       setCategory('all');
       const first = feed.querySelector('.entry');
       if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      commandOutput.textContent = 'Showing latest entry.';
+      commandOutput.textContent = 'Showing latest change.';
       return;
     }
     if (command === 'today') {
       setCategory('all');
       const today = document.getElementById(`day-${dateKey(new Date().toISOString())}`);
-      commandOutput.textContent = today ? 'Showing today.' : 'No entries today.';
+      commandOutput.textContent = today ? 'Showing today.' : 'No changes today.';
       if (today) today.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
