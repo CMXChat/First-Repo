@@ -1,0 +1,441 @@
+(() => {
+  "use strict";
+
+  const data = window.CMX_BACKEND_BLUEPRINT;
+  if (!data) return;
+
+  const ep = (method, path, family, phase, access, status, purpose, pages, options = {}) => ({
+    id: `${method}-${path}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+    method,
+    path,
+    family,
+    phase,
+    access,
+    status,
+    purpose,
+    pages,
+    database: options.database || "No",
+    background: options.background || "No",
+    request: options.request || "No request body.",
+    response: options.response || { status: "server-defined" },
+    dependencies: options.dependencies || ["Python API route", "Typed request and response schema"],
+    security: options.security || ["Authenticate", "Validate input", "Return safe errors", "Rate limit"]
+  });
+
+  const aiEndpoints = [
+    ep("GET", "/api/ai/capabilities", "AI Control", "AI foundation", "Authenticated", "Approved", "Return only the AI capabilities available to the current user and environment.", ["/ai/", "/", "Future assistant surfaces"], {
+      response: { capabilities: [{ id: "development.plan", risk_tier: 1, confirmation: false }] },
+      dependencies: ["Capability registry", "Role policy", "Feature flags"],
+      security: ["Filter by identity and environment", "Never expose disabled internal tools", "Capabilities cannot grant capabilities"]
+    }),
+    ep("GET", "/api/ai/policies", "AI Control", "AI foundation", "Authenticated", "Approved", "Return the readable rules for AI actions, approvals, data handling and blocked behavior.", ["/ai/", "/backend/"], {
+      response: { version: "policy-version", risk_tiers: [], blocked_actions: [] },
+      dependencies: ["Versioned AI policy", "Server-side policy engine"],
+      security: ["Enforcement remains server-side", "Do not return hidden prompts or secrets"]
+    }),
+    ep("GET", "/api/ai/models", "AI Control", "AI foundation", "Operator", "Future", "List approved model profiles and their permitted purposes without exposing provider credentials.", ["/ai/", "Future AI settings"], {
+      database: "Optional configuration",
+      response: { items: [{ id: "general", purpose: "planning", enabled: true }] },
+      dependencies: ["Model gateway", "Provider configuration", "Cost controls"],
+      security: ["No API keys", "No unrestricted provider selection", "Profile-specific quotas"]
+    }),
+    ep("POST", "/api/ai/sessions", "AI Control", "AI foundation", "Authenticated", "Future", "Create a controlled AI conversation for development, operations or an approved user feature.", ["/ai/", "Future assistant surfaces"], {
+      database: "Yes",
+      request: { purpose: "development_or_user_assistance", workspace_id: "optional", mode: "approved_mode" },
+      response: { id: "session_id", status: "active", policy_version: "version" },
+      dependencies: ["AI session model", "Policy engine", "Model gateway"],
+      security: ["Bind session to identity", "Retention limits", "No secrets in prompts"]
+    }),
+    ep("GET", "/api/ai/sessions/{session_id}", "AI Control", "AI foundation", "Owner or administrator", "Future", "Return one permitted AI session and safe transcript state.", ["/ai/", "Future assistant surfaces"], {
+      database: "Yes",
+      response: { id: "session_id", mode: "development", status: "active", messages: [] },
+      dependencies: ["Session store", "Ownership policy"],
+      security: ["Ownership check", "Redact tool secrets and hidden instructions", "Limit transcript size"]
+    }),
+    ep("POST", "/api/ai/sessions/{session_id}/messages", "AI Control", "AI foundation", "Owner", "Future", "Accept a natural-language instruction and return an answer, plan or proposed action.", ["/ai/", "/", "Future page copilots"], {
+      database: "Yes",
+      background: "Optional",
+      request: { message: "Plain-language request", attachments: [], context_scope: "approved" },
+      response: { message_id: "message_id", response_type: "answer_or_plan", request_id: "optional" },
+      dependencies: ["Model gateway", "Context service", "Policy engine", "Prompt-injection defenses"],
+      security: ["Classify intent before tools", "Prompt text is never permission", "Content and token limits", "Audit tool proposals"]
+    }),
+    ep("POST", "/api/ai/sessions/{session_id}/cancel", "AI Control", "AI foundation", "Owner", "Future", "Stop active generation and request cancellation of cancellable child work.", ["/ai/"], {
+      database: "Yes",
+      background: "Optional",
+      response: { session_id: "session_id", cancellation_requested: true },
+      dependencies: ["Cancellation service", "Job coordination"],
+      security: ["Ownership check", "Do not terminate shared infrastructure"]
+    }),
+    ep("POST", "/api/ai/requests", "AI Orchestration", "AI foundation", "Authenticated", "Approved", "Turn a natural-language goal into a tracked request before any tool or repository action occurs.", ["/ai/", "/", "Future assistant surfaces"], {
+      database: "Yes",
+      request: { session_id: "optional", goal: "Requested outcome", scope: "site_or_workspace", attachments: [] },
+      response: { id: "request_id", status: "classifying", risk_tier: "pending" },
+      dependencies: ["AI request model", "Intent classifier", "Policy engine"],
+      security: ["Record original request", "Apply limits", "Do not execute during creation"]
+    }),
+    ep("GET", "/api/ai/requests/{request_id}", "AI Orchestration", "AI foundation", "Owner or administrator", "Approved", "Return the plan, proposed actions, approvals, progress and safe results for one AI request.", ["/ai/", "Future assistant surfaces"], {
+      database: "Yes",
+      response: { id: "request_id", status: "awaiting_approval", risk_tier: 3, plan: [], actions: [] },
+      dependencies: ["Request store", "Approval service", "Job store"],
+      security: ["Ownership check", "Redact hidden prompts, credentials and internal traces"]
+    }),
+    ep("GET", "/api/ai/requests/{request_id}/events", "AI Orchestration", "AI foundation", "Owner", "Future", "Stream safe progress events for planning, checks, previews and approved actions.", ["/ai/", "Future assistant surfaces"], {
+      database: "Event references optional",
+      background: "Yes",
+      response: "Server-sent events with allowlisted event types.",
+      dependencies: ["Event broker", "SSE endpoint", "Reconnect policy"],
+      security: ["Ownership check", "No raw command output", "Event size and rate limits"]
+    }),
+    ep("POST", "/api/ai/requests/{request_id}/approve", "AI Orchestration", "AI foundation", "Owner with required capability", "Approved", "Approve a specific versioned plan or action set after the system shows its targets and effects.", ["/ai/", "Future approval dialogs"], {
+      database: "Yes",
+      request: { plan_version: 1, approved_actions: ["action_id"], confirmation_text: "required_when_sensitive" },
+      response: { request_id: "request_id", approval_id: "approval_id", status: "approved" },
+      dependencies: ["Approval model", "Capability policy", "Idempotency"],
+      security: ["Approval is scoped and expires", "Show file diff and action target", "Production approval is separate", "Audit decision"]
+    }),
+    ep("POST", "/api/ai/requests/{request_id}/cancel", "AI Orchestration", "AI foundation", "Owner or administrator", "Approved", "Cancel a planned or active AI request and its cancellable child jobs.", ["/ai/"], {
+      database: "Yes",
+      background: "Optional",
+      response: { request_id: "request_id", status: "cancelled" },
+      dependencies: ["Request service", "Job cancellation"],
+      security: ["Ownership check", "Preserve audit history", "Do not erase committed Git history"]
+    }),
+    ep("POST", "/api/ai/context/search", "AI Context", "AI foundation", "Capability-specific", "Approved", "Search the approved project handbook, documentation, route registry and permitted repository files.", ["/ai/", "/backend/", "Development assistant"], {
+      database: "Retrieval index optional",
+      request: { query: "Context question", scopes: ["handbook", "repo:first-repo"], limit: 10 },
+      response: { results: [{ source_id: "source_id", excerpt: "safe excerpt", revision: "sha" }] },
+      dependencies: ["Handbook service", "Repository adapter", "Retrieval index"],
+      security: ["Scope allowlist", "Respect exclusions", "No secrets or environment files", "Cite source revision"]
+    }),
+    ep("POST", "/api/ai/feedback", "AI Control", "User-facing AI", "Authenticated", "Future", "Record feedback about an AI answer, plan or completed action.", ["/ai/", "Future assistant surfaces"], {
+      database: "Yes",
+      request: { message_id: "message_id", rating: "helpful_or_not", note: "optional" },
+      response: { recorded: true },
+      dependencies: ["Feedback model", "Retention policy"],
+      security: ["Feedback cannot alter policy", "Limit text", "Separate feedback from commands"]
+    }),
+    ep("GET", "/api/handbook/version", "Project Handbook", "AI foundation", "Authenticated", "Approved", "Return the handbook revision and indexing state used by the AI.", ["/ai/", "/architecture/", "/backend/"], {
+      response: { revision: "git_sha", indexed_at: "ISO-8601", status: "current" },
+      dependencies: ["Versioned handbook", "GitHub source reference"],
+      security: ["No unpublished secrets", "Expose revision, not server paths"]
+    }),
+    ep("POST", "/api/handbook/search", "Project Handbook", "AI foundation", "Authenticated", "Approved", "Search approved handbook sections covering architecture, routes, standards, workflows and learning notes.", ["/ai/", "/architecture/", "Development assistant"], {
+      database: "Search index optional",
+      request: { query: "How should staging work?", sections: ["architecture", "deployment"] },
+      response: { results: [{ heading: "Staging", excerpt: "safe excerpt", source: "handbook" }] },
+      dependencies: ["Handbook parser", "Retrieval index"],
+      security: ["Read-only", "Return citations", "Block excluded sections"]
+    }),
+    ep("POST", "/api/handbook/refresh", "Project Handbook", "AI development", "Administrator", "Deferred", "Re-index the handbook after an approved Git commit changes it.", ["/ai/", "Future administration interface"], {
+      database: "Index metadata",
+      background: "Yes",
+      request: { commit_sha: "approved_commit", reason: "reviewed update" },
+      response: { job_id: "job_id", status: "queued" },
+      dependencies: ["GitHub adapter", "Indexer", "Worker queue"],
+      security: ["Approved repository only", "Commit must exist", "No arbitrary URL imports", "Audit refresh"]
+    }),
+    ep("GET", "/api/dev/repositories", "AI Development", "AI development", "Developer capability", "Approved", "List repositories explicitly approved for AI-assisted development and the allowed operations for each.", ["/ai/", "Development assistant"], {
+      database: "Configuration",
+      response: { items: [{ id: "first-repo", default_branch: "main", actions: ["read", "branch", "propose"] }] },
+      dependencies: ["GitHub adapter", "Repository allowlist"],
+      security: ["No global repository access", "Repository-specific token scope", "No secrets"]
+    }),
+    ep("GET", "/api/dev/repositories/{repository_id}/tree", "AI Development", "AI development", "Developer capability", "Approved", "Return a safe repository tree for an approved revision with excluded paths removed.", ["/ai/", "Development assistant"], {
+      request: "Repository ID plus approved branch, tag or commit.",
+      response: { repository_id: "first-repo", revision: "sha", items: [{ id: "file_id", path: "backend/index.html", type: "file" }] },
+      dependencies: ["GitHub adapter", "Path policy"],
+      security: ["Exclude secrets, binaries and protected paths", "Read limits", "Immutable revision"]
+    }),
+    ep("GET", "/api/dev/repositories/{repository_id}/files/{file_id}", "AI Development", "AI development", "Developer capability", "Approved", "Read one allowlisted text file by a server-issued identifier and revision.", ["/ai/", "Development assistant"], {
+      response: { file_id: "file_id", path: "backend/index.html", revision: "sha", content: "text" },
+      dependencies: ["GitHub adapter", "File identifier map", "Content limits"],
+      security: ["No user-supplied filesystem paths", "Text allowlist", "Maximum file size", "Audit protected reads"]
+    }),
+    ep("POST", "/api/dev/tasks", "AI Development", "AI development", "Developer capability", "Approved", "Create a tracked development task from a natural-language feature request without changing code.", ["/ai/", "Development assistant"], {
+      database: "Yes",
+      request: { repository_id: "first-repo", goal: "Feature request", base_ref: "main" },
+      response: { id: "task_id", status: "planning", base_sha: "sha" },
+      dependencies: ["Development task model", "Repository adapter", "AI request"],
+      security: ["Approved repository only", "Record immutable base SHA", "No writes during task creation"]
+    }),
+    ep("POST", "/api/dev/tasks/{task_id}/plan", "AI Development", "AI development", "Developer capability", "Approved", "Generate a versioned implementation plan, affected files, checks and risks for review.", ["/ai/", "Development assistant"], {
+      database: "Yes",
+      background: "Optional",
+      request: { include_tests: true, include_security_review: true },
+      response: { plan_version: 1, files: [], checks: [], risks: [], approval_required: true },
+      dependencies: ["Context service", "Model gateway", "Repository tree"],
+      security: ["Planning cannot execute tools", "Cite source files", "Flag protected paths"]
+    }),
+    ep("POST", "/api/dev/branches", "AI Development", "AI development", "Developer capability with approval", "Approved", "Create a feature branch from an approved immutable base commit.", ["/ai/", "Development assistant"], {
+      database: "Task record",
+      request: { task_id: "task_id", base_sha: "sha", branch_name: "agent/description", plan_version: 1 },
+      response: { branch: "agent/description", head_sha: "sha" },
+      dependencies: ["GitHub adapter", "Approval service", "Branch naming policy"],
+      security: ["Never write to main", "Base SHA must match approval", "Repository allowlist", "Audit branch creation"]
+    }),
+    ep("POST", "/api/dev/changesets", "AI Development", "AI development", "Developer capability with approval", "Approved", "Write a proposed, reviewable set of file changes to the approved feature branch.", ["/ai/", "Development assistant"], {
+      database: "Yes",
+      background: "Optional",
+      request: { task_id: "task_id", branch: "agent/description", changes: [{ file_id: "file_id", operation: "update" }] },
+      response: { changeset_id: "changeset_id", branch_head: "sha", files_changed: 1 },
+      dependencies: ["GitHub adapter", "Changeset service", "Protected path policy"],
+      security: ["Branch-only writes", "Elevated approval for workflows and policy files", "Diff limits", "Audit every file"]
+    }),
+    ep("POST", "/api/dev/sandboxes", "AI Development", "AI development", "Developer capability", "Approved", "Create a short-lived isolated Docker sandbox for an approved task revision.", ["/ai/", "Development assistant"], {
+      database: "Yes",
+      background: "Yes",
+      request: { task_id: "task_id", revision: "branch_sha", profile: "web_or_python" },
+      response: { id: "sandbox_id", status: "starting", expires_at: "ISO-8601" },
+      dependencies: ["Sandbox orchestrator", "Container images", "Resource quotas"],
+      security: ["No host socket", "No sudo", "Restricted network", "CPU, memory and time limits", "Automatic deletion"]
+    }),
+    ep("POST", "/api/dev/sandboxes/{sandbox_id}/checks", "AI Development", "AI development", "Developer capability", "Approved", "Run only approved test, lint, build and security profiles inside the sandbox.", ["/ai/", "Development assistant"], {
+      database: "Yes",
+      background: "Yes",
+      request: { checks: ["html", "javascript", "python", "security"], revision: "sha" },
+      response: { job_id: "job_id", status: "queued" },
+      dependencies: ["Check profile registry", "Sandbox runner", "Result parser"],
+      security: ["No arbitrary command strings", "Allowlisted checks", "Output limits", "No production network"]
+    }),
+    ep("GET", "/api/dev/sandboxes/{sandbox_id}/logs", "AI Development", "AI development", "Task owner or administrator", "Approved", "Return filtered sandbox logs and check results for debugging.", ["/ai/", "Development assistant"], {
+      database: "Log references",
+      response: { sandbox_id: "sandbox_id", checks: [], logs: [{ stream: "test", text: "filtered output" }] },
+      dependencies: ["Log filter", "Sandbox store"],
+      security: ["Redact tokens and internal paths", "No interactive terminal", "Ownership check", "Retention limit"]
+    }),
+    ep("POST", "/api/dev/previews", "AI Development", "AI development", "Developer capability with approval", "Approved", "Deploy an approved branch revision to a protected preview or staging slot.", ["/ai/", "Development assistant"], {
+      database: "Yes",
+      background: "Yes",
+      request: { task_id: "task_id", revision: "sha", target: "preview_or_staging" },
+      response: { deployment_id: "deployment_id", status: "queued", url: "assigned_when_ready" },
+      dependencies: ["Preview deployment service", "Cloudflare Access", "Environment isolation"],
+      security: ["Protected URL", "Separate data and secrets", "Automatic preview expiry", "No production credentials"]
+    }),
+    ep("POST", "/api/dev/pull-requests", "AI Development", "AI development", "Developer capability with approval", "Approved", "Open a draft pull request with the approved branch, checks, risks and review notes.", ["/ai/", "Development assistant"], {
+      database: "Task and pull request reference",
+      request: { task_id: "task_id", branch: "agent/description", base: "main", title: "Change summary", draft: true },
+      response: { pull_request_id: "provider_id", status: "draft", url: "provider_url" },
+      dependencies: ["GitHub adapter", "Pull request template", "Check results"],
+      security: ["Draft by default", "No automatic merge", "Approved base branch", "Audit provider action"]
+    }),
+    ep("POST", "/api/dev/deployment-requests", "AI Development", "AI development", "Production approver", "Approved", "Create a production deployment request after review and staging validation without deploying directly.", ["/ai/", "/build/", "Development assistant"], {
+      database: "Yes",
+      request: { release_sha: "reviewed_sha", staging_deployment_id: "deployment_id", rollback_sha: "known_good_sha" },
+      response: { id: "deployment_request_id", status: "awaiting_human_approval" },
+      dependencies: ["Deployment approval service", "Release records", "Rollback plan"],
+      security: ["AI cannot approve its own deployment", "Separate production credential boundary", "Explicit human approval", "Audit and rollback"]
+    }),
+    ep("GET", "/api/tools/catalog", "AI Tool Runtime", "AI foundation", "Authenticated", "Approved", "Return the allowlisted tools, input schemas, risk tiers and confirmation requirements available to the current user.", ["/ai/", "Future assistant surfaces"], {
+      response: { tools: [{ id: "routes.check", input_schema: {}, risk_tier: 1, confirmation: false }] },
+      dependencies: ["Tool registry", "Capability policy"],
+      security: ["Filter by role and environment", "No shell tool", "No secret-bearing schemas"]
+    }),
+    ep("POST", "/api/tools/{tool_id}/invoke", "AI Tool Runtime", "User-facing AI", "Capability-specific", "Future", "Invoke one typed, allowlisted application tool for an AI session or an authenticated user.", ["/ai/", "Future page copilots", "Connected pages"], {
+      database: "Audit required",
+      background: "Optional",
+      request: { request_id: "request_id", arguments: {}, confirmation_token: "when_required" },
+      response: { action_id: "action_id", status: "queued_or_complete" },
+      dependencies: ["Tool adapter", "Schema validator", "Approval service", "Audit log"],
+      security: ["Tool ID allowlist", "Typed arguments", "Record ownership", "Confirm writes", "Quotas and timeouts"]
+    }),
+    ep("POST", "/api/commands/parse", "AI Tool Runtime", "User-facing AI", "Authenticated", "Future", "Translate a natural-language command into a non-executing structured intent and proposed tool plan.", ["/ai/", "/", "Future command palette"], {
+      request: { text: "Check the registered routes and show failures", context: "current_page" },
+      response: { intent: "routes.check", proposed_actions: [], executes: false },
+      dependencies: ["Intent classifier", "Tool catalog", "Policy engine"],
+      security: ["Parsing never executes", "Unknown intents fail closed", "Show interpreted scope"]
+    }),
+    ep("POST", "/api/assistants", "User AI", "User-facing AI", "Administrator", "Deferred", "Create a configured assistant profile for an approved site use case and tool set.", ["/ai/", "Future administration interface"], {
+      database: "Yes",
+      request: { name: "Assistant name", purpose: "Approved purpose", tools: ["allowlisted_tool"], audience: "role" },
+      response: { id: "assistant_id", status: "disabled_pending_review" },
+      dependencies: ["Assistant model", "Tool registry", "Prompt template review"],
+      security: ["Administrator configuration", "No embedded secrets", "Tool allowlist", "Disabled until approved"]
+    }),
+    ep("POST", "/api/assistants/{assistant_id}/conversations", "User AI", "User-facing AI", "Authenticated", "Deferred", "Start a user-facing conversation with an approved assistant profile.", ["Future assistant page", "Future page copilots"], {
+      database: "Yes",
+      request: { workspace_id: "optional", page_context: "optional" },
+      response: { id: "conversation_id", assistant_id: "assistant_id" },
+      dependencies: ["Assistant service", "AI session", "User permissions"],
+      security: ["Assistant audience check", "Context minimization", "Retention policy"]
+    }),
+    ep("POST", "/api/assistants/{assistant_id}/conversations/{conversation_id}/messages", "User AI", "User-facing AI", "Conversation owner", "Deferred", "Send a message to an approved user-facing assistant and receive an answer or proposed tool action.", ["Future assistant page", "Future page copilots"], {
+      database: "Yes",
+      background: "Optional",
+      request: { message: "User question or instruction", attachments: [] },
+      response: { message_id: "message_id", answer: "text", proposed_actions: [] },
+      dependencies: ["Assistant service", "Model gateway", "Tool runtime"],
+      security: ["Assistant-specific tools", "Prompt-injection defenses", "No hidden cross-workspace context", "Confirm state changes"]
+    }),
+    ep("POST", "/api/assistants/actions/{action_id}/approve", "User AI", "User-facing AI", "Action owner", "Deferred", "Approve a clearly displayed user-facing AI action before it changes site data or invokes an external system.", ["Future assistant page", "Future page copilots"], {
+      database: "Yes",
+      request: { confirmation_text: "required_when_sensitive" },
+      response: { action_id: "action_id", status: "approved" },
+      dependencies: ["Action proposal model", "Approval service"],
+      security: ["Show exact effect", "Expire approvals", "Ownership and capability check", "Audit result"]
+    }),
+    ep("GET", "/api/automations", "AI Automation", "Automation", "Authenticated", "Deferred", "List only automations the current user may view or manage.", ["/ai/", "Future automation interface"], {
+      database: "Yes",
+      response: { items: [{ id: "automation_id", status: "paused", trigger: "schedule" }] },
+      dependencies: ["Automation model", "Scheduler", "Ownership policy"],
+      security: ["Ownership filter", "Safe summary only", "No secret payloads"]
+    }),
+    ep("POST", "/api/automations", "AI Automation", "Automation", "Operator", "Deferred", "Create an approved scheduled or event-polled workflow from a structured plan.", ["/ai/", "Future automation interface"], {
+      database: "Yes",
+      request: { name: "Automation", trigger: {}, steps: [{ tool_id: "allowlisted_tool", arguments: {} }], enabled: false },
+      response: { id: "automation_id", status: "disabled_pending_review" },
+      dependencies: ["Scheduler", "Tool registry", "Quota policy", "Approval service"],
+      security: ["No arbitrary code", "Allowlisted triggers and tools", "Disabled by default", "Budgets and cancellation"]
+    }),
+    ep("POST", "/api/automations/{automation_id}/run", "AI Automation", "Automation", "Owner with capability", "Deferred", "Run one approved automation manually with a recorded trigger and safe execution plan.", ["/ai/", "Future automation interface"], {
+      database: "Yes",
+      background: "Yes",
+      request: { reason: "manual_run", dry_run: false },
+      response: { job_id: "job_id", status: "queued" },
+      dependencies: ["Automation runner", "Worker queue", "Audit log"],
+      security: ["Ownership check", "Concurrency limits", "Per-step policy checks", "Emergency stop"]
+    }),
+    ep("GET", "/api/admin/ai/usage", "AI Administration", "AI operations", "Administrator", "Deferred", "Return usage, latency, error and cost summaries by approved model profile and capability.", ["/ai/", "Future administration interface"], {
+      database: "Yes",
+      response: { totals: {}, by_profile: [], alerts: [] },
+      dependencies: ["Usage ledger", "Cost normalization", "Metrics"],
+      security: ["Administrator only", "No prompt contents by default", "Redact user data"]
+    }),
+    ep("POST", "/api/admin/ai/policy-tests", "AI Administration", "AI operations", "Administrator", "Deferred", "Run approved test cases against AI policies and tool permissions without touching production data.", ["/ai/", "Future administration interface"], {
+      database: "Test results optional",
+      background: "Optional",
+      request: { suite: "policy_regression", environment: "staging" },
+      response: { job_id: "job_id", status: "queued" },
+      dependencies: ["Policy test suite", "Staging environment", "Synthetic fixtures"],
+      security: ["Staging only", "Synthetic data", "No provider writes"]
+    }),
+    ep("POST", "/api/admin/ai/emergency-stop", "AI Administration", "AI operations", "Administrator with reauthentication", "Approved", "Disable AI tool execution and automation while leaving read-only documentation and manual administration available.", ["/ai/", "/build/", "Future administration interface"], {
+      database: "Audit required",
+      request: { reason: "Required incident reason", scope: "all_tools_or_selected" },
+      response: { stopped: true, scope: "selected", effective_at: "ISO-8601" },
+      dependencies: ["Global feature flags", "Reauthentication", "Incident logging"],
+      security: ["Strong reauthentication", "Immediate server-side enforcement", "Cannot be reversed by AI", "Audit and alert"]
+    })
+  ];
+
+  data.endpoints.push(...aiEndpoints);
+  data.pagePlans["/ai/"] = {
+    mode: "AI control blueprint",
+    summary: "Focused plan for natural-language development, controlled tool use, user-facing assistants, sandboxed changes, approvals, previews, automations and AI operations.",
+    endpoints: ["GET /api/ai/capabilities", "POST /api/ai/requests", "POST /api/ai/sessions/{session_id}/messages", "POST /api/dev/tasks", "POST /api/tools/{tool_id}/invoke"]
+  };
+
+  data.aiPlan = {
+    framework: {
+      preferred: "FastAPI",
+      position: "Preferred initial backend, subject to implementation review before server work begins.",
+      reason: "It matches the Python learning goal, typed APIs, Jinja migration path, async services, automatic API documentation and Docker deployment plan.",
+      substitutionRule: "A different Python ASGI framework may replace it only when the same API contracts, security boundaries, testing, staging workflow and deployment controls are preserved."
+    },
+    pillars: [
+      { title: "Natural-language control", text: "A user describes a feature, question or operation in ordinary language. The AI converts it into a visible plan before requesting tools." },
+      { title: "Project understanding", text: "The AI reads an approved handbook, route registry and allowlisted repository files at known Git revisions." },
+      { title: "Controlled development", text: "The AI creates feature branches, proposes changes and opens draft pull requests. It never edits the production branch directly." },
+      { title: "Sandboxed verification", text: "Tests, builds, linting and security checks run through fixed profiles inside short-lived Docker sandboxes." },
+      { title: "Human approval", text: "Writes, external actions, staging previews and production requests require the approval tier defined for that action." },
+      { title: "User-facing intelligence", text: "Approved assistants may answer questions, use site context and call typed backend tools for authorized users." },
+      { title: "Integration layer", text: "External APIs and MCP servers are exposed through capability-specific adapters with server-held credentials." },
+      { title: "Operations and recovery", text: "Usage limits, logs, health checks, cancellation, emergency stop, backups and rollback keep the system controllable." }
+    ],
+    workflow: [
+      "Describe the goal in plain English.",
+      "Create a tracked AI request and classify its intent and risk.",
+      "Retrieve only approved handbook and repository context.",
+      "Show a versioned plan, affected files, tools, risks and tests.",
+      "Request scoped approval when the plan includes a write or external action.",
+      "Create a feature branch from an immutable base commit.",
+      "Write a reviewable changeset on that branch.",
+      "Run approved checks in an isolated Docker sandbox.",
+      "Deploy a protected preview or staging revision.",
+      "Open a draft pull request with checks and review notes.",
+      "Create a production deployment request only after staging validation.",
+      "Deploy production only after explicit human approval, with rollback prepared."
+    ],
+    surfaces: [
+      { name: "AI Control Center", route: "/ai/", purpose: "Planning, sessions, requests, approvals, development tasks, previews, usage and policy status." },
+      { name: "Root terminal launcher", route: "/", purpose: "Open approved pages and submit structured natural-language requests. It is never a real shell." },
+      { name: "Page copilots", route: "Selected pages", purpose: "Use current-page context and only the tools approved for that page and user." },
+      { name: "Development assistant", route: "/ai/#development", purpose: "Plan code, branch, edit, check, preview and prepare pull requests." },
+      { name: "User assistants", route: "Future assistant page", purpose: "Help authenticated users through approved conversations and site actions." },
+      { name: "Administration", route: "/build/ and future admin", purpose: "Health, providers, policy tests, usage, emergency stop, deployments and rollback." }
+    ],
+    riskTiers: [
+      { tier: "Tier 0", label: "Answer", examples: "Explain code, architecture or documentation.", approval: "No action approval" },
+      { tier: "Tier 1", label: "Read", examples: "Search handbook, inspect approved files, view status.", approval: "Capability and ownership checks" },
+      { tier: "Tier 2", label: "Draft", examples: "Create a plan, report draft or proposed changeset.", approval: "Review before persistence or provider write" },
+      { tier: "Tier 3", label: "Controlled write", examples: "Create branch, save workspace data, open draft pull request.", approval: "Explicit scoped approval" },
+      { tier: "Tier 4", label: "External or deployment action", examples: "Invoke connector write, deploy staging, request production.", approval: "Strong confirmation and audit" },
+      { tier: "Tier 5", label: "Blocked", examples: "Unrestricted shell, sudo, raw production secrets, arbitrary Python, direct production deployment.", approval: "Unavailable" }
+    ],
+    userCapabilities: [
+      "Ask questions using approved site and workspace context.",
+      "Summarize authorized records, files, reports and activity.",
+      "Generate drafts, checklists, reports and structured plans.",
+      "Run typed site tools through permissions and confirmations.",
+      "Save work to an authorized workspace.",
+      "Create approved recurring workflows with limits and cancellation.",
+      "Receive progress from real jobs without seeing hidden infrastructure.",
+      "Provide feedback and review every proposed state-changing action."
+    ],
+    hardBoundaries: [
+      "No unrestricted shell, sudo, Docker socket or host filesystem access.",
+      "No production secrets, raw environment variables or database credentials in AI context.",
+      "No arbitrary Python, JavaScript, command strings, URLs, MCP servers or provider methods supplied by prompts.",
+      "No direct writes to main and no automatic pull request merge.",
+      "No direct production deployment or self-approval by AI.",
+      "No cross-user or cross-workspace context without explicit permission.",
+      "No sensitive information in browser localStorage.",
+      "Every tool call is typed, allowlisted, rate-limited, attributable and cancellable where possible."
+    ]
+  };
+
+  function escapeHtml(value = "") {
+    return String(value).replace(/[&<>\"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[character]));
+  }
+
+  function injectAISection() {
+    const tabs = document.querySelector(".section-tabs");
+    const decisions = document.querySelector('[data-section="decisions"]');
+    if (!tabs || !decisions || document.querySelector('[data-target="ai"]')) return;
+
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.className = "tab";
+    tab.dataset.target = "ai";
+    tab.textContent = "AI Control";
+    tabs.insertBefore(tab, tabs.querySelector('[data-target="decisions"]'));
+
+    const section = document.createElement("section");
+    section.className = "blueprint-section";
+    section.id = "ai";
+    section.dataset.section = "ai";
+    section.hidden = true;
+    section.innerHTML = `
+      <div class="section-heading"><div><p class="eyebrow">Natural-language operations</p><h2>AI control plane and development workflow</h2><p>The AI layer is documented as a controlled client of approved APIs, GitHub actions, MCP tools and sandbox services. It does not receive a shell or production authority.</p></div></div>
+      <div class="overview-grid">
+        <article class="panel emphasis-card"><span class="card-kicker">Preferred foundation</span><h3>${escapeHtml(data.aiPlan.framework.preferred)}</h3><p>${escapeHtml(data.aiPlan.framework.position)}</p></article>
+        <article class="panel"><span class="card-kicker">Why</span><h3>Python-first learning and delivery</h3><p>${escapeHtml(data.aiPlan.framework.reason)}</p></article>
+        <article class="panel"><span class="card-kicker">Framework flexibility</span><h3>Contracts come first</h3><p>${escapeHtml(data.aiPlan.framework.substitutionRule)}</p></article>
+        <article class="panel"><span class="card-kicker">Current truth</span><h3>Planning only</h3><p>No AI control endpoint, sandbox, MCP server or deployment service is active yet.</p></article>
+      </div>
+      <article class="panel" style="margin-top:14px;padding:24px"><div class="panel-heading"><div><p class="eyebrow">Core architecture</p><h3>Eight AI pillars</h3></div></div><div class="capability-grid">${data.aiPlan.pillars.map(item => `<article class="capability-card"><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.text)}</p></article>`).join("")}</div></article>
+      <article class="panel" style="margin-top:14px;padding:24px"><div class="panel-heading"><div><p class="eyebrow">End-to-end delivery</p><h3>Plain English to reviewed production</h3></div></div><div class="roadmap-timeline">${data.aiPlan.workflow.map((step, index) => `<article class="roadmap-phase"><div class="phase-number">${String(index + 1).padStart(2, "0")}</div><div class="phase-main"><h3>${escapeHtml(step)}</h3></div><div class="deliverables"><span class="deliverable">Tracked, permissioned and auditable</span></div></article>`).join("")}</div></article>
+      <div class="two-column">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Interfaces</p><h3>Where AI appears</h3></div></div><div class="status-list">${data.aiPlan.surfaces.map(item => `<div class="status-row"><span>${escapeHtml(item.name)}<br><small>${escapeHtml(item.route)}</small></span><strong>${escapeHtml(item.purpose)}</strong></div>`).join("")}</div></article>
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Risk model</p><h3>Approval tiers</h3></div></div><div class="status-list">${data.aiPlan.riskTiers.map(item => `<div class="status-row"><span>${escapeHtml(item.tier)} · ${escapeHtml(item.label)}<br><small>${escapeHtml(item.examples)}</small></span><strong>${escapeHtml(item.approval)}</strong></div>`).join("")}</div></article>
+      </div>
+      <div class="decision-columns" style="margin-top:14px">
+        <article class="panel approved"><div class="panel-heading"><div><p class="eyebrow">User value</p><h3>What approved AI can do</h3></div></div><div class="decision-list">${data.aiPlan.userCapabilities.map(item => `<div class="decision-item">${escapeHtml(item)}</div>`).join("")}</div></article>
+        <article class="panel blocked"><div class="panel-heading"><div><p class="eyebrow">Hard boundaries</p><h3>What remains unavailable</h3></div></div><div class="decision-list">${data.aiPlan.hardBoundaries.map(item => `<div class="decision-item">${escapeHtml(item)}</div>`).join("")}</div></article>
+        <article class="panel deferred"><div class="panel-heading"><div><p class="eyebrow">Focused page</p><h3>AI Control Center</h3></div></div><p>The dedicated <code>/ai/</code> page explains the AI experience and control model. The complete endpoint contracts remain here in the Backend Blueprint.</p><a class="secondary-button" href="/ai/">Open AI Blueprint</a></article>
+      </div>`;
+    decisions.parentNode.insertBefore(section, decisions);
+  }
+
+  document.addEventListener("DOMContentLoaded", injectAISection);
+})();
