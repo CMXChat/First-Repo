@@ -3,6 +3,8 @@
   --white: #fff;
   --dim: #a8a8a8;
   --faint: #666;
+  --blue: #7db7ff;
+  --line: #262626;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
@@ -21,7 +23,7 @@ body {
 
 ::selection { color: var(--black); background: var(--white); }
 a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
-a:hover { text-decoration-thickness: 2px; }
+a:hover { color: var(--blue); text-decoration-thickness: 2px; }
 button, input { font: inherit; }
 [hidden] { display: none !important; }
 
@@ -50,15 +52,16 @@ button, input { font: inherit; }
 }
 
 .terminal {
-  width: min(900px, 100%);
+  width: min(980px, 100%);
   margin: 0 auto;
   padding: clamp(28px, 6vw, 64px) clamp(18px, 5vw, 48px) 56px;
 }
 
 .terminal-header,
+.brief,
 .status,
 .feed,
-.prompt-area { margin-bottom: 34px; }
+.prompt-area { margin-bottom: 38px; }
 
 p, h1, h2, h3 { margin-top: 0; }
 .command-line { margin-bottom: 24px; }
@@ -74,8 +77,25 @@ h1 {
 
 .terminal-header p { margin-bottom: 4px; }
 #summaryLine { color: var(--dim); }
+.header-links,
+.link-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 14px;
+  margin-top: 13px;
+}
+.header-links a,
+.entry-link {
+  color: var(--blue);
+  text-decoration-color: rgba(125, 183, 255, .5);
+}
 
-.status { padding-top: 2px; }
+.brief {
+  padding: 22px 0 4px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.brief h2,
 .status h2,
 .feed-label,
 .day-heading {
@@ -83,6 +103,34 @@ h1 {
   font-size: 14px;
   letter-spacing: .08em;
 }
+#briefSummary {
+  max-width: 900px;
+  margin-bottom: 20px;
+  color: var(--white);
+  font-weight: 700;
+}
+.brief-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px 28px;
+}
+.brief-section {
+  padding: 15px 0;
+  border-top: 1px solid var(--line);
+}
+.brief-section h3 {
+  margin-bottom: 5px;
+  color: var(--blue);
+  font-size: 13px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.brief-section p {
+  margin-bottom: 0;
+  color: var(--dim);
+}
+
+.status { padding-top: 2px; }
 .status p { margin-bottom: 4px; }
 #statusTimestamp { color: var(--dim); }
 #statusHeadline { font-weight: 700; }
@@ -92,7 +140,10 @@ h1 {
 .feed-label { color: var(--white); }
 .day-group { margin-bottom: 34px; scroll-margin-top: 24px; }
 .day-heading { color: var(--dim); }
-.entry { margin-bottom: 26px; }
+.entry {
+  margin-bottom: 28px;
+  padding-bottom: 4px;
+}
 .entry:last-child { margin-bottom: 0; }
 .entry-meta {
   margin-bottom: 4px;
@@ -107,7 +158,7 @@ h1 {
 .entry-summary { margin-bottom: 7px; }
 .entry-details { margin: 0; padding: 0; list-style: none; color: var(--dim); }
 .entry-details li::before { content: "  - "; color: var(--white); }
-.entry-link { display: inline-block; margin-top: 7px; }
+.entry-link { display: inline-block; }
 .empty-state { color: var(--dim); }
 
 .command-output {
@@ -136,14 +187,16 @@ h1 {
 footer { color: var(--dim); }
 footer a { color: var(--dim); }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   body { font-size: 14px; }
   .terminal { padding-top: 30px; }
   .terminal-header,
+  .brief,
   .status,
   .feed,
   .prompt-area { margin-bottom: 30px; }
-  .entry { margin-bottom: 22px; }
+  .brief-sections { grid-template-columns: 1fr; }
+  .entry { margin-bottom: 24px; }
   .command-form { gap: 7px; }
   .prompt { flex: 0 0 auto; font-size: 12px; }
 }
