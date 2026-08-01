@@ -1,229 +1,64 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-title="CMX Operations Directory" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="1.0" data-cmx-standard="on">
+<html lang="en" data-cmx-title="CMX Operations Directory" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="1.1" data-cmx-standard="on">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#050b14">
+<title>CMX Operations Directory</title>
+<meta name="description" content="Private directory for CMX research and operational tools.">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<link rel="canonical" href="https://db.cmxchat.com/directory/">
+<meta property="og:title" content="CMX Operations Directory">
+<meta property="og:description" content="Private directory for CMX research and operational tools.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CMX Restricted Node">
+<meta property="og:url" content="https://db.cmxchat.com/directory/">
+<meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CMX Operations Directory">
+<meta name="twitter:description" content="Private directory for CMX research and operational tools.">
+<meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png">
 <style>
-:root{
-  --bg:#000; --panel:#0b0c0e; --panel-2:#111317;
-  --ink:#e7e9ea; --muted:#8b98a5; --line:#2f3336;
-  --accent:#1d9bf0; --accent2:#82c8ff; --ok:#19c37d; --warn:#f6c76f;
-  --r:18px; --pad:clamp(14px,3.2vw,22px);
-  --fs-xl:clamp(26px,6.4vw,40px);
-  --fs-md:clamp(16px,3.4vw,18px);
-  --fs-sm:clamp(12px,2.6vw,13.5px);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;background:radial-gradient(1200px 600px at 20% -10%,rgba(29,155,240,.08),transparent),
-             radial-gradient(1200px 600px at 120% 100%,rgba(130,200,255,.06),transparent),
-             var(--bg);
-  color:var(--ink);
-  font:400 var(--fs-md)/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  -webkit-text-size-adjust:100%;
-}
-
-/* Top */
-.topbar{
-  position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
-  padding:var(--pad);background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)
-}
-.brand{display:flex;align-items:center;gap:12px;font-weight:900}
-.logo{width:30px;height:30px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
-.logo svg{width:18px;height:18px;fill:var(--accent)}
-.title{font-size:clamp(18px,5vw,22px)}
-.chip{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:var(--fs-sm)}
-
-/* Grid */
-.shell{display:grid;place-items:center;min-height:calc(100vh - 72px);padding:var(--pad)}
-.wrap{width:min(880px,96vw);display:grid;gap:clamp(14px,3vw,20px)}
-.head{border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r);padding:clamp(16px,4vw,24px)}
-.head h1{margin:0 0 .5rem;font-size:var(--fs-xl);line-height:1.15}
-.sub{color:var(--muted);font-size:var(--fs-sm)}
-
-/* Cards */
-.cards{display:grid;gap:clamp(12px,3vw,16px);grid-template-columns:1fr}
-@media(min-width:760px){.cards{grid-template-columns:1fr 1fr}}
-.card{
-  position:relative;overflow:hidden;
-  border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-  border-radius:20px; padding:clamp(18px,4vw,26px);
-  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-  cursor:pointer; text-decoration:none; color:inherit; display:block;
-}
-.card:hover{transform:translateY(-2px); border-color:var(--accent); box-shadow:0 14px 40px rgba(0,0,0,.45)}
-.card:focus-visible{outline:2px solid var(--accent)}
-.card h2{margin:0 0 .25rem;font-size:clamp(20px,4.6vw,26px);letter-spacing:.2px}
-.card p{margin:.25rem 0 0;color:var(--muted);font-size:var(--fs-sm);line-height:1.5}
-.card .tag{display:inline-block;margin-top:.7rem;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:var(--fs-sm)}
-.card .chev{position:absolute;right:16px;bottom:14px;opacity:.7}
-.card .chev svg{width:22px;height:22px;stroke:var(--accent)}
-.card.active{border-color:var(--accent2);box-shadow:0 16px 44px rgba(130,200,255,.15)}
-.keyhint{margin-top:.6rem;color:var(--muted);font-size:var(--fs-sm)}
-
-/* Footer */
-.footer{padding:var(--pad);display:flex;justify-content:center;color:var(--muted);font-size:var(--fs-sm)}
-
-/* Print */
-@media print{ .topbar,.footer{display:none} .wrap{width:100%} }
+:root{--bg:#050b14;--panel:#091521;--panel2:#0d1d2d;--line:rgba(41,157,255,.24);--strong:rgba(69,177,255,.52);--blue:#1f9bff;--cyan:#5ed7ff;--text:#edf8ff;--soft:#c6dfef;--muted:#7894a8;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;color-scheme:dark}*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{color:var(--text);font-family:var(--mono);background:radial-gradient(circle at 12% -8%,rgba(0,104,181,.3),transparent 25rem),radial-gradient(circle at 110% 5%,rgba(31,155,255,.16),transparent 22rem),linear-gradient(180deg,#061423 0,var(--bg) 42%,#02060b 100%)}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.04;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0,rgba(255,255,255,.05) 1px,transparent 1px,transparent 5px)}a{color:inherit;text-decoration:none}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(5,11,20,.86);backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:11px;font-weight:900}.logo{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--strong);border-radius:11px;background:linear-gradient(145deg,#0068b5,var(--blue));box-shadow:0 10px 24px rgba(0,104,181,.22)}.title{font-size:clamp(15px,4vw,20px)}.chip{padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:10px}.shell{width:min(1020px,100%);margin:auto;padding:clamp(16px,4vw,34px)}.intro{padding:clamp(20px,5vw,34px);border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(13,29,45,.96),rgba(7,17,28,.96));box-shadow:0 22px 65px rgba(0,0,0,.34)}.intro .kicker{color:var(--cyan);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.intro h1{margin:9px 0 8px;font-size:clamp(30px,8vw,50px);line-height:1;letter-spacing:-.05em}.intro p{margin:0;color:var(--muted);font:13px/1.65 system-ui,sans-serif}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.card{position:relative;min-height:190px;padding:22px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(13,29,45,.9),rgba(6,15,25,.94));transition:.18s ease}.card:hover,.card.active{transform:translateY(-2px);border-color:var(--strong);box-shadow:0 18px 48px rgba(0,0,0,.38),0 0 38px rgba(31,155,255,.07)}.card .hotkey{display:inline-grid;place-items:center;width:27px;height:27px;border:1px solid var(--line);border-radius:8px;color:var(--cyan);font-size:10px}.card h2{margin:18px 0 7px;font-size:clamp(19px,4vw,25px)}.card p{margin:0;color:var(--muted);font:12px/1.6 system-ui,sans-serif}.path{display:block;margin-top:18px;color:var(--soft);font-size:10px}.arrow{position:absolute;right:18px;bottom:18px;color:var(--blue);font-size:20px}.empty,.error{margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:14px;color:var(--muted);background:var(--panel)}.footer{padding:24px;text-align:center;color:var(--muted);font-size:10px}@media(max-width:700px){.cards{grid-template-columns:1fr}.card{min-height:170px}.chip{display:none}}
 </style>
-
-  <!-- CMX SITE STANDARD: START -->
-  <title>CMX Operations Directory</title>
-  <meta name="description" content="Private directory for CMX research, operational, project and internal tools." />
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <link rel="canonical" href="https://db.cmxchat.com/directory/" />
-  <meta property="og:title" content="CMX Operations Directory" />
-  <meta property="og:description" content="Private directory for CMX research, operational, project and internal tools." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CMX Restricted Node" />
-  <meta property="og:url" content="https://db.cmxchat.com/directory/" />
-  <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
-  <meta property="og:image:secure_url" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
-  <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="CMX Operations Directory private CMX interface" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CMX Operations Directory" />
-  <meta name="twitter:description" content="Private directory for CMX research, operational, project and internal tools." />
-  <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
-  <meta name="twitter:image:alt" content="CMX Operations Directory private CMX interface" />
-  <!-- CMX SITE STANDARD: END -->
-  <link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260731-1" />
+<link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260731-1">
+<script src="/assets/cmx-route-registry.js?v=1" defer></script>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand">
-    <div class="logo" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M17.5 3L12.9 9.1 20 21h-3.5l-4.7-7.6L7 21H4l5.7-8.6L4.2 3H7.7l4 6.6L16 3h1.5z"/></svg>
-    </div>
-    <div class="title">CMX • Operations Directory</div>
-  </div>
-  <span class="chip">Session <b id="sid"></b></span>
-</header>
-
+<header class="topbar"><div class="brand"><div class="logo">CMX</div><div class="title">Operations Directory</div></div><span class="chip">SESSION <b id="sid"></b></span></header>
 <main class="shell">
-  <div class="wrap">
-    <section class="head" aria-labelledby="hdr">
-      <h1 id="hdr">Operations Directory</h1>
-      <p class="sub">
-        Select an approved tool. <b>Seven</b> paths active.
-        <span class="hide-xs">Hotkeys:
-          <kbd>1</kbd> OSINT • <kbd>2</kbd> Phone Intel • <kbd>3</kbd> Metadata •
-          <kbd>4</kbd> Manual • <kbd>5</kbd> Resources •
-          <kbd>6</kbd> Missing Persons • <kbd>7</kbd> Advanced Search •
-          <kbd>Enter</kbd> to launch.
-        </span>
-      </p>
-    </section>
-
-    <nav class="cards" aria-label="Destinations">
-      <!-- 1. OSINT -->
-      <a class="card active" id="card-osint" href="https://db.cmxchat.com/osint">
-        <h2>OSINT Console</h2>
-        <p>Live tools, pivot maps, trace engines. Run fast, leave a clean footprint.</p>
-        <span class="tag">db.cmxchat.com/osint</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-
-      <!-- 2. Phone Intel -->
-      <a class="card" id="card-phone" href="https://db.cmxchat.com/phone">
-        <h2>Phone Intel</h2>
-        <p>Parse, enrich, and pivot numbers. Identify type, country, risk flags, and traces.</p>
-        <span class="tag">db.cmxchat.com/phone</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-
-      <!-- 3. Metadata -->
-      <a class="card" id="card-metadata" href="https://db.cmxchat.com/metadata">
-        <h2>Metadata Extractor</h2>
-        <p>Inspect EXIF/GPS, media specs, PDF info, and file headers—private, in-browser.</p>
-        <span class="tag">db.cmxchat.com/metadata</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-
-      <!-- 4. Manual -->
-      <a class="card" id="card-manual" href="https://db.cmxchat.com/manual">
-        <h2>Field Manual</h2>
-        <p>Doctrine, redlines, and checklists. Tradecraft compressed into ops-ready briefs.</p>
-        <span class="tag">db.cmxchat.com/manual</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-
-      <!-- 5. Resources -->
-      <a class="card" id="card-resources" href="https://db.cmxchat.com/resources">
-        <h2>Resource Library</h2>
-        <p>Curated OSINT directories, tool indexes, and training links. One hub for pivots.</p>
-        <span class="tag">db.cmxchat.com/resources</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-
-      <!-- 6. Missing Persons -->
-      <a class="card" id="card-missing" href="https://db.cmxchat.com/missing">
-        <h2>Missing Persons</h2>
-        <p>Focused MP workflows with image-led playbooks and a built-in Google Dorking Workbench.</p>
-        <span class="tag">db.cmxchat.com/missing</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-
-      <!-- 7. Advanced Search -->
-      <a class="card" id="card-adv" href="https://db.cmxchat.com/search">
-        <h2>Advanced Search</h2>
-        <p>Dorking+ workbench for names, usernames, and sites. Batch open queries, apply smart operators, and save results to an evidence locker.</p>
-        <span class="tag">db.cmxchat.com/search</span>
-        <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-      </a>
-    </nav>
-
-    <p class="keyhint">Tip: on mobile, long-press a card to open in a new tab.</p>
-  </div>
+<section class="intro"><span class="kicker">CMX Restricted Node</span><h1>Operations Directory</h1><p id="summary">Loading the approved route registry.</p></section>
+<nav class="cards" id="cards" aria-label="Approved tools"></nav>
+<div class="error" id="error" hidden>Route registry could not be loaded. Return to the restricted node and try again.</div>
 </main>
-
-<footer class="footer">© CMX</footer>
-
+<footer class="footer">CMX // ROUTE REGISTRY v1</footer>
 <script>
-/* Session chip */
 document.getElementById('sid').textContent=Math.random().toString(36).slice(2,10).toUpperCase();
-
-/* Keyboard nav */
-const cards=[
-  document.getElementById('card-osint'),     // 1
-  document.getElementById('card-phone'),     // 2
-  document.getElementById('card-metadata'),  // 3
-  document.getElementById('card-manual'),    // 4
-  document.getElementById('card-resources'), // 5
-  document.getElementById('card-missing'),   // 6
-  document.getElementById('card-adv')        // 7
-];
-let idx=0;
-function setActive(i){
-  idx=(i+cards.length)%cards.length;
-  cards.forEach((c,j)=>c.classList.toggle('active', j===idx));
-  cards[idx].focus({preventScroll:true});
+let cards=[],active=0;
+function esc(value){return String(value).replace(/[&<>"']/g,(char)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
+function setActive(index){if(!cards.length)return;active=(index+cards.length)%cards.length;cards.forEach((card,i)=>card.classList.toggle('active',i===active));cards[active].focus({preventScroll:true})}
+async function init(){
+  try{
+    const registry=await window.CMXRouteRegistry.load();
+    const routes=window.CMXRouteRegistry.directoryRoutes(registry);
+    document.getElementById('summary').textContent=`${routes.length} approved tools are currently listed. Use number keys, arrow keys or select a card.`;
+    const container=document.getElementById('cards');
+    container.innerHTML=routes.map((route,index)=>`<a class="card${index===0?' active':''}" href="${esc(route.path)}" data-index="${index}"><span class="hotkey">${esc(route.hotkey||index+1)}</span><h2>${esc(route.name)}</h2><p>${esc(route.description)}</p><span class="path">db.cmxchat.com${esc(route.path)}</span><span class="arrow">→</span></a>`).join('');
+    cards=[...container.querySelectorAll('.card')];
+    cards.forEach((card,index)=>card.addEventListener('focus',()=>{active=index;cards.forEach((item,i)=>item.classList.toggle('active',i===index))}));
+    window.addEventListener('keydown',(event)=>{
+      const numeric=Number(event.key);
+      if(Number.isInteger(numeric)&&numeric>0&&numeric<=cards.length)setActive(numeric-1);
+      else if(event.key==='ArrowRight'||event.key==='ArrowDown')setActive(active+1);
+      else if(event.key==='ArrowLeft'||event.key==='ArrowUp')setActive(active-1);
+      else if(event.key==='Enter'&&cards[active])window.location.href=cards[active].href;
+    });
+  }catch(error){document.getElementById('summary').textContent='Approved tools';document.getElementById('error').hidden=false;console.error(error)}
 }
-window.setActive=setActive;
-cards.forEach(c=>c.setAttribute('tabindex','0'));
-window.addEventListener('keydown',e=>{
-  if(e.key==='1'){ setActive(0); }
-  else if(e.key==='2'){ setActive(1); }
-  else if(e.key==='3'){ setActive(2); }
-  else if(e.key==='4'){ setActive(3); }
-  else if(e.key==='5'){ setActive(4); }
-  else if(e.key==='6'){ setActive(5); }
-  else if(e.key==='7'){ setActive(6); }
-  else if(e.key==='ArrowRight' || e.key==='ArrowDown'){ setActive(idx+1); }
-  else if(e.key==='ArrowLeft' || e.key==='ArrowUp'){ setActive(idx-1); }
-  else if(e.key==='Enter'){ window.location.href = cards[idx].href; }
-});
-cards.forEach(c=>{
-  c.addEventListener('focus',()=>{ cards.forEach(x=>x.classList.toggle('active', x===c)); idx=cards.indexOf(c); });
-});
+window.addEventListener('DOMContentLoaded',init,{once:true});
 </script>
-  <script src="/assets/cmx-page-standard.js?v=20260731-1" defer></script>
+<script src="/assets/cmx-page-standard.js?v=20260731-1" defer></script>
 </body>
 </html>
-
