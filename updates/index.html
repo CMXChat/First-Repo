@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="CMX Update Node">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#080b10" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+
+  <title>CMX Update Node</title>
+  <meta name="description" content="Daily changes, builds, research, and notes from the CMX restricted environment." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <link rel="canonical" href="https://db.cmxchat.com/updates/" />
+  <meta property="og:title" content="CMX Update Node" />
+  <meta property="og:description" content="Daily changes, builds, research, and notes from the CMX restricted environment." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://db.cmxchat.com/updates/" />
+  <meta property="og:site_name" content="CMX Restricted Node" />
+
+  <link rel="stylesheet" href="/assets/updates.css?v=20260801-1" />
+</head>
+<body>
+  <a class="skip-link" href="#feed">Skip to updates</a>
+
+  <div id="bootScreen" class="boot-screen" aria-live="polite">
+    <div class="boot-box">
+      <div class="boot-mark" aria-hidden="true">CMX</div>
+      <div id="bootLog" class="boot-log"></div>
+      <button id="skipBoot" type="button">SKIP</button>
+    </div>
+  </div>
+
+  <main id="app" class="app" hidden>
+    <header class="topbar">
+      <a class="node-id" href="/" aria-label="Return to CMX Restricted Node">
+        <span class="node-light" aria-hidden="true"></span>
+        <span>CMX / UPDATE NODE</span>
+      </a>
+      <div class="topbar-meta">
+        <span id="connectionState">ONLINE</span>
+        <span id="localClock">--:--:--</span>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="pageTitle">
+      <div class="intro-copy">
+        <p class="kicker">MANUAL LOG // NEWEST FIRST</p>
+        <h1 id="pageTitle">Updates</h1>
+        <p>Daily changes, builds, research, and notes. Added by hand because not everything needs a dashboard.</p>
+      </div>
+      <dl class="node-stats" aria-label="Update statistics">
+        <div><dt>ENTRIES</dt><dd id="entryCount">00</dd></div>
+        <div><dt>LAST ENTRY</dt><dd id="lastEntry">--</dd></div>
+        <div><dt>VISIBLE</dt><dd id="visibleCount">00</dd></div>
+      </dl>
+    </section>
+
+    <section id="statusPanel" class="status-panel" aria-labelledby="statusTitle">
+      <div class="status-header">
+        <span class="status-pulse" aria-hidden="true"></span>
+        <span id="statusTitle">CURRENT STATUS</span>
+        <span id="statusTimestamp">--</span>
+      </div>
+      <h2 id="statusHeadline">Loading status...</h2>
+      <ul id="statusLines"></ul>
+    </section>
+
+    <section class="controls" aria-label="Update controls">
+      <div id="filterBar" class="filter-bar" role="group" aria-label="Filter updates"></div>
+      <label class="search-box" for="searchInput">
+        <span>FIND</span>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="Search entries" />
+      </label>
+    </section>
+
+    <section class="terminal-shell" aria-label="CMX update terminal">
+      <div class="terminal-head">
+        <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <span>updates.feed</span>
+        <span id="activeFilter">FILTER: ALL</span>
+      </div>
+
+      <div class="terminal-grid">
+        <aside class="date-rail" aria-label="Dates in feed">
+          <span class="rail-label">DATES</span>
+          <nav id="dateNav"></nav>
+        </aside>
+
+        <div class="feed-column">
+          <div id="feedNotice" class="feed-notice" role="status" aria-live="polite"></div>
+          <div id="feed" class="feed"></div>
+        </div>
+      </div>
+
+      <form id="commandForm" class="command-form" autocomplete="off">
+        <span class="command-prompt" aria-hidden="true">cmx@updates:~$</span>
+        <label class="sr-only" for="commandInput">Enter a command</label>
+        <input id="commandInput" type="text" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="type help" />
+        <button type="submit">RUN</button>
+      </form>
+      <div id="commandOutput" class="command-output" role="status" aria-live="polite"></div>
+    </section>
+
+    <footer class="footer">
+      <span>CMX UPDATE NODE</span>
+      <span>MANUAL FEED</span>
+      <button id="backToTop" type="button">TOP ↑</button>
+    </footer>
+  </main>
+
+  <noscript>This page needs JavaScript to render the update feed.</noscript>
+  <script src="/assets/updates-data.js?v=20260801-1" defer></script>
+  <script src="/assets/updates.js?v=20260801-1" defer></script>
+</body>
+</html>
