@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  // This is only a temporary client-side deterrent for a static site.
+  // It is not server-side authorization and cannot protect public repository files.
   const root = document.documentElement;
   if (root.dataset.cmxGated !== 'true') return;
 
@@ -135,6 +137,7 @@
           <p class="cmx-gate-code">AUTHORIZATION // REQUIRED</p>
           <h1 id="cmx-gate-title">Restricted access</h1>
           <p class="cmx-gate-copy">Enter the user passphrase to continue.</p>
+          <p class="cmx-gate-copy">Temporary browser gate only. Real privacy requires the planned server-side access controls.</p>
           <form id="cmx-gate-form" autocomplete="off">
             <label for="cmx-gate-password">Passphrase</label>
             <div class="cmx-gate-inputrow">
