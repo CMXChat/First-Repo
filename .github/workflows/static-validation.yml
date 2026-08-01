@@ -75,7 +75,6 @@ jobs:
           python - <<'PY'
           from html.parser import HTMLParser
           from pathlib import Path
-          from urllib.parse import urlparse
           import re
           import sys
 
@@ -124,7 +123,6 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
           import sys
 
           backend = Path('backend/index.html').read_text(encoding='utf-8')
@@ -140,7 +138,16 @@ jobs:
               sys.exit(1)
 
           updates = Path('assets/updates-data.js').read_text(encoding='utf-8')
-          for term in ('/build/', '/backend/', '/ai/', 'project briefing'):
+          required_update_terms = (
+              '/build/',
+              '/backend/',
+              '/ai/',
+              'GitHub remains the permanent source of truth',
+              'AI-assisted coding',
+              'Frontend JavaScript sends typed HTTPS requests',
+              'Direct production deployment by AI',
+          )
+          for term in required_update_terms:
               if term.lower() not in updates.lower():
                   print(f'Updates briefing is missing required reference: {term}')
                   sys.exit(1)
