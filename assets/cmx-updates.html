@@ -10,38 +10,37 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
 
   <title>CMX Updates</title>
-  <meta name="description" content="Daily CMX changes, builds, research, and notes." />
+  <meta name="description" content="Private CMX status and change log." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <link rel="canonical" href="https://db.cmxchat.com/updates/" />
   <meta property="og:title" content="CMX Updates" />
-  <meta property="og:description" content="Daily CMX changes, builds, research, and notes." />
+  <meta property="og:description" content="Private CMX status and change log." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://db.cmxchat.com/updates/" />
   <meta property="og:site_name" content="CMX Restricted Node" />
 
-  <link rel="stylesheet" href="/assets/updates.css?v=20260801-2" />
+  <link rel="stylesheet" href="/assets/updates.css?v=20260801-3" />
 </head>
 <body>
-  <a class="skip-link" href="#feed">Skip to updates</a>
+  <a class="skip-link" href="#feed">Skip to change log</a>
 
   <main class="terminal" aria-labelledby="pageTitle">
     <header class="terminal-header">
       <p class="command-line"><span aria-hidden="true">$</span> python3 updates.py</p>
       <h1 id="pageTitle">CMX UPDATES</h1>
-      <p>Daily changes, builds, research, and notes.</p>
-      <p id="summaryLine">Loading entries...</p>
-      <p>Type <strong>help</strong> below for commands.</p>
+      <p id="summaryLine">Loading change log...</p>
     </header>
 
     <section id="status" class="status" aria-labelledby="statusTitle">
-      <h2 id="statusTitle">CURRENT STATUS</h2>
+      <h2 id="statusTitle">NOW</h2>
       <p id="statusTimestamp"></p>
       <p id="statusHeadline"></p>
       <div id="statusLines"></div>
     </section>
 
-    <section id="feed" class="feed" aria-label="Update feed" aria-live="polite"></section>
+    <h2 class="feed-label">CHANGE LOG</h2>
+    <section id="feed" class="feed" aria-label="CMX change log" aria-live="polite"></section>
 
     <section class="prompt-area" aria-label="Terminal command input">
       <div id="commandOutput" class="command-output" role="status" aria-live="polite"></div>
@@ -57,8 +56,8 @@
     </footer>
   </main>
 
-  <noscript>This page needs JavaScript to print the update feed.</noscript>
-  <script src="/assets/updates-data.js?v=20260801-3" defer></script>
-  <script src="/assets/updates.js?v=20260801-2" defer></script>
+  <noscript>This page needs JavaScript to print the change log.</noscript>
+  <script src="/assets/updates-data.js?v=20260801-4" defer></script>
+  <script src="/assets/updates.js?v=20260801-3" defer></script>
 </body>
 </html>
