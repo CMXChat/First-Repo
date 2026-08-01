@@ -1,78 +1,154 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-title="CMX Updates">
+<html lang="en" data-cmx-title="CMX Platform Brief">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#061225" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
 
   <title>CMX Platform Brief & Updates</title>
-  <meta name="description" content="Private CMX platform briefing, current status and change log." />
+  <meta name="description" content="Private briefing for the CMX Python, backend, AI, development and operations platform." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <link rel="canonical" href="https://db.cmxchat.com/updates/" />
   <meta property="og:title" content="CMX Platform Brief & Updates" />
-  <meta property="og:description" content="Private briefing and change log for the CMX Restricted Node platform." />
+  <meta property="og:description" content="Private project plan and implementation status for the CMX Restricted Node platform." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://db.cmxchat.com/updates/" />
   <meta property="og:site_name" content="CMX Restricted Node" />
 
-  <link rel="stylesheet" href="/assets/updates.css?v=20260801-5" />
+  <link rel="stylesheet" href="/assets/updates.css?v=20260801-9" />
 </head>
 <body>
-  <a class="skip-link" href="#brief">Skip to project brief</a>
+  <a class="skip-link" href="#mission">Skip to project plan</a>
 
-  <main class="terminal" aria-labelledby="pageTitle">
-    <header class="terminal-header">
-      <p class="command-line"><span aria-hidden="true">$</span> python3 platform_brief.py</p>
-      <h1 id="pageTitle">CMX PLATFORM BRIEF</h1>
-      <p id="summaryLine">Loading project briefing...</p>
-      <nav class="header-links" aria-label="Project pages">
-        <a href="/build/">/build</a>
-        <a href="/backend/">/backend</a>
-        <a href="/ai/">/ai</a>
-        <a href="/architecture/">/architecture</a>
-        <a href="/directory/">/directory</a>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">CMX</span>
+        <span><strong>Platform Brief</strong><small>Restricted Node planning and status</small></span>
+      </a>
+      <nav class="top-links" aria-label="Primary platform pages">
+        <a href="/build/">Build</a>
+        <a href="/backend/">Backend</a>
+        <a href="/ai/">AI</a>
+        <a href="/architecture/">Architecture</a>
       </nav>
     </header>
 
-    <section id="brief" class="brief" aria-labelledby="briefTitle">
-      <h2 id="briefTitle">PROJECT BRIEF</h2>
-      <p id="briefSummary"></p>
-      <div id="briefSections" class="brief-sections"></div>
-      <div id="briefLinks" class="link-group"></div>
-    </section>
+    <main>
+      <section class="hero panel">
+        <div>
+          <p class="eyebrow">db.cmxchat.com · master project brief</p>
+          <h1>From static pages to a private AI-assisted Python platform.</h1>
+          <p id="heroSummary" class="hero-summary">Loading the complete platform plan.</p>
+          <div class="truth-line"><strong>Current truth:</strong> the live site is still static. The backend, AI, MCP, sandbox, database and deployment services described below are documented plans until the server foundation is implemented.</div>
+        </div>
+        <div class="hero-flow" aria-label="Target platform flow">
+          <span>Plain English</span><i>→</i><span>Approved plan</span><i>→</i><span>Branch</span><i>→</i><span>Sandbox</span><i>→</i><span>Staging</span><i>→</i><span>Approval</span>
+        </div>
+      </section>
 
-    <section id="status" class="status" aria-labelledby="statusTitle">
-      <h2 id="statusTitle">CURRENT STATUS</h2>
-      <p id="statusTimestamp"></p>
-      <p id="statusHeadline"></p>
-      <div id="statusLines"></div>
-      <div id="statusLinks" class="link-group"></div>
-    </section>
+      <section class="section-block" aria-labelledby="mapTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Platform map</p><h2 id="mapTitle">The pages and what each one controls</h2></div>
+        </div>
+        <div id="pageCards" class="page-cards"></div>
+      </section>
 
-    <h2 class="feed-label">CHANGE LOG</h2>
-    <section id="feed" class="feed" aria-label="CMX change log" aria-live="polite"></section>
+      <section id="mission" class="section-block panel content-panel" aria-labelledby="missionTitle">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">The mission</p><h2 id="missionTitle">What we are building</h2></div>
+        </div>
+        <div id="missionContent" class="prose-grid"></div>
+      </section>
 
-    <section class="prompt-area" aria-label="Terminal command input">
-      <div id="commandOutput" class="command-output" role="status" aria-live="polite"></div>
-      <form id="commandForm" class="command-form" autocomplete="off">
-        <label class="sr-only" for="commandInput">Enter a command</label>
-        <span class="prompt" aria-hidden="true">cmx@db:~/updates$</span>
-        <input id="commandInput" type="text" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="help" />
-      </form>
-    </section>
+      <section class="section-block" aria-labelledby="aiTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">AI plan</p><h2 id="aiTitle">Every major way AI should work inside the platform</h2><p>The AI layer covers development, site commands, user assistance, integrations, automation and operations. Every capability stays behind server permissions and approval rules.</p></div>
+          <a class="section-link" href="/ai/">Open the full AI Blueprint</a>
+        </div>
+        <div id="aiCapabilities" class="capability-grid"></div>
+      </section>
+
+      <section class="section-block panel content-panel" aria-labelledby="apiTitle">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">AI and backend APIs</p><h2 id="apiTitle">The API groups required to make the plan real</h2></div>
+          <a class="section-link" href="/backend/#apis">Open the complete API Registry</a>
+        </div>
+        <div id="apiFamilies" class="api-family-grid"></div>
+      </section>
+
+      <section class="section-block" aria-labelledby="workflowTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Controlled development</p><h2 id="workflowTitle">How a plain-English feature request reaches production</h2></div>
+        </div>
+        <div id="aiWorkflow" class="workflow-list"></div>
+      </section>
+
+      <section class="section-block panel content-panel" aria-labelledby="connectionTitle">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">Frontend and Python</p><h2 id="connectionTitle">How the existing GitHub pages connect to the future backend</h2></div>
+          <a class="section-link" href="/backend/#pages">Open the page-to-backend map</a>
+        </div>
+        <div id="connectionMap" class="connection-map"></div>
+        <div id="connectionExamples" class="example-grid"></div>
+      </section>
+
+      <section class="section-block" aria-labelledby="securityTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Security boundary</p><h2 id="securityTitle">What AI may do and what remains blocked</h2></div>
+        </div>
+        <div class="security-grid">
+          <article class="panel security-card allowed"><h3>Approved through controls</h3><div id="allowedActions" class="check-list"></div></article>
+          <article class="panel security-card blocked"><h3>Unavailable by design</h3><div id="blockedActions" class="check-list"></div></article>
+        </div>
+      </section>
+
+      <section class="section-block panel content-panel" aria-labelledby="phasesTitle">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">Implementation order</p><h2 id="phasesTitle">Build the foundation before giving AI tools</h2></div>
+          <a class="section-link" href="/build/">Open Build Lab</a>
+        </div>
+        <div id="phaseList" class="phase-list"></div>
+      </section>
+
+      <section class="section-block" aria-labelledby="statusTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Current status</p><h2 id="statusTitle">What exists now and what is still planned</h2></div>
+        </div>
+        <div id="statusCards" class="status-cards"></div>
+      </section>
+
+      <section class="section-block" aria-labelledby="changesTitle">
+        <div class="section-heading">
+          <div><p class="eyebrow">Recent platform changes</p><h2 id="changesTitle">Changes related to the backend, AI and operations plan</h2></div>
+        </div>
+        <div id="changeLog" class="change-log"></div>
+      </section>
+
+      <section class="section-block panel quick-nav" aria-labelledby="navTitle">
+        <div><p class="eyebrow">Continue reviewing</p><h2 id="navTitle">Open the detailed planning pages</h2></div>
+        <div class="quick-links">
+          <a href="/build/"><strong>/build</strong><span>Operations, readiness, health and deployment control</span></a>
+          <a href="/backend/"><strong>/backend</strong><span>APIs, infrastructure, data, permissions and page connections</span></a>
+          <a href="/ai/"><strong>/ai</strong><span>Natural-language control, assistants, MCP, sandboxes and automation</span></a>
+          <a href="/architecture/"><strong>/architecture</strong><span>Technical architecture and learning reference</span></a>
+        </div>
+      </section>
+    </main>
 
     <footer>
-      <a href="/">exit</a>
+      <span>CMX Platform Brief · private planning resource</span>
+      <a href="/">Return to Restricted Node</a>
     </footer>
-  </main>
+  </div>
 
-  <noscript>This page needs JavaScript to print the project briefing and change log.</noscript>
-  <script src="/assets/updates-data.js?v=20260801-8" defer></script>
-  <script src="/assets/updates.js?v=20260801-8" defer></script>
+  <noscript>This page requires JavaScript to render the complete project briefing.</noscript>
+  <script src="/assets/updates-data.js?v=20260801-10" defer></script>
+  <script src="/assets/updates.js?v=20260801-9" defer></script>
 </body>
 </html>
