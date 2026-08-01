@@ -13,6 +13,14 @@
   const state = { category: 'all', query: '' };
   const sortedEntries = [...data.entries].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   const categoryIds = new Set((data.categories || []).map(category => category.id));
+  const knownPages = {
+    build: '/build/',
+    backend: '/backend/',
+    ai: '/ai/',
+    architecture: '/architecture/',
+    directory: '/directory/',
+    terminal: '/'
+  };
 
   function format(timestamp, options) {
     return new Intl.DateTimeFormat('en-US', {
@@ -27,6 +35,52 @@
 
   function safeLink(url) {
     return typeof url === 'string' && (url.startsWith('/') || url.startsWith('https://')) ? url : null;
+  }
+
+  function createLink(linkData) {
+    const url = safeLink(typeof linkData === 'string' ? linkData : linkData?.url);
+    if (!url) return null;
+    const link = document.createElement('a');
+    link.className = 'entry-link';
+    link.href = url;
+    link.textContent = typeof linkData === 'string' ? `open: ${url}` : (linkData.label || `open: ${url}`);
+    if (url.startsWith('https://')) {
+      link.target = '_blank';
+      link.rel = 'noopener';
+    }
+    return link;
+  }
+
+  function renderLinks(container, links = []) {
+    if (!container) return;
+    container.textContent = '';
+    links.forEach(linkData => {
+      const link = createLink(linkData);
+      if (link) container.appendChild(link);
+    });
+  }
+
+  function renderBrief() {
+    const brief = data.brief || {};
+    document.getElementById('briefSummary').textContent = brief.summary || '';
+
+    const sections = document.getElementById('briefSections');
+    sections.textContent = '';
+    (brief.sections || []).forEach(section => {
+      const article = document.createElement('article');
+      article.className = 'brief-section';
+
+      const label = document.createElement('h3');
+      label.textContent = section.label;
+
+      const text = document.createElement('p');
+      text.textContent = section.text;
+
+      article.append(label, text);
+      sections.appendChild(article);
+    });
+
+    renderLinks(document.getElementById('briefLinks'), brief.links || []);
   }
 
   function renderStatus() {
@@ -44,6 +98,8 @@
       p.textContent = text;
       lines.appendChild(p);
     });
+
+    renderLinks(document.getElementById('statusLinks'), status.links || []);
   }
 
   function visibleEntries() {
@@ -98,13 +154,16 @@
       article.appendChild(list);
     }
 
-    const url = safeLink(entry.link);
-    if (url) {
-      const link = document.createElement('a');
-      link.className = 'entry-link';
-      link.href = url;
-      link.textContent = `open: ${entry.linkLabel || url}`;
-      article.appendChild(link);
+    const links = Array.isArray(entry.links)
+      ? entry.links
+      : entry.link
+        ? [{ url: entry.link, label: entry.linkLabel || `open: ${entry.link}` }]
+        : [];
+    if (links.length) {
+      const group = document.createElement('div');
+      group.className = 'link-group';
+      renderLinks(group, links);
+      article.appendChild(group);
     }
 
     return article;
@@ -158,14 +217,20 @@
     if (!command) return;
 
     if (command === 'help') {
-      commandOutput.textContent = 'help · all · latest · today · site · tools · research · infrastructure · general · find [word] · status · count · clear';
+      commandOutput.textContent = 'help · brief · status · all · latest · today · site · tools · research · infrastructure · ai · general · find [word] · open [build|backend|ai|architecture|directory|terminal] · count · clear';
       return;
     }
     if (command === 'clear') {
       commandOutput.textContent = '';
       return;
     }
+    if (command === 'brief') {
+      document.getElementById('brief').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      commandOutput.textContent = 'Showing project brief.';
+      return;
+    }
     if (command === 'status') {
+      document.getElementById('status').scrollIntoView({ behavior: 'smooth', block: 'start' });
       commandOutput.textContent = `${data.status.headline}\n${(data.status.lines || []).map(line => `- ${line}`).join('\n')}`;
       return;
     }
@@ -203,6 +268,16 @@
       commandOutput.textContent = state.query ? `find=${state.query}` : 'Missing search text.';
       return;
     }
+    if (command.startsWith('open ')) {
+      const page = command.slice(5).trim();
+      const url = knownPages[page];
+      if (url) {
+        window.location.href = url;
+        return;
+      }
+      commandOutput.textContent = `Unknown page: ${page}`;
+      return;
+    }
 
     commandOutput.textContent = `command not found: ${command}`;
   }
@@ -212,6 +287,7 @@
     runCommand(commandInput.value);
   });
 
+  renderBrief();
   renderStatus();
   renderFeed();
   window.setTimeout(() => commandInput.focus({ preventScroll: true }), 50);
