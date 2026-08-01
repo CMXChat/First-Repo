@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-title="CMX Build Lab" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="2.0" data-cmx-standard="off">
+<html lang="en" data-cmx-title="CMX Build Lab" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="2.1" data-cmx-standard="off">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#061225" />
+  <meta name="theme-color" content="#000000" />
   <meta name="referrer" content="no-referrer" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <title>CMX Build Lab</title>
@@ -13,6 +13,7 @@
     .build-links{display:flex;flex-wrap:wrap;gap:9px}.build-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.build-card{padding:22px}.build-card strong{display:block;margin-bottom:8px;color:var(--blue-bright);font-family:var(--mono);font-size:22px}.build-card p{margin:0;font-size:12px}.truth-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.truth-card{padding:20px}.truth-card h3{color:var(--blue-bright)}.truth-card p{margin-bottom:0;font-size:12px}.control-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.control-card{padding:21px}.control-card code{display:inline-block;margin-bottom:12px;color:var(--blue-bright);font-family:var(--mono)}.control-card p{font-size:12px}.control-card a{display:inline-flex}.pipeline{display:grid;gap:10px}.pipeline-step{display:grid;grid-template-columns:52px minmax(180px,.8fr) minmax(240px,1.2fr);gap:16px;align-items:start;padding:18px}.pipeline-step .phase-number{font-size:12px}.pipeline-step p{margin:0;font-size:12px}.readiness-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.readiness-card{padding:24px}.readiness-list{display:grid;gap:10px}.readiness-row{display:grid;grid-template-columns:22px 1fr;gap:10px;color:var(--muted);font-size:12px;line-height:1.55}.readiness-row::before{content:"○";display:grid;place-items:center;width:20px;height:20px;border:1px solid var(--line-strong);border-radius:6px;color:var(--blue-bright);font-family:var(--mono)}.readiness-row.complete::before{content:"✓"}.table-wrap a{color:var(--blue-bright);text-decoration:none}.table-wrap a:hover{text-decoration:underline}.build-note{padding:18px}.build-note strong{color:var(--text)}.build-note p{margin:0}.status-strip{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:13px 0;color:var(--muted);font-family:var(--mono);font-size:11px}.status-strip strong{color:var(--blue-bright)}
     @media(max-width:1100px){.build-grid,.truth-grid,.control-map{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.build-grid,.truth-grid,.control-map,.readiness-columns{grid-template-columns:1fr}.pipeline-step{grid-template-columns:44px 1fr}.pipeline-step p{grid-column:2}.hero{min-height:unset}.topbar{position:relative}.topbar-actions{justify-content:flex-start}.truth-badge{display:inline-flex!important}}
   </style>
+  <link rel="stylesheet" href="/assets/cmx-terminal-blueprint.css?v=20260801-1" />
   <script src="/assets/cmx-build-lab.js?v=20260801-1" defer></script>
 </head>
 <body>
@@ -33,29 +34,29 @@
     <main>
       <section class="hero panel">
         <div class="hero-copy">
-          <p class="eyebrow">CMX restricted node · build lab v2</p>
+          <p class="eyebrow">$ cat ~/cmx/build-lab.status</p>
           <h1>See what exists, what is planned, and what is safe to operate.</h1>
           <p class="hero-description">Build Lab is the operational view for db.cmxchat.com. Today it checks the static route registry and explains readiness. Later it should display real backend health, deployments, workers, AI controls, logs, incidents and rollback state.</p>
-          <div class="truth-line"><strong>Current truth:</strong> the site is still served as static GitHub Pages. No Python runtime, database, MCP server, AI service, worker queue or production deployment control is active.</div>
+          <div class="truth-line"><strong>current_truth:</strong> the site is still served as static GitHub Pages. No Python runtime, database, MCP server, AI service, worker queue or production deployment control is active.</div>
         </div>
         <div class="architecture-mini" aria-label="Build Lab relationship">
-          <span>Plans</span><i>→</i><span>Branches</span><i>→</i><span>Checks</span><i>→</i><span>Staging</span><i>→</i><span>Approval</span>
+          <span>plans</span><i>→</i><span>branches</span><i>→</i><span>checks</span><i>→</i><span>staging</span><i>→</i><span>approval</span>
         </div>
       </section>
 
       <div class="status-strip">
-        <span>New York time: <strong id="buildClock">Loading</strong></span>
+        <span>new_york_time: <strong id="buildClock">Loading</strong></span>
         <span id="registryNotice">Loading route registry</span>
       </div>
 
       <section class="build-grid" aria-label="Build Lab metrics">
-        <article class="panel build-card"><span class="eyebrow">Registry</span><strong id="routeCount">0</strong><p>Registered routes</p></article>
-        <article class="panel build-card"><span class="eyebrow">Version</span><strong id="registryVersion">—</strong><p>Central route registry</p></article>
-        <article class="panel build-card"><span class="eyebrow">Route check</span><strong id="respondingCount">—</strong><p>Responding routes in this session</p></article>
-        <article class="panel build-card"><span class="eyebrow">Average</span><strong id="averageResponse">—</strong><p>Browser-observed response time</p></article>
+        <article class="panel build-card"><span class="eyebrow">registry</span><strong id="routeCount">0</strong><p>registered routes</p></article>
+        <article class="panel build-card"><span class="eyebrow">version</span><strong id="registryVersion">—</strong><p>central route registry</p></article>
+        <article class="panel build-card"><span class="eyebrow">route_check</span><strong id="respondingCount">—</strong><p>responding routes in this session</p></article>
+        <article class="panel build-card"><span class="eyebrow">average</span><strong id="averageResponse">—</strong><p>browser-observed response time</p></article>
       </section>
 
-      <section class="section-heading"><div><p class="eyebrow">Control map</p><h2>Each planning page has one clear job</h2></div></section>
+      <section class="section-heading"><div><p class="eyebrow">control_map</p><h2>Each planning page has one clear job</h2></div></section>
       <div class="control-map">
         <article class="panel control-card"><code>/build/</code><h3>Operate and observe</h3><p>Current route checks. Future health, workers, deployments, logs, incidents, approvals and rollback state.</p><a class="secondary-button" href="/build/">Current page</a></article>
         <article class="panel control-card"><code>/backend/</code><h3>Define the platform</h3><p>The source of truth for API contracts, infrastructure, page connections, data models, permissions and delivery phases.</p><a class="secondary-button" href="/backend/">Open Backend Blueprint</a></article>
@@ -63,7 +64,7 @@
         <article class="panel control-card"><code>/updates/</code><h3>Explain progress</h3><p>The readable project brief and change log showing what was completed, what is active and what remains planned.</p><a class="secondary-button" href="/updates/">Open Updates</a></article>
       </div>
 
-      <section class="section-heading"><div><p class="eyebrow">Runtime truth</p><h2>Current platform state</h2></div></section>
+      <section class="section-heading"><div><p class="eyebrow">runtime_truth</p><h2>Current platform state</h2></div></section>
       <div class="truth-grid">
         <article class="panel truth-card"><h3>Static frontend</h3><p>Active. Existing HTML, CSS and JavaScript pages remain available during migration.</p></article>
         <article class="panel truth-card"><h3>Python backend</h3><p>Planned. FastAPI is preferred, with compatible Python ASGI alternatives allowed if all documented controls remain intact.</p></article>
@@ -71,16 +72,16 @@
         <article class="panel truth-card"><h3>Production automation</h3><p>Disabled by design. Production must require a separate human approval and prepared rollback.</p></article>
       </div>
 
-      <section class="section-heading"><div><p class="eyebrow">Static route monitoring</p><h2>Registered route health</h2><p>The browser can confirm whether registered paths respond. This does not replace future server-side monitoring.</p></div><button class="secondary-button" type="button" id="checkRoutes">Run route check</button></section>
+      <section class="section-heading"><div><p class="eyebrow">static_route_monitoring</p><h2>Registered route health</h2><p>The browser can confirm whether registered paths respond. This does not replace future server-side monitoring.</p></div><button class="secondary-button" type="button" id="checkRoutes">Run route check</button></section>
       <article class="panel">
         <div class="table-wrap"><table>
           <thead><tr><th>Route</th><th>Name</th><th>Category</th><th>Status</th><th>Visibility</th><th>Current protection</th><th>Browser result</th><th>Time</th></tr></thead>
           <tbody id="routeRows"></tbody>
         </table></div>
       </article>
-      <p class="notice panel build-note"><strong>Important:</strong> a responding route can still be insecure. The current browser gates are temporary presentation barriers. Real privacy requires Cloudflare Access and server-side authorization.</p>
+      <p class="notice panel build-note"><strong>important:</strong> a responding route can still be insecure. The current browser gates are temporary presentation barriers. Real privacy requires Cloudflare Access and server-side authorization.</p>
 
-      <section class="section-heading"><div><p class="eyebrow">Delivery pipeline</p><h2>How changes should reach production</h2></div></section>
+      <section class="section-heading"><div><p class="eyebrow">delivery_pipeline</p><h2>How changes should reach production</h2></div></section>
       <div class="pipeline">
         <article class="panel pipeline-step"><span class="phase-number">01</span><h3>Normal-language request</h3><p>Describe the desired change. The request becomes a tracked plan with scope, affected files, risk and tests.</p></article>
         <article class="panel pipeline-step"><span class="phase-number">02</span><h3>Feature branch</h3><p>Create a branch from an approved immutable base commit. Main remains untouched.</p></article>
@@ -92,10 +93,10 @@
         <article class="panel pipeline-step"><span class="phase-number">08</span><h3>Deploy and observe</h3><p>Deploy only after approval, then watch health, errors and rollback readiness in Build Lab.</p></article>
       </div>
 
-      <section class="section-heading"><div><p class="eyebrow">Readiness</p><h2>What must exist before AI can safely act</h2></div></section>
+      <section class="section-heading"><div><p class="eyebrow">readiness</p><h2>What must exist before AI can safely act</h2></div></section>
       <div class="readiness-columns">
         <article class="panel readiness-card">
-          <div class="panel-heading"><div><p class="eyebrow">Backend foundation</p><h3>Required first</h3></div></div>
+          <div class="panel-heading"><div><p class="eyebrow">backend_foundation</p><h3>Required first</h3></div></div>
           <div class="readiness-list">
             <div class="readiness-row complete">Backend, API and AI contracts documented.</div>
             <div class="readiness-row complete">Route registry and page responsibilities documented.</div>
@@ -107,7 +108,7 @@
           </div>
         </article>
         <article class="panel readiness-card">
-          <div class="panel-heading"><div><p class="eyebrow">AI foundation</p><h3>Required before autonomy</h3></div></div>
+          <div class="panel-heading"><div><p class="eyebrow">ai_foundation</p><h3>Required before autonomy</h3></div></div>
           <div class="readiness-list">
             <div class="readiness-row complete">AI risk tiers, approvals and blocked actions documented.</div>
             <div class="readiness-row complete">GitHub branch, sandbox, preview and pull request workflow documented.</div>
@@ -120,7 +121,7 @@
         </article>
       </div>
 
-      <section class="section-heading"><div><p class="eyebrow">Future live panels</p><h2>What Build Lab should eventually display</h2></div></section>
+      <section class="section-heading"><div><p class="eyebrow">future_live_panels</p><h2>What Build Lab should eventually display</h2></div></section>
       <div class="overview-grid">
         <article class="panel truth-card"><h3>Application health</h3><p>Python API, database, worker queue, storage, tunnel and dependency status.</p></article>
         <article class="panel truth-card"><h3>Deployment control</h3><p>Preview, staging and production releases, approvals, checks and rollback revision.</p></article>
