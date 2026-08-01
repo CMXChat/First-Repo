@@ -87,8 +87,6 @@ window.CMX_UPDATES = {
       details: [
         'The feed now loads only after authorization.',
         'The route registry marks /updates as gated and direct-link-only.'
-      ],The feed now loads only after authorization.',
-        'The route registry marks /updates as gated and direct-link-only.'
       ],
       pinned: false
     }
