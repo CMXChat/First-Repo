@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#061225" />
+  <meta name="theme-color" content="#000000" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
@@ -25,6 +25,8 @@
   <meta name="twitter:description" content="Backend and AI control architecture for the CMX Restricted Node platform." />
   <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
   <link rel="stylesheet" href="/assets/cmx-backend-blueprint.css?v=20260801-2" />
+  <link rel="stylesheet" href="/assets/cmx-terminal-blueprint.css?v=20260801-2" />
+  <link rel="stylesheet" href="/assets/cmx-terminal-backend.css?v=20260801-1" />
   <script src="/assets/cmx-backend-blueprint-data.js?v=20260801-2" defer></script>
   <script src="/assets/cmx-ai-blueprint-extension.js?v=20260801-2" defer></script>
   <script src="/assets/cmx-ai-platform-extension.js?v=20260801-1" defer></script>
@@ -34,7 +36,7 @@
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="/" aria-label="Return to CMX Restricted Node">
-        <span class="brand-mark" aria-hidden="true">CMX</span>
+        <span class="brand-mark" aria-hidden="true">API</span>
         <span class="brand-copy"><strong>Backend Blueprint</strong><small>Backend, API and AI control source of truth</small></span>
       </a>
       <div class="topbar-actions">
@@ -49,13 +51,13 @@
     <main>
       <section class="hero panel" aria-labelledby="pageTitle">
         <div class="hero-copy">
-          <p class="eyebrow">CMX restricted node · blueprint v1.1</p>
+          <p class="eyebrow">$ cat ~/cmx/backend-blueprint.plan</p>
           <h1 id="pageTitle">The full backend and AI control plan before the backend exists.</h1>
           <p class="hero-description">This page defines the preferred Python backend, proposed API families, AI-assisted development, normal-language commands, user-facing assistants, page connections, infrastructure, data, permissions and delivery controls.</p>
-          <div class="truth-line"><strong>Current truth:</strong> the live site remains static HTML, CSS and JavaScript. Every backend and AI endpoint shown here is a documented contract, not a live service.</div>
+          <div class="truth-line"><strong>current_truth:</strong> the live site remains static HTML, CSS and JavaScript. Every backend and AI endpoint shown here is a documented contract, not a live service.</div>
         </div>
         <div class="architecture-mini" aria-label="Planned request path">
-          <span>User or AI</span><i>→</i><span>Cloudflare</span><i>→</i><span>Python API</span><i>→</i><span>Approved tools</span><i>→</i><span>Data or GitHub</span>
+          <span>user_or_ai</span><i>→</i><span>cloudflare</span><i>→</i><span>python_api</span><i>→</i><span>approved_tools</span><i>→</i><span>data_or_github</span>
         </div>
       </section>
 
