@@ -2,7 +2,7 @@
 //
 // To maintain the feed, tell ChatGPT things like:
 // - "Add an update about the new page."
-// - "Revise the Crystal entry."
+// - "Revise an existing update."
 // - "Delete the environment update."
 // - "Change the current status."
 //
@@ -30,7 +30,7 @@
 
 window.CMX_UPDATES = {
   status: {
-    timestamp: '2026-08-01T00:35:00-04:00',
+    timestamp: '2026-08-01T11:19:00-04:00',
     headline: 'Protected environment being prepared',
     lines: [
       'CRZA is setting up the new Linux environment for db.cmxchat.com.',
@@ -50,6 +50,22 @@ window.CMX_UPDATES = {
 
   entries: [
     {
+      id: '2026-08-01-updates-gated',
+      timestamp: '2026-08-01T11:19:00-04:00',
+      category: 'site',
+      status: 'complete',
+      title: 'Updates route protected',
+      summary: 'Moved /updates behind the shared CMX authorization gate and removed the retired Crystal project from the repository and update history.',
+      details: [
+        'The update feed now loads only after operator authorization.',
+        'The route registry marks /updates as gated and direct-link-only.',
+        'The Crystal page and its dedicated frontend assets were removed.'
+      ],
+      link: '/updates/',
+      linkLabel: 'OPEN /UPDATES',
+      pinned: false
+    },
+    {
       id: '2026-08-01-environment-setup',
       timestamp: '2026-08-01T00:35:00-04:00',
       category: 'infrastructure',
@@ -62,22 +78,6 @@ window.CMX_UPDATES = {
         'Cloudflare Access and Tunnel will sit in front of the server.'
       ],
       pinned: true
-    },
-    {
-      id: '2026-08-01-crystal-page',
-      timestamp: '2026-08-01T00:10:00-04:00',
-      category: 'site',
-      status: 'complete',
-      title: 'Crystal page created',
-      summary: 'Built /crystal as a short three-question terminal that opens into an interactive page about Crystal.',
-      details: [
-        'The terminal answers stay visible before the next question loads.',
-        'The page includes the Crystal profile, animals, jewelry, dreams, and flower sections.',
-        'The page remains excluded from search indexing.'
-      ],
-      link: '/crystal/',
-      linkLabel: 'OPEN /CRYSTAL',
-      pinned: false
     }
   ]
 };
