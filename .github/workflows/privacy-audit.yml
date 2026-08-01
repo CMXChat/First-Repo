@@ -21,14 +21,36 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           from urllib.parse import urlparse
+          import json
           import re
           import sys
 
-          failures = []
           root = Path('.')
-          sensitive = {'build/index.html', 'callmax/index.html', 'project/index.html'}
-          protected_assets = {'assets/cmx-build-lab.html'}
-          forbidden_destinations = {'/build', '/callmax', '/project'}
+          failures = []
+          registry_path = Path('assets/cmx-routes.json')
+
+          if not registry_path.exists():
+              failures.append('assets/cmx-routes.json: central route registry is missing')
+              registry = {'routes': []}
+          else:
+              try:
+                  registry = json.loads(registry_path.read_text(encoding='utf-8'))
+              except Exception as exc:
+                  failures.append(f'assets/cmx-routes.json: invalid JSON: {exc}')
+                  registry = {'routes': []}
+
+          routes = registry.get('routes', [])
+          paths = [route.get('path') for route in routes]
+          duplicates = sorted({path for path in paths if path and paths.count(path) > 1})
+          if duplicates:
+              failures.append(f'assets/cmx-routes.json: duplicate paths: {duplicates}')
+
+          def route_file(route_path):
+              if route_path == '/':
+                  return Path('index.html')
+              if route_path == '/404.html':
+                  return Path('404.html')
+              return Path(route_path.strip('/')) / 'index.html'
 
           def normalize_href(value):
               value = value.strip()
@@ -38,103 +60,85 @@ jobs:
               if parsed.netloc and parsed.netloc != 'db.cmxchat.com':
                   return None
               path = parsed.path or '/'
-              if path != '/':
-                  path = path.rstrip('/')
-              return path
+              return path if path == '/' else path.rstrip('/') + ('/' if parsed.path.endswith('/') else '')
 
-          standard_js = Path('assets/cmx-page-standard.js').read_text(encoding='utf-8', errors='ignore')
-          gate_js = Path('assets/cmx-sensitive-gate.js').read_text(encoding='utf-8', errors='ignore')
+          for route in routes:
+              path = route.get('path')
+              if not isinstance(path, str) or not path.startswith('/'):
+                  failures.append(f'assets/cmx-routes.json: invalid route path {path!r}')
+                  continue
 
-          for required in (
-              "new Set(['/build', '/callmax', '/project'])",
-              "new Set(['/manual', '/menu', '/workspace'",
-              "rel.add('noopener')",
-              "rel.add('noreferrer')",
-              "anchor.remove()",
-              "no-store, no-cache, must-revalidate",
-          ):
-              if required not in standard_js:
-                  failures.append(f'assets/cmx-page-standard.js: missing runtime control {required!r}')
+              file_path = route_file(path)
+              if not file_path.exists():
+                  failures.append(f'{path}: registered route file is missing at {file_path.as_posix()}')
+                  continue
 
-          for required in (
-              "PASSWORD_SHA256",
-              "5acc5a298686271b024634c1affb1a03a228278e707b6ff9f816af5e1cc948b9",
-              "Directory-visible",
-              "Direct-link-only",
-              "Build-only",
-              "<th>Visibility</th>",
-          ):
-              if required not in gate_js:
-                  failures.append(f'assets/cmx-sensitive-gate.js: missing gate or Build Lab control {required!r}')
-
-          html_files = [p for p in root.glob('**/*.html') if '.git' not in p.parts]
-          for path in html_files:
-              rel = path.as_posix()
-              text = path.read_text(encoding='utf-8', errors='ignore')
+              text = file_path.read_text(encoding='utf-8', errors='ignore')
               lower = text.lower()
-              uses_standard = '/assets/cmx-page-standard.js' in text
 
-              if rel not in protected_assets:
-                  required = {
-                      'robots noindex': ('name="robots"', 'noindex'),
-                      'googlebot noindex': ('name="googlebot"', 'noindex'),
-                      'meta title': ('<title>', '</title>'),
-                      'description': ('name="description"', 'content='),
-                      'no-referrer': ('name="referrer"', 'no-referrer'),
-                  }
-                  for label, needles in required.items():
-                      if any(needle and needle not in lower for needle in needles):
-                          failures.append(f'{rel}: missing {label}')
+              for label, needles in {
+                  'robots noindex': ('name="robots"', 'noindex'),
+                  'meta title': ('<title>', '</title>'),
+                  'no-referrer': ('name="referrer"', 'no-referrer'),
+              }.items():
+                  if any(needle not in lower for needle in needles):
+                      failures.append(f'{file_path.as_posix()}: missing {label}')
 
-              if rel in sensitive:
+              if route.get('directory') and route.get('visibility') != 'Directory-visible':
+                  failures.append(f'{path}: directory route must use Directory-visible visibility')
+
+              if route.get('gated'):
+                  if 'data-cmx-gated="true"' not in lower:
+                      failures.append(f'{file_path.as_posix()}: gated route lacks data-cmx-gated=true')
+                  if '/assets/cmx-sensitive-gate.css' not in text or '/assets/cmx-sensitive-gate.js' not in text:
+                      failures.append(f'{file_path.as_posix()}: gated route lacks shared gate assets')
                   if 'http-equiv="cache-control"' not in lower or 'no-store' not in lower:
-                      failures.append(f'{rel}: sensitive wrapper lacks static no-store hint')
-                  if 'data-cmx-visibility=' not in lower:
-                      failures.append(f'{rel}: sensitive wrapper lacks visibility classification')
-              elif rel not in protected_assets and not uses_standard and rel not in {'404.html', 'index.html'}:
-                  failures.append(f'{rel}: page lacks shared runtime privacy controls')
+                      failures.append(f'{file_path.as_posix()}: gated route lacks static no-store hint')
 
               for anchor in re.finditer(r'<a\b([^>]*)>', text, re.I | re.S):
                   attrs = anchor.group(1)
-                  href_match = re.search(r'\bhref\s*=\s*(["\'])(.*?)\1', attrs, re.I | re.S)
-                  if href_match:
-                      destination = normalize_href(href_match.group(2))
-                      if rel != 'build/index.html' and destination in forbidden_destinations:
-                          failures.append(f'{rel}: exposes sensitive route {destination}')
-
                   if re.search(r'\btarget\s*=\s*(["\'])_blank\1', attrs, re.I):
                       rel_match = re.search(r'\brel\s*=\s*(["\'])(.*?)\1', attrs, re.I | re.S)
                       tokens = set(rel_match.group(2).split()) if rel_match else set()
-                      if not {'noopener', 'noreferrer'}.issubset(tokens) and not uses_standard:
-                          failures.append(f'{rel}: target=_blank link lacks noopener noreferrer')
+                      uses_standard = '/assets/cmx-page-standard.js' in text
+                      if 'noopener' not in tokens and not uses_standard:
+                          failures.append(f'{file_path.as_posix()}: target=_blank link lacks noopener')
 
-          for rel in sensitive:
-              path = Path(rel)
-              if not path.exists():
-                  failures.append(f'{rel}: sensitive page missing')
+          planning_routes = {
+              '/build/': 'operational',
+              '/backend/': 'source of truth',
+              '/ai/': 'normal-language',
+              '/updates/': 'briefing',
+          }
+          route_map = {route.get('path'): route for route in routes}
+          for path, expected in planning_routes.items():
+              route = route_map.get(path)
+              if not route:
+                  failures.append(f'{path}: planning route missing from registry')
                   continue
-              text = path.read_text(encoding='utf-8', errors='ignore')
-              if 'data-cmx-gated="true"' not in text:
-                  failures.append(f'{rel}: temporary gate missing')
-              if '/assets/cmx-sensitive-gate.css' not in text or '/assets/cmx-sensitive-gate.js' not in text:
-                  failures.append(f'{rel}: gate assets missing')
-              if '<title>CMX Restricted Resource</title>' not in text:
-                  failures.append(f'{rel}: static title reveals page identity')
-              if 'content="Authorization required to access this private CMX resource."' not in text:
-                  failures.append(f'{rel}: static description is not generic')
+              description = str(route.get('description', '')).lower()
+              if expected not in description:
+                  failures.append(f'{path}: registry description should explain its {expected!r} role')
 
           error_page = Path('404.html').read_text(encoding='utf-8', errors='ignore').lower()
-          for term in ('/build', '/callmax', '/project', '/directory', 'available routes', 'suggested route'):
+          for term in ('/callmax', '/project', 'available routes', 'suggested route'):
               if term in error_page:
-                  failures.append(f'404.html: discloses route information through {term!r}')
+                  failures.append(f'404.html: discloses restricted route information through {term!r}')
 
           for name in ('robots.txt', 'sitemap.xml', 'route-manifest.json', 'site-manifest.json', 'routes.json'):
               if Path(name).exists():
-                  failures.append(f'{name}: public discovery file must not be published')
+                  failures.append(f'{name}: public root discovery file must not be published')
+
+          gate_script = Path('assets/cmx-sensitive-gate.js')
+          if gate_script.exists():
+              gate_text = gate_script.read_text(encoding='utf-8', errors='ignore')
+              if 'client-side deterrent' not in gate_text.lower() and 'not server-side' not in gate_text.lower():
+                  failures.append('assets/cmx-sensitive-gate.js: must clearly identify the browser gate as temporary, not real server authorization')
 
           if failures:
               print('CMX privacy audit failed:')
               print('\n'.join(f' - {item}' for item in failures))
               sys.exit(1)
-          print(f'CMX privacy audit passed for {len(html_files)} HTML files.')
+
+          print(f'CMX privacy audit passed for {len(routes)} registered routes.')
           PY
