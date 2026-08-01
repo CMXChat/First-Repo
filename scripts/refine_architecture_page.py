@@ -1,6 +1,6 @@
 from pathlib import Path
 
-path = Path('architecture/index.html')
+path = Path('assets/cmx-architecture-center.html')
 text = path.read_text(encoding='utf-8')
 
 text = text.replace('data-cmx-version="1.0"', 'data-cmx-version="1.1"')
