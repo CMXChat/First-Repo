@@ -55,11 +55,11 @@ window.CMX_UPDATES = {
       category: 'site',
       status: 'complete',
       title: 'Updates route protected',
-      summary: 'Moved /updates behind the shared CMX authorization gate and removed the retired Crystal project from the repository and update history.',
+      summary: 'Moved /updates behind the shared CMX authorization gate and removed a retired personal page and its files.',
       details: [
         'The update feed now loads only after operator authorization.',
         'The route registry marks /updates as gated and direct-link-only.',
-        'The Crystal page and its dedicated frontend assets were removed.'
+        'The retired page and its dedicated frontend assets were removed.'
       ],
       link: '/updates/',
       linkLabel: 'OPEN /UPDATES',
