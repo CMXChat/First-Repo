@@ -50,33 +50,34 @@ button, input { font: inherit; }
 }
 
 .terminal {
-  width: min(980px, 100%);
+  width: min(900px, 100%);
   margin: 0 auto;
-  padding: clamp(28px, 6vw, 72px) clamp(18px, 5vw, 54px) 56px;
+  padding: clamp(28px, 6vw, 64px) clamp(18px, 5vw, 48px) 56px;
 }
 
 .terminal-header,
 .status,
 .feed,
-.prompt-area { margin-bottom: 42px; }
+.prompt-area { margin-bottom: 34px; }
 
 p, h1, h2, h3 { margin-top: 0; }
-.command-line { margin-bottom: 28px; }
+.command-line { margin-bottom: 24px; }
 .command-line span,
 .prompt { color: var(--dim); }
 
 h1 {
-  margin-bottom: 10px;
-  font-size: clamp(28px, 6vw, 54px);
+  margin-bottom: 8px;
+  font-size: clamp(28px, 6vw, 48px);
   line-height: 1.1;
   letter-spacing: .04em;
 }
 
-.terminal-header p { margin-bottom: 5px; }
+.terminal-header p { margin-bottom: 4px; }
 #summaryLine { color: var(--dim); }
 
 .status { padding-top: 2px; }
 .status h2,
+.feed-label,
 .day-heading {
   margin-bottom: 9px;
   font-size: 14px;
@@ -88,9 +89,10 @@ h1 {
 .status-line { margin: 0; color: var(--dim); }
 .status-line::before { content: "- "; color: var(--white); }
 
-.day-group { margin-bottom: 42px; scroll-margin-top: 24px; }
+.feed-label { color: var(--white); }
+.day-group { margin-bottom: 34px; scroll-margin-top: 24px; }
 .day-heading { color: var(--dim); }
-.entry { margin-bottom: 30px; }
+.entry { margin-bottom: 26px; }
 .entry:last-child { margin-bottom: 0; }
 .entry-meta {
   margin-bottom: 4px;
@@ -140,8 +142,8 @@ footer a { color: var(--dim); }
   .terminal-header,
   .status,
   .feed,
-  .prompt-area { margin-bottom: 34px; }
-  .entry { margin-bottom: 25px; }
+  .prompt-area { margin-bottom: 30px; }
+  .entry { margin-bottom: 22px; }
   .command-form { gap: 7px; }
   .prompt { flex: 0 0 auto; font-size: 12px; }
 }
