@@ -2,293 +2,182 @@
   'use strict';
 
   const data = window.CMX_UPDATES;
-  if (!data || !Array.isArray(data.entries)) return;
+  if (!data) return;
 
-  const feed = document.getElementById('feed');
-  const commandForm = document.getElementById('commandForm');
-  const commandInput = document.getElementById('commandInput');
-  const commandOutput = document.getElementById('commandOutput');
-  const summaryLine = document.getElementById('summaryLine');
+  const $ = selector => document.querySelector(selector);
 
-  const state = { category: 'all', query: '' };
-  const sortedEntries = [...data.entries].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  const categoryIds = new Set((data.categories || []).map(category => category.id));
-  const knownPages = {
-    build: '/build/',
-    backend: '/backend/',
-    ai: '/ai/',
-    architecture: '/architecture/',
-    directory: '/directory/',
-    terminal: '/'
-  };
-
-  function format(timestamp, options) {
-    return new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York',
-      ...options
-    }).format(new Date(timestamp));
+  function escapeHtml(value = '') {
+    const node = document.createElement('div');
+    node.textContent = String(value);
+    return node.innerHTML;
   }
 
-  function dateKey(timestamp) {
-    return format(timestamp, { year: 'numeric', month: '2-digit', day: '2-digit' }).replaceAll('/', '-');
+  function safeLink(url = '') {
+    return typeof url === 'string' && url.startsWith('/') ? url : '#';
   }
 
-  function safeLink(url) {
-    return typeof url === 'string' && (url.startsWith('/') || url.startsWith('https://')) ? url : null;
+  function renderHero() {
+    const node = $('#heroSummary');
+    if (node) node.textContent = data.summary;
   }
 
-  function createLink(linkData) {
-    const url = safeLink(typeof linkData === 'string' ? linkData : linkData?.url);
-    if (!url) return null;
-    const link = document.createElement('a');
-    link.className = 'entry-link';
-    link.href = url;
-    link.textContent = typeof linkData === 'string' ? `open: ${url}` : (linkData.label || `open: ${url}`);
-    if (url.startsWith('https://')) {
-      link.target = '_blank';
-      link.rel = 'noopener';
-    }
-    return link;
-  }
-
-  function renderLinks(container, links = []) {
+  function renderPages() {
+    const container = $('#pageCards');
     if (!container) return;
-    container.textContent = '';
-    links.forEach(linkData => {
-      const link = createLink(linkData);
-      if (link) container.appendChild(link);
-    });
+    container.innerHTML = data.pages.map(page => `
+      <article class="panel page-card">
+        <div class="page-card-top">
+          <code>${escapeHtml(page.route)}</code>
+          <span class="status-chip">${escapeHtml(page.status)}</span>
+        </div>
+        <h3>${escapeHtml(page.name)}</h3>
+        <strong>${escapeHtml(page.role)}</strong>
+        <p>${escapeHtml(page.description)}</p>
+        <a href="${safeLink(page.route)}">Open ${escapeHtml(page.route)}</a>
+      </article>
+    `).join('');
   }
 
-  function renderBrief() {
-    const brief = data.brief || {};
-    document.getElementById('briefSummary').textContent = brief.summary || '';
+  function renderMission() {
+    const container = $('#missionContent');
+    if (!container) return;
+    container.innerHTML = data.mission.map(item => `
+      <article class="prose-card">
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.text)}</p>
+      </article>
+    `).join('');
+  }
 
-    const sections = document.getElementById('briefSections');
-    sections.textContent = '';
-    (brief.sections || []).forEach(section => {
-      const article = document.createElement('article');
-      article.className = 'brief-section';
+  function renderAICapabilities() {
+    const container = $('#aiCapabilities');
+    if (!container) return;
+    container.innerHTML = data.aiCapabilities.map((item, index) => `
+      <article class="panel capability-card">
+        <span class="number-label">${String(index + 1).padStart(2, '0')}</span>
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.text)}</p>
+      </article>
+    `).join('');
+  }
 
-      const label = document.createElement('h3');
-      label.textContent = section.label;
+  function renderApiFamilies() {
+    const container = $('#apiFamilies');
+    if (!container) return;
+    container.innerHTML = data.apiFamilies.map(item => `
+      <article class="api-family-card">
+        <h3>${escapeHtml(item.name)}</h3>
+        <p>${escapeHtml(item.examples)}</p>
+        <a href="${safeLink(item.link)}">Open related blueprint</a>
+      </article>
+    `).join('');
+  }
 
-      const text = document.createElement('p');
-      text.textContent = section.text;
+  function renderWorkflow() {
+    const container = $('#aiWorkflow');
+    if (!container) return;
+    container.innerHTML = data.workflow.map(item => `
+      <article class="panel workflow-step">
+        <span>${escapeHtml(item.step)}</span>
+        <div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.text)}</p></div>
+      </article>
+    `).join('');
+  }
 
-      article.append(label, text);
-      sections.appendChild(article);
-    });
+  function renderConnection() {
+    const map = $('#connectionMap');
+    if (map) {
+      map.innerHTML = data.connection.flow.map((item, index) => `
+        <article class="connection-step">
+          <span>${String(index + 1).padStart(2, '0')}</span>
+          <p>${escapeHtml(item)}</p>
+        </article>
+      `).join('');
+    }
 
-    renderLinks(document.getElementById('briefLinks'), brief.links || []);
+    const examples = $('#connectionExamples');
+    if (examples) {
+      examples.innerHTML = data.connection.examples.map(item => `
+        <article class="example-card">
+          <h3>${escapeHtml(item.title)}</h3>
+          <pre>${escapeHtml(item.code)}</pre>
+          <p>${escapeHtml(item.text)}</p>
+        </article>
+      `).join('');
+    }
+  }
+
+  function renderSecurity() {
+    const allowed = $('#allowedActions');
+    const blocked = $('#blockedActions');
+    if (allowed) {
+      allowed.innerHTML = data.security.allowed.map(item => `<div class="check-item">${escapeHtml(item)}</div>`).join('');
+    }
+    if (blocked) {
+      blocked.innerHTML = data.security.blocked.map(item => `<div class="check-item">${escapeHtml(item)}</div>`).join('');
+    }
+  }
+
+  function renderPhases() {
+    const container = $('#phaseList');
+    if (!container) return;
+    container.innerHTML = data.phases.map(item => `
+      <article class="phase-row">
+        <span class="phase-number">${escapeHtml(item.number)}</span>
+        <div class="phase-copy"><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.text)}</p></div>
+        <span class="phase-state">${escapeHtml(item.state)}</span>
+      </article>
+    `).join('');
   }
 
   function renderStatus() {
-    const status = data.status;
-    document.getElementById('statusTimestamp').textContent = format(status.timestamp, {
-      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
-    });
-    document.getElementById('statusHeadline').textContent = status.headline;
-
-    const lines = document.getElementById('statusLines');
-    lines.textContent = '';
-    (status.lines || []).forEach(text => {
-      const p = document.createElement('p');
-      p.className = 'status-line';
-      p.textContent = text;
-      lines.appendChild(p);
-    });
-
-    renderLinks(document.getElementById('statusLinks'), status.links || []);
+    const container = $('#statusCards');
+    if (!container) return;
+    container.innerHTML = data.status.map(group => `
+      <article class="panel status-card">
+        <div class="status-card-head"><h3>${escapeHtml(group.title)}</h3><span>${escapeHtml(group.state)}</span></div>
+        <div class="status-list">${group.items.map(item => `<div>${escapeHtml(item)}</div>`).join('')}</div>
+      </article>
+    `).join('');
   }
 
-  function visibleEntries() {
-    const query = state.query.trim().toLowerCase();
-    return sortedEntries.filter(entry => {
-      if (state.category !== 'all' && entry.category !== state.category) return false;
-      if (!query) return true;
-      return [entry.title, entry.summary, entry.category, entry.status, ...(entry.details || [])]
-        .join(' ')
-        .toLowerCase()
-        .includes(query);
-    });
+  function formatDate(timestamp) {
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(new Date(timestamp));
   }
 
-  function groupByDate(entries) {
-    return entries.reduce((groups, entry) => {
-      const key = dateKey(entry.timestamp);
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(entry);
-      return groups;
-    }, new Map());
+  function renderChanges() {
+    const container = $('#changeLog');
+    if (!container) return;
+    container.innerHTML = data.changes.map(item => `
+      <article class="panel change-card">
+        <div class="change-meta"><span>${escapeHtml(item.category)}</span><time>${escapeHtml(formatDate(item.timestamp))}</time></div>
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.summary)}</p>
+        <div class="change-links">${item.links.map(link => `<a href="${safeLink(link.url)}">${escapeHtml(link.label)}</a>`).join('')}</div>
+      </article>
+    `).join('');
   }
 
-  function createEntry(entry) {
-    const article = document.createElement('article');
-    article.className = 'entry';
-    article.id = entry.id;
-
-    const meta = document.createElement('p');
-    meta.className = 'entry-meta';
-    const time = format(entry.timestamp, { hour: '2-digit', minute: '2-digit', hour12: false });
-    const pinned = entry.pinned ? ' [PINNED]' : '';
-    meta.textContent = `[${time}] [${String(entry.category).toUpperCase()}] [${String(entry.status).toUpperCase()}]${pinned}`;
-
-    const title = document.createElement('h3');
-    title.textContent = entry.title;
-
-    const summary = document.createElement('p');
-    summary.className = 'entry-summary';
-    summary.textContent = entry.summary;
-
-    article.append(meta, title, summary);
-
-    if (Array.isArray(entry.details) && entry.details.length) {
-      const list = document.createElement('ul');
-      list.className = 'entry-details';
-      entry.details.forEach(detail => {
-        const item = document.createElement('li');
-        item.textContent = detail;
-        list.appendChild(item);
-      });
-      article.appendChild(list);
-    }
-
-    const links = Array.isArray(entry.links)
-      ? entry.links
-      : entry.link
-        ? [{ url: entry.link, label: entry.linkLabel || `open: ${entry.link}` }]
-        : [];
-    if (links.length) {
-      const group = document.createElement('div');
-      group.className = 'link-group';
-      renderLinks(group, links);
-      article.appendChild(group);
-    }
-
-    return article;
+  function init() {
+    renderHero();
+    renderPages();
+    renderMission();
+    renderAICapabilities();
+    renderApiFamilies();
+    renderWorkflow();
+    renderConnection();
+    renderSecurity();
+    renderPhases();
+    renderStatus();
+    renderChanges();
   }
 
-  function renderFeed() {
-    const entries = visibleEntries();
-    const groups = groupByDate(entries);
-    feed.textContent = '';
-
-    const mode = state.category !== 'all' ? `category=${state.category}` : state.query ? `find=${state.query}` : 'all';
-    const noun = sortedEntries.length === 1 ? 'change' : 'changes';
-    summaryLine.textContent = `${entries.length}/${sortedEntries.length} ${noun} shown · ${mode} · type help for commands`;
-
-    if (!entries.length) {
-      const empty = document.createElement('p');
-      empty.className = 'empty-state';
-      empty.textContent = 'No matching changes.';
-      feed.appendChild(empty);
-      return;
-    }
-
-    groups.forEach(dayEntries => {
-      const section = document.createElement('section');
-      section.className = 'day-group';
-      section.id = `day-${dateKey(dayEntries[0].timestamp)}`;
-
-      const heading = document.createElement('h2');
-      heading.className = 'day-heading';
-      heading.textContent = format(dayEntries[0].timestamp, {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-      }).toUpperCase();
-
-      section.appendChild(heading);
-      dayEntries.forEach(entry => section.appendChild(createEntry(entry)));
-      feed.appendChild(section);
-    });
-  }
-
-  function setCategory(category) {
-    if (category !== 'all' && !categoryIds.has(category)) return false;
-    state.category = category;
-    state.query = '';
-    renderFeed();
-    return true;
-  }
-
-  function runCommand(raw) {
-    const command = raw.trim().toLowerCase().replace(/\s+/g, ' ');
-    commandInput.value = '';
-    if (!command) return;
-
-    if (command === 'help') {
-      commandOutput.textContent = 'help · brief · status · all · latest · today · site · tools · research · infrastructure · ai · general · find [word] · open [build|backend|ai|architecture|directory|terminal] · count · clear';
-      return;
-    }
-    if (command === 'clear') {
-      commandOutput.textContent = '';
-      return;
-    }
-    if (command === 'brief') {
-      document.getElementById('brief').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      commandOutput.textContent = 'Showing project brief.';
-      return;
-    }
-    if (command === 'status') {
-      document.getElementById('status').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      commandOutput.textContent = `${data.status.headline}\n${(data.status.lines || []).map(line => `- ${line}`).join('\n')}`;
-      return;
-    }
-    if (command === 'count') {
-      commandOutput.textContent = `${visibleEntries().length} visible · ${sortedEntries.length} total`;
-      return;
-    }
-    if (command === 'latest') {
-      setCategory('all');
-      const first = feed.querySelector('.entry');
-      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      commandOutput.textContent = 'Showing latest change.';
-      return;
-    }
-    if (command === 'today') {
-      setCategory('all');
-      const today = document.getElementById(`day-${dateKey(new Date().toISOString())}`);
-      commandOutput.textContent = today ? 'Showing today.' : 'No changes today.';
-      if (today) today.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-    if (command === 'infra') {
-      setCategory('infrastructure');
-      commandOutput.textContent = 'category=infrastructure';
-      return;
-    }
-    if (setCategory(command)) {
-      commandOutput.textContent = `category=${command}`;
-      return;
-    }
-    if (command.startsWith('find ')) {
-      state.category = 'all';
-      state.query = command.slice(5).trim();
-      renderFeed();
-      commandOutput.textContent = state.query ? `find=${state.query}` : 'Missing search text.';
-      return;
-    }
-    if (command.startsWith('open ')) {
-      const page = command.slice(5).trim();
-      const url = knownPages[page];
-      if (url) {
-        window.location.href = url;
-        return;
-      }
-      commandOutput.textContent = `Unknown page: ${page}`;
-      return;
-    }
-
-    commandOutput.textContent = `command not found: ${command}`;
-  }
-
-  commandForm.addEventListener('submit', event => {
-    event.preventDefault();
-    runCommand(commandInput.value);
-  });
-
-  renderBrief();
-  renderStatus();
-  renderFeed();
-  window.setTimeout(() => commandInput.focus({ preventScroll: true }), 50);
+  document.addEventListener('DOMContentLoaded', init);
 })();
