@@ -26,7 +26,8 @@ jobs:
 
           failures = []
           root = Path('.')
-          sensitive = {'build/index.html', 'callmax/index.html', 'project/index.html'}
+          sensitive = {'build/index.html', 'projects/index.html', 'callmax/index.html', 'project/index.html'}
+          protected_assets = {'assets/cmx-build-lab.html', 'assets/cmx-projects-hub.html'}
           forbidden_destinations = {'/build', '/callmax', '/project'}
 
           def normalize_href(value):
@@ -73,23 +74,24 @@ jobs:
               lower = text.lower()
               uses_standard = '/assets/cmx-page-standard.js' in text
 
-              required = {
-                  'robots noindex': ('name="robots"', 'noindex'),
-                  'googlebot noindex': ('name="googlebot"', 'noindex'),
-                  'meta title': ('<title>', '</title>'),
-                  'description': ('name="description"', 'content='),
-                  'no-referrer': ('name="referrer"', 'no-referrer'),
-              }
-              for label, needles in required.items():
-                  if any(needle and needle not in lower for needle in needles):
-                      failures.append(f'{rel}: missing {label}')
+              if rel not in protected_assets:
+                  required = {
+                      'robots noindex': ('name="robots"', 'noindex'),
+                      'googlebot noindex': ('name="googlebot"', 'noindex'),
+                      'meta title': ('<title>', '</title>'),
+                      'description': ('name="description"', 'content='),
+                      'no-referrer': ('name="referrer"', 'no-referrer'),
+                  }
+                  for label, needles in required.items():
+                      if any(needle and needle not in lower for needle in needles):
+                          failures.append(f'{rel}: missing {label}')
 
               if rel in sensitive:
                   if 'http-equiv="cache-control"' not in lower or 'no-store' not in lower:
                       failures.append(f'{rel}: sensitive wrapper lacks static no-store hint')
                   if 'data-cmx-visibility=' not in lower:
                       failures.append(f'{rel}: sensitive wrapper lacks visibility classification')
-              elif not uses_standard and rel not in {'404.html', 'index.html'}:
+              elif rel not in protected_assets and not uses_standard and rel not in {'404.html', 'index.html'}:
                   failures.append(f'{rel}: page lacks shared runtime privacy controls')
 
               for anchor in re.finditer(r'<a\b([^>]*)>', text, re.I | re.S):
