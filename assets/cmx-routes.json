@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "updated": "2026-08-01",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -11,7 +11,6 @@
     {"path":"/missing/","name":"Missing Person Workflow","description":"Focused missing-person research workflows and search planning.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"5","gated":false},
     {"path":"/search/","name":"Advanced Search","description":"Advanced query builder for names, usernames, websites and evidence searches.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"6","gated":false},
     {"path":"/build/","name":"Build Lab","description":"Route monitoring, project structure and backend deployment planning.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
-    {"path":"/projects/","name":"CMX Projects","description":"Organizational spine for active work, project context, status and next actions.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/architecture/","name":"Architecture & Learning Center","description":"Technical platform map with practical CMX lessons for HTML, JavaScript, FastAPI, Python, databases, AI and deployment.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/updates/","name":"CMX Updates","description":"Private update feed for CMX changes, builds, research and operational notes.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference.","category":"Internal","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
