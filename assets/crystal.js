@@ -11,87 +11,82 @@
   const inventoryMeter = document.getElementById('inventoryMeter');
   const soundToggle = document.getElementById('soundToggle');
 
-  const saveKey = 'crystal-rpg-save-v1';
+  const saveKey = 'crystal-jay-hearing-v2';
   const defaultState = {
     scene: 0,
-    level: 1,
-    inventory: ['attitude'],
-    bossHp: 3,
+    question: 0,
     started: false,
     complete: false,
     sound: false,
-    jewelSequence: []
+    mercy: 0,
+    harsh: 0,
+    matcha: 0,
+    verdictKey: 'pending',
+    verdict: 'PENDING',
+    verdictNote: 'Jay is alive. The hearing has not started.'
+  };
+
+  const verdicts = {
+    soft: {
+      title: 'JAY SURVIVES ON A TECHNICALITY',
+      note: 'Crystal permits continued existence subject to improved behavior, snacks, and no speeches beginning with “technically.”',
+      condition: 'Alive. Grateful. About to ruin it by explaining his side.'
+    },
+    harsh: {
+      title: 'JAY SURVIVES, BUT IN RESTRICTED MODE',
+      note: 'Indoor privileges suspended. Phone monitored by five dogs. The couch has accepted the transfer.',
+      condition: 'Alive. On the couch. Typing a paragraph nobody requested.'
+    },
+    matcha: {
+      title: 'MISTRIAL: MATCHA REFUSED THE PAPERWORK',
+      note: 'Jay survives because the cat could not be bothered. This is the strongest legal defense he had.',
+      condition: 'Alive by feline administrative failure. Deeply humbled, probably temporarily.'
+    }
+  };
+
+  const scenes = {
+    intro: {
+      actions: ['start', 'about'],
+      lines: [
+        ['system', 'Opening CASE 00-JAY...'],
+        ['system', 'Judge detected: Crystal. Subject detected: Jay. State witness detected: Matcha.'],
+        ['story', 'ALLEGATION: being Jay during a complicated emotional period.'],
+        ['story', 'Three questions decide whether he reaches the rest of the page.'],
+        ['system', 'This is a fictional tribunal. Jay has water, legal rights, and several chances to stop talking.'],
+        ['story', 'Type START or press the button.']
+      ]
+    },
+    one: {
+      actions: ['hear him out', 'leave on read', 'ask matcha'],
+      lines: [
+        ['system', 'QUESTION 01/03 // THE LATE-NIGHT MESSAGE'],
+        ['story', 'At 11:47 PM, after being weird all day, Jay sends: “Can we talk?”'],
+        ['story', 'He is visibly typing and deleting. Somehow this makes it worse.'],
+        ['story', 'Choose: HEAR HIM OUT, LEAVE ON READ, or ASK MATCHA.']
+      ]
+    },
+    two: {
+      actions: ['accept apology', 'cross examine', 'order food'],
+      lines: [
+        ['system', 'QUESTION 02/03 // EXHIBIT: THE APOLOGY'],
+        ['story', 'Jay submits an apology. It contains “I’m sorry you feel that way” and, somehow, a paragraph about Jay.'],
+        ['story', 'The court asks everyone to remain calm. This instruction is mostly decorative.'],
+        ['story', 'Choose: ACCEPT APOLOGY, CROSS EXAMINE, or ORDER FOOD.']
+      ]
+    },
+    three: {
+      actions: ['spare jay', 'delete jay', 'let matcha decide'],
+      lines: [
+        ['system', 'QUESTION 03/03 // FINAL SENTENCING'],
+        ['story', 'Jay has survived the evidence stage. Nobody is sure how.'],
+        ['story', 'Does he leave as a boyfriend, a couch resident, or a missing app icon?'],
+        ['story', 'Choose: SPARE JAY, DELETE JAY, or LET MATCHA DECIDE.']
+      ]
+    }
   };
 
   let state = loadState();
   let audioContext = null;
-
-  const scenes = {
-    intro: {
-      actions: ['start', 'help', 'about'],
-      lines: [
-        ['system', 'Booting CRYSTAL STORY ENGINE v1.67...'],
-        ['system', 'Scanning personality data...'],
-        ['success', 'Beauty spot detected. Hair length exceeds standard rendering limits.'],
-        ['system', 'Five canine security units online. Matcha is refusing authentication.'],
-        ['story', 'MISSION: Cross five ridiculous realms and unlock the classified Crystal experience.'],
-        ['story', 'Type START or press the button. Type HELP whenever the plot becomes suspicious.']
-      ]
-    },
-    one: {
-      actions: ['glare', 'prove it', 'walk away', 'status'],
-      lines: [
-        ['system', 'LEVEL 01 // THE HALL OF UNDERESTIMATION'],
-        ['story', 'A badly informed stranger blocks the path.'],
-        ['story', 'STRANGER: “She probably cannot handle it.”'],
-        ['story', 'The room becomes dangerously quiet. Choose: GLARE, PROVE IT, or WALK AWAY.']
-      ]
-    },
-    two: {
-      actions: ['paint flowers', 'cry dramatically', 'make tea', 'status'],
-      lines: [
-        ['system', 'LEVEL 02 // THE GARDEN OF LOUD FEELINGS'],
-        ['story', 'The path is flooded with feelings that ignored the posted capacity limit.'],
-        ['story', 'A blank canvas waits beside an unnecessarily elegant box of tissues.'],
-        ['story', 'Choose: PAINT FLOWERS, CRY DRAMATICALLY, or MAKE TEA.']
-      ]
-    },
-    three: {
-      actions: ['summon matcha', 'deploy dogs', 'offer snacks', 'status'],
-      lines: [
-        ['system', 'LEVEL 03 // THE ANIMAL COUNCIL'],
-        ['story', 'Six animals sit around a table. Five are pleased to see you. One is a cat.'],
-        ['story', 'The council will grant passage only after a display of correct leadership.'],
-        ['story', 'Choose: SUMMON MATCHA, DEPLOY DOGS, or OFFER SNACKS.']
-      ]
-    },
-    four: {
-      actions: ['gold', 'pink', 'black', 'inspect vault'],
-      lines: [
-        ['system', 'LEVEL 04 // THE JEWELRY VAULT'],
-        ['story', 'Three color seals guard the founder’s key. The order is hidden in plain sight.'],
-        ['story', 'Enter the three colors one at a time. Hint: luxury, softness, and the void.'],
-        ['story', 'Available seals: GOLD, PINK, BLACK.']
-      ]
-    },
-    five: {
-      actions: ['block', 'paint', 'summon animals', 'laugh', 'status'],
-      lines: [
-        ['system', 'FINAL LEVEL // HEARTBREAK WITH WI-FI'],
-        ['story', 'A dramatic shadow appears, reconnecting every seven seconds for attention.'],
-        ['story', 'BOSS: “You will never recover from this season finale.”'],
-        ['story', 'Defeat it with BLOCK, PAINT, SUMMON ANIMALS, or LAUGH. Three clean hits required.']
-      ]
-    },
-    finish: {
-      actions: ['unlock', 'status'],
-      lines: [
-        ['success', 'BOSS DEFEATED. Heartbreak has been removed from the trusted network.'],
-        ['reward', 'FINAL REWARD ACQUIRED: the main-character key.'],
-        ['story', 'Type UNLOCK to open the real Crystal experience.']
-      ]
-    }
-  };
 
   function loadState() {
     try {
@@ -106,8 +101,12 @@
     try {
       localStorage.setItem(saveKey, JSON.stringify(state));
     } catch (_) {
-      // The game still works when browser storage is unavailable.
+      // Storage is optional. Poor decisions remain available in memory.
     }
+  }
+
+  function normalize(value) {
+    return value.toLowerCase().trim().replace(/\s+/g, ' ');
   }
 
   function line(type, text, delay = 0) {
@@ -121,7 +120,7 @@
   }
 
   function printLines(lines, startDelay = 0) {
-    lines.forEach(([type, text], index) => line(type, text, startDelay + index * 110));
+    lines.forEach(([type, text], index) => line(type, text, startDelay + index * 95));
   }
 
   function clearLog() {
@@ -135,14 +134,15 @@
       button.type = 'button';
       button.className = 'quick-action';
       button.textContent = action;
+      if (action === 'delete jay') button.dataset.danger = 'true';
       button.addEventListener('click', () => runCommand(action));
       quickActions.appendChild(button);
     });
   }
 
   function updateHud() {
-    levelMeter.textContent = String(state.level).padStart(2, '0');
-    inventoryMeter.textContent = state.inventory.join(' · ');
+    levelMeter.textContent = `${String(state.question).padStart(2, '0')}/03`;
+    inventoryMeter.textContent = state.complete ? state.verdictKey : state.started ? 'deliberating' : 'pending';
     soundToggle.textContent = state.sound ? 'SOUND: ON' : 'SOUND: OFF';
     soundToggle.setAttribute('aria-pressed', String(state.sound));
   }
@@ -153,22 +153,26 @@
     if (shouldClear) clearLog();
     printLines(scene.lines);
     setActions(scene.actions);
-    terminalInput.focus({ preventScroll: true });
     updateHud();
     saveState();
-  }
-
-  function addInventory(item) {
-    if (!state.inventory.includes(item)) state.inventory.push(item);
-  }
-
-  function normalize(value) {
-    return value.toLowerCase().trim().replace(/\s+/g, ' ');
+    window.setTimeout(() => terminalInput.focus({ preventScroll: true }), 50);
   }
 
   function commandEcho(command) {
     line('command', command);
     beep(430, 0.04);
+  }
+
+  function jolt() {
+    gameScreen.classList.remove('terminal-jolt');
+    void gameScreen.offsetWidth;
+    gameScreen.classList.add('terminal-jolt');
+    window.setTimeout(() => gameScreen.classList.remove('terminal-jolt'), 380);
+  }
+
+  function advance(sceneName) {
+    saveState();
+    window.setTimeout(() => setScene(sceneName), 720);
   }
 
   function runCommand(rawCommand) {
@@ -178,7 +182,7 @@
     terminalInput.value = '';
 
     if (['help', '?'].includes(command)) {
-      line('system', 'COMMANDS: use the action buttons or type the exact action. STATUS shows progress. CLEAR clears the terminal. RESET starts over.');
+      line('system', 'Use the buttons or type an exact choice. Other commands: STATUS, JAY, MATCHA, LOVE, SCREENSHOTS, RESET.');
       return;
     }
     if (command === 'clear') {
@@ -190,24 +194,46 @@
       return;
     }
     if (command === 'status') {
-      line('reward', `LEVEL ${state.level} // INVENTORY: ${state.inventory.join(', ')} // BOSS HP: ${state.bossHp}`);
+      line('reward', `QUESTION ${state.question}/3 // JAY: alive // CRYSTAL: considering options // MATCHA: refusing discovery requests`);
       return;
     }
     if (command === 'about') {
-      line('story', 'This game was generated from Crystal’s own paragraph. The terminal is merely the gate.');
+      line('story', 'Crystal wrote one paragraph. Jay somehow became the defendant. This was statistically inevitable.');
       return;
     }
-    if (['murder', 'plan murder', 'murders'].includes(command)) {
-      line('error', 'REQUEST DENIED: Never plan fictional murders out loud. This terminal logs everything. Matcha has already contacted counsel.');
+    if (['murder', 'kill jay', 'plan murder', 'murders'].includes(command)) {
+      line('error', 'Wrong terminal. This one handles fictional relationship admin, not felonies. Try DELETE JAY when the court permits it.');
+      jolt();
       beep(130, 0.1);
       return;
     }
     if (command === 'jay') {
-      line('story', 'JAY STATUS: partner detected. Plot details redacted. Admiration telemetry remains embarrassingly obvious.');
+      const reports = [
+        'JAY STATUS: alive, confused, currently typing and deleting.',
+        'JAY STATUS: preparing a defense that begins with “Okay, but listen.”',
+        'JAY STATUS: checked the page twice to see whether the verdict changed.'
+      ];
+      line('story', reports[Math.floor(Math.random() * reports.length)]);
       return;
     }
     if (command === 'matcha') {
-      line('story', 'MATCHA: “I have reviewed the evidence and decline to comment.”');
+      line('story', 'MATCHA: “I read the screenshots. Both of you require supervision.”');
+      return;
+    }
+    if (command === 'love') {
+      line('error', 'LOVE DETECTED. Annoying. Case is now significantly harder to prosecute.');
+      return;
+    }
+    if (command === 'screenshots') {
+      line('story', '47 attachments found. The court has cancelled lunch and one future friendship.');
+      return;
+    }
+    if (command === 'sorry') {
+      line('story', 'The word was received. Evidence of changed behavior is still buffering.');
+      return;
+    }
+    if (command === 'lawyer') {
+      line('story', 'COUNSEL ASSIGNED: Matcha. Retainer: one tuna pouch. Confidentiality: nonexistent.');
       return;
     }
 
@@ -215,140 +241,93 @@
       if (command === 'start') {
         state.started = true;
         state.scene = 1;
-        state.level = 1;
+        state.question = 1;
         setScene('one');
       } else {
-        line('error', 'Unknown pre-adventure command. Try START, HELP, or ABOUT.');
+        line('error', 'The hearing has not started. Try START. Jay would like the delay noted for the record. Denied.');
       }
       return;
     }
 
     if (state.scene === 1) {
-      if (['glare', 'prove it', 'walk away'].includes(command)) {
-        const responses = {
-          'glare': 'Critical hit. No words used. The stranger remembers an urgent appointment elsewhere.',
-          'prove it': 'You complete the impossible task while maintaining aggressive eye contact.',
-          'walk away': 'You conserve energy. The stranger is left alone with their own poor judgment.'
-        };
+      const responses = {
+        'hear him out': 'Against counsel’s advice, Jay is allowed to speak. He opens with “Basically...” and uses 600 words to avoid one noun.',
+        'leave on read': 'The message remains on delivered long enough to qualify for residency.',
+        'ask matcha': 'Matcha reads one screenshot, knocks the phone off the table, and bills Crystal for a full consultation.'
+      };
+      if (responses[command]) {
         line('success', responses[command]);
-        addInventory('underrated rage');
+        if (command === 'hear him out') state.mercy += 1;
+        if (command === 'leave on read') state.harsh += 1;
+        if (command === 'ask matcha') state.matcha += 1;
         state.scene = 2;
-        state.level = 2;
-        saveState();
-        window.setTimeout(() => setScene('two'), 900);
+        state.question = 2;
+        advance('two');
       } else {
-        line('error', 'That will not move this particular fool. Try GLARE, PROVE IT, or WALK AWAY.');
+        line('error', 'The court stares at you. Choose HEAR HIM OUT, LEAVE ON READ, or ASK MATCHA.');
       }
       return;
     }
 
     if (state.scene === 2) {
-      if (['paint flowers', 'cry dramatically', 'make tea'].includes(command)) {
-        const responses = {
-          'paint flowers': 'The feelings become petals. The canvas gains +20 emotional range.',
-          'cry dramatically': 'Valid move. The flood recedes after recognizing professional competition.',
-          'make tea': 'A tactical pause restores perspective and exactly zero patience.'
-        };
+      const responses = {
+        'accept apology': 'Suspiciously mature. The prosecution checks whether Crystal has been replaced by a polite duplicate.',
+        'cross examine': 'Question one: how are men bad at texting but never bad at finding the exact reel they want?',
+        'order food': 'Proceedings pause. Justice on an empty stomach is just irritability with paperwork.'
+      };
+      if (responses[command]) {
         line('success', responses[command]);
-        addInventory('painted flower');
+        if (command === 'accept apology') state.mercy += 1;
+        if (command === 'cross examine') state.harsh += 1;
+        if (command === 'order food') state.matcha += 1;
         state.scene = 3;
-        state.level = 3;
-        saveState();
-        window.setTimeout(() => setScene('three'), 900);
+        state.question = 3;
+        advance('three');
       } else {
-        line('error', 'The garden ignores that command. Try PAINT FLOWERS, CRY DRAMATICALLY, or MAKE TEA.');
+        line('error', 'Objection: irrelevant. Choose ACCEPT APOLOGY, CROSS EXAMINE, or ORDER FOOD.');
       }
       return;
     }
 
     if (state.scene === 3) {
-      if (['summon matcha', 'deploy dogs', 'offer snacks'].includes(command)) {
-        const responses = {
-          'summon matcha': 'Matcha appears, signs nothing, and somehow approves the motion.',
-          'deploy dogs': 'Five security units surround the table. Democracy becomes efficient.',
-          'offer snacks': 'Unanimous approval. Even Matcha abstains less judgmentally.'
-        };
+      const responses = {
+        'spare jay': 'Jay is spared. This is not forgiveness. It is budget-conscious mercy.',
+        'delete jay': 'DELETE request accepted by the interface and rejected by every adult institution. Sentence converted to couch exile.',
+        'let matcha decide': 'Matcha looks at Jay, looks at Crystal, and leaves. Mistrial. Nobody feels cleared.'
+      };
+      if (responses[command]) {
         line('success', responses[command]);
-        addInventory('animal council seal');
-        state.scene = 4;
-        state.level = 4;
-        state.jewelSequence = [];
-        saveState();
-        window.setTimeout(() => setScene('four'), 900);
-      } else {
-        line('error', 'The council stares. Try SUMMON MATCHA, DEPLOY DOGS, or OFFER SNACKS.');
-      }
-      return;
-    }
-
-    if (state.scene === 4) {
-      if (command === 'inspect vault') {
-        line('story', `SEALS ENTERED: ${state.jewelSequence.length ? state.jewelSequence.join(' → ') : 'none'}`);
-        return;
-      }
-      if (['gold', 'pink', 'black'].includes(command)) {
-        const expected = ['gold', 'pink', 'black'];
-        const expectedColor = expected[state.jewelSequence.length];
-        if (command === expectedColor) {
-          state.jewelSequence.push(command);
-          line('success', `${command.toUpperCase()} seal accepted.`);
-          beep(640 + state.jewelSequence.length * 80, 0.07);
-          if (state.jewelSequence.length === 3) {
-            addInventory('founder key');
-            state.scene = 5;
-            state.level = 5;
-            saveState();
-            window.setTimeout(() => setScene('five'), 900);
-          } else {
-            saveState();
-          }
-        } else {
-          state.jewelSequence = [];
-          saveState();
-          line('error', 'The vault flashes pink in disappointment. Sequence reset. Try GOLD first.');
+        if (command === 'spare jay') state.mercy += 3;
+        if (command === 'delete jay') {
+          state.harsh += 3;
+          jolt();
         }
+        if (command === 'let matcha decide') state.matcha += 3;
+        finishHearing();
       } else {
-        line('error', 'The vault accepts only GOLD, PINK, BLACK, or INSPECT VAULT.');
+        line('error', 'Final choices only: SPARE JAY, DELETE JAY, or LET MATCHA DECIDE. The court has plans later.');
       }
-      return;
     }
+  }
 
-    if (state.scene === 5) {
-      if (['block', 'paint', 'summon animals', 'laugh'].includes(command)) {
-        const attacks = {
-          'block': 'Access revoked. The boss loses one channel of unnecessary communication.',
-          'paint': 'You paint over the boss with flowers. It objects to the composition.',
-          'summon animals': 'Five dogs attack its confidence. Matcha attacks its legal position.',
-          'laugh': 'The boss cannot survive being treated like a badly written subplot.'
-        };
-        state.bossHp = Math.max(0, state.bossHp - 1);
-        line('success', `${attacks[command]} BOSS HP: ${state.bossHp}/3`);
-        beep(220 - state.bossHp * 25, 0.13);
-        if (state.bossHp === 0) {
-          addInventory('main-character key');
-          state.scene = 6;
-          state.level = 6;
-          state.complete = true;
-          saveState();
-          window.setTimeout(() => setScene('finish'), 1000);
-        } else {
-          saveState();
-        }
-      } else {
-        line('error', 'The boss survives that. Try BLOCK, PAINT, SUMMON ANIMALS, or LAUGH.');
-      }
-      return;
-    }
-
-    if (state.scene >= 6) {
-      if (command === 'unlock') {
-        line('success', 'ACCESS GRANTED. Rendering Crystal beyond the paragraph...');
-        beep(880, 0.18);
-        window.setTimeout(showReveal, 850);
-      } else {
-        line('error', 'The final door is waiting for one command: UNLOCK.');
-      }
-    }
+  function finishHearing() {
+    const maxScore = Math.max(state.mercy, state.harsh, state.matcha);
+    state.verdictKey = state.matcha === maxScore ? 'matcha' : state.harsh === maxScore ? 'harsh' : 'soft';
+    const verdict = verdicts[state.verdictKey];
+    state.verdict = verdict.title;
+    state.verdictNote = verdict.note;
+    state.scene = 4;
+    state.question = 3;
+    state.complete = true;
+    saveState();
+    updateHud();
+    setActions([]);
+    line('system', 'Calculating sentence...', 520);
+    line('reward', verdict.title, 900);
+    line('story', verdict.note, 1140);
+    line('system', 'Opening the Crystal file before Jay appeals...', 1450);
+    beep(820, 0.15);
+    window.setTimeout(showReveal, 2200);
   }
 
   function resetGame() {
@@ -357,37 +336,49 @@
     } catch (_) {
       // Continue with an in-memory reset.
     }
-    state = { ...defaultState, inventory: ['attitude'], jewelSequence: [] };
+    state = { ...defaultState };
     clearLog();
     setScene('intro', false);
   }
 
   function restoreScene() {
     updateHud();
+    if (state.complete) {
+      window.setTimeout(showReveal, 80);
+      return;
+    }
     if (!state.started || state.scene === 0) setScene('intro');
     else if (state.scene === 1) setScene('one');
     else if (state.scene === 2) setScene('two');
-    else if (state.scene === 3) setScene('three');
-    else if (state.scene === 4) setScene('four');
-    else if (state.scene === 5) setScene('five');
-    else setScene('finish');
+    else setScene('three');
+  }
+
+  function applyVerdict() {
+    const verdict = verdicts[state.verdictKey] || verdicts.soft;
+    document.getElementById('caseVerdict').textContent = verdict.title;
+    document.getElementById('caseVerdictNote').textContent = verdict.note;
+    document.getElementById('jayCondition').textContent = verdict.condition;
+    reveal.classList.remove('verdict-soft', 'verdict-harsh', 'verdict-matcha');
+    reveal.classList.add(`verdict-${state.verdictKey === 'pending' ? 'soft' : state.verdictKey}`);
   }
 
   function showReveal() {
+    applyVerdict();
     gameScreen.hidden = true;
     reveal.hidden = false;
     document.body.classList.add('reveal-active');
     window.scrollTo(0, 0);
     observeSections();
-    burstConfetti(70);
+    burstConfetti(state.verdictKey === 'harsh' ? 34 : 48);
   }
 
-  function showGame() {
+  function showGame(reset = false) {
+    if (reset) resetGame();
     reveal.hidden = true;
     gameScreen.hidden = false;
     document.body.classList.remove('reveal-active');
     window.scrollTo(0, 0);
-    restoreScene();
+    if (!reset) restoreScene();
     window.setTimeout(() => terminalInput.focus(), 80);
   }
 
@@ -424,10 +415,9 @@
   });
 
   document.getElementById('resetGame').addEventListener('click', resetGame);
-  document.getElementById('replayGame').addEventListener('click', showGame);
+  document.getElementById('replayGame').addEventListener('click', () => showGame(true));
   document.getElementById('backToTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-  // Reveal interactions
   let toastTimer = null;
   function toast(message) {
     const toastEl = document.getElementById('toast');
@@ -438,12 +428,12 @@
   }
 
   const animalReports = {
-    'Dog One': 'SECURITY 01 REPORT: Perimeter secure. A delivery person was observed and defeated with noise.',
-    'Dog Two': 'SECURITY 02 REPORT: Snack inventory is critically low according to a completely unbiased audit.',
-    'Dog Three': 'SECURITY 03 REPORT: Emotional backup online. Lap capacity may exceed manufacturer guidance.',
-    'Matcha': 'MATCHA REPORT: Everyone is behaving incorrectly. No further questions.',
-    'Dog Four': 'SECURITY 04 REPORT: Hair department confirms Crystal remains the senior specialist.',
-    'Dog Five': 'SECURITY 05 REPORT: Route to recovery identified. It includes several unnecessary stops for treats.'
+    'Dog One': 'WITNESS 01: Jay moved near the door. I barked. Investigation complete.',
+    'Dog Two': 'WITNESS 02: I will change my testimony for cheese. This is called transparency.',
+    'Dog Three': 'WITNESS 03: Crystal cried. I sat nearby. Jay attempted words. I advised against it.',
+    'Matcha': 'MATCHA: I read the messages. Both parties need adult supervision. I am unavailable.',
+    'Dog Four': 'WITNESS 04: Hair remains excellent. Jay’s explanation does not.',
+    'Dog Five': 'WITNESS 05: I know where Jay sleeps. For legal reasons, this is route-planning information.'
   };
 
   document.querySelectorAll('.animal-card').forEach(card => {
@@ -500,6 +490,7 @@
     garden.querySelectorAll('.planted-flower').forEach(flower => flower.remove());
     const instruction = garden.querySelector('.garden-instruction');
     if (instruction) instruction.hidden = false;
+    toast('Evidence removed. The flowers know what they saw.');
   });
 
   const necklace = document.getElementById('necklace');
@@ -513,16 +504,17 @@
   });
 
   const pieceNames = {
-    regal: ['The Main Character', 'Crown Without Permission', 'The Unbothered Heirloom'],
-    soft: ['Soft Menace', 'Petals After Midnight', 'The Quiet Comeback'],
-    chaos: ['Beautiful Threat', 'Matcha Made Me Do It', 'The Short Temper Collection']
+    regal: ['Probable Cause', 'Expensive Enough to Forgive Nothing', 'The Last Nerve'],
+    soft: ['I Said I’m Fine', 'Gentle Threat', 'The Apology Pending'],
+    chaos: ['Exhibit A', 'Never Put That in Writing', 'Matcha Has the Screenshots']
   };
+
   document.getElementById('namePiece').addEventListener('click', () => {
     const names = pieceNames[selected.mood];
     const name = names[Math.floor(Math.random() * names.length)];
     document.getElementById('pieceName').textContent = name;
-    toast(`Prototype named: ${name}`);
-    burstConfetti(18);
+    toast(`Evidence labeled: ${name}`);
+    burstConfetti(14);
   });
 
   const dreamModal = document.getElementById('dreamModal');
@@ -570,8 +562,8 @@
 
   function controlledChaos() {
     reveal.classList.add('chaos-flash');
-    burstConfetti(55);
-    toast('Controlled chaos released. Nobody was consulted.');
+    burstConfetti(48);
+    toast('Jay has started apologizing preemptively.');
     window.setTimeout(() => reveal.classList.remove('chaos-flash'), 1000);
   }
 
