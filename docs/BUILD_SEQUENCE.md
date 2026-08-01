@@ -4,34 +4,39 @@ This file records the approved order for the current static-to-backend project.
 
 ## 1. Central Route Registry
 
-Status: In progress
+Status: Complete
 
 - Maintain all route names, descriptions, categories, statuses, visibility rules and Directory inclusion in `assets/cmx-routes.json`.
 - Use `assets/cmx-route-registry.js` as the shared browser loader.
-- The Operations Directory must render from the registry.
-- The Build Lab route table must also render from the registry.
+- The Operations Directory renders from the registry.
+- The Build Lab route table renders from the registry.
 - New pages and route changes should update the registry first.
 
-## 2. Operator Handbook
+## 2. Architecture & Learning Center
+
+Status: Active build
+
+Maintain `/architecture/` as the central technical map and practical learning center for the CMX restricted node platform.
+
+It should serve two audiences without forcing either through unnecessary material:
+
+- Technical readers receive a fast architecture map, technology layers, delivery flow and decision guide.
+- Learning readers can open expandable examples explaining how HTML, JavaScript, FastAPI, Python, PostgreSQL, AI, Linux, Docker, Cloudflare and controlled MCP workflows connect.
+
+The lessons should use realistic CMX projects and outcomes instead of becoming a generic programming course.
+
+## 3. Shared Blue Design System
 
 Status: Next
 
-Create `/handbook/` as the main reference for routes, workflows, naming standards, GitHub branches, staging, approvals, deployment, Python, Linux, FastAPI and future MCP use.
-
-## 3. Architecture Map
-
-Status: Planned
-
-Create `/architecture/` showing the approved path from GitHub through staging, production approval, Linux, Docker, FastAPI, PostgreSQL, Cloudflare Tunnel and Cloudflare Access.
-
-## 4. Shared Blue Design System
-
-Status: Planned
-
 Centralize the root terminal's blue interface tokens, panels, buttons, badges, window bars and responsive behavior, then apply them gradually across approved pages.
 
-## 5. Changelog and Readiness
+## 4. Changelog
 
 Status: Planned
 
-Create a readable project change history and a manually maintained deployment-readiness view without browser-only persistence or simulated backend controls.
+Create a readable project change history showing dates, affected pages, decisions and meaningful implementation notes.
+
+## Deferred: Operator Handbook
+
+No handbook page is currently approved. Operating instructions can remain inside the Build Lab, repository documentation and relevant architecture sections until the project becomes complex enough to justify a separate handbook.
