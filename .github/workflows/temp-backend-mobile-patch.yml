@@ -1,0 +1,35 @@
+name: Temporary Backend Mobile Patch
+
+on:
+  push:
+    branches:
+      - agent/fix-backend-mobile-overflow
+    paths:
+      - '.backend-mobile-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/fix-backend-mobile-overflow
+
+      - name: Link Backend mobile stylesheet
+        run: python scripts/patch_backend_mobile.py
+
+      - name: Commit patched Backend page
+        run: |
+          if git diff --quiet; then
+            echo "No Backend page changes were required."
+            exit 0
+          fi
+          git config user.name "cmx-backend-mobile-fix"
+          git config user.email "actions@users.noreply.github.com"
+          git add backend/index.html
+          git commit -m "Link Backend mobile overflow fixes"
+          git push origin HEAD:agent/fix-backend-mobile-overflow
