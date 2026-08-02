@@ -1,25 +1,29 @@
 (() => {
   'use strict';
 
-  const cacheToken = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const originalFetch = window.fetch.bind(window);
 
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = `${src}${src.includes('?') ? '&' : '?'}v=${encodeURIComponent(cacheToken)}`;
-      script.async = false;
-      script.referrerPolicy = 'no-referrer';
-      script.addEventListener('load', resolve, { once: true });
-      script.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)), { once: true });
-      document.head.appendChild(script);
-    });
-  }
+  window.fetch = async (input, init) => {
+    const response = await originalFetch(input, init);
+    const requestUrl = typeof input === 'string' ? input : input?.url || '';
 
-  loadScript('/assets/news-data.js')
-    .then(() => loadScript('/assets/news.js'))
-    .catch(error => {
-      const target = document.getElementById('briefSummary');
-      if (target) target.textContent = 'The latest briefing could not be loaded. Refresh the page and try again.';
-      console.error(error);
+    if (!requestUrl.includes('/assets/cmx-news.html')) return response;
+
+    const token = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const html = await response.text();
+    const refreshedHtml = html
+      .replace(/\/assets\/news-data\.js(?:\?[^"']*)?/g, `/assets/news-data.js?v=${token}`)
+      .replace(/\/assets\/news\.js(?:\?[^"']*)?/g, `/assets/news.js?v=${token}`);
+
+    const headers = new Headers(response.headers);
+    headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    headers.set('Pragma', 'no-cache');
+    headers.set('Expires', '0');
+
+    return new Response(refreshedHtml, {
+      status: response.status,
+      statusText: response.statusText,
+      headers
     });
+  };
 })();
