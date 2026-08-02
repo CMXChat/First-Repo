@@ -13,8 +13,8 @@
     const html = await response.text();
     const refreshedHtml = html
       .replace(/\/assets\/news-data\.js(?:\?[^"']*)?/g, `/assets/news-data.js?v=${token}`)
+      .replace(/(<script src="\/assets\/news-data\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/daily-song.js?v=${token}" defer></script>`)
       .replace(/\/assets\/daily-video\.js(?:\?[^"']*)?/g, `/assets/daily-video.js?v=${token}`)
-      .replace(/(<script src="\/assets\/daily-video\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-song-final.js?v=${token}" defer></script>`)
       .replace(/\/assets\/news\.js(?:\?[^"']*)?/g, `/assets/news.js?v=${token}`)
       .replace(/\/assets\/news-media\.js(?:\?[^"']*)?/g, `/assets/news-media.js?v=${token}`);
 
