@@ -4,7 +4,7 @@
   const root = document.documentElement;
   const PASSWORD_SHA256 = String(root.dataset.cmxPasswordSha256 || '').toLowerCase();
   const SOURCE_URL = root.dataset.cmxLoadUrl || '/assets/cmx-news.html';
-  const FALLBACK_PREVIEW = 'https://p.scdn.co/mp3-preview/9c0b4d2e32560e295b5770138abd247f08c7bba9.mp3';
+  const EVERYWHERE_PREVIEW = 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/a2/79/75/a27975f9-de23-390f-8169-5401435f17e7/mzaf_8477868711916941859.plus.aac.p.m4a';
   const ITUNES_LOOKUP = 'https://itunes.apple.com/lookup?id=202272247';
 
   const audio = document.createElement('audio');
@@ -12,11 +12,12 @@
   audio.preload = 'auto';
   audio.hidden = true;
   audio.volume = 0.001;
-  audio.src = FALLBACK_PREVIEW;
+  audio.src = EVERYWHERE_PREVIEW;
+  audio.dataset.song = 'Everywhere · Fleetwood Mac';
   root.appendChild(audio);
 
-  let preparedPreview = FALLBACK_PREVIEW;
-  let previewPrepared = false;
+  let preparedPreview = EVERYWHERE_PREVIEW;
+  let previewPrepared = true;
   let primePromise = Promise.resolve();
 
   async function sha256(value) {
@@ -36,14 +37,17 @@
       const response = await fetch(ITUNES_LOOKUP, { cache: 'no-store', mode: 'cors' });
       if (!response.ok) throw new Error(`Preview lookup returned ${response.status}`);
       const payload = await response.json();
-      const preview = payload?.results?.[0]?.previewUrl;
+      const result = payload?.results?.find(item => Number(item?.trackId) === 202272247);
+      const preview = result?.previewUrl;
       if (typeof preview === 'string' && /^https:\/\//.test(preview)) {
         preparedPreview = preview;
         previewPrepared = true;
         if (audio.dataset.primed !== 'true') audio.src = preparedPreview;
       }
     } catch {
-      preparedPreview = FALLBACK_PREVIEW;
+      preparedPreview = EVERYWHERE_PREVIEW;
+      previewPrepared = true;
+      if (audio.dataset.primed !== 'true') audio.src = preparedPreview;
     }
   }
 
@@ -108,8 +112,8 @@
 
     const update = () => {
       const playing = !audio.paused && !audio.ended;
-      button.textContent = playing ? 'Pause today’s song' : 'Play today’s song';
-      button.setAttribute('aria-label', playing ? 'Pause today’s song' : 'Play today’s song');
+      button.textContent = playing ? 'Pause Everywhere' : 'Play Everywhere';
+      button.setAttribute('aria-label', playing ? 'Pause Everywhere by Fleetwood Mac' : 'Play Everywhere by Fleetwood Mac');
       button.setAttribute('aria-pressed', playing ? 'true' : 'false');
     };
 
@@ -171,7 +175,11 @@
 
     installHeroMusicControl();
     window.dispatchEvent(new CustomEvent('news:audio-ready', {
-      detail: { autoplay: audio.dataset.autoplay || 'unknown', previewPrepared }
+      detail: {
+        autoplay: audio.dataset.autoplay || 'unknown',
+        previewPrepared,
+        song: audio.dataset.song
+      }
     }));
   }
 
@@ -187,7 +195,7 @@
           <div class="cmx-gate-brand"><div class="cmx-gate-emblem">J+C</div><div><small>PRIVATE DAILY BRIEF</small><strong>CREATION DAY</strong></div></div>
           <p class="cmx-gate-code">BROOKLYN // WAIKATO</p>
           <h1 id="cmx-gate-title">Open today’s briefing</h1>
-          <p class="cmx-gate-copy">Enter the passphrase. Today’s uplifting song will begin as the page opens.</p>
+          <p class="cmx-gate-copy">Enter the passphrase. Fleetwood Mac’s “Everywhere” will begin as the page opens.</p>
           <form id="cmx-gate-form" autocomplete="off">
             <label for="cmx-gate-password">Passphrase</label>
             <div class="cmx-gate-inputrow">
@@ -196,7 +204,7 @@
             </div>
             <p id="cmx-gate-message" role="status" aria-live="polite"></p>
           </form>
-          <div class="cmx-gate-footer"><span>PRIVATE</span><span>DAILY SONG ENABLED</span></div>
+          <div class="cmx-gate-footer"><span>PRIVATE</span><span>EVERYWHERE ENABLED</span></div>
         </div>
       </section>`;
     document.body.replaceChildren(gate);
