@@ -31,6 +31,14 @@
     }
   });
 
+  if (currentPath === '/architecture') {
+    const architectureFooterExclusions = new Set(['/', '/directory']);
+    document.querySelectorAll('.links a[href]').forEach((anchor) => {
+      const destination = sameOriginPath(anchor.getAttribute('href'));
+      if (destination && architectureFooterExclusions.has(destination)) anchor.remove();
+    });
+  }
+
   if (root.dataset.cmxStandard === 'off' || document.querySelector('.cmx-standard-bar')) return;
 
   const title = root.dataset.cmxTitle || document.title.replace(/^CMX\s*[·•—-]?\s*/i, '').trim() || 'Private Resource';
