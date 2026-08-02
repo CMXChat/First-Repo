@@ -4,40 +4,20 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BLOCKED_PATHS = {"/", "/directory", "/directory/"}
-
-ANCHOR_PATTERN = re.compile(r"<a\b(?P<attrs>[^>]*)>(?P<body>.*?)</a>", re.IGNORECASE | re.DOTALL)
-HREF_PATTERN = re.compile(r"\bhref\s*=\s*([\"'])(?P<href>[^\"']+)\1", re.IGNORECASE)
-REMOVE_ATTR_PATTERN = re.compile(
-    r"\s+(?:href|target|rel|aria-label)\s*=\s*([\"'])[^\"']*\1",
-    re.IGNORECASE,
-)
 
 
-def normalized_path(href: str) -> str | None:
-    value = href.strip()
-    if value.startswith("https://db.cmxchat.com"):
-        value = value.removeprefix("https://db.cmxchat.com") or "/"
-    if not value.startswith("/"):
-        return None
-    path = value.split("?", 1)[0].split("#", 1)[0]
-    return path if path == "/" else path.rstrip("/")
-
-
-def unlink_anchor(match: re.Match[str]) -> str:
-    attrs = match.group("attrs")
-    body = match.group("body")
-    href_match = HREF_PATTERN.search(attrs)
-    if not href_match:
-        return match.group(0)
-
-    target = normalized_path(href_match.group("href"))
-    if target not in {"/", "/directory"}:
-        return match.group(0)
-
-    cleaned_attrs = REMOVE_ATTR_PATTERN.sub("", attrs)
-    cleaned_attrs = re.sub(r"\s+", " ", cleaned_attrs).rstrip()
-    return f"<span{cleaned_attrs}>{body}</span>"
+def unlink_static_targets(text: str) -> str:
+    replacements = {
+        'href="/"': 'data-cmx-unlinked="/"',
+        "href='/'": "data-cmx-unlinked='/'",
+        'href="/directory"': 'data-cmx-unlinked="/directory"',
+        "href='/directory'": "data-cmx-unlinked='/directory'",
+        'href="/directory/"': 'data-cmx-unlinked="/directory/"',
+        "href='/directory/'": "data-cmx-unlinked='/directory/'",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
 
 
 def clean_html(path: Path, text: str) -> str:
@@ -63,12 +43,11 @@ def clean_html(path: Path, text: str) -> str:
             flags=re.IGNORECASE | re.DOTALL,
         )
 
-    return ANCHOR_PATTERN.sub(unlink_anchor, text)
+    return unlink_static_targets(text)
 
 
 def clean_standard_js(text: str) -> str:
-    marker = "const blockedNavigationDestinations = new Set(['/', '/directory']);"
-    if marker not in text:
+    if "const blockedNavigationDestinations" not in text:
         text = text.replace(
             "  const sensitiveRoutes = new Set(['/build', '/callmax', '/project']);",
             "  const sensitiveRoutes = new Set(['/build', '/callmax', '/project']);\n"
@@ -103,14 +82,12 @@ def clean_standard_js(text: str) -> str:
 """
 
     new_loop = """  function unlinkAnchor(anchor) {
-    const replacement = document.createElement('span');
-    for (const attribute of anchor.attributes) {
-      if (!['href', 'target', 'rel', 'aria-label'].includes(attribute.name)) {
-        replacement.setAttribute(attribute.name, attribute.value);
-      }
-    }
-    replacement.innerHTML = anchor.innerHTML;
-    anchor.replaceWith(replacement);
+    const destination = anchor.getAttribute('href') || '';
+    anchor.removeAttribute('href');
+    anchor.removeAttribute('target');
+    anchor.removeAttribute('rel');
+    anchor.removeAttribute('aria-label');
+    anchor.dataset.cmxUnlinked = destination;
   }
 
   function enforceNavigationPolicy(scope = document) {
@@ -134,9 +111,7 @@ def clean_standard_js(text: str) -> str:
         else unlinkAnchor(anchor);
         return;
       }
-      if (removedRoutes.has(destination) || sensitiveRoutes.has(destination)) {
-        anchor.remove();
-      }
+      if (removedRoutes.has(destination) || sensitiveRoutes.has(destination)) anchor.remove();
     });
   }
 
@@ -171,28 +146,7 @@ def clean_apply_standards(text: str) -> str:
         '',
     )
 
-    helper = r'''
-
-def unlink_root_directory_anchors(text: str) -> str:
-    anchor_pattern = re.compile(r"<a\b(?P<attrs>[^>]*)>(?P<body>.*?)</a>", flags=re.I | re.S)
-    href_pattern = re.compile(r"\bhref\s*=\s*([\"'])(?P<href>[^\"']+)\1", flags=re.I)
-    remove_attrs = re.compile(r"\s+(?:href|target|rel|aria-label)\s*=\s*([\"'])[^\"']*\1", flags=re.I)
-
-    def replace(match: re.Match[str]) -> str:
-        attrs = match.group("attrs")
-        href_match = href_pattern.search(attrs)
-        if not href_match:
-            return match.group(0)
-        href = href_match.group("href").split("?", 1)[0].split("#", 1)[0]
-        normalized = href if href == "/" else href.rstrip("/")
-        if normalized not in {"/", "/directory"}:
-            return match.group(0)
-        cleaned = remove_attrs.sub("", attrs)
-        cleaned = re.sub(r"\s+", " ", cleaned).rstrip()
-        return f"<span{cleaned}>{match.group('body')}</span>"
-
-    return anchor_pattern.sub(replace, text)
-'''
+    helper = '''\n\ndef unlink_root_directory_anchors(text: str) -> str:\n    replacements = {\n        'href="/"': 'data-cmx-unlinked="/"',\n        "href='/\'": "data-cmx-unlinked='/\'",\n        'href="/directory"': 'data-cmx-unlinked="/directory"',\n        "href='/directory'": "data-cmx-unlinked='/directory'",\n        'href="/directory/"': 'data-cmx-unlinked="/directory/"',\n        "href='/directory/'": "data-cmx-unlinked='/directory/'",\n    }\n    for old, new in replacements.items():\n        text = text.replace(old, new)\n    return text\n'''
 
     if "def unlink_root_directory_anchors" not in text:
         text = text.replace("\ndef improve_404(text: str) -> str:\n", helper + "\ndef improve_404(text: str) -> str:\n")
@@ -216,7 +170,8 @@ def clean_build_js(text: str) -> str:
 
 
 def clean_updates_js(text: str) -> str:
-    if "data.pages.filter(page => !['/', '/directory/', '/directory'].includes(page.route)).map(page =>" not in text:
+    expected = "data.pages.filter(page => !['/', '/directory/', '/directory'].includes(page.route)).map(page =>"
+    if expected not in text:
         text = text.replace(
             "container.innerHTML = data.pages.map(page => `",
             "container.innerHTML = data.pages.filter(page => !['/', '/directory/', '/directory'].includes(page.route)).map(page => `",
@@ -236,7 +191,7 @@ def update(path: Path, transform) -> bool:
 
 def validate() -> None:
     failures: list[str] = []
-    forbidden = re.compile(r'<a\b[^>]*\bhref\s*=\s*([\"'])(?:/|/directory/?)\1', re.I)
+    forbidden = re.compile(r"<a\b[^>]*\bhref\s*=\s*([\"'])(?:/|/directory/?)\1", re.IGNORECASE)
 
     for path in ROOT.rglob("*.html"):
         if ".git" in path.parts:
@@ -245,10 +200,9 @@ def validate() -> None:
         if forbidden.search(text):
             failures.append(f"{path.relative_to(ROOT)}: blocked root or directory anchor remains")
 
-    for path in [ROOT / "assets/cmx-page-standard.js"]:
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        if re.search(r'<a href=[\"']/(?:directory/?)?[\"']', text, re.I):
-            failures.append(f"{path.relative_to(ROOT)}: generated blocked anchor remains")
+    standard = (ROOT / "assets/cmx-page-standard.js").read_text(encoding="utf-8", errors="ignore")
+    if re.search(r"<a href=[\"']/(?:directory/?)?[\"']", standard, re.IGNORECASE):
+        failures.append("assets/cmx-page-standard.js: generated blocked anchor remains")
 
     if failures:
         raise SystemExit("\n".join(failures))
