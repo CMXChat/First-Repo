@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="Jay + Crystal Daily Brief">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src https://open.spotify.com https://www.youtube-nocookie.com; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <title>Jay + Crystal Daily Brief</title>
+  <meta name="description" content="Private shared daily briefing for Jay and Crystal." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <link rel="canonical" href="https://db.cmxchat.com/news/" />
+  <link rel="stylesheet" href="/assets/news.css?v=20260801-5" />
+  <link rel="stylesheet" href="/assets/news-media.css?v=20260801-1" />
+</head>
+<body>
+  <a class="skip-link" href="#briefContent">Skip to today’s briefing</a>
+  <main class="brief-shell" aria-labelledby="pageTitle">
+    <header class="brief-header">
+      <p class="command-line"><span aria-hidden="true">$</span> open ~/shared/daily-brief</p>
+      <div class="eyebrow-row">
+        <span id="briefStatus" class="status-chip">daily edition</span>
+        <span id="briefDate" class="date-line">Loading briefing date</span>
+      </div>
+      <p id="greetingLine" class="greeting-line">Brooklyn to Waikato, checking in.</p>
+      <h1 id="pageTitle">JAY + CRYSTAL<br />DAILY BRIEF</h1>
+      <p id="briefSummary" class="hero-summary">Loading the shared briefing.</p>
+      <p class="hero-note">Two places. One shared page. News, small updates, and less guessing.</p>
+      <div class="audience-key" aria-label="Color key">
+        <span class="key-item audience-jay"><i aria-hidden="true"></i> Jay</span>
+        <span class="key-item audience-crystal"><i aria-hidden="true"></i> Crystal</span>
+        <span class="key-item audience-shared"><i aria-hidden="true"></i> Shared</span>
+      </div>
+      <nav class="brief-nav" aria-label="Quick sections">
+        <a href="#priority">Today</a>
+        <a href="#spotify">Play & watch</a>
+        <a href="#relationship">Us</a>
+        <a href="#crystal">Crystal</a>
+        <a href="#culture">Celebrity & culture</a>
+        <a href="#questions">Shape tomorrow</a>
+      </nav>
+      <div class="live-location-grid" aria-label="Current local times">
+        <article class="live-location card-jay"><p>Brooklyn, New York</p><strong id="brooklynTime">--:--</strong><span id="brooklynDate">Loading local date</span></article>
+        <article class="live-location card-crystal"><p>Waikato, New Zealand</p><strong id="waikatoTime">--:--</strong><span id="waikatoDate">Loading local date</span></article>
+      </div>
+    </header>
+    <div id="briefContent">
+      <section id="priority" class="brief-section priority-section" data-section="priority"><div class="section-heading"><div><p class="path-label">~/brief/start-here</p><h2>WHAT MATTERS TODAY</h2></div><span class="section-audience audience-shared">start here</span></div><div id="priorityCards" class="priority-grid"></div></section>
+      <section id="opening" class="brief-section" data-section="opening"><div class="section-heading"><div><p class="path-label">~/brief/quick-read</p><h2>THE QUICK READ</h2></div><span class="section-audience audience-shared">one minute</span></div><div id="openingCards" class="card-grid"></div></section>
+      <section id="activity" class="brief-section" data-section="activity"><div class="section-heading"><div><p class="path-label">~/jay/check-in</p><h2>JAY’S CHECK-IN</h2></div><span class="section-audience audience-jay">self-reported</span></div><p class="section-intro">A short, honest update from Jay. This is context, not a surveillance transcript or an unpaid internship in forensic accounting.</p><div id="activityCards" class="card-grid"></div></section>
+      <section id="crystal" class="brief-section" data-section="crystal"><div class="section-heading"><div><p class="path-label">~/crystal/corner</p><h2>CRYSTAL’S CORNER</h2></div><span class="section-audience audience-crystal">picked for Crystal</span></div><p class="section-intro">A few things worth her attention, without requiring her to become a full-time news editor.</p><div id="crystalCards" class="card-grid"></div></section>
+      <section id="weather" class="brief-section" data-section="weather"><div class="section-heading"><div><p class="path-label">~/world/two-cities</p><h2>WEATHER IN BOTH PLACES</h2></div><span class="section-audience audience-shared">practical</span></div><div id="weatherCards" class="city-grid"></div></section>
+      <section id="style" class="brief-section" data-section="style"><div class="section-heading"><div><p class="path-label">~/crystal/style-desk</p><h2>BEAUTY, STYLE & SMALL JOYS</h2></div><span class="section-audience audience-crystal">for Crystal</span></div><div id="styleCards" class="card-grid"></div></section>
+      <section id="spotify" class="brief-section" data-section="spotify"><div class="section-heading"><div><p class="path-label">~/media/today</p><h2>PLAY & WATCH</h2></div><span class="section-audience audience-shared">tap to load</span></div><p class="section-intro">One shared song and one daily watch when there is something worth pressing play on.</p><div id="spotifyCards" class="card-grid"></div></section>
+      <section id="local" class="brief-section" data-section="local"><div class="section-heading"><div><p class="path-label">~/news/local</p><h2>LOCAL NEWS, BOTH SIDES</h2></div><span class="section-audience audience-shared">Brooklyn + Waikato</span></div><div id="localNewsCards" class="city-grid"></div></section>
+      <section id="world" class="brief-section" data-section="world"><div class="section-heading"><div><p class="path-label">~/news/world</p><h2>WORLD, ONLY IF IT MATTERS</h2></div><span class="section-audience audience-shared">no doom buffet</span></div><div id="worldCards" class="story-list"></div></section>
+      <section id="culture" class="brief-section" data-section="culture"><div class="section-heading"><div><p class="path-label">~/news/culture</p><h2>CELEBRITY, CRIME & CULTURE</h2></div><span class="section-audience audience-crystal">any major public figure</span></div><p class="section-intro">The strongest current stories can involve actors, musicians, influencers, royals, politicians, major court cases, or whoever managed to become the internet’s problem today.</p><div id="cultureCards" class="story-list"></div></section>
+      <section id="horoscope" class="brief-section" data-section="horoscope"><div class="section-heading"><div><p class="path-label">~/personal/double-virgo</p><h2>DOUBLE VIRGO, FOR FUN</h2></div><span class="section-audience audience-shared">entertainment only</span></div><div id="horoscopeCards" class="pair-grid"></div></section>
+      <section id="relationship" class="brief-section" data-section="relationship"><div class="section-heading"><div><p class="path-label">~/relationship/checkpoint</p><h2>US, WITHOUT THE COURTROOM DRAMA</h2></div><span class="section-audience audience-shared">honest and fair</span></div><p class="section-intro">One useful observation, one practical rule, and no attempt to declare a winner.</p><div id="relationshipCards" class="card-grid"></div></section>
+      <section id="timeline" class="brief-section" data-section="timeline"><div class="section-heading"><div><p class="path-label">~/relationship/good-things</p><h2>GOOD THINGS WE’RE BUILDING</h2></div><span class="section-audience audience-shared">when available</span></div><div id="timelineCards" class="card-grid"></div></section>
+      <section id="quote" class="brief-section quote-section" data-section="quote"><div class="section-heading"><div><p class="path-label">~/brief/one-line</p><h2>ONE LINE TO KEEP</h2></div><span class="section-audience audience-shared">shared</span></div><div class="quote-card"><span class="quote-mark" aria-hidden="true">“</span><p id="quoteKicker" class="quote-kicker">one thought worth keeping</p><blockquote id="dailyQuote">Loading today’s quote.</blockquote><p id="quoteSource" class="quote-source"></p><p id="quoteReflection" class="quote-reflection" hidden></p></div></section>
+      <section id="questions" class="brief-section" data-section="questions" data-keep-visible="true"><div class="section-heading"><div><p class="path-label">~/intake/tomorrow</p><h2>HELP SHAPE TOMORROW</h2></div><span class="section-audience audience-shared">for Jay + Crystal</span></div><p class="section-intro">Send the answers back in chat before the next edition.</p><div id="questionList" class="question-list follow-up-questions"></div></section>
+    </div>
+    <details class="command-panel"><summary>Little terminal controls</summary><section class="command-area" aria-label="Terminal command navigation"><div id="commandOutput" class="command-output" role="status" aria-live="polite">type help for briefing commands</div><form id="commandForm" class="command-form" autocomplete="off"><label class="sr-only" for="commandInput">Enter a navigation command</label><span class="prompt" aria-hidden="true">jay+crystal@db:~/news$</span><input id="commandInput" type="text" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="help" /></form></section></details>
+    <footer><span>Private shared briefing · built for Jay + Crystal</span><span id="generatedLine">Awaiting today’s edition</span></footer>
+  </main>
+  <noscript>This page requires JavaScript to render the daily briefing.</noscript>
+  <script src="/assets/news-data.js" defer></script>
+  <script src="/assets/daily-video.js" defer></script>
+  <script src="/assets/news.js" defer></script>
+  <script src="/assets/news-media.js" defer></script>
+</body>
+</html>
