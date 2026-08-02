@@ -1,0 +1,38 @@
+:root{
+  --bg:#000;
+  --bg-soft:#050505;
+  --panel:rgba(12,12,14,.88);
+  --panel-strong:rgba(15,15,18,.97);
+  --line:rgba(255,255,255,.10);
+  --line-strong:rgba(255,255,255,.20);
+  --text:#f2f3f5;
+  --muted:#9b9fa8;
+  --shadow:0 28px 90px rgba(0,0,0,.72);
+}
+html,body{background:#000!important}
+body{background:radial-gradient(circle at 50% -18%,#171717 0,transparent 36%),#000!important}
+.orb{display:none!important}
+.command-bar{background:rgba(0,0,0,.9)!important;border-bottom-color:rgba(255,255,255,.10)!important}
+.navigator{background:rgba(5,5,6,.99)!important;border-left-color:rgba(255,255,255,.14)!important}
+.scene{border-bottom-color:rgba(255,255,255,.055)!important}
+.glass-card,.timeline-shell,.risk-console,.readiness-panel,.question-console,.project-truth,.pipeline-lab,.plain-language,.notes-panel{
+  background:linear-gradient(145deg,rgba(16,16,18,.94),rgba(5,5,6,.96))!important;
+  border-color:rgba(255,255,255,.10)!important;
+}
+.evidence-card{background:rgba(12,12,14,.9)!important;border-color:rgba(255,255,255,.09)!important}
+.evidence-card:hover{background:rgba(20,20,23,.96)!important;border-color:rgba(130,155,255,.34)!important}
+.parcel{background:linear-gradient(135deg,rgba(50,58,78,.48),rgba(14,14,16,.88))!important}
+.parcel-rear{background:rgba(77,60,25,.18)!important}
+.orbit-core{background:radial-gradient(circle at 35% 30%,rgba(100,116,160,.16),rgba(8,8,10,.98) 68%)!important;box-shadow:0 0 70px rgba(0,0,0,.72),inset 0 0 36px rgba(255,255,255,.04)!important}
+.orbit-tag{background:rgba(8,8,10,.94)!important}
+.primary-button{background:linear-gradient(135deg,#214da8,#3845a1)!important;box-shadow:0 12px 34px rgba(15,34,80,.42)!important}
+.brand-mark{background:linear-gradient(145deg,rgba(58,76,120,.34),rgba(20,20,24,.54))!important}
+.navigator nav button:hover,.navigator nav button.active{background:rgba(255,255,255,.045)!important}
+.progress-track i{background:linear-gradient(90deg,#486fd2,#8194d9)!important}
+.checkpoint-card{background:linear-gradient(145deg,rgba(18,18,21,.96),rgba(6,6,7,.98))!important;border-color:rgba(255,255,255,.11)!important}
+.locked-cover{display:none!important}
+.locked-scene>*:not(.locked-cover){filter:none!important;pointer-events:auto!important;user-select:auto!important;opacity:1!important}
+.locked-scene{min-height:100svh!important}
+.phrase-form{display:none!important}
+.decision-rule{margin-top:24px;padding:18px 20px;border:1px solid rgba(255,255,255,.11);border-radius:16px;background:rgba(255,255,255,.028);color:var(--muted);line-height:1.65}
+.decision-rule strong{color:var(--text)}
