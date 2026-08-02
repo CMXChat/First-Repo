@@ -56,24 +56,41 @@
     }
   }
 
+  function createReadAloudCompatibility(afterElement) {
+    let compatibility = document.getElementById("readSummary");
+    if (compatibility) return compatibility;
+
+    compatibility = document.createElement("button");
+    compatibility.id = "readSummary";
+    compatibility.type = "button";
+    compatibility.hidden = true;
+    compatibility.tabIndex = -1;
+    compatibility.setAttribute("aria-hidden", "true");
+    afterElement?.after(compatibility);
+    return compatibility;
+  }
+
   function restoreHeroMusicButton() {
+    const existingMusicButton = document.getElementById("heroMusicToggle");
+    if (existingMusicButton) {
+      createReadAloudCompatibility(existingMusicButton);
+      existingMusicButton.textContent = "Play today's song";
+      existingMusicButton.setAttribute("aria-pressed", "false");
+      return existingMusicButton;
+    }
+
     const original = document.getElementById("readSummary");
-    if (!original) return document.getElementById("heroMusicToggle");
+    if (!original) return null;
 
     const musicButton = original.cloneNode(true);
+    musicButton.hidden = false;
+    musicButton.removeAttribute("aria-hidden");
+    musicButton.removeAttribute("tabindex");
     musicButton.id = "heroMusicToggle";
     musicButton.textContent = "Play today's song";
     musicButton.setAttribute("aria-pressed", "false");
     original.replaceWith(musicButton);
-
-    const readAloudCompatibility = document.createElement("button");
-    readAloudCompatibility.id = "readSummary";
-    readAloudCompatibility.type = "button";
-    readAloudCompatibility.hidden = true;
-    readAloudCompatibility.tabIndex = -1;
-    readAloudCompatibility.setAttribute("aria-hidden", "true");
-    musicButton.after(readAloudCompatibility);
-
+    createReadAloudCompatibility(musicButton);
     return musicButton;
   }
 
@@ -90,10 +107,7 @@
       heroButton.setAttribute("aria-pressed", String(isPlaying));
     }
 
-    if (mediaButton) {
-      mediaButton.textContent = isPlaying ? "Pause preview" : "Play preview";
-    }
-
+    if (mediaButton) mediaButton.textContent = isPlaying ? "Pause preview" : "Play preview";
     document.querySelector(".media-card")?.classList.toggle("playing", isPlaying);
   }
 
@@ -150,9 +164,8 @@
     audio.muted = false;
     audio.volume = 0.32;
 
-    if (audio.paused) {
-      startSong({ force: true });
-    } else {
+    if (audio.paused) startSong({ force: true });
+    else {
       autoplayAttempted = true;
       syncMusicControls();
     }
@@ -180,9 +193,7 @@
     if (status) {
       const statusObserver = new MutationObserver(() => {
         const message = status.textContent.toLowerCase();
-        if (message.includes("access denied") || message.includes("authentication failed") || message.includes("try again")) {
-          stopPrimedAudio();
-        }
+        if (message.includes("access denied") || message.includes("authentication failed") || message.includes("try again")) stopPrimedAudio();
       });
       statusObserver.observe(status, { childList: true, characterData: true, subtree: true });
     }
@@ -208,9 +219,6 @@
     window.addEventListener("unhandledrejection", () => window.setTimeout(recoverVisibility, 0));
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, { once: true });
-  } else {
-    start();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+  else start();
 })();
