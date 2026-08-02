@@ -6,7 +6,7 @@
   const root = document.getElementById('spotifyCards');
   if (!root) return;
 
-  const crystalAudio = document.getElementById('crystalDailyAudio');
+  const dailyAudio = document.getElementById('cmxDailyAudio');
   const sorted = items => [...(Array.isArray(items) ? items : [])]
     .sort((a, b) => Number(b.priority || 0) - Number(a.priority || 0));
 
@@ -60,6 +60,7 @@
     button.addEventListener('click', async () => {
       if (audio.paused) {
         audio.muted = false;
+        audio.volume = 0.3;
         try { await audio.play(); } catch {}
       } else {
         audio.pause();
@@ -74,7 +75,7 @@
       audio.currentTime = 0;
       update();
     });
-    window.addEventListener('crystal:audio-ready', update);
+    window.addEventListener('cmx:audio-ready', update);
 
     button.append(icon, label, note);
     shell.append(button, progress);
@@ -135,8 +136,8 @@
       if (!card || card.querySelector('.media-shell')) return;
 
       card.classList.add('media-card');
-      if (crystalAudio) {
-        card.appendChild(createAudioShell(crystalAudio, item.title || 'Today’s shared song'));
+      if (dailyAudio) {
+        card.appendChild(createAudioShell(dailyAudio, item.title || 'Today’s shared song'));
         return;
       }
 
@@ -152,8 +153,8 @@
 
     const intro = document.querySelector('#spotify .section-intro');
     if (intro) {
-      intro.textContent = crystalAudio
-        ? 'Today’s uplifting song is primed by the password click and should begin as the briefing opens. Tap the control if the browser still blocks sound.'
+      intro.textContent = dailyAudio
+        ? 'Today’s uplifting song is primed by the password click and should begin as the briefing opens. Use either play or pause control at any time.'
         : 'Today’s shared song and video stay asleep until one of you taps them.';
     }
   }
