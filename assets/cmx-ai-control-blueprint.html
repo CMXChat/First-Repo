@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-visibility="Direct-link-only">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <title>CMX AI Control Blueprint</title>
+  <meta name="description" content="Static plan for natural-language AI control, development, approved tools, MCP integrations, user assistants, sandboxes, staging and production approvals." />
+  <link rel="canonical" href="https://db.cmxchat.com/ai/" />
+  <meta property="og:title" content="CMX AI Control Blueprint" />
+  <meta property="og:description" content="The planned AI control layer for the CMX Restricted Node platform." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CMX Restricted Node" />
+  <meta property="og:url" content="https://db.cmxchat.com/ai/" />
+  <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CMX AI Control Blueprint" />
+  <meta name="twitter:description" content="The planned AI control layer for the CMX Restricted Node platform." />
+  <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <link rel="stylesheet" href="/assets/cmx-backend-blueprint.css?v=20260801-2" />
+  <link rel="stylesheet" href="/assets/cmx-terminal-blueprint.css?v=20260801-3" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" data-cmx-unlinked="/" aria-label="Return to CMX Restricted Node">
+        <span class="brand-mark" aria-hidden="true">AI</span>
+        <span class="brand-copy"><strong>AI Control Blueprint</strong><small>Natural-language development and operations plan</small></span>
+      </a>
+      <nav class="topbar-actions" aria-label="Platform pages">
+        <span class="truth-badge"><span class="status-dot" aria-hidden="true"></span>Nothing on this page is live yet</span>
+        <a class="icon-button" href="/build/">Build Lab</a>
+        <a class="icon-button" href="/backend/">Backend Blueprint</a>
+        <a class="icon-button" href="/ai/" aria-current="page">AI Blueprint · Current</a>
+        <a class="icon-button" href="/updates/">Updates</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">$ cat ~/cmx/ai-control.blueprint</p>
+          <h1>Describe the goal. Review the plan. Let approved systems do the work.</h1>
+          <p class="hero-description">The goal is to manage and extend db.cmxchat.com largely through ordinary language while keeping GitHub, permissions, tests, staging and human approval in control.</p>
+          <div class="truth-line"><strong>current_truth:</strong> this is a static design and policy page. There is no connected model, MCP server, sandbox, Python backend or production automation yet.</div>
+        </div>
+        <div class="architecture-mini" aria-label="AI delivery path">
+          <span>plain_english</span><i>→</i><span>plan</span><i>→</i><span>approval</span><i>→</i><span>sandbox</span><i>→</i><span>staging</span><i>→</i><span>production_approval</span>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="AI blueprint summary">
+        <article class="metric"><strong>2</strong><span>AI tracks: platform development and user-facing intelligence</span></article>
+        <article class="metric"><strong>6</strong><span>Interfaces: control center, terminal, copilots, development, assistants and administration</span></article>
+        <article class="metric"><strong>6</strong><span>Risk tiers from read-only answers through blocked actions</span></article>
+        <article class="metric"><strong>12</strong><span>Controlled steps from request to reviewed production</span></article>
+        <article class="metric"><strong>0</strong><span>AI services currently operating</span></article>
+      </section>
+
+      <section class="section-heading"><div><p class="eyebrow">main_purpose</p><h2>Two AI systems under one control plane</h2></div></section>
+      <div class="two-column">
+        <article class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">operator_and_developer_ai</p><h3>Build and manage the platform</h3></div></div>
+          <div class="check-list">
+            <div class="check-item">Understand the approved project handbook, architecture and route registry.</div>
+            <div class="check-item">Read approved GitHub files at a specific revision.</div>
+            <div class="check-item">Turn a feature request into a visible implementation plan.</div>
+            <div class="check-item">Create feature branches and reviewable changesets.</div>
+            <div class="check-item">Run fixed tests and security checks in an isolated Docker sandbox.</div>
+            <div class="check-item">Create protected previews, staging deployments and draft pull requests.</div>
+            <div class="check-item">Request production deployment after review without approving itself.</div>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">user_facing_ai</p><h3>Help authorized users inside the site</h3></div></div>
+          <div class="check-list">
+            <div class="check-item">Answer questions using approved page, workspace and documentation context.</div>
+            <div class="check-item">Summarize authorized records, files, reports and activity.</div>
+            <div class="check-item">Generate drafts, checklists, research plans and reports.</div>
+            <div class="check-item">Call typed backend tools that the user is permitted to use.</div>
+            <div class="check-item">Propose changes to site data and show the exact effect before approval.</div>
+            <div class="check-item">Create approved automations with schedules, quotas, logs and cancellation.</div>
+            <div class="check-item">Keep each user and workspace isolated from unrelated context.</div>
+          </div>
+        </article>
+      </div>
+
+      <section class="section-heading"><div><p class="eyebrow">interfaces</p><h2>Where the AI layer would appear</h2></div></section>
+      <div class="overview-grid">
+        <article class="panel emphasis-card"><span class="card-kicker">/ai/</span><h3>AI Control Center</h3><p>Sessions, requests, plans, approvals, development tasks, previews, assistants, automations, policy and usage.</p></article>
+        <article class="panel"><span class="card-kicker">root_terminal</span><h3>Controlled launcher and command entry</h3><p>The terminal may understand approved natural-language commands and open tools. It never becomes a real Linux shell.</p></article>
+        <article class="panel"><span class="card-kicker">selected_pages</span><h3>Page copilots</h3><p>Each copilot receives only the current page context and the tools approved for that page, user and workspace.</p></article>
+        <article class="panel"><span class="card-kicker">development</span><h3>Branch-to-staging workflow</h3><p>A focused development view shows files, plans, diffs, sandbox checks, previews and pull request state.</p></article>
+        <article class="panel"><span class="card-kicker">user_assistance</span><h3>Configured assistants</h3><p>Different assistants can serve approved purposes with separate instructions, tools, audiences and retention rules.</p></article>
+        <article class="panel"><span class="card-kicker">operations</span><h3>Build Lab and administration</h3><p>Health, deployments, providers, policy tests, costs, errors, emergency stop and rollback stay visible to administrators.</p></article>
+      </div>
+
+      <section class="section-heading"><div><p class="eyebrow">development_lifecycle</p><h2>Plain English to reviewed production</h2></div></section>
+      <div class="roadmap-timeline">
+        <article class="roadmap-phase"><div class="phase-number">01</div><div class="phase-main"><h3>Describe the goal</h3><p>Explain the feature, problem or desired outcome in ordinary language.</p></div><div class="deliverables"><span class="deliverable">Original request recorded</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">02</div><div class="phase-main"><h3>Classify intent and risk</h3><p>The server identifies whether the request is an answer, read, draft, write, external action or blocked request.</p></div><div class="deliverables"><span class="deliverable">Risk tier and required approval</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">03</div><div class="phase-main"><h3>Retrieve approved context</h3><p>The AI searches the handbook, route registry and allowlisted repository files at known revisions.</p></div><div class="deliverables"><span class="deliverable">Cited context only</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">04</div><div class="phase-main"><h3>Show a versioned plan</h3><p>The plan lists affected files, APIs, tools, tests, risks and protected areas.</p></div><div class="deliverables"><span class="deliverable">Nothing executes yet</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">05</div><div class="phase-main"><h3>Approve the scoped action</h3><p>Only the displayed plan version and selected actions receive temporary approval.</p></div><div class="deliverables"><span class="deliverable">Approval expires and is audited</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">06</div><div class="phase-main"><h3>Create a feature branch</h3><p>The branch starts from the approved base commit. Main remains untouched.</p></div><div class="deliverables"><span class="deliverable">Immutable base SHA</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">07</div><div class="phase-main"><h3>Write the changeset</h3><p>The AI updates only approved files and creates a reviewable diff.</p></div><div class="deliverables"><span class="deliverable">Branch-only write</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">08</div><div class="phase-main"><h3>Run sandbox checks</h3><p>Fixed test, lint, build and security profiles run in a temporary restricted container.</p></div><div class="deliverables"><span class="deliverable">No arbitrary shell</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">09</div><div class="phase-main"><h3>Open a protected preview</h3><p>The approved revision is deployed with separate test data and secrets.</p></div><div class="deliverables"><span class="deliverable">Cloudflare-protected preview</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">10</div><div class="phase-main"><h3>Create a draft pull request</h3><p>The pull request includes the plan, changed files, checks, risks and review notes.</p></div><div class="deliverables"><span class="deliverable">No automatic merge</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">11</div><div class="phase-main"><h3>Validate staging</h3><p>The reviewed release runs in the protected staging environment with production credentials unavailable.</p></div><div class="deliverables"><span class="deliverable">Separate environment and data</span></div></article>
+        <article class="roadmap-phase"><div class="phase-number">12</div><div class="phase-main"><h3>Request production approval</h3><p>The system presents the release, staging evidence and rollback version. A human approves production.</p></div><div class="deliverables"><span class="deliverable">Rollback prepared</span></div></article>
+      </div>
+
+      <section class="section-heading"><div><p class="eyebrow">approval_model</p><h2>Risk determines what the AI may do</h2></div></section>
+      <article class="panel"><div class="table-wrap"><table>
+        <thead><tr><th>Tier</th><th>Type</th><th>Examples</th><th>Control</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Answer</td><td>Explain architecture or code</td><td>No action approval</td></tr>
+          <tr><td>1</td><td>Read</td><td>Search handbook or inspect approved files</td><td>Identity, scope and ownership</td></tr>
+          <tr><td>2</td><td>Draft</td><td>Create plans, reports or proposed changes</td><td>Review before persistence or provider write</td></tr>
+          <tr><td>3</td><td>Controlled write</td><td>Create branch, save data or open draft PR</td><td>Explicit scoped approval</td></tr>
+          <tr><td>4</td><td>External or deployment</td><td>Connector write, staging deploy or production request</td><td>Strong confirmation and audit</td></tr>
+          <tr><td>5</td><td>Blocked</td><td>Shell, sudo, arbitrary code or direct production deploy</td><td>Unavailable</td></tr>
+        </tbody>
+      </table></div></article>
+
+      <section class="section-heading"><div><p class="eyebrow">framework_position</p><h2>FastAPI is preferred, while the architecture stays portable</h2></div></section>
+      <div class="two-column">
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">preferred</p><h3>Dockerized FastAPI on Linux</h3></div></div><p>FastAPI fits the Python learning objective, typed request models, async services, automatic API documentation, Jinja migration path and Docker deployment plan.</p></article>
+        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">decision_rule</p><h3>Requirements outrank the framework name</h3></div></div><p>A different Python ASGI framework can be selected during implementation only when it preserves the documented APIs, security boundaries, sandbox workflow, staging process, tests, approvals and deployment controls.</p></article>
+      </div>
+
+      <section class="section-heading"><div><p class="eyebrow">non_negotiable_boundaries</p><h2>The AI remains useful because it remains controlled</h2></div></section>
+      <div class="decision-columns">
+        <article class="panel approved"><div class="panel-heading"><div><p class="eyebrow">allowed_direction</p><h3>Controlled capabilities</h3></div></div><div class="decision-list">
+          <div class="decision-item">Approved repository reads and feature branches.</div>
+          <div class="decision-item">Typed backend tools and capability-specific MCP tools.</div>
+          <div class="decision-item">Sandboxed checks, protected previews and draft pull requests.</div>
+          <div class="decision-item">User actions with visible effects and confirmation.</div>
+          <div class="decision-item">Audit logs, quotas, cancellation and emergency stop.</div>
+        </div></article>
+        <article class="panel blocked"><div class="panel-heading"><div><p class="eyebrow">unavailable</p><h3>Hard blocks</h3></div></div><div class="decision-list">
+          <div class="decision-item">Unrestricted shell, sudo, Docker socket or host filesystem.</div>
+          <div class="decision-item">Production secrets, raw environment variables or database credentials in AI context.</div>
+          <div class="decision-item">Arbitrary Python, JavaScript, commands, URLs, MCP servers or provider methods.</div>
+          <div class="decision-item">Direct writes to main, automatic merges or AI self-approval.</div>
+          <div class="decision-item">Direct production deployment or cross-workspace data access.</div>
+        </div></article>
+        <article class="panel deferred"><div class="panel-heading"><div><p class="eyebrow">build_order</p><h3>Foundation before autonomy</h3></div></div><p>Identity, API contracts, tool permissions, jobs, audit logging, staging and cancellation come before user assistants, MCP writes, AI automation and advanced development actions.</p></article>
+      </div>
+    </main>
+
+    <footer><span>CMX AI Control Blueprint · static planning resource</span><span>Updated August 1, 2026</span></footer>
+  </div>
+</body>
+</html>
