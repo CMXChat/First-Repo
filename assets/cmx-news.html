@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="Jay + Crystal Daily Brief">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <title>Jay + Crystal Daily Brief</title>
+  <meta name="description" content="Private shared daily briefing for Jay and Crystal." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <link rel="canonical" href="https://db.cmxchat.com/news/" />
+  <link rel="stylesheet" href="/assets/news.css?v=20260801-1" />
+</head>
+<body>
+  <a class="skip-link" href="#briefContent">Skip to today’s briefing</a>
+  <main class="brief-shell" aria-labelledby="pageTitle">
+    <header class="brief-header">
+      <p class="command-line"><span aria-hidden="true">$</span> cat ~/shared/daily-brief.log</p>
+      <div class="eyebrow-row">
+        <span id="briefStatus" class="status-chip">setup</span>
+        <span id="briefDate" class="date-line">Loading briefing date</span>
+      </div>
+      <h1 id="pageTitle">JAY + CRYSTAL<br />DAILY BRIEF</h1>
+      <p id="briefSummary" class="hero-summary">Loading the shared briefing.</p>
+      <div class="audience-key" aria-label="Color key">
+        <span class="key-item audience-jay"><i aria-hidden="true"></i> Jay</span>
+        <span class="key-item audience-crystal"><i aria-hidden="true"></i> Crystal</span>
+        <span class="key-item audience-shared"><i aria-hidden="true"></i> Shared</span>
+      </div>
+      <div class="location-strip">
+        <span><strong>Jay:</strong> Brooklyn, New York</span>
+        <span><strong>Crystal:</strong> Waikato, New Zealand</span>
+      </div>
+    </header>
+
+    <div id="briefContent">
+      <section class="brief-section" data-section="opening">
+        <div class="section-heading"><div><p class="path-label">~/brief/opening</p><h2>GOOD MORNING, BOTH OF YOU</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <div id="openingCards" class="card-grid"></div>
+      </section>
+
+      <section class="brief-section" data-section="activity">
+        <div class="section-heading"><div><p class="path-label">~/jay/activity-recap</p><h2>JAY’S DIGITAL ACTIVITY</h2></div><span class="section-audience audience-jay">for Jay</span></div>
+        <p class="section-intro">A consensual, self-reported recap of conversations, communities, online tasks and listening activity, with context included.</p>
+        <div id="activityCards" class="card-grid"></div>
+      </section>
+
+      <section class="brief-section" data-section="crystal">
+        <div class="section-heading"><div><p class="path-label">~/crystal/corner</p><h2>CRYSTAL’S CORNER</h2></div><span class="section-audience audience-crystal">for Crystal</span></div>
+        <div id="crystalCards" class="card-grid"></div>
+      </section>
+
+      <section class="brief-section" data-section="weather">
+        <div class="section-heading"><div><p class="path-label">~/world/two-city-weather</p><h2>TWO-CITY WEATHER</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <div id="weatherCards" class="city-grid"></div>
+      </section>
+
+      <section class="brief-section" data-section="local">
+        <div class="section-heading"><div><p class="path-label">~/news/local</p><h2>LOCAL NEWS, BOTH SIDES</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <div id="localNewsCards" class="city-grid"></div>
+      </section>
+
+      <section class="brief-section" data-section="world">
+        <div class="section-heading"><div><p class="path-label">~/news/world</p><h2>WORLD AFFAIRS</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <div id="worldCards" class="story-list"></div>
+      </section>
+
+      <section class="brief-section" data-section="culture">
+        <div class="section-heading"><div><p class="path-label">~/news/culture</p><h2>CELEBRITY & CULTURE DESK</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <div id="cultureCards" class="story-list"></div>
+      </section>
+
+      <section class="brief-section" data-section="horoscope">
+        <div class="section-heading"><div><p class="path-label">~/personal/double-virgo</p><h2>DOUBLE VIRGO FORECAST</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <div id="horoscopeCards" class="pair-grid"></div>
+      </section>
+
+      <section class="brief-section" data-section="relationship">
+        <div class="section-heading"><div><p class="path-label">~/relationship/checkpoint</p><h2>RELATIONSHIP CHECKPOINT</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <div id="relationshipCards" class="card-grid"></div>
+      </section>
+
+      <section class="brief-section quote-section" data-section="quote">
+        <div class="section-heading"><div><p class="path-label">~/brief/quote</p><h2>QUOTE FOR THE DAY</h2></div><span class="section-audience audience-shared">shared</span></div>
+        <blockquote id="dailyQuote">Loading today’s quote.</blockquote>
+        <p id="quoteSource" class="quote-source"></p>
+      </section>
+
+      <section class="brief-section" data-section="questions">
+        <div class="section-heading"><div><p class="path-label">~/intake/questions</p><h2>QUESTIONS FOR THE NEXT BRIEF</h2></div><span class="section-audience audience-jay">for Jay</span></div>
+        <div id="questionList" class="question-list"></div>
+      </section>
+    </div>
+
+    <section class="command-area" aria-label="Terminal command navigation">
+      <div id="commandOutput" class="command-output" role="status" aria-live="polite">type help for briefing commands</div>
+      <form id="commandForm" class="command-form" autocomplete="off">
+        <label class="sr-only" for="commandInput">Enter a navigation command</label>
+        <span class="prompt" aria-hidden="true">jay+crystal@db:~/news$</span>
+        <input id="commandInput" type="text" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="help" />
+      </form>
+    </section>
+
+    <footer>
+      <span>Private shared briefing · direct-link-only</span>
+      <span id="generatedLine">Awaiting first scheduled edition</span>
+    </footer>
+  </main>
+  <noscript>This page requires JavaScript to render the daily briefing.</noscript>
+  <script src="/assets/news-data.js?v=20260801-1" defer></script>
+  <script src="/assets/news.js?v=20260801-1" defer></script>
+</body>
+</html>
