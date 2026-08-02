@@ -2,8 +2,8 @@ window.CMX_NEWS_BRIEF = {
   meta: {
     status: "weekend edition",
     date: "Saturday, August 1, 2026 in Brooklyn · Sunday, August 2, 2026 in Waikato",
-    generated: "Refined August 1, 2026 at 10:43 PM EDT / August 2, 2026 at 2:43 PM NZST",
-    summary: "A lighter shared briefing with honest context, useful news, a daily song for both of you, and no attempt to turn ordinary life into a police procedural.",
+    generated: "Expanded August 1, 2026 at 11:00 PM EDT / August 2, 2026 at 3:00 PM NZST",
+    summary: "A warmer shared briefing with a daily song, useful news, one mildly messy rumor, movement for both of you, a personalized style idea, and fewer empty boxes pretending to be content.",
     sectionOrder: [
       "priority",
       "opening",
@@ -29,11 +29,11 @@ window.CMX_NEWS_BRIEF = {
       priority: 100,
       label: "the better format",
       title: "Honest, useful, and lighter",
-      text: "This page works best as a shared check-in, not a daily evidence locker. The aim is enough truth to prevent guessing, enough context to understand each other, and enough normal life that opening the page does not feel like attending court.",
+      text: "This page works best as a shared check-in, not a daily evidence locker. The aim is enough truth to prevent guessing, enough context to understand each other, and enough normal life that opening it does not feel like attending court.",
       directLines: [
         {
           audience: "jay",
-          text: "Jay: share relationship-relevant facts early and plainly, then resist the urge to submit a twelve-page defense."
+          text: "Jay: share the relationship-relevant fact early, then resist producing a twelve-page defense."
         },
         {
           audience: "crystal",
@@ -45,7 +45,28 @@ window.CMX_NEWS_BRIEF = {
         }
       ],
       whyItMatters: "Too little information creates guessing. Too much routine detail creates resentment. A shared relevance rule gives both people a fairer middle.",
-      watchNext: "Tomorrow's briefing should reflect whether this lighter format felt reassuring, dismissive, useful, or still incomplete."
+      watchNext: "Tomorrow's briefing should reflect whether this format felt reassuring, dismissive, useful, or still incomplete."
+    },
+    {
+      audience: "shared",
+      priority: 95,
+      label: "move today",
+      title: "One solid session each, no documentary crew required",
+      text: "Jay can take the gym route or complete 4 sets of 15 pushups and 3 sets of 20 situps. Crystal can choose the gym or a scenic run or brisk walk where the Waikato view gets partial credit for attendance.",
+      directLines: [
+        {
+          audience: "jay",
+          text: "Jay: complete the session before designing a system to track the session."
+        },
+        {
+          audience: "crystal",
+          text: "Crystal: the view is allowed to be part of the workout. Enjoying it does not cancel the cardio."
+        },
+        {
+          audience: "shared",
+          text: "Shared: finish feeling capable, not punished. Consistency is already dramatic enough."
+        }
+      ]
     },
     {
       audience: "shared",
@@ -73,14 +94,14 @@ window.CMX_NEWS_BRIEF = {
       priority: 88,
       label: "what this page is for",
       title: "A shared page, not a performance review",
-      text: "The briefing brings together the day's useful news, small personal updates, relationship context, music, local conditions, and a few things chosen specifically for Crystal."
+      text: "The briefing brings together useful news, small personal updates, relationship context, music, movement, local conditions, and a few things selected specifically for each of you."
     },
     {
       audience: "shared",
-      priority: 78,
-      label: "tonight in one sentence",
-      title: "Python, pets, pink-and-gold nails, celebrity law, and two different weather seasons",
-      text: "That is already enough plot for one edition. The rest can behave itself."
+      priority: 82,
+      label: "daily fact that is unfortunately your life",
+      title: "Brooklyn and Waikato are currently 16 hours apart",
+      text: "This is enough time for one person to say good morning while the other is deciding whether the conversation still counts as yesterday. Long-distance relationships: now with international date-line paperwork."
     }
   ],
 
@@ -145,25 +166,48 @@ window.CMX_NEWS_BRIEF = {
   style: [
     {
       audience: "crystal",
-      priority: 77,
-      label: "Chanel watch",
-      status: "OFFICIAL",
-      title: "Burgundy moves from lining color to main character",
-      text: "Chanel's Fall-Winter 2026 pre-collection puts burgundy at the center, including a suede Maxi Flap Bag with gold-tone hardware. It fits Crystal's gold, black, pink, and jewel-tone preferences without looking overly delicate.",
-      url: "https://www.chanel.com/us/fashion/handbags/c/1x1x1/",
-      linkLabel: "view Chanel handbags",
-      published: "Fall-Winter 2026 pre-collection"
+      priority: 84,
+      label: "personal style idea",
+      title: "Long hair, one gold detail, and clean face framing",
+      text: "For Crystal's very long hair, a half-up section with one gold cuff or coin detail keeps the length dramatic while leaving her beauty spot and jewelry visible. Pair it with a fitted black top, a soft pink lip, and one strong gold focal piece.",
+      items: [
+        "Hair: half-up with the front kept clean and intentional",
+        "Makeup: soft liner, defined lashes, pink or rose lip",
+        "Accessory: one gold coin necklace, cuff, or statement earring",
+        "Palette: black base with pink and gold doing the talking"
+      ]
     },
     {
       audience: "crystal",
-      priority: 72,
+      priority: 79,
+      label: "trend radar",
+      status: "REPORTED",
+      title: "Gold coin jewelry and decorative hair cuffs are moving up",
+      text: "Gold coin necklaces are returning as an easy statement piece, while hair jewelry and cuffs are giving long hairstyles more structure without requiring an entire architectural permit.",
+      sources: [
+        {
+          label: "Glamour on gold coin necklaces",
+          url: "https://www.glamour.com/story/gold-coin-necklace-trend-2026",
+          published: "Aug 1"
+        },
+        {
+          label: "Marie Claire on hair accessories",
+          url: "https://www.marieclaire.com/beauty/hair/best-hair-accessories-summer-2026/",
+          published: "Summer 2026"
+        }
+      ],
+      detailsLabel: "see the trend sources"
+    },
+    {
+      audience: "crystal",
+      priority: 74,
       label: "August nail direction",
       status: "REPORTED",
-      title: "Pink-and-gold aura nails, kept deliberate",
-      text: "A hot-pink center fading into black or burgundy with restrained gold accents would make the aura trend look more like jewelry and less like a craft drawer won an argument.",
-      url: "https://www.instyle.com/august-aura-nails-12029615",
-      linkLabel: "view August aura nail ideas",
-      published: "Jul 30"
+      title: "Pink-and-gold florals without entering craft-store combat",
+      text: "August trend coverage is leaning toward 3D florals, fruit details, coastal blue, and bright red. For Crystal, a black or burgundy base with one or two raised pink flowers and restrained gold detail would keep it personal instead of chaotic.",
+      url: "https://www.cosmopolitan.com/style-beauty/beauty/a73307132/august-nail-ideas/",
+      linkLabel: "view August nail trends",
+      published: "Jul 31"
     },
     {
       audience: "crystal",
@@ -198,7 +242,7 @@ window.CMX_NEWS_BRIEF = {
       label: "recent listening",
       status: "CONNECTED SOURCE",
       title: "Spotify returned a varied five-track rotation",
-      text: "The connected source surfaced Olive, ben, Kaskade with Glockenbach and Kaitlin Aragon, JAY-Z, and Robyn with Zara Larsson. No emotional thesis has been assigned to this playlist because songs are allowed to simply exist.",
+      text: "The connected source surfaced Olive, ben, Kaskade with Glockenbach and Kaitlin Aragon, JAY-Z, and Robyn with Zara Larsson. No emotional thesis has been assigned because songs are allowed to simply exist.",
       items: [
         "You're Not Alone · Olive",
         "Touch My Hair · ben",
@@ -251,6 +295,19 @@ window.CMX_NEWS_BRIEF = {
   culture: [
     {
       audience: "crystal",
+      priority: 82,
+      label: "mildly messy rumor desk",
+      status: "UNCONFIRMED",
+      title: "Ariana Grande and Ricky Álvarez have the internet reopening an old file",
+      text: "A recent post and several public moments have fueled reconciliation rumors involving Ariana Grande and her ex Ricky Álvarez. Entertainment coverage is treating the chemistry as suggestive, but neither person has formally confirmed a relationship. Semi-toxic enough to discuss, nowhere near confirmed enough to order matching towels.",
+      url: "https://www.eonline.com/news/1434379/ariana-grande-soft-launches-ricky-alvarez-relationship",
+      linkLabel: "read the rumor report",
+      published: "Jul 27",
+      whyItMatters: "This is entertainment speculation built from public posts and appearances, not a verified relationship announcement.",
+      watchNext: "A direct statement, another clearly romantic public appearance, or everyone getting distracted by a newer rumor."
+    },
+    {
+      audience: "crystal",
       priority: 78,
       label: "what to stream",
       status: "REPORTED",
@@ -274,7 +331,7 @@ window.CMX_NEWS_BRIEF = {
       watchNext: "Whether appeal permission is granted and how much of the requested interim payment the court orders."
     },
     {
-      audience: "crystal",
+      audience: "shared",
       priority: 69,
       label: "high-profile court watch",
       status: "REPORTED",
@@ -312,7 +369,7 @@ window.CMX_NEWS_BRIEF = {
       directLines: [
         {
           audience: "jay",
-          text: "Jay: say the relevant thing early, then go learn another piece of Python."
+          text: "Jay: say the relevant thing early, finish the workout, then learn another piece of Python."
         }
       ]
     },
@@ -325,7 +382,7 @@ window.CMX_NEWS_BRIEF = {
       directLines: [
         {
           audience: "crystal",
-          text: "Crystal: keep the strongest idea and make the rest earn its place."
+          text: "Crystal: keep the strongest idea, take the scenic route when you need it, and make the rest earn its place."
         }
       ]
     }
@@ -338,37 +395,20 @@ window.CMX_NEWS_BRIEF = {
       label: "the current state",
       title: "Less reporting, better questions",
       text: "Jay does not want ordinary life turned into a detailed activity report. Crystal appears to need enough clarity to feel informed. Those needs can coexist when the briefing focuses on what affects trust, agreements, plans, or the relationship itself.",
+      items: [
+        "Known tonight: Jay learned Python, briefly used an alternate Discord account, and texted two friends.",
+        "Not supplied: message contents or anything indicating misconduct.",
+        "Next move: one concise fact from Jay and one specific follow-up from Crystal if needed.",
+        "Positive addition for tomorrow: each person names one thing that felt reassuring, appreciated, or genuinely funny."
+      ],
       directLines: [
         {
           audience: "shared",
           text: "Shared: the goal is to understand what happened, not to produce the longest possible document about it."
         }
       ],
-      whyItMatters: "A format that one person experiences as surveillance will eventually reduce honest participation. A format that leaves the other person guessing will not create security either.",
+      whyItMatters: "A format that feels like surveillance reduces participation. A format that leaves someone guessing does not create security either.",
       watchNext: "Whether both of you can agree on three or four categories that always get disclosed."
-    },
-    {
-      audience: "shared",
-      priority: 86,
-      label: "one workable rule",
-      title: "Use relationship relevance as the filter",
-      text: "Share facts that affect exclusivity, honesty, safety, money, agreed plans, or an existing boundary. Routine work, learning, browsing, and harmless social contact can stay brief unless one of you has a specific concern.",
-      items: [
-        "Known tonight: Jay learned Python, briefly used an alternate Discord account, and texted two friends.",
-        "Not supplied: message contents or anything indicating misconduct.",
-        "Next move: Jay gives the concise fact; Crystal asks one specific follow-up if needed.",
-        "Good addition for tomorrow: each person names one thing that felt reassuring or appreciated."
-      ],
-      directLines: [
-        {
-          audience: "jay",
-          text: "Jay: irritation with the process does not excuse hiding a relevant fact."
-        },
-        {
-          audience: "crystal",
-          text: "Crystal: incomplete information is a reason for one clear question, not an automatic verdict."
-        }
-      ]
     }
   ],
 
@@ -376,14 +416,14 @@ window.CMX_NEWS_BRIEF = {
 
   quote: {
     kicker: "today's line",
-    text: "The goal is clarity, not a courtroom.",
+    text: "Show up, say the useful thing, and leave some room for normal life.",
     source: "Jay + Crystal Daily Brief",
-    reflection: "Enough honesty to reduce guessing. Enough restraint to leave ordinary life ordinary."
+    reflection: "That applies to the relationship, the gym, the run, and probably half the internet."
   },
 
   questions: [
-    "Jay and Crystal: what part of this version felt useful, and what part felt unnecessary?",
-    "What is one positive thing from today that tomorrow's briefing should remember?",
-    "Is there a person, case, celebrity, trend, topic, or music mood either of you wants followed tomorrow?"
+    "Jay: what changed today that could affect tomorrow's briefing, and did you train?",
+    "Crystal: did you gym, run, see a view worth mentioning, or find a style or celebrity topic you want followed?",
+    "Both: what felt useful on this page, and what should be removed before it becomes furniture?"
   ]
 };
