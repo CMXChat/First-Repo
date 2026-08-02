@@ -2,12 +2,17 @@
   "use strict";
 
   const SESSION_KEY = "debbie_brief_session_v2";
+  let autoplayAttempted = false;
+  let loginPrimeActive = false;
 
   function getElements() {
     return {
       gate: document.getElementById("accessGate"),
       app: document.getElementById("app"),
-      password: document.getElementById("gatePassword")
+      password: document.getElementById("gatePassword"),
+      form: document.getElementById("gateForm"),
+      status: document.getElementById("gateStatus"),
+      audio: document.getElementById("dailyAudio")
     };
   }
 
@@ -51,8 +56,151 @@
     }
   }
 
+  function restoreHeroMusicButton() {
+    const original = document.getElementById("readSummary");
+    if (!original) return document.getElementById("heroMusicToggle");
+
+    const musicButton = original.cloneNode(true);
+    musicButton.id = "heroMusicToggle";
+    musicButton.textContent = "Play today's song";
+    musicButton.setAttribute("aria-pressed", "false");
+    original.replaceWith(musicButton);
+
+    const readAloudCompatibility = document.createElement("button");
+    readAloudCompatibility.id = "readSummary";
+    readAloudCompatibility.type = "button";
+    readAloudCompatibility.hidden = true;
+    readAloudCompatibility.tabIndex = -1;
+    readAloudCompatibility.setAttribute("aria-hidden", "true");
+    musicButton.after(readAloudCompatibility);
+
+    return musicButton;
+  }
+
+  function syncMusicControls() {
+    const { audio } = getElements();
+    if (!audio) return;
+
+    const heroButton = document.getElementById("heroMusicToggle");
+    const mediaButton = document.getElementById("musicToggle");
+    const isPlaying = !audio.paused && !audio.ended;
+
+    if (heroButton) {
+      heroButton.textContent = isPlaying ? "Pause today's song" : "Play today's song";
+      heroButton.setAttribute("aria-pressed", String(isPlaying));
+    }
+
+    if (mediaButton) {
+      mediaButton.textContent = isPlaying ? "Pause preview" : "Play preview";
+    }
+
+    document.querySelector(".media-card")?.classList.toggle("playing", isPlaying);
+  }
+
+  async function startSong({ force = false } = {}) {
+    const { audio, app } = getElements();
+    if (!audio || !app?.classList.contains("active")) return false;
+    if (autoplayAttempted && !force && !audio.paused) return true;
+
+    autoplayAttempted = true;
+    audio.muted = false;
+    audio.volume = 0.32;
+
+    try {
+      await audio.play();
+      syncMusicControls();
+      return true;
+    } catch {
+      syncMusicControls();
+      return false;
+    }
+  }
+
+  function stopPrimedAudio() {
+    const { audio } = getElements();
+    if (!audio || !loginPrimeActive) return;
+    loginPrimeActive = false;
+    audio.pause();
+    audio.currentTime = 0;
+    audio.muted = false;
+    audio.volume = 0.32;
+    syncMusicControls();
+  }
+
+  function primeAudioFromLogin() {
+    const { audio } = getElements();
+    if (!audio) return;
+
+    loginPrimeActive = true;
+    audio.muted = true;
+    audio.volume = 0;
+    audio.currentTime = 0;
+    audio.play().catch(() => {
+      loginPrimeActive = false;
+      audio.muted = false;
+      audio.volume = 0.32;
+    });
+  }
+
+  function finishLoginAutoplay() {
+    const { audio } = getElements();
+    if (!audio) return;
+
+    loginPrimeActive = false;
+    audio.muted = false;
+    audio.volume = 0.32;
+
+    if (audio.paused) {
+      startSong({ force: true });
+    } else {
+      autoplayAttempted = true;
+      syncMusicControls();
+    }
+  }
+
+  function setupMusic() {
+    const { app, form, status, audio } = getElements();
+    if (!app || !audio) return;
+
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+
+    const heroButton = restoreHeroMusicButton();
+    heroButton?.addEventListener("click", async () => {
+      if (audio.paused) await startSong({ force: true });
+      else audio.pause();
+      syncMusicControls();
+    });
+
+    audio.addEventListener("play", syncMusicControls);
+    audio.addEventListener("pause", syncMusicControls);
+    audio.addEventListener("ended", syncMusicControls);
+
+    form?.addEventListener("submit", primeAudioFromLogin, true);
+
+    if (status) {
+      const statusObserver = new MutationObserver(() => {
+        const message = status.textContent.toLowerCase();
+        if (message.includes("access denied") || message.includes("authentication failed") || message.includes("try again")) {
+          stopPrimedAudio();
+        }
+      });
+      statusObserver.observe(status, { childList: true, characterData: true, subtree: true });
+    }
+
+    const appObserver = new MutationObserver(() => {
+      if (!app.classList.contains("active")) return;
+      if (loginPrimeActive) finishLoginAutoplay();
+      else startSong();
+    });
+    appObserver.observe(app, { attributes: true, attributeFilter: ["class", "aria-hidden", "inert"] });
+
+    if (app.classList.contains("active")) startSong();
+    syncMusicControls();
+  }
+
   function start() {
     recoverVisibility();
+    setupMusic();
     window.setTimeout(recoverVisibility, 900);
     window.setTimeout(recoverVisibility, 2200);
     window.addEventListener("pageshow", recoverVisibility);
