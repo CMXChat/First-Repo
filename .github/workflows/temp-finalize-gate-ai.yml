@@ -1,0 +1,48 @@
+name: Temporary Finalize AI Gate
+
+on:
+  push:
+    branches:
+      - agent/gate-ai-final
+    paths:
+      - '.finalize-gate-ai-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out final branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/gate-ai-final
+          fetch-depth: 0
+
+      - name: Restore reviewed gate files
+        run: |
+          git fetch origin agent/gate-ai
+          git checkout origin/agent/gate-ai -- \
+            ai/index.html \
+            assets/cmx-ai-control-blueprint.html \
+            assets/cmx-debbie-brief.html \
+            assets/cmx-logan-brief.html \
+            assets/cmx-routes.json \
+            debbie/index.html \
+            logan/index.html
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('assets/cmx-debbie-brief.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('/assets/debbie-data.js?v=20260802-1', '/assets/debbie-data.js?v=20260802-2')
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit final gate files
+        run: |
+          git config user.name "cmx-gate-finalizer"
+          git config user.email "actions@users.noreply.github.com"
+          git add ai/index.html assets/cmx-ai-control-blueprint.html assets/cmx-debbie-brief.html assets/cmx-logan-brief.html assets/cmx-routes.json debbie/index.html logan/index.html
+          git commit -m "Gate AI and private briefings"
+          git push origin HEAD:agent/gate-ai-final
