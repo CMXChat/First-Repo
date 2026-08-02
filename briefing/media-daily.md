@@ -20,7 +20,7 @@ Give Jay and Crystal one shared song and, when a strong option exists, one share
 
 ## Daily video
 
-Update `assets/daily-video.js` with valid UTF-8 JavaScript beginning exactly with:
+When a strong selection exists, update `assets/daily-video.js` with valid UTF-8 JavaScript beginning exactly with:
 
 `window.CMX_DAILY_VIDEO = {`
 
@@ -41,6 +41,10 @@ Use these fields:
 - `url`: checked public YouTube watch URL
 - `linkLabel`: fallback external-link label
 - `published`: date or concise source note when useful
+
+When no strong embeddable video exists, replace the file with exactly:
+
+`window.CMX_DAILY_VIDEO = null;`
 
 Choose among comedy, a concise news explainer, scenic footage, music performance, fitness or running, animals, culture, a mini-documentary, or another useful current video. It may match the shared song when the official music video is the strongest choice.
 
