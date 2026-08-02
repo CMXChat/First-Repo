@@ -99,3 +99,13 @@
     wrapper.classList.add("is-visible");
   }
 })();
+
+(() => {
+  "use strict";
+  const id = "debbie-video-fix-script";
+  if (document.getElementById(id)) return;
+  const script = document.createElement("script");
+  script.id = id;
+  script.src = "/assets/debbie-video-fix.js?v=20260802-1";
+  document.head.appendChild(script);
+})();
