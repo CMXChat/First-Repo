@@ -1,112 +1,152 @@
 # `/news` Daily Briefing Source
 
-Status: template
+Status: active daily instructions
 Target page: `/news/`
-Runtime data: `assets/news-data.js`
+
+## Read first
+
+Every run must read and follow:
+
+1. `briefing/news-publishing-standard.md`
+2. `briefing/media-daily.md`
+3. `briefing/weather-daily.md`
+4. `briefing/culture-daily.md`
+5. `briefing/crystal-profile.md`
+6. `briefing/jay-profile.md` when present
+7. Current daily runtime files and the previous edition
+
+`briefing/news-publishing-standard.md` is the authoritative section-by-section research, personalization, privacy, publishing and validation contract.
 
 ## Daily objective
 
-Create one current, useful shared briefing for Jay and Crystal. The page must feel intentionally made for both of them. Keep Jay-specific lines light blue, Crystal-specific lines pink, and shared information white.
+Create one current, useful and personal shared briefing for Jay and Crystal. The page must feel intentionally selected for both people, not automatically populated.
 
-Keep the edition concise, warm, useful, easy to scan, and occasionally funny. Crystal-facing copy should stay short, with strong attention to celebrity news, major crime, pets, beauty, nails, jewelry, Chanel, running, scenic New Zealand movement, and her confirmed style preferences. Jay-facing material should include useful local context, music, practical motivation, learning, gym consistency, and concise relationship-relevant updates.
+Keep Jay-specific material light blue, Crystal-specific material pink and shared material white. Keep the experience warm, direct, useful, easy to scan and occasionally funny.
 
-## Default tone
+Every visible section must contain fresh research, fresh permitted personal input, a clear practical purpose or a meaningful shared connection. Hide weak and empty sections cleanly.
 
-Keep the briefing lighthearted and occasionally playful when the subject permits. Use dry humor without making Jay, Crystal, private people, victims, or vulnerable people the joke.
+## Tone
 
-Routine weather, entertainment, pets, style, Spotify, harmless activity, gym, running, horoscopes, and ordinary relationship updates should not sound ominous. A quiet day should feel calm, not suspicious.
+Use dry humor when the subject permits. Never make private people, victims, vulnerable people, grief, abuse or serious safety issues the joke.
 
-Shift into a serious voice only for safety, severe weather, crime, legal developments, grief, health, major world events, or an important relationship issue that genuinely requires it. Stay calm and proportionate, then return to the lighter voice afterward.
+Routine weather, music, entertainment, pets, style, movement, astrology and ordinary relationship updates should feel light. Shift into a calm serious voice for crime, legal developments, severe weather, grief, health, safety and major world events.
 
-## Presentation rules
+Do not use ellipses or em dashes. Avoid generic AI symmetry, repeated motivational clichés and dramatic filler.
 
-- Treat the page as a shared check-in, not surveillance, a performance review, or a courtroom transcript.
-- Never display an empty section, placeholder, missing-data apology, or filler card merely to preserve the layout. If useful material is unavailable, skip the section cleanly.
-- Keep Jay's activity recap brief and relationship-relevant. Routine work details can be omitted unless they affect plans or Crystal requests them.
-- Place the Spotify section near the top, normally after the quick-read section and before the relationship section.
-- Include exactly one shared daily song recommendation whenever the Spotify connection works. Use a real connector-derived link, rotate recent picks, and add a short original reason the song fits without quoting lyrics or forcing a romantic exercise.
-- Include one short factual daily fact, observation, or piece of trivia that is funny, surprising, useful, or specifically relevant to Jay and Crystal. Verify it. Never invent a fact for the joke.
-- Include one shared movement card most days. Personalize it for both: Jay's gym or current bodyweight targets, and Crystal's gym, running, walking, scenic routes, or outdoor movement in New Zealand. Keep it motivating without shaming, overtraining, or pretending exercise solves relationship problems.
-- Use the relationship section for one useful observation and one workable rule or action. Do not repeat the same warning across several cards.
-- Include two or three strong celebrity, crime, entertainment, culture, royal, influencer, political-figure, or major legal stories when worthwhile. Crystal does not need to name people in advance.
-- Include one optional `UNCONFIRMED` messy-rumor card when a notable public-figure rumor is current, sourced, non-malicious, and genuinely entertaining. Summarize the public evidence, state clearly that it is unconfirmed, and explain what would count as confirmation. Skip the rumor slot entirely when the material is weak, cruel, invasive, based on anonymous social posts alone, or about private people.
-- Include an up-and-coming trend when a real current trend is useful: beauty, nails, hair, jewelry, fashion, fitness, running, music, entertainment, internet culture, or practical technology. Skip weak trend claims.
-- Keep the permanent Jay, Crystal, and shared questions at the bottom visible. Add zero to three edition-specific questions that help improve the next briefing.
-- Include at least one positive, entertaining, practical, aesthetic, or motivational item so serious news does not dominate.
+## Personalization
 
-## Personalization rules
+Use only confirmed details and current permitted context.
 
-Use only confirmed details, supplied descriptions, and current permitted context. Do not claim visual knowledge that is unavailable in the current context and do not invent body features.
+Crystal-facing material may draw from confirmed interests including:
 
-Confirmed Crystal details that may guide respectful style ideas include very long hair, a beauty spot above the right side of her lip, a preference for gold, pink, and black, jewelry design, flowers, animals, running, scenic views, and gym activity. Style suggestions should help frame or complement those features, never criticize her body, compare her to other women, or make appearance judgments.
+- Gold, pink and black
+- Jewelry design
+- Flowers and animals
+- Very long hair
+- Running, gym activity and scenic views
+- Beauty, nails, style, music, television, celebrity and New Zealand culture
 
-Known Jay details that may guide movement and motivation include gym interest, the current 60-pushup target as 4 sets of 15, the 60-situp target as 3 sets of 20, learning Python, and a preference for direct, grounded motivation without corny hype.
+Jay-facing material may draw from confirmed interests including:
 
-## No-update fallback
+- Gym and current bodyweight targets
+- 60 pushups as four sets of 15
+- 60 situps as three sets of 20
+- Learning Python and automation
+- Music, practical motivation, work, building and current plans
 
-Check whether either person supplied meaningful updates during the previous 24 to 48 hours.
+Do not invent appearance details, feelings, activity, plans or relationship events.
 
-- Never pretend an old update happened today.
-- If updates are missing, research and publish useful external material instead of displaying blank or apologetic sections.
-- Add one light shared nudge such as: `You two have been quiet for a day or two. The briefing can research the world, but it cannot obtain relationship updates through telepathy. Send one useful update each.`
-- The nudge may say they have been quiet or slacking only when that is factually true. Keep it playful, not shaming.
-- Ask for one concise update from each person: what changed, one positive moment, plans, gym or run activity, a concern, a correction, a topic to follow, or tomorrow's preferred music mood.
+## Personal activity
 
-## Refresh each run
+Discord, messages, online activity, browsing, calls, gaming, Spotify history and personal work activity must come from a fresh self-report or an explicitly authorized connected source.
 
-- Current local date and time for Brooklyn and Waikato
-- Weather and meaningful alerts for both areas
-- Useful Brooklyn, New York, Waikato, and New Zealand developments
-- Waikato safety, crime, emergency, court, and missing-person developments from official sources
-- Major crime and exact legal developments
-- Two or three worthwhile celebrity, entertainment, culture, royal, influencer, political-figure, or major legal stories
-- Optional responsibly handled public-figure rumor
-- One useful up-and-coming trend when available
-- One current personalized style, beauty, hair, nail, accessory, or jewelry idea for Crystal when worthwhile
-- One concise practical custom-jewelry-business sentence on most days
-- One worthwhile pet or animal item
-- One shared movement or gym card for both
-- Current connected Spotify information and one fresh shared song
-- Separate short Virgo readings for September 15 and September 14
-- One factual funny or relevant daily fact
-- One strong original quote with a short reflection
+Label self-reported activity `SELF-REPORTED`. Never recycle an old recap as current. Keep private names, usernames, message text, screenshots, health details, sexual details, precise locations, client information and financial account details out of the repository.
+
+## Required current research
+
+Refresh each run:
+
+- Local dates and times for Brooklyn and Waikato
+- Full useful weather for both places
+- Meaningful local developments for both sides
 - Major world affairs only when consequential
+- Strong celebrity, crime and culture research
+- One fresh shared song and lawful preview when available
+- One optional strong video
+- Useful current style, beauty, jewelry, animal, movement or trend material when worthwhile
+- Separate light Virgo readings
+- One verified funny, surprising or useful fact when available
+- One original line to keep
 
-## Detailed card fields
+## Editorial expectations
 
-The renderer supports concise cards with optional expandable detail:
+- Put the Spotify section near the top.
+- Include exactly one current shared song when Spotify works.
+- Research the culture desk deeply enough to provide good details, legal status, source links, why the story matters and what to watch next.
+- Include one positive, useful, aesthetic, funny or motivating item so serious news does not dominate.
+- Use the relationship section for one fair observation and one workable action. Do not repeat the same warning in multiple sections.
+- Keep permanent questions visible and add no more than three edition-specific questions.
+- Never show placeholder cards or missing-data apologies merely to preserve layout.
 
-- `whyItMatters`
-- `watchNext`
-- `details`
-- `sources`
-- `detailsLabel`
+## No-update handling
 
-Keep the main card readable without opening details. Use expansion for developing, legal, safety, rumor, trend, and relationship cards when it improves understanding. Do not add expandable filler to every card.
+Check whether Jay or Crystal supplied meaningful updates during the previous 24 to 48 hours.
 
-## Relationship guidance
+When personal input is missing:
 
-Use recent private context when available, but do not store sensitive relationship details in this public repository. Focus on accountability, clarity, reasonable proof, emotional acknowledgment, boundaries, and specific next actions. Do not diagnose, shame, excuse betrayal, manufacture equal blame, pressure either person, or become insulting on either person's behalf.
+- Do not pretend an old event happened today
+- Publish stronger external research instead
+- Hide personal sections that cannot be supported
+- Add one light nudge only when useful
+- Ask for one concise update from each person at most
 
-When a claim is disputed or unsupported, label it as a concern, self-report, report, inference, or unresolved issue. Acknowledge impact before debating intent. Encourage defined transparency boundaries, not permanent surveillance.
+The briefing can research public information. It cannot obtain private relationship context through telepathy.
 
-## Activity source
+## Runtime files
 
-Discord, messaging, online activity, gaming, browsing, calls, social media, and Spotify history must come from a fresh self-report or an explicitly authorized connected source. Label personal activity `SELF-REPORTED` unless independently supported. Never invent activity or recycle yesterday's recap as current.
+A normal daily run may update only:
 
-## Privacy
+1. `assets/news-data.js`
+2. `assets/daily-song.js`
+3. `assets/daily-weather.js`
+4. `assets/daily-culture.js`
+5. `assets/daily-video.js`
 
-The repository is public even though `/news` has a browser gate. Do not publish private names, usernames, screenshots, verbatim private messages, sexual or romantic allegations, health information, medication, Crystal's precise location, confidential client or security details, or identifying third-party information. Git history may preserve deleted content.
+Do not edit permanent HTML, CSS, loaders, gates, sync scripts or renderers during an ordinary run.
 
-Avoid `CMX` in Crystal-facing copy unless technically required.
+## File roles
 
-## Publishing steps
+### `assets/news-data.js`
 
-1. Read this file and the current profile and renderer files.
-2. Gather current sources and recent permitted context.
-3. Compare with the prior edition and avoid unnecessary repeats.
-4. Rank material by safety, relevance, freshness, usefulness, and genuine interest.
-5. Update only `assets/news-data.js` using the supported schema.
-6. Preserve the shared song near the top, hide empty sections, and keep the bottom questions visible.
-7. Verify dates, claims, legal status, rumor labeling, links, Spotify, privacy, JavaScript validity, and loader behavior.
-8. Report publishing or source failures honestly.
+Stores the main briefing structure, personal sections, priorities, opening, local and world material, style, astrology, relationship guidance, timeline, quote and questions.
+
+### `assets/daily-song.js`
+
+Stores only the current edition’s song title, artist, Spotify link, preview URL, description and edition date. The song changes daily.
+
+### `assets/daily-weather.js`
+
+Stores researched Brooklyn and Waikato forecasts for their correct local dates.
+
+### `assets/daily-culture.js`
+
+Stores the fully researched celebrity, crime and culture desk.
+
+### `assets/daily-video.js`
+
+Stores one optional strong embeddable video or `null`.
+
+## Publishing process
+
+1. Read all authoritative instructions and profiles.
+2. Gather fresh permitted input and current public research.
+3. Compare with the previous edition and recent song and story choices.
+4. Rank items by freshness, relevance, usefulness, safety and genuine interest.
+5. Fetch the latest SHA immediately before each file write.
+6. Update the five daily files only.
+7. Fetch all updated files again.
+8. Validate JavaScript, dates, links, sources, legal status, privacy and consistency.
+9. Confirm the route loads fresh data without stale cache when possible.
+10. Report failures and unverified live behavior honestly.
+
+The live page is the primary output. Do not paste the entire briefing unless publication failed or Jay explicitly asks for it.
