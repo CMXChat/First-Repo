@@ -2,9 +2,7 @@
   --epic-blue: #8ed5ff;
   --epic-cyan: #5bc0ff;
   --epic-deep: #06101d;
-  --epic-sun-glow: 0.28;
   --epic-sun-scale: 1;
-  --epic-weather-light: 0.4;
 }
 
 /* The page speaks directly to the reader. */
@@ -32,9 +30,9 @@
     radial-gradient(circle at var(--daylight-x, 72%) var(--daylight-y, 24%), rgba(91, 192, 255, 0.18), transparent 23rem),
     radial-gradient(circle at 18% 72%, rgba(71, 128, 190, 0.12), transparent 26rem),
     conic-gradient(from 210deg at 76% 28%, transparent, rgba(142, 213, 255, 0.055), transparent 28%);
-  opacity: calc(0.7 - var(--hero-scroll, 0) * 0.35);
-  transform: translate3d(0, calc(var(--hero-scroll, 0) * 34px), 0) scale(1.04);
-  transition: opacity 0.15s linear;
+  opacity: var(--hero-ambient-opacity, 0.7);
+  transform: translate3d(0, var(--hero-ambient-shift, 0px), 0) scale(1.04);
+  transition: opacity 0.15s linear, transform 0.15s linear;
 }
 .hero-mote {
   position: absolute;
@@ -57,16 +55,15 @@
 
 /* A brighter weather experience that responds to scroll position */
 .weather-section {
-  --weather-light: var(--epic-weather-light);
   background:
-    radial-gradient(circle at 78% 24%, rgba(247, 197, 107, calc(0.08 + var(--weather-light) * 0.18)), transparent 19rem),
-    radial-gradient(circle at 18% 70%, rgba(91, 192, 255, calc(0.07 + var(--weather-light) * 0.12)), transparent 27rem),
+    radial-gradient(circle at 78% 24%, rgba(247, 197, 107, var(--weather-sun-alpha, 0.14)), transparent 19rem),
+    radial-gradient(circle at 18% 70%, rgba(91, 192, 255, var(--weather-blue-alpha, 0.11)), transparent 27rem),
     linear-gradient(180deg, rgba(8, 25, 43, 0.84), rgba(5, 9, 18, 0.96));
 }
 .weather-shell {
   box-shadow:
     0 34px 105px rgba(0, 0, 0, 0.34),
-    0 0 calc(45px + var(--weather-light) * 55px) rgba(91, 192, 255, calc(0.03 + var(--weather-light) * 0.08)),
+    0 0 var(--weather-halo-size, 70px) rgba(91, 192, 255, var(--weather-halo-alpha, 0.07)),
     inset 0 1px rgba(255, 255, 255, 0.05);
 }
 .sun-stage::before,
@@ -82,19 +79,19 @@
   transform: translate(-50%, -50%) rotate(var(--sun-ring-turn, 0deg));
 }
 .sun-stage::before {
-  border: 1px solid rgba(255, 239, 184, calc(0.08 + var(--weather-light) * 0.13));
-  box-shadow: 0 0 70px rgba(247, 197, 107, calc(0.06 + var(--weather-light) * 0.13));
+  border: 1px solid rgba(255, 239, 184, var(--sun-ring-alpha, 0.14));
+  box-shadow: 0 0 70px rgba(247, 197, 107, var(--sun-ring-glow-alpha, 0.12));
 }
 .sun-stage::after {
   width: clamp(320px, 39vw, 485px);
-  border: 1px dashed rgba(142, 213, 255, calc(0.05 + var(--weather-light) * 0.09));
+  border: 1px dashed rgba(142, 213, 255, var(--sun-orbit-alpha, 0.09));
   animation: epicSolarOrbit 42s linear infinite;
 }
 .sun-orb {
   transform: translate3d(0, var(--sun-shift, 0px), 0) scale(var(--sun-scale, var(--epic-sun-scale)));
   box-shadow:
-    0 0 45px rgba(247, 197, 107, calc(0.2 + var(--sun-glow, var(--epic-sun-glow)))),
-    0 0 145px rgba(247, 197, 107, calc(0.08 + var(--sun-glow, var(--epic-sun-glow)) * 0.4)),
+    0 0 45px rgba(247, 197, 107, var(--sun-main-glow-alpha, 0.42)),
+    0 0 145px rgba(247, 197, 107, var(--sun-soft-glow-alpha, 0.18)),
     inset -18px -22px 44px rgba(156, 79, 20, 0.25);
   transition: transform 0.12s linear, box-shadow 0.14s linear;
 }
