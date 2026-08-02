@@ -11,6 +11,8 @@ Give Jay and Crystal one shared song every day and, when a strong option exists,
 
 The current song is never a permanent site setting. It is only the selection for that edition. Choose a new song on the next daily run unless there is a clear editorial reason to repeat one.
 
+The login welcome remains fixed while one short mood phrase changes with each edition. The song stays a surprise until the briefing opens.
+
 ## Daily shared song
 
 - Use the authorized Spotify connector when available.
@@ -43,6 +45,7 @@ Use these fields:
 - `title`: exact song title
 - `artist`: exact artist name
 - `displayTitle`: `Song · Artist`
+- `loginMood`: one concise lowercase mood phrase ending with a period, such as `hopeful, honest, and still building.`
 - `text`: one short original explanation of why it fits today
 - `directLine`: one optional playful or warm shared line
 - `spotifyUrl`: exact connector-derived Spotify track URL
@@ -51,16 +54,20 @@ Use these fields:
 - `selectedFor`: Brooklyn edition date in `YYYY-MM-DD`
 - `published`: concise note such as `today's shared pick`
 
-`assets/daily-song.js` is the authoritative source for login copy, autoplay source, accessible control labels and the visible shared-song card. Permanent rendering logic lives elsewhere and must not be copied into this daily file.
+`assets/daily-song.js` is the authoritative source for the daily login mood, autoplay source, accessible control labels and the visible shared-song card. Permanent rendering logic lives elsewhere and must not be copied into this daily file.
 
 The matching `spotify` entry in `assets/news-data.js` should use the same track, artist, description and Spotify URL. If the two files briefly disagree, `assets/daily-song.js` wins on the rendered page.
 
-## Autoplay and controls
+## Login welcome, autoplay and controls
 
+- The permanent login sentence is: `Welcome to today’s brief. This private space belongs to Jay and Crystal.`
+- A second line displays `Today’s mood: [loginMood]` and changes with every edition.
+- Keep the mood line brief, truthful to the edition and free from diagnosis, certainty about either person’s feelings or melodrama.
+- Do not reveal the daily song title on the login screen. Let the music be a small surprise after access is granted.
 - The song may begin only after the passphrase submission, which is the user interaction used to prime audio.
 - Never autoplay before the user interacts with the gate.
 - The visible hero control remains generic across editions: `Play music`, `Pause music` or `Open music` when no preview exists.
-- The current song title and artist belong in the login copy, media card and accessible label.
+- The current song title and artist belong in the media card and accessible control label.
 - The hero and media-card controls must stay synchronized.
 - When a browser blocks autoplay, keep a clear play option.
 - When no preview exists, open the verified Spotify link instead of pretending audio can play.
@@ -114,6 +121,6 @@ During the full daily briefing run, update the five daily runtime files defined 
 - The matching song entry in `assets/news-data.js`
 - `assets/daily-video.js`
 
-Fetch the latest SHA immediately before every write. Validate exact track identity, Spotify link, preview URL, video ID, current edition date and cross-file consistency after publishing.
+Fetch the latest SHA immediately before every write. Validate the mood phrase, exact track identity, Spotify link, preview URL, video ID, current edition date and cross-file consistency after publishing.
 
-Do not edit the media renderer, synchronization script, cache loader, access gate, CSS or HTML during an ordinary daily publishing run.
+Do not edit the media renderer, synchronization script, cache loader, access gate, gate-copy script, CSS or HTML during an ordinary daily publishing run.
