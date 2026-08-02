@@ -1,641 +1,962 @@
 (() => {
   "use strict";
 
-  const data = window.LOGAN_BRIEF;
-  if (!data) return;
+  const data = window.LOGAN_TERMINAL_DATA;
+  const output = document.getElementById("output");
+  const form = document.getElementById("shellForm");
+  const input = document.getElementById("shellInput");
+  const promptLabel = document.getElementById("promptLabel");
+  const clock = document.getElementById("clock");
 
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
-  const ACCESS_KEY = `logan-brief-access-${document.documentElement.dataset.briefDate}`;
-  const WATER_KEY = `logan-water-${document.documentElement.dataset.briefDate}`;
-  const correctAnswers = { q1: "b", q2: "c", q3: "a" };
+  const SESSION_KEY = "logan_terminal_session_v1";
+  const STATE_KEY = "cmx_gate_state_v1";
+  const ITERATIONS = 600000;
+  const SALT_B64 = "AZ4QJPMRsGl0B1pJV+4Yzut/sDzFl++ZoeMAfrO5ieo=";
+  const VERIFIER_B64 = "PWXFb5BlVpc7BCUDpCvMZ1faJ6Yb304F8d0EspmpnP0=";
 
-  const expansionStyles = document.createElement("link");
-  expansionStyles.rel = "stylesheet";
-  expansionStyles.href = "/assets/logan-expansion.css?v=20260802-1";
-  document.head.appendChild(expansionStyles);
+  const commands = [
+    "help", "man", "brief", "all", "news", "local", "weather", "timeline",
+    "guns", "safety", "missions", "shift", "bar-tip", "tips", "social",
+    "media", "friendship", "platform", "capabilities", "pages", "questions",
+    "sources", "open", "status", "neofetch", "whoami", "date", "pwd", "ls",
+    "tree", "cat", "history", "clear", "relock", "exit"
+  ];
 
-  const gate = $("#gate");
-  const app = $("#briefApp");
-  const quizForm = $("#quizForm");
-  const quizStatus = $("#quizStatus");
-  const terminalLog = $("#terminalLog");
+  const aliases = {
+    cls: "clear",
+    briefing: "brief",
+    gun: "guns",
+    hunt: "guns",
+    music: "media",
+    routes: "pages",
+    map: "pages",
+    about: "friendship",
+    system: "platform",
+    quit: "exit"
+  };
 
-  function formatNacTime(includeSeconds = false) {
-    return new Intl.DateTimeFormat("en-US", {
-      timeZone: "America/Chicago",
-      hour: "numeric",
-      minute: "2-digit",
-      second: includeSeconds ? "2-digit" : undefined,
-      hour12: true,
-      timeZoneName: includeSeconds ? undefined : "short"
-    }).format(new Date());
-  }
-
-  function updateClocks() {
-    const gateClock = $("#gateClock");
-    const liveLocalTime = $("#liveLocalTime");
-    if (gateClock) gateClock.textContent = `${formatNacTime(true)} CDT`;
-    if (liveLocalTime) liveLocalTime.textContent = formatNacTime(false);
-  }
-  updateClocks();
-  setInterval(updateClocks, 1000);
-
-  function addTerminalLine(text, className = "") {
-    const line = document.createElement("div");
-    line.className = className;
-    line.textContent = text;
-    terminalLog.appendChild(line);
-  }
-
-  let revealObserver;
-
-  function grantAccess(save = true) {
-    if (save) localStorage.setItem(ACCESS_KEY, "granted");
-    document.body.classList.remove("gate-active");
-    gate.classList.add("granted");
-    app.classList.add("active");
-    app.removeAttribute("inert");
-    app.setAttribute("aria-hidden", "false");
-    window.setTimeout(() => {
-      if (revealObserver) $$(".reveal").forEach((element) => revealObserver.observe(element));
-    }, 100);
-  }
-
-  function relock() {
-    localStorage.removeItem(ACCESS_KEY);
-    document.body.classList.add("gate-active");
-    gate.classList.remove("granted");
-    app.classList.remove("active");
-    app.setAttribute("inert", "");
-    app.setAttribute("aria-hidden", "true");
-    quizForm.reset();
-    terminalLog.innerHTML = "";
-    quizStatus.textContent = "awaiting input_";
-    $$("fieldset", quizForm).forEach((field) => field.classList.remove("correct", "wrong"));
-    gate.scrollTop = 0;
-  }
-
-  quizForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    terminalLog.innerHTML = "";
-    let score = 0;
-    let unanswered = 0;
-
-    Object.entries(correctAnswers).forEach(([name, correct], index) => {
-      const selected = $(`input[name="${name}"]:checked`, quizForm);
-      const field = $(`fieldset[data-question="${index + 1}"]`, quizForm);
-      field.classList.remove("correct", "wrong");
-      if (!selected) {
-        unanswered += 1;
-        field.classList.add("wrong");
-        return;
-      }
-      if (selected.value === correct) {
-        score += 1;
-        field.classList.add("correct");
-      } else {
-        field.classList.add("wrong");
-      }
-    });
-
-    if (unanswered) {
-      quizStatus.textContent = `missing ${unanswered} answer${unanswered > 1 ? "s" : ""}_`;
-      addTerminalLine("[ ERROR ] challenge incomplete", "error");
-      return;
-    }
-
-    addTerminalLine(`[ SCAN ] ${score}/3 safety responses verified`);
-    if (score === 3) {
-      quizStatus.textContent = "authorization accepted_";
-      addTerminalLine("[ OK ] firearm-safety baseline confirmed", "ok");
-      addTerminalLine("[ OK ] Logan profile match: Army / bartender / East Texas", "ok");
-      addTerminalLine("ACCESS GRANTED // welcome to today's field brief", "grant");
-      window.setTimeout(() => grantAccess(true), 850);
-    } else {
-      quizStatus.textContent = "authorization denied_";
-      addTerminalLine("[ DENIED ] Check the four universal safety rules and try again.", "error");
-    }
-  });
-
-  $("#relockButton").addEventListener("click", relock);
-
-  function sourceById(id) {
-    return data.sources.find((source) => source.id === id);
-  }
-
-  function renderFilters() {
-    const categories = [
-      ["all", "All intel"],
-      ["local", "Nacogdoches"],
-      ["guns", "Guns + hunting"],
-      ["texas", "Texas"],
-      ["weather", "Weather"],
-      ["fun", "Light stuff"]
-    ];
-    const container = $("#newsFilters");
-    categories.forEach(([value, label], index) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = `filter-button${index === 0 ? " active" : ""}`;
-      button.dataset.filter = value;
-      button.textContent = label;
-      button.addEventListener("click", () => {
-        $$(".filter-button", container).forEach((item) => item.classList.toggle("active", item === button));
-        $$(".intel-card", $("#newsGrid")).forEach((card) => {
-          card.hidden = value !== "all" && card.dataset.category !== value;
-        });
-      });
-      container.appendChild(button);
-    });
-  }
-
-  function renderNews() {
-    const grid = $("#newsGrid");
-    data.news.forEach((item) => {
-      const source = sourceById(item.sourceId);
-      const article = document.createElement("article");
-      article.className = "intel-card reveal";
-      article.dataset.category = item.category;
-      article.dataset.priority = item.priority;
-      article.innerHTML = `
-        <span class="eyebrow">${item.eyebrow}</span>
-        <h3>${item.title}</h3>
-        <p>${item.summary}</p>
-        <p class="intel-why"><strong>Why it matters:</strong> ${item.why}</p>
-        <button class="source-jump" type="button">${source ? source.name : "source"} ↗</button>`;
-      $(".source-jump", article).addEventListener("click", () => {
-        if (source) window.open(source.url, "_blank", "noopener,noreferrer");
-      });
-      grid.appendChild(article);
-    });
-  }
-
-  function renderTimeline() {
-    const track = $("#timelineTrack");
-    const detail = $("#timelineDetail");
-    const select = (index) => {
-      const item = data.timeline[index];
-      $$(".timeline-node", track).forEach((node, nodeIndex) => node.classList.toggle("active", nodeIndex === index));
-      detail.innerHTML = `<span class="detail-type">${item.type}</span><h3>${item.time} · ${item.title}</h3><p>${item.detail}</p>`;
-    };
-    data.timeline.forEach((item, index) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "timeline-node";
-      button.innerHTML = `<strong>${item.time}</strong><i></i><span>${item.title}</span>`;
-      button.addEventListener("click", () => select(index));
-      track.appendChild(button);
-    });
-    select(0);
-  }
-
-  function renderGunDates() {
-    data.gunDates.forEach((item) => {
-      const row = document.createElement("div");
-      row.className = "date-row";
-      row.innerHTML = `<time>${item.date}</time><div><h3>${item.title}</h3><p>${item.text}</p></div>`;
-      $("#gunDates").appendChild(row);
-    });
-  }
-
-  function renderState() {
-    data.stateItems.forEach((item) => {
-      const card = document.createElement("article");
-      card.className = "state-card reveal";
-      card.innerHTML = `<div class="state-icon">${item.icon}</div><div class="state-label">${item.label}</div><h3>${item.title}</h3><p>${item.text}</p>`;
-      $("#stateGrid").appendChild(card);
-    });
-  }
-
-  function renderCapabilities() {
-    data.capabilities.forEach((item) => {
-      const card = document.createElement("article");
-      card.className = "capability-card reveal";
-      card.innerHTML = `<div class="cap-icon">${item.icon}</div><h3>${item.title}</h3><p>${item.text}</p>`;
-      $("#capabilityGrid").appendChild(card);
-    });
-  }
-
-  function renderQuestions() {
-    data.questions.forEach((question, index) => {
-      const item = document.createElement("div");
-      item.className = "question-item";
-      item.innerHTML = `<span>${String(index + 1).padStart(2, "0")}</span><div>${question}</div>`;
-      $("#questionList").appendChild(item);
-    });
-  }
-
-  function renderSources() {
-    data.sources.forEach((source) => {
-      const link = document.createElement("a");
-      link.className = "source-item";
-      link.href = source.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.innerHTML = `<span>${source.name}</span><strong>${source.title}</strong><small>${source.date}</small>`;
-      $("#sourceList").appendChild(link);
-    });
-  }
-
-  function renderBarTip() {
-    const tip = document.createElement("article");
-    tip.className = "bar-tip reveal";
-    tip.innerHTML = `
-      <div class="bar-tip-icon" aria-hidden="true">♜</div>
-      <div>
-        <div class="card-label">DAILY BAR UPGRADE // THE REGULARS MEMORY LOOP</div>
-        <h3>Remember one useful detail, not someone's entire life story.</h3>
-        <p>At the end of the shift, record three privacy-safe things: a regular's first name, usual drink, and one harmless conversation hook such as their team, job field, or upcoming trip. On the next visit, greet them by name and confirm the drink instead of assuming it.</p>
-        <small>Why it works: people return to places where they feel recognized. It improves hospitality, repeat business, atmosphere, and often tips. Do not record sensitive information, gossip, intoxicated confessions, phone numbers, or anything that would feel creepy if the guest saw it.</small>
-      </div>`;
-    $("#shift-intel").insertBefore(tip, $("#shift-intel").lastElementChild);
-  }
-
-  const recentTracks = [
+  const challenge = [
     {
-      title: "No Receipts",
-      artist: "Augxst, Prznt, Adrian Chafer",
-      spotify: "https://open.spotify.com/track/6CQCw1B4igNUKBGCgcIJLj?utm_source=openai&utm_medium=chatgpt&go=1&nap_web=1&request_id=1c0c8cc9-b6f6-4e76-99fb-a866ee39651b&nl=spotify%3Anl%3ACAASEBwMjMm29k52mfuoZu45ZRsaGDU6NkNRQ3cxQjRpZ05VS0JHQ2djSUpMaiADMAPgAzXoA8TbhZr8M%2FADIA%3D%3D&redirect_uri=com.openai.chatgpt"
+      question: "Treat every firearm as though it is:",
+      options: ["a) unloaded until proven otherwise", "b) loaded", "c) safe when the safety is on"],
+      answer: "b"
     },
     {
-      title: "Ready",
-      artist: "Dyce",
-      spotify: "https://open.spotify.com/track/3iGt2RRIfy42EOoMMIoEB2?utm_source=openai&utm_medium=chatgpt&go=1&nap_web=1&request_id=1c0c8cc9-b6f6-4e76-99fb-a866ee39651b&nl=spotify%3Anl%3ACAASEBwMjMm29k52mfuoZu45ZRsaGDU6M2lHdDJSUklmeTQyRU9vTU1Jb0VCMiADMAPgAzXoA8TbhZr8M%2FADIA%3D%3D&redirect_uri=com.openai.chatgpt"
+      question: "The muzzle should point:",
+      options: ["a) wherever your eyes are looking", "b) down whenever possible", "c) only where an unintended discharge would cause no injury"],
+      answer: "c"
     },
     {
-      title: "Everlasting",
-      artist: "Armin van Buuren, SACHA",
-      spotify: "https://open.spotify.com/track/3fQpNZSQAR1Kf0X5IbSVoX?utm_source=openai&utm_medium=chatgpt&go=1&nap_web=1&request_id=1c0c8cc9-b6f6-4e76-99fb-a866ee39651b&nl=spotify%3Anl%3ACAASEBwMjMm29k52mfuoZu45ZRsaGDU6M2ZRcE5aU1FBUjFLZjBYNUliU1ZvWCADMAPgAzXoA8TbhZr8M%2FADIA%3D%3D&redirect_uri=com.openai.chatgpt"
-    },
-    {
-      title: "energy",
-      artist: "arya x",
-      spotify: "https://open.spotify.com/track/1ZCjqdLQEkQspnq5mBKy8C?utm_source=openai&utm_medium=chatgpt&go=1&nap_web=1&request_id=1c0c8cc9-b6f6-4e76-99fb-a866ee39651b&nl=spotify%3Anl%3ACAASEBwMjMm29k52mfuoZu45ZRsaGDU6MVpDanFkTFFFa1FzcG5xNW1CS3k4QyADMAPgAzXoA8TbhZr8M%2FADIA%3D%3D&redirect_uri=com.openai.chatgpt"
-    },
-    {
-      title: "Broken Soul, Pt. 2",
-      artist: "CloverS",
-      spotify: "https://open.spotify.com/track/7v8mtcuyUUiELxn5SRiXPc?utm_source=openai&utm_medium=chatgpt&go=1&nap_web=1&request_id=1c0c8cc9-b6f6-4e76-99fb-a866ee39651b&nl=spotify%3Anl%3ACAASEBwMjMm29k52mfuoZu45ZRsaGDU6N3Y4bXRjdXlVVWlFTHhuNVNSaVhQYyADMAPgAzXoA8TbhZr8M%2FADIA%3D%3D&redirect_uri=com.openai.chatgpt"
+      question: "Your trigger finger stays:",
+      options: ["a) indexed outside the trigger guard until you intend to fire", "b) resting lightly on the trigger", "c) wherever it feels comfortable"],
+      answer: "a"
     }
   ];
 
-  function renderExpansionSections() {
-    const tomorrow = $("#tomorrow");
-    tomorrow.dataset.scene = "14";
+  let mode = "boot";
+  let challengeIndex = 0;
+  let challengeAnswers = [];
+  let commandHistory = [];
+  let historyIndex = 0;
+  let routeCache = null;
 
-    const media = document.createElement("section");
-    media.className = "scene media-scene";
-    media.id = "media";
-    media.dataset.scene = "11";
-    media.dataset.title = "Jay's Media Drop";
-    media.innerHTML = `
-      <div class="scene-head reveal">
-        <div><p class="kicker">FROM JAY'S RECENT SPOTIFY ROTATION</p><h2>A song for an old internet friend.</h2></div>
-        <p>This is based on Jay's connected Spotify recent listening, not a generic recommendation pretending to know him.</p>
-      </div>
-      <div class="friendship-note reveal">
-        <strong>LOGAN // WHY YOU ARE GETTING THIS PAGE</strong>
-        <p>Jay has known you since the COVID-era internet chaos. You helped build the social side of CMX when it was still becoming a real community, and you stayed a good friend through the strange years after that. This page is partly a daily briefing and partly a live demonstration of where Jay wants CMX technology to go.</p>
-      </div>
-      <div class="media-layout">
-        <article class="media-player reveal">
-          <div class="media-label">JAY'S SONG CHOICE FOR LOGAN</div>
-          <h3>Everlasting</h3>
-          <p class="media-artist">Armin van Buuren & SACHA</p>
-          <div class="waveform" aria-hidden="true">${"<i></i>".repeat(28)}</div>
-          <p class="media-reason"><strong>Why this one:</strong> it appeared in Jay's recent rotation, the title fits a friendship that survived the COVID era and the long CMX build, and the track has enough forward energy for an Army veteran who works behind a bar. Sentimental, but not a Hallmark hostage situation.</p>
-          <div class="media-actions">
-            <a class="media-link spotify" href="${recentTracks[2].spotify}" target="_blank" rel="noopener noreferrer">Play on Spotify</a>
-            <a class="media-link youtube" href="https://www.youtube.com/results?search_query=Armin+van+Buuren+SACHA+Everlasting" target="_blank" rel="noopener noreferrer">Find on YouTube</a>
-          </div>
-        </article>
-        <article class="rotation-card reveal">
-          <div class="card-label">WHAT JAY HAS BEEN LISTENING TO</div>
-          <h3>Recent Spotify rotation</h3>
-          <div class="rotation-list">
-            ${recentTracks.map((track, index) => `<a class="rotation-track" href="${track.spotify}" target="_blank" rel="noopener noreferrer"><span>${String(index + 1).padStart(2, "0")}</span><span><strong>${track.title}</strong><small>${track.artist}</small></span><em>SPOTIFY ↗</em></a>`).join("")}
-          </div>
-          <p class="media-truth">Pulled from Jay's authorized Spotify listening history on August 2, 2026. This does not expose private messages, contacts, or unrelated account data.</p>
-        </article>
-      </div>`;
-
-    const platform = document.createElement("section");
-    platform.className = "scene";
-    platform.id = "platform";
-    platform.dataset.scene = "12";
-    platform.dataset.title = "What Jay Is Building";
-    platform.innerHTML = `
-      <div class="scene-head reveal">
-        <div><p class="kicker">THE BIG CMX PLAN, WITHOUT DEVELOPER GIBBERISH</p><h2>Turn pages like this into useful private software.</h2></div>
-        <p>Right now this site is a set of advanced static web pages. Jay's next move is to give those pages a secure engine, memory, approved integrations, and AI that can perform controlled work.</p>
-      </div>
-      <div class="friendship-note reveal">
-        <strong>WHY THIS MATTERS TO YOU</strong>
-        <p>You helped Jay build CMX as a social place. He is now trying to evolve the same idea into a platform where trusted people can have their own useful tools, briefings, workspaces, research pages, automations, and private assistants without needing to understand code.</p>
-      </div>
-      <div class="platform-stack">
-        <article class="platform-card reveal"><span class="platform-number">01 // FRONTEND</span><h3>The part you see</h3><p>The buttons, terminal, cards, timelines, calculators, forms, music links, and pages in your browser. HTML gives it structure, CSS makes it look good, and JavaScript makes it interactive.</p><code>browser = dashboard</code></article>
-        <article class="platform-card reveal"><span class="platform-number">02 // BACKEND</span><h3>The protected engine room</h3><p>A Python FastAPI server would receive requests, check identity and permission, process files, call approved services, run automations, and return safe results to the page.</p><code>FastAPI = engine</code></article>
-        <article class="platform-card reveal"><span class="platform-number">03 // DATABASE</span><h3>The organized memory</h3><p>A database can remember profiles, settings, briefing history, tasks, saved research, approvals, audit logs, and information you explicitly choose to store.</p><code>PostgreSQL = memory</code></article>
-        <article class="platform-card reveal"><span class="platform-number">04 // AI</span><h3>The translator and operator</h3><p>You speak normally. The AI understands the request, gathers permitted context, creates a plan, and calls narrowly defined tools. It should never get unlimited server authority.</p><code>plain English → tools</code></article>
-        <article class="platform-card reveal"><span class="platform-number">05 // MCP + CONNECTORS</span><h3>The approved adapters</h3><p>MCP and app connectors let the AI use specific outside services such as GitHub, Gmail, calendars, Spotify, finances, files, search, or internal CMX tools through defined permissions.</p><code>connector = allowed doorway</code></article>
-        <article class="platform-card reveal"><span class="platform-number">06 // GITHUB</span><h3>The source of truth</h3><p>Every page and code change remains versioned. The AI can create a branch, show exactly what changed, send it to staging, and preserve a rollback path.</p><code>GitHub = history</code></article>
-        <article class="platform-card reveal"><span class="platform-number">07 // STAGING + APPROVAL</span><h3>The safety checkpoint</h3><p>Changes go to a private test version first. Jay reviews them before production. High-risk actions can require another explicit approval instead of silently running.</p><code>test → approve → live</code></article>
-        <article class="platform-card reveal"><span class="platform-number">08 // CLOUDFLARE + LINUX</span><h3>The real gate and server</h3><p>A Linux server runs the app. Cloudflare Access and Tunnel protect it, while HTTPS, rate limits, logs, backups, secret storage, and automatic restarts keep it controlled and recoverable.</p><code>identity before access</code></article>
-      </div>
-      <div class="platform-flow reveal" aria-label="How a request moves through the future CMX platform">
-        <div class="flow-node"><span>01</span><strong>You ask normally</strong></div>
-        <div class="flow-node"><span>02</span><strong>AI understands intent</strong></div>
-        <div class="flow-node"><span>03</span><strong>Permissions are checked</strong></div>
-        <div class="flow-node"><span>04</span><strong>Approved tools run</strong></div>
-        <div class="flow-node"><span>05</span><strong>Staging shows result</strong></div>
-        <div class="flow-node"><span>06</span><strong>Human approves live</strong></div>
-      </div>
-      <div class="platform-details">
-        <article class="flow-example reveal">
-          <h3>What that would feel like</h3>
-          <ol>
-            <li>Logan says, “Build tomorrow's briefing and include hunting deadlines, my shifts, weather, and bills due.”</li>
-            <li>The AI checks which accounts and data Logan has actually authorized.</li>
-            <li>It researches public sources, reads the permitted schedule or finance data, and drafts the page.</li>
-            <li>It writes the change to GitHub on a branch and deploys a protected preview.</li>
-            <li>Jay or Logan reviews it, approves it, and the live page updates with a complete audit trail.</li>
-          </ol>
-        </article>
-        <article class="flow-example platform-truth reveal">
-          <h3>Why a backend is necessary</h3>
-          <ul>
-            <li>Static pages cannot safely hold secrets, private account tokens, real authentication, or trusted personal data.</li>
-            <li>A backend can enforce who is allowed to read, write, approve, upload, connect, or trigger an action.</li>
-            <li>It enables databases, file processing, notifications, scheduled jobs, private AI memory, APIs, and account integrations.</li>
-            <li>It lets CMX build tools once and safely reuse them across people, pages, and future projects.</li>
-          </ul>
-        </article>
-      </div>
-      <div class="truth-console reveal"><strong>Current truth:</strong><p>The quiz gate on this page is a fun browser gate on a public static repository. It discourages casual viewing, but real confidentiality requires the planned server, login, permissions, and Cloudflare Access. Jay is deliberately building the architecture in stages so the cool part does not outrun the secure part.</p></div>`;
-
-    const pageMap = document.createElement("section");
-    pageMap.className = "scene";
-    pageMap.id = "page-map";
-    pageMap.dataset.scene = "13";
-    pageMap.dataset.title = "CMX Page Map";
-    pageMap.innerHTML = `
-      <div class="scene-head reveal">
-        <div><p class="kicker">WHAT JAY HAS ALREADY BUILT</p><h2>The current db.cmxchat.com map.</h2></div>
-        <p>These links are loaded from the live CMX route registry. Some are polished tools, some are private plans, and some are experiments preserved so the best ideas can be reused.</p>
-      </div>
-      <div class="friendship-note reveal">
-        <strong>TRUSTED ACCESS NOTE</strong>
-        <p>Jay trusts you enough to show you the working map. Explore it, break nothing on purpose, and remember that the more technical pages describe what is being built, while several backend features remain planned until the secure server exists.</p>
-      </div>
-      <div class="page-map" id="liveRouteMap">
-        <article class="page-group reveal"><h3>Loading route registry...</h3><p>The page is checking the current source of truth.</p></article>
-      </div>
-      <p class="legacy-note reveal">The directory intentionally shows only approved active tools. This trusted briefing also exposes direct-link planning, internal, client, experimental, legacy, and system routes so Logan can understand the whole project.</p>`;
-
-    tomorrow.parentNode.insertBefore(media, tomorrow);
-    tomorrow.parentNode.insertBefore(platform, tomorrow);
-    tomorrow.parentNode.insertBefore(pageMap, tomorrow);
-    renderRouteMap();
+  function escapeText(value) {
+    return String(value ?? "");
   }
 
-  async function renderRouteMap() {
-    const container = $("#liveRouteMap");
-    try {
-      const response = await fetch("/assets/cmx-routes.json?v=14", { cache: "no-store", credentials: "same-origin" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const registry = await response.json();
-      const active = registry.routes.filter((route) => route.status === "Active" && route.category !== "System");
-      const working = registry.routes.filter((route) => !["Active", "Legacy"].includes(route.status) && route.category !== "System");
-      const legacy = registry.routes.filter((route) => route.status === "Legacy" || route.category === "System");
-      const renderGroup = (title, intro, routes) => `
-        <article class="page-group reveal">
-          <h3>${title}</h3><p>${intro}</p>
-          <div class="route-list">${routes.map((route) => `<a class="route-link" href="${route.path}" target="_blank" rel="noopener"><code>${route.path}</code><span>${route.name}</span><small>${route.status}</small></a>`).join("")}</div>
-        </article>`;
-      container.innerHTML = [
-        renderGroup("Active pages", "Current tools, operational blueprints, briefings, and client workspaces marked active.", active),
-        renderGroup("Work in progress", "Internal, experimental, and review-stage pages that preserve ongoing thinking and design work.", working),
-        renderGroup("Legacy and system", "Compatibility routes and the custom fallback page.", legacy)
-      ].join("");
-      if (revealObserver) $$(".reveal", container).forEach((element) => revealObserver.observe(element));
-    } catch (error) {
-      container.innerHTML = `<article class="page-group reveal"><h3>Route registry unavailable</h3><p>The live map could not load. Open <a href="/directory/">/directory/</a> for the approved tool list.</p></article>`;
-      console.error(error);
-    }
+  function scrollBottom() {
+    output.scrollTop = output.scrollHeight;
   }
 
-  renderFilters();
-  renderNews();
-  renderTimeline();
-  renderGunDates();
-  renderState();
-  renderCapabilities();
-  renderQuestions();
-  renderSources();
-  renderBarTip();
-  renderExpansionSections();
-
-  let safetyIndex = 3;
-  $("#safetyCard").addEventListener("click", () => {
-    safetyIndex = (safetyIndex + 1) % data.safetyRules.length;
-    $("#safetyRule").textContent = data.safetyRules[safetyIndex];
-  });
-
-  let openerIndex = 0;
-  $("#shuffleOpener").addEventListener("click", () => {
-    let next = openerIndex;
-    while (next === openerIndex && data.socialOpeners.length > 1) next = Math.floor(Math.random() * data.socialOpeners.length);
-    openerIndex = next;
-    $("#openerDisplay").textContent = data.socialOpeners[openerIndex];
-  });
-
-  const shiftHours = $("#shiftHours");
-  const tipsPerHour = $("#tipsPerHour");
-  const taxReserve = $("#taxReserve");
-  function updateTipCalculator() {
-    const hours = Number(shiftHours.value);
-    const rate = Number(tipsPerHour.value);
-    const reserve = Number(taxReserve.value);
-    const gross = hours * rate;
-    const net = gross * (1 - reserve / 100);
-    $("#shiftHoursOutput").textContent = `${hours} hours`;
-    $("#tipsPerHourOutput").textContent = `$${rate}/hr`;
-    $("#taxReserveOutput").textContent = `${reserve}%`;
-    $("#grossTips").textContent = `$${gross.toFixed(0)}`;
-    $("#netTips").textContent = `$${net.toFixed(0)}`;
+  function addLine(text = "", className = "") {
+    const line = document.createElement("div");
+    line.className = `line ${className}`.trim();
+    line.textContent = escapeText(text);
+    output.appendChild(line);
+    scrollBottom();
+    return line;
   }
-  [shiftHours, tipsPerHour, taxReserve].forEach((input) => input.addEventListener("input", updateTipCalculator));
-  updateTipCalculator();
 
-  let waterCount = Number(localStorage.getItem(WATER_KEY) || 0);
-  function updateWater() {
-    $("#waterCount").textContent = String(waterCount);
+  function addLinkLine(prefix, label, url, suffix = "") {
+    const line = document.createElement("div");
+    line.className = "line link-line";
+    if (prefix) line.append(document.createTextNode(prefix));
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = label;
+    line.append(link);
+    if (suffix) line.append(document.createTextNode(suffix));
+    output.appendChild(line);
+    scrollBottom();
   }
-  updateWater();
-  $("#addWater").addEventListener("click", () => {
-    waterCount += 1;
-    localStorage.setItem(WATER_KEY, String(waterCount));
-    updateWater();
-  });
 
-  const missionButtons = $$(".mission-card .check-button");
-  function updateMissions() {
-    const complete = missionButtons.filter((button) => button.closest(".mission-card").classList.contains("completed")).length;
-    $("#missionCount").textContent = `${complete} / 3`;
-    $("#missionFill").style.width = `${(complete / 3) * 100}%`;
-    $("#missionMessage").textContent = complete === 3
-      ? "All three acknowledged. The command staff will now stop hovering."
-      : "Nothing dramatic. Just handle the three things that can become annoying later.";
+  function addRule(character = "─") {
+    addLine(character.repeat(96), "rule");
   }
-  missionButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const card = button.closest(".mission-card");
-      card.classList.toggle("completed");
-      button.textContent = card.classList.contains("completed") ? "checked ✓" : "mark checked";
-      updateMissions();
+
+  function addHeader(title, subtitle = "") {
+    addLine("");
+    addRule();
+    addLine(title.toUpperCase(), "strong");
+    if (subtitle) addLine(subtitle, "dim");
+    addRule();
+  }
+
+  function addTable(headers, rows) {
+    const table = document.createElement("table");
+    table.className = "table";
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    headers.forEach((header) => {
+      const th = document.createElement("th");
+      th.textContent = header;
+      headRow.appendChild(th);
     });
-  });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
 
-  async function copyText(text) {
+    const tbody = document.createElement("tbody");
+    rows.forEach((row) => {
+      const tr = document.createElement("tr");
+      row.forEach((cell) => {
+        const td = document.createElement("td");
+        td.textContent = escapeText(cell);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    output.appendChild(table);
+    scrollBottom();
+  }
+
+  function addCommandEcho(command) {
+    addLine(`┌──(logan㉿cmx-node)-[~/brief]`);
+    addLine(`└─$ ${command}`, "command");
+  }
+
+  function updateClock() {
+    clock.textContent = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZoneName: "short"
+    }).format(new Date());
+  }
+
+  function setPrompt(top, bottom, placeholder = "", password = false) {
+    promptLabel.innerHTML = "";
+    const topSpan = document.createElement("span");
+    topSpan.className = "prompt-top";
+    topSpan.textContent = top;
+    const bottomSpan = document.createElement("span");
+    bottomSpan.className = "prompt-bottom";
+    bottomSpan.textContent = bottom;
+    promptLabel.append(topSpan, bottomSpan);
+    input.placeholder = placeholder;
+    input.type = password ? "password" : "text";
+    document.body.classList.toggle("password-mode", password);
+    requestAnimationFrame(() => input.focus());
+  }
+
+  function setShellPrompt() {
+    setPrompt("┌──(logan㉿cmx-node)-[~/brief]", "└─$", "type help");
+  }
+
+  function setPasswordPrompt() {
+    setPrompt("┌──(admin㉿cmx-node)-[/secure/logan]", "└─Password:", "", true);
+  }
+
+  function setChallengePrompt() {
+    setPrompt(`┌──(security-check㉿cmx-node)-[question-${challengeIndex + 1}]`, "└─answer [a/b/c]:", "a, b, or c");
+  }
+
+  function fromBase64(value) {
+    const binary = atob(value);
+    return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  }
+
+  function toBase64(bytes) {
+    let binary = "";
+    bytes.forEach((byte) => {
+      binary += String.fromCharCode(byte);
+    });
+    return btoa(binary);
+  }
+
+  async function deriveVerifier(password) {
+    const material = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(password),
+      "PBKDF2",
+      false,
+      ["deriveBits"]
+    );
+    const bits = await crypto.subtle.deriveBits(
+      {
+        name: "PBKDF2",
+        hash: "SHA-256",
+        salt: fromBase64(SALT_B64),
+        iterations: ITERATIONS
+      },
+      material,
+      256
+    );
+    return toBase64(new Uint8Array(bits));
+  }
+
+  function constantTimeEqual(left, right) {
+    if (left.length !== right.length) return false;
+    let difference = 0;
+    for (let index = 0; index < left.length; index += 1) {
+      difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
+    }
+    return difference === 0;
+  }
+
+  function readGateState() {
     try {
-      await navigator.clipboard.writeText(text);
-      return true;
+      return JSON.parse(localStorage.getItem(STATE_KEY) || "{}") || {};
     } catch {
-      const area = document.createElement("textarea");
-      area.value = text;
-      area.style.position = "fixed";
-      area.style.opacity = "0";
-      document.body.appendChild(area);
-      area.select();
-      const success = document.execCommand("copy");
-      area.remove();
-      return success;
+      return {};
     }
   }
 
-  $("#profileForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const topics = $("#profileTopics").value.trim() || "Not answered";
-    const schedule = $("#profileSchedule").value.trim() || "Not answered";
-    const tracking = $("#profileTracking").value.trim() || "Not answered";
-    const note = `LOGAN BRIEFING PROFILE\n\nTopics I want: ${topics}\n\nMy normal week: ${schedule}\n\nTrack or remind me about: ${tracking}\n\nConnected services I may consider: calendar / Gmail / Spotify / finances / none\n\nSend this to Jay so future /logan briefings can be personalized.`;
-    const success = await copyText(note);
-    $("#profileStatus").textContent = success ? "profile note copied" : "copy failed; select the text manually";
-  });
-
-  $("#copyLink").addEventListener("click", async () => {
-    const success = await copyText(window.location.href);
-    $("#copyLink").textContent = success ? "Link copied ✓" : "Copy failed";
-  });
-
-  $$('[data-jump]').forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = document.getElementById(button.dataset.jump);
-      if (target) target.scrollIntoView({ behavior: "smooth" });
-    });
-  });
-
-  const scenes = $$(".scene");
-  const nav = $("#navigator");
-  const navScrim = $("#navScrim");
-  const navLinks = $("#navLinks");
-  function closeNav() {
-    nav.classList.remove("open");
-    navScrim.classList.remove("open");
+  function saveGateState(state) {
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
   }
-  $("#openNavigator").addEventListener("click", () => {
-    nav.classList.add("open");
-    navScrim.classList.add("open");
-  });
-  $("#closeNavigator").addEventListener("click", closeNav);
-  navScrim.addEventListener("click", closeNav);
 
-  scenes.forEach((scene, index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.target = scene.id;
-    button.innerHTML = `<i>${String(index + 1).padStart(2, "0")}</i><span>${scene.dataset.title}</span><small>↗</small>`;
-    button.addEventListener("click", () => {
-      scene.scrollIntoView({ behavior: "smooth" });
-      closeNav();
-    });
-    navLinks.appendChild(button);
-  });
-
-  revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) entry.target.classList.add("visible");
-    });
-  }, { threshold: 0.12 });
-
-  const sceneObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      $$("button", navLinks).forEach((button) => button.classList.toggle("active", button.dataset.target === entry.target.id));
-    });
-  }, { rootMargin: "-40% 0px -45% 0px" });
-  scenes.forEach((scene) => sceneObserver.observe(scene));
-
-  function updateScrollProgress() {
-    const doc = document.documentElement;
-    const max = doc.scrollHeight - window.innerHeight;
-    const percent = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
-    $("#progressFill").style.width = `${percent}%`;
-    $("#progressLabel").textContent = `${Math.round(percent)}% scanned`;
+  function boot() {
+    output.innerHTML = "";
+    addLine("CMX RESTRICTED NODE / LOGAN TERMINAL", "strong");
+    addLine("Copyright (c) 2026 CMX Global LLC");
+    addLine("");
+    addLine("[    0.000000 ] Linux cmx-node 6.12.0-amd64");
+    addLine("[    0.082113 ] mounting /briefs/logan");
+    addLine("[    0.194201 ] loading Nacogdoches intelligence dataset");
+    addLine("[    0.311904 ] loading Texas firearms and hunting watch");
+    addLine("[    0.447188 ] loading operator profile: army-veteran / bartender / cmx-friend");
+    addLine("[    0.601037 ] network interfaces restricted");
+    addLine("[    0.778502 ] authentication service ready");
+    addLine("");
+    addLine("Unauthorized access is prohibited.");
+    addLine("This browser gate is a deterrent. Real confidentiality requires the planned server and Cloudflare Access.", "dim");
+    addLine("");
+    addLine("login: admin");
+    mode = "password";
+    setPasswordPrompt();
   }
-  window.addEventListener("scroll", updateScrollProgress, { passive: true });
-  updateScrollProgress();
 
-  const commandMap = {
-    help: "commands: news, guns, timeline, shift, social, texas, media, platform, pages, profile, sources, top, relock",
-    news: "sitrep",
-    guns: "gun-desk",
-    timeline: "timeline",
-    shift: "shift-intel",
-    social: "social-radar",
-    texas: "texas-watch",
-    media: "media",
-    platform: "platform",
-    pages: "page-map",
-    profile: "profile",
-    sources: "sources",
-    top: "brief"
-  };
+  async function authenticate(password) {
+    const state = readGateState();
+    const remaining = Math.ceil((Number(state.lockedUntil || 0) - Date.now()) / 1000);
 
-  $("#commandForm").addEventListener("submit", (event) => {
+    if (remaining > 0) {
+      addLine(`Access temporarily suspended. Retry in ${remaining}s.`, "error");
+      return;
+    }
+
+    if (!password) {
+      addLine("Password required.", "error");
+      return;
+    }
+
+    addLine("verifying credential...", "dim");
+    input.disabled = true;
+
+    try {
+      const candidate = await deriveVerifier(password);
+      const valid = constantTimeEqual(candidate, VERIFIER_B64);
+
+      if (!valid) {
+        state.failures = Number(state.failures || 0) + 1;
+        const lockSeconds = state.failures >= 10 ? 300 : state.failures >= 5 ? 30 : 0;
+        state.lockedUntil = lockSeconds ? Date.now() + lockSeconds * 1000 : 0;
+        saveGateState(state);
+        addLine(lockSeconds ? `Access denied. Retry in ${lockSeconds}s.` : "Access denied.", "error");
+        return;
+      }
+
+      saveGateState({ failures: 0, lockedUntil: 0, lastLogin: new Date().toISOString() });
+      addLine("credential accepted", "strong");
+      addLine("executing: sudo /usr/local/bin/firearm-safety-check");
+      beginChallenge();
+    } catch {
+      addLine("Authentication failed.", "error");
+    } finally {
+      input.disabled = false;
+      input.value = "";
+      input.focus();
+    }
+  }
+
+  function beginChallenge() {
+    mode = "challenge";
+    challengeIndex = 0;
+    challengeAnswers = [];
+    addHeader("firearm safety authorization", "Three simple questions. Enter a, b, or c.");
+    printChallenge();
+  }
+
+  function printChallenge() {
+    const item = challenge[challengeIndex];
+    addLine(`[${challengeIndex + 1}/3] ${item.question}`, "strong");
+    item.options.forEach((option) => addLine(option, "indent"));
+    setChallengePrompt();
+  }
+
+  function answerChallenge(answer) {
+    const normalized = answer.trim().toLowerCase();
+    if (!["a", "b", "c"].includes(normalized)) {
+      addLine("Enter a, b, or c.", "error");
+      return;
+    }
+
+    challengeAnswers.push(normalized);
+    addLine(`answer: ${normalized}`);
+    challengeIndex += 1;
+
+    if (challengeIndex < challenge.length) {
+      addLine("");
+      printChallenge();
+      return;
+    }
+
+    const score = challenge.reduce(
+      (total, item, index) => total + (challengeAnswers[index] === item.answer ? 1 : 0),
+      0
+    );
+
+    if (score !== challenge.length) {
+      addLine("");
+      addLine(`authorization denied: ${score}/3 correct`, "error");
+      addLine("Review the universal safety rules and run the check again.");
+      challengeIndex = 0;
+      challengeAnswers = [];
+      addLine("");
+      printChallenge();
+      return;
+    }
+
+    sessionStorage.setItem(SESSION_KEY, "granted");
+    mode = "shell";
+    addLine("");
+    addLine("firearm-safety baseline confirmed", "strong");
+    addLine("access granted");
+    addLine("");
+    showMotd();
+    setShellPrompt();
+  }
+
+  function showMotd() {
+    addRule("═");
+    addLine(`LOGAN TERMINAL BRIEF / ${data.date.toUpperCase()}`, "strong");
+    addLine(`${data.location} | edition ${data.edition} | refreshed ${data.updated}`);
+    addLine("Type 'help' for commands. Type 'brief' for the useful stuff first.");
+    addLine("Use Arrow Up and Arrow Down for history. Use Tab for completion. Ctrl+L clears the screen.", "dim");
+    addRule("═");
+  }
+
+  function commandHelp() {
+    addHeader("available commands", "Everything on this page is accessed through the shell.");
+    addTable(
+      ["COMMAND", "PURPOSE"],
+      [
+        ["brief", "Today's concise operator briefing"],
+        ["all", "Print every major briefing section"],
+        ["news [category]", "News. Categories: all, local, guns, texas, weather, fun"],
+        ["weather", "Nacogdoches weather snapshot"],
+        ["timeline", "Today's local timeline"],
+        ["guns", "Firearms, hunting dates, draw watch, and legal note"],
+        ["safety", "Universal firearm-safety refresher"],
+        ["missions", "Three practical priorities for today"],
+        ["shift", "Bartender shift intelligence"],
+        ["bar-tip", "Daily bar improvement tip"],
+        ["tips <hours> <rate> <reserve>", "Estimate gross tips and after-reserve amount"],
+        ["social", "A random light conversation opener"],
+        ["media", "Jay's song choice and recent Spotify rotation"],
+        ["friendship", "Why Jay made this for Logan"],
+        ["platform", "Plain-English frontend, backend, AI, MCP, and server plan"],
+        ["capabilities", "What this platform can actually do with permission"],
+        ["pages", "Load the current db.cmxchat.com route registry"],
+        ["questions", "Information Logan can provide for better daily briefs"],
+        ["sources", "Public-source ledger"],
+        ["open <target>", "Open spotify, youtube, directory, a source ID, or a /route/"],
+        ["status | neofetch", "Terminal and briefing status"],
+        ["ls | tree | cat <file>", "Linux-style navigation"],
+        ["history", "Command history"],
+        ["clear", "Clear terminal output"],
+        ["relock | exit", "Destroy this browser session and return to login"]
+      ]
+    );
+  }
+
+  function commandBrief() {
+    addHeader("today's field brief", `${data.location} | ${data.date}`);
+    addLine(`Weather: ${data.weather.summary}; high ${data.weather.high} F; feels like ${data.weather.feelsLike} F; sunset ${data.weather.sunset}.`);
+    addLine("Priority 1: Check whether home or work is inside the active boil-water notice area.");
+    addLine("Priority 2: Hydrate before the hottest part of the day.");
+    addLine("Priority 3: New Texas recreational-license ID validation begins August 3.");
+    addLine("Priority 4: August 15 is the next major hunting-license and drawn-hunt date.");
+    addLine("");
+    data.news.slice(0, 5).forEach((item, index) => {
+      addLine(`${String(index + 1).padStart(2, "0")} [${item.priority}] ${item.title}`, "strong");
+      addLine(item.summary, "indent");
+    });
+    addLine("");
+    addLine("Run: news, guns, timeline, shift, media, platform, or all");
+  }
+
+  function commandNews(category = "all") {
+    const allowed = ["all", "local", "guns", "texas", "weather", "fun"];
+    const normalized = allowed.includes(category) ? category : "all";
+    const items = normalized === "all" ? data.news : data.news.filter((item) => item.category === normalized);
+    addHeader(`${normalized} news`, `${items.length} item${items.length === 1 ? "" : "s"} loaded`);
+    items.forEach((item, index) => {
+      addLine(`${String(index + 1).padStart(2, "0")} [${item.priority}] ${item.title}`, "strong");
+      addLine(item.summary, "indent");
+      addLine(`why_it_matters: ${item.why}`, "double-indent dim");
+      addLine(`source: ${item.source}`, "double-indent faint");
+      addLine("");
+    });
+  }
+
+  function commandWeather() {
+    addHeader("nacogdoches weather");
+    addLine(`condition : ${data.weather.summary}`);
+    addLine(`high      : ${data.weather.high} F`);
+    addLine(`low       : ${data.weather.low} F`);
+    addLine(`feels_like: ${data.weather.feelsLike} F`);
+    addLine(`sunset    : ${data.weather.sunset}`);
+    addLine("");
+    addLine("operator_note: Hydration and vehicle or pet heat checks matter more than weather-app theatrics.");
+  }
+
+  function commandTimeline() {
+    addHeader("today's timeline");
+    addTable(["TIME", "EVENT", "DETAIL"], data.timeline);
+  }
+
+  function commandGuns() {
+    addHeader("firearms and hunting watch", "Official-source summary. Verify the exact rule for the exact situation.");
+    addTable(["DATE", "ITEM", "DETAIL"], data.gunDates);
+    addLine("Gus Engeling WMA archery-deer draw:", "strong");
+    addLine("50 permits listed; August 15 deadline; $3 application; extended-hunt fee may apply if selected.", "indent");
+    addLine("Last year's listed success rate was 13 percent. That is context, not a prediction.", "indent dim");
+    addLine("");
+    addLine("legal_note: This is not legal advice, a carry-permission map, or a substitute for TPWD, DPS, ATF, property-owner, range, or attorney guidance.", "dim");
+  }
+
+  function commandSafety() {
+    addHeader("firearm safety refresher");
+    data.safetyRules.forEach((rule, index) => addLine(`${index + 1}. ${rule}`));
+  }
+
+  function commandMissions() {
+    addHeader("commander's intent", "Three priorities. Everything else can wait.");
+    data.missions.forEach(([id, title, text]) => {
+      addLine(`${id} ${title.toUpperCase()}`, "strong");
+      addLine(text, "indent");
+      addLine("");
+    });
+  }
+
+  function commandShift() {
+    addHeader("bartender shift intelligence");
+    addLine("environment : August heat outside; controlled chaos inside.");
+    addLine("nightlife   : Historic downtown remains the obvious local zone for drinks, music, and foot traffic.");
+    addLine("pre-shift   : water, food, cash setup, clean tools, stocked backups, and one clear sales focus.");
+    addLine("after-shift : count cash once, reserve taxes, hydrate, eat, and avoid emotional accounting.");
+    addLine("");
+    addLine("Try: tips 8 30 20");
+    addLine("Run: bar-tip");
+  }
+
+  function commandBarTip() {
+    addHeader(`daily bar tip: ${data.barTip.title}`);
+    addLine(data.barTip.text);
+    addLine("");
+    addLine(`why_it_works: ${data.barTip.why}`);
+    addLine(`privacy_boundary: ${data.barTip.boundary}`, "dim");
+  }
+
+  function commandTips(args) {
+    const hours = Number(args[0] ?? 8);
+    const rate = Number(args[1] ?? 30);
+    const reserve = Number(args[2] ?? 20);
+
+    if (![hours, rate, reserve].every(Number.isFinite) || hours < 0 || rate < 0 || reserve < 0 || reserve > 100) {
+      addLine("usage: tips <hours> <tips-per-hour> <reserve-percent>", "error");
+      addLine("example: tips 8 30 20");
+      return;
+    }
+
+    const gross = hours * rate;
+    const afterReserve = gross * (1 - reserve / 100);
+    addHeader("tip-run estimate");
+    addLine(`shift_hours       : ${hours}`);
+    addLine(`tips_per_hour     : $${rate.toFixed(2)}`);
+    addLine(`gross_tips        : $${gross.toFixed(2)}`);
+    addLine(`reserve_percent   : ${reserve}%`);
+    addLine(`after_reserve     : $${afterReserve.toFixed(2)}`, "strong");
+    addLine("scenario_only     : actual tips, taxes, tip-outs, wages, and reporting rules vary.", "dim");
+  }
+
+  function commandSocial() {
+    const opener = data.socialOpeners[Math.floor(Math.random() * data.socialOpeners.length)];
+    addHeader("social radar");
+    addLine(opener, "strong");
+    addLine("");
+    addLine("operator_note: Ask it naturally. Do not sound like a chatbot wearing cologne.", "dim");
+  }
+
+  function commandMedia() {
+    addHeader("jay's media drop");
+    addLine(`selected_track: ${data.media.chosen.title}`);
+    addLine(`artist        : ${data.media.chosen.artist}`);
+    addLine(`why           : ${data.media.chosen.reason}`);
+    addLine("");
+    addLine("Run 'open spotify' or 'open youtube'.");
+    addLine("");
+    addLine("Recent Spotify rotation:", "strong");
+    data.media.recent.forEach(([title, artist], index) => {
+      addLine(`${String(index + 1).padStart(2, "0")} ${title} / ${artist}`);
+    });
+  }
+
+  function commandFriendship() {
+    addHeader("why this terminal exists");
+    addLine(data.friendship);
+    addLine("");
+    addLine("Logan helped build the social foundation. Jay is now trying to build the technical foundation around it.");
+    addLine("The goal is to turn trusted relationships, useful information, and CMX history into private tools that actually help people.");
+  }
+
+  function commandPlatform() {
+    addHeader("what jay is building", "The simple version of the frontend, backend, AI, and infrastructure plan.");
+    data.platform.forEach(([name, title, text], index) => {
+      addLine(`${String(index + 1).padStart(2, "0")} ${name} / ${title}`, "strong");
+      addLine(text, "indent");
+      addLine("");
+    });
+    addLine("REQUEST FLOW", "strong");
+    addLine("1. Logan asks in normal language.");
+    addLine("2. AI checks identity, permission, and available context.");
+    addLine("3. AI calls only approved tools or connectors.");
+    addLine("4. The backend performs the controlled work.");
+    addLine("5. The result goes to a staging preview.");
+    addLine("6. Jay or Logan approves it before production.");
+    addLine("7. GitHub records what changed and preserves rollback.");
+    addLine("");
+    addLine("current_truth: This terminal is still a static GitHub Pages interface. Real authentication, private data, databases, AI actions, and automation require the planned FastAPI server and Cloudflare identity layer.", "dim");
+  }
+
+  function commandCapabilities() {
+    addHeader("what the full platform can do", "Only with explicit authorization and the required connected services.");
+    data.capabilities.forEach((item, index) => addLine(`${String(index + 1).padStart(2, "0")}. ${item}`));
+  }
+
+  async function fetchRoutes() {
+    if (routeCache) return routeCache;
+    const response = await fetch("/assets/cmx-routes.json?v=14", {
+      cache: "no-store",
+      credentials: "same-origin"
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    routeCache = await response.json();
+    return routeCache;
+  }
+
+  async function commandPages() {
+    addHeader("cmx route registry", "Loading the current source of truth...");
+    try {
+      const registry = await fetchRoutes();
+      const rows = registry.routes.map((route) => [
+        route.path,
+        route.name,
+        route.status,
+        route.visibility
+      ]);
+      addTable(["PATH", "NAME", "STATUS", "VISIBILITY"], rows);
+      addLine("Use: open /route/");
+    } catch (error) {
+      addLine(`route registry unavailable: ${error.message}`, "error");
+      addLine("Try: open directory");
+    }
+  }
+
+  function commandQuestions() {
+    addHeader("logan profile questions", "Answering these lets future editions become genuinely personal.");
+    data.questions.forEach((question, index) => addLine(`${String(index + 1).padStart(2, "0")}. ${question}`));
+    addLine("");
+    addLine("Send the answers to Jay. Do not paste passwords, account numbers, private access tokens, or anything you would not want stored.");
+  }
+
+  function commandSources() {
+    addHeader("source ledger");
+    data.sources.forEach(([id, name, title, url]) => {
+      addLine(`[${id}] ${name} / ${title}`, "strong");
+      addLinkLine("    ", url, url);
+    });
+  }
+
+  function commandStatus() {
+    addHeader("system status");
+    addLine("           .-------------------------.");
+    addLine("           | LOGAN / CMX NODE        |");
+    addLine("           '-------------------------'");
+    addLine(`user       : logan`);
+    addLine(`host       : cmx-node`);
+    addLine(`shell      : logan-brief 1.0`);
+    addLine(`location   : ${data.location}`);
+    addLine(`edition    : ${data.edition}`);
+    addLine(`brief_date : ${data.date}`);
+    addLine(`updated    : ${data.updated}`);
+    addLine(`interface  : static GitHub Pages terminal`);
+    addLine(`auth       : client-side PBKDF2 gate plus safety check`);
+    addLine(`backend    : planned FastAPI / Linux / Cloudflare`);
+    addLine(`theme      : black / white / text-only`);
+  }
+
+  function commandWhoami() {
+    addHeader("operator profile");
+    addLine("name       : Logan");
+    addLine("location   : Nacogdoches, Texas");
+    addLine("background : United States Army veteran");
+    addLine("work       : bartender");
+    addLine("interests  : firearms, hunting, Texas, music, women, practical local intelligence");
+    addLine("cmx_role   : early social-side contributor and long-time friend since the COVID era");
+    addLine("access     : trusted briefing user");
+  }
+
+  function commandLs() {
+    addLine("brief/  intel/  texas/  guns/  shift/  media/  platform/  sources/  profile/");
+  }
+
+  function commandTree() {
+    addLine(".");
+    addLine("├── brief");
+    addLine("│   ├── today.txt");
+    addLine("│   ├── timeline.log");
+    addLine("│   └── missions.txt");
+    addLine("├── intel");
+    addLine("│   ├── local.news");
+    addLine("│   ├── texas.news");
+    addLine("│   └── weather.txt");
+    addLine("├── guns");
+    addLine("│   ├── deadlines.txt");
+    addLine("│   └── safety.rules");
+    addLine("├── shift");
+    addLine("│   ├── bartender.txt");
+    addLine("│   └── daily-tip.txt");
+    addLine("├── media");
+    addLine("│   ├── selected-track.txt");
+    addLine("│   └── recent-rotation.txt");
+    addLine("├── platform");
+    addLine("│   ├── architecture.txt");
+    addLine("│   ├── capabilities.txt");
+    addLine("│   └── routes.json");
+    addLine("└── profile");
+    addLine("    ├── friendship.txt");
+    addLine("    └── questions.txt");
+  }
+
+  async function commandCat(target = "") {
+    const normalized = target.replace(/^\.?\//, "").toLowerCase();
+    const map = {
+      "brief/today.txt": commandBrief,
+      "brief/timeline.log": commandTimeline,
+      "brief/missions.txt": commandMissions,
+      "intel/local.news": () => commandNews("local"),
+      "intel/texas.news": () => commandNews("texas"),
+      "intel/weather.txt": commandWeather,
+      "guns/deadlines.txt": commandGuns,
+      "guns/safety.rules": commandSafety,
+      "shift/bartender.txt": commandShift,
+      "shift/daily-tip.txt": commandBarTip,
+      "media/selected-track.txt": commandMedia,
+      "media/recent-rotation.txt": commandMedia,
+      "platform/architecture.txt": commandPlatform,
+      "platform/capabilities.txt": commandCapabilities,
+      "platform/routes.json": commandPages,
+      "profile/friendship.txt": commandFriendship,
+      "profile/questions.txt": commandQuestions
+    };
+    const handler = map[normalized];
+    if (!handler) {
+      addLine(`cat: ${target || "missing operand"}: No such file or command mapping`, "error");
+      addLine("Run 'tree' to view available pseudo-files.");
+      return;
+    }
+    await handler();
+  }
+
+  function showHistory() {
+    addHeader("command history");
+    commandHistory.forEach((item, index) => addLine(`${String(index + 1).padStart(4, " ")}  ${item}`));
+  }
+
+  function findSource(id) {
+    return data.sources.find((source) => source[0] === id);
+  }
+
+  async function commandOpen(target = "") {
+    const normalized = target.trim();
+    let url = "";
+
+    if (normalized === "spotify") url = data.media.chosen.spotify;
+    else if (normalized === "youtube") url = data.media.chosen.youtube;
+    else if (normalized === "directory") url = "/directory/";
+    else if (normalized.startsWith("/")) url = normalized;
+    else {
+      const source = findSource(normalized);
+      if (source) url = source[3];
+    }
+
+    if (!url) {
+      addLine("usage: open spotify | youtube | directory | <source-id> | /route/", "error");
+      return;
+    }
+
+    addLine(`opening ${url}`);
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function commandMan(target = "") {
+    const manuals = {
+      news: "news [all|local|guns|texas|weather|fun] prints researched briefing items and source IDs.",
+      tips: "tips <hours> <tips-per-hour> <reserve-percent> calculates gross tips and the amount remaining after a planning reserve.",
+      open: "open <target> opens spotify, youtube, directory, a source ID, or a db.cmxchat.com route.",
+      cat: "cat <pseudo-file> prints a briefing section. Run tree to see available files.",
+      pages: "pages fetches /assets/cmx-routes.json and prints the current CMX route registry.",
+      platform: "platform explains the frontend, FastAPI backend, PostgreSQL, AI, MCP, GitHub, staging, Linux, and Cloudflare plan."
+    };
+    addHeader(`manual: ${target || "logan-terminal"}`);
+    addLine(manuals[target] || "Run 'help' for the command list. This shell is a controlled briefing interface, not a real operating-system terminal.");
+  }
+
+  async function commandAll() {
+    commandBrief();
+    commandNews("all");
+    commandWeather();
+    commandTimeline();
+    commandGuns();
+    commandSafety();
+    commandMissions();
+    commandShift();
+    commandBarTip();
+    commandMedia();
+    commandFriendship();
+    commandPlatform();
+    commandCapabilities();
+    await commandPages();
+    commandQuestions();
+    commandSources();
+  }
+
+  async function execute(raw) {
+    const trimmed = raw.trim();
+    if (!trimmed) return;
+
+    addCommandEcho(trimmed);
+    commandHistory.push(trimmed);
+    historyIndex = commandHistory.length;
+
+    const parts = trimmed.split(/\s+/);
+    let command = parts.shift().toLowerCase();
+    command = aliases[command] || command;
+    const args = parts;
+
+    switch (command) {
+      case "help":
+        commandHelp();
+        break;
+      case "man":
+        commandMan((args[0] || "").toLowerCase());
+        break;
+      case "brief":
+        commandBrief();
+        break;
+      case "all":
+        await commandAll();
+        break;
+      case "news":
+        commandNews((args[0] || "all").toLowerCase());
+        break;
+      case "local":
+        commandNews("local");
+        break;
+      case "weather":
+        commandWeather();
+        break;
+      case "timeline":
+        commandTimeline();
+        break;
+      case "guns":
+        commandGuns();
+        break;
+      case "safety":
+        commandSafety();
+        break;
+      case "missions":
+        commandMissions();
+        break;
+      case "shift":
+        commandShift();
+        break;
+      case "bar-tip":
+        commandBarTip();
+        break;
+      case "tips":
+        commandTips(args);
+        break;
+      case "social":
+        commandSocial();
+        break;
+      case "media":
+        commandMedia();
+        break;
+      case "friendship":
+        commandFriendship();
+        break;
+      case "platform":
+        commandPlatform();
+        break;
+      case "capabilities":
+        commandCapabilities();
+        break;
+      case "pages":
+        await commandPages();
+        break;
+      case "questions":
+        commandQuestions();
+        break;
+      case "sources":
+        commandSources();
+        break;
+      case "open":
+        await commandOpen(args.join(" "));
+        break;
+      case "status":
+      case "neofetch":
+        commandStatus();
+        break;
+      case "whoami":
+        commandWhoami();
+        break;
+      case "date":
+        addLine(new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Chicago",
+          dateStyle: "full",
+          timeStyle: "long"
+        }).format(new Date()));
+        break;
+      case "pwd":
+        addLine("/home/logan/brief");
+        break;
+      case "ls":
+        commandLs();
+        break;
+      case "tree":
+        commandTree();
+        break;
+      case "cat":
+        await commandCat(args.join(" "));
+        break;
+      case "history":
+        showHistory();
+        break;
+      case "clear":
+        output.innerHTML = "";
+        break;
+      case "relock":
+      case "exit":
+        sessionStorage.removeItem(SESSION_KEY);
+        output.innerHTML = "";
+        addLine("session destroyed");
+        addLine("returning to login...");
+        setTimeout(boot, 350);
+        break;
+      default:
+        addLine(`${command}: command not found`, "error");
+        addLine("Type 'help' to list available commands.");
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const input = $("#commandInput");
-    const command = input.value.trim().toLowerCase();
+    const value = input.value;
     input.value = "";
-    if (!command) return;
-    if (command === "relock") {
-      $("#commandOutput").textContent = "terminal relocked";
-      relock();
+
+    if (mode === "password") {
+      await authenticate(value);
       return;
     }
-    if (command === "help") {
-      $("#commandOutput").textContent = commandMap.help;
+
+    if (mode === "challenge") {
+      answerChallenge(value);
       return;
     }
-    const targetId = commandMap[command];
-    const target = targetId ? document.getElementById(targetId) : null;
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
-      $("#commandOutput").textContent = `opening ~/${command}`;
-    } else {
-      $("#commandOutput").textContent = `command not found: ${command}. type help`;
+
+    if (mode === "shell") {
+      await execute(value);
     }
   });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeNav();
-    if (event.key === "/" && app.classList.contains("active") && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+  input.addEventListener("keydown", (event) => {
+    if (mode !== "shell") return;
+
+    if (event.key === "ArrowUp") {
       event.preventDefault();
-      $("#commandInput").focus();
+      if (!commandHistory.length) return;
+      historyIndex = Math.max(0, historyIndex - 1);
+      input.value = commandHistory[historyIndex] || "";
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      if (!commandHistory.length) return;
+      historyIndex = Math.min(commandHistory.length, historyIndex + 1);
+      input.value = commandHistory[historyIndex] || "";
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+
+    if (event.key === "Tab") {
+      event.preventDefault();
+      const typed = input.value.trim().toLowerCase();
+      if (!typed || typed.includes(" ")) return;
+      const matches = commands.filter((command) => command.startsWith(typed));
+      if (matches.length === 1) input.value = matches[0];
+      else if (matches.length > 1) addLine(matches.join("  "), "dim");
+    }
+
+    if (event.ctrlKey && event.key.toLowerCase() === "l") {
+      event.preventDefault();
+      output.innerHTML = "";
     }
   });
 
-  if (localStorage.getItem(ACCESS_KEY) === "granted") grantAccess(false);
+  document.addEventListener("click", () => input.focus());
+  window.addEventListener("pageshow", () => input.focus());
+
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  if (!data) {
+    addLine("fatal: briefing dataset unavailable", "error");
+    return;
+  }
+
+  if (sessionStorage.getItem(SESSION_KEY) === "granted") {
+    mode = "shell";
+    showMotd();
+    setShellPrompt();
+  } else {
+    boot();
+  }
 })();
