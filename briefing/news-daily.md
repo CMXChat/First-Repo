@@ -22,6 +22,10 @@ Shift into a serious tone only when accuracy, safety, severe weather, crime, leg
 
 - Treat the page as a shared check-in, not a surveillance report, performance review, or courtroom transcript.
 - Keep Jay's activity recap brief and relationship-relevant. Routine work details can be omitted unless they affect plans or Crystal asks for them.
+- Place the Spotify section near the top, normally after the quick-read section and before the relationship section.
+- Include exactly one shared daily song recommendation in `spotify` whenever the Spotify connection works. Set its audience to `shared`, give it the highest priority in that section, and label it clearly as the day's song for both of them.
+- The shared song card must include the exact track and artist, a real connector-derived Spotify link, and a short original description explaining why the song fits that day's shared tone. Do not quote lyrics, infer either person's mood as fact, or turn listening into a required couple exercise.
+- Rotate the shared song. Do not repeat a recent pick unless there is a meaningful reason, and explain the reason when repeating it.
 - Use the relationship section for one useful observation and one workable rule or next action. Do not repeat the same warning in several cards.
 - Include two or three celebrity, crime, entertainment, culture, royal, influencer, political-figure, or major legal stories when strong current material exists. Crystal does not need to name the people in advance.
 - Keep the permanent Jay, Crystal, and shared questions at the bottom visible. Add one to three edition-specific questions that will help improve the next briefing.
@@ -41,6 +45,7 @@ Shift into a serious tone only when accuracy, safety, severe weather, crime, leg
 - Rumors and viral claims only when clearly labeled `UNCONFIRMED`
 - Pet and animal stories when genuinely interesting
 - Current Spotify information when connected and permitted
+- One fresh shared Spotify song recommendation for Jay and Crystal, with a short description and real link
 - Separate Virgo readings for September 15 and September 14
 - One strong daily quote with a short reason it fits
 
@@ -94,8 +99,9 @@ Avoid the term `CMX` in Crystal-facing copy unless required for technical accura
 2. Gather current sources and recent permitted context.
 3. Rank sections by urgency, relevance, safety, freshness, and usefulness.
 4. Update `assets/news-data.js` using the existing schema.
-5. Preserve `sectionOrder`, `priority`, `audience`, `directLines`, source labels, links, and optional detailed-card fields.
-6. Hide empty sections instead of adding filler, except the permanent bottom questions section.
-7. Keep the complete edition concise and easy to scan.
-8. Verify `/news/` loads, the date is current, and celebrity/culture cards are not being hidden by stale cached data.
-9. Report any source, connection, permission, or publishing failure honestly.
+5. Preserve `sectionOrder`, `priority`, `audience`, `directLines`, source labels, links, optional detailed-card fields, and the shared daily song rule.
+6. Keep `spotify` near the top of `sectionOrder`, normally after `opening`.
+7. Hide empty sections instead of adding filler, except the permanent bottom questions section. Hide Spotify only when the connected capability fails.
+8. Keep the complete edition concise and easy to scan.
+9. Verify `/news/` loads, the date is current, the shared song link opens correctly, and celebrity/culture cards are not being hidden by stale cached data.
+10. Report any source, connection, permission, or publishing failure honestly.
