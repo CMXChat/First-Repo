@@ -2,17 +2,17 @@ window.CMX_NEWS_BRIEF = {
   meta: {
     status: "weekend edition",
     date: "Saturday, August 1, 2026 in Brooklyn · Sunday, August 2, 2026 in Waikato",
-    generated: "Refined August 1, 2026 at 10:35 PM EDT / August 2, 2026 at 2:35 PM NZST",
-    summary: "A lighter shared briefing with honest context, useful news, a few things for Crystal, and no attempt to turn ordinary life into a police procedural.",
+    generated: "Refined August 1, 2026 at 10:43 PM EDT / August 2, 2026 at 2:43 PM NZST",
+    summary: "A lighter shared briefing with honest context, useful news, a daily song for both of you, and no attempt to turn ordinary life into a police procedural.",
     sectionOrder: [
       "priority",
       "opening",
+      "spotify",
       "relationship",
       "activity",
       "crystal",
       "culture",
       "style",
-      "spotify",
       "weather",
       "local",
       "world",
@@ -175,6 +175,23 @@ window.CMX_NEWS_BRIEF = {
   ],
 
   spotify: [
+    {
+      audience: "shared",
+      priority: 100,
+      label: "today's song for both of you",
+      status: "CONNECTED SOURCE",
+      title: "Everywhere · Fleetwood Mac",
+      text: "A bright, affectionate song about wanting closeness without turning the feeling into a heavy speech. It fits a Brooklyn-to-Waikato page because it feels warm, immediate, and easy to play together from two different places.",
+      directLines: [
+        {
+          audience: "shared",
+          text: "Shared: play it once today and let it be a song, not an assignment."
+        }
+      ],
+      url: "https://open.spotify.com/track/1prZ0pr6XoRCxcrC3MCL0M?utm_source=openai&utm_medium=chatgpt&go=1&nap_web=1&request_id=67305af6-67a1-4a02-96d2-5bc9418b6b54&nl=spotify%3Anl%3ACAASEGcwWvZnoUoCltJbyUGLa1QaGDU6MXByWjBwcjZYb1JDeGNyQzNNQ0wwTSADMAPgAzXoA8mD7IL8M%2FADIA%3D%3D",
+      linkLabel: "play Everywhere on Spotify",
+      published: "today's shared pick"
+    },
     {
       audience: "jay",
       priority: 74,
@@ -367,6 +384,6 @@ window.CMX_NEWS_BRIEF = {
   questions: [
     "Jay and Crystal: what part of this version felt useful, and what part felt unnecessary?",
     "What is one positive thing from today that tomorrow's briefing should remember?",
-    "Is there a person, case, celebrity, trend, or topic either of you wants followed tomorrow?"
+    "Is there a person, case, celebrity, trend, topic, or music mood either of you wants followed tomorrow?"
   ]
 };
