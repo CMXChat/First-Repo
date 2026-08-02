@@ -1,0 +1,228 @@
+/* Backend Blueprint mobile containment fixes.
+   Keeps the terminal design while preventing page-level horizontal overflow. */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.app-shell,
+.topbar,
+main,
+.blueprint-section,
+.panel,
+.hero,
+.hero-copy,
+.section-heading,
+.two-column,
+.overview-grid,
+.metrics,
+.registry-toolbar,
+.registry-summary,
+.endpoint-list,
+.endpoint-card,
+.page-map,
+.model-grid,
+.capability-grid,
+.readiness-grid,
+.infrastructure-flow,
+.environment-grid,
+.relationship-map,
+.permission-layers,
+.permission-layers #permissionLayers,
+.roadmap-timeline,
+.roadmap-phase,
+.decision-columns,
+.dialog-shell,
+.dialog-grid {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-shell {
+  overflow-x: clip;
+}
+
+.brand,
+.brand-copy,
+.topbar-actions,
+.topbar-actions > *,
+.registry-toolbar > *,
+.endpoint-card > *,
+.page-card,
+.model-card,
+.capability-card,
+.readiness-item,
+.infrastructure-node,
+.environment-card,
+.permission-layer,
+.relationship,
+.roadmap-phase > *,
+.decision-columns > * {
+  min-width: 0;
+}
+
+h1,
+h2,
+h3,
+p,
+span,
+small,
+strong,
+code,
+.endpoint-path,
+.endpoint-purpose,
+.endpoint-meta,
+.route-path,
+.page-card,
+.model-card,
+.capability-card,
+.infrastructure-node,
+.environment-card,
+.relationship,
+.permission-layer,
+.roadmap-phase,
+.decision-item,
+.deliverable,
+.chip {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.section-tabs,
+.table-wrap,
+.code-tree,
+pre,
+.json-block {
+  max-width: 100%;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.section-tabs,
+.table-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.code-tree,
+pre,
+.json-block {
+  overflow-x: auto;
+}
+
+.architecture-mini,
+.hero-flow {
+  max-width: 100%;
+}
+
+.architecture-mini span,
+.hero-flow span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.registry-toolbar input,
+.registry-toolbar select,
+.registry-toolbar button {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.endpoint-dialog {
+  max-width: calc(100vw - 20px);
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    width: calc(100% - 22px);
+    max-width: calc(100% - 22px);
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .brand {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .topbar-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    max-width: 100%;
+    gap: 7px;
+  }
+
+  .topbar-actions::before,
+  .truth-badge {
+    grid-column: 1 / -1;
+  }
+
+  .topbar-actions .icon-button,
+  .topbar-actions a.icon-button,
+  .topbar-actions button.icon-button {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
+  }
+
+  .truth-badge {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .section-heading {
+    align-items: start;
+  }
+
+  .registry-summary {
+    flex-wrap: wrap;
+  }
+
+  .endpoint-card,
+  .roadmap-phase {
+    width: 100%;
+  }
+
+  .endpoint-meta,
+  .deliverables,
+  .node-controls {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  footer {
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .topbar-actions::before,
+  .truth-badge {
+    grid-column: auto;
+  }
+
+  .hero {
+    padding-top: 26px;
+  }
+
+  .endpoint-dialog {
+    width: calc(100vw - 12px);
+    max-width: calc(100vw - 12px);
+  }
+}
