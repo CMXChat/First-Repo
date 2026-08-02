@@ -1,30 +1,192 @@
 <!DOCTYPE html>
-<html lang="en" class="cmx-gate-pending" data-cmx-gated="true" data-cmx-visibility="Direct-link-only" data-cmx-load-url="/assets/cmx-debbie-brief.html?v=20260802-2" data-cmx-extra-styles="/assets/debbie-epic.css?v=20260802-2" data-cmx-extra-scripts="/assets/debbie-voice.js?v=20260802-2,/assets/debbie-epic.js?v=20260802-1,/assets/debbie-sun-scroll.js?v=20260802-1">
+<html lang="en" data-brief-date="2026-08-02">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#050912" />
-  <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+  <meta name="theme-color" content="#06111f" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' https://p.scdn.co; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <title>Your Brooklyn Brief</title>
-  <meta name="description" content="Authorization required to access your private CMX briefing." />
+  <title>Debbie's Brooklyn Brief | August 2, 2026</title>
+  <meta name="description" content="A private Brooklyn briefing for Debbie with local weather, Jewish and Israel news, selected media, interactive ideas and a plain-language tour of an AI-powered daily briefing system." />
   <link rel="canonical" href="https://db.cmxchat.com/debbie/" />
-  <meta property="og:title" content="Your Brooklyn Brief" />
-  <meta property="og:description" content="Authorization required to access your private CMX briefing." />
+  <meta property="og:title" content="Debbie's Brooklyn Brief" />
+  <meta property="og:description" content="A personal daily briefing and an interactive look at what private AI-powered daily intelligence could become." />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CMX Restricted Node" />
   <meta property="og:url" content="https://db.cmxchat.com/debbie/" />
+  <meta property="og:site_name" content="CMX Restricted Node" />
   <meta name="twitter:card" content="summary" />
-  <style>html,body{margin:0;min-height:100%;background:#050912}html.cmx-gate-pending body>*{visibility:hidden}</style>
-  <link rel="stylesheet" href="/assets/cmx-sensitive-gate.css?v=20260731-2" />
-  <script src="/assets/cmx-sensitive-gate.js?v=20260802-3" defer></script>
+  <link rel="stylesheet" href="/assets/debbie-final-v2.css?v=20260802-1" />
+  <script src="/assets/debbie-final-v2.js?v=20260802-1" defer></script>
 </head>
-<body>
-  <noscript>This private resource requires JavaScript and authorization.</noscript>
+<body class="locked">
+  <div class="page-progress" aria-hidden="true"><i id="pageProgress"></i></div>
+  <div class="ambient-grid" aria-hidden="true"></div>
+
+  <section class="access-gate" id="accessGate" aria-labelledby="gateTitle">
+    <div class="gate-card">
+      <div class="gate-top"><span>PRIVATE BRIEFING</span><span>BROOKLYN // 08.02.26</span></div>
+      <div class="gate-symbol" aria-hidden="true"><span>D</span></div>
+      <p class="kicker">DEBBIE'S RESTRICTED BRIEF</p>
+      <h1 id="gateTitle">A little news. A little music. A bigger idea.</h1>
+      <p>Enter the password Jay gave you. You only need to enter it once per visit.</p>
+      <form id="gateForm" class="gate-form">
+        <label for="gatePassword">Access password</label>
+        <div class="gate-input"><span>key</span><input id="gatePassword" type="password" autocomplete="current-password" placeholder="password" /></div>
+        <button type="submit" id="unlockButton">Open your briefing</button>
+        <p id="gateStatus" class="gate-status" role="status" aria-live="polite"></p>
+      </form>
+      <p class="gate-note">This prototype uses a browser gate. A public product would use real accounts, server permissions and private data controls.</p>
+    </div>
+  </section>
+
+  <div id="app" class="app" aria-hidden="true" inert>
+    <header class="topbar">
+      <a class="brand" href="#welcome"><span>D</span><strong>DEBBIE'S BROOKLYN BRIEF</strong></a>
+      <nav aria-label="Page sections">
+        <a href="#today">Today</a><a href="#play">Play</a><a href="#project">How it works</a><a href="#build">Build yours</a><a href="#explore">Explore</a>
+      </nav>
+      <button id="relockButton" class="ghost-button" type="button">Lock</button>
+    </header>
+
+    <main>
+      <section class="hero" id="welcome" data-guide="This opening combines public facts, personal preferences and presentation. The same information could also be read aloud, emailed or turned into an alert.">
+        <div class="hero-light" aria-hidden="true"></div>
+        <div class="skyline" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="hero-copy reveal">
+          <p class="kicker">SUNDAY · 19 AV 5786 · BROOKLYN</p>
+          <h1 id="heroGreeting">Good afternoon, Debbie.</h1>
+          <p class="hero-lede">Coffee first. Then the world. This is a short briefing built around what you care about, followed by a practical tour of what Jay is trying to create and what it could become.</p>
+          <div class="hero-actions">
+            <button class="primary" data-jump="today" type="button">Start today's brief</button>
+            <button class="secondary" id="readSummary" type="button">Listen to the idea</button>
+          </div>
+          <div class="hero-tags"><span>Jewish + Israel news</span><span>Brooklyn</span><span>Mysteries</span><span>Scrabble</span><span>Country music</span></div>
+        </div>
+        <aside class="intention-card reveal">
+          <span>TODAY'S INTENTION</span>
+          <blockquote>Stay informed without letting the entire world move into your living room.</blockquote>
+          <p>One useful priority, one enjoyable thing, one honest conversation.</p>
+        </aside>
+      </section>
+
+      <section class="section weather-section" id="weather" data-guide="Weather is one data source. A daily system could combine it with your calendar and habits to suggest a walk, adjust a workout or warn about travel.">
+        <div class="weather-shell reveal">
+          <div class="weather-copy">
+            <p class="kicker">BROOKLYN RIGHT NOW</p>
+            <h2>A bright Sunday.</h2>
+            <p>Sunny and warm this afternoon. Good coffee-outside weather, assuming the coffee makes it outside before becoming iced by neglect.</p>
+            <div class="weather-live"><strong>83°</strong><span id="brooklynClock">--:-- PM EDT</span></div>
+            <div class="weather-stats"><div><span>Conditions</span><b>Sunny</b></div><div><span>Overnight</span><b>73°F</b></div><div><span>Sunset</span><b>8:09 PM</b></div></div>
+          </div>
+          <div class="sun-stage" aria-hidden="true"><div class="sun-rings"></div><div class="sun-orb"></div><div class="sun-cloud"></div></div>
+        </div>
+      </section>
+
+      <section class="section" id="today" data-guide="The useful part is selection. An assistant can research widely, verify sources, then show only the few items that match your interests and your day.">
+        <div class="section-head reveal"><div><p class="kicker">TODAY IN FIVE</p><h2>Useful, Jewish, local and human.</h2></div><p>Short summaries, direct sources and enough context to understand why each item earned a place here.</p></div>
+        <div id="newsFilters" class="filters reveal" role="group" aria-label="Filter news"></div>
+        <div id="newsGrid" class="news-grid"></div>
+      </section>
+
+      <section class="section horoscope-section" id="horoscope" data-guide="This selector is another example of personalization. The page waits for your choice, then shows only the result that applies to you.">
+        <div class="section-head reveal"><div><p class="kicker">TODAY'S HOROSCOPE</p><h2>Choose your sign.</h2></div><p>Today carries mixed emotional signals and restless energy. The broad advice is to simplify plans, check assumptions and stay grounded.</p></div>
+        <div id="zodiacGrid" class="zodiac-grid reveal"></div>
+        <article id="horoscopeResult" class="horoscope-result reveal" aria-live="polite"><span>WAITING FOR YOUR SIGN</span><h3>Pick one above.</h3><p>Only the horoscope you choose will appear here.</p><small>For entertainment. Based on the August 2 readings published by Mecca Woods and PEOPLE.</small></article>
+      </section>
+
+      <section class="section play-section" id="play" data-guide="Personal details create reasons to return. Music, word games and small rituals can make a useful product feel like yours instead of a generic dashboard.">
+        <div class="section-head reveal"><div><p class="kicker">SELECTED MEDIA + PLAY</p><h2>A song, a word and a clue.</h2></div><p>No fragile video player. The selected song works as an audio preview, with direct Spotify and YouTube options.</p></div>
+        <div class="play-grid">
+          <article class="media-card reveal">
+            <div class="media-visual" aria-hidden="true"><div class="media-globe"><i></i><i></i><i></i><i></i></div><div class="media-bars"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div></div>
+            <div class="media-copy"><p class="card-label">TODAY'S SELECTED MEDIA</p><h3>My Wish</h3><p class="artist">Rascal Flatts</p><p>A warm country song for a page about possibilities, good judgment and building something that can grow with you.</p>
+              <div class="audio-controls"><button id="musicToggle" type="button">Play preview</button><div class="audio-track"><i id="musicProgress"></i></div><span id="musicTime">0:00</span></div>
+              <div class="media-links"><a href="https://open.spotify.com/track/6Gfmj0HbpvxTdW0sdlzTDU" target="_blank" rel="noopener noreferrer">Open in Spotify</a><a href="https://www.youtube.com/watch?v=uX7vUajFZ9E" target="_blank" rel="noopener noreferrer">Open on YouTube</a></div>
+            </div>
+          </article>
+
+          <article class="word-card reveal">
+            <p class="card-label">SCRABBLE WORD OF THE DAY</p><h3>Put the letters in order.</h3>
+            <div id="letterTray" class="letter-tray" aria-label="Mixed letters"></div>
+            <div id="answerTray" class="answer-tray" aria-label="Your answer"><span>Tap the letters above</span></div>
+            <div class="word-actions"><button id="checkWord" type="button">Check word</button><button id="resetWord" type="button">Reset</button></div>
+            <p id="wordStatus" class="word-status" role="status"></p>
+            <div id="wordDefinition" class="word-definition" hidden><strong>INSIGHT</strong><span>noun</span><p>A clear understanding of a person, situation or pattern.</p><em>Example: A month of journal entries can reveal insight about what gives you energy.</em><small>Scrabble score: 11</small></div>
+          </article>
+
+          <article class="mystery-card reveal">
+            <p class="card-label">THE ONE-MINUTE MYSTERY</p><h3>The untouched coffee</h3><p>A woman orders coffee every morning. One day the cup is still full, yet the café knows she arrived. What detail gave her away?</p><button id="revealClue" type="button">Reveal the clue</button><p id="clueAnswer" hidden>Her usual Scrabble tile pouch was on the table. Small repeated details can become useful patterns when they are recorded carefully.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section project-section" id="project" data-guide="Pay attention here. This page is the example, but the real idea is the engine behind it: data comes in, software organizes it, AI explains it and scheduled tasks deliver it.">
+        <div class="section-head reveal"><div><p class="kicker">WHY JAY MADE THIS FOR YOU</p><h2>Understand the parts, then help imagine the product.</h2></div><p>By the end, you should be able to tell Jay which tools would matter, what a daily briefing should notice and what would feel useful or invasive.</p></div>
+        <article class="project-message reveal"><strong>The basic idea</strong><p>You could tell the system what matters in normal language. The page you see is the frontend. A protected Python backend would do the work. Connectors would fetch only the accounts you approve. A database would remember preferences and history. AI would compare, summarize and explain. Scheduled tasks would run it every morning or when an important condition changes.</p></article>
+        <div id="stackGrid" class="stack-grid reveal"></div>
+        <article id="stackDetail" class="stack-detail reveal" aria-live="polite"></article>
+      </section>
+
+      <section class="section natural-language-section" id="naturalLanguage" data-guide="Natural language becomes structured instructions. The system still needs permissions, rules, testing and human approval before it can safely act.">
+        <div class="section-head reveal"><div><p class="kicker">FROM A SENTENCE TO A WORKFLOW</p><h2>Say what you want. The system plans the steps.</h2></div><p>Try the example below. It does not connect to real accounts. It shows how one sentence can become a controlled workflow.</p></div>
+        <div class="prompt-demo reveal"><label for="promptInput">Tell the future app what to do</label><textarea id="promptInput" rows="3">Every morning, compare my calendar, emails, spending, weather, habits and workouts. Give me three priorities, one warning and one encouraging next step.</textarea><button id="runPrompt" type="button">Turn this into a plan</button><div id="promptPlan" class="prompt-plan" aria-live="polite"></div></div>
+      </section>
+
+      <section class="section build-section" id="build" data-guide="This is where the same engine becomes a habit app, journal, fitness tracker, finance assistant, lesson planner or daily strategy system. The data and rules decide the product.">
+        <div class="section-head reveal"><div><p class="kicker">BUILD YOUR DAILY SYSTEM</p><h2>Choose what it should notice and help with.</h2></div><p>Select ideas to build a sample daily output. Every private source would require your permission and could be disconnected later.</p></div>
+        <div class="builder-shell reveal">
+          <div id="capabilityGrid" class="capability-grid"></div>
+          <article class="brief-preview"><div class="preview-top"><span>YOUR SAMPLE DAILY SYSTEM</span><b id="selectedCount">0 modules</b></div><div id="briefPreview"></div></article>
+        </div>
+      </section>
+
+      <section class="section learning-section" id="learning" data-guide="The system learns through approved data, corrections and repeated feedback. It should never secretly gather everything or treat guesses as facts.">
+        <div class="section-head reveal"><div><p class="kicker">HOW IT LEARNS WITHOUT MANUAL ENTRY</p><h2>A consent-based learning loop.</h2></div><p>Fine-tuning a model is usually not the first step. Useful personalization starts with a profile, connected sources, memory, feedback and clear rules.</p></div>
+        <div id="learningLoop" class="learning-loop reveal"></div>
+        <article id="learningDetail" class="learning-detail reveal"></article>
+      </section>
+
+      <section class="section automation-section" id="automations" data-guide="Scheduled tasks handle repetition. Conditional tasks wait for something meaningful, such as an unusual charge, an urgent email or a missed goal.">
+        <div class="section-head reveal"><div><p class="kicker">AUTOMATIONS YOU COULD ASK FOR</p><h2>Run on a schedule or when something changes.</h2></div><p>Tap an example to see the trigger, approved data and useful result.</p></div>
+        <div id="automationGrid" class="automation-grid reveal"></div>
+        <article id="automationDetail" class="automation-detail reveal"></article>
+        <div class="daily-pipeline reveal"><span>6:30 Gather</span><i></i><span>6:35 Verify</span><i></i><span>6:40 Compare</span><i></i><span>6:45 Write</span><i></i><span>6:50 Deliver</span></div>
+      </section>
+
+      <section class="section intelligence-section" id="intelligence" data-guide="The same information principles appear in research and intelligence work: collect, verify, connect, assess confidence and require accountable human review.">
+        <div class="section-head reveal"><div><p class="kicker">A RESPONSIBLE INTELLIGENCE COMPARISON</p><h2>How serious organizations turn data into decisions.</h2></div><p>Governments and militaries use structured intelligence workflows to understand people, events and risks. The safeguards matter as much as the technology.</p></div>
+        <div class="intel-flow reveal"><button data-intel="collect">1. Collect</button><button data-intel="verify">2. Verify</button><button data-intel="connect">3. Connect</button><button data-intel="assess">4. Assess</button><button data-intel="review">5. Human review</button></div>
+        <article id="intelDetail" class="intel-detail reveal"></article>
+        <p class="safety-note reveal">A responsible system should separate facts from allegations, show confidence levels, follow law and policy, preserve an audit trail and never make an autonomous targeting decision.</p>
+      </section>
+
+      <section class="section explore-section" id="explore" data-guide="These links show the larger CMX build. Open the map when you are ready to see how the experiments, tools and technical plans connect.">
+        <div class="section-head reveal"><div><p class="kicker">SEE WHERE THE IDEAS LEAD</p><h2>Explore the complete CMX platform.</h2></div><p>Start with the recommended path, then reveal the complete project map. Each page opens a different part of the tools, infrastructure, research and AI planning.</p></div>
+        <div id="recommendedProjects" class="recommended-grid reveal"></div>
+        <div class="route-discovery-cta reveal"><div><span>THE COMPLETE CMX BUILD</span><h3>You have only seen the front door.</h3><p>Reveal the full project map to see the tools, research pages, operating plans, AI blueprints and experiments behind the platform.</p><div class="route-meta"><b id="routeCount">Loading the map</b><span>Tools + blueprints</span><span>Opens below</span></div></div><button id="showAllRoutes" type="button" aria-controls="routeGrid" aria-expanded="false">Reveal the complete project map</button></div>
+        <div id="routeGrid" class="route-grid" hidden></div>
+      </section>
+
+      <section class="section brainstorm-section" id="brainstorm" data-guide="You have reached the important part. The goal is not to admire the page. It is to decide what the product should learn, notice, explain and help you do.">
+        <div class="section-head reveal"><div><p class="kicker">YOUR TURN, DEBBIE</p><h2>Help Jay shape something people would actually use.</h2></div><p>You now know the basic parts. Think about the daily problems that deserve a calm, private and well-informed assistant.</p></div>
+        <form id="ideaForm" class="idea-form reveal">
+          <label>What would make you open this every morning?<textarea id="ideaOne" rows="3"></textarea></label>
+          <label>What should it learn automatically, and what should always require permission?<textarea id="ideaTwo" rows="3"></textarea></label>
+          <label>What tool or automation should Jay build first?<textarea id="ideaThree" rows="3"></textarea></label>
+          <button type="submit">Copy my ideas for Jay</button><span id="ideaStatus" role="status"></span>
+        </form>
+        <div class="closing reveal"><strong>The page is only one possible form.</strong><p>The same data could become an app, a voice briefing, a journal, a tracker, an alert, a strategy dashboard or a private assistant. Your ideas can help decide what deserves to exist.</p></div>
+      </section>
+    </main>
+
+    <aside id="guidePill" class="guide-pill" aria-live="polite"><button id="guideToggle" type="button" aria-expanded="true">WHAT THIS DEMONSTRATES</button><p id="guideText">This page is a live example. Notice how data, design and automation work together.</p></aside>
+    <footer><span>Debbie's Brooklyn Brief · private concept edition</span><button id="backToTop" type="button">Back to top</button></footer>
+  </div>
+
+  <audio id="dailyAudio" preload="auto" src="https://p.scdn.co/mp3-preview/9c0b4d2e32560e295b5770138abd247f08c7bba9.mp3"></audio>
 </body>
 </html>
