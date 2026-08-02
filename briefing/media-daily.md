@@ -1,4 +1,4 @@
-# Daily Play & Watch Rules
+# Daily Play and Watch Rules
 
 Target section: `spotify`
 Daily song data: `assets/daily-song.js`
@@ -17,12 +17,12 @@ The current song is never a permanent site setting. It is only the selection for
 - Choose exactly one shared song for each daily edition.
 - Match the day’s mood and strongest themes without claiming the song proves either person’s emotions.
 - Prefer an uplifting, warm, energizing, playful or emotionally appropriate choice.
-- Avoid recent repeats. Review the prior daily files or recent commit history before selecting.
+- Avoid recent repeats. Review prior daily files or recent commit history before selecting.
 - A repeat is allowed only when the song has a clear new reason to return. State that reason in the internal run summary.
 - Do not quote lyrics, force romance or make listening homework.
 - Use the exact track and artist, a short original description and the connector-derived Spotify track link.
-- Find and verify a lawful public preview URL when available. Prefer a Spotify-hosted preview or an official Apple/iTunes preview. Never upload or copy a full copyrighted recording.
-- If no preview is available, publish the Spotify selection anyway. The page will show an external play option instead of autoplaying audio.
+- Find and verify a lawful public preview URL when available. Prefer a Spotify-hosted preview or an official Apple or iTunes preview. Never upload or copy a full copyrighted recording.
+- If no preview is available, publish the Spotify selection anyway. The page will show an external music option instead of pretending autoplay is available.
 
 ## Daily song file
 
@@ -51,17 +51,19 @@ Use these fields:
 - `selectedFor`: Brooklyn edition date in `YYYY-MM-DD`
 - `published`: concise note such as `today's shared pick`
 
-`assets/daily-song.js` is the authoritative source for the gate copy, autoplay source, hero play and pause labels, and visible shared-song card. The permanent rendering logic lives elsewhere and must not be copied into this daily file.
+`assets/daily-song.js` is the authoritative source for login copy, autoplay source, accessible control labels and the visible shared-song card. Permanent rendering logic lives elsewhere and must not be copied into this daily file.
 
 The matching `spotify` entry in `assets/news-data.js` should use the same track, artist, description and Spotify URL. If the two files briefly disagree, `assets/daily-song.js` wins on the rendered page.
 
-## Autoplay behavior
+## Autoplay and controls
 
 - The song may begin only after the passphrase submission, which is the user interaction used to prime audio.
 - Never autoplay before the user interacts with the gate.
-- The hero and media-card controls must use the current daily song title and stay synchronized.
-- When a browser blocks autoplay, keep a clear play button.
-- When no preview exists, show a Spotify option instead of pretending audio can play.
+- The visible hero control remains generic across editions: `Play music`, `Pause music` or `Open music` when no preview exists.
+- The current song title and artist belong in the login copy, media card and accessible label.
+- The hero and media-card controls must stay synchronized.
+- When a browser blocks autoplay, keep a clear play option.
+- When no preview exists, open the verified Spotify link instead of pretending audio can play.
 
 ## Daily video
 
@@ -106,16 +108,12 @@ Choose among comedy, a concise news explainer, scenic footage, music performance
 
 ## Publishing
 
-The daily briefing task should update these three files:
+During the full daily briefing run, update the five daily runtime files defined in `briefing/news-publishing-standard.md`. This media section specifically governs:
 
-1. `assets/news-data.js`
-2. `assets/daily-song.js`
-3. `assets/daily-video.js`
+- `assets/daily-song.js`
+- The matching song entry in `assets/news-data.js`
+- `assets/daily-video.js`
 
-Fetch the latest SHA for each file immediately before writing. Validate all three files after writing. Do not edit the media renderer, synchronization script, cache loader, access gate, CSS or HTML during an ordinary daily publishing run.
+Fetch the latest SHA immediately before every write. Validate exact track identity, Spotify link, preview URL, video ID, current edition date and cross-file consistency after publishing.
 
-Use intentional commit messages:
-
-- `Update Jay + Crystal daily brief for YYYY-MM-DD`
-- `Update Jay + Crystal daily song for YYYY-MM-DD`
-- `Update Jay + Crystal daily video for YYYY-MM-DD`
+Do not edit the media renderer, synchronization script, cache loader, access gate, CSS or HTML during an ordinary daily publishing run.
