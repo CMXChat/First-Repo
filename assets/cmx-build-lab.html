@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-title="CMX Build Lab" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="2.1" data-cmx-standard="off">
+<html lang="en" data-cmx-title="CMX Build Lab" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="2.2" data-cmx-standard="off">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -11,9 +11,9 @@
   <link rel="stylesheet" href="/assets/cmx-backend-blueprint.css?v=20260801-2" />
   <style>
     .build-links{display:flex;flex-wrap:wrap;gap:9px}.build-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.build-card{padding:22px}.build-card strong{display:block;margin-bottom:8px;color:var(--blue-bright);font-family:var(--mono);font-size:22px}.build-card p{margin:0;font-size:12px}.truth-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.truth-card{padding:20px}.truth-card h3{color:var(--blue-bright)}.truth-card p{margin-bottom:0;font-size:12px}.control-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.control-card{padding:21px}.control-card code{display:inline-block;margin-bottom:12px;color:var(--blue-bright);font-family:var(--mono)}.control-card p{font-size:12px}.control-card a{display:inline-flex}.pipeline{display:grid;gap:10px}.pipeline-step{display:grid;grid-template-columns:52px minmax(180px,.8fr) minmax(240px,1.2fr);gap:16px;align-items:start;padding:18px}.pipeline-step .phase-number{font-size:12px}.pipeline-step p{margin:0;font-size:12px}.readiness-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.readiness-card{padding:24px}.readiness-list{display:grid;gap:10px}.readiness-row{display:grid;grid-template-columns:22px 1fr;gap:10px;color:var(--muted);font-size:12px;line-height:1.55}.readiness-row::before{content:"○";display:grid;place-items:center;width:20px;height:20px;border:1px solid var(--line-strong);border-radius:6px;color:var(--blue-bright);font-family:var(--mono)}.readiness-row.complete::before{content:"✓"}.table-wrap a{color:var(--blue-bright);text-decoration:none}.table-wrap a:hover{text-decoration:underline}.build-note{padding:18px}.build-note strong{color:var(--text)}.build-note p{margin:0}.status-strip{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:13px 0;color:var(--muted);font-family:var(--mono);font-size:11px}.status-strip strong{color:var(--blue-bright)}
-    @media(max-width:1100px){.build-grid,.truth-grid,.control-map{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.build-grid,.truth-grid,.control-map,.readiness-columns{grid-template-columns:1fr}.pipeline-step{grid-template-columns:44px 1fr}.pipeline-step p{grid-column:2}.hero{min-height:unset}.topbar{position:relative}.topbar-actions{justify-content:flex-start}.truth-badge{display:inline-flex!important}}
+    @media(max-width:1100px){.build-grid,.truth-grid,.control-map{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.build-grid,.truth-grid,.control-map,.readiness-columns{grid-template-columns:1fr}.pipeline-step{grid-template-columns:44px 1fr}.pipeline-step p{grid-column:2}.hero{min-height:unset}.topbar{position:sticky}.topbar-actions{justify-content:flex-start}.truth-badge{display:inline-flex!important}}
   </style>
-  <link rel="stylesheet" href="/assets/cmx-terminal-blueprint.css?v=20260801-1" />
+  <link rel="stylesheet" href="/assets/cmx-terminal-blueprint.css?v=20260801-3" />
   <script src="/assets/cmx-build-lab.js?v=20260801-1" defer></script>
 </head>
 <body>
@@ -23,12 +23,13 @@
         <span class="brand-mark" aria-hidden="true">BLD</span>
         <span class="brand-copy"><strong>CMX Build Lab</strong><small>Future operational control room</small></span>
       </a>
-      <div class="topbar-actions">
+      <nav class="topbar-actions" aria-label="Platform pages">
         <span class="truth-badge"><span class="status-dot" aria-hidden="true"></span>Static operations view</span>
-        <a class="icon-button" href="/backend/">Backend</a>
-        <a class="icon-button" href="/ai/">AI</a>
+        <a class="icon-button" href="/build/" aria-current="page">Build Lab · Current</a>
+        <a class="icon-button" href="/backend/">Backend Blueprint</a>
+        <a class="icon-button" href="/ai/">AI Blueprint</a>
         <a class="icon-button" href="/updates/">Updates</a>
-      </div>
+      </nav>
     </header>
 
     <main>
