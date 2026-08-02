@@ -6,10 +6,14 @@
   const root = document.documentElement;
   if (root.dataset.cmxGated !== 'true') return;
 
-  const SESSION_KEY = 'cmx-sensitive-access-v1';
-  const ATTEMPTS_KEY = 'cmx-sensitive-attempts-v1';
-  const PASSWORD_SHA256 = '5acc5a298686271b024634c1affb1a03a228278e707b6ff9f816af5e1cc948b9';
+  const DEFAULT_PASSWORD_SHA256 = '5acc5a298686271b024634c1affb1a03a228278e707b6ff9f816af5e1cc948b9';
+  const PASSWORD_SHA256 = String(root.dataset.cmxPasswordSha256 || DEFAULT_PASSWORD_SHA256).toLowerCase();
   const IDLE_LIMIT_MS = 10 * 60 * 1000;
+  const ABSOLUTE_LIMIT_MS = 30 * 60 * 1000;
+  const routeScope = `${location.pathname}|${root.dataset.cmxLoadUrl || ''}`;
+  const scopeToken = Array.from(new TextEncoder().encode(routeScope), byte => byte.toString(16).padStart(2, '0')).join('').slice(0, 48);
+  const SESSION_KEY = `cmx-sensitive-access-v2:${scopeToken}`;
+  const ATTEMPTS_KEY = `cmx-sensitive-attempts-v2:${scopeToken}`;
 
   function readJson(key, fallback) {
     try {
@@ -27,11 +31,18 @@
 
   function hasActiveSession() {
     const session = readJson(SESSION_KEY, null);
-    return Boolean(session && Number.isFinite(session.lastSeen) && Date.now() - session.lastSeen < IDLE_LIMIT_MS);
+    if (!session || !Number.isFinite(session.createdAt) || !Number.isFinite(session.lastSeen)) return false;
+    const now = Date.now();
+    return now - session.lastSeen < IDLE_LIMIT_MS && now - session.createdAt < ABSOLUTE_LIMIT_MS;
   }
 
   function touchSession() {
-    writeJson(SESSION_KEY, { lastSeen: Date.now() });
+    const existing = readJson(SESSION_KEY, null);
+    const now = Date.now();
+    writeJson(SESSION_KEY, {
+      createdAt: Number.isFinite(existing?.createdAt) ? existing.createdAt : now,
+      lastSeen: now
+    });
   }
 
   function clearSession() {
@@ -45,8 +56,17 @@
     return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
   }
 
+  function constantTimeEqual(left, right) {
+    if (left.length !== right.length) return false;
+    let result = 0;
+    for (let index = 0; index < left.length; index += 1) {
+      result |= left.charCodeAt(index) ^ right.charCodeAt(index);
+    }
+    return result === 0;
+  }
+
   function sessionKeeperScript() {
-    return `<script>(()=>{const k='${SESSION_KEY}',limit=${IDLE_LIMIT_MS};let last=Date.now(),timer;const touch=()=>{last=Date.now();clearTimeout(timer);timer=setTimeout(()=>{try{sessionStorage.setItem(k,JSON.stringify({lastSeen:Date.now()}))}catch{}},200)};['pointerdown','keydown','scroll','touchstart'].forEach(e=>addEventListener(e,touch,{passive:true}));touch();setInterval(()=>{if(Date.now()-last>=limit){try{sessionStorage.removeItem(k)}catch{}location.reload()}},30000)})()<\/script>`;
+    return `<script>(()=>{const k=${JSON.stringify(SESSION_KEY)},idle=${IDLE_LIMIT_MS},absolute=${ABSOLUTE_LIMIT_MS};let last=Date.now(),timer;const read=()=>{try{return JSON.parse(sessionStorage.getItem(k))||null}catch{return null}},write=()=>{const now=Date.now(),old=read();try{sessionStorage.setItem(k,JSON.stringify({createdAt:Number.isFinite(old?.createdAt)?old.createdAt:now,lastSeen:now}))}catch{}};const touch=()=>{last=Date.now();clearTimeout(timer);timer=setTimeout(write,200)};['pointerdown','keydown','scroll','touchstart'].forEach(e=>addEventListener(e,touch,{passive:true}));touch();setInterval(()=>{const s=read(),now=Date.now();if(!s||now-last>=idle||now-Number(s.createdAt||0)>=absolute){try{sessionStorage.removeItem(k)}catch{}location.reload()}},30000)})()<\/script>`;
   }
 
   async function loadProtectedDocument(message) {
@@ -146,7 +166,7 @@
             </div>
             <p id="cmx-gate-message" role="status" aria-live="polite"></p>
           </form>
-          <div class="cmx-gate-footer"><span>NO INDEXING</span><span>SESSION EXPIRES AFTER 10 MINUTES IDLE</span></div>
+          <div class="cmx-gate-footer"><span>NO INDEXING</span><span>SESSION: 10 MIN IDLE / 30 MIN MAX</span></div>
         </div>
       </section>`;
 
@@ -181,7 +201,8 @@
       message.textContent = 'Verifying authorization…';
 
       try {
-        const valid = await sha256(input.value) === PASSWORD_SHA256;
+        const submittedHash = await sha256(input.value);
+        const valid = constantTimeEqual(submittedHash, PASSWORD_SHA256);
         input.value = '';
 
         if (valid) {
