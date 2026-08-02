@@ -1,0 +1,31 @@
+name: Temporary Private Brief Gate Migration
+
+on:
+  push:
+    branches:
+      - agent/gate-ai
+    paths:
+      - '.gate-private-briefs-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  gate-private-briefs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/gate-ai
+
+      - name: Gate registered private briefings
+        run: python scripts/gate_private_briefs.py
+
+      - name: Commit gated briefings
+        run: |
+          git config user.name "cmx-private-brief-gate"
+          git config user.email "actions@users.noreply.github.com"
+          git add logan/index.html debbie/index.html assets/cmx-logan-brief.html assets/cmx-debbie-brief.html
+          git commit -m "Gate registered private briefings"
+          git push origin HEAD:agent/gate-ai
