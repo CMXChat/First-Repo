@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-brief-date="2026-08-02">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#09070b" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' https://p.scdn.co; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <title>Debbie's Brooklyn Brief | August 2, 2026</title>
+  <meta name="description" content="A private Brooklyn briefing for Debbie with Jewish and Israel news, a daily song, interactive ideas and a simple explanation of Jay's AI briefing project." />
+  <link rel="canonical" href="https://db.cmxchat.com/debbie/" />
+  <meta property="og:title" content="Debbie's Brooklyn Brief" />
+  <meta property="og:description" content="A personal daily briefing, a chosen country song and a guided look at the future of private AI-powered daily intelligence." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://db.cmxchat.com/debbie/" />
+  <meta property="og:site_name" content="CMX Restricted Node" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="/assets/debbie.css?v=20260802-1" />
+  <script src="/assets/debbie-data.js?v=20260802-1" defer></script>
+  <script src="/assets/debbie.js?v=20260802-1" defer></script>
+</head>
+<body class="locked">
+  <div class="grain" aria-hidden="true"></div>
+
+  <section class="access-gate" id="accessGate" aria-labelledby="gateTitle">
+    <div class="gate-card">
+      <div class="gate-top"><span>PRIVATE BRIEFING</span><span>BROOKLYN // 08.02.26</span></div>
+      <div class="gate-mark" aria-hidden="true">D</div>
+      <p class="eyebrow">DEBBIE'S RESTRICTED BRIEF</p>
+      <h1 id="gateTitle">A little news. A little music. A bigger idea.</h1>
+      <p class="gate-copy">Enter the access password Jay gave you.</p>
+      <form id="gateForm" class="gate-form">
+        <label for="gateUser">User</label>
+        <div class="field-shell"><span>user</span><input id="gateUser" value="debbie" readonly aria-readonly="true" /></div>
+        <label for="gatePassword">Password</label>
+        <div class="field-shell"><span>key</span><input id="gatePassword" type="password" autocomplete="current-password" placeholder="password" /></div>
+        <button type="submit" id="unlockButton">Open today's briefing</button>
+        <p id="gateStatus" class="gate-status" role="status" aria-live="polite"></p>
+      </form>
+      <p class="gate-note">This is a client-side gate on a static page. The future version uses real accounts, server permissions and private data controls.</p>
+    </div>
+  </section>
+
+  <div id="app" class="app" aria-hidden="true" inert>
+    <header class="topbar">
+      <a class="brand" href="#welcome"><span>D</span><strong>DEBBIE'S BROOKLYN BRIEF</strong></a>
+      <nav aria-label="Briefing sections">
+        <a href="#today">Today</a><a href="#play">Play</a><a href="#project">The idea</a><a href="#prototype">Prototype</a><a href="#explore">Explore</a>
+      </nav>
+      <button id="relockButton" class="text-button" type="button">Lock</button>
+    </header>
+
+    <main>
+      <section class="hero" id="welcome">
+        <div class="skyline" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="hero-copy">
+          <p class="eyebrow">SUNDAY · 19 AV 5786 · BROOKLYN</p>
+          <h1>Good morning, Debbie.</h1>
+          <p class="hero-lede">Coffee first. Then the world. This is a short personal briefing built around the things you care about, followed by a simple tour of what Jay is trying to create.</p>
+          <div class="hero-actions"><button class="primary" data-jump="today" type="button">Start the brief</button><button class="secondary" id="musicToggleHero" type="button">Play today's song</button></div>
+          <div class="hero-tags"><span>Jewish + Israel news</span><span>Brooklyn</span><span>Mystery books</span><span>Scrabble</span><span>Country music</span></div>
+        </div>
+        <aside class="daily-card">
+          <span class="daily-label">TODAY'S INTENTION</span>
+          <blockquote>Stay informed without letting the entire world move into your living room.</blockquote>
+          <p>One useful priority, one enjoyable thing, one honest conversation.</p>
+        </aside>
+      </section>
+
+      <section class="section" id="today">
+        <div class="section-head"><div><p class="eyebrow">TODAY IN FIVE</p><h2>Useful, Jewish, local and human.</h2></div><p>Short summaries with direct sources. The page can be refreshed daily without turning into an endless news feed.</p></div>
+        <div id="newsFilters" class="filters" role="group" aria-label="Filter news"></div>
+        <div id="newsGrid" class="news-grid"></div>
+        <article class="local-note">
+          <div><span>IN BROOKLYN TODAY</span><strong>Torah class and breakfast</strong></div>
+          <p>F.R.E.E. of Brighton Beach lists a noon Torah class and breakfast today. It is included as a nearby Jewish-calendar item, not a guess about your neighborhood or plans.</p>
+          <a href="https://he.chabad.org/calendar/view/list.asp?mosadid=5808&tdate=8%2F1%2F2026" target="_blank" rel="noopener noreferrer">View calendar</a>
+        </article>
+      </section>
+
+      <section class="section play-section" id="play">
+        <div class="section-head"><div><p class="eyebrow">A BRIEF SHOULD HAVE SOME LIFE IN IT</p><h2>Country music, clues and wordplay.</h2></div><p>The personal layer matters. A useful product should understand what makes someone want to return tomorrow.</p></div>
+        <div class="play-grid">
+          <article class="song-card">
+            <p class="card-label">TODAY'S SONG</p>
+            <h3>My Wish</h3><p class="artist">Rascal Flatts</p>
+            <p>I chose it because you like country music and the message is warm, hopeful and forward-looking. This page is meant to feel like an invitation to imagine something better, not another technical lecture.</p>
+            <div class="player-row"><button id="musicToggle" type="button">Play preview</button><div class="progress"><i id="musicProgress"></i></div><span id="musicTime">0:00</span></div>
+            <div class="song-links"><a href="https://open.spotify.com/track/6Gfmj0HbpvxTdW0sdlzTDU" target="_blank" rel="noopener noreferrer">Spotify</a><a href="https://www.youtube.com/watch?v=uX7vUajFZ9E" target="_blank" rel="noopener noreferrer">YouTube</a></div>
+            <p id="autoplayNote" class="micro">The page tries to begin the preview after access is granted. Browser rules may still require one tap.</p>
+          </article>
+
+          <article class="scrabble-card">
+            <p class="card-label">SCRABBLE DRAW</p>
+            <div id="scrabbleTiles" class="tiles" aria-live="polite"></div>
+            <div class="scoreline"><span>Score</span><strong id="scrabbleScore">0</strong></div>
+            <p id="scrabbleMeaning">Draw a word for today.</p>
+            <button id="drawWord" type="button">Draw another word</button>
+          </article>
+
+          <article class="mystery-card">
+            <p class="card-label">THE ONE-MINUTE MYSTERY</p>
+            <h3>The untouched coffee</h3>
+            <p>A woman orders coffee every morning. One day the cup is still full, yet the café knows she arrived. What detail gave her away?</p>
+            <button id="revealClue" type="button">Reveal the clue</button>
+            <p id="clueAnswer" hidden>Her usual Scrabble tile pouch was on the table. The point is not the riddle. It is how small repeated details become useful patterns.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section project-section" id="project">
+        <div class="section-head"><div><p class="eyebrow">WHAT JAY IS ACTUALLY TRYING TO BUILD</p><h2>A private daily intelligence service for normal people.</h2></div><p>You should not need to understand programming to understand the product. Think of it as a very organized assistant that learns your preferences and prepares the right page each morning.</p></div>
+        <div class="analogy-grid" id="analogyGrid"></div>
+        <div class="project-truth">
+          <strong>The important technical truth</strong>
+          <p>Most people would not need a specially retrained AI model. The useful personalization comes first from a secure profile, selected memories, connected accounts, clear rules and feedback about what was helpful. Custom training can come later when there is enough real data to justify it.</p>
+        </div>
+        <div class="trusted-context">
+          <span>WHY JAY THOUGHT YOU WOULD UNDERSTAND THE NEED</span>
+          <p>You already know that family situations, harassment concerns, messages, dates and competing claims can become confusing. A private tool could organize what is documented, what is alleged, what is still unknown and what needs verification, without turning suspicion into fact.</p>
+        </div>
+      </section>
+
+      <section class="section prototype-section" id="prototype">
+        <div class="section-head"><div><p class="eyebrow">TRY THE PRODUCT IDEA</p><h2>Build a sample morning brief.</h2></div><p>Choose what the assistant is allowed to use. The preview updates so you can see the logic without reading code.</p></div>
+        <div class="prototype-shell">
+          <div class="controls-panel">
+            <fieldset><legend>What should it cover?</legend><label><input type="checkbox" data-topic="jewish" checked /> Jewish + Israel news</label><label><input type="checkbox" data-topic="local" checked /> Brooklyn and local life</label><label><input type="checkbox" data-topic="books" checked /> Mystery books and culture</label><label><input type="checkbox" data-topic="money" /> Spending and bills</label><label><input type="checkbox" data-topic="schedule" /> Calendar and priorities</label></fieldset>
+            <fieldset><legend>What may it connect to?</legend><label><input type="checkbox" data-source="calendar" /> Calendar</label><label><input type="checkbox" data-source="email" /> Email</label><label><input type="checkbox" data-source="spotify" checked /> Spotify</label><label><input type="checkbox" data-source="finances" /> Finances</label><label><input type="checkbox" data-source="none" /> Nothing private</label></fieldset>
+            <label class="tone-label">Tone<select id="toneSelect"><option>Warm and direct</option><option>Very concise</option><option>Playful</option><option>Serious</option></select></label>
+          </div>
+          <article class="preview-panel">
+            <div class="preview-top"><span>DEMO BRIEF</span><span id="previewTone">Warm and direct</span></div>
+            <div id="briefPreview"></div>
+          </article>
+        </div>
+        <div class="pattern-panel">
+          <div><p class="card-label">PATTERN TRACKER DEMO</p><h3>Memory should reveal patterns, not spy on you.</h3><p>Select a line. The real product could compare sleep, mood, spending, appointments, habits or stress only when the user chooses to track them.</p></div>
+          <div class="chart-controls"><button class="active" data-series="energy" type="button">Energy</button><button data-series="focus" type="button">Focus</button><button data-series="calm" type="button">Calm</button></div>
+          <svg id="patternChart" viewBox="0 0 700 240" role="img" aria-label="Seven day pattern demo"><g class="grid-lines"></g><path id="chartPath" d=""></path><g id="chartPoints"></g></svg>
+          <div class="days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        </div>
+      </section>
+
+      <section class="section roadmap-section" id="roadmap">
+        <div class="section-head"><div><p class="eyebrow">HOW THIS BECOMES A REAL PRODUCT</p><h2>Five understandable steps.</h2></div><p>Tap a stage to see what it changes. The goal is gradual progress with privacy and approval built in.</p></div>
+        <div id="roadmapSteps" class="roadmap"></div>
+        <article id="roadmapDetail" class="roadmap-detail" aria-live="polite"></article>
+      </section>
+
+      <section class="section explore-section" id="explore">
+        <div class="section-head"><div><p class="eyebrow">SEE WHERE THE IDEAS LEAD</p><h2>Explore the CMX work already built.</h2></div><p>Start with the recommended path, then open the full project map. Some pages are finished tools, some are plans and some are experiments.</p></div>
+        <div id="recommendedProjects" class="recommended-grid"></div>
+        <button id="showAllRoutes" class="route-toggle" type="button">Show the full route map</button>
+        <div id="routeGrid" class="route-grid" hidden></div>
+      </section>
+
+      <section class="section brainstorm-section" id="brainstorm">
+        <div class="section-head"><div><p class="eyebrow">YOUR JOB AFTER THIS</p><h2>Help Jay make the idea less technical and more useful.</h2></div><p>The best product ideas often come from the person asking, “Why would anyone want that?” and then improving the answer.</p></div>
+        <form id="ideaForm" class="idea-form">
+          <label>What would make you open a personal briefing every morning?<textarea id="ideaOne" rows="3"></textarea></label>
+          <label>What would feel useful, and what would feel invasive?<textarea id="ideaTwo" rows="3"></textarea></label>
+          <label>What is one feature Jay has not thought of yet?<textarea id="ideaThree" rows="3"></textarea></label>
+          <button type="submit">Copy my ideas for Jay</button><span id="ideaStatus" role="status"></span>
+        </form>
+        <div class="closing"><strong>This is the beginning, not the finished product.</strong><p>The page can eventually become quieter, smarter and more personal. The important part is that the person stays in control of what it knows, what it remembers and what it is allowed to do.</p></div>
+      </section>
+    </main>
+
+    <footer><span>Debbie's Brooklyn Brief · private concept edition</span><button id="backToTop" type="button">Back to top</button></footer>
+  </div>
+
+  <audio id="dailyAudio" preload="auto" src="https://p.scdn.co/mp3-preview/9c0b4d2e32560e295b5770138abd247f08c7bba9.mp3"></audio>
+</body>
+</html>
