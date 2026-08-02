@@ -6,7 +6,7 @@
   const root = document.getElementById('spotifyCards');
   if (!root) return;
 
-  const dailyAudio = document.getElementById('cmxDailyAudio');
+  const dailyAudio = document.getElementById('newsDailyAudio');
   const sorted = items => [...(Array.isArray(items) ? items : [])]
     .sort((a, b) => Number(b.priority || 0) - Number(a.priority || 0));
 
@@ -75,7 +75,7 @@
       audio.currentTime = 0;
       update();
     });
-    window.addEventListener('cmx:audio-ready', update);
+    window.addEventListener('news:audio-ready', update);
 
     button.append(icon, label, note);
     shell.append(button, progress);
