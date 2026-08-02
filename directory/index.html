@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-title="CMX Operations Directory" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="1.1" data-cmx-standard="on">
+<html lang="en" data-cmx-title="CMX Operations Directory" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="1.2" data-cmx-standard="on">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#050b14">
+<meta name="theme-color" content="#000000">
 <title>CMX Operations Directory</title>
 <meta name="description" content="Private directory for CMX research and operational tools.">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
@@ -24,10 +24,11 @@
 :root{--bg:#050b14;--panel:#091521;--panel2:#0d1d2d;--line:rgba(41,157,255,.24);--strong:rgba(69,177,255,.52);--blue:#1f9bff;--cyan:#5ed7ff;--text:#edf8ff;--soft:#c6dfef;--muted:#7894a8;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;color-scheme:dark}*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{color:var(--text);font-family:var(--mono);background:radial-gradient(circle at 12% -8%,rgba(0,104,181,.3),transparent 25rem),radial-gradient(circle at 110% 5%,rgba(31,155,255,.16),transparent 22rem),linear-gradient(180deg,#061423 0,var(--bg) 42%,#02060b 100%)}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.04;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0,rgba(255,255,255,.05) 1px,transparent 1px,transparent 5px)}a{color:inherit;text-decoration:none}.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(5,11,20,.86);backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:11px;font-weight:900}.logo{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--strong);border-radius:11px;background:linear-gradient(145deg,#0068b5,var(--blue));box-shadow:0 10px 24px rgba(0,104,181,.22)}.title{font-size:clamp(15px,4vw,20px)}.chip{padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:10px}.shell{width:min(1020px,100%);margin:auto;padding:clamp(16px,4vw,34px)}.intro{padding:clamp(20px,5vw,34px);border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(13,29,45,.96),rgba(7,17,28,.96));box-shadow:0 22px 65px rgba(0,0,0,.34)}.intro .kicker{color:var(--cyan);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.intro h1{margin:9px 0 8px;font-size:clamp(30px,8vw,50px);line-height:1;letter-spacing:-.05em}.intro p{margin:0;color:var(--muted);font:13px/1.65 system-ui,sans-serif}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.card{position:relative;min-height:190px;padding:22px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(13,29,45,.9),rgba(6,15,25,.94));transition:.18s ease}.card:hover,.card.active{transform:translateY(-2px);border-color:var(--strong);box-shadow:0 18px 48px rgba(0,0,0,.38),0 0 38px rgba(31,155,255,.07)}.card .hotkey{display:inline-grid;place-items:center;width:27px;height:27px;border:1px solid var(--line);border-radius:8px;color:var(--cyan);font-size:10px}.card h2{margin:18px 0 7px;font-size:clamp(19px,4vw,25px)}.card p{margin:0;color:var(--muted);font:12px/1.6 system-ui,sans-serif}.path{display:block;margin-top:18px;color:var(--soft);font-size:10px}.arrow{position:absolute;right:18px;bottom:18px;color:var(--blue);font-size:20px}.empty,.error{margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:14px;color:var(--muted);background:var(--panel)}.footer{padding:24px;text-align:center;color:var(--muted);font-size:10px}@media(max-width:700px){.cards{grid-template-columns:1fr}.card{min-height:170px}.chip{display:none}}
 </style>
 <link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260731-1">
+<link rel="stylesheet" href="/assets/cmx-directory-terminal.css?v=20260801-1">
 <script src="/assets/cmx-route-registry.js?v=1" defer></script>
 </head>
 <body>
-<header class="topbar"><div class="brand"><div class="logo">CMX</div><div class="title">Operations Directory</div></div><span class="chip">SESSION <b id="sid"></b></span></header>
+<header class="topbar"><a class="brand" href="/" aria-label="Return to CMX Restricted Node"><div class="logo">CMX</div><div class="title">Operations Directory</div></a><span class="chip">SESSION <b id="sid"></b></span></header>
 <main class="shell">
 <section class="intro"><span class="kicker">CMX Restricted Node</span><h1>Operations Directory</h1><p id="summary">Loading the approved route registry.</p></section>
 <nav class="cards" id="cards" aria-label="Approved tools"></nav>
