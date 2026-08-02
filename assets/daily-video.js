@@ -2,12 +2,12 @@ window.CMX_DAILY_VIDEO = {
   audience: "shared",
   label: "today's watch",
   status: "OFFICIAL",
-  title: "Everywhere · Fleetwood Mac (Official Music Video)",
-  text: "Today’s watch matches the shared song: an official, slightly theatrical Fleetwood Mac video that keeps the page warm and easy. Brooklyn and Waikato get the same soundtrack, plus horses, armor, and considerably more medieval commitment than expected.",
+  title: "My Wish · Rascal Flatts (Official Audio)",
+  text: "The shared watch matches the song so the whole section carries one warm, uplifting mood. Play it here or open the full track whenever you want the soundtrack without extra noise.",
   provider: "youtube",
-  videoId: "YF1R0hc5Q2I",
-  buttonLabel: "play today's video",
-  url: "https://www.youtube.com/watch?v=YF1R0hc5Q2I",
-  linkLabel: "open on YouTube",
-  published: "official music video"
+  videoId: "VLf3Qs8n_P4",
+  buttonLabel: "play My Wish",
+  url: "https://www.youtube.com/watch?v=VLf3Qs8n_P4",
+  linkLabel: "open My Wish on YouTube",
+  published: "official artist audio"
 };
