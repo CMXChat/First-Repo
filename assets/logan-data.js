@@ -159,3 +159,182 @@ window.LOGAN_BRIEF = {
     { id: "nac-nightlife", name: "Visit Nacogdoches", title: "Entertainment and nightlife overview", date: "Accessed August 2, 2026", url: "https://www.visitnacogdoches.org/entertainment-and-nightlife" }
   ]
 };
+
+(() => {
+  "use strict";
+
+  const STYLE_ID = "logan-root-theme";
+  const SESSION_KEY = "logan_root_password_v1";
+  const STATE_KEY = "cmx_gate_state_v1";
+  const ITERATIONS = 600000;
+  const SALT_B64 = "AZ4QJPMRsGl0B1pJV+4Yzut/sDzFl++ZoeMAfrO5ieo=";
+  const VERIFIER_B64 = "PWXFb5BlVpc7BCUDpCvMZ1faJ6Yb304F8d0EspmpnP0=";
+
+  if (!document.getElementById(STYLE_ID)) {
+    const link = document.createElement("link");
+    link.id = STYLE_ID;
+    link.rel = "stylesheet";
+    link.href = "/assets/logan-root-theme.css?v=20260802-2";
+    document.head.appendChild(link);
+  }
+
+  function fromBase64(value) {
+    const binary = atob(value);
+    return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  }
+
+  function toBase64(bytes) {
+    let binary = "";
+    bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+    return btoa(binary);
+  }
+
+  async function deriveVerifier(password) {
+    const material = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(password),
+      "PBKDF2",
+      false,
+      ["deriveBits"]
+    );
+    const bits = await crypto.subtle.deriveBits(
+      { name: "PBKDF2", hash: "SHA-256", salt: fromBase64(SALT_B64), iterations: ITERATIONS },
+      material,
+      256
+    );
+    return toBase64(new Uint8Array(bits));
+  }
+
+  function constantTimeEqual(left, right) {
+    if (left.length !== right.length) return false;
+    let difference = 0;
+    for (let index = 0; index < left.length; index += 1) {
+      difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
+    }
+    return difference === 0;
+  }
+
+  function readState() {
+    try {
+      return JSON.parse(localStorage.getItem(STATE_KEY) || "{}") || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveState(state) {
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+  }
+
+  function unlockPage(gate) {
+    sessionStorage.setItem(SESSION_KEY, "granted");
+    document.body.classList.remove("password-locked");
+    gate.hidden = true;
+    gate.setAttribute("aria-hidden", "true");
+    const firstAnswer = document.querySelector('#quizForm input[type="radio"]');
+    if (firstAnswer) firstAnswer.focus({ preventScroll: true });
+  }
+
+  function mountPasswordGate() {
+    const challengeTitle = document.getElementById("gateTitle");
+    const challengeCopy = document.querySelector("#gate .gate-intro");
+    const challengeHost = document.querySelector("#gate .terminal-chrome > span:nth-child(2)");
+    if (challengeTitle) challengeTitle.textContent = "Firearm safety check";
+    if (challengeCopy) challengeCopy.textContent = "Three basic questions before the daily brief opens. Keep it simple and get all three right.";
+    if (challengeHost) challengeHost.textContent = "admin@node: ~/briefs/logan/safety-check";
+
+    if (sessionStorage.getItem(SESSION_KEY) === "granted") return;
+
+    document.body.classList.add("password-locked");
+    const gate = document.createElement("section");
+    gate.className = "logan-password-gate";
+    gate.id = "loganPasswordGate";
+    gate.setAttribute("aria-labelledby", "loganPasswordTitle");
+    gate.innerHTML = `
+      <div class="logan-auth-shell">
+        <div class="logan-auth-bar"><i></i><i></i><i></i><span>restricted node · logan authentication</span></div>
+        <div class="logan-auth-body">
+          <header class="logan-auth-brand">
+            <div class="logan-auth-emblem" aria-hidden="true">L//TX</div>
+            <div><div class="logan-auth-kicker">Restricted user node</div><div class="logan-auth-host">db.cmxchat.com/logan</div></div>
+          </header>
+          <h1 class="logan-auth-title" id="loganPasswordTitle">Authentication required</h1>
+          <p class="logan-auth-copy">Use the CMX Restricted Node password to continue.</p>
+          <div class="logan-auth-field">
+            <label for="loganLoginUser">User</label>
+            <div class="logan-auth-input"><span>login</span><input id="loganLoginUser" value="admin" readonly aria-readonly="true" /></div>
+          </div>
+          <div class="logan-auth-field">
+            <label for="loganLoginPassword">Password</label>
+            <div class="logan-auth-input"><span>key</span><input id="loganLoginPassword" type="password" autocomplete="current-password" placeholder="password" /></div>
+          </div>
+          <button class="logan-auth-button" id="loganUnlockButton" type="button">Authenticate</button>
+          <div class="logan-auth-output" id="loganAuthOutput" role="status" aria-live="polite"></div>
+          <div class="logan-auth-note">Client-side password gate using the same verifier as the root node. It blocks casual access, but real private access still requires the planned server and Cloudflare identity layer.</div>
+        </div>
+      </div>`;
+    document.body.prepend(gate);
+
+    const passwordInput = gate.querySelector("#loganLoginPassword");
+    const unlockButton = gate.querySelector("#loganUnlockButton");
+    const output = gate.querySelector("#loganAuthOutput");
+
+    async function authenticate() {
+      const state = readState();
+      const remaining = Math.ceil((Number(state.lockedUntil || 0) - Date.now()) / 1000);
+      if (remaining > 0) {
+        output.className = "logan-auth-output bad";
+        output.textContent = `Access temporarily suspended. Retry in ${remaining}s.`;
+        return;
+      }
+      const password = passwordInput.value;
+      if (!password) {
+        output.className = "logan-auth-output bad";
+        output.textContent = "Enter the admin password.";
+        passwordInput.focus();
+        return;
+      }
+      output.className = "logan-auth-output info";
+      output.textContent = "Verifying...";
+      unlockButton.disabled = true;
+      try {
+        const candidate = await deriveVerifier(password);
+        const valid = constantTimeEqual(candidate, VERIFIER_B64);
+        passwordInput.value = "";
+        if (!valid) {
+          state.failures = Number(state.failures || 0) + 1;
+          const lockSeconds = state.failures >= 10 ? 300 : state.failures >= 5 ? 30 : 0;
+          state.lockedUntil = lockSeconds ? Date.now() + lockSeconds * 1000 : 0;
+          saveState(state);
+          output.className = "logan-auth-output bad";
+          output.textContent = lockSeconds ? `Access denied. Retry in ${lockSeconds}s.` : "Access denied.";
+          return;
+        }
+        saveState({ failures: 0, lockedUntil: 0, lastLogin: new Date().toISOString() });
+        output.className = "logan-auth-output ok";
+        output.textContent = "Access granted. Loading safety check...";
+        window.setTimeout(() => unlockPage(gate), 220);
+      } catch {
+        output.className = "logan-auth-output bad";
+        output.textContent = "Authentication failed.";
+      } finally {
+        unlockButton.disabled = false;
+      }
+    }
+
+    unlockButton.addEventListener("click", authenticate);
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") authenticate();
+    });
+    window.setTimeout(() => passwordInput.focus(), 80);
+  }
+
+  mountPasswordGate();
+
+  document.addEventListener("click", (event) => {
+    const relock = event.target.closest("#relockButton");
+    if (!relock) return;
+    sessionStorage.removeItem(SESSION_KEY);
+    window.setTimeout(() => window.location.reload(), 80);
+  }, true);
+})();
