@@ -13,7 +13,11 @@
   audio.preload = 'auto';
   audio.hidden = true;
   audio.volume = 0.3;
-  document.head.appendChild(audio);
+  audio.src = FALLBACK_PREVIEW;
+  root.appendChild(audio);
+
+  let preparedPreview = FALLBACK_PREVIEW;
+  let previewPrepared = false;
 
   function readSession() {
     try {
@@ -40,32 +44,32 @@
     return result === 0;
   }
 
+  async function prepareDailyPreview() {
+    try {
+      const response = await fetch(ITUNES_LOOKUP, { cache: 'no-store', mode: 'cors' });
+      if (!response.ok) throw new Error(`Preview lookup returned ${response.status}`);
+      const payload = await response.json();
+      const preview = payload?.results?.[0]?.previewUrl;
+      if (typeof preview === 'string' && /^https:\/\//.test(preview)) {
+        preparedPreview = preview;
+        previewPrepared = true;
+        if (audio.paused && audio.dataset.primed !== 'true') audio.src = preparedPreview;
+      }
+    } catch {
+      preparedPreview = FALLBACK_PREVIEW;
+    }
+  }
+
   function primeAudio() {
-    audio.src = FALLBACK_PREVIEW;
+    audio.dataset.primed = 'true';
+    if (audio.paused && audio.src !== preparedPreview) audio.src = preparedPreview;
     audio.muted = true;
     audio.currentTime = 0;
     const attempt = audio.play();
     if (attempt && typeof attempt.catch === 'function') attempt.catch(() => {});
   }
 
-  async function resolveDailyPreview() {
-    try {
-      const response = await fetch(ITUNES_LOOKUP, { cache: 'no-store', mode: 'cors' });
-      if (!response.ok) throw new Error(`Preview lookup returned ${response.status}`);
-      const payload = await response.json();
-      const preview = payload?.results?.[0]?.previewUrl;
-      return typeof preview === 'string' && /^https:\/\//.test(preview) ? preview : FALLBACK_PREVIEW;
-    } catch {
-      return FALLBACK_PREVIEW;
-    }
-  }
-
   async function startDailySong() {
-    const preview = await resolveDailyPreview();
-    if (audio.src !== preview) {
-      audio.src = preview;
-      audio.currentTime = 0;
-    }
     audio.muted = false;
     audio.volume = 0.3;
     try {
@@ -129,7 +133,12 @@
       await loadScript(`${source}${separator}cb=${Date.now()}`);
     }
 
-    window.dispatchEvent(new CustomEvent('crystal:audio-ready', { detail: { autoplay: audio.dataset.autoplay || 'unknown' } }));
+    window.dispatchEvent(new CustomEvent('crystal:audio-ready', {
+      detail: {
+        autoplay: audio.dataset.autoplay || 'unknown',
+        previewPrepared
+      }
+    }));
   }
 
   function renderGate() {
@@ -144,7 +153,7 @@
           <div class="cmx-gate-brand"><div class="cmx-gate-emblem">J+C</div><div><small>PRIVATE DAILY BRIEF</small><strong>CREATION DAY</strong></div></div>
           <p class="cmx-gate-code">BROOKLYN // WAIKATO</p>
           <h1 id="cmx-gate-title">Open today’s briefing</h1>
-          <p class="cmx-gate-copy">Enter the passphrase. Today’s song will try to begin as the page opens.</p>
+          <p class="cmx-gate-copy">Enter the passphrase. Today’s song will begin as the page opens.</p>
           <form id="cmx-gate-form" autocomplete="off">
             <label for="cmx-gate-password">Passphrase</label>
             <div class="cmx-gate-inputrow">
@@ -176,13 +185,15 @@
         if (!constantTimeEqual(submittedHash, PASSWORD_SHA256)) {
           audio.pause();
           audio.currentTime = 0;
+          audio.dataset.primed = 'false';
           message.className = 'is-error';
           message.textContent = 'Access denied.';
           return;
         }
 
         saveSession();
-        await Promise.all([startDailySong(), loadProtectedDocument(message)]);
+        await startDailySong();
+        await loadProtectedDocument(message);
       } catch (error) {
         audio.pause();
         message.className = 'is-error';
@@ -195,6 +206,8 @@
 
     setTimeout(() => input.focus(), 50);
   }
+
+  prepareDailyPreview();
 
   document.addEventListener('DOMContentLoaded', () => {
     if (readSession()) {
