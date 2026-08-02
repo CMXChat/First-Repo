@@ -31,7 +31,18 @@
     button.type = 'button';
     button.className = 'media-load-button';
     button.setAttribute('aria-label', buttonLabel || `play ${title}`);
-    button.innerHTML = `<span aria-hidden="true">▶</span><b>${buttonLabel || 'play on page'}</b><small>No autoplay until you tap</small>`;
+
+    const icon = document.createElement('span');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = '▶';
+
+    const label = document.createElement('b');
+    label.textContent = buttonLabel || 'play on page';
+
+    const note = document.createElement('small');
+    note.textContent = 'No autoplay until you tap';
+
+    button.append(icon, label, note);
 
     button.addEventListener('click', () => {
       const iframe = document.createElement('iframe');
@@ -113,15 +124,13 @@
       buttonLabel: video.buttonLabel || "play today's video"
     }));
 
-    if (video.url) {
-      const link = document.createElement('a');
-      link.className = 'card-link';
-      link.href = video.url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.textContent = video.linkLabel || 'open on YouTube';
-      card.appendChild(link);
-    }
+    const link = document.createElement('a');
+    link.className = 'card-link';
+    link.href = `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = video.linkLabel || 'open on YouTube';
+    card.appendChild(link);
 
     return card;
   }
