@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "updated": "2026-08-02",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -15,7 +15,6 @@
     {"path":"/backend/","name":"Backend Blueprint","description":"Complete source of truth for core and AI APIs, page connections, infrastructure, data models, permissions, security and delivery phases.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/ai/","name":"AI Control Blueprint","description":"Focused plan for normal-language development, project context, GitHub actions, MCP, assistants, sandboxes, staging, approvals, automation and AI operations.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/updates/","name":"CMX Platform Notes & Brief","description":"Terminal-style daily notes plus the complete linked project briefing for AI, APIs, frontend and backend connection, security, phases, current status and platform changes.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
-    {"path":"/logan/","name":"Logan's Deep East Texas Brief","description":"Private daily Nacogdoches briefing with Texas news, gun and hunting watch, shift tools, media, CMX platform explanation and trusted route map.","category":"Private Briefing","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/debbie/","name":"Debbie's Brooklyn Brief","description":"Private Brooklyn briefing with Jewish and Israel news, country music, Scrabble, interactive product concepts and a plain-language CMX platform tour.","category":"Private Briefing","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference that remains direct-link-only until real server authorization exists.","category":"Internal","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/project/","name":"Callmax SEO Master Plan","description":"Client project planning resource.","category":"Client","status":"Active","visibility":"Build-only","directory":false,"gated":true},
