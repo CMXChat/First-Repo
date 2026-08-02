@@ -80,3 +80,22 @@ window.DEBBIE_BRIEF = {
     calm: [62, 56, 47, 59, 67, 72, 76]
   }
 };
+
+(() => {
+  const cssId = "debbie-route-cta-style";
+  if (!document.getElementById(cssId)) {
+    const link = document.createElement("link");
+    link.id = cssId;
+    link.rel = "stylesheet";
+    link.href = "/assets/debbie-route-cta.css?v=20260802-1";
+    document.head.appendChild(link);
+  }
+
+  const scriptId = "debbie-route-cta-script";
+  if (!document.getElementById(scriptId)) {
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = "/assets/debbie-route-cta.js?v=20260802-1";
+    document.head.appendChild(script);
+  }
+})();
