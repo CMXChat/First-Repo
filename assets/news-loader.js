@@ -14,7 +14,9 @@
     const refreshedHtml = html
       .replace(/\/assets\/news-data\.js(?:\?[^"']*)?/g, `/assets/news-data.js?v=${token}`)
       .replace(/\/assets\/daily-video\.js(?:\?[^"']*)?/g, `/assets/daily-video.js?v=${token}`)
-      .replace(/\/assets\/news\.js(?:\?[^"']*)?/g, `/assets/news.js?v=${token}`);
+      .replace(/(<script src="\/assets\/daily-video\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-song-final.js?v=${token}" defer></script>`)
+      .replace(/\/assets\/news\.js(?:\?[^"']*)?/g, `/assets/news.js?v=${token}`)
+      .replace(/\/assets\/news-media\.js(?:\?[^"']*)?/g, `/assets/news-media.js?v=${token}`);
 
     const headers = new Headers(response.headers);
     headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
