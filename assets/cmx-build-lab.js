@@ -2,7 +2,7 @@
   "use strict";
 
   const $ = selector => document.querySelector(selector);
-  const BUILD_EXCLUDED_ROUTES = new Set(["/callmax/"]);
+  const BUILD_EXCLUDED_ROUTES = new Set(["/callmax/", "/", "/directory/"]);
   const state = { routes: [], checks: new Map(), registryVersion: "—" };
 
   function escapeHtml(value = "") {

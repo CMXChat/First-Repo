@@ -62,7 +62,7 @@
   function renderPages() {
     const container = $('#pageIndex');
     if (!container) return;
-    container.innerHTML = data.pages.map(page => `
+    container.innerHTML = data.pages.filter(page => !['/', '/directory/', '/directory'].includes(page.route)).map(page => `
       <a class="index-row" href="${safeLink(page.route)}">
         <code>${escapeHtml(page.route)}</code>
         <span><strong>${escapeHtml(page.name)}</strong><small>${escapeHtml(page.role)} · ${escapeHtml(page.status)}</small></span>

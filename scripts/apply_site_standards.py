@@ -123,6 +123,20 @@ def normalize_links(text: str) -> str:
     return text
 
 
+
+def unlink_root_directory_anchors(text: str) -> str:
+    replacements = {
+        'href="/"': 'data-cmx-unlinked="/"',
+        "href='/'": "data-cmx-unlinked='/'",
+        'href="/directory"': 'data-cmx-unlinked="/directory"',
+        "href='/directory'": "data-cmx-unlinked='/directory'",
+        'href="/directory/"': 'data-cmx-unlinked="/directory/"',
+        "href='/directory/'": "data-cmx-unlinked='/directory/'",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
+
 def improve_404(text: str) -> str:
     if "requested resource is unavailable" not in text.lower():
         return text
@@ -134,8 +148,7 @@ def improve_404(text: str) -> str:
         <header class="gate-brand"><div class="gate-emblem" aria-hidden="true">CMX</div><div class="gate-brand-copy"><div class="gate-kicker">Policy boundary</div><div class="gate-host">route unavailable</div></div></header>
         <h1 id="deniedTitle" class="gate-title">Resource unavailable</h1>
         <p class="gate-copy">The requested resource is unavailable or access is not permitted.</p>
-        <div class="gate-actions single"><a class="btn primary" href="/">Return to restricted node</a></div>
-      </div>
+              </div>
     </section>
   </main>
 """
@@ -151,6 +164,7 @@ def process(path: str, config: tuple[str, str, str, str, bool]) -> bool:
     original = file.read_text(encoding="utf-8")
     text = strip_old_standard(original)
     text = normalize_links(text)
+    text = unlink_root_directory_anchors(text)
     text = add_html_data(text, title, category, status, standard_ui)
 
     block = metadata_block(path, title, description)
