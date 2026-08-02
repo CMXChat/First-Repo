@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-visibility="Direct-link-only">
+<html lang="en" class="cmx-gate-pending" data-cmx-gated="true" data-cmx-visibility="Direct-link-only" data-cmx-load-url="/assets/cmx-backend-blueprint.html?v=20260802-1">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -12,151 +12,34 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <title>CMX Backend Blueprint</title>
-  <meta name="description" content="CMX source of truth for backend APIs, AI-assisted development, infrastructure, page connections, data, permissions and deployment." />
+  <meta name="description" content="Authorization required to access the private CMX backend blueprint." />
   <link rel="canonical" href="https://db.cmxchat.com/backend/" />
   <meta property="og:title" content="CMX Backend Blueprint" />
-  <meta property="og:description" content="Backend and AI control architecture for the CMX Restricted Node platform." />
+  <meta property="og:description" content="Authorization required to access this private CMX technical resource." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="CMX Restricted Node" />
   <meta property="og:url" content="https://db.cmxchat.com/backend/" />
   <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta property="og:image:secure_url" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CMX Backend Blueprint restricted resource" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="CMX Backend Blueprint" />
-  <meta name="twitter:description" content="Backend and AI control architecture for the CMX Restricted Node platform." />
+  <meta name="twitter:description" content="Authorization required to access this private CMX technical resource." />
   <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
-  <link rel="stylesheet" href="/assets/cmx-backend-blueprint.css?v=20260801-2" />
-  <link rel="stylesheet" href="/assets/cmx-terminal-blueprint.css?v=20260801-3" />
-  <link rel="stylesheet" href="/assets/cmx-terminal-backend.css?v=20260801-1" />
-  <link rel="stylesheet" href="/assets/cmx-backend-mobile.css?v=20260802-1" />
-  <script src="/assets/cmx-backend-blueprint-data.js?v=20260801-2" defer></script>
-  <script src="/assets/cmx-ai-blueprint-extension.js?v=20260801-2" defer></script>
-  <script src="/assets/cmx-ai-platform-extension.js?v=20260801-1" defer></script>
-  <script src="/assets/cmx-backend-blueprint.js?v=20260801-2" defer></script>
+  <meta name="twitter:image:alt" content="CMX Backend Blueprint restricted resource" />
+  <!-- Protected payload retains /assets/cmx-terminal-blueprint.css and these scripts:
+       /assets/cmx-backend-blueprint-data.js
+       /assets/cmx-ai-blueprint-extension.js
+       /assets/cmx-ai-platform-extension.js
+       /assets/cmx-backend-blueprint.js -->
+  <style>html,body{margin:0;min-height:100%;background:#000}html.cmx-gate-pending body>*{visibility:hidden}</style>
+  <link rel="stylesheet" href="/assets/cmx-sensitive-gate.css?v=20260731-2" />
+  <script src="/assets/cmx-sensitive-gate.js?v=20260731-2" defer></script>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" data-cmx-unlinked="/" aria-label="Return to CMX Restricted Node">
-        <span class="brand-mark" aria-hidden="true">API</span>
-        <span class="brand-copy"><strong>Backend Blueprint</strong><small>Backend, API and AI control source of truth</small></span>
-      </a>
-      <nav class="topbar-actions" aria-label="Platform pages">
-        <span class="truth-badge"><span class="status-dot" aria-hidden="true"></span>Static planning resource</span>
-        <a class="icon-button" href="/build/">Build Lab</a>
-        <a class="icon-button" href="/backend/" aria-current="page">Backend · Current</a>
-        <a class="icon-button" href="/ai/">AI Blueprint</a>
-        <a class="icon-button" href="/updates/">Updates</a>
-        <button class="icon-button" id="copySummaryButton" type="button">Copy summary</button>
-      </nav>
-    </header>
-
-    <main>
-      <section class="hero panel" aria-labelledby="pageTitle">
-        <div class="hero-copy">
-          <p class="eyebrow">$ cat ~/cmx/backend-blueprint.plan</p>
-          <h1 id="pageTitle">The full backend and AI control plan before the backend exists.</h1>
-          <p class="hero-description">This page defines the preferred Python backend, proposed API families, AI-assisted development, normal-language commands, user-facing assistants, page connections, infrastructure, data, permissions and delivery controls.</p>
-          <div class="truth-line"><strong>current_truth:</strong> the live site remains static HTML, CSS and JavaScript. Every backend and AI endpoint shown here is a documented contract, not a live service.</div>
-        </div>
-        <div class="architecture-mini" aria-label="Planned request path">
-          <span>user_or_ai</span><i>→</i><span>cloudflare</span><i>→</i><span>python_api</span><i>→</i><span>approved_tools</span><i>→</i><span>data_or_github</span>
-        </div>
-      </section>
-
-      <section class="metrics" id="metrics" aria-label="Blueprint summary"></section>
-
-      <nav class="section-tabs" aria-label="Blueprint sections">
-        <button type="button" class="tab is-active" data-target="overview">Overview</button>
-        <button type="button" class="tab" data-target="apis">API Registry</button>
-        <button type="button" class="tab" data-target="pages">Page Map</button>
-        <button type="button" class="tab" data-target="infrastructure">Infrastructure</button>
-        <button type="button" class="tab" data-target="data">Data Models</button>
-        <button type="button" class="tab" data-target="permissions">Permissions</button>
-        <button type="button" class="tab" data-target="roadmap">Roadmap</button>
-        <button type="button" class="tab" data-target="decisions">Decisions</button>
-      </nav>
-
-      <section class="blueprint-section is-active" id="overview" data-section="overview">
-        <div class="section-heading"><div><p class="eyebrow">Operating view</p><h2>What this platform is supposed to become</h2></div></div>
-        <div class="overview-grid">
-          <article class="panel emphasis-card"><span class="card-kicker">Preferred foundation</span><h3>Python API first</h3><p>FastAPI is the preferred initial framework because it fits the learning, typed API, Jinja and Docker goals. The contracts and controls remain authoritative if another compatible Python ASGI framework is selected.</p></article>
-          <article class="panel"><span class="card-kicker">Source control</span><h3>GitHub remains authoritative</h3><p>AI and humans work through branches, reviewable changes and pull requests. Production code is never silently edited.</p></article>
-          <article class="panel"><span class="card-kicker">AI control</span><h3>Plain English becomes a visible plan</h3><p>Normal-language requests are classified, scoped and reviewed before approved APIs, MCP tools, sandboxes or GitHub actions are used.</p></article>
-          <article class="panel"><span class="card-kicker">Access</span><h3>Real protection at every layer</h3><p>Cloudflare Access, server sessions, capabilities, record ownership, approvals, audit logs and environment separation replace browser-only gates.</p></article>
-        </div>
-        <div class="two-column">
-          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Platform status</p><h3>Current versus planned</h3></div></div><div id="platformStatus" class="status-list"></div></article>
-          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">API families</p><h3>Coverage by purpose</h3></div></div><div id="familyOverview" class="family-overview"></div></article>
-        </div>
-        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Capabilities</p><h3>What the backend adds</h3></div></div><div id="capabilityGrid" class="capability-grid"></div></article>
-      </section>
-
-      <section class="blueprint-section" id="apis" data-section="apis" hidden>
-        <div class="section-heading"><div><p class="eyebrow">Interface contracts</p><h2>Future API registry</h2><p>Core backend, AI, development, MCP, automation and user-assistant contracts. Search AI, sandbox, GitHub, command, assistant or deployment to inspect the related endpoints.</p></div></div>
-        <div class="registry-toolbar panel">
-          <label class="search-field"><span>Search</span><input id="apiSearch" type="search" placeholder="Endpoint, purpose, page or dependency" autocomplete="off" /></label>
-          <label><span>Family</span><select id="familyFilter"><option value="all">All families</option></select></label>
-          <label><span>Phase</span><select id="phaseFilter"><option value="all">All phases</option></select></label>
-          <label><span>Access</span><select id="accessFilter"><option value="all">All access levels</option></select></label>
-          <button class="secondary-button" id="resetApiFilters" type="button">Reset</button>
-        </div>
-        <div class="registry-summary" id="registrySummary"></div><div class="endpoint-list" id="endpointList"></div>
-      </section>
-
-      <section class="blueprint-section" id="pages" data-section="pages" hidden>
-        <div class="section-heading"><div><p class="eyebrow">Connection map</p><h2>Every registered page and its backend position</h2><p>The current route registry is loaded directly. New routes without a backend decision are highlighted.</p></div></div>
-        <div id="routeRegistryNotice" class="notice panel" role="status"></div>
-        <div class="registry-toolbar panel page-toolbar">
-          <label class="search-field"><span>Search</span><input id="pageSearch" type="search" placeholder="Route, page, purpose or endpoint" autocomplete="off" /></label>
-          <label><span>Backend position</span><select id="pageModeFilter"><option value="all">All positions</option></select></label>
-          <button class="secondary-button" id="resetPageFilters" type="button">Reset</button>
-        </div>
-        <div class="page-map" id="pageMap"></div>
-      </section>
-
-      <section class="blueprint-section" id="infrastructure" data-section="infrastructure" hidden>
-        <div class="section-heading"><div><p class="eyebrow">Deployment architecture</p><h2>Infrastructure from browser to backup, AI gateway and sandbox</h2></div></div>
-        <div id="infrastructureFlow" class="infrastructure-flow"></div>
-        <div class="two-column">
-          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Environments</p><h3>Development, staging and production</h3></div></div><div id="environmentGrid" class="environment-grid"></div></article>
-          <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Operational controls</p><h3>Required protections</h3></div></div><div id="controlList" class="check-list"></div></article>
-        </div>
-        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Repository target</p><h3>Planned Python application structure</h3></div></div><pre class="code-tree" id="applicationTree"></pre></article>
-      </section>
-
-      <section class="blueprint-section" id="data" data-section="data" hidden>
-        <div class="section-heading"><div><p class="eyebrow">Persistence plan</p><h2>Proposed core and AI data models</h2><p>Only data with an approved purpose, ownership rule and retention policy should be stored.</p></div></div>
-        <div id="modelGrid" class="model-grid"></div>
-        <article class="panel relationship-panel"><div class="panel-heading"><div><p class="eyebrow">Relationships</p><h3>How records connect</h3></div></div><div id="relationshipMap" class="relationship-map"></div></article>
-      </section>
-
-      <section class="blueprint-section" id="permissions" data-section="permissions" hidden>
-        <div class="section-heading"><div><p class="eyebrow">Access design</p><h2>Identity, roles, capabilities, approvals and ownership</h2></div></div>
-        <article class="panel permission-layers"><div class="panel-heading"><div><p class="eyebrow">Defense in depth</p><h3>Separate checks before an action</h3></div></div><div id="permissionLayers"></div></article>
-        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Role matrix</p><h3>Minimum permissions by capability</h3></div></div><div class="table-wrap"><table><thead><tr><th>Capability</th><th>Viewer</th><th>Operator</th><th>Administrator</th></tr></thead><tbody id="roleMatrix"></tbody></table></div></article>
-      </section>
-
-      <section class="blueprint-section" id="roadmap" data-section="roadmap" hidden>
-        <div class="section-heading"><div><p class="eyebrow">Delivery order</p><h2>Build the foundation before AI autonomy</h2></div></div>
-        <div id="roadmapTimeline" class="roadmap-timeline"></div>
-        <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Readiness standard</p><h3>Definition of ready for each endpoint and AI capability</h3></div></div><div id="readinessChecklist" class="readiness-grid"></div></article>
-      </section>
-
-      <section class="blueprint-section" id="decisions" data-section="decisions" hidden>
-        <div class="section-heading"><div><p class="eyebrow">Architecture record</p><h2>Approved direction, constraints and deferred ideas</h2></div></div>
-        <div class="decision-columns">
-          <article class="panel approved"><div class="panel-heading"><div><p class="eyebrow">Approved</p><h3>Current direction</h3></div></div><div id="approvedDecisions" class="decision-list"></div></article>
-          <article class="panel blocked"><div class="panel-heading"><div><p class="eyebrow">Not approved</p><h3>Unsafe or premature patterns</h3></div></div><div id="blockedDecisions" class="decision-list"></div></article>
-          <article class="panel deferred"><div class="panel-heading"><div><p class="eyebrow">Deferred</p><h3>Possible later layers</h3></div></div><div id="deferredDecisions" class="decision-list"></div></article>
-        </div>
-      </section>
-    </main>
-
-    <footer><span>CMX Backend Blueprint · static planning resource</span><span id="lastUpdated"></span></footer>
-  </div>
-
-  <dialog id="endpointDialog" class="endpoint-dialog"><form method="dialog" class="dialog-shell"><button class="dialog-close" aria-label="Close endpoint details">×</button><div id="endpointDialogContent"></div></form></dialog>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <noscript>This blueprint requires JavaScript to render its registries and maps.</noscript>
+  <noscript>This private resource requires JavaScript and authorization.</noscript>
 </body>
 </html>
