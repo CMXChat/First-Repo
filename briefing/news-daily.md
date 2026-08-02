@@ -8,17 +8,21 @@ Runtime data: `assets/news-data.js`
 
 Create one current, useful shared briefing for Jay and Crystal. Lead with what matters most. Keep Jay-specific lines light blue, Crystal-specific lines pink, and shared information white. Use personal color sparingly for direct advice, horoscopes, practical reminders, or clearly addressed sentences.
 
+Keep the overall edition concise. Crystal-facing copy should be especially short, with emphasis on celebrity news, major crime, pets, nail trends, and notable Chanel bag releases.
+
 ## Refresh each run
 
 - Current local time and date for Brooklyn, New York and Waikato, New Zealand
 - Weather and meaningful alerts for both areas
 - Useful Brooklyn or New York developments
 - Waikato crime and safety news
+- Major crime stories and significant criminal-case updates
 - Major New Zealand developments
 - Major world affairs only when consequential
 - Celebrity, entertainment, and culture news
 - Erika Kirk and Diddy developments when current and relevant
-- Rumors only when clearly labeled `UNCONFIRMED`
+- Rumors and viral claims only when clearly labeled `UNCONFIRMED`
+- Pet and animal stories when genuinely interesting
 - Current Spotify information when connected and permitted
 - Separate Virgo readings for September 15 and September 14
 - One strong daily quote with a short reason it fits
@@ -27,7 +31,8 @@ Create one current, useful shared briefing for Jay and Crystal. Lead with what m
 
 Use only when worthwhile:
 
-- Crystal beauty, fashion, hair, makeup, nails, or jewelry inspiration
+- Crystal beauty, fashion, long-hair, makeup, nail, or jewelry inspiration
+- Latest or notable Chanel bag drops
 - One-sentence advice for Crystal's custom jewelry business
 - Pets or animal-related information
 - Mindfulness or practical day guidance
@@ -36,15 +41,23 @@ Use only when worthwhile:
 
 ## Relationship guidance
 
-Use recent private context when available, but do not store sensitive relationship details in this public file. Focus on accountability, clarity, reasonable proof, emotional acknowledgment, boundaries, and specific next actions. Do not diagnose, shame, excuse betrayal, manufacture equal blame, or pressure either person into activities.
+Use recent private context when available, but do not store sensitive relationship details in this public file. Focus on accountability, clarity, reasonable proof, emotional acknowledgment, boundaries, and specific next actions. Do not diagnose, shame, excuse betrayal, manufacture equal blame, pressure either person into activities, or become insulting on either person's behalf.
+
+When advocating for Crystal, state her concern plainly and fairly. When challenging Jay, be direct without humiliation. When a claim is disputed or unsupported, label it as a report, concern, self-report, or unresolved issue instead of presenting it as verified fact.
 
 ## Jay activity source
 
-Jay's Discord, messaging, online activity, and Spotify recap must come from connected data or Jay's self-report. Label uncertainty honestly. Do not invent activity.
+Jay's Discord, messaging, online activity, and Spotify recap must come from connected data or Jay's self-report. Label it `SELF-REPORTED` unless independently supported by an authorized source. Do not invent activity or present a curated summary as independently verified.
+
+## Preference-confidence rule
+
+Use repeated or directly confirmed preferences as stable guidance. Treat statements made during acute anger, exhaustion, or distress as provisional unless later confirmed. Do not convert requests for cruelty, humiliation, or blanket condemnation into editorial policy.
 
 ## Privacy
 
 Do not write private names, screenshots, message contents, health information, allegations, exact Waikato location, or confidential third-party information into this repository. Use sanitized summaries until the protected backend exists.
+
+Avoid the term `CMX` in Crystal-facing copy unless required for technical accuracy.
 
 ## Publishing steps
 
@@ -54,5 +67,6 @@ Do not write private names, screenshots, message contents, health information, a
 4. Update `assets/news-data.js` using the existing schema.
 5. Preserve `sectionOrder`, `priority`, `audience`, `directLines`, source labels, and links.
 6. Hide empty sections instead of adding filler.
-7. Verify `/news/` loads and the date is current.
-8. Report any source, connection, permission, or publishing failure honestly.
+7. Keep the complete edition concise and easy to scan.
+8. Verify `/news/` loads and the date is current.
+9. Report any source, connection, permission, or publishing failure honestly.
