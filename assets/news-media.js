@@ -23,7 +23,7 @@
     return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : '';
   }
 
-  function createPlayerShell({ provider, id, title, buttonLabel }) {
+  function createPlayerShell({ provider, id, title, buttonLabel, autoStart = false }) {
     const shell = document.createElement('div');
     shell.className = `media-shell media-${provider}`;
 
@@ -40,11 +40,17 @@
     label.textContent = buttonLabel || 'play on page';
 
     const note = document.createElement('small');
-    note.textContent = 'No autoplay until you tap';
+    note.textContent = autoStart
+      ? 'Trying to start after access. Tap here if your browser blocks it.'
+      : 'Tap to load';
 
     button.append(icon, label, note);
 
-    button.addEventListener('click', () => {
+    let loaded = false;
+    function loadPlayer() {
+      if (loaded) return;
+      loaded = true;
+
       const iframe = document.createElement('iframe');
       iframe.className = 'media-frame';
       iframe.title = title || 'Embedded media player';
@@ -54,22 +60,29 @@
       iframe.setAttribute('allowfullscreen', '');
 
       if (provider === 'spotify') {
-        iframe.src = `https://open.spotify.com/embed/track/${encodeURIComponent(id)}?utm_source=generator&theme=0`;
+        iframe.src = `https://open.spotify.com/embed/track/${encodeURIComponent(id)}?utm_source=generator&theme=0&autoplay=1`;
         iframe.height = '152';
       } else {
         iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
       }
 
       shell.replaceChildren(iframe);
-    }, { once: true });
+    }
 
+    button.addEventListener('click', loadPlayer, { once: true });
     shell.appendChild(button);
+
+    if (autoStart) {
+      window.setTimeout(loadPlayer, 220);
+    }
+
     return shell;
   }
 
   function enhanceSpotifySong() {
     const items = sorted(brief.spotify);
     const cards = [...root.children];
+    let autoplayAssigned = false;
 
     items.forEach((item, index) => {
       if (item.audience !== 'shared') return;
@@ -77,14 +90,23 @@
       const card = cards[index];
       if (!trackId || !card || card.querySelector('.media-shell')) return;
 
+      const shouldAutoplay = !autoplayAssigned;
+      autoplayAssigned = autoplayAssigned || shouldAutoplay;
+
       card.classList.add('media-card');
       card.appendChild(createPlayerShell({
         provider: 'spotify',
         id: trackId,
         title: item.title || 'Today’s shared song',
-        buttonLabel: 'play song on this page'
+        buttonLabel: shouldAutoplay ? 'play today’s song' : 'play song on this page',
+        autoStart: shouldAutoplay
       }));
     });
+
+    const intro = document.querySelector('#spotify .section-intro');
+    if (intro) {
+      intro.textContent = 'Today’s shared song tries to begin after access is granted, like the Debbie briefing. Browser rules may still require one tap. Videos remain tap-to-play.';
+    }
   }
 
   function createVideoCard(video) {
