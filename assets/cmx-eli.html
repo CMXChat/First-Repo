@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="Eli Investment Review" data-cmx-category="Private" data-cmx-status="Active" data-cmx-version="1.0" data-cmx-standard="off">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#020713" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <title>Eli Investment Review</title>
+  <link rel="stylesheet" href="/assets/cmx-eli.css?v=20260802-1" />
+  <script src="/assets/cmx-eli.js?v=20260802-1" defer></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-a" aria-hidden="true"></div>
+  <div class="orb orb-b" aria-hidden="true"></div>
+
+  <header class="command-bar">
+    <a class="brand" href="#brief" aria-label="Return to investment review start">
+      <span class="brand-mark">CXI</span>
+      <span><strong>ELI // INVESTMENT REVIEW</strong><small>Evidence before exposure</small></span>
+    </a>
+    <div class="command-status">
+      <span class="status-pulse"></span>
+      <span>PRIVATE CASE FILE</span>
+      <span class="desktop-only">STATIC GATE · NOT SERVER-SECURE</span>
+    </div>
+    <button class="icon-control" id="openNavigator" type="button" aria-label="Open section navigator">⌘</button>
+  </header>
+
+  <aside class="navigator" id="navigator" aria-label="Page sections">
+    <div class="navigator-head">
+      <span>MISSION MAP</span>
+      <button id="closeNavigator" type="button" aria-label="Close section navigator">×</button>
+    </div>
+    <nav id="navLinks"></nav>
+    <div class="navigator-foot">
+      <span id="progressLabel">0% reviewed</span>
+      <div class="progress-track"><i id="progressFill"></i></div>
+    </div>
+  </aside>
+  <div class="nav-scrim" id="navScrim"></div>
+
+  <main id="experience">
+    <section class="scene hero-scene" id="brief" data-scene="01" data-title="Case Brief">
+      <div class="scene-grid hero-grid">
+        <div class="hero-copy reveal">
+          <p class="kicker">CASE FILE // GHANA LAND ACQUISITION</p>
+          <h1>Opportunity deserves proof.</h1>
+          <p class="lede">This interactive review separates the exciting development vision from the evidence that must be verified before capital, credit, or reputation is committed.</p>
+          <div class="hero-actions">
+            <button class="primary-button" data-jump="opportunity" type="button">Begin the review</button>
+            <button class="ghost-button" id="resumeButton" type="button">Resume where I stopped</button>
+          </div>
+          <p class="privacy-note"><strong>Current privacy truth:</strong> this is a temporary browser gate on a public static repository. It deters casual access, but real confidentiality will require the planned Python server and Cloudflare Access.</p>
+        </div>
+        <div class="hero-orbit reveal" aria-label="Case status summary">
+          <div class="orbit-ring ring-one"></div>
+          <div class="orbit-ring ring-two"></div>
+          <div class="orbit-core">
+            <span>CASE STATUS</span>
+            <strong>PAUSE</strong>
+            <small>Independent verification required</small>
+          </div>
+          <div class="orbit-tag tag-a">6.5 acres claimed</div>
+          <div class="orbit-tag tag-b">3 parcels</div>
+          <div class="orbit-tag tag-c">$500k stated land price</div>
+          <div class="orbit-tag tag-d">20-unit concept</div>
+        </div>
+      </div>
+      <button class="scroll-cue" data-jump="opportunity" type="button"><span>Scroll to investigate</span><i>↓</i></button>
+    </section>
+
+    <section class="scene" id="opportunity" data-scene="02" data-title="The Opportunity">
+      <div class="scene-head reveal">
+        <div><p class="kicker">WHY THE DEAL IS TEMPTING</p><h2>The upside is easy to imagine.</h2></div>
+        <p>The concept is a gated residential development across three claimed adjoining parcels. The vision may be commercially attractive, but the value exists only after title, access, approvals, financing, and construction are proven.</p>
+      </div>
+      <div class="opportunity-layout">
+        <article class="glass-card map-card reveal">
+          <div class="card-label">CONCEPT MAP</div>
+          <div class="land-map" aria-label="Conceptual parcel layout, not a survey">
+            <div class="parcel parcel-four"><span>4 ACRES</span><small>Front parcel</small></div>
+            <div class="parcel parcel-one"><span>1 ACRE</span><small>Road frontage claimed</small></div>
+            <div class="parcel parcel-rear"><span>1.5 ACRES</span><small>Rear access unresolved</small></div>
+            <div class="road">ROAD / ACCESS</div>
+          </div>
+          <p class="microcopy">Concept only. The three parcels have not been independently shown to adjoin, and permanent access to the rear parcel has not been demonstrated.</p>
+        </article>
+        <article class="glass-card calculator-card reveal">
+          <div class="card-label">VISION CALCULATOR</div>
+          <div class="input-grid">
+            <label>Units<input id="unitsInput" type="range" min="4" max="24" step="1" value="20"><output id="unitsOutput">20</output></label>
+            <label>Monthly rent per unit<input id="rentInput" type="range" min="500" max="1800" step="50" value="1000"><output id="rentOutput">$1,000</output></label>
+            <label>Occupancy<input id="occupancyInput" type="range" min="60" max="100" step="1" value="90"><output id="occupancyOutput">90%</output></label>
+            <label>Operating costs<input id="opexInput" type="range" min="15" max="45" step="1" value="30"><output id="opexOutput">30%</output></label>
+          </div>
+          <div class="calc-results">
+            <div><span>Gross annual rent</span><strong id="grossRent">$240,000</strong></div>
+            <div><span>Estimated NOI before debt/tax</span><strong id="noiValue">$151,200</strong></div>
+          </div>
+          <p class="microcopy">Scenario only. Asking rents are not signed leases, and this does not include financing, taxes, major reserves, or construction overruns.</p>
+        </article>
+      </div>
+      <div class="insight-strip reveal"><strong>The emotional trap:</strong><span>Projected millions can feel real before the underlying ownership, permissions, and payment route are real.</span></div>
+    </section>
+
+    <section class="scene" id="evidence" data-scene="03" data-title="Evidence Room">
+      <div class="scene-head reveal">
+        <div><p class="kicker">DOCUMENT ROOM</p><h2>More paperwork. More contradictions.</h2></div>
+        <p>Use the filters to inspect the evidence by category. Select a document to see what it claims, why it matters, and what still needs independent confirmation.</p>
+      </div>
+      <div class="filter-row reveal" role="group" aria-label="Evidence filters">
+        <button class="filter-button active" data-filter="all" type="button">All evidence</button>
+        <button class="filter-button" data-filter="credentials" type="button">Credentials</button>
+        <button class="filter-button" data-filter="land" type="button">Land records</button>
+        <button class="filter-button" data-filter="money" type="button">Money & contracts</button>
+        <button class="filter-button" data-filter="planning" type="button">Planning</button>
+      </div>
+      <div class="evidence-grid" id="evidenceGrid"></div>
+      <div class="evidence-summary reveal">
+        <div><span>Documents reviewed</span><strong id="documentCount">0</strong></div>
+        <div><span>Independently authenticated</span><strong>0</strong></div>
+        <div><span>Current title searches</span><strong>0</strong></div>
+        <div><span>Buyer-side legal opinions</span><strong>0</strong></div>
+      </div>
+    </section>
+
+    <section class="scene" id="timeline" data-scene="04" data-title="Timeline">
+      <div class="scene-head reveal">
+        <div><p class="kicker">CHRONOLOGY TEST</p><h2>The dates do not form a clean chain.</h2></div>
+        <p>Move through the timeline. Each event may have an innocent explanation, but the explanations must come from the issuing institutions, not from the people asking for money.</p>
+      </div>
+      <div class="timeline-shell reveal">
+        <div class="timeline-track" id="timelineTrack"></div>
+        <article class="timeline-detail" id="timelineDetail" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <section class="scene checkpoint-scene" id="checkpoint-one" data-scene="05" data-title="Checkpoint One">
+      <div class="checkpoint-card reveal">
+        <p class="kicker">DECISION CHECKPOINT 01</p>
+        <h2>Value comes after verification.</h2>
+        <p>Type the principle below to unlock the contradiction matrix.</p>
+        <form class="phrase-form" data-unlock="contradictions" data-phrase="VERIFY BEFORE VALUE">
+          <label for="phraseOne">Enter: <strong>VERIFY BEFORE VALUE</strong></label>
+          <div><input id="phraseOne" type="text" autocomplete="off" spellcheck="false" placeholder="Type the phrase exactly"><button type="submit">Confirm</button></div>
+          <p class="form-message" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="scene locked-scene" id="contradictions" data-scene="06" data-title="Contradictions" data-lock="contradictions">
+      <div class="locked-cover"><span>LOCKED</span><p>Complete the previous checkpoint.</p></div>
+      <div class="scene-head reveal">
+        <div><p class="kicker">CONTRADICTION MATRIX</p><h2>These are not cosmetic mistakes.</h2></div>
+        <p>Each conflict touches legal authority, ownership, timing, or where the money goes. Open each card to see the impact and the evidence needed to resolve it.</p>
+      </div>
+      <div class="contradiction-grid" id="contradictionGrid"></div>
+      <div class="risk-console reveal">
+        <div class="risk-gauge" aria-label="Risk exposure high">
+          <svg viewBox="0 0 220 120" role="img" aria-label="High risk exposure gauge">
+            <path class="gauge-base" d="M20 105 A90 90 0 0 1 200 105"></path>
+            <path class="gauge-fill" d="M20 105 A90 90 0 0 1 200 105"></path>
+          </svg>
+          <div><span>OPERATING ASSESSMENT</span><strong>HIGH RISK</strong><small>Not a scientific probability</small></div>
+        </div>
+        <div class="risk-copy">
+          <h3>Why the risk is high</h3>
+          <p>The documentation has become more detailed, but each new layer has introduced conflicts instead of independently resolving the earlier ones. That pattern is consistent with either severe professional incompetence, material misrepresentation, or deliberate deception.</p>
+          <div class="risk-range"><span>Estimated chance of significant deception, fraud, or serious irregularity</span><strong>60–75%</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" id="verification" data-scene="07" data-title="Verification Plan">
+      <div class="scene-head reveal">
+        <div><p class="kicker">THE FASTEST WAY TO KNOW</p><h2>Three checks can collapse the uncertainty.</h2></div>
+        <p>Stop debating every detail inside the deal. Use institutions and professionals who are outside it.</p>
+      </div>
+      <div class="verification-grid">
+        <article class="verification-card reveal" data-check="lawyer">
+          <span>01</span><h3>Independent buyer’s lawyer</h3><p>Choose an unrelated Ghanaian property lawyer. Give them the entire file and instruct them to perform a fresh search, verify the chain of title, confirm the sellers, reconcile the contracts, and report only to the buyer.</p><button type="button" class="check-button">Mark understood</button>
+        </article>
+        <article class="verification-card reveal" data-check="regulator">
+          <span>02</span><h3>Regulator verification</h3><p>Confirm the attorney’s identity, 2026 practising licence, good standing, and chambers registration directly with the General Legal Council and Ghana Bar Association.</p><button type="button" class="check-button">Mark understood</button>
+        </article>
+        <article class="verification-card reveal" data-check="bank">
+          <span>03</span><h3>Bank and money route</h3><p>Confirm the exact client-account status through Stanbic’s official channels. The bank confirmation, contracts, and buyer’s lawyer must all identify the same destination before any payment.</p><button type="button" class="check-button">Mark understood</button>
+        </article>
+      </div>
+      <div class="readiness-panel reveal">
+        <div><span>Independent checks understood</span><strong id="checkCount">0 / 3</strong></div>
+        <div class="readiness-track"><i id="readinessFill"></i></div>
+        <p id="readinessMessage">No deal is ready until all three checks are completed in the real world.</p>
+      </div>
+      <div class="question-console reveal">
+        <div class="question-head"><span>HIGH-PRIORITY QUESTIONS</span><button id="shuffleQuestion" type="button">Next question</button></div>
+        <blockquote id="questionDisplay"></blockquote>
+        <button class="copy-button" id="copyQuestion" type="button">Copy this question</button>
+      </div>
+    </section>
+
+    <section class="scene checkpoint-scene" id="checkpoint-two" data-scene="08" data-title="Checkpoint Two">
+      <div class="checkpoint-card reveal">
+        <p class="kicker">DECISION CHECKPOINT 02</p>
+        <h2>Do not finance uncertainty.</h2>
+        <p>Type the operating rule below to unlock the strategy alternatives.</p>
+        <form class="phrase-form" data-unlock="alternatives" data-phrase="NO MONEY MOVES">
+          <label for="phraseTwo">Enter: <strong>NO MONEY MOVES</strong></label>
+          <div><input id="phraseTwo" type="text" autocomplete="off" spellcheck="false" placeholder="Type the phrase exactly"><button type="submit">Confirm</button></div>
+          <p class="form-message" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="scene locked-scene" id="alternatives" data-scene="09" data-title="Safer Strategies" data-lock="alternatives">
+      <div class="locked-cover"><span>LOCKED</span><p>Complete the previous checkpoint.</p></div>
+      <div class="scene-head reveal">
+        <div><p class="kicker">SAME GOAL // BETTER ODDS</p><h2>Keep the ambition. Change the structure.</h2></div>
+        <p>Two practical alternatives show how roughly the same acquisition resources could be directed toward assets that are easier to inspect, verify, phase, and measure.</p>
+      </div>
+      <div class="strategy-switcher reveal" role="tablist" aria-label="Alternative strategies">
+        <button class="strategy-tab active" data-strategy="income" role="tab" type="button">Existing income property</button>
+        <button class="strategy-tab" data-strategy="pilot" role="tab" type="button">Smaller phased development</button>
+        <button class="strategy-tab" data-strategy="preferred" role="tab" type="button">Preferred / secured investment</button>
+      </div>
+      <div class="strategy-stage" id="strategyStage"></div>
+      <div class="comparison-grid reveal">
+        <article><span>Existing property</span><strong>Earlier cash flow</strong><p>Inspect the building, leases, collections, occupancy, expenses, utilities, approvals, and condition before purchase.</p></article>
+        <article><span>Phased pilot</span><strong>Greater upside, controlled learning</strong><p>Verify a smaller parcel, build one or two units, measure the real costs and demand, then decide whether to expand.</p></article>
+        <article><span>Preferred capital</span><strong>Defined exposure</strong><p>Invest a fixed amount into a verified project with priority repayment, collateral, inspections, and a hard contribution cap.</p></article>
+      </div>
+      <div class="strategy-note reveal"><strong>Illustrative market examples:</strong> 2026 listings showed completed multifamily properties near the same broad acquisition price as the claimed land package, and smaller East Legon Hills plots that could support a staged pilot. Listings are leads, not verified opportunities.</div>
+    </section>
+
+    <section class="scene" id="ai-project" data-scene="10" data-title="AI + Python Project">
+      <div class="scene-head reveal">
+        <div><p class="kicker">THE BIGGER PROJECT</p><h2>What Jonathan is building with AI, GitHub, and Python.</h2></div>
+        <p>This page is a working demonstration: a normal-language request became a designed, interactive web experience committed to GitHub. The next stage adds a secure Python backend so the pages can do real work with controlled data and tools.</p>
+      </div>
+      <div class="project-truth reveal">
+        <div class="truth-column current">
+          <span>WHAT EXISTS TODAY</span>
+          <h3>Interactive static application</h3>
+          <ul>
+            <li>HTML creates the structure.</li>
+            <li>CSS creates the visual system and motion.</li>
+            <li>JavaScript powers interaction, calculators, gates, timelines, and saved progress.</li>
+            <li>GitHub stores every version and publishes the site.</li>
+            <li>AI helps turn plain-English instructions into reviewable code changes.</li>
+          </ul>
+        </div>
+        <div class="truth-arrow">→</div>
+        <div class="truth-column future">
+          <span>WHAT PYTHON ADDS</span>
+          <h3>Secure operational intelligence</h3>
+          <ul>
+            <li>Real login and server-side authorization.</li>
+            <li>Private databases and structured case records.</li>
+            <li>Document processing, comparison, extraction, and report generation.</li>
+            <li>Approved connections to email, GitHub, calendars, files, APIs, and MCP tools.</li>
+            <li>Automations, scheduled checks, audit logs, staging, approvals, and rollback.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pipeline-lab reveal">
+        <div class="pipeline-head"><span>DESCRIBE → BUILD → VERIFY → APPROVE</span><button id="runPipeline" type="button">Run demonstration</button></div>
+        <div class="pipeline-steps" id="pipelineSteps">
+          <div data-step="1"><i>01</i><strong>You describe the goal</strong><small>“Build Eli an interactive investment review.”</small></div>
+          <div data-step="2"><i>02</i><strong>AI plans the change</strong><small>Scope, files, design, risk, and behavior.</small></div>
+          <div data-step="3"><i>03</i><strong>GitHub stores the code</strong><small>Every change is versioned and recoverable.</small></div>
+          <div data-step="4"><i>04</i><strong>Checks run</strong><small>Syntax, privacy, route, and design validation.</small></div>
+          <div data-step="5"><i>05</i><strong>Protected preview</strong><small>Review before production.</small></div>
+          <div data-step="6"><i>06</i><strong>Human approval</strong><small>No uncontrolled production action.</small></div>
+        </div>
+      </div>
+      <div class="plain-language reveal">
+        <h3>The easy explanation</h3>
+        <p>Think of the website as the visible control panel, GitHub as the locked filing cabinet and change history, Python as the engine room, and AI as the operator that can understand instructions and prepare work. AI should not secretly control the engine room. It should work through approved tools, show what it plans to do, test the change in a safe environment, and wait for a human before anything important goes live.</p>
+      </div>
+    </section>
+
+    <section class="scene checkpoint-scene" id="checkpoint-three" data-scene="11" data-title="Final Checkpoint">
+      <div class="checkpoint-card reveal">
+        <p class="kicker">FINAL CHECKPOINT</p>
+        <h2>Understand the system. Control the decision.</h2>
+        <p>Type the phrase to unlock the final recommendation and private notes panel.</p>
+        <form class="phrase-form" data-unlock="decision" data-phrase="I UNDERSTAND THE SYSTEM">
+          <label for="phraseThree">Enter: <strong>I UNDERSTAND THE SYSTEM</strong></label>
+          <div><input id="phraseThree" type="text" autocomplete="off" spellcheck="false" placeholder="Type the phrase exactly"><button type="submit">Confirm</button></div>
+          <p class="form-message" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="scene locked-scene final-scene" id="decision" data-scene="12" data-title="Final Decision" data-lock="decision">
+      <div class="locked-cover"><span>LOCKED</span><p>Complete the final checkpoint.</p></div>
+      <div class="final-grid">
+        <article class="final-message reveal">
+          <p class="kicker">FINAL CXI POSITION</p>
+          <h2>Do not proceed with this transaction in its current form.</h2>
+          <p>The ambition is valid. The opportunity is unproven. Pause the payments, move the verification outside the deal, and redirect the same energy toward a structure where title, people, money, costs, and demand can be independently measured before exposure begins.</p>
+          <div class="final-actions">
+            <button class="primary-button" id="copyDecision" type="button">Copy final recommendation</button>
+            <button class="ghost-button" id="resetExperience" type="button">Reset my progress</button>
+          </div>
+        </article>
+        <article class="notes-panel reveal">
+          <div class="notes-head"><span>ELI’S PRIVATE NOTES</span><small>Saved only in this browser</small></div>
+          <textarea id="eliNotes" placeholder="Write questions, decisions, or next steps here..."></textarea>
+          <div class="notes-actions"><span id="notesStatus">Not saved</span><button id="saveNotes" type="button">Save notes</button></div>
+        </article>
+      </div>
+      <div class="closing-line reveal"><span>VERIFY THE PEOPLE.</span><span>VERIFY THE TITLE.</span><span>VERIFY THE MONEY.</span><span>THEN DECIDE.</span></div>
+    </section>
+  </main>
+
+  <dialog class="detail-modal" id="detailModal">
+    <button class="modal-close" id="closeModal" type="button" aria-label="Close detail">×</button>
+    <div id="modalContent"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
