@@ -4,15 +4,28 @@
   const root = document.documentElement;
   const PASSWORD_SHA256 = String(root.dataset.cmxPasswordSha256 || '').toLowerCase();
   const SOURCE_URL = root.dataset.cmxLoadUrl || '/assets/cmx-news.html';
-  const MY_WISH_PREVIEW = 'https://p.scdn.co/mp3-preview/9c0b4d2e32560e295b5770138abd247f08c7bba9.mp3';
+  const song = window.CMX_DAILY_SONG || {
+    title: "Today's song",
+    artist: "",
+    displayTitle: "Today's song",
+    spotifyUrl: "",
+    previewUrl: "",
+    selectedFor: ""
+  };
+
+  const songTitle = String(song.title || "Today's song");
+  const songArtist = String(song.artist || "");
+  const songDisplayTitle = String(song.displayTitle || [songTitle, songArtist].filter(Boolean).join(' · '));
+  const previewUrl = /^https:\/\//.test(String(song.previewUrl || '')) ? String(song.previewUrl) : '';
+  const spotifyUrl = /^https:\/\/open\.spotify\.com\//.test(String(song.spotifyUrl || '')) ? String(song.spotifyUrl) : '';
 
   const audio = document.createElement('audio');
   audio.id = 'newsDailyAudio';
   audio.preload = 'auto';
   audio.hidden = true;
   audio.volume = 0.001;
-  audio.src = MY_WISH_PREVIEW;
-  audio.dataset.song = 'My Wish · Rascal Flatts';
+  audio.dataset.song = songDisplayTitle;
+  if (previewUrl) audio.src = previewUrl;
   root.appendChild(audio);
 
   let primePromise = Promise.resolve();
@@ -30,8 +43,14 @@
   }
 
   function primeAudio() {
+    if (!previewUrl) {
+      audio.dataset.autoplay = 'unavailable';
+      primePromise = Promise.resolve();
+      return;
+    }
+
     audio.dataset.primed = 'true';
-    audio.src = MY_WISH_PREVIEW;
+    if (audio.src !== previewUrl) audio.src = previewUrl;
     audio.muted = false;
     audio.volume = 0.001;
     audio.currentTime = 0;
@@ -40,6 +59,11 @@
   }
 
   async function startDailySong() {
+    if (!previewUrl) {
+      audio.dataset.autoplay = 'unavailable';
+      return;
+    }
+
     await primePromise;
     audio.muted = false;
     audio.volume = 0.3;
@@ -89,13 +113,25 @@
     button.style.marginLeft = 'auto';
 
     const update = () => {
-      const playing = !audio.paused && !audio.ended;
-      button.textContent = playing ? 'Pause My Wish' : 'Play My Wish';
-      button.setAttribute('aria-label', playing ? 'Pause My Wish by Rascal Flatts' : 'Play My Wish by Rascal Flatts');
-      button.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      const playing = previewUrl && !audio.paused && !audio.ended;
+      if (!previewUrl) {
+        button.textContent = `Open ${songTitle}`;
+        button.setAttribute('aria-label', `Open ${songDisplayTitle} on Spotify`);
+        button.setAttribute('aria-pressed', 'false');
+        return;
+      }
+
+      button.textContent = playing ? `Pause ${songTitle}` : `Play ${songTitle}`;
+      button.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${songDisplayTitle}`);
+      button.setAttribute('aria-pressed', String(playing));
     };
 
     button.addEventListener('click', async () => {
+      if (!previewUrl) {
+        if (spotifyUrl) window.open(spotifyUrl, '_blank', 'noopener,noreferrer');
+        return;
+      }
+
       if (audio.paused) {
         audio.muted = false;
         audio.volume = 0.3;
@@ -124,7 +160,7 @@
   async function loadProtectedDocument(message) {
     if (message) {
       message.className = 'is-success';
-      message.textContent = 'Access granted. Loading today’s briefing…';
+      message.textContent = 'Access granted. Loading today’s briefing.';
     }
 
     const response = await fetch(`${SOURCE_URL}${SOURCE_URL.includes('?') ? '&' : '?'}cb=${Date.now()}`, {
@@ -155,8 +191,8 @@
     window.dispatchEvent(new CustomEvent('news:audio-ready', {
       detail: {
         autoplay: audio.dataset.autoplay || 'unknown',
-        previewPrepared: true,
-        song: audio.dataset.song
+        previewPrepared: Boolean(previewUrl),
+        song: songDisplayTitle
       }
     }));
   }
@@ -166,6 +202,11 @@
     const gate = document.createElement('main');
     gate.id = 'cmx-sensitive-gate';
     gate.setAttribute('aria-labelledby', 'cmx-gate-title');
+
+    const gateSongCopy = previewUrl
+      ? `Enter the passphrase. “${songTitle}”${songArtist ? ` by ${songArtist}` : ''} will begin as the page opens.`
+      : `Enter the passphrase. Today’s song is “${songTitle}”${songArtist ? ` by ${songArtist}` : ''}, with a Spotify link inside.`;
+
     gate.innerHTML = `
       <section class="cmx-gate-window">
         <div class="cmx-gate-windowbar" aria-hidden="true"><span></span><span></span><span></span><b>jay + crystal briefing</b></div>
@@ -173,7 +214,7 @@
           <div class="cmx-gate-brand"><div class="cmx-gate-emblem">J+C</div><div><small>PRIVATE DAILY BRIEF</small><strong>CREATION DAY</strong></div></div>
           <p class="cmx-gate-code">BROOKLYN // WAIKATO</p>
           <h1 id="cmx-gate-title">Open today’s briefing</h1>
-          <p class="cmx-gate-copy">Enter the passphrase. “My Wish” by Rascal Flatts will begin as the page opens.</p>
+          <p class="cmx-gate-copy">${gateSongCopy}</p>
           <form id="cmx-gate-form" autocomplete="off">
             <label for="cmx-gate-password">Passphrase</label>
             <div class="cmx-gate-inputrow">
@@ -182,7 +223,7 @@
             </div>
             <p id="cmx-gate-message" role="status" aria-live="polite"></p>
           </form>
-          <div class="cmx-gate-footer"><span>PRIVATE</span><span>MY WISH ENABLED</span></div>
+          <div class="cmx-gate-footer"><span>PRIVATE</span><span>DAILY SONG · ${String(song.selectedFor || 'TODAY').toUpperCase()}</span></div>
         </div>
       </section>`;
     document.body.replaceChildren(gate);
@@ -197,7 +238,7 @@
       primeAudio();
       button.disabled = true;
       message.className = '';
-      message.textContent = 'Checking access…';
+      message.textContent = 'Checking access.';
 
       try {
         const submittedHash = await sha256(input.value);
