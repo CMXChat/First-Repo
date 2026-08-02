@@ -1,149 +1,291 @@
 window.CMX_NEWS_BRIEF = {
   meta: {
-    status: "setup edition",
+    status: "structure preview",
     date: "August 1, 2026",
-    generated: "Page framework created August 1, 2026",
-    summary: "The private daily briefing home for Jay and Crystal. The first scheduled edition will replace these setup notes with verified daily information and Jay’s self-reported activity recap."
+    generated: "Adaptive page structure updated August 1, 2026",
+    summary: "A flexible daily briefing that leads with what matters most, refreshes current information, and uses light blue for Jay, pink for Crystal and white for shared context.",
+    sectionOrder: [
+      "priority",
+      "opening",
+      "weather",
+      "activity",
+      "crystal",
+      "local",
+      "culture",
+      "style",
+      "spotify",
+      "world",
+      "horoscope",
+      "relationship",
+      "timeline",
+      "quote",
+      "questions"
+    ]
   },
+
+  priority: [
+    {
+      audience: "shared",
+      priority: 100,
+      label: "page upgrade",
+      status: "ready",
+      title: "The briefing now begins with the one thing worth noticing first",
+      text: "This lead area can hold a weather warning, important local development, meaningful personal update or anything else that deserves attention before the regular sections.",
+      directLines: [
+        {
+          audience: "jay",
+          text: "Jay-specific guidance can appear in light blue when a direct sentence is genuinely useful."
+        },
+        {
+          audience: "crystal",
+          text: "Crystal-specific guidance can appear in pink without turning every paragraph into a color-coded wall."
+        }
+      ]
+    }
+  ],
+
   opening: [
     {
       audience: "shared",
-      label: "briefing status",
-      title: "The shared page is ready",
-      text: "This first edition shows the structure we will use each day: personal updates, two-city information, a lighter culture desk and one practical relationship checkpoint."
+      priority: 90,
+      label: "adaptive structure",
+      title: "Sections can move, shorten or disappear",
+      text: "The daily data can change the section order. Empty sections hide automatically, and quiet news days do not need filler."
     },
     {
       audience: "shared",
-      label: "daily intention",
-      title: "Clarity without interrogation",
-      text: "The goal is to make both of you feel informed and considered. Facts get context, concerns get respectful language, and neither person is treated like the enemy."
+      priority: 80,
+      label: "editorial rule",
+      title: "Useful context comes before volume",
+      text: "The daily edition should explain what matters, identify uncertainty and avoid repeating the same advice simply to fill space."
     }
   ],
+
   activity: [
     {
       audience: "jay",
-      label: "discord and messages",
-      title: "Awaiting Jay’s daily check-in",
+      priority: 90,
+      label: "digital activity",
+      status: "self-reported",
+      title: "Daily online recap",
       items: [
-        "Who Jay directly messaged and how he knows them",
-        "What the conversations were mainly about",
-        "Servers, channels, group chats or voice calls used",
-        "Approximate time and useful context where remembered"
+        "People and communities Jay interacted with",
+        "The general purpose and context of meaningful conversations",
+        "Online work, browsing, gaming, calls or other activity",
+        "Unknown or incomplete details labeled honestly"
+      ],
+      directLines: [
+        {
+          audience: "jay",
+          text: "The final briefing should be clear and contextual, not written like an interrogation transcript."
+        }
       ]
     },
     {
-      audience: "jay",
-      label: "online time and spotify",
-      title: "Listening and activity recap",
-      items: [
-        "Work, CMX, research, gaming, browsing or social activity",
-        "Spotify artists, playlists, podcasts or notable songs",
-        "What took longer than planned",
-        "Anything Jay could not remember clearly will be labeled unknown"
-      ]
+      audience: "shared",
+      priority: 75,
+      label: "privacy model",
+      status: "backend pending",
+      title: "Sensitive activity expires after 24 hours",
+      text: "The future backend will keep temporary activity outside Git history and automatically remove it after the agreed retention window."
     }
   ],
+
   crystal: [
     {
       audience: "crystal",
-      label: "for Crystal",
-      title: "A briefing that answers the real questions",
-      text: "This section can highlight what may matter most to Crystal, explain context that would otherwise be missing, and include a direct reassurance or question when one is genuinely useful."
+      priority: 90,
+      label: "Crystal’s interests",
+      title: "Her side of the briefing gets real space",
+      text: "This area can prioritize Waikato developments, major crime stories, celebrity coverage, lighter culture, pets, beauty, fashion and anything else Crystal says she cares about.",
+      directLines: [
+        {
+          audience: "crystal",
+          text: "Your section should feel selected for you, not like leftovers from Jay’s briefing."
+        }
+      ]
     },
     {
       audience: "crystal",
-      label: "future personalization",
-      title: "Your interests belong here too",
-      text: "As we learn what Crystal enjoys, this section can include her preferred stories, music, creative interests, business notes, animals, reminders and topics she wants followed."
+      priority: 70,
+      label: "future feedback",
+      status: "backend pending",
+      title: "Corrections and preferences from the page",
+      text: "Once the backend exists, Crystal will be able to flag something as incorrect, irrelevant, too detailed or worth following tomorrow."
     }
   ],
+
   weather: [
     {
       audience: "jay",
+      priority: 80,
       label: "Brooklyn, New York",
-      title: "Weather will appear in the daily edition",
-      text: "Current conditions, temperature range, rain or severe-weather notes and one practical clothing or travel line."
+      title: "Live weather appears here",
+      text: "Current conditions, temperature range, rain or severe-weather information and one practical line for the day."
     },
     {
       audience: "crystal",
+      priority: 80,
       label: "Waikato, New Zealand",
-      title: "Weather will appear in the daily edition",
-      text: "Current conditions, temperature range, rain or severe-weather notes and one practical clothing or travel line."
+      title: "Live weather appears here",
+      text: "Waikato-wide conditions only, without attempting to reveal or infer a more precise location."
     }
   ],
-  localNews: [
-    {
-      audience: "jay",
-      label: "Brooklyn and New York",
-      title: "Brief local developments",
-      text: "Only useful or genuinely interesting local stories, avoiding a pile of crime headlines unless something materially affects the day."
-    },
+
+  style: [
     {
       audience: "crystal",
-      label: "Waikato and New Zealand",
-      title: "Brief local developments",
-      text: "A small number of relevant local stories with the event date and source checked before publication."
-    }
-  ],
-  world: [
-    {
-      label: "world desk",
-      title: "Verified developments, explained briefly",
-      text: "The daily edition will select a few consequential international stories and explain what happened, why it matters and what remains uncertain."
-    }
-  ],
-  culture: [
-    {
-      label: "celebrity and internet culture",
-      title: "The lighter part of the briefing",
-      text: "A few current entertainment, celebrity or internet-culture stories, clearly separating confirmed reporting from rumors and speculation."
-    }
-  ],
-  horoscope: [
-    {
-      audience: "jay",
-      label: "Virgo · September 15",
-      title: "Jay’s daily reading",
-      text: "A light, reflective horoscope written for entertainment and connected to the day’s likely themes without pretending astrology is a verified prediction."
-    },
-    {
-      audience: "crystal",
-      label: "Virgo · September 14",
-      title: "Crystal’s daily reading",
-      text: "A separate Virgo reading so two people with the same sign do not receive identical copy."
-    }
-  ],
-  relationship: [
-    {
-      audience: "shared",
-      label: "daily practice",
-      title: "One useful thing, not a lecture",
-      text: "Each edition will suggest a small action such as a five-minute check-in, a specific appreciation, a repair attempt, a clear reassurance or a question asked without accusation."
-    },
-    {
-      audience: "shared",
-      label: "counselor-style guardrails",
-      title: "Support the relationship without taking sides",
-      items: [
-        "Encourage honesty and voluntary transparency",
-        "Avoid blame, diagnosis, manipulation and mind-reading",
-        "Name patterns carefully without declaring either person guilty",
-        "Recommend outside professional support when a situation exceeds a daily briefing"
+      priority: 65,
+      label: "beauty and fashion",
+      title: "One useful style note when there is something worth suggesting",
+      text: "This can rotate between weather-aware hair ideas, makeup, nails, jewelry, outfit colors, current trends and celebrity style without becoming repetitive.",
+      directLines: [
+        {
+          audience: "crystal",
+          text: "Advice should complement your preferences and never rank, criticize or overanalyze your appearance."
+        }
       ]
     }
   ],
+
+  spotify: [
+    {
+      audience: "jay",
+      priority: 70,
+      label: "recent listening",
+      status: "connected source",
+      title: "Spotify recap for Jay",
+      text: "When access is available, this can summarize recent listening and link directly to a notable track, artist or playlist."
+    },
+    {
+      audience: "shared",
+      priority: 60,
+      label: "upbeat pick",
+      title: "One positive soundtrack option",
+      text: "A bright, upbeat recommendation can appear with a real Spotify link. It remains optional and is not framed as a required couple activity."
+    }
+  ],
+
+  localNews: [
+    {
+      audience: "jay",
+      priority: 75,
+      label: "Brooklyn and New York",
+      title: "Useful local developments",
+      text: "Only timely stories with a practical or genuinely interesting reason to include them."
+    },
+    {
+      audience: "crystal",
+      priority: 85,
+      label: "Waikato and New Zealand",
+      title: "Crime, safety and major local developments",
+      text: "Relevant Waikato coverage should receive more attention, with event dates and sourcing checked before publication."
+    }
+  ],
+
+  world: [
+    {
+      audience: "shared",
+      priority: 50,
+      label: "world desk",
+      status: "verified",
+      title: "Only major developments",
+      text: "Routine political coverage can be skipped. Include international news when it is consequential enough to matter or explain."
+    }
+  ],
+
+  culture: [
+    {
+      audience: "crystal",
+      priority: 85,
+      label: "celebrity and major cases",
+      status: "verified",
+      title: "Confirmed developments with sources",
+      text: "Current celebrity news and major crime or court developments can be summarized clearly and linked to reliable reporting."
+    },
+    {
+      audience: "crystal",
+      priority: 70,
+      label: "rumor desk",
+      status: "unconfirmed",
+      title: "Rumors may appear, but never disguised as facts",
+      text: "A rumor should identify where it came from, what remains unverified and whether credible reporting supports any part of it."
+    }
+  ],
+
+  horoscope: [
+    {
+      audience: "jay",
+      priority: 60,
+      label: "Virgo · September 15",
+      title: "Jay’s reading",
+      text: "A short reflective horoscope for entertainment, written separately from Crystal’s.",
+      directLines: [
+        {
+          audience: "jay",
+          text: "Your best move today is to make one clear decision and stop reopening it for unnecessary debate."
+        }
+      ]
+    },
+    {
+      audience: "crystal",
+      priority: 60,
+      label: "Virgo · September 14",
+      title: "Crystal’s reading",
+      text: "A distinct Virgo reading shaped around her day and interests.",
+      directLines: [
+        {
+          audience: "crystal",
+          text: "Protect your attention today and give your energy only to what feels consistent and real."
+        }
+      ]
+    }
+  ],
+
+  relationship: [
+    {
+      audience: "shared",
+      priority: 80,
+      label: "daily perspective",
+      title: "Advice should fit the actual state of the relationship",
+      text: "The briefing will not force an activity, manufacture a conflict or flatten every issue into equal blame. It should identify the clearest point of common ground available that day.",
+      directLines: [
+        {
+          audience: "jay",
+          text: "Direct advice for Jay can be plain without becoming accusatory."
+        },
+        {
+          audience: "crystal",
+          text: "Crystal’s concern can be advocated for clearly without turning the page into a case against either person."
+        }
+      ]
+    }
+  ],
+
+  timeline: [
+    {
+      audience: "shared",
+      priority: 40,
+      label: "positive memory lane",
+      status: "backend pending",
+      title: "Keep the good parts too",
+      text: "A future private archive can preserve kind messages, funny moments, meaningful songs and signs of progress. Daily sensitive activity will not enter this permanent timeline automatically."
+    }
+  ],
+
   quote: {
-    text: "Trust grows when clarity becomes a habit, not a courtroom.",
-    source: "Shared briefing principle"
+    kicker: "today’s line",
+    text: "Clarity should lower the temperature, not raise the stakes.",
+    source: "Jay + Crystal Daily Brief",
+    reflection: "The quote area can include one short line explaining why the thought fits today. Some days it can be serious, some days playful, and some days simply useful."
   },
+
   questions: [
-    "Who did you directly message today, and what was each conversation mainly about?",
+    "Who did you directly message, and what was each meaningful conversation mainly about?",
     "Which Discord servers, channels, group chats or voice calls did you use?",
-    "What work, CMX, gaming, browsing or other online activity took your time?",
-    "What did you listen to on Spotify, and was anything on repeat?",
-    "Is there anything you are unsure about or do not remember clearly?",
-    "Did anything happen today that Crystal would reasonably want context about?",
-    "What is one thing you appreciated about Crystal today?",
-    "What would help the two of you feel more connected tomorrow?"
+    "What else took your online time today?",
+    "What did you listen to on Spotify, and was anything repeated?",
+    "Did Crystal share a new preference, correction or concern that tomorrow’s briefing should reflect?",
+    "Is there one detail you are uncertain about and want labeled as unknown?"
   ]
 };
