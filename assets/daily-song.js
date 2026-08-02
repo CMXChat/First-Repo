@@ -6,6 +6,7 @@ window.CMX_DAILY_SONG = {
   title: "My Wish",
   artist: "Rascal Flatts",
   displayTitle: "My Wish · Rascal Flatts",
+  loginMood: "hopeful, honest, and still building.",
   text: "Warm, hopeful, and centered on wanting good things for someone you love. It fits a day about rebuilding, growing, and believing the future can still become something beautiful.",
   directLine: "Shared: let this be the soundtrack while you build the next version together.",
   spotifyUrl: "https://open.spotify.com/track/6Gfmj0HbpvxTdW0sdlzTDU",
