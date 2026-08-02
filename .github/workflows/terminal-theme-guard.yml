@@ -1,0 +1,96 @@
+name: CMX Terminal Theme Guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  terminal-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Enforce terminal-only core interface
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          failures = []
+
+          required_styles = {
+              Path('ai/index.html'): '/assets/cmx-terminal-blueprint.css',
+              Path('backend/index.html'): '/assets/cmx-terminal-blueprint.css',
+              Path('assets/cmx-build-lab.html'): '/assets/cmx-terminal-blueprint.css',
+              Path('directory/index.html'): '/assets/cmx-directory-terminal.css',
+          }
+
+          for path, stylesheet in required_styles.items():
+              if not path.exists():
+                  failures.append(f'{path}: missing')
+                  continue
+              text = path.read_text(encoding='utf-8')
+              if stylesheet not in text:
+                  failures.append(f'{path}: missing required terminal stylesheet {stylesheet}')
+
+          compatibility = Path('assets/cmx-backend-blueprint.css')
+          if not compatibility.exists():
+              failures.append('assets/cmx-backend-blueprint.css: missing compatibility base')
+          else:
+              text = compatibility.read_text(encoding='utf-8')
+              if 'CMX TERMINAL-ONLY COMPATIBILITY BASE' not in text:
+                  failures.append('assets/cmx-backend-blueprint.css: terminal-only contract marker missing')
+
+              banned = (
+                  'radial-gradient',
+                  '#4f9dff',
+                  '#7db7ff',
+                  'rgba(79, 157, 255',
+                  'rgba(44, 122, 255',
+                  'linear-gradient(135deg, #1759a5',
+              )
+              for token in banned:
+                  if token.lower() in text.lower():
+                      failures.append(f'assets/cmx-backend-blueprint.css: banned legacy blue theme token: {token}')
+
+          directory = Path('directory/index.html')
+          if directory.exists():
+              text = directory.read_text(encoding='utf-8')
+              if 'data-cmx-theme="terminal-only"' not in text:
+                  failures.append('directory/index.html: terminal-only theme declaration missing')
+              for token in ('radial-gradient', '--blue:#1f9bff', '#0068b5'):
+                  if token.lower() in text.lower():
+                      failures.append(f'directory/index.html: banned legacy blue theme token: {token}')
+
+          terminal_css = Path('assets/cmx-terminal-blueprint.css')
+          if terminal_css.exists():
+              text = terminal_css.read_text(encoding='utf-8')
+              required_tokens = ('background: #000', 'font-family: var(--mono)', '--text: #f4f4f4')
+              for token in required_tokens:
+                  if token not in text:
+                      failures.append(f'assets/cmx-terminal-blueprint.css: missing terminal design token: {token}')
+          else:
+              failures.append('assets/cmx-terminal-blueprint.css: missing')
+
+          directory_css = Path('assets/cmx-directory-terminal.css')
+          if directory_css.exists():
+              text = directory_css.read_text(encoding='utf-8')
+              required_tokens = ('--bg:#000', 'background:#000', 'font-family:var(--mono)')
+              for token in required_tokens:
+                  if token not in text:
+                      failures.append(f'assets/cmx-directory-terminal.css: missing terminal design token: {token}')
+          else:
+              failures.append('assets/cmx-directory-terminal.css: missing')
+
+          if failures:
+              print('\n'.join(f' - {failure}' for failure in failures))
+              sys.exit(1)
+
+          print('Terminal-only design contract passed for Build, Backend, AI and Directory.')
+          PY
