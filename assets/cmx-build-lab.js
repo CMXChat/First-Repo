@@ -2,6 +2,7 @@
   "use strict";
 
   const $ = selector => document.querySelector(selector);
+  const BUILD_EXCLUDED_ROUTES = new Set(["/callmax/"]);
   const state = { routes: [], checks: new Map(), registryVersion: "—" };
 
   function escapeHtml(value = "") {
@@ -72,9 +73,10 @@
       const response = await fetch("/assets/cmx-routes.json", { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const registry = await response.json();
-      state.routes = Array.isArray(registry.routes) ? registry.routes : [];
+      const registeredRoutes = Array.isArray(registry.routes) ? registry.routes : [];
+      state.routes = registeredRoutes.filter(route => !BUILD_EXCLUDED_ROUTES.has(route.path));
       state.registryVersion = registry.version || "—";
-      if (notice) notice.textContent = `Route registry v${state.registryVersion} loaded with ${state.routes.length} registered routes.`;
+      if (notice) notice.textContent = `Route registry v${state.registryVersion} loaded with ${state.routes.length} Build Lab routes.`;
     } catch (error) {
       state.routes = [];
       if (notice) notice.textContent = "The route registry could not be loaded. Build Lab remains in static documentation mode.";
