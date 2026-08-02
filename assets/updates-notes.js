@@ -22,6 +22,25 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-01-ai-backend-terminal-completion',
+    timestamp: '2026-08-01T19:57:00-04:00',
+    title: 'AI and Backend blueprints completed in the terminal notebook system',
+    status: 'complete',
+    body: [
+      'AI Control Blueprint was reviewed end to end and retained in the shared black-and-white terminal design because its content and layout already matched the new direction.',
+      'Backend Blueprint now uses the same terminal foundation across the overview, tabs, API filters, endpoint registry, page map, infrastructure, data models, permissions, roadmap and decisions.',
+      'Endpoint dialogs, search fields, tables, status labels and mobile layouts were restyled so the blue dashboard does not appear underneath the terminal theme.',
+      'All API contracts, AI plans, route connections, security controls and interactive functionality remain intact.'
+    ],
+    links: [
+      { url: '/ai/', label: 'Open AI Blueprint' },
+      { url: '/backend/', label: 'Open Backend Blueprint' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['ai', 'backend', 'design'],
+    pinned: true
+  },
+  {
     id: '2026-08-01-build-ai-terminal-design',
     timestamp: '2026-08-01T19:48:00-04:00',
     title: 'Build Lab and AI Blueprint moved to the terminal notebook design system',
@@ -38,7 +57,7 @@ window.CMX_DAILY_NOTES = [
       { url: '/updates/', label: 'Open Platform Notes' }
     ],
     tags: ['build', 'ai', 'design'],
-    pinned: true
+    pinned: false
   },
   {
     id: '2026-08-01-terminal-notes-restored',
