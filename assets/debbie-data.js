@@ -59,12 +59,12 @@ window.DEBBIE_BRIEF = {
     { title: "Daily automation", status: "PRODUCT", text: "Research, generate, review and deliver a fresh briefing on schedule, with alerts only when something truly matters." }
   ],
   projects: [
-    { path: "/news/", name: "Jay + Crystal Daily Brief", note: "See a shared daily briefing with personal and shared sections.", badge: "See personalization" },
-    { path: "/logan/", name: "Logan Terminal Brief", note: "See the same product concept presented as a command-driven Linux terminal.", badge: "See another format" },
+    { path: "/directory/", name: "Operations Directory", note: "See the active CMX tools and how the private workspace is organized.", badge: "Start here" },
     { path: "/architecture/", name: "Architecture & Learning Center", note: "The clearest map of HTML, JavaScript, Python, databases and deployment.", badge: "Start learning" },
     { path: "/backend/", name: "Backend Blueprint", note: "See the protected engine Jay wants to build behind the pages.", badge: "See the engine" },
     { path: "/ai/", name: "AI Control Blueprint", note: "See how AI, permissions, tools and approvals are supposed to work together.", badge: "See the rules" },
-    { path: "/updates/", name: "CMX Platform Notes", note: "Follow what has been built, what is planned and what remains only an idea.", badge: "See progress" }
+    { path: "/updates/", name: "CMX Platform Notes", note: "Follow what has been built, what is planned and what remains only an idea.", badge: "See progress" },
+    { path: "/build/", name: "Build Lab", note: "See how routes, readiness, deployment and future server controls fit together.", badge: "See the build" }
   ],
   words: [
     { word: "HONEST", meaning: "A useful filter for people, news and technology." },
