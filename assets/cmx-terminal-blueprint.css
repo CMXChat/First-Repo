@@ -43,18 +43,18 @@ code, pre { font-family: var(--mono); }
 }
 
 .topbar {
-  position: relative;
-  top: auto;
-  z-index: 1;
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 22px;
   min-height: 0;
-  padding: 28px 0 20px;
+  padding: 18px 0 14px;
   border-bottom: 1px solid var(--line-strong);
-  background: #000;
-  backdrop-filter: none;
+  background: rgba(0, 0, 0, .96);
+  backdrop-filter: blur(10px);
 }
 
 .brand {
@@ -86,14 +86,25 @@ code, pre { font-family: var(--mono); }
 .topbar-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: stretch;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 7px;
+}
+.topbar-actions::before {
+  content: "platform_nav:";
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+  color: var(--faint);
+  font: 700 9px/1.2 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 .truth-badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 34px;
+  min-height: 40px;
   padding: 6px 9px;
   color: var(--muted);
   border: 1px solid var(--line);
@@ -119,8 +130,35 @@ code, pre { font-family: var(--mono); }
   text-decoration: none;
   cursor: pointer;
 }
+.topbar-actions a.icon-button {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  min-width: 92px;
+  min-height: 40px;
+  gap: 1px;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+.topbar-actions a.icon-button::before {
+  color: #fff;
+  font: 700 9px/1.15 var(--mono);
+  letter-spacing: .04em;
+}
+.topbar-actions a[href="/build/"]::before { content: "/build/"; }
+.topbar-actions a[href="/backend/"]::before,
+.topbar-actions a[href="/backend/#ai"]::before { content: "/backend/"; }
+.topbar-actions a[href="/ai/"]::before { content: "/ai/"; }
+.topbar-actions a[href="/updates/"]::before { content: "/updates/"; }
+.topbar-actions a[href="/directory/"]::before { content: "/directory/"; }
 .icon-button:hover,
 .secondary-button:hover { color: #fff; border-color: #777; background: #080808; }
+.icon-button:focus-visible,
+.secondary-button:focus-visible,
+.brand:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
 .icon-button:disabled,
 .secondary-button:disabled { color: var(--faint); cursor: wait; }
 
@@ -405,8 +443,24 @@ footer {
 @media (max-width: 720px) {
   body { font-size: 13px; }
   .app-shell { width: min(100% - 22px, 1040px); }
-  .topbar { flex-direction: column; }
-  .topbar-actions { justify-content: flex-start; }
+  .topbar {
+    position: sticky;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 12px;
+  }
+  .topbar-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+    padding-bottom: 5px;
+  }
+  .topbar-actions::before,
+  .topbar-actions > * { flex: 0 0 auto; }
+  .topbar-actions a.icon-button { min-width: 102px; }
   .hero { padding-top: 26px; }
   h1 { font-size: clamp(25px, 9vw, 38px); }
   .metrics,
