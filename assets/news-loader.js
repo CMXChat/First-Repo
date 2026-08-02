@@ -13,6 +13,7 @@
     const html = await response.text();
     const refreshedHtml = html
       .replace(/\/assets\/news-data\.js(?:\?[^"']*)?/g, `/assets/news-data.js?v=${token}`)
+      .replace(/\/assets\/daily-video\.js(?:\?[^"']*)?/g, `/assets/daily-video.js?v=${token}`)
       .replace(/\/assets\/news\.js(?:\?[^"']*)?/g, `/assets/news.js?v=${token}`);
 
     const headers = new Headers(response.headers);
