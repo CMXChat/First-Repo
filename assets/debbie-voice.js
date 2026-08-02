@@ -21,22 +21,18 @@
   }
 
   function applyVoice() {
-    document.title = "Your Brooklyn Brief | August 2, 2026";
+    if (document.title !== "Your Brooklyn Brief | August 2, 2026") {
+      document.title = "Your Brooklyn Brief | August 2, 2026";
+    }
     const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.content = "Your Brooklyn Brief";
+    if (ogTitle && ogTitle.content !== "Your Brooklyn Brief") ogTitle.content = "Your Brooklyn Brief";
 
     setText(".brand strong", "YOUR BROOKLYN BRIEF");
     setText(".gate-card .eyebrow", "YOUR RESTRICTED BRIEF");
     setText("footer > span", "Your Brooklyn Brief · private concept edition");
     setText("#explore .section-head h2", "Explore the complete CMX platform.");
-
-    const exploreCopy = $("#explore .section-head > p");
-    if (exploreCopy) {
-      exploreCopy.textContent = "Start with the recommended path, then reveal the complete project map. Each page opens a different part of the tools, infrastructure, research, AI planning and experiments behind the platform.";
-    }
-
-    const brainstormTitle = $("#brainstorm .section-head h2");
-    if (brainstormTitle) brainstormTitle.textContent = "Help shape something you would actually use.";
+    setText("#explore .section-head > p", "Start with the recommended path, then reveal the complete project map. Each page opens a different part of the tools, infrastructure, research, AI planning and experiments behind the platform.");
+    setText("#brainstorm .section-head h2", "Help shape something you would actually use.");
 
     const walkerRoot = document.getElementById("app") || document.body;
     const walker = document.createTreeWalker(walkerRoot, NodeFilter.SHOW_TEXT);
@@ -51,7 +47,15 @@
 
   function start() {
     applyVoice();
-    const observer = new MutationObserver(applyVoice);
+    let scheduled = false;
+    const observer = new MutationObserver(() => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        applyVoice();
+      });
+    });
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     window.setTimeout(() => observer.disconnect(), 20000);
   }
