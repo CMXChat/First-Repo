@@ -4,7 +4,6 @@
   const root = document.documentElement;
   const PASSWORD_SHA256 = String(root.dataset.cmxPasswordSha256 || '').toLowerCase();
   const SOURCE_URL = root.dataset.cmxLoadUrl || '/assets/cmx-news.html';
-  const SESSION_KEY = 'cmx-crystal-access-v1';
   const FALLBACK_PREVIEW = 'https://p.scdn.co/mp3-preview/9c0b4d2e32560e295b5770138abd247f08c7bba9.mp3';
   const ITUNES_LOOKUP = 'https://itunes.apple.com/lookup?id=202272247';
 
@@ -18,19 +17,7 @@
 
   let preparedPreview = FALLBACK_PREVIEW;
   let previewPrepared = false;
-
-  function readSession() {
-    try {
-      const value = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
-      return value && Date.now() - Number(value.at || 0) < 30 * 60 * 1000;
-    } catch {
-      return false;
-    }
-  }
-
-  function saveSession() {
-    try { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ at: Date.now() })); } catch {}
-  }
+  let primePromise = Promise.resolve();
 
   async function sha256(value) {
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
@@ -66,10 +53,11 @@
     audio.muted = true;
     audio.currentTime = 0;
     const attempt = audio.play();
-    if (attempt && typeof attempt.catch === 'function') attempt.catch(() => {});
+    primePromise = attempt && typeof attempt.then === 'function' ? attempt.catch(() => {}) : Promise.resolve();
   }
 
   async function startDailySong() {
+    await primePromise;
     audio.muted = false;
     audio.volume = 0.3;
     try {
@@ -105,6 +93,50 @@
     });
   }
 
+  function installHeroMusicControl() {
+    const header = document.querySelector('.brief-header');
+    if (!header || document.getElementById('crystalMusicToggleHero')) return;
+
+    const button = document.createElement('button');
+    button.id = 'crystalMusicToggleHero';
+    button.type = 'button';
+    button.className = 'status-chip';
+    button.style.cursor = 'pointer';
+    button.style.font = 'inherit';
+    button.style.marginLeft = 'auto';
+
+    const update = () => {
+      const playing = !audio.paused && !audio.ended;
+      button.textContent = playing ? 'Pause today’s song' : 'Play today’s song';
+      button.setAttribute('aria-label', playing ? 'Pause today’s song' : 'Play today’s song');
+      button.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    };
+
+    button.addEventListener('click', async () => {
+      if (audio.paused) {
+        audio.muted = false;
+        try {
+          await audio.play();
+          audio.dataset.autoplay = 'started';
+        } catch {
+          audio.dataset.autoplay = 'blocked';
+        }
+      } else {
+        audio.pause();
+      }
+      update();
+    });
+
+    audio.addEventListener('play', update);
+    audio.addEventListener('pause', update);
+    audio.addEventListener('ended', update);
+
+    const row = header.querySelector('.eyebrow-row');
+    if (row) row.appendChild(button);
+    else header.insertBefore(button, header.firstChild);
+    update();
+  }
+
   async function loadProtectedDocument(message) {
     if (message) {
       message.className = 'is-success';
@@ -133,6 +165,7 @@
       await loadScript(`${source}${separator}cb=${Date.now()}`);
     }
 
+    installHeroMusicControl();
     window.dispatchEvent(new CustomEvent('crystal:audio-ready', {
       detail: {
         autoplay: audio.dataset.autoplay || 'unknown',
@@ -191,7 +224,6 @@
           return;
         }
 
-        saveSession();
         await startDailySong();
         await loadProtectedDocument(message);
       } catch (error) {
@@ -208,12 +240,5 @@
   }
 
   prepareDailyPreview();
-
-  document.addEventListener('DOMContentLoaded', () => {
-    if (readSession()) {
-      loadProtectedDocument().catch(() => renderGate());
-    } else {
-      renderGate();
-    }
-  }, { once: true });
+  document.addEventListener('DOMContentLoaded', renderGate, { once: true });
 })();
