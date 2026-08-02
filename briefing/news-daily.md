@@ -18,6 +18,15 @@ Do not make routine weather, entertainment, pets, style, Spotify, horoscopes, ha
 
 Shift into a serious tone only when accuracy, safety, severe weather, crime, legal developments, grief, health, major world events, or an important relationship issue genuinely requires it. Serious sections should remain calm and proportionate, then return to the lighter overall voice when appropriate.
 
+## Presentation rules
+
+- Treat the page as a shared check-in, not a surveillance report, performance review, or courtroom transcript.
+- Keep Jay's activity recap brief and relationship-relevant. Routine work details can be omitted unless they affect plans or Crystal asks for them.
+- Use the relationship section for one useful observation and one workable rule or next action. Do not repeat the same warning in several cards.
+- Include two or three celebrity, crime, entertainment, culture, royal, influencer, political-figure, or major legal stories when strong current material exists. Crystal does not need to name the people in advance.
+- Keep the permanent Jay, Crystal, and shared questions at the bottom visible. Add one to three edition-specific questions that will help improve the next briefing.
+- Include at least one positive, entertaining, practical, or aesthetically interesting item so serious news does not dominate the whole page.
+
 ## Refresh each run
 
 - Current local time and date for Brooklyn, New York and Waikato, New Zealand
@@ -47,6 +56,18 @@ Use only when worthwhile:
 - A positive relationship timeline item
 - Backend feature status
 
+## Detailed card fields
+
+The renderer supports concise cards with optional expandable detail. Use the extra fields only when they improve understanding:
+
+- `whyItMatters`: one short explanation of practical or relationship significance
+- `watchNext`: the next date, decision, event, or condition worth following
+- `details`: a short list of supporting facts
+- `sources`: an array of `{ label, url, published }` objects when more than one source is useful
+- `detailsLabel`: optional replacement for the default `More context` label
+
+Keep the main card readable without opening the details. Serious, developing, legal, safety, and relationship cards benefit most from `whyItMatters` and `watchNext`. Do not add expandable filler to every card.
+
 ## Relationship guidance
 
 Use recent private context when available, but do not store sensitive relationship details in this public file. Focus on accountability, clarity, reasonable proof, emotional acknowledgment, boundaries, and specific next actions. Do not diagnose, shame, excuse betrayal, manufacture equal blame, pressure either person into activities, or become insulting on either person's behalf.
@@ -73,8 +94,8 @@ Avoid the term `CMX` in Crystal-facing copy unless required for technical accura
 2. Gather current sources and recent permitted context.
 3. Rank sections by urgency, relevance, safety, freshness, and usefulness.
 4. Update `assets/news-data.js` using the existing schema.
-5. Preserve `sectionOrder`, `priority`, `audience`, `directLines`, source labels, and links.
-6. Hide empty sections instead of adding filler.
+5. Preserve `sectionOrder`, `priority`, `audience`, `directLines`, source labels, links, and optional detailed-card fields.
+6. Hide empty sections instead of adding filler, except the permanent bottom questions section.
 7. Keep the complete edition concise and easy to scan.
-8. Verify `/news/` loads and the date is current.
+8. Verify `/news/` loads, the date is current, and celebrity/culture cards are not being hidden by stale cached data.
 9. Report any source, connection, permission, or publishing failure honestly.
