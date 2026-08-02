@@ -4,331 +4,50 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#030812" />
+  <meta name="theme-color" content="#000000" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'none'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <title>Logan's Deep East Texas Brief | August 2, 2026</title>
-  <meta name="description" content="A private daily Nacogdoches briefing with Texas news, gun and hunting updates, shift intel, weather, and interactive tools for Logan." />
+  <title>Logan Terminal Brief | August 2, 2026</title>
+  <meta name="description" content="A command-driven private terminal briefing for Logan in Nacogdoches, Texas." />
   <link rel="canonical" href="https://db.cmxchat.com/logan/" />
-  <meta property="og:title" content="Logan's Deep East Texas Brief" />
-  <meta property="og:description" content="Texas intel, gun news, shift prep and a challenge gate. Updated for August 2, 2026." />
+  <meta property="og:title" content="Logan Terminal Brief" />
+  <meta property="og:description" content="Texas intelligence, firearms and hunting updates, shift prep, music and the CMX build plan through a private command console." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://db.cmxchat.com/logan/" />
   <meta property="og:site_name" content="CMX Restricted Node" />
   <meta name="twitter:card" content="summary" />
-  <link rel="stylesheet" href="/assets/logan.css?v=20260802-1" />
-  <script src="/assets/logan-data.js?v=20260802-1" defer></script>
-  <script src="/assets/logan.js?v=20260802-1" defer></script>
+  <link rel="stylesheet" href="/assets/logan.css?v=20260802-4" />
+  <script src="/assets/logan-terminal-data.js?v=20260802-1" defer></script>
+  <script src="/assets/logan.js?v=20260802-4" defer></script>
 </head>
-<body class="gate-active">
-  <div class="noise" aria-hidden="true"></div>
-  <div class="scanlines" aria-hidden="true"></div>
-
-  <section class="gate" id="gate" aria-labelledby="gateTitle">
-    <div class="gate-shell">
-      <div class="terminal-chrome">
-        <div class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></div>
-        <span>root@pineywoods: ~/briefs/logan</span>
-        <span id="gateClock">--:--:-- CDT</span>
-      </div>
-      <div class="terminal-screen">
-        <pre class="ascii" aria-hidden="true"> ██╗      ██████╗  ██████╗  █████╗ ███╗   ██╗
- ██║     ██╔═══██╗██╔════╝ ██╔══██╗████╗  ██║
- ██║     ██║   ██║██║  ███╗███████║██╔██╗ ██║
- ██║     ██║   ██║██║   ██║██╔══██║██║╚██╗██║
- ███████╗╚██████╔╝╚██████╔╝██║  ██║██║ ╚████║
- ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝</pre>
-        <p class="boot-line"><span>[ OK ]</span> Deep East Texas briefing node online.</p>
-        <p class="boot-line"><span>[ OK ]</span> Nacogdoches local feed synchronized.</p>
-        <p class="boot-line"><span>[ .. ]</span> Identity challenge required.</p>
-        <h1 id="gateTitle">Prove you know the four rules.</h1>
-        <p class="gate-intro">Three simple firearm-safety questions. Get them right and the daily brief opens. This is a fun browser gate, not actual security.</p>
-
-        <form id="quizForm" class="quiz-form">
-          <fieldset data-question="1">
-            <legend><span>01</span> Treat every firearm as though it is...</legend>
-            <label><input type="radio" name="q1" value="a" /> unloaded until proven otherwise</label>
-            <label><input type="radio" name="q1" value="b" /> loaded</label>
-            <label><input type="radio" name="q1" value="c" /> safe when the safety is on</label>
-          </fieldset>
-          <fieldset data-question="2">
-            <legend><span>02</span> Your muzzle should point...</legend>
-            <label><input type="radio" name="q2" value="a" /> wherever your eyes are looking</label>
-            <label><input type="radio" name="q2" value="b" /> down whenever possible</label>
-            <label><input type="radio" name="q2" value="c" /> only in a direction where an unintended discharge would cause no injury</label>
-          </fieldset>
-          <fieldset data-question="3">
-            <legend><span>03</span> Your trigger finger stays...</legend>
-            <label><input type="radio" name="q3" value="a" /> indexed outside the trigger guard until the sights are on target and you intend to fire</label>
-            <label><input type="radio" name="q3" value="b" /> resting lightly on the trigger</label>
-            <label><input type="radio" name="q3" value="c" /> wherever it is most comfortable</label>
-          </fieldset>
-          <div class="gate-actions">
-            <button class="terminal-submit" type="submit">run authorization check</button>
-            <span id="quizStatus" role="status" aria-live="polite">awaiting input_</span>
-          </div>
-        </form>
-        <div class="terminal-log" id="terminalLog" aria-live="polite"></div>
-      </div>
-    </div>
-  </section>
-
-  <div id="briefApp" class="brief-app" aria-hidden="true" inert>
-    <header class="command-bar">
-      <a class="brand" href="#brief" aria-label="Return to Logan brief start">
-        <span class="brand-mark">L//TX</span>
-        <span><strong>LOGAN // DAILY FIELD BRIEF</strong><small>Nacogdoches, Texas · edition 001</small></span>
-      </a>
-      <div class="command-status">
-        <span class="status-pulse"></span>
-        <span id="liveLocalTime">LIVE CDT</span>
-        <span class="desktop-only">REFRESHED AUG 02, 2026</span>
-      </div>
-      <button class="icon-control" id="openNavigator" type="button" aria-label="Open briefing navigator">⌘</button>
+<body>
+  <main id="terminal" class="terminal" aria-label="Logan terminal briefing">
+    <header class="terminal-bar">
+      <span class="terminal-title">logan@cmx-node: ~/brief</span>
+      <span id="clock" class="terminal-clock">--:--:-- CDT</span>
     </header>
 
-    <aside class="navigator" id="navigator" aria-label="Briefing sections">
-      <div class="navigator-head">
-        <span>MISSION MAP</span>
-        <button id="closeNavigator" type="button" aria-label="Close briefing navigator">×</button>
-      </div>
-      <nav id="navLinks"></nav>
-      <div class="navigator-foot">
-        <span id="progressLabel">0% scanned</span>
-        <div class="progress-track"><i id="progressFill"></i></div>
-      </div>
-    </aside>
-    <div class="nav-scrim" id="navScrim"></div>
+    <section id="output" class="terminal-output" role="log" aria-live="polite" aria-relevant="additions"></section>
 
-    <main id="experience">
-      <section class="scene hero-scene" id="brief" data-scene="01" data-title="Field Brief">
-        <div class="scene-grid hero-grid">
-          <div class="hero-copy reveal">
-            <p class="kicker">SUNDAY // AUGUST 2, 2026 // NACOGDOCHES</p>
-            <h1>Your corner of Texas, decoded.</h1>
-            <p class="lede">Local alerts, state news, guns and hunting, Army-grade prioritization, bartender math, and just enough social intelligence to prevent friendly fire.</p>
-            <div class="hero-actions">
-              <button class="primary-button" data-jump="sitrep" type="button">Start the scan</button>
-              <button class="ghost-button" id="relockButton" type="button">Relock terminal</button>
-            </div>
-            <p class="privacy-note"><strong>Daily edition:</strong> this page is accurate to the cited sources available this morning and is designed to be replaced with a new briefing each day.</p>
-          </div>
-          <div class="hero-orbit reveal" aria-label="Today's briefing status">
-            <div class="orbit-ring ring-one"></div>
-            <div class="orbit-ring ring-two"></div>
-            <div class="orbit-core">
-              <span>LOCAL STATUS</span>
-              <strong>HOT</strong>
-              <small>95°F forecast · boil-water notice active in the south/west zone</small>
-            </div>
-            <div class="orbit-tag tag-a">Army veteran</div>
-            <div class="orbit-tag tag-b">Bartender</div>
-            <div class="orbit-tag tag-c">Gun desk online</div>
-            <div class="orbit-tag tag-d">Social radar questionable</div>
-          </div>
-        </div>
-        <button class="scroll-cue" data-jump="sitrep" type="button"><span>Scroll to deploy</span><i>↓</i></button>
-      </section>
+    <form id="shellForm" class="terminal-input" autocomplete="off">
+      <label id="promptLabel" class="prompt" for="shellInput">
+        <span class="prompt-top">┌──(guest㉿cmx-node)-[~]</span>
+        <span class="prompt-bottom">└─$</span>
+      </label>
+      <input
+        id="shellInput"
+        type="text"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Terminal command"
+      />
+    </form>
+  </main>
 
-      <section class="scene" id="sitrep" data-scene="02" data-title="90-Second SITREP">
-        <div class="scene-head reveal">
-          <div><p class="kicker">TODAY IN 90 SECONDS</p><h2>The useful stuff first.</h2></div>
-          <p>No doom-scroll sludge. Every item earns its place by being local, actionable, unusually interesting, or specifically Logan-coded.</p>
-        </div>
-        <div class="filter-row reveal" id="newsFilters" role="group" aria-label="Filter briefing items"></div>
-        <div class="intel-grid" id="newsGrid"></div>
-        <div class="priority-strip reveal">
-          <strong>Immediate action:</strong>
-          <span>If you are south of Main Street and west of Press Road, use boiled or bottled water for drinking, cooking, ice, brushing teeth, and washing your face until the city rescinds the notice.</span>
-        </div>
-      </section>
-
-      <section class="scene" id="timeline" data-scene="03" data-title="Today's Timeline">
-        <div class="scene-head reveal">
-          <div><p class="kicker">LOCAL CLOCK</p><h2>Run the day, do not let it run you.</h2></div>
-          <p>The timeline mixes confirmed public events with practical windows. Anything marked “your call” is a suggestion, not surveillance pretending to know your schedule.</p>
-        </div>
-        <div class="timeline-shell reveal">
-          <div class="timeline-track" id="timelineTrack"></div>
-          <article class="timeline-detail" id="timelineDetail" aria-live="polite"></article>
-        </div>
-      </section>
-
-      <section class="scene" id="gun-desk" data-scene="04" data-title="Gun Desk">
-        <div class="scene-head reveal">
-          <div><p class="kicker">FIREARMS + HUNTING WATCH</p><h2>What actually matters this week.</h2></div>
-          <p>Official-source practical updates, minus internet-lawyer confidence. Always verify rules for the exact county, property, season, firearm, and situation.</p>
-        </div>
-        <div class="gun-layout">
-          <article class="glass-card reveal">
-            <div class="card-label">THE THREE-DATE BOARD</div>
-            <div id="gunDates" class="date-board"></div>
-          </article>
-          <article class="glass-card reveal">
-            <div class="card-label">EAST TEXAS DRAW WATCH</div>
-            <div class="hunt-stat">
-              <span>Gus Engeling WMA archery-deer permits</span>
-              <strong>50</strong>
-              <small>Application deadline: August 15 · $3 application · extended-hunt permit fee may apply if selected.</small>
-            </div>
-            <div class="hunt-meter"><i></i></div>
-            <p class="microcopy">Last year's listed success rate for that archery category was 13%. That is not a prediction, merely a reminder that “drawn hunt” includes the word drawn for a reason.</p>
-          </article>
-          <article class="glass-card safe-card reveal">
-            <div class="card-label">SAFE-HANDLING REFRESHER</div>
-            <button id="safetyCard" class="safety-flip" type="button" aria-live="polite">
-              <span>Tap for today's rule</span>
-              <strong id="safetyRule">Know your target and what is beyond it.</strong>
-            </button>
-            <p class="microcopy">The gate is trivia. Safe handling is real. Store firearms so unauthorized people and children cannot access them.</p>
-          </article>
-        </div>
-        <div class="legal-note reveal"><strong>Legal note:</strong> This briefing summarizes public information and is not legal advice, a carry-permission map, or a substitute for official TPWD, DPS, ATF, property-owner, range, or attorney guidance.</div>
-      </section>
-
-      <section class="scene" id="army-scan" data-scene="05" data-title="Army Scan">
-        <div class="scene-head reveal">
-          <div><p class="kicker">COMMANDER'S INTENT</p><h2>Three priorities. Everything else is noise.</h2></div>
-          <p>A veteran does not need another motivational speech. He needs the objective, the friction, and the next move.</p>
-        </div>
-        <div class="mission-grid">
-          <article class="mission-card reveal"><span>01</span><h3>Water first</h3><p>Confirm whether your home or workplace is inside the boil-notice area. Do not assume clear water equals cleared water.</p><button class="check-button" type="button">mark checked</button></article>
-          <article class="mission-card reveal"><span>02</span><h3>Heat discipline</h3><p>Today peaks near 95°F and hotter conditions return this week. Hydration before thirst is cheaper than learning humility from August.</p><button class="check-button" type="button">mark checked</button></article>
-          <article class="mission-card reveal"><span>03</span><h3>Hunt admin</h3><p>New license ID validation starts tomorrow. Draw deadlines are already rolling. Do the paperwork before Future Logan starts cussing Present Logan.</p><button class="check-button" type="button">mark checked</button></article>
-        </div>
-        <div class="readiness-panel reveal">
-          <div><span>Today's priorities acknowledged</span><strong id="missionCount">0 / 3</strong></div>
-          <div class="readiness-track"><i id="missionFill"></i></div>
-          <p id="missionMessage">Nothing dramatic. Just handle the three things that can become annoying later.</p>
-        </div>
-      </section>
-
-      <section class="scene" id="shift-intel" data-scene="06" data-title="Shift Intel">
-        <div class="scene-head reveal">
-          <div><p class="kicker">BARTENDER MODE</p><h2>Heat outside. Controlled chaos inside.</h2></div>
-          <p>Historic downtown remains the obvious nightlife zone for cocktails, local brews, music, and people making confident decisions after their third drink.</p>
-        </div>
-        <div class="shift-layout">
-          <article class="glass-card calculator-card reveal">
-            <div class="card-label">TIP-RUN ESTIMATOR</div>
-            <label>Shift length <input id="shiftHours" type="range" min="2" max="12" step="0.5" value="8" /><output id="shiftHoursOutput">8 hours</output></label>
-            <label>Average tips per hour <input id="tipsPerHour" type="range" min="5" max="80" step="5" value="30" /><output id="tipsPerHourOutput">$30/hr</output></label>
-            <label>Cash set-aside <input id="taxReserve" type="range" min="0" max="35" step="1" value="20" /><output id="taxReserveOutput">20%</output></label>
-            <div class="calc-results">
-              <div><span>Estimated tips</span><strong id="grossTips">$240</strong></div>
-              <div><span>After set-aside</span><strong id="netTips">$192</strong></div>
-            </div>
-            <p class="microcopy">Planning math only. It does not know your actual wage, tip pool, taxes, cash-outs, or whether someone ordered eight lemon drops at last call.</p>
-          </article>
-          <article class="glass-card reveal">
-            <div class="card-label">SHIFT WEATHER</div>
-            <div class="weather-stack">
-              <div><span>4 PM</span><strong>95°F</strong><small>peak heat</small></div>
-              <div><span>8 PM</span><strong>88°F</strong><small>sunset around 8:13</small></div>
-              <div><span>11 PM</span><strong>78°F</strong><small>finally civilized</small></div>
-            </div>
-            <div class="hydration-control">
-              <span>Water count</span><strong id="waterCount">0</strong>
-              <button id="addWater" type="button">+ log one</button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="scene" id="social-radar" data-scene="07" data-title="Social Radar">
-        <div class="scene-head reveal">
-          <div><p class="kicker">YES, THE GIRLS SECTION</p><h2>Charm without becoming a case study.</h2></div>
-          <p>The operating standard is simple: be funny, be respectful, read the room, and understand that “no” is a complete sentence. Elite-level tactics, apparently.</p>
-        </div>
-        <div class="social-console reveal">
-          <div class="social-head"><span>CONVERSATION STARTER GENERATOR</span><button id="shuffleOpener" type="button">new opener</button></div>
-          <blockquote id="openerDisplay">You look like you have a strong opinion about the worst drink order. What's the verdict?</blockquote>
-          <div class="social-rules">
-            <span>✓ easy to answer</span><span>✓ no weird pressure</span><span>✓ can survive rejection</span><span>✓ bartender-approved exit route</span>
-          </div>
-        </div>
-        <div class="wingman-strip reveal"><strong>Wingman note:</strong><span>The goal is a good interaction, not forcing an outcome. Confidence that requires cooperation from a stranger is just a hostage situation with cologne.</span></div>
-      </section>
-
-      <section class="scene" id="texas-watch" data-scene="08" data-title="Texas Watch">
-        <div class="scene-head reveal">
-          <div><p class="kicker">STATEWIDE RADAR</p><h2>Texas is doing Texas things.</h2></div>
-          <p>Heat, infrastructure, land, wildlife, and one country singer naming an album after shortening. The briefing department respects range.</p>
-        </div>
-        <div class="state-grid" id="stateGrid"></div>
-      </section>
-
-      <section class="scene" id="future-brief" data-scene="09" data-title="What This Can Become">
-        <div class="scene-head reveal">
-          <div><p class="kicker">FULL CAPABILITY</p><h2>This can become your actual daily operating page.</h2></div>
-          <p>Today is a static researched edition. With your explicit permission and connected accounts, future briefings can become substantially more personal and useful.</p>
-        </div>
-        <div class="capability-grid" id="capabilityGrid"></div>
-        <div class="truth-console reveal">
-          <strong>Privacy truth:</strong>
-          <p>This page cannot secretly see your bank, texts, email, Spotify, location history, work schedule, or firearms. Connected private data is available only after you authorize the relevant account or provide the information. Financial data can be analyzed through ChatGPT Finances only after you link accounts.</p>
-        </div>
-      </section>
-
-      <section class="scene" id="profile" data-scene="10" data-title="Build Logan's Profile">
-        <div class="scene-head reveal">
-          <div><p class="kicker">MAKE TOMORROW BETTER</p><h2>Give Jay the missing intel.</h2></div>
-          <p>Answer any of these and the daily page can stop treating “Army bartender in Nacogdoches who likes guns and girls” as the complete intelligence dossier.</p>
-        </div>
-        <div class="profile-layout">
-          <article class="glass-card reveal">
-            <div class="card-label">EXAMPLE QUESTIONS</div>
-            <div id="questionList" class="question-list"></div>
-          </article>
-          <article class="glass-card profile-card reveal">
-            <div class="card-label">COPY-TO-JAY PROFILE NOTE</div>
-            <form id="profileForm">
-              <label>What should the briefing focus on?<textarea id="profileTopics" rows="3" placeholder="Guns, hunting, East Texas, Army news, sports, money, music..."></textarea></label>
-              <label>What does a normal week look like?<textarea id="profileSchedule" rows="3" placeholder="Work nights, days off, range days, gym, family stuff..."></textarea></label>
-              <label>What should it track or remind you about?<textarea id="profileTracking" rows="3" placeholder="Bills, hunting deadlines, weather, shifts, appointments, ammo prices..."></textarea></label>
-              <div class="profile-actions"><button class="primary-button" type="submit">copy profile note</button><span id="profileStatus" role="status" aria-live="polite"></span></div>
-            </form>
-          </article>
-        </div>
-      </section>
-
-      <section class="scene final-scene" id="tomorrow" data-scene="11" data-title="Tomorrow's Edition">
-        <div class="final-message reveal">
-          <p class="kicker">END OF BRIEF // EDITION 001</p>
-          <h2>Come back tomorrow. The intel changes.</h2>
-          <p>This edition was assembled for Sunday, August 2, 2026. Tomorrow's version can refresh the news, weather, gun and hunting watch, local events, and anything Logan chooses to connect.</p>
-          <div class="final-actions">
-            <button class="primary-button" data-jump="brief" type="button">Return to top</button>
-            <button class="ghost-button" id="copyLink" type="button">Copy page link</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="sources-section" id="sources" aria-labelledby="sourcesTitle">
-        <div class="sources-head"><p class="kicker">SOURCE LEDGER</p><h2 id="sourcesTitle">Where today's facts came from</h2></div>
-        <div id="sourceList" class="source-list"></div>
-        <p class="source-disclaimer">Published information can change after this page is updated. Open the original source for the latest notice, rule, deadline, or forecast.</p>
-      </section>
-
-      <section class="command-area" aria-label="Briefing command navigation">
-        <div id="commandOutput" class="command-output" role="status" aria-live="polite">type help for commands</div>
-        <form id="commandForm" class="command-form" autocomplete="off">
-          <label class="sr-only" for="commandInput">Enter a briefing command</label>
-          <span class="prompt" aria-hidden="true">logan@nac:~/brief$</span>
-          <input id="commandInput" type="text" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="help" />
-        </form>
-      </section>
-    </main>
-
-    <footer>
-      <span>Logan's Deep East Texas Brief · built by Jay + CMX</span>
-      <span>static browser gate · noindex · daily refresh candidate</span>
-    </footer>
-  </div>
-
-  <noscript>This interactive briefing requires JavaScript.</noscript>
+  <noscript>This private briefing requires JavaScript.</noscript>
 </body>
 </html>
