@@ -115,14 +115,14 @@
     const update = () => {
       const playing = previewUrl && !audio.paused && !audio.ended;
       if (!previewUrl) {
-        button.textContent = `Open ${songTitle}`;
+        button.textContent = 'Open music';
         button.setAttribute('aria-label', `Open ${songDisplayTitle} on Spotify`);
         button.setAttribute('aria-pressed', 'false');
         return;
       }
 
-      button.textContent = playing ? `Pause ${songTitle}` : `Play ${songTitle}`;
-      button.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${songDisplayTitle}`);
+      button.textContent = playing ? 'Pause music' : 'Play music';
+      button.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} today’s music: ${songDisplayTitle}`);
       button.setAttribute('aria-pressed', String(playing));
     };
 
