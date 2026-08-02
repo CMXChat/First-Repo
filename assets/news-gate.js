@@ -8,7 +8,7 @@
   const ITUNES_LOOKUP = 'https://itunes.apple.com/lookup?id=202272247';
 
   const audio = document.createElement('audio');
-  audio.id = 'cmxDailyAudio';
+  audio.id = 'newsDailyAudio';
   audio.preload = 'auto';
   audio.hidden = true;
   audio.volume = 0.001;
@@ -170,7 +170,7 @@
     }
 
     installHeroMusicControl();
-    window.dispatchEvent(new CustomEvent('cmx:audio-ready', {
+    window.dispatchEvent(new CustomEvent('news:audio-ready', {
       detail: { autoplay: audio.dataset.autoplay || 'unknown', previewPrepared }
     }));
   }
