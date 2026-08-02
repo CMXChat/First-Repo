@@ -23,6 +23,7 @@ jobs:
           node --check assets/cmx-ai-platform-extension.js
           node --check assets/cmx-backend-blueprint.js
           node --check assets/cmx-build-lab.js
+          node --check assets/cmx-eli.js
           node --check assets/updates-data.js
           node --check assets/updates-notes.js
           node --check assets/updates.js
@@ -51,7 +52,7 @@ jobs:
           if len(paths) != len(set(paths)):
               failures.append('route paths must be unique')
 
-          required = {'/', '/directory/', '/build/', '/backend/', '/ai/', '/updates/', '/404.html'}
+          required = {'/', '/directory/', '/build/', '/backend/', '/ai/', '/updates/', '/eli/', '/404.html'}
           missing = sorted(required - set(paths))
           if missing:
               failures.append(f'missing required routes: {missing}')
@@ -82,8 +83,10 @@ jobs:
           targets = [
               Path('backend/index.html'),
               Path('ai/index.html'),
+              Path('eli/index.html'),
               Path('assets/cmx-build-lab.html'),
               Path('assets/cmx-updates.html'),
+              Path('assets/cmx-eli.html'),
           ]
           failures = []
 
