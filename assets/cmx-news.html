@@ -7,13 +7,14 @@
   <meta name="theme-color" content="#050505" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src https://open.spotify.com https://www.youtube-nocookie.com; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
   <title>Jay + Crystal Daily Brief</title>
   <meta name="description" content="Private shared daily briefing for Jay and Crystal." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <link rel="canonical" href="https://db.cmxchat.com/news/" />
   <link rel="stylesheet" href="/assets/news.css?v=20260801-5" />
+  <link rel="stylesheet" href="/assets/news-media.css?v=20260801-1" />
 </head>
 <body>
   <a class="skip-link" href="#briefContent">Skip to today’s briefing</a>
@@ -40,6 +41,7 @@
 
       <nav class="brief-nav" aria-label="Quick sections">
         <a href="#priority">Today</a>
+        <a href="#spotify">Play & watch</a>
         <a href="#relationship">Us</a>
         <a href="#crystal">Crystal</a>
         <a href="#culture">Celebrity & culture</a>
@@ -113,9 +115,10 @@
 
       <section id="spotify" class="brief-section" data-section="spotify">
         <div class="section-heading">
-          <div><p class="path-label">~/music/listening</p><h2>MUSIC & LISTENING</h2></div>
-          <span class="section-audience audience-shared">soundtrack</span>
+          <div><p class="path-label">~/media/today</p><h2>PLAY & WATCH</h2></div>
+          <span class="section-audience audience-shared">tap to load</span>
         </div>
+        <p class="section-intro">One shared song and one daily watch when there is something worth pressing play on. Nothing autoplays, and both players stay asleep until one of you taps them.</p>
         <div id="spotifyCards" class="card-grid"></div>
       </section>
 
@@ -228,7 +231,9 @@
   </main>
 
   <noscript>This page requires JavaScript to render the daily briefing.</noscript>
-  <script src="/assets/news-data.js?v=20260801-5" defer></script>
-  <script src="/assets/news.js?v=20260801-5" defer></script>
+  <script src="/assets/news-data.js?v=20260801-6" defer></script>
+  <script src="/assets/daily-video.js?v=20260801-1" defer></script>
+  <script src="/assets/news.js?v=20260801-6" defer></script>
+  <script src="/assets/news-media.js?v=20260801-1" defer></script>
 </body>
 </html>
