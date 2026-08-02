@@ -63,8 +63,14 @@
   });
   observer.observe(grid, { childList: true, subtree: true });
 
-  toggle.addEventListener("click", () => {
+  toggle.addEventListener("click", event => {
     window.setTimeout(() => {
+      if (!event.isTrusted) {
+        userOpened = false;
+        keepClosedUntilChosen();
+        return;
+      }
+
       userOpened = !grid.hidden;
       wrapper.classList.toggle("is-open", userOpened);
       toggle.setAttribute("aria-expanded", String(userOpened));
