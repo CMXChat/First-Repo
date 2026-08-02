@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="/assets/debbie-balanced-blue.css?v=20260802-2" />
   <link rel="stylesheet" href="/assets/debbie-balanced-type.css?v=20260802-2" />
   <link rel="stylesheet" href="/assets/debbie-stability.css?v=20260802-1" />
-  <script src="/assets/debbie-boot.js?v=20260802-1" defer></script>
+  <script src="/assets/debbie-boot.js?v=20260802-2" defer></script>
   <script src="/assets/debbie-final-v2.js?v=20260802-2" defer></script>
 </head>
 <body class="locked">
@@ -71,7 +71,8 @@
           <p class="hero-lede">Coffee first. Then the world. This is a short briefing built around what you care about, followed by a practical tour of what Jay is trying to create and what it could become.</p>
           <div class="hero-actions">
             <button class="primary" data-jump="today" type="button">Start today's brief</button>
-            <button class="secondary" id="readSummary" type="button">Listen to the idea</button>
+            <button class="secondary" id="heroMusicToggle" type="button" aria-pressed="false">Play today's song</button>
+            <button id="readSummary" type="button" hidden tabindex="-1" aria-hidden="true"></button>
           </div>
           <div class="hero-tags"><span>Jewish + Israel news</span><span>Brooklyn</span><span>Mysteries</span><span>Scrabble</span><span>Country music</span></div>
         </div>
