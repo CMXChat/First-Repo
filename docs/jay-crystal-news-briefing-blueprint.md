@@ -1,10 +1,24 @@
 # Jay + Crystal `/news` Briefing Blueprint
 
+## Canonical Route
+
+The live Jay + Crystal shared briefing belongs at `/news/`.
+
+The old `/crystal/` route should only redirect to `/news/` and must never become a separate competing version.
+
 ## Purpose
 
 The Jay + Crystal `/news` briefing is a private, interactive shared daily page for Jay and Crystal. It combines personal updates, relationship repair, uplifting music, creative ideas, career progress, fitness accountability, useful current information, and a concise explanation of whatever Jay is building.
 
 This blueprint must remain reusable even if the live `/news/` route is later rebuilt or deleted.
+
+## Preserved Layout
+
+The protected layout copy is stored at:
+
+`templates/jay-crystal-news-layout.html`
+
+Treat the live visual shell and its preserved template as protected design assets.
 
 ## Identity
 
@@ -150,11 +164,16 @@ Do not repeatedly ask for information already supplied.
 
 ## Daily Update Architecture
 
-Preferred long-term structure:
+Preferred structure:
 
 - `/news/` as the canonical gated Jay + Crystal route
-- Reusable briefing shell
-- Separate daily data file or API response
+- `/crystal/` as redirect only
+- `assets/cmx-news.html` as the live visual shell
+- `assets/news-data.js` as daily content
+- `assets/news.js` as the renderer
+- `assets/news-media.js` as synchronized media controls
+- `assets/news-gate.js` as password and autoplay flow
+- `templates/jay-crystal-news-layout.html` as the preserved layout copy
 - Separate recipient profiles and preferences
 - Daily uplifting media selection
 - Approved connectors only
