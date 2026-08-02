@@ -14,7 +14,7 @@
   </style>
 </head>
 <body>
-  <iframe id="eliExperience" src="/assets/cmx-eli.html?v=20260802-2" title="Eli Investment Review"></iframe>
+  <iframe id="eliExperience" src="/assets/cmx-eli.html?v=20260802-3" title="Eli Investment Review"></iframe>
   <script>
     (() => {
       const frame = document.getElementById('eliExperience');
@@ -23,6 +23,43 @@
         alternatives: 'alternatives',
         decision: 'decision'
       };
+
+      function correctParcelMap(doc) {
+        const formerOneAcre = doc.querySelector('.parcel-one');
+        const formerRearParcel = doc.querySelector('.parcel-rear');
+        const roadway = doc.querySelector('.land-map .road');
+        const mapNote = doc.querySelector('.map-card .microcopy');
+
+        if (formerOneAcre) {
+          const acreage = formerOneAcre.querySelector('span');
+          const description = formerOneAcre.querySelector('small');
+          if (acreage) acreage.textContent = '1.5 ACRES';
+          if (description) description.textContent = 'Rear parcel';
+          formerOneAcre.setAttribute('aria-label', 'One and a half acre rear parcel');
+        }
+
+        if (formerRearParcel) {
+          const acreage = formerRearParcel.querySelector('span');
+          const description = formerRearParcel.querySelector('small');
+          if (acreage) acreage.textContent = '1 ACRE';
+          if (description) description.textContent = 'Major road frontage';
+          formerRearParcel.setAttribute('aria-label', 'One acre front parcel along the major roadway');
+        }
+
+        if (roadway) {
+          roadway.textContent = 'MAJOR ROADWAY / FRONTAGE';
+          roadway.setAttribute('aria-label', 'Major roadway in front of the four-acre and one-acre parcels');
+          roadway.style.border = '1px solid rgba(255,255,255,.16)';
+          roadway.style.background = 'repeating-linear-gradient(90deg,rgba(255,255,255,.12) 0 28px,rgba(255,255,255,.025) 28px 44px)';
+          roadway.style.color = '#d7d9df';
+          roadway.style.fontWeight = '800';
+          roadway.style.letterSpacing = '.12em';
+        }
+
+        if (mapNote) {
+          mapNote.textContent = 'Concept only. Per Eli’s clarification, the 1.5-acre parcel sits behind the 1-acre parcel, while the major roadway runs in front of the 4-acre and 1-acre parcels. Exact boundaries, adjacency, and access still require an independent combined survey.';
+        }
+      }
 
       function openEverything(doc) {
         if (!doc?.body) return;
@@ -34,6 +71,8 @@
           dark.href = '/assets/cmx-eli-dark.css?v=20260802-1';
           doc.head.appendChild(dark);
         }
+
+        correctParcelMap(doc);
 
         doc.querySelectorAll('[data-lock]').forEach(section => {
           section.classList.remove('locked-scene');
