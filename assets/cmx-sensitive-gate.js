@@ -69,6 +69,40 @@
     return `<script>(()=>{const k=${JSON.stringify(SESSION_KEY)},idle=${IDLE_LIMIT_MS},absolute=${ABSOLUTE_LIMIT_MS};let last=Date.now(),timer;const read=()=>{try{return JSON.parse(sessionStorage.getItem(k))||null}catch{return null}},write=()=>{const now=Date.now(),old=read();try{sessionStorage.setItem(k,JSON.stringify({createdAt:Number.isFinite(old?.createdAt)?old.createdAt:now,lastSeen:now}))}catch{}};const touch=()=>{last=Date.now();clearTimeout(timer);timer=setTimeout(write,200)};['pointerdown','keydown','scroll','touchstart'].forEach(e=>addEventListener(e,touch,{passive:true}));touch();setInterval(()=>{const s=read(),now=Date.now();if(!s||now-last>=idle||now-Number(s.createdAt||0)>=absolute){try{sessionStorage.removeItem(k)}catch{}location.reload()}},30000)})()<\/script>`;
   }
 
+  function safeAssetList(value) {
+    return String(value || '')
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean)
+      .map(item => {
+        try {
+          const url = new URL(item, location.origin);
+          if (url.origin !== location.origin) return '';
+          return `${url.pathname}${url.search}`;
+        } catch {
+          return '';
+        }
+      })
+      .filter(Boolean);
+  }
+
+  function escapeAttribute(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('"', '&quot;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;');
+  }
+
+  function extraAssetMarkup() {
+    const styles = safeAssetList(root.dataset.cmxExtraStyles);
+    const scripts = safeAssetList(root.dataset.cmxExtraScripts);
+    return [
+      ...styles.map(href => `<link rel="stylesheet" href="${escapeAttribute(href)}" />`),
+      ...scripts.map(src => `<script src="${escapeAttribute(src)}" defer><\/script>`)
+    ].join('');
+  }
+
   async function loadProtectedDocument(message) {
     const source = root.dataset.cmxLoadUrl;
     if (!source) return false;
@@ -87,6 +121,8 @@
     if (!response.ok) throw new Error(`Resource returned HTTP ${response.status}`);
 
     let html = await response.text();
+    const extraAssets = extraAssetMarkup();
+    if (extraAssets) html = html.replace('</head>', `${extraAssets}</head>`);
     html = html.replace('</body>', `${sessionKeeperScript()}</body>`);
     document.open();
     document.write(html);
