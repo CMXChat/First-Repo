@@ -1,9 +1,9 @@
 window.CMX_NEWS_BRIEF = {
   meta: {
-    status: "structure preview",
-    date: "August 1, 2026",
-    generated: "Adaptive page structure updated August 1, 2026",
-    summary: "A flexible daily briefing that leads with what matters most, refreshes current information, and uses light blue for Jay, pink for Crystal and white for shared context.",
+    status: "daily edition",
+    date: "August 1, 2026 in Brooklyn · August 2, 2026 in Waikato",
+    generated: "Generated August 1, 2026 at 9:54 PM EDT / August 2, 2026 at 1:54 PM NZST",
+    summary: "A calm two-date edition with useful weather, a public-safe activity note, recent Spotify listening, winter pet care and one strong style direction.",
     sectionOrder: [
       "priority",
       "opening",
@@ -27,18 +27,18 @@ window.CMX_NEWS_BRIEF = {
     {
       audience: "shared",
       priority: 100,
-      label: "page upgrade",
-      status: "ready",
-      title: "The briefing now begins with the one thing worth noticing first",
-      text: "This lead area can hold a weather warning, important local development, meaningful personal update or anything else that deserves attention before the regular sections.",
+      label: "two-city weather",
+      status: "REPORTED",
+      title: "Brooklyn stays mild tonight; Waikato gets a bright but cold Sunday",
+      text: "Brooklyn is overcast in the mid-70s with Sunday storm chances building late. Across available Waikato forecasts, Sunday is mainly sunny with a cold early start and breezy southwesterlies.",
       directLines: [
         {
           audience: "jay",
-          text: "Jay-specific guidance can appear in light blue when a direct sentence is genuinely useful."
+          text: "Jay: Sunday errands are easier before the late-afternoon storm chance rises."
         },
         {
           audience: "crystal",
-          text: "Crystal-specific guidance can appear in pink without turning every paragraph into a color-coded wall."
+          text: "Crystal: sunshine helps, but the cold start still deserves layers."
         }
       ]
     }
@@ -48,195 +48,169 @@ window.CMX_NEWS_BRIEF = {
     {
       audience: "shared",
       priority: 90,
-      label: "adaptive structure",
-      title: "Sections can move, shorten or disappear",
-      text: "The daily data can change the section order. Empty sections hide automatically, and quiet news days do not need filler."
+      label: "today in one minute",
+      title: "Useful beats dramatic today",
+      text: "No urgent item passed the verification bar during this test run. The strongest material is practical: weather timing, winter pet care, current listening and one clean fashion direction."
     },
     {
       audience: "shared",
       priority: 80,
-      label: "editorial rule",
-      title: "Useful context comes before volume",
-      text: "The daily edition should explain what matters, identify uncertainty and avoid repeating the same advice simply to fill space."
+      label: "editorial check",
+      title: "Weak celebrity claims were left out",
+      text: "No sufficiently strong new Erika Kirk item was confirmed, and the newest Diddy release-date report lacked enough independent current confirmation for this edition."
     }
   ],
 
   activity: [
     {
       audience: "jay",
-      priority: 90,
+      priority: 80,
       label: "digital activity",
-      status: "self-reported",
-      title: "Daily online recap",
-      items: [
-        "People and communities Jay interacted with",
-        "The general purpose and context of meaningful conversations",
-        "Online work, browsing, gaming, calls or other activity",
-        "Unknown or incomplete details labeled honestly"
-      ],
-      directLines: [
-        {
-          audience: "jay",
-          text: "The final briefing should be clear and contextual, not written like an interrogation transcript."
-        }
-      ]
-    },
-    {
-      audience: "shared",
-      priority: 75,
-      label: "privacy model",
-      status: "backend pending",
-      title: "Sensitive activity expires after 24 hours",
-      text: "The future backend will keep temporary activity outside Git history and automatically remove it after the agreed retention window."
+      status: "SELF-REPORTED",
+      title: "No fresh activity check-in",
+      text: "No new digital-activity check-in was supplied for this edition. Discord, messages, browsing, calls and other online activity remain not supplied rather than assumed."
     }
   ],
 
   crystal: [
     {
       audience: "crystal",
-      priority: 90,
-      label: "Crystal’s interests",
-      title: "Her side of the briefing gets real space",
-      text: "This area can prioritize Waikato developments, major crime stories, celebrity coverage, lighter culture, pets, beauty, fashion and anything else Crystal says she cares about.",
+      priority: 82,
+      label: "pets in winter",
+      status: "OFFICIAL",
+      title: "Cold-day setup for the tiny-dog department",
+      text: "SPCA New Zealand recommends warm, dry bedding and weatherproof shelter in winter. Small short-haired dogs may need extra warmth when the day begins near the low single digits.",
       directLines: [
         {
           audience: "crystal",
-          text: "Your section should feel selected for you, not like leftovers from Jay’s briefing."
+          text: "Crystal: cold day, warm pile of dogs. Efficient."
         }
-      ]
-    },
-    {
-      audience: "crystal",
-      priority: 70,
-      label: "future feedback",
-      status: "backend pending",
-      title: "Corrections and preferences from the page",
-      text: "Once the backend exists, Crystal will be able to flag something as incorrect, irrelevant, too detailed or worth following tomorrow."
+      ],
+      url: "https://www.spca.nz/advice-and-welfare/article/preparing-your-pets-for-winter",
+      linkLabel: "read SPCA winter guidance",
+      published: "current guidance"
     }
   ],
 
   weather: [
     {
       audience: "jay",
-      priority: 80,
+      priority: 85,
       label: "Brooklyn, New York",
-      title: "Live weather appears here",
-      text: "Current conditions, temperature range, rain or severe-weather information and one practical line for the day."
+      status: "REPORTED",
+      title: "Overcast tonight, storm chance Sunday afternoon",
+      text: "Around 76°F late evening with an overnight low near 74°F. Sunday reaches about 80°F, with thunderstorm chances rising toward 60% late afternoon and early evening.",
+      url: "https://www.timeanddate.com/weather/usa/brooklyn/hourly",
+      linkLabel: "view hourly Brooklyn forecast",
+      published: "updated Aug 1"
     },
     {
       audience: "crystal",
-      priority: 80,
+      priority: 85,
       label: "Waikato, New Zealand",
-      title: "Live weather appears here",
-      text: "Waikato-wide conditions only, without attempting to reveal or infer a more precise location."
+      status: "REPORTED",
+      title: "Mainly sunny, cold start, breezy southwest",
+      text: "Available Waikato forecasts cluster around 13–15°C for the high and 3–5°C for the low, with a low rain chance and a noticeable southwesterly breeze.",
+      url: "https://www.weatherwatch.co.nz/forecasts/Hamilton%2C%20Waikato",
+      linkLabel: "view Waikato forecast reference",
+      published: "Sunday, Aug 2"
     }
   ],
 
   style: [
     {
       audience: "crystal",
-      priority: 65,
-      label: "beauty and fashion",
-      title: "One useful style note when there is something worth suggesting",
-      text: "This can rotate between weather-aware hair ideas, makeup, nails, jewelry, outfit colors, current trends and celebrity style without becoming repetitive.",
-      directLines: [
-        {
-          audience: "crystal",
-          text: "Advice should complement your preferences and never rank, criticize or overanalyze your appearance."
-        }
-      ]
+      priority: 76,
+      label: "Chanel bag direction",
+      status: "OFFICIAL",
+      title: "Dark burgundy and gold hardware are the strongest match",
+      text: "Chanel's Spring-Summer 2026 pre-collection includes a dark-burgundy Maxi Hobo and CHANEL 31 Mini Shopping Bag with gold-tone hardware. The color sits neatly between glamorous, bold and wearable.",
+      url: "https://www.chanel.com/us/fashion/handbags/spring-summer-2026-pre-collection//",
+      linkLabel: "view Chanel handbags",
+      published: "Spring-Summer 2026"
+    },
+    {
+      audience: "crystal",
+      priority: 68,
+      label: "jewelry business",
+      title: "Show the transformation",
+      text: "Photograph one finished piece beside the components it began as; the before-and-after story makes the custom work visible and helps support the price."
     }
   ],
 
   spotify: [
     {
       audience: "jay",
-      priority: 70,
+      priority: 74,
       label: "recent listening",
-      status: "connected source",
-      title: "Spotify recap for Jay",
-      text: "When access is available, this can summarize recent listening and link directly to a notable track, artist or playlist."
-    },
-    {
-      audience: "shared",
-      priority: 60,
-      label: "upbeat pick",
-      title: "One positive soundtrack option",
-      text: "A bright, upbeat recommendation can appear with a real Spotify link. It remains optional and is not framed as a required couple activity."
+      status: "CONNECTED SOURCE",
+      title: "Spotify surfaced a mixed recent rotation",
+      text: "Recent results included Olive, ben, Kaskade with Glockenbach and Kaitlin Aragon, JAY-Z, and Robyn with Zara Larsson. No listening duration or emotional meaning is being inferred.",
+      items: [
+        "You're Not Alone · Olive",
+        "Touch My Hair · ben",
+        "Runaway · Kaskade, Glockenbach and Kaitlin Aragon",
+        "In My Lifetime · JAY-Z",
+        "Talk To Me, Zara · Robyn and Zara Larsson"
+      ],
+      url: "https://open.spotify.com/track/4AJWkU9WQeFytNaJExtyRj?utm_source=openai&utm_medium=chatgpt&go=1&nap_web=1&request_id=650ddee3-28c7-40b7-b5d6-28d07323704b&nl=spotify%3Anl%3ACAASEGUN3uMox0C3tdYo0HMjcEsaGDU6NEFKV2tVOVdRZUZ5dE5hSkV4dHlSaiADMAPgAzXoA7XPuYH8M%2FADIA%3D%3D",
+      linkLabel: "open You're Not Alone on Spotify",
+      published: "connected during this run"
     }
   ],
 
   localNews: [
     {
       audience: "jay",
-      priority: 75,
-      label: "Brooklyn and New York",
-      title: "Useful local developments",
-      text: "Only timely stories with a practical or genuinely interesting reason to include them."
+      priority: 66,
+      label: "New York transit",
+      status: "REPORTED",
+      title: "Recent figures point to weaker subway reliability",
+      text: "Reporting based on MTA data says weekday on-time performance slipped, with the B, N, 2, F and 6 among the weaker lines. Check live MTA status before a time-sensitive trip.",
+      url: "https://nypost.com/2026/07/31/us-news/subway-delays-worsen-as-mta-touts-solutions-in-2050/",
+      linkLabel: "read the transit report",
+      published: "Jul 31"
     },
     {
       audience: "crystal",
-      priority: 85,
-      label: "Waikato and New Zealand",
-      title: "Crime, safety and major local developments",
-      text: "Relevant Waikato coverage should receive more attention, with event dates and sourcing checked before publication."
+      priority: 62,
+      label: "Waikato Police",
+      status: "OFFICIAL",
+      title: "No newer region-wide Police alert surfaced",
+      text: "The official Waikato district feed's newest visible release was dated July 26. No broader active regional emergency was identified from that feed during this test run.",
+      url: "https://www.police.govt.nz/news/districts/waikato",
+      linkLabel: "check Waikato Police updates",
+      published: "checked Aug 2 NZ time"
     }
   ],
 
-  world: [
-    {
-      audience: "shared",
-      priority: 50,
-      label: "world desk",
-      status: "verified",
-      title: "Only major developments",
-      text: "Routine political coverage can be skipped. Include international news when it is consequential enough to matter or explain."
-    }
-  ],
-
-  culture: [
-    {
-      audience: "crystal",
-      priority: 85,
-      label: "celebrity and major cases",
-      status: "verified",
-      title: "Confirmed developments with sources",
-      text: "Current celebrity news and major crime or court developments can be summarized clearly and linked to reliable reporting."
-    },
-    {
-      audience: "crystal",
-      priority: 70,
-      label: "rumor desk",
-      status: "unconfirmed",
-      title: "Rumors may appear, but never disguised as facts",
-      text: "A rumor should identify where it came from, what remains unverified and whether credible reporting supports any part of it."
-    }
-  ],
+  world: [],
+  culture: [],
 
   horoscope: [
     {
       audience: "jay",
-      priority: 60,
-      label: "Virgo · September 15",
-      title: "Jay’s reading",
-      text: "A short reflective horoscope for entertainment, written separately from Crystal’s.",
+      priority: 58,
+      label: "Virgo · September 15 · for entertainment",
+      title: "Jay's reading",
+      text: "The useful move is closing one open loop before opening three more. Precision works better than intensity tonight.",
       directLines: [
         {
           audience: "jay",
-          text: "Your best move today is to make one clear decision and stop reopening it for unnecessary debate."
+          text: "Jay: finish the smallest real task and let that count."
         }
       ]
     },
     {
       audience: "crystal",
-      priority: 60,
-      label: "Virgo · September 14",
-      title: "Crystal’s reading",
-      text: "A distinct Virgo reading shaped around her day and interests.",
+      priority: 58,
+      label: "Virgo · September 14 · for entertainment",
+      title: "Crystal's reading",
+      text: "A bright cold Sunday favors selective attention: one creative detail, one practical choice and less tolerance for clutter.",
       directLines: [
         {
           audience: "crystal",
-          text: "Protect your attention today and give your energy only to what feels consistent and real."
+          text: "Crystal: keep the strongest idea and edit the rest without ceremony."
         }
       ]
     }
@@ -245,47 +219,29 @@ window.CMX_NEWS_BRIEF = {
   relationship: [
     {
       audience: "shared",
-      priority: 80,
-      label: "daily perspective",
-      title: "Advice should fit the actual state of the relationship",
-      text: "The briefing will not force an activity, manufacture a conflict or flatten every issue into equal blame. It should identify the clearest point of common ground available that day.",
+      priority: 64,
+      label: "low-temperature guidance",
+      title: "Do not turn uncertainty into a completed story",
+      text: "No fresh relationship check-in was available for this edition. State what is known, label what is missing, and leave one clear question instead of ten overlapping accusations or defenses.",
       directLines: [
         {
-          audience: "jay",
-          text: "Direct advice for Jay can be plain without becoming accusatory."
-        },
-        {
-          audience: "crystal",
-          text: "Crystal’s concern can be advocated for clearly without turning the page into a case against either person."
+          audience: "shared",
+          text: "Shared: quiet consistency is more useful than a dramatic explanation."
         }
       ]
     }
   ],
 
-  timeline: [
-    {
-      audience: "shared",
-      priority: 40,
-      label: "positive memory lane",
-      status: "backend pending",
-      title: "Keep the good parts too",
-      text: "A future private archive can preserve kind messages, funny moments, meaningful songs and signs of progress. Daily sensitive activity will not enter this permanent timeline automatically."
-    }
-  ],
+  timeline: [],
 
   quote: {
-    kicker: "today’s line",
-    text: "Clarity should lower the temperature, not raise the stakes.",
+    kicker: "today's line",
+    text: "A quiet day is still information; it means you do not have to invent a crisis.",
     source: "Jay + Crystal Daily Brief",
-    reflection: "The quote area can include one short line explaining why the thought fits today. Some days it can be serious, some days playful, and some days simply useful."
+    reflection: "This edition had a few source gaps, so restraint produced a better page than pretending every section had a headline."
   },
 
   questions: [
-    "Who did you directly message, and what was each meaningful conversation mainly about?",
-    "Which Discord servers, channels, group chats or voice calls did you use?",
-    "What else took your online time today?",
-    "What did you listen to on Spotify, and was anything repeated?",
-    "Did Crystal share a new preference, correction or concern that tomorrow’s briefing should reflect?",
-    "Is there one detail you are uncertain about and want labeled as unknown?"
+    "What fresh online activity, if any, should tomorrow's edition summarize as SELF-REPORTED?"
   ]
 };
