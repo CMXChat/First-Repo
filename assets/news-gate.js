@@ -4,20 +4,17 @@
   const root = document.documentElement;
   const PASSWORD_SHA256 = String(root.dataset.cmxPasswordSha256 || '').toLowerCase();
   const SOURCE_URL = root.dataset.cmxLoadUrl || '/assets/cmx-news.html';
-  const EVERYWHERE_PREVIEW = 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/a2/79/75/a27975f9-de23-390f-8169-5401435f17e7/mzaf_8477868711916941859.plus.aac.p.m4a';
-  const ITUNES_LOOKUP = 'https://itunes.apple.com/lookup?id=202272247';
+  const MY_WISH_PREVIEW = 'https://p.scdn.co/mp3-preview/9c0b4d2e32560e295b5770138abd247f08c7bba9.mp3';
 
   const audio = document.createElement('audio');
   audio.id = 'newsDailyAudio';
   audio.preload = 'auto';
   audio.hidden = true;
   audio.volume = 0.001;
-  audio.src = EVERYWHERE_PREVIEW;
-  audio.dataset.song = 'Everywhere · Fleetwood Mac';
+  audio.src = MY_WISH_PREVIEW;
+  audio.dataset.song = 'My Wish · Rascal Flatts';
   root.appendChild(audio);
 
-  let preparedPreview = EVERYWHERE_PREVIEW;
-  let previewPrepared = true;
   let primePromise = Promise.resolve();
 
   async function sha256(value) {
@@ -32,28 +29,9 @@
     return result === 0;
   }
 
-  async function prepareDailyPreview() {
-    try {
-      const response = await fetch(ITUNES_LOOKUP, { cache: 'no-store', mode: 'cors' });
-      if (!response.ok) throw new Error(`Preview lookup returned ${response.status}`);
-      const payload = await response.json();
-      const result = payload?.results?.find(item => Number(item?.trackId) === 202272247);
-      const preview = result?.previewUrl;
-      if (typeof preview === 'string' && /^https:\/\//.test(preview)) {
-        preparedPreview = preview;
-        previewPrepared = true;
-        if (audio.dataset.primed !== 'true') audio.src = preparedPreview;
-      }
-    } catch {
-      preparedPreview = EVERYWHERE_PREVIEW;
-      previewPrepared = true;
-      if (audio.dataset.primed !== 'true') audio.src = preparedPreview;
-    }
-  }
-
   function primeAudio() {
     audio.dataset.primed = 'true';
-    if (audio.src !== preparedPreview) audio.src = preparedPreview;
+    audio.src = MY_WISH_PREVIEW;
     audio.muted = false;
     audio.volume = 0.001;
     audio.currentTime = 0;
@@ -112,8 +90,8 @@
 
     const update = () => {
       const playing = !audio.paused && !audio.ended;
-      button.textContent = playing ? 'Pause Everywhere' : 'Play Everywhere';
-      button.setAttribute('aria-label', playing ? 'Pause Everywhere by Fleetwood Mac' : 'Play Everywhere by Fleetwood Mac');
+      button.textContent = playing ? 'Pause My Wish' : 'Play My Wish';
+      button.setAttribute('aria-label', playing ? 'Pause My Wish by Rascal Flatts' : 'Play My Wish by Rascal Flatts');
       button.setAttribute('aria-pressed', playing ? 'true' : 'false');
     };
 
@@ -177,7 +155,7 @@
     window.dispatchEvent(new CustomEvent('news:audio-ready', {
       detail: {
         autoplay: audio.dataset.autoplay || 'unknown',
-        previewPrepared,
+        previewPrepared: true,
         song: audio.dataset.song
       }
     }));
@@ -195,7 +173,7 @@
           <div class="cmx-gate-brand"><div class="cmx-gate-emblem">J+C</div><div><small>PRIVATE DAILY BRIEF</small><strong>CREATION DAY</strong></div></div>
           <p class="cmx-gate-code">BROOKLYN // WAIKATO</p>
           <h1 id="cmx-gate-title">Open today’s briefing</h1>
-          <p class="cmx-gate-copy">Enter the passphrase. Fleetwood Mac’s “Everywhere” will begin as the page opens.</p>
+          <p class="cmx-gate-copy">Enter the passphrase. “My Wish” by Rascal Flatts will begin as the page opens.</p>
           <form id="cmx-gate-form" autocomplete="off">
             <label for="cmx-gate-password">Passphrase</label>
             <div class="cmx-gate-inputrow">
@@ -204,7 +182,7 @@
             </div>
             <p id="cmx-gate-message" role="status" aria-live="polite"></p>
           </form>
-          <div class="cmx-gate-footer"><span>PRIVATE</span><span>EVERYWHERE ENABLED</span></div>
+          <div class="cmx-gate-footer"><span>PRIVATE</span><span>MY WISH ENABLED</span></div>
         </div>
       </section>`;
     document.body.replaceChildren(gate);
@@ -248,6 +226,5 @@
     setTimeout(() => input.focus(), 50);
   }
 
-  prepareDailyPreview();
   document.addEventListener('DOMContentLoaded', renderGate, { once: true });
 })();
