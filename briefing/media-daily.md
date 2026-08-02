@@ -1,22 +1,67 @@
 # Daily Play & Watch Rules
 
 Target section: `spotify`
+Daily song data: `assets/daily-song.js`
+Daily briefing data: `assets/news-data.js`
 Daily video data: `assets/daily-video.js`
-Daily song data: the highest-priority shared card in `assets/news-data.js` under `spotify`
 
 ## Purpose
 
-Give Jay and Crystal one shared song and, when a strong option exists, one shared video they can play directly on `/news/`. Keep both choices light, useful, current, and easy to skip.
+Give Jay and Crystal one shared song every day and, when a strong option exists, one shared video they can play directly on `/news/`. Keep both choices light, useful, current and easy to skip.
+
+The current song is never a permanent site setting. It is only the selection for that edition. Choose a new song on the next daily run unless there is a clear editorial reason to repeat one.
 
 ## Daily shared song
 
-- Use the authorized Spotify connector.
-- Include exactly one shared song when Spotify works.
-- Use `audience: "shared"`, `status: "CONNECTED SOURCE"`, and the highest priority in `spotify`.
-- Include the exact track and artist, a short original description, and the connector-derived Spotify track link.
-- The page automatically turns the shared Spotify track into a click-to-load player.
-- Do not quote lyrics, claim the song proves either person's mood, force romance, or make listening homework.
-- Avoid recent repeats unless there is a clear reason.
+- Use the authorized Spotify connector when available.
+- Choose exactly one shared song for each daily edition.
+- Match the day’s mood and strongest themes without claiming the song proves either person’s emotions.
+- Prefer an uplifting, warm, energizing, playful or emotionally appropriate choice.
+- Avoid recent repeats. Review the prior daily files or recent commit history before selecting.
+- A repeat is allowed only when the song has a clear new reason to return. State that reason in the internal run summary.
+- Do not quote lyrics, force romance or make listening homework.
+- Use the exact track and artist, a short original description and the connector-derived Spotify track link.
+- Find and verify a lawful public preview URL when available. Prefer a Spotify-hosted preview or an official Apple/iTunes preview. Never upload or copy a full copyrighted recording.
+- If no preview is available, publish the Spotify selection anyway. The page will show an external play option instead of autoplaying audio.
+
+## Daily song file
+
+Replace `assets/daily-song.js` every day with valid UTF-8 JavaScript beginning exactly with:
+
+`window.CMX_DAILY_SONG = {`
+
+and ending with:
+
+`};`
+
+Use these fields:
+
+- `audience`: normally `shared`
+- `priority`: normally `100`
+- `label`: normally `today's uplifting song`
+- `status`: normally `DAILY PICK` or `CONNECTED SOURCE`
+- `title`: exact song title
+- `artist`: exact artist name
+- `displayTitle`: `Song · Artist`
+- `text`: one short original explanation of why it fits today
+- `directLine`: one optional playful or warm shared line
+- `spotifyUrl`: exact connector-derived Spotify track URL
+- `spotifyLinkLabel`: concise link label
+- `previewUrl`: verified lawful HTTPS preview URL, or an empty string when unavailable
+- `selectedFor`: Brooklyn edition date in `YYYY-MM-DD`
+- `published`: concise note such as `today's shared pick`
+
+`assets/daily-song.js` is the authoritative source for the gate copy, autoplay source, hero play and pause labels, and visible shared-song card. The permanent rendering logic lives elsewhere and must not be copied into this daily file.
+
+The matching `spotify` entry in `assets/news-data.js` should use the same track, artist, description and Spotify URL. If the two files briefly disagree, `assets/daily-song.js` wins on the rendered page.
+
+## Autoplay behavior
+
+- The song may begin only after the passphrase submission, which is the user interaction used to prime audio.
+- Never autoplay before the user interacts with the gate.
+- The hero and media-card controls must use the current daily song title and stay synchronized.
+- When a browser blocks autoplay, keep a clear play button.
+- When no preview exists, show a Spotify option instead of pretending audio can play.
 
 ## Daily video
 
@@ -32,7 +77,7 @@ Use these fields:
 
 - `audience`: normally `shared`
 - `label`: normally `today's watch`
-- `status`: `OFFICIAL`, `VERIFIED`, or `REPORTED`
+- `status`: `OFFICIAL`, `VERIFIED` or `REPORTED`
 - `title`: exact public video title or a faithful concise title
 - `text`: one short original explanation of why it was selected
 - `provider`: exactly `youtube`
@@ -46,32 +91,31 @@ When no strong embeddable video exists, replace the file with exactly:
 
 `window.CMX_DAILY_VIDEO = null;`
 
-Choose among comedy, a concise news explainer, scenic footage, music performance, fitness or running, animals, culture, a mini-documentary, or another useful current video. It may match the shared song when the official music video is the strongest choice.
+Choose among comedy, a concise news explainer, scenic footage, music performance, fitness or running, animals, culture, a mini-documentary or another useful current video. It may match the shared song when the official music video is the strongest choice, but it does not have to.
 
 ## Video safety and quality
 
-- Prefer official channels, primary sources, respected publishers, established creators, or verified artists.
+- Prefer official channels, primary sources, respected publishers, established creators or verified artists.
 - Verify the exact video ID and that the watch page exists.
-- Prefer videos that are embeddable. Skip videos that are age-restricted, private, removed, highly graphic, deceptive, invasive, or likely to fail in an iframe.
+- Prefer videos that are embeddable. Skip videos that are age-restricted, private, removed, highly graphic, deceptive, invasive or likely to fail in an iframe.
 - Do not use a rumor video as evidence for a factual claim.
 - Do not select distressing news merely because it is dramatic.
 - Keep political videos factual and proportionate. Avoid campaign propaganda as casual entertainment.
-- Do not use private-person content, leaked material, stolen uploads, or reuploads when an official source exists.
+- Do not use private-person content, leaked material, stolen uploads or reuploads when an official source exists.
 - Do not quote lyrics or reproduce copyrighted transcripts.
-
-## Player behavior
-
-- Players load only after a user taps them.
-- The page does not autoplay media before interaction.
-- YouTube uses Privacy-Enhanced Mode through `youtube-nocookie.com`.
-- Spotify and YouTube remain optional. Keep external fallback links.
-- Skip the video cleanly when no strong embeddable selection exists. Do not publish an empty card or missing-video notice.
 
 ## Publishing
 
-The daily briefing task may update both:
+The daily briefing task should update these three files:
 
 1. `assets/news-data.js`
-2. `assets/daily-video.js`
+2. `assets/daily-song.js`
+3. `assets/daily-video.js`
 
-Fetch the latest SHA for each file immediately before updating it. Validate both files after writing. Do not edit the media renderer, CSS, page gate, or HTML during an ordinary daily publishing run.
+Fetch the latest SHA for each file immediately before writing. Validate all three files after writing. Do not edit the media renderer, synchronization script, cache loader, access gate, CSS or HTML during an ordinary daily publishing run.
+
+Use intentional commit messages:
+
+- `Update Jay + Crystal daily brief for YYYY-MM-DD`
+- `Update Jay + Crystal daily song for YYYY-MM-DD`
+- `Update Jay + Crystal daily video for YYYY-MM-DD`
