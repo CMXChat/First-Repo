@@ -1,0 +1,170 @@
+:root {
+  --deep: #031b23;
+  --ocean: #0b5666;
+  --sea: #1e8b99;
+  --foam: #e8fbf8;
+  --sand: #e6d7b8;
+  --ink: #102c32;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0;
+  color: var(--foam);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(71, 183, 191, .24), transparent 33%),
+    radial-gradient(circle at 83% 12%, rgba(230, 215, 184, .13), transparent 28%),
+    linear-gradient(160deg, #03161d 0%, #073643 52%, #0b5666 100%);
+  font-family: Arial, "Noto Sans Hebrew", sans-serif;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  left: -10%;
+  width: 120%;
+  height: 180px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+body::before {
+  bottom: -105px;
+  background: rgba(232, 251, 248, .14);
+  animation: saraWave 9s ease-in-out infinite alternate;
+}
+body::after {
+  bottom: -130px;
+  background: rgba(232, 251, 248, .08);
+  animation: saraWave 12s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes saraWave {
+  from { transform: translateX(-2%) rotate(-1deg); }
+  to { transform: translateX(2%) rotate(1deg); }
+}
+
+#sara-private-gate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  direction: rtl;
+}
+
+.sara-gate-card {
+  width: min(620px, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(232, 251, 248, .28);
+  border-radius: 26px;
+  background: rgba(3, 27, 35, .86);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .38);
+  backdrop-filter: blur(18px);
+}
+
+.sara-gate-top {
+  min-height: 120px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  background:
+    linear-gradient(180deg, rgba(3, 27, 35, .06), rgba(3, 27, 35, .58)),
+    repeating-radial-gradient(ellipse at 50% 135%, transparent 0 24px, rgba(232, 251, 248, .12) 25px 27px, transparent 28px 46px),
+    linear-gradient(135deg, #0b6675, #1e8b99);
+}
+
+.sara-gate-mark {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.5);
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  font-size: 34px;
+}
+
+.sara-gate-top p,
+.sara-gate-top strong { margin: 0; }
+.sara-gate-top p { color: rgba(255,255,255,.78); font-size: 13px; }
+.sara-gate-top strong { display: block; margin-top: 4px; font-size: 21px; }
+
+.sara-gate-body { padding: 34px 32px 30px; }
+.sara-gate-kicker {
+  margin: 0 0 8px;
+  color: #8ed7df;
+  font-size: 13px;
+  letter-spacing: .03em;
+}
+.sara-gate-body h1 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: clamp(34px, 8vw, 56px);
+  line-height: 1.05;
+}
+.sara-gate-copy {
+  margin: 0 0 24px;
+  color: rgba(232, 251, 248, .79);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.sara-gate-form { display: grid; gap: 11px; }
+.sara-gate-form label { color: #cfeeed; font-size: 13px; }
+.sara-gate-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+.sara-gate-row input,
+.sara-gate-row button {
+  min-height: 52px;
+  border-radius: 14px;
+  font: inherit;
+}
+.sara-gate-row input {
+  min-width: 0;
+  padding: 0 16px;
+  color: #fff;
+  border: 1px solid rgba(232, 251, 248, .3);
+  outline: none;
+  background: rgba(0,0,0,.2);
+}
+.sara-gate-row input:focus { border-color: #8ed7df; box-shadow: 0 0 0 3px rgba(142, 215, 223, .12); }
+.sara-gate-row button {
+  padding: 0 20px;
+  color: var(--ink);
+  border: 0;
+  background: var(--sand);
+  font-weight: 700;
+  cursor: pointer;
+}
+.sara-gate-row button:hover { filter: brightness(1.06); }
+.sara-gate-row button:disabled { opacity: .65; cursor: wait; }
+
+#saraGateMessage { min-height: 1.5em; margin: 0; color: #abdfe4; font-size: 13px; }
+#saraGateMessage.is-error { color: #ffb4b4; }
+#saraGateMessage.is-success { color: #baf1d2; }
+
+.sara-gate-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 18px;
+  color: rgba(232,251,248,.56);
+  border-top: 1px solid rgba(232,251,248,.13);
+  font-size: 12px;
+}
+
+@media (max-width: 560px) {
+  #sara-private-gate { padding: 14px; }
+  .sara-gate-top { padding: 20px; min-height: 105px; }
+  .sara-gate-body { padding: 28px 20px 24px; }
+  .sara-gate-row { grid-template-columns: 1fr; }
+  .sara-gate-row button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none; }
+}
