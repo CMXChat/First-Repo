@@ -3,6 +3,8 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   let initialized = false;
+  let retryTimer = 0;
+  let retryCount = 0;
 
   function currentPreset() {
     return window.BRIEF_APP?.getPreset?.() || 'individual';
@@ -64,14 +66,15 @@
     const existing = $('#relationshipDailyWatch');
     if (currentPreset() !== 'couple') {
       existing?.remove();
-      return;
+      return true;
     }
 
     const video = validVideo();
     const addon = $('#scenarioExperienceAddon');
-    if (!video || !addon) return;
+    if (!video) return true;
+    if (!addon) return false;
 
-    if (existing?.dataset.videoId === video.videoId) return;
+    if (existing?.dataset.videoId === video.videoId) return true;
     existing?.remove();
 
     const card = createCard(video);
@@ -79,18 +82,28 @@
     const culture = $('.culture-stream', addon);
     if (culture) culture.insertAdjacentElement('beforebegin', card);
     else addon.appendChild(card);
+    return true;
+  }
+
+  function scheduleRender() {
+    window.clearTimeout(retryTimer);
+    retryCount = 0;
+
+    const attempt = () => {
+      retryCount += 1;
+      const complete = render();
+      if (!complete && retryCount < 12) retryTimer = window.setTimeout(attempt, 250);
+    };
+
+    attempt();
   }
 
   function init() {
     if (initialized || !window.BRIEF_APP) return;
     initialized = true;
-    render();
-    window.addEventListener('brief:preset-change', () => window.setTimeout(render, 180));
-
-    if ('MutationObserver' in window) {
-      const observer = new MutationObserver(() => render());
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
+    scheduleRender();
+    window.addEventListener('brief:preset-change', () => window.setTimeout(scheduleRender, 120));
+    window.addEventListener('brief:device-fallback-open', () => window.setTimeout(scheduleRender, 120));
   }
 
   window.addEventListener('brief:ready', init, { once: true });
