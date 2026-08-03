@@ -21,7 +21,7 @@ window.SARA_BRIEF_DATA = {
     {
       icon: '🎵',
       kicker: 'בחירה של שרה',
-      title: 'Mama · Genesis · 1983',
+      title: 'Mama · Genesis (שירה מובילה: Phil Collins) · 1983',
       text: 'שיר דרמטי, עמוק ומעט מסתורי לפתיחת הבוקר. הוא נשאר הבחירה המזוהה שלך, ובחלק המוזיקה מחכים עוד שירים של פיל קולינס וג׳נסיס.'
     }
   ],
@@ -156,7 +156,7 @@ window.SARA_BRIEF_DATA = {
   songs: [
     {
       title: 'Mama',
-      artist: 'Genesis',
+      artist: 'Genesis (שירה מובילה: Phil Collins)',
       year: '1983',
       note: 'הבחירה שלך. שיר דרמטי עם קצב איטי שנבנה בהדרגה ומרגיש כמו סצנה שלמה.',
       url: 'https://open.spotify.com/search/Genesis%20Mama'
