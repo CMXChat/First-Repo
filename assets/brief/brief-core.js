@@ -5,6 +5,7 @@
   const presets = window.BRIEF_PRESETS;
   const data = window.BRIEF_DATA;
   const connections = window.BRIEF_CONNECTIONS;
+  const song = window.CMX_DAILY_SONG || null;
   if (!config || !presets || !data || !connections) return;
 
   const $ = selector => document.querySelector(selector);
@@ -14,8 +15,10 @@
     preset: localStorage.getItem(storageKey('preset')) || config.preset,
     shared: false,
     explaining: false,
-    soundtrack: null,
-    narrationActive: false
+    songAudio: null,
+    narrationActive: false,
+    narrationRestoreVolume: null,
+    selectedTrack: 0
   };
 
   function escapeHtml(value) {
@@ -164,40 +167,172 @@
     dailyTab.addEventListener('click', () => switchTo('daily'));
   }
 
-  function startSoundtrack() {
-    if (state.soundtrack) return;
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) {
-      showToast('This browser does not support the demo soundtrack.');
+  function safeSpotifyTrackId(url) {
+    const match = String(url || '').match(/open\.spotify\.com\/track\/([A-Za-z0-9]{22})/);
+    return match ? match[1] : '';
+  }
+
+  function trackParts(item) {
+    const display = String(item?.displayTitle || item?.title || 'Music selection');
+    if (item?.artist) return { title: String(item.title || display), artist: String(item.artist) };
+    const parts = display.split(' · ');
+    return { title: parts[0] || display, artist: parts.slice(1).join(' · ') || 'Spotify selection' };
+  }
+
+  function spotifyUrl(item) {
+    return String(item?.spotifyUrl || item?.url || '');
+  }
+
+  function formatTime(value) {
+    if (!Number.isFinite(value) || value < 0) return '0:00';
+    const minutes = Math.floor(value / 60);
+    const seconds = Math.floor(value % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  }
+
+  function setSpotifyEmbed(item, index = 0) {
+    const id = safeSpotifyTrackId(spotifyUrl(item));
+    if (!id) return;
+    const parts = trackParts(item);
+    $('#spotifyFeaturedFrame').src = `https://open.spotify.com/embed/track/${encodeURIComponent(id)}?utm_source=generator&theme=0`;
+    $('#spotifyNowLabel').textContent = `${parts.title} · ${parts.artist}`;
+    state.selectedTrack = index;
+    $$('.favorite-track').forEach((card, cardIndex) => card.classList.toggle('is-selected', cardIndex === index));
+  }
+
+  function updateMusicUi() {
+    const audio = state.songAudio;
+    const playing = Boolean(audio && !audio.paused && !audio.ended);
+    const previewButton = $('#musicPreviewButton');
+    if (previewButton) {
+      const icon = previewButton.querySelector('span');
+      const label = previewButton.querySelector('b');
+      if (icon) icon.textContent = playing ? '❚❚' : '▶';
+      if (label) label.textContent = playing ? 'Pause actual song preview' : 'Play actual song preview';
+      previewButton.setAttribute('aria-pressed', String(playing));
+    }
+    $('#audioButton').classList.toggle('is-active', playing);
+    $('#audioButton').setAttribute('aria-label', playing ? 'Pause today’s song' : 'Play today’s song');
+  }
+
+  function updateMusicProgress() {
+    const audio = state.songAudio;
+    if (!audio) return;
+    const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 30;
+    const percent = Math.min(100, (audio.currentTime / duration) * 100);
+    $('#musicCurrentTime').textContent = formatTime(audio.currentTime);
+    $('#musicDuration').textContent = formatTime(duration);
+    $('#musicProgressBar').style.width = `${percent}%`;
+  }
+
+  function renderMusic() {
+    const section = $('#music');
+    if (!song || !section) {
+      if (section) section.hidden = true;
+      $('#musicOnEntry').checked = false;
+      $('#musicOnEntry').disabled = true;
+      $('#gateSongName').textContent = 'No daily song is configured for this demonstration.';
+      $('#audioButton').disabled = true;
       return;
     }
-    const context = new AudioContext();
-    const master = context.createGain();
-    master.gain.value = 0.035;
-    master.connect(context.destination);
-    const frequencies = [110, 164.81, 220, 329.63];
-    const oscillators = frequencies.map((frequency, index) => {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = index % 2 ? 'sine' : 'triangle';
-      oscillator.frequency.value = frequency;
-      gain.gain.value = index === 0 ? 0.55 : 0.2;
-      oscillator.connect(gain).connect(master);
-      oscillator.start();
-      return oscillator;
+
+    const parts = trackParts(song);
+    const displayTitle = song.displayTitle || `${parts.title} · ${parts.artist}`;
+    $('#gateSongName').textContent = `${displayTitle} will begin after you press Enter, subject to browser support.`;
+    $('#musicTitle').textContent = parts.title;
+    $('#musicArtist').textContent = parts.artist;
+    $('#musicReason').textContent = song.text || 'Selected to match the pace and mood of the day.';
+    $('#musicDirectLine').textContent = song.directLine || 'A daily soundtrack can make the briefing feel alive.';
+    $('#musicSpotifyLink').href = spotifyUrl(song) || 'https://open.spotify.com/';
+    $('#musicArtDate').textContent = String(song.selectedFor || data.edition.date || '').replaceAll('-', '.');
+
+    const previewUrl = /^https:\/\//.test(String(song.previewUrl || '')) ? String(song.previewUrl) : '';
+    if (previewUrl) {
+      const audio = new Audio(previewUrl);
+      audio.preload = 'metadata';
+      audio.volume = 0.3;
+      state.songAudio = audio;
+      audio.addEventListener('play', () => {
+        $('#musicPreviewNote').textContent = `Playing the authorized preview of ${displayTitle}.`;
+        updateMusicUi();
+      });
+      audio.addEventListener('pause', updateMusicUi);
+      audio.addEventListener('loadedmetadata', updateMusicProgress);
+      audio.addEventListener('timeupdate', updateMusicProgress);
+      audio.addEventListener('ended', () => {
+        audio.currentTime = 0;
+        $('#musicPreviewNote').textContent = 'Preview complete. Use the Spotify player for provider playback.';
+        updateMusicProgress();
+        updateMusicUi();
+      });
+      audio.addEventListener('error', () => {
+        $('#musicPreviewNote').textContent = 'The preview could not load. The Spotify player remains available.';
+        updateMusicUi();
+      });
+    } else {
+      $('#musicPreviewButton').disabled = true;
+      $('#musicPreviewNote').textContent = 'No authorized preview is available. Use the Spotify player for playback.';
+    }
+
+    const recommendations = Array.isArray(song.recommendations) ? song.recommendations : [];
+    const accents = ['rgba(87,168,255,.48)', 'rgba(161,119,255,.48)', 'rgba(255,176,82,.48)'];
+    $('#musicFavorites').innerHTML = recommendations.map((item, index) => {
+      const itemParts = trackParts(item);
+      return `
+        <article class="favorite-track" style="--track-accent:${accents[index % accents.length]}">
+          <span>${escapeHtml(item.status || item.label || 'FAVORITE')}</span>
+          <h4>${escapeHtml(itemParts.title)}<br><small>${escapeHtml(itemParts.artist)}</small></h4>
+          <p>${escapeHtml(item.text || 'Saved in the fictional favorites rotation.')}</p>
+          <button type="button" data-spotify-track-index="${index}">Load in Spotify player</button>
+        </article>
+      `;
+    }).join('');
+
+    $$('[data-spotify-track-index]').forEach(button => {
+      button.addEventListener('click', () => {
+        const index = Number(button.dataset.spotifyTrackIndex);
+        const item = recommendations[index];
+        setSpotifyEmbed(item, index);
+        $('#spotifyFeaturedFrame').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
     });
-    state.soundtrack = { context, oscillators };
-    $('#audioButton').classList.add('is-active');
-    $('#audioButton').setAttribute('aria-label', 'Stop soundtrack');
+
+    setSpotifyEmbed(song, -1);
+    updateMusicUi();
+    updateMusicProgress();
+  }
+
+  async function startSoundtrack() {
+    const audio = state.songAudio;
+    if (!audio) {
+      showToast('No actual song preview is available. Use the Spotify player below.');
+      return;
+    }
+    if (audio.ended) audio.currentTime = 0;
+    audio.muted = false;
+    audio.volume = state.narrationActive ? 0.08 : 0.3;
+    try {
+      await audio.play();
+    } catch {
+      $('#musicPreviewNote').textContent = 'Your browser blocked automatic playback. Tap the music button to play.';
+      showToast('Your browser blocked the song. Tap the music control to play it.');
+    }
+    updateMusicUi();
   }
 
   function stopSoundtrack() {
-    if (!state.soundtrack) return;
-    state.soundtrack.oscillators.forEach(oscillator => oscillator.stop());
-    state.soundtrack.context.close();
-    state.soundtrack = null;
-    $('#audioButton').classList.remove('is-active');
-    $('#audioButton').setAttribute('aria-label', 'Start soundtrack');
+    if (!state.songAudio) return;
+    state.songAudio.pause();
+    updateMusicUi();
+  }
+
+  function finishNarration() {
+    state.narrationActive = false;
+    $('#readButton').classList.remove('is-active');
+    if (state.songAudio && state.narrationRestoreVolume !== null && !state.songAudio.paused) {
+      state.songAudio.volume = state.narrationRestoreVolume;
+    }
+    state.narrationRestoreVolume = null;
   }
 
   function readOpening() {
@@ -207,20 +342,22 @@
     }
     if (state.narrationActive) {
       window.speechSynthesis.cancel();
-      state.narrationActive = false;
-      $('#readButton').classList.remove('is-active');
+      finishNarration();
       return;
     }
     const words = [$('#greeting').textContent, $('#heroTitle').textContent, $('#heroSummary').textContent, ...data.priorities.map(item => `${item.title}. ${item.detail}`)].join(' ');
     const utterance = new SpeechSynthesisUtterance(words);
     utterance.rate = 0.96;
     utterance.pitch = 1;
-    utterance.onend = () => {
-      state.narrationActive = false;
-      $('#readButton').classList.remove('is-active');
-    };
+    utterance.onend = finishNarration;
+    utterance.onerror = finishNarration;
+    if (state.songAudio && !state.songAudio.paused) {
+      state.narrationRestoreVolume = state.songAudio.volume;
+      state.songAudio.volume = 0.08;
+    }
     state.narrationActive = true;
     $('#readButton').classList.add('is-active');
+    window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
   }
 
@@ -232,7 +369,7 @@
     $('#briefApp').setAttribute('aria-hidden', 'false');
     sessionStorage.setItem(storageKey('entered'), 'true');
     if ($('#musicOnEntry').checked) startSoundtrack();
-    if ($('#readOnEntry').checked) setTimeout(readOpening, 300);
+    if ($('#readOnEntry').checked) setTimeout(readOpening, 850);
     $('#briefMain').focus({ preventScroll: true });
   }
 
@@ -241,7 +378,8 @@
     $('#profileSelect').value = state.preset;
     $('#viewModeButton').addEventListener('click', () => { state.shared = !state.shared; renderShared(); });
     $('#sharedToggleInside').addEventListener('click', () => { state.shared = !state.shared; renderShared(); $('#sharedSpace').scrollIntoView({ behavior: 'smooth' }); });
-    $('#audioButton').addEventListener('click', () => state.soundtrack ? stopSoundtrack() : startSoundtrack());
+    $('#audioButton').addEventListener('click', () => state.songAudio && !state.songAudio.paused ? stopSoundtrack() : startSoundtrack());
+    $('#musicPreviewButton')?.addEventListener('click', () => state.songAudio && !state.songAudio.paused ? stopSoundtrack() : startSoundtrack());
     $('#readButton').addEventListener('click', readOpening);
     $('#explainButton').addEventListener('click', () => {
       state.explaining = !state.explaining;
@@ -271,6 +409,7 @@
     $('#editionDate').textContent = data.edition.date;
     applyPreset(state.preset);
     renderWeather();
+    renderMusic();
     renderPriorities();
     renderSchedule();
     renderShared();
