@@ -83,7 +83,7 @@
     if (!original) return false;
     const command = original.toLowerCase().replace(/^\s*(open|go)\s+/, '').trim();
 
-    const switchMatch = command.match(/^(?:brief|briefing|briefing\s+type|view|switch)\s+(.+)$/);
+    const switchMatch = command.match(/^(?:briefing\s+type|briefing|brief|view|switch)\s+(.+)$/);
     const recognized = [
       'help', 'commands', 'backend', 'future', 'learn', 'learning', 'teach', 'teaching',
       'teams', 'team', 'security', 'cloud', 'brief', 'briefing', 'briefing type'
