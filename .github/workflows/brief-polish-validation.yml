@@ -64,4 +64,4 @@ jobs:
 
           exit "$failures"
 
-# self-reporting final validation
+# final rerun after correcting the polish assertion
