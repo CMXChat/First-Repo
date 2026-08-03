@@ -78,46 +78,32 @@
   const note = document.getElementById('gateSelectionNote');
   if (note) group.appendChild(note);
 
-  let opening = false;
-
   function syncVisual(value) {
     items.forEach(item => item.label.classList.toggle('is-selected', item.input.value === value));
   }
 
-  function enableRadios(enabled) {
-    radios.forEach(radio => { radio.disabled = !enabled; });
-    group.setAttribute('aria-busy', String(!enabled));
-  }
-
-  function choose(radio) {
-    if (!radio?.checked || opening) return;
-    opening = true;
-    syncVisual(radio.value);
-    enableRadios(false);
+  function selectBriefing(radio) {
+    if (!radio?.checked) return;
 
     select.value = radio.value;
     select.dataset.userSelection = radio.value;
+    syncVisual(radio.value);
     select.dispatchEvent(new Event('input', { bubbles: true }));
     select.dispatchEvent(new Event('change', { bubbles: true }));
 
     const label = copy[radio.value]?.title || 'Briefing';
-    if (note) note.textContent = `Opening ${label.toLowerCase()}…`;
-
-    window.setTimeout(() => enter.click(), 90);
-
-    window.setTimeout(() => {
-      if (!document.body.classList.contains('is-locked')) return;
-      opening = false;
-      enableRadios(true);
-      if (note) note.textContent = 'Still preparing. Tap the briefing again or reload the page.';
-    }, 8000);
+    if (note) note.textContent = `${label} selected. Choose any entry preferences, then press Open this briefing.`;
   }
 
-  radios.forEach(radio => radio.addEventListener('change', () => choose(radio)));
+  radios.forEach(radio => radio.addEventListener('change', () => selectBriefing(radio)));
 
   select.addEventListener('change', () => {
     const matching = radios.find(radio => radio.value === select.value);
     if (matching && !matching.checked) matching.checked = true;
     syncVisual(select.value);
   });
+
+  enter.addEventListener('click', () => {
+    if (!select.value && note) note.textContent = 'Choose one briefing before continuing.';
+  }, true);
 })();
