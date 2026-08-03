@@ -21,13 +21,13 @@ window.BRIEF_CONFIG = {
 
   const build = {
     device: '20260803-1',
-    entry: '20260803-2',
+    entry: '20260803-3',
     upgrade: '20260803-5',
     live: '20260803-4',
     daily: '20260803-3',
     experience: '20260803-3',
     terminal: '20260803-1',
-    watch: '20260803-1'
+    watch: '20260803-2'
   };
 
   const labels = {
