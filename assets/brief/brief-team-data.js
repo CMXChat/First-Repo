@@ -75,6 +75,17 @@
     kicker: 'ROLE-BASED TEAM + PROJECT BRIEF',
     title: 'One project, many views, controlled by purpose.',
     summary: 'Each member receives the assignments, handoffs, procedures and risks relevant to their role. Shared spaces hold approved project truth while sensitive records remain restricted.',
+    dayCycle: [
+      { time: 'Start', title: 'Open the role-specific view', text: 'Each member begins with assigned work, dependencies and approved preparation.' },
+      { time: 'Handoff', title: 'Move evidence with the work', text: 'The sender, receiver, required proof and current blocker remain visible.' },
+      { time: 'Close', title: 'Update shared project truth', text: 'Completed work, unresolved risk and tomorrow’s owner are recorded once.' }
+    ],
+    intelligence: [
+      { label: 'Readiness', title: 'Launch state', value: '82%', note: 'One permissions blocker remains.' },
+      { label: 'Handoffs', title: 'Due today', value: '3', note: 'Each transfer has a sender and receiver.' },
+      { label: 'Finance', title: 'Budget status', value: 'In range', note: 'Members see only the context needed for their work.' },
+      { label: 'Security', title: 'Access model', value: 'Role-based', note: 'Private, role, project and leadership spaces remain separate.' }
+    ],
     members: [
       { role: 'Project lead', name: 'Leah', sees: 'Whole-project status, owners, approvals, blockers and leadership decisions', private: 'Personnel notes, compensation and unapproved drafts', next: 'Confirm the release owner' },
       { role: 'Designer', name: 'Noah', sees: 'Approved requirements, design feedback, dependencies and delivery dates', private: 'Security findings and unrelated finance records', next: 'Close the final accessibility note' },

@@ -77,7 +77,7 @@
       trainer: c.trainerAccountability?.quote || 'Consistency becomes easier when the plan fits the person.',
       team: window.BRIEF_TEAM_VIEW?.quote || 'A strong team sees the same mission without exposing every private detail.'
     };
-    return values[current];
+    return content().dailyQuotes?.[current] || values[current];
   }
 
   function quoteCard(current) {

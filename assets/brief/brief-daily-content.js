@@ -1,5 +1,5 @@
 window.BRIEF_DAILY_CONTENT = {
-  schemaVersion: 2,
+  schemaVersion: 3,
   edition: {
     date: '2026-08-03',
     timezone: 'America/New_York',
@@ -31,7 +31,11 @@ window.BRIEF_DAILY_CONTENT = {
       'assets/brief/brief-live.js',
       'assets/brief/brief-live-patch.js',
       'assets/brief/brief-daily.js',
-      'assets/brief/brief-experience.js'
+      'assets/brief/brief-experience.js',
+      'assets/brief/brief-team-data.js',
+      'assets/brief/brief-team-renderer.js',
+      'assets/brief/brief-workspace.js',
+      'assets/brief/brief-workspace.css'
     ]
   },
   music: {
@@ -61,7 +65,19 @@ window.BRIEF_DAILY_CONTENT = {
       { title: 'POWER', artist: 'Kanye West', spotify: '2gZUPNdnz5Y45eiGxpHGSc', note: 'Working sets' },
       { title: 'Till I Collapse', artist: 'Eminem feat. Nate Dogg', spotify: '4xkOaSrkexMciUUogZKVTS', note: 'Final effort' },
       { title: 'Sunflower', artist: 'Post Malone and Swae Lee', spotify: '0RiRZpuVRbi7oqRdSMwhQY', note: 'Cooldown' }
+    ],
+    team: [
+      { title: 'Midnight City', artist: 'M83', spotify: '1eyzqe2QqGZUmfcPZtrIyt', note: 'Build focus' },
+      { title: 'On Top Of The World', artist: 'Imagine Dragons', spotify: '213x4gsFDm04hSqIUkg88w', note: 'Team lift' },
+      { title: 'A Sky Full of Stars', artist: 'Coldplay', spotify: '0FDzzruyVECATHXKHFs9eJ', note: 'Release moment' }
     ]
+  },
+  dailyQuotes: {
+    individual: 'A useful day begins when the next honest action becomes visible.',
+    couple: 'Care becomes practical when both people can see the next kind action.',
+    partners: 'Clarity compounds when every decision has evidence, an owner and a date.',
+    trainer: 'Consistency becomes easier when the plan fits the person.',
+    team: 'A strong team sees the same mission without exposing every private detail.'
   },
   personalDashboard: {
     headline: 'A personal command center that changes with the day.',
@@ -197,7 +213,8 @@ window.BRIEF_DAILY_CONTENT = {
     { id: 'individual', title: 'Personal', text: 'Live Brooklyn information, priorities, learning and private-life possibilities.' },
     { id: 'couple', title: 'Relationship', text: 'Two private perspectives, approved shared memory and neutral guidance.' },
     { id: 'partners', title: 'Business', text: 'KPIs, finances, projects, inboxes, decisions and ownership.' },
-    { id: 'trainer', title: 'Trainer + student', text: 'Habits, goals, evidence, notes, privacy and coaching actions.' }
+    { id: 'trainer', title: 'Trainer + student', text: 'Habits, goals, evidence, notes, privacy and coaching actions.' },
+    { id: 'team', title: 'Team + project', text: 'Role-based member views, shared project truth, handoffs, procedures, finance and security.' }
   ]
 };
 
@@ -217,7 +234,7 @@ window.BRIEF_DAILY_CONTENT = {
     }));
   }
   if (scenarios) {
-    ['individual', 'couple', 'partners', 'trainer'].forEach(id => {
+    ['individual', 'couple', 'partners', 'trainer', 'team'].forEach(id => {
       const tracks = content.music[id === 'individual' ? 'personal' : id] || [];
       if (scenarios[id]) scenarios[id].songs = tracks.map(track => ({ ...track }));
     });
