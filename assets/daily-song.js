@@ -11,7 +11,7 @@ window.CMX_DAILY_SONG = {
   directLine: "Shared: different places, same team, and apparently five minutes apart is already too long.",
   spotifyUrl: "https://open.spotify.com/track/1prZ0pr6XoRCxcrC3MCL0M",
   spotifyLinkLabel: "play Everywhere on Spotify",
-  previewUrl: "",
+  previewUrl: "https://p.scdn.co/mp3-preview/3a4d5d835af283b755436ba81050d90fe44e6590.mp3",
   selectedFor: "2026-08-03",
   published: "today's shared pick",
   recommendations: [
