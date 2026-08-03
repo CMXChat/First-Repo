@@ -1,0 +1,32 @@
+name: Exact Final Briefing Check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-final-check.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/brief-device-smoke.test.js
+      - run: node tests/brief-terminal-smoke.test.js
+      - run: node tests/brief-entry-watch-smoke.test.js
+      - run: node tests/brief-stability-smoke.test.js
+      - run: node tests/brief-workspace-team-smoke.test.js
+      - run: |
+          printf 'final five-suite check passed\ncommit=%s\n' "$GITHUB_SHA" > .brief-final-check-pass
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .brief-final-check-pass
+          git commit -m 'Record exact final briefing check'
+          git push
