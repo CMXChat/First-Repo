@@ -4,7 +4,7 @@
 
 The briefing has two layers:
 
-1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, help modal, private/shared controls, light mode, mobile containment, music controls, accountability logic, device compatibility, and source labels.
+1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, help modal, private/shared controls, light mode, mobile containment, music controls, accountability logic, device compatibility, scenario-aware terminal, and source labels.
 2. **Daily content**: current public Brooklyn information, weather, changing news, daily horoscope reflections, entertainment and market context, rotating music, and clearly fictional demonstration records.
 
 Daily updates must never redesign the permanent layer.
@@ -64,13 +64,28 @@ Do not edit permanent files during a normal daily refresh. They include:
 - `brief-experience.js`
 - `brief-experience-guard.js`
 - `brief-virgo-pair.js`
+- `brief-terminal.js`
+- `brief-terminal.css`
 - `brief-config.js`
 - `brief-device.js`
 - `brief-device.css`
 - `tests/brief-device-smoke.test.js`
+- `tests/brief-terminal-smoke.test.js`
 - `.github/workflows/brief-device-smoke.yml`
 
 A permanent file may change only for an intentional product feature or verified bug fix.
+
+## Terminal contract
+
+The terminal at the bottom of `/brief` is a permanent navigation and product-demonstration layer.
+
+- It must adapt to Personal, Relationship, Business, and Trainer views.
+- Each view must have its own prompt, summary, quick commands, and module commands.
+- Global commands must preserve `help`, `summary`, `status`, `modules`, `private`, `shared`, `top`, `about`, `privacy`, `clear`, and briefing-view switching.
+- Commands must navigate existing modules or change existing interface state. They must not pretend to execute backend, financial, legal, medical, account, or device actions.
+- Nothing typed into the static terminal may be transmitted or stored remotely.
+- The terminal must remain usable through tappable shortcuts on mobile, keyboard input on desktop, light mode, dark mode, reduced motion, and screen readers.
+- The terminal belongs immediately before the final briefing switcher.
 
 ## Daily update sequence
 
@@ -87,9 +102,9 @@ A permanent file may change only for an intentional product feature or verified 
 11. Confirm `noindex` remains present.
 12. Confirm dark mode remains the default and the white light mode remains optional.
 13. Confirm entry music and narration remain unchecked by default.
-14. Confirm Personal, Relationship, Business, and Trainer views can be opened from the top switcher, scenario cards, and final switcher, and switching returns to the beginning.
-15. Confirm the help button, private/shared control, trainer yes/no tracker, horoscope selectors, charts, and Spotify players remain interactive.
-16. Run `node tests/brief-device-smoke.test.js` after any permanent briefing change.
+14. Confirm Personal, Relationship, Business, and Trainer views can be opened from the top switcher, scenario cards, terminal, and final switcher, and switching returns to the beginning.
+15. Confirm the help button, private/shared control, trainer yes/no tracker, horoscope selectors, charts, Spotify players, and terminal remain interactive.
+16. Run `node tests/brief-device-smoke.test.js` and `node tests/brief-terminal-smoke.test.js` after any permanent briefing change.
 17. Publish only after validation.
 
 ## Non-negotiable rules
@@ -107,6 +122,8 @@ A permanent file may change only for an intentional product feature or verified 
 - Never edit permanent files merely to refresh content.
 - Never allow multiple scripts to reset or independently own the entry selector.
 - Never remove the queued-open fallback or mobile entry regression test.
+- Never turn the static terminal into a fake backend console or imply that typed commands perform real protected actions.
+- Never remove the terminal smoke test when changing terminal behavior.
 
 ## File loading order
 
@@ -122,5 +139,6 @@ The loader must keep data ahead of dependent renderers and continue after option
 8. experience guard
 9. Virgo-pair defaults
 10. profile-space, help, horoscope, accountability, market, and light-theme experience renderer
+11. scenario-aware terminal renderer
 
 Keep this order intact.
