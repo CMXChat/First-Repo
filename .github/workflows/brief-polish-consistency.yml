@@ -58,3 +58,5 @@ jobs:
           git add assets/brief/brief-polish.js assets/brief/brief-config.js tests/brief-polish-smoke.test.js brief/index.html
           git commit -m 'Align Team readiness and bump briefing polish cache'
           git push
+
+# retriggered for final consistency pass
