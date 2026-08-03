@@ -21,7 +21,7 @@ window.BRIEF_CONFIG = {
 
   const build = {
     device: '20260803-1',
-    entry: '20260803-1',
+    entry: '20260803-2',
     upgrade: '20260803-5',
     live: '20260803-4',
     daily: '20260803-3',
@@ -110,7 +110,7 @@ window.BRIEF_CONFIG = {
         event.preventDefault();
         event.stopImmediatePropagation();
         note.textContent = 'Choose Personal, Relationship, Business, or Trainer + student first.';
-        document.getElementById('briefEntryTrigger')?.focus();
+        document.querySelector('input[name="briefEntryType"]')?.focus();
         return;
       }
 
@@ -197,7 +197,7 @@ window.BRIEF_CONFIG = {
   installEntryController();
 
   loadStyle('briefDeviceStyle', `/assets/brief/brief-device.css?v=${build.device}`);
-  loadStyle('briefEntryDropdownStyle', `/assets/brief/brief-entry-dropdown.css?v=${build.entry}`);
+  loadStyle('briefEntryRadioStyle', `/assets/brief/brief-entry-radio.css?v=${build.entry}`);
   loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);
   loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);
   loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);
@@ -206,7 +206,7 @@ window.BRIEF_CONFIG = {
   loadStyle('briefRelationshipWatchStyle', `/assets/brief/brief-relationship-watch.css?v=${build.watch}`);
 
   loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);
-  loadScript('briefEntryDropdownScript', `/assets/brief/brief-entry-dropdown.js?v=${build.entry}`);
+  loadScript('briefEntryRadioScript', `/assets/brief/brief-entry-radio.js?v=${build.entry}`);
 
   loadScript('briefDailyVideoScript', `/assets/daily-video.js?v=${build.watch}`, () => {
     loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
