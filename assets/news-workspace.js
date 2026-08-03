@@ -20,6 +20,7 @@
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-');
   const storagePrefix = `cmx-news:${editionKey}:workspace`;
+  const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
   let activeTab = readStorage('tab', 'overview');
 
   function readStorage(key, fallback) {
@@ -48,7 +49,7 @@
     if (!section) return;
     const hadTabIndex = section.hasAttribute('tabindex');
     if (!hadTabIndex) section.setAttribute('tabindex', '-1');
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    section.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
     window.setTimeout(() => {
       section.focus({ preventScroll: true });
       if (!hadTabIndex) section.addEventListener('blur', () => section.removeAttribute('tabindex'), { once: true });
