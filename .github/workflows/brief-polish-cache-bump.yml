@@ -1,0 +1,36 @@
+name: Brief Polish Cache Bump
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-polish-cache-bump.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump briefing loader URL
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('brief/index.html')
+          text = path.read_text()
+          old = 'brief-config.js?v=20260803-10'
+          new = 'brief-config.js?v=20260803-11'
+          if old not in text:
+              raise SystemExit('expected briefing config version not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+      - name: Commit cache bump
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add brief/index.html
+          git commit -m 'Bump briefing polish loader cache'
+          git push
