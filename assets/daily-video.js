@@ -1,13 +1,13 @@
 window.CMX_DAILY_VIDEO = {
   audience: "shared",
-  label: "today's watch",
-  status: "OFFICIAL",
-  title: "Everywhere · Fleetwood Mac (Official Music Video)",
-  text: "The official video keeps today's music, mood, and shared theme aligned in one place.",
+  label: "today’s watch",
+  status: "OFFICIAL TEASER",
+  title: "One Hundred Years of Solitude",
+  text: "A visually rich option to save for a shared watch. It gives the media section a different purpose instead of repeating the opening song.",
   provider: "youtube",
-  videoId: "YF1R0hc5Q2I",
-  buttonLabel: "play Everywhere",
-  url: "https://www.youtube.com/watch?v=YF1R0hc5Q2I",
-  linkLabel: "open Everywhere on YouTube",
-  published: "official Fleetwood Mac video"
+  videoId: "vG45GfgD2JU",
+  buttonLabel: "play the official teaser",
+  url: "https://www.youtube.com/watch?v=vG45GfgD2JU",
+  linkLabel: "open the teaser on YouTube",
+  published: "official Netflix teaser"
 };
