@@ -26,6 +26,8 @@ expect(polish.includes('setRailPaused') && polish.includes("animationPlayState =
 expect(polish.includes('newsPulseGrid'), 'top visual pulse is rendered');
 expect(css.includes('@media (max-width: 560px)'), 'phone breakpoint is present');
 expect(css.includes('@media (prefers-reduced-motion: reduce)'), 'reduced-motion behavior is present');
+expect(!css.includes('.news-personal-view #newsPersonalView'), 'build-note toggle remains available after notes are hidden');
+expect(workspace.includes("reducedMotion ? 'auto' : 'smooth'"), 'workspace scrolling respects reduced-motion preferences');
 expect(index.includes('news-14'), 'entry page cache version was bumped');
 
 const failed = checks.filter(check => !check.condition);
