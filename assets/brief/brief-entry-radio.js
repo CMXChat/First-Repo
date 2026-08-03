@@ -38,7 +38,7 @@
   group.appendChild(grid);
 
   const options = [...select.options].filter(option => option.value && copy[option.value]);
-  const radios = options.map(option => {
+  const items = options.map(option => {
     const label = document.createElement('label');
     label.className = `brief-entry-radio-card is-${option.value}`;
 
@@ -64,8 +64,10 @@
     body.append(title, description);
     label.append(input, marker, body);
     grid.appendChild(label);
-    return input;
+    return { input, label };
   });
+
+  const radios = items.map(item => item.input);
 
   originalField.insertAdjacentElement('afterend', group);
   originalField.classList.add('brief-native-entry-field');
@@ -78,6 +80,10 @@
 
   let opening = false;
 
+  function syncVisual(value) {
+    items.forEach(item => item.label.classList.toggle('is-selected', item.input.value === value));
+  }
+
   function enableRadios(enabled) {
     radios.forEach(radio => { radio.disabled = !enabled; });
     group.setAttribute('aria-busy', String(!enabled));
@@ -86,6 +92,7 @@
   function choose(radio) {
     if (!radio?.checked || opening) return;
     opening = true;
+    syncVisual(radio.value);
     enableRadios(false);
 
     select.value = radio.value;
@@ -111,5 +118,6 @@
   select.addEventListener('change', () => {
     const matching = radios.find(radio => radio.value === select.value);
     if (matching && !matching.checked) matching.checked = true;
+    syncVisual(select.value);
   });
 })();
