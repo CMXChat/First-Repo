@@ -9,7 +9,8 @@
   <meta name="description" content="A private personalized daily briefing product demonstration." />
   <link rel="canonical" href="https://db.cmxchat.com/brief/" />
   <title>Personal Briefing Demo</title>
-  <link rel="stylesheet" href="/assets/brief/brief.css?v=20260803-2" />
+  <link rel="stylesheet" href="/assets/brief/brief.css?v=20260803-3" />
+  <link rel="stylesheet" href="/assets/brief/brief-music.css?v=20260803-1" />
 </head>
 <body class="is-locked">
   <a class="skip-link" href="#briefMain">Skip to briefing</a>
@@ -33,11 +34,11 @@
       <div class="entry-options" aria-label="Entry preferences">
         <label class="option-row">
           <input id="musicOnEntry" type="checkbox" checked />
-          <span><strong>Start the demo soundtrack</strong><small>Begins only after you press Enter, subject to browser support.</small></span>
+          <span><strong>Start today’s actual song</strong><small id="gateSongName">The authorized track preview begins after you press Enter.</small></span>
         </label>
         <label class="option-row">
           <input id="readOnEntry" type="checkbox" />
-          <span><strong>Read the opening aloud</strong><small>Uses the device’s built-in speech voice after entry.</small></span>
+          <span><strong>Read the opening aloud</strong><small>Uses the device’s built-in speech voice and lowers the music while speaking.</small></span>
         </label>
       </div>
 
@@ -54,7 +55,7 @@
       </a>
       <nav class="top-actions" aria-label="Briefing controls">
         <button class="quiet-button" id="viewModeButton" type="button" aria-pressed="false">Private view</button>
-        <button class="icon-button" id="audioButton" type="button" aria-label="Toggle soundtrack">♪</button>
+        <button class="icon-button" id="audioButton" type="button" aria-label="Play today’s song">♪</button>
         <button class="icon-button" id="readButton" type="button" aria-label="Read briefing aloud">Aa</button>
         <button class="icon-button" id="explainButton" type="button" aria-label="Explain the product" aria-pressed="false">?</button>
       </nav>
@@ -95,6 +96,7 @@
 
       <nav class="section-nav" aria-label="Briefing sections">
         <a href="#weather">Weather</a>
+        <a href="#music">Music</a>
         <a href="#priorities">Priorities</a>
         <a href="#schedule">Schedule</a>
         <a href="#sharedSpace">Shared space</a>
@@ -133,6 +135,62 @@
           <div class="weather-timeline" id="hourlyWeather" role="tabpanel" aria-labelledby="hourlyTab"></div>
           <div class="weather-timeline is-hidden" id="dailyWeather" role="tabpanel" aria-labelledby="dailyTab"></div>
         </div>
+      </section>
+
+      <section class="brief-section music-section" id="music" aria-labelledby="musicSectionTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">ACTUAL SONG · SPOTIFY CONNECTION DEMO</p>
+            <h2 id="musicSectionTitle">A soundtrack that belongs to the day.</h2>
+          </div>
+          <p>An authorized preview can begin after entry. The Spotify player demonstrates full provider playback and a personal favorites library.</p>
+        </div>
+
+        <div class="music-hero">
+          <div class="music-art" aria-hidden="true">
+            <div class="music-art-core"></div>
+            <div class="music-art-caption"><span>daily selection</span><span id="musicArtDate">2026.08.03</span></div>
+          </div>
+
+          <article class="music-feature">
+            <div>
+              <span class="source-label source-connected">SPOTIFY DEMO</span>
+              <p class="micro-label">TODAY’S FEATURED TRACK</p>
+              <h3 id="musicTitle">Everywhere</h3>
+              <p class="music-artist" id="musicArtist">Fleetwood Mac</p>
+              <p class="music-reason" id="musicReason">Bright, affectionate and full of movement.</p>
+              <p class="music-direct-line" id="musicDirectLine">Different places, same team.</p>
+            </div>
+
+            <div class="music-controls">
+              <div class="music-control-row">
+                <button class="music-play-button" id="musicPreviewButton" type="button"><span aria-hidden="true">▶</span><b>Play actual song preview</b></button>
+                <a class="music-open-link" id="musicSpotifyLink" href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Open in Spotify</a>
+              </div>
+              <div class="music-progress" aria-label="Song preview progress">
+                <span id="musicCurrentTime">0:00</span>
+                <div class="music-progress-track"><i id="musicProgressBar"></i></div>
+                <span id="musicDuration">0:30</span>
+              </div>
+              <p class="music-preview-note" id="musicPreviewNote">Authorized preview. Full playback depends on Spotify availability and account status.</p>
+            </div>
+          </article>
+
+          <aside class="spotify-embed-panel">
+            <div class="spotify-panel-top">
+              <div><span class="source-label source-demo">CONNECTED EXPERIENCE</span><strong id="spotifyNowLabel">Featured track</strong></div>
+              <span class="micro-label">SPOTIFY EMBED</span>
+            </div>
+            <iframe id="spotifyFeaturedFrame" title="Spotify featured track player" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+            <p class="spotify-disclaimer">This is a real Spotify embed inside a fictional connection demonstration. It does not mean a Spotify account is currently connected.</p>
+          </aside>
+        </div>
+
+        <div class="music-library-heading">
+          <div><p class="micro-label">REMEMBERED FAVORITES DEMO</p><h3>Your rotation, ready when the mood changes.</h3></div>
+          <p>Select a track to replace the Spotify player above. A connected version could learn favorites, workout songs, shared playlists and recent listening with permission.</p>
+        </div>
+        <div class="music-favorites" id="musicFavorites"></div>
       </section>
 
       <section class="brief-section" id="priorities" aria-labelledby="priorityTitle">
@@ -203,11 +261,12 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="/assets/brief/brief-config.js?v=20260803-2" defer></script>
-  <script src="/assets/brief/brief-presets.js?v=20260803-2" defer></script>
-  <script src="/assets/brief/brief-data.js?v=20260803-2" defer></script>
-  <script src="/assets/brief/brief-memory.js?v=20260803-2" defer></script>
-  <script src="/assets/brief/brief-connections.js?v=20260803-2" defer></script>
-  <script src="/assets/brief/brief-core.js?v=20260803-2" defer></script>
+  <script src="/assets/brief/brief-config.js?v=20260803-3" defer></script>
+  <script src="/assets/brief/brief-presets.js?v=20260803-3" defer></script>
+  <script src="/assets/brief/brief-data.js?v=20260803-3" defer></script>
+  <script src="/assets/brief/brief-memory.js?v=20260803-3" defer></script>
+  <script src="/assets/brief/brief-connections.js?v=20260803-3" defer></script>
+  <script src="/assets/daily-song.js?v=20260803-3" defer></script>
+  <script src="/assets/brief/brief-core.js?v=20260803-3" defer></script>
 </body>
 </html>
