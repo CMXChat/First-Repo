@@ -36,12 +36,16 @@ assert.match(entryCss, /grid-template-columns: repeat\(2/);
 assert.match(entryCss, /\.has-entry-radio #enterBrief/);
 assert.match(entryCss, /@media \(max-width: 620px\)/);
 assert.match(entryCss, /grid-template-columns: 1fr/);
+assert.doesNotMatch(entryCss, /:has\(/);
 
 assert.match(watchJs, /currentPreset\(\) !== 'couple'/);
 assert.match(watchJs, /window\.CMX_DAILY_VIDEO/);
 assert.match(watchJs, /youtube-nocookie\.com\/embed/);
 assert.match(watchJs, /relationship-watch-poster/);
 assert.match(watchJs, /player\.replaceChildren\(iframe\)/);
+assert.match(watchJs, /scheduleRender/);
+assert.doesNotMatch(watchJs, /new MutationObserver/);
+assert.doesNotMatch(watchJs, /observer\.observe\(document\.body/);
 assert.match(watchCss, /aspect-ratio: 16 \/ 9/);
 assert.match(watchCss, /html\[data-theme='light'\]/);
 assert.match(dailyVideo, /provider: "youtube"/);
