@@ -23,7 +23,7 @@ jobs:
       - run: node tests/brief-entry-watch-smoke.test.js
       - run: node tests/brief-stability-smoke.test.js
       - run: node tests/brief-workspace-team-smoke.test.js
-      - name: Record validation
+      - name: Record final validation
         run: |
           printf 'workspace validation passed\ncommit=%s\n' "$GITHUB_SHA" > .brief-workspace-validation-pass
           git config user.name 'github-actions[bot]'
