@@ -18,16 +18,27 @@ assert.match(indexHtml, /<input id="readOnEntry" type="checkbox"\s*\/>/);
 assert.match(indexHtml, /id="enterBrief"[^>]*disabled[^>]*aria-disabled="true"/);
 assert.match(configJs, /select\.dataset\.requiredChoice = 'true'/);
 assert.match(configJs, /select\.dataset\.liveRequired = 'true'/);
+assert.match(configJs, /Choose any entry preferences/);
+assert.match(configJs, /function forceTop\(\)/);
+assert.match(configJs, /window\.scrollTo\(\{ top: 0, left: 0, behavior: 'auto' \}\)/);
 assert.match(configJs, /brief-device\.css/);
 assert.match(configJs, /brief-device\.js/);
 assert.match(configJs, /script\.addEventListener\('error', finish/);
-assert.match(deviceCss, /font-size: 16px/);
 assert.match(deviceCss, /safe-area-inset-top/);
 assert.match(deviceCss, /overflow-x: hidden/);
-assert.match(deviceCss, /min-height: 48px/);
+assert.match(deviceCss, /#themeToggleButton/);
+assert.match(deviceCss, /width: 44px !important/);
+assert.match(deviceCss, /height: 44px !important/);
+assert.match(deviceCss, /flex-wrap: nowrap !important/);
+assert.match(deviceCss, /box-shadow: 0 0 10px/);
 assert.match(deviceJs, /visualViewport/);
 assert.match(deviceJs, /speechSynthesis/);
 assert.match(deviceJs, /navigator\.onLine/);
+assert.match(deviceJs, /function forceDocumentTop\(\)/);
+assert.match(deviceJs, /history\.scrollRestoration = 'manual'/);
+assert.match(deviceJs, /window\.setTimeout\(forceDocumentTop, 320\)/);
+assert.match(deviceJs, /const root = \$\('#briefApp'\) \|\| document\.body/);
+assert.match(deviceJs, /requestAnimationFrame/);
 
 class ClassList {
   constructor() { this.values = new Set(); }
@@ -74,6 +85,7 @@ class ElementMock extends EventTargetMock {
     this.checked = false;
     this.textContent = '';
     this.parent = null;
+    this.scrollTop = 75;
   }
   setAttribute(name, value) { this.attributes[name] = String(value); }
   getAttribute(name) { return this.attributes[name] ?? null; }
@@ -95,7 +107,7 @@ class ElementMock extends EventTargetMock {
     return [];
   }
   closest(selector) { return selector === '.profile-field' ? field : null; }
-  focus() { this.focused = true; }
+  focus(options) { this.focused = true; this.focusOptions = options; }
   click() { this.dispatchEvent(makeEvent('click')); }
   remove() {
     if (!this.parent) return;
@@ -154,15 +166,19 @@ const documentMock = new EventTargetMock();
 documentMock.readyState = 'complete';
 documentMock.body = new ElementMock('body');
 documentMock.body.classList.add('is-locked');
+documentMock.body.scrollTop = 92;
+documentMock.documentElement = { scrollTop: 81 };
 documentMock.head = new ElementMock('head');
 documentMock.getElementById = id => elements[id] || null;
 documentMock.querySelector = selector => selector === '.gate-copy' ? copy : null;
 documentMock.createElement = tag => new ElementMock('', tag);
 
+const scrollCalls = [];
 const windowMock = new EventTargetMock();
 windowMock.window = windowMock;
 windowMock.document = documentMock;
 windowMock.setTimeout = setTimeout;
+windowMock.scrollTo = options => scrollCalls.push(options);
 windowMock.CustomEvent = class CustomEventMock {
   constructor(type, options = {}) { this.type = type; this.detail = options.detail; }
 };
@@ -193,6 +209,10 @@ enter.click();
 assert.equal(enter.disabled, true);
 assert.equal(enter.textContent, 'Preparing briefing…');
 assert.equal(documentMock.body.classList.contains('is-locked'), true);
+assert.equal(gate.scrollTop, 0);
+assert.equal(documentMock.documentElement.scrollTop, 0);
+assert.equal(documentMock.body.scrollTop, 0);
+assert.ok(scrollCalls.length > 0);
 
 windowMock.BRIEF_APP = {
   preset: null,
@@ -205,5 +225,8 @@ setTimeout(() => {
   assert.equal(app.getAttribute('aria-hidden'), 'false');
   assert.equal(windowMock.BRIEF_APP.preset, 'partners');
   assert.equal(select.value, 'partners');
+  assert.equal(gate.scrollTop, 0);
+  assert.equal(documentMock.documentElement.scrollTop, 0);
+  assert.equal(documentMock.body.scrollTop, 0);
   console.log('Brief device smoke test passed.');
 }, 550);
