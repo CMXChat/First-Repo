@@ -20,8 +20,8 @@ window.BRIEF_CONFIG = {
   'use strict';
 
   const build = {
-    device: '20260803-1',
-    entry: '20260803-3',
+    device: '20260803-2',
+    entry: '20260803-4',
     upgrade: '20260803-5',
     live: '20260803-4',
     daily: '20260803-3',
@@ -36,6 +36,14 @@ window.BRIEF_CONFIG = {
     partners: 'Business',
     trainer: 'Trainer + student'
   };
+
+  function forceTop() {
+    const gate = document.getElementById('entryGate');
+    if (gate) gate.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }
 
   function installEntryController() {
     const select = document.getElementById('profileSelect');
@@ -87,7 +95,7 @@ window.BRIEF_CONFIG = {
       enter.classList.remove('is-preparing');
       enter.textContent = enabled ? 'Open this briefing' : 'Choose a briefing first';
       note.textContent = enabled
-        ? `${labels[choice]} briefing selected. Press Open this briefing to continue.`
+        ? `${labels[choice]} briefing selected. Choose any entry preferences, then press Open this briefing.`
         : 'Choose one version before continuing. You can switch between all four inside.';
     };
 
@@ -100,9 +108,6 @@ window.BRIEF_CONFIG = {
 
     select.addEventListener('input', acceptSelection);
     select.addEventListener('change', acceptSelection);
-    select.addEventListener('pointerup', () => window.setTimeout(acceptSelection, 0), { passive: true });
-    select.addEventListener('keyup', () => window.setTimeout(acceptSelection, 0));
-    select.addEventListener('blur', acceptSelection);
 
     enter.addEventListener('click', event => {
       const choice = validChoice(selectedValue) ? selectedValue : (validChoice(select.value) ? select.value : '');
@@ -116,6 +121,7 @@ window.BRIEF_CONFIG = {
 
       selectedValue = choice;
       select.value = choice;
+      forceTop();
 
       if (!appReady || !window.BRIEF_APP) {
         event.preventDefault();
@@ -137,6 +143,8 @@ window.BRIEF_CONFIG = {
         document.getElementById('entryGate')?.classList.add('is-hidden');
         document.getElementById('briefApp')?.setAttribute('aria-hidden', 'false');
         try { sessionStorage.setItem(`${window.BRIEF_CONFIG.storagePrefix}:entered`, 'true'); } catch {}
+        forceTop();
+        window.setTimeout(forceTop, 80);
         try { document.getElementById('briefMain')?.focus({ preventScroll: true }); } catch { document.getElementById('briefMain')?.focus(); }
         window.dispatchEvent(new CustomEvent('brief:device-fallback-open', { detail: { preset: selectedValue } }));
       }, 450);
