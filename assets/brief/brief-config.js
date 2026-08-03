@@ -18,8 +18,17 @@ window.BRIEF_CONFIG = {
 
 (() => {
   'use strict';
-  const upgradeVersion = '20260803-5';
-  const liveVersion = '20260803-3';
+
+  const build = {
+    upgrade: '20260803-5',
+    live: '20260803-3',
+    daily: '20260803-1'
+  };
+
+  const music = document.getElementById('musicOnEntry');
+  const narration = document.getElementById('readOnEntry');
+  if (music) music.checked = false;
+  if (narration) narration.checked = false;
 
   function loadStyle(id, href) {
     if (document.getElementById(id)) return;
@@ -44,13 +53,18 @@ window.BRIEF_CONFIG = {
     document.head.appendChild(script);
   }
 
-  loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${upgradeVersion}`);
-  loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${liveVersion}`);
+  loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);
+  loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);
+  loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);
 
-  loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${upgradeVersion}`, () => {
-    loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${liveVersion}`, () => {
-      loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${liveVersion}`, () => {
-        loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${liveVersion}`);
+  loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
+    loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
+      loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
+        loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
+          loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
+            loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`);
+          });
+        });
       });
     });
   });
