@@ -18,19 +18,37 @@ window.BRIEF_CONFIG = {
 
 (() => {
   'use strict';
-  const version = '20260803-5';
-  if (!document.querySelector('link[data-brief-upgrade]')) {
+  const upgradeVersion = '20260803-5';
+  const liveVersion = '20260803-1';
+
+  function loadStyle(key, href) {
+    if (document.querySelector(`link[data-${key}]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `/assets/brief/brief-upgrade.css?v=${version}`;
-    link.dataset.briefUpgrade = 'true';
+    link.href = href;
+    link.dataset[key] = 'true';
     document.head.appendChild(link);
   }
-  if (!document.querySelector('script[data-brief-upgrade]')) {
+
+  function loadScript(key, src, onload) {
+    if (document.querySelector(`script[data-${key}]`)) {
+      if (onload) onload();
+      return;
+    }
     const script = document.createElement('script');
-    script.src = `/assets/brief/brief-upgrade.js?v=${version}`;
+    script.src = src;
     script.async = false;
-    script.dataset.briefUpgrade = 'true';
+    script.dataset[key] = 'true';
+    if (onload) script.addEventListener('load', onload, { once: true });
     document.head.appendChild(script);
   }
+
+  loadStyle('briefUpgrade', `/assets/brief/brief-upgrade.css?v=${upgradeVersion}`);
+  loadStyle('briefLive', `/assets/brief/brief-live.css?v=${liveVersion}`);
+
+  loadScript('briefUpgrade', `/assets/brief/brief-upgrade.js?v=${upgradeVersion}`, () => {
+    loadScript('briefLiveData', `/assets/brief/brief-live-data.js?v=${liveVersion}`, () => {
+      loadScript('briefLive', `/assets/brief/brief-live.js?v=${liveVersion}`);
+    });
+  });
 })();
