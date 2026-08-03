@@ -94,7 +94,7 @@
     renderFooterSwitcher();
     addMaintenanceMarker();
     const currentPreset = window.BRIEF_APP?.getPreset?.() || 'individual';
-    window.BRIEF_APP?.setPreset?.(currentPreset);
+    window.dispatchEvent(new CustomEvent('brief:preset-change', { detail: { preset: currentPreset } }));
     $('#personalCommandCenter')?.toggleAttribute('hidden', currentPreset !== 'individual');
     window.addEventListener('brief:preset-change', () => {
       const personal = window.BRIEF_APP?.getPreset?.() === 'individual';
