@@ -1,42 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="black">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="dark light" />
-  <meta name="theme-color" content="#071218" />
-  <meta name="robots" content="noindex, nofollow, noarchive" />
-  <meta name="description" content="A concept framework for a personalized daily briefing product." />
-  <title>Personal Briefing Concept</title>
-  <link rel="stylesheet" href="/assets/brief-concept.css?v=20260803-1" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="description" content="A private personalized daily briefing product demonstration." />
+  <link rel="canonical" href="https://db.cmxchat.com/brief/" />
+  <title>Personal Briefing Demo</title>
+  <link rel="stylesheet" href="/assets/brief/brief.css?v=20260803-2" />
 </head>
-<body>
-  <main class="shell">
-    <header class="hero">
-      <div class="hero-row">
-        <div>
-          <p class="eyebrow" id="conceptLabel">PERSONAL BRIEFING CONCEPT</p>
-          <h1 id="conceptTitle">One place for the day ahead</h1>
-          <p class="hero-copy" id="conceptDescription"></p>
-        </div>
-        <div class="controls" aria-label="Concept controls">
-          <button id="viewToggle" type="button" aria-pressed="false">Show shared space</button>
-          <button id="themeToggle" type="button" aria-pressed="false">Ocean light mode</button>
-        </div>
+<body class="is-locked">
+  <a class="skip-link" href="#briefMain">Skip to briefing</a>
+
+  <section class="entry-gate" id="entryGate" aria-labelledby="gateTitle">
+    <div class="gate-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="gate-panel">
+      <p class="micro-label">PRIVATE BRIEFING CONCEPT</p>
+      <h1 id="gateTitle">Your day, already organized.</h1>
+      <p class="gate-copy">Enter a fictional personalized briefing that demonstrates private context, shared spaces, live-style information, memory, connections and approved actions.</p>
+
+      <label class="profile-field">
+        <span>Demo profile</span>
+        <select id="profileSelect">
+          <option value="individual">Alex · Individual founder</option>
+          <option value="couple">Maya + Jordan · Couple</option>
+          <option value="partners">Northstar · Business partners</option>
+        </select>
+      </label>
+
+      <div class="entry-options" aria-label="Entry preferences">
+        <label class="option-row">
+          <input id="musicOnEntry" type="checkbox" checked />
+          <span><strong>Start the demo soundtrack</strong><small>Begins only after you press Enter, subject to browser support.</small></span>
+        </label>
+        <label class="option-row">
+          <input id="readOnEntry" type="checkbox" />
+          <span><strong>Read the opening aloud</strong><small>Uses the device’s built-in speech voice after entry.</small></span>
+        </label>
       </div>
-      <div class="status-grid" id="statusGrid"></div>
-      <p class="mode-note" id="modeNote">Private-profile preview: personal context stays separate unless the person chooses to share it.</p>
+
+      <button class="primary-action" id="enterBrief" type="button">Enter briefing</button>
+      <p class="security-note">Concept gate only. Real private data would require server-side authentication.</p>
+    </div>
+  </section>
+
+  <div class="app" id="briefApp" aria-hidden="true">
+    <header class="topbar">
+      <a class="brand" href="#today" aria-label="Personal Brief home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>PERSONAL BRIEF</span>
+      </a>
+      <nav class="top-actions" aria-label="Briefing controls">
+        <button class="quiet-button" id="viewModeButton" type="button" aria-pressed="false">Private view</button>
+        <button class="icon-button" id="audioButton" type="button" aria-label="Toggle soundtrack">♪</button>
+        <button class="icon-button" id="readButton" type="button" aria-label="Read briefing aloud">Aa</button>
+        <button class="icon-button" id="explainButton" type="button" aria-label="Explain the product" aria-pressed="false">?</button>
+      </nav>
     </header>
 
-    <nav class="nav" id="briefNav" aria-label="Briefing sections"></nav>
-    <div id="briefSections"></div>
+    <main id="briefMain" tabindex="-1">
+      <section class="hero" id="today" aria-labelledby="heroTitle">
+        <div class="hero-copy-block">
+          <div class="hero-meta">
+            <span class="status-pill status-demo">DEMO EDITION</span>
+            <span id="editionDate">Monday, August 3</span>
+          </div>
+          <p class="greeting" id="greeting">Good afternoon, Alex.</p>
+          <h1 id="heroTitle">Here is the shape of your day.</h1>
+          <p class="hero-summary" id="heroSummary">You have one focused work window, warm weather later, and three decisions worth handling before the day fragments.</p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#priorities">Start with priorities</a>
+            <button class="secondary-action" id="openConnections" type="button">View connections</button>
+          </div>
+        </div>
+
+        <aside class="next-up-panel" aria-labelledby="nextUpTitle">
+          <div class="panel-topline">
+            <span class="source-label source-connected">CONNECTED DEMO</span>
+            <span id="currentTime">1:17 PM</span>
+          </div>
+          <p class="micro-label">NEXT UP</p>
+          <h2 id="nextUpTitle">Website review with Morgan</h2>
+          <p class="next-time">2:30 PM · 45 minutes</p>
+          <div class="prep-list">
+            <span>Open prototype</span>
+            <span>Confirm launch risks</span>
+            <span>Leave with one owner</span>
+          </div>
+          <button class="text-action" type="button" data-concept-action="Prepare meeting brief">Prepare meeting brief →</button>
+        </aside>
+      </section>
+
+      <nav class="section-nav" aria-label="Briefing sections">
+        <a href="#weather">Weather</a>
+        <a href="#priorities">Priorities</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#sharedSpace">Shared space</a>
+        <a href="#connections">Connections</a>
+      </nav>
+
+      <section class="brief-section weather-section" id="weather" aria-labelledby="weatherTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">LIVE-STYLE WEATHER MODULE</p>
+            <h2 id="weatherTitle">Plan around the sky, not a tiny icon.</h2>
+          </div>
+          <div class="weather-tabs" role="tablist" aria-label="Weather views">
+            <button id="hourlyTab" role="tab" aria-selected="true" aria-controls="hourlyWeather" type="button">Hourly</button>
+            <button id="dailyTab" role="tab" aria-selected="false" aria-controls="dailyWeather" type="button">7 days</button>
+          </div>
+        </div>
+
+        <div class="weather-stage">
+          <article class="weather-now" id="weatherNow">
+            <div class="weather-visual" aria-hidden="true">
+              <div class="sun-core"></div>
+              <div class="weather-cloud cloud-one"></div>
+              <div class="weather-cloud cloud-two"></div>
+            </div>
+            <div class="weather-primary">
+              <span class="source-label source-demo">DEMO WEATHER</span>
+              <p class="weather-location" id="weatherLocation">Brooklyn, New York</p>
+              <strong class="weather-temp" id="weatherTemp">82°</strong>
+              <p class="weather-condition" id="weatherCondition">Mostly sunny</p>
+              <p class="weather-advice" id="weatherAdvice">Best outdoor window: 5:30–7:30 PM, once the heat starts backing off.</p>
+            </div>
+            <div class="weather-metrics" id="weatherMetrics"></div>
+          </article>
+
+          <div class="weather-timeline" id="hourlyWeather" role="tabpanel" aria-labelledby="hourlyTab"></div>
+          <div class="weather-timeline is-hidden" id="dailyWeather" role="tabpanel" aria-labelledby="dailyTab"></div>
+        </div>
+      </section>
+
+      <section class="brief-section" id="priorities" aria-labelledby="priorityTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">SUGGESTED · BASED ON DEMO CONTEXT</p>
+            <h2 id="priorityTitle">Three moves. No task landfill.</h2>
+          </div>
+          <p>Complete items locally on this device. A real version could sync approved updates to connected tools.</p>
+        </div>
+        <div class="priority-board" id="priorityBoard"></div>
+      </section>
+
+      <section class="brief-section split-section" id="schedule" aria-labelledby="scheduleTitle">
+        <div class="section-heading section-heading-compact">
+          <div>
+            <p class="micro-label">TODAY’S FLOW</p>
+            <h2 id="scheduleTitle">Protect the useful window.</h2>
+          </div>
+        </div>
+        <div class="schedule-layout">
+          <div class="timeline" id="scheduleTimeline"></div>
+          <aside class="focus-card">
+            <span class="source-label source-analysis">ANALYSIS</span>
+            <p class="micro-label">BEST FOCUS BLOCK</p>
+            <strong>3:30–5:15 PM</strong>
+            <p>No scheduled conflict. Use it for the work that becomes painful after 7 PM.</p>
+            <button class="secondary-action" type="button" data-concept-action="Protect focus time">Protect this time</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="brief-section shared-section" id="sharedSpace" aria-labelledby="sharedTitle">
+        <div class="shared-heading">
+          <div>
+            <span class="source-label source-shared">APPROVED SHARED SPACE</span>
+            <p class="micro-label">PRIVATE PROFILES, SELECTIVE COLLABORATION</p>
+            <h2 id="sharedTitle">Share the plan without sharing everything.</h2>
+          </div>
+          <button class="secondary-action" id="sharedToggleInside" type="button">Preview shared view</button>
+        </div>
+        <div class="shared-grid" id="sharedGrid"></div>
+      </section>
+
+      <section class="brief-section" id="connections" aria-labelledby="connectionsTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">HONEST CONNECTION STATUS</p>
+            <h2 id="connectionsTitle">Nothing is connected by implication.</h2>
+          </div>
+          <p>Each service states whether it is a demo, disconnected, planned or awaiting approval.</p>
+        </div>
+        <div class="connection-grid" id="connectionGrid"></div>
+      </section>
+
+      <section class="explain-panel is-hidden" id="explainPanel" aria-live="polite">
+        <span class="source-label source-demo">EXPLAIN MODE</span>
+        <h2>What this page is demonstrating</h2>
+        <p>Labels show where information would come from. The current content is fictional. Buttons marked as concept actions explain what a connected product could do without pretending the action already exists.</p>
+      </section>
+    </main>
 
     <footer>
       <span>CMX personalized briefing concept</span>
-      <span id="conceptUpdated">Concept framework · ready for customization</span>
+      <button class="text-action" id="resetExperience" type="button">Reset experience</button>
     </footer>
-  </main>
-  <script src="/assets/brief-concept-data.js?v=20260803-1" defer></script>
-  <script src="/assets/brief-concept.js?v=20260803-1" defer></script>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/assets/brief/brief-config.js?v=20260803-2" defer></script>
+  <script src="/assets/brief/brief-presets.js?v=20260803-2" defer></script>
+  <script src="/assets/brief/brief-data.js?v=20260803-2" defer></script>
+  <script src="/assets/brief/brief-memory.js?v=20260803-2" defer></script>
+  <script src="/assets/brief/brief-connections.js?v=20260803-2" defer></script>
+  <script src="/assets/brief/brief-core.js?v=20260803-2" defer></script>
 </body>
 </html>
