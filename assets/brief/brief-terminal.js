@@ -2,8 +2,7 @@
   'use strict';
 
   const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const VALID_PRESETS = ['individual', 'couple', 'partners', 'trainer'];
+  const VALID_PRESETS = ['individual', 'couple', 'partners', 'trainer', 'team'];
 
   const TERMINALS = {
     individual: {
@@ -13,6 +12,7 @@
       quick: ['summary', 'public', 'report', 'horoscope', 'music', 'privacy'],
       modules: {
         today: ['#today', 'Opening today'],
+        quick: ['#briefWorkspace', 'Opening the concise Personal briefing'],
         public: ['#livePublicLayer', 'Opening live public information'],
         weather: ['#livePublicLayer', 'Opening Brooklyn weather and alerts'],
         dashboard: ['#personalCommandCenter', 'Opening the personal command center'],
@@ -20,7 +20,7 @@
         inbox: ['#personalCommandCenter .fake-inbox-panel', 'Opening fictional inbox triage'],
         projects: ['#personalCommandCenter .project-health-panel', 'Opening fictional project health'],
         horoscope: ['#scenarioExperienceAddon .horoscope-card', 'Opening the personal horoscope'],
-        quote: ['#scenarioExperienceAddon .daily-quote', 'Opening today’s reflection'],
+        quote: ['#briefWorkspace .quick-quote-card', 'Opening today’s reflection'],
         music: ['#music', 'Opening music and media'],
         actions: ['#priorities', 'Opening daily actions'],
         schedule: ['#schedule', 'Opening today’s schedule'],
@@ -32,9 +32,10 @@
       label: 'Relationship briefing terminal',
       prompt: 'pair@brief:~/shared$',
       intro: 'Relationship console ready. Compare two private profiles with the approved shared space.',
-      quick: ['summary', 'profiles', 'shared', 'horoscope', 'culture', 'privacy'],
+      quick: ['summary', 'profiles', 'shared', 'horoscope', 'watch', 'privacy'],
       modules: {
-        today: ['#today', 'Opening the relationship briefing'],
+        today: ['#today', 'Opening the Relationship briefing'],
+        quick: ['#briefWorkspace', 'Opening the concise Relationship briefing'],
         profiles: ['#scenarioExperienceAddon .relationship-profile-space', 'Opening both private profiles and the approved couple space'],
         partnera: ['#scenarioExperienceAddon .tone-blue', 'Opening the blue demonstration profile'],
         partnerb: ['#scenarioExperienceAddon .tone-pink', 'Opening the pink demonstration profile'],
@@ -42,6 +43,7 @@
         mediator: ['#scenarioStage', 'Opening neutral relationship guidance'],
         promises: ['#scenarioStage', 'Opening approved promises and shared agreements'],
         horoscope: ['#scenarioExperienceAddon .couple-horoscope-grid', 'Opening Virgo + Virgo reflections'],
+        watch: ['#relationshipDailyWatch', 'Opening today’s shared watch'],
         culture: ['#scenarioExperienceAddon .culture-stream', 'Opening celebrity and culture updates'],
         music: ['#music', 'Opening shared music'],
         actions: ['#priorities', 'Opening relationship actions'],
@@ -53,13 +55,15 @@
       label: 'Business briefing terminal',
       prompt: 'partners@brief:~/ops$',
       intro: 'Operating console ready. Inspect partner-private information, approved company data, markets and decisions.',
-      quick: ['summary', 'partners', 'ledger', 'charts', 'markets', 'privacy'],
+      quick: ['summary', 'finance', 'projects', 'decisions', 'markets', 'privacy'],
       modules: {
-        today: ['#today', 'Opening the business briefing'],
+        today: ['#today', 'Opening the Business briefing'],
+        quick: ['#briefWorkspace', 'Opening the concise Business briefing'],
         partners: ['#scenarioExperienceAddon .business-profile-grid', 'Opening both partner-private dashboards'],
         ledger: ['#scenarioExperienceAddon .business-shared-ledger', 'Opening the approved shared company ledger'],
         kpis: ['#scenarioStage', 'Opening operating KPIs'],
         charts: ['#scenarioExperienceAddon .business-visual-grid', 'Opening financial and process visuals'],
+        finance: ['#scenarioExperienceAddon .allocation-panel', 'Opening fictional cost allocation and shared finance'],
         allocation: ['#scenarioExperienceAddon .allocation-panel', 'Opening fictional cost allocation'],
         decisions: ['#scenarioExperienceAddon .process-map-panel', 'Opening the decision process map'],
         advice: ['#scenarioExperienceAddon .advice-visual-grid', 'Opening fictional legal, financial and strategic guidance'],
@@ -74,19 +78,41 @@
       label: 'Trainer briefing terminal',
       prompt: 'coach@brief:~/training$',
       intro: 'Training console ready. Review habits, answer today’s checks and inspect how advice adapts.',
-      quick: ['summary', 'habits', 'checkin', 'coach', 'progress', 'privacy'],
+      quick: ['summary', 'today', 'habits', 'checkin', 'coach', 'privacy'],
       modules: {
-        today: ['#today', 'Opening the trainer briefing'],
+        today: ['#today', 'Opening the Trainer briefing'],
+        quick: ['#briefWorkspace', 'Opening the concise Trainer briefing'],
         habits: ['#scenarioExperienceAddon .habit-calendar', 'Opening the seven-day habit calendar'],
         checkin: ['#scenarioExperienceAddon .accountability-questions', 'Opening today’s yes-or-no check-in'],
         coach: ['#scenarioExperienceAddon .adaptive-coach-note', 'Opening the adapted coach note'],
         progress: ['#scenarioStage', 'Opening progress and evidence'],
+        recovery: ['#scenarioExperienceAddon', 'Opening recovery and accountability guidance'],
         notes: ['#scenarioStage', 'Opening trainer and student notes'],
         music: ['#music', 'Opening training music'],
         actions: ['#priorities', 'Opening today’s training actions'],
         schedule: ['#schedule', 'Opening the training schedule'],
         memory: ['#learning', 'Opening correction and memory controls'],
         connections: ['#connections', 'Opening connected-data boundaries']
+      }
+    },
+    team: {
+      label: 'Team briefing terminal',
+      prompt: 'team@brief:~/project$',
+      intro: 'Team console ready. Review member work, project truth, handoffs, procedures, finance and access boundaries.',
+      quick: ['summary', 'mywork', 'project', 'handoffs', 'procedure', 'security'],
+      modules: {
+        today: ['#today', 'Opening the Team briefing'],
+        quick: ['#briefWorkspace', 'Opening the concise Team briefing'],
+        mywork: ['#scenarioStage .team-role-console', 'Opening role-based member work'],
+        project: ['#scenarioStage .team-progress-panel', 'Opening the shared project timeline'],
+        handoffs: ['#scenarioStage .team-handoff-board', 'Opening project handoffs'],
+        procedure: ['#scenarioStage .team-procedure-board', 'Opening procedure readiness'],
+        finance: ['#scenarioStage .team-finance-watch', 'Opening approved financial context'],
+        spaces: ['#scenarioStage .team-space-map', 'Opening users, roles and spaces'],
+        security: ['#scenarioStage .team-security-boundary', 'Opening planned security boundaries'],
+        actions: ['#priorities', 'Opening Team actions'],
+        schedule: ['#schedule', 'Opening the Team schedule'],
+        connections: ['#connections', 'Opening Team connection status']
       }
     }
   };
@@ -152,7 +178,10 @@
       business: 'partners',
       partners: 'partners',
       trainer: 'trainer',
-      training: 'trainer'
+      training: 'trainer',
+      team: 'team',
+      project: 'team',
+      crew: 'team'
     };
     const id = aliases[next];
     if (!id || !window.BRIEF_APP?.setPreset) {
@@ -171,7 +200,8 @@
       individual: `Personal briefing active in ${boundaries}. Public Brooklyn information may be current. Inbox, money, project and private-life examples are fictional.`,
       couple: `Relationship briefing active in ${boundaries}. Two private profiles remain separate from the approved couple space. Blue and pink labels are customizable.`,
       partners: `Business briefing active in ${boundaries}. Partner-private records stay separate from the approved company ledger. Financial, legal and operating examples are fictional.`,
-      trainer: `Trainer briefing active in ${boundaries}. Student answers, trainer rules and AI suggestions remain separately labeled. Health guidance is demonstrative, not medical care.`
+      trainer: `Trainer briefing active in ${boundaries}. Student answers, trainer rules and AI suggestions remain separately labeled. Health guidance is demonstrative, not medical care.`,
+      team: `Team briefing active in ${boundaries}. Member, role, project and leadership spaces keep different visibility while approved project truth stays shared.`
     };
     return summaries[current];
   }
@@ -179,7 +209,7 @@
   function helpText() {
     const current = config();
     const moduleCommands = Object.keys(current.modules).join(', ');
-    return `global: help, summary, status, modules, private, shared, top, about, privacy, clear, view personal|relationship|business|trainer. ${current.label.toLowerCase()}: ${moduleCommands}`;
+    return `global: help, summary, status, modules, private, shared, top, about, privacy, clear, view personal|relationship|business|trainer|team. ${current.label.toLowerCase()}: ${moduleCommands}`;
   }
 
   function run(rawCommand) {
@@ -234,7 +264,7 @@
       switchPreset(command.split(/\s+/).slice(1).join(''));
       return;
     }
-    if (['personal', 'individual', 'relationship', 'couple', 'business', 'partners', 'trainer', 'training'].includes(command)) {
+    if (['personal', 'individual', 'relationship', 'couple', 'business', 'partners', 'trainer', 'training', 'team', 'project', 'crew'].includes(command)) {
       switchPreset(command);
       return;
     }
@@ -268,7 +298,7 @@
     const state = $('#briefTerminalState');
     if (title) title.textContent = current.label;
     if (prompt) prompt.textContent = current.prompt;
-    if (state) state.textContent = preset() === 'individual' ? 'personal' : preset() === 'couple' ? 'relationship' : preset() === 'partners' ? 'business' : 'trainer';
+    if (state) state.textContent = preset() === 'individual' ? 'personal' : preset() === 'couple' ? 'relationship' : preset() === 'partners' ? 'business' : preset() === 'trainer' ? 'trainer' : 'team';
     clearOutput();
     appendLine(current.intro, 'system');
     appendLine('Type help or tap a command below. Nothing typed here leaves this page.', 'system');
