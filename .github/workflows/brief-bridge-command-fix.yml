@@ -1,0 +1,36 @@
+name: Fix Briefing Type Command Parsing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-bridge-command-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Correct command alternative order
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('assets/brief/brief-terminal-bridge.js')
+          text = path.read_text().replace(
+              '/^(?:brief|briefing|briefing\\s+type|view|switch)\\s+(.+)$/',
+              '/^(?:briefing\\s+type|briefing|brief|view|switch)\\s+(.+)$/'
+          )
+          path.write_text(text)
+          path = Path('brief/index.html')
+          path.write_text(path.read_text().replace('brief-terminal-bridge.js?v=20260803-3', 'brief-terminal-bridge.js?v=20260803-4'))
+          PY
+          node --check assets/brief/brief-terminal-bridge.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brief/brief-terminal-bridge.js brief/index.html
+          git commit -m 'Fix briefing type command parsing and cache version'
+          git push
