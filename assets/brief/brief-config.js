@@ -22,7 +22,7 @@ window.BRIEF_CONFIG = {
   const build = {
     upgrade: '20260803-5',
     live: '20260803-3',
-    daily: '20260803-1'
+    daily: '20260803-2'
   };
 
   const music = document.getElementById('musicOnEntry');
