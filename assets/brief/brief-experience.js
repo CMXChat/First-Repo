@@ -204,7 +204,7 @@
     const d = window.BRIEF_DAILY_CONTENT.relationshipSpace;
     const live = window.BRIEF_LIVE_DATA;
     const leftSign = localStorage.getItem(storage('sign:coupleLeftSign')) || 'virgo';
-    const rightSign = localStorage.getItem(storage('sign:coupleRightSign')) || 'pisces';
+    const rightSign = localStorage.getItem(storage('sign:coupleRightSign')) || 'virgo';
     return `
       <section class="experience-addon">
         <div class="experience-addon-heading"><div><p class="micro-label">PROFILES + APPROVED COUPLE SPACE</p><h3>Two accounts can stay private while selected updates become shared.</h3></div><p>Blue and pink are demonstration labels only. Names, colors, language, roles and relationship terms would be customizable.</p></div>
@@ -226,7 +226,7 @@
         </div>
         <div class="couple-horoscope-grid">
           ${horoscopeCard(leftSign, 'blue', 'coupleLeftSign')}
-          <article class="compatibility-card"><span>TODAY’S COUPLE REFLECTION</span><h4>Virgo + Pisces example</h4><p>${escapeHtml(live.horoscopes.compatibility)}</p><small>${escapeHtml(live.horoscopes.disclaimer)}</small></article>
+          <article class="compatibility-card"><span>TODAY’S COUPLE REFLECTION</span><h4>Virgo + Virgo example</h4><p>${escapeHtml(live.horoscopes.compatibility)}</p><small>${escapeHtml(live.horoscopes.disclaimer)}</small></article>
           ${horoscopeCard(rightSign, 'pink', 'coupleRightSign')}
         </div>
         <section class="culture-stream">
@@ -361,12 +361,11 @@
       styleInternalActions();
       enhanceThemeToggle();
     }, 100));
-    const observer = new MutationObserver(() => {
+    [0, 120, 420, 900].forEach(delay => window.setTimeout(() => {
       styleInternalActions();
       enhanceThemeToggle();
       syncSpaceButtons();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+    }, delay));
   }
 
   window.addEventListener('brief:ready', init, { once: true });

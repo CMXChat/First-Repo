@@ -274,11 +274,7 @@
         enhanceSpotifyPlayers();
       }, 60);
     });
-    const observer = new MutationObserver(() => enhanceSpotifyPlayers());
-    const stage = $('#scenarioStage');
-    const favorites = $('#musicFavorites');
-    if (stage) observer.observe(stage, { childList: true, subtree: true });
-    if (favorites) observer.observe(favorites, { childList: true, subtree: true });
+    [120, 420, 900].forEach(delay => window.setTimeout(enhanceSpotifyPlayers, delay));
   }
 
   window.addEventListener('brief:ready', init, { once: true });
