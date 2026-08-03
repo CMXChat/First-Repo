@@ -1,116 +1,108 @@
 window.CMX_DAILY_CULTURE = {
-  generated: "Researched August 2, 2026",
+  generated: "Researched August 3, 2026",
   items: [
     {
       audience: "shared",
       priority: 100,
-      label: "box office earthquake",
-      status: "VERIFIED",
-      title: "Spider-Man just delivered a near-Endgame opening",
-      text: "Spider-Man: Brand New Day opened with an estimated $355 million in the U.S. and Canada and $927 million worldwide, the second-largest opening weekend on record behind Avengers: Endgame. Tom Holland returned as Peter Parker, Zendaya returned as MJ, and the film helped push the overall North American weekend to an estimated $430 million, the biggest combined weekend the market has recorded.",
-      detailsLabel: "The good details",
+      label: "court watch",
+      status: "ONGOING CASES",
+      title: "A major week of celebrity-linked criminal cases is underway",
+      text: "Several high-profile cases are moving at once, including the D4vd murder prosecution, the Tate brothers' extradition fight, the Tupac Shakur murder case, the federal trial tied to the attack on Salman Rushdie, and sentencing questions in the Apalachee High School shooting case. Each remains at a different legal stage, so headlines should not flatten them into one story.",
+      detailsLabel: "What matters now",
       details: [
-        "The movie earned an estimated $168 million on its opening day.",
-        "International markets contributed about $572 million, including a reported $121 million from China.",
-        "The Odyssey remained strong in second place, giving Holland and Zendaya two major films near the top of the box office at the same time.",
-        "The huge result matters because superhero fatigue has been a real industry concern, yet audiences still showed up when the event felt big enough."
+        "D4vd has been ordered to stand trial. That ruling means a judge found probable cause, not guilt.",
+        "Andrew and Tristan Tate are seeking release while contesting extradition to the United Kingdom. They deny wrongdoing.",
+        "In the Tupac case, the defense is challenging whether a 2008 police interview can be used at trial.",
+        "The strongest thing to watch is procedure: bail, admissibility, arraignment, sentencing, and trial scheduling."
       ],
-      whyItMatters: "This was not a normal successful opening. It was a genuine culture event and a major confidence boost for theaters, Sony and the wider summer movie business.",
-      watchNext: "The industry will be watching whether word of mouth keeps the second weekend unusually strong and whether the franchise crosses $10 billion worldwide.",
+      whyItMatters: "These cases are receiving enormous attention, but the legal stage is often the part most coverage gets wrong or skips.",
+      watchNext: "Bail filings in the Tate case, the next D4vd court date, and the suppression ruling in the Tupac prosecution.",
       sources: [
-        { label: "Associated Press", url: "https://apnews.com/article/a2c2efb863263ce50bcee1e7db822574", published: "August 2, 2026" },
-        { label: "Reuters", url: "https://www.reuters.com/lifestyle/spider-man-brand-new-day-opens-355-million-us-canada-2026-08-02/", published: "August 2, 2026" }
+        { label: "Associated Press court roundup", url: "https://apnews.com/article/3d1661685f9b72235ba716850ab9fdc7", published: "July 27, 2026" },
+        { label: "Reuters on the Tate extradition case", url: "https://www.reuters.com/legal/government/andrew-tristan-tate-seek-release-us-jail-while-fighting-extradition-2026-07-27/", published: "July 27, 2026" }
       ]
     },
     {
       audience: "shared",
-      priority: 96,
-      label: "celebrity crime case",
-      status: "CHARGES, NOT A CONVICTION",
-      title: "Singer D4vd has been ordered to stand trial",
-      text: "A Los Angeles judge ruled that prosecutors presented enough evidence for singer David Burke, known as D4vd, to stand trial in the killing of a 14-year-old girl. He faces charges including murder, continuous sexual abuse of a child under 14 and unlawful mutilation of human remains. He has not been convicted, and the allegations will now be tested at trial.",
-      detailsLabel: "What actually happened in court",
+      priority: 93,
+      label: "what people are watching",
+      status: "VERIFIED RELEASE GUIDE",
+      title: "August streaming is crowded enough to require adult supervision",
+      text: "August brings Ted Lasso season four, Lanterns, the final season of Outer Banks, Reacher season four, One Hundred Years of Solitude part two, and a wide mix of films, documentaries, reality shows, and live events. The useful move is choosing one shared show, not turning every subscription into a second job.",
+      detailsLabel: "The strongest candidates",
       details: [
-        "The preliminary hearing lasted five days and included testimony from 12 prosecution witnesses.",
-        "The judge's decision establishes probable cause for a trial. It is not a finding of guilt.",
-        "Prosecutors allege the killing followed threats to expose an unlawful relationship and damage the singer's career.",
-        "The Los Angeles County District Attorney says Burke is due back in court on August 31."
+        "Ted Lasso returns August 5 with a new focus on a women's football team.",
+        "One Hundred Years of Solitude part two arrives August 5.",
+        "Lanterns is one of HBO Max's biggest new August series.",
+        "The final Outer Banks season gives longtime viewers an actual ending instead of another cliffhanger-shaped invoice."
       ],
-      whyItMatters: "This is one of the most serious criminal cases currently involving a young music star, and the next phase will bring far more scrutiny to the evidence and the conduct of everyone around the case.",
-      watchNext: "Arraignment and trial scheduling, defense challenges to the evidence and any additional filings before the August 31 return date.",
+      whyItMatters: "A shared show can give Jay and Crystal something normal, light, and consistent to enjoy across the distance.",
+      watchNext: "Pick one title together and decide whether it is a weekly ritual or a binge with poor sleep hygiene.",
       sources: [
-        { label: "Los Angeles County District Attorney", url: "https://da.lacounty.gov/media/news/d4vd-ordered-stand-trial-murdering-dismembering-14-year-old-girl", published: "July 27, 2026" },
-        { label: "Associated Press court roundup", url: "https://apnews.com/article/3d1661685f9b72235ba716850ab9fdc7", published: "July 27, 2026" }
-      ]
-    },
-    {
-      audience: "shared",
-      priority: 92,
-      label: "hip-hop history in court",
-      status: "ONGOING CASE",
-      title: "A key Tupac murder-case interview is under challenge",
-      text: "Duane “Keffe D” Davis is accused of orchestrating the 1996 killing of Tupac Shakur and is expected to face trial in August. His lawyers are asking the court to exclude a 2008 police interview that could become central evidence. Davis has pleaded not guilty and has not been convicted.",
-      detailsLabel: "Why the interview matters",
-      details: [
-        "The case remained cold for decades before Davis made public statements about the shooting, including statements in a book he co-wrote.",
-        "The defense challenge focuses on whether the 2008 interview can legally be used at trial.",
-        "The ruling could materially change how prosecutors present a case tied to one of music's most famous unsolved killings.",
-        "The court fight is about admissibility and procedure, not a final decision about guilt."
-      ],
-      whyItMatters: "Tupac's death has shaped hip-hop mythology for nearly 30 years. A trial would move the story from speculation and documentaries into a formal evidentiary record.",
-      watchNext: "The judge's suppression ruling, the final trial timetable and which of Davis' previous statements prosecutors are allowed to present.",
-      sources: [
-        { label: "Associated Press", url: "https://apnews.com/article/3d1661685f9b72235ba716850ab9fdc7", published: "July 27, 2026" }
+        { label: "Disney Plus and Hulu August guide", url: "https://press.disneyplus.com/news/next-on-disney-plus-august-2026", published: "July 16, 2026" },
+        { label: "TV Insider August streaming guide", url: "https://www.tvinsider.com/1275246/august-2026-streaming-guide-netflix-hulu-paramount-more/", published: "July 23, 2026" },
+        { label: "Associated Press streaming picks", url: "https://apnews.com/article/b4bead6662b30b8fd5982b2497fca1c2", published: "July 27, 2026" }
       ]
     },
     {
       audience: "crystal",
       priority: 88,
-      label: "New Zealand screen legacy",
-      status: "REMEMBERING SAM NEILL",
-      title: "Sam Neill's legacy reaches far beyond Jurassic Park",
-      text: "New Zealand actor Sam Neill died July 13 at age 78. He became a global star as Dr. Alan Grant in Jurassic Park, but his career also stretched through The Piano, Dead Calm, Hunt for the Wilderpeople, Peaky Blinders and decades of Australian and New Zealand film. His family said the loss was sudden and unexpected and that he remained cancer-free.",
-      detailsLabel: "The fuller picture",
+      label: "New Zealand culture",
+      status: "VERIFIED",
+      title: "New Zealand has formally made English an official language",
+      text: "Parliament passed legislation giving English formal official-language status alongside te reo Māori and New Zealand Sign Language. Supporters called it recognition of existing practice. Critics argued it was unnecessary because English already dominates public life and said the move carried more political symbolism than practical value.",
+      detailsLabel: "Why people are arguing",
       details: [
-        "Neill was born in Northern Ireland and grew up in Christchurch, where he discovered acting through university theatre.",
-        "His New Zealand breakthrough came through Sleeping Dogs before My Brilliant Career and Dead Calm expanded his international reputation.",
-        "His representative later said pneumonia was the cause of death after years of cancer treatment had left his immune system compromised.",
-        "Steven Spielberg, Nicole Kidman, Cillian Murphy, Jeff Goldblum and other collaborators remembered him as kind, funny, gentle and unusually collaborative."
+        "English is already spoken by the overwhelming majority of New Zealanders.",
+        "Official-language laws are usually used to protect minority languages, which is why critics see this as unusual.",
+        "The debate is really about identity, power, and the place of te reo Māori in public life.",
+        "The practical daily effect may be small, but the cultural argument is not."
       ],
-      whyItMatters: "He was one of New Zealand's most recognizable cultural exports while still feeling connected to the region, its filmmaking and his farm life.",
-      watchNext: "A private family memorial is expected to be held later at his New Zealand farm.",
+      whyItMatters: "It is a current national culture story that touches language, belonging, and how New Zealand defines itself.",
+      watchNext: "Whether the law changes public-sector practice or remains mainly symbolic.",
       sources: [
-        { label: "Associated Press", url: "https://apnews.com/article/91f11b230d06771fb4680c0916b0c876", published: "July 13, 2026" },
-        { label: "Variety Australia", url: "https://au.variety.com/2026/film/news/sam-neills-cause-of-death-has-been-revealed-38622/", published: "July 16, 2026" }
+        { label: "The Guardian", url: "https://www.theguardian.com/world/2026/aug/03/new-zealand-english-an-official-language-bill", published: "August 3, 2026" }
       ]
     },
     {
       audience: "crystal",
-      priority: 82,
-      label: "Australia and New Zealand watch",
+      priority: 80,
+      label: "lighter regional pick",
       status: "REGIONAL PICK",
-      title: "The Voice Australia is returning with a strange new mix",
-      text: "The Voice Australia returns August 2 with an overhauled coaching lineup that includes Tones And I, Spice Girls member Melanie C and Richard Marx, plus a promised format twist. That is a very specific combination of Australian pop, British nostalgia and American adult-contemporary energy sharing one television set.",
-      detailsLabel: "Why it may be fun",
+      title: "Waikato is putting local creativity on display",
+      text: "Waikato District has been highlighting community groups using art and creativity to strengthen local connections. It is a quieter story than celebrity court drama, but it is closer to the kind of culture that actually changes how a place feels.",
+      detailsLabel: "Why it fits",
       details: [
-        "Tones And I brings current Australian chart credibility.",
-        "Melanie C brings a major Spice Girls connection and a very recognizable global pop history.",
-        "Richard Marx adds decades of songwriting and performance experience from a completely different lane.",
-        "The producers are also teasing a secret format change, which is television language for either genuinely clever or gloriously unnecessary."
+        "The project centers local creative groups and community stories.",
+        "It connects art with belonging instead of treating creativity as decoration.",
+        "For someone who paints flowers and designs jewelry, the idea is simple: local creativity counts as real culture too."
       ],
-      whyItMatters: "It is a lighter regional culture pick that Crystal can actually watch, judge and complain about in real time instead of reading another American celebrity lawsuit.",
-      watchNext: "Which coach chemistry works, what the format twist actually is and whether the season produces a breakout Australian or New Zealand voice.",
+      whyItMatters: "This is a useful reminder that Crystal's own creative work belongs in the same category as the things people travel to galleries to see.",
+      watchNext: "Look for one local artist, exhibition, market, or design idea worth saving for a future outing or jewelry concept.",
       sources: [
-        { label: "Variety Australia", url: "https://au.variety.com/2026/biz/news/live", published: "August 2, 2026" }
+        { label: "Waikato District Council", url: "https://www.waikatodistrict.govt.nz/news/article", published: "July 8, 2026" }
       ]
     },
     {
       audience: "shared",
-      priority: 45,
-      label: "today's culture desk",
-      status: "PERSPECTIVE",
-      title: "The main story is still here",
-      text: "The internet produced records, court hearings, tributes and television chaos. None of it deserves more authority over the day than two people across the world trying to repair, create and plan a future. The culture desk may be better now, but it is still not allowed to move into the living room."
+      priority: 72,
+      label: "music detail",
+      status: "VERIFIED",
+      title: "Why Everywhere still sounds so bright",
+      text: "Christine McVie's melody and Lindsey Buckingham's production gave Everywhere its unusually shimmering sound. One of the signature guitar textures was created by recording parts slowly and speeding them up, helping the track feel light, precise, and almost unreal.",
+      detailsLabel: "The good detail",
+      details: [
+        "The song came from Fleetwood Mac's 1987 album Tango in the Night.",
+        "McVie wrote it during a happier romantic period.",
+        "The production used then-modern sampling and tape techniques to create its glossy texture.",
+        "It fits today's page because the song itself sounds like movement toward someone."
+      ],
+      whyItMatters: "The daily song is not random background audio. Its construction matches the mood of distance, movement, and wanting closeness.",
+      watchNext: "Play the official video after opening the briefing and decide whether it deserves a future repeat.",
+      sources: [
+        { label: "MusicRadar", url: "https://www.musicradar.com/artists/he-slowed-the-tape-down-really-slowly-and-played-the-parts-slowly-when-it-came-up-to-the-right-speed-it-sounded-amazing-how-christine-mcvies-pop-songcraft-and-lindsey-buckinghams-production-genius-created-one-of-fleetwood-macs-biggest-80s-hits", published: "July 31, 2026" },
+        { label: "Official Fleetwood Mac video page", url: "https://www.fleetwoodmacofficial.com/video/fleetwood-mac-everywhere-official-music-video", published: "official archive" }
+      ]
     }
   ]
 };
