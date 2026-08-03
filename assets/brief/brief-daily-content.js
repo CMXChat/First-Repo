@@ -1,5 +1,5 @@
 window.BRIEF_DAILY_CONTENT = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   edition: {
     date: '2026-08-03',
     timezone: 'America/New_York',
@@ -24,12 +24,14 @@ window.BRIEF_DAILY_CONTENT = {
       'assets/brief/brief-upgrade.css',
       'assets/brief/brief-live.css',
       'assets/brief/brief-daily.css',
+      'assets/brief/brief-experience.css',
       'assets/brief/brief-core.js',
       'assets/brief/brief-scenario-renderer.js',
       'assets/brief/brief-upgrade.js',
       'assets/brief/brief-live.js',
       'assets/brief/brief-live-patch.js',
-      'assets/brief/brief-daily.js'
+      'assets/brief/brief-daily.js',
+      'assets/brief/brief-experience.js'
     ]
   },
   music: {
@@ -64,6 +66,7 @@ window.BRIEF_DAILY_CONTENT = {
   personalDashboard: {
     headline: 'A personal command center that changes with the day.',
     summary: 'Public information can be real. Private-looking records remain fictional until a protected backend and explicit permissions exist.',
+    quote: 'A useful day begins when the next honest action becomes visible.',
     scorecards: [
       { label: 'Useful focus window', value: '3:30–5:15 PM', detail: 'Fictional calendar example', tone: 'blue' },
       { label: 'Open actions', value: '3', detail: 'One should be finished before the afternoon fragments', tone: 'amber' },
@@ -85,6 +88,109 @@ window.BRIEF_DAILY_CONTENT = {
       { name: 'Website launch', health: 82, state: 'On track', next: 'Close two review notes' },
       { name: 'Personal finance cleanup', health: 58, state: 'Watch', next: 'Assign the two uncategorized expenses' },
       { name: 'Python learning path', health: 71, state: 'Building', next: 'Practice API response parsing' }
+    ]
+  },
+  relationshipSpace: {
+    labels: { left: 'Partner A', right: 'Partner B', shared: 'Couple space' },
+    colors: { left: 'blue', right: 'pink' },
+    left: {
+      name: 'Maya',
+      privateUpdates: [
+        'Needs reassurance before solving logistics',
+        'Saved a private note about the weekend conversation',
+        'Celebrity and culture updates are part of her briefing'
+      ],
+      approvedShared: [
+        'Dinner plan can move to 8:00 PM',
+        'Wants ten calm minutes before making a decision'
+      ]
+    },
+    right: {
+      name: 'Jordan',
+      privateUpdates: [
+        'Focused on solving the travel plan',
+        'Has a private reminder to slow down before responding',
+        'Financial planning stays private until deliberately shared'
+      ],
+      approvedShared: [
+        'Can handle the booking after work',
+        'Agrees to reassurance first, logistics second'
+      ]
+    },
+    shared: [
+      { label: 'Approved plan', text: 'Review weekend travel together at 8:15 PM' },
+      { label: 'Shared promise', text: 'No late-night ultimatums' },
+      { label: 'Needs both', text: 'Move £300 into the trip fund' }
+    ]
+  },
+  businessSpace: {
+    labels: { left: 'London partner', right: 'New York partner', shared: 'Northstar operating space' },
+    left: {
+      name: 'Amina',
+      private: [
+        { label: 'Private concern', value: 'Team capacity', note: 'Two London projects may overlap next week' },
+        { label: 'Private decision', value: 'Hold hiring', note: 'Wait for collections before approving another contractor' },
+        { label: 'Private inbox', value: '4 selected', note: 'Two client replies and two internal approvals' }
+      ],
+      approved: [
+        'Share London delivery capacity risk',
+        'Escalate the at-risk client to both partners'
+      ]
+    },
+    right: {
+      name: 'Eli',
+      private: [
+        { label: 'Private concern', value: 'US collections', note: 'Two invoices are more than 14 days late' },
+        { label: 'Private decision', value: 'Call today', note: 'Own the overdue US invoice follow-up' },
+        { label: 'Private inbox', value: '3 selected', note: 'One sales reply and two payment threads' }
+      ],
+      approved: [
+        'Share expected collection dates',
+        'Own the US cash-recovery actions'
+      ]
+    },
+    shared: [
+      { label: 'Revenue MTD', value: '£82.4k', note: 'Fictional company record' },
+      { label: 'Cash collected', value: '62%', note: 'Below the fictional 75% operating target' },
+      { label: 'Decision', value: 'Contractor paused', note: 'Review after £18k in receivables clears' },
+      { label: 'Legal watch', value: '2 items', note: 'Fictional contract renewal and data-processing review' }
+    ],
+    process: [
+      'Public market update',
+      'Approved company records',
+      'Partner-private interpretation',
+      'Shared operating decision',
+      'Owner and deadline'
+    ],
+    allocation: [
+      { label: 'Delivery', value: 44 },
+      { label: 'Payroll', value: 28 },
+      { label: 'Growth', value: 12 },
+      { label: 'Tools', value: 8 },
+      { label: 'Reserve', value: 8 }
+    ],
+    advice: [
+      { kind: 'Financial', title: 'Collect before expanding fixed cost', text: 'The fictional pipeline is healthy, but cash conversion is weak. Tie contractor approval to collected receivables.' },
+      { kind: 'Legal', title: 'Turn repeated exceptions into policy', text: 'Pricing and scope exceptions should become a written approval rule. This is an operational example, not legal advice.' },
+      { kind: 'Strategic', title: 'Use market news only when it changes a decision', text: 'Connect public stock, energy or technology changes to actual company exposure instead of adding generic headlines.' }
+    ]
+  },
+  trainerAccountability: {
+    quote: 'Consistency becomes easier when the plan fits the person.',
+    questions: [
+      { id: 'movement', question: 'Did you complete today’s planned movement?', yes: 'Log the session and prepare the next progression.', no: 'Choose a smaller recovery action instead of pretending the day is lost.' },
+      { id: 'protein', question: 'Did you reach the agreed protein target?', yes: 'Keep the meal pattern that worked.', no: 'Identify which meal created the gap and plan one practical correction.' },
+      { id: 'sleep', question: 'Did you get at least seven hours of sleep?', yes: 'Normal training guidance can remain.', no: 'Reduce intensity if warm-up quality or coordination feels poor.' },
+      { id: 'pain', question: 'Did any movement cause unusual pain?', yes: 'Stop the affected exercise and share the specific movement and sensation with the trainer.', no: 'Continue tracking without inventing a problem.' }
+    ],
+    week: [
+      { day: 'Mon', done: true },
+      { day: 'Tue', done: true },
+      { day: 'Wed', done: false },
+      { day: 'Thu', done: true },
+      { day: 'Fri', done: null },
+      { day: 'Sat', done: null },
+      { day: 'Sun', done: null }
     ]
   },
   footerViews: [
