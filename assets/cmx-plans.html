@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="CMX Plans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+
+  <title>CMX Plans</title>
+  <meta name="description" content="Private dated plans and product concepts for the CMX Restricted Node." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <link rel="canonical" href="https://db.cmxchat.com/plans/" />
+
+  <link rel="stylesheet" href="/assets/plans.css?v=20260802-1" />
+</head>
+<body>
+  <a class="skip-link" href="#planEntries">Skip to plan entries</a>
+
+  <main class="terminal" aria-labelledby="pageTitle">
+    <header class="terminal-header">
+      <p class="command-line"><span aria-hidden="true">$</span> ls -la ~/plans</p>
+      <h1 id="pageTitle">PLANS</h1>
+      <p class="summary-line">Dated product and platform plans written as working entries.</p>
+      <p class="truth-line"><strong>current_truth:</strong> these entries describe the intended direction. Features remain planned until they are implemented and verified.</p>
+      <nav class="header-links" aria-label="Related pages">
+        <a href="/updates/">[updates]</a>
+        <a href="/news/">[news]</a>
+        <a href="/architecture/">[architecture]</a>
+      </nav>
+    </header>
+
+    <section id="planEntries" class="terminal-section" aria-labelledby="plansTitle">
+      <div class="section-label">
+        <div>
+          <p class="prompt-label">~/plans/entries</p>
+          <h2 id="plansTitle">PLAN ENTRIES</h2>
+        </div>
+      </div>
+      <p class="section-intro">Newest entries appear first. Each entry records a product idea, its intended experience, and the practical direction for building it.</p>
+      <div id="plansList" class="notes-list"></div>
+    </section>
+
+    <footer>
+      <span>CMX Plans · private working resource</span>
+      <a href="/updates/">return to updates</a>
+    </footer>
+  </main>
+
+  <noscript>This page requires JavaScript to render the plan entries.</noscript>
+  <script src="/assets/plans-data.js?v=20260802-1" defer></script>
+  <script src="/assets/plans.js?v=20260802-1" defer></script>
+</body>
+</html>
