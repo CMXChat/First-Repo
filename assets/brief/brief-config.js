@@ -23,9 +23,9 @@ window.BRIEF_CONFIG = {
     device: '20260803-2',
     entry: '20260803-4',
     upgrade: '20260803-5',
-    live: '20260803-4',
+    live: '20260803-5',
     daily: '20260803-3',
-    experience: '20260803-3',
+    experience: '20260803-4',
     terminal: '20260803-1',
     watch: '20260803-2'
   };
