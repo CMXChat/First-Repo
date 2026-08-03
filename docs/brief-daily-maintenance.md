@@ -4,23 +4,26 @@
 
 The briefing has two layers:
 
-1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, music controls, and source labels.
-2. **Daily content**: current public Brooklyn information, changing news, date-sensitive advice, rotating music, and clearly fictional demonstration records.
+1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, help modal, private/shared controls, light mode, mobile containment, music controls, accountability logic, and source labels.
+2. **Daily content**: current public Brooklyn information, weather, changing news, daily horoscope reflections, entertainment and market context, rotating music, and clearly fictional demonstration records.
 
 Daily updates must never redesign the permanent layer.
 
 ## The only daily-edit files
 
 ### `assets/brief/brief-live-data.js`
-Use for verified public information:
+Use for verified or clearly labeled public information:
 
 - Brooklyn and NYC weather or alerts
 - Local operational updates
 - AI and technology news
-- Business or market news
+- Business, stock, energy, or market news
+- Entertainment and celebrity updates
+- Daily horoscope reflections for all signs
+- Virgo and Pisces relationship reflection
 - Exact timestamps and source URLs
 
-Every item must state why it matters. Never place private user information here.
+Every current item must state why it matters. Astrology must remain labeled as entertainment and reflection. Never place private user information here.
 
 ### `assets/brief/brief-daily-content.js`
 Use for safe rotations and fictional demonstrations:
@@ -30,6 +33,10 @@ Use for safe rotations and fictional demonstrations:
 - Fictional report rows
 - Fictional inbox examples
 - Fictional project health
+- Fictional relationship profile and approved shared-space examples
+- Fictional business-partner private records and shared company records
+- Fictional trainer accountability questions and weekly status
+- Quote rotations
 - Edition metadata
 
 Keep the object schema stable. Edit values, not renderer logic.
@@ -46,6 +53,9 @@ Do not edit permanent files during a normal daily refresh. They include:
 - `brief-live.js`
 - `brief-live-patch.js`
 - `brief-daily.js`
+- `brief-experience.js`
+- `brief-experience-guard.js`
+- `brief-config.js`
 
 A permanent file may change only for an intentional product feature or verified bug fix.
 
@@ -55,14 +65,18 @@ A permanent file may change only for an intentional product feature or verified 
 2. Fetch the latest two daily-edit files from `main`.
 3. Research current public information from reputable sources.
 4. Update the exact timestamp and source URLs.
-5. Rotate music so one artist or song is not repeated excessively.
-6. Keep all private-looking records labeled fictional or demo.
-7. Validate JavaScript syntax.
-8. Confirm `noindex` remains present.
-9. Confirm dark mode remains the default and light mode remains optional.
-10. Confirm entry music and narration remain unchecked by default.
-11. Confirm Personal, Relationship, Business, and Trainer views can be opened from both the top switcher and final switcher.
-12. Publish only after validation.
+5. Refresh all daily horoscope sign summaries and keep the entertainment disclaimer.
+6. Refresh entertainment news for the Relationship view and market news for the Business view.
+7. Rotate music so one artist or song is not repeated excessively.
+8. Keep all private-looking records labeled fictional or demo.
+9. Preserve the blue/pink relationship example as customizable labels, not fixed gender rules.
+10. Validate JavaScript syntax.
+11. Confirm `noindex` remains present.
+12. Confirm dark mode remains the default and the white light mode remains optional.
+13. Confirm entry music and narration remain unchecked by default.
+14. Confirm Personal, Relationship, Business, and Trainer views can be opened from the top switcher, scenario cards, and final switcher, and switching returns to the beginning.
+15. Confirm the help button, private/shared control, trainer yes/no tracker, horoscope selectors, charts, and Spotify players remain interactive.
+16. Publish only after validation.
 
 ## Non-negotiable rules
 
@@ -70,19 +84,24 @@ A permanent file may change only for an intentional product feature or verified 
 - Never call fictional data live.
 - Never call a disconnected service connected.
 - Never remove source links from public information.
+- Never present astrology as science or professional advice.
 - Never let one click silently become permanent memory.
 - Never make medical, nutritional, legal, or financial conclusions beyond the permitted evidence and appropriate safety limits.
 - Never replace the true-black default design during a daily update.
+- Never remove or weaken the genuine white light theme.
 - Never add autoplay assumptions. Browsers and providers may require a direct user action.
+- Never edit permanent files merely to refresh content.
 
 ## File loading order
 
-The HTML and briefing loader must keep data ahead of renderers:
+The loader must keep data ahead of dependent renderers:
 
-1. configuration and evergreen scenario data
-2. daily song and public live data
-3. daily rotating content
-4. core and scenario renderers
-5. upgrade, live, patch, and daily enhancement renderers
+1. evergreen configuration and scenario data
+2. upgrade behavior
+3. live public data and live renderer
+4. live-weather protection
+5. daily rotating content and daily renderer
+6. experience guard
+7. profile-space, help, horoscope, accountability, market, and light-theme experience renderer
 
 Keep this order intact.
