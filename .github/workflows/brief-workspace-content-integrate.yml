@@ -1,0 +1,92 @@
+name: Integrate Team Content and Workspace Data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-workspace-content-integrate.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply content integration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('brief/index.html')
+          text = path.read_text()
+          text = text.replace(
+              '          <option value="trainer">Nina + Sam · Trainer and student</option>',
+              '          <option value="trainer">Nina + Sam · Trainer and student</option>\n          <option value="team">Atlas · Team and project</option>',
+              1
+          )
+          text = text.replace('FOUR WAYS THE SAME PLATFORM CAN FEEL COMPLETELY DIFFERENT', 'FIVE WAYS THE SAME PLATFORM CAN FEEL COMPLETELY DIFFERENT')
+          text = text.replace(
+              '  <script src="/assets/brief/brief-scenarios.js?v=20260803-1" defer></script>',
+              '  <script src="/assets/brief/brief-scenarios.js?v=20260803-1" defer></script>\n  <script src="/assets/brief/brief-team-data.js?v=20260803-1" defer></script>',
+              1
+          )
+          text = text.replace('brief-config.js?v=20260803-9', 'brief-config.js?v=20260803-10')
+          text = text.replace('brief-terminal-bridge.js?v=20260803-2', 'brief-terminal-bridge.js?v=20260803-3')
+          path.write_text(text)
+
+          path = Path('assets/brief/brief-team-data.js')
+          text = path.read_text()
+          text = text.replace(
+              "    summary: 'Each member receives the assignments, handoffs, procedures and risks relevant to their role. Shared spaces hold approved project truth while sensitive records remain restricted.',\n    members: [",
+              "    summary: 'Each member receives the assignments, handoffs, procedures and risks relevant to their role. Shared spaces hold approved project truth while sensitive records remain restricted.',\n    dayCycle: [\n      { time: 'Start', title: 'Open the role-specific view', text: 'Each member begins with assigned work, dependencies and approved preparation.' },\n      { time: 'Handoff', title: 'Move evidence with the work', text: 'The sender, receiver, required proof and current blocker remain visible.' },\n      { time: 'Close', title: 'Update shared project truth', text: 'Completed work, unresolved risk and tomorrow’s owner are recorded once.' }\n    ],\n    intelligence: [\n      { label: 'Readiness', title: 'Launch state', value: '82%', note: 'One permissions blocker remains.' },\n      { label: 'Handoffs', title: 'Due today', value: '3', note: 'Each transfer has a sender and receiver.' },\n      { label: 'Finance', title: 'Budget status', value: 'In range', note: 'Members see only the context needed for their work.' },\n      { label: 'Security', title: 'Access model', value: 'Role-based', note: 'Private, role, project and leadership spaces remain separate.' }\n    ],\n    members: [",
+              1
+          )
+          path.write_text(text)
+
+          path = Path('assets/brief/brief-daily-content.js')
+          text = path.read_text()
+          text = text.replace('schemaVersion: 2', 'schemaVersion: 3', 1)
+          text = text.replace(
+              "    trainer: [\n      { title: 'POWER', artist: 'Kanye West', spotify: '2gZUPNdnz5Y45eiGxpHGSc', note: 'Working sets' },\n      { title: 'Till I Collapse', artist: 'Eminem feat. Nate Dogg', spotify: '4xkOaSrkexMciUUogZKVTS', note: 'Final effort' },\n      { title: 'Sunflower', artist: 'Post Malone and Swae Lee', spotify: '0RiRZpuVRbi7oqRdSMwhQY', note: 'Cooldown' }\n    ]",
+              "    trainer: [\n      { title: 'POWER', artist: 'Kanye West', spotify: '2gZUPNdnz5Y45eiGxpHGSc', note: 'Working sets' },\n      { title: 'Till I Collapse', artist: 'Eminem feat. Nate Dogg', spotify: '4xkOaSrkexMciUUogZKVTS', note: 'Final effort' },\n      { title: 'Sunflower', artist: 'Post Malone and Swae Lee', spotify: '0RiRZpuVRbi7oqRdSMwhQY', note: 'Cooldown' }\n    ],\n    team: [\n      { title: 'Midnight City', artist: 'M83', spotify: '1eyzqe2QqGZUmfcPZtrIyt', note: 'Build focus' },\n      { title: 'On Top Of The World', artist: 'Imagine Dragons', spotify: '213x4gsFDm04hSqIUkg88w', note: 'Team lift' },\n      { title: 'A Sky Full of Stars', artist: 'Coldplay', spotify: '0FDzzruyVECATHXKHFs9eJ', note: 'Release moment' }\n    ]",
+              1
+          )
+          text = text.replace(
+              '  personalDashboard: {',
+              "  dailyQuotes: {\n    individual: 'A useful day begins when the next honest action becomes visible.',\n    couple: 'Care becomes practical when both people can see the next kind action.',\n    partners: 'Clarity compounds when every decision has evidence, an owner and a date.',\n    trainer: 'Consistency becomes easier when the plan fits the person.',\n    team: 'A strong team sees the same mission without exposing every private detail.'\n  },\n  personalDashboard: {",
+              1
+          )
+          text = text.replace(
+              "    { id: 'trainer', title: 'Trainer + student', text: 'Habits, goals, evidence, notes, privacy and coaching actions.' }",
+              "    { id: 'trainer', title: 'Trainer + student', text: 'Habits, goals, evidence, notes, privacy and coaching actions.' },\n    { id: 'team', title: 'Team + project', text: 'Role-based member views, shared project truth, handoffs, procedures, finance and security.' }",
+              1
+          )
+          text = text.replace("['individual', 'couple', 'partners', 'trainer']", "['individual', 'couple', 'partners', 'trainer', 'team']", 1)
+          text = text.replace(
+              "      'assets/brief/brief-experience.js'",
+              "      'assets/brief/brief-experience.js',\n      'assets/brief/brief-team-data.js',\n      'assets/brief/brief-team-renderer.js',\n      'assets/brief/brief-workspace.js',\n      'assets/brief/brief-workspace.css'",
+              1
+          )
+          path.write_text(text)
+
+          path = Path('assets/brief/brief-workspace.js')
+          text = path.read_text().replace('    return values[current];', '    return content().dailyQuotes?.[current] || values[current];', 1)
+          path.write_text(text)
+          PY
+
+      - name: Validate content scripts
+        run: |
+          node --check assets/brief/brief-team-data.js
+          node --check assets/brief/brief-daily-content.js
+          node --check assets/brief/brief-workspace.js
+
+      - name: Commit content integration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add brief/index.html assets/brief/brief-team-data.js assets/brief/brief-daily-content.js assets/brief/brief-workspace.js
+          git commit -m 'Integrate Team data, quick quotes and fifth briefing option'
+          git push
