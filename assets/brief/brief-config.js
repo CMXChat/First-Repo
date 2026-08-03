@@ -19,7 +19,7 @@ window.BRIEF_CONFIG = {
 (() => {
   'use strict';
   const upgradeVersion = '20260803-5';
-  const liveVersion = '20260803-2';
+  const liveVersion = '20260803-3';
 
   function loadStyle(id, href) {
     if (document.getElementById(id)) return;
@@ -49,7 +49,9 @@ window.BRIEF_CONFIG = {
 
   loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${upgradeVersion}`, () => {
     loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${liveVersion}`, () => {
-      loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${liveVersion}`);
+      loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${liveVersion}`, () => {
+        loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${liveVersion}`);
+      });
     });
   });
 })();
