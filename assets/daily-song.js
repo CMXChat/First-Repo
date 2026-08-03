@@ -22,7 +22,7 @@ window.CMX_DAILY_SONG = {
       status: "FOCUS",
       title: "Dreams · The Cranberries",
       text: "A lighter option for a focused work block or a calmer start after the opening briefing.",
-      spotifyUrl: "https://open.spotify.com/track/3W486X36Id1ChRaLhseMBj",
+      spotifyUrl: "https://open.spotify.com/track/1IFSa6KKHLeSwRe8mDlz6k",
       spotifyLinkLabel: "play Dreams on Spotify",
       published: "focus pick"
     },
