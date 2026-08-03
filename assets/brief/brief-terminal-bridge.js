@@ -11,13 +11,17 @@
     business: 'partners',
     partners: 'partners',
     trainer: 'trainer',
-    training: 'trainer'
+    training: 'trainer',
+    team: 'team',
+    project: 'team',
+    crew: 'team'
   };
   const LABELS = {
     individual: 'Personal',
     couple: 'Relationship',
     partners: 'Business',
-    trainer: 'Trainer'
+    trainer: 'Trainer',
+    team: 'Team'
   };
   const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';
   const TERMINAL_SUMMARY = 'demo now · backend reserved';
@@ -59,7 +63,7 @@
     const normalized = String(value || '').replace(/[^a-z]/g, '');
     const next = ALIASES[normalized];
     if (!next || !window.BRIEF_APP?.setPreset) {
-      appendLine('usage: brief personal|relationship|business|trainer', 'error');
+      appendLine('usage: brief personal|relationship|business|trainer|team', 'error');
       return;
     }
     pendingSwitchMessage = `${LABELS[next]} briefing opened.`;
@@ -70,7 +74,7 @@
   function helpLines() {
     return [
       'now: demo navigation only. backend reserved for secure data + file input here or in the dashboard.',
-      'commands: brief personal|relationship|business|trainer, top, private, shared, modules, learn, teams, security, backend, privacy, about, clear.'
+      'commands: brief personal|relationship|business|trainer|team, top, private, shared, modules, learn, teams, security, backend, privacy, about, clear.'
     ];
   }
 
@@ -95,7 +99,7 @@
     }
 
     if (command === 'brief' || command === 'briefing' || command === 'briefing type') {
-      appendLine('usage: brief personal|relationship|business|trainer');
+      appendLine('usage: brief personal|relationship|business|trainer|team');
       return true;
     }
 
@@ -115,7 +119,7 @@
     }
 
     if (command === 'teams' || command === 'team') {
-      appendLine('teams: role-based views for projects, procedures, handoffs, operations and finance monitoring, including team-member views.');
+      appendLine('teams: role-based member, project and leadership spaces for procedures, handoffs, operations and approved finance monitoring. use brief team to open the demo.');
       return true;
     }
 
@@ -150,7 +154,7 @@
 
     const details = document.createElement('details');
     details.id = 'briefScopeHelp';
-    details.innerHTML = '<summary>Learning, accountability, teams and secure operations</summary><p>Daily teaching, spaced repetition, workout progression and accountability can use approved history. Future role-based team spaces can support projects, procedures, handoffs, operations and finance monitoring for managers and team members. The planned backend uses protected authentication, permissions, encrypted transport, secrets management, audit logs, rate limits, backups and approval-gated actions.</p>';
+    details.innerHTML = '<summary>Learning, accountability, teams and secure operations</summary><p>Daily teaching, spaced repetition, workout progression and accountability can use approved history. Role-based team spaces can support projects, procedures, handoffs, operations and finance monitoring for managers and team members. The planned backend uses protected authentication, permissions, encrypted transport, secrets management, audit logs, rate limits, backups and approval-gated actions.</p>';
 
     const reality = $('.brief-help-reality', dialog);
     if (reality) dialog.insertBefore(details, reality);
