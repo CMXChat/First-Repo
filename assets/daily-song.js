@@ -1,52 +1,41 @@
 window.CMX_DAILY_SONG = {
   audience: "shared",
   priority: 100,
-  label: "today’s uplifting song",
+  label: "today’s opening song",
   status: "DAILY PICK",
-  title: "Everywhere",
-  artist: "Fleetwood Mac",
-  displayTitle: "Everywhere · Fleetwood Mac",
-  loginMood: "quiet day, warm connection.",
-  text: "Bright, affectionate, and easy to return to. It keeps the page warm on a day that has otherwise been unusually quiet.",
-  directLine: "Shared: quiet day, same team.",
-  spotifyUrl: "https://open.spotify.com/track/1prZ0pr6XoRCxcrC3MCL0M",
-  spotifyLinkLabel: "play Everywhere on Spotify",
-  previewUrl: "https://p.scdn.co/mp3-preview/3a4d5d835af283b755436ba81050d90fe44e6590.mp3",
+  title: "Dreams",
+  artist: "The Cranberries",
+  displayTitle: "Dreams · The Cranberries",
+  loginMood: "soft lift, clear next step.",
+  text: "Open, hopeful, and forward-moving. It fits Crystal waking into her morning, Jay working from the library, and a day that still has time to change direction.",
+  directLine: "Shared: keep moving toward the life you keep talking about.",
+  spotifyUrl: "https://open.spotify.com/track/3W486X36Id1ChRaLhseMBj",
+  spotifyLinkLabel: "play Dreams on Spotify",
+  previewUrl: "https://p.scdn.co/mp3-preview/5c935c988a0c49908dc78a0f7df32940efa2165a.mp3",
   selectedFor: "2026-08-03",
   published: "today’s shared pick",
   recommendations: [
     {
-      audience: "crystal",
-      priority: 78,
-      label: "for Crystal’s run",
-      status: "KEEP MOVING",
-      title: "Dreams · The Cranberries",
-      text: "Light, open, and forward-moving. A good soundtrack for fresh air, a long route, and coming back with a clearer head.",
-      spotifyUrl: "https://open.spotify.com/track/1IFSa6KKHLeSwRe8mDlz6k",
-      spotifyLinkLabel: "play Dreams on Spotify",
-      published: "run pick"
-    },
-    {
       audience: "shared",
-      priority: 74,
-      label: "shared lift",
+      priority: 76,
+      label: "for a shared lift",
       status: "BIG ENERGY",
       title: "A Sky Full of Stars · Coldplay",
-      text: "A brighter lift for a quiet day, especially when both people need the mood to move before the circumstances do.",
+      text: "A brighter option for movement, future plans, and the moment the day needs more energy.",
       spotifyUrl: "https://open.spotify.com/track/0FDzzruyVECATHXKHFs9eJ",
       spotifyLinkLabel: "play A Sky Full of Stars on Spotify",
-      published: "shared pick"
+      published: "shared lift"
     },
     {
       audience: "jay",
-      priority: 70,
-      label: "for the reset",
-      status: "UPLIFT",
+      priority: 72,
+      label: "for breaking the block",
+      status: "RESET",
       title: "Best Day Of My Life · American Authors",
-      text: "Simple energy for the application, the workout, or the decision to stop waiting for the day to become productive by itself.",
+      text: "Simple energy for sending the resume, making the call, or doing the next thing before the mind moves it again.",
       spotifyUrl: "https://open.spotify.com/track/5Hroj5K7vLpIG4FNCRIjbP",
       spotifyLinkLabel: "play Best Day Of My Life on Spotify",
-      published: "reset pick"
+      published: "career reset"
     }
   ]
 };
