@@ -1,0 +1,42 @@
+name: Brief Polish Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-polish-validation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript syntax
+        run: |
+          node --check assets/brief/brief-config.js
+          node --check assets/brief/brief-workspace.js
+          node --check assets/brief/brief-polish.js
+          node --check assets/brief/brief-relationship-watch.js
+      - name: Run all briefing smoke tests
+        run: |
+          node tests/brief-device-smoke.test.js
+          node tests/brief-terminal-smoke.test.js
+          node tests/brief-entry-watch-smoke.test.js
+          node tests/brief-stability-smoke.test.js
+          node tests/brief-workspace-team-smoke.test.js
+          node tests/brief-polish-smoke.test.js
+      - name: Record passing validation
+        run: |
+          printf 'brief polish validation passed\ncommit=%s\n' "$GITHUB_SHA" > .brief-polish-validation-pass
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .brief-polish-validation-pass
+          git commit -m 'Record briefing polish validation'
+          git push
