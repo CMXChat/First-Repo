@@ -24,6 +24,7 @@ jobs:
           node --check assets/brief/brief-workspace.js
           node --check assets/brief/brief-polish.js
           node --check assets/brief/brief-relationship-watch.js
+          node --check assets/brief/brief-team-data.js
       - name: Run all briefing smoke tests
         run: |
           node tests/brief-device-smoke.test.js
@@ -40,3 +41,5 @@ jobs:
           git add .brief-polish-validation-pass
           git commit -m 'Record briefing polish validation'
           git push
+
+# final retrigger after Team metric and test alignment
