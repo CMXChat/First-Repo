@@ -188,11 +188,22 @@
     });
   }
 
+  function watchForLateUi() {
+    if (!('MutationObserver' in window) || !document.body) return;
+    const observer = new MutationObserver(() => {
+      augmentTerminal();
+      augmentHelpModal();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.setTimeout(() => observer.disconnect(), 15000);
+  }
+
   function init() {
     if (initialized || !window.BRIEF_APP) return;
     initialized = true;
     installCommandBridge();
     installUniversalReturnToTop();
+    watchForLateUi();
     augmentTerminal();
     augmentHelpModal();
 
