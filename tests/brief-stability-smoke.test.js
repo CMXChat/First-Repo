@@ -14,15 +14,18 @@ const experience = read('assets/brief/brief-experience.js');
 const live = read('assets/brief/brief-live.js');
 const bridge = read('assets/brief/brief-terminal-bridge.js');
 const watch = read('assets/brief/brief-relationship-watch.js');
+const workspace = read('assets/brief/brief-workspace.js');
+const teamRenderer = read('assets/brief/brief-team-renderer.js');
 
-for (const [name, source] of Object.entries({ config, entry, device, experience, live, bridge, watch })) {
+for (const [name, source] of Object.entries({ config, entry, device, experience, live, bridge, watch, workspace, teamRenderer })) {
   new vm.Script(source, { filename: `${name}.js` });
 }
 
 assert.match(config, /device: '20260803-2'/);
-assert.match(config, /entry: '20260803-4'/);
+assert.match(config, /entry: '20260803-5'/);
 assert.match(config, /live: '20260803-5'/);
 assert.match(config, /experience: '20260803-4'/);
+assert.match(config, /workspace: '20260803-1'/);
 assert.match(config, /function forceTop\(\)/);
 assert.match(config, /Choose any entry preferences/);
 
@@ -41,6 +44,8 @@ assert.match(deviceCss, /height: 44px !important/);
 
 assert.doesNotMatch(bridge, /new MutationObserver/);
 assert.doesNotMatch(watch, /new MutationObserver/);
+assert.doesNotMatch(workspace, /new MutationObserver/);
+assert.doesNotMatch(teamRenderer, /new MutationObserver/);
 assert.doesNotMatch(experience, /observer\.observe\(document\.body/);
 assert.doesNotMatch(live, /observer\.observe\(stage/);
 assert.doesNotMatch(live, /observer\.observe\(favorites/);
@@ -48,5 +53,7 @@ assert.match(experience, /\[0, 120, 420, 900\]/);
 assert.match(live, /\[120, 420, 900\]/);
 assert.match(experience, /Virgo \+ Virgo example/);
 assert.doesNotMatch(experience, /Virgo \+ Pisces example/);
+assert.match(workspace, /state\.depth = 'quick'/);
+assert.match(workspace, /window\.scrollTo\(\{ top: 0/);
 
 console.log('Brief stability smoke test passed.');
