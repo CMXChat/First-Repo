@@ -4,31 +4,33 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#031b23" />
+  <meta name="theme-color" content="#061d25" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' https://p.scdn.co; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src https://open.spotify.com https://www.youtube-nocookie.com; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://i.scdn.co; media-src 'self' https://p.scdn.co; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src https://open.spotify.com https://www.youtube-nocookie.com; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
   <title>התדרוך האישי של שרה</title>
   <meta name="description" content="תדרוך יומי פרטי ומותאם אישית עבור שרה." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <link rel="canonical" href="https://db.cmxchat.com/brief/" />
-  <link rel="stylesheet" href="/assets/sara-brief.css?v=20260803-1" />
+  <link rel="stylesheet" href="/assets/sara-brief.css?v=20260803-2" />
 </head>
-<body>
+<body data-theme="ocean">
   <a class="skip-link" href="#briefContent">דלגי לתדרוך</a>
   <main class="sara-shell" aria-labelledby="pageTitle">
     <header class="sara-hero">
+      <div class="hero-ambient" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="hero-wave" aria-hidden="true"></div>
       <div class="hero-topline"><span class="private-pill">פרטי לשרה</span><span id="editionDate">3 באוגוסט 2026</span></div>
       <p id="greetingLine" class="greeting-line">בוקר טוב, שרה</p>
       <h1 id="pageTitle">התדרוך האישי שלך</h1>
       <p class="hero-copy">בריאות, תנועה, החוף, ישראל, טיסות ומוזיקה שנבחרו לפי מה שמעניין אותך.</p>
-      <div class="hero-actions" aria-label="פקדי מוזיקה והקראה">
-        <button id="musicToggle" type="button">השהי מוזיקה</button>
+      <div class="hero-actions" aria-label="פקדי מוזיקה, הקראה ותצוגה">
+        <button id="musicToggle" type="button">נגני את Mama</button>
         <button id="readBrief" type="button">הקריאי לי את התדרוך</button>
         <button id="stopReading" type="button" hidden>עצרי הקראה</button>
-        <a href="https://open.spotify.com/search/Genesis%20Mama" target="_blank" rel="noopener noreferrer">פתחי את Mama ב-Spotify</a>
+        <button id="themeToggle" type="button">מצב לילה</button>
       </div>
+      <div class="music-now" aria-live="polite"><span class="music-pulse" aria-hidden="true"></span><div><small>השיר של שרה</small><strong>Mama · Genesis</strong><span>פיל קולינס בקול הראשי</span></div><p id="musicStatus">מנסה להפעיל את Mama</p></div>
       <div class="now-grid" aria-label="השעה בניו יורק ובירושלים">
         <article><span>ניו יורק</span><strong id="newYorkTime">--:--</strong><small id="newYorkDate">טוען תאריך</small></article>
         <article><span>ירושלים</span><strong id="jerusalemTime">--:--</strong><small id="jerusalemDate">טוען תאריך</small></article>
@@ -36,18 +38,18 @@
     </header>
 
     <nav class="sara-nav" aria-label="חלקי התדרוך">
-      <a href="#today">היום</a><a href="#health">בריאות</a><a href="#beach">החוף</a><a href="#israel">ישראל</a><a href="#music">מוזיקה</a><a href="#travel">טיסות</a><a href="#project">הפרויקט</a>
+      <a href="#today">היום</a><a href="#weather">מזג אוויר</a><a href="#health">בריאות</a><a href="#beach">החוף</a><a href="#israel">ישראל</a><a href="#music">מוזיקה</a><a href="#travel">טיסות</a><a href="#project">הפרויקט</a>
     </nav>
 
     <div id="briefContent">
       <section id="today" class="brief-section"><div class="section-heading"><div><span>התחלה טובה</span><h2>מה חשוב עכשיו</h2></div></div><div id="priorityCards" class="feature-grid"></div></section>
-      <section id="weather" class="brief-section"><div class="section-heading"><div><span>שתי ערים</span><h2>מזג האוויר</h2></div></div><div id="weatherCards" class="weather-grid"></div></section>
+      <section id="weather" class="brief-section weather-section"><div class="section-heading"><div><span>שתי ערים, מבט אחד</span><h2>מזג האוויר</h2></div><p>לחצי על “פרטים” כדי לפתוח תחזית קצרה לכל עיר.</p></div><div id="weatherCards" class="weather-grid"></div></section>
 
       <section id="health" class="brief-section">
-        <div class="section-heading"><div><span>תנועה יומית</span><h2>פסיעות, כוח ויוגה</h2></div></div>
+        <div class="section-heading"><div><span>תנועה יומית</span><h2>פסיעות, כוח ויוגה</h2></div><p id="movementStatus">מוכנה לתנועה עדינה</p></div>
         <p class="section-intro">התוכנית קצרה בכוונה. המטרה היא לצבור תנועה עקבית בלי להפוך את היום למחנה אימונים.</p>
         <div class="health-layout">
-          <article class="step-card"><span class="card-icon" aria-hidden="true">👟</span><h3>מעקב פסיעות</h3><p>כתבי כמה פסיעות עשית היום. המספר נשמר במכשיר הזה.</p><label for="stepInput">פסיעות היום</label><div class="step-input-row"><input id="stepInput" type="number" inputmode="numeric" min="0" max="50000" placeholder="0" /><button id="saveSteps" type="button">שמרי</button></div><div class="progress-track" aria-hidden="true"><span id="stepProgress"></span></div><p id="stepMessage" class="small-note">כל תנועה נחשבת.</p></article>
+          <article class="step-card reveal-card"><span class="card-icon" aria-hidden="true">👟</span><h3>מעקב פסיעות</h3><p>כתבי כמה פסיעות עשית היום. המספר נשמר במכשיר הזה.</p><label for="stepInput">פסיעות היום</label><div class="step-input-row"><input id="stepInput" type="number" inputmode="numeric" min="0" max="50000" placeholder="0" /><button id="saveSteps" type="button">שמרי</button></div><div class="progress-track" aria-hidden="true"><span id="stepProgress"></span></div><p id="stepMessage" class="small-note">כל תנועה נחשבת.</p></article>
           <div id="exerciseCards" class="exercise-grid"></div>
         </div>
         <p class="safety-note">אם יש כאב, סחרחורת, חולשה או חוסר יציבות, עוצרים. תרגול רק בהתאם להנחיות הרופא או הפיזיותרפיסט.</p>
@@ -56,7 +58,7 @@
       <section id="food" class="brief-section"><div class="section-heading"><div><span>פשוט ובריא</span><h2>אוכל שמשרת את היום</h2></div></div><div id="foodCards" class="card-grid"></div></section>
       <section id="beach" class="brief-section beach-section"><div class="section-heading"><div><span>יום שלישי, 4 באוגוסט</span><h2>ברייטון ביץ׳</h2></div></div><div id="beachCard"></div></section>
       <section id="israel" class="brief-section"><div class="section-heading"><div><span>חדשות, לא צעקות</span><h2>ישראל, איראן וארה״ב</h2></div></div><p class="section-intro">דיווחים מאומתים מופרדים מהערכות. לכל פריט מצוין מקור.</p><div id="newsCards" class="news-list"></div></section>
-      <section id="music" class="brief-section"><div class="section-heading"><div><span>שנות ה-80 וה-90</span><h2>פיל קולינס וג׳נסיס</h2></div></div><p class="section-intro">בחרי שיר לפי מצב הרוח. הקישורים נפתחים ב-Spotify, והעמוד לא מציג שיר כזמין אם לא נמצא קישור תקין.</p><div id="songCards" class="card-grid"></div></section>
+      <section id="music" class="brief-section music-section"><div class="section-heading"><div><span>שנות ה-80 וה-90</span><h2>פיל קולינס וג׳נסיס</h2></div><p>כל שיר כולל נגן Spotify בתוך העמוד.</p></div><p class="section-intro">Mama נשאר השיר הראשי של שרה. כל נגן יכול לפעול ישירות כאן, או להיפתח באפליקציית Spotify.</p><div id="songCards" class="song-grid"></div></section>
       <section id="travel" class="brief-section"><div class="section-heading"><div><span>ספטמבר או אוקטובר 2026</span><h2>טיסה ישירה לישראל</h2></div></div><div id="flightCard"></div></section>
       <section id="connections" class="brief-section"><div class="section-heading"><div><span>בהמשך, רק באישור</span><h2>מה התדרוך יוכל לחבר</h2></div></div><div id="connectionCards" class="card-grid"></div></section>
       <section id="project" class="brief-section project-section"><div class="section-heading"><div><span>הפרויקט של ג׳יי</span><h2>החזון, האנשים והמרחבים</h2></div></div><div id="projectCards" class="project-grid"></div></section>
@@ -66,7 +68,7 @@
     <footer><span>נבנה במיוחד עבור שרה</span><span id="generatedLine">עודכן ב-3 באוגוסט 2026</span></footer>
   </main>
   <noscript>העמוד הזה דורש JavaScript כדי להציג את התדרוך.</noscript>
-  <script src="/assets/sara-brief-data.js?v=20260803-1" defer></script>
-  <script src="/assets/sara-brief.js?v=20260803-1" defer></script>
+  <script src="/assets/sara-brief-data.js?v=20260803-2" defer></script>
+  <script src="/assets/sara-brief.js?v=20260803-2" defer></script>
 </body>
 </html>
