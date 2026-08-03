@@ -1,5 +1,9 @@
 :root {
   --brief-device-height: 100vh;
+  --brief-device-width: 100vw;
+  --brief-viewport-offset-top: 0px;
+  --brief-viewport-offset-left: 0px;
+  --brief-keyboard-inset: 0px;
 }
 
 html,
@@ -202,9 +206,21 @@ iframe {
   min-height: 48px;
 }
 
+.brief-keyboard-visible .scenario-dock,
+.brief-keyboard-visible .brief-tour-invite {
+  transform: translateY(calc(-1 * var(--brief-keyboard-inset)));
+}
+
 @supports (height: 100dvh) {
   .entry-gate {
     min-height: 100dvh;
+  }
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
   }
 }
 
@@ -221,6 +237,7 @@ iframe {
     width: 100%;
     max-width: 100vw;
     min-height: 62px;
+    padding-top: max(0px, env(safe-area-inset-top));
     padding-left: max(8px, env(safe-area-inset-left));
     padding-right: max(8px, env(safe-area-inset-right));
   }
@@ -316,6 +333,16 @@ iframe {
     height: 40px !important;
     min-height: 40px !important;
     max-height: 40px !important;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .topbar {
+    min-height: 54px;
+  }
+
+  .scenario-dock {
+    bottom: max(4px, env(safe-area-inset-bottom));
   }
 }
 
