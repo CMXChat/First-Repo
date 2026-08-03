@@ -15,3 +15,22 @@ window.BRIEF_CONFIG = {
     explainMode: true
   }
 };
+
+(() => {
+  'use strict';
+  const version = '20260803-5';
+  if (!document.querySelector('link[data-brief-upgrade]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `/assets/brief/brief-upgrade.css?v=${version}`;
+    link.dataset.briefUpgrade = 'true';
+    document.head.appendChild(link);
+  }
+  if (!document.querySelector('script[data-brief-upgrade]')) {
+    const script = document.createElement('script');
+    script.src = `/assets/brief/brief-upgrade.js?v=${version}`;
+    script.async = false;
+    script.dataset.briefUpgrade = 'true';
+    document.head.appendChild(script);
+  }
+})();
