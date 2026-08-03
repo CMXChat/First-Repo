@@ -24,6 +24,20 @@
     return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : '';
   }
 
+  function cacheBust(url) {
+    const value = new URL(url, window.location.href);
+    value.searchParams.set('refresh', String(Date.now()));
+    return value.toString();
+  }
+
+  function createStatus(text) {
+    const status = document.createElement('span');
+    status.className = 'media-player-status';
+    status.setAttribute('role', 'status');
+    status.textContent = text;
+    return status;
+  }
+
   function createAudioShell(audio, title) {
     const shell = document.createElement('div');
     shell.className = 'media-shell media-audio-preview';
@@ -34,13 +48,21 @@
 
     const icon = document.createElement('span');
     icon.setAttribute('aria-hidden', 'true');
-
     const label = document.createElement('b');
     const note = document.createElement('small');
     const progress = document.createElement('div');
     progress.className = 'media-audio-progress';
     const progressBar = document.createElement('i');
     progress.appendChild(progressBar);
+
+    const tools = document.createElement('div');
+    tools.className = 'media-player-tools';
+    const refresh = document.createElement('button');
+    refresh.type = 'button';
+    refresh.className = 'media-refresh-button';
+    refresh.textContent = '↻ Restart preview';
+    const status = createStatus('Audio preview ready.');
+    tools.append(refresh, status);
 
     function update() {
       const playing = !audio.paused && !audio.ended;
@@ -50,9 +72,8 @@
       note.textContent = audio.dataset.autoplay === 'blocked'
         ? 'Your browser blocked automatic sound. Tap to play.'
         : playing
-          ? 'Playing automatically after access was granted.'
+          ? 'Playing now.'
           : 'Ready when you are.';
-
       const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 30;
       progressBar.style.width = `${Math.min(100, (audio.currentTime / duration) * 100)}%`;
     }
@@ -61,11 +82,25 @@
       if (audio.paused) {
         audio.muted = false;
         audio.volume = 0.3;
-        try { await audio.play(); } catch {}
+        try {
+          await audio.play();
+          status.textContent = 'Audio playing.';
+        } catch {
+          status.textContent = 'The preview could not start. Restart it or open Spotify.';
+        }
       } else {
         audio.pause();
+        status.textContent = 'Audio paused.';
       }
       update();
+    });
+
+    refresh.addEventListener('click', () => {
+      audio.pause();
+      audio.currentTime = 0;
+      try { audio.load(); } catch {}
+      update();
+      status.textContent = 'Preview restarted and ready to play.';
     });
 
     audio.addEventListener('play', update);
@@ -73,12 +108,18 @@
     audio.addEventListener('timeupdate', update);
     audio.addEventListener('ended', () => {
       audio.currentTime = 0;
+      status.textContent = 'Preview complete.';
+      update();
+    });
+    audio.addEventListener('error', () => {
+      status.textContent = 'The audio preview failed to load. Restart it or open Spotify.';
       update();
     });
     window.addEventListener('news:audio-ready', update);
+    window.addEventListener('news:media-refresh', () => refresh.click());
 
     button.append(icon, label, note);
-    shell.append(button, progress);
+    shell.append(button, progress, tools);
     update();
     return shell;
   }
@@ -86,24 +127,71 @@
   function createPlayerShell({ provider, id, title, buttonLabel }) {
     const shell = document.createElement('div');
     shell.className = `media-shell media-${provider}`;
+    shell.dataset.provider = provider;
+    shell.dataset.mediaId = id;
 
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'media-load-button';
-    button.setAttribute('aria-label', buttonLabel || `play ${title}`);
+    const stage = document.createElement('div');
+    stage.className = 'media-player-stage';
+    const tools = document.createElement('div');
+    tools.className = 'media-player-tools';
+    const refresh = document.createElement('button');
+    refresh.type = 'button';
+    refresh.className = 'media-refresh-button';
+    refresh.textContent = '↻ Refresh player';
+    const status = createStatus(provider === 'spotify' ? 'Spotify waits until you tap Play.' : 'Video waits until you tap Play.');
+    tools.append(refresh, status);
+    let loadTimer = 0;
+    let loaded = false;
 
-    const icon = document.createElement('span');
-    icon.setAttribute('aria-hidden', 'true');
-    icon.textContent = '▶';
+    function playerUrl() {
+      if (provider === 'spotify') {
+        return `https://open.spotify.com/embed/track/${encodeURIComponent(id)}?utm_source=generator&theme=0`;
+      }
+      return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+    }
 
-    const label = document.createElement('b');
-    label.textContent = buttonLabel || 'play on page';
+    function idleButton() {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'media-load-button';
+      button.setAttribute('aria-label', buttonLabel || `play ${title}`);
 
-    const note = document.createElement('small');
-    note.textContent = provider === 'spotify' ? 'Tap to open the Spotify player' : 'Tap to load';
-    button.append(icon, label, note);
+      if (provider === 'youtube') {
+        const image = document.createElement('img');
+        image.className = 'media-video-poster';
+        image.src = cacheBust(`https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`);
+        image.alt = '';
+        image.loading = 'lazy';
+        image.addEventListener('error', () => {
+          status.textContent = 'The video preview image did not load. The player can still be opened.';
+        }, { once: true });
+        button.appendChild(image);
+      }
 
-    button.addEventListener('click', () => {
+      const icon = document.createElement('span');
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = '▶';
+      const label = document.createElement('b');
+      label.textContent = buttonLabel || 'play on page';
+      const note = document.createElement('small');
+      note.textContent = provider === 'spotify' ? 'Tap to open the Spotify player' : 'Tap to load the official video';
+      button.append(icon, label, note);
+      button.addEventListener('click', () => loadPlayer(false));
+      return button;
+    }
+
+    function setIdle(message) {
+      window.clearTimeout(loadTimer);
+      loaded = false;
+      stage.replaceChildren(idleButton());
+      status.textContent = message;
+    }
+
+    function loadPlayer(isRefresh) {
+      window.clearTimeout(loadTimer);
+      loaded = true;
+      status.textContent = isRefresh ? 'Refreshing player.' : 'Loading player.';
+
       const iframe = document.createElement('iframe');
       iframe.className = 'media-frame';
       iframe.title = title || 'Embedded media player';
@@ -111,18 +199,30 @@
       iframe.referrerPolicy = 'strict-origin-when-cross-origin';
       iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
       iframe.setAttribute('allowfullscreen', '');
+      iframe.src = cacheBust(playerUrl());
+      if (provider === 'spotify') iframe.height = '152';
 
-      if (provider === 'spotify') {
-        iframe.src = `https://open.spotify.com/embed/track/${encodeURIComponent(id)}?utm_source=generator&theme=0`;
-        iframe.height = '152';
-      } else {
-        iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
-      }
+      iframe.addEventListener('load', () => {
+        window.clearTimeout(loadTimer);
+        status.textContent = 'Player loaded. Refresh it if playback stays blank.';
+      }, { once: true });
 
-      shell.replaceChildren(iframe);
-    }, { once: true });
+      stage.replaceChildren(iframe);
+      loadTimer = window.setTimeout(() => {
+        status.textContent = 'Still loading. Refresh the player or use the external link.';
+      }, 9000);
+    }
 
-    shell.appendChild(button);
+    refresh.addEventListener('click', () => {
+      if (loaded) loadPlayer(true);
+      else setIdle('Preview refreshed. Tap Play to load a fresh player.');
+      refresh.textContent = '✓ Refreshed';
+      window.setTimeout(() => { refresh.textContent = '↻ Refresh player'; }, 1300);
+    });
+
+    window.addEventListener('news:media-refresh', () => refresh.click());
+    shell.append(stage, tools);
+    setIdle(provider === 'spotify' ? 'Spotify waits until you tap Play.' : 'Video waits until you tap Play.');
     return shell;
   }
 
@@ -133,7 +233,6 @@
     items.forEach((item, index) => {
       const card = cards[index];
       if (!card || card.querySelector('.media-shell')) return;
-
       card.classList.add('media-card');
 
       if (item.isDailySong && dailyAudio) {
@@ -143,7 +242,6 @@
 
       const trackId = safeSpotifyTrackId(item.url);
       if (!trackId) return;
-
       card.appendChild(createPlayerShell({
         provider: 'spotify',
         id: trackId,
