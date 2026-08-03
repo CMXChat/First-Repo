@@ -64,7 +64,7 @@
         { label: 'Leadership-private', title: 'Compensation and sensitive personnel context', note: 'Never exposed through the general team space.' }
       ],
       shared: [
-        { label: 'Project space', title: 'Launch readiness is 82%', note: 'Shared status, owners, dependencies and deadlines.' },
+        { label: 'Project space', title: 'Project phase completion is 40%', note: 'Two of five fictional phases are complete. Blockers and approvals remain separate signals.' },
         { label: 'Procedure space', title: 'All required pre-operation checks are visible', note: 'Only approved readiness information is shared.' },
         { label: 'Finance watch', title: 'Budget remains inside the approved threshold', note: 'Members see only the financial context needed for their work.' }
       ]
@@ -81,7 +81,7 @@
       { time: 'Close', title: 'Update shared project truth', text: 'Completed work, unresolved risk and tomorrow’s owner are recorded once.' }
     ],
     intelligence: [
-      { label: 'Readiness', title: 'Launch state', value: '82%', note: 'One permissions blocker remains.' },
+      { label: 'Phase completion', title: 'Project state', value: '40%', note: 'Two of five phases are complete and one permissions blocker remains.' },
       { label: 'Handoffs', title: 'Due today', value: '3', note: 'Each transfer has a sender and receiver.' },
       { label: 'Finance', title: 'Budget status', value: 'In range', note: 'Members see only the context needed for their work.' },
       { label: 'Security', title: 'Access model', value: 'Role-based', note: 'Private, role, project and leadership spaces remain separate.' }
@@ -140,7 +140,7 @@
     quote: 'A strong team sees the same mission without exposing every private detail.',
     updated: 'Fictional team and project demonstration',
     quickSignals: [
-      'Launch readiness 82%',
+      'Project phase completion 40%',
       '1 blocker needs approval',
       '3 handoffs due today',
       'Budget remains in range',
