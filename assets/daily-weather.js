@@ -1,56 +1,56 @@
 window.CMX_DAILY_WEATHER = {
-  generated: "Updated August 3, 2026 for Brooklyn and August 3-4, 2026 for Waikato",
+  generated: "Updated August 3, 2026 at 4:07 PM Brooklyn time",
   brooklyn: {
     audience: "jay",
     priority: 100,
-    label: "Brooklyn · Monday morning",
+    label: "Brooklyn · Monday afternoon",
     status: "FORECAST",
-    title: "Warm, humid, with a shower chance",
-    text: "Brooklyn starts near 73-75°F and should climb into the low 80s, with a humid feel and a chance of passing showers or a thunderstorm. Winds stay light to moderate, generally under 10 mph. Sunset is around 8:09 PM.",
+    title: "Warm with a small shower risk",
+    text: "Brooklyn is in the low-to-mid 80s range with partial sun and a chance of passing showers. The useful move is water, lighter clothing, and a radar check before a longer walk or errand.",
     items: [
-      "Best window: early morning for errands or movement before the day gets warmer and more humid.",
-      "Carry water and a light rain layer if you will be out for several hours.",
-      "Tuesday trends drier and a little warmer, with more sunshine likely."
+      "Best remaining window: late afternoon or early evening if the radar stays clear.",
+      "A short walk or fallback workout is still realistic.",
+      "Do not turn uncertain shower timing into a full indoor-day excuse."
     ],
-    whyItMatters: "The day should still be usable, but brief rain or a storm could interrupt outdoor plans and slow travel.",
-    watchNext: "Check the radar before a longer trip because downpours may be uneven across the city.",
+    whyItMatters: "The weather is usable, but a brief shower could interrupt outdoor plans.",
+    watchNext: "Check the National Weather Service radar before leaving for more than a short trip.",
     sources: [
-      {
-        label: "Brooklyn hourly forecast",
-        url: "https://www.timeanddate.com/weather/usa/brooklyn/hourly",
-        published: "August 3 hourly outlook"
-      },
       {
         label: "National Weather Service New York",
         url: "https://www.weather.gov/okx/",
-        published: "current forecast office"
+        published: "Current forecast office"
+      },
+      {
+        label: "Brooklyn point forecast",
+        url: "https://forecast.weather.gov/MapClick.php?lat=40.6957&lon=-73.9936",
+        published: "Forecast valid through August 3, 2026"
       }
     ]
   },
   waikato: {
     audience: "crystal",
     priority: 99,
-    label: "Waikato · Monday evening into Tuesday",
+    label: "Hamilton · Tuesday",
     status: "FORECAST",
-    title: "Cold again tonight, brighter Tuesday",
-    text: "Hamilton reached roughly 13-14°C Monday after a near-freezing start. Temperatures fall back toward 3-5°C overnight, then Tuesday should recover to about 14-15°C with light winds and limited rain risk. Sunset is around 5:33 PM.",
+    title: "Cool, partly cloudy, and workable for a run",
+    text: "Hamilton is forecast around 13-15°C with a cold morning, light winds, and a low rain chance. Late morning through mid-afternoon should be the more comfortable outdoor window.",
     items: [
-      "Best window Tuesday: late morning through mid-afternoon for a run, walk, errands, or the route with the good view.",
-      "Layers matter more than drama. The morning will feel much colder than the afternoon.",
-      "Wednesday may bring more cloud and a higher shower chance."
+      "Best window: roughly late morning through mid-afternoon.",
+      "Start with a layer because the morning will feel much colder than the daytime high.",
+      "Wednesday carries a higher shower chance, so Tuesday is the cleaner outdoor option."
     ],
-    whyItMatters: "Outdoor movement looks workable, but the cold start and quick evening cooldown are the real planning factors.",
-    watchNext: "Watch for frost on shaded surfaces early Tuesday and reassess if cloud thickens faster than expected.",
+    whyItMatters: "The weather supports a run or walk without requiring a perfect day.",
+    watchNext: "Recheck the local forecast in the morning in case the cloud or shower timing changes.",
     sources: [
       {
-        label: "Hamilton hourly forecast",
-        url: "https://www.timeanddate.com/weather/%402190325/hourly",
-        published: "August 3-4 hourly outlook"
+        label: "WeatherWatch Hamilton",
+        url: "https://www.weatherwatch.co.nz/forecasts/hamilton",
+        published: "August 3-6, 2026 outlook"
       },
       {
         label: "MetService Hamilton",
         url: "https://www.metservice.com/towns-cities/locations/hamilton",
-        published: "current local forecast"
+        published: "Current local forecast"
       }
     ]
   }
