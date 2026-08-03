@@ -354,7 +354,7 @@ window.CMX_NEWS_BRIEF = {
       priority: 75,
       label: "Brooklyn",
       title: "Warm, humid, with a passing-shower chance",
-      text: "Use the cooler part of the day for movement or errands, carry water, and check the latest radar before a longer trip.",
+      text: "Brooklyn should reach the low 80s. Use the early morning for movement or errands, carry water, and check radar before a longer trip.",
       url: "https://www.weather.gov/okx/",
       linkLabel: "check the New York forecast"
     },
@@ -362,8 +362,8 @@ window.CMX_NEWS_BRIEF = {
       audience: "crystal",
       priority: 75,
       label: "Waikato",
-      title: "Cold overnight with a better daytime running window",
-      text: "Use the latest local forecast to choose a comfortable outdoor window and keep the run low pressure.",
+      title: "Cold tonight, better running window Tuesday",
+      text: "Hamilton cools toward 3-5°C overnight, then Tuesday should recover near 14-15°C. Late morning through mid-afternoon looks like the better outdoor window.",
       url: "https://www.metservice.com/towns-cities/locations/hamilton",
       linkLabel: "check the Hamilton forecast"
     }
@@ -374,19 +374,19 @@ window.CMX_NEWS_BRIEF = {
       audience: "jay",
       priority: 70,
       label: "Brooklyn this week",
-      title: "A low-pressure reason to leave the apartment",
-      text: "Keep one current Brooklyn event or useful local development here, with the exact date and a reliable source.",
+      title: "Reading Rhythms comes to the Brooklyn Army Terminal",
+      text: "A waterfront reading party is scheduled for Thursday, August 6, from 4:00 to 8:00 PM, with communal reading and guided conversation. It is a low-pressure option for leaving the apartment without entering a nightclub-based side quest.",
       url: "https://edc.nyc/events",
-      linkLabel: "see current New York events"
+      linkLabel: "see Brooklyn Army Terminal events"
     },
     {
       audience: "crystal",
       priority: 70,
       label: "Waikato local",
-      title: "Community creativity deserves a proper spotlight",
-      text: "Keep one current Waikato event, arts item, animal story, or useful local development here.",
-      url: "https://www.waikatodistrict.govt.nz/news",
-      linkLabel: "see current Waikato stories"
+      title: "Community creativity is getting a proper spotlight",
+      text: "Waikato District is highlighting groups using art and creativity to strengthen local connection, which is a better reminder than another algorithm telling artists their work is a hobby.",
+      url: "https://www.waikatodistrict.govt.nz/news/article",
+      linkLabel: "see Waikato District stories"
     }
   ],
 
@@ -394,19 +394,21 @@ window.CMX_NEWS_BRIEF = {
     {
       audience: "shared",
       priority: 72,
-      label: "world desk",
-      title: "Keep only the world story that changes what today means",
-      text: "The daily workflow should verify the strongest useful development, explain why it matters, and reject the rest of the doom buffet."
+      label: "New Zealand national debate",
+      title: "English has formally become an official language",
+      text: "New Zealand passed a law giving English official status alongside te reo Māori and New Zealand Sign Language. The practical effect may be limited, but the debate about national identity and the place of te reo Māori is significant.",
+      url: "https://www.theguardian.com/world/2026/aug/03/new-zealand-english-an-official-language-bill",
+      linkLabel: "read the report"
     }
   ],
 
   culture: [
     {
-      audience: "crystal",
+      audience: "shared",
       priority: 90,
-      label: "culture desk",
-      title: "Celebrity, crime, and culture with the legal status kept straight",
-      text: "The daily culture file can add the strongest verified developments, streaming ideas, music news, New Zealand and Australian culture, one lighter item, and expandable source details."
+      label: "culture desk preview",
+      title: "Court procedure, August streaming, New Zealand language politics, and the story behind Everywhere",
+      text: "The full culture section separates allegations from legal findings, gives you actual streaming choices, includes a current New Zealand debate, and explains why today's song sounds as bright as it does."
     }
   ],
 
