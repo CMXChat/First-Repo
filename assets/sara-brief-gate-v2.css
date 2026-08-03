@@ -1,0 +1,33 @@
+html,
+body {
+  background: #010507;
+}
+
+body {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(37, 130, 142, .12), transparent 30%),
+    radial-gradient(circle at 84% 8%, rgba(230, 215, 184, .05), transparent 24%),
+    linear-gradient(160deg, #010507 0%, #061117 54%, #081d24 100%);
+}
+
+.sara-gate-card {
+  border-color: rgba(232, 251, 248, .16);
+  background: rgba(2, 8, 11, .94);
+  box-shadow: 0 34px 100px rgba(0, 0, 0, .62);
+}
+
+.sara-gate-top {
+  background:
+    linear-gradient(180deg, rgba(1, 5, 8, .14), rgba(1, 5, 8, .83)),
+    repeating-radial-gradient(ellipse at 50% 135%, transparent 0 24px, rgba(232, 251, 248, .075) 25px 27px, transparent 28px 46px),
+    linear-gradient(135deg, #0a3540, #0b5b68);
+}
+
+.sara-gate-row input {
+  background: rgba(0, 0, 0, .42);
+}
+
+.sara-gate-row button {
+  color: #081114;
+  background: #d9caa9;
+}
