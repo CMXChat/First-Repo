@@ -25,7 +25,8 @@
 
       <label class="profile-field">
         <span>Demo profile</span>
-        <select id="profileSelect">
+        <select id="profileSelect" required>
+          <option value="" disabled selected>Choose the briefing you want to explore</option>
           <option value="individual">Alex · Personal briefing</option>
           <option value="couple">Maya + Jordan · Couple and shared space</option>
           <option value="partners">Northstar · UK and US business partners</option>
@@ -35,7 +36,7 @@
 
       <div class="entry-options" aria-label="Entry preferences">
         <label class="option-row">
-          <input id="musicOnEntry" type="checkbox" checked />
+          <input id="musicOnEntry" type="checkbox" />
           <span><strong>Start today’s actual song</strong><small id="gateSongName">The authorized track preview begins after you press Enter.</small></span>
         </label>
         <label class="option-row">
@@ -44,7 +45,7 @@
         </label>
       </div>
 
-      <button class="primary-action" id="enterBrief" type="button">Enter briefing</button>
+      <button class="primary-action" id="enterBrief" type="button" disabled aria-disabled="true">Choose a briefing first</button>
       <p class="security-note">Concept gate only. Real private data would require server-side authentication.</p>
     </div>
   </section>
@@ -351,7 +352,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="/assets/brief/brief-config.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-config.js?v=20260803-5" defer></script>
   <script src="/assets/brief/brief-presets.js?v=20260803-4" defer></script>
   <script src="/assets/brief/brief-data.js?v=20260803-4" defer></script>
   <script src="/assets/brief/brief-memory.js?v=20260803-4" defer></script>
