@@ -22,7 +22,7 @@ assert.match(config, /brief-polish\.js/);
 assert.match(config, /watch: '20260803-3'/);
 assert.match(config, /briefWorkspaceScript[\s\S]*briefPolishScript/);
 
-assert.match(workspace, /data-rail-paused/);
+assert.match(workspace, /dataset\.railPaused/);
 assert.match(workspace, /state\.railPaused = !state\.railPaused/);
 assert.match(polish, /animationPlayState = paused \? 'paused' : 'running'/);
 assert.match(polish, /Pause moving briefing signals/);
