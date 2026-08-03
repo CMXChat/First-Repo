@@ -178,7 +178,16 @@ window.BRIEF_CONFIG = {
     script.id = id;
     script.src = src;
     script.async = false;
-    if (onload) script.addEventListener('load', onload, { once: true });
+    if (onload) {
+      let completed = false;
+      const finish = () => {
+        if (completed) return;
+        completed = true;
+        onload();
+      };
+      script.addEventListener('load', finish, { once: true });
+      script.addEventListener('error', finish, { once: true });
+    }
     document.head.appendChild(script);
   }
 
@@ -190,17 +199,16 @@ window.BRIEF_CONFIG = {
   loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);
   loadStyle('briefExperienceStyle', `/assets/brief/brief-experience.css?v=${build.experience}`);
 
-  loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`, () => {
-    loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
-      loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
-        loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
-          loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
-            loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
-              loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
-                loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
-                  loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
-                    loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`);
-                  });
+  loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);
+  loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
+    loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
+      loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
+        loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
+          loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
+            loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
+              loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
+                loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
+                  loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`);
                 });
               });
             });
