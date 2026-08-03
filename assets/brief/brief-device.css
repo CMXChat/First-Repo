@@ -121,6 +121,42 @@ select,
   min-width: 0;
 }
 
+.top-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap !important;
+  gap: 7px;
+}
+
+.top-actions .icon-button,
+.top-actions #themeToggleButton,
+.top-actions #audioButton,
+.top-actions #readButton,
+.top-actions #explainButton,
+.top-actions #scenarioMenuButton {
+  flex: 0 0 44px;
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  line-height: 1 !important;
+}
+
+html .top-actions #themeToggleButton.neon-theme-toggle {
+  transform: none !important;
+  font-size: 18px !important;
+  box-shadow: 0 0 10px rgba(255,255,255,.28), 0 0 20px rgba(87,168,255,.22) !important;
+}
+
+html .top-actions #themeToggleButton.neon-theme-toggle:hover,
+html .top-actions #themeToggleButton.neon-theme-toggle:active {
+  transform: none !important;
+}
+
 .brief-section,
 .scenario-stage,
 .experience-addon,
@@ -184,13 +220,50 @@ iframe {
   .topbar {
     width: 100%;
     max-width: 100vw;
-    padding-left: max(12px, env(safe-area-inset-left));
-    padding-right: max(12px, env(safe-area-inset-right));
+    min-height: 62px;
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
+
+  .brand {
+    flex: 0 0 auto;
   }
 
   .top-actions {
-    max-width: 100%;
-    flex-wrap: wrap;
+    margin-left: auto;
+    gap: 6px;
+  }
+
+  .top-actions .icon-button,
+  .top-actions #themeToggleButton,
+  .top-actions #audioButton,
+  .top-actions #readButton,
+  .top-actions #explainButton,
+  .top-actions #scenarioMenuButton,
+  .top-actions #viewModeButton {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    overflow: hidden;
+  }
+
+  #viewModeButton span:last-child {
+    display: none !important;
+  }
+
+  #viewModeButton .space-lock {
+    width: auto;
+    height: auto;
+    background: transparent;
   }
 
   .brief-help-dialog,
@@ -221,6 +294,28 @@ iframe {
   th {
     overflow-wrap: anywhere;
     word-break: normal;
+  }
+}
+
+@media (max-width: 390px) {
+  .top-actions {
+    gap: 4px;
+  }
+
+  .top-actions .icon-button,
+  .top-actions #themeToggleButton,
+  .top-actions #audioButton,
+  .top-actions #readButton,
+  .top-actions #explainButton,
+  .top-actions #scenarioMenuButton,
+  .top-actions #viewModeButton {
+    flex-basis: 40px;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
   }
 }
 
