@@ -1,7 +1,8 @@
-.brief-native-select-fallback {
+.profile-field select.brief-native-select-fallback {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
+  min-height: 1px !important;
   padding: 0 !important;
   margin: -1px !important;
   overflow: hidden !important;
