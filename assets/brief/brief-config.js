@@ -21,11 +21,13 @@ window.BRIEF_CONFIG = {
 
   const build = {
     device: '20260803-1',
+    entry: '20260803-1',
     upgrade: '20260803-5',
     live: '20260803-4',
     daily: '20260803-3',
     experience: '20260803-3',
-    terminal: '20260803-1'
+    terminal: '20260803-1',
+    watch: '20260803-1'
   };
 
   const labels = {
@@ -108,7 +110,7 @@ window.BRIEF_CONFIG = {
         event.preventDefault();
         event.stopImmediatePropagation();
         note.textContent = 'Choose Personal, Relationship, Business, or Trainer + student first.';
-        select.focus();
+        document.getElementById('briefEntryTrigger')?.focus();
         return;
       }
 
@@ -195,23 +197,31 @@ window.BRIEF_CONFIG = {
   installEntryController();
 
   loadStyle('briefDeviceStyle', `/assets/brief/brief-device.css?v=${build.device}`);
+  loadStyle('briefEntryDropdownStyle', `/assets/brief/brief-entry-dropdown.css?v=${build.entry}`);
   loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);
   loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);
   loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);
   loadStyle('briefExperienceStyle', `/assets/brief/brief-experience.css?v=${build.experience}`);
   loadStyle('briefTerminalStyle', `/assets/brief/brief-terminal.css?v=${build.terminal}`);
+  loadStyle('briefRelationshipWatchStyle', `/assets/brief/brief-relationship-watch.css?v=${build.watch}`);
 
   loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);
-  loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
-    loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
-      loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
-        loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
-          loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
-            loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
-              loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
-                loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
-                  loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {
-                    loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`);
+  loadScript('briefEntryDropdownScript', `/assets/brief/brief-entry-dropdown.js?v=${build.entry}`);
+
+  loadScript('briefDailyVideoScript', `/assets/daily-video.js?v=${build.watch}`, () => {
+    loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
+      loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
+        loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
+          loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
+            loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
+              loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
+                loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
+                  loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
+                    loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {
+                      loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`, () => {
+                        loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`);
+                      });
+                    });
                   });
                 });
               });
