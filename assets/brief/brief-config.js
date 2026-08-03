@@ -30,7 +30,7 @@ window.BRIEF_CONFIG = {
     watch: '20260803-3',
     team: '20260803-1',
     workspace: '20260803-1',
-    polish: '20260803-1'
+    polish: '20260803-2'
   };
 
   const labels = {

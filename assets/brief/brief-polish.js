@@ -114,14 +114,14 @@
 
     return `<div class="polish-visual-head"><div><p class="micro-label">LIVE TEAM OPERATING BOARD · FICTIONAL PROJECT DATA</p><h3>A role-aware workspace with the clarity of a project board.</h3></div><p>Members see their work and dependencies. Leads see readiness, workload, handoffs, finance and approvals without exposing unrelated private records.</p></div>
       <div class="polish-kpi-grid">${[
-        kpiCard('Readiness', `${readiness}%`, `${complete} of ${timeline.length} phases complete`, 'green'),
+        kpiCard('Phase completion', `${readiness}%`, `${complete} of ${timeline.length} phases complete`, 'green'),
         kpiCard('Active blockers', String(blockers), blockers ? 'Approval required before release' : 'No blocked readiness checks', blockers ? 'amber' : 'green'),
         kpiCard('Handoffs at risk', String(waiting), 'Waiting or missing evidence', waiting ? 'amber' : 'green'),
         kpiCard('Budget used', `${budget}%`, finance[1]?.note || 'Fictional project budget', 'blue'),
         kpiCard('Role views', String((team.members || []).length), 'Private, role, project and leadership spaces', 'violet')
       ].join('')}</div>
       <div class="polish-team-summary-grid">
-        ${ring(readiness, 'Project readiness', blockers ? 'One approval is holding the release' : 'Readiness checks are clear')}
+        ${ring(readiness, 'Phase completion', blockers ? 'One approval is holding the release' : 'Readiness checks are clear')}
         <article class="polish-workload-card"><div><span>ROLE WORKLOAD</span><strong>Capacity by member</strong></div>${workloadBars(team.members || [])}</article>
       </div>
       <div class="polish-full-only">

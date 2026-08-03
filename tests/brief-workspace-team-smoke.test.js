@@ -30,9 +30,9 @@ for (const [name, source] of [
 
 assert.match(index, /<option value="team">Atlas · Team and project<\/option>/);
 assert.match(index, /FIVE WAYS THE SAME PLATFORM/);
-assert.match(index, /brief-team-data\.js/);
+assert.match(index, /brief-team-data\.js\?v=20260803-2/);
 assert.ok(index.indexOf('brief-team-data.js') < index.indexOf('brief-core.js'));
-assert.match(index, /brief-config\.js\?v=20260803-11/);
+assert.match(index, /brief-config\.js\?v=20260803-12/);
 
 assert.match(config, /team: 'Team \+ project'/);
 assert.match(config, /brief-workspace\.css/);

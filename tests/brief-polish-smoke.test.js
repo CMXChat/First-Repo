@@ -16,7 +16,7 @@ for (const [name, source] of Object.entries({ config, workspace, polish, watch }
   new vm.Script(source, { filename: `${name}.js` });
 }
 
-assert.match(config, /polish: '20260803-1'/);
+assert.match(config, /polish: '20260803-2'/);
 assert.match(config, /brief-polish\.css/);
 assert.match(config, /brief-polish\.js/);
 assert.match(config, /watch: '20260803-3'/);
@@ -33,6 +33,7 @@ assert.match(polish, /EXECUTIVE PULSE/);
 assert.match(polish, /SIX-MONTH REVENUE/);
 assert.match(polish, /Cash collected/);
 assert.match(polish, /LIVE TEAM OPERATING BOARD/);
+assert.match(polish, /Phase completion/);
 assert.match(polish, /polish-team-board/);
 assert.match(polish, /ROLE WORKLOAD/);
 assert.match(polish, /HANDOFF WATCH/);
