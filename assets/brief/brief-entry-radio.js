@@ -22,6 +22,10 @@
     trainer: {
       title: 'Trainer + student',
       text: 'Training plans, habits, progression, check-ins and accountability.'
+    },
+    team: {
+      title: 'Team + project',
+      text: 'Role-based member views, handoffs, procedures, finance signals and shared project truth.'
     }
   };
 
