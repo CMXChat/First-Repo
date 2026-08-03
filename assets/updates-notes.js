@@ -22,6 +22,25 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-02-personal-os-plan-entry',
+    timestamp: '2026-08-02T21:00:00-04:00',
+    title: 'Personal OS product plan added as a protected plan entry',
+    status: 'complete',
+    body: [
+      'Created the new gated /plans route using the same terminal notebook language as /updates.',
+      'Added the first plan entry, Personal OS, covering the scheduled briefing, alarm-style music and narration, personalized dashboard, structured memory, private and shared spaces, connected services, relationship and business use cases, and the Python development path.',
+      'The plans page is structured as a dated entry feed so additional product and platform plans can be added later without redesigning the route.',
+      'The entry describes the intended product direction honestly and does not present planned backend, connector, memory or alarm features as already live.'
+    ],
+    links: [
+      { url: '/plans/', label: 'Open Plans' },
+      { url: '/news/', label: 'Open Current Briefing Prototype' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['plans', 'personal-os', 'briefing', 'product'],
+    pinned: true
+  },
+  {
     id: '2026-08-01-ai-backend-terminal-completion',
     timestamp: '2026-08-01T19:57:00-04:00',
     title: 'AI and Backend blueprints completed in the terminal notebook system',
