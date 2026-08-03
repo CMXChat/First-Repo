@@ -100,7 +100,7 @@
     label.textContent = buttonLabel || 'play on page';
 
     const note = document.createElement('small');
-    note.textContent = 'Tap to load';
+    note.textContent = provider === 'spotify' ? 'Tap to open the Spotify player' : 'Tap to load';
     button.append(icon, label, note);
 
     button.addEventListener('click', () => {
@@ -126,37 +126,42 @@
     return shell;
   }
 
-  function enhanceSpotifySong() {
+  function enhanceSpotifySongs() {
     const items = sorted(brief.spotify);
     const cards = [...root.children];
 
     items.forEach((item, index) => {
-      if (item.audience !== 'shared') return;
       const card = cards[index];
       if (!card || card.querySelector('.media-shell')) return;
 
       card.classList.add('media-card');
-      if (dailyAudio) {
+
+      if (item.isDailySong && dailyAudio) {
         card.appendChild(createAudioShell(dailyAudio, item.title || 'Today’s shared song'));
         return;
       }
 
       const trackId = safeSpotifyTrackId(item.url);
       if (!trackId) return;
+
       card.appendChild(createPlayerShell({
         provider: 'spotify',
         id: trackId,
-        title: item.title || 'Today’s shared song',
-        buttonLabel: 'play song on this page'
+        title: item.title || 'Recommended song',
+        buttonLabel: 'play this song on the page'
       }));
     });
 
     const intro = document.querySelector('#spotify .section-intro');
     if (intro) {
+      const extraCount = Math.max(0, items.length - 1);
       intro.textContent = dailyAudio
-        ? 'Today’s uplifting song is primed by the password click and should begin as the briefing opens. Use either play or pause control at any time.'
-        : 'Today’s shared song and video stay asleep until one of you taps them.';
+        ? `Today’s main song begins after access when the browser allows it. ${extraCount ? `${extraCount} more picks are waiting farther down for running, creating, and resetting.` : 'Use either play or pause control at any time.'}`
+        : 'Today’s music and video stay asleep until one of you taps them.';
     }
+
+    const badge = document.querySelector('#spotify .section-audience');
+    if (badge && items.length > 1) badge.textContent = `${items.length} songs + today’s watch`;
   }
 
   function createVideoCard(video) {
@@ -212,6 +217,6 @@
     else root.appendChild(card);
   }
 
-  enhanceSpotifySong();
+  enhanceSpotifySongs();
   addDailyVideo();
 })();
