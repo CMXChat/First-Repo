@@ -78,7 +78,6 @@ window.BRIEF_CONFIG = {
 
     const updateControls = () => {
       const choice = validChoice(selectedValue) ? selectedValue : '';
-      if (select.value !== choice) select.value = choice;
       const enabled = Boolean(choice);
       enter.disabled = !enabled;
       enter.setAttribute('aria-disabled', String(!enabled));
@@ -143,6 +142,7 @@ window.BRIEF_CONFIG = {
     window.addEventListener('brief:ready', () => {
       appReady = true;
       if (!validChoice(selectedValue)) selectedValue = '';
+      select.value = selectedValue;
       updateControls();
       if (queuedOpen && selectedValue) {
         queuedOpen = false;
