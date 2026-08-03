@@ -4,10 +4,18 @@
 
 The briefing has two layers:
 
-1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, help modal, private/shared controls, light mode, mobile containment, music controls, accountability logic, and source labels.
+1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, help modal, private/shared controls, light mode, mobile containment, music controls, accountability logic, device compatibility, and source labels.
 2. **Daily content**: current public Brooklyn information, weather, changing news, daily horoscope reflections, entertainment and market context, rotating music, and clearly fictional demonstration records.
 
 Daily updates must never redesign the permanent layer.
+
+## Required reading
+
+Before any daily update, read:
+
+- `docs/briefing-design-standard.md`
+- `docs/brief-daily-maintenance.md`
+- `docs/brief-device-compatibility.md`
 
 ## The only daily-edit files
 
@@ -20,7 +28,7 @@ Use for verified or clearly labeled public information:
 - Business, stock, energy, or market news
 - Entertainment and celebrity updates
 - Daily horoscope reflections for all signs
-- Virgo and Pisces relationship reflection
+- Virgo and Virgo relationship reflection
 - Exact timestamps and source URLs
 
 Every current item must state why it matters. Astrology must remain labeled as entertainment and reflection. Never place private user information here.
@@ -55,13 +63,18 @@ Do not edit permanent files during a normal daily refresh. They include:
 - `brief-daily.js`
 - `brief-experience.js`
 - `brief-experience-guard.js`
+- `brief-virgo-pair.js`
 - `brief-config.js`
+- `brief-device.js`
+- `brief-device.css`
+- `tests/brief-device-smoke.test.js`
+- `.github/workflows/brief-device-smoke.yml`
 
 A permanent file may change only for an intentional product feature or verified bug fix.
 
 ## Daily update sequence
 
-1. Read this file and `docs/briefing-design-standard.md`.
+1. Read all required documentation.
 2. Fetch the latest two daily-edit files from `main`.
 3. Research current public information from reputable sources.
 4. Update the exact timestamp and source URLs.
@@ -76,7 +89,8 @@ A permanent file may change only for an intentional product feature or verified 
 13. Confirm entry music and narration remain unchecked by default.
 14. Confirm Personal, Relationship, Business, and Trainer views can be opened from the top switcher, scenario cards, and final switcher, and switching returns to the beginning.
 15. Confirm the help button, private/shared control, trainer yes/no tracker, horoscope selectors, charts, and Spotify players remain interactive.
-16. Publish only after validation.
+16. Run `node tests/brief-device-smoke.test.js` after any permanent briefing change.
+17. Publish only after validation.
 
 ## Non-negotiable rules
 
@@ -91,17 +105,22 @@ A permanent file may change only for an intentional product feature or verified 
 - Never remove or weaken the genuine white light theme.
 - Never add autoplay assumptions. Browsers and providers may require a direct user action.
 - Never edit permanent files merely to refresh content.
+- Never allow multiple scripts to reset or independently own the entry selector.
+- Never remove the queued-open fallback or mobile entry regression test.
 
 ## File loading order
 
-The loader must keep data ahead of dependent renderers:
+The loader must keep data ahead of dependent renderers and continue after optional script failures:
 
-1. evergreen configuration and scenario data
-2. upgrade behavior
-3. live public data and live renderer
-4. live-weather protection
-5. daily rotating content and daily renderer
-6. experience guard
-7. profile-space, help, horoscope, accountability, market, and light-theme experience renderer
+1. synchronous entry controller in `brief-config.js`
+2. device compatibility CSS and helper
+3. evergreen configuration and scenario data
+4. upgrade behavior
+5. live public data and live renderer
+6. live-weather protection
+7. daily rotating content and daily renderer
+8. experience guard
+9. Virgo-pair defaults
+10. profile-space, help, horoscope, accountability, market, and light-theme experience renderer
 
 Keep this order intact.
