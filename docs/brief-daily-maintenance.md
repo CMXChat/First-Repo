@@ -86,6 +86,7 @@ Do not edit permanent files during a normal daily refresh. They include:
 - `tests/brief-device-smoke.test.js`
 - `tests/brief-terminal-smoke.test.js`
 - `tests/brief-entry-watch-smoke.test.js`
+- `tests/brief-stability-smoke.test.js`
 - `.github/workflows/brief-device-smoke.yml`
 
 A permanent file may change only for an intentional product feature or verified bug fix.
@@ -96,8 +97,8 @@ The pre-entry briefing choice uses four visible radio cards.
 
 - Personal, Relationship, Business, and Trainer choices must all remain readable without opening a menu.
 - Native radio behavior must allow only one choice at a time.
-- One tap selects and opens the briefing. A separate visible Open button is not required.
-- The hidden native select and Enter button remain only as compatibility bridges for the established slow-device queue and fallback unlock.
+- Selecting a radio card only selects the briefing. It must not open automatically.
+- The hidden native select remains a compatibility bridge. The visible Open this briefing button is the only entry action and must allow music and narration preferences to be chosen first.
 - The gate must never return to a native phone popup, modal selector, or custom dropdown.
 - Music and narration remain unchecked by default.
 
@@ -135,7 +136,7 @@ The terminal at the bottom of `/brief` is a permanent navigation and product-dem
 12. Confirm `noindex` remains present.
 13. Confirm dark mode remains the default and the white light mode remains optional.
 14. Confirm entry music and narration remain unchecked by default.
-15. Confirm the four visible radio cards open their briefing in one tap without a popup or second button.
+15. Confirm the four visible radio cards select one briefing without opening it, and the visible Open this briefing button enters only after preferences are chosen.
 16. Confirm Personal, Relationship, Business, and Trainer views can be opened from the top switcher, scenario cards, terminal, and final switcher, and switching returns to the beginning.
 17. Confirm the help button, private/shared control, trainer yes/no tracker, horoscope selectors, charts, Spotify players, terminal, and Relationship watch remain interactive.
 18. Run `node tests/brief-device-smoke.test.js`, `node tests/brief-terminal-smoke.test.js`, and `node tests/brief-entry-watch-smoke.test.js` after any permanent briefing change.
