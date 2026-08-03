@@ -2,13 +2,13 @@
 
 ## Product structure
 
-The briefing has three distinct layers:
+The briefing has three permanent layers:
 
-1. **Quick briefing**: the default experience. It shows a small number of current signals, one recommended action, a compact day line, a daily quote, and scenario-specific pill tabs.
-2. **Full workspace**: every rich dashboard, profile, chart, player, terminal, privacy explanation, memory control, integration concept and technical explanation remains available here.
+1. **Quick briefing**: the default. It shows a small set of current signals, one recommended action, a compact timeline, a polished daily quote and scenario-specific pill tabs.
+2. **Full workspace**: every rich dashboard, profile, chart, player, terminal, privacy explanation, memory control, integration concept and technical explanation remains available.
 3. **Daily content**: current public information and clearly fictional demonstration records that can change without redesigning the product.
 
-The product should demonstrate its own promise: collect broadly, organize deeply, and show only what matters first.
+The product should demonstrate its own promise: collect broadly, organize deeply and show only what matters first.
 
 ## Required reading
 
@@ -36,7 +36,7 @@ Use it for verified or clearly labeled public information:
 - Virgo and Virgo relationship reflection
 - Exact timestamps and source URLs
 
-Every current item must explain why it matters. Astrology remains entertainment and reflection. Never place private user information here.
+Every current item explains why it matters. Astrology remains entertainment and reflection. Never place private user information here.
 
 ### `assets/brief/brief-daily-content.js`
 
@@ -48,7 +48,7 @@ Use it for safe rotations and fictional demonstrations:
 - Fictional relationship profiles and approved shared-space examples
 - Fictional business-partner private and shared records
 - Fictional trainer accountability questions and weekly status
-- Fictional Team demonstration values only when the existing schema permits them
+- Fictional Team values when the existing schema permits them
 - Edition metadata
 
 Edit values, not renderer logic or object structure.
@@ -60,6 +60,10 @@ Edit values, not renderer logic or object structure.
 - Do not create a competing `/brief` writer for this file.
 - A `/news` video update must update both pages.
 - The iframe stays unloaded until Play is tapped.
+- The full player includes **Refresh video**. Refresh resets a failed iframe to a fresh poster and requires another Play tap.
+- The Quick Watch view includes **Refresh preview** for a blank thumbnail.
+- Refresh must never silently autoplay the video.
+- Loading, loaded and delayed states remain visible in text.
 - An invalid or missing video must not break the Relationship briefing.
 
 ## Five briefing types
@@ -79,10 +83,11 @@ Business remains partner and management focused. Team is a distinct member-facin
 - Shared project truth
 - Leadership spaces
 - Member-specific work
-- Project timelines
+- Project timelines and board columns
 - Handoffs
 - Procedure or operation readiness
 - Approved finance signals
+- Workload and readiness visuals
 - Least-privilege security boundaries
 
 ## Quick briefing contract
@@ -96,7 +101,6 @@ Quick briefing is always the default after entry or after switching briefing typ
 - Preserve a polished daily quote card.
 - Use real public data where available and label it clearly.
 - Use concise placeholders or fictional examples for unconnected private data.
-- Do not fill every unavailable section with large invented datasets merely to prove breadth.
 - The full workspace remains one tap away.
 
 Pill tabs are scenario specific:
@@ -107,16 +111,51 @@ Pill tabs are scenario specific:
 - Trainer: Overview, Today, Habits, Progress, Recovery, Coach
 - Team: Overview, My work, Project, Handoffs, Procedure, Finance, Spaces
 
+## Business and Team visual hierarchy
+
+Business and Team require decision-grade visuals near the top of the experience.
+
+### Business
+
+The Overview, Finance, Projects and Decisions tabs keep an executive pulse directly below the pill navigation:
+
+- KPI cards
+- Six-month revenue trend
+- Cash-collected ring
+- Current operating decision
+- A route to the deeper ledger and finance charts
+
+These visuals use clearly fictional internal company data. Public market stories remain separately sourced and labeled.
+
+### Team
+
+The Overview, My work, Project, Handoffs, Procedure and Finance tabs keep a Team operating board directly below the pill navigation:
+
+- Readiness
+- Blockers
+- At-risk handoffs
+- Budget used
+- Role count
+- Workload bars
+- Project flow
+- Monday-style status columns
+- Handoff watch
+- Approved finance bars
+
+Quick mode shows the compact signals. Full mode reveals the richer board and charts before the older long-form Team modules.
+
 ## Motion contract
 
 Motion may support short status information. It must not control substantial reading.
 
 - The compact signal rail may move automatically.
-- It must include a Pause or Play control.
-- Hover, keyboard focus and explicit pause stop it.
-- `prefers-reduced-motion` disables movement.
+- It includes a working Pause or Play control.
+- Explicit Pause is the source of truth and Play must always resume movement.
+- Keyboard focus must never trap the rail in a permanently paused state.
+- Hover may pause only on devices with a fine pointer.
+- `prefers-reduced-motion` disables the moving rail and decorative Team-flow animation.
 - Full cards, quotes, procedures, finance records and decisions never rotate automatically.
-- Mobile cards may use user-controlled horizontal swipe and scroll snap.
+- Mobile cards use user-controlled horizontal swipe and scroll snap when space is limited.
 - Do not add autoplay carousels for meaningful content.
 
 ## Entry contract
@@ -130,7 +169,7 @@ The pre-entry gate uses five visible radio cards.
 - Music and narration preferences can be chosen before entry.
 - Both preferences remain unchecked by default.
 - The hidden select exists only as a compatibility bridge.
-- Entry must force the document and gate to position zero.
+- Entry forces the document and gate to position zero.
 - Never restore a popup, modal picker, dropdown or one-tap automatic entry.
 
 ## Full workspace contract
@@ -142,9 +181,10 @@ Full workspace preserves the rich work already created:
 - Scenario explorer
 - Personal command center
 - Relationship private and shared profiles
-- Business partner dashboards and shared ledger
+- Relationship Today’s Watch and refresh control
+- Business partner dashboards, executive pulse and shared ledger
 - Trainer habit and accountability modules
-- Team users, roles, spaces, handoffs, procedures, finance and security
+- Team users, roles, spaces, workload, board, handoffs, procedures, finance and security
 - Priorities and schedules
 - Daily rhythm
 - Memory controls
@@ -193,6 +233,8 @@ Normal daily refreshes must not edit permanent product files, including:
 - `brief-team-renderer.js`
 - `brief-workspace.js`
 - `brief-workspace.css`
+- `brief-polish.js`
+- `brief-polish.css`
 - all briefing smoke tests
 - `.github/workflows/brief-device-smoke.yml`
 
@@ -213,18 +255,21 @@ A permanent file changes only for an intentional product feature or verified bug
 11. Confirm selection does not enter automatically.
 12. Confirm Quick briefing is the default and Full workspace remains available.
 13. Confirm all scenario pill tabs work.
-14. Confirm the signal rail pauses and respects reduced motion.
-15. Confirm Team member, project, handoff, procedure, finance and space views remain available.
-16. Confirm every briefing switch returns to the top.
-17. Confirm dark mode, genuine light mode and mobile containment remain intact.
-18. Confirm `noindex` remains present.
-19. After a permanent change, run:
+14. Confirm Pause → Play → Pause works and reduced motion disables movement.
+15. Confirm the Relationship video can be reset without autoplay.
+16. Confirm Business KPIs and charts appear near the top.
+17. Confirm Team readiness, workload, board, handoff and finance visuals remain available.
+18. Confirm every briefing switch returns to the top.
+19. Confirm dark mode, genuine light mode and mobile containment remain intact.
+20. Confirm `noindex` remains present.
+21. After a permanent change, run:
    - `node tests/brief-device-smoke.test.js`
    - `node tests/brief-terminal-smoke.test.js`
    - `node tests/brief-entry-watch-smoke.test.js`
    - `node tests/brief-stability-smoke.test.js`
    - `node tests/brief-workspace-team-smoke.test.js`
-20. Publish only after validation.
+   - `node tests/brief-polish-smoke.test.js`
+22. Publish only after validation.
 
 ## Non-negotiable rules
 
@@ -241,6 +286,7 @@ A permanent file changes only for an intentional product feature or verified bug
 - Never hide the rich modules permanently in order to shorten Quick briefing.
 - Never make substantial content auto-rotate.
 - Never merge Team into Business. They serve different perspectives.
+- Never remove media refresh controls without an equivalent recovery path.
 
 ## Loading order
 
@@ -260,6 +306,7 @@ The loader keeps data before dependent renderers and continues after optional sc
 12. Relationship watch renderer
 13. Team renderer
 14. Quick/full workspace controller
-15. Terminal bridge and universal return-to-top controller
+15. Business, Team, motion and media polish controller
+16. Terminal bridge and universal return-to-top controller
 
 Keep this order intact.
