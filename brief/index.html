@@ -9,8 +9,9 @@
   <meta name="description" content="A private personalized daily briefing product demonstration." />
   <link rel="canonical" href="https://db.cmxchat.com/brief/" />
   <title>Personal Briefing Demo</title>
-  <link rel="stylesheet" href="/assets/brief/brief.css?v=20260803-3" />
-  <link rel="stylesheet" href="/assets/brief/brief-music.css?v=20260803-1" />
+  <link rel="stylesheet" href="/assets/brief/brief.css?v=20260803-4" />
+  <link rel="stylesheet" href="/assets/brief/brief-music.css?v=20260803-2" />
+  <link rel="stylesheet" href="/assets/brief/brief-scenarios.css?v=20260803-1" />
 </head>
 <body class="is-locked">
   <a class="skip-link" href="#briefMain">Skip to briefing</a>
@@ -20,14 +21,15 @@
     <div class="gate-panel">
       <p class="micro-label">PRIVATE BRIEFING CONCEPT</p>
       <h1 id="gateTitle">Your day, already organized.</h1>
-      <p class="gate-copy">Enter a fictional personalized briefing that demonstrates private context, shared spaces, live-style information, memory, connections and approved actions.</p>
+      <p class="gate-copy">Choose a fictional example. Each version demonstrates different users, private profiles, approved shared spaces, structured memory, connected services and actions.</p>
 
       <label class="profile-field">
         <span>Demo profile</span>
         <select id="profileSelect">
-          <option value="individual">Alex · Individual founder</option>
-          <option value="couple">Maya + Jordan · Couple</option>
-          <option value="partners">Northstar · Business partners</option>
+          <option value="individual">Alex · Personal briefing</option>
+          <option value="couple">Maya + Jordan · Couple and shared space</option>
+          <option value="partners">Northstar · UK and US business partners</option>
+          <option value="trainer">Nina + Sam · Trainer and student</option>
         </select>
       </label>
 
@@ -70,9 +72,9 @@
           </div>
           <p class="greeting" id="greeting">Good afternoon, Alex.</p>
           <h1 id="heroTitle">Here is the shape of your day.</h1>
-          <p class="hero-summary" id="heroSummary">You have one focused work window, warm weather later, and three decisions worth handling before the day fragments.</p>
+          <p class="hero-summary" id="heroSummary">Your schedule, weather, money, messages, goals and preferred briefing style are organized around what matters next.</p>
           <div class="hero-actions">
-            <a class="primary-action" href="#priorities">Start with priorities</a>
+            <a class="primary-action" href="#scenarioExplorer">Explore this version</a>
             <button class="secondary-action" id="openConnections" type="button">View connections</button>
           </div>
         </div>
@@ -84,34 +86,36 @@
           </div>
           <p class="micro-label">NEXT UP</p>
           <h2 id="nextUpTitle">Website review with Morgan</h2>
-          <p class="next-time">2:30 PM · 45 minutes</p>
-          <div class="prep-list">
+          <p class="next-time" id="nextUpTime">2:30 PM · 45 minutes</p>
+          <div class="prep-list" id="nextUpPrep">
             <span>Open prototype</span>
             <span>Confirm launch risks</span>
             <span>Leave with one owner</span>
           </div>
-          <button class="text-action" type="button" data-concept-action="Prepare meeting brief">Prepare meeting brief →</button>
+          <button class="text-action" type="button" data-concept-action="Prepare context-aware brief">Prepare this brief →</button>
         </aside>
       </section>
 
       <nav class="section-nav" aria-label="Briefing sections">
         <a href="#weather">Weather</a>
         <a href="#music">Music</a>
-        <a href="#priorities">Priorities</a>
-        <a href="#schedule">Schedule</a>
-        <a href="#sharedSpace">Shared space</a>
+        <a href="#scenarioExplorer">Examples</a>
+        <a href="#priorities">Actions</a>
+        <a href="#dailyRhythm">Daily updates</a>
+        <a href="#learning">Memory</a>
+        <a href="#possibilities">Possibilities</a>
         <a href="#connections">Connections</a>
       </nav>
 
       <section class="brief-section weather-section" id="weather" aria-labelledby="weatherTitle">
         <div class="section-heading">
           <div>
-            <p class="micro-label">LIVE-STYLE WEATHER MODULE</p>
+            <p class="micro-label">LOCATION-AWARE WEATHER MODULE</p>
             <h2 id="weatherTitle">Plan around the sky, not a tiny icon.</h2>
           </div>
           <div class="weather-tabs" role="tablist" aria-label="Weather views">
             <button id="hourlyTab" role="tab" aria-selected="true" aria-controls="hourlyWeather" type="button">Hourly</button>
-            <button id="dailyTab" role="tab" aria-selected="false" aria-controls="dailyWeather" type="button">7 days</button>
+            <button id="dailyTab" role="tab" aria-selected="false" aria-controls="dailyWeather" type="button">Outlook</button>
           </div>
         </div>
 
@@ -127,7 +131,7 @@
               <p class="weather-location" id="weatherLocation">Brooklyn, New York</p>
               <strong class="weather-temp" id="weatherTemp">82°</strong>
               <p class="weather-condition" id="weatherCondition">Mostly sunny</p>
-              <p class="weather-advice" id="weatherAdvice">Best outdoor window: 5:30–7:30 PM, once the heat starts backing off.</p>
+              <p class="weather-advice" id="weatherAdvice">Best outdoor window: 5:30–7:30 PM.</p>
             </div>
             <div class="weather-metrics" id="weatherMetrics"></div>
           </article>
@@ -193,11 +197,23 @@
         <div class="music-favorites" id="musicFavorites"></div>
       </section>
 
+      <section class="brief-section scenario-explorer" id="scenarioExplorer" aria-labelledby="scenarioExplorerTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">FOUR WAYS THE SAME PLATFORM CAN FEEL COMPLETELY DIFFERENT</p>
+            <h2 id="scenarioExplorerTitle">Choose the people. The briefing changes around them.</h2>
+          </div>
+          <p>The core stays stable. The users, shared spaces, priorities, tone, data and useful actions change.</p>
+        </div>
+        <div class="scenario-selector" id="scenarioSelector" aria-label="Briefing examples"></div>
+        <div class="scenario-stage" id="scenarioStage"></div>
+      </section>
+
       <section class="brief-section" id="priorities" aria-labelledby="priorityTitle">
         <div class="section-heading">
           <div>
-            <p class="micro-label">SUGGESTED · BASED ON DEMO CONTEXT</p>
-            <h2 id="priorityTitle">Three moves. No task landfill.</h2>
+            <p class="micro-label">DAILY ACTIONS FOR THE SELECTED EXAMPLE</p>
+            <h2 id="priorityTitle">Important work becomes clear ownership.</h2>
           </div>
           <p>Complete items locally on this device. A real version could sync approved updates to connected tools.</p>
         </div>
@@ -208,19 +224,93 @@
         <div class="section-heading section-heading-compact">
           <div>
             <p class="micro-label">TODAY’S FLOW</p>
-            <h2 id="scheduleTitle">Protect the useful window.</h2>
+            <h2 id="scheduleTitle">The schedule changes with the people and purpose.</h2>
           </div>
         </div>
         <div class="schedule-layout">
           <div class="timeline" id="scheduleTimeline"></div>
           <aside class="focus-card">
             <span class="source-label source-analysis">ANALYSIS</span>
-            <p class="micro-label">BEST FOCUS BLOCK</p>
-            <strong>3:30–5:15 PM</strong>
-            <p>No scheduled conflict. Use it for the work that becomes painful after 7 PM.</p>
-            <button class="secondary-action" type="button" data-concept-action="Protect focus time">Protect this time</button>
+            <p class="micro-label">WHY THIS MATTERS</p>
+            <strong>Context creates better timing</strong>
+            <p>A useful briefing knows when a person is available, what is urgent, and which action becomes harder later.</p>
+            <button class="secondary-action" type="button" data-concept-action="Protect or reschedule time">Turn insight into action</button>
           </aside>
         </div>
+      </section>
+
+      <section class="brief-section education-section" id="dailyRhythm" aria-labelledby="dailyRhythmTitle">
+        <div class="education-hero">
+          <span class="source-label source-demo">SCHEDULED EXPERIENCE</span>
+          <p class="micro-label">THE SAME BRIEFING THROUGHOUT THE DAY</p>
+          <h2 id="dailyRhythmTitle">It knows the time and circumstances. You do not choose a mode.</h2>
+          <p>The morning can open like an alarm, the daytime view can update when something important changes, and the evening can close the loop in a shorter review.</p>
+        </div>
+        <div class="daily-rhythm-grid" id="dailyRhythmGrid"></div>
+      </section>
+
+      <section class="brief-section education-section" id="learning" aria-labelledby="learningTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">STRUCTURED PROFILE + MEMORY DATABASE</p>
+            <h2 id="learningTitle">How it learns without deciding your identity for you.</h2>
+          </div>
+          <p>Every important memory can keep its source, confidence, sensitivity, expiry and sharing rules.</p>
+        </div>
+
+        <div class="learning-layout">
+          <div class="learning-steps" id="learningSteps"></div>
+          <div class="learning-explanation" id="learningExplanation"></div>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">USER CONTROL</p>
+            <h2>Important conclusions become questions, not silent permanent facts.</h2>
+          </div>
+        </div>
+        <div class="memory-choice-grid" id="memoryChoiceGrid"></div>
+        <p class="memory-choice-result" id="memoryChoiceResult"></p>
+
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">EXAMPLE MEMORY RECORDS</p>
+            <h2>What structured memory can look like.</h2>
+          </div>
+          <p>These are fictional examples. Sensitive real memory belongs in a protected backend, not public JavaScript.</p>
+        </div>
+        <div class="memory-record-list" id="memoryRecordList"></div>
+      </section>
+
+      <section class="brief-section education-section" id="possibilities" aria-labelledby="possibilitiesTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">WHAT CAN BE ADDED</p>
+            <h2 id="possibilitiesTitle">Almost anything useful to the person’s day can become a briefing module.</h2>
+          </div>
+          <p>Filter the examples. Each module would still need an honest data source, permission state and useful reason to exist.</p>
+        </div>
+        <div class="capability-filters" id="capabilityFilters"></div>
+        <div class="capability-grid" id="capabilityGrid"></div>
+      </section>
+
+      <section class="brief-section education-section" id="difference" aria-labelledby="differenceTitle">
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">THE SIMPLEST EXPLANATION</p>
+            <h2 id="differenceTitle">A normal AI chat answers. This platform prepares context before the answer.</h2>
+          </div>
+        </div>
+        <div class="comparison-grid" id="comparisonGrid"></div>
+
+        <div class="section-heading">
+          <div>
+            <p class="micro-label">HOW PYTHON AND FASTAPI EVENTUALLY CONNECT IT</p>
+            <h2>The page is the experience. The backend makes it real.</h2>
+          </div>
+          <p>Python can securely connect accounts, scheduled jobs, memory, databases, permissions, voice, alarms and approved actions.</p>
+        </div>
+        <div class="backend-flow" id="backendFlow"></div>
       </section>
 
       <section class="brief-section shared-section" id="sharedSpace" aria-labelledby="sharedTitle">
@@ -249,7 +339,7 @@
       <section class="explain-panel is-hidden" id="explainPanel" aria-live="polite">
         <span class="source-label source-demo">EXPLAIN MODE</span>
         <h2>What this page is demonstrating</h2>
-        <p>Labels show where information would come from. The current content is fictional. Buttons marked as concept actions explain what a connected product could do without pretending the action already exists.</p>
+        <p>The current people, finances, messages, health records and business metrics are fictional. The page shows how a real product could organize approved information without pretending the accounts or backend are already connected.</p>
       </section>
     </main>
 
@@ -261,12 +351,14 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="/assets/brief/brief-config.js?v=20260803-3" defer></script>
-  <script src="/assets/brief/brief-presets.js?v=20260803-3" defer></script>
-  <script src="/assets/brief/brief-data.js?v=20260803-3" defer></script>
-  <script src="/assets/brief/brief-memory.js?v=20260803-3" defer></script>
-  <script src="/assets/brief/brief-connections.js?v=20260803-3" defer></script>
-  <script src="/assets/daily-song.js?v=20260803-3" defer></script>
-  <script src="/assets/brief/brief-core.js?v=20260803-3" defer></script>
+  <script src="/assets/brief/brief-config.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-presets.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-data.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-memory.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-connections.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-scenarios.js?v=20260803-1" defer></script>
+  <script src="/assets/daily-song.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-core.js?v=20260803-4" defer></script>
+  <script src="/assets/brief/brief-scenario-renderer.js?v=20260803-1" defer></script>
 </body>
 </html>
