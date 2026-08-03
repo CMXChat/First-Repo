@@ -1,34 +1,42 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl" class="sara-gate-pending" data-sara-load-url="/assets/cmx-sara-brief.html?v=20260803-2" data-sara-password-sha256="926b4b8a00cfab44b758450fa6bf188d4bf8541c2fd6b3d9b93d152d43a99f64">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#061d25" />
-  <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <title>התדרוך האישי של שרה</title>
-  <meta name="description" content="תדרוך יומי פרטי ומותאם אישית עבור שרה." />
-  <link rel="canonical" href="https://db.cmxchat.com/brief/" />
-  <meta property="og:title" content="התדרוך האישי של שרה" />
-  <meta property="og:description" content="בריאות, תנועה, החוף, ישראל, טיסות ומוזיקה שנבחרו במיוחד עבור שרה." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CMX Restricted Node" />
-  <meta property="og:url" content="https://db.cmxchat.com/brief/" />
-  <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="התדרוך האישי של שרה" />
-  <meta name="twitter:description" content="בריאות, תנועה, החוף, ישראל, טיסות ומוזיקה שנבחרו במיוחד עבור שרה." />
-  <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
-  <style>html,body{margin:0;min-height:100%;background:#061d25}html.sara-gate-pending body>*{visibility:hidden}</style>
-  <link rel="stylesheet" href="/assets/sara-brief-gate.css?v=20260802-2" />
-  <script src="/assets/sara-brief-gate.js?v=20260803-2" defer></script>
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#071218" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="description" content="A concept framework for a personalized daily briefing product." />
+  <title>Personal Briefing Concept</title>
+  <link rel="stylesheet" href="/assets/brief-concept.css?v=20260803-1" />
 </head>
 <body>
-  <noscript>העמוד הפרטי הזה דורש JavaScript ואישור גישה.</noscript>
+  <main class="shell">
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow" id="conceptLabel">PERSONAL BRIEFING CONCEPT</p>
+          <h1 id="conceptTitle">One place for the day ahead</h1>
+          <p class="hero-copy" id="conceptDescription"></p>
+        </div>
+        <div class="controls" aria-label="Concept controls">
+          <button id="viewToggle" type="button" aria-pressed="false">Show shared space</button>
+          <button id="themeToggle" type="button" aria-pressed="false">Ocean light mode</button>
+        </div>
+      </div>
+      <div class="status-grid" id="statusGrid"></div>
+      <p class="mode-note" id="modeNote">Private-profile preview: personal context stays separate unless the person chooses to share it.</p>
+    </header>
+
+    <nav class="nav" id="briefNav" aria-label="Briefing sections"></nav>
+    <div id="briefSections"></div>
+
+    <footer>
+      <span>CMX personalized briefing concept</span>
+      <span id="conceptUpdated">Concept framework · ready for customization</span>
+    </footer>
+  </main>
+  <script src="/assets/brief-concept-data.js?v=20260803-1" defer></script>
+  <script src="/assets/brief-concept.js?v=20260803-1" defer></script>
 </body>
 </html>
