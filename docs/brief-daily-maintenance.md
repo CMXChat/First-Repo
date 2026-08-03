@@ -66,6 +66,7 @@ Do not edit permanent files during a normal daily refresh. They include:
 - `brief-virgo-pair.js`
 - `brief-terminal.js`
 - `brief-terminal.css`
+- `brief-terminal-bridge.js`
 - `brief-config.js`
 - `brief-device.js`
 - `brief-device.css`
@@ -81,7 +82,13 @@ The terminal at the bottom of `/brief` is a permanent navigation and product-dem
 
 - It must adapt to Personal, Relationship, Business, and Trainer views.
 - Each view must have its own prompt, summary, quick commands, and module commands.
-- Global commands must preserve `help`, `summary`, `status`, `modules`, `private`, `shared`, `top`, `about`, `privacy`, `clear`, and briefing-view switching.
+- Global commands must preserve `help`, `summary`, `status`, `modules`, `private`, `shared`, `top`, `about`, `privacy`, `clear`, `backend`, `learn`, `teams`, `security`, and briefing-view switching.
+- The primary switching syntax is `brief personal|relationship|business|trainer`. Compatible `briefing`, `briefing type`, `view`, and `switch` forms may remain available.
+- Every actual briefing-type change must return the user to the beginning, whether it came from the top menu, scenario cards, dock, terminal, or final switcher.
+- Terminal help must state concisely that the current shell is limited to demonstration navigation, a protected backend layer is reserved, and future users may enter structured information or upload files through the terminal or dashboard.
+- Learning copy may describe daily lessons, spaced repetition, quizzes, corrections, workout progression, and accountability using approved history.
+- Team copy may describe role-based member and manager views for projects, procedures, handoffs, operations, and finance monitoring.
+- Security copy must describe the planned architecture honestly, including containerized FastAPI on Linux, Cloudflare Access and Tunnel, protected secrets, least-privilege permissions, audit logs, rate limits, encrypted transport, backups, and approval-gated actions.
 - Commands must navigate existing modules or change existing interface state. They must not pretend to execute backend, financial, legal, medical, account, or device actions.
 - Nothing typed into the static terminal may be transmitted or stored remotely.
 - The terminal must remain usable through tappable shortcuts on mobile, keyboard input on desktop, light mode, dark mode, reduced motion, and screen readers.
@@ -140,5 +147,6 @@ The loader must keep data ahead of dependent renderers and continue after option
 9. Virgo-pair defaults
 10. profile-space, help, horoscope, accountability, market, and light-theme experience renderer
 11. scenario-aware terminal renderer
+12. terminal/backend bridge and universal return-to-top controller
 
 Keep this order intact.
