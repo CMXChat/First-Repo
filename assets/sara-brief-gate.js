@@ -4,7 +4,7 @@
   const root = document.documentElement;
   const PASSWORD_SHA256 = String(root.dataset.saraPasswordSha256 || '').toLowerCase();
   const SOURCE_URL = root.dataset.saraLoadUrl || '/assets/cmx-sara-brief.html';
-  const PREVIEW_URL = 'https://p.scdn.co/mp3-preview/0f980d0fac59f77123d0272b78bce97f1374d9e9';
+  const PREVIEW_URL = 'https://p.scdn.co/mp3-preview/0f980d0fac59f77123d0272b78bce97f1374d9e9?cid=3928bbd17a50482ab7ddaa4b6da39864';
 
   const audio = document.createElement('audio');
   audio.id = 'saraDailyAudio';
@@ -98,6 +98,7 @@
     document.body.className = parsed.body.className;
     document.body.innerHTML = parsed.body.innerHTML;
     root.classList.remove('sara-gate-pending');
+    document.querySelector('link[href*="sara-brief-gate.css"]')?.remove();
 
     for (const source of scripts) {
       const separator = source.includes('?') ? '&' : '?';
