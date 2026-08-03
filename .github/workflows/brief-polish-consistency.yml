@@ -1,0 +1,60 @@
+name: Brief Polish Consistency Fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-polish-consistency.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align Team readiness and bump caches
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('assets/brief/brief-polish.js')
+          text = path.read_text()
+          old = "    const readiness = timeline.length ? Math.round((complete / timeline.length) * 100) : 0;"
+          new = "    const readiness = parsePercent(window.BRIEF_TEAM_VIEW?.quickSignals?.[0]) || (timeline.length ? Math.round((complete / timeline.length) * 100) : 0);"
+          if old not in text:
+              raise SystemExit('readiness marker missing')
+          path.write_text(text.replace(old, new, 1))
+
+          path = Path('assets/brief/brief-config.js')
+          text = path.read_text()
+          old = "    polish: '20260803-1'"
+          new = "    polish: '20260803-2'"
+          if old not in text:
+              raise SystemExit('polish version marker missing')
+          path.write_text(text.replace(old, new, 1))
+
+          path = Path('tests/brief-polish-smoke.test.js')
+          text = path.read_text().replace("polish: '20260803-1'", "polish: '20260803-2'", 1)
+          path.write_text(text)
+
+          path = Path('brief/index.html')
+          text = path.read_text()
+          old = 'brief-config.js?v=20260803-11'
+          new = 'brief-config.js?v=20260803-12'
+          if old not in text:
+              raise SystemExit('config cache marker missing')
+          path.write_text(text.replace(old, new, 1))
+          PY
+      - name: Validate and commit
+        run: |
+          node --check assets/brief/brief-polish.js
+          node --check assets/brief/brief-config.js
+          node tests/brief-polish-smoke.test.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brief/brief-polish.js assets/brief/brief-config.js tests/brief-polish-smoke.test.js brief/index.html
+          git commit -m 'Align Team readiness and bump briefing polish cache'
+          git push
