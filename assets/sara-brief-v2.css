@@ -1,0 +1,292 @@
+:root {
+  --night: #02070a;
+  --deep: #07151b;
+  --ocean: #0b4652;
+  --sea: #25828e;
+  --foam: #edf8f6;
+  --mist: #a9c6c4;
+  --line: rgba(237, 248, 246, .11);
+  --panel: rgba(5, 12, 16, .94);
+  --panel-soft: rgba(255, 255, 255, .038);
+  --shadow: 0 26px 80px rgba(0, 0, 0, .48);
+}
+
+html,
+body {
+  background: #02070a;
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% 3%, rgba(37, 130, 142, .12), transparent 26%),
+    radial-gradient(circle at 86% 9%, rgba(234, 217, 182, .055), transparent 21%),
+    linear-gradient(180deg, #02070a 0%, #061117 42%, #02070a 100%);
+}
+
+.sara-hero {
+  border-bottom: 1px solid rgba(237, 248, 246, .12);
+  background:
+    linear-gradient(180deg, rgba(1, 5, 8, .18), rgba(1, 5, 8, .88)),
+    radial-gradient(circle at 76% 16%, rgba(37, 130, 142, .2), transparent 25%),
+    linear-gradient(135deg, #071c24, #0a3039 52%, #02070a);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .58);
+}
+
+.sara-nav {
+  background: linear-gradient(180deg, rgba(2, 7, 10, .99), rgba(2, 7, 10, .93));
+}
+
+.brief-card,
+.weather-card,
+.exercise-card,
+.step-card,
+.project-card,
+.beach-card,
+.news-card,
+.music-card,
+.flight-card {
+  border-color: rgba(237, 248, 246, .11);
+  background: rgba(5, 12, 16, .94);
+  box-shadow: 0 18px 56px rgba(0, 0, 0, .3);
+}
+
+.feature-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.music-section {
+  position: relative;
+}
+
+.music-list {
+  display: grid;
+  gap: 14px;
+}
+
+.music-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(86px, 120px) 1fr auto;
+  gap: 20px;
+  align-items: center;
+  min-height: 150px;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  transition: transform .22s ease, border-color .22s ease, background .22s ease;
+}
+
+.music-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(128, 215, 222, .38);
+}
+
+.music-card.is-featured {
+  background:
+    radial-gradient(circle at 90% 10%, rgba(37, 130, 142, .18), transparent 30%),
+    linear-gradient(135deg, rgba(10, 38, 47, .98), rgba(5, 12, 16, .97));
+}
+
+.music-card.is-playing {
+  border-color: rgba(128, 215, 222, .7);
+  box-shadow: 0 0 0 1px rgba(128, 215, 222, .18), 0 20px 70px rgba(0, 0, 0, .42);
+}
+
+.music-number {
+  color: rgba(237, 248, 246, .42);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.music-copy p {
+  margin-bottom: 0;
+  color: var(--mist);
+}
+
+.music-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.music-actions button,
+.music-actions a {
+  min-height: 38px;
+  padding: 7px 12px;
+  color: var(--foam);
+  border: 1px solid rgba(237, 248, 246, .18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .035);
+  text-decoration: none;
+  font: inherit;
+  font-size: 13px;
+}
+
+.music-actions button:hover,
+.music-actions a:hover {
+  border-color: rgba(128, 215, 222, .65);
+  background: rgba(128, 215, 222, .08);
+}
+
+.music-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(128, 215, 222, .2);
+}
+
+.music-card.is-playing .music-pulse {
+  background: #80d7de;
+  box-shadow: 0 0 0 0 rgba(128, 215, 222, .45);
+  animation: saraPulse 1.7s infinite;
+}
+
+@keyframes saraPulse {
+  0% { box-shadow: 0 0 0 0 rgba(128, 215, 222, .4); }
+  70% { box-shadow: 0 0 0 13px rgba(128, 215, 222, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(128, 215, 222, 0); }
+}
+
+.flight-card {
+  padding: clamp(24px, 5vw, 42px);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(37, 130, 142, .13), transparent 27%),
+    linear-gradient(145deg, rgba(6, 18, 24, .98), rgba(4, 9, 13, .98));
+}
+
+.flight-route {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  color: var(--mist);
+  font-size: clamp(18px, 3vw, 25px);
+}
+
+.flight-route strong {
+  color: #80d7de;
+  font-size: 28px;
+  transform: rotate(180deg);
+}
+
+.flight-summary {
+  max-width: 900px;
+  color: var(--mist);
+}
+
+.fare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.fare-card {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .035);
+}
+
+.fare-card span,
+.fare-card strong {
+  display: block;
+}
+
+.fare-card span {
+  color: #80d7de;
+  font-size: 13px;
+}
+
+.fare-card strong {
+  margin: 7px 0;
+  color: #fff;
+  font-size: clamp(28px, 5vw, 42px);
+  line-height: 1;
+}
+
+.fare-card p {
+  margin-bottom: 0;
+  color: var(--mist);
+  font-size: 13px;
+}
+
+.flight-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.flight-columns > div {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.flight-columns h4 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: 17px;
+}
+
+.flight-columns ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-right: 20px;
+  color: var(--mist);
+}
+
+.news-card:first-child {
+  border-color: rgba(240, 168, 157, .25);
+  background: linear-gradient(135deg, rgba(43, 17, 18, .35), rgba(5, 12, 16, .96));
+}
+
+.project-card {
+  min-height: 210px;
+}
+
+@media (max-width: 780px) {
+  .music-card {
+    grid-template-columns: 1fr auto;
+  }
+
+  .music-number {
+    grid-column: 1 / -1;
+    text-align: right;
+  }
+
+  .fare-grid,
+  .flight-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .music-card {
+    grid-template-columns: 1fr;
+  }
+
+  .music-pulse {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .music-card,
+  .music-card.is-playing .music-pulse {
+    transition: none;
+    animation: none;
+  }
+}
