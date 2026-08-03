@@ -1,0 +1,83 @@
+name: Brief Final Cache and Metric Consistency
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-final-cache-consistency.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Align Team labels and cache versions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('assets/brief/brief-polish.js')
+          text = path.read_text()
+          replacements = {
+            "kpiCard('Readiness',": "kpiCard('Phase completion',",
+            "ring(readiness, 'Project readiness',": "ring(readiness, 'Phase completion',"
+          }
+          for old, new in replacements.items():
+            if old not in text:
+              raise SystemExit(f'missing polish marker: {old}')
+            text = text.replace(old, new, 1)
+          path.write_text(text)
+
+          path = Path('assets/brief/brief-config.js')
+          text = path.read_text()
+          old = "    polish: '20260803-1'"
+          new = "    polish: '20260803-2'"
+          if old not in text:
+            raise SystemExit('missing polish cache marker')
+          path.write_text(text.replace(old, new, 1))
+
+          path = Path('brief/index.html')
+          text = path.read_text()
+          for old, new in [
+            ('brief-config.js?v=20260803-11', 'brief-config.js?v=20260803-12'),
+            ('brief-team-data.js?v=20260803-1', 'brief-team-data.js?v=20260803-2')
+          ]:
+            if old not in text:
+              raise SystemExit(f'missing HTML cache marker: {old}')
+            text = text.replace(old, new, 1)
+          path.write_text(text)
+
+          path = Path('tests/brief-polish-smoke.test.js')
+          text = path.read_text().replace("polish: '20260803-1'", "polish: '20260803-2'", 1)
+          text = text.replace("assert.match(polish, /LIVE TEAM OPERATING BOARD/);", "assert.match(polish, /LIVE TEAM OPERATING BOARD/);\nassert.match(polish, /Phase completion/);")
+          path.write_text(text)
+
+          path = Path('tests/brief-workspace-team-smoke.test.js')
+          text = path.read_text().replace('brief-config\\.js\\?v=20260803-11', 'brief-config\\.js\\?v=20260803-12', 1)
+          text = text.replace("assert.match(index, /brief-team-data\\.js/);", "assert.match(index, /brief-team-data\\.js\\?v=20260803-2/);")
+          path.write_text(text)
+          PY
+      - name: Validate final branch changes
+        run: |
+          node --check assets/brief/brief-config.js
+          node --check assets/brief/brief-polish.js
+          node tests/brief-device-smoke.test.js
+          node tests/brief-terminal-smoke.test.js
+          node tests/brief-entry-watch-smoke.test.js
+          node tests/brief-stability-smoke.test.js
+          node tests/brief-workspace-team-smoke.test.js
+          node tests/brief-polish-smoke.test.js
+      - name: Commit final consistency update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brief/brief-polish.js assets/brief/brief-config.js brief/index.html tests/brief-polish-smoke.test.js tests/brief-workspace-team-smoke.test.js
+          git commit -m 'Align Team phase metric and bump briefing caches'
+          git push
