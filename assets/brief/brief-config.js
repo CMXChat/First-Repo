@@ -23,7 +23,7 @@ window.BRIEF_CONFIG = {
     upgrade: '20260803-5',
     live: '20260803-4',
     daily: '20260803-3',
-    experience: '20260803-2'
+    experience: '20260803-3'
   };
 
   const music = document.getElementById('musicOnEntry');
@@ -66,7 +66,9 @@ window.BRIEF_CONFIG = {
           loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
             loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
               loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
-                loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`);
+                loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
+                  loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`);
+                });
               });
             });
           });
