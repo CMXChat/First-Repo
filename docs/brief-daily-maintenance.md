@@ -4,7 +4,7 @@
 
 The briefing has two layers:
 
-1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, help modal, private/shared controls, light mode, mobile containment, music controls, accountability logic, device compatibility, scenario-aware terminal, and source labels.
+1. **Permanent product experience**: layout, interactions, privacy model, scenario architecture, renderers, themes, memory explanations, users and spaces, help modal, private/shared controls, visible radio-card entry, light mode, mobile containment, music controls, accountability logic, device compatibility, scenario-aware terminal, Relationship watch renderer, and source labels.
 2. **Daily content**: current public Brooklyn information, weather, changing news, daily horoscope reflections, entertainment and market context, rotating music, and clearly fictional demonstration records.
 
 Daily updates must never redesign the permanent layer.
@@ -17,7 +17,7 @@ Before any daily update, read:
 - `docs/brief-daily-maintenance.md`
 - `docs/brief-device-compatibility.md`
 
-## The only daily-edit files
+## The only `/brief` daily-edit files
 
 ### `assets/brief/brief-live-data.js`
 Use for verified or clearly labeled public information:
@@ -49,6 +49,15 @@ Use for safe rotations and fictional demonstrations:
 
 Keep the object schema stable. Edit values, not renderer logic.
 
+## Shared daily media dependency
+
+`assets/daily-video.js` is published by the existing `/news` daily workflow. `/brief` must read that same verified YouTube item for the Relationship view’s **Today’s Watch** card.
+
+- Do not create a second competing daily writer for this file.
+- A new `/news` video selection must automatically update both `/news` and the Relationship briefing.
+- The player must remain unloaded until a person taps Play.
+- If no valid YouTube item is available, omit the card without breaking the Relationship briefing.
+
 ## Permanent files
 
 Do not edit permanent files during a normal daily refresh. They include:
@@ -67,14 +76,30 @@ Do not edit permanent files during a normal daily refresh. They include:
 - `brief-terminal.js`
 - `brief-terminal.css`
 - `brief-terminal-bridge.js`
+- `brief-entry-radio.js`
+- `brief-entry-radio.css`
+- `brief-relationship-watch.js`
+- `brief-relationship-watch.css`
 - `brief-config.js`
 - `brief-device.js`
 - `brief-device.css`
 - `tests/brief-device-smoke.test.js`
 - `tests/brief-terminal-smoke.test.js`
+- `tests/brief-entry-watch-smoke.test.js`
 - `.github/workflows/brief-device-smoke.yml`
 
 A permanent file may change only for an intentional product feature or verified bug fix.
+
+## Entry contract
+
+The pre-entry briefing choice uses four visible radio cards.
+
+- Personal, Relationship, Business, and Trainer choices must all remain readable without opening a menu.
+- Native radio behavior must allow only one choice at a time.
+- One tap selects and opens the briefing. A separate visible Open button is not required.
+- The hidden native select and Enter button remain only as compatibility bridges for the established slow-device queue and fallback unlock.
+- The gate must never return to a native phone popup, modal selector, or custom dropdown.
+- Music and narration remain unchecked by default.
 
 ## Terminal contract
 
@@ -97,22 +122,24 @@ The terminal at the bottom of `/brief` is a permanent navigation and product-dem
 ## Daily update sequence
 
 1. Read all required documentation.
-2. Fetch the latest two daily-edit files from `main`.
-3. Research current public information from reputable sources.
-4. Update the exact timestamp and source URLs.
-5. Refresh all daily horoscope sign summaries and keep the entertainment disclaimer.
-6. Refresh entertainment news for the Relationship view and market news for the Business view.
-7. Rotate music so one artist or song is not repeated excessively.
-8. Keep all private-looking records labeled fictional or demo.
-9. Preserve the blue/pink relationship example as customizable labels, not fixed gender rules.
-10. Validate JavaScript syntax.
-11. Confirm `noindex` remains present.
-12. Confirm dark mode remains the default and the white light mode remains optional.
-13. Confirm entry music and narration remain unchecked by default.
-14. Confirm Personal, Relationship, Business, and Trainer views can be opened from the top switcher, scenario cards, terminal, and final switcher, and switching returns to the beginning.
-15. Confirm the help button, private/shared control, trainer yes/no tracker, horoscope selectors, charts, Spotify players, and terminal remain interactive.
-16. Run `node tests/brief-device-smoke.test.js` and `node tests/brief-terminal-smoke.test.js` after any permanent briefing change.
-17. Publish only after validation.
+2. Fetch the latest two `/brief` daily-edit files from `main`.
+3. Read the shared `assets/daily-video.js` item without rewriting it.
+4. Research current public information from reputable sources.
+5. Update the exact timestamp and source URLs.
+6. Refresh all daily horoscope sign summaries and keep the entertainment disclaimer.
+7. Refresh entertainment news for the Relationship view and market news for the Business view.
+8. Rotate music so one artist or song is not repeated excessively.
+9. Keep all private-looking records labeled fictional or demo.
+10. Preserve the blue/pink relationship example as customizable labels, not fixed gender rules.
+11. Validate JavaScript syntax.
+12. Confirm `noindex` remains present.
+13. Confirm dark mode remains the default and the white light mode remains optional.
+14. Confirm entry music and narration remain unchecked by default.
+15. Confirm the four visible radio cards open their briefing in one tap without a popup or second button.
+16. Confirm Personal, Relationship, Business, and Trainer views can be opened from the top switcher, scenario cards, terminal, and final switcher, and switching returns to the beginning.
+17. Confirm the help button, private/shared control, trainer yes/no tracker, horoscope selectors, charts, Spotify players, terminal, and Relationship watch remain interactive.
+18. Run `node tests/brief-device-smoke.test.js`, `node tests/brief-terminal-smoke.test.js`, and `node tests/brief-entry-watch-smoke.test.js` after any permanent briefing change.
+19. Publish only after validation.
 
 ## Non-negotiable rules
 
@@ -127,26 +154,30 @@ The terminal at the bottom of `/brief` is a permanent navigation and product-dem
 - Never remove or weaken the genuine white light theme.
 - Never add autoplay assumptions. Browsers and providers may require a direct user action.
 - Never edit permanent files merely to refresh content.
-- Never allow multiple scripts to reset or independently own the entry selector.
+- Never allow multiple scripts to reset or independently own the entry selection.
+- Never replace the visible radio cards with a popup, modal, dropdown, or phone-native picker.
 - Never remove the queued-open fallback or mobile entry regression test.
 - Never turn the static terminal into a fake backend console or imply that typed commands perform real protected actions.
-- Never remove the terminal smoke test when changing terminal behavior.
+- Never remove the terminal or entry/watch smoke tests when changing their behavior.
+- Never create a second `/brief` daily writer for `assets/daily-video.js`.
 
 ## File loading order
 
 The loader must keep data ahead of dependent renderers and continue after optional script failures:
 
-1. synchronous entry controller in `brief-config.js`
-2. device compatibility CSS and helper
-3. evergreen configuration and scenario data
-4. upgrade behavior
-5. live public data and live renderer
-6. live-weather protection
-7. daily rotating content and daily renderer
-8. experience guard
-9. Virgo-pair defaults
-10. profile-space, help, horoscope, accountability, market, and light-theme experience renderer
-11. scenario-aware terminal renderer
-12. terminal/backend bridge and universal return-to-top controller
+1. synchronous compatibility entry controller in `brief-config.js`
+2. visible radio-card entry bridge and device compatibility helper
+3. shared `assets/daily-video.js` media data
+4. evergreen configuration and scenario data
+5. upgrade behavior
+6. live public data and live renderer
+7. live-weather protection
+8. daily rotating content and daily renderer
+9. experience guard
+10. Virgo-pair defaults
+11. profile-space, help, horoscope, accountability, market, and light-theme experience renderer
+12. scenario-aware terminal renderer
+13. Relationship watch renderer
+14. terminal/backend bridge and universal return-to-top controller
 
 Keep this order intact.
