@@ -19,10 +19,14 @@
     partners: 'Business',
     trainer: 'Trainer'
   };
+  const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';
+  const TERMINAL_SUMMARY = 'demo now · backend reserved';
 
   let initialized = false;
   let lastPreset = '';
   let pendingSwitchMessage = '';
+  let lateUiTimer = 0;
+  let lateUiAttempts = 0;
 
   function preset() {
     return window.BRIEF_APP?.getPreset?.() || 'individual';
@@ -125,10 +129,10 @@
 
   function augmentTerminal() {
     const intro = $('.brief-terminal-intro');
-    if (intro) intro.textContent = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';
+    if (intro && intro.textContent !== TERMINAL_INTRO) intro.textContent = TERMINAL_INTRO;
 
     const summary = $('.brief-terminal-panel summary small');
-    if (summary) summary.textContent = 'demo now · backend reserved';
+    if (summary && summary.textContent !== TERMINAL_SUMMARY) summary.textContent = TERMINAL_SUMMARY;
 
     const output = $('#briefTerminalOutput');
     if (output && !output.querySelector('[data-terminal-bridge-note]')) {
@@ -188,14 +192,19 @@
     });
   }
 
-  function watchForLateUi() {
-    if (!('MutationObserver' in window) || !document.body) return;
-    const observer = new MutationObserver(() => {
+  function scheduleLateUi() {
+    window.clearTimeout(lateUiTimer);
+    lateUiAttempts = 0;
+
+    const check = () => {
+      lateUiAttempts += 1;
       augmentTerminal();
       augmentHelpModal();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    window.setTimeout(() => observer.disconnect(), 15000);
+      const complete = Boolean($('#briefTerminalOutput') && $('.brief-help-dialog'));
+      if (!complete && lateUiAttempts < 20) lateUiTimer = window.setTimeout(check, 300);
+    };
+
+    check();
   }
 
   function init() {
@@ -203,9 +212,7 @@
     initialized = true;
     installCommandBridge();
     installUniversalReturnToTop();
-    watchForLateUi();
-    augmentTerminal();
-    augmentHelpModal();
+    scheduleLateUi();
 
     $('#explainButton')?.addEventListener('click', () => window.setTimeout(augmentHelpModal, 60), true);
   }
