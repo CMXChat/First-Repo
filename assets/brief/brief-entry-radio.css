@@ -56,12 +56,7 @@
   background: rgba(66, 145, 220, .08);
 }
 
-.brief-entry-radio-card:has(input:focus-visible) {
-  outline: 2px solid #74bdff;
-  outline-offset: 2px;
-}
-
-.brief-entry-radio-card:has(input:checked) {
+.brief-entry-radio-card.is-selected {
   border-color: rgba(102, 183, 255, .78);
   background:
     linear-gradient(135deg, rgba(61, 146, 224, .16), rgba(255, 255, 255, .025));
@@ -92,6 +87,11 @@
   background: rgba(0, 0, 0, .28);
 }
 
+.brief-entry-radio-card input:focus-visible + .brief-entry-radio-marker {
+  outline: 2px solid #74bdff;
+  outline-offset: 3px;
+}
+
 .brief-entry-radio-marker::after {
   content: '';
   width: 8px;
@@ -103,11 +103,11 @@
   transition: opacity .14s ease, transform .14s ease;
 }
 
-.brief-entry-radio-card:has(input:checked) .brief-entry-radio-marker {
+.brief-entry-radio-card.is-selected .brief-entry-radio-marker {
   border-color: #8dccff;
 }
 
-.brief-entry-radio-card:has(input:checked) .brief-entry-radio-marker::after {
+.brief-entry-radio-card.is-selected .brief-entry-radio-marker::after {
   opacity: 1;
   transform: scale(1);
 }
@@ -148,7 +148,7 @@ html[data-theme='light'] .brief-entry-radio-card {
 }
 
 html[data-theme='light'] .brief-entry-radio-card:hover,
-html[data-theme='light'] .brief-entry-radio-card:has(input:checked) {
+html[data-theme='light'] .brief-entry-radio-card.is-selected {
   border-color: #66a4d8;
   background: #edf7ff;
 }
