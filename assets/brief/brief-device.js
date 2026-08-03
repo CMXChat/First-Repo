@@ -53,6 +53,7 @@
   }
 
   function watchDynamicContent() {
+    if (!('MutationObserver' in window)) return;
     const observer = new MutationObserver(mutations => {
       let shouldRefresh = false;
       for (const mutation of mutations) {
