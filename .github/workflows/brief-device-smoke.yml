@@ -1,4 +1,4 @@
-name: Brief Device and Terminal Smoke Tests
+name: Brief Device, Terminal and Media Smoke Tests
 
 on:
   push:
@@ -6,15 +6,19 @@ on:
     paths:
       - 'brief/**'
       - 'assets/brief/**'
+      - 'assets/daily-video.js'
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-terminal-smoke.test.js'
+      - 'tests/brief-entry-watch-smoke.test.js'
       - '.github/workflows/brief-device-smoke.yml'
   pull_request:
     paths:
       - 'brief/**'
       - 'assets/brief/**'
+      - 'assets/daily-video.js'
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-terminal-smoke.test.js'
+      - 'tests/brief-entry-watch-smoke.test.js'
       - '.github/workflows/brief-device-smoke.yml'
 
 permissions:
@@ -38,3 +42,6 @@ jobs:
 
       - name: Run briefing terminal smoke test
         run: node tests/brief-terminal-smoke.test.js
+
+      - name: Run entry and relationship watch smoke test
+        run: node tests/brief-entry-watch-smoke.test.js
