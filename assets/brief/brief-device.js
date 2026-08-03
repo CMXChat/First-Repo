@@ -4,11 +4,30 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   let dynamicRefreshQueued = false;
+  let viewportFrame = 0;
 
   function updateViewportUnit() {
-    const viewport = window.visualViewport;
-    const height = viewport?.height || window.innerHeight || document.documentElement.clientHeight;
-    document.documentElement.style.setProperty('--brief-device-height', `${Math.max(320, height)}px`);
+    window.cancelAnimationFrame(viewportFrame);
+    viewportFrame = window.requestAnimationFrame(() => {
+      const viewport = window.visualViewport;
+      const height = viewport?.height || window.innerHeight || document.documentElement.clientHeight;
+      const width = viewport?.width || window.innerWidth || document.documentElement.clientWidth;
+      const offsetTop = viewport?.offsetTop || 0;
+      const offsetLeft = viewport?.offsetLeft || 0;
+      const layoutHeight = window.innerHeight || document.documentElement.clientHeight || height;
+      const keyboardInset = Math.max(0, layoutHeight - height - offsetTop);
+      const root = document.documentElement.style;
+      root.setProperty('--brief-device-height', `${Math.max(320, height)}px`);
+      root.setProperty('--brief-device-width', `${Math.max(280, width)}px`);
+      root.setProperty('--brief-viewport-offset-top', `${Math.max(0, offsetTop)}px`);
+      root.setProperty('--brief-viewport-offset-left', `${Math.max(0, offsetLeft)}px`);
+      root.setProperty('--brief-keyboard-inset', `${keyboardInset}px`);
+      document.documentElement.classList.toggle('brief-keyboard-visible', keyboardInset > 120);
+    });
+  }
+
+  function scheduleViewportRecovery() {
+    [0, 80, 220, 520].forEach(delay => window.setTimeout(updateViewportUnit, delay));
   }
 
   function forceDocumentTop() {
@@ -56,6 +75,10 @@
 
     if (!('IntersectionObserver' in window)) {
       document.documentElement.classList.add('no-intersection-observer');
+    }
+
+    if (!window.visualViewport) {
+      document.documentElement.classList.add('no-visual-viewport');
     }
   }
 
@@ -113,10 +136,13 @@
 
     window.addEventListener('brief:device-fallback-open', () => {
       forceDocumentTop();
+      scheduleViewportRecovery();
       window.setTimeout(forceDocumentTop, 80);
     });
 
-    window.addEventListener('pageshow', () => {
+    window.addEventListener('pageshow', event => {
+      scheduleViewportRecovery();
+      if (event.persisted) prepareFrames();
       if (document.body.classList.contains('is-locked')) forceDocumentTop();
     });
   }
@@ -151,8 +177,11 @@
     watchDynamicContent();
 
     window.addEventListener('resize', updateViewportUnit, { passive: true });
-    window.addEventListener('orientationchange', () => window.setTimeout(updateViewportUnit, 120), { passive: true });
+    window.addEventListener('orientationchange', scheduleViewportRecovery, { passive: true });
     window.visualViewport?.addEventListener('resize', updateViewportUnit, { passive: true });
+    window.visualViewport?.addEventListener('scroll', updateViewportUnit, { passive: true });
+    window.addEventListener('focusin', scheduleViewportRecovery, { passive: true });
+    window.addEventListener('focusout', scheduleViewportRecovery, { passive: true });
     window.addEventListener('online', updateConnectionState);
     window.addEventListener('offline', updateConnectionState);
   }
