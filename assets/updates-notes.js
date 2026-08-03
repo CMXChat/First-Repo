@@ -22,6 +22,25 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-02-sara-hebrew-personal-brief',
+    timestamp: '2026-08-02T22:15:00-04:00',
+    title: 'Hebrew personal briefing created for Sara',
+    status: 'complete',
+    body: [
+      'Created the new protected /brief route as a fully right-to-left Hebrew experience personalized around Sara’s interests and daily needs.',
+      'The page includes live New York and Jerusalem clocks, weather summaries, current Israel and Middle East coverage, a Tuesday Brooklyn beach plan, 1980s music after login, Hebrew read-aloud controls, step tracking, strength and gentle yoga exercises, and healthy food ideas.',
+      'The briefing explains the larger personalized briefing product and why Python is being learned, while keeping future calendar, email and finance connections clearly marked as not connected.',
+      'The page uses the password requested for Sara and is registered as a direct-link-only protected briefing.'
+    ],
+    links: [
+      { url: '/brief/', label: 'Open Sara Brief' },
+      { url: '/plans/', label: 'Open Product Plans' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['briefing', 'hebrew', 'sara', 'personalization'],
+    pinned: true
+  },
+  {
     id: '2026-08-02-personal-os-plan-entry',
     timestamp: '2026-08-02T21:00:00-04:00',
     title: 'Personal OS product plan added as a protected plan entry',
