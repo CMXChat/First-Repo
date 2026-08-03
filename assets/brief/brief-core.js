@@ -18,13 +18,18 @@
     songAudio: null,
     narrationActive: false,
     narrationRestoreVolume: null,
-    selectedTrack: 0
+    selectedTrack: -1,
+    initialized: false
   };
 
   function escapeHtml(value) {
     const node = document.createElement('div');
     node.textContent = String(value ?? '');
     return node.innerHTML;
+  }
+
+  function activeData() {
+    return data.scenarios?.[state.preset] || data.scenarios?.individual || data;
   }
 
   function showToast(message) {
@@ -36,24 +41,44 @@
     showToast.timer = setTimeout(() => toast.classList.remove('is-visible'), 3200);
   }
 
+  function setText(selector, value) {
+    const node = $(selector);
+    if (node && value !== undefined && value !== null) node.textContent = value;
+  }
+
+  function updateNextUp(current) {
+    const next = current.nextUp || {};
+    setText('#nextUpTitle', next.title || 'Next useful action');
+    setText('#nextUpTime', next.time || 'Check today’s schedule');
+    const prep = $('#nextUpPrep');
+    if (prep) {
+      prep.innerHTML = (Array.isArray(next.prep) ? next.prep : []).map(item => `<span>${escapeHtml(item)}</span>`).join('');
+    }
+  }
+
   function applyPreset(id) {
     const preset = presets[id] || presets.individual;
     state.preset = preset.id;
     localStorage.setItem(storageKey('preset'), preset.id);
-    $('#greeting').textContent = preset.greeting;
-    $('#heroTitle').textContent = preset.heroTitle;
-    $('#heroSummary').textContent = preset.summary;
+    setText('#greeting', preset.greeting);
+    setText('#heroTitle', preset.heroTitle);
+    setText('#heroSummary', preset.summary);
+    updateNextUp(activeData());
+    $('#profileSelect').value = preset.id;
   }
 
   function renderWeather() {
-    $('#weatherLocation').textContent = data.weather.location;
-    $('#weatherCondition').textContent = data.weather.condition;
-    $('#weatherAdvice').textContent = data.weather.advice;
-    $('#weatherMetrics').innerHTML = data.weather.metrics.map(item => `
+    const weather = activeData().weather;
+    if (!weather) return;
+    setText('#weatherLocation', weather.location);
+    setText('#weatherCondition', weather.condition);
+    setText('#weatherAdvice', weather.advice);
+    setText('#weatherTemp', `${weather.hourly?.[0]?.temp ?? '--'}°`);
+    $('#weatherMetrics').innerHTML = (weather.metrics || []).map(item => `
       <div><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>
     `).join('');
 
-    $('#hourlyWeather').innerHTML = data.weather.hourly.map((item, index) => `
+    $('#hourlyWeather').innerHTML = (weather.hourly || []).map((item, index) => `
       <button class="forecast-item ${index === 0 ? 'is-active' : ''}" type="button" data-weather-index="${index}">
         <span>${escapeHtml(item.time)}</span>
         <i aria-hidden="true"></i>
@@ -62,7 +87,7 @@
       </button>
     `).join('');
 
-    $('#dailyWeather').innerHTML = data.weather.daily.map(item => `
+    $('#dailyWeather').innerHTML = (weather.daily || []).map(item => `
       <button class="forecast-item" type="button" data-day-label="${escapeHtml(item.time)}">
         <span>${escapeHtml(item.time)}</span>
         <i aria-hidden="true"></i>
@@ -73,19 +98,20 @@
 
     $$('[data-weather-index]').forEach(button => {
       button.addEventListener('click', () => {
-        const item = data.weather.hourly[Number(button.dataset.weatherIndex)];
+        const item = weather.hourly[Number(button.dataset.weatherIndex)];
         $$('[data-weather-index]').forEach(card => card.classList.remove('is-active'));
         button.classList.add('is-active');
-        $('#weatherTemp').textContent = `${item.temp}°`;
-        $('#weatherCondition').textContent = item.condition;
-        $('#weatherAdvice').textContent = `${item.rain}% rain chance · ${item.wind} mph wind. Select another hour to compare.`;
+        setText('#weatherTemp', `${item.temp}°`);
+        setText('#weatherCondition', item.condition);
+        setText('#weatherAdvice', `${item.rain}% rain chance · ${item.wind}${typeof item.wind === 'number' ? ' mph' : ''}. Select another hour to compare.`);
       });
     });
   }
 
   function renderPriorities() {
-    const completed = JSON.parse(localStorage.getItem(storageKey('completed')) || '[]');
-    $('#priorityBoard').innerHTML = data.priorities.map(item => `
+    const current = activeData();
+    const completed = JSON.parse(localStorage.getItem(storageKey(`completed:${state.preset}`)) || '[]');
+    $('#priorityBoard').innerHTML = (current.priorities || []).map(item => `
       <article class="priority-card ${completed.includes(item.id) ? 'is-complete' : ''}" data-priority-id="${escapeHtml(item.id)}">
         <div class="priority-rank">${escapeHtml(item.rank)}</div>
         <div class="priority-content">
@@ -102,9 +128,10 @@
       button.addEventListener('click', () => {
         const card = button.closest('.priority-card');
         const id = card.dataset.priorityId;
-        const values = new Set(JSON.parse(localStorage.getItem(storageKey('completed')) || '[]'));
+        const key = storageKey(`completed:${state.preset}`);
+        const values = new Set(JSON.parse(localStorage.getItem(key) || '[]'));
         if (values.has(id)) values.delete(id); else values.add(id);
-        localStorage.setItem(storageKey('completed'), JSON.stringify([...values]));
+        localStorage.setItem(key, JSON.stringify([...values]));
         card.classList.toggle('is-complete');
         showToast(card.classList.contains('is-complete') ? 'Marked complete on this device.' : 'Moved back to active priorities.');
       });
@@ -112,7 +139,7 @@
   }
 
   function renderSchedule() {
-    $('#scheduleTimeline').innerHTML = data.schedule.map(item => `
+    $('#scheduleTimeline').innerHTML = (activeData().schedule || []).map(item => `
       <article class="timeline-item">
         <time>${escapeHtml(item.time)}</time>
         <div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.meta)}</p></div>
@@ -121,7 +148,8 @@
   }
 
   function renderShared() {
-    const items = state.shared ? data.shared.shared : data.shared.private;
+    const sharedData = activeData().shared || { private: [], shared: [] };
+    const items = state.shared ? sharedData.shared : sharedData.private;
     $('#sharedGrid').innerHTML = items.map(item => `
       <article class="shared-card">
         <span>${escapeHtml(item.label)}</span>
@@ -129,9 +157,9 @@
         <p>${escapeHtml(item.note)}</p>
       </article>
     `).join('');
-    $('#viewModeButton').textContent = state.shared ? 'Shared view' : 'Private view';
+    setText('#viewModeButton', state.shared ? 'Shared view' : 'Private view');
     $('#viewModeButton').setAttribute('aria-pressed', String(state.shared));
-    $('#sharedToggleInside').textContent = state.shared ? 'Return to private view' : 'Preview shared view';
+    setText('#sharedToggleInside', state.shared ? 'Return to private view' : 'Preview shared view');
   }
 
   function renderConnections() {
@@ -195,7 +223,7 @@
     if (!id) return;
     const parts = trackParts(item);
     $('#spotifyFeaturedFrame').src = `https://open.spotify.com/embed/track/${encodeURIComponent(id)}?utm_source=generator&theme=0`;
-    $('#spotifyNowLabel').textContent = `${parts.title} · ${parts.artist}`;
+    setText('#spotifyNowLabel', `${parts.title} · ${parts.artist}`);
     state.selectedTrack = index;
     $$('.favorite-track').forEach((card, cardIndex) => card.classList.toggle('is-selected', cardIndex === index));
   }
@@ -220,8 +248,8 @@
     if (!audio) return;
     const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 30;
     const percent = Math.min(100, (audio.currentTime / duration) * 100);
-    $('#musicCurrentTime').textContent = formatTime(audio.currentTime);
-    $('#musicDuration').textContent = formatTime(duration);
+    setText('#musicCurrentTime', formatTime(audio.currentTime));
+    setText('#musicDuration', formatTime(duration));
     $('#musicProgressBar').style.width = `${percent}%`;
   }
 
@@ -231,20 +259,20 @@
       if (section) section.hidden = true;
       $('#musicOnEntry').checked = false;
       $('#musicOnEntry').disabled = true;
-      $('#gateSongName').textContent = 'No daily song is configured for this demonstration.';
+      setText('#gateSongName', 'No daily song is configured for this demonstration.');
       $('#audioButton').disabled = true;
       return;
     }
 
     const parts = trackParts(song);
     const displayTitle = song.displayTitle || `${parts.title} · ${parts.artist}`;
-    $('#gateSongName').textContent = `${displayTitle} will begin after you press Enter, subject to browser support.`;
-    $('#musicTitle').textContent = parts.title;
-    $('#musicArtist').textContent = parts.artist;
-    $('#musicReason').textContent = song.text || 'Selected to match the pace and mood of the day.';
-    $('#musicDirectLine').textContent = song.directLine || 'A daily soundtrack can make the briefing feel alive.';
+    setText('#gateSongName', `${displayTitle} will begin after you press Enter, subject to browser support.`);
+    setText('#musicTitle', parts.title);
+    setText('#musicArtist', parts.artist);
+    setText('#musicReason', song.text || 'Selected to match the pace and mood of the day.');
+    setText('#musicDirectLine', song.directLine || 'A daily soundtrack can make the briefing feel alive.');
     $('#musicSpotifyLink').href = spotifyUrl(song) || 'https://open.spotify.com/';
-    $('#musicArtDate').textContent = String(song.selectedFor || data.edition.date || '').replaceAll('-', '.');
+    setText('#musicArtDate', String(song.selectedFor || data.edition.date || '').replaceAll('-', '.'));
 
     const previewUrl = /^https:\/\//.test(String(song.previewUrl || '')) ? String(song.previewUrl) : '';
     if (previewUrl) {
@@ -253,7 +281,7 @@
       audio.volume = 0.3;
       state.songAudio = audio;
       audio.addEventListener('play', () => {
-        $('#musicPreviewNote').textContent = `Playing the authorized preview of ${displayTitle}.`;
+        setText('#musicPreviewNote', `Playing the authorized preview of ${displayTitle}.`);
         updateMusicUi();
       });
       audio.addEventListener('pause', updateMusicUi);
@@ -261,17 +289,17 @@
       audio.addEventListener('timeupdate', updateMusicProgress);
       audio.addEventListener('ended', () => {
         audio.currentTime = 0;
-        $('#musicPreviewNote').textContent = 'Preview complete. Use the Spotify player for provider playback.';
+        setText('#musicPreviewNote', 'Preview complete. Use the Spotify player for provider playback.');
         updateMusicProgress();
         updateMusicUi();
       });
       audio.addEventListener('error', () => {
-        $('#musicPreviewNote').textContent = 'The preview could not load. The Spotify player remains available.';
+        setText('#musicPreviewNote', 'The preview could not load. The Spotify player remains available.');
         updateMusicUi();
       });
     } else {
       $('#musicPreviewButton').disabled = true;
-      $('#musicPreviewNote').textContent = 'No authorized preview is available. Use the Spotify player for playback.';
+      setText('#musicPreviewNote', 'No authorized preview is available. Use the Spotify player for playback.');
     }
 
     const recommendations = Array.isArray(song.recommendations) ? song.recommendations : [];
@@ -314,7 +342,7 @@
     try {
       await audio.play();
     } catch {
-      $('#musicPreviewNote').textContent = 'Your browser blocked automatic playback. Tap the music button to play.';
+      setText('#musicPreviewNote', 'Your browser blocked automatic playback. Tap the music button to play.');
       showToast('Your browser blocked the song. Tap the music control to play it.');
     }
     updateMusicUi();
@@ -345,7 +373,8 @@
       finishNarration();
       return;
     }
-    const words = [$('#greeting').textContent, $('#heroTitle').textContent, $('#heroSummary').textContent, ...data.priorities.map(item => `${item.title}. ${item.detail}`)].join(' ');
+    const current = activeData();
+    const words = [$('#greeting').textContent, $('#heroTitle').textContent, $('#heroSummary').textContent, ...(current.priorities || []).map(item => `${item.title}. ${item.detail}`)].join(' ');
     const utterance = new SpeechSynthesisUtterance(words);
     utterance.rate = 0.96;
     utterance.pitch = 1;
@@ -361,9 +390,34 @@
     window.speechSynthesis.speak(utterance);
   }
 
+  function updateClock() {
+    const current = activeData();
+    const value = new Intl.DateTimeFormat('en-US', {
+      timeZone: current.timezone || data.edition.timezone,
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(new Date());
+    setText('#currentTime', value);
+  }
+
+  function refreshScenarioCore() {
+    applyPreset(state.preset);
+    renderWeather();
+    renderPriorities();
+    renderSchedule();
+    renderShared();
+    updateClock();
+    window.dispatchEvent(new CustomEvent('brief:preset-change', { detail: { preset: state.preset } }));
+  }
+
+  function setPreset(id) {
+    const next = presets[id] ? id : 'individual';
+    state.preset = next;
+    refreshScenarioCore();
+  }
+
   function unlock() {
-    const profile = $('#profileSelect').value;
-    applyPreset(profile);
+    setPreset($('#profileSelect').value);
     document.body.classList.remove('is-locked');
     $('#entryGate').classList.add('is-hidden');
     $('#briefApp').setAttribute('aria-hidden', 'false');
@@ -400,13 +454,8 @@
     });
   }
 
-  function updateClock() {
-    const value = new Intl.DateTimeFormat('en-US', { timeZone: data.edition.timezone, hour: 'numeric', minute: '2-digit' }).format(new Date());
-    $('#currentTime').textContent = value;
-  }
-
   function init() {
-    $('#editionDate').textContent = data.edition.date;
+    setText('#editionDate', data.edition.date);
     applyPreset(state.preset);
     renderWeather();
     renderMusic();
@@ -417,8 +466,17 @@
     setupWeatherTabs();
     setupInteractions();
     updateClock();
+    state.initialized = true;
+    window.BRIEF_APP = {
+      getPreset: () => state.preset,
+      setPreset,
+      getActiveData: activeData,
+      showToast
+    };
+    window.dispatchEvent(new CustomEvent('brief:ready', { detail: { preset: state.preset } }));
     setInterval(updateClock, 30000);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true }); else init();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
 })();
