@@ -1,312 +1,185 @@
 window.CMX_NEWS_BRIEF = {
   meta: {
-    status: "building everywhere edition",
-    date: "Monday, August 3, 2026 in Brooklyn · Monday evening into Tuesday, August 4, 2026 in Waikato",
-    generated: "Updated August 3, 2026 for Jay + Crystal",
-    summary: "A personal edition about missing each other in ordinary moments, turning a private briefing into a real product idea, moving the career plan forward, and keeping today's public information useful instead of noisy.",
+    status: "quiet day edition",
+    date: "Monday, August 3, 2026 in Brooklyn · Tuesday, August 4, 2026 in Waikato",
+    generated: "Updated August 3, 2026 at 4:07 PM Brooklyn time",
+    summary: "A quieter personal edition with music, Crystal-focused style and culture, practical weather, useful news, relationship perspective, and only a small amount of product talk.",
     sectionOrder: [
-      "priority",
-      "opening",
-      "spotify",
-      "activity",
-      "crystal",
-      "relationship",
-      "timeline",
-      "style",
-      "weather",
-      "localNews",
-      "world",
-      "culture",
-      "horoscope",
-      "quote",
-      "questions"
+      "sinceYesterday", "priority", "spotify", "opening", "activity", "crystal", "weather", "style", "culture", "local", "world", "relationship", "timeline", "memory", "progress", "nextSteps", "whatBuilt", "behindBuild", "whyExists", "productVision", "comingSoon", "horoscope", "quote", "questions", "livingPrototype"
     ]
   },
 
+  sinceYesterday: [
+    { audience: "jay", priority: 100, label: "social", status: "QUIET", title: "Today’s contact list is Mom and Dad", text: "Jay reports that he has only spoken with his parents so far today. No friends, no extra calls, and literally no one else." },
+    { audience: "shared", priority: 96, label: "briefing balance", status: "IMPROVED", title: "The page now covers more of life", text: "Music, Crystal’s interests, weather, culture, local ideas, relationship moments, fitness, career, and shared plans now carry more of the page than Jay’s work." },
+    { audience: "shared", priority: 92, label: "relationship", status: "NO ASSUMPTIONS", title: "A quiet start is only a quiet start", text: "There is no need to invent a relationship story from a day that has barely unfolded. The next real conversation can supply the next real update." },
+    { audience: "jay", priority: 88, label: "fitness", status: "OPEN", title: "The movement window is still available", text: "No workout has been reported yet. A short fallback session still counts." },
+    { audience: "shared", priority: 84, label: "today’s focus", status: "NEXT", title: "One useful action, one real connection", text: "The clean target is one career action, one movement block, and one calm moment with Crystal when she is available." }
+  ],
+
   priority: [
     {
-      audience: "shared",
-      priority: 100,
-      label: "today's title",
-      title: "Different Places, Same Team",
-      text: "Crystal went for her run while Jay stayed behind working on the project. When asked what made him appreciate her, his answer was simple: she existed. Five minutes apart was apparently already excessive.",
-      directLines: [
-        { audience: "shared", text: "Shared: she moved, he built, and both were still part of the same day." }
-      ]
+      audience: "shared", priority: 100, label: "today’s title", title: "Quiet Day, Still Connected",
+      text: "The day has been small so far: Jay spoke with his parents and nobody else. That leaves room for a useful reset without turning silence into a crisis or the briefing into a work report.",
+      directLines: [{ audience: "shared", text: "Shared: quiet is allowed. The next good moment does not need a dramatic setup." }]
     },
-    {
-      audience: "shared",
-      priority: 97,
-      label: "what we accomplished",
-      title: "The private page is becoming a product idea",
-      text: "The work now has a clearer purpose. The idea is to create personalized daily briefings that collect the right information, learn approved preferences, and present everything in one calm page for couples, individuals, families, founders, and businesses.",
-      items: [
-        "Improved the daily research process so it happens at night and again before publishing",
-        "Added better personal check-ins so missing details can be filled without invasive questions",
-        "Aligned the daily song, Spotify link, YouTube video, login mood, and page content",
-        "Strengthened the celebrity, crime, culture, weather, and local research rules",
-        "Created a repeatable workflow that can eventually support many personalized briefings"
-      ],
-      whyItMatters: "The idea is moving beyond one custom page. It is becoming a process that could be packaged responsibly for real people and organizations.",
-      watchNext: "Crystal's feedback should help decide what feels useful, beautiful, funny, too much, or genuinely worth opening every morning."
-    },
-    {
-      audience: "jay",
-      priority: 91,
-      label: "today's practical reset",
-      title: "Finish something that moves real life",
-      text: "The project has momentum. Today still needs one visible move outside the project: send the resume, train, or complete another action that improves income and consistency.",
-      items: [
-        "Send the resume before more polishing becomes hiding",
-        "Train or complete the 60 pushups and 60 situps fallback",
-        "Keep the product work focused on one useful improvement",
-        "Protect time with Crystal that is not only about fixing or building"
-      ]
-    }
+    { audience: "crystal", priority: 96, label: "picked for Crystal", title: "Style, art, animals, culture, and a better running window", text: "Today’s page includes pink jewelry with more edge, a black-cherry nail idea, a flower-painting prompt, an owl documentary, Hamilton art, current court stories, and practical weather." },
+    { audience: "jay", priority: 92, label: "one real move", title: "Complete something before the day closes", text: "The strongest options are one resume application, the fallback workout, or both. The briefing is already built enough to stop being the excuse." }
   ],
 
   opening: [
-    {
-      audience: "shared",
-      priority: 95,
-      label: "the quick read",
-      title: "The project got smarter and the relationship stayed human",
-      text: "Jay spent the evening improving how the briefing researches, updates, asks questions, selects media, and explains the product vision. Crystal went for a run, Jay missed her while working, and that ordinary little moment became the cleanest emotional summary of the day."
-    },
-    {
-      audience: "crystal",
-      priority: 90,
-      label: "for Crystal",
-      title: "You are not being handed a technical manual",
-      text: "The simple version is this: Jay is building a private morning experience that remembers what matters, organizes the day, includes music and useful updates, and becomes more personal with permission. Your job is not to understand the machinery. Your taste can help decide whether the experience is actually lovable."
-    }
+    { audience: "jay", priority: 100, label: "the quick read", title: "Two parents, zero side quests", text: "Jay’s social update is unusually simple: he spoke with his mother and father and no one else. There is no hidden social plot to investigate today." },
+    { audience: "shared", priority: 94, label: "the wider page", title: "The interesting parts are not all about the build", text: "The edition moves quickly through music, weather, local ideas, style, art, animals, culture, world news, relationship perspective, memories, fitness, career, and shared next steps. The product explanation stays near the bottom." }
   ],
 
   activity: [
     {
-      audience: "jay",
-      priority: 100,
-      label: "what Jay accomplished",
-      status: "SELF-REPORTED",
-      title: "From custom page to repeatable briefing process",
-      text: "Jay expanded the project from a one-off shared page into a more organized product concept. The process now includes nightly preparation, morning verification, targeted questions, researched weather and culture, synchronized music, and clearer rules for privacy and quality.",
-      items: [
-        "Set up a nightly deep-research pass for every briefing section",
-        "Required a second research and fact-checking pass before the morning publish",
-        "Expanded check-in questions across work, fitness, relationship, music, style, plans, and product feedback",
-        "Made Everywhere the unified Spotify and YouTube selection",
-        "Clarified the broader market: couples, individuals, families, founders, and businesses",
-        "Kept the explanation simple enough for a real person to enjoy"
-      ],
-      whyItMatters: "A product becomes real when the process can reliably create value again tomorrow, not only when one page looks good today."
+      audience: "jay", priority: 100, label: "Jay’s check-in", status: "SELF-REPORTED", title: "A very small social day",
+      text: "Jay says he has only spoken with his parents today and literally no one else.",
+      items: ["No friends or additional calls reported", "No workout reported yet", "Resume outreach remains unfinished", "The briefing received one focused improvement instead of becoming the entire day"]
     },
     {
-      audience: "jay",
-      priority: 86,
-      label: "career and body",
-      title: "The project cannot become the new hiding place",
-      text: "Building is productive, but income and physical consistency still require direct actions. The resume and training remain the two cleanest tests of whether momentum is transferring into the rest of life.",
-      directLines: [
-        { audience: "jay", text: "Jay: one sent application and one completed workout beat another hour reorganizing the perfect future." }
-      ]
+      audience: "jay", priority: 86, label: "practical reset", title: "Use the quiet instead of explaining it",
+      text: "A quiet afternoon is enough space for one application, a short workout, food, water, and a real conversation later.",
+      directLines: [{ audience: "jay", text: "Jay: the day does not need to feel impressive. It needs one completed action." }]
     }
   ],
 
   crystal: [
-    {
-      audience: "crystal",
-      priority: 100,
-      label: "today's small thing",
-      title: "You existed, unfortunately for Jay's concentration",
-      text: "When asked what you did that made him smile or appreciate you, Jay said, 'She existed.' You were on your run while he worked, and he already missed you. This is both romantic and a little inconvenient for productivity."
-    },
-    {
-      audience: "crystal",
-      priority: 94,
-      label: "creative director invitation",
-      title: "Help decide what this becomes",
-      text: "Jay wants the product to work for real people, not only impress technical people. Your reactions can shape the parts that matter most: how personal it should feel, what belongs on the page, what should stay private, what is fun, and what would make you return tomorrow.",
-      items: [
-        "A shared memory or little-moment card",
-        "Music that matches the day",
-        "A tiny game, poll, or question",
-        "Style, jewelry, animals, shows, and local culture",
-        "A private progress area for plans and goals"
-      ]
-    },
-    {
-      audience: "crystal",
-      priority: 82,
-      label: "movement note",
-      title: "The run counted and the view counts too",
-      text: "Running while Jay worked gave both of you separate momentum. The best version of the briefing should notice that without turning normal life into surveillance or a performance review."
-    }
+    { audience: "crystal", priority: 100, label: "Crystal’s mix", title: "A page that remembers you like more than relationship updates", text: "Today’s selection includes jewelry, nails, flower art, animals, a possible running window, Hamilton culture, streaming ideas, and current public stories with the legal status kept straight." },
+    { audience: "crystal", priority: 94, label: "no homework", title: "You do not need to review the product", text: "Crystal can simply notice what she enjoys, skips, laughs at, or wants more of. That reaction is more useful than being handed a technical questionnaire." },
+    { audience: "crystal", priority: 88, label: "official classification", title: "Mean and stinky remains legally binding", text: "No further explanation was requested, and the editorial board has wisely declined to challenge the ruling." }
   ],
 
   relationship: [
     {
-      audience: "shared",
-      priority: 100,
-      label: "relationship checkpoint",
-      title: "Ordinary affection is useful evidence",
-      text: "Not every relationship update needs to be a major repair conversation. Missing each other during a normal run and work session is a small sign of attachment that can coexist with harder conversations.",
-      directLines: [
-        { audience: "shared", text: "Shared: protect one ordinary ritual today, even if it is only a call, a show, a photo from the run, or ten calm minutes together." }
-      ]
+      audience: "shared", priority: 100, label: "relationship checkpoint", title: "Silence is not evidence",
+      text: "Jay has not supplied a new Crystal interaction for today. That means the briefing should leave the space open instead of guessing what either person feels.",
+      directLines: [{ audience: "shared", text: "Shared: when you reconnect, start with one real detail from the day and one easy question." }]
     },
-    {
-      audience: "shared",
-      priority: 88,
-      label: "one workable rule",
-      title: "Ask for closeness without demanding proof",
-      text: "Say what you want directly, keep the request small, and let affection be given freely. A simple 'I miss you, come back and tell me about the run' is clearer than turning distance into a test."
-    }
+    { audience: "shared", priority: 92, label: "one small next step", title: "Choose presence over a status report", text: "A simple message such as ‘My day was weirdly quiet. How are you doing?’ creates more closeness than sending a full explanation of why the day felt quiet." },
+    { audience: "shared", priority: 86, label: "appreciation", title: "The relationship still has people choosing it", text: "Jay continues to appreciate that Crystal fights for the relationship. The useful response is to meet that effort with honesty, calmness, and consistent behavior." }
   ],
 
   timeline: [
+    { audience: "shared", priority: 90, label: "shared direction", title: "The life outside the page still matters most", text: "The bigger picture remains saving, meeting, closing the distance, watching the shared show, creating together, spending ordinary time together, and supporting each other’s goals." }
+  ],
+
+  memory: [
     {
-      audience: "shared",
-      priority: 98,
-      label: "good things we're building",
-      title: "A personalized briefing product",
-      text: "The long-term idea is a secure briefing engine that can organize approved information into a useful daily experience. Different versions could serve couples, individuals, families, founders, teams, and businesses without making everyone read the same generic feed.",
-      items: [
-        "Couples: shared moments, plans, music, weather, rituals, and questions",
-        "Individuals: priorities, habits, finances, work, learning, and accountability",
-        "Families: schedules, reminders, local information, and shared updates",
-        "Businesses: meetings, projects, performance, risks, clients, and important news",
-        "A database that remembers permitted preferences and improves the briefing over time",
-        "An optimized research and publishing process that keeps each edition current"
-      ],
-      whyItMatters: "The value is not more information. The value is selecting, organizing, and explaining the right information for the right person."
-    },
-    {
-      audience: "shared",
-      priority: 86,
-      label: "next small step",
-      title: "Design the first real product version together",
-      text: "The next useful move is choosing the three features that make this feel essential instead of merely impressive. Crystal should help rank them because she is experiencing the product, not grading the code."
+      audience: "shared", priority: 100, label: "memory of the day", cardClass: "memory-card", title: "The peaceful sound after a hard morning",
+      text: "One of Jay’s happiest recent moments was hearing Crystal sleeping and breathing peacefully after a stressful start to her day.",
+      directLines: [{ audience: "crystal", text: "Secondary memory, filed without objection: mean and stinky." }]
     }
+  ],
+
+  progress: [
+    { audience: "shared", priority: 100, label: "relationship", status: "QUIET TODAY", title: "Waiting for the next real moment", text: "No new interaction has been added, so the page is keeping the relationship section warm without inventing details." },
+    { audience: "jay", priority: 96, label: "career", status: "NEXT ACTION", title: "The resume needs to leave the building", text: "An office role still fits the direction. One application is the next measurable move." },
+    { audience: "jay", priority: 92, label: "fitness", status: "NEEDS ATTENTION", title: "The fallback workout is available", text: "Four sets of 15 pushups and three sets of 20 situps remain a clear no-gym option." },
+    { audience: "shared", priority: 84, label: "product", status: "MOVING", title: "The briefing is broader and more balanced", text: "The product work is visible, but it no longer dominates the personal experience." }
+  ],
+
+  nextSteps: [
+    {
+      audience: "shared", priority: 100, label: "what’s next", title: "Five things that are small enough to finish",
+      items: ["Send one resume application", "Complete the fallback workout or train", "Eat, hydrate, and leave the screen for a little while", "Ask Crystal one easy question when she is available", "Choose a shared show or small activity without turning it into another project"]
+    }
+  ],
+
+  whatJayBuilt: [
+    {
+      audience: "jay", priority: 100, label: "plain-language build update", title: "The briefing became less about the briefing",
+      text: "Jay adjusted the page so his work explains one part of the day without swallowing the rest of it. The experience now gives more space to Crystal, music, useful information, shared life, culture, fitness, and ordinary moments.",
+      whyItMatters: "A personalized briefing only works when the person opening it feels included, not briefed at.",
+      watchNext: "Tomorrow’s edition should use Crystal’s actual reaction to decide which sections deserve more or less space."
+    }
+  ],
+
+  behindBuild: [
+    { audience: "shared", priority: 100, label: "behind the build", title: "The design problem was balance", text: "The page already had useful features. The harder question was deciding what deserved attention. The answer was simple: less explanation of Jay’s work, more of the life the product is meant to support." }
   ],
 
   style: [
     {
-      audience: "crystal",
-      priority: 84,
-      label: "style and product idea",
-      title: "A briefing should feel like opening your own magazine",
-      text: "A future couples edition could let each person choose a visual mood, favorite sections, music style, and small daily surprise. Gold, pink, black, flowers, jewelry sketches, scenic photos, and softer personal cards could make Crystal's version feel genuinely hers."
-    }
+      audience: "crystal", priority: 100, label: "jewelry direction", title: "Pink jewelry, with sharper edges",
+      text: "A current jewelry direction pairs pink stones or rose gold with geometric, architectural, or slightly spiked forms. The palette stays feminine while the shape carries more attitude.",
+      whyItMatters: "It fits Crystal’s gold, pink, and black palette without becoming overly sweet.",
+      watchNext: "Sketch one piece using a pale pink stone, a strong black negative space, and one clean gold structure.",
+      sources: [{ label: "British Vogue on pink jewelry", url: "https://www.vogue.co.uk/article/pink-jewellery-trend", published: "March 18, 2026" }]
+    },
+    {
+      audience: "crystal", priority: 96, label: "nail idea", title: "Black cherry with one fine gold detail",
+      text: "Summer-goth nails are leaning into black, black cherry, velvet finishes, and small metallic details. A short black-cherry manicure with one thin gold line would keep the look polished and dramatic.",
+      sources: [
+        { label: "Who What Wear summer nail trends", url: "https://www.whowhatwear.com/beauty/nails/europe-summer-nail-trends-2026", published: "August 1, 2026" },
+        { label: "Allure 2026 nail trends", url: "https://www.allure.com/story/nail-trends-2026", published: "December 17, 2025" }
+      ]
+    },
+    { audience: "crystal", priority: 92, label: "art prompt", title: "Flowers after midnight", text: "Paint pale blush flowers emerging from a nearly black background, then use thin gold lines only where light would catch the petals. Keep one area unfinished so the piece feels like it is still appearing." }
   ],
 
   spotify: [
-    {
-      audience: "shared",
-      priority: 100,
-      label: "today's uplifting song",
-      status: "DAILY PICK",
-      title: "Everywhere · Fleetwood Mac",
-      text: "Bright, affectionate, and full of movement. It fits Crystal running, Jay building, and both still wanting to be wherever the other person is.",
-      directLines: [
-        { audience: "shared", text: "Shared: different places, same team, and five minutes apart is apparently already too long." }
-      ],
-      url: "https://open.spotify.com/track/1prZ0pr6XoRCxcrC3MCL0M",
-      linkLabel: "play Everywhere on Spotify",
-      published: "today's shared pick"
-    }
+    { audience: "shared", priority: 100, label: "today’s uplifting song", status: "DAILY PICK", title: "Everywhere · Fleetwood Mac", text: "Bright, affectionate, and easy to return to. It keeps the page warm on a day that has otherwise been unusually quiet.", url: "https://open.spotify.com/track/1prZ0pr6XoRCxcrC3MCL0M", linkLabel: "play Everywhere on Spotify" }
   ],
 
   weather: [
-    {
-      audience: "jay",
-      priority: 75,
-      label: "Brooklyn",
-      title: "Warm, humid, with a passing-shower chance",
-      text: "Brooklyn should reach the low 80s. Use the early morning for movement or errands, carry water, and check radar before a longer trip.",
-      url: "https://www.weather.gov/okx/",
-      linkLabel: "check the New York forecast"
-    },
-    {
-      audience: "crystal",
-      priority: 75,
-      label: "Waikato",
-      title: "Cold tonight, better running window Tuesday",
-      text: "Hamilton cools toward 3-5°C overnight, then Tuesday should recover near 14-15°C. Late morning through mid-afternoon looks like the better outdoor window.",
-      url: "https://www.metservice.com/towns-cities/locations/hamilton",
-      linkLabel: "check the Hamilton forecast"
-    }
+    { audience: "jay", priority: 100, label: "Brooklyn · Monday afternoon", status: "FORECAST", title: "Warm with a small shower risk", text: "Brooklyn is in the low-to-mid 80s range with partial sun and a chance of passing showers. The practical move is water, lighter clothing, and a radar check before a longer walk.", url: "https://www.weather.gov/okx/", linkLabel: "check the latest Brooklyn forecast" },
+    { audience: "crystal", priority: 99, label: "Hamilton · Tuesday", status: "FORECAST", title: "Cool, partly cloudy, and workable for a run", text: "Hamilton is forecast around 13-15°C with a cold morning, light winds, and a low rain chance. Late morning through mid-afternoon should be the more comfortable outdoor window.", url: "https://www.weatherwatch.co.nz/forecasts/hamilton", linkLabel: "check the latest Hamilton forecast" }
   ],
 
   localNews: [
     {
-      audience: "jay",
-      priority: 70,
-      label: "Brooklyn this week",
-      title: "Reading Rhythms comes to the Brooklyn Army Terminal",
-      text: "A waterfront reading party is scheduled for Thursday, August 6, from 4:00 to 8:00 PM, with communal reading and guided conversation. It is a low-pressure option for leaving the apartment without entering a nightclub-based side quest.",
-      url: "https://edc.nyc/events",
-      linkLabel: "see Brooklyn Army Terminal events"
+      audience: "jay", priority: 100, label: "Brooklyn outdoors", status: "OFFICIAL EVENT", title: "Family camping is coming to Marine Park",
+      text: "NYC Parks lists an overnight family-camping event at the Salt Marsh Nature Center in Brooklyn for August 15. The free program uses a lottery, with registration scheduled to open August 6.",
+      whyItMatters: "It is an unusual way to experience Brooklyn without needing a major trip or expensive plan.",
+      watchNext: "Check the official listing when the lottery opens because the group size is limited.",
+      sources: [{ label: "NYC Parks family camping", url: "https://www2.nycgovparks.org/events/p42", published: "August 2026 event listing" }]
     },
     {
-      audience: "crystal",
-      priority: 70,
-      label: "Waikato local",
-      title: "Community creativity is getting a proper spotlight",
-      text: "Waikato District is highlighting groups using art and creativity to strengthen local connection, which is a better reminder than another algorithm telling artists their work is a hobby.",
-      url: "https://www.waikatodistrict.govt.nz/news/article",
-      linkLabel: "see Waikato District stories"
+      audience: "crystal", priority: 98, label: "Hamilton art", status: "FREE EXHIBITION", title: "Chaos and Calm is still open",
+      text: "The Winter Collection: Chaos and Calm is showing at Welcome Swallow Gift Shop and Gallery in Hamilton through August 21. Entry is free, and the exhibition brings together original work around two moods that already sound like they have met Crystal.",
+      whyItMatters: "It is local, creative, low-pressure, and directly relevant to someone who paints and designs.",
+      watchNext: "Save one color pairing, composition, or material idea for a future painting or jewelry sketch.",
+      sources: [{ label: "WaikatoNZ event listing", url: "https://www.waikatonz.com/all-events/the-winter-collection-chaos-and-calm/", published: "June 19 to August 21, 2026" }]
     }
   ],
 
   world: [
     {
-      audience: "shared",
-      priority: 72,
-      label: "New Zealand national debate",
-      title: "English has formally become an official language",
-      text: "New Zealand passed a law giving English official status alongside te reo Māori and New Zealand Sign Language. The practical effect may be limited, but the debate about national identity and the place of te reo Māori is significant.",
-      url: "https://www.theguardian.com/world/2026/aug/03/new-zealand-english-an-official-language-bill",
-      linkLabel: "read the report"
+      audience: "shared", priority: 100, label: "Middle East and markets", status: "DEVELOPING", title: "Talk of U.S.-Iran negotiations is easing oil fears, but the facts remain disputed",
+      text: "President Trump said talks were beginning over the conflict and navigation through the Strait of Hormuz. Iran disputed the timing and described separate discussions with Oman. Oil prices fell and global markets rose, but the diplomatic picture is not settled.",
+      whyItMatters: "The Strait affects global energy supply, inflation, travel costs, and market confidence. A real de-escalation would matter far beyond the region.",
+      watchNext: "Look for confirmation from both sides, changes in shipping access, and whether lower oil prices hold.",
+      sources: [
+        { label: "Associated Press", url: "https://apnews.com/article/3b92568b6f2eec283eb51d0327ee682a", published: "August 3, 2026" },
+        { label: "Reuters market report", url: "https://www.reuters.com/business/wall-st-futures-edge-up-mideast-deal-hopes-healthcare-focus-2026-08-03/", published: "August 3, 2026" }
+      ]
+    },
+    {
+      audience: "shared", priority: 88, label: "space watch", status: "EXPECTED AUGUST 5", title: "A spent Falcon 9 stage is expected to hit the Moon",
+      text: "Researchers expect a discarded upper stage to impact near Einstein Crater at about 06:35 UTC on August 5. Scientists are treating the event as a rare chance to observe an artificial lunar impact and study the dust plume.",
+      whyItMatters: "It is both a useful experiment and a reminder that space debris does not stop being debris when it leaves Earth orbit.",
+      watchNext: "Professional and amateur observatories may report whether the flash or plume was detected.",
+      sources: [{ label: "Observational planning paper", url: "https://arxiv.org/abs/2607.14625", published: "July 16, 2026" }]
     }
   ],
 
   culture: [
-    {
-      audience: "shared",
-      priority: 90,
-      label: "culture desk preview",
-      title: "Court procedure, August streaming, New Zealand language politics, and the story behind Everywhere",
-      text: "The full culture section separates allegations from legal findings, gives you actual streaming choices, includes a current New Zealand debate, and explains why today's song sounds as bright as it does."
-    }
+    { audience: "shared", priority: 100, label: "culture desk", title: "Today’s deeper culture stories load from the verified daily culture file", text: "The section includes current court procedure, official streaming options, a New York animal documentary, and a New Zealand language debate." }
   ],
 
   horoscope: [
-    {
-      audience: "jay",
-      priority: 65,
-      label: "Virgo for fun",
-      title: "Stop optimizing the doorway",
-      text: "Today favors sending, starting, and finishing. The system can improve after the real-world action exists. Entertainment only, but annoyingly relevant."
-    },
-    {
-      audience: "crystal",
-      priority: 65,
-      label: "Virgo for fun",
-      title: "Your opinion is part of the design",
-      text: "Notice what feels good before explaining why. Your first reaction may be more useful than a ten-point critique. Entertainment only, creative-director authority remains unofficial."
-    }
+    { audience: "jay", priority: 65, label: "Virgo for fun", title: "The quiet day still requires a decision", text: "Pick one action and complete it before reorganizing the plan again. Entertainment only, but irritatingly specific." },
+    { audience: "crystal", priority: 65, label: "Virgo for fun", title: "Your taste does not need a committee", text: "The first thing that catches your eye may be the correct answer. Entertainment only, creative-director powers remain active." }
   ],
 
   quote: {
     kicker: "one line to keep",
-    text: "The best personalized product does not know everything about you. It knows what you permitted, remembers what matters, and leaves the rest alone.",
-    source: "Written for today's edition",
-    reflection: "Usefulness and privacy have to grow together or the product idea loses the point."
+    text: "A quiet day does not need a dramatic explanation. It needs one honest action.",
+    source: "Written for today’s edition",
+    reflection: "Small completed actions are allowed to carry the day."
   },
 
-  questions: [
-    "Crystal: which three features would make you genuinely want to open this every morning?",
-    "Jay: what real-world action will prove today was not only another building day?",
-    "Both: what should a couples briefing remember, and what should it never store?"
-  ]
+  questions: ["What should tomorrow include more of: music, culture, style, local ideas, relationship, or practical plans?"]
 };
