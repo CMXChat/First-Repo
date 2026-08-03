@@ -27,9 +27,10 @@ window.BRIEF_CONFIG = {
     daily: '20260803-3',
     experience: '20260803-4',
     terminal: '20260803-2',
-    watch: '20260803-2',
+    watch: '20260803-3',
     team: '20260803-1',
-    workspace: '20260803-1'
+    workspace: '20260803-1',
+    polish: '20260803-1'
   };
 
   const labels = {
@@ -216,6 +217,7 @@ window.BRIEF_CONFIG = {
   loadStyle('briefTerminalStyle', `/assets/brief/brief-terminal.css?v=${build.terminal}`);
   loadStyle('briefRelationshipWatchStyle', `/assets/brief/brief-relationship-watch.css?v=${build.watch}`);
   loadStyle('briefWorkspaceStyle', `/assets/brief/brief-workspace.css?v=${build.workspace}`);
+  loadStyle('briefPolishStyle', `/assets/brief/brief-polish.css?v=${build.polish}`);
 
   loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);
   loadScript('briefEntryRadioScript', `/assets/brief/brief-entry-radio.js?v=${build.entry}`);
@@ -233,7 +235,9 @@ window.BRIEF_CONFIG = {
                       loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`, () => {
                         loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`, () => {
                           loadScript('briefTeamRendererScript', `/assets/brief/brief-team-renderer.js?v=${build.team}`, () => {
-                            loadScript('briefWorkspaceScript', `/assets/brief/brief-workspace.js?v=${build.workspace}`);
+                            loadScript('briefWorkspaceScript', `/assets/brief/brief-workspace.js?v=${build.workspace}`, () => {
+                              loadScript('briefPolishScript', `/assets/brief/brief-polish.js?v=${build.polish}`);
+                            });
                           });
                         });
                       });
