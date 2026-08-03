@@ -1,0 +1,49 @@
+name: Diagnose Transformed Briefing Syntax
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-workspace-syntax-diagnose.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replay migration and capture syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from textwrap import dedent
+          workflow = Path('.github/workflows/brief-workspace-integrate.yml').read_text()
+          start = workflow.index("          python - <<'PY'\n") + len("          python - <<'PY'\n")
+          end = workflow.index("\n          PY", start)
+          script = dedent(workflow[start:end])
+          exec(compile(script, '<integration>', 'exec'), {})
+          PY
+          set +e
+          : > /tmp/syntax.log
+          for file in \
+            assets/brief/brief-config.js \
+            assets/brief/brief-team-data.js \
+            assets/brief/brief-team-renderer.js \
+            assets/brief/brief-workspace.js \
+            assets/brief/brief-terminal.js \
+            assets/brief/brief-terminal-bridge.js \
+            assets/brief/brief-daily-content.js; do
+            echo "=== $file ===" >> /tmp/syntax.log
+            node --check "$file" >> /tmp/syntax.log 2>&1
+            echo "status=$?" >> /tmp/syntax.log
+          done
+          git reset --hard HEAD
+          cp /tmp/syntax.log .brief-workspace-syntax-diagnosis
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .brief-workspace-syntax-diagnosis
+          git commit -m 'Record transformed briefing syntax diagnosis'
+          git push
