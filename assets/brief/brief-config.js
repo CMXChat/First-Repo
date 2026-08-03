@@ -21,20 +21,23 @@ window.BRIEF_CONFIG = {
 
   const build = {
     device: '20260803-2',
-    entry: '20260803-4',
+    entry: '20260803-5',
     upgrade: '20260803-5',
     live: '20260803-5',
     daily: '20260803-3',
     experience: '20260803-4',
-    terminal: '20260803-1',
-    watch: '20260803-2'
+    terminal: '20260803-2',
+    watch: '20260803-2',
+    team: '20260803-1',
+    workspace: '20260803-1'
   };
 
   const labels = {
     individual: 'Personal',
     couple: 'Relationship',
     partners: 'Business',
-    trainer: 'Trainer + student'
+    trainer: 'Trainer + student',
+    team: 'Team + project'
   };
 
   function forceTop() {
@@ -78,7 +81,7 @@ window.BRIEF_CONFIG = {
 
     const copy = document.querySelector('.gate-copy');
     if (copy) {
-      copy.textContent = 'Choose the briefing you want to explore. The same private platform can organize one person, a relationship, business partners, or a trainer and student while keeping profiles and shared spaces separate.';
+      copy.textContent = 'Choose the briefing you want to explore. The same private platform can organize one person, a relationship, business partners, a trainer and student, or a role-based team while keeping profiles and shared spaces separate.';
     }
 
     let selectedValue = '';
@@ -96,7 +99,7 @@ window.BRIEF_CONFIG = {
       enter.textContent = enabled ? 'Open this briefing' : 'Choose a briefing first';
       note.textContent = enabled
         ? `${labels[choice]} briefing selected. Choose any entry preferences, then press Open this briefing.`
-        : 'Choose one version before continuing. You can switch between all four inside.';
+        : 'Choose one version before continuing. You can switch between all five inside.';
     };
 
     const acceptSelection = () => {
@@ -114,7 +117,7 @@ window.BRIEF_CONFIG = {
       if (!choice) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        note.textContent = 'Choose Personal, Relationship, Business, or Trainer + student first.';
+        note.textContent = 'Choose Personal, Relationship, Business, Trainer + student, or Team + project first.';
         document.querySelector('input[name="briefEntryType"]')?.focus();
         return;
       }
@@ -212,6 +215,7 @@ window.BRIEF_CONFIG = {
   loadStyle('briefExperienceStyle', `/assets/brief/brief-experience.css?v=${build.experience}`);
   loadStyle('briefTerminalStyle', `/assets/brief/brief-terminal.css?v=${build.terminal}`);
   loadStyle('briefRelationshipWatchStyle', `/assets/brief/brief-relationship-watch.css?v=${build.watch}`);
+  loadStyle('briefWorkspaceStyle', `/assets/brief/brief-workspace.css?v=${build.workspace}`);
 
   loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);
   loadScript('briefEntryRadioScript', `/assets/brief/brief-entry-radio.js?v=${build.entry}`);
@@ -227,7 +231,11 @@ window.BRIEF_CONFIG = {
                   loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
                     loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {
                       loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`, () => {
-                        loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`);
+                        loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`, () => {
+                          loadScript('briefTeamRendererScript', `/assets/brief/brief-team-renderer.js?v=${build.team}`, () => {
+                            loadScript('briefWorkspaceScript', `/assets/brief/brief-workspace.js?v=${build.workspace}`);
+                          });
+                        });
                       });
                     });
                   });
