@@ -51,6 +51,11 @@
   transition: border-color .16s ease, background .16s ease, transform .16s ease;
 }
 
+.brief-entry-radio-card.is-team {
+  grid-column: 1 / -1;
+  min-height: 84px;
+}
+
 .brief-entry-radio-card:hover {
   border-color: rgba(102, 183, 255, .52);
   background: rgba(66, 145, 220, .08);
@@ -168,7 +173,9 @@ html[data-theme='light'] .brief-entry-radio-marker {
     grid-template-columns: 1fr;
   }
 
-  .brief-entry-radio-card {
+  .brief-entry-radio-card,
+  .brief-entry-radio-card.is-team {
+    grid-column: auto;
     min-height: 82px;
     padding: 13px;
   }
