@@ -4,182 +4,395 @@
 
 The live Jay + Crystal shared briefing belongs at `/news/`.
 
-The old `/crystal/` route should only redirect to `/news/` and must never become a separate competing version.
+The `/crystal/` route is redirect-only. It must point to `/news/` and must never become a second competing briefing.
 
 ## Purpose
 
-The Jay + Crystal `/news` briefing is a private, interactive shared daily page for Jay and Crystal. It combines personal updates, relationship repair, uplifting music, creative ideas, career progress, fitness accountability, useful current information, and a concise explanation of whatever Jay is building.
+The page is a private daily experience built for Jay and Crystal and a working prototype for a future personalized briefing product.
 
-This blueprint must remain reusable even if the live `/news/` route is later rebuilt or deleted.
+It can combine:
 
-## Preserved Layout
+- Personal updates
+- Relationship moments
+- Jay's progress
+- Crystal-focused ideas
+- Music
+- Weather
+- Local and world news
+- Celebrity, crime, and culture
+- Beauty, style, jewelry, art, animals, running, and fitness
+- Career direction
+- Shared plans and memories
+- Product-development updates
+
+The page should feel personal, intelligent, useful, visually polished, and easy to finish on a phone.
+
+## Preserved Design
 
 The protected layout copy is stored at:
 
 `templates/jay-crystal-news-layout.html`
 
-Treat the live visual shell and its preserved template as protected design assets.
+Preserve the existing:
 
-## Identity
+- Dark premium background
+- Light blue for Jay
+- Pink for Crystal
+- White for shared content
+- Card system
+- Typography
+- Spacing and layout rhythm
+- Navigation
+- Terminal-inspired details
+- Responsive behavior
 
-The format should feel:
+The page should feel improved, not replaced. New sections should use the current classes and visual language.
 
-- Intimate without becoming invasive
-- Honest without becoming a courtroom
-- Playful without becoming childish
-- Emotional without becoming exhausting
-- Interactive without becoming cluttered
-- Short enough that Crystal genuinely wants to finish it
-- Visually polished and clearly different from a generic dashboard
+## Runtime Architecture
 
-The page belongs to both Jay and Crystal. It should feel like a shared place, not a surveillance report or a report written about one person for the other.
+The live route uses:
 
-## Visual Rules
+- `news/index.html` for the protected entry page
+- `assets/cmx-news.html` for the stable visual shell
+- `assets/news-loader.js` for cache-safe daily asset loading
+- `assets/news-gate.js` for the current access gate and password-triggered music attempt
+- `assets/news-data.js` for the main daily edition
+- `assets/daily-song.js` for the daily song and supporting songs
+- `assets/daily-weather.js` for daily weather
+- `assets/daily-culture.js` for daily culture stories
+- `assets/daily-video.js` for the daily video
+- `assets/news.js` for the core renderer
+- `assets/news-media.js` for music and video controls
+- `assets/news-upgrades.js` for permanent Phase 1 sections
+- `assets/news-upgrades.css` for the new section styles
 
-- Preserve the existing `/news` layout, colors, typography, spacing, cards, and motion unless Jay explicitly requests a redesign.
-- Keep Jay content light blue, Crystal content pink, and shared content white.
-- Keep the dark premium interface.
-- Update daily data and small interaction copy before touching structure.
-- Avoid oversized paragraphs and excessive cards.
-- Keep mobile reading comfortable.
+Daily publishing should update only the dedicated daily files. It should not rewrite the shell, access gate, loaders, renderers, synchronization scripts, permanent layout, or blueprint.
 
-## Core Sections
+## Phase 1 Sections
 
-1. A strong daily title and one-sentence theme
-2. A short quick read
-3. An uplifting daily song that attempts autoplay after access is granted
-4. A visible top play/pause control synchronized with the media-section control
-5. Jay's honest day update
-6. Crystal's personal corner
-7. A fair relationship checkpoint
-8. What they are building together
-9. Career and money direction when relevant
-10. Fitness accountability for both people
-11. One playful inside joke or private ritual
-12. A short tomorrow plan
-13. Two or three easy questions that shape the next edition
+### Since Yesterday
 
-## Music Pattern
+A compact progress strip near the top. Use it for changes such as product progress, career action, relationship moments, fitness, and today's focus.
 
-- Choose one uplifting, comforting, romantic, or motivating song each day.
-- The song should fit the emotional temperature without turning into a lecture.
-- Start audio from the password-submit interaction so browser autoplay rules are respected.
-- Keep the same audio element alive through the protected page load.
-- Show a top play/pause button near the briefing header.
-- Show a synchronized play/pause control in the music card.
-- Keep Spotify as the external fallback.
-- If a browser blocks sound, clearly offer one-tap playback.
-- Avoid songs that intensify conflict, despair, jealousy, or guilt on difficult days.
+### What Jay Built
 
-## Content Rules
+Explain Jay's work in normal language using four ideas:
 
-- Use only personal details Jay or Crystal knowingly supplied or approved.
-- Do not publish private usernames, screenshots, message contents, or surveillance-style logs.
-- Summarize conversations by relevance, not by transcript.
-- Separate facts from fears, interpretations, and unresolved concerns.
-- Do not shame either person or declare a winner.
-- Do not use self-abusive language as final apology copy.
-- Convert guilt into accountability, repair, and specific next actions.
-- Keep sexual references private, mutual, adult, and tasteful.
-- Preserve exact inside jokes when requested, including `mean and stinky`.
+1. What changed
+2. Why it matters
+3. What it could become
+4. What comes next
+
+Avoid API jargon, backend terminology, technical changelogs, and long feature inventories.
+
+### Behind the Build
+
+Tell the human story behind the product in one or two cards:
+
+- Today's problem
+- What changed
+- Why the change matters
+- What becomes possible next
+
+### Memory of the Day
+
+Use one short warm memory, funny line, quiet moment, inside joke, shared call, or appreciation. Keep it broad enough to remain safe in repository history.
+
+### Why This Exists
+
+Keep a permanent purpose card explaining the emotional and practical reason for the page.
+
+### Product Vision
+
+Keep a permanent concise card explaining that `/news` is a working prototype for personalized couple, family, founder, business, and personal briefings.
+
+### Progress Tracker
+
+Use four areas:
+
+- Product
+- Career
+- Fitness
+- Relationship
+
+Use truthful status labels such as `Moving`, `Needs attention`, `In progress`, `Paused`, `Next action`, and `Small win`. Do not invent percentages.
+
+### What's Next
+
+Keep the next steps short, practical, and finishable.
+
+### Coming Soon
+
+Explain future backend features honestly. Do not show fake buttons or controls that appear functional.
+
+### Living Prototype
+
+Use a small banner near the bottom to reinforce that each daily edition and design improvement is helping shape the larger product.
+
+## Recommended Section Order
+
+1. Hero
+2. Since Yesterday
+3. What Matters Today
+4. Daily Song
+5. Quick Read
+6. Jay's Check-In
+7. What Jay Built
+8. Behind the Build
+9. Crystal's Corner
+10. Weather
+11. Style and Small Joys
+12. Celebrity, Crime, and Culture
+13. Local News
+14. World News
+15. Relationship Checkpoint
+16. Shared Direction
+17. Memory of the Day
+18. Why This Exists
+19. Product Vision
+20. Progress Tracker
+21. What's Next
+22. Coming Soon
+23. Horoscope and Quote when useful
+24. One Daily Question
+25. Living Prototype
+
+The top should remain fast. Deeper explanations belong later or inside expandable details.
+
+## Music Rules
+
+The main daily song should:
+
+- Attempt playback after the password form is submitted
+- Use a valid audio preview when available
+- Match the visible title, Spotify link, and daily video theme
+- Use synchronized top and music-card controls
+- Keep a Spotify fallback link
+- Remain a surprise until the briefing opens
+
+Supporting songs should:
+
+- Include two to four picks
+- Never autoplay
+- Include a short reason
+- Use verified Spotify links
+- Load the embedded player only after a tap
+
+Avoid recent repeats and songs that intensify conflict, jealousy, despair, guilt, or pressure.
+
+## Crystal-Focused Research
+
+Research broadly, then publish selectively.
+
+### Celebrity, Crime, and Culture
+
+Potential areas include major celebrity developments, public-figure court cases, significant crime cases, music, film, television, streaming, internet culture, royal stories, New Zealand and Australian culture, tributes, and one lighter item.
+
+For legal or crime stories, include:
+
+- What happened
+- Exact legal status
+- Why it matters
+- What to watch next
+- Reliable sources
+
+Never present an allegation as a finding. Reject weak gossip, unverified social claims, sensational victim coverage, and recycled stories without a new development.
+
+### Beauty, Style, and Jewelry
+
+Use tasteful practical ideas involving beauty trends, jewelry, gold/pink/black styling, hair, nails, designer references, and small-business inspiration.
+
+### Art and Creative Inspiration
+
+Use flower-painting prompts, artists, palettes, exhibitions, animal art, jewelry references, and small visual trends.
+
+### Animals
+
+Use occasional positive or useful items about dogs, cats, rescues, wildlife, pet care, and funny animal stories. Do not force this section every day.
+
+### Running and Fitness
+
+Use weather-aware outdoor windows, scenic ideas, recovery suggestions, running music, and low-pressure motivation. Do not assume pace, distance, ability, or health status.
+
+## Jay's Progress Story
+
+Jay's work should appear without sounding like a technical project report or a self-promotional pitch.
+
+Explain:
+
+- What he worked on
+- Why it matters
+- How it connects to the shared future
+- What product idea is emerging
+- The next milestone
+- How Crystal may participate later
+
+The product direction is a personalized briefing that combines approved information, preferences, music, research, reminders, memories, goals, and useful daily context.
 
 ## Relationship Voice
 
-The relationship section should include:
+The relationship section should feel fair, calm, and useful.
 
-- What happened
+Include:
+
+- What happened in approved broad terms
 - What each person may need
-- One fair practical rule
-- One appreciation
+- One useful observation
 - One small next step
+- One appreciation
+- One practical rule
 
-Avoid diagnosing, blaming, taking sides, or pressuring Crystal to comfort Jay. Jay's apologies should acknowledge harm and emphasize consistent action.
+Avoid diagnosing, blaming, taking sides, declaring a winner, asking Crystal to reassure Jay, using self-abusive apology language, or repeating private arguments in detail.
 
-## Product Explanation Pattern
+A useful apology pattern is:
 
-When explaining Jay's projects to Crystal:
+> I hurt you. I am deeply sorry. I know words alone are not enough. I want my actions, honesty, and consistency to show that I understand the damage and that I am working to change.
 
-- Lead with the human outcome
-- Avoid a wall of technical terminology
-- Explain what it could do in daily life
-- Show why Crystal's taste and ideas matter
-- Invite one simple piece of feedback
-- Keep the explanation short and interactive
+## Daily Question Rules
 
-Example:
+Ask one useful question at a time.
 
-> Imagine opening one private page every morning where the right music starts, the important things are already organized, and the tools you approved work together to help you plan the day.
+Rotate across:
 
-## Interaction Pattern
+- What changed
+- One positive moment
+- Tomorrow's plan
+- Project progress
+- Resume progress
+- Fitness
+- Crystal's run
+- Style
+- Music
+- Culture
+- Shared activity
+- Product idea
+- Briefing feedback
 
-Use a small number of satisfying interactions, such as:
+Make the question easy to answer. Do not request private names, message contents, screenshots, health details, financial-account details, or full activity logs.
 
-- Play or pause the daily song
-- Pick tomorrow's feature
-- Reveal an inside joke
-- Choose a shared activity
-- Vote on a product idea
-- Mark a resume or workout goal complete
-- Answer one relationship question
+## Expandable Content
 
-The page should never feel like homework.
+Use expandable details for:
 
-## Daily Intake
+- Legal background
+- Full sources
+- Product explanation
+- Longer news context
+- Future roadmap
+- Technical information
+- Additional recommendations
 
-Useful rotating questions include:
+The default view should remain a short headline, one concise paragraph, a clear label, and optional `More context`.
 
-- What changed today?
-- What was one positive moment?
-- What should Crystal understand about Jay's work?
-- What should Jay understand about Crystal's day?
-- Did either person train?
-- What is tomorrow's most important task?
-- What music mood should tomorrow have?
-- What is one thing they appreciate about each other?
+## Privacy Rules
 
-Do not repeatedly ask for information already supplied.
+The repository is public or potentially visible through GitHub history. Treat every committed line as something that could be discovered later.
 
-## Known Personal Briefing Details From Creation Day
+Do not store:
 
-- Jay described the day as Creation Day and a builder's day.
-- Jay worked for hours on the personalized AI briefing product.
-- He learned and refined layouts and post-login music autoplay.
-- He believes the concept could become a real product if services and approved information can be connected responsibly.
-- He wants Crystal to help shape the product without making the briefing long or boring.
-- He sat in a coffee shop for hours working, thinking, talking to people, and charging his phone.
-- He spoke with Logan, Debbie, his mother, and his father.
-- He helped his father with a possible scam concern and trusts Crystal with that context.
-- He wants to show Crystal his updated resume and new ideas.
-- Ovaro appears on the resume as evidence of initiative, ownership, and business experience.
-- He wants a non-labor office role where he can help businesses grow through operations, web, SEO, advertising, strategy, and project support.
-- He did not train and wants help rebuilding motivation and consistency.
-- His next-day goals included sending the resume, training, creating, spending time with Crystal, watching their show, and private couple time.
-- His happiest moment was hearing Crystal breathing and sleeping peacefully after a stressful morning.
-- He wants Crystal to feel loved when she reads the briefing.
-- He appreciates that Crystal fights for the relationship and does not easily let him go.
-- Their inside phrase is `mean and stinky`.
-- Their shared statement is: `We're a power couple. We're gonna make it through this.`
-- Jay's apology should acknowledge cheating and harm without using self-destructive wording, then emphasize honest answers, changed behavior, and consistent actions.
-- Their future picture includes saving, meeting, closing the distance, physical intimacy, love, and building a shared life.
+- Passwords or password hints
+- Private usernames or identifiers
+- Message contents or screenshots
+- Exact financial details
+- Sensitive health details
+- Private sexual details
+- Private account information
+- Detailed family disputes or private arguments
+- Anything that could endanger either person
 
-## Daily Update Architecture
+Use approved summaries. Keep personal context broad enough to remain safe. Private memory, reactions, corrections, and preferences should move to a secure backend before they become detailed or searchable.
 
-Preferred structure:
+## Future Backend Features
 
-- `/news/` as the canonical gated Jay + Crystal route
-- `/crystal/` as redirect only
-- `assets/cmx-news.html` as the live visual shell
-- `assets/news-data.js` as daily content
-- `assets/news.js` as the renderer
-- `assets/news-media.js` as synchronized media controls
-- `assets/news-gate.js` as password and autoplay flow
-- `templates/jay-crystal-news-layout.html` as the preserved layout copy
-- Separate recipient profiles and preferences
-- Daily uplifting media selection
-- Approved connectors only
-- FastAPI backend when authentication, saved answers, automation, or private data becomes real
-- Versioned daily editions and a clear deletion/correction process
+After a secure backend exists, the page may support:
 
-## Replication Principle
+- Reactions
+- Song voting
+- Notes
+- Suggestions
+- Saved memories
+- Search
+- Personalized preferences
+- Shared checklists
+- Daily answers
+- Corrections
+- Product feedback
+- Private profile settings
 
-Preserve the format, emotional intelligence, interaction quality, music behavior, privacy rules, and visual design. Rebuild each day's content around what genuinely happened. The result should feel fresh, personal, useful, and easy to finish.
+Preferred future foundations:
+
+- FastAPI
+- Server-side authentication
+- Secure sessions
+- Database storage
+- User roles
+- Private API endpoints
+- Rate limiting
+- Audit logs
+- Encrypted secrets
+- Cloudflare Access or equivalent protection
+
+The current client-side access gate is a prototype, not long-term private authentication.
+
+## Research Workflow
+
+### Night Research
+
+Each night:
+
+1. Research every possible section
+2. Build a preliminary dossier
+3. Gather sources
+4. Identify missing personal details
+5. Suggest one or two possible check-in questions
+6. Flag weak stories
+7. Prepare music and video candidates
+8. Prepare weather questions
+9. Prepare Jay's progress narrative
+10. Prepare Crystal-focused ideas
+11. Prepare three page-improvement ideas
+
+Recommended path:
+
+`briefing/research/YYYY-MM-DD-preliminary.md`
+
+### Morning Verification and Publishing
+
+At 6:00 AM Brooklyn time:
+
+1. Read the nightly dossier
+2. Re-research the selected stories
+3. Check overnight changes
+4. Reject stale items
+5. Verify legal status
+6. Verify weather
+7. Verify Spotify links and preview URLs
+8. Verify video
+9. Refresh approved personal context
+10. Publish the dedicated daily files
+11. Validate the rendered experience
+
+The nightly dossier is preparation, not automatically correct source material.
+
+## Rebuild Procedure
+
+If the live page is deleted or damaged:
+
+1. Restore `templates/jay-crystal-news-layout.html` as the shell reference
+2. Restore the protected route from `news/index.html`
+3. Confirm `/crystal/` redirects to `/news/`
+4. Restore `assets/cmx-news.html`
+5. Restore the base styles and renderers
+6. Restore `assets/news-upgrades.js` and `assets/news-upgrades.css`
+7. Restore the five daily files
+8. Confirm the daily song appears first in the music section
+9. Test password-triggered playback, both play/pause controls, Spotify fallback, and supporting-song tap behavior
+10. Test mobile widths and expandable cards
+11. Confirm robots remain `noindex, nofollow`
+12. Confirm no secrets or sensitive personal data entered repository history
+
+## Definition of Success
+
+The page should make Crystal feel loved, included, curious, entertained, informed, part of the product story, comfortable giving ideas later, and interested enough to return tomorrow.
+
+Jay's progress should feel visible without becoming self-important. The product concept should feel clear without becoming a pitch deck. The page should remain easy to finish on a phone and visually consistent with the existing `/news` design.
