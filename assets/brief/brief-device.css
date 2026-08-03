@@ -1,0 +1,230 @@
+:root {
+  --brief-device-height: 100vh;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  min-width: 0;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+button,
+select,
+input,
+summary,
+a {
+  touch-action: manipulation;
+}
+
+button,
+select,
+input[type='checkbox'] {
+  font: inherit;
+}
+
+button,
+select,
+[role='button'] {
+  min-height: 44px;
+}
+
+.entry-gate {
+  min-height: var(--brief-device-height);
+  min-height: 100svh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-right: max(16px, env(safe-area-inset-right));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding-left: max(16px, env(safe-area-inset-left));
+}
+
+.gate-orbit,
+.gate-orbit *,
+.entry-gate::before,
+.entry-gate::after {
+  pointer-events: none !important;
+}
+
+.gate-panel {
+  width: min(100%, 680px);
+  max-height: none;
+  overflow: visible;
+}
+
+.profile-field,
+.profile-field select,
+#enterBrief {
+  position: relative;
+  z-index: 4;
+}
+
+.profile-field select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 52px;
+  padding: 12px 44px 12px 14px;
+  font-size: 16px;
+  line-height: 1.25;
+  cursor: pointer;
+  pointer-events: auto !important;
+  -webkit-appearance: menulist;
+  appearance: auto;
+}
+
+#enterBrief[disabled] {
+  cursor: not-allowed;
+  opacity: .58;
+}
+
+#enterBrief.is-preparing {
+  cursor: progress;
+}
+
+.device-connection-note {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 190, 90, .42);
+  border-radius: 12px;
+  background: rgba(255, 190, 90, .1);
+  color: inherit;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+.topbar,
+.top-actions,
+.hero,
+.section-heading,
+.shared-heading,
+.music-control-row,
+.scenario-quick-head {
+  min-width: 0;
+}
+
+.brief-section,
+.scenario-stage,
+.experience-addon,
+.personal-report-layout,
+.business-profile-grid,
+.business-visual-grid,
+.couple-horoscope-grid,
+.profile-space-demo,
+.accountability-layout {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.sheet-wrap,
+.process-map,
+.section-nav,
+.scenario-dock-buttons {
+  -webkit-overflow-scrolling: touch;
+}
+
+iframe {
+  border: 0;
+}
+
+.embed-unavailable iframe {
+  min-height: 80px;
+  opacity: .62;
+}
+
+.is-touch-device .quiet-button,
+.is-touch-device .icon-button,
+.is-touch-device .primary-action,
+.is-touch-device .secondary-action,
+.is-touch-device .text-action,
+.is-touch-device .scenario-choice,
+.is-touch-device .scenario-song,
+.is-touch-device .forecast-item,
+.is-touch-device .complete-button,
+.is-touch-device .footer-view-grid button,
+.is-touch-device .scenario-quick-grid button,
+.is-touch-device .accountability-questions button {
+  min-height: 48px;
+}
+
+@supports (height: 100dvh) {
+  .entry-gate {
+    min-height: 100dvh;
+  }
+}
+
+@media (max-width: 760px) {
+  .entry-gate {
+    align-items: flex-start;
+  }
+
+  .gate-panel {
+    margin: auto 0;
+  }
+
+  .topbar {
+    width: 100%;
+    max-width: 100vw;
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .top-actions {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .brief-help-dialog,
+  .scenario-quick-menu {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    max-height: calc(var(--brief-device-height) - 24px);
+    overflow-y: auto;
+  }
+
+  .scenario-dock {
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: auto;
+    max-width: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  strong,
+  small,
+  span,
+  td,
+  th {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}
