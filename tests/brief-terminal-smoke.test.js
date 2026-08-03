@@ -42,7 +42,7 @@ assert.match(bridge, /Cloudflare Access\/Tunnel/);
 assert.match(bridge, /SWITCH_CONTROLS/);
 assert.match(bridge, /brief:preset-change/);
 assert.match(bridge, /scrollTop/);
-assert.match(bridge, /briefing\s\+type/);
+assert.match(bridge, /briefing type/);
 assert.match(bridge, /briefScopeHelp/);
 assert.match(styles, /html\[data-theme='light'\]/);
 assert.match(styles, /@media \(max-width: 680px\)/);
