@@ -58,8 +58,7 @@
 
 .brief-entry-radio-card.is-selected {
   border-color: rgba(102, 183, 255, .78);
-  background:
-    linear-gradient(135deg, rgba(61, 146, 224, .16), rgba(255, 255, 255, .025));
+  background: linear-gradient(135deg, rgba(61, 146, 224, .16), rgba(255, 255, 255, .025));
   box-shadow: inset 0 0 0 1px rgba(104, 187, 255, .16);
   transform: translateY(-1px);
 }
@@ -130,7 +129,9 @@
 }
 
 .has-entry-radio #enterBrief {
-  display: none !important;
+  display: inline-flex !important;
+  width: 100%;
+  margin-top: 2px;
 }
 
 .brief-entry-radio #gateSelectionNote {
