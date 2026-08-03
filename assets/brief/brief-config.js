@@ -24,7 +24,8 @@ window.BRIEF_CONFIG = {
     upgrade: '20260803-5',
     live: '20260803-4',
     daily: '20260803-3',
-    experience: '20260803-3'
+    experience: '20260803-3',
+    terminal: '20260803-1'
   };
 
   const labels = {
@@ -198,6 +199,7 @@ window.BRIEF_CONFIG = {
   loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);
   loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);
   loadStyle('briefExperienceStyle', `/assets/brief/brief-experience.css?v=${build.experience}`);
+  loadStyle('briefTerminalStyle', `/assets/brief/brief-terminal.css?v=${build.terminal}`);
 
   loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);
   loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
@@ -208,7 +210,9 @@ window.BRIEF_CONFIG = {
             loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
               loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
                 loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
-                  loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`);
+                  loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {
+                    loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`);
+                  });
                 });
               });
             });
