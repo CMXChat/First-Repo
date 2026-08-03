@@ -23,28 +23,8 @@ window.CMX_DAILY_CULTURE = {
       ]
     },
     {
-      audience: "shared",
-      priority: 94,
-      label: "streaming",
-      status: "OFFICIAL RELEASES",
-      title: "Two August options without a fake giant watchlist",
-      text: "Netflix’s official 2026 guide lists The Last House for August 7 and One Hundred Years of Solitude Part 2 for August. One is a contained family sci-fi thriller. The other returns to the Buendía family and Macondo.",
-      detailsLabel: "Pick by mood",
-      details: [
-        "The Last House: a family becomes sealed inside its home and has to survive the threat outside and the pressure inside.",
-        "One Hundred Years of Solitude Part 2: a larger, slower story about family, power, memory, and the transformation of Macondo.",
-        "Choose one shared title. Do not create a streaming backlog that requires project management."
-      ],
-      whyItMatters: "A shared show can become a normal ritual across the distance without needing a heavy relationship conversation.",
-      watchNext: "Check the exact regional availability before planning the watch together.",
-      sources: [
-        { label: "Netflix summer movie guide", url: "https://www.netflix.com/tudum/features/new-summer-movies-on-netflix-2026", published: "2026 release guide" },
-        { label: "Netflix 2026 show guide", url: "https://www.netflix.com/tudum/articles/new-shows-on-netflix", published: "2026 release guide" }
-      ]
-    },
-    {
       audience: "crystal",
-      priority: 90,
+      priority: 92,
       label: "animals and New York",
       status: "LIGHTER PICK",
       title: "Flaco the owl gets the documentary treatment",
@@ -53,7 +33,7 @@ window.CMX_DAILY_CULTURE = {
       details: [
         "Flaco adapted to hunting in the city despite spending his life in captivity.",
         "New Yorkers followed his movements, photographed him, and built a public mythology around his freedom.",
-        "His death also renewed attention on building collisions and safer rodent control."
+        "His death renewed attention on building collisions and safer rodent control."
       ],
       whyItMatters: "It is an animal story, a New York story, and a surprisingly emotional story about freedom and the risks built into city life.",
       watchNext: "Wild Inside premiered July 31. Check local streaming or screening availability.",
