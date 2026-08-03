@@ -50,6 +50,13 @@ jobs:
                   return Path('404.html')
               return Path(route_path.strip('/')) / 'index.html'
 
+          custom_gates = {
+              '/brief/': {
+                  'markers': ('data-sara-load-url=', 'data-sara-password-sha256='),
+                  'assets': ('/assets/sara-brief-gate.css', '/assets/sara-brief-gate.js'),
+              },
+          }
+
           for route in routes:
               path = route.get('path')
               if not isinstance(path, str) or not path.startswith('/'):
@@ -76,10 +83,19 @@ jobs:
                   failures.append(f'{path}: directory route must use Directory-visible visibility')
 
               if route.get('gated'):
-                  if 'data-cmx-gated="true"' not in lower:
-                      failures.append(f'{file_path.as_posix()}: gated route lacks data-cmx-gated=true')
-                  if '/assets/cmx-sensitive-gate.css' not in text or '/assets/cmx-sensitive-gate.js' not in text:
-                      failures.append(f'{file_path.as_posix()}: gated route lacks shared gate assets')
+                  custom_gate = custom_gates.get(path)
+                  if custom_gate:
+                      for marker in custom_gate['markers']:
+                          if marker not in lower:
+                              failures.append(f'{file_path.as_posix()}: custom gate lacks marker {marker!r}')
+                      for asset in custom_gate['assets']:
+                          if asset not in text:
+                              failures.append(f'{file_path.as_posix()}: custom gate lacks asset {asset}')
+                  else:
+                      if 'data-cmx-gated="true"' not in lower:
+                          failures.append(f'{file_path.as_posix()}: gated route lacks data-cmx-gated=true')
+                      if '/assets/cmx-sensitive-gate.css' not in text or '/assets/cmx-sensitive-gate.js' not in text:
+                          failures.append(f'{file_path.as_posix()}: gated route lacks shared gate assets')
                   if 'http-equiv="cache-control"' not in lower or 'no-store' not in lower:
                       failures.append(f'{file_path.as_posix()}: gated route lacks static no-store hint')
                   if 'name="referrer"' not in lower or 'no-referrer' not in lower:
