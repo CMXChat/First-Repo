@@ -16,7 +16,25 @@
   };
   const first = value => Array.isArray(value) && value.length ? value[0] : null;
   const tabs = ['overview', 'us', 'crystal', 'jay', 'plans'];
-  let activeTab = 'overview';
+  const editionKey = String(brief.meta?.date || new Date().toISOString().slice(0, 10))
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-');
+  const storagePrefix = `cmx-news:${editionKey}:workspace`;
+  let activeTab = readStorage('tab', 'overview');
+
+  function readStorage(key, fallback) {
+    try {
+      return window.localStorage.getItem(`${storagePrefix}:${key}`) || fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function writeStorage(key, value) {
+    try {
+      window.localStorage.setItem(`${storagePrefix}:${key}`, value);
+    } catch {}
+  }
 
   function stylesheet() {
     if ($('link[href^="/assets/news-workspace.css"]')) return;
@@ -26,9 +44,22 @@
     document.head.appendChild(link);
   }
 
+  function focusSection(section) {
+    if (!section) return;
+    const hadTabIndex = section.hasAttribute('tabindex');
+    if (!hadTabIndex) section.setAttribute('tabindex', '-1');
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.setTimeout(() => {
+      section.focus({ preventScroll: true });
+      if (!hadTabIndex) section.addEventListener('blur', () => section.removeAttribute('tabindex'), { once: true });
+    }, 420);
+  }
+
   function openSection(id) {
     setDepth('full');
-    window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => focusSection(document.getElementById(id)));
+    });
   }
 
   function actionRows() {
@@ -118,9 +149,18 @@
     const list = make('ol');
     actionData().slice(0, 4).forEach((item, index) => {
       const row = make('li', item.complete ? 'is-complete' : '');
-      row.append(make('span', '', String(index + 1).padStart(2, '0')), make('strong', '', item.text), make('small', '', item.complete ? 'Done here' : 'Still open'));
+      row.append(
+        make('span', '', String(index + 1).padStart(2, '0')),
+        make('strong', '', item.text),
+        make('small', '', item.complete ? 'Done here' : 'Still open')
+      );
       list.appendChild(row);
     });
+    if (!list.children.length) {
+      const row = make('li');
+      row.append(make('span', '', '01'), make('strong', '', 'Choose one useful action'), make('small', '', 'No checklist loaded'));
+      list.appendChild(row);
+    }
     section.append(intro, list);
     return section;
   }
@@ -144,15 +184,21 @@
     const list = make('div', 'news-workspace-actions');
     actionRows().forEach(row => {
       const source = row.querySelector('.news-action-toggle');
-      const button = make('button', row.classList.contains('is-complete') ? 'is-complete' : '');
+      const done = row.classList.contains('is-complete');
+      const button = make('button', done ? 'is-complete' : '');
       button.type = 'button';
-      button.append(make('span', '', row.classList.contains('is-complete') ? '✓' : ''), make('strong', '', source?.dataset.actionText || row.textContent.trim()));
+      button.setAttribute('aria-pressed', String(done));
+      button.append(make('span', '', done ? '✓' : ''), make('strong', '', source?.dataset.actionText || row.textContent.trim()));
       button.addEventListener('click', () => {
         source?.click();
-        window.setTimeout(render, 0);
+        window.setTimeout(() => {
+          render();
+          window.dispatchEvent(new CustomEvent('news:actions-changed'));
+        }, 0);
       });
       list.appendChild(button);
     });
+    if (!list.children.length) list.appendChild(make('p', 'news-workspace-empty', 'No actions are loaded in today’s edition.'));
     return list;
   }
 
@@ -174,35 +220,86 @@
     } else {
       panel.append(heading('~/quick/plans', 'Small enough to complete', 'Checks stay on this device and do not imply backend storage.'), plans());
     }
+    window.dispatchEvent(new CustomEvent('news:workspace-rendered', { detail: { tab: activeTab } }));
   }
 
-  function setTab(id) {
+  function setTab(id, focus = false) {
     activeTab = tabs.includes(id) ? id : 'overview';
+    writeStorage('tab', activeTab);
     $$('[data-workspace-tab]').forEach(button => {
       const active = button.dataset.workspaceTab === activeTab;
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+      if (active && focus) button.focus();
     });
     render();
   }
 
-  function setDepth(depth) {
-    const quick = depth === 'quick';
+  function syncAuxiliaryControls(quick) {
+    const personal = $('#newsPersonalView');
+    if (personal) {
+      personal.hidden = quick;
+      personal.setAttribute('aria-hidden', String(quick));
+      if (!quick) personal.textContent = document.body.classList.contains('news-personal-view') ? 'Show build notes' : 'Hide build notes';
+    }
+  }
+
+  function setDepth(depth, save = true) {
+    const normalized = depth === 'full' ? 'full' : 'quick';
+    const quick = normalized === 'quick';
     document.body.classList.toggle('news-workspace-quick', quick);
+    document.body.dataset.newsDepth = normalized;
     $$('[data-workspace-depth]').forEach(button => {
-      const active = button.dataset.workspaceDepth === depth;
+      const active = button.dataset.workspaceDepth === normalized;
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
+    });
+    syncAuxiliaryControls(quick);
+    if (save) writeStorage('depth', normalized);
+    window.dispatchEvent(new CustomEvent('news:depth-change', { detail: { depth: normalized } }));
+  }
+
+  function bindExternalNavigation() {
+    ['newsJumpNext', 'newsOpenActions'].forEach(id => {
+      const button = document.getElementById(id);
+      if (!button || button.dataset.workspaceBound === 'true') return;
+      button.dataset.workspaceBound = 'true';
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openSection('nextSteps');
+      }, true);
+    });
+  }
+
+  function bindTabKeyboard(tabbar) {
+    tabbar.addEventListener('keydown', event => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const current = Math.max(0, tabs.indexOf(activeTab));
+      const index = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? tabs.length - 1
+          : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      setTab(tabs[index], true);
     });
   }
 
   function build() {
     const section = make('section', 'news-workspace');
     section.id = 'newsWorkspace';
+    section.setAttribute('aria-labelledby', 'newsWorkspaceTitle');
+
     const top = make('div', 'news-workspace-top');
     const copy = make('div');
-    copy.append(make('p', 'path-label', '~/brief/private-workspace'), make('h2', '', 'THE DAY, WITHOUT THE WHOLE SCROLL'), make('p', '', 'Five useful signals, one honest move, and the full edition whenever you need the details.'));
+    const title = make('h2', '', 'THE DAY, WITHOUT THE WHOLE SCROLL');
+    title.id = 'newsWorkspaceTitle';
+    copy.append(make('p', 'path-label', '~/brief/private-workspace'), title, make('p', '', 'Five useful signals, one honest move, and the full edition whenever you need the details.'));
+
     const depth = make('div', 'news-workspace-depth');
+    depth.setAttribute('aria-label', 'Briefing depth');
     [['quick', 'Quick'], ['full', 'Full edition']].forEach(([id, label]) => {
       const button = make('button', '', label);
       button.type = 'button';
@@ -214,19 +311,23 @@
 
     const tabbar = make('div', 'news-workspace-tabs');
     tabbar.setAttribute('role', 'tablist');
+    tabbar.setAttribute('aria-label', 'Quick briefing views');
     const labels = { overview: 'Overview', us: 'Us', crystal: 'Crystal', jay: 'Jay', plans: 'Plans' };
     tabs.forEach(id => {
       const button = make('button', '', labels[id]);
       button.type = 'button';
       button.dataset.workspaceTab = id;
       button.setAttribute('role', 'tab');
+      button.setAttribute('aria-controls', 'newsWorkspacePanel');
       button.addEventListener('click', () => setTab(id));
       tabbar.appendChild(button);
     });
+    bindTabKeyboard(tabbar);
 
     const panel = make('div', 'news-workspace-panel');
     panel.id = 'newsWorkspacePanel';
     panel.setAttribute('role', 'tabpanel');
+    panel.tabIndex = 0;
     section.append(top, tabbar, panel);
 
     const anchor = $('.news-knowledge-strip') || $('.live-location-grid');
@@ -238,14 +339,18 @@
     const oldNext = $('.news-next-up');
     if (oldNext) oldNext.hidden = true;
 
-    setTab('overview');
-    setDepth('full');
+    setTab(activeTab);
+    setDepth(readStorage('depth', 'quick'), false);
+    bindExternalNavigation();
 
     const observer = new MutationObserver(() => {
       if (activeTab === 'overview' || activeTab === 'plans') render();
     });
     const actionHost = $('#nextStepsCards');
-    if (actionHost) observer.observe(actionHost, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    if (actionHost) observer.observe(actionHost, { subtree: true, attributes: true, attributeFilter: ['class', 'aria-pressed'] });
+
+    window.addEventListener('news:refresh', render);
+    window.addEventListener('news:actions-changed', render);
   }
 
   stylesheet();
