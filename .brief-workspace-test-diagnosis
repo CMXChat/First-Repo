@@ -1,0 +1,1013 @@
+=== tests/brief-device-smoke.test.js ===
+Brief device smoke test passed.
+status=0
+=== tests/brief-terminal-smoke.test.js ===
+node:assert:883
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /team-member views/. Input:
+
+'(() => {\n' +
+  "  'use strict';\n" +
+  '\n' +
+  '  const $ = (selector, root = document) => root.querySelector(selector);\n' +
+  "  const SWITCH_CONTROLS = '[data-scenario-choice], [data-footer-preset], [data-quick-preset], [data-dock-preset]';\n" +
+  '  const ALIASES = {\n' +
+  "    personal: 'individual',\n" +
+  "    individual: 'individual',\n" +
+  "    relationship: 'couple',\n" +
+  "    couple: 'couple',\n" +
+  "    business: 'partners',\n" +
+  "    partners: 'partners',\n" +
+  "    trainer: 'trainer',\n" +
+  "    training: 'trainer',\n" +
+  "    team: 'team',\n" +
+  "    project: 'team',\n" +
+  "    crew: 'team'\n" +
+  '  };\n' +
+  '  const LABELS = {\n' +
+  "    individual: 'Personal',\n" +
+  "    couple: 'Relationship',\n" +
+  "    partners: 'Business',\n" +
+  "    trainer: 'Trainer',\n" +
+  "    team: 'Team'\n" +
+  '  };\n' +
+  "  const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';\n" +
+  "  const TERMINAL_SUMMARY = 'demo now · backend reserved';\n" +
+  '\n' +
+  '  let initialized = false;\n' +
+  "  let lastPreset = '';\n" +
+  "  let pendingSwitchMessage = '';\n" +
+  '  let lateUiTimer = 0;\n' +
+  '  let lateUiAttempts = 0;\n' +
+  '\n' +
+  '  function preset() {\n' +
+  "    return window.BRIEF_APP?.getPreset?.() || 'individual';\n" +
+  '  }\n' +
+  '\n' +
+  '  function terminalPrompt() {\n' +
+  "    return $('#briefTerminalPrompt')?.textContent || 'brief@cmx:$';\n" +
+  '  }\n' +
+  '\n' +
+  "  function appendLine(text, type = 'response') {\n" +
+  "    const output = $('#briefTerminalOutput');\n" +
+  '    if (!output || !text) return;\n' +
+  "    const line = document.createElement('div');\n" +
+  '    line.className = `brief-terminal-line is-${type}`;\n' +
+  '    line.textContent = text;\n' +
+  '    output.appendChild(line);\n' +
+  '    while (output.children.length > 12) output.firstElementChild?.remove();\n' +
+  '    output.scrollTop = output.scrollHeight;\n' +
+  '  }\n' +
+  '\n' +
+  '  function appendCommand(command) {\n' +
+  "    appendLine(`${terminalPrompt()} ${command}`, 'command');\n" +
+  '  }\n' +
+  '\n' +
+  '  function scrollTop() {\n' +
+  "    window.scrollTo({ top: 0, behavior: 'smooth' });\n" +
+  '  }\n' +
+  '\n' +
+  '  function switchBriefing(value) {\n' +
+  "    const normalized = String(value || '').replace(/[^a-z]/g, '');\n" +
+  '    const next = ALIASES[normalized];\n' +
+  '    if (!next || !window.BRIEF_APP?.setPreset) {\n' +
+  "      appendLine('usage: brief personal|relationship|business|trainer|team', 'error');\n" +
+  '      return;\n' +
+  '    }\n' +
+  '    pendingSwitchMessage = `${LABELS[next]} briefing opened.`;\n' +
+  '    window.BRIEF_APP.setPreset(next);\n' +
+  '    window.setTimeout(scrollTop, 60);\n' +
+  '  }\n' +
+  '\n' +
+  '  function helpLines() {\n' +
+  '    return [\n' +
+  "      'now: demo navigation only. backend reserved for secure data + file input here or in the dashboard.',\n" +
+  "      'commands: brief personal|relationship|business|trainer|team, top, private, shared, modules, learn, teams, security, backend, privacy, about, clear.'\n" +
+  '    ];\n' +
+  '  }\n' +
+  '\n' +
+  '  function handleBridgeCommand(rawValue) {\n' +
+  "    const original = String(rawValue || '').trim();\n" +
+  '    if (!original) return false;\n' +
+  "    const command = original.toLowerCase().replace(/^\\s*(open|go)\\s+/, '').trim();\n" +
+  '\n' +
+  '    const switchMatch = command.match(/^(?:brief|briefing|briefing\\s+type|view|switch)\\s+(.+)$/);\n' +
+  '    const recognized = [\n' +
+  "      'help', 'commands', 'backend', 'future', 'learn', 'learning', 'teach', 'teaching',\n" +
+  "      'teams', 'team', 'security', 'cloud', 'brief', 'briefing', 'briefing type'\n" +
+  '    ].includes(command) || Boolean(switchMatch);\n' +
+  '\n' +
+  '    if (!recognized) return false;\n' +
+  '\n' +
+  '    appendCommand(original);\n' +
+  '\n' +
+  "    if (command === 'help' || command === 'commands') {\n" +
+  '      helpLines().forEach(line => appendLine(line));\n' +
+  '      return true;\n' +
+  '    }\n' +
+  '\n' +
+  "    if (command === 'brief' || command === 'briefing' || command === 'briefing type') {\n" +
+  "      appendLine('usage: brief personal|relationship|business|trainer|team');\n" +
+  '      return true;\n' +
+  '    }\n' +
+  '\n' +
+  '    if (switchMatch) {\n' +
+  '      switchBriefing(switchMatch[1]);\n' +
+  '      return true;\n' +
+  '    }\n' +
+  '\n' +
+  "    if (command === 'backend' || command === 'future') {\n" +
+  "      appendLine('backend reserved. later: authenticated inputs, file uploads, connectors and approved actions through terminal or dashboard.');\n" +
+  '      return true;\n' +
+  '    }\n' +
+  '\n' +
+  "    if (['learn', 'learning', 'teach', 'teaching'].includes(command)) {\n" +
+  "      appendLine('learning: daily lessons, spaced repetition, quizzes, corrections, workout progression and accountability from approved history.');\n" +
+  '      return true;\n' +
+  '    }\n' +
+  '\n' +
+  "    if (command === 'teams' || command === 'team') {\n" +
+  "      appendLine('teams: role-based member, project and leadership spaces for procedures, handoffs, operations and approved finance monitoring. use brief team to open the demo.');\n" +
+  '      return true;\n' +
+  '    }\n' +
+  '\n' +
+  "    if (command === 'security' || command === 'cloud') {\n" +
+  "      appendLine('planned security: containerized FastAPI on Linux, Cloudflare Access/Tunnel, protected secrets, least-privilege permissions, audit logs, rate limits, encrypted transport, backups and approval gates.');\n" +
+  '      return true;\n' +
+  '    }\n' +
+  '\n' +
+  '    return false;\n' +
+  '  }\n' +
+  '\n' +
+  '  function augmentTerminal() {\n' +
+  "    const intro = $('.brief-terminal-intro');\n" +
+  '    if (intro && intro.textContent !== TERMINAL_INTRO) intro.textContent = TERMINAL_INTRO;\n' +
+  '\n' +
+  "    const summary = $('.brief-terminal-panel summary small');\n" +
+  '    if (summary && summary.textContent !== TERMINAL_SUMMARY) summary.textContent = TERMINAL_SUMMARY;\n' +
+  '\n' +
+  "    const output = $('#briefTerminalOutput');\n" +
+  "    if (output && !output.querySelector('[data-terminal-bridge-note]')) {\n" +
+  "      const line = document.createElement('div');\n" +
+  "      line.dataset.terminalBridgeNote = 'true';\n" +
+  "      line.className = 'brief-terminal-line is-system';\n" +
+  "      line.textContent = 'demo shell only · type help for backend, learning, teams and security';\n" +
+  '      output.appendChild(line);\n' +
+  '    }\n' +
+  '  }\n' +
+  '\n' +
+  '  function augmentHelpModal() {\n' +
+  "    const dialog = $('.brief-help-dialog');\n" +
+  "    if (!dialog || $('#briefScopeHelp')) return;\n" +
+  '\n' +
+  "    const details = document.createElement('details');\n" +
+  "    details.id = 'briefScopeHelp';\n" +
+  "    details.innerHTML = '<summary>Learning, accountability, teams and secure operations</summary><p>Daily teaching, spaced repetition, workout progression and accountability can use approved history. Role-based team spaces can support projects, procedures, handoffs, operations and finance monitoring for managers and team members. The planned backend uses protected authentication, permissions, encrypted transport, secrets management, audit logs, rate limits, backups and approval-gated actions.</p>';\n" +
+  '\n' +
+  "    const reality = $('.brief-help-reality', dialog);\n" +
+  '    if (reality) dialog.insertBefore(details, reality);\n' +
+  '    else dialog.appendChild(details);\n' +
+  '  }\n' +
+  '\n' +
+  '  function installCommandBridge() {\n' +
+  "    document.addEventListener('submit', event => {\n" +
+  "      if (event.target?.id !== 'briefTerminalForm') return;\n" +
+  "      const input = $('#briefTerminalInput');\n" +
+  '      if (!handleBridgeCommand(input?.value)) return;\n' +
+  '      event.preventDefault();\n' +
+  '      event.stopImmediatePropagation();\n' +
+  "      if (input) input.value = '';\n" +
+  '    }, true);\n' +
+  '  }\n' +
+  '\n' +
+  '  function installUniversalReturnToTop() {\n' +
+  '    lastPreset = preset();\n' +
+  '\n' +
+  "    document.addEventListener('click', event => {\n" +
+  '      if (!event.target.closest?.(SWITCH_CONTROLS)) return;\n' +
+  '      window.setTimeout(scrollTop, 120);\n' +
+  '    }, true);\n' +
+  '\n' +
+  "    window.addEventListener('brief:preset-change', event => {\n" +
+  '      const next = event.detail?.preset || preset();\n' +
+  '      const changed = next !== lastPreset;\n' +
+  '      lastPreset = next;\n' +
+  '      window.setTimeout(() => {\n' +
+  '        augmentTerminal();\n' +
+  '        augmentHelpModal();\n' +
+  '        if (changed) scrollTop();\n' +
+  '        if (pendingSwitchMessage) {\n' +
+  "          appendLine(pendingSwitchMessage, 'success');\n" +
+  "          pendingSwitchMessage = '';\n" +
+  '        }\n' +
+  '      }, 180);\n' +
+  '    });\n' +
+  '  }\n' +
+  '\n' +
+  '  function scheduleLateUi() {\n' +
+  '    window.clearTimeout(lateUiTimer);\n' +
+  '    lateUiAttempts = 0;\n' +
+  '\n' +
+  '    const check = () => {\n' +
+  '      lateUiAttempts += 1;\n' +
+  '      augmentTerminal();\n' +
+  '      augmentHelpModal();\n' +
+  "      const complete = Boolean($('#briefTerminalOutput') && $('.brief-help-dialog'));\n" +
+  '      if (!complete && lateUiAttempts < 20) lateUiTimer = window.setTimeout(check, 300);\n' +
+  '    };\n' +
+  '\n' +
+  '    check();\n' +
+  '  }\n' +
+  '\n' +
+  '  function init() {\n' +
+  '    if (initialized || !window.BRIEF_APP) return;\n' +
+  '    initialized = true;\n' +
+  '    installCommandBridge();\n' +
+  '    installUniversalReturnToTop();\n' +
+  '    scheduleLateUi();\n' +
+  '\n' +
+  "    $('#explainButton')?.addEventListener('click', () => window.setTimeout(augmentHelpModal, 60), true);\n" +
+  '  }\n' +
+  '\n' +
+  "  window.addEventListener('brief:ready', init, { once: true });\n" +
+  '  if (window.BRIEF_APP) init();\n' +
+  "  else document.addEventListener('DOMContentLoaded', () => window.setTimeout(init, 850), { once: true });\n" +
+  '})();\n'
+
+    at Object.<anonymous> (/home/runner/work/First-Repo/First-Repo/tests/brief-terminal-smoke.test.js:40:8)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '(() => {\n' +
+    "  'use strict';\n" +
+    '\n' +
+    '  const $ = (selector, root = document) => root.querySelector(selector);\n' +
+    "  const SWITCH_CONTROLS = '[data-scenario-choice], [data-footer-preset], [data-quick-preset], [data-dock-preset]';\n" +
+    '  const ALIASES = {\n' +
+    "    personal: 'individual',\n" +
+    "    individual: 'individual',\n" +
+    "    relationship: 'couple',\n" +
+    "    couple: 'couple',\n" +
+    "    business: 'partners',\n" +
+    "    partners: 'partners',\n" +
+    "    trainer: 'trainer',\n" +
+    "    training: 'trainer',\n" +
+    "    team: 'team',\n" +
+    "    project: 'team',\n" +
+    "    crew: 'team'\n" +
+    '  };\n' +
+    '  const LABELS = {\n' +
+    "    individual: 'Personal',\n" +
+    "    couple: 'Relationship',\n" +
+    "    partners: 'Business',\n" +
+    "    trainer: 'Trainer',\n" +
+    "    team: 'Team'\n" +
+    '  };\n' +
+    "  const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';\n" +
+    "  const TERMINAL_SUMMARY = 'demo now · backend reserved';\n" +
+    '\n' +
+    '  let initialized = false;\n' +
+    "  let lastPreset = '';\n" +
+    "  let pendingSwitchMessage = '';\n" +
+    '  let lateUiTimer = 0;\n' +
+    '  let lateUiAttempts = 0;\n' +
+    '\n' +
+    '  function preset() {\n' +
+    "    return window.BRIEF_APP?.getPreset?.() || 'individual';\n" +
+    '  }\n' +
+    '\n' +
+    '  function terminalPrompt() {\n' +
+    "    return $('#briefTerminalPrompt')?.textContent || 'brief@cmx:$';\n" +
+    '  }\n' +
+    '\n' +
+    "  function appendLine(text, type = 'response') {\n" +
+    "    const output = $('#briefTerminalOutput');\n" +
+    '    if (!output || !text) return;\n' +
+    "    const line = document.createElement('div');\n" +
+    '    line.className = `brief-terminal-line is-${type}`;\n' +
+    '    line.textContent = text;\n' +
+    '    output.appendChild(line);\n' +
+    '    while (output.children.length > 12) output.firstElementChild?.remove();\n' +
+    '    output.scrollTop = output.scrollHeight;\n' +
+    '  }\n' +
+    '\n' +
+    '  function appendCommand(command) {\n' +
+    "    appendLine(`${terminalPrompt()} ${command}`, 'command');\n" +
+    '  }\n' +
+    '\n' +
+    '  function scrollTop() {\n' +
+    "    window.scrollTo({ top: 0, behavior: 'smooth' });\n" +
+    '  }\n' +
+    '\n' +
+    '  function switchBriefing(value) {\n' +
+    "    const normalized = String(value || '').replace(/[^a-z]/g, '');\n" +
+    '    const next = ALIASES[normalized];\n' +
+    '    if (!next || !window.BRIEF_APP?.setPreset) {\n' +
+    "      appendLine('usage: brief personal|relationship|business|trainer|team', 'error');\n" +
+    '      return;\n' +
+    '    }\n' +
+    '    pendingSwitchMessage = `${LABELS[next]} briefing opened.`;\n' +
+    '    window.BRIEF_APP.setPreset(next);\n' +
+    '    window.setTimeout(scrollTop, 60);\n' +
+    '  }\n' +
+    '\n' +
+    '  function helpLines() {\n' +
+    '    return [\n' +
+    "      'now: demo navigation only. backend reserved for secure data + file input here or in the dashboard.',\n" +
+    "      'commands: brief personal|relationship|business|trainer|team, top, private, shared, modules, learn, teams, security, backend, privacy, about, clear.'\n" +
+    '    ];\n' +
+    '  }\n' +
+    '\n' +
+    '  function handleBridgeCommand(rawValue) {\n' +
+    "    const original = String(rawValue || '').trim();\n" +
+    '    if (!original) return false;\n' +
+    "    const command = original.toLowerCase().replace(/^\\s*(open|go)\\s+/, '').trim();\n" +
+    '\n' +
+    '    const switchMatch = command.match(/^(?:brief|briefing|briefing\\s+type|view|switch)\\s+(.+)$/);\n' +
+    '    const recognized = [\n' +
+    "      'help', 'commands', 'backend', 'future', 'learn', 'learning', 'teach', 'teaching',\n" +
+    "      'teams', 'team', 'security', 'cloud', 'brief', 'briefing', 'briefing type'\n" +
+    '    ].includes(command) || Boolean(switchMatch);\n' +
+    '\n' +
+    '    if (!recognized) return false;\n' +
+    '\n' +
+    '    appendCommand(original);\n' +
+    '\n' +
+    "    if (command === 'help' || command === 'commands') {\n" +
+    '      helpLines().forEach(line => appendLine(line));\n' +
+    '      return true;\n' +
+    '    }\n' +
+    '\n' +
+    "    if (command === 'brief' || command === 'briefing' || command === 'briefing type') {\n" +
+    "      appendLine('usage: brief personal|relationship|business|trainer|team');\n" +
+    '      return true;\n' +
+    '    }\n' +
+    '\n' +
+    '    if (switchMatch) {\n' +
+    '      switchBriefing(switchMatch[1]);\n' +
+    '      return true;\n' +
+    '    }\n' +
+    '\n' +
+    "    if (command === 'backend' || command === 'future') {\n" +
+    "      appendLine('backend reserved. later: authenticated inputs, file uploads, connectors and approved actions through terminal or dashboard.');\n" +
+    '      return true;\n' +
+    '    }\n' +
+    '\n' +
+    "    if (['learn', 'learning', 'teach', 'teaching'].includes(command)) {\n" +
+    "      appendLine('learning: daily lessons, spaced repetition, quizzes, corrections, workout progression and accountability from approved history.');\n" +
+    '      return true;\n' +
+    '    }\n' +
+    '\n' +
+    "    if (command === 'teams' || command === 'team') {\n" +
+    "      appendLine('teams: role-based member, project and leadership spaces for procedures, handoffs, operations and approved finance monitoring. use brief team to open the demo.');\n" +
+    '      return true;\n' +
+    '    }\n' +
+    '\n' +
+    "    if (command === 'security' || command === 'cloud') {\n" +
+    "      appendLine('planned security: containerized FastAPI on Linux, Cloudflare Access/Tunnel, protected secrets, least-privilege permissions, audit logs, rate limits, encrypted transport, backups and approval gates.');\n" +
+    '      return true;\n' +
+    '    }\n' +
+    '\n' +
+    '    return false;\n' +
+    '  }\n' +
+    '\n' +
+    '  function augmentTerminal() {\n' +
+    "    const intro = $('.brief-terminal-intro');\n" +
+    '    if (intro && intro.textContent !== TERMINAL_INTRO) intro.textContent = TERMINAL_INTRO;\n' +
+    '\n' +
+    "    const summary = $('.brief-terminal-panel summary small');\n" +
+    '    if (summary && summary.textContent !== TERMINAL_SUMMARY) summary.textContent = TERMINAL_SUMMARY;\n' +
+    '\n' +
+    "    const output = $('#briefTerminalOutput');\n" +
+    "    if (output && !output.querySelector('[data-terminal-bridge-note]')) {\n" +
+    "      const line = document.createElement('div');\n" +
+    "      line.dataset.terminalBridgeNote = 'true';\n" +
+    "      line.className = 'brief-terminal-line is-system';\n" +
+    "      line.textContent = 'demo shell only · type help for backend, learning, teams and security';\n" +
+    '      output.appendChild(line);\n' +
+    '    }\n' +
+    '  }\n' +
+    '\n' +
+    '  function augmentHelpModal() {\n' +
+    "    const dialog = $('.brief-help-dialog');\n" +
+    "    if (!dialog || $('#briefScopeHelp')) return;\n" +
+    '\n' +
+    "    const details = document.createElement('details');\n" +
+    "    details.id = 'briefScopeHelp';\n" +
+    "    details.innerHTML = '<summary>Learning, accountability, teams and secure operations</summary><p>Daily teaching, spaced repetition, workout progression and accountability can use approved history. Role-based team spaces can support projects, procedures, handoffs, operations and finance monitoring for managers and team members. The planned backend uses protected authentication, permissions, encrypted transport, secrets management, audit logs, rate limits, backups and approval-gated actions.</p>';\n" +
+    '\n' +
+    "    const reality = $('.brief-help-reality', dialog);\n" +
+    '    if (reality) dialog.insertBefore(details, reality);\n' +
+    '    else dialog.appendChild(details);\n' +
+    '  }\n' +
+    '\n' +
+    '  function installCommandBridge() {\n' +
+    "    document.addEventListener('submit', event => {\n" +
+    "      if (event.target?.id !== 'briefTerminalForm') return;\n" +
+    "      const input = $('#briefTerminalInput');\n" +
+    '      if (!handleBridgeCommand(input?.value)) return;\n' +
+    '      event.preventDefault();\n' +
+    '      event.stopImmediatePropagation();\n' +
+    "      if (input) input.value = '';\n" +
+    '    }, true);\n' +
+    '  }\n' +
+    '\n' +
+    '  function installUniversalReturnToTop() {\n' +
+    '    lastPreset = preset();\n' +
+    '\n' +
+    "    document.addEventListener('click', event => {\n" +
+    '      if (!event.target.closest?.(SWITCH_CONTROLS)) return;\n' +
+    '      window.setTimeout(scrollTop, 120);\n' +
+    '    }, true);\n' +
+    '\n' +
+    "    window.addEventListener('brief:preset-change', event => {\n" +
+    '      const next = event.detail?.preset || preset();\n' +
+    '      const changed = next !== lastPreset;\n' +
+    '      lastPreset = next;\n' +
+    '      window.setTimeout(() => {\n' +
+    '        augmentTerminal();\n' +
+    '        augmentHelpModal();\n' +
+    '        if (changed) scrollTop();\n' +
+    '        if (pendingSwitchMessage) {\n' +
+    "          appendLine(pendingSwitchMessage, 'success');\n" +
+    "          pendingSwitchMessage = '';\n" +
+    '        }\n' +
+    '      }, 180);\n' +
+    '    });\n' +
+    '  }\n' +
+    '\n' +
+    '  function scheduleLateUi() {\n' +
+    '    window.clearTimeout(lateUiTimer);\n' +
+    '    lateUiAttempts = 0;\n' +
+    '\n' +
+    '    const check = () => {\n' +
+    '      lateUiAttempts += 1;\n' +
+    '      augmentTerminal();\n' +
+    '      augmentHelpModal();\n' +
+    "      const complete = Boolean($('#briefTerminalOutput') && $('.brief-help-dialog'));\n" +
+    '      if (!complete && lateUiAttempts < 20) lateUiTimer = window.setTimeout(check, 300);\n' +
+    '    };\n' +
+    '\n' +
+    '    check();\n' +
+    '  }\n' +
+    '\n' +
+    '  function init() {\n' +
+    '    if (initialized || !window.BRIEF_APP) return;\n' +
+    '    initialized = true;\n' +
+    '    installCommandBridge();\n' +
+    '    installUniversalReturnToTop();\n' +
+    '    scheduleLateUi();\n' +
+    '\n' +
+    "    $('#explainButton')?.addEventListener('click', () => window.setTimeout(augmentHelpModal, 60), true);\n" +
+    '  }\n' +
+    '\n' +
+    "  window.addEventListener('brief:ready', init, { once: true });\n" +
+    '  if (window.BRIEF_APP) init();\n' +
+    "  else document.addEventListener('DOMContentLoaded', () => window.setTimeout(init, 850), { once: true });\n" +
+    '})();\n',
+  expected: /team-member views/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v22.23.1
+status=1
+=== tests/brief-entry-watch-smoke.test.js ===
+Brief entry and relationship watch smoke test passed.
+status=0
+=== tests/brief-stability-smoke.test.js ===
+node:assert:883
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /entry: '20260803-4'/. Input:
+
+'window.BRIEF_CONFIG = {\n' +
+  "  preset: 'individual',\n" +
+  "  theme: 'black',\n" +
+  "  appearance: 'dark',\n" +
+  "  storagePrefix: 'cmxBriefDemo',\n" +
+  '  effects: {\n' +
+  '    ambientGlow: true,\n' +
+  '    weatherMotion: true,\n' +
+  '    cardMotion: true\n' +
+  '  },\n' +
+  '  controls: {\n' +
+  '    sharedView: true,\n' +
+  '    readAloud: true,\n' +
+  '    music: true,\n' +
+  '    explainMode: true\n' +
+  '  }\n' +
+  '};\n' +
+  '\n' +
+  '(() => {\n' +
+  "  'use strict';\n" +
+  '\n' +
+  '  const build = {\n' +
+  "    device: '20260803-2',\n" +
+  "    entry: '20260803-5',\n" +
+  "    upgrade: '20260803-5',\n" +
+  "    live: '20260803-5',\n" +
+  "    daily: '20260803-3',\n" +
+  "    experience: '20260803-4',\n" +
+  "    terminal: '20260803-2',\n" +
+  "    watch: '20260803-2',\n" +
+  "    team: '20260803-1',\n" +
+  "    workspace: '20260803-1'\n" +
+  '  };\n' +
+  '\n' +
+  '  const labels = {\n' +
+  "    individual: 'Personal',\n" +
+  "    couple: 'Relationship',\n" +
+  "    partners: 'Business',\n" +
+  "    trainer: 'Trainer + student',\n" +
+  "    team: 'Team + project'\n" +
+  '  };\n' +
+  '\n' +
+  '  function forceTop() {\n' +
+  "    const gate = document.getElementById('entryGate');\n" +
+  '    if (gate) gate.scrollTop = 0;\n' +
+  '    document.documentElement.scrollTop = 0;\n' +
+  '    document.body.scrollTop = 0;\n' +
+  "    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });\n" +
+  '  }\n' +
+  '\n' +
+  '  function installEntryController() {\n' +
+  "    const select = document.getElementById('profileSelect');\n" +
+  "    const enter = document.getElementById('enterBrief');\n" +
+  "    const field = select?.closest('.profile-field');\n" +
+  '    if (!select || !enter) return;\n' +
+  '\n' +
+  "    select.dataset.requiredChoice = 'true';\n" +
+  "    select.dataset.liveRequired = 'true';\n" +
+  "    select.setAttribute('required', '');\n" +
+  "    field?.classList.add('is-required');\n" +
+  '\n' +
+  `    const emptyOptions = [...select.querySelectorAll('option[value=""]')];\n` +
+  '    let placeholder = emptyOptions.shift();\n' +
+  '    emptyOptions.forEach(option => option.remove());\n' +
+  '    if (!placeholder) {\n' +
+  "      placeholder = document.createElement('option');\n" +
+  "      placeholder.value = '';\n" +
+  '      select.insertBefore(placeholder, select.firstChild);\n' +
+  '    }\n' +
+  '    placeholder.disabled = true;\n' +
+  "    placeholder.textContent = 'Choose the briefing you want to explore';\n" +
+  '\n' +
+  "    let note = document.getElementById('gateSelectionNote');\n" +
+  '    if (!note) {\n' +
+  "      note = document.createElement('p');\n" +
+  "      note.id = 'gateSelectionNote';\n" +
+  "      note.className = 'gate-selection-note';\n" +
+  '      field?.appendChild(note);\n' +
+  '    }\n' +
+  "    select.setAttribute('aria-describedby', 'gateSelectionNote');\n" +
+  '\n' +
+  "    const copy = document.querySelector('.gate-copy');\n" +
+  '    if (copy) {\n' +
+  "      copy.textContent = 'Choose the briefing you want to explore. The same private platform can organize one person, a relationship, business partners, a trainer and student, or a role-based team while keeping profiles and shared spaces separate.';\n" +
+  '    }\n' +
+  '\n' +
+  "    let selectedValue = '';\n" +
+  '    let appReady = Boolean(window.BRIEF_APP);\n' +
+  '    let queuedOpen = false;\n' +
+  '\n' +
+  '    const validChoice = value => Object.prototype.hasOwnProperty.call(labels, value);\n' +
+  '\n' +
+  '    const updateControls = () => {\n' +
+  "      const choice = validChoice(selectedValue) ? selectedValue : '';\n" +
+  '      const enabled = Boolean(choice);\n' +
+  '      enter.disabled = !enabled;\n' +
+  "      enter.setAttribute('aria-disabled', String(!enabled));\n" +
+  "      enter.classList.remove('is-preparing');\n" +
+  "      enter.textContent = enabled ? 'Open this briefing' : 'Choose a briefing first';\n" +
+  '      note.textContent = enabled\n' +
+  '        ? `${labels[choice]} briefing selected. Choose any entry preferences, then press Open this briefing.`\n' +
+  "        : 'Choose one version before continuing. You can switch between all five inside.';\n" +
+  '    };\n' +
+  '\n' +
+  '    const acceptSelection = () => {\n' +
+  "      const choice = validChoice(select.value) ? select.value : '';\n" +
+  '      selectedValue = choice;\n' +
+  '      select.dataset.userSelection = choice;\n' +
+  '      updateControls();\n' +
+  '    };\n' +
+  '\n' +
+  "    select.addEventListener('input', acceptSelection);\n" +
+  "    select.addEventListener('change', acceptSelection);\n" +
+  '\n' +
+  "    enter.addEventListener('click', event => {\n" +
+  "      const choice = validChoice(selectedValue) ? selectedValue : (validChoice(select.value) ? select.value : '');\n" +
+  '      if (!choice) {\n' +
+  '        event.preventDefault();\n' +
+  '        event.stopImmediatePropagation();\n' +
+  "        note.textContent = 'Choose Personal, Relationship, Business, Trainer + student, or Team + project first.';\n" +
+  `        document.querySelector('input[name="briefEntryType"]')?.focus();\n` +
+  '        return;\n' +
+  '      }\n' +
+  '\n' +
+  '      selectedValue = choice;\n' +
+  '      select.value = choice;\n' +
+  '      forceTop();\n' +
+  '\n' +
+  '      if (!appReady || !window.BRIEF_APP) {\n' +
+  '        event.preventDefault();\n' +
+  '        event.stopImmediatePropagation();\n' +
+  '        queuedOpen = true;\n' +
+  '        enter.disabled = true;\n' +
+  "        enter.setAttribute('aria-disabled', 'true');\n" +
+  "        enter.classList.add('is-preparing');\n" +
+  "        enter.textContent = 'Preparing briefing…';\n" +
+  "        note.textContent = 'The briefing is finishing its device setup. It will open automatically.';\n" +
+  '        return;\n' +
+  '      }\n' +
+  '\n' +
+  '      window.setTimeout(() => {\n' +
+  "        if (!document.body.classList.contains('is-locked')) return;\n" +
+  '        if (!window.BRIEF_APP || !validChoice(selectedValue)) return;\n' +
+  '        window.BRIEF_APP.setPreset(selectedValue);\n' +
+  "        document.body.classList.remove('is-locked');\n" +
+  "        document.getElementById('entryGate')?.classList.add('is-hidden');\n" +
+  "        document.getElementById('briefApp')?.setAttribute('aria-hidden', 'false');\n" +
+  "        try { sessionStorage.setItem(`${window.BRIEF_CONFIG.storagePrefix}:entered`, 'true'); } catch {}\n" +
+  '        forceTop();\n' +
+  '        window.setTimeout(forceTop, 80);\n' +
+  "        try { document.getElementById('briefMain')?.focus({ preventScroll: true }); } catch { document.getElementById('briefMain')?.focus(); }\n" +
+  "        window.dispatchEvent(new CustomEvent('brief:device-fallback-open', { detail: { preset: selectedValue } }));\n" +
+  '      }, 450);\n' +
+  '    }, true);\n' +
+  '\n' +
+  "    window.addEventListener('brief:ready', () => {\n" +
+  '      appReady = true;\n' +
+  "      if (!validChoice(selectedValue)) selectedValue = '';\n" +
+  '      select.value = selectedValue;\n' +
+  '      updateControls();\n' +
+  '      if (queuedOpen && selectedValue) {\n' +
+  '        queuedOpen = false;\n' +
+  '        window.setTimeout(() => enter.click(), 0);\n' +
+  '      }\n' +
+  '    });\n' +
+  '\n' +
+  "    selectedValue = '';\n" +
+  "    select.value = '';\n" +
+  "    const music = document.getElementById('musicOnEntry');\n" +
+  "    const narration = document.getElementById('readOnEntry');\n" +
+  '    if (music) music.checked = false;\n' +
+  '    if (narration) narration.checked = false;\n' +
+  '    updateControls();\n' +
+  '  }\n' +
+  '\n' +
+  '  function loadStyle(id, href) {\n' +
+  '    if (document.getElementById(id)) return;\n' +
+  "    const link = document.createElement('link');\n" +
+  '    link.id = id;\n' +
+  "    link.rel = 'stylesheet';\n" +
+  '    link.href = href;\n' +
+  '    document.head.appendChild(link);\n' +
+  '  }\n' +
+  '\n' +
+  '  function loadScript(id, src, onload) {\n' +
+  '    const existing = document.getElementById(id);\n' +
+  '    if (existing) {\n' +
+  '      if (onload) onload();\n' +
+  '      return;\n' +
+  '    }\n' +
+  "    const script = document.createElement('script');\n" +
+  '    script.id = id;\n' +
+  '    script.src = src;\n' +
+  '    script.async = false;\n' +
+  '    if (onload) {\n' +
+  '      let completed = false;\n' +
+  '      const finish = () => {\n' +
+  '        if (completed) return;\n' +
+  '        completed = true;\n' +
+  '        onload();\n' +
+  '      };\n' +
+  "      script.addEventListener('load', finish, { once: true });\n" +
+  "      script.addEventListener('error', finish, { once: true });\n" +
+  '    }\n' +
+  '    document.head.appendChild(script);\n' +
+  '  }\n' +
+  '\n' +
+  '  installEntryController();\n' +
+  '\n' +
+  "  loadStyle('briefDeviceStyle', `/assets/brief/brief-device.css?v=${build.device}`);\n" +
+  "  loadStyle('briefEntryRadioStyle', `/assets/brief/brief-entry-radio.css?v=${build.entry}`);\n" +
+  "  loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);\n" +
+  "  loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);\n" +
+  "  loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);\n" +
+  "  loadStyle('briefExperienceStyle', `/assets/brief/brief-experience.css?v=${build.experience}`);\n" +
+  "  loadStyle('briefTerminalStyle', `/assets/brief/brief-terminal.css?v=${build.terminal}`);\n" +
+  "  loadStyle('briefRelationshipWatchStyle', `/assets/brief/brief-relationship-watch.css?v=${build.watch}`);\n" +
+  "  loadStyle('briefWorkspaceStyle', `/assets/brief/brief-workspace.css?v=${build.workspace}`);\n" +
+  '\n' +
+  "  loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);\n" +
+  "  loadScript('briefEntryRadioScript', `/assets/brief/brief-entry-radio.js?v=${build.entry}`);\n" +
+  '\n' +
+  "  loadScript('briefDailyVideoScript', `/assets/daily-video.js?v=${build.watch}`, () => {\n" +
+  "    loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {\n" +
+  "      loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {\n" +
+  "        loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {\n" +
+  "          loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {\n" +
+  "            loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {\n" +
+  "              loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {\n" +
+  "                loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {\n" +
+  "                  loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {\n" +
+  "                    loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {\n" +
+  "                      loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`, () => {\n" +
+  "                        loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`, () => {\n" +
+  "                          loadScript('briefTeamRendererScript', `/assets/brief/brief-team-renderer.js?v=${build.team}`, () => {\n" +
+  "                            loadScript('briefWorkspaceScript', `/assets/brief/brief-workspace.js?v=${build.workspace}`);\n" +
+  '                          });\n' +
+  '                        });\n' +
+  '                      });\n' +
+  '                    });\n' +
+  '                  });\n' +
+  '                });\n' +
+  '              });\n' +
+  '            });\n' +
+  '          });\n' +
+  '        });\n' +
+  '      });\n' +
+  '    });\n' +
+  '  });\n' +
+  '})();\n'
+
+    at Object.<anonymous> (/home/runner/work/First-Repo/First-Repo/tests/brief-stability-smoke.test.js:23:8)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'window.BRIEF_CONFIG = {\n' +
+    "  preset: 'individual',\n" +
+    "  theme: 'black',\n" +
+    "  appearance: 'dark',\n" +
+    "  storagePrefix: 'cmxBriefDemo',\n" +
+    '  effects: {\n' +
+    '    ambientGlow: true,\n' +
+    '    weatherMotion: true,\n' +
+    '    cardMotion: true\n' +
+    '  },\n' +
+    '  controls: {\n' +
+    '    sharedView: true,\n' +
+    '    readAloud: true,\n' +
+    '    music: true,\n' +
+    '    explainMode: true\n' +
+    '  }\n' +
+    '};\n' +
+    '\n' +
+    '(() => {\n' +
+    "  'use strict';\n" +
+    '\n' +
+    '  const build = {\n' +
+    "    device: '20260803-2',\n" +
+    "    entry: '20260803-5',\n" +
+    "    upgrade: '20260803-5',\n" +
+    "    live: '20260803-5',\n" +
+    "    daily: '20260803-3',\n" +
+    "    experience: '20260803-4',\n" +
+    "    terminal: '20260803-2',\n" +
+    "    watch: '20260803-2',\n" +
+    "    team: '20260803-1',\n" +
+    "    workspace: '20260803-1'\n" +
+    '  };\n' +
+    '\n' +
+    '  const labels = {\n' +
+    "    individual: 'Personal',\n" +
+    "    couple: 'Relationship',\n" +
+    "    partners: 'Business',\n" +
+    "    trainer: 'Trainer + student',\n" +
+    "    team: 'Team + project'\n" +
+    '  };\n' +
+    '\n' +
+    '  function forceTop() {\n' +
+    "    const gate = document.getElementById('entryGate');\n" +
+    '    if (gate) gate.scrollTop = 0;\n' +
+    '    document.documentElement.scrollTop = 0;\n' +
+    '    document.body.scrollTop = 0;\n' +
+    "    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });\n" +
+    '  }\n' +
+    '\n' +
+    '  function installEntryController() {\n' +
+    "    const select = document.getElementById('profileSelect');\n" +
+    "    const enter = document.getElementById('enterBrief');\n" +
+    "    const field = select?.closest('.profile-field');\n" +
+    '    if (!select || !enter) return;\n' +
+    '\n' +
+    "    select.dataset.requiredChoice = 'true';\n" +
+    "    select.dataset.liveRequired = 'true';\n" +
+    "    select.setAttribute('required', '');\n" +
+    "    field?.classList.add('is-required');\n" +
+    '\n' +
+    `    const emptyOptions = [...select.querySelectorAll('option[value=""]')];\n` +
+    '    let placeholder = emptyOptions.shift();\n' +
+    '    emptyOptions.forEach(option => option.remove());\n' +
+    '    if (!placeholder) {\n' +
+    "      placeholder = document.createElement('option');\n" +
+    "      placeholder.value = '';\n" +
+    '      select.insertBefore(placeholder, select.firstChild);\n' +
+    '    }\n' +
+    '    placeholder.disabled = true;\n' +
+    "    placeholder.textContent = 'Choose the briefing you want to explore';\n" +
+    '\n' +
+    "    let note = document.getElementById('gateSelectionNote');\n" +
+    '    if (!note) {\n' +
+    "      note = document.createElement('p');\n" +
+    "      note.id = 'gateSelectionNote';\n" +
+    "      note.className = 'gate-selection-note';\n" +
+    '      field?.appendChild(note);\n' +
+    '    }\n' +
+    "    select.setAttribute('aria-describedby', 'gateSelectionNote');\n" +
+    '\n' +
+    "    const copy = document.querySelector('.gate-copy');\n" +
+    '    if (copy) {\n' +
+    "      copy.textContent = 'Choose the briefing you want to explore. The same private platform can organize one person, a relationship, business partners, a trainer and student, or a role-based team while keeping profiles and shared spaces separate.';\n" +
+    '    }\n' +
+    '\n' +
+    "    let selectedValue = '';\n" +
+    '    let appReady = Boolean(window.BRIEF_APP);\n' +
+    '    let queuedOpen = false;\n' +
+    '\n' +
+    '    const validChoice = value => Object.prototype.hasOwnProperty.call(labels, value);\n' +
+    '\n' +
+    '    const updateControls = () => {\n' +
+    "      const choice = validChoice(selectedValue) ? selectedValue : '';\n" +
+    '      const enabled = Boolean(choice);\n' +
+    '      enter.disabled = !enabled;\n' +
+    "      enter.setAttribute('aria-disabled', String(!enabled));\n" +
+    "      enter.classList.remove('is-preparing');\n" +
+    "      enter.textContent = enabled ? 'Open this briefing' : 'Choose a briefing first';\n" +
+    '      note.textContent = enabled\n' +
+    '        ? `${labels[choice]} briefing selected. Choose any entry preferences, then press Open this briefing.`\n' +
+    "        : 'Choose one version before continuing. You can switch between all five inside.';\n" +
+    '    };\n' +
+    '\n' +
+    '    const acceptSelection = () => {\n' +
+    "      const choice = validChoice(select.value) ? select.value : '';\n" +
+    '      selectedValue = choice;\n' +
+    '      select.dataset.userSelection = choice;\n' +
+    '      updateControls();\n' +
+    '    };\n' +
+    '\n' +
+    "    select.addEventListener('input', acceptSelection);\n" +
+    "    select.addEventListener('change', acceptSelection);\n" +
+    '\n' +
+    "    enter.addEventListener('click', event => {\n" +
+    "      const choice = validChoice(selectedValue) ? selectedValue : (validChoice(select.value) ? select.value : '');\n" +
+    '      if (!choice) {\n' +
+    '        event.preventDefault();\n' +
+    '        event.stopImmediatePropagation();\n' +
+    "        note.textContent = 'Choose Personal, Relationship, Business, Trainer + student, or Team + project first.';\n" +
+    `        document.querySelector('input[name="briefEntryType"]')?.focus();\n` +
+    '        return;\n' +
+    '      }\n' +
+    '\n' +
+    '      selectedValue = choice;\n' +
+    '      select.value = choice;\n' +
+    '      forceTop();\n' +
+    '\n' +
+    '      if (!appReady || !window.BRIEF_APP) {\n' +
+    '        event.preventDefault();\n' +
+    '        event.stopImmediatePropagation();\n' +
+    '        queuedOpen = true;\n' +
+    '        enter.disabled = true;\n' +
+    "        enter.setAttribute('aria-disabled', 'true');\n" +
+    "        enter.classList.add('is-preparing');\n" +
+    "        enter.textContent = 'Preparing briefing…';\n" +
+    "        note.textContent = 'The briefing is finishing its device setup. It will open automatically.';\n" +
+    '        return;\n' +
+    '      }\n' +
+    '\n' +
+    '      window.setTimeout(() => {\n' +
+    "        if (!document.body.classList.contains('is-locked')) return;\n" +
+    '        if (!window.BRIEF_APP || !validChoice(selectedValue)) return;\n' +
+    '        window.BRIEF_APP.setPreset(selectedValue);\n' +
+    "        document.body.classList.remove('is-locked');\n" +
+    "        document.getElementById('entryGate')?.classList.add('is-hidden');\n" +
+    "        document.getElementById('briefApp')?.setAttribute('aria-hidden', 'false');\n" +
+    "        try { sessionStorage.setItem(`${window.BRIEF_CONFIG.storagePrefix}:entered`, 'true'); } catch {}\n" +
+    '        forceTop();\n' +
+    '        window.setTimeout(forceTop, 80);\n' +
+    "        try { document.getElementById('briefMain')?.focus({ preventScroll: true }); } catch { document.getElementById('briefMain')?.focus(); }\n" +
+    "        window.dispatchEvent(new CustomEvent('brief:device-fallback-open', { detail: { preset: selectedValue } }));\n" +
+    '      }, 450);\n' +
+    '    }, true);\n' +
+    '\n' +
+    "    window.addEventListener('brief:ready', () => {\n" +
+    '      appReady = true;\n' +
+    "      if (!validChoice(selectedValue)) selectedValue = '';\n" +
+    '      select.value = selectedValue;\n' +
+    '      updateControls();\n' +
+    '      if (queuedOpen && selectedValue) {\n' +
+    '        queuedOpen = false;\n' +
+    '        window.setTimeout(() => enter.click(), 0);\n' +
+    '      }\n' +
+    '    });\n' +
+    '\n' +
+    "    selectedValue = '';\n" +
+    "    select.value = '';\n" +
+    "    const music = document.getElementById('musicOnEntry');\n" +
+    "    const narration = document.getElementById('readOnEntry');\n" +
+    '    if (music) music.checked = false;\n' +
+    '    if (narration) narration.checked = false;\n' +
+    '    updateControls();\n' +
+    '  }\n' +
+    '\n' +
+    '  function loadStyle(id, href) {\n' +
+    '    if (document.getElementById(id)) return;\n' +
+    "    const link = document.createElement('link');\n" +
+    '    link.id = id;\n' +
+    "    link.rel = 'stylesheet';\n" +
+    '    link.href = href;\n' +
+    '    document.head.appendChild(link);\n' +
+    '  }\n' +
+    '\n' +
+    '  function loadScript(id, src, onload) {\n' +
+    '    const existing = document.getElementById(id);\n' +
+    '    if (existing) {\n' +
+    '      if (onload) onload();\n' +
+    '      return;\n' +
+    '    }\n' +
+    "    const script = document.createElement('script');\n" +
+    '    script.id = id;\n' +
+    '    script.src = src;\n' +
+    '    script.async = false;\n' +
+    '    if (onload) {\n' +
+    '      let completed = false;\n' +
+    '      const finish = () => {\n' +
+    '        if (completed) return;\n' +
+    '        completed = true;\n' +
+    '        onload();\n' +
+    '      };\n' +
+    "      script.addEventListener('load', finish, { once: true });\n" +
+    "      script.addEventListener('error', finish, { once: true });\n" +
+    '    }\n' +
+    '    document.head.appendChild(script);\n' +
+    '  }\n' +
+    '\n' +
+    '  installEntryController();\n' +
+    '\n' +
+    "  loadStyle('briefDeviceStyle', `/assets/brief/brief-device.css?v=${build.device}`);\n" +
+    "  loadStyle('briefEntryRadioStyle', `/assets/brief/brief-entry-radio.css?v=${build.entry}`);\n" +
+    "  loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);\n" +
+    "  loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);\n" +
+    "  loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);\n" +
+    "  loadStyle('briefExperienceStyle', `/assets/brief/brief-experience.css?v=${build.experience}`);\n" +
+    "  loadStyle('briefTerminalStyle', `/assets/brief/brief-terminal.css?v=${build.terminal}`);\n" +
+    "  loadStyle('briefRelationshipWatchStyle', `/assets/brief/brief-relationship-watch.css?v=${build.watch}`);\n" +
+    "  loadStyle('briefWorkspaceStyle', `/assets/brief/brief-workspace.css?v=${build.workspace}`);\n" +
+    '\n' +
+    "  loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);\n" +
+    "  loadScript('briefEntryRadioScript', `/assets/brief/brief-entry-radio.js?v=${build.entry}`);\n" +
+    '\n' +
+    "  loadScript('briefDailyVideoScript', `/assets/daily-video.js?v=${build.watch}`, () => {\n" +
+    "    loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {\n" +
+    "      loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {\n" +
+    "        loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {\n" +
+    "          loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {\n" +
+    "            loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {\n" +
+    "              loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {\n" +
+    "                loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {\n" +
+    "                  loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {\n" +
+    "                    loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {\n" +
+    "                      loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`, () => {\n" +
+    "                        loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`, () => {\n" +
+    "                          loadScript('briefTeamRendererScript', `/assets/brief/brief-team-renderer.js?v=${build.team}`, () => {\n" +
+    "                            loadScript('briefWorkspaceScript', `/assets/brief/brief-workspace.js?v=${build.workspace}`);\n" +
+    '                          });\n' +
+    '                        });\n' +
+    '                      });\n' +
+    '                    });\n' +
+    '                  });\n' +
+    '                });\n' +
+    '              });\n' +
+    '            });\n' +
+    '          });\n' +
+    '        });\n' +
+    '      });\n' +
+    '    });\n' +
+    '  });\n' +
+    '})();\n',
+  expected: /entry: '20260803-4'/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v22.23.1
+status=1
+=== tests/brief-workspace-team-smoke.test.js ===
+Brief workspace and Team smoke test passed.
+status=0
