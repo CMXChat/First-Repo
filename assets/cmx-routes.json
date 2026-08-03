@@ -1,6 +1,6 @@
 {
-  "version": 19,
-  "updated": "2026-08-02",
+  "version": 20,
+  "updated": "2026-08-03",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
     {"path":"/directory/","name":"Operations Directory","description":"Approved directory for current active private tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -17,7 +17,6 @@
     {"path":"/updates/","name":"CMX Platform Notes & Brief","description":"Terminal-style daily notes plus the complete linked project briefing for AI, APIs, frontend and backend connection, security, phases, current status and platform changes.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/plans/","name":"CMX Plans","description":"Dated private product and platform plan entries, beginning with the Personal OS briefing concept.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/brief/","name":"Sara Personal Brief","description":"Private Hebrew briefing for Sara with health, movement, weather, Israel news, music, beach planning and a plain-language product explanation.","category":"Private Briefing","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
-    {"path":"/debbie/","name":"Debbie's Brooklyn Brief","description":"Private Brooklyn briefing with Jewish and Israel news, country music, Scrabble, interactive product concepts and a plain-language CMX platform tour.","category":"Private Briefing","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference that remains direct-link-only until real server authorization exists.","category":"Internal","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/project/","name":"Callmax SEO Master Plan","description":"Client project planning resource.","category":"Client","status":"Active","visibility":"Build-only","directory":false,"gated":true},
     {"path":"/callmax/","name":"Callmax Workspace","description":"Callmax project workspace requiring review.","category":"Client","status":"Needs Review","visibility":"Build-only","directory":false,"gated":true},
