@@ -40,15 +40,15 @@ window.BRIEF_DAILY_CONTENT = {
       purpose: 'Optional opening track'
     },
     personal: [
-      { title: 'The Recipe', artist: 'Kendrick Lamar feat. Dr. Dre', spotify: '0T5iIrXA4p5GsubkhuBIKV', note: 'Morning momentum' },
-      { title: 'Dreams', artist: 'The Cranberries', spotify: '0gEyKnHvgkrkBM6fbeHdwK', note: 'Clear focus' },
+      { title: 'The Recipe', artist: 'Kendrick Lamar feat. Dr. Dre', spotify: '4i0ioe6BC6qvV6FOm6nf7K', note: 'Morning momentum' },
+      { title: 'Dreams', artist: 'The Cranberries', spotify: '1IFSa6KKHLeSwRe8mDlz6k', note: 'Clear focus' },
       { title: 'A Sky Full of Stars', artist: 'Coldplay', spotify: '0FDzzruyVECATHXKHFs9eJ', note: 'Afternoon lift' },
       { title: 'Best Day Of My Life', artist: 'American Authors', spotify: '5Hroj5K7vLpIG4FNCRIjbP', note: 'Reset track' }
     ],
     couple: [
       { title: 'Yellow', artist: 'Coldplay', spotify: '3AJwUDP919kvQ9QcozQPxg', note: 'Shared favorite' },
       { title: 'Dreams', artist: 'Fleetwood Mac', spotify: '0ofHAoxe9vBkTCp2UQIavz', note: 'Slow the room down' },
-      { title: 'Just the Two of Us', artist: 'Grover Washington, Jr. feat. Bill Withers', spotify: '1ko2lVN0vKGUl9zrU0qSlT', note: 'Reconnect' }
+      { title: 'Just the Two of Us', artist: 'Grover Washington, Jr. feat. Bill Withers', spotify: '6pLE8VbtyEEF8LXa3g7vSc', note: 'Reconnect' }
     ],
     partners: [
       { title: 'On Top Of The World', artist: 'Imagine Dragons', spotify: '213x4gsFDm04hSqIUkg88w', note: 'Operating review' },
