@@ -1,0 +1,63 @@
+name: Apply Brief Stability Cleanup
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-stability-source.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  stabilize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove broad observers and bump loader
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('brief/index.html')
+          text = index.read_text()
+          text = text.replace('brief-config.js?v=20260803-7', 'brief-config.js?v=20260803-8')
+          index.write_text(text)
+
+          experience = Path('assets/brief/brief-experience.js')
+          text = experience.read_text()
+          text = text.replace("const rightSign = localStorage.getItem(storage('sign:coupleRightSign')) || 'pisces';", "const rightSign = localStorage.getItem(storage('sign:coupleRightSign')) || 'virgo';")
+          text = text.replace('<h4>Virgo + Pisces example</h4>', '<h4>Virgo + Virgo example</h4>')
+          text = re.sub(
+              r"\n    const observer = new MutationObserver\(\(\) => \{\n      styleInternalActions\(\);\n      enhanceThemeToggle\(\);\n      syncSpaceButtons\(\);\n    \}\);\n    observer\.observe\(document\.body, \{ childList: true, subtree: true \}\);",
+              "\n    [0, 120, 420, 900].forEach(delay => window.setTimeout(() => {\n      styleInternalActions();\n      enhanceThemeToggle();\n      syncSpaceButtons();\n    }, delay));",
+              text,
+              count=1,
+          )
+          experience.write_text(text)
+
+          live = Path('assets/brief/brief-live.js')
+          text = live.read_text()
+          text = re.sub(
+              r"\n    const observer = new MutationObserver\(\(\) => enhanceSpotifyPlayers\(\)\);\n    const stage = \$\('#scenarioStage'\);\n    const favorites = \$\('#musicFavorites'\);\n    if \(stage\) observer\.observe\(stage, \{ childList: true, subtree: true \}\);\n    if \(favorites\) observer\.observe\(favorites, \{ childList: true, subtree: true \}\);",
+              "\n    [120, 420, 900].forEach(delay => window.setTimeout(enhanceSpotifyPlayers, delay));",
+              text,
+              count=1,
+          )
+          live.write_text(text)
+          PY
+
+      - name: Commit cleanup
+        run: |
+          if git diff --quiet; then
+            echo 'No stability changes were needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add brief/index.html assets/brief/brief-experience.js assets/brief/brief-live.js
+          git commit -m 'Stabilize briefing renderers and force refreshed loader'
+          git push
