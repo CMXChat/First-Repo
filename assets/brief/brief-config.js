@@ -21,8 +21,9 @@ window.BRIEF_CONFIG = {
 
   const build = {
     upgrade: '20260803-5',
-    live: '20260803-3',
-    daily: '20260803-2'
+    live: '20260803-4',
+    daily: '20260803-3',
+    experience: '20260803-1'
   };
 
   const music = document.getElementById('musicOnEntry');
@@ -56,13 +57,16 @@ window.BRIEF_CONFIG = {
   loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);
   loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);
   loadStyle('briefDailyStyle', `/assets/brief/brief-daily.css?v=${build.daily}`);
+  loadStyle('briefExperienceStyle', `/assets/brief/brief-experience.css?v=${build.experience}`);
 
   loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
     loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
       loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
         loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
           loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
-            loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`);
+            loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
+              loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`);
+            });
           });
         });
       });
