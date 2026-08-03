@@ -32,13 +32,16 @@ assert.match(index, /<option value="team">Atlas · Team and project<\/option>/);
 assert.match(index, /FIVE WAYS THE SAME PLATFORM/);
 assert.match(index, /brief-team-data\.js/);
 assert.ok(index.indexOf('brief-team-data.js') < index.indexOf('brief-core.js'));
-assert.match(index, /brief-config\.js\?v=20260803-10/);
+assert.match(index, /brief-config\.js\?v=20260803-11/);
 
 assert.match(config, /team: 'Team \+ project'/);
 assert.match(config, /brief-workspace\.css/);
 assert.match(config, /brief-team-renderer\.js/);
 assert.match(config, /brief-workspace\.js/);
+assert.match(config, /brief-polish\.css/);
+assert.match(config, /brief-polish\.js/);
 assert.ok(config.indexOf('briefTeamRendererScript') < config.indexOf('briefWorkspaceScript'));
+assert.ok(config.indexOf('briefWorkspaceScript') < config.indexOf('briefPolishScript'));
 
 assert.match(entry, /Team \+ project/);
 assert.match(entry, /input\.type = 'radio'/);
@@ -51,6 +54,8 @@ assert.match(teamData, /Private profile/);
 assert.match(teamData, /Role space/);
 assert.match(teamData, /Project space/);
 assert.match(teamData, /Leadership space/);
+assert.match(teamData, /Project phase completion is 40%/);
+assert.match(teamData, /Phase completion/);
 assert.match(teamData, /procedure/);
 assert.match(teamData, /finance/);
 assert.match(teamData, /Least-privilege access/);
