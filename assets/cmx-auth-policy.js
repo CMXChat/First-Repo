@@ -1,7 +1,7 @@
 'use strict';
 
-const FIXED_GATE_STATE_KEY = 'cmx_gate_state_v1';
-const FIXED_GATE_MIGRATION_KEY = 'cmx_fixed_gate_v1';
+const FIXED_GATE_STATE_KEY = 'cmx_gate_state_v2';
+const FIXED_GATE_MIGRATION_KEY = 'cmx_fixed_gate_v2';
 const FIXED_GATE_ITERATIONS = 600000;
 
 /*
@@ -9,13 +9,14 @@ const FIXED_GATE_ITERATIONS = 600000;
  * PBKDF2-SHA256 salt and verifier for the fixed user credential.
  * This is only a client-side deterrent, not server-side access control.
  */
-const FIXED_GATE_SALT = ['AZ4QJPMRsGl0B1pJ', 'V+4Yzut/sDzFl++Z', 'oeMAfrO5ieo='].join('');
-const FIXED_GATE_VERIFIER = ['PWXFb5BlVpc7BCUD', 'pCvMZ1faJ6Yb304F', '8d0EspmpnP0='].join('');
+const FIXED_GATE_SALT = ['AJZgvy6gSlaz4vmH', 'mF/J+PeJu5chL1Rd', 'PrPxgAoM0WU='].join('');
+const FIXED_GATE_VERIFIER = ['kaxZz7+7WWXt5sr5', 'vVdV5iwA2OF5xCZe', 'IuJ93zUnXRs='].join('');
 
 if (!localStorage.getItem(FIXED_GATE_MIGRATION_KEY)) {
   [
     'cmx_auth_v4', 'cmx_auth_v5', 'cmx_auth_v6',
-    'cmx_session_v3', 'cmx_session_v4'
+    'cmx_session_v3', 'cmx_session_v4',
+    'cmx_gate_state_v1'
   ].forEach((key) => {
     localStorage.removeItem(key);
     sessionStorage.removeItem(key);
@@ -36,7 +37,7 @@ function saveFixedGateState(state) {
 
 authData = function fixedCredentialAvailable() {
   return {
-    version: 1,
+    version: 2,
     username: ADMIN_USERNAME,
     iterations: FIXED_GATE_ITERATIONS
   };
