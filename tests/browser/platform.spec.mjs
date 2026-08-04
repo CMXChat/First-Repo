@@ -151,6 +151,18 @@ test('OSINT saves an explicit snapshot to the selected persistent case', async (
   expect(detail.observations.some((observation) => observation.kind === 'analysis' && observation.value_text === username)).toBeTruthy();
 });
 
+test('Cases opens the exact case requested by the active-case context', async ({ page, request }) => {
+  const title = `Requested case ${Date.now()}`;
+  const record = await createPersistentCase(request, title, 'osint');
+
+  await grantClientSession(page);
+  const response = await page.goto(`/cases?case=${encodeURIComponent(record.id)}`, { waitUntil: 'domcontentloaded' });
+  expect(response?.ok()).toBeTruthy();
+  await expect(page.locator('#backendBadge')).toHaveText(/Backend connected/i);
+  await expect(page.locator('#detailId')).toHaveText(record.id);
+  await expect(page.locator('#detailTitle')).toHaveText(title);
+});
+
 test('Metadata renders an adversarial filename as text', async ({ page }) => {
   await openProtected(page, '/metadata');
   await page.locator('#fileInput').setInputFiles({
