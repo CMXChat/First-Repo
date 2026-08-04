@@ -26,7 +26,8 @@
       'exportCase',
       'addNote',
       'importSession',
-      'operatorCreateRelationship'
+      'operatorCreateRelationship',
+      'custodyAddEvent'
     ];
 
     const connected = () => badge.classList.contains('good') && /connected/i.test(badge.textContent || '');
@@ -103,9 +104,11 @@
     installCriticalResponsiveStyle();
     loadStyle('/assets/cases-operator-workspace.css?v=20260804-1', 'workspace');
     loadStyle('/assets/cases-operator-responsive.css?v=20260804-1', 'responsive');
+    loadStyle('/assets/cases-evidence-custody.css?v=20260804-1', 'custody');
     loadScript('/assets/cases-workbench-guard.js?v=20260804-1', 'guard');
     loadScript('/assets/cases-operator-workspace.js?v=20260804-1', 'workspace');
     loadScript('/assets/cases-operator-records.js?v=20260804-1', 'records');
+    loadScript('/assets/cases-evidence-custody.js?v=20260804-1', 'custody');
   }
 
   function installCriticalResponsiveStyle() {
