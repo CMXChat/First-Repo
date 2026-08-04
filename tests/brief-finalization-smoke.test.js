@@ -90,10 +90,11 @@ assert.doesNotMatch(theme, /subtree:\s*true/);
 
 assert.match(vision, /const STEPS = \[/);
 assert.match(vision, /You wake up\. The day is already sorted/);
+assert.match(vision, /Your morning can have its own sound/);
 assert.match(vision, /Spotify favorites/);
 assert.match(vision, /Context turns reminders into strategy/);
 assert.match(vision, /Different people see different truths/);
-assert.match(vision, /learns through correction/);
+assert.match(vision, /Corrections teach it what matters/);
 assert.match(vision, /When you approve it, the briefing can act/);
 assert.match(vision, /role="dialog"/);
 assert.match(vision, /aria-modal="true"/);
