@@ -27,7 +27,8 @@
   const TERMINAL_SUMMARY = 'demo navigation · backend later';
   const NAVIGATION_VERSION = '20260803-7';
   const INTERFACE_VERSION = '20260803-3';
-  const FINAL_VERSION = '20260803-3';
+  const FINAL_VERSION = '20260803-4';
+  const FLOW_VERSION = '20260803-1';
 
   let initialized = false;
   let lastPreset = '';
@@ -230,17 +231,24 @@
     loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
     loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);
     loadStyle('briefVisionStyle', `/assets/brief/brief-vision-tour.css?v=${FINAL_VERSION}`);
+    loadStyle('briefVisionV2Style', `/assets/brief/brief-vision-v2.css?v=${FINAL_VERSION}`);
     loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
     loadStyle('briefFinalizeStyle', `/assets/brief/brief-finalize.css?v=${FINAL_VERSION}`);
+    loadStyle('briefFlowPolishStyle', `/assets/brief/brief-flow-polish.css?v=${FLOW_VERSION}`);
 
     loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);
     loadScript('briefNavigationScript', `/assets/brief/brief-navigation.js?v=${NAVIGATION_VERSION}`, () => {
-      loadScript('briefNavigationRuntimeScript', `/assets/brief/brief-navigation-runtime.js?v=${NAVIGATION_VERSION}`);
+      loadScript('briefNavigationRuntimeScript', `/assets/brief/brief-navigation-runtime.js?v=${NAVIGATION_VERSION}`, () => {
+        loadScript('briefFlowPolishScript', `/assets/brief/brief-flow-polish.js?v=${FLOW_VERSION}`);
+      });
       loadScript('briefTopMapScript', `/assets/brief/brief-map-top.js?v=${INTERFACE_VERSION}`);
     });
 
-    loadScript('briefVisionScript', `/assets/brief/brief-vision-tour.js?v=${FINAL_VERSION}`);
-    loadScript('briefFinalizeScript', `/assets/brief/brief-finalize.js?v=${FINAL_VERSION}`);
+    loadScript('briefVisionScript', `/assets/brief/brief-vision-tour.js?v=${FINAL_VERSION}`, () => {
+      loadScript('briefVisionV2Script', `/assets/brief/brief-vision-v2.js?v=${FINAL_VERSION}`, () => {
+        loadScript('briefFinalizeScript', `/assets/brief/brief-finalize.js?v=${FINAL_VERSION}`);
+      });
+    });
   }
 
   function installCommandBridge() {
