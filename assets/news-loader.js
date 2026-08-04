@@ -19,7 +19,7 @@
       .replace(/\/assets\/news\.js(?:\?[^"']*)?/g, `/assets/news.js?v=${token}`)
       .replace(/(<script src="\/assets\/news\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-weather-modern.js?v=${token}" defer></script>`)
       .replace(/\/assets\/news-media\.js(?:\?[^"']*)?/g, `/assets/news-media.js?v=${token}`)
-      .replace(/(<script src="\/assets\/news-media\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-upgrades.js?v=${token}" defer></script>\n  <script src="/assets/news-experience.js?v=${token}" defer></script>\n  <script src="/assets/news-workspace.js?v=${token}" defer></script>\n  <script src="/assets/news-polish.js?v=${token}" defer></script>`)
+      .replace(/(<script src="\/assets\/news-media\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-upgrades.js?v=${token}" defer></script>\n  <script src="/assets/news-experience.js?v=${token}" defer></script>\n  <script src="/assets/news-workspace.js?v=${token}" defer></script>\n  <script src="/assets/news-polish.js?v=${token}" defer></script>\n  <script src="/assets/news-navigation.js?v=${token}" defer></script>`)
       .replace(/\/assets\/news-weather-modern\.css(?:\?[^"']*)?/g, `/assets/news-weather-modern.css?v=${token}`)
       .replace(/\/assets\/news-weather-modern\.js(?:\?[^"']*)?/g, `/assets/news-weather-modern.js?v=${token}`);
 
