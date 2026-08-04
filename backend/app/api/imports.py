@@ -10,6 +10,7 @@ from ..db import get_db_session
 from ..import_schemas import SessionImportRequest, SessionImportResult
 from ..security import AccessIdentity
 from ..services.cases import get_owned_case, record_audit
+from ..services.import_links import link_missing_import_sources
 from ..services.imports import import_session_payload
 
 router = APIRouter(prefix="/api/cases/{case_id}", tags=["case imports"])
@@ -26,6 +27,12 @@ def import_session(
     case = get_owned_case(session, case_id, identity.subject)
     try:
         result = import_session_payload(
+            session,
+            case=case,
+            owner_subject=identity.subject,
+            payload=request_payload.payload,
+        )
+        linked_sources = link_missing_import_sources(
             session,
             case=case,
             owner_subject=identity.subject,
@@ -48,6 +55,7 @@ def import_session(
                 "queries_created": result.queries_created,
                 "evidence_created": result.evidence_created,
                 "notes_created": result.notes_created,
+                "source_links_created": linked_sources,
                 "warning_count": len(result.warnings),
             },
         )
