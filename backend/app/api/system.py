@@ -7,8 +7,10 @@ from sqlalchemy import text
 
 from ..config import Settings, get_settings
 from ..security import AccessIdentity
+from .custody import router as custody_router
 
 router = APIRouter(tags=["system"])
+router.include_router(custody_router)
 
 
 @router.get("/api/health/live", include_in_schema=False)
