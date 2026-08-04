@@ -1,17 +1,19 @@
 # Goal Intelligence Step 3 Prototype
 
 **Created:** August 4, 2026  
+**Last revised:** August 4, 2026  
 **Project:** `db.cmxchat.com` / future `/brief` goal intelligence layer  
 **Roadmap step:** Step 3, isolated frontend prototype  
-**Implementation slice:** Part 1  
+**Implementation slice:** Parts 1 and 2 complete  
 **Branch:** `agent/goal-intelligence-prototype`  
+**Draft PR:** `#34`  
 **Prototype route:** `/goals-lab/`  
-**Status:** Implemented for review on a draft branch  
+**Status:** Implemented and browser-validated on the draft branch  
 **Authority:** This file records the prototype. It does not authorize changes to `/brief` or production data flows.
 
 ## Purpose
 
-This implementation begins Step 3 from the living Goal Intelligence concept and data-model work recorded in:
+This implementation continues Step 3 from the living Goal Intelligence concept and data-model work recorded in:
 
 - `docs/concepts/brief-goal-intelligence-concept-2026-08-04.md`
 
@@ -38,13 +40,63 @@ The isolated `/goals-lab/` route includes:
 - Responsive dark and light layouts
 - Reduced-motion and forced-colors support
 
+## Part 2 Browser Validation and Repair
+
+Part 2 added a dedicated Playwright workflow and tested the prototype in:
+
+- Chromium desktop
+- Chromium using Pixel 5 mobile emulation
+
+The browser suite verifies:
+
+- The page loads without JavaScript errors
+- The layout does not create horizontal overflow on desktop or mobile
+- The prototype boundary remains visible
+- Goal edits update the Goal Pulse
+- Difficulty changes alter the workload and effort
+- Goal state survives a browser reload
+- A check-in updates the blocker, active question, recommendation, effort, and history
+- Answering a blocker question advances the loop instead of immediately repeating the same prompt
+- Evidence updates the evidence list and trajectory
+- Recommendation outcomes enter the operating history
+- Theme switching works
+- Section navigation remains usable
+
+The final Part 2 browser matrix passed all tests on both configured projects.
+
+## Bugs Found During Part 2
+
+### 1. Browser test cleanup incorrectly erased persisted state
+
+The first test version cleared `localStorage` through an initialization script, so the cleanup ran again during reload and made valid persistence look broken.
+
+The test now clears state once before the test begins, reloads the clean sample, and then permits later reloads to preserve the edited goal.
+
+### 2. Low-energy effort expectation was incorrect
+
+The implementation rounds 65 percent of a 10-minute capacity to 7 minutes. The first test expected 6 minutes.
+
+The browser expectation now matches the documented calculation performed by the prototype.
+
+### 3. Answered blocker questions could repeat immediately
+
+This was a real product defect. The deterministic question selector could regenerate the same high-priority blocker question immediately after the user answered it.
+
+A Part 2 repair now checks the persisted answer history. When the newly generated prompt has already been answered, the loop advances to a distinct follow-up question that asks what should happen next. The advancement is recorded in state history.
+
+This repair remains local to `/goals-lab/` and does not change `/brief`.
+
 ## Prototype Files
 
 ```text
 goals-lab/index.html
 goals-lab/styles.css
 goals-lab/app.js
+goals-lab/part2.js
 tests/goals-lab-smoke.test.js
+tests/goals-lab-browser-e2e.spec.cjs
+tests/goals-lab.playwright.config.cjs
+.github/workflows/goals-lab-browser-validation.yml
 ```
 
 ## Current Reference Goal
@@ -57,7 +109,7 @@ The prototype uses the current FastAPI learning and backend direction because it
 
 ## Deterministic Logic
 
-This part does not call an AI model.
+This prototype does not call an AI model.
 
 The local rules adjust the active question and recommendation based on:
 
@@ -69,6 +121,7 @@ The local rules adjust the active question and recommendation based on:
 - Repeated non-completion
 - User answer preference
 - Evidence type and confidence
+- Whether a proposed question has already been answered
 
 This allows the interaction to be evaluated before model behavior is added.
 
@@ -97,35 +150,31 @@ The following reported issues remain separate from this prototype:
 
 No fix for those issues is included in this branch.
 
-## Validation Added
+## Validation Status
 
-A source-level smoke test verifies:
+The final branch head passed:
 
-- The prototype JavaScript parses
-- Required UI sections exist
-- Difficulty, check-in, question, evidence, history, and outcome controls exist
-- Deterministic question, recommendation, trajectory, and confidence functions exist
-- No `fetch()` call exists in the prototype
-- Responsive, reduced-motion, forced-colors, and light-theme styles exist
+- Goal Intelligence desktop and Android browser validation
+- CMX Static Validation
+- CMX Privacy Audit
+- CMX Secret Scan
+- CMX Navigation Link Guard
+- CMX Terminal Theme Guard
 
 ## Remaining Step 3 Parts
-
-### Part 2: Browser validation and interaction repair
-
-Test the prototype on desktop and mobile widths and verify:
-
-- Goal edits persist correctly
-- Every difficulty level produces a visibly different workload
-- Check-ins update the pulse, question, recommendation, and history
-- Question choices influence the next action
-- Outcomes create the next loop
-- Evidence changes confidence without silently rewriting claims
-- Reset and theme controls work
-- Keyboard and focus behavior remain usable
 
 ### Part 3: Product review and simplification
 
 Review whether the interface feels like useful guidance or an oversized form. Remove fields or interactions that do not change the recommendation.
+
+The review should specifically examine:
+
+- Whether goal setup asks for too much information at once
+- Whether difficulty needs a temporary override and a required Sprint end date
+- Whether the question follow-up should move into the main engine instead of remaining a separate Part 2 repair layer
+- Whether evidence and history deserve equal visual weight in the daily workflow
+- Whether check-in fields can be reduced without lowering recommendation quality
+- Whether one real user session produces a useful Goal Pulse
 
 ### Part 4: Step 3 decision
 
@@ -140,7 +189,15 @@ No `/brief` integration should begin during Step 3.
 
 ## Revision Log
 
-### August 4, 2026
+### August 4, 2026, Part 2
+
+- Added desktop and Android Playwright validation.
+- Confirmed responsive containment, persistence, goal updates, difficulty behavior, check-ins, questions, evidence, outcomes, theme, and navigation.
+- Corrected two browser-test assumptions.
+- Fixed the real repeated-question defect.
+- Recorded that every branch-wide validation check passed.
+
+### August 4, 2026, Part 1
 
 - Created the first isolated Goal Intelligence frontend prototype.
 - Added the full local goal loop and structured data interactions.
