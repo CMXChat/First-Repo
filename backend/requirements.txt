@@ -1,0 +1,4 @@
+fastapi[standard]==0.139.2
+httpx==0.28.1
+pydantic-settings==2.14.2
+PyJWT[crypto]==2.13.0
