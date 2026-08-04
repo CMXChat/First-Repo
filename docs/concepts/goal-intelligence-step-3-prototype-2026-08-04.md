@@ -4,114 +4,175 @@
 **Last revised:** August 4, 2026  
 **Project:** `db.cmxchat.com` / future `/brief` goal intelligence layer  
 **Roadmap step:** Step 3, isolated frontend prototype  
-**Implementation slice:** Parts 1 and 2 complete  
+**Implementation slice:** Parts 1, 2, and 3 complete  
 **Branch:** `agent/goal-intelligence-prototype`  
 **Draft PR:** `#34`  
 **Prototype route:** `/goals-lab/`  
-**Status:** Implemented and browser-validated on the draft branch  
+**Status:** Implemented, simplified, and browser-validated on the draft branch  
 **Authority:** This file records the prototype. It does not authorize changes to `/brief` or production data flows.
+
+## Continuation Record
+
+The current operational status is maintained in:
+
+- `docs/concepts/brief-goal-intelligence-worklog.md`
+
+Future context windows should read the worklog first, then this report, then the original dated concept file.
 
 ## Purpose
 
-This implementation continues Step 3 from the living Goal Intelligence concept and data-model work recorded in:
+Step 3 tests the smallest useful goal loop before adding FastAPI, PostgreSQL, connectors, or AI model reasoning.
 
-- `docs/concepts/brief-goal-intelligence-concept-2026-08-04.md`
+The prototype asks whether structured goals, short check-ins, one useful question, evidence, and one recommended action can create a useful daily operating loop.
 
-The goal is to test the smallest useful interaction before adding FastAPI, PostgreSQL, connectors, or AI model reasoning.
+## Part 1: Isolated Frontend Prototype
 
-## Implemented in Part 1
-
-The isolated `/goals-lab/` route includes:
+The first `/goals-lab/` implementation added:
 
 - One editable goal
 - Desired outcome, motivation, baseline, success definition, priority, visibility, and milestone fields
-- A five-level difficulty lever
-- A short structured check-in
+- A five-level difficulty control
+- A structured check-in
 - One active question at a time
-- Deterministic question selection based on blockers and outcomes
+- Deterministic question and recommendation selection
 - One primary recommendation at a time
 - Recommendation effort, purpose, expected result, milestone, confidence, and evidence basis
 - Outcome recording
 - Evidence records kept separate from user claims
 - Trajectory and confidence labels
 - State and revision history
-- A compact Goal Pulse that can later become an input to `/brief`
-- Local browser persistence with a clear reset control
+- A compact Goal Pulse
+- Local browser persistence
 - Responsive dark and light layouts
 - Reduced-motion and forced-colors support
 
-## Part 2 Browser Validation and Repair
+## Part 2: Browser Validation and Loop Repair
 
-Part 2 added a dedicated Playwright workflow and tested the prototype in:
+Part 2 added a dedicated Playwright workflow for:
 
 - Chromium desktop
 - Chromium using Pixel 5 mobile emulation
 
-The browser suite verifies:
+The browser suite confirmed:
 
-- The page loads without JavaScript errors
-- The layout does not create horizontal overflow on desktop or mobile
-- The prototype boundary remains visible
-- Goal edits update the Goal Pulse
-- Difficulty changes alter the workload and effort
-- Goal state survives a browser reload
-- A check-in updates the blocker, active question, recommendation, effort, and history
-- Answering a blocker question advances the loop instead of immediately repeating the same prompt
-- Evidence updates the evidence list and trajectory
-- Recommendation outcomes enter the operating history
-- Theme switching works
-- Section navigation remains usable
+- Clean loading without JavaScript errors
+- No horizontal overflow on desktop or mobile
+- Goal editing and reload persistence
+- Difficulty and workload changes
+- Check-in updates to blockers, questions, recommendations, effort, and history
+- Evidence and trajectory updates
+- Recommendation outcomes
+- Theme switching
+- Section navigation
 
-The final Part 2 browser matrix passed all tests on both configured projects.
+### Part 2 Defects and Corrections
 
-## Bugs Found During Part 2
+#### Test cleanup erased persisted state
 
-### 1. Browser test cleanup incorrectly erased persisted state
+The first persistence test cleared `localStorage` during every reload. The test now clears state once before the test and allows later reloads to preserve edits.
 
-The first test version cleared `localStorage` through an initialization script, so the cleanup ran again during reload and made valid persistence look broken.
+#### Low-energy effort expectation was wrong
 
-The test now clears state once before the test begins, reloads the clean sample, and then permits later reloads to preserve the edited goal.
+The prototype rounds 65 percent of a 10-minute capacity to 7 minutes. The browser expectation was corrected.
 
-### 2. Low-energy effort expectation was incorrect
+#### Answered blocker questions repeated
 
-The implementation rounds 65 percent of a 10-minute capacity to 7 minutes. The first test expected 6 minutes.
+The deterministic selector could regenerate the same high-priority blocker question immediately after it was answered.
 
-The browser expectation now matches the documented calculation performed by the prototype.
+The repair checks answer history and advances to a distinct follow-up question. The advancement is recorded in state history.
 
-### 3. Answered blocker questions could repeat immediately
+## Part 3: Product Review and Simplification
 
-This was a real product defect. The deterministic question selector could regenerate the same high-priority blocker question immediately after the user answered it.
+Part 3 reviewed whether the prototype felt like guidance or a large setup form.
 
-A Part 2 repair now checks the persisted answer history. When the newly generated prompt has already been answered, the loop advances to a distinct follow-up question that asks what should happen next. The advancement is recorded in state history.
+The review concluded that the normal experience should focus on:
 
-This repair remains local to `/goals-lab/` and does not change `/brief`.
+```text
+Goal Pulse
+  ↓
+Quick check-in
+  ↓
+One useful question
+  ↓
+One recommended action
+  ↓
+Outcome or evidence
+```
 
-## Prototype Files
+Configuration and records remain available, but they no longer compete with the daily loop.
+
+### Part 3 Interface Changes
+
+- Check-in and active question now appear before goal editing in reading order and on mobile.
+- The full goal editor is collapsed by default.
+- Title, desired outcome, milestone, and difficulty remain in the main goal-editing path.
+- Motivation, baseline, success definition, priority, and visibility moved into Planning Context.
+- Optional check-in text moved into Add Context.
+- Evidence and history moved into a secondary Records drawer.
+- Sticky navigation was reduced to Pulse, Update, Question, Goal, and Records.
+- Sprint difficulty now requires an end date of today or later.
+- The Sprint date persists and appears in Goal Pulse.
+- All Step 2 data fields remain available.
+
+### Part 3 Product Findings
+
+#### Keep prominent
+
+- Goal Pulse
+- Four-field quick check-in
+- One active question
+- One recommendation with an evidence basis
+- Difficulty as workload control
+- Evidence separated from claims
+- State history
+
+#### Keep available with less visual weight
+
+- Full goal definition
+- Optional written check-in context
+- Evidence entry
+- History review
+- Repeated prototype boundary explanation
+
+#### Defer
+
+- Moving the repeated-question repair into the core deterministic engine
+- Multiple active goals
+- Backend persistence
+- Authentication
+- AI model reasoning
+- Connectors
+- `/brief` integration
+
+## Current Prototype Files
 
 ```text
 goals-lab/index.html
 goals-lab/styles.css
 goals-lab/app.js
 goals-lab/part2.js
+goals-lab/part3.js
+goals-lab/part3.css
 tests/goals-lab-smoke.test.js
 tests/goals-lab-browser-e2e.spec.cjs
 tests/goals-lab.playwright.config.cjs
 .github/workflows/goals-lab-browser-validation.yml
+docs/concepts/brief-goal-intelligence-worklog.md
 ```
 
 ## Current Reference Goal
 
-The sample goal is:
+The sample goal remains:
 
 > Build and understand the CMX backend.
 
-The prototype uses the current FastAPI learning and backend direction because it provides a measurable goal with technical uncertainty, limited experience, dependencies, milestones, and evidence that can be recorded.
+This goal provides technical uncertainty, limited experience, dependencies, milestones, and evidence that can be tested without changing `/brief`.
 
-## Deterministic Logic
+## Current Logic Boundary
 
-This prototype does not call an AI model.
+The prototype still uses deterministic local rules. It does not call an AI model.
 
-The local rules adjust the active question and recommendation based on:
+The rules currently consider:
 
 - Difficulty
 - Available time
@@ -122,15 +183,14 @@ The local rules adjust the active question and recommendation based on:
 - User answer preference
 - Evidence type and confidence
 - Whether a proposed question has already been answered
-
-This allows the interaction to be evaluated before model behavior is added.
+- Sprint end date
 
 ## Data Boundary
 
 The current prototype:
 
 - Uses sample data by default
-- Stores edits only in the current browser through `localStorage`
+- Stores edits in the current browser through `localStorage`
 - Makes no network requests
 - Reads no connected accounts
 - Does not train or fine-tune a model
@@ -138,68 +198,81 @@ The current prototype:
 - Does not modify `/brief`
 - Does not provide server-side security or multi-device persistence
 
-The page is marked `noindex, nofollow` and visibly labeled as an isolated prototype.
-
-## Known Existing `/brief` Issues
-
-The following reported issues remain separate from this prototype:
-
-- The terminal interaction currently blurs the page instead of working correctly.
-- The login instruction telling users to choose a briefing may need greater prominence.
-- Music autoplay is not working and displays feedback near the bottom.
-
-No fix for those issues is included in this branch.
+The page remains `noindex, nofollow` and visibly labeled as an isolated prototype.
 
 ## Validation Status
 
-The final branch head passed:
+Validated implementation commit:
 
-- Goal Intelligence desktop and Android browser validation
+`72bb4c040eb9a0f1a7b3ccdffb3a8581ffc84614`
+
+Successful workflows:
+
+- Goal Intelligence Browser Validation
 - CMX Static Validation
 - CMX Privacy Audit
 - CMX Secret Scan
 - CMX Navigation Link Guard
 - CMX Terminal Theme Guard
 
-## Remaining Step 3 Parts
+Part 3 browser coverage includes:
 
-### Part 3: Product review and simplification
+- Collapsed default state for secondary work
+- Daily-loop reading order
+- Five-item navigation
+- Goal editing and persistence
+- Sprint end-date validation and persistence
+- Check-in behavior
+- Repeated-question progression
+- Evidence and outcomes
+- Records drawer behavior
+- Theme switching
+- Desktop and Pixel 5 containment
 
-Review whether the interface feels like useful guidance or an oversized form. Remove fields or interactions that do not change the recommendation.
+## Known Existing `/brief` Issues
 
-The review should specifically examine:
+The following reported issues remain separate from this prototype:
 
-- Whether goal setup asks for too much information at once
-- Whether difficulty needs a temporary override and a required Sprint end date
-- Whether the question follow-up should move into the main engine instead of remaining a separate Part 2 repair layer
-- Whether evidence and history deserve equal visual weight in the daily workflow
-- Whether check-in fields can be reduced without lowering recommendation quality
-- Whether one real user session produces a useful Goal Pulse
+- The terminal interaction blurs the page instead of working correctly.
+- The login instruction telling users to choose a briefing may need greater prominence.
+- Music autoplay is not working and displays feedback near the bottom.
 
-### Part 4: Step 3 decision
+No fix for those issues is included in this branch.
 
-Decide whether to:
+## Remaining Step 3 Work
 
-- Revise the prototype
-- Advance to deterministic engine hardening
-- Prepare the FastAPI storage contract
-- Stop or narrow the concept
+### Part 4: Decision Checkpoint
 
-No `/brief` integration should begin during Step 3.
+Make an explicit decision to:
+
+- Revise the prototype again
+- Advance to Step 4 deterministic engine hardening
+- Prepare the later FastAPI storage contract without building it
+- Narrow or stop the concept
+
+The current evidence supports advancing to Step 4, with `/brief` remaining untouched.
 
 ## Revision Log
+
+### August 4, 2026, Part 3
+
+- Added a durable cross-context worklog.
+- Reordered the interface around the daily goal loop.
+- Collapsed planning, optional context, and records.
+- Required an end date for Sprint mode.
+- Extended source and browser coverage.
+- Passed all configured browser and repository checks.
 
 ### August 4, 2026, Part 2
 
 - Added desktop and Android Playwright validation.
-- Confirmed responsive containment, persistence, goal updates, difficulty behavior, check-ins, questions, evidence, outcomes, theme, and navigation.
 - Corrected two browser-test assumptions.
-- Fixed the real repeated-question defect.
-- Recorded that every branch-wide validation check passed.
+- Fixed the repeated-question defect.
+- Passed all branch-wide validation checks.
 
 ### August 4, 2026, Part 1
 
 - Created the first isolated Goal Intelligence frontend prototype.
-- Added the full local goal loop and structured data interactions.
+- Added the local goal loop and structured data interactions.
 - Added source-level smoke coverage.
 - Preserved the boundary that `/brief` remains untouched.
