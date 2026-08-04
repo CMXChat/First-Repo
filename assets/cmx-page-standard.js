@@ -5,7 +5,7 @@
   const currentPath = normalizePath(window.location.pathname);
   const clientSessionKey = 'cmx_session_v4';
   const clientSessionMaxAgeMs = 12 * 60 * 60 * 1000;
-  const guardedRoutes = new Set(['/directory', '/osint', '/phone', '/metadata', '/search', '/missing', '/resources']);
+  const guardedRoutes = new Set(['/directory', '/cases', '/osint', '/phone', '/metadata', '/search', '/missing', '/resources']);
   const directoryVisible = new Set(['/', ...guardedRoutes]);
   const removedRoutes = new Set(['/manual', '/menu', '/workspace', '/collab6', '/collab7', '/pythontest', '/test.html', '/report']);
   const sensitiveRoutes = new Set(['/build', '/callmax', '/project']);
