@@ -25,7 +25,7 @@
   };
   const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';
   const TERMINAL_SUMMARY = 'demo now · backend reserved';
-  const NAVIGATION_VERSION = '20260803-1';
+  const NAVIGATION_VERSION = '20260803-2';
 
   let initialized = false;
   let lastPreset = '';
@@ -187,6 +187,7 @@
 
   function loadNavigation() {
     loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
+    loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);
     loadScript('briefNavigationScript', `/assets/brief/brief-navigation.js?v=${NAVIGATION_VERSION}`, () => {
       loadScript('briefNavigationRuntimeScript', `/assets/brief/brief-navigation-runtime.js?v=${NAVIGATION_VERSION}`);
     });
