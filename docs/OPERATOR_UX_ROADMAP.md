@@ -82,49 +82,72 @@ Implemented:
 - separate lifecycle workspace for destructive restore and purge actions
 - explicit confirmation for archive, restore and purge
 
-### Validation
-
-The completed Cases slice passes:
-
-- strict source and syntax checks
-- unsafe-rendering and browser-persistence checks
-- backend and PostgreSQL integration tests
-- full Chromium desktop regressions
-- full Chromium mobile regressions
-
 See `docs/PHASE_2_CASES_VALIDATION.md` for the validated implementation head and detailed test scope.
 
-## Next slice: Active-case context across remaining tools
+## Completed slice 3: Active-case context across research tools
 
-Apply the protected active-case workflow to:
+The shared protected active-case workflow now covers:
 
-1. Phone
-2. Search
-3. Metadata
-4. Missing Person
+1. OSINT
+2. Phone
+3. Search
+4. Metadata
+5. Missing Person
 
-Each tool must:
+Implemented across the five tools:
 
-- show authenticated or local-only operating mode
-- allow selection of an existing persistent case
-- never save research automatically
-- save through one atomic case transaction where a supported CMX import schema exists
-- block incomplete or invalid snapshots
-- show saved, unsaved, partial and failed states clearly
-- return directly to the selected case
-- preserve tool-specific provider and confidence disclosures
-- pass desktop and mobile browser regressions
+- authenticated or local-only operating mode
+- persistent case selection through the requested case parameter or session continuity
+- explicit save action with no automatic research persistence
+- one atomic case import transaction per save
+- schema validation before writing
+- unsaved, saving, saved and failed state messages
+- direct return to the selected persistent case
+- save disablement after success until the tool state changes
+- desktop and mobile browser regressions
+
+### Schema handling
+
+The shared client supports:
+
+- `cmx-osint-session-v1`
+- `cmx-phone-session-v1`
+- `cmx-search-session-v1`
+- `cmx-metadata-session-v1`
+- `cmx-missing-case-v1`
+
+Phone, OSINT and Missing Person read their current rendered schema JSON directly. Search and Metadata reuse their exact existing export payloads while suppressing the duplicate file download during case saving.
+
+Generated but unsaved Search queries are excluded. Metadata case imports register completed SHA-256 evidence records without uploading the original file bytes.
+
+See `docs/PHASE_3_ACTIVE_CASE_TOOLS_VALIDATION.md` for the validated implementation head and detailed test scope.
+
+## Next slice: Direct source and finding capture
+
+Add deliberate capture controls that let an operator write a single external finding into the active case without exporting and importing a complete tool session.
+
+The first pass should support:
+
+- source registration with label, URL, source type, access time and notes
+- observation capture with entity, source, confidence, observed time and analyst note
+- query result provenance without storing page contents automatically
+- duplicate warnings before write
+- clear pending, saved and failed states
+- explicit disclosure of which fields will enter the case
+- one protected API transaction per capture
+- desktop and mobile browser regressions
+
+The capture workflow must not silently fetch, archive, screenshot or copy third-party page contents.
 
 ## Later slices
 
-1. Add direct capture of sources and external findings.
-2. Add server-side RDAP, ASN, BGP, RPKI, TLS, Certificate Transparency and HTTP adapters.
-3. Add isolated deep metadata and OCR workers.
-4. Add evidence manifests, screenshots, hashes and custody notes.
-5. Add explicit analyst-state editing for verified, inferred, conflicting, ruled-out and unverified records.
-6. Add restrained relationship comparison views.
-7. Add a local inline SVG icon set and compact first-use header treatment.
-8. Add persistent banners for disconnected, partial, unsaved and failed platform states.
+1. Add server-side RDAP, ASN, BGP, RPKI, TLS, Certificate Transparency and HTTP adapters.
+2. Add isolated deep metadata and OCR workers.
+3. Add evidence manifests, screenshots, hashes and custody notes.
+4. Add explicit analyst-state editing for verified, inferred, conflicting, ruled-out and unverified records.
+5. Add restrained relationship comparison views.
+6. Add a local inline SVG icon set and compact first-use header treatment.
+7. Add persistent banners for disconnected, partial, unsaved and failed platform states.
 
 ## Safety and release gate
 
