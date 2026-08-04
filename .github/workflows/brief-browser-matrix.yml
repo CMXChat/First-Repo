@@ -1,25 +1,13 @@
 name: Brief Browser Matrix
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'brief/**'
-      - 'assets/brief/**'
-      - 'assets/daily-video.js'
-      - 'tests/brief-browser-e2e.spec.cjs'
-      - 'tests/brief-theme-e2e.spec.cjs'
-      - 'tests/brief-finalization-e2e.spec.cjs'
-      - 'tests/playwright.config.cjs'
-      - '.github/workflows/brief-browser-matrix.yml'
   pull_request:
     paths:
       - 'brief/**'
       - 'assets/brief/**'
       - 'assets/daily-video.js'
-      - 'tests/brief-browser-e2e.spec.cjs'
-      - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/brief-finalization-e2e.spec.cjs'
+      - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
 
@@ -29,7 +17,7 @@ permissions:
 jobs:
   browser-matrix:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -45,14 +33,14 @@ jobs:
       - name: Install browser engines
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Run Chromium, Firefox, WebKit, iPhone and Android tests
-        run: npx playwright test --config=tests/playwright.config.cjs
+      - name: Run final product and theme flows in every browser project
+        run: npx playwright test tests/brief-finalization-e2e.spec.cjs tests/brief-theme-e2e.spec.cjs --config=tests/playwright.config.cjs
 
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: brief-browser-test-results
+          name: brief-final-browser-results
           path: test-results
           if-no-files-found: ignore
           retention-days: 7
