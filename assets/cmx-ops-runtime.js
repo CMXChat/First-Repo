@@ -246,28 +246,8 @@ $('#commandInput').onkeydown = (event) => {
 
 $('#loginPassword').onkeydown = (event) => { if (event.key === 'Enter') unlock(); };
 
-document.addEventListener('contextmenu', (event) => {
-  if (event.target.closest('#gate, #app')) {
-    event.preventDefault();
-    toast('Restricted interface.');
-  }
-});
-
-document.addEventListener('keydown', (event) => {
-  const key = event.key.toLowerCase();
-  const blocked = event.key === 'F12'
-    || (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].includes(key))
-    || (event.ctrlKey && key === 'u');
-
-  if (blocked) {
-    event.preventDefault();
-    toast('Restricted interface.');
-  }
-});
-
 document.addEventListener('click', (event) => {
   if (!$('#app').classList.contains('hidden') && !event.target.closest('button,a,input,textarea')) $('#commandInput').focus();
 });
 
-window.addEventListener('pagehide', () => sessionStorage.removeItem(KEY.session));
 boot();
