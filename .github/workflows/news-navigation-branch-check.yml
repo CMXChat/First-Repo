@@ -1,14 +1,26 @@
-name: News Navigation Branch Check
+name: News Navigation Validation
 
 on:
-  push:
-    branches:
-      - agent/news-navigation-map
+  pull_request:
     paths:
       - 'assets/news-navigation.js'
       - 'assets/news-navigation-state.js'
       - 'assets/news-navigation.css'
       - 'assets/news-loader.js'
+      - 'assets/news-workspace.js'
+      - 'assets/news-polish.js'
+      - 'news/index.html'
+      - 'scripts/validate-news-product.mjs'
+      - '.github/workflows/news-navigation-branch-check.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/news-navigation.js'
+      - 'assets/news-navigation-state.js'
+      - 'assets/news-navigation.css'
+      - 'assets/news-loader.js'
+      - 'assets/news-workspace.js'
+      - 'assets/news-polish.js'
       - 'news/index.html'
       - 'scripts/validate-news-product.mjs'
       - '.github/workflows/news-navigation-branch-check.yml'
