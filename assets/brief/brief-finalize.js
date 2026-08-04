@@ -52,8 +52,12 @@
   function simplifyNavigator() {
     const bar = $('#briefNavigatorBar');
     if (bar) {
-      bar.setAttribute('aria-label', 'Full workspace sections');
-      $('#briefMapButton', bar)?.remove();
+      bar.setAttribute('aria-label', 'Briefing sections and map');
+      const map = $('#briefMapButton', bar);
+      if (map) {
+        map.setAttribute('aria-label', 'Open briefing map');
+        map.title = 'Open briefing map';
+      }
       const locationLabel = $('.brief-you-are-here small', bar);
       if (locationLabel) locationLabel.textContent = 'CURRENT SECTION';
       const quick = $('#briefBackToQuick', bar);
