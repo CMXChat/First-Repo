@@ -1,0 +1,49 @@
+name: Final Brief Navigation Cache
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-navigation-final-cache.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump navigation assets and bridge
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          bridge = Path('assets/brief/brief-terminal-bridge.js')
+          text = bridge.read_text()
+          old = "const NAVIGATION_VERSION = '20260803-2';"
+          new = "const NAVIGATION_VERSION = '20260803-3';"
+          if old not in text and new not in text:
+              raise SystemExit('navigation version marker not found')
+          bridge.write_text(text.replace(old, new, 1))
+
+          index = Path('brief/index.html')
+          text = index.read_text()
+          old = 'brief-terminal-bridge.js?v=20260803-6'
+          new = 'brief-terminal-bridge.js?v=20260803-7'
+          if old not in text and new not in text:
+              raise SystemExit('bridge cache marker not found')
+          index.write_text(text.replace(old, new, 1))
+          PY
+      - name: Validate and commit
+        run: |
+          node --check assets/brief/brief-terminal-bridge.js
+          node --check assets/brief/brief-navigation.js
+          node --check assets/brief/brief-navigation-runtime.js
+          node tests/brief-navigation-smoke.test.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brief/brief-terminal-bridge.js brief/index.html
+          git commit -m 'Bump final interconnected navigation cache' || exit 0
+          git push
