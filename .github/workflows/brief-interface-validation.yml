@@ -116,4 +116,4 @@ jobs:
           test "${{ steps.install.outcome }}" = "success"
           test "${{ steps.browsers.outputs.status }}" = "0"
 
-# Final rerun after permanent top-map positioning and theme-integrity fixes.
+# Latest rerun after visible-first Map placement and dedicated control contrast safeguards.
