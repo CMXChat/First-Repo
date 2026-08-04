@@ -63,10 +63,10 @@ expect(navigationCss.includes('@media (prefers-reduced-motion: reduce)'), 'navig
 expect(resilience.includes('visualViewport'), 'resilience tracks the visual viewport');
 expect(resilience.includes('--news-viewport-height'), 'resilience publishes viewport dimensions to CSS');
 expect(resilience.includes('newsHelpButton') && resilience.includes('newsHelpLayer'), 'quiet question-mark help is available');
-expect(resilience.includes('closeDrawerForHelp') && resilience.includes('closeHelpForDrawer'), 'help and section drawer coordinate as one overlay at a time');
+expect(resilience.includes('closeDrawerForHelp') && resilience.includes('stopImmediatePropagation') && resilience.includes('trigger.click()'), 'help and section drawer serialize as one overlay at a time');
 expect(resilience.includes("window.addEventListener('offline'"), 'offline changes are detected');
 expect(resilience.includes('The written briefing is still available'), 'offline state explains what remains usable');
-expect(resilience.includes('speechSynthesis'), 'read-aloud capability is checked');
+expect(resilience.includes('speechSynthesis') && resilience.includes('SpeechSynthesisUtterance'), 'read-aloud capability is checked');
 expect(resilience.includes('MutationObserver') && resilience.includes('prepareFrames'), 'dynamic media receives device preparation');
 expect(resilienceCss.includes('var(--news-viewport-height'), 'help and drawer use visible viewport bounds');
 expect(resilienceCss.includes('position: sticky') && resilienceCss.includes('bottom: -20px'), 'overlay actions remain reachable in a sticky footer');
