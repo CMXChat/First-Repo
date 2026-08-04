@@ -1,0 +1,58 @@
+name: Brief Static Final Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-static-validation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run every source-level suite
+        id: tests
+        run: |
+          set -o pipefail
+          : > /tmp/static.log
+          for test_file in \
+            tests/brief-device-smoke.test.js \
+            tests/brief-onboarding-smoke.test.js \
+            tests/brief-navigation-smoke.test.js \
+            tests/brief-theme-map-smoke.test.js \
+            tests/brief-terminal-smoke.test.js \
+            tests/brief-entry-watch-smoke.test.js \
+            tests/brief-stability-smoke.test.js \
+            tests/brief-workspace-team-smoke.test.js \
+            tests/brief-polish-smoke.test.js; do
+            echo "=== $test_file ===" | tee -a /tmp/static.log
+            node "$test_file" 2>&1 | tee -a /tmp/static.log
+          done
+          echo 'failures=0' | tee -a /tmp/static.log
+
+      - name: Record source validation
+        if: always()
+        run: |
+          {
+            echo '# Brief static validation'
+            echo
+            echo "Validated commit: \`$GITHUB_SHA\`"
+            echo
+            echo '```text'
+            cat /tmp/static.log 2>/dev/null || true
+            echo '```'
+          } > docs/brief-static-validation.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/brief-static-validation.md
+          git commit -m 'Record final briefing source validation'
+          git push
