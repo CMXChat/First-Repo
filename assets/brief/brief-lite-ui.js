@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-1';
+  const VERSION = '20260804-2';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -15,16 +15,17 @@
     if (link.getAttribute('href') !== href) link.setAttribute('href', href);
   }
 
-  function loadScript() {
-    if (document.getElementById('briefSystemScript') || window.BRIEF_SYSTEM) return;
+  function ensureScript(id, path) {
+    if (document.getElementById(id)) return;
     const script = document.createElement('script');
-    script.id = 'briefSystemScript';
-    script.src = `/assets/brief/brief-system.js?v=${VERSION}`;
+    script.id = id;
+    script.src = `${path}?v=${VERSION}`;
     script.async = false;
     document.head.appendChild(script);
   }
 
   ensureStyle('briefSystemStyle', '/assets/brief/brief-system.css');
   ensureStyle('briefSystemFixStyle', '/assets/brief/brief-system-fixes.css');
-  loadScript();
+  ensureScript('briefSystemScript', '/assets/brief/brief-system.js');
+  ensureScript('briefFirstPassFixScript', '/assets/brief/brief-first-pass-fixes.js');
 })();
