@@ -3,12 +3,12 @@
 
   const VERSION = '20260804-1';
 
-  function loadStyle() {
-    const href = `/assets/brief/brief-system.css?v=${VERSION}`;
-    let link = document.getElementById('briefSystemStyle');
+  function ensureStyle(id, path) {
+    const href = `${path}?v=${VERSION}`;
+    let link = document.getElementById(id);
     if (!link) {
       link = document.createElement('link');
-      link.id = 'briefSystemStyle';
+      link.id = id;
       link.rel = 'stylesheet';
       document.head.appendChild(link);
     }
@@ -24,6 +24,7 @@
     document.head.appendChild(script);
   }
 
-  loadStyle();
+  ensureStyle('briefSystemStyle', '/assets/brief/brief-system.css');
+  ensureStyle('briefSystemFixStyle', '/assets/brief/brief-system-fixes.css');
   loadScript();
 })();
