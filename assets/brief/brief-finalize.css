@@ -18,7 +18,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.brief-help-actions #briefTipsToggle {
+.brief-help-actions #briefStartVision + #briefTipsToggle {
   grid-column: 1 / -1;
   min-height: 104px;
 }
@@ -28,7 +28,7 @@
     grid-template-columns: 1fr;
   }
 
-  .brief-help-actions #briefTipsToggle {
+  .brief-help-actions #briefStartVision + #briefTipsToggle {
     grid-column: auto;
   }
 }
