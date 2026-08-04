@@ -6,11 +6,16 @@ on:
       - 'assets/news-navigation.js'
       - 'assets/news-navigation-state.js'
       - 'assets/news-navigation.css'
+      - 'assets/news-resilience.js'
+      - 'assets/news-resilience.css'
       - 'assets/news-loader.js'
       - 'assets/news-workspace.js'
       - 'assets/news-polish.js'
+      - 'assets/news-media.js'
       - 'news/index.html'
       - 'scripts/validate-news-product.mjs'
+      - 'tests/news-browser-e2e.spec.cjs'
+      - 'tests/news-playwright.config.cjs'
       - '.github/workflows/news-navigation-branch-check.yml'
   push:
     branches: [main]
@@ -18,11 +23,16 @@ on:
       - 'assets/news-navigation.js'
       - 'assets/news-navigation-state.js'
       - 'assets/news-navigation.css'
+      - 'assets/news-resilience.js'
+      - 'assets/news-resilience.css'
       - 'assets/news-loader.js'
       - 'assets/news-workspace.js'
       - 'assets/news-polish.js'
+      - 'assets/news-media.js'
       - 'news/index.html'
       - 'scripts/validate-news-product.mjs'
+      - 'tests/news-browser-e2e.spec.cjs'
+      - 'tests/news-playwright.config.cjs'
       - '.github/workflows/news-navigation-branch-check.yml'
 
 permissions:
@@ -42,7 +52,10 @@ jobs:
           node --check assets/news-loader.js
           node --check assets/news-navigation.js
           node --check assets/news-navigation-state.js
+          node --check assets/news-resilience.js
           node --check assets/news-workspace.js
           node --check assets/news-polish.js
+          node --check tests/news-browser-e2e.spec.cjs
+          node --check tests/news-playwright.config.cjs
       - name: Run news product regression checks
         run: node scripts/validate-news-product.mjs
