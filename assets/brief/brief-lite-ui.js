@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-7';
+  const VERSION = '20260804-8';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -15,23 +15,42 @@
     if (link.getAttribute('href') !== href) link.setAttribute('href', href);
   }
 
+  function params() {
+    try { return new URL(window.location.href).searchParams; } catch { return new URLSearchParams(); }
+  }
+
   function shouldLoadPersonalOs() {
-    try {
-      const params = new URL(window.location.href).searchParams;
-      if (params.has('personal-os-test')) return true;
-      return !params.has('browser-test') && !params.has('overlay-test');
-    } catch {
-      return true;
-    }
+    const query = params();
+    if (query.has('personal-os-test')) return true;
+    return !query.has('browser-test') && !query.has('overlay-test');
+  }
+
+  function shouldLoadStability() {
+    return !params().has('browser-test');
+  }
+
+  function loadStabilityScript() {
+    if (!shouldLoadStability()) return;
+    if (document.getElementById('briefPersonalOsStabilityScript') || window.BRIEF_PERSONAL_OS_STABILITY) return;
+    const script = document.createElement('script');
+    script.id = 'briefPersonalOsStabilityScript';
+    script.src = `/assets/brief/brief-personal-os-stability.js?v=${VERSION}`;
+    script.async = false;
+    document.head.appendChild(script);
   }
 
   function loadFullHomeScript() {
     if (!shouldLoadPersonalOs()) return;
-    if (document.getElementById('briefFullHomeScript') || window.BRIEF_FULL_HOME) return;
+    if (window.BRIEF_FULL_HOME) {
+      loadStabilityScript();
+      return;
+    }
+    if (document.getElementById('briefFullHomeScript')) return;
     const script = document.createElement('script');
     script.id = 'briefFullHomeScript';
     script.src = `/assets/brief/brief-full-home.js?v=${VERSION}`;
     script.async = false;
+    script.addEventListener('load', loadStabilityScript, { once: true });
     document.head.appendChild(script);
   }
 
@@ -43,7 +62,7 @@
     }
     const existing = document.getElementById('briefPersonalOsScript');
     if (existing) {
-      loadFullHomeScript();
+      existing.addEventListener('load', loadFullHomeScript, { once: true });
       return;
     }
     const script = document.createElement('script');
@@ -54,15 +73,20 @@
     document.head.appendChild(script);
   }
 
+  function afterRepair() {
+    loadPersonalOsScript();
+    loadStabilityScript();
+  }
+
   function loadRepairScript() {
     if (window.BRIEF_OVERLAY_CONTROLS_FIX) {
-      loadPersonalOsScript();
+      afterRepair();
       return;
     }
 
     const existing = document.getElementById('briefOverlayControlsFixScript');
     if (existing) {
-      existing.addEventListener('load', loadPersonalOsScript, { once: true });
+      existing.addEventListener('load', afterRepair, { once: true });
       return;
     }
 
@@ -70,7 +94,7 @@
     repair.id = 'briefOverlayControlsFixScript';
     repair.src = `/assets/brief/brief-overlay-controls-fix.js?v=${VERSION}`;
     repair.async = false;
-    repair.addEventListener('load', loadPersonalOsScript, { once: true });
+    repair.addEventListener('load', afterRepair, { once: true });
     document.head.appendChild(repair);
   }
 
@@ -102,6 +126,9 @@
     ensureStyle('briefPersonalOsDensityStyle', '/assets/brief/brief-personal-os-density.css');
     ensureStyle('briefPersonalOsMobileStyle', '/assets/brief/brief-personal-os-mobile.css');
     ensureStyle('briefFullHomeStyle', '/assets/brief/brief-full-home.css');
+  }
+  if (shouldLoadStability()) {
+    ensureStyle('briefPersonalOsStabilityStyle', '/assets/brief/brief-personal-os-stability.css');
   }
   loadSystemScript();
 })();
