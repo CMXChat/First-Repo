@@ -64,9 +64,10 @@
       window.BRIEF_NAVIGATION?.open?.();
     });
 
-    const help = $('#explainButton', actions);
-    if (help) actions.insertBefore(button, help);
-    else actions.appendChild(button);
+    const viewMode = $('#viewModeButton', actions);
+    if (viewMode?.nextSibling) actions.insertBefore(button, viewMode.nextSibling);
+    else if (viewMode) actions.appendChild(button);
+    else actions.prepend(button);
     updateLabel();
     return true;
   }
