@@ -3,7 +3,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: __dirname,
-  testMatch: ['brief-browser-e2e.spec.cjs', 'brief-theme-e2e.spec.cjs'],
+  testMatch: ['brief-browser-e2e.spec.cjs', 'brief-theme-e2e.spec.cjs', 'brief-finalization-e2e.spec.cjs'],
   timeout: 45000,
   expect: { timeout: 7000 },
   fullyParallel: false,
