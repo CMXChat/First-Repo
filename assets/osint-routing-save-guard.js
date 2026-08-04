@@ -65,6 +65,29 @@
     if (event.target?.classList?.contains('cmx-case-context-select')) preflight = null;
   });
 
+  installRoutingUiGuard();
+
+  function installRoutingUiGuard() {
+    const synchronize = () => {
+      const cancel = document.getElementById('routingCancel');
+      if (cancel) cancel.setAttribute('aria-label', 'Stop routing lookup');
+
+      const records = document.getElementById('routingRecords');
+      if (!records) return;
+      const walker = document.createTreeWalker(records, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach((node) => {
+        node.nodeValue = node.nodeValue
+          .replace(/\binvalid_asn\b/gi, 'Invalid ASN')
+          .replace(/\binvalid_length\b/gi, 'Invalid Length')
+          .replace(/\bnot_found\b/gi, 'Not Found');
+      });
+    };
+    synchronize();
+    new MutationObserver(synchronize).observe(document.documentElement, { childList: true, subtree: true });
+  }
+
   function requestUrlFor(input) {
     try {
       const value = typeof input === 'string' || input instanceof URL ? input : input.url;
