@@ -116,6 +116,13 @@ class ElementMock extends EventTargetMock {
   }
 }
 
+class MutationObserverMock {
+  constructor(callback) { this.callback = callback; }
+  observe() {}
+  disconnect() {}
+  takeRecords() { return []; }
+}
+
 function makeEvent(type) {
   return {
     type,
@@ -182,12 +189,14 @@ windowMock.scrollTo = options => scrollCalls.push(options);
 windowMock.CustomEvent = class CustomEventMock {
   constructor(type, options = {}) { this.type = type; this.detail = options.detail; }
 };
+windowMock.MutationObserver = MutationObserverMock;
 
 const context = {
   window: windowMock,
   document: documentMock,
   sessionStorage: { setItem() {} },
   CustomEvent: windowMock.CustomEvent,
+  MutationObserver: MutationObserverMock,
   setTimeout,
   console
 };
