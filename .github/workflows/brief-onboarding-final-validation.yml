@@ -102,7 +102,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/brief-onboarding-browser-validation.md
-          git commit -m 'Record briefing onboarding browser validation'
+          git commit -m 'Record final passing onboarding browser validation'
           git push
 
       - name: Fail when validation failed
@@ -111,3 +111,5 @@ jobs:
           test "${{ steps.static.outputs.failures }}" = "0"
           test "${{ steps.install.outcome }}" = "success"
           test "${{ steps.browsers.outputs.status }}" = "0"
+
+# Validation rerun after Chromium and Android viewport guard.
