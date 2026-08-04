@@ -44,16 +44,17 @@
   }
 
   function removeTerminalSurface() {
-    document.body.classList.remove('brief-terminal-open');
+    if (document.body.classList.contains('brief-terminal-open')) {
+      document.body.classList.remove('brief-terminal-open');
+    }
 
-    const dock = $('#briefSystemTerminalDock');
-    if (dock) dock.remove();
+    $('#briefSystemTerminalDock')?.remove();
 
     const terminal = $('#briefTerminal');
     if (terminal) {
-      terminal.hidden = true;
-      terminal.setAttribute('aria-hidden', 'true');
-      terminal.inert = true;
+      if (!terminal.hidden) terminal.hidden = true;
+      if (terminal.getAttribute('aria-hidden') !== 'true') terminal.setAttribute('aria-hidden', 'true');
+      if (!terminal.inert) terminal.inert = true;
     }
 
     $$('[data-terminal-open]').forEach(node => node.remove());
@@ -76,7 +77,9 @@
     $$('[data-system-link]').forEach(card => {
       if (!card.hasAttribute('tabindex')) card.tabIndex = 0;
       if (!card.hasAttribute('role')) card.setAttribute('role', 'button');
-      card.setAttribute('aria-label', `${card.querySelector('strong')?.textContent || 'Open section'}. ${card.querySelector('b')?.textContent || ''}`.trim());
+      if (!card.hasAttribute('aria-label')) {
+        card.setAttribute('aria-label', `${card.querySelector('strong')?.textContent || 'Open section'}. ${card.querySelector('b')?.textContent || ''}`.trim());
+      }
     });
   }
 
@@ -97,7 +100,7 @@
     const tourVisible = closeInvalidLayer('#briefSystemTour', '.brief-system-tour');
     closeInvalidLayer('#briefSystemMoreLayer', '.brief-system-more-card', '#briefSystemMoreButton');
 
-    if (!switcherVisible && !tourVisible) {
+    if (!switcherVisible && !tourVisible && document.body.classList.contains('brief-system-overlay-open')) {
       document.body.classList.remove('brief-system-overlay-open');
     }
   }
@@ -134,9 +137,6 @@
         return;
       }
 
-      const card = event.target.closest?.('[data-system-link]');
-      if (card && event.target === card) card.querySelector('b')?.focus?.();
-
       [0, 80, 180, 360].forEach(delay => window.setTimeout(clearStrandedBlur, delay));
     }, true);
 
@@ -158,7 +158,7 @@
   }
 
   window.BRIEF_PERSONAL_OS_STABILITY = {
-    version: '20260804-1',
+    version: '20260804-2',
     repair,
     clearStrandedBlur,
     updateVisibleViewport
