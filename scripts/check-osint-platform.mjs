@@ -12,8 +12,11 @@ const requiredFiles = [
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/metadata-workbench.css',
+  'assets/osint-workbench.js',
+  'assets/osint-workbench.css',
   'search/index.html',
   'metadata/index.html',
+  'osint/index.html',
   'SECURITY.md',
   'docs/OSINT_PLATFORM_ROADMAP.md'
 ];
@@ -28,7 +31,8 @@ const javascriptFiles = [
   'assets/cmx-ops-core.js',
   'assets/cmx-ops-runtime.js',
   'assets/search-workbench.js',
-  'assets/metadata-workbench.js'
+  'assets/metadata-workbench.js',
+  'assets/osint-workbench.js'
 ];
 
 for (const file of javascriptFiles) {
@@ -51,7 +55,7 @@ const bannedPatterns = [
   { pattern: /```||/, label: 'trailing editor artifact' }
 ];
 
-const migratedPages = ['search/index.html', 'metadata/index.html'];
+const migratedPages = ['search/index.html', 'metadata/index.html', 'osint/index.html'];
 for (const file of migratedPages) {
   if (!existsSync(join(root, file))) continue;
   const source = readFileSync(join(root, file), 'utf8');
@@ -69,6 +73,11 @@ checkPageModule('search/index.html', 'assets/search-workbench.js', [
 checkPageModule('metadata/index.html', 'assets/metadata-workbench.js', [
   '/assets/metadata-workbench.js',
   '/assets/metadata-workbench.css',
+  '/assets/cmx-tool-shell.css'
+]);
+checkPageModule('osint/index.html', 'assets/osint-workbench.js', [
+  '/assets/osint-workbench.js',
+  '/assets/osint-workbench.css',
   '/assets/cmx-tool-shell.css'
 ]);
 
