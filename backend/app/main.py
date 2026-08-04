@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 import uuid
 from collections import defaultdict, deque
@@ -17,9 +18,12 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from .api.dns import router as dns_router
 from .api.system import router as system_router
 from .config import Settings, get_settings
+from .logging import configure_logging
 from .security import AccessIdentity, authenticate_request
 from .services.dns import DnsResolverService
 
+configure_logging()
+logger = logging.getLogger("cmx.request")
 settings: Settings = get_settings()
 
 
@@ -58,8 +62,10 @@ async def lifespan(app: FastAPI):
     )
     app.state.http_client = client
     app.state.dns_resolver = DnsResolverService(client, settings)
+    logger.info("application_started", extra={"event": "application_started"})
     yield
     await client.aclose()
+    logger.info("application_stopped", extra={"event": "application_stopped"})
 
 
 app = FastAPI(
@@ -78,6 +84,7 @@ async def access_and_security_boundary(
     request: Request,
     call_next: Callable[[Request], Awaitable[Response]],
 ) -> Response:
+    started_at = time.perf_counter()
     request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))[:128]
     request.state.request_id = request_id
     identity: AccessIdentity | None = None
@@ -87,32 +94,73 @@ async def access_and_security_boundary(
             identity = await authenticate_request(request, settings)
             request.state.identity = identity
         except HTTPException as exc:
-            return secured_response(
+            response = secured_response(
                 JSONResponse(status_code=exc.status_code, content={"detail": exc.detail}),
                 request_id,
             )
+            log_request(request, response, started_at, request_id, None, "access_denied")
+            return response
 
     if request.url.path.startswith("/api/") and request.url.path != "/api/health/live":
         client_key = (
-            identity.email
-            if identity and identity.email
+            identity.subject
+            if identity
             else request.headers.get("CF-Connecting-IP")
             or (request.client.host if request.client else "unknown")
         )
         allowed, retry_after = await rate_limiter.allow(client_key)
         if not allowed:
-            response = JSONResponse(
-                status_code=429,
-                content={"detail": "API rate limit exceeded"},
-                headers={"Retry-After": str(retry_after)},
+            response = secured_response(
+                JSONResponse(
+                    status_code=429,
+                    content={"detail": "API rate limit exceeded"},
+                    headers={"Retry-After": str(retry_after)},
+                ),
+                request_id,
             )
-            return secured_response(response, request_id)
+            log_request(request, response, started_at, request_id, identity, "rate_limited")
+            return response
 
     try:
         response = await call_next(request)
     except Exception:
+        logger.exception(
+            "request_failed",
+            extra={
+                "request_id": request_id,
+                "method": request.method,
+                "path": request.url.path,
+                "identity": identity.subject if identity else "anonymous",
+                "event": "unhandled_exception",
+            },
+        )
         response = JSONResponse(status_code=500, content={"detail": "Internal server error"})
-    return secured_response(response, request_id, request.url.path)
+
+    response = secured_response(response, request_id, request.url.path)
+    log_request(request, response, started_at, request_id, identity, "request_completed")
+    return response
+
+
+def log_request(
+    request: Request,
+    response: Response,
+    started_at: float,
+    request_id: str,
+    identity: AccessIdentity | None,
+    event: str,
+) -> None:
+    logger.info(
+        event,
+        extra={
+            "request_id": request_id,
+            "method": request.method,
+            "path": request.url.path,
+            "status_code": response.status_code,
+            "duration_ms": round((time.perf_counter() - started_at) * 1000, 2),
+            "identity": identity.subject if identity else "anonymous",
+            "event": event,
+        },
+    )
 
 
 def secured_response(response: Response, request_id: str, path: str = "") -> Response:
