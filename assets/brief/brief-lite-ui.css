@@ -1,4 +1,5 @@
-@import url('/assets/brief/brief-system.css?v=20260804-1');
-@import url('/assets/brief/brief-system-fixes.css?v=20260804-1');
+@import url('/assets/brief/brief-system.css?v=20260804-2');
+@import url('/assets/brief/brief-system-fixes.css?v=20260804-2');
+@import url('/assets/brief/brief-overlay-controls-fix.css?v=20260804-2');
 
 /* Compatibility entry point retained for cached /brief HTML. */
