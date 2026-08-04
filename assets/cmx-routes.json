@@ -1,10 +1,10 @@
 {
-  "version": 22,
+  "version": 23,
   "updated": "2026-08-04",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
     {"path":"/directory/","name":"Operations Directory","description":"Approved directory for current active private tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
-    {"path":"/cases/","name":"Cases","description":"Persistent Access-scoped workspace for cases, entities, observations, sources, queries, evidence, relationships, notes and CMX session imports.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"1","gated":true},
+    {"path":"/cases/","name":"Cases","description":"Server-authenticated, Access-scoped workspace for cases, entities, observations, sources, queries, evidence, relationships, notes and CMX session imports. Static hosting remains read-only.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"1","gated":false},
     {"path":"/osint/","name":"OSINT Console","description":"Normalized entity intake, DNS evidence, safe pivots and session observations.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"2","gated":false},
     {"path":"/phone/","name":"Phone Intelligence","description":"Conservative local phone normalization and disclosed investigation pivots.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"3","gated":false},
     {"path":"/metadata/","name":"Metadata Inspector","description":"Bounded local file metadata inspection, hashing and structured export.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"4","gated":false},
