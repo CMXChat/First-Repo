@@ -24,6 +24,7 @@
 
   root.dataset.cmxAccess = guardedRoutes.has(currentPath) ? 'client-session' : 'public-entry';
   if (guardedRoutes.has(currentPath) && root.dataset.cmxModern !== 'true') loadToolHardening();
+  applySearchPrefill();
 
   function hasActiveClientSession() {
     try {
@@ -48,6 +49,30 @@
     script.defer = true;
     script.dataset.cmxToolHardening = 'true';
     document.head.appendChild(script);
+  }
+
+  function applySearchPrefill() {
+    if (currentPath !== '/search') return;
+    const params = new URLSearchParams(window.location.search);
+    const entity = (params.get('entity') || '').trim().slice(0, 420);
+    const type = (params.get('type') || '').toLowerCase();
+    if (!entity) return;
+
+    const fieldMap = {
+      email: 'email',
+      phone: 'phone',
+      username: 'usernames'
+    };
+    const fieldId = fieldMap[type] || 'fullName';
+    const field = document.getElementById(fieldId);
+    if (!field || field.value) return;
+    field.value = entity;
+
+    if (fieldId === 'fullName' && type && type !== 'auto') {
+      const label = document.querySelector('label[for="fullName"]');
+      if (label) label.textContent = 'Name or exact identifier';
+      field.placeholder = 'Name, domain, IP, URL, or exact phrase';
+    }
   }
 
   function unlinkAnchor(anchor) {
