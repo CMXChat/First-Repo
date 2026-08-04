@@ -129,3 +129,5 @@ jobs:
           test "${{ steps.static.outputs.failures }}" = "0"
           test "${{ steps.install.outcome }}" = "success"
           test "${{ steps.browsers.outputs.status }}" = "0"
+
+# Triggered after final navigation and Vision integration.
