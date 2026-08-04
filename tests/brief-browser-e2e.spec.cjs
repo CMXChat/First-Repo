@@ -282,7 +282,7 @@ test('light and dark themes keep representative cards, charts and maps readable'
 
   await page.evaluate(() => window.BRIEF_APP.setPreset('team'));
   await expect.poll(() => page.evaluate(() => window.BRIEF_APP.getPreset())).toBe('team');
-  await expectReadable(page.locator('.polish-team-flow > div').first(), 'strong');
+  await expectReadable(page.locator('.polish-workload-card'), 'strong');
   await page.locator('[data-depth-choice="full"]').click();
   await expectReadable(page.locator('.polish-team-board article').first(), 'strong');
 
