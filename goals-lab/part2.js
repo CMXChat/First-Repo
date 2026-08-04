@@ -3,6 +3,7 @@
 
   const STORAGE_KEY = 'cmx_goal_intelligence_lab_v1';
   const RESTORE_SCROLL_KEY = 'cmx_goal_intelligence_restore_scroll_v1';
+  const PART3_SCRIPT_ID = 'goalsLabPart3Script';
 
   function uid(prefix) {
     return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
@@ -97,14 +98,28 @@
     window.requestAnimationFrame(() => window.scrollTo({ top: Number.isFinite(top) ? top : 0, behavior: 'auto' }));
   }
 
+  function loadPart3() {
+    if (document.getElementById(PART3_SCRIPT_ID)) return;
+    const script = document.createElement('script');
+    script.id = PART3_SCRIPT_ID;
+    script.src = './part3.js?v=20260804-1';
+    script.defer = true;
+    document.head.append(script);
+  }
+
+  function finishSetup() {
+    restoreScroll();
+    loadPart3();
+  }
+
   document.addEventListener('click', event => {
     if (!event.target.closest?.('#submitQuestionAnswer')) return;
     window.setTimeout(advanceRepeatedQuestion, 80);
   });
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', restoreScroll, { once: true });
+    document.addEventListener('DOMContentLoaded', finishSetup, { once: true });
   } else {
-    restoreScroll();
+    finishSetup();
   }
 })();
