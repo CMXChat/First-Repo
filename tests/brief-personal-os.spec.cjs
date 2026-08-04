@@ -84,13 +84,21 @@ test('OS command opens the repaired terminal and closes cleanly', async ({ page 
   await expect(page.locator('body')).not.toHaveClass(/brief-terminal-open/);
 });
 
-test('mobile uses bottom apps, swipe-sized screens and no page scroll', async ({ page }) => {
+test('mobile uses a compact bottom-app dashboard with no page scroll', async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await enterPersonalBriefing(page);
 
   const navBox = await page.locator('#briefOsNav').boundingBox();
   expect(navBox).not.toBeNull();
-  expect(navBox.y).toBeGreaterThan(760);
+  expect(navBox.y).toBeGreaterThan(790);
+
+  const commandBox = await page.locator('.brief-os-command-card').boundingBox();
+  const nextBox = await page.locator('.brief-os-next-card').boundingBox();
+  expect(commandBox).not.toBeNull();
+  expect(nextBox).not.toBeNull();
+  expect(commandBox.height).toBeLessThan(380);
+  expect(nextBox.y).toBeLessThan(520);
+  expect(nextBox.y + nextBox.height).toBeLessThan(690);
 
   await page.locator('#briefOsNav [data-os-open="actions"]').click();
   await expect(page.locator('#briefOsTitle')).toHaveText('Work');
