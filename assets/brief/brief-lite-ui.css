@@ -1,4 +1,4 @@
-/* Compact Lite Mode entry, clearer top controls and stronger entry positioning. */
+/* Stable Lite Mode, compact top controls and entry-position protection. */
 
 html.brief-entry-top-guard,
 html.brief-entry-top-guard body,
@@ -6,6 +6,35 @@ html.brief-entry-top-guard #briefApp,
 html.brief-entry-top-guard #briefMain {
   scroll-behavior: auto !important;
   overflow-anchor: none !important;
+}
+
+html.brief-entry-top-guard #briefNavigatorBar {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Quick and Lite must show only the compact workspace. */
+body.has-brief-workspace[data-brief-depth='quick'] #briefMain > .brief-section:not(#briefWorkspace),
+body.has-brief-workspace[data-brief-depth='quick'] #briefMain > .section-nav,
+body.has-brief-workspace[data-brief-depth='quick'] #interactionHint,
+body.has-brief-workspace[data-brief-depth='quick'] #briefNavigatorBar,
+body.has-brief-workspace[data-brief-depth='quick'] .scenario-dock,
+body.brief-lite-mode-active #briefNavigatorBar,
+body.brief-lite-mode-active .scenario-dock {
+  display: none !important;
+}
+
+body.has-brief-workspace[data-brief-depth='quick'] #today,
+body.has-brief-workspace[data-brief-depth='quick'] #briefWorkspace {
+  display: grid !important;
+}
+
+body.has-brief-workspace[data-brief-depth='quick'] #briefWorkspace {
+  display: block !important;
+}
+
+body.has-brief-workspace[data-brief-depth='full'] #briefNavigatorBar {
+  display: grid;
 }
 
 .top-actions {
@@ -133,6 +162,7 @@ html.brief-entry-top-guard #briefMain {
   box-shadow: 0 0 18px rgba(87, 168, 255, 0.24) !important;
 }
 
+/* Lite entry near the end of the full briefing. */
 .brief-lite-experience {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -229,6 +259,134 @@ html.brief-entry-top-guard #briefMain {
   transform: translateY(-1px);
 }
 
+/* Quick workspace surface and card repair. */
+body[data-brief-depth='quick'] .brief-workspace-shell {
+  padding-top: clamp(24px, 4vw, 48px);
+}
+
+body[data-brief-depth='quick'] .brief-workspace-panel {
+  min-height: 0;
+  overflow: hidden;
+}
+
+body[data-brief-depth='quick'] .quick-signal-card,
+body[data-brief-depth='quick'] .quick-next-action,
+body[data-brief-depth='quick'] .quick-quote-card,
+body[data-brief-depth='quick'] .quick-dayline,
+body[data-brief-depth='quick'] .quick-compact-list,
+body[data-brief-depth='quick'] .quick-timeline li,
+body[data-brief-depth='quick'] .quick-watch-card,
+body[data-brief-depth='quick'] .brief-priority-visuals,
+body[data-brief-depth='quick'] .polish-kpi,
+body[data-brief-depth='quick'] .polish-chart-card,
+body[data-brief-depth='quick'] .polish-ring-card,
+body[data-brief-depth='quick'] .polish-decision-card,
+body[data-brief-depth='quick'] .polish-workload-card {
+  min-width: 0;
+}
+
+body[data-brief-depth='quick'] .quick-signal-card h4,
+body[data-brief-depth='quick'] .quick-next-action h4,
+body[data-brief-depth='quick'] .quick-compact-list strong,
+body[data-brief-depth='quick'] .quick-timeline strong,
+body[data-brief-depth='quick'] .quick-watch-card strong {
+  overflow-wrap: anywhere;
+}
+
+/* Full-workspace light surfaces also need readable cards. */
+html[data-theme='light'] .scenario-choice,
+html[data-theme='light'] .scenario-intro,
+html[data-theme='light'] .cycle-card,
+html[data-theme='light'] .intelligence-card,
+html[data-theme='light'] .perspective-card,
+html[data-theme='light'] .mediator-panel,
+html[data-theme='light'] .mediator-steps article,
+html[data-theme='light'] .promise-panel,
+html[data-theme='light'] .friend-panel,
+html[data-theme='light'] .friend-panel li,
+html[data-theme='light'] .world-clock,
+html[data-theme='light'] .kpi-card,
+html[data-theme='light'] .business-chart-panel,
+html[data-theme='light'] .action-register,
+html[data-theme='light'] .advice-stack,
+html[data-theme='light'] .advice-stack article,
+html[data-theme='light'] .business-news,
+html[data-theme='light'] .people-space-grid > article,
+html[data-theme='light'] .habit-panel,
+html[data-theme='light'] .habit-card,
+html[data-theme='light'] .pattern-list,
+html[data-theme='light'] .pattern-list article,
+html[data-theme='light'] .note-stream,
+html[data-theme='light'] .note-stream article,
+html[data-theme='light'] .scenario-music,
+html[data-theme='light'] .scenario-song {
+  color: #142235 !important;
+  border-color: #d4dee8 !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  box-shadow: 0 14px 34px rgba(42, 61, 84, 0.08);
+}
+
+html[data-theme='light'] .scenario-choice span,
+html[data-theme='light'] .scenario-intro h2,
+html[data-theme='light'] .cycle-card strong,
+html[data-theme='light'] .intelligence-card h3,
+html[data-theme='light'] .perspective-card h3,
+html[data-theme='light'] .perspective-card blockquote,
+html[data-theme='light'] .mediator-panel h3,
+html[data-theme='light'] .mediator-steps h4,
+html[data-theme='light'] .promise-panel h3,
+html[data-theme='light'] .promise-panel strong,
+html[data-theme='light'] .friend-panel h3,
+html[data-theme='light'] .world-clock h3,
+html[data-theme='light'] .world-clock strong,
+html[data-theme='light'] .kpi-card strong,
+html[data-theme='light'] .business-chart-panel h3,
+html[data-theme='light'] .action-register h3,
+html[data-theme='light'] .action-register strong,
+html[data-theme='light'] .advice-stack h3,
+html[data-theme='light'] .advice-stack strong,
+html[data-theme='light'] .business-news h3,
+html[data-theme='light'] .business-news h4,
+html[data-theme='light'] .people-space-grid h3,
+html[data-theme='light'] .habit-panel h3,
+html[data-theme='light'] .habit-card strong,
+html[data-theme='light'] .pattern-list h3,
+html[data-theme='light'] .pattern-list h4,
+html[data-theme='light'] .note-stream h3,
+html[data-theme='light'] .note-stream strong,
+html[data-theme='light'] .scenario-music h3,
+html[data-theme='light'] .scenario-song strong {
+  color: #142235 !important;
+}
+
+html[data-theme='light'] .scenario-choice small,
+html[data-theme='light'] .scenario-intro > p:last-child,
+html[data-theme='light'] .cycle-card small,
+html[data-theme='light'] .intelligence-card p,
+html[data-theme='light'] .perspective-card small,
+html[data-theme='light'] .mediator-panel p,
+html[data-theme='light'] .mediator-steps p,
+html[data-theme='light'] .promise-panel span,
+html[data-theme='light'] .promise-panel small,
+html[data-theme='light'] .friend-panel li,
+html[data-theme='light'] .world-clock span,
+html[data-theme='light'] .world-clock small,
+html[data-theme='light'] .kpi-card small,
+html[data-theme='light'] .action-register small,
+html[data-theme='light'] .action-register em,
+html[data-theme='light'] .advice-stack p,
+html[data-theme='light'] .business-news p,
+html[data-theme='light'] .people-space-grid p,
+html[data-theme='light'] .habit-panel p,
+html[data-theme='light'] .pattern-list p,
+html[data-theme='light'] .pattern-list small,
+html[data-theme='light'] .note-stream p,
+html[data-theme='light'] .note-stream span,
+html[data-theme='light'] .scenario-song small {
+  color: #5b6979 !important;
+}
+
 html[data-theme='light'] .top-actions {
   border-color: rgba(30, 78, 120, 0.14);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(236, 244, 252, 0.92));
@@ -257,12 +415,79 @@ html[data-theme='light'] .brief-lite-actions > small {
   color: #5d6b79;
 }
 
+html[data-theme='light'] body[data-brief-depth='quick'] .brief-workspace-panel,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-signal-card,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-next-action,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-quote-card,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-dayline,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-compact-list,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-timeline li,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-watch-card,
+html[data-theme='light'] body[data-brief-depth='quick'] .brief-priority-visuals,
+html[data-theme='light'] body[data-brief-depth='quick'] .polish-kpi,
+html[data-theme='light'] body[data-brief-depth='quick'] .polish-chart-card,
+html[data-theme='light'] body[data-brief-depth='quick'] .polish-ring-card,
+html[data-theme='light'] body[data-brief-depth='quick'] .polish-decision-card,
+html[data-theme='light'] body[data-brief-depth='quick'] .polish-workload-card {
+  color: #142235 !important;
+  border-color: #d4dee8 !important;
+  background: #ffffff !important;
+  box-shadow: 0 16px 42px rgba(42, 61, 84, 0.1) !important;
+}
+
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-signal-card p,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-signal-card small,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-next-action p,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-quote-card footer,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-timeline small,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-compact-list small,
+html[data-theme='light'] body[data-brief-depth='quick'] .quick-watch-card p {
+  color: #59697a !important;
+}
+
+@media (max-width: 900px) {
+  body[data-brief-depth='quick'] .brief-workspace-top,
+  body[data-brief-depth='quick'] .quick-panel-heading,
+  body[data-brief-depth='quick'] .quick-overview-lower,
+  body[data-brief-depth='quick'] .quick-dayline,
+  body[data-brief-depth='quick'] .polish-business-grid,
+  body[data-brief-depth='quick'] .polish-team-summary-grid,
+  body[data-brief-depth='quick'] .polish-team-bottom {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-brief-depth='quick'] .brief-workspace-top {
+    align-items: start;
+  }
+
+  body[data-brief-depth='quick'] .brief-depth-switch {
+    width: 100%;
+  }
+
+  body[data-brief-depth='quick'] .brief-depth-switch button {
+    flex: 1 1 50%;
+  }
+
+  body[data-brief-depth='quick'] .quick-signal-grid,
+  body[data-brief-depth='quick'] .polish-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body[data-brief-depth='quick'] .quick-timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
 @media (max-width: 760px) {
   .topbar .brand { display: none; }
 
   .topbar,
   .top-actions {
     width: 100%;
+  }
+
+  .topbar {
+    padding-inline: max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-right));
   }
 
   .top-actions {
@@ -308,8 +533,169 @@ html[data-theme='light'] .brief-lite-actions > small {
 
   .brief-lite-actions > small { display: none; }
 
-  #briefLiteButton {
+  #briefLiteButton { width: 100%; }
+
+  body[data-brief-depth='quick'] .brief-workspace-shell {
+    padding: 22px 0 48px;
+  }
+
+  body[data-brief-depth='quick'] .brief-workspace-top {
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  body[data-brief-depth='quick'] .brief-workspace-top h2 {
+    font-size: clamp(34px, 11vw, 52px);
+    line-height: 0.98;
+  }
+
+  body[data-brief-depth='quick'] .brief-space-widget,
+  body[data-brief-depth='quick'] .brief-signal-rail,
+  body[data-brief-depth='quick'] .brief-workspace-tabs,
+  body[data-brief-depth='quick'] .brief-workspace-panel {
     width: 100%;
+    max-width: 100%;
+  }
+
+  body[data-brief-depth='quick'] .brief-signal-rail {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  body[data-brief-depth='quick'] .brief-workspace-panel {
+    min-height: 0;
+    padding: 16px !important;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+
+  body[data-brief-depth='quick'] .quick-panel-heading {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  body[data-brief-depth='quick'] .quick-panel-heading h3 {
+    font-size: clamp(30px, 9vw, 44px);
+    line-height: 1;
+  }
+
+  body[data-brief-depth='quick'] .quick-signal-grid,
+  body[data-brief-depth='quick'] .polish-kpi-grid,
+  body[data-brief-depth='quick'] .quick-timeline,
+  body[data-brief-depth='quick'] .polish-team-board {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-brief-depth='quick'] .quick-signal-card {
+    min-height: 0;
+    padding: 17px;
+  }
+
+  body[data-brief-depth='quick'] .quick-signal-card h4 {
+    margin-top: 14px;
+    font-size: clamp(22px, 7vw, 30px);
+  }
+
+  body[data-brief-depth='quick'] .quick-overview-lower,
+  body[data-brief-depth='quick'] .quick-dayline {
+    gap: 10px;
+  }
+
+  body[data-brief-depth='quick'] .quick-next-action,
+  body[data-brief-depth='quick'] .quick-quote-card,
+  body[data-brief-depth='quick'] .quick-dayline,
+  body[data-brief-depth='quick'] .quick-compact-list {
+    border-radius: 18px;
+  }
+
+  body[data-brief-depth='quick'] .quick-quote-card {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 20px;
+  }
+
+  body[data-brief-depth='quick'] .quick-quote-mark {
+    font-size: 58px;
+  }
+
+  body[data-brief-depth='quick'] .quick-quote-card p {
+    font-size: clamp(25px, 8vw, 36px);
+  }
+
+  body[data-brief-depth='quick'] .quick-dayline {
+    padding: 18px;
+  }
+
+  body[data-brief-depth='quick'] .quick-timeline li {
+    min-height: 0;
+  }
+
+  body[data-brief-depth='quick'] .quick-compact-list article {
+    grid-template-columns: 1fr !important;
+    gap: 6px;
+    padding: 16px;
+  }
+
+  body[data-brief-depth='quick'] .quick-compact-list article[data-quick-route] {
+    padding-right: 62px;
+  }
+
+  body[data-brief-depth='quick'] .quick-watch-card {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-brief-depth='quick'] .quick-watch-card img {
+    min-height: 190px;
+    max-height: 260px;
+  }
+
+  body[data-brief-depth='quick'] .quick-watch-card > span {
+    padding: 20px;
+  }
+
+  body[data-brief-depth='quick'] .polish-chart-card,
+  body[data-brief-depth='quick'] .polish-workload-card,
+  body[data-brief-depth='quick'] .polish-handoff-visual,
+  body[data-brief-depth='quick'] .polish-finance-bars {
+    overflow-x: auto;
+  }
+
+  body[data-brief-depth='quick'] .polish-sparkline {
+    min-width: 520px;
+  }
+
+  body[data-brief-depth='quick'] .polish-workload-list article {
+    grid-template-columns: minmax(100px, 0.8fr) minmax(100px, 1fr) auto;
+  }
+
+  html[data-theme='light'] .scenario-selector {
+    gap: 10px;
+  }
+
+  html[data-theme='light'] .scenario-choice,
+  html[data-theme='light'] .friend-panel li,
+  html[data-theme='light'] .mediator-steps article {
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 430px) {
+  body[data-brief-depth='quick'] .brief-depth-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  body[data-brief-depth='quick'] .brief-depth-switch button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .brief-space-widget {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .brief-space-widget #viewModeButton {
+    width: 100% !important;
   }
 }
 
