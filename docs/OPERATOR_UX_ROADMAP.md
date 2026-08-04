@@ -280,35 +280,85 @@ Implemented:
 
 See `docs/PHASE_5_ENRICHMENT_VALIDATION.md` for the validated implementation head and detailed network boundary.
 
-## Next slice: BGP and RPKI context
+## Completed slice 6: BGP, RPKI and branch-wide bug audit
 
-Extend the protected infrastructure boundary with routing context while preserving the current conservative interpretation model.
+The protected routing boundary now supports:
 
-The first pass should support:
+- public IP or exact prefix to origin ASN context
+- ASN announced-prefix records and bounded timelines
+- bounded RIPE RIS route visibility
+- bounded AS paths
+- RPKI `valid`, `invalid`, `not_found`, and `unavailable` states
+- fixed RIPEstat server-side providers only
+- provider, source URL, collection time, target, requester, cache, count, and truncation disclosure
+- explicit observation save with `unrated` confidence
+- review-only relationship suggestions
 
-- prefix-to-origin ASN lookup
-- ASN-to-announced-prefix lookup
-- BGP route visibility from a fixed, reviewed public provider
-- RPKI Route Origin Authorization state
-- valid, invalid, not-found, and unavailable result states
-- provider, source URL, collection time, cache state, and query target disclosure
-- bounded timeouts, response bytes, and record counts
-- public IP, prefix, and ASN validation
-- no arbitrary URL input for routing providers
-- explicit operator save into the active case with `unrated` confidence
-- restrained relationship suggestions that require operator review before creation
-- desktop, mobile, backend, PostgreSQL, privacy, and source-policy regressions
+The browser cannot supply routing-provider URLs and does not call RIPEstat directly.
 
-The interface must separate observed routing data from conclusions about ownership, control, compromise, attribution, or malicious activity.
+Routing evidence remains separate from conclusions about ownership, control, compromise, attribution, intent, reputation, or malicious activity.
+
+The same phase audited the full migration branch and added deterministic regressions for transport limits, source linking, enrichment deadlines, Unicode targets, delayed-save races, exact-case hydration, stale case and audit responses, lifecycle navigation, provenance-aware duplicates, rate-limiter retention, fixed-chrome pointer interception, routing cancellation cleanup, and failed duplicate-preflight writes.
+
+See `docs/PHASE_6_ROUTING_AND_BUG_AUDIT_VALIDATION.md` for the validated implementation head and complete defect record.
+
+## Completed slice 7: Evidence manifests and custody notes
+
+The Cases Evidence workspace now extends the existing evidence registration model with an append-only custody ledger.
+
+Implemented:
+
+- owner-scoped custody records linked to one case and evidence item
+- received, transferred, stored, accessed, verified, released, returned, disposed, and note event types
+- authenticated recording subject
+- custodian, location, note, and occurrence time
+- optional observed SHA-256
+- server-calculated `not_checked`, `match`, and `mismatch` integrity states
+- required SHA-256 for explicit verification events
+- immutable individual custody events
+- linked source provenance
+- deterministic `cmx-evidence-manifest-v1` JSON
+- stable manifest SHA-256 excluding the read-time generation timestamp
+- safe manifest preview and explicit JSON download
+- redacted operational audit records
+- static-mode write denial
+- stale case and evidence response rejection
+- same-origin-only API use
+- no local storage of evidence, custody, or manifest contents
+- desktop, mobile, backend, PostgreSQL, privacy, secret, source-policy, container, and migration regressions
+
+The manifest records evidence metadata, hashes, provenance references, and operator-entered custody events. It does not independently prove source truth, identity, ownership, authorization outside the case, or uninterrupted physical control.
+
+See `docs/PHASE_7_EVIDENCE_CUSTODY_VALIDATION.md` for the validated implementation head and complete manifest contract.
+
+## Next slice: Isolated deep metadata and OCR workers
+
+The next bounded phase should add deeper parsing without moving untrusted file processing into the FastAPI request process.
+
+The first pass should require:
+
+- explicit operator authorization and upload action
+- strict file-size and media-type limits
+- isolated worker execution without network access
+- CPU, memory, process, and wall-clock limits
+- temporary encrypted or memory-backed working storage
+- source-byte deletion after the bounded job
+- SHA-256 continuity with the existing evidence registration
+- parser and OCR engine provenance
+- clear partial, unsupported, failed, and completed states
+- no hidden background continuation after the request or job deadline
+- explicit operator save into the selected case
+- no automatic confidence elevation
+- no automatic identity, ownership, attribution, or causation conclusions
+- desktop, mobile, backend, container, migration, privacy, and protected-staging regressions
 
 ## Later slices
 
-1. Add isolated deep metadata and OCR workers.
-2. Add evidence manifests, screenshots, hashes and custody notes.
-3. Add explicit analyst-state editing for verified, inferred, conflicting, ruled-out and unverified records.
-4. Add restrained relationship comparison views.
-5. Add a local inline SVG icon set and compact first-use header treatment.
-6. Add persistent banners for disconnected, partial, unsaved and failed platform states.
+1. Add explicit analyst-state editing for verified, inferred, conflicting, ruled-out and unverified records.
+2. Add restrained relationship comparison views.
+3. Add a local inline SVG icon set and compact first-use header treatment.
+4. Add persistent banners for disconnected, partial, unsaved and failed platform states.
+5. Evaluate screenshot capture only through a separately authorized, isolated and bounded worker.
 
 ## Safety and release gate
 
