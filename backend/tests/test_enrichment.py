@@ -7,6 +7,7 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
+from app.api.enrichment import bounded_network_call, canonicalize_http_url
 from app.config import Settings
 from app.main import app
 from app.services.enrichment import (
@@ -51,6 +52,28 @@ def test_http_probe_url_requires_standard_public_http_or_https() -> None:
         validate_probe_url("https://example.com:8443/")
     with pytest.raises(EnrichmentBlockedTarget):
         validate_probe_url("http://192.168.1.10/")
+
+
+def test_http_probe_canonicalizes_unicode_path_and_query_to_ascii() -> None:
+    canonical = canonicalize_http_url("https://example.com/naïve path?q=café au lait")
+    assert canonical == "https://example.com/na%C3%AFve%20path?q=caf%C3%A9%20au%20lait"
+    target = validate_probe_url(canonical)
+    assert target.request_target.encode("ascii")
+
+
+def test_network_operation_has_one_end_to_end_timeout() -> None:
+    class SlowService:
+        settings = Settings(enrichment_timeout_seconds=1.0)
+
+    async def slow_operation():
+        await asyncio.sleep(2)
+        return ({}, False)
+
+    async def exercise() -> None:
+        with pytest.raises(TimeoutError, match="network operation timed out"):
+            await bounded_network_call(SlowService(), slow_operation())
+
+    asyncio.run(exercise())
 
 
 def test_http_header_parser_returns_only_selected_headers() -> None:
