@@ -34,17 +34,55 @@ async function insideViewport(locator) {
   expect(bounds.bottom).toBeLessThanOrEqual(bounds.height + 3);
 }
 
-test('Full workspace opens directly and leaves Map optional', async ({ page }) => {
+test('Map remains optional and its controls stay synchronized', async ({ page }) => {
   await enter(page);
+  const drawer = page.locator('#briefNavigationDrawer');
+  const topMap = page.locator('#briefTopMapButton');
+  const quickMap = page.locator('[data-open-brief-map]').first();
+
   await expect(page.locator('#briefMapButton')).toBeVisible();
-  await expect(page.locator('#briefTopMapButton')).toBeVisible();
+  await expect(topMap).toBeVisible();
+  await expect(quickMap).toBeVisible();
+  await expect(drawer).toBeHidden();
+  await expect(topMap).toHaveAttribute('aria-expanded', 'false');
+
+  await quickMap.click();
+  await expect(drawer).toBeVisible();
+  await expect(topMap).toHaveAttribute('aria-expanded', 'true');
+  await expect(topMap).toHaveClass(/is-active/);
+
+  await page.locator('[data-nav-close]').last().click();
+  await expect(drawer).toBeHidden();
+  await expect(topMap).toHaveAttribute('aria-expanded', 'false');
+  await expect(topMap).not.toHaveClass(/is-active/);
+});
+
+test('Full workspace opens the current section directly without opening Map', async ({ page }) => {
+  await enter(page);
+  await page.locator('[data-workspace-tab="work"]').click();
   const full = page.locator('[data-open-full-workspace]').first();
   await expect(full).toBeVisible();
   await full.click();
   await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'full');
   await expect(page.locator('#briefNavigationDrawer')).toBeHidden();
   await expect(page.locator('#briefMapButton')).toBeVisible();
+  await expect(page.locator('#briefTopMapButton')).toBeVisible();
   await expect(page.locator('#briefNavigatorBar')).toBeVisible();
+});
+
+test('Quick briefing launches Vision and restores focus to its launcher', async ({ page }) => {
+  await enter(page);
+  const launcher = page.locator('[data-start-vision]');
+  await expect(launcher).toBeVisible();
+  await expect(page.locator('.brief-vision-entry-card')).toContainText('real music, voice, context and approved connections');
+
+  await launcher.click();
+  await expect(page.locator('#briefVisionLayer')).toBeVisible();
+  await expect(page.locator('#briefVisionTitle')).toHaveText('You wake up. The day is already sorted.');
+  await insideViewport(page.locator('#briefVisionPanel'));
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#briefVisionLayer')).toBeHidden();
+  await expect(launcher).toBeFocused();
 });
 
 test('Help launches a clean manual Vision walkthrough', async ({ page }) => {
@@ -85,8 +123,7 @@ test('Help launches a clean manual Vision walkthrough', async ({ page }) => {
 test('Vision remains inside a narrow landscape viewport', async ({ page }) => {
   await enter(page);
   await page.setViewportSize({ width: 667, height: 375 });
-  await page.locator('#explainButton').click();
-  await page.locator('#briefStartVision').click();
+  await page.locator('[data-start-vision]').click();
   await expect(page.locator('#briefVisionLayer')).toBeVisible();
   await insideViewport(page.locator('#briefVisionPanel'));
   await page.keyboard.press('Escape');

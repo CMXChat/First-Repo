@@ -12,6 +12,7 @@ const topMap = read('assets/brief/brief-map-top.js');
 const mapCss = read('assets/brief/brief-map-top.css');
 const theme = read('assets/brief/brief-theme-integrity.js');
 const css = read('assets/brief/brief-theme-integrity.css');
+const finalCss = read('assets/brief/brief-finalize.css');
 
 new vm.Script(bridge, { filename: 'brief-terminal-bridge.js' });
 new vm.Script(topMap, { filename: 'brief-map-top.js' });
@@ -21,13 +22,14 @@ assert.match(index, /brief-terminal-bridge\.js\?v=20260803-\d+/);
 assert.match(bridge, /brief-theme-integrity\.css/);
 assert.match(bridge, /brief-theme-integrity\.js/);
 assert.match(bridge, /brief-map-top\.js/);
-assert.match(bridge, /NAVIGATION_VERSION = '20260803-6'/);
-assert.match(bridge, /INTERFACE_VERSION = '20260803-2'/);
-assert.match(bridge, /FINAL_VERSION = '20260803-2'/);
+assert.match(bridge, /NAVIGATION_VERSION = '20260803-7'/);
+assert.match(bridge, /INTERFACE_VERSION = '20260803-3'/);
+assert.match(bridge, /FINAL_VERSION = '20260803-3'/);
+assert.ok(bridge.indexOf('briefFinalizeStyle') > bridge.indexOf('briefThemeIntegrityStyle'));
 
 assert.match(topMap, /briefTopMapButton/);
 assert.match(topMap, /brief-map-top\.css/);
-assert.match(topMap, /Open \$\{label\} briefing map/);
+assert.match(topMap, /Open the \$\{label\} briefing map/);
 assert.match(topMap, /individual: 'Personal'/);
 assert.match(topMap, /couple: 'Relationship'/);
 assert.match(topMap, /partners: 'Business'/);
@@ -37,6 +39,8 @@ assert.match(topMap, /viewMode/);
 assert.match(topMap, /aria-haspopup/);
 assert.match(topMap, /aria-controls/);
 assert.match(topMap, /aria-expanded/);
+assert.match(topMap, /brief:navigation-open/);
+assert.match(topMap, /brief:navigation-close/);
 assert.match(topMap, /window\.BRIEF_NAVIGATION\?\.open/);
 assert.doesNotMatch(topMap, /new MutationObserver/);
 assert.match(mapCss, /brief-top-map-button/);
@@ -66,5 +70,10 @@ assert.match(css, /brand > span:last-child/);
 assert.match(css, /overflow-x: auto/);
 assert.match(css, /prefers-contrast: more/);
 assert.match(css, /forced-colors: active/);
+
+assert.match(finalCss, /brief-vision-entry-card/);
+assert.match(finalCss, /data-open-brief-map/);
+assert.match(finalCss, /quick-signal-card\.tone-blue/);
+assert.match(finalCss, /brief-vision-panel/);
 
 console.log('Brief map and theme integrity smoke test passed.');

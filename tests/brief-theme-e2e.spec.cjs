@@ -1,11 +1,26 @@
 const { test, expect } = require('@playwright/test');
 
 const PAIRS = [
+  ['.hero', '#heroTitle'],
+  ['.next-up-panel', 'h2'],
+  ['.weather-now', '.weather-location'],
+  ['.forecast-item', 'strong'],
+  ['.music-feature', 'h3'],
+  ['.spotify-embed-panel', 'strong'],
+  ['.favorite-track', 'h4'],
+  ['.scenario-stage', 'h3'],
+  ['.priority-card', 'h3'],
+  ['.focus-card', 'strong'],
+  ['.education-hero', 'h2'],
+  ['.daily-rhythm-grid > *', 'strong'],
+  ['.shared-card', 'h3'],
+  ['.connection-card', 'h3'],
   ['.brief-workspace-panel', 'h3'],
   ['.quick-signal-card', 'h4'],
   ['.quick-next-action', 'h4'],
   ['.quick-quote-card', 'p'],
   ['.quick-timeline li', 'strong'],
+  ['.brief-vision-entry-card', 'strong'],
   ['.brief-priority-visuals', 'h3'],
   ['.polish-kpi', 'strong'],
   ['.polish-chart-card', 'strong'],
@@ -29,7 +44,9 @@ const PAIRS = [
   ['.adaptive-coach-note', 'h4'],
   ['.brief-terminal-panel', '.brief-terminal-line'],
   ['.relationship-watch-card', 'h3'],
-  ['.brief-navigator-bar', '.brief-map-button']
+  ['.brief-navigator-bar', '.brief-map-button'],
+  ['.brief-navigation-panel', 'h2'],
+  ['.brief-vision-panel', 'h2']
 ];
 
 async function enterBriefing(page) {
@@ -44,6 +61,7 @@ async function enterBriefing(page) {
   await expect(page.locator('body')).not.toHaveClass(/is-locked/);
   await expect(page.locator('#briefWorkspace')).toBeVisible();
   await expect(page.locator('#briefTopMapButton')).toBeVisible();
+  await expect(page.locator('.brief-vision-entry-card')).toBeVisible();
 }
 
 async function ensureTheme(page, theme) {
@@ -124,6 +142,7 @@ test('all five briefings remain readable in Quick and Full light and dark states
       await page.evaluate(value => window.BRIEF_APP.setPreset(value), preset);
       await expect.poll(() => page.evaluate(() => window.BRIEF_APP.getPreset())).toBe(preset);
       await expect(page.locator('#briefTopMapButton')).toBeVisible();
+      await expect(page.locator('.brief-vision-entry-card')).toBeVisible();
       await auditCurrentState(page, `${theme}/${preset}/quick`);
 
       const full = page.locator('[data-depth-choice="full"]').first();
@@ -131,5 +150,25 @@ test('all five briefings remain readable in Quick and Full light and dark states
       await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'full');
       await auditCurrentState(page, `${theme}/${preset}/full`);
     }
+  }
+});
+
+test('Map and Vision overlays remain readable in both themes', async ({ page }) => {
+  await enterBriefing(page);
+
+  for (const theme of ['light', 'dark']) {
+    await ensureTheme(page, theme);
+
+    await page.locator('#briefTopMapButton').click();
+    await expect(page.locator('#briefNavigationDrawer')).toBeVisible();
+    await auditCurrentState(page, `${theme}/map`);
+    await page.locator('[data-nav-close]').last().click();
+    await expect(page.locator('#briefNavigationDrawer')).toBeHidden();
+
+    await page.locator('[data-start-vision]').click();
+    await expect(page.locator('#briefVisionLayer')).toBeVisible();
+    await auditCurrentState(page, `${theme}/vision`);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#briefVisionLayer')).toBeHidden();
   }
 });

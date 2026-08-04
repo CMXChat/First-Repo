@@ -6,29 +6,69 @@
   let attempts = 0;
   let timer = 0;
   let openingVision = false;
+  let visionReturnFocus = null;
 
   const COPY = new Map([
     ['Open full workspace map', 'Open full workspace'],
-    ['Open the relevant view', 'Take me there'],
-    ['The full day without the full scroll.', 'See the shape of the day at a glance.'],
-    ['Five signals, one recommended move, and the deeper workspace only when it is useful.', 'The few things worth your attention right now. Everything else stays one tap away.'],
-    ['Move through the briefing without hunting.', 'Jump to what you need.']
+    ['Open the relevant view', 'See what this affects'],
+    ['The full day without the full scroll.', 'Your day, without the long scroll.'],
+    ['Five signals, one recommended move, and the deeper workspace only when it is useful.', 'The few things worth your attention right now. The evidence stays one tap away.'],
+    ['Move through the briefing without hunting.', 'Jump to what you need.'],
+    ['Quick view', 'Back to quick briefing'],
+    ['You are here', 'Current section']
   ]);
 
   function reducedMotion() {
     return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
   }
 
-  function closeMap() {
-    window.BRIEF_NAVIGATION?.close?.(false);
+  function ensureHelpFallbackStyle() {
+    if ($('#briefFinalHelpFallbackStyle')) return;
+    const style = document.createElement('style');
+    style.id = 'briefFinalHelpFallbackStyle';
+    style.textContent = `
+      .brief-help-actions:not(:has(#briefStartVision)) #briefTipsToggle {
+        grid-column: auto;
+        min-height: 0;
+      }
+      @supports not selector(:has(*)) {
+        .brief-help-actions:not(.has-vision-entry) #briefTipsToggle {
+          grid-column: auto;
+          min-height: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
   }
 
-  function openFullWorkspace() {
-    closeMap();
+  function navigationState() {
+    return window.BRIEF_NAVIGATION?.getState?.() || {};
+  }
+
+  function drawerIsOpen() {
+    const drawer = $('#briefNavigationDrawer');
+    return Boolean(drawer && !drawer.hidden && drawer.classList.contains('is-visible'));
+  }
+
+  function announceNavigationState(open) {
+    window.dispatchEvent(new CustomEvent(open ? 'brief:navigation-open' : 'brief:navigation-close'));
+  }
+
+  function closeMap() {
+    window.BRIEF_NAVIGATION?.close?.(false);
+    window.setTimeout(() => announceNavigationState(false), 20);
+  }
+
+  function openMap() {
+    window.BRIEF_NAVIGATION?.open?.();
+    window.setTimeout(() => announceNavigationState(drawerIsOpen()), 80);
+  }
+
+  function fallbackOpenFullWorkspace() {
     const button = $('[data-depth-choice="full"]');
     if (button?.getAttribute('aria-pressed') !== 'true') button?.click();
     window.setTimeout(() => {
-      const target = $('#briefNavigatorBar') || $('#today') || $('#briefMain');
+      const target = $('#briefNavigatorBar') || $('#briefWorkspace') || $('#today') || $('#briefMain');
       target?.scrollIntoView({
         behavior: reducedMotion() ? 'auto' : 'smooth',
         block: 'start',
@@ -39,14 +79,86 @@
     }, 120);
   }
 
-  function openVisionAfterHelp() {
+  function openFullWorkspace(trigger = null) {
+    closeMap();
+    const state = navigationState();
+    const route = trigger?.dataset?.fullRoute || state.route || 'overview';
+    if (window.BRIEF_NAVIGATION?.navigate) {
+      window.BRIEF_NAVIGATION.navigate(route, { depth: 'full', push: true, focus: true });
+      return;
+    }
+    fallbackOpenFullWorkspace();
+  }
+
+  function openVisionAfterHelp(launcher = null) {
     if (openingVision) return;
     openingVision = true;
+    visionReturnFocus = launcher?.id === 'briefStartVision'
+      ? $('#explainButton')
+      : launcher || document.activeElement || $('#explainButton');
     window.BRIEF_ONBOARDING?.closeHelp?.(false);
     window.setTimeout(() => {
       window.BRIEF_VISION_TOUR?.open?.();
       openingVision = false;
     }, reducedMotion() ? 0 : 190);
+  }
+
+  function restoreVisionFocus() {
+    const target = visionReturnFocus;
+    visionReturnFocus = null;
+    window.setTimeout(() => target?.isConnected && target?.focus?.(), 0);
+  }
+
+  function normalizeFullWorkspaceButtons(root = document) {
+    $$('[data-open-full-map]', root).forEach(button => {
+      button.removeAttribute('data-open-full-map');
+      button.dataset.openFullWorkspace = 'true';
+    });
+
+    $$('.brief-related-routes', root).forEach(nav => {
+      let full = $('[data-open-full-workspace]', nav);
+      if (!full) {
+        full = document.createElement('button');
+        full.type = 'button';
+        full.dataset.openFullWorkspace = 'true';
+        nav.appendChild(full);
+      }
+      full.textContent = 'Open full workspace';
+      full.setAttribute('aria-label', 'Open the complete briefing workspace at the current section');
+
+      let map = $('[data-open-brief-map]', nav);
+      if (!map) {
+        map = document.createElement('button');
+        map.type = 'button';
+        map.dataset.openBriefMap = 'true';
+        nav.appendChild(map);
+      }
+      map.textContent = 'Open briefing map';
+      map.setAttribute('aria-label', 'Open the briefing map without changing the current view');
+    });
+  }
+
+  function ensureVisionEntry() {
+    const panel = $('#briefWorkspacePanel');
+    if (!panel || $('[data-start-vision]', panel)) return;
+    const card = document.createElement('aside');
+    card.className = 'brief-vision-entry-card';
+    card.innerHTML = `
+      <div>
+        <span>SEE THE BIGGER IDEA</span>
+        <strong>Imagine this with your real music, voice, context and approved connections.</strong>
+        <p>A short, visual walkthrough shows how the briefing could guide the whole day without making you read every module.</p>
+      </div>
+      <button type="button" data-start-vision>Start the vision walkthrough</button>`;
+    const dayline = $('.quick-dayline', panel);
+    if (dayline) panel.insertBefore(card, dayline);
+    else panel.appendChild(card);
+  }
+
+  function syncHelpLayoutState() {
+    const actions = $('.brief-help-actions');
+    if (!actions) return;
+    actions.classList.toggle('has-vision-entry', Boolean($('#briefStartVision', actions)));
   }
 
   function simplifyNavigator() {
@@ -63,13 +175,6 @@
       const quick = $('#briefBackToQuick', bar);
       if (quick) quick.textContent = 'Back to quick briefing';
     }
-
-    $$('[data-open-full-map]').forEach(button => {
-      button.removeAttribute('data-open-full-map');
-      button.dataset.openFullWorkspace = 'true';
-      button.textContent = 'Open full workspace';
-      button.setAttribute('aria-label', 'Open the complete briefing workspace');
-    });
   }
 
   function polishVisibleCopy(root = document) {
@@ -84,8 +189,31 @@
     if (drawerTitle) drawerTitle.textContent = 'Jump to what you need.';
   }
 
+  function patchNavigationApi() {
+    const api = window.BRIEF_NAVIGATION;
+    if (!api || api.__productFinalized) return;
+    const originalOpen = api.open?.bind(api);
+    const originalClose = api.close?.bind(api);
+    api.open = (...args) => {
+      const result = originalOpen?.(...args);
+      window.setTimeout(() => announceNavigationState(drawerIsOpen()), 40);
+      return result;
+    };
+    api.close = (...args) => {
+      const result = originalClose?.(...args);
+      window.setTimeout(() => announceNavigationState(false), 20);
+      return result;
+    };
+    api.__productFinalized = true;
+  }
+
   function apply() {
+    ensureHelpFallbackStyle();
+    patchNavigationApi();
     simplifyNavigator();
+    normalizeFullWorkspaceButtons();
+    ensureVisionEntry();
+    syncHelpLayoutState();
     polishVisibleCopy();
     document.documentElement.dataset.briefFinalized = 'true';
   }
@@ -95,16 +223,17 @@
     timer = window.setTimeout(() => {
       apply();
       attempts += 1;
-      if ((!$('#briefNavigatorBar') || !$('[data-depth-choice="full"]')) && attempts < 18) schedule(220);
+      if ((!$('#briefNavigatorBar') || !$('[data-depth-choice="full"]') || !$('#briefWorkspacePanel')) && attempts < 24) schedule(220);
     }, delay);
   }
 
   function install() {
     document.addEventListener('click', event => {
-      if (event.target.closest?.('#briefStartVision')) {
+      const vision = event.target.closest?.('#briefStartVision, [data-start-vision]');
+      if (vision) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        openVisionAfterHelp();
+        openVisionAfterHelp(vision);
         return;
       }
 
@@ -112,7 +241,15 @@
       if (full) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        openFullWorkspace();
+        openFullWorkspace(full);
+        return;
+      }
+
+      const map = event.target.closest?.('[data-open-brief-map]');
+      if (map) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openMap();
         return;
       }
 
@@ -121,7 +258,11 @@
         window.setTimeout(apply, 100);
       }
 
-      if (event.target.closest?.('[data-depth-choice], [data-workspace-tab], [data-quick-route], [data-related-route], [data-quick-preset], [data-scenario-choice], [data-footer-preset], [data-dock-preset]')) {
+      if (event.target.closest?.('[data-nav-close], [data-nav-route], [data-nav-depth], [data-drawer-preset]')) {
+        window.setTimeout(() => announceNavigationState(drawerIsOpen()), 220);
+      }
+
+      if (event.target.closest?.('#explainButton, [data-depth-choice], [data-workspace-tab], [data-quick-route], [data-related-route], [data-quick-preset], [data-scenario-choice], [data-footer-preset], [data-dock-preset]')) {
         window.setTimeout(apply, 180);
       }
     }, true);
@@ -129,10 +270,13 @@
     window.addEventListener('brief:preset-change', () => window.setTimeout(apply, 260));
     window.addEventListener('brief:device-fallback-open', () => window.setTimeout(apply, 220));
     window.addEventListener('brief:ready', () => schedule(120), { once: true });
+    window.addEventListener('brief:navigation-open', () => document.body.classList.add('brief-map-visible'));
+    window.addEventListener('brief:navigation-close', () => document.body.classList.remove('brief-map-visible'));
+    window.addEventListener('brief:vision-close', restoreVisionFocus);
     schedule(80);
   }
 
-  window.BRIEF_FINALIZE = { apply, openFullWorkspace, openVisionAfterHelp };
+  window.BRIEF_FINALIZE = { apply, openFullWorkspace, openMap, openVisionAfterHelp };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();

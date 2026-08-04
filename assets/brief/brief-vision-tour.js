@@ -159,7 +159,7 @@
     createLayer();
     if (state.open || document.body.classList.contains('is-locked')) return;
     state.open = true;
-    state.returnFocus = $('#explainButton') || document.activeElement;
+    state.returnFocus = document.activeElement || $('#explainButton');
     window.BRIEF_ONBOARDING?.closeHelp?.(false);
     const layer = $('#briefVisionLayer');
     layer.hidden = false;
@@ -167,6 +167,7 @@
     setAppInert(true);
     show(0);
     window.requestAnimationFrame(() => layer.classList.add('is-visible'));
+    window.dispatchEvent(new CustomEvent('brief:vision-open'));
   }
 
   function close() {
@@ -179,6 +180,7 @@
       document.body.classList.remove('brief-vision-open');
       setAppInert(false);
       state.returnFocus?.focus?.();
+      window.dispatchEvent(new CustomEvent('brief:vision-close'));
     }, reducedMotion() ? 0 : 160);
   }
 
