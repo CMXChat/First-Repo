@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-5';
+  const VERSION = '20260804-6';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -81,6 +81,7 @@
   if (shouldLoadPersonalOs()) {
     ensureStyle('briefPersonalOsStyle', '/assets/brief/brief-personal-os.css');
     ensureStyle('briefPersonalOsDensityStyle', '/assets/brief/brief-personal-os-density.css');
+    ensureStyle('briefPersonalOsMobileStyle', '/assets/brief/brief-personal-os-mobile.css');
   }
   loadSystemScript();
 })();
