@@ -35,8 +35,12 @@
     }
   }
 
+  function scheduleSync() {
+    [0, 120, 420, 1000, 1800].forEach(delay => window.setTimeout(syncTheme, delay));
+  }
+
   function init() {
-    syncTheme();
+    scheduleSync();
     if ('MutationObserver' in window) {
       observer = new MutationObserver(records => {
         if (records.some(record => record.attributeName === 'data-theme')) syncTheme();
@@ -50,7 +54,9 @@
       window.setTimeout(syncTheme, 120);
     }, true);
 
-    window.addEventListener('pageshow', syncTheme);
+    window.addEventListener('brief:ready', scheduleSync, { once: true });
+    window.addEventListener('brief:preset-change', () => window.setTimeout(syncTheme, 120));
+    window.addEventListener('pageshow', scheduleSync);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
