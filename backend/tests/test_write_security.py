@@ -32,6 +32,9 @@ def test_cross_site_write_is_rejected() -> None:
         response = client.post("/api/cases", headers=headers, json=CASE_PAYLOAD)
     assert response.status_code == 403
     assert response.json()["detail"] == "Cross-site API writes are not allowed."
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert response.headers["Cache-Control"] == "no-store"
+    assert response.headers.get("X-Request-ID")
 
 
 def test_same_site_sibling_origin_is_rejected() -> None:
@@ -69,6 +72,21 @@ def test_declared_oversized_write_is_rejected() -> None:
     with TestClient(app) as client:
         response = client.post("/api/cases", headers=headers, content="{}")
     assert response.status_code == 413
+
+
+def test_actual_oversized_write_is_rejected_when_content_length_understates_body() -> None:
+    headers = {
+        **HEADERS,
+        "Origin": "http://testserver",
+        "Sec-Fetch-Site": "same-origin",
+        "Content-Type": "application/json",
+        "Content-Length": "1",
+    }
+    with TestClient(app) as client:
+        response = client.post("/api/cases", headers=headers, content=b"x" * 2_500_001)
+    assert response.status_code == 413
+    assert response.json()["detail"] == "API request body exceeds the 2.5 MB transport limit."
+    assert response.headers["Cache-Control"] == "no-store"
 
 
 def test_delete_without_body_content_type_remains_supported() -> None:
