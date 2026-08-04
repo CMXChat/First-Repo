@@ -211,6 +211,7 @@ window.BRIEF_CONFIG = {
 
   loadStyle('briefDeviceStyle', `/assets/brief/brief-device.css?v=${build.device}`);
   loadStyle('briefOnboardingStyle', `/assets/brief/brief-onboarding.css?v=${build.onboarding}`);
+  loadStyle('briefOnboardingBoundsStyle', '/assets/brief/brief-onboarding-bounds.css?v=20260803-1');
   loadStyle('briefEntryRadioStyle', `/assets/brief/brief-entry-radio.css?v=${build.entry}`);
   loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);
   loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);
