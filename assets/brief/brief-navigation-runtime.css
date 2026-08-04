@@ -1,0 +1,79 @@
+/* Runtime enhancements for compact Quick routes and navigation recovery states. */
+
+.quick-compact-list article[data-quick-route] {
+  position: relative;
+  padding-right: 82px;
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+
+.quick-compact-list article[data-quick-route]::after {
+  content: 'Open →';
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  color: #8dccff;
+  font-size: .66rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  transform: translateY(-50%);
+}
+
+.quick-compact-list article[data-quick-route]:hover,
+.quick-compact-list article[data-quick-route]:focus-visible {
+  border-color: rgba(141, 204, 255, .58);
+  background: rgba(75, 155, 232, .075);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.brief-navigation-panel[aria-busy='true']::after {
+  content: 'Restoring this briefing route…';
+  display: block;
+  margin-top: 16px;
+  color: #8d98a7;
+  font-size: .75rem;
+}
+
+html[data-theme='light'] .quick-compact-list article[data-quick-route]::after {
+  color: #0867ad;
+}
+
+html[data-theme='light'] .quick-compact-list article[data-quick-route]:hover,
+html[data-theme='light'] .quick-compact-list article[data-quick-route]:focus-visible {
+  border-color: #8fbfe4;
+  background: #edf7ff;
+}
+
+@media (max-width: 560px) {
+  .quick-compact-list article[data-quick-route] {
+    padding-right: 68px;
+  }
+
+  .quick-compact-list article[data-quick-route]::after {
+    right: 10px;
+    font-size: .62rem;
+  }
+}
+
+@media (pointer: coarse) {
+  .quick-compact-list article[data-quick-route] {
+    min-height: 58px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-compact-list article[data-quick-route] {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .quick-compact-list article[data-quick-route] {
+    border: 2px solid CanvasText;
+  }
+
+  .quick-compact-list article[data-quick-route]::after {
+    color: LinkText;
+  }
+}
