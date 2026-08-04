@@ -4,7 +4,7 @@ import asyncio
 import logging
 import time
 import uuid
-from collections import defaultdict, deque
+from collections import OrderedDict, deque
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Awaitable, Callable
@@ -21,6 +21,7 @@ from .api.enrichment import router as enrichment_router
 from .api.imports import router as imports_router
 from .api.lifecycle import router as lifecycle_router
 from .api.records import router as records_router
+from .api.routing import router as routing_router
 from .api.system import router as system_router
 from .config import Settings, get_settings
 from .db import create_database_engine, create_session_factory, initialize_database
@@ -28,6 +29,7 @@ from .logging import configure_logging
 from .security import AccessIdentity, authenticate_request
 from .services.dns import DnsResolverService
 from .services.enrichment import EnrichmentService
+from .services.routing import RoutingService
 
 configure_logging()
 logger = logging.getLogger("cmx.request")
@@ -35,19 +37,34 @@ settings: Settings = get_settings()
 
 
 class InMemoryRateLimiter:
-    """Per-process API limiter. Cloudflare edge limits remain the production authority."""
+    """Bounded per-process API limiter. Cloudflare edge limits remain the production authority."""
 
-    def __init__(self, limit: int, window_seconds: int = 60) -> None:
+    def __init__(self, limit: int, window_seconds: int = 60, max_keys: int = 10_000) -> None:
         self.limit = limit
         self.window_seconds = window_seconds
-        self._events: dict[str, deque[float]] = defaultdict(deque)
+        self.max_keys = max_keys
+        self._events: OrderedDict[str, deque[float]] = OrderedDict()
         self._lock = asyncio.Lock()
+        self._requests_since_sweep = 0
 
     async def allow(self, key: str) -> tuple[bool, int]:
         now = time.monotonic()
         cutoff = now - self.window_seconds
         async with self._lock:
-            events = self._events[key]
+            self._requests_since_sweep += 1
+            if self._requests_since_sweep >= 256:
+                self._prune_all(cutoff)
+                self._requests_since_sweep = 0
+
+            events = self._events.get(key)
+            if events is None:
+                while len(self._events) >= self.max_keys:
+                    self._events.popitem(last=False)
+                events = deque()
+                self._events[key] = events
+            else:
+                self._events.move_to_end(key)
+
             while events and events[0] <= cutoff:
                 events.popleft()
             if len(events) >= self.limit:
@@ -55,6 +72,13 @@ class InMemoryRateLimiter:
                 return False, retry_after
             events.append(now)
             return True, 0
+
+    def _prune_all(self, cutoff: float) -> None:
+        for key, events in list(self._events.items()):
+            while events and events[0] <= cutoff:
+                events.popleft()
+            if not events:
+                self._events.pop(key, None)
 
 
 rate_limiter = InMemoryRateLimiter(settings.api_rate_limit_per_minute)
@@ -75,6 +99,7 @@ async def lifespan(app: FastAPI):
     app.state.http_client = client
     app.state.dns_resolver = DnsResolverService(client, settings)
     app.state.enrichment_service = EnrichmentService(client, settings)
+    app.state.routing_service = RoutingService(client, settings)
     logger.info("application_started", extra={"event": "application_started"})
     yield
     await client.aclose()
@@ -84,7 +109,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="CMX Restricted Node API",
-    version="0.3.0",
+    version="0.4.0",
     docs_url=None if settings.environment == "production" else "/api/docs",
     redoc_url=None,
     openapi_url=None if settings.environment == "production" else "/api/openapi.json",
@@ -204,6 +229,7 @@ def secured_response(response: Response, request_id: str, path: str = "") -> Res
 app.include_router(system_router)
 app.include_router(dns_router)
 app.include_router(enrichment_router)
+app.include_router(routing_router)
 app.include_router(lifecycle_router)
 app.include_router(cases_router)
 app.include_router(records_router)
