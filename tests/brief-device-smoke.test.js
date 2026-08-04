@@ -69,6 +69,22 @@ class EventTargetMock {
   }
 }
 
+class MutationObserverMock {
+  constructor(callback) {
+    this.callback = callback;
+    this.targets = [];
+  }
+  observe(target, options = {}) {
+    this.targets.push({ target, options });
+  }
+  disconnect() {
+    this.targets = [];
+  }
+  takeRecords() {
+    return [];
+  }
+}
+
 class ElementMock extends EventTargetMock {
   constructor(id = '', tag = 'div') {
     super();
@@ -188,6 +204,7 @@ const context = {
   document: documentMock,
   sessionStorage: { setItem() {} },
   CustomEvent: windowMock.CustomEvent,
+  MutationObserver: MutationObserverMock,
   setTimeout,
   console
 };
