@@ -18,8 +18,8 @@ async function loadNews(page) {
   await page.waitForSelector('#newsHelpButton');
   await page.waitForFunction(() => {
     const layer = document.querySelector('#newsHelpLayer');
-    const viewportHeight = getComputedStyle(document.documentElement).getPropertyValue('--news-viewport-height').trim();
-    return Boolean(layer && viewportHeight && getComputedStyle(layer).position === 'fixed');
+    const stylesheetLoaded = [...document.styleSheets].some(sheet => sheet.href?.includes('/assets/news-resilience.css'));
+    return Boolean(layer && stylesheetLoaded && window.CMX_NEWS_RESILIENCE);
   });
 }
 
@@ -82,7 +82,7 @@ test('offline state keeps the written briefing available and explains live limit
   await expect(page.locator('html')).toHaveClass(/news-offline/);
   await expect(page.locator('#newsConnectionNote')).toBeVisible();
   await expect(page.locator('#newsConnectionNote')).toContainText('written briefing is still available');
-  await expect(page.locator('#briefContent')).toBeVisible();
+  await expect(page.locator('#newsWorkspace')).toBeVisible();
 
   await context.setOffline(false);
   await page.evaluate(() => window.dispatchEvent(new Event('online')));
