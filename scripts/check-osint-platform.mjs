@@ -33,6 +33,7 @@ const requiredFiles = [
   'phone/index.html',
   'missing/index.html',
   'cases/index.html',
+  'tests/browser/active-case-tools.spec.mjs',
   'SECURITY.md',
   'docs/OSINT_PLATFORM_ROADMAP.md'
 ];
@@ -55,7 +56,8 @@ const javascriptFiles = [
   'assets/osint-workbench.js',
   'assets/phone-workbench.js',
   'assets/missing-workbench.js',
-  'assets/cases-workbench.js'
+  'assets/cases-workbench.js',
+  'tests/browser/active-case-tools.spec.mjs'
 ];
 
 for (const file of javascriptFiles) {
@@ -133,6 +135,7 @@ checkSafeModule('assets/cases-state-sync.js');
 checkSafeModule('assets/cases-operator-workspace.js');
 checkSafeModule('assets/cases-operator-records.js');
 checkCasesOperatorLoader();
+checkCaseContextLoader();
 
 function checkPageModule(page, module, requiredReferences) {
   const pagePath = join(root, page);
@@ -158,6 +161,33 @@ function checkCasesOperatorLoader() {
   ].forEach((reference) => {
     if (!source.includes(reference)) failures.push(`assets/cases-state-sync.js must load ${reference}`);
   });
+}
+
+function checkCaseContextLoader() {
+  const loaderPath = join(root, 'assets/cmx-page-standard.js');
+  const contextPath = join(root, 'assets/cmx-case-context.js');
+  if (!existsSync(loaderPath) || !existsSync(contextPath)) return;
+
+  const loader = readFileSync(loaderPath, 'utf8');
+  const context = readFileSync(contextPath, 'utf8');
+  ['/osint', '/phone', '/search', '/metadata', '/missing'].forEach((route) => {
+    if (!loader.includes(`'${route}'`)) failures.push(`assets/cmx-page-standard.js must register ${route} for active case context`);
+  });
+  ['/assets/cmx-case-context.js', '/assets/cmx-case-context.css'].forEach((reference) => {
+    if (!loader.includes(reference)) failures.push(`assets/cmx-page-standard.js must load ${reference}`);
+  });
+  [
+    'cmx-osint-session-v1',
+    'cmx-phone-session-v1',
+    'cmx-search-session-v1',
+    'cmx-metadata-session-v1',
+    'cmx-missing-case-v1'
+  ].forEach((schema) => {
+    if (!context.includes(schema)) failures.push(`assets/cmx-case-context.js must support ${schema}`);
+  });
+  if (!context.includes('captureExportPayload')) {
+    failures.push('assets/cmx-case-context.js must capture exact Search and Metadata export payloads');
+  }
 }
 
 function checkSafeModule(module) {
