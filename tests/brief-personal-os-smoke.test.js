@@ -14,23 +14,30 @@ const density = read('assets/brief/brief-personal-os-density.css');
 const mobile = read('assets/brief/brief-personal-os-mobile.css');
 const fullHome = read('assets/brief/brief-full-home.js');
 const fullHomeCss = read('assets/brief/brief-full-home.css');
+const stability = read('assets/brief/brief-personal-os-stability.js');
+const stabilityCss = read('assets/brief/brief-personal-os-stability.css');
 
 new vm.Script(loader, { filename: 'brief-lite-ui.js' });
 new vm.Script(os, { filename: 'brief-personal-os.js' });
 new vm.Script(fullHome, { filename: 'brief-full-home.js' });
+new vm.Script(stability, { filename: 'brief-personal-os-stability.js' });
 
 assert.match(loader, /briefPersonalOsStyle/);
 assert.match(loader, /briefPersonalOsDensityStyle/);
 assert.match(loader, /briefPersonalOsMobileStyle/);
 assert.match(loader, /briefFullHomeStyle/);
+assert.match(loader, /briefPersonalOsStabilityStyle/);
 assert.match(loader, /brief-personal-os\.css/);
 assert.match(loader, /brief-personal-os-density\.css/);
 assert.match(loader, /brief-personal-os-mobile\.css/);
 assert.match(loader, /brief-full-home\.css/);
+assert.match(loader, /brief-personal-os-stability\.css/);
 assert.match(loader, /brief-personal-os\.js/);
 assert.match(loader, /brief-full-home\.js/);
+assert.match(loader, /brief-personal-os-stability\.js/);
 assert.match(loader, /loadPersonalOsScript/);
 assert.match(loader, /loadFullHomeScript/);
+assert.match(loader, /loadStabilityScript/);
 assert.match(loader, /personal-os-test/);
 assert.match(loader, /browser-test/);
 assert.match(loader, /overlay-test/);
@@ -38,6 +45,7 @@ assert.match(loaderCss, /brief-personal-os\.css/);
 assert.match(loaderCss, /brief-personal-os-density\.css/);
 assert.match(loaderCss, /brief-personal-os-mobile\.css/);
 assert.match(loaderCss, /brief-full-home\.css/);
+assert.match(loaderCss, /brief-personal-os-stability\.css/);
 
 assert.match(os, /const APP_MAP/);
 assert.match(os, /Personal briefing operating system/);
@@ -71,6 +79,17 @@ assert.match(fullHome, /MutationObserver/);
 assert.match(fullHome, /window\.BRIEF_FULL_HOME/);
 assert.doesNotMatch(fullHome, /fetch\(|XMLHttpRequest|WebSocket/);
 
+assert.match(stability, /TERMINAL_TRIGGER_SELECTOR/);
+assert.match(stability, /replaceHeaderCommand/);
+assert.match(stability, /About Personal OS/);
+assert.match(stability, /href = '\/doc\/'/);
+assert.match(stability, /removeTerminalSurface/);
+assert.match(stability, /clearStrandedBlur/);
+assert.match(stability, /visualViewport/);
+assert.match(stability, /MutationObserver/);
+assert.match(stability, /window\.BRIEF_PERSONAL_OS_STABILITY/);
+assert.doesNotMatch(stability, /fetch\(|XMLHttpRequest|WebSocket/);
+
 assert.match(css, /overflow: hidden !important/);
 assert.match(css, /height: 100dvh/);
 assert.match(css, /grid-template-columns: var\(--brief-os-rail\)/);
@@ -103,5 +122,14 @@ assert.match(fullHomeCss, /@media \(max-width: 720px\)/);
 assert.match(fullHomeCss, /grid-template-columns: 1fr/);
 assert.match(fullHomeCss, /prefers-reduced-motion/);
 assert.match(fullHomeCss, /forced-colors: active/);
+
+assert.match(stabilityCss, /#briefSystemTerminalDock/);
+assert.match(stabilityCss, /#briefTerminal/);
+assert.match(stabilityCss, /brief-os-visible-height/);
+assert.match(stabilityCss, /overscroll-behavior-y: contain/);
+assert.match(stabilityCss, /brief-system-more-about/);
+assert.match(stabilityCss, /brief-system-home-grid article\[data-system-link\]/);
+assert.match(stabilityCss, /border-radius: 999px/);
+assert.match(stabilityCss, /@media \(max-width: 720px\)/);
 
 console.log('Brief Personal OS smoke test passed.');
