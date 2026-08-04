@@ -9,6 +9,7 @@ const javascriptFiles = [
   'assets/cmx-case-save-guard.js',
   'assets/cases-workbench-guard.js',
   'assets/case-lifecycle-guard.js',
+  'assets/osint-routing-save-guard.js',
   'assets/osint-routing.js'
 ];
 
@@ -31,8 +32,11 @@ for (const file of javascriptFiles) {
 }
 
 requireMarker('assets/cmx-page-standard.js', '/assets/cmx-case-save-guard.js');
+requireMarker('assets/cmx-case-save-guard.js', '/assets/osint-routing-save-guard.js');
 requireMarker('assets/cmx-case-save-guard.js', '/assets/osint-routing.js');
 requireMarker('assets/cmx-case-save-guard.js', '/assets/osint-routing.css');
+requireMarker('assets/osint-routing-save-guard.js', 'fresh duplicate review');
+requireMarker('assets/osint-routing-save-guard.js', 'exact routing observation');
 requireMarker('assets/cases-state-sync.js', '/assets/cases-workbench-guard.js');
 requireMarker('cases/lifecycle/index.html', '/assets/case-lifecycle-guard.js');
 requireMarker('backend/app/hardened.py', 'buffer_request_messages');
@@ -45,6 +49,7 @@ requireMarker('backend/app/main.py', 'max_keys');
 requireMarker('backend/app/api/routing.py', '/api/routing');
 requireMarker('backend/app/services/routing.py', 'RIPESTAT_BASE');
 requireMarker('backend/app/services/routing.py', 'CACHE_MAX_ENTRIES');
+requireMarker('backend/app/services/routing.py', '_discard_completed_inflight');
 requireMarker('backend/app/services/routing.py', 'malicious activity');
 requireMarker('backend/tests/test_write_security.py', 'actual_oversized_write');
 requireMarker('backend/tests/test_imports.py', 'linked_observations');
