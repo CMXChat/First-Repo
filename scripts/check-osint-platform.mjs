@@ -9,6 +9,8 @@ const requiredFiles = [
   'assets/cmx-page-standard.js',
   'assets/cmx-tool-hardening.js',
   'assets/cmx-tool-shell.css',
+  'assets/cmx-case-context.js',
+  'assets/cmx-case-context.css',
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/metadata-workbench.css',
@@ -39,6 +41,7 @@ const javascriptFiles = [
   'assets/cmx-tool-hardening.js',
   'assets/cmx-ops-core.js',
   'assets/cmx-ops-runtime.js',
+  'assets/cmx-case-context.js',
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/osint-workbench.js',
@@ -98,6 +101,10 @@ checkPageModule('osint/index.html', 'assets/osint-workbench.js', [
   '/assets/osint-workbench.js',
   '/assets/osint-workbench.css',
   '/assets/cmx-tool-shell.css'
+]);
+checkPageModule('osint/index.html', 'assets/cmx-case-context.js', [
+  '/assets/cmx-case-context.js',
+  '/assets/cmx-case-context.css'
 ]);
 checkPageModule('phone/index.html', 'assets/phone-workbench.js', [
   '/assets/phone-workbench.js',
