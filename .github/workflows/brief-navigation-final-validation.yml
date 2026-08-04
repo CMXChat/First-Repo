@@ -1,0 +1,138 @@
+name: Brief Navigation Final Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-navigation-final-validation.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run source-level regression suites
+        id: static
+        continue-on-error: true
+        run: |
+          set +e
+          : > /tmp/static.log
+          failures=0
+          for test_file in \
+            tests/brief-device-smoke.test.js \
+            tests/brief-onboarding-smoke.test.js \
+            tests/brief-navigation-smoke.test.js \
+            tests/brief-terminal-smoke.test.js \
+            tests/brief-entry-watch-smoke.test.js \
+            tests/brief-stability-smoke.test.js \
+            tests/brief-workspace-team-smoke.test.js \
+            tests/brief-polish-smoke.test.js; do
+            echo "=== $test_file ===" | tee -a /tmp/static.log
+            node "$test_file" 2>&1 | tee -a /tmp/static.log
+            status=${PIPESTATUS[0]}
+            echo "status=$status" | tee -a /tmp/static.log
+            if [ "$status" -ne 0 ]; then failures=$((failures + 1)); fi
+          done
+          echo "failures=$failures" | tee -a /tmp/static.log
+          echo "failures=$failures" >> "$GITHUB_OUTPUT"
+
+      - name: Install browser engines
+        id: install
+        continue-on-error: true
+        run: |
+          npm install --no-save @playwright/test@1.55.0
+          npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run browser and device matrix
+        id: browsers
+        continue-on-error: true
+        run: |
+          set +e
+          npx playwright test --config=tests/playwright.config.cjs 2>&1 | tee /tmp/browser.log
+          status=${PIPESTATUS[0]}
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Record concise validation report
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import os, re
+          static = Path('/tmp/static.log').read_text(errors='replace') if Path('/tmp/static.log').exists() else 'not run'
+          browser = Path('/tmp/browser.log').read_text(errors='replace') if Path('/tmp/browser.log').exists() else 'not run'
+          ansi = re.compile(r'\x1b\[[0-9;]*[A-Za-z]')
+          browser = ansi.sub('', browser)
+          summary = []
+          for line in browser.splitlines():
+              if any(token in line for token in ('passed', 'failed', 'skipped', 'Error:', 'TimeoutError', 'Expected:', 'Received:', 'at tests/brief-browser-e2e.spec.cjs')):
+                  summary.append(line)
+          report = f'''# Brief interconnected navigation validation
+
+Validated commit: `{os.environ.get('GITHUB_SHA', '')}`
+
+## Coverage
+
+- Eight source-level regression suites
+- Chromium desktop
+- Firefox desktop
+- WebKit desktop
+- WebKit iPhone 13 emulation
+- Chromium Pixel 5 emulation
+- Quick-card routing
+- Sticky Full-workspace section map
+- Mobile briefing drawer and viewport bounds
+- Team switch and Handoffs route
+- Recent routes
+- Direct URL restoration after deliberate entry
+- Help, tour, Pause to Play and landscape regressions
+
+## Result
+
+Static failures: {os.environ.get('STATIC_FAILURES', 'unknown')}
+Browser status: {os.environ.get('BROWSER_STATUS', 'unknown')}
+Install outcome: {os.environ.get('INSTALL_OUTCOME', 'unknown')}
+
+## Static log
+
+```text
+{static[-12000:]}
+```
+
+## Browser summary
+
+```text
+{chr(10).join(summary[-250:])}
+```
+'''
+          Path('docs/brief-navigation-browser-validation.md').write_text(report)
+          PY
+        env:
+          STATIC_FAILURES: ${{ steps.static.outputs.failures }}
+          BROWSER_STATUS: ${{ steps.browsers.outputs.status }}
+          INSTALL_OUTCOME: ${{ steps.install.outcome }}
+
+      - name: Commit report
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/brief-navigation-browser-validation.md
+          git commit -m 'Record interconnected navigation validation' || exit 0
+          git push
+
+      - name: Fail when validation failed
+        if: always()
+        run: |
+          test "${{ steps.static.outputs.failures }}" = "0"
+          test "${{ steps.install.outcome }}" = "success"
+          test "${{ steps.browsers.outputs.status }}" = "0"
