@@ -1,0 +1,47 @@
+/* Final control-level contrast loaded with the permanent top map module. */
+
+html[data-theme='light'] .brief-map-button,
+html[data-theme='light'] .brief-top-map-button:not(.is-active) {
+  color: #174f75 !important;
+  border-color: #b9d2e7 !important;
+  background: #f4f9fd !important;
+  box-shadow: none !important;
+}
+
+html[data-theme='light'] .brief-map-button:hover,
+html[data-theme='light'] .brief-map-button:focus-visible,
+html[data-theme='light'] .brief-top-map-button:not(.is-active):hover,
+html[data-theme='light'] .brief-top-map-button:not(.is-active):focus-visible {
+  color: #083f68 !important;
+  border-color: #6fa8d2 !important;
+  background: #e8f4fc !important;
+}
+
+html:not([data-theme='light']) .brief-map-button,
+html:not([data-theme='light']) .brief-top-map-button:not(.is-active) {
+  color: #dceeff;
+  border-color: rgba(121,192,255,.34);
+  background: rgba(75,155,232,.11);
+}
+
+.brief-top-map-button.is-active,
+.brief-map-button[aria-expanded='true'] {
+  color: #07121e !important;
+  border-color: #8dccff !important;
+  background: linear-gradient(135deg, #a8d7ff, #61afff) !important;
+}
+
+@media (forced-colors: active) {
+  .brief-map-button,
+  .brief-top-map-button {
+    color: ButtonText !important;
+    border: 2px solid ButtonText !important;
+    background: ButtonFace !important;
+  }
+
+  .brief-top-map-button.is-active,
+  .brief-map-button[aria-expanded='true'] {
+    color: HighlightText !important;
+    background: Highlight !important;
+  }
+}
