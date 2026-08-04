@@ -14,8 +14,8 @@
     const list = document.getElementById('caseList');
     if (!badge || !refresh || !list) return;
 
-    let refreshStarted = false;
-    let requestedSelectionComplete = false;
+    let synchronizationStarted = false;
+    let synchronizationComplete = false;
     let retryTimer = 0;
     const writeControlIds = [
       'createCase',
@@ -29,23 +29,17 @@
     const connected = () => badge.classList.contains('good') && /connected/i.test(badge.textContent || '');
     const staticMode = () => badge.classList.contains('warn') && /static/i.test(badge.textContent || '');
 
-    const requestInitialLoad = () => {
-      if (refreshStarted || !connected()) return;
-      refreshStarted = true;
-      window.setTimeout(() => {
-        refresh.disabled = false;
-        refresh.click();
-        if (requestedCaseId) scheduleRequestedSelection(0);
-      }, 80);
-    };
-
-    const scheduleRequestedSelection = (attempt) => {
+    const scheduleSynchronization = (attempt) => {
       window.clearTimeout(retryTimer);
-      retryTimer = window.setTimeout(() => selectRequestedCase(attempt), attempt ? 120 : 180);
+      retryTimer = window.setTimeout(
+        () => synchronizeCases(attempt),
+        attempt === 0 ? 100 : 150
+      );
     };
 
-    const selectRequestedCase = async (attempt) => {
-      if (!requestedCaseId || requestedSelectionComplete || !connected()) return;
+    const synchronizeCases = async (attempt) => {
+      if (synchronizationComplete || !connected()) return;
+
       try {
         const response = await fetch('/api/cases?limit=200', {
           credentials: 'same-origin',
@@ -54,28 +48,35 @@
         });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const cases = await response.json();
-        const index = cases.findIndex((record) => record.id === requestedCaseId);
         const buttons = list.querySelectorAll('.cases-item');
-        if (index >= 0 && buttons[index]) {
-          requestedSelectionComplete = true;
-          buttons[index].click();
+
+        if (!cases.length) {
+          synchronizationComplete = true;
+          return;
+        }
+
+        if (buttons.length >= cases.length) {
+          if (requestedCaseId) {
+            const index = cases.findIndex((record) => record.id === requestedCaseId);
+            if (index >= 0 && buttons[index]) buttons[index].click();
+          }
+          synchronizationComplete = true;
           return;
         }
       } catch {
         // The visible workspace keeps its own error handling.
       }
 
-      if (attempt < 20) {
-        if (attempt === 4 || attempt === 10) {
-          refresh.disabled = false;
-          refresh.click();
-        }
-        scheduleRequestedSelection(attempt + 1);
-      }
+      refresh.disabled = false;
+      refresh.click();
+      if (attempt < 24) scheduleSynchronization(attempt + 1);
     };
 
     const synchronize = () => {
-      if (connected()) requestInitialLoad();
+      if (connected() && !synchronizationStarted) {
+        synchronizationStarted = true;
+        scheduleSynchronization(0);
+      }
 
       if (staticMode()) {
         window.clearTimeout(retryTimer);
