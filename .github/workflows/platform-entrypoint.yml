@@ -12,9 +12,13 @@ on:
       - 'backend/tests/test_write_security.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
-      - 'cases/lifecycle/**'
+      - 'cases/**'
+      - 'osint/**'
       - 'assets/case-lifecycle.*'
+      - 'assets/cases-*'
+      - 'assets/osint-workbench.js'
       - 'tests/browser/lifecycle.spec.mjs'
+      - 'tests/browser/platform.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
   push:
@@ -31,9 +35,13 @@ on:
       - 'backend/tests/test_write_security.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
-      - 'cases/lifecycle/**'
+      - 'cases/**'
+      - 'osint/**'
       - 'assets/case-lifecycle.*'
+      - 'assets/cases-*'
+      - 'assets/osint-workbench.js'
       - 'tests/browser/lifecycle.spec.mjs'
+      - 'tests/browser/platform.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
 
@@ -76,9 +84,9 @@ jobs:
             --file backend/compose.platform.yml \
             config >/dev/null
 
-  lifecycle-browser:
+  platform-browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     needs: platform-api
     steps:
       - name: Check out repository
@@ -122,10 +130,15 @@ jobs:
           cat /tmp/cmx-platform.log
           exit 1
 
-      - name: Run local lifecycle browser regressions
+      - name: Run desktop platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/lifecycle.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
+
+      - name: Run mobile platform regressions
+        env:
+          CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
+        run: npx playwright test tests/browser/platform.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
 
       - name: Upload platform failure artifacts
         if: failure()
