@@ -10,13 +10,15 @@
   const tocLinks = Array.from(document.querySelectorAll('.document-toc a'));
   const sections = Array.from(document.querySelectorAll('.document-section[id]'));
   const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const documentFooter = document.querySelector('.document-footer');
   const STORAGE_KEY = 'personal_os_doc_theme_v1';
 
   function readTheme() {
     try {
-      return localStorage.getItem(STORAGE_KEY) === 'dark' ? 'dark' : 'light';
+      const savedTheme = localStorage.getItem(STORAGE_KEY);
+      return savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'dark';
     } catch {
-      return 'light';
+      return 'dark';
     }
   }
 
@@ -29,7 +31,7 @@
   }
 
   function applyTheme(theme, persist = false) {
-    const nextTheme = theme === 'dark' ? 'dark' : 'light';
+    const nextTheme = theme === 'light' ? 'light' : 'dark';
     root.dataset.theme = nextTheme;
 
     if (themeLabel) themeLabel.textContent = nextTheme === 'dark' ? 'Light mode' : 'Dark mode';
@@ -39,6 +41,9 @@
       themeButton.setAttribute('aria-pressed', String(nextTheme === 'dark'));
     }
     if (themeMeta) themeMeta.setAttribute('content', nextTheme === 'dark' ? '#07101d' : '#edf3f8');
+    if (documentFooter) {
+      documentFooter.innerHTML = '<strong>Personal OS</strong> · Private product overview · Dark mode is the default. Light mode and print controls are available at the top of the document.';
+    }
     if (persist) saveTheme(nextTheme);
   }
 
