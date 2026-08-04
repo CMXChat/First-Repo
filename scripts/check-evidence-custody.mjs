@@ -39,7 +39,7 @@ if ([clientPath, apiPath, servicePath, loaderPath, browserPath].every(existsSync
   const loader = readFileSync(loaderPath, 'utf8');
   const browser = readFileSync(browserPath, 'utf8');
 
-  ['cmx-evidence-manifest-v1', 'Add custody event', 'Export manifest', 'Hash mismatch', 'textContent']
+  ['Add custody event', 'Export manifest', 'Hash mismatch', 'textContent']
     .forEach((marker) => {
       if (!client.includes(marker)) failures.push(`Custody client missing marker: ${marker}`);
     });
@@ -47,7 +47,7 @@ if ([clientPath, apiPath, servicePath, loaderPath, browserPath].every(existsSync
     .forEach((marker) => {
       if (!api.includes(marker)) failures.push(`Custody API missing marker: ${marker}`);
     });
-  ['sort_keys=True', 'separators=(",", ":")', 'manifest_sha256', 'uninterrupted physical control']
+  ['cmx-evidence-manifest-v1', 'sort_keys=True', 'separators=(",", ":")', 'manifest_sha256', 'uninterrupted physical control']
     .forEach((marker) => {
       if (!service.includes(marker)) failures.push(`Custody service missing marker: ${marker}`);
     });
