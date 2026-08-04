@@ -82,13 +82,16 @@
 
   const state = {
     open: false,
+    opening: false,
     current: 0,
     selections: {},
     returnFocus: null,
-    appAriaHidden: null
+    appAriaHidden: null,
+    openTimer: 0
   };
 
   function focusable(root) {
+    if (!root) return [];
     return $$('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])', root)
       .filter(node => node.offsetParent !== null && !node.hidden);
   }
@@ -100,12 +103,12 @@
       state.appAriaHidden = app.getAttribute('aria-hidden');
       if ('inert' in app) app.inert = true;
       else app.setAttribute('aria-hidden', 'true');
-    } else {
-      if ('inert' in app) app.inert = false;
-      if (state.appAriaHidden === null) app.removeAttribute('aria-hidden');
-      else app.setAttribute('aria-hidden', state.appAriaHidden);
-      state.appAriaHidden = null;
+      return;
     }
+    if ('inert' in app) app.inert = false;
+    if (state.appAriaHidden === null) app.removeAttribute('aria-hidden');
+    else app.setAttribute('aria-hidden', state.appAriaHidden);
+    state.appAriaHidden = null;
   }
 
   function trapFocus(event) {
@@ -234,13 +237,12 @@
     window.setTimeout(() => $('#briefVisionNext')?.focus(), reducedMotion() ? 0 : 140);
   }
 
-  function open(launcher = null) {
-    if (!$('#briefVisionLayer')) createLayer();
-    if (state.open || document.body.classList.contains('is-locked')) return;
+  function beginOpen() {
+    if (!state.opening || state.open) return;
+    state.opening = false;
     state.open = true;
-    state.returnFocus = launcher || document.activeElement || $('#explainButton');
-    window.BRIEF_ONBOARDING?.closeHelp?.(false);
     const layer = $('#briefVisionLayer');
+    if (!layer) return;
     layer.hidden = false;
     document.body.classList.add('brief-vision-open');
     setAppInert(true);
@@ -249,7 +251,25 @@
     window.dispatchEvent(new CustomEvent('brief:vision-open'));
   }
 
+  function open(launcher = null) {
+    if (!$('#briefVisionLayer')) createLayer();
+    if (state.open || state.opening || document.body.classList.contains('is-locked')) return;
+    state.opening = true;
+    state.returnFocus = launcher || document.activeElement || $('#explainButton');
+    const help = $('#briefHelpCenter');
+    const helpVisible = Boolean(help && !help.hidden && help.classList.contains('is-visible'));
+    window.clearTimeout(state.openTimer);
+    if (helpVisible) {
+      window.BRIEF_ONBOARDING?.closeHelp?.(false);
+      state.openTimer = window.setTimeout(beginOpen, reducedMotion() ? 0 : 190);
+      return;
+    }
+    beginOpen();
+  }
+
   function close() {
+    window.clearTimeout(state.openTimer);
+    state.opening = false;
     const layer = $('#briefVisionLayer');
     if (!layer || !state.open) return;
     state.open = false;
