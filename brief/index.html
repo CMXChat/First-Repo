@@ -1,347 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="black">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <meta name="description" content="A private personalized daily briefing product demonstration." />
-  <link rel="canonical" href="https://db.cmxchat.com/brief/" />
-  <title>Personal Briefing Demo</title>
-  <link rel="stylesheet" href="/assets/brief/brief.css?v=20260803-4" />
-  <link rel="stylesheet" href="/assets/brief/brief-music.css?v=20260803-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-scenarios.css?v=20260803-1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+  <meta name="theme-color" content="#000000">
+  <title>CMX Personalized Briefing Concept</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/brief/brief.css?v=20260803-4">
+  <link rel="stylesheet" href="/assets/brief/brief-music.css?v=20260803-2">
+  <link rel="stylesheet" href="/assets/brief/brief-scenarios.css?v=20260803-1">
 </head>
 <body class="is-locked">
-  <a class="skip-link" href="#briefMain">Skip to briefing</a>
+  <div class="entry-gate" id="entryGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <div class="gate-orbit" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <section class="gate-panel">
+      <p class="gate-kicker">CMX PERSONALIZED BRIEFING · INTERACTIVE CONCEPT</p>
+      <h1 id="gateTitle">One private platform.<br>Five ways to use it.</h1>
+      <p class="gate-copy">Choose the briefing you want to explore. The same private platform can organize one person, a relationship, business partners, a trainer and student, or a role-based team while keeping profiles and shared spaces separate.</p>
 
-  <section class="entry-gate" id="entryGate" aria-labelledby="gateTitle">
-    <div class="gate-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
-    <div class="gate-panel">
-      <p class="micro-label">PRIVATE BRIEFING CONCEPT</p>
-      <h1 id="gateTitle">Your day, already organized.</h1>
-      <p class="gate-copy">Choose a fictional example. Each version demonstrates different users, private profiles, approved shared spaces, structured memory, connected services and actions.</p>
-
-      <label class="profile-field">
-        <span>Demo profile</span>
+      <label class="profile-field" for="profileSelect">
+        <span>Briefing type</span>
         <select id="profileSelect" required>
-          <option value="" disabled selected>Choose the briefing you want to explore</option>
+          <option value="" selected disabled>Choose the briefing you want to explore</option>
           <option value="individual">Alex · Personal briefing</option>
-          <option value="couple">Maya + Jordan · Couple and shared space</option>
-          <option value="partners">Northstar · UK and US business partners</option>
-          <option value="trainer">Nina + Sam · Trainer and student</option>
+          <option value="couple">Alex + Jordan · Relationship briefing</option>
+          <option value="partners">Northline Labs · Business partners</option>
+          <option value="trainer">Coach + Sam · Trainer and student</option>
           <option value="team">Atlas · Team and project</option>
         </select>
       </label>
 
       <div class="entry-options" aria-label="Entry preferences">
         <label class="option-row">
-          <input id="musicOnEntry" type="checkbox" />
-          <span><strong>Start today’s actual song</strong><small id="gateSongName">The authorized track preview begins after you press Enter.</small></span>
+          <input type="checkbox" id="musicOnEntry">
+          <span><strong>Start with music</strong><small>Music remains optional and starts only after a direct action.</small></span>
         </label>
         <label class="option-row">
-          <input id="readOnEntry" type="checkbox" />
-          <span><strong>Read the opening aloud</strong><small>Uses the device’s built-in speech voice and lowers the music while speaking.</small></span>
+          <input type="checkbox" id="readOnEntry">
+          <span><strong>Read the briefing aloud</strong><small>Narration remains optional and can be stopped at any time.</small></span>
         </label>
       </div>
 
-      <button class="primary-action" id="enterBrief" type="button" disabled aria-disabled="true">Choose a briefing first</button>
-      <p class="security-note">Concept gate only. Real private data would require server-side authentication.</p>
-    </div>
-  </section>
+      <button class="primary-action" id="enterBrief" type="button" disabled>Choose a briefing first</button>
+      <p class="gate-note">This public page uses fictional private-looking records. Current public items remain labeled and sourced.</p>
+    </section>
+  </div>
 
-  <div class="app" id="briefApp" aria-hidden="true">
+  <div class="app-shell" id="briefApp" aria-hidden="true">
     <header class="topbar">
-      <a class="brand" href="#today" aria-label="Personal Brief home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>PERSONAL BRIEF</span>
+      <a class="brand" href="/brief/" aria-label="CMX Personalized Briefing home">
+        <span class="brand-mark">C</span>
+        <span><strong>CMX Brief</strong><small>private intelligence layer</small></span>
       </a>
-      <nav class="top-actions" aria-label="Briefing controls">
-        <button class="quiet-button" id="viewModeButton" type="button" aria-pressed="false">Private view</button>
-        <button class="icon-button" id="audioButton" type="button" aria-label="Play today’s song">♪</button>
-        <button class="icon-button" id="readButton" type="button" aria-label="Read briefing aloud">Aa</button>
-        <button class="icon-button" id="explainButton" type="button" aria-label="Explain the product" aria-pressed="false">?</button>
-      </nav>
+      <div class="top-actions">
+        <button class="icon-button" id="scenarioMenuButton" type="button" aria-label="Switch briefing type" title="Switch briefing type">⌘</button>
+        <button class="icon-button" id="viewModeButton" type="button" aria-label="Switch private or shared space" title="Switch private or shared space"><span class="space-lock">▣</span><span>Private</span></button>
+        <button class="icon-button" id="audioButton" type="button" aria-label="Play briefing music" title="Play briefing music">♫</button>
+        <button class="icon-button" id="readButton" type="button" aria-label="Read briefing aloud" title="Read briefing aloud">◖</button>
+        <button class="icon-button neon-theme-toggle" id="themeToggleButton" type="button" aria-label="Switch appearance" title="Switch appearance">◐</button>
+        <button class="icon-button" id="explainButton" type="button" aria-label="Explain this briefing" title="Explain this briefing">?</button>
+      </div>
     </header>
 
     <main id="briefMain" tabindex="-1">
-      <section class="hero" id="today" aria-labelledby="heroTitle">
-        <div class="hero-copy-block">
-          <div class="hero-meta">
-            <span class="status-pill status-demo">DEMO EDITION</span>
-            <span id="editionDate">Monday, August 3</span>
-          </div>
-          <p class="greeting" id="greeting">Good afternoon, Alex.</p>
-          <h1 id="heroTitle">Here is the shape of your day.</h1>
-          <p class="hero-summary" id="heroSummary">Your schedule, weather, money, messages, goals and preferred briefing style are organized around what matters next.</p>
-          <div class="hero-actions">
-            <a class="primary-action" href="#scenarioExplorer">Explore this version</a>
-            <button class="secondary-action" id="openConnections" type="button">View connections</button>
-          </div>
+      <section class="hero" id="today">
+        <div class="hero-copy">
+          <p class="micro-label">PERSONAL BRIEFING · DEMO</p>
+          <h2>Good morning, Alex.</h2>
+          <p>Here is the shortest useful version of your day.</p>
         </div>
-
-        <aside class="next-up-panel" aria-labelledby="nextUpTitle">
-          <div class="panel-topline">
-            <span class="source-label source-connected">CONNECTED DEMO</span>
-            <span id="currentTime">1:17 PM</span>
-          </div>
-          <p class="micro-label">NEXT UP</p>
-          <h2 id="nextUpTitle">Website review with Morgan</h2>
-          <p class="next-time" id="nextUpTime">2:30 PM · 45 minutes</p>
-          <div class="prep-list" id="nextUpPrep">
-            <span>Open prototype</span>
-            <span>Confirm launch risks</span>
-            <span>Leave with one owner</span>
-          </div>
-          <button class="text-action" type="button" data-concept-action="Prepare context-aware brief">Prepare this brief →</button>
-        </aside>
+        <div class="hero-time" aria-label="Current briefing time"><strong>07:12</strong><span>Brooklyn · Tuesday</span></div>
       </section>
 
-      <nav class="section-nav" aria-label="Briefing sections">
-        <a href="#weather">Weather</a>
-        <a href="#music">Music</a>
-        <a href="#scenarioExplorer">Examples</a>
-        <a href="#priorities">Actions</a>
-        <a href="#dailyRhythm">Daily updates</a>
-        <a href="#learning">Memory</a>
-        <a href="#possibilities">Possibilities</a>
-        <a href="#connections">Connections</a>
-      </nav>
-
-      <section class="brief-section weather-section" id="weather" aria-labelledby="weatherTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">LOCATION-AWARE WEATHER MODULE</p>
-            <h2 id="weatherTitle">Plan around the sky, not a tiny icon.</h2>
-          </div>
-          <div class="weather-tabs" role="tablist" aria-label="Weather views">
-            <button id="hourlyTab" role="tab" aria-selected="true" aria-controls="hourlyWeather" type="button">Hourly</button>
-            <button id="dailyTab" role="tab" aria-selected="false" aria-controls="dailyWeather" type="button">Outlook</button>
-          </div>
-        </div>
-
-        <div class="weather-stage">
-          <article class="weather-now" id="weatherNow">
-            <div class="weather-visual" aria-hidden="true">
-              <div class="sun-core"></div>
-              <div class="weather-cloud cloud-one"></div>
-              <div class="weather-cloud cloud-two"></div>
-            </div>
-            <div class="weather-primary">
-              <span class="source-label source-demo">DEMO WEATHER</span>
-              <p class="weather-location" id="weatherLocation">Brooklyn, New York</p>
-              <strong class="weather-temp" id="weatherTemp">82°</strong>
-              <p class="weather-condition" id="weatherCondition">Mostly sunny</p>
-              <p class="weather-advice" id="weatherAdvice">Best outdoor window: 5:30–7:30 PM.</p>
-            </div>
-            <div class="weather-metrics" id="weatherMetrics"></div>
-          </article>
-
-          <div class="weather-timeline" id="hourlyWeather" role="tabpanel" aria-labelledby="hourlyTab"></div>
-          <div class="weather-timeline is-hidden" id="dailyWeather" role="tabpanel" aria-labelledby="dailyTab"></div>
-        </div>
+      <section class="brief-section" id="weather">
+        <div class="section-heading"><div><p class="micro-label">PUBLIC LAYER</p><h3>Weather and operational context</h3></div><p>Current public information remains sourced and separate from fictional private records.</p></div>
+        <div class="weather-grid" id="weatherGrid"></div>
       </section>
 
-      <section class="brief-section music-section" id="music" aria-labelledby="musicSectionTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">ACTUAL SONG · SPOTIFY CONNECTION DEMO</p>
-            <h2 id="musicSectionTitle">A soundtrack that belongs to the day.</h2>
-          </div>
-          <p>An authorized preview can begin after entry. The Spotify player demonstrates full provider playback and a personal favorites library.</p>
-        </div>
-
-        <div class="music-hero">
-          <div class="music-art" aria-hidden="true">
-            <div class="music-art-core"></div>
-            <div class="music-art-caption"><span>daily selection</span><span id="musicArtDate">2026.08.03</span></div>
-          </div>
-
-          <article class="music-feature">
-            <div>
-              <span class="source-label source-connected">SPOTIFY DEMO</span>
-              <p class="micro-label">TODAY’S FEATURED TRACK</p>
-              <h3 id="musicTitle">Everywhere</h3>
-              <p class="music-artist" id="musicArtist">Fleetwood Mac</p>
-              <p class="music-reason" id="musicReason">Bright, affectionate and full of movement.</p>
-              <p class="music-direct-line" id="musicDirectLine">Different places, same team.</p>
-            </div>
-
-            <div class="music-controls">
-              <div class="music-control-row">
-                <button class="music-play-button" id="musicPreviewButton" type="button"><span aria-hidden="true">▶</span><b>Play actual song preview</b></button>
-                <a class="music-open-link" id="musicSpotifyLink" href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Open in Spotify</a>
-              </div>
-              <div class="music-progress" aria-label="Song preview progress">
-                <span id="musicCurrentTime">0:00</span>
-                <div class="music-progress-track"><i id="musicProgressBar"></i></div>
-                <span id="musicDuration">0:30</span>
-              </div>
-              <p class="music-preview-note" id="musicPreviewNote">Authorized preview. Full playback depends on Spotify availability and account status.</p>
-            </div>
-          </article>
-
-          <aside class="spotify-embed-panel">
-            <div class="spotify-panel-top">
-              <div><span class="source-label source-demo">CONNECTED EXPERIENCE</span><strong id="spotifyNowLabel">Featured track</strong></div>
-              <span class="micro-label">SPOTIFY EMBED</span>
-            </div>
-            <iframe id="spotifyFeaturedFrame" title="Spotify featured track player" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-            <p class="spotify-disclaimer">This is a real Spotify embed inside a fictional connection demonstration. It does not mean a Spotify account is currently connected.</p>
-          </aside>
-        </div>
-
-        <div class="music-library-heading">
-          <div><p class="micro-label">REMEMBERED FAVORITES DEMO</p><h3>Your rotation, ready when the mood changes.</h3></div>
-          <p>Select a track to replace the Spotify player above. A connected version could learn favorites, workout songs, shared playlists and recent listening with permission.</p>
-        </div>
-        <div class="music-favorites" id="musicFavorites"></div>
+      <section class="brief-section" id="priorities">
+        <div class="section-heading"><div><p class="micro-label">PRIVATE DEMO</p><h3>Priorities that need an owner</h3></div><p>Fictional examples show how the system can compress tasks, deadlines and preparation.</p></div>
+        <div class="priority-grid" id="priorityGrid"></div>
       </section>
 
-      <section class="brief-section scenario-explorer" id="scenarioExplorer" aria-labelledby="scenarioExplorerTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">FIVE WAYS THE SAME PLATFORM CAN FEEL COMPLETELY DIFFERENT</p>
-            <h2 id="scenarioExplorerTitle">Choose the people. The briefing changes around them.</h2>
-          </div>
-          <p>The core stays stable. The users, shared spaces, priorities, tone, data and useful actions change.</p>
-        </div>
-        <div class="scenario-selector" id="scenarioSelector" aria-label="Briefing examples"></div>
-        <div class="scenario-stage" id="scenarioStage"></div>
+      <section class="brief-section" id="schedule">
+        <div class="section-heading"><div><p class="micro-label">PRIVATE DEMO</p><h3>Schedule and preparation</h3></div><p>Each event can include why it matters and what should happen before it starts.</p></div>
+        <div class="schedule-list" id="scheduleList"></div>
       </section>
 
-      <section class="brief-section" id="priorities" aria-labelledby="priorityTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">DAILY ACTIONS FOR THE SELECTED EXAMPLE</p>
-            <h2 id="priorityTitle">Important work becomes clear ownership.</h2>
-          </div>
-          <p>Complete items locally on this device. A real version could sync approved updates to connected tools.</p>
-        </div>
-        <div class="priority-board" id="priorityBoard"></div>
-      </section>
-
-      <section class="brief-section split-section" id="schedule" aria-labelledby="scheduleTitle">
-        <div class="section-heading section-heading-compact">
-          <div>
-            <p class="micro-label">TODAY’S FLOW</p>
-            <h2 id="scheduleTitle">The schedule changes with the people and purpose.</h2>
-          </div>
-        </div>
-        <div class="schedule-layout">
-          <div class="timeline" id="scheduleTimeline"></div>
-          <aside class="focus-card">
-            <span class="source-label source-analysis">ANALYSIS</span>
-            <p class="micro-label">WHY THIS MATTERS</p>
-            <strong>Context creates better timing</strong>
-            <p>A useful briefing knows when a person is available, what is urgent, and which action becomes harder later.</p>
-            <button class="secondary-action" type="button" data-concept-action="Protect or reschedule time">Turn insight into action</button>
-          </aside>
-        </div>
-      </section>
-
-      <section class="brief-section education-section" id="dailyRhythm" aria-labelledby="dailyRhythmTitle">
-        <div class="education-hero">
-          <span class="source-label source-demo">SCHEDULED EXPERIENCE</span>
-          <p class="micro-label">THE SAME BRIEFING THROUGHOUT THE DAY</p>
-          <h2 id="dailyRhythmTitle">It knows the time and circumstances. You do not choose a mode.</h2>
-          <p>The morning can open like an alarm, the daytime view can update when something important changes, and the evening can close the loop in a shorter review.</p>
-        </div>
-        <div class="daily-rhythm-grid" id="dailyRhythmGrid"></div>
-      </section>
-
-      <section class="brief-section education-section" id="learning" aria-labelledby="learningTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">STRUCTURED PROFILE + MEMORY DATABASE</p>
-            <h2 id="learningTitle">How it learns without deciding your identity for you.</h2>
-          </div>
-          <p>Every important memory can keep its source, confidence, sensitivity, expiry and sharing rules.</p>
-        </div>
-
-        <div class="learning-layout">
-          <div class="learning-steps" id="learningSteps"></div>
-          <div class="learning-explanation" id="learningExplanation"></div>
-        </div>
-
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">USER CONTROL</p>
-            <h2>Important conclusions become questions, not silent permanent facts.</h2>
-          </div>
-        </div>
-        <div class="memory-choice-grid" id="memoryChoiceGrid"></div>
-        <p class="memory-choice-result" id="memoryChoiceResult"></p>
-
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">EXAMPLE MEMORY RECORDS</p>
-            <h2>What structured memory can look like.</h2>
-          </div>
-          <p>These are fictional examples. Sensitive real memory belongs in a protected backend, not public JavaScript.</p>
-        </div>
-        <div class="memory-record-list" id="memoryRecordList"></div>
-      </section>
-
-      <section class="brief-section education-section" id="possibilities" aria-labelledby="possibilitiesTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">WHAT CAN BE ADDED</p>
-            <h2 id="possibilitiesTitle">Almost anything useful to the person’s day can become a briefing module.</h2>
-          </div>
-          <p>Filter the examples. Each module would still need an honest data source, permission state and useful reason to exist.</p>
-        </div>
-        <div class="capability-filters" id="capabilityFilters"></div>
-        <div class="capability-grid" id="capabilityGrid"></div>
-      </section>
-
-      <section class="brief-section education-section" id="difference" aria-labelledby="differenceTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">THE SIMPLEST EXPLANATION</p>
-            <h2 id="differenceTitle">A normal AI chat answers. This platform prepares context before the answer.</h2>
-          </div>
-        </div>
-        <div class="comparison-grid" id="comparisonGrid"></div>
-
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">HOW PYTHON AND FASTAPI EVENTUALLY CONNECT IT</p>
-            <h2>The page is the experience. The backend makes it real.</h2>
-          </div>
-          <p>Python can securely connect accounts, scheduled jobs, memory, databases, permissions, voice, alarms and approved actions.</p>
-        </div>
-        <div class="backend-flow" id="backendFlow"></div>
-      </section>
-
-      <section class="brief-section shared-section" id="sharedSpace" aria-labelledby="sharedTitle">
-        <div class="shared-heading">
-          <div>
-            <span class="source-label source-shared">APPROVED SHARED SPACE</span>
-            <p class="micro-label">PRIVATE PROFILES, SELECTIVE COLLABORATION</p>
-            <h2 id="sharedTitle">Share the plan without sharing everything.</h2>
-          </div>
-          <button class="secondary-action" id="sharedToggleInside" type="button">Preview shared view</button>
-        </div>
+      <section class="brief-section" id="sharedSpace">
+        <div class="shared-heading"><div><p class="micro-label">PRIVATE + SHARED MODEL</p><h3>One platform, separate permissions</h3></div><p id="sharedSpaceCopy">Private notes stay private. Shared spaces contain only approved information.</p></div>
         <div class="shared-grid" id="sharedGrid"></div>
       </section>
 
-      <section class="brief-section" id="connections" aria-labelledby="connectionsTitle">
-        <div class="section-heading">
-          <div>
-            <p class="micro-label">HONEST CONNECTION STATUS</p>
-            <h2 id="connectionsTitle">Nothing is connected by implication.</h2>
-          </div>
-          <p>Each service states whether it is a demo, disconnected, planned or awaiting approval.</p>
-        </div>
-        <div class="connection-grid" id="connectionGrid"></div>
+      <section class="brief-section" id="scenarioExplorer">
+        <div class="section-heading"><div><p class="micro-label">FIVE WAYS THE SAME PLATFORM CAN WORK</p><h3>Choose a briefing model</h3></div><p>Each view changes the information hierarchy, privacy boundaries and next actions.</p></div>
+        <div class="scenario-choice-grid" id="scenarioChoiceGrid"></div>
       </section>
 
-      <section class="explain-panel is-hidden" id="explainPanel" aria-live="polite">
-        <span class="source-label source-demo">EXPLAIN MODE</span>
-        <h2>What this page is demonstrating</h2>
-        <p>The current people, finances, messages, health records and business metrics are fictional. The page shows how a real product could organize approved information without pretending the accounts or backend are already connected.</p>
+      <section class="brief-section" id="scenarioStage">
+        <div class="section-heading"><div><p class="micro-label">SCENARIO WORKSPACE</p><h3 id="scenarioStageTitle">Personal command center</h3></div><p id="scenarioStageCopy">Fictional data demonstrates how the protected product could work.</p></div>
+        <div id="scenarioStageBody"></div>
+      </section>
+
+      <section class="brief-section" id="learning">
+        <div class="section-heading"><div><p class="micro-label">LEARNING + MEMORY</p><h3>Useful memory with correction and expiry</h3></div><p>Approved history can support lessons, accountability and better preparation without turning old guesses into permanent identity.</p></div>
+        <div id="learningGrid"></div>
+      </section>
+
+      <section class="brief-section" id="livePublicLayer">
+        <div class="section-heading"><div><p class="micro-label">LIVE PUBLIC LAYER</p><h3>Only the updates that could change the day</h3></div><p>Current items keep their timestamps, sources and reasons.</p></div>
+        <div id="livePublicGrid"></div>
+      </section>
+
+      <section class="brief-section" id="connections">
+        <div class="section-heading"><div><p class="micro-label">CONNECTIONS · DEMO</p><h3>Connected services would remain explicit</h3></div><p>This concept never calls a disconnected service connected.</p></div>
+        <div id="connectionsGrid"></div>
+      </section>
+
+      <section class="brief-section" id="privacy">
+        <div class="section-heading"><div><p class="micro-label">PRIVACY MODEL</p><h3>Approval before memory, sharing or action</h3></div><p>The public demonstration keeps sensitive-looking records fictional and labeled.</p></div>
+        <div id="privacyGrid"></div>
       </section>
     </main>
 
@@ -363,6 +147,6 @@
   <script src="/assets/daily-song.js?v=20260803-4" defer></script>
   <script src="/assets/brief/brief-core.js?v=20260803-4" defer></script>
   <script src="/assets/brief/brief-scenario-renderer.js?v=20260803-1" defer></script>
-  <script src="/assets/brief/brief-terminal-bridge.js?v=20260803-7" defer></script>
+  <script src="/assets/brief/brief-terminal-bridge.js?v=20260803-8" defer></script>
 </body>
 </html>
