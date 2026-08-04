@@ -55,6 +55,10 @@ jobs:
                   'markers': ('data-sara-load-url=', 'data-sara-password-sha256='),
                   'assets': ('/assets/sara-brief-gate.css', '/assets/sara-brief-gate.js'),
               },
+              '/doc/': {
+                  'markers': ('data-cmx-gate="black-prompt"', 'data-cmx-gate-id="personal-os-document"'),
+                  'assets': ('/assets/gates/cmx-gate-black-prompt.css', '/assets/gates/cmx-gate-black-prompt.js'),
+              },
           }
 
           for route in routes:
