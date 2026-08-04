@@ -1,0 +1,36 @@
+name: News Navigation Branch Check
+
+on:
+  push:
+    branches:
+      - agent/news-navigation-map
+    paths:
+      - 'assets/news-navigation.js'
+      - 'assets/news-navigation-state.js'
+      - 'assets/news-navigation.css'
+      - 'assets/news-loader.js'
+      - 'news/index.html'
+      - 'scripts/validate-news-product.mjs'
+      - '.github/workflows/news-navigation-branch-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check assets/news-loader.js
+          node --check assets/news-navigation.js
+          node --check assets/news-navigation-state.js
+          node --check assets/news-workspace.js
+          node --check assets/news-polish.js
+      - name: Run news product regression checks
+        run: node scripts/validate-news-product.mjs
