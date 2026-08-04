@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
 
+const writeHeaders = {
+  Origin: 'http://127.0.0.1:8000',
+  'Sec-Fetch-Site': 'same-origin',
+  'Content-Type': 'application/json'
+};
+
 const protectedRoutes = [
   ['/directory', 'Operations Directory'],
   ['/cases', 'CMX Cases'],
@@ -22,6 +28,19 @@ async function openProtected(page, path) {
   const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
   expect(response?.ok()).toBeTruthy();
   await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}/?$`));
+}
+
+async function createPersistentCase(request, title, caseType = 'general') {
+  const response = await request.post('/api/cases', {
+    headers: writeHeaders,
+    data: {
+      case_type: caseType,
+      title,
+      authorization_basis: 'Authorized platform browser regression test'
+    }
+  });
+  expect(response.status()).toBe(201);
+  return response.json();
 }
 
 test.describe('protected route smoke tests', () => {
@@ -100,6 +119,36 @@ test('OSINT prefers the authenticated DNS gateway and discards stale responses',
   await expect(page.locator('#dnsBody')).toContainText('203.0.113.20');
   await expect(page.locator('#dnsBody')).not.toContainText('192.0.2.10');
   expect(directResolverCalls).toBe(0);
+});
+
+test('OSINT saves an explicit snapshot to the selected persistent case', async ({ page, request }) => {
+  const title = `OSINT context case ${Date.now()}`;
+  const record = await createPersistentCase(request, title, 'osint');
+  const username = `context_${Date.now()}`;
+
+  await grantClientSession(page);
+  const response = await page.goto(`/osint?case=${encodeURIComponent(record.id)}`, { waitUntil: 'domcontentloaded' });
+  expect(response?.ok()).toBeTruthy();
+
+  await expect(page.locator('.cmx-case-context-badge')).toHaveText('Protected');
+  await expect(page.locator('.cmx-case-context-select')).toHaveValue(record.id);
+
+  await page.locator('#entityType').selectOption('username');
+  await page.locator('#entityValue').fill(username);
+  await page.locator('#entityNotes').fill('Authorized active-case persistence regression');
+  await page.locator('#analyzeEntity').click();
+
+  const save = page.getByRole('button', { name: 'Save current snapshot' });
+  await expect(save).toBeEnabled();
+  await save.click();
+  await expect(page.locator('.cmx-case-context-message')).toContainText(/saved/i);
+  await expect(save).toBeDisabled();
+
+  const detailResponse = await request.get(`/api/cases/${record.id}`);
+  expect(detailResponse.status()).toBe(200);
+  const detail = await detailResponse.json();
+  expect(detail.entities.some((entity) => entity.entity_type === 'username' && entity.normalized_value === username)).toBeTruthy();
+  expect(detail.observations.some((observation) => observation.kind === 'osint_analysis' && observation.value_text === username)).toBeTruthy();
 });
 
 test('Metadata renders an adversarial filename as text', async ({ page }) => {
