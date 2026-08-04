@@ -272,7 +272,7 @@ test('OSINT enrichment cancels stale work and saves one normalized finding to th
   const detail = await detailResponse.json();
   const observations = detail.observations.filter((item) => item.kind === 'enrichment_rdap');
   expect(observations).toHaveLength(1);
-  expect(observations[0].value_text).toContain('example.com');
+  expect(observations[0].value_text.toLowerCase()).toContain('example.com');
   expect(observations[0].confidence).toBe('unrated');
   expect(observations[0].note).toContain('IANA-bootstrapped RDAP service');
   expect(providerRequests).toBe(0);
