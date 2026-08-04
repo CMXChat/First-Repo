@@ -7,6 +7,8 @@
   const nativeFetch = window.fetch.bind(window);
   let enrichmentDraft = null;
 
+  loadRoutingWorkspace();
+
   document.addEventListener('click', (event) => {
     const button = event.target.closest?.('#enrichmentSave');
     if (!button || button.disabled) return;
@@ -54,6 +56,25 @@
   };
 
   hydrateExactActiveCase();
+
+  function loadRoutingWorkspace() {
+    const path = window.location.pathname.replace(/\/index\.html$/i, '/').replace(/\/+$/, '') || '/';
+    if (path !== '/osint') return;
+    if (!document.querySelector('link[href^="/assets/osint-routing.css"]')) {
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = '/assets/osint-routing.css?v=20260804-1';
+      style.dataset.cmxOsintRouting = 'true';
+      document.head.appendChild(style);
+    }
+    if (!document.querySelector('script[src^="/assets/osint-routing.js"]')) {
+      const script = document.createElement('script');
+      script.src = '/assets/osint-routing.js?v=20260804-1';
+      script.async = false;
+      script.dataset.cmxOsintRouting = 'true';
+      document.head.appendChild(script);
+    }
+  }
 
   function beginSnapshotLock(caseId) {
     const select = document.querySelector('.cmx-case-context-select');
