@@ -23,12 +23,17 @@ const requiredFiles = [
   'assets/metadata-workbench.css',
   'assets/osint-workbench.js',
   'assets/osint-workbench.css',
+  'assets/osint-enrichment.js',
+  'assets/osint-enrichment.css',
   'assets/phone-workbench.js',
   'assets/phone-workbench.css',
   'assets/missing-workbench.js',
   'assets/missing-workbench.css',
   'assets/cases-workbench.js',
   'assets/cases-workbench.css',
+  'backend/app/api/enrichment.py',
+  'backend/app/services/enrichment.py',
+  'backend/tests/test_enrichment.py',
   'search/index.html',
   'metadata/index.html',
   'osint/index.html',
@@ -57,6 +62,7 @@ const javascriptFiles = [
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/osint-workbench.js',
+  'assets/osint-enrichment.js',
   'assets/phone-workbench.js',
   'assets/missing-workbench.js',
   'assets/cases-workbench.js',
@@ -113,6 +119,8 @@ checkPageModule('metadata/index.html', 'assets/metadata-workbench.js', [
 checkPageModule('osint/index.html', 'assets/osint-workbench.js', [
   '/assets/osint-workbench.js',
   '/assets/osint-workbench.css',
+  '/assets/osint-enrichment.js',
+  '/assets/osint-enrichment.css',
   '/assets/cmx-tool-shell.css'
 ]);
 checkPageModule('osint/index.html', 'assets/cmx-case-context.js', [
@@ -135,12 +143,14 @@ checkPageModule('cases/index.html', 'assets/cases-workbench.js', [
   '/assets/cmx-tool-shell.css'
 ]);
 checkSafeModule('assets/cmx-case-capture.js');
+checkSafeModule('assets/osint-enrichment.js');
 checkSafeModule('assets/cases-state-sync.js');
 checkSafeModule('assets/cases-operator-workspace.js');
 checkSafeModule('assets/cases-operator-records.js');
 checkCasesOperatorLoader();
 checkCaseContextLoader();
 checkDirectCapturePolicy();
+checkEnrichmentPolicy();
 
 function checkPageModule(page, module, requiredReferences) {
   const pagePath = join(root, page);
@@ -229,6 +239,63 @@ function checkDirectCapturePolicy() {
   });
   if (/fetch\(\s*[`'\"]https?:\/\//i.test(capture)) {
     failures.push('assets/cmx-case-capture.js must not fetch third-party URLs');
+  }
+}
+
+function checkEnrichmentPolicy() {
+  const clientPath = join(root, 'assets/osint-enrichment.js');
+  const servicePath = join(root, 'backend/app/services/enrichment.py');
+  const apiPath = join(root, 'backend/app/api/enrichment.py');
+  const testPath = join(root, 'tests/browser/active-case-tools.spec.mjs');
+  if (![clientPath, servicePath, apiPath, testPath].every(existsSync)) return;
+
+  const client = readFileSync(clientPath, 'utf8');
+  const service = readFileSync(servicePath, 'utf8');
+  const api = readFileSync(apiPath, 'utf8');
+  const tests = readFileSync(testPath, 'utf8');
+
+  [
+    '/api/enrichment/rdap',
+    '/api/enrichment/http',
+    '/api/enrichment/tls',
+    '/api/enrichment/ct',
+    'Save finding to active case',
+    'Checking the latest case observations for an exact duplicate',
+    'cache_hit',
+    'source_url'
+  ].forEach((required) => {
+    if (!client.includes(required)) failures.push(`assets/osint-enrichment.js must include enrichment marker: ${required}`);
+  });
+
+  [
+    'IANA bootstrap data',
+    'follow_redirects=False',
+    'request_method": "HEAD"',
+    'redirect_followed": False',
+    'body_read": False',
+    'ensure_public_ip',
+    'enrichment_max_response_bytes',
+    'enrichment_max_header_bytes',
+    'enrichment_max_records'
+  ].forEach((required) => {
+    if (!service.includes(required)) failures.push(`backend/app/services/enrichment.py must include safety marker: ${required}`);
+  });
+
+  ['/rdap', '/http', '/tls', '/ct'].forEach((route) => {
+    if (!api.includes(`"${route}"`)) failures.push(`backend/app/api/enrichment.py must expose ${route}`);
+  });
+
+  [
+    'OSINT enrichment cancels stale work',
+    '#enrichmentDuplicate',
+    'enrichment_rdap',
+    'expect(providerRequests).toBe(0)'
+  ].forEach((required) => {
+    if (!tests.includes(required)) failures.push(`tests/browser/active-case-tools.spec.mjs must cover ${required}`);
+  });
+
+  if (/fetch\(\s*[`'\"]https?:\/\//i.test(client)) {
+    failures.push('assets/osint-enrichment.js must use only same-origin enrichment endpoints');
   }
 }
 
