@@ -14,6 +14,7 @@ on:
       - '.dockerignore'
       - 'scripts/check-osint-platform.mjs'
       - 'scripts/check-platform-bug-guards.mjs'
+      - 'scripts/check-evidence-custody.mjs'
       - '.github/workflows/osint-platform-checks.yml'
       - 'SECURITY.md'
       - 'docs/OSINT_PLATFORM_ROADMAP.md'
@@ -33,6 +34,7 @@ on:
       - '.dockerignore'
       - 'scripts/check-osint-platform.mjs'
       - 'scripts/check-platform-bug-guards.mjs'
+      - 'scripts/check-evidence-custody.mjs'
       - '.github/workflows/osint-platform-checks.yml'
 
 permissions:
@@ -55,6 +57,7 @@ jobs:
         run: |
           node scripts/check-osint-platform.mjs
           node scripts/check-platform-bug-guards.mjs
+          node scripts/check-evidence-custody.mjs
 
   backend-tests:
     runs-on: ubuntu-latest
