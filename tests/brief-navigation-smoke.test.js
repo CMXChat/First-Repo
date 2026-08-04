@@ -47,7 +47,8 @@ assert.doesNotMatch(navigation, /new MutationObserver/);
 assert.match(runtime, /setQuickRoute/);
 assert.match(runtime, /#briefWorkspace/);
 assert.match(runtime, /briefWorkspacePanel/);
-assert.match(runtime, /restoreUrlAfterEntry/);
+assert.match(runtime, /restoreUrlState/);
+assert.match(runtime, /applyRequestedUrl/);
 assert.match(runtime, /data-quick-route/);
 assert.match(runtime, /data-related-route/);
 assert.match(runtime, /data-nav-route/);
@@ -75,5 +76,6 @@ assert.match(styles, /forced-colors: active/);
 assert.match(styles, /@supports not \(\(-webkit-backdrop-filter/);
 
 assert.match(index, /brief-config\.js\?v=20260803-\d+/);
+assert.match(index, /brief-terminal-bridge\.js\?v=20260803-7/);
 
 console.log('Brief interconnected navigation smoke test passed.');
