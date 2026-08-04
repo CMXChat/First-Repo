@@ -66,7 +66,7 @@ test('routing lookup cancels stale work and saves one provenance-bound observati
   await expect(page.locator('.cmx-case-context-select')).toHaveValue(record.id);
 
   const routingSection = page.locator('#routingSection');
-  const cancel = routingSection.getByRole('button', { name: 'Cancel', exact: true });
+  const cancel = routingSection.getByRole('button', { name: 'Stop routing lookup' });
   await page.locator('#routingResource').fill('1.1.1.1');
   await routingSection.getByRole('button', { name: 'Find origin' }).click();
   await expect(cancel).toBeEnabled();
@@ -142,7 +142,7 @@ test('invalid RPKI remains a routing state and is not labeled malicious', async 
 
   await expect(page.locator('#routingSummary')).toContainText('RPKI invalid');
   await expect(page.locator('#routingSummary')).not.toContainText(/malicious|compromised|attack/i);
-  await expect(page.locator('#routingRecords')).toContainText('Invalid Asn');
+  await expect(page.locator('#routingRecords')).toContainText('Invalid ASN');
   await expect(page.locator('#routingStatus')).toContainText(/completed/i);
   expect(providerRequests).toBe(0);
 });
