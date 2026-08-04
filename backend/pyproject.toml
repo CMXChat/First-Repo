@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cmx-restricted-node"
+version = "0.1.0"
+description = "Authenticated FastAPI origin for the CMX restricted OSINT node"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi[standard]==0.139.2",
+  "httpx==0.28.1",
+  "pydantic-settings==2.14.2",
+  "PyJWT[crypto]==2.13.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+  "pytest-asyncio>=0.24,<2"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
