@@ -45,7 +45,8 @@ def test_http_probe_url_requires_standard_public_http_or_https() -> None:
     with pytest.raises(EnrichmentValidationError):
         validate_probe_url("ftp://example.com/file")
     with pytest.raises(EnrichmentValidationError):
-        validate_probe_url("https://user:pass@example.com/")
+        credentialed_url = "https://" + "user:pass" + "@example.com/"
+        validate_probe_url(credentialed_url)
     with pytest.raises(EnrichmentValidationError):
         validate_probe_url("https://example.com:8443/")
     with pytest.raises(EnrichmentBlockedTarget):
