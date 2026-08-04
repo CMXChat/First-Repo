@@ -95,13 +95,15 @@ class RoutingService:
                     )
                 )
                 self._inflight[key] = task
+                task.add_done_callback(
+                    lambda completed, cache_key=key: self._discard_completed_inflight(cache_key, completed)
+                )
 
         try:
             value = await asyncio.shield(task)
         finally:
-            async with self._lock:
-                if self._inflight.get(key) is task and task.done():
-                    self._inflight.pop(key, None)
+            if task.done():
+                self._discard_completed_inflight(key, task)
 
         if self.settings.enrichment_cache_ttl_seconds > 0:
             async with self._lock:
@@ -118,6 +120,14 @@ class RoutingService:
                 while len(self._cache) > CACHE_MAX_ENTRIES:
                     self._cache.popitem(last=False)
         return value, False
+
+    def _discard_completed_inflight(
+        self,
+        key: tuple[str, str],
+        task: asyncio.Task[dict[str, Any]],
+    ) -> None:
+        if self._inflight.get(key) is task and task.done():
+            self._inflight.pop(key, None)
 
     def _prune(self, now: float) -> None:
         expired = [key for key, entry in self._cache.items() if entry.expires_at <= now]
