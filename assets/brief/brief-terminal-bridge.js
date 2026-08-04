@@ -23,10 +23,11 @@
     trainer: 'Trainer',
     team: 'Team'
   };
-  const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';
-  const TERMINAL_SUMMARY = 'demo now · backend reserved';
+  const TERMINAL_INTRO = 'Demo navigation shell today. Protected data, files, connectors and approved actions belong to the future backend.';
+  const TERMINAL_SUMMARY = 'demo navigation · backend later';
   const NAVIGATION_VERSION = '20260803-6';
   const INTERFACE_VERSION = '20260803-2';
+  const FINAL_VERSION = '20260803-1';
 
   let initialized = false;
   let lastPreset = '';
@@ -75,7 +76,7 @@
 
   function helpLines() {
     return [
-      'now: demo navigation only. backend reserved for secure data + file input here or in the dashboard.',
+      'now: this shell navigates the demo. protected data and approved actions require the future backend.',
       'commands: brief personal|relationship|business|trainer|team, top, private, shared, modules, learn, teams, security, backend, privacy, about, clear.'
     ];
   }
@@ -111,17 +112,17 @@
     }
 
     if (command === 'backend' || command === 'future') {
-      appendLine('backend reserved. later: authenticated inputs, file uploads, connectors and approved actions through terminal or dashboard.');
+      appendLine('backend reserved. later: authenticated input, file uploads, connectors and approved actions through the terminal or dashboard.');
       return true;
     }
 
     if (['learn', 'learning', 'teach', 'teaching'].includes(command)) {
-      appendLine('learning: daily lessons, spaced repetition, quizzes, corrections, workout progression and accountability from approved history.');
+      appendLine('learning: daily lessons, spaced repetition, corrections, workout progression and accountability from approved history.');
       return true;
     }
 
     if (command === 'teams' || command === 'team') {
-      appendLine('teams: role-based member, project and leadership spaces for procedures, handoffs, operations and approved finance monitoring. use brief team to open the demo.');
+      appendLine('teams: role-based member, project and leadership spaces for procedures, handoffs, operations and approved finance signals. use brief team to open the demo.');
       return true;
     }
 
@@ -182,19 +183,34 @@
     script.id = id;
     script.src = src;
     script.async = false;
-    if (onload) script.addEventListener('load', onload, { once: true });
+    if (onload) {
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        onload();
+      };
+      script.addEventListener('load', finish, { once: true });
+      script.addEventListener('error', finish, { once: true });
+    }
     document.head.appendChild(script);
   }
 
-  function loadNavigation() {
+  function loadProductLayers() {
     loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
     loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);
     loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
+    loadStyle('briefFinalizeStyle', `/assets/brief/brief-finalize.css?v=${FINAL_VERSION}`);
+    loadStyle('briefVisionStyle', `/assets/brief/brief-vision-tour.css?v=${FINAL_VERSION}`);
+
     loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);
     loadScript('briefNavigationScript', `/assets/brief/brief-navigation.js?v=${NAVIGATION_VERSION}`, () => {
       loadScript('briefNavigationRuntimeScript', `/assets/brief/brief-navigation-runtime.js?v=${NAVIGATION_VERSION}`);
       loadScript('briefTopMapScript', `/assets/brief/brief-map-top.js?v=${INTERFACE_VERSION}`);
     });
+
+    loadScript('briefFinalizeScript', `/assets/brief/brief-finalize.js?v=${FINAL_VERSION}`);
+    loadScript('briefVisionScript', `/assets/brief/brief-vision-tour.js?v=${FINAL_VERSION}`);
   }
 
   function installCommandBridge() {
@@ -253,7 +269,7 @@
     installCommandBridge();
     installUniversalReturnToTop();
     scheduleLateUi();
-    loadNavigation();
+    loadProductLayers();
 
     $('#explainButton')?.addEventListener('click', () => window.setTimeout(augmentHelpModal, 60), true);
   }
