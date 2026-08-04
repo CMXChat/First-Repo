@@ -61,6 +61,7 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
   border: 1px solid rgba(141, 200, 255, .3);
   border-radius: 26px;
   background:
@@ -223,6 +224,7 @@
 
 .news-drawer-panel {
   max-height: calc(var(--news-viewport-height, 100dvh) - 24px - var(--news-keyboard-inset, 0px));
+  box-sizing: border-box;
 }
 
 .news-drawer-panel > footer {
