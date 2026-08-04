@@ -1,4 +1,4 @@
-name: Brief Device, Onboarding, Navigation, Terminal, Media, Stability, Workspace and Polish Tests
+name: Brief Device, Onboarding, Navigation, Theme, Terminal, Media, Stability, Workspace and Polish Tests
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-onboarding-smoke.test.js'
       - 'tests/brief-navigation-smoke.test.js'
+      - 'tests/brief-theme-map-smoke.test.js'
       - 'tests/brief-terminal-smoke.test.js'
       - 'tests/brief-entry-watch-smoke.test.js'
       - 'tests/brief-stability-smoke.test.js'
@@ -24,6 +25,7 @@ on:
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-onboarding-smoke.test.js'
       - 'tests/brief-navigation-smoke.test.js'
+      - 'tests/brief-theme-map-smoke.test.js'
       - 'tests/brief-terminal-smoke.test.js'
       - 'tests/brief-entry-watch-smoke.test.js'
       - 'tests/brief-stability-smoke.test.js'
@@ -55,6 +57,9 @@ jobs:
 
       - name: Run interconnected navigation smoke test
         run: node tests/brief-navigation-smoke.test.js
+
+      - name: Run map and theme integrity smoke test
+        run: node tests/brief-theme-map-smoke.test.js
 
       - name: Run briefing terminal smoke test
         run: node tests/brief-terminal-smoke.test.js
