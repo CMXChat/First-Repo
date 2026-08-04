@@ -1,6 +1,6 @@
 # CMX Operator UX Roadmap
 
-## Current completed slice
+## Completed slice 1: OSINT active-case workflow
 
 The first case-centered operator pass is implemented on `/osint`:
 
@@ -15,11 +15,9 @@ The first case-centered operator pass is implemented on `/osint`:
 - `/cases?case=<id>` opens the exact selected case
 - desktop and mobile regressions cover the complete loop
 
-## Next slice: Cases information architecture
+## Completed slice 2: Cases information architecture
 
-### Navigation
-
-Replace the long undifferentiated detail column with case-level views:
+The persistent `/cases` workspace now uses eight case-level views:
 
 1. Overview
 2. Timeline
@@ -30,64 +28,103 @@ Replace the long undifferentiated detail column with case-level views:
 7. Notes
 8. Audit
 
-The current case remains selected while moving between views. Views must work without client-side persistence of case contents.
+The current case remains selected while moving between views. Case contents are not persisted in browser storage by the operator layer.
 
 ### Overview
 
-Show the information needed to resume work:
+Implemented:
 
 - status and urgency
-- authorization basis
+- authorization basis and summary
 - retention review date
-- last meaningful activity
 - record totals
-- recent observations and sources
-- unverified or conflicting records
-- next-action note
+- recent chronological activity
+- review prompts for weak confidence, duplicates, missing sources, missing notes, retention review and registration-only evidence
 - import and export controls
 
 ### Timeline
 
-Combine observations, sources, queries, evidence registrations, notes and lifecycle actions into one chronological view. Each row must state its record type and source. Timeline ordering must not imply causation.
+Implemented a single chronological view across:
+
+- observations
+- sources
+- queries
+- evidence registrations
+- relationships
+- analyst notes
+- audit events
+
+Each row states its record type and available time/context. Timeline ordering is display only and does not imply causation.
 
 ### Entity workspace
 
-Add:
+Implemented:
 
 - entity-type and confidence filters
 - normalized-value search
 - duplicate review
-- direct links back into supported CMX tools
+- direct links into supported CMX tools
+- verified, inferred and unverified display states
 - relationship creation between entities in the same case
-- verified, inferred, conflicting and ruled-out analyst states
+- readable relationship endpoint labels and analyst notes
 
-### Mobile behavior
+Explicit conflicting and ruled-out state editing remains a later record-editing improvement. Existing explicit analyst-state values are displayed conservatively when present.
 
-On narrow screens:
+### Mobile and density
 
-- use stacked record cards instead of minimum-width tables
-- keep the case switcher and save state visible without covering content
-- place destructive actions in a separate lifecycle area
-- require explicit confirmation for archive, restore and purge
+Implemented:
 
-### Visual system
-
-- compact operator header after first use
-- rectangular action buttons
-- pills reserved for status and filters
+- stacked case and detail sections
+- wrapped case-view controls
+- stable import and relationship controls
+- non-sticky case navigation on narrow screens
 - comfortable and compact density modes
-- local inline SVG icon set
-- persistent banners for disconnected, partial, unsaved and failed states
-- no decorative investigation-board effects
+- separate lifecycle workspace for destructive restore and purge actions
+- explicit confirmation for archive, restore and purge
+
+### Validation
+
+The completed Cases slice passes:
+
+- strict source and syntax checks
+- unsafe-rendering and browser-persistence checks
+- backend and PostgreSQL integration tests
+- full Chromium desktop regressions
+- full Chromium mobile regressions
+
+See `docs/PHASE_2_CASES_VALIDATION.md` for the validated implementation head and detailed test scope.
+
+## Next slice: Active-case context across remaining tools
+
+Apply the protected active-case workflow to:
+
+1. Phone
+2. Search
+3. Metadata
+4. Missing Person
+
+Each tool must:
+
+- show authenticated or local-only operating mode
+- allow selection of an existing persistent case
+- never save research automatically
+- save through one atomic case transaction where a supported CMX import schema exists
+- block incomplete or invalid snapshots
+- show saved, unsaved, partial and failed states clearly
+- return directly to the selected case
+- preserve tool-specific provider and confidence disclosures
+- pass desktop and mobile browser regressions
 
 ## Later slices
 
-1. Apply active-case context to Phone, Search, Metadata and Missing Person.
-2. Add direct capture of sources and external findings.
-3. Add server-side RDAP, ASN, BGP, RPKI, TLS, Certificate Transparency and HTTP adapters.
-4. Add isolated deep metadata and OCR workers.
-5. Add evidence manifests, screenshots, hashes and custody notes.
-6. Add restrained relationship and comparison views.
+1. Add direct capture of sources and external findings.
+2. Add server-side RDAP, ASN, BGP, RPKI, TLS, Certificate Transparency and HTTP adapters.
+3. Add isolated deep metadata and OCR workers.
+4. Add evidence manifests, screenshots, hashes and custody notes.
+5. Add explicit analyst-state editing for verified, inferred, conflicting, ruled-out and unverified records.
+6. Add restrained relationship comparison views.
+7. Add a local inline SVG icon set and compact first-use header treatment.
+8. Add persistent banners for disconnected, partial, unsaved and failed platform states.
 
 ## Safety and release gate
 
