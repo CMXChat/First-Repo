@@ -7,9 +7,14 @@ on:
       - 'backend/app/hardened.py'
       - 'backend/app/write_security.py'
       - 'backend/app/api/lifecycle.py'
+      - 'backend/app/api/enrichment.py'
+      - 'backend/app/services/enrichment.py'
+      - 'backend/app/config.py'
+      - 'backend/app/main.py'
       - 'backend/tests/test_platform.py'
       - 'backend/tests/test_lifecycle.py'
       - 'backend/tests/test_write_security.py'
+      - 'backend/tests/test_enrichment.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
       - 'cases/**'
@@ -24,6 +29,7 @@ on:
       - 'assets/cmx-case-capture.*'
       - 'assets/cmx-page-standard.js'
       - 'assets/osint-workbench.js'
+      - 'assets/osint-enrichment.*'
       - 'assets/phone-workbench.js'
       - 'assets/search-workbench.js'
       - 'assets/metadata-workbench.js'
@@ -43,9 +49,14 @@ on:
       - 'backend/app/hardened.py'
       - 'backend/app/write_security.py'
       - 'backend/app/api/lifecycle.py'
+      - 'backend/app/api/enrichment.py'
+      - 'backend/app/services/enrichment.py'
+      - 'backend/app/config.py'
+      - 'backend/app/main.py'
       - 'backend/tests/test_platform.py'
       - 'backend/tests/test_lifecycle.py'
       - 'backend/tests/test_write_security.py'
+      - 'backend/tests/test_enrichment.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
       - 'cases/**'
@@ -60,6 +71,7 @@ on:
       - 'assets/cmx-case-capture.*'
       - 'assets/cmx-page-standard.js'
       - 'assets/osint-workbench.js'
+      - 'assets/osint-enrichment.*'
       - 'assets/phone-workbench.js'
       - 'assets/search-workbench.js'
       - 'assets/metadata-workbench.js'
@@ -93,13 +105,13 @@ jobs:
         working-directory: backend
         run: python -m pip install --upgrade pip && python -m pip install -r requirements-dev.txt
 
-      - name: Compile final entry point
+      - name: Compile final entry point and enrichment boundary
         working-directory: backend
-        run: python -m compileall -q app/platform.py app/hardened.py app/write_security.py
+        run: python -m compileall -q app/platform.py app/hardened.py app/write_security.py app/main.py app/api/enrichment.py app/services/enrichment.py
 
-      - name: Run platform lifecycle and write tests
+      - name: Run platform lifecycle, write and enrichment tests
         working-directory: backend
-        run: pytest tests/test_platform.py tests/test_lifecycle.py tests/test_write_security.py
+        run: pytest tests/test_platform.py tests/test_lifecycle.py tests/test_write_security.py tests/test_enrichment.py
 
       - name: Validate platform Compose merge
         run: |
