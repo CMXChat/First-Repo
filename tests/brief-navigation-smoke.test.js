@@ -55,14 +55,16 @@ assert.match(runtime, /data-nav-route/);
 assert.match(runtime, /window\.BRIEF_NAVIGATION/);
 assert.doesNotMatch(runtime, /new MutationObserver/);
 
-assert.match(bridge, /NAVIGATION_VERSION/);
-assert.match(bridge, /FINAL_VERSION/);
-assert.match(bridge, /brief-navigation\.css/);
-assert.match(bridge, /brief-navigation\.js/);
-assert.match(bridge, /brief-navigation-runtime\.js/);
+assert.match(bridge, /THEME_VERSION/);
+assert.match(bridge, /SYSTEM_VERSION/);
+assert.match(bridge, /brief-theme-integrity\.css/);
+assert.match(bridge, /brief-system\.css/);
+assert.match(bridge, /brief-system-fixes\.css/);
+assert.match(bridge, /brief-theme-integrity\.js/);
+assert.match(bridge, /brief-system\.js/);
 assert.match(bridge, /loadProductLayers\(\)/);
-assert.match(bridge, /briefFinalizeScript/);
-assert.match(bridge, /briefVisionScript/);
+assert.match(bridge, /installCommandBridge\(\)/);
+assert.match(bridge, /window\.BRIEF_SYSTEM/);
 
 assert.match(styles, /position: sticky/);
 assert.match(styles, /brief-navigator-bar/);
