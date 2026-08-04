@@ -1,0 +1,77 @@
+name: Finalize Brief Theme Integrity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-theme-finalize.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Put theme audit last and patch map contrast
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('assets/brief/brief-terminal-bridge.js')
+          text = path.read_text()
+          old = """    loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
+    loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);
+    loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
+    loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);"""
+          new = """    loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
+    loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);
+    loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
+    loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);"""
+          if old not in text:
+              raise SystemExit('theme load-order marker not found')
+          path.write_text(text.replace(old, new, 1))
+
+          path = Path('assets/brief/brief-theme-integrity.css')
+          text = path.read_text()
+          marker = "/* Permanent top map control and narrow-device toolbar safety. */"
+          addition = """html[data-theme='light'] .brief-map-button,
+html[data-theme='light'] .brief-top-map-button:not(.is-active) {
+  color: #174f75 !important;
+  border-color: #b9d2e7 !important;
+  background: #f4f9fd !important;
+}
+
+html[data-theme='light'] .brief-map-button:hover,
+html[data-theme='light'] .brief-map-button:focus-visible,
+html[data-theme='light'] .brief-top-map-button:not(.is-active):hover,
+html[data-theme='light'] .brief-top-map-button:not(.is-active):focus-visible {
+  color: #083f68 !important;
+  border-color: #6fa8d2 !important;
+  background: #e8f4fc !important;
+}
+
+""" + marker
+          if "html[data-theme='light'] .brief-map-button," not in text:
+              if marker not in text:
+                  raise SystemExit('map-control marker not found')
+              text = text.replace(marker, addition, 1)
+          path.write_text(text)
+          PY
+
+      - name: Validate
+        run: |
+          node --check assets/brief/brief-terminal-bridge.js
+          node --check assets/brief/brief-theme-integrity.js
+          node tests/brief-theme-map-smoke.test.js
+
+      - name: Commit final theme integrity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brief/brief-terminal-bridge.js assets/brief/brief-theme-integrity.css
+          git commit -m 'Finalize map contrast and theme load order'
+          git push
