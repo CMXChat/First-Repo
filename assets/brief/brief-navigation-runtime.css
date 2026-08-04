@@ -1,5 +1,9 @@
 /* Runtime enhancements for compact Quick routes and navigation recovery states. */
 
+.brief-navigator-bar {
+  top: 76px;
+}
+
 .quick-compact-list article[data-quick-route] {
   position: relative;
   padding-right: 82px;
@@ -43,6 +47,12 @@ html[data-theme='light'] .quick-compact-list article[data-quick-route]:hover,
 html[data-theme='light'] .quick-compact-list article[data-quick-route]:focus-visible {
   border-color: #8fbfe4;
   background: #edf7ff;
+}
+
+@media (max-width: 900px) {
+  .brief-navigator-bar {
+    top: max(66px, calc(48px + env(safe-area-inset-top)));
+  }
 }
 
 @media (max-width: 560px) {
