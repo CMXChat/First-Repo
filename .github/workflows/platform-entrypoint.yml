@@ -10,11 +10,17 @@ on:
       - 'backend/app/api/imports.py'
       - 'backend/app/api/enrichment.py'
       - 'backend/app/api/routing.py'
+      - 'backend/app/api/custody.py'
+      - 'backend/app/custody_models.py'
+      - 'backend/app/custody_schemas.py'
       - 'backend/app/services/import_links.py'
       - 'backend/app/services/enrichment.py'
       - 'backend/app/services/routing.py'
+      - 'backend/app/services/custody.py'
       - 'backend/app/config.py'
       - 'backend/app/main.py'
+      - 'backend/app/api/system.py'
+      - 'backend/alembic/versions/20260804_0002_evidence_custody.py'
       - 'backend/tests/test_platform.py'
       - 'backend/tests/test_lifecycle.py'
       - 'backend/tests/test_write_security.py'
@@ -22,6 +28,7 @@ on:
       - 'backend/tests/test_enrichment.py'
       - 'backend/tests/test_routing.py'
       - 'backend/tests/test_routing_cancellation.py'
+      - 'backend/tests/test_custody.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
       - 'cases/**'
@@ -43,6 +50,7 @@ on:
       - 'assets/search-workbench.js'
       - 'assets/metadata-workbench.js'
       - 'assets/missing-workbench.js'
+      - 'scripts/check-evidence-custody.mjs'
       - 'tests/browser/lifecycle.spec.mjs'
       - 'tests/browser/platform.spec.mjs'
       - 'tests/browser/cases-operator-workspace.spec.mjs'
@@ -50,6 +58,7 @@ on:
       - 'tests/browser/bug-audit.spec.mjs'
       - 'tests/browser/routing.spec.mjs'
       - 'tests/browser/routing-guards.spec.mjs'
+      - 'tests/browser/evidence-custody.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
   push:
@@ -64,11 +73,17 @@ on:
       - 'backend/app/api/imports.py'
       - 'backend/app/api/enrichment.py'
       - 'backend/app/api/routing.py'
+      - 'backend/app/api/custody.py'
+      - 'backend/app/custody_models.py'
+      - 'backend/app/custody_schemas.py'
       - 'backend/app/services/import_links.py'
       - 'backend/app/services/enrichment.py'
       - 'backend/app/services/routing.py'
+      - 'backend/app/services/custody.py'
       - 'backend/app/config.py'
       - 'backend/app/main.py'
+      - 'backend/app/api/system.py'
+      - 'backend/alembic/versions/20260804_0002_evidence_custody.py'
       - 'backend/tests/test_platform.py'
       - 'backend/tests/test_lifecycle.py'
       - 'backend/tests/test_write_security.py'
@@ -76,6 +91,7 @@ on:
       - 'backend/tests/test_enrichment.py'
       - 'backend/tests/test_routing.py'
       - 'backend/tests/test_routing_cancellation.py'
+      - 'backend/tests/test_custody.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
       - 'cases/**'
@@ -97,6 +113,7 @@ on:
       - 'assets/search-workbench.js'
       - 'assets/metadata-workbench.js'
       - 'assets/missing-workbench.js'
+      - 'scripts/check-evidence-custody.mjs'
       - 'tests/browser/lifecycle.spec.mjs'
       - 'tests/browser/platform.spec.mjs'
       - 'tests/browser/cases-operator-workspace.spec.mjs'
@@ -104,6 +121,7 @@ on:
       - 'tests/browser/bug-audit.spec.mjs'
       - 'tests/browser/routing.spec.mjs'
       - 'tests/browser/routing-guards.spec.mjs'
+      - 'tests/browser/evidence-custody.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
 
@@ -129,13 +147,13 @@ jobs:
         working-directory: backend
         run: python -m pip install --upgrade pip && python -m pip install -r requirements-dev.txt
 
-      - name: Compile final entry point, enrichment and routing boundaries
+      - name: Compile final entry point and protected service boundaries
         working-directory: backend
-        run: python -m compileall -q app/platform.py app/hardened.py app/write_security.py app/main.py app/api/imports.py app/services/import_links.py app/api/enrichment.py app/services/enrichment.py app/api/routing.py app/services/routing.py
+        run: python -m compileall -q app/platform.py app/hardened.py app/write_security.py app/main.py app/api/imports.py app/services/import_links.py app/api/enrichment.py app/services/enrichment.py app/api/routing.py app/services/routing.py app/api/custody.py app/services/custody.py app/custody_models.py app/custody_schemas.py
 
-      - name: Run platform lifecycle, write, import, enrichment and routing tests
+      - name: Run platform lifecycle, write, import, enrichment, routing and custody tests
         working-directory: backend
-        run: pytest tests/test_platform.py tests/test_lifecycle.py tests/test_write_security.py tests/test_imports.py tests/test_enrichment.py tests/test_routing.py tests/test_routing_cancellation.py
+        run: pytest tests/test_platform.py tests/test_lifecycle.py tests/test_write_security.py tests/test_imports.py tests/test_enrichment.py tests/test_routing.py tests/test_routing_cancellation.py tests/test_custody.py
 
       - name: Validate platform Compose merge
         run: |
@@ -196,12 +214,12 @@ jobs:
       - name: Run desktop platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs tests/browser/routing-guards.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs tests/browser/routing-guards.spec.mjs tests/browser/evidence-custody.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
 
       - name: Run mobile platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs tests/browser/routing-guards.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs tests/browser/routing-guards.spec.mjs tests/browser/evidence-custody.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
 
       - name: Upload platform failure artifacts
         if: failure()
