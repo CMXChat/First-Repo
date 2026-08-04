@@ -8,7 +8,8 @@ const failures = [];
 const javascriptFiles = [
   'assets/cmx-case-save-guard.js',
   'assets/cases-workbench-guard.js',
-  'assets/case-lifecycle-guard.js'
+  'assets/case-lifecycle-guard.js',
+  'assets/osint-routing.js'
 ];
 
 for (const file of javascriptFiles) {
@@ -30,6 +31,8 @@ for (const file of javascriptFiles) {
 }
 
 requireMarker('assets/cmx-page-standard.js', '/assets/cmx-case-save-guard.js');
+requireMarker('assets/cmx-case-save-guard.js', '/assets/osint-routing.js');
+requireMarker('assets/cmx-case-save-guard.js', '/assets/osint-routing.css');
 requireMarker('assets/cases-state-sync.js', '/assets/cases-workbench-guard.js');
 requireMarker('cases/lifecycle/index.html', '/assets/case-lifecycle-guard.js');
 requireMarker('backend/app/hardened.py', 'buffer_request_messages');
@@ -37,10 +40,20 @@ requireMarker('backend/app/hardened.py', 'API request body exceeds the 2.5 MB tr
 requireMarker('backend/app/api/imports.py', 'link_missing_import_sources');
 requireMarker('backend/app/api/enrichment.py', 'bounded_network_call');
 requireMarker('backend/app/api/enrichment.py', 'canonicalize_http_url');
+requireMarker('backend/app/main.py', 'RoutingService');
+requireMarker('backend/app/main.py', 'max_keys');
+requireMarker('backend/app/api/routing.py', '/api/routing');
+requireMarker('backend/app/services/routing.py', 'RIPESTAT_BASE');
+requireMarker('backend/app/services/routing.py', 'CACHE_MAX_ENTRIES');
+requireMarker('backend/app/services/routing.py', 'malicious activity');
 requireMarker('backend/tests/test_write_security.py', 'actual_oversized_write');
 requireMarker('backend/tests/test_imports.py', 'linked_observations');
 requireMarker('backend/tests/test_enrichment.py', 'canonicalizes_unicode_path');
 requireMarker('backend/tests/test_enrichment.py', 'end_to_end_timeout');
+requireMarker('backend/tests/test_routing.py', 'malformed_path_identifiers');
+requireMarker('backend/tests/test_routing.py', 'rpki_states_remain_explicit');
+requireMarker('tests/browser/routing.spec.mjs', 'zero direct');
+requireMarker('tests/browser/routing.spec.mjs', 'not labeled malicious');
 
 function requireMarker(file, marker) {
   const path = join(root, file);
