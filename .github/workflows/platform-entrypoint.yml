@@ -121,6 +121,7 @@ jobs:
           CMX_DATABASE_URL: sqlite+pysqlite:///./platform-playwright.db
           CMX_DATABASE_AUTO_CREATE: 'true'
           CMX_ALLOWED_HOSTS_CSV: localhost,127.0.0.1,testserver
+          CMX_API_RATE_LIMIT_PER_MINUTE: '2000'
         run: |
           nohup uvicorn app.platform:app --host 127.0.0.1 --port 8000 > /tmp/cmx-platform.log 2>&1 &
           for attempt in $(seq 1 30); do
