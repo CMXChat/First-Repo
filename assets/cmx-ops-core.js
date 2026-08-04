@@ -16,6 +16,7 @@ LEGACY_KEYS.forEach((key) => { localStorage.removeItem(key); sessionStorage.remo
 
 const ROUTES = {
   directory: { path: '/directory', label: 'Operations Directory' },
+  cases: { path: '/cases', label: 'Persistent Cases' },
   osint: { path: '/osint', label: 'OSINT console' },
   phone: { path: '/phone', label: 'Phone intelligence' },
   metadata: { path: '/metadata', label: 'Metadata extractor' },
@@ -330,4 +331,3 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 12000) {
   } finally {
     clearTimeout(timeout);
   }
-}
