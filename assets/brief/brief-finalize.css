@@ -16,10 +16,7 @@ body[data-brief-depth='full'] #briefNavigatorBar {
   display: none !important;
 }
 
-#briefNavigatorBar .brief-you-are-here {
-  min-width: 0;
-}
-
+#briefNavigatorBar .brief-you-are-here,
 #briefNavigatorBar .brief-sticky-routes {
   min-width: 0;
 }
@@ -30,6 +27,16 @@ body[data-brief-depth='full'] #briefNavigatorBar {
 
 [data-open-full-workspace] {
   cursor: pointer;
+}
+
+/* Explicit fallback for browsers that do not support :has(). */
+.brief-help-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.brief-help-actions #briefTipsToggle {
+  grid-column: 1 / -1;
+  min-height: 104px;
 }
 
 @media (max-width: 760px) {
@@ -50,6 +57,16 @@ body[data-brief-depth='full'] #briefNavigatorBar {
   #briefBackToQuick {
     grid-column: 2;
     grid-row: 1;
+  }
+}
+
+@media (max-width: 620px) {
+  .brief-help-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .brief-help-actions #briefTipsToggle {
+    grid-column: auto;
   }
 }
 
