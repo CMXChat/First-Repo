@@ -1,13 +1,16 @@
 const { test, expect } = require('@playwright/test');
 
 const STORAGE_KEY = 'cmx_goal_intelligence_lab_v1';
+const THEME_KEY = 'cmx_goal_intelligence_theme_v1';
 
 async function openClean(page) {
-  await page.addInitScript((key) => {
-    localStorage.removeItem(key);
-    localStorage.removeItem('cmx_goal_intelligence_theme_v1');
-  }, STORAGE_KEY);
   await page.goto('/goals-lab/');
+  await page.evaluate(({ storageKey, themeKey }) => {
+    localStorage.removeItem(storageKey);
+    localStorage.removeItem(themeKey);
+    sessionStorage.clear();
+  }, { storageKey: STORAGE_KEY, themeKey: THEME_KEY });
+  await page.reload();
   await expect(page.locator('#pageTitle')).toBeVisible();
 }
 
@@ -71,7 +74,7 @@ test('check-in changes the question, recommendation and history', async ({ page 
 
   await expect(page.locator('#activeQuestion')).toContainText('What exact command');
   await expect(page.locator('#recommendationTitle')).toContainText('Capture the exact setup error');
-  await expect(page.locator('#recommendationEffort')).toHaveText('6 min');
+  await expect(page.locator('#recommendationEffort')).toHaveText('7 min');
   await expect(page.locator('#blockerValue')).toHaveText('Technical');
   await expect(page.locator('#historyList')).toContainText('Check-in processed');
 });
@@ -87,7 +90,9 @@ test('answering a blocker question advances instead of repeating it', async ({ p
   await page.getByRole('button', { name: 'Save answer' }).click();
 
   await expect(page.locator('#historyList')).toContainText('Active question answered');
+  await expect(page.locator('#historyList')).toContainText('Question loop advanced');
   await expect(page.locator('#activeQuestion')).not.toHaveText(firstQuestion || '');
+  await expect(page.locator('#activeQuestion')).toContainText('What should happen next?');
 });
 
 test('evidence and recommendation outcomes update the operating record', async ({ page }) => {
