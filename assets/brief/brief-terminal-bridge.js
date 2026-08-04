@@ -187,10 +187,10 @@
   }
 
   function loadNavigation() {
-    loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
-    loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);
     loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
     loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);
+    loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
+    loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);
     loadScript('briefNavigationScript', `/assets/brief/brief-navigation.js?v=${NAVIGATION_VERSION}`, () => {
       loadScript('briefNavigationRuntimeScript', `/assets/brief/brief-navigation-runtime.js?v=${NAVIGATION_VERSION}`);
       loadScript('briefTopMapScript', `/assets/brief/brief-map-top.js?v=${INTERFACE_VERSION}`);
