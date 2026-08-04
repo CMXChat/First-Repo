@@ -71,7 +71,7 @@ expect(resilience.includes("window.addEventListener('offline'"), 'offline change
 expect(resilience.includes('The written briefing is still available'), 'offline state explains what remains usable');
 expect(resilience.includes('speechSynthesis') && resilience.includes('SpeechSynthesisUtterance'), 'read-aloud capability is checked');
 expect(resilience.includes('MutationObserver') && resilience.includes('prepareFrames'), 'dynamic media receives device preparation');
-expect(resilienceBounds.includes('visibleHeight') && resilienceBounds.includes("panel.style.maxHeight"), 'pixel-safe overlay bounds use the visible viewport');
+expect(resilienceBounds.includes('viewportBox') && resilienceBounds.includes("style.setProperty('max-height'"), 'pixel-safe overlay bounds use the visible viewport');
 expect(resilienceBounds.includes("window.visualViewport?.addEventListener('resize'"), 'pixel bounds recover when the visual viewport changes');
 expect(resilienceBounds.includes('CMX_NEWS_RESILIENCE_BOUNDS'), 'pixel bound recovery is exposed for browser validation');
 expect(resilienceCss.includes('var(--news-viewport-height'), 'help and drawer use visible viewport bounds');
