@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="CMX Case Lifecycle" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="1.0" data-cmx-standard="on" data-cmx-modern="true">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>CMX Case Lifecycle</title>
+  <meta name="description" content="Private CMX lifecycle workspace for retention review, case audit, restore and permanent purge.">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <link rel="canonical" href="https://db.cmxchat.com/cases/lifecycle/">
+  <link rel="stylesheet" href="/assets/cmx-tool-shell.css?v=20260804-1">
+  <link rel="stylesheet" href="/assets/case-lifecycle.css?v=20260804-1">
+  <link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260804-1">
+  <script src="/assets/cmx-page-standard.js?v=20260804-2" defer></script>
+  <script src="/assets/case-lifecycle.js?v=20260804-1" defer></script>
+</head>
+<body>
+  <header class="cmx-tool-topbar">
+    <div class="cmx-tool-brand">
+      <span class="cmx-tool-mark" aria-hidden="true">⌛</span>
+      <span class="cmx-tool-title">CMX Case Lifecycle</span>
+    </div>
+    <a class="cmx-button" href="/cases">Return to Cases</a>
+  </header>
+
+  <main class="cmx-container">
+    <section class="cmx-hero">
+      <p class="cmx-eyebrow">Retention and deletion control</p>
+      <h1>Review what should remain, what should return, and what should be deleted.</h1>
+      <p>Inspect retention-due cases and audit history. Restore soft-deleted cases or permanently purge only after typing the exact case ID and recording the reason.</p>
+    </section>
+
+    <section class="life-status">
+      <div>
+        <strong>Protected lifecycle API</strong>
+        <span id="lifecycleStatusCopy">Checking the authenticated FastAPI origin.</span>
+      </div>
+      <div class="cmx-actions">
+        <span class="life-badge warn" id="lifecycleStatus">Checking backend</span>
+        <button class="cmx-button" id="refreshLifecycle" type="button">Refresh lifecycle data</button>
+      </div>
+    </section>
+
+    <section class="life-grid cmx-section">
+      <article class="cmx-card">
+        <h2>Retention review due</h2>
+        <p class="cmx-card-copy"><strong id="retentionCount">0</strong> active cases have reached their review date. Review scope and necessity before changing or deleting anything.</p>
+        <div class="life-list cmx-section" id="retentionList"></div>
+      </article>
+
+      <article class="cmx-card">
+        <h2>Soft-deleted cases</h2>
+        <p class="cmx-card-copy"><strong id="deletedCount">0</strong> cases can be restored or permanently purged. Purge removes linked operational records and cannot be undone.</p>
+        <div class="life-list cmx-section" id="deletedList"></div>
+      </article>
+    </section>
+
+    <section class="cmx-card cmx-section">
+      <h2>Case audit history</h2>
+      <p class="cmx-card-copy">Audit events show operational actions and counts. They intentionally omit case titles, query text, observation text, notes and file contents.</p>
+      <div class="cmx-inline-form">
+        <div class="cmx-field cmx-grow">
+          <label for="auditCase">Active case</label>
+          <select class="cmx-select" id="auditCase"><option value="">Select an active case</option></select>
+        </div>
+        <button class="cmx-button primary" id="loadAudit" type="button">Load audit</button>
+      </div>
+      <div class="life-audit cmx-section" id="auditList"><div class="life-empty">Select a case to review its operational audit events.</div></div>
+    </section>
+  </main>
+
+  <dialog class="life-dialog" id="lifecycleDialog">
+    <div class="life-dialog-body">
+      <h2 id="dialogTitle">Confirm lifecycle action</h2>
+      <p class="life-danger-copy" id="dialogCopy"></p>
+      <div class="cmx-field cmx-section">
+        <label for="lifecycleConfirmation">Exact case ID</label>
+        <input class="cmx-input cmx-code" id="lifecycleConfirmation" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="cmx-field cmx-section">
+        <label for="lifecycleReason">Reason</label>
+        <textarea class="cmx-textarea" id="lifecycleReason" maxlength="2000" placeholder="Why this restore or purge is appropriate"></textarea>
+      </div>
+      <div class="cmx-actions cmx-section">
+        <button class="cmx-button" id="cancelLifecycleAction" type="button">Cancel</button>
+        <button class="cmx-button danger" id="confirmLifecycleAction" type="button">Confirm</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="cmx-toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
