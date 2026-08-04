@@ -42,6 +42,66 @@ test('cross-tool query parameters prefill Phone and Search', async ({ page }) =>
   await expect(page.locator('#email')).toHaveValue('operator@example.test');
 });
 
+test('OSINT prefers the authenticated DNS gateway and discards stale responses', async ({ page }) => {
+  await grantClientSession(page);
+  let directResolverCalls = 0;
+
+  await page.route('https://dns.google/**', async (route) => {
+    directResolverCalls += 1;
+    await route.abort();
+  });
+
+  await page.route('**/api/dns?*', async (route) => {
+    const url = new URL(route.request().url());
+    const name = url.searchParams.get('name') || '';
+    const type = url.searchParams.get('type') || 'A';
+    const isSlow = name.includes('slow.example');
+    await new Promise((resolve) => setTimeout(resolve, isSlow ? 250 : 15));
+
+    const address = isSlow ? '192.0.2.10' : '203.0.113.20';
+    const answer = type === 'A' && !name.startsWith('_')
+      ? [{ name: `${name}.`, type: 1, TTL: 60, data: address }]
+      : [];
+
+    try {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          source: 'Google Public DNS JSON API',
+          queried_at: new Date().toISOString(),
+          cache_hit: false,
+          Status: 0,
+          AD: true,
+          TC: false,
+          RA: true,
+          Comment: '',
+          Answer: answer
+        })
+      });
+    } catch {
+      // The older request is expected to be aborted when the active entity changes.
+    }
+  });
+
+  const response = await page.goto('/osint', { waitUntil: 'domcontentloaded' });
+  expect(response?.ok()).toBeTruthy();
+
+  await page.locator('#entityType').selectOption('domain');
+  await page.locator('#entityValue').fill('slow.example');
+  await page.locator('#analyzeEntity').click();
+  await page.waitForTimeout(30);
+
+  await page.locator('#entityValue').fill('fast.example');
+  await page.locator('#analyzeEntity').click();
+
+  await expect(page.locator('#dnsDomain')).toHaveText('fast.example');
+  await expect(page.locator('#dnsStatus')).toContainText('CMX authenticated DNS gateway');
+  await expect(page.locator('#dnsBody')).toContainText('203.0.113.20');
+  await expect(page.locator('#dnsBody')).not.toContainText('192.0.2.10');
+  expect(directResolverCalls).toBe(0);
+});
+
 test('Metadata renders an adversarial filename as text', async ({ page }) => {
   await openProtected(page, '/metadata');
   await page.locator('#fileInput').setInputFiles({
