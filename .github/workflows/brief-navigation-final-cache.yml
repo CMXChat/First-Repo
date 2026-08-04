@@ -22,19 +22,33 @@ jobs:
 
           bridge = Path('assets/brief/brief-terminal-bridge.js')
           text = bridge.read_text()
-          old = "const NAVIGATION_VERSION = '20260803-2';"
-          new = "const NAVIGATION_VERSION = '20260803-3';"
-          if old not in text and new not in text:
-              raise SystemExit('navigation version marker not found')
-          bridge.write_text(text.replace(old, new, 1))
+          target = "const NAVIGATION_VERSION = '20260803-4';"
+          if target not in text:
+              changed = False
+              for version in ('20260803-2', '20260803-3'):
+                  old = f"const NAVIGATION_VERSION = '{version}';"
+                  if old in text:
+                      text = text.replace(old, target, 1)
+                      changed = True
+                      break
+              if not changed:
+                  raise SystemExit('navigation version marker not found')
+          bridge.write_text(text)
 
           index = Path('brief/index.html')
           text = index.read_text()
-          old = 'brief-terminal-bridge.js?v=20260803-6'
-          new = 'brief-terminal-bridge.js?v=20260803-7'
-          if old not in text and new not in text:
-              raise SystemExit('bridge cache marker not found')
-          index.write_text(text.replace(old, new, 1))
+          target = 'brief-terminal-bridge.js?v=20260803-8'
+          if target not in text:
+              changed = False
+              for version in ('20260803-6', '20260803-7'):
+                  old = f'brief-terminal-bridge.js?v={version}'
+                  if old in text:
+                      text = text.replace(old, target, 1)
+                      changed = True
+                      break
+              if not changed:
+                  raise SystemExit('bridge cache marker not found')
+          index.write_text(text)
           PY
       - name: Validate and commit
         run: |
@@ -47,3 +61,5 @@ jobs:
           git add assets/brief/brief-terminal-bridge.js brief/index.html
           git commit -m 'Bump final interconnected navigation cache' || exit 0
           git push
+
+# Final URLs include drawer-release and safe-area offset fixes.
