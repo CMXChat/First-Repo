@@ -1,0 +1,430 @@
+[WebServer] 127.0.0.1 - - [04/Aug/2026 00:06:35] "GET /favicon.ico HTTP/1.1" 404 -
+
+  1) [chromium-desktop] › tests/brief-browser-e2e.spec.cjs:42:1 › entry, help center and guided tour work without overflow 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 723
+    Received:    779.5374755859375
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+---
+  1) [chromium-desktop] › tests/brief-browser-e2e.spec.cjs:42:1 › entry, help center and guided tour work without overflow 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 723
+    Received:    779.5374755859375
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+---
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 723
+    Received:    779.5374755859375
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+---
+
+    Expected: <= 723
+    Received:    779.5374755859375
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+---
+    Expected: <= 723
+    Received:    779.5374755859375
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+---
+    Received:    779.5374755859375
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop/test-failed-1.png
+---
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop/trace.zip
+---
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 723
+    Received:    1177.046875
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+---
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 723
+    Received:    1177.046875
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+---
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 723
+    Received:    1177.046875
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+---
+
+    Expected: <= 723
+    Received:    1177.046875
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+---
+    Expected: <= 723
+    Received:    1177.046875
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+---
+    Received:    1177.046875
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop-retry1/test-failed-1.png
+---
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-desktop-retry1/trace.zip
+---
+[WebServer] 127.0.0.1 - - [04/Aug/2026 00:08:12] "GET /assets/brief/brief-polish.js?v=20260803-2 HTTP/1.1" 200 -
+
+  2) [chromium-android] › tests/brief-browser-e2e.spec.cjs:42:1 › entry, help center and guided tour work without overflow 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 730
+    Received:    862.5785522460938
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+---
+  2) [chromium-android] › tests/brief-browser-e2e.spec.cjs:42:1 › entry, help center and guided tour work without overflow 
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 730
+    Received:    862.5785522460938
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+---
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 730
+    Received:    862.5785522460938
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+---
+
+    Expected: <= 730
+    Received:    862.5785522460938
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+---
+    Expected: <= 730
+    Received:    862.5785522460938
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+---
+    Received:    862.5785522460938
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android/test-failed-1.png
+---
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android/trace.zip
+---
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 730
+    Received:    862.6015625
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+---
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 730
+    Received:    862.6015625
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+---
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 730
+    Received:    862.6015625
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+---
+
+    Expected: <= 730
+    Received:    862.6015625
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+---
+    Expected: <= 730
+    Received:    862.6015625
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+---
+    Received:    862.6015625
+
+      30 |   expect(result.top).toBeGreaterThanOrEqual(-3);
+      31 |   expect(result.right).toBeLessThanOrEqual(result.width + 3);
+    > 32 |   expect(result.bottom).toBeLessThanOrEqual(result.height + 3);
+         |                         ^
+      33 | }
+      34 |
+      35 | test.beforeEach(async ({ page }) => {
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android-retry1/test-failed-1.png
+---
+        at expectInsideViewport (/home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:32:25)
+        at /home/runner/work/First-Repo/First-Repo/tests/brief-browser-e2e.spec.cjs:65:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android-retry1/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/brief-browser-e2e-entry-he-d8387--tour-work-without-overflow-chromium-android-retry1/trace.zip
+---
+[WebServer] 127.0.0.1 - - [04/Aug/2026 00:08:28] "GET /assets/brief/brief-workspace.js?v=20260803-1 HTTP/1.1" 200 -
+
+[WebServer] 127.0.0.1 - - [04/Aug/2026 00:08:28] "GET /assets/brief/brief-polish.js?v=20260803-2 HTTP/1.1" 200 -
+
+  2 failed
+    [chromium-desktop] › tests/brief-browser-e2e.spec.cjs:42:1 › entry, help center and guided tour work without overflow 
+    [chromium-android] › tests/brief-browser-e2e.spec.cjs:42:1 › entry, help center and guided tour work without overflow 
+  23 passed (2.3m)
+```
+---
