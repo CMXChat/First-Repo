@@ -6,8 +6,8 @@
 
   const GATE_NAME = 'Black Prompt Gate';
   const ITERATIONS = 600000;
-  const SALT = 'LVEr8UZwLX/xvF9bDS0FdFyqWGdK7B2YBehT/NrErEU=';
-  const VERIFIER = '85w/8jTT9R1VBL9wjcuJO+1HpR6Wm251AJoMPDta/UU=';
+  const SALT = 'H9jnkUr1jKwn+NbZvWqXw5WQxSpP/HOg/mR3ckPbx6w=';
+  const VERIFIER = 'asdL6NWjTfGhdr0eP9QFwokjIUpBg/1Gha9gFhFGL4k=';
   const STATE_KEY = 'cmx_gate_black_prompt_state_v1';
   const scope = root.dataset.cmxGateId || window.location.pathname;
   const SESSION_KEY = `cmx_gate_black_prompt_session_v1:${scope}`;
