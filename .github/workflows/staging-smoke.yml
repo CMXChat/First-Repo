@@ -1,0 +1,74 @@
+name: Staging smoke tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Protected staging origin, for example https://db-staging.cmxchat.com
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  authenticated-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: staging
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate staging input
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          case "$BASE_URL" in
+            https://*) ;;
+            *) echo "base_url must use HTTPS" >&2; exit 1 ;;
+          esac
+          test -n "$CLIENT_ID"
+          test -n "$CLIENT_SECRET"
+
+      - name: Verify Access-authenticated readiness
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          curl --fail --silent --show-error \
+            -H "CF-Access-Client-Id: $CLIENT_ID" \
+            -H "CF-Access-Client-Secret: $CLIENT_SECRET" \
+            -H "Accept: application/json" \
+            "$BASE_URL/api/health/ready" | python -m json.tool
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install browser dependencies
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Run authenticated desktop and mobile regressions
+        env:
+          CMX_BROWSER_BASE_URL: ${{ inputs.base_url }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: npx playwright test --config=playwright.staging.config.mjs
+
+      - name: Upload staging browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-playwright-failure-artifacts
+          path: |
+            playwright-staging-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 7
