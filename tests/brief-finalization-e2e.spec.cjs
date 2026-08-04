@@ -128,10 +128,10 @@ test('Help launches a clean manual Vision walkthrough', async ({ page }) => {
 
   const titles = [
     'You wake up. The day is already sorted.',
-    'It sounds like you, not a robot.',
+    'Your morning can have its own sound.',
     'Context turns reminders into strategy.',
     'Different people see different truths.',
-    'It learns through correction, not assumption.',
+    'Corrections teach it what matters.',
     'When you approve it, the briefing can act.'
   ];
 
