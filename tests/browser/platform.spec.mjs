@@ -148,7 +148,7 @@ test('OSINT saves an explicit snapshot to the selected persistent case', async (
   expect(detailResponse.status()).toBe(200);
   const detail = await detailResponse.json();
   expect(detail.entities.some((entity) => entity.entity_type === 'username' && entity.normalized_value === username)).toBeTruthy();
-  expect(detail.observations.some((observation) => observation.kind === 'osint_analysis' && observation.value_text === username)).toBeTruthy();
+  expect(detail.observations.some((observation) => observation.kind === 'analysis' && observation.value_text === username)).toBeTruthy();
 });
 
 test('Metadata renders an adversarial filename as text', async ({ page }) => {
