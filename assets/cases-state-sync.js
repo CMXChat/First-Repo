@@ -103,6 +103,7 @@
     installCriticalResponsiveStyle();
     loadStyle('/assets/cases-operator-workspace.css?v=20260804-1', 'workspace');
     loadStyle('/assets/cases-operator-responsive.css?v=20260804-1', 'responsive');
+    loadScript('/assets/cases-workbench-guard.js?v=20260804-1', 'guard');
     loadScript('/assets/cases-operator-workspace.js?v=20260804-1', 'workspace');
     loadScript('/assets/cases-operator-records.js?v=20260804-1', 'records');
   }
