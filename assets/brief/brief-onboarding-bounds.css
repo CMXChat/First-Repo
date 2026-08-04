@@ -1,0 +1,42 @@
+/* Final viewport guard for guided-tour bubbles across Chromium, WebKit and Firefox. */
+
+.brief-tour-bubble {
+  max-height: calc(var(--brief-device-height, 100dvh) - 20px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.brief-tour-bubble footer {
+  position: sticky;
+  bottom: -20px;
+  z-index: 2;
+  padding: 12px 0 2px;
+  background: linear-gradient(to top, rgba(7, 11, 18, .98) 68%, rgba(7, 11, 18, 0));
+}
+
+html[data-theme='light'] .brief-tour-bubble footer {
+  background: linear-gradient(to top, rgba(248, 251, 255, .98) 68%, rgba(248, 251, 255, 0));
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .brief-tour-bubble footer {
+    background: linear-gradient(to top, #0b1019 68%, rgba(11, 16, 25, 0));
+  }
+
+  html[data-theme='light'] .brief-tour-bubble footer {
+    background: linear-gradient(to top, #f7fbff 68%, rgba(247, 251, 255, 0));
+  }
+}
+
+@media (max-width: 700px) {
+  .brief-tour-bubble {
+    max-height: calc(var(--brief-device-height, 100dvh) - 16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brief-tour-bubble {
+    scroll-behavior: auto;
+  }
+}
