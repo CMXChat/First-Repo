@@ -5,6 +5,7 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const TYPE_CONTROLS = '#enterBrief, [data-scenario-choice], [data-footer-preset], [data-quick-preset], [data-dock-preset], [data-drawer-preset]';
   const QUICK_ROUTE_CONTROLS = '[data-workspace-tab], [data-quick-route], [data-related-route], [data-nav-route], [data-context-route]';
+  const NAVIGATION_INTENT_CONTROLS = `${QUICK_ROUTE_CONTROLS}, [data-open-full-workspace], [data-depth-choice], [data-open-brief-map]`;
   const ROUTES = {
     individual: [['overview', 'Overview'], ['day', 'Day'], ['work', 'Work'], ['finance', 'Finance'], ['wellness', 'Wellness'], ['intelligence', 'Intelligence'], ['memory', 'Memory']],
     couple: [['overview', 'Overview'], ['together', 'Together'], ['profiles', 'Profiles'], ['plans', 'Plans'], ['watch', 'Watch'], ['reflection', 'Reflection'], ['shared', 'Shared space']],
@@ -137,6 +138,7 @@
     anchor.insertAdjacentElement('afterend', nav);
 
     const go = () => {
+      cancelTopReset();
       const route = $('#briefRouteJumpSelect')?.value || 'overview';
       window.BRIEF_NAVIGATION?.navigate?.(route, { depth: depth(), push: true, focus: true });
       if (depth() === 'quick') scheduleQuickLanding();
@@ -172,6 +174,9 @@
     document.addEventListener('click', event => {
       const typeControl = event.target.closest?.(TYPE_CONTROLS);
       if (typeControl) settleAtTrueTop(typeControl.id === 'enterBrief' ? 1400 : 1100);
+
+      const navigationIntent = event.target.closest?.(NAVIGATION_INTENT_CONTROLS);
+      if (navigationIntent) cancelTopReset();
 
       const quickControl = event.target.closest?.(QUICK_ROUTE_CONTROLS);
       if (quickControl && depth() === 'quick') scheduleQuickLanding();
