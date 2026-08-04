@@ -94,7 +94,7 @@ Navigation methods include:
 
 Guided Flow advances through the function applications once and stops at System. Manual navigation stops it.
 
-## Progressive Disclosure
+## Progressive Disclosure and Action Hierarchy
 
 Full does not mean fully expanded.
 
@@ -106,9 +106,9 @@ Every module follows the same hierarchy:
 4. `Show More` for secondary items
 5. A relevant function or detail action
 
-This keeps the complete operating picture present while limiting visual noise.
+Action links and `Show More` controls use compact pill treatments with visible borders, hover states, keyboard focus, and sufficient mobile touch height. Retained legacy home cards also receive a clear clickable state and keyboard activation.
 
-## Mobile Rules
+## Mobile and Scrolling Rules
 
 Full View remains the default on mobile.
 
@@ -119,6 +119,33 @@ Full View remains the default on mobile.
 - content scrolls inside the active OS screen
 - the bottom application dock stays available
 - no horizontal overflow is allowed
+- the active screen uses contained native momentum scrolling
+- the visible browser viewport is measured so Android browser chrome changes do not resize the layout unpredictably
+- the fixed terminal dock no longer competes with the bottom application dock
+
+## Terminal Decision
+
+The visible terminal is removed from the active product for this phase.
+
+The underlying terminal implementation is retained in the repository, but the current experience cannot open it. The following surfaces are removed or hidden:
+
+- top Command button
+- bottom command bar
+- terminal entry in the OS rail
+- terminal entry in the System directory
+- terminal open triggers
+
+The top Command position becomes an About link to `/doc/`. The System directory and More menu also expose the Personal OS product overview.
+
+Any stale terminal-open state is cleared automatically so it cannot leave the page blurred or blocked.
+
+## Overlay Safety
+
+The briefing switcher, More menu, and guided tour remain available.
+
+A stability layer verifies that an overlay surface is actually visible and interactive after its backdrop opens. When a panel fails to render, the layer closes it and removes the blur state instead of leaving the page trapped.
+
+The retained controls are tested in desktop Chromium and Pixel 5 sizing.
 
 ## Deep Detail Boundary
 
@@ -128,13 +155,14 @@ Opening detail mode temporarily restores the existing long-form modules and adds
 
 ## Existing Controls Preserved
 
-- repaired briefing switcher
-- repaired terminal and close flows
+- briefing switcher
 - More controls
+- guided tour
 - light and dark themes
 - current fictional scenario data
 - preset switching
 - the complete underlying report
+- `/doc` product overview access
 
 ## Validation Requirements
 
@@ -144,18 +172,23 @@ The dedicated Personal OS validation covers:
 - all eight home modules present
 - Quick View optional and locally persisted
 - progressive disclosure
+- visible pill actions
 - local task completion
 - fixed viewport and no default document scrolling
+- internal mobile screen scrolling
 - animated application movement
 - Previous, Next, keyboard, and swipe navigation
 - deliberate detail mode and return
-- terminal opening and closing
+- terminal entry points absent
+- About links to `/doc/`
+- switcher, More, and tour opening and closing
+- no stranded blur or terminal-open class
 - compact mobile cards
 - mobile section expansion
 - overflow protection
 - Guided Flow completion
 
-The overlay repair suite and complete underlying briefing smoke chain remain separate compatibility gates.
+The complete underlying briefing smoke chain remains a separate compatibility gate. The older browser-test route keeps its legacy test contract while the new product behavior is covered by the Personal OS and overlay suites.
 
 ## Files
 
@@ -166,23 +199,26 @@ assets/brief/brief-personal-os-density.css
 assets/brief/brief-personal-os-mobile.css
 assets/brief/brief-full-home.js
 assets/brief/brief-full-home.css
+assets/brief/brief-personal-os-stability.js
+assets/brief/brief-personal-os-stability.css
 assets/brief/brief-lite-ui.js
 assets/brief/brief-lite-ui.css
 tests/brief-personal-os-smoke.test.js
 tests/brief-personal-os.spec.cjs
+tests/brief-overlay-controls.spec.cjs
 tests/brief-personal-os.playwright.config.cjs
 .github/workflows/brief-personal-os-validation.yml
 ```
 
 ## Dependency Boundary
 
-This branch starts from the terminal and overlay repair branch so the Personal OS can use the repaired controls.
+This branch starts from the terminal and overlay repair branch, but the Personal OS now keeps the terminal dormant while retaining the switcher, More menu, and guided tour.
 
 The intended review order is:
 
-1. Review and merge PR `#35`.
-2. Rebase or retarget PR `#37` onto `main`.
-3. Review the Full-first Personal OS presentation separately.
+1. Review the reusable overlay fixes from PR `#35`.
+2. Rebase or retarget PR `#37` onto `main` when the dependency is resolved.
+3. Review the Full-first Personal OS presentation, terminal removal, scrolling stabilization, and `/doc` links together.
 
 Goal Intelligence Step 4 remains in PR `#34` and must not be mixed into this presentation change.
 
