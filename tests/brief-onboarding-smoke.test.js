@@ -10,6 +10,7 @@ const index = read('brief/index.html');
 const config = read('assets/brief/brief-config.js');
 const onboarding = read('assets/brief/brief-onboarding.js');
 const onboardingCss = read('assets/brief/brief-onboarding.css');
+const onboardingBoundsCss = read('assets/brief/brief-onboarding-bounds.css');
 const device = read('assets/brief/brief-device.js');
 const deviceCss = read('assets/brief/brief-device.css');
 
@@ -17,6 +18,7 @@ new vm.Script(onboarding, { filename: 'brief-onboarding.js' });
 new vm.Script(device, { filename: 'brief-device.js' });
 
 assert.match(config, /brief-onboarding\.css/);
+assert.match(config, /brief-onboarding-bounds\.css/);
 assert.match(config, /brief-onboarding\.js/);
 assert.match(config, /briefOnboardingScript/);
 assert.match(index, /brief-config\.js\?v=/);
@@ -52,6 +54,12 @@ assert.match(onboardingCss, /prefers-contrast: more/);
 assert.match(onboardingCss, /forced-colors: active/);
 assert.match(onboardingCss, /@media \(pointer: coarse\)/);
 assert.match(onboardingCss, /max-width: 390px/);
+
+assert.match(onboardingBoundsCss, /max-height: calc\(var\(--brief-device-height/);
+assert.match(onboardingBoundsCss, /overflow-y: auto/);
+assert.match(onboardingBoundsCss, /overscroll-behavior: contain/);
+assert.match(onboardingBoundsCss, /position: sticky/);
+assert.match(onboardingBoundsCss, /prefers-reduced-motion: reduce/);
 
 assert.match(device, /--brief-viewport-offset-top/);
 assert.match(device, /--brief-keyboard-inset/);
