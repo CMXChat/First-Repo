@@ -1,5 +1,11 @@
 const { test, expect } = require('@playwright/test');
 
+async function disableAutomaticTips(page) {
+  await page.addInitScript(() => {
+    localStorage.setItem('cmxBriefDemo:onboarding:tips', 'off');
+  });
+}
+
 async function enterPersonalBriefing(page) {
   await page.goto('/brief/?browser-test=1', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#briefEntryRadio')).toBeVisible();
@@ -86,6 +92,7 @@ test('tips can be disabled and help remains available', async ({ page }) => {
 });
 
 test('moving signal rail resumes after pause', async ({ page }) => {
+  await disableAutomaticTips(page);
   await enterPersonalBriefing(page);
   const button = page.locator('#briefSignalPause');
   const strip = page.locator('#briefSignalStrip');
@@ -113,6 +120,7 @@ test('help and tour stay usable in landscape viewport', async ({ page }) => {
 });
 
 test('team switch, full workspace and question-mark help remain functional', async ({ page }) => {
+  await disableAutomaticTips(page);
   await enterPersonalBriefing(page);
   await page.evaluate(() => window.BRIEF_APP.setPreset('team'));
   await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'quick');
@@ -122,4 +130,62 @@ test('team switch, full workspace and question-mark help remain functional', asy
   await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'full');
   await page.locator('#explainButton').click();
   await expect(page.locator('#briefHelpCenter')).toBeVisible();
+});
+
+test('quick cards, sticky map and contextual links create an interconnected path', async ({ page }) => {
+  await disableAutomaticTips(page);
+  await enterPersonalBriefing(page);
+
+  await expect(page.locator('#briefNavigatorBar')).toBeVisible();
+  await expect(page.locator('#briefMapButton')).toBeVisible();
+  const dayCard = page.locator('[data-quick-route="day"]').first();
+  await expect(dayCard).toBeVisible();
+  await dayCard.click();
+  await expect(page.locator('[data-workspace-tab="day"]')).toHaveAttribute('aria-selected', 'true');
+  await expect.poll(() => new URL(page.url()).searchParams.get('tab')).toBe('day');
+  await expect.poll(() => new URL(page.url()).searchParams.get('depth')).toBe('quick');
+  await expect.poll(() => new URL(page.url()).hash).toBe('#briefWorkspace');
+
+  await page.locator('[data-depth-choice="full"]').first().click();
+  await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'full');
+  await page.locator('#briefStickyRoutes [data-nav-route="finance"]').click();
+  await expect(page.locator('[data-workspace-tab="money"]')).toHaveAttribute('aria-selected', 'true');
+  await expect.poll(() => new URL(page.url()).searchParams.get('tab')).toBe('money');
+  await expect.poll(() => new URL(page.url()).searchParams.get('depth')).toBe('full');
+  await expect(page.locator('.brief-context-nav').first()).toBeVisible();
+});
+
+test('briefing map switches to Team and remembers a handoff route', async ({ page }) => {
+  await disableAutomaticTips(page);
+  await enterPersonalBriefing(page);
+  await page.locator('#briefMapButton').click();
+  await expect(page.locator('#briefNavigationDrawer')).toBeVisible();
+  await expectInsideViewport(page.locator('.brief-navigation-panel'), page);
+
+  await page.locator('#briefDrawerPresets button').filter({ hasText: /^Team$/ }).click();
+  await expect.poll(() => page.evaluate(() => window.BRIEF_APP.getPreset())).toBe('team');
+  await expect(page.locator('#briefNavigationDrawer')).toBeHidden();
+
+  await page.locator('#briefMapButton').click();
+  await page.locator('#briefDrawerRoutes [data-nav-route="handoffs"]').click();
+  await expect(page.locator('[data-workspace-tab="handoffs"]')).toHaveAttribute('aria-selected', 'true');
+  await expect.poll(() => new URL(page.url()).searchParams.get('view')).toBe('team');
+  await expect.poll(() => new URL(page.url()).searchParams.get('tab')).toBe('handoffs');
+
+  await page.locator('#briefMapButton').click();
+  await expect(page.locator('#briefRecentRoutes')).toContainText('Team · Handoffs');
+});
+
+test('a deep URL preserves the deliberate gate and restores the requested Team view after entry', async ({ page }) => {
+  await disableAutomaticTips(page);
+  await page.goto('/brief/?view=team&tab=handoffs&depth=full#scenarioStage', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('body')).toHaveClass(/is-locked/);
+  await expect(page.locator('input[name="briefEntryType"][value="team"]')).toBeChecked();
+  await page.locator('#enterBrief').click();
+  await expect(page.locator('body')).not.toHaveClass(/is-locked/);
+  await expect.poll(() => page.evaluate(() => window.BRIEF_APP.getPreset())).toBe('team');
+  await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'full');
+  await expect(page.locator('[data-workspace-tab="handoffs"]')).toHaveAttribute('aria-selected', 'true');
+  await expect.poll(() => new URL(page.url()).searchParams.get('view')).toBe('team');
+  await expect.poll(() => new URL(page.url()).searchParams.get('tab')).toBe('handoffs');
 });
