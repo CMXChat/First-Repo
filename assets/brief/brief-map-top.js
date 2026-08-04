@@ -17,6 +17,15 @@
     return window.BRIEF_APP?.getPreset?.() || 'individual';
   }
 
+  function loadStyle() {
+    if (document.getElementById('briefTopMapStyle')) return;
+    const link = document.createElement('link');
+    link.id = 'briefTopMapStyle';
+    link.rel = 'stylesheet';
+    link.href = '/assets/brief/brief-map-top.css?v=20260803-1';
+    document.head.appendChild(link);
+  }
+
   function setExpanded(expanded) {
     const button = $('#briefTopMapButton');
     if (!button) return;
@@ -34,6 +43,7 @@
   }
 
   function createButton() {
+    loadStyle();
     if ($('#briefTopMapButton')) {
       updateLabel();
       return true;
@@ -78,6 +88,7 @@
   }
 
   function initialize() {
+    loadStyle();
     if (initialized) return true;
     if (!createButton()) return false;
     initialized = true;
