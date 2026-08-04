@@ -1,3 +1,4 @@
+// Validation-only branch trigger. Product assertions remain unchanged.
 const { test, expect } = require('@playwright/test');
 
 async function enter(page) {
