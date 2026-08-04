@@ -199,10 +199,10 @@ test('Cases creates and renders an adversarial title safely', async ({ page }) =
   await page.locator('#caseSummaryInput').fill('Browser-created case');
   await page.locator('#createCase').click();
 
-  await expect(page.getByText(title, { exact: true })).toBeVisible();
+  await expect(page.locator('#detailTitle')).toHaveText(title);
+  await expect(page.locator('.cases-item-title').filter({ hasText: title })).toHaveCount(1);
   await expect(page.locator('img[src="x"]')).toHaveCount(0);
   expect(await page.evaluate(() => window.__cmxCaseXss)).toBeUndefined();
-  await expect(page.locator('#detailTitle')).toHaveText(title);
 });
 
 test('Cases imports a Search session through the visible workspace', async ({ page }) => {
