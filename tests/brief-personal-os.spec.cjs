@@ -71,7 +71,12 @@ test('detail mode is deliberate and returns to the OS', async ({ page }) => {
 
 test('OS command opens the repaired terminal and closes cleanly', async ({ page }) => {
   await enterPersonalBriefing(page);
-  await page.locator('.brief-os-rail-footer [data-os-command]').click();
+  const desktopCommand = page.locator('.brief-os-rail-footer [data-os-command]');
+  const commandTrigger = await desktopCommand.isVisible()
+    ? desktopCommand
+    : page.locator('#briefSystemCommandButton');
+  await expect(commandTrigger).toBeVisible();
+  await commandTrigger.click();
   await expect(page.locator('#briefTerminal')).toBeVisible();
   await expect(page.locator('body')).toHaveClass(/brief-terminal-open/);
   await page.locator('[data-terminal-close]').click();
