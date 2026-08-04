@@ -88,6 +88,13 @@ test('mobile uses a compact bottom-app dashboard with no page scroll', async ({ 
   await page.setViewportSize({ width: 393, height: 852 });
   await enterPersonalBriefing(page);
 
+  const switcher = page.locator('#briefSystemSwitcher');
+  await expect(switcher).toBeVisible();
+  await switcher.click();
+  await expect(page.locator('#briefSystemSwitcherLayer')).toBeVisible();
+  await page.locator('#briefSystemSwitcherLayer [data-system-close]').last().click();
+  await expect(page.locator('#briefSystemSwitcherLayer')).toBeHidden();
+
   const navBox = await page.locator('#briefOsNav').boundingBox();
   expect(navBox).not.toBeNull();
   expect(navBox.y).toBeGreaterThan(790);
