@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-2';
+  const VERSION = '20260804-3';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -15,16 +15,36 @@
     if (link.getAttribute('href') !== href) link.setAttribute('href', href);
   }
 
+  function loadPersonalOsScript() {
+    if (document.getElementById('briefPersonalOsScript') || window.BRIEF_PERSONAL_OS) return;
+    const script = document.createElement('script');
+    script.id = 'briefPersonalOsScript';
+    script.src = `/assets/brief/brief-personal-os.js?v=${VERSION}`;
+    script.async = false;
+    document.head.appendChild(script);
+  }
+
   function loadRepairScript() {
-    if (document.getElementById('briefOverlayControlsFixScript') || window.BRIEF_OVERLAY_CONTROLS_FIX) return;
+    if (window.BRIEF_OVERLAY_CONTROLS_FIX) {
+      loadPersonalOsScript();
+      return;
+    }
+
+    const existing = document.getElementById('briefOverlayControlsFixScript');
+    if (existing) {
+      existing.addEventListener('load', loadPersonalOsScript, { once: true });
+      return;
+    }
+
     const repair = document.createElement('script');
     repair.id = 'briefOverlayControlsFixScript';
     repair.src = `/assets/brief/brief-overlay-controls-fix.js?v=${VERSION}`;
     repair.async = false;
+    repair.addEventListener('load', loadPersonalOsScript, { once: true });
     document.head.appendChild(repair);
   }
 
-  function loadScript() {
+  function loadSystemScript() {
     if (window.BRIEF_SYSTEM) {
       loadRepairScript();
       return;
@@ -47,5 +67,6 @@
   ensureStyle('briefSystemStyle', '/assets/brief/brief-system.css');
   ensureStyle('briefSystemFixStyle', '/assets/brief/brief-system-fixes.css');
   ensureStyle('briefOverlayControlsFixStyle', '/assets/brief/brief-overlay-controls-fix.css');
-  loadScript();
+  ensureStyle('briefPersonalOsStyle', '/assets/brief/brief-personal-os.css');
+  loadSystemScript();
 })();
