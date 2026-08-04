@@ -1,0 +1,54 @@
+name: Brief Browser Matrix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'brief/**'
+      - 'assets/brief/**'
+      - 'assets/daily-video.js'
+      - 'tests/brief-browser-e2e.spec.cjs'
+      - 'tests/playwright.config.cjs'
+      - '.github/workflows/brief-browser-matrix.yml'
+  pull_request:
+    paths:
+      - 'brief/**'
+      - 'assets/brief/**'
+      - 'assets/daily-video.js'
+      - 'tests/brief-browser-e2e.spec.cjs'
+      - 'tests/playwright.config.cjs'
+      - '.github/workflows/brief-browser-matrix.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  browser-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright test runner
+        run: npm install --no-save @playwright/test@1.55.0
+
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run Chromium, Firefox, WebKit, iPhone and Android tests
+        run: npx playwright test --config=tests/playwright.config.cjs
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-browser-test-results
+          path: test-results
+          if-no-files-found: ignore
+          retention-days: 7
