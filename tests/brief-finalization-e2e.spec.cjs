@@ -13,6 +13,7 @@ async function enter(page) {
   await expect(page.locator('body')).not.toHaveClass(/is-locked/);
   await expect(page.locator('#briefWorkspace')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('data-brief-finalized', 'true');
+  await expect(page.locator('#briefRouteJump')).toBeVisible();
 }
 
 async function insideViewport(locator) {
@@ -58,8 +59,35 @@ test('Mobile entry always begins at the true document top', async ({ page }) => 
   await page.locator('#enterBrief').click({ force: true });
   await expect(page.locator('body')).not.toHaveClass(/is-locked/);
   await expect(page.locator('#briefWorkspace')).toBeVisible();
-  await expect.poll(() => page.evaluate(() => window.scrollY || document.documentElement.scrollTop || document.body.scrollTop)).toBeLessThanOrEqual(1);
+  await expect.poll(() => page.evaluate(() => window.scrollY || document.documentElement.scrollTop || document.body.scrollTop), { timeout: 2200 }).toBeLessThanOrEqual(1);
   await expect(page.locator('.topbar')).toBeInViewport();
+});
+
+test('Mobile tab buttons land on the changing content below the heading', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await enter(page);
+  await page.evaluate(() => window.BRIEF_APP.setPreset('partners'));
+  await expect(page.locator('[data-workspace-tab="markets"]')).toBeVisible();
+  await page.locator('[data-workspace-tab="markets"]').click();
+  await expect(page.locator('#briefWorkspacePanel')).toContainText('Public news only when it changes company exposure');
+  const list = page.locator('#briefWorkspacePanel .quick-compact-list').first();
+  await expect(list).toBeVisible();
+  await expect.poll(() => list.evaluate(node => {
+    const rect = node.getBoundingClientRect();
+    return rect.top >= 55 && rect.top < window.innerHeight - 80;
+  })).toBe(true);
+  await expect(page.locator('html')).toHaveAttribute('data-brief-content-landed', 'true');
+});
+
+test('Changing briefing type returns to the real top', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await enter(page);
+  await page.evaluate(() => window.scrollTo(0, 1800));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
+  await page.evaluate(() => window.BRIEF_APP.setPreset('team'));
+  await expect.poll(() => page.evaluate(() => window.scrollY || document.documentElement.scrollTop), { timeout: 2200 }).toBeLessThanOrEqual(1);
+  await expect(page.locator('.topbar')).toBeInViewport();
+  await expect(page.locator('html')).toHaveAttribute('data-brief-entry-at-top', 'true');
 });
 
 test('Map remains optional and its controls stay synchronized', async ({ page }) => {
@@ -98,7 +126,7 @@ test('Full workspace opens the current section directly without opening Map', as
   await expect(page.locator('#briefNavigatorBar')).toBeVisible();
 });
 
-test('Quick briefing launches Vision and restores focus to its launcher', async ({ page }) => {
+test('Quick briefing launches interactive Vision and restores focus', async ({ page }) => {
   await enter(page);
   const launcher = page.locator('[data-start-vision]');
   await expect(launcher).toBeVisible();
@@ -106,42 +134,49 @@ test('Quick briefing launches Vision and restores focus to its launcher', async 
 
   await launcher.click();
   await expect(page.locator('#briefVisionLayer')).toBeVisible();
-  await expect(page.locator('#briefVisionTitle')).toHaveText('You wake up. The day is already sorted.');
+  await expect(page.locator('#briefVisionTitle')).toHaveText('Build the opening you would actually use.');
+  await expect(page.locator('#briefVisionChoices button')).toHaveCount(3);
+  await page.locator('[data-vision-choice="focus"]').click();
+  await expect(page.locator('#briefVisionXp')).toHaveText('100 XP');
   await insideViewport(page.locator('#briefVisionPanel'));
   await page.keyboard.press('Escape');
   await expect(page.locator('#briefVisionLayer')).toBeHidden();
   await expect(launcher).toBeFocused();
 });
 
-test('Help launches a clean manual Vision walkthrough', async ({ page }) => {
+test('Help launches the transparent Vision mission walkthrough', async ({ page }) => {
   await enter(page);
   const help = page.locator('#explainButton');
   await help.click();
   await expect(page.locator('#briefHelpCenter')).toBeVisible();
   await expect(page.locator('#briefStartVision')).toBeVisible();
+  await expect(page.locator('#briefHelpCenter .brief-glass-panel')).toHaveCSS('backdrop-filter', /blur/);
   await page.locator('#briefStartVision').click();
   await expect(page.locator('#briefHelpCenter')).toBeHidden();
   await expect(page.locator('#briefVisionLayer')).toBeVisible();
-  await expect(page.locator('#briefVisionTitle')).toHaveText('You wake up. The day is already sorted.');
+  await expect(page.locator('#briefVisionTitle')).toHaveText('Build the opening you would actually use.');
   await insideViewport(page.locator('#briefVisionPanel'));
   await expect.poll(() => page.evaluate(() => document.querySelector('#briefApp').inert)).toBe(true);
 
   const titles = [
-    'You wake up. The day is already sorted.',
-    'Your morning can have its own sound.',
-    'Context turns reminders into strategy.',
-    'Different people see different truths.',
-    'Corrections teach it what matters.',
-    'When you approve it, the briefing can act.'
+    'Build the opening you would actually use.',
+    'Give the morning a sound and a voice.',
+    'Turn scattered facts into one strategic move.',
+    'Choose what each space is allowed to know.',
+    'Correct the record and improve tomorrow.',
+    'Approve the action or keep it a draft.'
   ];
 
   for (let index = 0; index < titles.length; index += 1) {
     await expect(page.locator('#briefVisionTitle')).toHaveText(titles[index]);
+    await expect(page.locator('#briefVisionChoices button')).toHaveCount(3);
+    await page.locator('#briefVisionChoices button').first().click();
     await insideViewport(page.locator('#briefVisionPanel'));
     if (index < titles.length - 1) await page.locator('#briefVisionNext').click();
   }
 
-  await expect(page.locator('#briefVisionNext')).toHaveText('Finish');
+  await expect(page.locator('#briefVisionXp')).toHaveText('600 XP');
+  await expect(page.locator('#briefVisionNext')).toHaveText('Finish walkthrough');
   await page.locator('#briefVisionNext').click();
   await expect(page.locator('#briefVisionLayer')).toBeHidden();
   await expect.poll(() => page.evaluate(() => document.querySelector('#briefApp').inert)).toBe(false);
