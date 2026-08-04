@@ -1,4 +1,4 @@
-/* Final product hierarchy: navigation stays available, but Full workspace never forces the Map open. */
+/* Final briefing hierarchy. Quick stays focused while deeper material remains available in Full workspace. */
 
 #briefNavigatorBar .brief-you-are-here,
 #briefNavigatorBar .brief-sticky-routes {
@@ -11,48 +11,37 @@
 
 [data-open-full-workspace] {
   cursor: pointer;
-  border-color: rgba(160, 214, 255, 0.78) !important;
+  border-color: rgba(150, 205, 255, 0.62) !important;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(87, 168, 255, 0.2)
+    rgba(255, 255, 255, 0.07),
+    rgba(87, 168, 255, 0.14)
   ) !important;
-  box-shadow:
-    0 0 9px rgba(255, 255, 255, 0.16),
-    0 0 22px rgba(87, 168, 255, 0.3);
-  animation: briefFullWorkspacePulse 2.4s ease-in-out infinite;
+  box-shadow: 0 0 18px rgba(87, 168, 255, 0.2);
   transition:
     border-color 180ms ease,
     background 180ms ease,
-    box-shadow 180ms ease;
-}
-
-@keyframes briefFullWorkspacePulse {
-  0%,
-  100% {
-    border-color: rgba(150, 205, 255, 0.62);
-    box-shadow:
-      0 0 7px rgba(255, 255, 255, 0.12),
-      0 0 17px rgba(87, 168, 255, 0.24);
-  }
-
-  50% {
-    border-color: rgba(215, 239, 255, 0.96);
-    box-shadow:
-      0 0 14px rgba(255, 255, 255, 0.34),
-      0 0 32px rgba(87, 168, 255, 0.58),
-      0 0 48px rgba(87, 168, 255, 0.16);
-  }
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 [data-open-full-workspace]:hover,
 [data-open-full-workspace]:focus-visible {
-  animation-play-state: paused;
-  border-color: rgba(225, 244, 255, 1) !important;
-  box-shadow:
-    0 0 16px rgba(255, 255, 255, 0.38),
-    0 0 38px rgba(87, 168, 255, 0.7),
-    0 0 58px rgba(87, 168, 255, 0.18);
+  border-color: rgba(215, 239, 255, 0.96) !important;
+  box-shadow: 0 0 28px rgba(87, 168, 255, 0.38);
+  transform: translateY(-1px);
+}
+
+/* Reversible Part 1 cleanup. These elements return in Full workspace. */
+body.brief-streamlined-primary:not([data-brief-depth='full']) .section-nav,
+body.brief-streamlined-primary:not([data-brief-depth='full']) #briefStickyRoutes,
+body.brief-streamlined-primary:not([data-brief-depth='full']) .brief-related-routes,
+body.brief-streamlined-primary:not([data-brief-depth='full']) .brief-secondary-section {
+  display: none !important;
+}
+
+body.brief-streamlined-primary:not([data-brief-depth='full']) #briefNavigatorBar {
+  gap: 12px;
 }
 
 /* Explicit fallback for browsers that do not support :has(). */
@@ -90,6 +79,7 @@
   }
 
   [data-open-full-workspace] {
-    animation: none;
+    transition: none;
+    transform: none;
   }
 }
