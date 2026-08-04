@@ -15,6 +15,8 @@
 
   const source = document.querySelector('#caseJson');
   const topbar = document.querySelector('.cmx-tool-topbar');
+  const dnsRefresh = document.querySelector('#dnsRefresh');
+  const dnsSection = document.querySelector('#dnsSection');
   if (!source || !topbar) return;
 
   const shell = buildShell();
@@ -34,6 +36,9 @@
     characterData: true,
     subtree: true
   });
+  if (dnsRefresh) {
+    new MutationObserver(updateSaveState).observe(dnsRefresh, { attributes: true });
+  }
 
   loadContext();
 
@@ -195,20 +200,37 @@
     shell.message.textContent = 'No research data is saved automatically.';
   }
 
+  function dnsBusy() {
+    return Boolean(
+      dnsRefresh
+      && dnsSection
+      && !dnsSection.classList.contains('osint-hidden')
+      && dnsRefresh.disabled
+    );
+  }
+
   function updateSaveState() {
     const snapshot = readSnapshot();
     const fingerprint = source.textContent || '';
     const validSnapshot = snapshot?.schema === EXPECTED_SCHEMA && Boolean(snapshot?.entity?.value);
     const selected = Boolean(state.activeCaseId);
+    const collectingDns = dnsBusy();
     const unsaved = fingerprint !== state.lastSavedFingerprint;
 
-    shell.save.disabled = !state.backend || !selected || !validSnapshot || state.saving || !unsaved;
+    shell.save.disabled = !state.backend
+      || !selected
+      || !validSnapshot
+      || collectingDns
+      || state.saving
+      || !unsaved;
     if (!state.backend) return;
 
     if (!selected) {
       shell.message.textContent = 'Select an active case to persist the current OSINT entity and observations.';
     } else if (!validSnapshot) {
       shell.message.textContent = 'Analyze an entity before saving a case snapshot.';
+    } else if (collectingDns) {
+      shell.message.textContent = 'DNS collection is still running. Saving will unlock when the snapshot is complete.';
     } else if (!unsaved) {
       shell.message.textContent = state.lastSaveMessage || 'The current OSINT snapshot is saved to the selected case.';
     } else {
@@ -223,6 +245,7 @@
       || !state.activeCaseId
       || snapshot?.schema !== EXPECTED_SCHEMA
       || !snapshot?.entity?.value
+      || dnsBusy()
       || state.saving
     ) return;
 
