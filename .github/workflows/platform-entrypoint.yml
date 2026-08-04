@@ -21,6 +21,7 @@ on:
       - 'backend/tests/test_imports.py'
       - 'backend/tests/test_enrichment.py'
       - 'backend/tests/test_routing.py'
+      - 'backend/tests/test_routing_cancellation.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
       - 'cases/**'
@@ -48,6 +49,7 @@ on:
       - 'tests/browser/active-case-tools.spec.mjs'
       - 'tests/browser/bug-audit.spec.mjs'
       - 'tests/browser/routing.spec.mjs'
+      - 'tests/browser/routing-guards.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
   push:
@@ -73,6 +75,7 @@ on:
       - 'backend/tests/test_imports.py'
       - 'backend/tests/test_enrichment.py'
       - 'backend/tests/test_routing.py'
+      - 'backend/tests/test_routing_cancellation.py'
       - 'backend/compose.yml'
       - 'backend/compose.platform.yml'
       - 'cases/**'
@@ -100,6 +103,7 @@ on:
       - 'tests/browser/active-case-tools.spec.mjs'
       - 'tests/browser/bug-audit.spec.mjs'
       - 'tests/browser/routing.spec.mjs'
+      - 'tests/browser/routing-guards.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
 
@@ -131,7 +135,7 @@ jobs:
 
       - name: Run platform lifecycle, write, import, enrichment and routing tests
         working-directory: backend
-        run: pytest tests/test_platform.py tests/test_lifecycle.py tests/test_write_security.py tests/test_imports.py tests/test_enrichment.py tests/test_routing.py
+        run: pytest tests/test_platform.py tests/test_lifecycle.py tests/test_write_security.py tests/test_imports.py tests/test_enrichment.py tests/test_routing.py tests/test_routing_cancellation.py
 
       - name: Validate platform Compose merge
         run: |
@@ -192,12 +196,12 @@ jobs:
       - name: Run desktop platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs tests/browser/routing-guards.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
 
       - name: Run mobile platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs tests/browser/bug-audit.spec.mjs tests/browser/routing.spec.mjs tests/browser/routing-guards.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
 
       - name: Upload platform failure artifacts
         if: failure()
