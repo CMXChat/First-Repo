@@ -6,6 +6,7 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const TERMINAL_TRIGGER_SELECTOR = '#briefSystemCommandButton, #briefSystemTerminalDock, [data-terminal-open], [data-os-command]';
+  const layerOpenedAt = new WeakMap();
   let repairQueued = false;
 
   function isVisible(node) {
@@ -85,9 +86,23 @@
 
   function closeInvalidLayer(layerSelector, surfaceSelector, expandedSelector) {
     const layer = $(layerSelector);
-    if (!layer || layer.hidden) return false;
+    if (!layer || layer.hidden) {
+      if (layer) layerOpenedAt.delete(layer);
+      return false;
+    }
+
     const surface = $(surfaceSelector, layer);
-    if (isVisible(surface)) return true;
+    if (isVisible(surface)) {
+      layerOpenedAt.delete(layer);
+      return true;
+    }
+
+    const now = performance.now();
+    const openedAt = layerOpenedAt.get(layer) || now;
+    if (!layerOpenedAt.has(layer)) layerOpenedAt.set(layer, openedAt);
+    if (now - openedAt < 340) return true;
+
+    layerOpenedAt.delete(layer);
     layer.hidden = true;
     if (expandedSelector) $(expandedSelector)?.setAttribute('aria-expanded', 'false');
     return false;
@@ -137,7 +152,7 @@
         return;
       }
 
-      [0, 80, 180, 360].forEach(delay => window.setTimeout(clearStrandedBlur, delay));
+      [80, 180, 380, 520].forEach(delay => window.setTimeout(clearStrandedBlur, delay));
     }, true);
 
     document.addEventListener('keydown', event => {
@@ -158,7 +173,7 @@
   }
 
   window.BRIEF_PERSONAL_OS_STABILITY = {
-    version: '20260804-2',
+    version: '20260804-3',
     repair,
     clearStrandedBlur,
     updateVisibleViewport
