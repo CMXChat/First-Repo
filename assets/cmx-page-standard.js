@@ -26,7 +26,7 @@
   root.dataset.cmxAccess = guardedRoutes.has(currentPath) ? 'client-session' : 'public-entry';
   if (guardedRoutes.has(currentPath) && root.dataset.cmxModern !== 'true') loadToolHardening();
   applySearchPrefill();
-  installDnsApiBridge();
+  loadCasesStateSync();
 
   function hasActiveClientSession() {
     try {
@@ -53,6 +53,15 @@
     document.head.appendChild(script);
   }
 
+  function loadCasesStateSync() {
+    if (currentPath !== '/cases' || document.querySelector('script[data-cmx-cases-state-sync]')) return;
+    const script = document.createElement('script');
+    script.src = '/assets/cases-state-sync.js?v=20260804-2';
+    script.defer = true;
+    script.dataset.cmxCasesStateSync = 'true';
+    document.head.appendChild(script);
+  }
+
   function applySearchPrefill() {
     if (currentPath !== '/search') return;
     const params = new URLSearchParams(window.location.search);
@@ -74,51 +83,6 @@
       const label = document.querySelector('label[for="fullName"]');
       if (label) label.textContent = 'Name or exact identifier';
       field.placeholder = 'Name, domain, IP, URL, or exact phrase';
-    }
-  }
-
-  function installDnsApiBridge() {
-    if (currentPath !== '/osint' || window.__cmxDnsApiBridgeInstalled) return;
-    window.__cmxDnsApiBridgeInstalled = true;
-    const nativeFetch = window.fetch.bind(window);
-
-    window.fetch = async (input, init = {}) => {
-      const requestedUrl = requestUrl(input);
-      if (!requestedUrl || requestedUrl.origin !== 'https://dns.google' || requestedUrl.pathname !== '/resolve') {
-        return nativeFetch(input, init);
-      }
-
-      const apiUrl = new URL('/api/dns', window.location.origin);
-      apiUrl.searchParams.set('name', requestedUrl.searchParams.get('name') || '');
-      apiUrl.searchParams.set('type', requestedUrl.searchParams.get('type') || 'A');
-      const headers = new Headers(init.headers || {});
-      headers.set('accept', 'application/json');
-
-      try {
-        const response = await nativeFetch(apiUrl, {
-          ...init,
-          method: 'GET',
-          credentials: 'same-origin',
-          cache: 'no-store',
-          headers
-        });
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) return response;
-        if (![404, 405, 501].includes(response.status)) return response;
-      } catch {
-        // Static hosting has no FastAPI route. The direct resolver remains a temporary fallback.
-      }
-      return nativeFetch(input, init);
-    };
-
-    function requestUrl(input) {
-      try {
-        if (typeof input === 'string' || input instanceof URL) return new URL(input, window.location.href);
-        if (input instanceof Request) return new URL(input.url, window.location.href);
-        return null;
-      } catch {
-        return null;
-      }
     }
   }
 
