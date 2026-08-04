@@ -1,0 +1,47 @@
+name: Operations scripts
+
+on:
+  pull_request:
+    paths:
+      - 'backend/scripts/**'
+      - 'backend/compose*.yml'
+      - 'backend/.env.example'
+      - 'backend/STAGING_RUNBOOK.md'
+      - 'backend/WRITE_SECURITY.md'
+      - '.github/workflows/operations-scripts.yml'
+  push:
+    branches:
+      - main
+      - 'agent/**'
+    paths:
+      - 'backend/scripts/**'
+      - 'backend/compose*.yml'
+      - 'backend/.env.example'
+      - 'backend/STAGING_RUNBOOK.md'
+      - 'backend/WRITE_SECURITY.md'
+      - '.github/workflows/operations-scripts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  shell-and-compose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate shell syntax
+        run: |
+          for script in backend/scripts/*.sh; do
+            echo "Checking $script"
+            bash -n "$script"
+          done
+
+      - name: Validate every Compose profile
+        run: |
+          cp backend/.env.example backend/.env
+          docker compose --env-file backend/.env --file backend/compose.yml config >/dev/null
+          docker compose --env-file backend/.env --file backend/compose.yml --file backend/compose.secure.yml config >/dev/null
+          docker compose --env-file backend/.env --file backend/compose.yml --file backend/compose.platform.yml config >/dev/null
