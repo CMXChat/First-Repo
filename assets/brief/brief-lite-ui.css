@@ -1,8 +1,9 @@
-@import url('/assets/brief/brief-system.css?v=20260804-6');
-@import url('/assets/brief/brief-system-fixes.css?v=20260804-6');
-@import url('/assets/brief/brief-overlay-controls-fix.css?v=20260804-6');
-@import url('/assets/brief/brief-personal-os.css?v=20260804-6');
-@import url('/assets/brief/brief-personal-os-density.css?v=20260804-6');
-@import url('/assets/brief/brief-personal-os-mobile.css?v=20260804-6');
+@import url('/assets/brief/brief-system.css?v=20260804-7');
+@import url('/assets/brief/brief-system-fixes.css?v=20260804-7');
+@import url('/assets/brief/brief-overlay-controls-fix.css?v=20260804-7');
+@import url('/assets/brief/brief-personal-os.css?v=20260804-7');
+@import url('/assets/brief/brief-personal-os-density.css?v=20260804-7');
+@import url('/assets/brief/brief-personal-os-mobile.css?v=20260804-7');
+@import url('/assets/brief/brief-full-home.css?v=20260804-7');
 
 /* Compatibility entry point retained for cached /brief HTML. */
