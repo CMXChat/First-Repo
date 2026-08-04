@@ -62,6 +62,36 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  function forceEntryTop() {
+    const scroller = document.scrollingElement || document.documentElement;
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    if (scroller) scroller.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }
+
+  function resetEntryPosition() {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    const reset = () => {
+      forceEntryTop();
+      $('#briefMain')?.focus?.({ preventScroll: true });
+    };
+
+    reset();
+    window.requestAnimationFrame(() => {
+      reset();
+      window.requestAnimationFrame(reset);
+    });
+    [60, 180, 420].forEach(delay => window.setTimeout(reset, delay));
+  }
+
+  function installEntryTopReset() {
+    document.addEventListener('click', event => {
+      if (!event.target.closest?.('#enterBrief')) return;
+      resetEntryPosition();
+    }, true);
+  }
+
   function switchBriefing(value) {
     const normalized = String(value || '').replace(/[^a-z]/g, '');
     const next = ALIASES[normalized];
@@ -266,6 +296,7 @@
   function init() {
     if (initialized || !window.BRIEF_APP) return;
     initialized = true;
+    installEntryTopReset();
     installCommandBridge();
     installUniversalReturnToTop();
     scheduleLateUi();
