@@ -58,6 +58,20 @@
     window.BRIEF_APP?.showToast?.(message);
   }
 
+  function refreshLiteStylesheet() {
+    const href = '/assets/brief/brief-lite-ui.css?v=20260804-2';
+    const existing = [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .find(link => /\/assets\/brief\/brief-lite-ui\.css/.test(link.getAttribute('href') || ''));
+    if (existing) {
+      if (existing.getAttribute('href') !== href) existing.setAttribute('href', href);
+      return;
+    }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+  }
+
   function cleanEntryRoute() {
     try {
       const url = new URL(window.location.href);
@@ -68,6 +82,7 @@
   }
 
   function forceDocumentTop() {
+    if (entryGuardUntil) cleanEntryRoute();
     const nodes = [
       document.scrollingElement,
       document.documentElement,
@@ -76,7 +91,10 @@
       $('#briefMain'),
       $('#entryGate')
     ].filter(Boolean);
-    nodes.forEach(node => { node.scrollTop = 0; node.scrollLeft = 0; });
+    nodes.forEach(node => {
+      node.scrollTop = 0;
+      node.scrollLeft = 0;
+    });
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }
 
@@ -86,6 +104,7 @@
     entryGuardTimer = 0;
     entryGuardUntil = 0;
     document.documentElement.classList.remove('brief-entry-top-guard');
+    document.body?.removeAttribute('data-brief-entry-opening');
   }
 
   function enforceEntryTop() {
@@ -103,16 +122,56 @@
 
   function startEntryGuard() {
     stopEntryGuard();
+    document.body?.classList.remove('brief-lite-mode-active');
     cleanEntryRoute();
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    entryGuardUntil = now() + 2200;
+    entryGuardUntil = now() + 2600;
     document.documentElement.classList.add('brief-entry-top-guard');
+    document.body?.setAttribute('data-brief-entry-opening', 'true');
     forceDocumentTop();
-    entryGuardTimer = window.setInterval(forceDocumentTop, 55);
+    entryGuardTimer = window.setInterval(forceDocumentTop, 45);
     entryGuardRelease = window.setTimeout(() => {
       forceDocumentTop();
-      stopEntryGuard();
-    }, 2250);
+      window.requestAnimationFrame(() => {
+        forceDocumentTop();
+        stopEntryGuard();
+      });
+    }, 2650);
+  }
+
+  function installSafeScrollIntoView() {
+    if (window.__CMX_BRIEF_SCROLL_SAFETY__) return;
+    window.__CMX_BRIEF_SCROLL_SAFETY__ = true;
+    const nativeScrollIntoView = Element.prototype.scrollIntoView;
+
+    Element.prototype.scrollIntoView = function scrollIntoView(options) {
+      const stickyHost = this.closest?.('#briefStickyRoutes');
+      if (stickyHost) {
+        const targetLeft = Math.max(0, this.offsetLeft - ((stickyHost.clientWidth - this.offsetWidth) / 2));
+        stickyHost.scrollTo({
+          left: targetLeft,
+          behavior: reducedMotion() ? 'auto' : 'smooth'
+        });
+        return;
+      }
+
+      if (document.documentElement.classList.contains('brief-entry-top-guard')) {
+        const entrySafe = this.id === 'today'
+          || this.id === 'briefMain'
+          || Boolean(this.closest?.('#entryGate'));
+        if (!entrySafe) return;
+      }
+
+      return nativeScrollIntoView.call(this, options);
+    };
+  }
+
+  function scrollElementBelowHeader(element, behavior = reducedMotion() ? 'auto' : 'smooth') {
+    if (!element) return;
+    const header = $('.topbar');
+    const offset = Math.max(12, (header?.getBoundingClientRect().height || 0) + 12);
+    const top = element.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top: Math.max(0, top), left: 0, behavior });
   }
 
   function officialVideoUrl(autoplay = false) {
@@ -156,11 +215,11 @@
         }, 120);
         return;
       }
-      if (attempt < 8) {
+      if (attempt < 10) {
         window.setTimeout(() => startOfficialMusic(attempt + 1), 180);
         return;
       }
-      $('#music')?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      scrollElementBelowHeader($('#music'));
       showToast('The music player is opening below. Tap the visible player once if your browser blocks sound.');
       return;
     }
@@ -206,7 +265,30 @@
     if (typeof playerState === 'number') syncMusicButton();
   }
 
-  function installEntryAndMusicCapture() {
+  function activateLiteMode({ scroll = true, resetTab = true } = {}) {
+    const body = document.body;
+    body.classList.add('brief-lite-mode-active');
+    body.dataset.briefDepth = 'quick';
+
+    const quick = $('[data-depth-choice="quick"]');
+    if (quick?.getAttribute('aria-pressed') !== 'true') quick.click();
+
+    window.setTimeout(() => {
+      body.dataset.briefDepth = 'quick';
+      if (resetTab) {
+        const overview = $('[data-workspace-tab="overview"]');
+        if (overview?.getAttribute('aria-selected') !== 'true') overview.click();
+      }
+      if (scroll) scrollElementBelowHeader($('#briefWorkspace'));
+      $('#briefWorkspacePanel')?.focus?.({ preventScroll: true });
+    }, 120);
+  }
+
+  function deactivateLiteMode() {
+    document.body.classList.remove('brief-lite-mode-active');
+  }
+
+  function installEntryMusicAndDepthCapture() {
     document.addEventListener('click', event => {
       const enter = event.target.closest?.('#enterBrief');
       if (enter && !enter.disabled) {
@@ -224,10 +306,18 @@
       }
 
       const audio = event.target.closest?.('#audioButton');
-      if (!audio) return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      toggleOfficialMusic();
+      if (audio) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        toggleOfficialMusic();
+        return;
+      }
+
+      const depth = event.target.closest?.('[data-depth-choice]');
+      if (depth?.dataset.depthChoice === 'full') deactivateLiteMode();
+      if (depth?.dataset.depthChoice === 'quick') {
+        window.setTimeout(() => activateLiteMode({ scroll: false, resetTab: false }), 0);
+      }
     }, true);
 
     window.addEventListener('scroll', enforceEntryTop, { passive: true });
@@ -323,17 +413,7 @@
     if (anchor?.parentNode) anchor.parentNode.insertBefore(section, anchor);
     else $('#briefMain')?.appendChild(section);
 
-    $('#briefLiteButton', section)?.addEventListener('click', () => {
-      const quick = $('[data-depth-choice="quick"]');
-      if (quick?.getAttribute('aria-pressed') !== 'true') quick?.click();
-      else document.body.dataset.briefDepth = 'quick';
-      window.setTimeout(() => {
-        const target = $('#briefWorkspace') || $('#today');
-        target?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
-        target?.focus?.({ preventScroll: true });
-      }, 100);
-    });
-
+    $('#briefLiteButton', section)?.addEventListener('click', () => activateLiteMode({ scroll: true, resetTab: true }));
     return section;
   }
 
@@ -363,7 +443,7 @@
     const run = () => {
       uiApplyAttempts += 1;
       const complete = applyUi();
-      if (!complete && uiApplyAttempts < 30) uiApplyTimer = window.setTimeout(run, 220);
+      if (!complete && uiApplyAttempts < 36) uiApplyTimer = window.setTimeout(run, 220);
     };
     run();
   }
@@ -371,16 +451,24 @@
   function init() {
     if (initialized) return;
     initialized = true;
-    installEntryAndMusicCapture();
+    refreshLiteStylesheet();
+    installSafeScrollIntoView();
+    installEntryMusicAndDepthCapture();
     scheduleUiApply();
+
     window.addEventListener('brief:preset-change', () => window.setTimeout(() => {
       syncLiteSection();
       moveSpaceControl();
       polishTopControls();
+      if (document.body.classList.contains('brief-lite-mode-active')) {
+        activateLiteMode({ scroll: false, resetTab: true });
+      }
     }, 180));
+
     window.addEventListener('brief:device-fallback-open', () => window.setTimeout(scheduleUiApply, 180));
+
     document.addEventListener('click', event => {
-      if (event.target.closest?.('#themeToggleButton, #scenarioMenuButton, [data-depth-choice]')) {
+      if (event.target.closest?.('#themeToggleButton, #scenarioMenuButton, [data-workspace-tab]')) {
         window.setTimeout(() => {
           polishTopControls();
           syncLiteSection();
