@@ -29,10 +29,25 @@ async def resolve_dns(
     except httpx.HTTPError as exc:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="DNS resolver request failed") from exc
 
+    compatibility_answers = [
+        {
+            "name": answer["name"],
+            "type": answer["type"],
+            "TTL": answer["ttl"],
+            "data": answer["data"],
+        }
+        for answer in result["answers"]
+    ]
     return {
         "source": "Google Public DNS JSON API",
         "queried_at": datetime.now(UTC).isoformat(),
         "cache_hit": cache_hit,
-        "requested_by": identity.email or identity.subject,
+        "requested_by": identity.subject,
         **result,
+        "Status": result["status"],
+        "AD": result["authenticated_data"],
+        "TC": result["truncated"],
+        "RA": result["recursion_available"],
+        "Comment": result["comment"],
+        "Answer": compatibility_answers,
     }
