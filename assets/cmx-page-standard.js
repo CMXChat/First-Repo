@@ -3,16 +3,42 @@
 
   const root = document.documentElement;
   const currentPath = normalizePath(window.location.pathname);
-  const directoryVisible = new Set(['/', '/directory', '/osint', '/phone', '/metadata', '/search', '/missing', '/resources']);
+  const clientSessionKey = 'cmx_session_v4';
+  const clientSessionMaxAgeMs = 12 * 60 * 60 * 1000;
+  const guardedRoutes = new Set(['/directory', '/osint', '/phone', '/metadata', '/search', '/missing', '/resources']);
+  const directoryVisible = new Set(['/', ...guardedRoutes]);
   const removedRoutes = new Set(['/manual', '/menu', '/workspace', '/collab6', '/collab7', '/pythontest', '/test.html', '/report']);
   const sensitiveRoutes = new Set(['/build', '/callmax', '/project']);
-  const blockedNavigationDestinations = new Set(['/', '/directory']);
 
   root.dataset.cmxVisibility ||= directoryVisible.has(currentPath) ? 'Directory-visible' : 'Direct-link-only';
   ensureMeta('name', 'referrer', 'no-referrer');
   ensureMeta('http-equiv', 'Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   ensureMeta('http-equiv', 'Pragma', 'no-cache');
   ensureMeta('http-equiv', 'Expires', '0');
+
+  if (guardedRoutes.has(currentPath) && !hasActiveClientSession()) {
+    const returnPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    window.location.replace(`/?return=${encodeURIComponent(returnPath)}`);
+    return;
+  }
+
+  root.dataset.cmxAccess = guardedRoutes.has(currentPath) ? 'client-session' : 'public-entry';
+
+  function hasActiveClientSession() {
+    try {
+      const raw = sessionStorage.getItem(clientSessionKey);
+      if (!raw) return false;
+      const session = JSON.parse(raw);
+      const createdAt = Number(session?.at || 0);
+      const age = Date.now() - createdAt;
+      return session?.username === 'admin'
+        && Number.isFinite(age)
+        && age >= 0
+        && age <= clientSessionMaxAgeMs;
+    } catch {
+      return false;
+    }
+  }
 
   function unlinkAnchor(anchor) {
     const destination = anchor.getAttribute('href') || '';
@@ -39,12 +65,10 @@
       }
 
       if (!destination) return;
-      if (blockedNavigationDestinations.has(destination)) {
+      if (removedRoutes.has(destination) || sensitiveRoutes.has(destination)) {
         if (anchor.closest('.links, .gate-actions')) anchor.remove();
         else unlinkAnchor(anchor);
-        return;
       }
-      if (removedRoutes.has(destination) || sensitiveRoutes.has(destination)) anchor.remove();
     });
   }
 
@@ -67,19 +91,38 @@
   const bar = document.createElement('nav');
   bar.className = 'cmx-standard-bar';
   bar.setAttribute('aria-label', 'CMX private page controls');
-  bar.innerHTML = [
-    '<span class="cmx-standard-home">CMX</span>',
-    '<span class="cmx-standard-sep">/</span>',
-    `<span class="cmx-standard-class">${escapeHtml(category)}</span>`,
-    '<span class="cmx-standard-sep">/</span>',
-    `<span class="cmx-standard-title" title="${escapeHtml(title)}">${escapeHtml(title)}</span>`,
-    '<span class="cmx-standard-sep">·</span>',
-    `<span class="cmx-standard-status">${escapeHtml(status)}</span>`,
-    '<span class="cmx-standard-sep">·</span>',
-    `<span>v${escapeHtml(version)}</span>`,
-    '<span class="cmx-standard-private">Private · No indexing</span>'
-  ].join('');
+
+  const home = document.createElement('a');
+  home.className = 'cmx-standard-home';
+  home.href = '/directory';
+  home.textContent = 'CMX';
+  home.setAttribute('aria-label', 'Open Operations Directory');
+
+  const titleElement = document.createElement('span');
+  titleElement.className = 'cmx-standard-title';
+  titleElement.title = title;
+  titleElement.textContent = title;
+
+  bar.append(
+    home,
+    standardSpan('/', 'cmx-standard-sep'),
+    standardSpan(category, 'cmx-standard-class'),
+    standardSpan('/', 'cmx-standard-sep'),
+    titleElement,
+    standardSpan('·', 'cmx-standard-sep'),
+    standardSpan(status, 'cmx-standard-status'),
+    standardSpan('·', 'cmx-standard-sep'),
+    standardSpan(`v${version}`),
+    standardSpan('Private · No indexing', 'cmx-standard-private')
+  );
   document.body.appendChild(bar);
+
+  function standardSpan(text, className = '') {
+    const span = document.createElement('span');
+    if (className) span.className = className;
+    span.textContent = text;
+    return span;
+  }
 
   function normalizePath(value) {
     if (!value) return '/';
@@ -107,11 +150,5 @@
       document.head.appendChild(meta);
     }
     meta.setAttribute('content', content);
-  }
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>'"]/g, (char) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    })[char]);
   }
 })();
