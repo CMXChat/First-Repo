@@ -6,7 +6,9 @@
     current: null,
     dns: [],
     observations: [],
-    extracted: []
+    extracted: [],
+    dnsRun: null,
+    dnsSources: new Set()
   };
 
   const DNS_TYPES = ['A', 'AAAA', 'CNAME', 'MX', 'NS', 'TXT', 'CAA', 'SOA'];
@@ -18,6 +20,7 @@
     4: 'NOTIMP',
     5: 'REFUSED'
   };
+  const STATIC_FALLBACK_STATUSES = new Set([404, 405, 501]);
 
   const els = {
     session: $('#sessionId'),
@@ -86,7 +89,9 @@
     const requestedEntity = (params.get('entity') || '').slice(0, 500);
     const requestedType = params.get('type') || 'auto';
     if (requestedEntity) {
-      if ([...els.type.options].some((option) => option.value === requestedType)) els.type.value = requestedType;
+      if ([...els.type.options].some((option) => option.value === requestedType)) {
+        els.type.value = requestedType;
+      }
       els.value.value = requestedEntity;
       analyzeFromForm();
     }
@@ -96,7 +101,10 @@
   }
 
   function randomId() {
-    return crypto.getRandomValues(new Uint32Array(2)).reduce((value, number) => value + number.toString(36), '').slice(0, 10).toUpperCase();
+    return crypto.getRandomValues(new Uint32Array(2))
+      .reduce((value, number) => value + number.toString(36), '')
+      .slice(0, 10)
+      .toUpperCase();
   }
 
   function analyzeFromForm() {
@@ -106,6 +114,7 @@
     const result = normalizeEntity(raw, els.type.value);
     if (!result.ok) return showToast(result.error);
 
+    cancelDnsRun();
     state.current = {
       type: result.type,
       value: result.value,
@@ -116,12 +125,18 @@
       analyzedAt: new Date().toISOString()
     };
     state.dns = [];
+    state.dnsSources = new Set();
 
     renderSummary();
     renderPivots(buildPivots(state.current));
     renderIpClassification();
     updateToolLinks();
-    addObservation('analysis', state.current.value, 'CMX local analyzer', `${state.current.type} normalized with ${state.current.confidence.toLowerCase()} confidence.`);
+    addObservation(
+      'analysis',
+      state.current.value,
+      'CMX local analyzer',
+      `${state.current.type} normalized with ${state.current.confidence.toLowerCase()} confidence.`
+    );
 
     const domain = domainForCurrent();
     if (domain) runDns(domain);
@@ -135,7 +150,9 @@
 
     if (type === 'email') {
       const value = raw.trim().toLowerCase();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/u.test(value)) return invalid('Enter a valid email address.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/u.test(value)) {
+        return invalid('Enter a valid email address.');
+      }
       return valid(type, value, 'Email syntax and domain are normalized locally.', 'High');
     }
 
@@ -153,7 +170,9 @@
 
     if (type === 'ip') {
       const value = raw.trim().toLowerCase();
-      if (!isIPv4(value) && !isIPv6(value)) return invalid('Enter a valid IPv4 or IPv6 address.');
+      if (!isIPv4(value) && !isIPv6(value)) {
+        return invalid('Enter a valid IPv4 or IPv6 address.');
+      }
       return valid(type, value, 'Address class is evaluated locally. Reputation and ownership require external sources.', 'High');
     }
 
@@ -165,12 +184,18 @@
 
     if (type === 'username') {
       const value = raw.trim().replace(/^@/, '');
-      if (!/^[\p{L}\p{N}._-]{2,80}$/u.test(value)) return invalid('Use a username containing letters, numbers, dots, underscores, or hyphens.');
+      if (!/^[\p{L}\p{N}._-]{2,80}$/u.test(value)) {
+        return invalid('Use a username containing letters, numbers, dots, underscores, or hyphens.');
+      }
       return valid(type, value, 'A handle can belong to different people across services.', 'Medium');
     }
 
-    const value = raw.trim().slice(0, 5000);
-    return valid('text', value, 'Unstructured text. Extracted identifiers remain hypotheses until verified.', 'Low');
+    return valid(
+      'text',
+      raw.trim().slice(0, 5000),
+      'Unstructured text. Extracted identifiers remain hypotheses until verified.',
+      'Low'
+    );
   }
 
   function valid(type, value, scope, confidence) {
@@ -193,11 +218,19 @@
   }
 
   function normalizeDomain(value) {
-    const candidate = value.trim().replace(/^https?:\/\//i, '').split(/[/?#]/)[0].replace(/\.$/, '').toLowerCase();
+    const candidate = value
+      .trim()
+      .replace(/^https?:\/\//i, '')
+      .split(/[/?#]/)[0]
+      .replace(/\.$/, '')
+      .toLowerCase();
     if (!candidate || candidate.length > 253 || candidate.includes(':')) return '';
+
     try {
       const hostname = new URL(`https://${candidate}`).hostname.toLowerCase();
-      if (!/^(?=.{1,253}$)(?!-)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i.test(hostname)) return '';
+      if (!/^(?=.{1,253}$)(?!-)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i.test(hostname)) {
+        return '';
+      }
       return hostname;
     } catch {
       return '';
@@ -224,7 +257,12 @@
 
   function isIPv4(value) {
     const parts = value.split('.');
-    return parts.length === 4 && parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) >= 0 && Number(part) <= 255 && String(Number(part)) === part);
+    return parts.length === 4 && parts.every((part) =>
+      /^\d{1,3}$/.test(part)
+      && Number(part) >= 0
+      && Number(part) <= 255
+      && String(Number(part)) === part
+    );
   }
 
   function isIPv6(value) {
@@ -254,9 +292,15 @@
   }
 
   function disclosureForType(type) {
-    if (['email', 'phone'].includes(type)) return 'Opening external pivots may disclose the complete identifier to the selected provider.';
-    if (type === 'ip') return 'Opening reputation or routing pivots discloses the address to the selected provider.';
-    if (type === 'url') return 'Opening scanners or archives discloses the URL to the selected provider.';
+    if (['email', 'phone'].includes(type)) {
+      return 'Opening external pivots may disclose the complete identifier to the selected provider.';
+    }
+    if (type === 'ip') {
+      return 'Opening reputation or routing pivots discloses the address to the selected provider.';
+    }
+    if (type === 'url') {
+      return 'Opening scanners or archives discloses the URL to the selected provider.';
+    }
     return 'External pivots disclose the selected entity or search term to the selected provider.';
   }
 
@@ -274,10 +318,28 @@
     return '';
   }
 
+  function cancelDnsRun() {
+    if (state.dnsRun?.controller) state.dnsRun.controller.abort();
+    state.dnsRun = null;
+  }
+
   async function runDns(domain) {
+    cancelDnsRun();
+
+    const run = {
+      id: crypto.randomUUID ? crypto.randomUUID() : randomId(),
+      domain,
+      controller: new AbortController(),
+      completed: 0,
+      total: DNS_TYPES.length + 2
+    };
+    state.dnsRun = run;
+    state.dns = [];
+    state.dnsSources = new Set();
+
     els.dnsSection.classList.remove('osint-hidden');
     els.dnsDomain.textContent = domain;
-    els.dnsStatus.textContent = 'Querying Google Public DNS JSON API…';
+    els.dnsStatus.textContent = 'Starting authenticated DNS analysis…';
     els.dnsRefresh.disabled = true;
     els.dnsSave.disabled = true;
     els.dnsBody.replaceChildren();
@@ -288,62 +350,129 @@
     queries.push({ name: `_dmarc.${domain}`, type: 'TXT' });
     queries.push({ name: `_mta-sts.${domain}`, type: 'TXT' });
 
-    const results = await Promise.all(queries.map(async (query) => {
-      try {
-        const data = await fetchDns(query.name, query.type);
-        return normalizeDnsResponse(query, data);
-      } catch (error) {
-        return {
-          query,
-          status: null,
-          statusLabel: 'NETWORK_ERROR',
-          authenticatedData: false,
-          truncated: false,
-          answers: [],
-          error: error instanceof Error ? error.message : String(error)
-        };
-      }
-    }));
+    renderDnsProgress(run);
+    await Promise.allSettled(queries.map((query) => resolveDnsQuestion(run, query)));
 
-    state.dns = results;
-    renderDns(results);
+    if (!isCurrentDnsRun(run)) return;
+
     els.dnsRefresh.disabled = false;
-    els.dnsSave.disabled = false;
-    els.dnsStatus.textContent = `${results.length} DNS questions completed at ${new Date().toLocaleTimeString()}.`;
+    els.dnsSave.disabled = state.dns.length === 0;
+    els.dnsStatus.textContent = `${state.dns.length} DNS questions completed through ${dnsSourceLabel()} at ${new Date().toLocaleTimeString()}.`;
     updateCaseJson();
   }
 
-  async function fetchDns(name, type) {
-    const params = new URLSearchParams({ name, type, cd: 'false', do: 'true' });
-    const response = await fetch(`https://dns.google/resolve?${params.toString()}`, {
+  async function resolveDnsQuestion(run, query) {
+    try {
+      const resolved = await fetchDns(query.name, query.type, run.controller.signal);
+      if (!isCurrentDnsRun(run)) return;
+
+      state.dnsSources.add(resolved.source);
+      state.dns.push(normalizeDnsResponse(query, resolved.data, resolved.source));
+    } catch (error) {
+      if (error?.name === 'AbortError' || !isCurrentDnsRun(run)) return;
+      state.dns.push({
+        query,
+        source: 'CMX DNS request',
+        status: null,
+        statusLabel: 'NETWORK_ERROR',
+        authenticatedData: false,
+        truncated: false,
+        recursionAvailable: false,
+        answers: [],
+        error: error instanceof Error ? error.message : String(error)
+      });
+    } finally {
+      if (!isCurrentDnsRun(run)) return;
+      run.completed += 1;
+      sortDnsResults();
+      renderDns(state.dns, run);
+      updateCaseJson();
+    }
+  }
+
+  function isCurrentDnsRun(run) {
+    return state.dnsRun?.id === run.id
+      && state.dnsRun.domain === run.domain
+      && domainForCurrent() === run.domain
+      && !run.controller.signal.aborted;
+  }
+
+  async function fetchDns(name, type, signal) {
+    const sameOriginParams = new URLSearchParams({ name, type });
+    try {
+      const response = await fetch(`/api/dns?${sameOriginParams.toString()}`, {
+        method: 'GET',
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { accept: 'application/json' },
+        signal
+      });
+
+      if (response.ok) {
+        return {
+          source: 'CMX authenticated DNS gateway',
+          data: await response.json()
+        };
+      }
+
+      if (!STATIC_FALLBACK_STATUSES.has(response.status)) {
+        throw new Error(`CMX DNS gateway returned HTTP ${response.status}`);
+      }
+    } catch (error) {
+      if (error?.name === 'AbortError') throw error;
+      if (!(error instanceof TypeError)) throw error;
+    }
+
+    const directParams = new URLSearchParams({ name, type, cd: 'false', do: 'true' });
+    const response = await fetch(`https://dns.google/resolve?${directParams.toString()}`, {
       method: 'GET',
       mode: 'cors',
       cache: 'no-store',
       credentials: 'omit',
-      headers: { accept: 'application/dns-json' }
+      headers: { accept: 'application/dns-json' },
+      signal
     });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return response.json();
+    if (!response.ok) throw new Error(`Google Public DNS returned HTTP ${response.status}`);
+
+    return {
+      source: 'Google Public DNS direct fallback',
+      data: await response.json()
+    };
   }
 
-  function normalizeDnsResponse(query, data) {
-    const answers = Array.isArray(data.Answer) ? data.Answer.map((answer) => ({
+  function normalizeDnsResponse(query, data, source) {
+    const rawAnswers = Array.isArray(data.Answer)
+      ? data.Answer
+      : Array.isArray(data.answers)
+        ? data.answers.map((answer) => ({
+          name: answer.name,
+          type: answer.type,
+          TTL: answer.ttl,
+          data: answer.data
+        }))
+        : [];
+
+    const answers = rawAnswers.map((answer) => ({
       name: String(answer.name || query.name),
       type: Number(answer.type || 0),
       typeLabel: dnsTypeLabel(Number(answer.type || 0), query.type),
       ttl: Number.isFinite(Number(answer.TTL)) ? Number(answer.TTL) : null,
       data: String(answer.data ?? '')
-    })) : [];
+    }));
 
+    const statusValue = data.Status ?? data.status;
     return {
       query,
-      status: Number.isFinite(Number(data.Status)) ? Number(data.Status) : null,
-      statusLabel: DNS_STATUS[data.Status] || `STATUS_${data.Status}`,
-      authenticatedData: data.AD === true,
-      truncated: data.TC === true,
-      recursionAvailable: data.RA === true,
+      source,
+      queriedAt: data.queried_at || new Date().toISOString(),
+      cacheHit: data.cache_hit === true,
+      status: Number.isFinite(Number(statusValue)) ? Number(statusValue) : null,
+      statusLabel: DNS_STATUS[statusValue] || `STATUS_${statusValue}`,
+      authenticatedData: (data.AD ?? data.authenticated_data) === true,
+      truncated: (data.TC ?? data.truncated) === true,
+      recursionAvailable: (data.RA ?? data.recursion_available) === true,
       answers,
-      comment: typeof data.Comment === 'string' ? data.Comment : ''
+      comment: String(data.Comment ?? data.comment ?? '')
     };
   }
 
@@ -352,7 +481,16 @@
     return map[number] || fallback || String(number);
   }
 
-  function renderDns(results) {
+  function sortDnsResults() {
+    const order = new Map(DNS_TYPES.map((type, index) => [type, index]));
+    state.dns.sort((left, right) => {
+      const leftSpecial = left.query.name.startsWith('_dmarc.') ? 100 : left.query.name.startsWith('_mta-sts.') ? 101 : order.get(left.query.type) ?? 99;
+      const rightSpecial = right.query.name.startsWith('_dmarc.') ? 100 : right.query.name.startsWith('_mta-sts.') ? 101 : order.get(right.query.type) ?? 99;
+      return leftSpecial - rightSpecial;
+    });
+  }
+
+  function renderDns(results, run = state.dnsRun) {
     els.dnsBody.replaceChildren();
     let rowCount = 0;
 
@@ -368,9 +506,20 @@
       }
     });
 
+    if (run && run.completed < run.total) {
+      els.dnsBody.appendChild(emptyTableRow(7, `${run.completed} of ${run.total} questions completed…`));
+      els.dnsStatus.textContent = `${run.completed} of ${run.total} DNS questions completed through ${dnsSourceLabel()}.`;
+    }
+
     renderMailPosture(results);
     els.dnsRaw.textContent = JSON.stringify(results, null, 2);
-    if (!rowCount) els.dnsBody.appendChild(emptyTableRow(7, 'No DNS responses were returned.'));
+    if (!rowCount && (!run || run.completed >= run.total)) {
+      els.dnsBody.appendChild(emptyTableRow(7, 'No DNS responses were returned.'));
+    }
+  }
+
+  function renderDnsProgress(run) {
+    els.dnsBody.replaceChildren(emptyTableRow(7, `0 of ${run.total} questions completed…`));
   }
 
   function dnsRow(result, answer) {
@@ -382,12 +531,21 @@
     appendCell(row, answer?.data || result.error || result.comment || 'No answer');
     appendCell(row, result.authenticatedData ? 'Yes' : 'No');
     appendCell(row, result.truncated ? 'Yes' : 'No');
+    row.title = `${result.source}${result.cacheHit ? ' · cache hit' : ''}`;
     return row;
+  }
+
+  function dnsSourceLabel() {
+    if (!state.dnsSources.size) return 'CMX DNS gateway';
+    if (state.dnsSources.size === 1) return [...state.dnsSources][0];
+    return 'mixed gateway and fallback sources';
   }
 
   function renderMailPosture(results) {
     els.mailPosture.replaceChildren();
     const domain = domainForCurrent();
+    if (!domain) return;
+
     const mx = answersFor(results, domain, 'MX').map((answer) => answer.data);
     const rootTxt = answersFor(results, domain, 'TXT').map((answer) => stripOuterQuotes(answer.data));
     const dmarc = answersFor(results, `_dmarc.${domain}`, 'TXT').map((answer) => stripOuterQuotes(answer.data));
@@ -400,14 +558,18 @@
     addMailItem('DMARC', dmarc.some((value) => /^v=dmarc1\b/i.test(value)) ? 'Present' : 'Not observed', firstMatching(dmarc, /^v=dmarc1\b/i) || 'No DMARC TXT record observed.', dmarc.some((value) => /^v=dmarc1\b/i.test(value)) ? 'good' : 'warn');
     addMailItem('MTA-STS', mtaSts.some((value) => /^v=stsv1\b/i.test(value)) ? 'Present' : 'Not observed', firstMatching(mtaSts, /^v=stsv1\b/i) || 'No _mta-sts TXT record observed.', mtaSts.some((value) => /^v=stsv1\b/i.test(value)) ? 'good' : 'warn');
     addMailItem('CAA', caa.length ? 'Present' : 'Not observed', caa.length ? caa.join(' | ') : 'No CAA answer observed.', caa.length ? 'good' : 'info');
-    addMailItem('DNSSEC signal', adSeen ? 'Authenticated data observed' : 'Not confirmed', adSeen ? 'Google Public DNS set AD on at least one response.' : 'AD was not set. This does not prove DNSSEC is absent.', adSeen ? 'good' : 'info');
+    addMailItem('DNSSEC signal', adSeen ? 'Authenticated data observed' : 'Not confirmed', adSeen ? 'The resolver set AD on at least one response.' : 'AD was not set. This does not prove DNSSEC is absent.', adSeen ? 'good' : 'info');
+    addMailItem('Resolver path', dnsSourceLabel(), 'Use the row title or exported JSON to review the source for each DNS question.', 'info');
     addMailItem('DKIM', 'Selector required', 'DKIM cannot be tested reliably without one or more selector names.', 'info');
   }
 
   function answersFor(results, name, type) {
     const normalizedName = `${name.replace(/\.$/, '')}.`;
     return results
-      .filter((result) => result.query.type === type && `${result.query.name.replace(/\.$/, '')}.` === normalizedName)
+      .filter((result) =>
+        result.query.type === type
+        && `${result.query.name.replace(/\.$/, '')}.` === normalizedName
+      )
       .flatMap((result) => result.answers);
   }
 
@@ -451,16 +613,26 @@
     const domain = domainForCurrent();
     if (!domain || !state.dns.length) return showToast('Run DNS analysis first.');
     const answerCount = state.dns.reduce((total, result) => total + result.answers.length, 0);
-    const failures = state.dns.filter((result) => result.statusLabel !== 'NOERROR').map((result) => `${result.query.type}:${result.statusLabel}`);
-    addObservation('dns', domain, 'Google Public DNS JSON API', `${answerCount} answers across ${state.dns.length} questions.${failures.length ? ` Non-NOERROR: ${failures.join(', ')}.` : ''}`);
+    const failures = state.dns
+      .filter((result) => result.statusLabel !== 'NOERROR')
+      .map((result) => `${result.query.type}:${result.statusLabel}`);
+    addObservation(
+      'dns',
+      domain,
+      dnsSourceLabel(),
+      `${answerCount} answers across ${state.dns.length} questions.${failures.length ? ` Non-NOERROR: ${failures.join(', ')}.` : ''}`
+    );
     showToast('DNS summary saved to the session log.');
   }
 
   function hideDns() {
+    cancelDnsRun();
     els.dnsSection.classList.add('osint-hidden');
     els.dnsBody.replaceChildren();
     els.mailPosture.replaceChildren();
     els.dnsRaw.textContent = '';
+    els.dnsRefresh.disabled = false;
+    els.dnsSave.disabled = true;
   }
 
   function renderIpClassification() {
@@ -503,9 +675,15 @@
       ['Multicast IPv4', 'A multicast group address, not a single host.', '224.0.0.0', '239.255.255.255'],
       ['Reserved IPv4', 'Reserved or limited-use address space.', '240.0.0.0', '255.255.255.254']
     ];
-    if (value === '255.255.255.255') return ipClass('Limited broadcast IPv4', 'Broadcast address for the local network.');
-    const match = ranges.find((range) => number >= ipv4Number(range[2]) && number <= ipv4Number(range[3]));
-    return match ? ipClass(match[0], match[1]) : ipClass('Public IPv4', 'Use RDAP and routing sources to confirm allocation, network, and context.');
+    if (value === '255.255.255.255') {
+      return ipClass('Limited broadcast IPv4', 'Broadcast address for the local network.');
+    }
+    const match = ranges.find((range) =>
+      number >= ipv4Number(range[2]) && number <= ipv4Number(range[3])
+    );
+    return match
+      ? ipClass(match[0], match[1])
+      : ipClass('Public IPv4', 'Use RDAP and routing sources to confirm allocation, network, and context.');
   }
 
   function ipv4Number(value) {
@@ -523,25 +701,29 @@
     const bing = (query) => `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
     const ddg = (query) => `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
 
-    if (entity.type === 'email') return [
-      pivot('Exact web search', 'Google', 'Find exact public mentions.', google(exact), true),
-      pivot('Exact web search', 'Bing', 'Compare another public index.', bing(exact), true),
-      pivot('Exact web search', 'DuckDuckGo', 'Compare another public index.', ddg(exact), true),
-      pivot('GitHub search', 'GitHub', 'Find exact mentions in public code and profiles.', `https://github.com/search?q=${encodeURIComponent(value)}&type=code`, true),
-      pivot('Breach notification check', 'Have I Been Pwned', 'Check whether the address appears in disclosed breach data.', `https://haveibeenpwned.com/account/${encodeURIComponent(value)}`, true),
-      pivot('Domain analysis', 'CMX', 'Continue with the email domain in this console.', `/osint?type=domain&entity=${encodeURIComponent(value.split('@')[1])}`, false)
-    ];
+    if (entity.type === 'email') {
+      return [
+        pivot('Exact web search', 'Google', 'Find exact public mentions.', google(exact), true),
+        pivot('Exact web search', 'Bing', 'Compare another public index.', bing(exact), true),
+        pivot('Exact web search', 'DuckDuckGo', 'Compare another public index.', ddg(exact), true),
+        pivot('GitHub search', 'GitHub', 'Find exact mentions in public code and profiles.', `https://github.com/search?q=${encodeURIComponent(value)}&type=code`, true),
+        pivot('Breach notification check', 'Have I Been Pwned', 'Check whether the address appears in disclosed breach data.', `https://haveibeenpwned.com/account/${encodeURIComponent(value)}`, true),
+        pivot('Domain analysis', 'CMX', 'Continue with the email domain in this console.', `/osint?type=domain&entity=${encodeURIComponent(value.split('@')[1])}`, false)
+      ];
+    }
 
-    if (entity.type === 'username') return [
-      pivot('GitHub profile', 'GitHub', 'Open the exact public profile path.', `https://github.com/${encodeURIComponent(value)}`, true),
-      pivot('Reddit profile', 'Reddit', 'Open the exact public profile path.', `https://www.reddit.com/user/${encodeURIComponent(value)}`, true),
-      pivot('X profile', 'X', 'Open the exact public profile path.', `https://x.com/${encodeURIComponent(value)}`, true),
-      pivot('Instagram profile', 'Instagram', 'Open the exact public profile path.', `https://www.instagram.com/${encodeURIComponent(value)}/`, true),
-      pivot('TikTok profile', 'TikTok', 'Open the exact public profile path.', `https://www.tiktok.com/@${encodeURIComponent(value)}`, true),
-      pivot('YouTube handle', 'YouTube', 'Open the exact public handle path.', `https://www.youtube.com/@${encodeURIComponent(value)}`, true),
-      pivot('Exact web search', 'Google', 'Find cross-platform public mentions.', google(exact), true),
-      pivot('Exact web search', 'DuckDuckGo', 'Compare another public index.', ddg(exact), true)
-    ];
+    if (entity.type === 'username') {
+      return [
+        pivot('GitHub profile', 'GitHub', 'Open the exact public profile path.', `https://github.com/${encodeURIComponent(value)}`, true),
+        pivot('Reddit profile', 'Reddit', 'Open the exact public profile path.', `https://www.reddit.com/user/${encodeURIComponent(value)}`, true),
+        pivot('X profile', 'X', 'Open the exact public profile path.', `https://x.com/${encodeURIComponent(value)}`, true),
+        pivot('Instagram profile', 'Instagram', 'Open the exact public profile path.', `https://www.instagram.com/${encodeURIComponent(value)}/`, true),
+        pivot('TikTok profile', 'TikTok', 'Open the exact public profile path.', `https://www.tiktok.com/@${encodeURIComponent(value)}`, true),
+        pivot('YouTube handle', 'YouTube', 'Open the exact public handle path.', `https://www.youtube.com/@${encodeURIComponent(value)}`, true),
+        pivot('Exact web search', 'Google', 'Find cross-platform public mentions.', google(exact), true),
+        pivot('Exact web search', 'DuckDuckGo', 'Compare another public index.', ddg(exact), true)
+      ];
+    }
 
     if (entity.type === 'domain') return domainPivots(value);
     if (entity.type === 'ip') return ipPivots(value);
@@ -557,11 +739,13 @@
       ];
     }
 
-    if (entity.type === 'phone') return [
-      pivot('Phone intelligence', 'CMX', 'Open the specialized phone workflow.', `/phone?n=${encodeURIComponent(value)}`, false),
-      pivot('Exact web search', 'Google', 'Search the complete normalized number.', google(exact), true),
-      pivot('Exact web search', 'Bing', 'Compare another public index.', bing(exact), true)
-    ];
+    if (entity.type === 'phone') {
+      return [
+        pivot('Phone intelligence', 'CMX', 'Open the specialized phone workflow.', `/phone?n=${encodeURIComponent(value)}`, false),
+        pivot('Exact web search', 'Google', 'Search the complete normalized number.', google(exact), true),
+        pivot('Exact web search', 'Bing', 'Compare another public index.', bing(exact), true)
+      ];
+    }
 
     return [
       pivot('Focused search workbench', 'CMX', 'Build provider-specific public searches.', `/search?type=text&entity=${encodeURIComponent(value.slice(0, 500))}`, false),
@@ -638,9 +822,16 @@
         open.target = '_blank';
         open.rel = 'noopener noreferrer';
       }
-      const copyButton = miniButton('Copy URL', () => copyText(new URL(item.url, window.location.href).href, 'URL copied.'));
+
+      const absoluteUrl = new URL(item.url, window.location.href).href;
+      const copyButton = miniButton('Copy URL', () => copyText(absoluteUrl, 'URL copied.'));
       const saveButton = miniButton('Save', () => {
-        addObservation('pivot', state.current?.value || '', item.provider, `${item.title}: ${item.purpose} ${new URL(item.url, window.location.href).href}`);
+        addObservation(
+          'pivot',
+          state.current?.value || '',
+          item.provider,
+          `${item.title}: ${item.purpose} ${absoluteUrl}`
+        );
         showToast('Pivot saved to the session log.');
       });
       actions.append(open, copyButton, saveButton);
@@ -665,7 +856,7 @@
     const findings = [];
     addFindings(findings, 'email', text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) || []);
     addFindings(findings, 'url', text.match(/https?:\/\/[^\s"'<>]+/gi) || []);
-    addFindings(findings, 'ip', text.match(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g) || [], (value) => isIPv4(value));
+    addFindings(findings, 'ip', text.match(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g) || [], isIPv4);
     addFindings(findings, 'domain', text.match(/\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}\b/gi) || [], (value) => Boolean(normalizeDomain(value)));
     addFindings(findings, 'phone', text.match(/\+?\d[\d\s().-]{5,}\d/g) || [], (value) => Boolean(normalizePhone(value)));
 
@@ -768,6 +959,7 @@
       sessionId: els.session.textContent,
       entity: state.current,
       dns: state.dns,
+      dnsSource: dnsSourceLabel(),
       observations: state.observations
     };
   }
@@ -796,11 +988,13 @@
   }
 
   function clearEntity() {
+    cancelDnsRun();
     els.value.value = '';
     els.notes.value = '';
     els.type.value = 'auto';
     state.current = null;
     state.dns = [];
+    state.dnsSources = new Set();
     renderSummary();
     hideDns();
     renderIpClassification();
@@ -813,7 +1007,9 @@
   function updateToolLinks() {
     const entity = state.current?.value || '';
     const type = state.current?.type || 'auto';
-    els.searchTool.href = entity ? `/search?type=${encodeURIComponent(type)}&entity=${encodeURIComponent(entity)}` : '/search';
+    els.searchTool.href = entity
+      ? `/search?type=${encodeURIComponent(type)}&entity=${encodeURIComponent(entity)}`
+      : '/search';
     els.phoneTool.href = type === 'phone' ? `/phone?n=${encodeURIComponent(entity)}` : '/phone';
     els.metadataTool.href = '/metadata';
     els.missingTool.href = '/missing';
