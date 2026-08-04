@@ -4,10 +4,11 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: __dirname,
   testMatch: 'news-browser-e2e.spec.cjs',
-  timeout: 45000,
-  expect: { timeout: 7000 },
-  fullyParallel: false,
-  retries: 1,
+  timeout: 25000,
+  expect: { timeout: 6000 },
+  fullyParallel: true,
+  workers: process.env.CI ? 2 : undefined,
+  retries: 0,
   reporter: [['line']],
   use: {
     baseURL: 'http://127.0.0.1:4174',
