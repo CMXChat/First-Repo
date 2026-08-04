@@ -38,6 +38,7 @@ class RoutingService:
         self.client = client
         self.settings = settings
         self._cache: OrderedDict[tuple[str, str], RoutingCacheEntry] = OrderedDict()
+        self._inflight: dict[tuple[str, str], asyncio.Task[dict[str, Any]]] = {}
         self._lock = asyncio.Lock()
 
     async def origin(self, resource: str) -> tuple[dict[str, Any], bool]:
@@ -85,14 +86,30 @@ class RoutingService:
             if cached is not None:
                 self._cache.move_to_end(key)
                 return cached.value, True
+            task = self._inflight.get(key)
+            if task is None:
+                task = asyncio.create_task(
+                    asyncio.wait_for(
+                        producer(),
+                        timeout=self.settings.enrichment_timeout_seconds,
+                    )
+                )
+                self._inflight[key] = task
 
-        value = await asyncio.wait_for(
-            producer(),
-            timeout=self.settings.enrichment_timeout_seconds,
-        )
+        try:
+            value = await asyncio.shield(task)
+        finally:
+            async with self._lock:
+                if self._inflight.get(key) is task and task.done():
+                    self._inflight.pop(key, None)
+
         if self.settings.enrichment_cache_ttl_seconds > 0:
             async with self._lock:
                 self._prune(time.monotonic())
+                existing = self._cache.get(key)
+                if existing is not None:
+                    self._cache.move_to_end(key)
+                    return existing.value, True
                 self._cache[key] = RoutingCacheEntry(
                     expires_at=time.monotonic() + self.settings.enrichment_cache_ttl_seconds,
                     value=value,
@@ -117,7 +134,7 @@ class RoutingService:
         source_url = ripestat_url(endpoint, resource=resource)
         payload = await self._fetch_data(source_url)
         if adapter == "network_info":
-            prefix = safe_prefix(payload.get("prefix"))
+            prefix = safe_public_prefix(payload.get("prefix"))
             asns = normalize_asn_list(payload.get("asns"))
             result = {
                 "resource": resource,
@@ -129,14 +146,14 @@ class RoutingService:
         else:
             asns = normalize_asn_objects(payload.get("asns"))
             result = {
-                "resource": safe_text(payload.get("resource"), 200) or resource,
+                "resource": safe_public_prefix(payload.get("resource")) or resource,
                 "resource_type": resource_type,
                 "announced": bool(payload.get("announced")),
                 "origin_asns": asns,
                 "is_less_specific": bool(payload.get("is_less_specific")),
                 "related_prefixes": normalize_prefix_list(payload.get("related_prefixes")),
-                "actual_related_count": safe_int(payload.get("actual_num_related"), 0, 1_000_000),
-                "filtered_count": safe_int(payload.get("num_filtered_out"), 0, 1_000_000),
+                "actual_related_count": safe_count(payload.get("actual_num_related"), 1_000_000),
+                "filtered_count": safe_count(payload.get("num_filtered_out"), 1_000_000),
                 "query_time": safe_text(payload.get("query_time"), 100),
             }
         return routing_envelope(adapter, source_url, resource, result)
@@ -144,11 +161,12 @@ class RoutingService:
     async def _collect_announced_prefixes(self, asn: str) -> dict[str, Any]:
         source_url = ripestat_url("announced-prefixes", resource=f"AS{asn}")
         payload = await self._fetch_data(source_url)
+        provider_records = as_list(payload.get("prefixes"))
         records: list[dict[str, Any]] = []
-        for item in as_list(payload.get("prefixes"))[: self.settings.enrichment_max_records]:
+        for item in provider_records[: self.settings.enrichment_max_records]:
             if not isinstance(item, dict):
                 continue
-            prefix = safe_prefix(item.get("prefix"))
+            prefix = safe_public_prefix(item.get("prefix"))
             if not prefix:
                 continue
             timelines = []
@@ -164,12 +182,12 @@ class RoutingService:
             "asn": asn,
             "prefixes": records,
             "returned_records": len(records),
-            "provider_record_count": len(as_list(payload.get("prefixes"))),
+            "provider_record_count": len(provider_records),
             "query_start": safe_text(payload.get("query_starttime"), 100),
             "query_end": safe_text(payload.get("query_endtime"), 100),
             "earliest_time": safe_text(payload.get("earliest_time"), 100),
             "latest_time": safe_text(payload.get("latest_time"), 100),
-            "truncated": len(as_list(payload.get("prefixes"))) > len(records),
+            "truncated": len(provider_records) > len(records),
         }
         return routing_envelope("announced_prefixes", source_url, f"AS{asn}", result)
 
@@ -178,23 +196,31 @@ class RoutingService:
         payload = await self._fetch_data(source_url)
         collectors: list[dict[str, Any]] = []
         peer_budget = self.settings.enrichment_max_records
+        provider_peer_count = 0
         for collector in as_list(payload.get("rrcs"))[:20]:
-            if not isinstance(collector, dict) or peer_budget <= 0:
+            if not isinstance(collector, dict):
+                continue
+            provider_peers = as_list(collector.get("peers"))
+            provider_peer_count += len(provider_peers)
+            if peer_budget <= 0:
                 continue
             peers = []
-            for peer in as_list(collector.get("peers")):
+            for peer in provider_peers:
                 if not isinstance(peer, dict) or peer_budget <= 0:
                     break
-                as_path = [safe_int(value, 1, 4_294_967_295) for value in as_list(peer.get("as_path"))[:100]]
-                as_path = [value for value in as_path if value]
+                prefix = safe_public_prefix(peer.get("prefix"))
+                origin_asn = strict_identifier_int(
+                    peer.get("asn_origin") if peer.get("asn_origin") is not None else peer.get("asn_orgin"),
+                    4_294_967_295,
+                )
                 peers.append({
-                    "peer": safe_text(peer.get("peer"), 100),
-                    "prefix": safe_prefix(peer.get("prefix")),
-                    "origin_asn": safe_int(peer.get("asn_origin") or peer.get("asn_orgin"), 0, 4_294_967_295),
+                    "peer": safe_public_ip(peer.get("peer")),
+                    "prefix": prefix,
+                    "origin_asn": origin_asn,
                     "origin_type": safe_text(peer.get("origin"), 40),
-                    "as_path": as_path,
+                    "as_path": normalize_as_path(peer.get("as_path")),
                     "last_updated": safe_text(peer.get("last_updated"), 100),
-                    "latest_time": safe_text(peer.get("latest_time"), 100),
+                    "latest_time": safe_text(peer.get("latest_time") or peer.get("lastest_time"), 100),
                 })
                 peer_budget -= 1
             collectors.append({
@@ -202,14 +228,16 @@ class RoutingService:
                 "location": safe_text(collector.get("location"), 200),
                 "peers": peers,
             })
+        returned_peer_count = sum(len(item["peers"]) for item in collectors)
         result = {
             "resource": resource,
             "resource_type": resource_type,
             "latest_time": safe_text(payload.get("latest_time"), 100),
             "collectors": collectors,
             "collector_count": len(collectors),
-            "peer_records": sum(len(item["peers"]) for item in collectors),
-            "truncated": peer_budget <= 0,
+            "peer_records": returned_peer_count,
+            "provider_peer_count": provider_peer_count,
+            "truncated": provider_peer_count > returned_peer_count,
         }
         return routing_envelope("route_visibility", source_url, resource, result)
 
@@ -223,9 +251,10 @@ class RoutingService:
             "invalid_length": "invalid",
             "unknown": "not_found",
         }
+        provider_asn = normalize_asn_or_default(payload.get("resource"), asn)
         result = {
-            "prefix": safe_prefix(payload.get("prefix")) or prefix,
-            "asn": normalize_asn(payload.get("resource") or asn),
+            "prefix": safe_public_prefix(payload.get("prefix")) or prefix,
+            "asn": provider_asn,
             "state": state_map.get(provider_status, "unavailable"),
             "provider_status": provider_status or "unavailable",
             "description": safe_text(payload.get("description"), 2000),
@@ -261,8 +290,11 @@ class RoutingService:
         if not isinstance(payload, dict):
             raise EnrichmentUpstreamError("RIPEstat returned an unexpected response")
         if payload.get("status") != "ok" or not isinstance(payload.get("data"), dict):
-            message = safe_text(payload.get("message"), 500) or "RIPEstat reported an unavailable result"
-            raise EnrichmentUpstreamError(message)
+            messages = as_list(payload.get("messages"))
+            message = safe_text(payload.get("message"), 500)
+            if not message and messages:
+                message = safe_text(messages[0], 500)
+            raise EnrichmentUpstreamError(message or "RIPEstat reported an unavailable result")
         return payload["data"]
 
 
@@ -282,7 +314,7 @@ def normalize_network_resource(
             network = ip_network(text, strict=False)
         except ValueError as exc:
             raise EnrichmentValidationError("Enter a valid IP prefix") from exc
-        if network.prefixlen == 0 or not network.network_address.is_global:
+        if network.prefixlen == 0 or not network.is_global:
             raise EnrichmentBlockedTarget("Routing lookups permit public global prefixes only")
         return str(network), "prefix"
     if not allow_ip:
@@ -308,6 +340,13 @@ def normalize_asn(value: Any) -> str:
     return str(number)
 
 
+def normalize_asn_or_default(value: Any, fallback: str) -> str:
+    try:
+        return normalize_asn(value)
+    except EnrichmentValidationError:
+        return fallback
+
+
 def ripestat_url(endpoint: str, **params: str) -> str:
     query = urlencode({**params, "sourceapp": SOURCE_APP})
     return f"{RIPESTAT_BASE}/{endpoint}/data.json?{query}"
@@ -328,11 +367,8 @@ def routing_envelope(adapter: str, source_url: str, target: str, result: dict[st
 def normalize_asn_list(value: Any) -> list[int]:
     output = []
     for item in as_list(value)[:100]:
-        try:
-            number = int(str(item).removeprefix("AS"))
-        except ValueError:
-            continue
-        if 1 <= number <= 4_294_967_295 and number not in output:
+        number = strict_identifier_int(str(item).upper().removeprefix("AS"), 4_294_967_295)
+        if number and number not in output:
             output.append(number)
     return output
 
@@ -341,13 +377,22 @@ def normalize_asn_objects(value: Any) -> list[dict[str, Any]]:
     output = []
     for item in as_list(value)[:100]:
         if isinstance(item, dict):
-            asn = safe_int(item.get("asn"), 0, 4_294_967_295)
+            asn = strict_identifier_int(item.get("asn"), 4_294_967_295)
             if asn:
                 output.append({"asn": asn, "holder": safe_text(item.get("holder"), 500)})
         else:
-            asn = safe_int(item, 0, 4_294_967_295)
+            asn = strict_identifier_int(item, 4_294_967_295)
             if asn:
                 output.append({"asn": asn, "holder": ""})
+    return output
+
+
+def normalize_as_path(value: Any) -> list[int]:
+    output = []
+    for item in as_list(value)[:100]:
+        number = strict_identifier_int(item, 4_294_967_295)
+        if number:
+            output.append(number)
     return output
 
 
@@ -355,32 +400,52 @@ def normalize_prefix_list(value: Any) -> list[str]:
     output = []
     for item in as_list(value)[:100]:
         candidate = item.get("prefix") if isinstance(item, dict) else item
-        prefix = safe_prefix(candidate)
+        prefix = safe_public_prefix(candidate)
         if prefix and prefix not in output:
             output.append(prefix)
     return output
 
 
-def safe_prefix(value: Any) -> str:
+def safe_public_prefix(value: Any) -> str:
     text = safe_text(value, 200)
     if not text:
         return ""
     try:
-        return str(ip_network(text, strict=False))
+        network = ip_network(text, strict=False)
     except ValueError:
         return ""
+    return str(network) if network.prefixlen and network.is_global else ""
+
+
+def safe_public_ip(value: Any) -> str:
+    text = safe_text(value, 100)
+    if not text:
+        return ""
+    try:
+        address = ip_address(text)
+    except ValueError:
+        return ""
+    return str(address) if address.is_global else ""
+
+
+def strict_identifier_int(value: Any, maximum: int) -> int:
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return number if 1 <= number <= maximum else 0
+
+
+def safe_count(value: Any, maximum: int) -> int:
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(0, min(maximum, number))
 
 
 def safe_text(value: Any, limit: int) -> str:
     return str(value or "").strip()[:limit]
-
-
-def safe_int(value: Any, minimum: int, maximum: int) -> int:
-    try:
-        number = int(value)
-    except (TypeError, ValueError):
-        return minimum
-    return max(minimum, min(maximum, number))
 
 
 def as_list(value: Any) -> list[Any]:
