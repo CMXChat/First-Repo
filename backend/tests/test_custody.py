@@ -8,6 +8,7 @@ from app.main import app
 
 USER_A = {"X-CMX-Dev-User": "custody-a@example.test"}
 USER_B = {"X-CMX-Dev-User": "custody-b@example.test"}
+SUBJECT_A = "development:custody-a@example.test"
 
 
 def create_case_source_evidence(client: TestClient) -> tuple[dict, dict, dict]:
@@ -97,7 +98,7 @@ def test_custody_events_and_manifest_are_owner_scoped_and_deterministic() -> Non
         verified_payload = verified.json()
         assert verified_payload["integrity_state"] == "match"
         assert verified_payload["observed_sha256"] == "a" * 64
-        assert verified_payload["recorded_by"] == "custody-a@example.test"
+        assert verified_payload["recorded_by"] == SUBJECT_A
 
         mismatch = client.post(
             f"{base}/custody",
