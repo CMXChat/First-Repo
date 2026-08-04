@@ -1,0 +1,36 @@
+/* Compatibility fixes for legacy section visibility rules and cached enhancement layers. */
+
+body.brief-system-ready[data-brief-system-mode='focus'] #briefMain > #briefTerminal.brief-terminal-system-drawer,
+body.brief-system-ready[data-brief-system-mode='workspace'] #briefMain > #briefTerminal.brief-terminal-system-drawer,
+body.brief-system-ready[data-brief-system-mode='full'] #briefMain > #briefTerminal.brief-terminal-system-drawer {
+  display: block !important;
+}
+
+body.brief-system-ready[data-brief-system-mode='focus'] #briefMain > #briefTerminal.brief-terminal-system-drawer:not(.brief-terminal-open),
+body.brief-system-ready[data-brief-system-mode='workspace'] #briefMain > #briefTerminal.brief-terminal-system-drawer:not(.brief-terminal-open) {
+  pointer-events: none;
+}
+
+body.brief-system-ready .brief-navigation-drawer,
+body.brief-system-ready #briefNavigationDrawer,
+body.brief-system-ready .brief-navigation-panel,
+body.brief-system-ready #briefTopMapButton,
+body.brief-system-ready #scenarioMenuButton,
+body.brief-system-ready #themeToggleButton,
+body.brief-system-ready #briefVisionButton,
+body.brief-system-ready #briefTopVisionButton {
+  display: none !important;
+}
+
+body.brief-system-ready[data-brief-system-mode='focus'] #briefSystemShell {
+  margin-top: 14px;
+}
+
+body.brief-system-ready[data-brief-system-mode='focus'] #briefSystemHome {
+  display: block !important;
+}
+
+body.brief-system-ready[data-brief-system-mode='workspace'][data-brief-system-primary='briefing'] #briefWorkspace[hidden],
+body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace[hidden] {
+  display: block !important;
+}
