@@ -38,6 +38,8 @@
     return response;
   };
 
+  installCreateDrawerStateGuard();
+
   async function hydrateRequestedCase(response) {
     if (!requestedCaseId || !response.ok) return response;
     try {
@@ -54,6 +56,36 @@
     } catch {
       return response;
     }
+  }
+
+  function installCreateDrawerStateGuard() {
+    const synchronize = () => {
+      const toggle = document.querySelector('.cases-create-toggle');
+      const panel = document.getElementById('createCase')?.closest('.cmx-card');
+      if (!toggle || !panel || toggle.dataset.cmxDrawerGuard === 'true') return;
+      toggle.dataset.cmxDrawerGuard = 'true';
+      toggle.id = 'operatorNewCase';
+      toggle.setAttribute('aria-controls', 'operatorCaseDrawer');
+      panel.id = 'operatorCaseDrawer';
+      updateDrawerAria(toggle, panel);
+      toggle.addEventListener('click', () => {
+        window.setTimeout(() => {
+          const shouldOpen = /close case form/i.test(toggle.textContent || '');
+          panel.classList.toggle('cases-hidden', !shouldOpen);
+          updateDrawerAria(toggle, panel);
+        }, 0);
+      });
+      new MutationObserver(() => updateDrawerAria(toggle, panel)).observe(panel, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    };
+    synchronize();
+    new MutationObserver(synchronize).observe(document.documentElement, { childList: true, subtree: true });
+  }
+
+  function updateDrawerAria(toggle, panel) {
+    toggle.setAttribute('aria-expanded', String(!panel.classList.contains('cases-hidden')));
   }
 
   function scheduleVisibleRefresh(attempt = 0) {
