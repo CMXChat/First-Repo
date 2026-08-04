@@ -22,8 +22,13 @@
     const link = document.createElement('link');
     link.id = 'briefTopMapStyle';
     link.rel = 'stylesheet';
-    link.href = '/assets/brief/brief-map-top.css?v=20260803-1';
+    link.href = '/assets/brief/brief-map-top.css?v=20260803-2';
     document.head.appendChild(link);
+  }
+
+  function drawerIsOpen() {
+    const drawer = $('#briefNavigationDrawer');
+    return Boolean(drawer && !drawer.hidden && drawer.classList.contains('is-visible'));
   }
 
   function setExpanded(expanded) {
@@ -33,11 +38,15 @@
     button.classList.toggle('is-active', expanded);
   }
 
+  function syncDrawerState() {
+    setExpanded(drawerIsOpen());
+  }
+
   function updateLabel() {
     const button = $('#briefTopMapButton');
     if (!button) return;
     const label = LABELS[preset()] || 'Current';
-    button.setAttribute('aria-label', `Open ${label} briefing map`);
+    button.setAttribute('aria-label', `Open the ${label} briefing map`);
     button.title = `${label} briefing map`;
     button.dataset.mapPreset = preset();
   }
@@ -46,6 +55,7 @@
     loadStyle();
     if ($('#briefTopMapButton')) {
       updateLabel();
+      syncDrawerState();
       return true;
     }
     const actions = $('.top-actions');
@@ -60,8 +70,8 @@
     button.setAttribute('aria-controls', 'briefNavigationDrawer');
     button.setAttribute('aria-expanded', 'false');
     button.addEventListener('click', () => {
-      setExpanded(true);
       window.BRIEF_NAVIGATION?.open?.();
+      window.setTimeout(syncDrawerState, 80);
     });
 
     const viewMode = $('#viewModeButton', actions);
@@ -69,23 +79,28 @@
     else if (viewMode) actions.appendChild(button);
     else actions.prepend(button);
     updateLabel();
+    syncDrawerState();
     return true;
   }
 
   function wireDrawerState() {
+    window.addEventListener('brief:navigation-open', () => setExpanded(true));
+    window.addEventListener('brief:navigation-close', () => setExpanded(false));
+
     document.addEventListener('click', event => {
-      if (event.target.closest?.('[data-nav-close]')) setExpanded(false);
-      if (event.target.closest?.('.brief-navigation-panel [data-nav-route], .brief-navigation-panel [data-nav-depth], .brief-navigation-panel button')) {
-        window.setTimeout(() => {
-          const drawer = $('#briefNavigationDrawer');
-          setExpanded(Boolean(drawer && !drawer.hidden && drawer.classList.contains('is-visible')));
-        }, 220);
+      if (event.target.closest?.('[data-nav-close], [data-nav-route], [data-nav-depth], [data-open-full-workspace]')) {
+        window.setTimeout(syncDrawerState, 220);
+      }
+      if (event.target.closest?.('#briefMapButton, [data-open-brief-map]')) {
+        window.setTimeout(syncDrawerState, 80);
       }
     }, true);
 
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') window.setTimeout(() => setExpanded(false), 30);
+      if (event.key === 'Escape') window.setTimeout(syncDrawerState, 30);
     });
+
+    window.addEventListener('pageshow', () => window.setTimeout(syncDrawerState, 80));
   }
 
   function initialize() {
@@ -94,7 +109,10 @@
     if (!createButton()) return false;
     initialized = true;
     wireDrawerState();
-    window.addEventListener('brief:preset-change', () => window.setTimeout(updateLabel, 120));
+    window.addEventListener('brief:preset-change', () => window.setTimeout(() => {
+      updateLabel();
+      syncDrawerState();
+    }, 120));
     window.addEventListener('brief:device-fallback-open', () => window.setTimeout(createButton, 120));
     return true;
   }
