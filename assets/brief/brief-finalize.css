@@ -1,20 +1,4 @@
-/* Final product hierarchy: Quick uses cards and pills. Full keeps a compact section rail. */
-
-body[data-brief-depth='quick'] #briefNavigatorBar {
-  display: none !important;
-}
-
-body[data-brief-depth='full'] #briefNavigatorBar {
-  display: grid;
-}
-
-#briefNavigatorBar {
-  grid-template-columns: auto minmax(0, 1fr) auto;
-}
-
-#briefNavigatorBar #briefMapButton {
-  display: none !important;
-}
+/* Final product hierarchy: navigation stays available, but Full workspace never forces the Map open. */
 
 #briefNavigatorBar .brief-you-are-here,
 #briefNavigatorBar .brief-sticky-routes {
@@ -37,27 +21,6 @@ body[data-brief-depth='full'] #briefNavigatorBar {
 .brief-help-actions #briefTipsToggle {
   grid-column: 1 / -1;
   min-height: 104px;
-}
-
-@media (max-width: 760px) {
-  #briefNavigatorBar {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px;
-  }
-
-  #briefNavigatorBar .brief-you-are-here {
-    grid-column: 1;
-  }
-
-  #briefNavigatorBar .brief-sticky-routes {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-
-  #briefBackToQuick {
-    grid-column: 2;
-    grid-row: 1;
-  }
 }
 
 @media (max-width: 620px) {
