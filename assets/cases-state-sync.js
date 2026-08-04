@@ -9,6 +9,8 @@
   const requestedCaseId = (new URLSearchParams(window.location.search).get('case') || '').slice(0, 36);
 
   window.setTimeout(() => {
+    loadOperatorWorkspace();
+
     const badge = document.getElementById('backendBadge');
     const refresh = document.getElementById('refreshCases');
     const list = document.getElementById('caseList');
@@ -23,7 +25,8 @@
       'archiveCase',
       'exportCase',
       'addNote',
-      'importSession'
+      'importSession',
+      'operatorCreateRelationship'
     ];
 
     const connected = () => badge.classList.contains('good') && /connected/i.test(badge.textContent || '');
@@ -95,4 +98,22 @@
       subtree: true
     });
   }, 0);
+
+  function loadOperatorWorkspace() {
+    if (!document.querySelector('link[data-cmx-cases-operator]')) {
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = '/assets/cases-operator-workspace.css?v=20260804-1';
+      style.dataset.cmxCasesOperator = 'true';
+      document.head.appendChild(style);
+    }
+
+    if (!document.querySelector('script[data-cmx-cases-operator]')) {
+      const script = document.createElement('script');
+      script.src = '/assets/cases-operator-workspace.js?v=20260804-1';
+      script.async = false;
+      script.dataset.cmxCasesOperator = 'true';
+      document.head.appendChild(script);
+    }
+  }
 })();
