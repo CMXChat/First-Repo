@@ -13,6 +13,7 @@
     individual: 'Personal', couple: 'Relationship', partners: 'Business', trainer: 'Trainer', team: 'Team'
   };
   const THEME_VERSION = '20260804-2';
+  const SYSTEM_VERSION = '20260804-1';
   let initialized = false;
   let pendingSwitchMessage = '';
   let lateUiTimer = 0;
@@ -142,7 +143,7 @@
   }
 
   function loadScript(id, src) {
-    if (document.getElementById(id)) return;
+    if (document.getElementById(id) || (id === 'briefSystemScript' && window.BRIEF_SYSTEM)) return;
     const script = document.createElement('script');
     script.id = id;
     script.src = src;
@@ -152,7 +153,10 @@
 
   function loadProductLayers() {
     loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${THEME_VERSION}`);
+    loadStyle('briefSystemStyle', `/assets/brief/brief-system.css?v=${SYSTEM_VERSION}`);
+    loadStyle('briefSystemFixStyle', `/assets/brief/brief-system-fixes.css?v=${SYSTEM_VERSION}`);
     loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${THEME_VERSION}`);
+    loadScript('briefSystemScript', `/assets/brief/brief-system.js?v=${SYSTEM_VERSION}`);
   }
 
   function installCommandBridge() {
