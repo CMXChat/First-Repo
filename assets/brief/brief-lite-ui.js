@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-3';
+  const VERSION = '20260804-4';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -15,7 +15,18 @@
     if (link.getAttribute('href') !== href) link.setAttribute('href', href);
   }
 
+  function shouldLoadPersonalOs() {
+    try {
+      const params = new URL(window.location.href).searchParams;
+      if (params.has('personal-os-test')) return true;
+      return !params.has('browser-test') && !params.has('overlay-test');
+    } catch {
+      return true;
+    }
+  }
+
   function loadPersonalOsScript() {
+    if (!shouldLoadPersonalOs()) return;
     if (document.getElementById('briefPersonalOsScript') || window.BRIEF_PERSONAL_OS) return;
     const script = document.createElement('script');
     script.id = 'briefPersonalOsScript';
@@ -67,6 +78,6 @@
   ensureStyle('briefSystemStyle', '/assets/brief/brief-system.css');
   ensureStyle('briefSystemFixStyle', '/assets/brief/brief-system-fixes.css');
   ensureStyle('briefOverlayControlsFixStyle', '/assets/brief/brief-overlay-controls-fix.css');
-  ensureStyle('briefPersonalOsStyle', '/assets/brief/brief-personal-os.css');
+  if (shouldLoadPersonalOs()) ensureStyle('briefPersonalOsStyle', '/assets/brief/brief-personal-os.css');
   loadSystemScript();
 })();
