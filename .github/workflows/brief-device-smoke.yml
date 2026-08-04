@@ -1,4 +1,4 @@
-name: Brief Device, Onboarding, Navigation, Theme, Terminal, Media, Stability, Workspace and Polish Tests
+name: Brief Device, Onboarding, Navigation, Theme, Vision, Terminal, Media, Stability, Workspace and Polish Tests
 
 on:
   push:
@@ -11,6 +11,7 @@ on:
       - 'tests/brief-onboarding-smoke.test.js'
       - 'tests/brief-navigation-smoke.test.js'
       - 'tests/brief-theme-map-smoke.test.js'
+      - 'tests/brief-finalization-smoke.test.js'
       - 'tests/brief-terminal-smoke.test.js'
       - 'tests/brief-entry-watch-smoke.test.js'
       - 'tests/brief-stability-smoke.test.js'
@@ -26,6 +27,7 @@ on:
       - 'tests/brief-onboarding-smoke.test.js'
       - 'tests/brief-navigation-smoke.test.js'
       - 'tests/brief-theme-map-smoke.test.js'
+      - 'tests/brief-finalization-smoke.test.js'
       - 'tests/brief-terminal-smoke.test.js'
       - 'tests/brief-entry-watch-smoke.test.js'
       - 'tests/brief-stability-smoke.test.js'
@@ -39,7 +41,7 @@ permissions:
 jobs:
   smoke-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 6
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -60,6 +62,9 @@ jobs:
 
       - name: Run map and theme integrity smoke test
         run: node tests/brief-theme-map-smoke.test.js
+
+      - name: Run final navigation and vision smoke test
+        run: node tests/brief-finalization-smoke.test.js
 
       - name: Run briefing terminal smoke test
         run: node tests/brief-terminal-smoke.test.js
