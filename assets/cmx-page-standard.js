@@ -72,6 +72,7 @@
 
     loadOrderedScript('/assets/cmx-case-context.js?v=20260804-3', 'cmxCaseContext');
     loadOrderedScript('/assets/cmx-case-capture.js?v=20260804-1', 'cmxCaseCapture');
+    loadOrderedScript('/assets/cmx-case-save-guard.js?v=20260804-1', 'cmxCaseSaveGuard');
   }
 
   function loadStylesheet(href, datasetKey) {
