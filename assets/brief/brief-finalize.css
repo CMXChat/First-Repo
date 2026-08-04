@@ -11,6 +11,48 @@
 
 [data-open-full-workspace] {
   cursor: pointer;
+  border-color: rgba(160, 214, 255, 0.78) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(87, 168, 255, 0.2)
+  ) !important;
+  box-shadow:
+    0 0 9px rgba(255, 255, 255, 0.16),
+    0 0 22px rgba(87, 168, 255, 0.3);
+  animation: briefFullWorkspacePulse 2.4s ease-in-out infinite;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+@keyframes briefFullWorkspacePulse {
+  0%,
+  100% {
+    border-color: rgba(150, 205, 255, 0.62);
+    box-shadow:
+      0 0 7px rgba(255, 255, 255, 0.12),
+      0 0 17px rgba(87, 168, 255, 0.24);
+  }
+
+  50% {
+    border-color: rgba(215, 239, 255, 0.96);
+    box-shadow:
+      0 0 14px rgba(255, 255, 255, 0.34),
+      0 0 32px rgba(87, 168, 255, 0.58),
+      0 0 48px rgba(87, 168, 255, 0.16);
+  }
+}
+
+[data-open-full-workspace]:hover,
+[data-open-full-workspace]:focus-visible {
+  animation-play-state: paused;
+  border-color: rgba(225, 244, 255, 1) !important;
+  box-shadow:
+    0 0 16px rgba(255, 255, 255, 0.38),
+    0 0 38px rgba(87, 168, 255, 0.7),
+    0 0 58px rgba(87, 168, 255, 0.18);
 }
 
 /* Explicit fallback for browsers that do not support :has(). */
@@ -45,5 +87,9 @@
   #briefNavigatorBar,
   [data-open-full-workspace] {
     scroll-behavior: auto;
+  }
+
+  [data-open-full-workspace] {
+    animation: none;
   }
 }

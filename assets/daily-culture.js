@@ -1,63 +1,81 @@
 window.CMX_DAILY_CULTURE = {
-  generated: "Researched and refreshed August 3, 2026",
-  items: [
+  "generated": "Researched and refreshed August 4, 2026",
+  "items": [
     {
-      audience: "shared",
-      priority: 100,
-      label: "court watch",
-      status: "MULTIPLE LEGAL STAGES",
-      title: "The celebrity court week needs careful labels",
-      text: "Several high-profile cases are moving at once, including the D4vd prosecution, the Tate brothers’ extradition fight, the Tupac Shakur murder case, and the federal trial connected to the attack on Salman Rushdie. The legal stage is different in every case.",
-      detailsLabel: "What is actually happening",
-      details: [
-        "A judge ruled there was enough evidence for D4vd to stand trial. That is a probable-cause finding, not a conviction. He has pleaded not guilty.",
-        "Andrew and Tristan Tate are detained while contesting extradition to the United Kingdom. They deny wrongdoing, and a detention hearing is scheduled for August 13.",
-        "In the Tupac case, the defense is asking a judge to exclude a 2008 police interview before trial.",
-        "Hadi Matar is on federal trial over the attack on author Salman Rushdie after an earlier state conviction."
+      "audience": "shared",
+      "priority": 100,
+      "label": "what to stream",
+      "status": "VERIFIED",
+      "title": "This week's releases offer one warm pick and one darker pick",
+      "text": "The Associated Press highlights the return of Ted Lasso, Billie Eilish's concert film, the romantic comedy You, Me & Tuscany, and the thriller series The Shards among the August 3–9 releases.",
+      "detailsLabel": "The useful shortlist",
+      "details": [
+        "Ted Lasso returns with a women's-team storyline.",
+        "Billie Eilish: Hit Me Hard and Soft: The Tour (Live) arrives on Paramount+.",
+        "You, Me & Tuscany is the lighter shared option.",
+        "The Shards is the darker suspense pick."
       ],
-      whyItMatters: "Court headlines often collapse an accusation, hearing, trial, and verdict into the same thing. The distinction is the story.",
-      watchNext: "The next D4vd court date, the Tate bail motion and August 13 hearing, and the evidence ruling in the Tupac case.",
-      sources: [
-        { label: "Associated Press court roundup", url: "https://apnews.com/article/3d1661685f9b72235ba716850ab9fdc7", published: "July 27, 2026" },
-        { label: "Reuters on the Tate extradition case", url: "https://www.reuters.com/legal/government/andrew-tristan-tate-seek-release-us-jail-while-fighting-extradition-2026-07-27/", published: "July 27, 2026" }
+      "whyItMatters": "It gives Jay and Crystal a current shared-watch choice without dumping an entire release calendar on them.",
+      "watchNext": "Confirm New Zealand service availability before choosing the shared watch.",
+      "sources": [
+        {"label":"Associated Press streaming guide","url":"https://apnews.com/article/dfa7f10a03a09dfd0a044f1c30aebba9","published":"July 31, 2026"}
       ]
     },
     {
-      audience: "crystal",
-      priority: 92,
-      label: "animals and New York",
-      status: "LIGHTER PICK",
-      title: "Flaco the owl gets the documentary treatment",
-      text: "Wild Inside follows Flaco, the Eurasian eagle-owl who escaped the Central Park Zoo, learned to survive in New York, and became a symbol of wildness and resilience before his death after a building collision.",
-      detailsLabel: "Why the story stayed with people",
-      details: [
-        "Flaco adapted to hunting in the city despite spending his life in captivity.",
-        "New Yorkers followed his movements, photographed him, and built a public mythology around his freedom.",
-        "His death renewed attention on building collisions and safer rodent control."
+      "audience": "crystal",
+      "priority": 96,
+      "label": "Australian celebrity court",
+      "status": "CIVIL DEFAMATION RULING",
+      "title": "Rebel Wilson won the case, but the judgment was not a total endorsement",
+      "text": "Australian reporting says Rebel Wilson prevailed in a defamation dispute tied to Instagram posts about The Deb. The result is a civil ruling, not a criminal finding, and reporting notes reputational criticism remained in the judgment.",
+      "detailsLabel": "Why the label matters",
+      "details": [
+        "This was a civil defamation proceeding.",
+        "Winning the case does not make every disputed statement accurate.",
+        "The written reasons matter more than victory-language headlines."
       ],
-      whyItMatters: "It is an animal story, a New York story, and a surprisingly emotional story about freedom and the risks built into city life.",
-      watchNext: "Wild Inside premiered July 31. Check local streaming or screening availability.",
-      sources: [
-        { label: "The Guardian documentary feature", url: "https://www.theguardian.com/film/2026/jul/30/flaco-the-owl-documentary", published: "July 30, 2026" }
+      "whyItMatters": "It is a current Australian celebrity legal story where careful wording changes the meaning.",
+      "watchNext": "Any appeal notice, costs ruling, or publication of fuller reasons.",
+      "sources": [
+        {"label":"AAP celebrity desk","url":"https://aapnews.aap.com.au/topics/celebrity","published":"August 3, 2026"}
       ]
     },
     {
-      audience: "crystal",
-      priority: 86,
-      label: "New Zealand culture",
-      status: "CURRENT DEBATE",
-      title: "English now has formal official-language status",
-      text: "New Zealand passed legislation giving English official status alongside te reo Māori and New Zealand Sign Language. Supporters describe it as recognition of existing practice. Critics argue it was unnecessary and politically symbolic.",
-      detailsLabel: "The real argument",
-      details: [
-        "English already dominates public life and is spoken by the overwhelming majority of New Zealanders.",
-        "Official-language laws are usually used to protect minority languages, which makes this case unusual.",
-        "The deeper debate concerns identity, power, and the place of te reo Māori."
+      "audience": "crystal",
+      "priority": 92,
+      "label": "Waikato culture",
+      "status": "OFFICIAL LISTING",
+      "title": "Hamilton's August calendar is unusually Crystal-coded",
+      "text": "Hamilton Gardens lists Sonic Boom on August 8, the city's first Most Wuthering Heights Day on August 9, and Aotearoa in Bloom on August 13.",
+      "detailsLabel": "Three different moods",
+      "details": [
+        "Sonic Boom is a home-town children's concert.",
+        "Wuthering Heights Day brings the red-dress dance tradition to Kirikiriroa.",
+        "Aotearoa in Bloom focuses on native flowering plants through an illustrated talk."
       ],
-      whyItMatters: "The practical daily effect may be limited, but the cultural argument reaches into how New Zealand describes itself.",
-      watchNext: "Whether the law changes public-sector practice or remains mainly symbolic.",
-      sources: [
-        { label: "The Guardian", url: "https://www.theguardian.com/world/2026/aug/03/new-zealand-english-an-official-language-bill", published: "August 3, 2026" }
+      "whyItMatters": "Music, theatrical chaos, flowers, and local culture have all somehow formed a committee.",
+      "watchNext": "Check event pages for final times, access, and ticket details.",
+      "sources": [
+        {"label":"Hamilton Gardens upcoming events","url":"https://hamiltongardens.co.nz/","published":"August 2026 listings"}
+      ]
+    },
+    {
+      "audience": "shared",
+      "priority": 88,
+      "label": "lighter internet culture",
+      "status": "CURRENT RELEASE",
+      "title": "Big Walk turns cooperative wandering into the point",
+      "text": "The new game from the creators of Untitled Goose Game is built around exploring and solving things together instead of trying to beat each other.",
+      "detailsLabel": "Why it stands out",
+      "details": [
+        "It is designed as a cooperative social game.",
+        "The appeal is conversation, discovery, and low-stakes problem solving.",
+        "It offers a different shared-activity idea than watching another episode."
+      ],
+      "whyItMatters": "A shared activity that rewards cooperation is a better fit than competitive misery disguised as bonding.",
+      "watchNext": "Platform availability and whether remote play works well across their devices.",
+      "sources": [
+        {"label":"Associated Press streaming and games guide","url":"https://apnews.com/article/dfa7f10a03a09dfd0a044f1c30aebba9","published":"July 31, 2026"}
       ]
     }
   ]
