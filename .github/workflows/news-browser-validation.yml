@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'assets/news-resilience.js'
+      - 'assets/news-resilience-bounds.js'
       - 'assets/news-resilience.css'
       - 'assets/news-navigation.js'
       - 'assets/news-navigation-state.js'
@@ -20,6 +21,7 @@ on:
     branches: [main]
     paths:
       - 'assets/news-resilience.js'
+      - 'assets/news-resilience-bounds.js'
       - 'assets/news-resilience.css'
       - 'assets/news-navigation.js'
       - 'assets/news-navigation-state.js'
