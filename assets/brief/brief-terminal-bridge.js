@@ -2,42 +2,21 @@
   'use strict';
 
   const $ = (selector, root = document) => root.querySelector(selector);
-  const SWITCH_CONTROLS = '[data-scenario-choice], [data-footer-preset], [data-quick-preset], [data-dock-preset]';
   const ALIASES = {
-    personal: 'individual',
-    individual: 'individual',
-    relationship: 'couple',
-    couple: 'couple',
-    business: 'partners',
-    partners: 'partners',
-    trainer: 'trainer',
-    training: 'trainer',
-    team: 'team',
-    project: 'team',
-    crew: 'team'
+    personal: 'individual', individual: 'individual',
+    relationship: 'couple', couple: 'couple',
+    business: 'partners', partners: 'partners',
+    trainer: 'trainer', training: 'trainer',
+    team: 'team', project: 'team', crew: 'team'
   };
   const LABELS = {
-    individual: 'Personal',
-    couple: 'Relationship',
-    partners: 'Business',
-    trainer: 'Trainer',
-    team: 'Team'
+    individual: 'Personal', couple: 'Relationship', partners: 'Business', trainer: 'Trainer', team: 'Team'
   };
-  const TERMINAL_INTRO = 'Demo navigation shell today. Protected data, files, connectors and approved actions belong to the future backend.';
-  const TERMINAL_SUMMARY = 'demo navigation · backend later';
-  const NAVIGATION_VERSION = '20260803-6';
-  const INTERFACE_VERSION = '20260803-2';
-  const FINAL_VERSION = '20260804-1';
-
+  const THEME_VERSION = '20260804-2';
   let initialized = false;
-  let lastPreset = '';
   let pendingSwitchMessage = '';
   let lateUiTimer = 0;
   let lateUiAttempts = 0;
-
-  function preset() {
-    return window.BRIEF_APP?.getPreset?.() || 'individual';
-  }
 
   function terminalPrompt() {
     return $('#briefTerminalPrompt')?.textContent || 'brief@cmx:$';
@@ -58,26 +37,24 @@
     appendLine(`${terminalPrompt()} ${command}`, 'command');
   }
 
-  function scrollTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
   function switchBriefing(value) {
     const normalized = String(value || '').replace(/[^a-z]/g, '');
     const next = ALIASES[normalized];
-    if (!next || !window.BRIEF_APP?.setPreset) {
+    if (!next) {
       appendLine('usage: brief personal|relationship|business|trainer|team', 'error');
       return;
     }
     pendingSwitchMessage = `${LABELS[next]} briefing opened.`;
-    window.BRIEF_APP.setPreset(next);
-    window.setTimeout(scrollTop, 60);
+    if (window.BRIEF_SYSTEM?.switchPreset) window.BRIEF_SYSTEM.switchPreset(next);
+    else window.BRIEF_APP?.setPreset?.(next);
   }
 
   function helpLines() {
     return [
-      'now: this shell navigates the demo. protected data and approved actions require the future backend.',
-      'commands: brief personal|relationship|business|trainer|team, top, private, shared, modules, learn, teams, security, backend, privacy, about, clear.'
+      'views: focus, workspace, full, library, spaces, plans, tour.',
+      'briefings: brief personal|relationship|business|trainer|team.',
+      'modules: use the active pill name, or try weather, music, memory, connections.',
+      'boundaries: privacy, backend, security, learning, teams, about, clear.'
     ];
   }
 
@@ -85,68 +62,61 @@
     const original = String(rawValue || '').trim();
     if (!original) return false;
     const command = original.toLowerCase().replace(/^\s*(open|go)\s+/, '').trim();
-
     const switchMatch = command.match(/^(?:briefing\s+type|briefing|brief|view|switch)\s+(.+)$/);
     const recognized = [
       'help', 'commands', 'backend', 'future', 'learn', 'learning', 'teach', 'teaching',
-      'teams', 'team', 'security', 'cloud', 'brief', 'briefing', 'briefing type'
+      'teams', 'team', 'security', 'cloud', 'brief', 'briefing', 'briefing type', 'about'
     ].includes(command) || Boolean(switchMatch);
 
     if (!recognized) return false;
-
     appendCommand(original);
 
     if (command === 'help' || command === 'commands') {
       helpLines().forEach(line => appendLine(line));
       return true;
     }
-
     if (command === 'brief' || command === 'briefing' || command === 'briefing type') {
       appendLine('usage: brief personal|relationship|business|trainer|team');
       return true;
     }
-
     if (switchMatch) {
       switchBriefing(switchMatch[1]);
       return true;
     }
-
     if (command === 'backend' || command === 'future') {
-      appendLine('backend reserved. later: authenticated input, file uploads, connectors and approved actions through the terminal or dashboard.');
+      appendLine('The interface is a public demonstration. Protected records, files, connectors and approved actions belong behind authenticated backend services.');
       return true;
     }
-
     if (['learn', 'learning', 'teach', 'teaching'].includes(command)) {
-      appendLine('learning: daily lessons, spaced repetition, corrections, workout progression and accountability from approved history.');
+      appendLine('Learning can use approved history, corrections, spaced repetition, completed actions and temporary context without silently redefining the person.');
       return true;
     }
-
     if (command === 'teams' || command === 'team') {
-      appendLine('teams: role-based member, project and leadership spaces for procedures, handoffs, operations and approved finance signals. use brief team to open the demo.');
+      appendLine('Team spaces can separate member work, project truth, handoffs, procedures, leadership context and approved finance signals by role.');
       return true;
     }
-
     if (command === 'security' || command === 'cloud') {
-      appendLine('planned security: containerized FastAPI on Linux, Cloudflare Access/Tunnel, protected secrets, least-privilege permissions, audit logs, rate limits, encrypted transport, backups and approval gates.');
+      appendLine('Planned controls include authentication, least-privilege permissions, encrypted transport, protected secrets, audit logs, rate limits, backups and approval gates.');
       return true;
     }
-
+    if (command === 'about') {
+      appendLine('This is a connected briefing interface with Focus, Workspace and Full View, an information library, guided walkthroughs and a front-end command layer.');
+      return true;
+    }
     return false;
   }
 
   function augmentTerminal() {
     const intro = $('.brief-terminal-intro');
-    if (intro && intro.textContent !== TERMINAL_INTRO) intro.textContent = TERMINAL_INTRO;
-
+    if (intro) intro.textContent = 'Navigate Focus, Workspace, Full View, briefing tabs, spaces, plans and the information library from one command surface.';
     const summary = $('.brief-terminal-panel summary small');
-    if (summary && summary.textContent !== TERMINAL_SUMMARY) summary.textContent = TERMINAL_SUMMARY;
-
+    if (summary) summary.textContent = 'views · modules · privacy · briefing types';
     const output = $('#briefTerminalOutput');
     if (output && !output.querySelector('[data-terminal-bridge-note]')) {
       const line = document.createElement('div');
       line.dataset.terminalBridgeNote = 'true';
       line.className = 'brief-terminal-line is-system';
-      line.textContent = 'demo shell only · type help for backend, learning, teams and security';
+      line.textContent = 'type help for the system map';
       output.appendChild(line);
     }
   }
@@ -154,11 +124,9 @@
   function augmentHelpModal() {
     const dialog = $('.brief-help-dialog');
     if (!dialog || $('#briefScopeHelp')) return;
-
     const details = document.createElement('details');
     details.id = 'briefScopeHelp';
-    details.innerHTML = '<summary>Learning, accountability, teams and secure operations</summary><p>Daily teaching, spaced repetition, workout progression and accountability can use approved history. Role-based team spaces can support projects, procedures, handoffs, operations and finance monitoring for managers and team members. The planned backend uses protected authentication, permissions, encrypted transport, secrets management, audit logs, rate limits, backups and approval-gated actions.</p>';
-
+    details.innerHTML = '<summary>Focus, Workspace, Full View and protected operations</summary><p>Focus shows the immediate operating picture. Workspace uses stable navigation and scenario-specific tabs. Full View preserves every visual module. Protected data and actions still require authenticated backend services, permissions and approval gates.</p>';
     const reality = $('.brief-help-reality', dialog);
     if (reality) dialog.insertBefore(details, reality);
     else dialog.appendChild(details);
@@ -173,44 +141,18 @@
     document.head.appendChild(link);
   }
 
-  function loadScript(id, src, onload) {
-    const existing = document.getElementById(id);
-    if (existing) {
-      if (onload) onload();
-      return;
-    }
+  function loadScript(id, src) {
+    if (document.getElementById(id)) return;
     const script = document.createElement('script');
     script.id = id;
     script.src = src;
     script.async = false;
-    if (onload) {
-      let finished = false;
-      const finish = () => {
-        if (finished) return;
-        finished = true;
-        onload();
-      };
-      script.addEventListener('load', finish, { once: true });
-      script.addEventListener('error', finish, { once: true });
-    }
     document.head.appendChild(script);
   }
 
   function loadProductLayers() {
-    loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
-    loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);
-    loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
-    loadStyle('briefFinalizeStyle', `/assets/brief/brief-finalize.css?v=${FINAL_VERSION}`);
-    loadStyle('briefVisionStyle', `/assets/brief/brief-vision-tour.css?v=${FINAL_VERSION}`);
-
-    loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);
-    loadScript('briefNavigationScript', `/assets/brief/brief-navigation.js?v=${NAVIGATION_VERSION}`, () => {
-      loadScript('briefNavigationRuntimeScript', `/assets/brief/brief-navigation-runtime.js?v=${NAVIGATION_VERSION}`);
-      loadScript('briefTopMapScript', `/assets/brief/brief-map-top.js?v=${INTERFACE_VERSION}`);
-    });
-
-    loadScript('briefFinalizeScript', `/assets/brief/brief-finalize.js?v=${FINAL_VERSION}`);
-    loadScript('briefVisionScript', `/assets/brief/brief-vision-tour.js?v=${FINAL_VERSION}`);
+    loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${THEME_VERSION}`);
+    loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${THEME_VERSION}`);
   }
 
   function installCommandBridge() {
@@ -224,42 +166,17 @@
     }, true);
   }
 
-  function installUniversalReturnToTop() {
-    lastPreset = preset();
-
-    document.addEventListener('click', event => {
-      if (!event.target.closest?.(SWITCH_CONTROLS)) return;
-      window.setTimeout(scrollTop, 120);
-    }, true);
-
-    window.addEventListener('brief:preset-change', event => {
-      const next = event.detail?.preset || preset();
-      const changed = next !== lastPreset;
-      lastPreset = next;
-      window.setTimeout(() => {
-        augmentTerminal();
-        augmentHelpModal();
-        if (changed) scrollTop();
-        if (pendingSwitchMessage) {
-          appendLine(pendingSwitchMessage, 'success');
-          pendingSwitchMessage = '';
-        }
-      }, 180);
-    });
-  }
-
   function scheduleLateUi() {
     window.clearTimeout(lateUiTimer);
     lateUiAttempts = 0;
-
     const check = () => {
       lateUiAttempts += 1;
       augmentTerminal();
       augmentHelpModal();
-      const complete = Boolean($('#briefTerminalOutput') && $('.brief-help-dialog'));
-      if (!complete && lateUiAttempts < 20) lateUiTimer = window.setTimeout(check, 300);
+      if ((!$('#briefTerminalOutput') || !$('.brief-help-dialog')) && lateUiAttempts < 24) {
+        lateUiTimer = window.setTimeout(check, 280);
+      }
     };
-
     check();
   }
 
@@ -267,14 +184,22 @@
     if (initialized || !window.BRIEF_APP) return;
     initialized = true;
     installCommandBridge();
-    installUniversalReturnToTop();
     scheduleLateUi();
     loadProductLayers();
-
+    window.addEventListener('brief:preset-change', () => {
+      window.setTimeout(() => {
+        augmentTerminal();
+        augmentHelpModal();
+        if (pendingSwitchMessage) {
+          appendLine(pendingSwitchMessage, 'success');
+          pendingSwitchMessage = '';
+        }
+      }, 180);
+    });
     $('#explainButton')?.addEventListener('click', () => window.setTimeout(augmentHelpModal, 60), true);
   }
 
   window.addEventListener('brief:ready', init, { once: true });
   if (window.BRIEF_APP) init();
-  else document.addEventListener('DOMContentLoaded', () => window.setTimeout(init, 850), { once: true });
+  else document.addEventListener('DOMContentLoaded', () => window.setTimeout(init, 650), { once: true });
 })();
