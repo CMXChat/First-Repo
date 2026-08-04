@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-6';
+  const VERSION = '20260804-7';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -25,13 +25,32 @@
     }
   }
 
+  function loadFullHomeScript() {
+    if (!shouldLoadPersonalOs()) return;
+    if (document.getElementById('briefFullHomeScript') || window.BRIEF_FULL_HOME) return;
+    const script = document.createElement('script');
+    script.id = 'briefFullHomeScript';
+    script.src = `/assets/brief/brief-full-home.js?v=${VERSION}`;
+    script.async = false;
+    document.head.appendChild(script);
+  }
+
   function loadPersonalOsScript() {
     if (!shouldLoadPersonalOs()) return;
-    if (document.getElementById('briefPersonalOsScript') || window.BRIEF_PERSONAL_OS) return;
+    if (window.BRIEF_PERSONAL_OS) {
+      loadFullHomeScript();
+      return;
+    }
+    const existing = document.getElementById('briefPersonalOsScript');
+    if (existing) {
+      loadFullHomeScript();
+      return;
+    }
     const script = document.createElement('script');
     script.id = 'briefPersonalOsScript';
     script.src = `/assets/brief/brief-personal-os.js?v=${VERSION}`;
     script.async = false;
+    script.addEventListener('load', loadFullHomeScript, { once: true });
     document.head.appendChild(script);
   }
 
@@ -82,6 +101,7 @@
     ensureStyle('briefPersonalOsStyle', '/assets/brief/brief-personal-os.css');
     ensureStyle('briefPersonalOsDensityStyle', '/assets/brief/brief-personal-os-density.css');
     ensureStyle('briefPersonalOsMobileStyle', '/assets/brief/brief-personal-os-mobile.css');
+    ensureStyle('briefFullHomeStyle', '/assets/brief/brief-full-home.css');
   }
   loadSystemScript();
 })();
