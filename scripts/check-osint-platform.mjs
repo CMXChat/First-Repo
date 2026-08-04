@@ -11,6 +11,7 @@ const requiredFiles = [
   'assets/cmx-tool-shell.css',
   'assets/cmx-case-context.js',
   'assets/cmx-case-context.css',
+  'assets/cases-state-sync.js',
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/metadata-workbench.css',
@@ -42,6 +43,7 @@ const javascriptFiles = [
   'assets/cmx-ops-core.js',
   'assets/cmx-ops-runtime.js',
   'assets/cmx-case-context.js',
+  'assets/cases-state-sync.js',
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/osint-workbench.js',
@@ -121,6 +123,7 @@ checkPageModule('cases/index.html', 'assets/cases-workbench.js', [
   '/assets/cases-workbench.css',
   '/assets/cmx-tool-shell.css'
 ]);
+checkSafeModule('assets/cases-state-sync.js');
 
 function checkPageModule(page, module, requiredReferences) {
   const pagePath = join(root, page);
@@ -131,7 +134,12 @@ function checkPageModule(page, module, requiredReferences) {
   requiredReferences.forEach((reference) => {
     if (!pageSource.includes(reference)) failures.push(`${page} must reference ${reference}`);
   });
+  checkSafeModule(module);
+}
 
+function checkSafeModule(module) {
+  const modulePath = join(root, module);
+  if (!existsSync(modulePath)) return;
   const moduleSource = readFileSync(modulePath, 'utf8');
   const unsafeSinks = [
     /\.innerHTML\s*=/,
