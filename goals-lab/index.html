@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="robots" content="noindex, nofollow">
+  <title>CMX Goal Intelligence Lab</title>
+  <meta name="description" content="Isolated frontend prototype for goal-directed check-ins, questions, recommendations, evidence, and progress history.">
+  <link rel="stylesheet" href="./styles.css?v=20260804-1">
+  <script src="./app.js?v=20260804-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Skip to goal workspace</a>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <span class="brand-orb" aria-hidden="true"></span>
+        <div>
+          <p>CMX RESTRICTED NODE</p>
+          <strong>Goal Intelligence Lab</strong>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="prototype-badge">ISOLATED PROTOTYPE</span>
+        <button id="themeButton" class="icon-button" type="button" aria-label="Switch appearance" title="Switch appearance">◐</button>
+        <button id="resetButton" class="quiet-button" type="button">Reset sample</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="mainContent" class="app-shell">
+    <section class="masthead" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow">STEP 3 · FRONTEND PROTOTYPE · PART 1</p>
+        <h1 id="pageTitle">Turn one goal into a living operating loop.</h1>
+        <p class="lead">Define the outcome, set the pressure level, answer one useful question, record what happened, and let the next action adjust to the evidence.</p>
+      </div>
+      <div class="boundary-card">
+        <span>BOUNDARY</span>
+        <strong>No `/brief` integration</strong>
+        <p>This page uses sample data and browser-only storage. It does not read private accounts, train a model, or change the live briefing.</p>
+      </div>
+    </section>
+
+    <nav class="section-nav" aria-label="Goal prototype sections">
+      <button type="button" data-scroll-target="goalPulse">Pulse</button>
+      <button type="button" data-scroll-target="goalSetup">Goal</button>
+      <button type="button" data-scroll-target="checkIn">Check-in</button>
+      <button type="button" data-scroll-target="questionPanel">Question</button>
+      <button type="button" data-scroll-target="evidencePanel">Evidence</button>
+      <button type="button" data-scroll-target="historyPanel">History</button>
+    </nav>
+
+    <section id="goalPulse" class="pulse-panel panel" aria-labelledby="pulseTitle">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">CURRENT GOAL PULSE</p>
+          <h2 id="pulseTitle">What matters now</h2>
+        </div>
+        <span id="saveStatus" class="save-status" role="status" aria-live="polite">Sample loaded</span>
+      </div>
+
+      <div class="metric-grid" aria-label="Current goal status">
+        <article class="metric-card">
+          <span>Trajectory</span>
+          <strong id="trajectoryValue">Unclear</strong>
+          <small id="trajectoryReason">Waiting for the first check-in.</small>
+        </article>
+        <article class="metric-card">
+          <span>Difficulty</span>
+          <strong id="difficultyValue">Focused</strong>
+          <small id="difficultyDetail">30 to 60 minutes</small>
+        </article>
+        <article class="metric-card">
+          <span>Milestone</span>
+          <strong id="milestoneValue">First working route</strong>
+          <small id="milestoneDetail">One visible technical result</small>
+        </article>
+        <article class="metric-card">
+          <span>Confidence</span>
+          <strong id="confidenceValue">Moderate</strong>
+          <small id="confidenceDetail">Based on sample context</small>
+        </article>
+      </div>
+
+      <div class="pulse-layout">
+        <article class="recommendation-card">
+          <div class="card-label-row">
+            <span>NEXT RECOMMENDED ACTION</span>
+            <span id="recommendationEffort" class="value-chip">30 minutes</span>
+          </div>
+          <h3 id="recommendationTitle">Run one local FastAPI route and confirm the response.</h3>
+          <p id="recommendationWhy">This proves the smallest backend path before adding storage, authentication, or connectors.</p>
+          <dl class="recommendation-details">
+            <div><dt>Expected result</dt><dd id="recommendationResult">A working local endpoint and a short explanation of what each line does.</dd></div>
+            <div><dt>Current milestone</dt><dd id="recommendationMilestone">First working API route</dd></div>
+            <div><dt>Based on</dt><dd id="recommendationBasis">Limited Python experience, no route evidence yet, Focused difficulty.</dd></div>
+          </dl>
+          <div class="outcome-actions" aria-label="Record the result of the recommended action">
+            <button type="button" data-outcome="completed">Completed</button>
+            <button type="button" data-outcome="partial">Partly done</button>
+            <button type="button" data-outcome="not_completed">Not done</button>
+            <button type="button" data-outcome="replaced">Did something useful instead</button>
+          </div>
+        </article>
+
+        <aside class="state-card">
+          <span>ACTIVE STATE</span>
+          <h3 id="goalTitlePulse">Build and understand the CMX backend</h3>
+          <dl>
+            <div><dt>Primary blocker</dt><dd id="blockerValue">Knowledge and setup sequence</dd></div>
+            <div><dt>Priority</dt><dd id="priorityValue">High</dd></div>
+            <div><dt>Status</dt><dd id="statusValue">Active</dd></div>
+            <div><dt>Last updated</dt><dd id="updatedValue">August 4, 2026</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <div class="two-column-layout">
+      <section id="goalSetup" class="panel" aria-labelledby="goalSetupTitle">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">GOAL DEFINITION</p>
+            <h2 id="goalSetupTitle">Set direction</h2>
+          </div>
+          <span class="section-number">01</span>
+        </div>
+
+        <form id="goalForm" novalidate>
+          <label>
+            <span>Goal title</span>
+            <input id="goalTitle" name="goalTitle" required maxlength="120">
+          </label>
+          <label>
+            <span>Desired outcome</span>
+            <textarea id="goalOutcome" name="goalOutcome" required rows="3" maxlength="500"></textarea>
+          </label>
+          <label>
+            <span>Why it matters</span>
+            <textarea id="goalWhy" name="goalWhy" required rows="3" maxlength="500"></textarea>
+          </label>
+          <label>
+            <span>Current baseline</span>
+            <textarea id="goalBaseline" name="goalBaseline" required rows="3" maxlength="500"></textarea>
+          </label>
+          <label>
+            <span>Definition of success</span>
+            <textarea id="goalSuccess" name="goalSuccess" required rows="3" maxlength="500"></textarea>
+          </label>
+          <div class="form-grid">
+            <label>
+              <span>Priority</span>
+              <select id="goalPriority" name="goalPriority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </label>
+            <label>
+              <span>Visibility</span>
+              <select id="goalVisibility" name="goalVisibility">
+                <option value="private">Private</option>
+                <option value="ai_only">AI-only context</option>
+                <option value="shared">Shared</option>
+                <option value="ask_before_brief">Ask before briefing</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            <span>Current milestone</span>
+            <input id="goalMilestone" name="goalMilestone" required maxlength="180">
+          </label>
+
+          <fieldset class="difficulty-fieldset">
+            <legend>Difficulty lever</legend>
+            <div class="difficulty-heading">
+              <strong id="difficultyLabel">Focused</strong>
+              <span id="difficultyDescription">Meaningful execution with a realistic workload.</span>
+            </div>
+            <input id="difficultyRange" type="range" min="1" max="5" step="1" value="3" aria-describedby="difficultyDescription">
+            <div class="difficulty-scale" aria-hidden="true">
+              <span>Recovery</span><span>Sustainable</span><span>Focused</span><span>Stretch</span><span>Sprint</span>
+            </div>
+          </fieldset>
+
+          <button class="primary-button" type="submit">Update goal state</button>
+        </form>
+      </section>
+
+      <div class="stacked-column">
+        <section id="checkIn" class="panel" aria-labelledby="checkInTitle">
+          <div class="panel-heading compact">
+            <div>
+              <p class="eyebrow">SHORT CHECK-IN</p>
+              <h2 id="checkInTitle">Update reality</h2>
+            </div>
+            <span class="section-number">02</span>
+          </div>
+
+          <form id="checkInForm">
+            <div class="form-grid">
+              <label>
+                <span>Previous action</span>
+                <select id="checkInResult" name="checkInResult">
+                  <option value="completed">Completed</option>
+                  <option value="partial">Partly completed</option>
+                  <option value="not_completed">Not completed</option>
+                  <option value="none" selected>No action assigned</option>
+                </select>
+              </label>
+              <label>
+                <span>Available time</span>
+                <select id="checkInCapacity" name="checkInCapacity">
+                  <option value="10">About 10 minutes</option>
+                  <option value="20">About 20 minutes</option>
+                  <option value="45" selected>About 45 minutes</option>
+                  <option value="90">About 90 minutes</option>
+                  <option value="120">Two hours or more</option>
+                </select>
+              </label>
+            </div>
+            <div class="form-grid">
+              <label>
+                <span>Energy</span>
+                <select id="checkInEnergy" name="checkInEnergy">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </label>
+              <label>
+                <span>Current blocker</span>
+                <select id="checkInBlocker" name="checkInBlocker">
+                  <option value="none">None</option>
+                  <option value="technical">Technical</option>
+                  <option value="knowledge" selected>Knowledge</option>
+                  <option value="time">Time</option>
+                  <option value="financial">Financial</option>
+                  <option value="emotional">Emotional</option>
+                  <option value="dependency">Dependency</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>What changed?</span>
+              <textarea id="checkInChange" name="checkInChange" rows="2" maxlength="400" placeholder="Deadline, access, workload, priority, resources, or nothing important."></textarea>
+            </label>
+            <label>
+              <span>Optional context</span>
+              <textarea id="checkInNote" name="checkInNote" rows="3" maxlength="600" placeholder="Only add details that could change the next action."></textarea>
+            </label>
+            <button class="primary-button" type="submit">Process check-in</button>
+          </form>
+        </section>
+
+        <section id="questionPanel" class="panel question-panel" aria-labelledby="questionTitle">
+          <div class="panel-heading compact">
+            <div>
+              <p class="eyebrow">ONE ACTIVE QUESTION</p>
+              <h2 id="questionTitle">Reduce uncertainty</h2>
+            </div>
+            <span class="section-number">03</span>
+          </div>
+          <div class="question-content">
+            <h3 id="activeQuestion">Which result matters more for the first backend session?</h3>
+            <p id="questionReason">The answer changes whether the next action prioritizes learning, proof, or developer handoff.</p>
+            <div id="questionOptions" class="question-options" role="group" aria-label="Answer the active question"></div>
+            <label class="custom-answer">
+              <span>Or write a different answer</span>
+              <textarea id="questionCustomAnswer" rows="2" maxlength="400"></textarea>
+            </label>
+            <div class="inline-actions">
+              <button id="submitQuestionAnswer" class="primary-button" type="button">Save answer</button>
+              <button id="skipQuestion" class="quiet-button" type="button">Skip for now</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="two-column-layout lower-layout">
+      <section id="evidencePanel" class="panel" aria-labelledby="evidenceTitle">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">EVIDENCE</p>
+            <h2 id="evidenceTitle">Keep claims honest</h2>
+          </div>
+          <span class="section-number">04</span>
+        </div>
+
+        <form id="evidenceForm">
+          <div class="form-grid">
+            <label>
+              <span>Evidence type</span>
+              <select id="evidenceType">
+                <option value="user_confirmation">User confirmation</option>
+                <option value="github_commit">GitHub commit</option>
+                <option value="working_output">Working output</option>
+                <option value="document">Document</option>
+                <option value="screenshot">Screenshot</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <label>
+              <span>Confidence</span>
+              <select id="evidenceConfidence">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            <span>Evidence detail</span>
+            <textarea id="evidenceDetail" rows="3" required maxlength="600" placeholder="Example: A route returned a successful JSON response locally."></textarea>
+          </label>
+          <button class="primary-button" type="submit">Add evidence</button>
+        </form>
+        <div id="evidenceList" class="record-list" aria-live="polite"></div>
+      </section>
+
+      <section id="historyPanel" class="panel" aria-labelledby="historyTitle">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">STATE HISTORY</p>
+            <h2 id="historyTitle">See what changed</h2>
+          </div>
+          <span class="section-number">05</span>
+        </div>
+        <div id="historyList" class="history-list" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <section class="prototype-note panel">
+      <div>
+        <p class="eyebrow">WHAT THIS PART PROVES</p>
+        <h2>A complete local loop before backend complexity.</h2>
+      </div>
+      <ul>
+        <li>One editable goal</li>
+        <li>Five real difficulty modes</li>
+        <li>One active question at a time</li>
+        <li>Deterministic recommendations</li>
+        <li>Check-ins, outcomes, evidence, and revision history</li>
+        <li>A compact Goal Pulse that could later feed `/brief`</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Prototype route: <code>/goals-lab/</code> · Data stays in this browser · No production integration</p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
