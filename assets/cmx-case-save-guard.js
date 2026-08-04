@@ -67,13 +67,31 @@
       style.dataset.cmxOsintRouting = 'true';
       document.head.appendChild(style);
     }
-    if (!document.querySelector('script[src^="/assets/osint-routing.js"]')) {
+
+    const loadWorkspace = () => {
+      if (document.querySelector('script[src^="/assets/osint-routing.js"]')) return;
       const script = document.createElement('script');
       script.src = '/assets/osint-routing.js?v=20260804-1';
       script.async = false;
       script.dataset.cmxOsintRouting = 'true';
       document.head.appendChild(script);
+    };
+
+    if (window.__cmxOsintRoutingSaveGuard) {
+      loadWorkspace();
+      return;
     }
+    const existingGuard = document.querySelector('script[src^="/assets/osint-routing-save-guard.js"]');
+    if (existingGuard) {
+      existingGuard.addEventListener('load', loadWorkspace, { once: true });
+      return;
+    }
+    const guard = document.createElement('script');
+    guard.src = '/assets/osint-routing-save-guard.js?v=20260804-1';
+    guard.async = false;
+    guard.dataset.cmxOsintRoutingSaveGuard = 'true';
+    guard.addEventListener('load', loadWorkspace, { once: true });
+    document.head.appendChild(guard);
   }
 
   function beginSnapshotLock(caseId) {
