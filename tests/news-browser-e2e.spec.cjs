@@ -12,6 +12,11 @@ const enhancementScripts = [
 ];
 
 async function loadNews(page) {
+  await page.route('**/assets/cmx-news.html', async route => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace(/;\s*upgrade-insecure-requests/i, '');
+    await route.fulfill({ response, body });
+  });
   await page.goto('/assets/cmx-news.html', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => Boolean(window.CMX_NEWS_BRIEF && document.querySelector('#briefContent')));
   for (const path of enhancementScripts) await page.addScriptTag({ url: `/${path}` });
