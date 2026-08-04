@@ -14,13 +14,23 @@ on:
       - 'backend/compose.platform.yml'
       - 'cases/**'
       - 'osint/**'
+      - 'phone/**'
+      - 'search/**'
+      - 'metadata/**'
+      - 'missing/**'
       - 'assets/case-lifecycle.*'
       - 'assets/cases-*'
       - 'assets/cmx-case-context.*'
+      - 'assets/cmx-page-standard.js'
       - 'assets/osint-workbench.js'
+      - 'assets/phone-workbench.js'
+      - 'assets/search-workbench.js'
+      - 'assets/metadata-workbench.js'
+      - 'assets/missing-workbench.js'
       - 'tests/browser/lifecycle.spec.mjs'
       - 'tests/browser/platform.spec.mjs'
       - 'tests/browser/cases-operator-workspace.spec.mjs'
+      - 'tests/browser/active-case-tools.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
   push:
@@ -39,13 +49,23 @@ on:
       - 'backend/compose.platform.yml'
       - 'cases/**'
       - 'osint/**'
+      - 'phone/**'
+      - 'search/**'
+      - 'metadata/**'
+      - 'missing/**'
       - 'assets/case-lifecycle.*'
       - 'assets/cases-*'
       - 'assets/cmx-case-context.*'
+      - 'assets/cmx-page-standard.js'
       - 'assets/osint-workbench.js'
+      - 'assets/phone-workbench.js'
+      - 'assets/search-workbench.js'
+      - 'assets/metadata-workbench.js'
+      - 'assets/missing-workbench.js'
       - 'tests/browser/lifecycle.spec.mjs'
       - 'tests/browser/platform.spec.mjs'
       - 'tests/browser/cases-operator-workspace.spec.mjs'
+      - 'tests/browser/active-case-tools.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
 
@@ -138,12 +158,12 @@ jobs:
       - name: Run desktop platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs tests/browser/cases-operator-workspace.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
 
       - name: Run mobile platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/cases-operator-workspace.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/cases-operator-workspace.spec.mjs tests/browser/active-case-tools.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
 
       - name: Upload platform failure artifacts
         if: failure()
