@@ -58,7 +58,7 @@
   function loadCasesStateSync() {
     if (currentPath !== '/cases' || document.querySelector('script[data-cmx-cases-state-sync]')) return;
     const script = document.createElement('script');
-    script.src = '/assets/cases-state-sync.js?v=20260804-2';
+    script.src = '/assets/cases-state-sync.js?v=20260804-3';
     script.defer = true;
     script.dataset.cmxCasesStateSync = 'true';
     document.head.appendChild(script);
