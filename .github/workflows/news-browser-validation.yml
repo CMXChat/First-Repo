@@ -45,7 +45,7 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 22
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -54,6 +54,7 @@ jobs:
       - name: Install Playwright
         run: |
           npm install --no-save @playwright/test@1.55.0
+          npx playwright install-deps webkit
           npx playwright install chromium firefox webkit
       - name: Run desktop and mobile news checks
         id: browser
