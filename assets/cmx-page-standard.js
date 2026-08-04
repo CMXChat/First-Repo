@@ -67,20 +67,35 @@
   function loadCaseContext() {
     if (!caseContextRoutes.has(currentPath)) return;
 
-    if (!document.querySelector('link[href^="/assets/cmx-case-context.css"]')) {
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = '/assets/cmx-case-context.css?v=20260804-2';
-      style.dataset.cmxCaseContext = 'true';
-      document.head.appendChild(style);
-    }
+    loadStylesheet('/assets/cmx-case-context.css?v=20260804-3', 'cmxCaseContext');
+    loadStylesheet('/assets/cmx-case-capture.css?v=20260804-1', 'cmxCaseCapture');
 
-    if (document.querySelector('script[src^="/assets/cmx-case-context.js"], script[data-cmx-case-context]')) return;
+    loadOrderedScript('/assets/cmx-case-context.js?v=20260804-3', 'cmxCaseContext');
+    loadOrderedScript('/assets/cmx-case-capture.js?v=20260804-1', 'cmxCaseCapture');
+  }
+
+  function loadStylesheet(href, datasetKey) {
+    const base = href.split('?')[0];
+    if (document.querySelector(`link[href^="${base}"]`)) return;
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = href;
+    style.dataset[datasetKey] = 'true';
+    document.head.appendChild(style);
+  }
+
+  function loadOrderedScript(src, datasetKey) {
+    const base = src.split('?')[0];
+    if (document.querySelector(`script[src^="${base}"], script[data-${camelToKebab(datasetKey)}]`)) return;
     const script = document.createElement('script');
-    script.src = '/assets/cmx-case-context.js?v=20260804-2';
+    script.src = src;
     script.async = false;
-    script.dataset.cmxCaseContext = 'true';
+    script.dataset[datasetKey] = 'true';
     document.head.appendChild(script);
+  }
+
+  function camelToKebab(value) {
+    return value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
   }
 
   function applySearchPrefill() {
