@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-title="CMX OSINT Console" data-cmx-category="OSINT" data-cmx-status="Active" data-cmx-version="2.0" data-cmx-standard="on" data-cmx-modern="true">
+<html lang="en" data-cmx-title="CMX OSINT Console" data-cmx-category="OSINT" data-cmx-status="Active" data-cmx-version="2.1" data-cmx-standard="on" data-cmx-modern="true">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="dark">
+  <meta name="referrer" content="no-referrer">
   <title>CMX OSINT Console</title>
   <meta name="description" content="Private CMX workspace for normalized public-source entities, DNS evidence, safe pivots, and session observations.">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
@@ -23,7 +24,7 @@
   <link rel="stylesheet" href="/assets/osint-workbench.css?v=20260804-1">
   <link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260731-1">
   <script src="/assets/cmx-page-standard.js?v=20260804-1" defer></script>
-  <script src="/assets/osint-workbench.js?v=20260804-1" defer></script>
+  <script src="/assets/osint-workbench.js?v=20260804-2" defer></script>
 </head>
 <body>
   <header class="cmx-tool-topbar">
@@ -76,7 +77,7 @@
           <button class="cmx-button primary" id="analyzeEntity" type="button">Analyze entity</button>
           <button class="cmx-button" id="clearEntity" type="button">Clear entity</button>
         </div>
-        <p class="cmx-notice warn cmx-section"><strong>Boundary:</strong> DNS uses Google Public DNS when a domain is analyzed. Reputation, profile, archive, and routing checks only run when you choose an external link.</p>
+        <p class="cmx-notice warn cmx-section"><strong>Boundary:</strong> DNS uses the authenticated CMX gateway when FastAPI is active. Static transition mode can use a clearly labeled direct Google Public DNS fallback. Reputation, profile, archive, and routing checks run only when you choose an external link.</p>
       </article>
 
       <article class="cmx-card">
@@ -115,7 +116,7 @@
           <button class="cmx-button good" id="dnsSave" type="button">Save summary</button>
         </div>
       </div>
-      <p class="cmx-notice"><strong>Interpretation:</strong> HTTP success and DNS success are separate. Each question records DNS status, TTL, authenticated-data signal, truncation, and raw record content.</p>
+      <p class="cmx-notice"><strong>Interpretation:</strong> HTTP success and DNS success are separate. Each question records resolver source, DNS status, TTL, authenticated-data signal, truncation, and raw record content.</p>
       <div class="cmx-table-wrap cmx-section">
         <table class="cmx-table osint-dns-table">
           <thead><tr><th>Name</th><th>Type</th><th>DNS status</th><th>TTL</th><th>Raw answer or diagnostic</th><th>AD</th><th>TC</th></tr></thead>
