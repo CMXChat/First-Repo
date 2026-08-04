@@ -2,27 +2,31 @@
   'use strict';
 
   const ACTIVE_CASE_KEY = 'cmx_active_case_v1';
-  const MAX_SESSION_OBSERVATIONS = 50;
+  const EXPECTED_SCHEMA = 'cmx-osint-session-v1';
   const state = {
     backend: false,
     identity: null,
     cases: [],
     activeCaseId: '',
     lastSavedFingerprint: '',
+    lastSaveMessage: '',
     saving: false
   };
 
-  const shell = buildShell();
   const source = document.querySelector('#caseJson');
   const topbar = document.querySelector('.cmx-tool-topbar');
   if (!source || !topbar) return;
+
+  const shell = buildShell();
   topbar.insertAdjacentElement('afterend', shell.root);
 
   shell.select.addEventListener('change', selectCase);
   shell.save.addEventListener('click', saveSnapshot);
   shell.refresh.addEventListener('click', loadContext);
   shell.openCases.addEventListener('click', () => {
-    window.location.href = state.activeCaseId ? `/cases?case=${encodeURIComponent(state.activeCaseId)}` : '/cases';
+    window.location.href = state.activeCaseId
+      ? `/cases?case=${encodeURIComponent(state.activeCaseId)}`
+      : '/cases';
   });
 
   new MutationObserver(updateSaveState).observe(source, {
@@ -40,9 +44,11 @@
 
     const statusBox = document.createElement('div');
     statusBox.className = 'cmx-case-context-status';
+
     const badge = document.createElement('span');
     badge.className = 'cmx-case-context-badge pending';
     badge.textContent = 'Checking protection';
+
     const identity = document.createElement('span');
     identity.className = 'cmx-case-context-identity';
     identity.textContent = 'Persistent case service is being checked.';
@@ -58,10 +64,7 @@
     const select = document.createElement('select');
     select.className = 'cmx-case-context-select';
     select.disabled = true;
-    const initial = document.createElement('option');
-    initial.value = '';
-    initial.textContent = 'No persistent case selected';
-    select.appendChild(initial);
+    select.appendChild(option('', 'No persistent case selected'));
     label.append(labelText, select);
 
     const save = document.createElement('button');
@@ -100,7 +103,9 @@
         cache: 'no-store',
         headers: { accept: 'application/json' }
       });
-      if (!identityResponse.ok) throw new Error(`Identity service returned HTTP ${identityResponse.status}`);
+      if (!identityResponse.ok) {
+        throw new Error(`Identity service returned HTTP ${identityResponse.status}`);
+      }
 
       state.identity = await identityResponse.json();
       const casesResponse = await fetch('/api/cases?limit=100', {
@@ -108,40 +113,46 @@
         cache: 'no-store',
         headers: { accept: 'application/json' }
       });
-      if (!casesResponse.ok) throw new Error(`Case service returned HTTP ${casesResponse.status}`);
+      if (!casesResponse.ok) {
+        throw new Error(`Case service returned HTTP ${casesResponse.status}`);
+      }
 
       state.cases = await casesResponse.json();
       state.backend = true;
       renderCases();
       setProtected();
     } catch {
-      state.backend = false;
-      state.identity = null;
-      state.cases = [];
-      state.activeCaseId = '';
-      shell.select.replaceChildren(option('', 'Local-only mode'));
-      shell.select.disabled = true;
-      shell.save.disabled = true;
-      shell.badge.className = 'cmx-case-context-badge local';
-      shell.badge.textContent = 'Local-only';
-      shell.identity.textContent = 'FastAPI case persistence is unavailable on this hostname.';
-      shell.message.textContent = 'Continue locally or export JSON. Nothing will be written to a case.';
+      setLocalOnly();
     } finally {
       shell.refresh.disabled = false;
       updateSaveState();
     }
   }
 
+  function setLocalOnly() {
+    state.backend = false;
+    state.identity = null;
+    state.cases = [];
+    state.activeCaseId = '';
+    state.lastSavedFingerprint = '';
+    state.lastSaveMessage = '';
+    shell.select.replaceChildren(option('', 'Local-only mode'));
+    shell.select.disabled = true;
+    shell.save.disabled = true;
+    shell.badge.className = 'cmx-case-context-badge local';
+    shell.badge.textContent = 'Local-only';
+    shell.identity.textContent = 'FastAPI case persistence is unavailable on this hostname.';
+    shell.message.textContent = 'Continue locally or export JSON. Nothing will be written to a case.';
+  }
+
   function renderCases() {
     shell.select.replaceChildren(option('', 'Select a persistent case'));
     state.cases.forEach((record) => {
-      const item = option(record.id, `${record.title} · ${record.status}`);
-      item.dataset.status = record.status;
-      shell.select.appendChild(item);
+      shell.select.appendChild(option(record.id, `${record.title} · ${record.status}`));
     });
 
-    const remembered = safeSessionGet(ACTIVE_CASE_KEY);
     const requested = new URLSearchParams(window.location.search).get('case') || '';
+    const remembered = safeSessionGet(ACTIVE_CASE_KEY);
     const candidate = requested || remembered;
     if (candidate && state.cases.some((record) => record.id === candidate)) {
       state.activeCaseId = candidate;
@@ -161,19 +172,20 @@
   function selectCase() {
     state.activeCaseId = shell.select.value;
     state.lastSavedFingerprint = '';
+    state.lastSaveMessage = '';
     if (state.activeCaseId) safeSessionSet(ACTIVE_CASE_KEY, state.activeCaseId);
     else safeSessionDelete(ACTIVE_CASE_KEY);
     updateSaveState();
   }
 
   function setProtected() {
-    const label = state.identity?.email || state.identity?.name || state.identity?.subject || 'Authenticated operator';
+    const label = state.identity?.email
+      || state.identity?.name
+      || state.identity?.subject
+      || 'Authenticated operator';
     shell.badge.className = 'cmx-case-context-badge protected';
     shell.badge.textContent = 'Protected';
     shell.identity.textContent = label;
-    shell.message.textContent = state.activeCaseId
-      ? 'Current work remains unsaved until you choose Save current snapshot.'
-      : 'Select an active case to persist the current OSINT entity and observations.';
   }
 
   function setPending(message) {
@@ -186,19 +198,19 @@
   function updateSaveState() {
     const snapshot = readSnapshot();
     const fingerprint = source.textContent || '';
-    const hasEntity = Boolean(snapshot?.entity?.value);
+    const validSnapshot = snapshot?.schema === EXPECTED_SCHEMA && Boolean(snapshot?.entity?.value);
     const selected = Boolean(state.activeCaseId);
     const unsaved = fingerprint !== state.lastSavedFingerprint;
 
-    shell.save.disabled = !state.backend || !selected || !hasEntity || state.saving || !unsaved;
+    shell.save.disabled = !state.backend || !selected || !validSnapshot || state.saving || !unsaved;
     if (!state.backend) return;
 
     if (!selected) {
       shell.message.textContent = 'Select an active case to persist the current OSINT entity and observations.';
-    } else if (!hasEntity) {
+    } else if (!validSnapshot) {
       shell.message.textContent = 'Analyze an entity before saving a case snapshot.';
     } else if (!unsaved) {
-      shell.message.textContent = 'The current OSINT snapshot is saved to the selected case.';
+      shell.message.textContent = state.lastSaveMessage || 'The current OSINT snapshot is saved to the selected case.';
     } else {
       shell.message.textContent = 'Unsaved OSINT work is ready for the selected case.';
     }
@@ -206,48 +218,42 @@
 
   async function saveSnapshot() {
     const snapshot = readSnapshot();
-    if (!state.backend || !state.activeCaseId || !snapshot?.entity?.value || state.saving) return;
+    if (
+      !state.backend
+      || !state.activeCaseId
+      || snapshot?.schema !== EXPECTED_SCHEMA
+      || !snapshot?.entity?.value
+      || state.saving
+    ) return;
 
     state.saving = true;
     shell.save.disabled = true;
     shell.save.textContent = 'Saving…';
-    shell.message.textContent = 'Creating or linking the entity and writing case observations.';
+    shell.message.textContent = 'Writing the complete OSINT snapshot as one case transaction.';
 
     try {
-      const entity = await ensureEntity(snapshot.entity);
-      let written = 0;
-
-      if (Array.isArray(snapshot.dns) && snapshot.dns.length) {
-        await postJson(`/api/cases/${encodeURIComponent(state.activeCaseId)}/observations`, {
-          entity_id: entity.id,
-          kind: 'dns_snapshot',
-          value_text: boundedJson(buildDnsSnapshot(snapshot), 19000),
-          note: `Resolver path: ${snapshot.dnsSource || 'unspecified'}`,
-          confidence: 'high',
-          observed_at: new Date().toISOString()
-        });
-        written += 1;
-      }
-
-      const observations = Array.isArray(snapshot.observations)
-        ? snapshot.observations.slice(0, MAX_SESSION_OBSERVATIONS)
-        : [];
-      for (const observation of observations) {
-        await postJson(`/api/cases/${encodeURIComponent(state.activeCaseId)}/observations`, {
-          entity_id: entity.id,
-          kind: normalizeKind(`osint_${observation.kind || 'observation'}`),
-          value_text: String(observation.value || snapshot.entity.value).slice(0, 20000),
-          note: `${observation.source ? `Source: ${observation.source}. ` : ''}${observation.note || ''}`.slice(0, 20000),
-          confidence: normalizeConfidence(snapshot.entity.confidence),
-          observed_at: observation.timestamp || new Date().toISOString()
-        });
-        written += 1;
-      }
-
+      const result = await postJson(
+        `/api/cases/${encodeURIComponent(state.activeCaseId)}/imports`,
+        { payload: snapshot }
+      );
+      const counts = [
+        ['entity', result.entities_created],
+        ['observation', result.observations_created],
+        ['source', result.sources_created],
+        ['query', result.queries_created],
+        ['evidence item', result.evidence_created],
+        ['note', result.notes_created]
+      ]
+        .filter(([, count]) => Number(count) > 0)
+        .map(([label, count]) => `${count} ${label}${Number(count) === 1 ? '' : 's'}`);
+      const warningCount = Array.isArray(result.warnings) ? result.warnings.length : 0;
       state.lastSavedFingerprint = source.textContent || '';
-      shell.message.textContent = `Saved the current entity and ${written} observation${written === 1 ? '' : 's'} to the active case.`;
+      state.lastSaveMessage = `Saved ${counts.join(', ') || 'the current snapshot'} to the active case${warningCount ? ` with ${warningCount} warning${warningCount === 1 ? '' : 's'}` : ''}.`;
     } catch (error) {
-      shell.message.textContent = error instanceof Error ? error.message : 'The case snapshot could not be saved.';
+      state.lastSaveMessage = '';
+      shell.message.textContent = error instanceof Error
+        ? error.message
+        : 'The case snapshot could not be saved.';
     } finally {
       state.saving = false;
       shell.save.textContent = 'Save current snapshot';
@@ -255,67 +261,8 @@
     }
   }
 
-  async function ensureEntity(entity) {
-    const path = `/api/cases/${encodeURIComponent(state.activeCaseId)}/entities`;
-    const payload = {
-      entity_type: normalizeKind(entity.type || 'unknown'),
-      normalized_value: String(entity.value).slice(0, 5000),
-      display_value: String(entity.input || entity.value).slice(0, 5000),
-      confidence: normalizeConfidence(entity.confidence),
-      attributes: {
-        inference_scope: String(entity.scope || '').slice(0, 2000),
-        analyzed_at: entity.analyzedAt || null,
-        analyst_context: String(entity.notes || '').slice(0, 2000),
-        origin_tool: 'cmx-osint'
-      }
-    };
-
-    const response = await fetch(path, writeOptions(payload));
-    if (response.status === 201) return response.json();
-    if (response.status !== 409) throw await responseError(response, 'Entity could not be saved');
-
-    const existingResponse = await fetch(`${path}?limit=500`, {
-      credentials: 'same-origin',
-      cache: 'no-store',
-      headers: { accept: 'application/json' }
-    });
-    if (!existingResponse.ok) throw await responseError(existingResponse, 'Existing entity could not be resolved');
-    const records = await existingResponse.json();
-    const existing = records.find((record) =>
-      record.entity_type === payload.entity_type
-      && record.normalized_value === payload.normalized_value
-    );
-    if (!existing) throw new Error('The entity already exists but could not be matched safely.');
-    return existing;
-  }
-
-  function buildDnsSnapshot(snapshot) {
-    return {
-      schema: 'cmx-dns-snapshot-v1',
-      captured_at: new Date().toISOString(),
-      entity: snapshot.entity?.value || '',
-      resolver_path: snapshot.dnsSource || '',
-      questions: snapshot.dns.map((record) => ({
-        query: record.query,
-        source: record.source,
-        queried_at: record.queriedAt,
-        cache_hit: record.cacheHit === true,
-        status: record.statusLabel,
-        authenticated_data: record.authenticatedData === true,
-        truncated: record.truncated === true,
-        answers: record.answers
-      }))
-    };
-  }
-
   async function postJson(path, payload) {
-    const response = await fetch(path, writeOptions(payload));
-    if (!response.ok) throw await responseError(response, 'Case observation could not be saved');
-    return response.json();
-  }
-
-  function writeOptions(payload) {
-    return {
+    const response = await fetch(path, {
       method: 'POST',
       credentials: 'same-origin',
       cache: 'no-store',
@@ -324,13 +271,18 @@
         'content-type': 'application/json'
       },
       body: JSON.stringify(payload)
-    };
+    });
+    if (!response.ok) throw await responseError(response, 'Case snapshot could not be saved');
+    return response.json();
   }
 
   async function responseError(response, fallback) {
     try {
       const payload = await response.json();
-      return new Error(`${fallback}: ${payload.detail || `HTTP ${response.status}`}`);
+      const detail = typeof payload.detail === 'string'
+        ? payload.detail
+        : JSON.stringify(payload.detail || {});
+      return new Error(`${fallback}: ${detail || `HTTP ${response.status}`}`);
     } catch {
       return new Error(`${fallback}: HTTP ${response.status}`);
     }
@@ -342,34 +294,6 @@
     } catch {
       return null;
     }
-  }
-
-  function normalizeKind(value) {
-    return String(value)
-      .toLowerCase()
-      .replace(/[^a-z0-9_-]+/g, '_')
-      .replace(/^_+|_+$/g, '')
-      .slice(0, 80) || 'unknown';
-  }
-
-  function normalizeConfidence(value) {
-    const normalized = String(value || '').toLowerCase();
-    const allowed = new Set(['unrated', 'low', 'limited', 'medium', 'strong', 'high', 'confirmed']);
-    return allowed.has(normalized) ? normalized : 'unrated';
-  }
-
-  function boundedJson(value, limit) {
-    const serialized = JSON.stringify(value);
-    if (serialized.length <= limit) return serialized;
-    return JSON.stringify({
-      schema: value.schema,
-      captured_at: value.captured_at,
-      entity: value.entity,
-      resolver_path: value.resolver_path,
-      truncated: true,
-      original_character_count: serialized.length,
-      questions: value.questions.slice(0, 6)
-    }).slice(0, limit);
   }
 
   function option(value, label) {
