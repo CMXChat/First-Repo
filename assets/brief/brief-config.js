@@ -20,7 +20,8 @@ window.BRIEF_CONFIG = {
   'use strict';
 
   const build = {
-    device: '20260803-2',
+    device: '20260803-3',
+    onboarding: '20260803-1',
     entry: '20260803-5',
     upgrade: '20260803-5',
     live: '20260803-5',
@@ -209,6 +210,7 @@ window.BRIEF_CONFIG = {
   installEntryController();
 
   loadStyle('briefDeviceStyle', `/assets/brief/brief-device.css?v=${build.device}`);
+  loadStyle('briefOnboardingStyle', `/assets/brief/brief-onboarding.css?v=${build.onboarding}`);
   loadStyle('briefEntryRadioStyle', `/assets/brief/brief-entry-radio.css?v=${build.entry}`);
   loadStyle('briefUpgradeStyle', `/assets/brief/brief-upgrade.css?v=${build.upgrade}`);
   loadStyle('briefLiveStyle', `/assets/brief/brief-live.css?v=${build.live}`);
@@ -222,21 +224,23 @@ window.BRIEF_CONFIG = {
   loadScript('briefDeviceScript', `/assets/brief/brief-device.js?v=${build.device}`);
   loadScript('briefEntryRadioScript', `/assets/brief/brief-entry-radio.js?v=${build.entry}`);
 
-  loadScript('briefDailyVideoScript', `/assets/daily-video.js?v=${build.watch}`, () => {
-    loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
-      loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
-        loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
-          loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
-            loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
-              loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
-                loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
-                  loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
-                    loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {
-                      loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`, () => {
-                        loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`, () => {
-                          loadScript('briefTeamRendererScript', `/assets/brief/brief-team-renderer.js?v=${build.team}`, () => {
-                            loadScript('briefWorkspaceScript', `/assets/brief/brief-workspace.js?v=${build.workspace}`, () => {
-                              loadScript('briefPolishScript', `/assets/brief/brief-polish.js?v=${build.polish}`);
+  loadScript('briefOnboardingScript', `/assets/brief/brief-onboarding.js?v=${build.onboarding}`, () => {
+    loadScript('briefDailyVideoScript', `/assets/daily-video.js?v=${build.watch}`, () => {
+      loadScript('briefUpgradeScript', `/assets/brief/brief-upgrade.js?v=${build.upgrade}`, () => {
+        loadScript('briefLiveDataScript', `/assets/brief/brief-live-data.js?v=${build.live}`, () => {
+          loadScript('briefLiveScript', `/assets/brief/brief-live.js?v=${build.live}`, () => {
+            loadScript('briefLivePatchScript', `/assets/brief/brief-live-patch.js?v=${build.live}`, () => {
+              loadScript('briefDailyContentScript', `/assets/brief/brief-daily-content.js?v=${build.daily}`, () => {
+                loadScript('briefDailyScript', `/assets/brief/brief-daily.js?v=${build.daily}`, () => {
+                  loadScript('briefExperienceGuardScript', `/assets/brief/brief-experience-guard.js?v=${build.experience}`, () => {
+                    loadScript('briefVirgoPairScript', `/assets/brief/brief-virgo-pair.js?v=${build.experience}`, () => {
+                      loadScript('briefExperienceScript', `/assets/brief/brief-experience.js?v=${build.experience}`, () => {
+                        loadScript('briefTerminalScript', `/assets/brief/brief-terminal.js?v=${build.terminal}`, () => {
+                          loadScript('briefRelationshipWatchScript', `/assets/brief/brief-relationship-watch.js?v=${build.watch}`, () => {
+                            loadScript('briefTeamRendererScript', `/assets/brief/brief-team-renderer.js?v=${build.team}`, () => {
+                              loadScript('briefWorkspaceScript', `/assets/brief/brief-workspace.js?v=${build.workspace}`, () => {
+                                loadScript('briefPolishScript', `/assets/brief/brief-polish.js?v=${build.polish}`);
+                              });
                             });
                           });
                         });
