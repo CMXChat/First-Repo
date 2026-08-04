@@ -11,6 +11,7 @@ from app.config import Settings
 from app.main import app
 from app.services.enrichment import (
     EnrichmentBlockedTarget,
+    EnrichmentResponseTooLarge,
     EnrichmentService,
     EnrichmentValidationError,
     classify_rdap_target,
@@ -137,7 +138,7 @@ def test_rdap_service_uses_iana_bootstrap_and_cache() -> None:
         if request.url.host == "data.iana.org":
             return httpx.Response(
                 200,
-                json={"services": [["com"], ["https://rdap.registry.example/"]]},
+                json={"services": [[["com"], ["https://rdap.registry.example/"]]]},
             )
         if request.url.host == "rdap.registry.example":
             return httpx.Response(
@@ -215,7 +216,7 @@ def test_enrichment_api_maps_private_target_and_exposes_provenance() -> None:
 
 
 def test_json_size_limit_rejects_oversized_provider_payload() -> None:
-    oversized = json.dumps({"data": "x" * 5000}).encode()
+    oversized = json.dumps({"data": "x" * 70000}).encode()
 
     def handler(_: httpx.Request) -> httpx.Response:
         return httpx.Response(200, content=oversized)
@@ -225,12 +226,12 @@ def test_json_size_limit_rejects_oversized_provider_payload() -> None:
         async with httpx.AsyncClient(transport=transport) as client:
             service = EnrichmentService(
                 client,
-                Settings(enrichment_max_response_bytes=1024),
+                Settings(enrichment_max_response_bytes=65536),
             )
             await service._fetch_json(
                 "https://example.test/data.json",
                 expected_container=dict,
             )
 
-    with pytest.raises(Exception, match="size limit"):
+    with pytest.raises(EnrichmentResponseTooLarge, match="size limit"):
         asyncio.run(exercise())
