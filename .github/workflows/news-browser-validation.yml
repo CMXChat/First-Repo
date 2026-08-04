@@ -33,6 +33,10 @@ on:
       - 'tests/news-playwright.config.cjs'
       - '.github/workflows/news-browser-validation.yml'
 
+concurrency:
+  group: news-browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
