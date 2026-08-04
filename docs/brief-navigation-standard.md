@@ -1,4 +1,4 @@
-# `/brief` Interconnected Navigation Standard
+# `/brief` Interconnected Navigation and Theme Standard
 
 ## Product principle
 
@@ -10,12 +10,34 @@ A visitor should be able to reach the same important view through several logica
 - Clickable signal cards
 - Related-view links
 - Sticky Full-workspace map
+- Permanent top-right Map control
 - Briefing map drawer
 - Previous and next section controls
 - Terminal commands where appropriate
 - Direct URLs
 
 The page should feel like an application with connected information, not a long presentation.
+
+## Permanent Map control
+
+Every briefing type must show the circular Map control in the top action bar:
+
+- Personal
+- Relationship
+- Business
+- Trainer
+- Team
+
+The control sits immediately after the private/shared-space control so it remains visible on narrow phones. Its accessible label changes with the current briefing, such as `Open Business briefing map`.
+
+The Map control is separate from the `?` help and guided-tour control.
+
+On narrow devices:
+
+- The brand text may collapse visually while remaining accessible.
+- The action bar may scroll horizontally.
+- The Map control remains one of the first visible controls.
+- All controls remain fixed circles with appropriate touch targets.
 
 ## Quick briefing
 
@@ -48,8 +70,6 @@ Full workspace keeps normal vertical reading and adds:
 The sticky map must remain compact and must not cover meaningful content.
 
 ## Briefing map drawer
-
-The Map control is separate from the `?` help control.
 
 The drawer includes:
 
@@ -111,6 +131,32 @@ A direct URL must never bypass the deliberate entry gate. It may preselect the r
 
 Browser Back, Forward, refresh and bookmark restoration must remain functional.
 
+## Theme integrity contract
+
+Light and dark mode are complete product states, not decorative filters.
+
+The centralized integrity layer must keep these readable in both modes:
+
+- Quick cards and daily quote
+- Business KPI cards, chart labels, rings and decisions
+- Team flow, board columns, handoffs and finance bars
+- Profile, horoscope, culture, accountability and process cards
+- Relationship media and video states
+- Terminal output and input
+- Sticky map, drawer and top Map controls
+- Help center and guided tour
+
+Theme switching also updates:
+
+- `color-scheme`
+- Browser `theme-color`
+- The theme button label and pressed state
+- iPhone and mobile browser chrome colors
+
+Light mode must not leave white text on white cards, dark-only chart labels, black nested Team cards or low-contrast Map buttons. Dark mode must not inherit white surfaces or dark text from light mode.
+
+Theme integrity styles load after component and navigation styles. Small control-level safeguards may load with the Map module to guarantee final contrast.
+
 ## Motion and active-section rules
 
 Use `IntersectionObserver` to highlight the current Full-workspace section when supported. Use a bounded scroll fallback otherwise.
@@ -126,9 +172,10 @@ Active-section highlighting must not continuously add browser-history entries. P
 - `aria-current="location"` marks the active route.
 - Route changes move focus only when initiated by the user.
 - Reduced-motion users receive immediate scrolling.
-- Mobile targets remain at least 44px.
+- Mobile targets remain at least 44px where layout allows.
 - Horizontal route rails remain manually swipeable.
 - No important information is available only through hover.
+- Increased contrast and forced colors remain supported.
 
 ## Permanent files
 
@@ -137,12 +184,17 @@ Normal daily content updates must not edit:
 - `assets/brief/brief-navigation.js`
 - `assets/brief/brief-navigation-runtime.js`
 - `assets/brief/brief-navigation.css`
+- `assets/brief/brief-map-top.js`
+- `assets/brief/brief-map-top.css`
+- `assets/brief/brief-theme-integrity.js`
+- `assets/brief/brief-theme-integrity.css`
 - `tests/brief-navigation-smoke.test.js`
-- Navigation coverage in `tests/brief-browser-e2e.spec.cjs`
+- `tests/brief-theme-map-smoke.test.js`
+- Navigation and theme coverage in `tests/brief-browser-e2e.spec.cjs`
 
 ## Validation
 
-After any permanent navigation change:
+After any permanent navigation or theme change:
 
 1. Validate JavaScript syntax.
 2. Run all source-level briefing tests.
@@ -150,9 +202,11 @@ After any permanent navigation change:
 4. Run iPhone WebKit and Android Chromium projects.
 5. Test Quick-card routing.
 6. Test sticky Full-workspace routes.
-7. Test the briefing map drawer and focus behavior.
-8. Test a Team switch and Handoffs route.
-9. Test Back, Forward, refresh and a direct gated URL.
-10. Check portrait, landscape, safe-area and horizontal-overflow behavior.
+7. Test the top Map control in all five briefings.
+8. Test the briefing map drawer and focus behavior.
+9. Test a Team switch and Handoffs route.
+10. Test Back, Forward, refresh and a direct gated URL.
+11. Test light and dark representative Quick cards, Business charts, Team cards, terminal and drawer.
+12. Check browser theme-color, portrait, landscape, safe-area and horizontal-overflow behavior.
 
 Browser emulation does not replace every physical device, browser version, text-size setting or embedded webview. Do not claim universal perfection without a physical-device lab.
