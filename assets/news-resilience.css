@@ -56,6 +56,8 @@
 .news-help-panel {
   position: relative;
   width: min(680px, 100%);
+  min-height: 0;
+  min-block-size: 0;
   max-height: calc(var(--news-viewport-height, 100dvh) - 24px - var(--news-keyboard-inset, 0px));
   padding: clamp(20px, 4vw, 30px);
   overflow-y: auto;
@@ -223,7 +225,11 @@
 }
 
 .news-drawer-panel {
+  align-self: center;
+  min-height: 0;
+  min-block-size: 0;
   max-height: calc(var(--news-viewport-height, 100dvh) - 24px - var(--news-keyboard-inset, 0px));
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
