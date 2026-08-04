@@ -1,0 +1,50 @@
+name: Wire Brief Tour Viewport Guard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-onboarding-bounds-wire.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load viewport guard and bump cache
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('assets/brief/brief-config.js')
+          text = path.read_text()
+          marker = "  loadStyle('briefOnboardingStyle', `/assets/brief/brief-onboarding.css?v=${build.onboarding}`);"
+          addition = marker + "\n  loadStyle('briefOnboardingBoundsStyle', '/assets/brief/brief-onboarding-bounds.css?v=20260803-1');"
+          if 'briefOnboardingBoundsStyle' not in text:
+              if marker not in text:
+                  raise SystemExit('onboarding style marker not found')
+              text = text.replace(marker, addition, 1)
+          path.write_text(text)
+
+          path = Path('brief/index.html')
+          text = path.read_text()
+          if 'brief-config.js?v=20260803-14' in text:
+              text = text.replace('brief-config.js?v=20260803-14', 'brief-config.js?v=20260803-15', 1)
+          elif 'brief-config.js?v=20260803-15' not in text:
+              raise SystemExit('config cache marker not found')
+          path.write_text(text)
+          PY
+
+      - name: Validate and commit
+        run: |
+          node --check assets/brief/brief-config.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brief/brief-config.js brief/index.html
+          git commit -m 'Load guided tour viewport guard'
+          git push
