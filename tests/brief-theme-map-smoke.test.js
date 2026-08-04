@@ -24,7 +24,8 @@ assert.match(bridge, /brief-theme-integrity\.js/);
 assert.match(bridge, /brief-map-top\.js/);
 assert.match(bridge, /NAVIGATION_VERSION = '20260803-7'/);
 assert.match(bridge, /INTERFACE_VERSION = '20260803-3'/);
-assert.match(bridge, /FINAL_VERSION = '20260803-3'/);
+assert.match(bridge, /FINAL_VERSION = '20260803-4'/);
+assert.match(bridge, /FLOW_VERSION = '20260803-1'/);
 assert.ok(bridge.indexOf('briefFinalizeStyle') > bridge.indexOf('briefThemeIntegrityStyle'));
 
 assert.match(topMap, /briefTopMapButton/);
