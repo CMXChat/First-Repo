@@ -146,7 +146,15 @@ def test_custody_events_and_manifest_are_owner_scoped_and_deterministic() -> Non
             headers=USER_A,
             json={"note": "Attempted edit"},
         )
-        assert immutable.status_code == 405
+        assert immutable.status_code == 404
+        unchanged_events = client.get(f"{base}/custody", headers=USER_A)
+        assert unchanged_events.status_code == 200, unchanged_events.text
+        original = next(
+            event for event in unchanged_events.json()
+            if event["id"] == verified_payload["id"]
+        )
+        assert original["note"] == "Hash checked before analysis"
+        assert original["integrity_state"] == "match"
 
         audit_response = client.get(f"/api/cases/{case['id']}/audit", headers=USER_A)
         assert audit_response.status_code == 200, audit_response.text
