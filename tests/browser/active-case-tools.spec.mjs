@@ -128,3 +128,79 @@ test('Missing Person saves the authorized header, source and fact to the active 
   expect(detail.observations.some((observation) => observation.kind === 'fact' && observation.value_text === fact)).toBeTruthy();
   expect(detail.observations.some((observation) => observation.kind === 'missing_case_header')).toBeTruthy();
 });
+
+test('Direct capture writes source, finding and query records without fetching third-party content', async ({ page, request }) => {
+  const record = await createCase(request, `Direct capture case ${Date.now()}`, 'osint');
+  const sourceLabel = `Capture source ${Date.now()}`;
+  const sourceUrl = `https://capture.example.test/source-${Date.now()}`;
+  const findingValue = `Confirmed capture finding ${Date.now()}`;
+  const queryText = `site:capture.example.test ${Date.now()}`;
+  const resultUrl = `https://capture.example.test/result-${Date.now()}`;
+  let externalRequests = 0;
+
+  await page.route('https://capture.example.test/**', async (route) => {
+    externalRequests += 1;
+    await route.abort();
+  });
+
+  await openTool(page, '/osint', record.id);
+  const captureToggle = page.getByRole('button', { name: 'Capture record' });
+  await expect(captureToggle).toBeEnabled();
+  await captureToggle.click();
+  await expect(page.locator('#cmxCaptureDrawer')).toBeVisible();
+
+  await page.locator('#cmxCaptureSourceLabel').fill(sourceLabel);
+  await page.locator('#cmxCaptureSourceUrl').fill(sourceUrl);
+  await page.locator('#cmxCaptureSourceType').selectOption('official');
+  await page.locator('#cmxCaptureSourceNotes').fill('Direct source capture regression');
+  await expect(page.locator('#cmxCaptureDisclosure')).toContainText(sourceUrl);
+  await page.getByRole('button', { name: 'Save source' }).click();
+  await expect(page.locator('#cmxCaptureStatus')).toContainText(/Saved source/i);
+
+  await page.locator('#cmxCaptureSourceLabel').fill(sourceLabel);
+  await page.locator('#cmxCaptureSourceUrl').fill(sourceUrl);
+  await page.locator('#cmxCaptureSourceType').selectOption('official');
+  await page.getByRole('button', { name: 'Save source' }).click();
+  await expect(page.locator('#cmxCaptureDuplicate')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Save source' })).toBeDisabled();
+  await page.locator('#cmxCaptureDuplicateReview').check();
+  await expect(page.getByRole('button', { name: 'Save source' })).toBeEnabled();
+  await page.locator('#cmxCaptureClear').click();
+  await expect(page.locator('#cmxCaptureDuplicate')).toBeHidden();
+
+  await page.locator('#cmxCaptureKind').selectOption('finding');
+  await page.locator('#cmxCaptureFindingKind').fill('fact');
+  await page.locator('#cmxCaptureFindingValue').fill(findingValue);
+  await page.locator('#cmxCaptureFindingSource').selectOption({ label: `official · ${sourceLabel}` });
+  await page.locator('#cmxCaptureFindingConfidence').selectOption('confirmed');
+  await page.locator('#cmxCaptureFindingNote').fill('Corroborated against the registered source');
+  await page.getByRole('button', { name: 'Save finding' }).click();
+  await expect(page.locator('#cmxCaptureStatus')).toContainText(/Saved fact/i);
+
+  await page.locator('#cmxCaptureKind').selectOption('query');
+  await page.locator('#cmxCaptureQueryProvider').fill('Google');
+  await page.locator('#cmxCaptureQueryText').fill(queryText);
+  await page.locator('#cmxCaptureQueryUrl').fill(resultUrl);
+  await page.locator('#cmxCaptureQueryPurpose').fill('Record query provenance without storing result content');
+  await page.getByRole('button', { name: 'Save query' }).click();
+  await expect(page.locator('#cmxCaptureStatus')).toContainText(/Saved query/i);
+
+  const detailResponse = await request.get(`/api/cases/${record.id}`);
+  expect(detailResponse.status()).toBe(200);
+  const detail = await detailResponse.json();
+  const source = detail.sources.find((item) => item.url === sourceUrl);
+  expect(source).toBeTruthy();
+  expect(detail.sources.filter((item) => item.url === sourceUrl)).toHaveLength(1);
+  expect(detail.observations.some((item) =>
+    item.kind === 'fact'
+    && item.value_text === findingValue
+    && item.source_id === source.id
+    && item.confidence === 'confirmed'
+  )).toBeTruthy();
+  expect(detail.queries.some((item) =>
+    item.provider === 'Google'
+    && item.query_text === queryText
+    && item.result_url === resultUrl
+  )).toBeTruthy();
+  expect(externalRequests).toBe(0);
+});
