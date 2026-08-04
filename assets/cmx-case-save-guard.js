@@ -191,6 +191,7 @@
       option.value = record.id;
       option.textContent = `${record.title} · ${record.status}`;
       select.appendChild(option);
+      select.disabled = false;
       select.value = record.id;
       select.dispatchEvent(new Event('change', { bubbles: true }));
     }).catch(() => {
