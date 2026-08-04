@@ -1,6 +1,38 @@
 /* Mobile dashboard composition. Keep Today useful within one operating viewport. */
 
 @media (max-width: 720px) {
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header .brief-system-profile {
+    position: fixed;
+    top: 7px;
+    left: 7px;
+    z-index: 765;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+    border-radius: 11px;
+    pointer-events: auto;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header .brief-system-profile > span:not(.brief-system-orb),
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header .brief-system-profile > b {
+    display: none;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header .brief-system-orb {
+    width: 24px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar {
+    padding-left: 51px;
+  }
+
   body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-grid.is-command {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto auto auto;
