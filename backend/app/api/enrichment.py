@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Any
+import asyncio
+from typing import Any, Awaitable, TypeVar
+from urllib.parse import quote, urlsplit, urlunsplit
 
 from fastapi import APIRouter, HTTPException, Query, Request, status
 
@@ -14,6 +16,7 @@ from ..services.enrichment import (
 )
 
 router = APIRouter(prefix="/api/enrichment", tags=["enrichment"])
+ResultType = TypeVar("ResultType")
 
 
 @router.get("/rdap")
@@ -36,7 +39,11 @@ async def inspect_http_headers(
 ) -> dict[str, Any]:
     service = enrichment_service(request)
     try:
-        result, cache_hit = await service.http_headers(url)
+        normalized_url = canonicalize_http_url(url)
+        result, cache_hit = await bounded_network_call(
+            service,
+            service.http_headers(normalized_url),
+        )
     except Exception as exc:
         raise enrichment_http_error(exc) from exc
     return response_payload(request, result, cache_hit)
@@ -50,7 +57,10 @@ async def inspect_tls_certificate(
 ) -> dict[str, Any]:
     service = enrichment_service(request)
     try:
-        result, cache_hit = await service.tls_certificate(host, port)
+        result, cache_hit = await bounded_network_call(
+            service,
+            service.tls_certificate(host, port),
+        )
     except Exception as exc:
         raise enrichment_http_error(exc) from exc
     return response_payload(request, result, cache_hit)
@@ -75,6 +85,33 @@ async def certificate_transparency_lookup(
 
 def enrichment_service(request: Request) -> EnrichmentService:
     return request.app.state.enrichment_service
+
+
+async def bounded_network_call(
+    service: EnrichmentService,
+    operation: Awaitable[ResultType],
+) -> ResultType:
+    """Apply one end-to-end deadline, including DNS and address fallback attempts."""
+
+    try:
+        return await asyncio.wait_for(
+            operation,
+            timeout=service.settings.enrichment_timeout_seconds,
+        )
+    except TimeoutError as exc:
+        raise TimeoutError("Enrichment network operation timed out") from exc
+
+
+def canonicalize_http_url(value: str) -> str:
+    """Encode path/query characters before the bounded raw HTTP request is assembled."""
+
+    try:
+        parsed = urlsplit(value.strip())
+    except ValueError as exc:
+        raise EnrichmentValidationError("Enter a valid HTTP or HTTPS URL") from exc
+    path = quote(parsed.path or "/", safe="/%:@!$&'()*+,;=-._~")
+    query = quote(parsed.query, safe="%!?$&'()*+,;=:@/-._~")
+    return urlunsplit((parsed.scheme, parsed.netloc, path, query, ""))
 
 
 def response_payload(
