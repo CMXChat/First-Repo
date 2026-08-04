@@ -12,7 +12,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 
@@ -80,10 +80,12 @@ jobs:
             echo '- WebKit desktop'
             echo '- WebKit iPhone 13 emulation'
             echo '- Chromium Pixel 5 emulation'
-            echo '- All five top briefing-map labels and drawers'
+            echo '- All five permanent top briefing-map labels and drawers'
             echo '- Quick cards, sticky map, contextual links and deep URLs'
-            echo '- Light and dark Quick cards, Business charts, Team boards and map drawer'
+            echo '- Light and dark Quick and Full states across all five briefings'
+            echo '- Business charts, Team boards, terminals, media and drawer contrast'
             echo '- Guided tour, safe-area bounds, landscape, Pause to Play and media behavior'
+            echo '- Cache-busted bridge v7 and interface assets v2'
             echo
             echo '## Result'
             echo
@@ -106,7 +108,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/brief-interface-validation.md
-          git commit -m 'Record final briefing interface validation'
+          git commit -m 'Record final cache-busted briefing validation'
           git push
 
       - name: Fail on any regression
@@ -116,4 +118,4 @@ jobs:
           test "${{ steps.install.outcome }}" = "success"
           test "${{ steps.browsers.outputs.status }}" = "0"
 
-# Latest rerun after visible-first Map placement and dedicated control contrast safeguards.
+# Definitive rerun after bridge v7, interface v2, permanent top Map placement, and full theme sweep.
