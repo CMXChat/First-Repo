@@ -26,7 +26,7 @@
   const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';
   const TERMINAL_SUMMARY = 'demo now · backend reserved';
   const NAVIGATION_VERSION = '20260803-6';
-  const INTERFACE_VERSION = '20260803-1';
+  const INTERFACE_VERSION = '20260803-2';
 
   let initialized = false;
   let lastPreset = '';
