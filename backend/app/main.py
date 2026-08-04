@@ -15,9 +15,12 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from .api.cases import router as cases_router
 from .api.dns import router as dns_router
+from .api.records import router as records_router
 from .api.system import router as system_router
 from .config import Settings, get_settings
+from .db import create_database_engine, create_session_factory, initialize_database
 from .logging import configure_logging
 from .security import AccessIdentity, authenticate_request
 from .services.dns import DnsResolverService
@@ -55,8 +58,13 @@ rate_limiter = InMemoryRateLimiter(settings.api_rate_limit_per_minute)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    database_engine = create_database_engine(settings)
+    initialize_database(database_engine, settings)
+    app.state.database_engine = database_engine
+    app.state.session_factory = create_session_factory(database_engine)
+
     client = httpx.AsyncClient(
-        headers={"User-Agent": "CMX-Restricted-Node/0.1"},
+        headers={"User-Agent": "CMX-Restricted-Node/0.2"},
         follow_redirects=False,
         limits=httpx.Limits(max_connections=20, max_keepalive_connections=10),
     )
@@ -65,12 +73,13 @@ async def lifespan(app: FastAPI):
     logger.info("application_started", extra={"event": "application_started"})
     yield
     await client.aclose()
+    database_engine.dispose()
     logger.info("application_stopped", extra={"event": "application_stopped"})
 
 
 app = FastAPI(
     title="CMX Restricted Node API",
-    version="0.1.0",
+    version="0.2.0",
     docs_url=None if settings.environment == "production" else "/api/docs",
     redoc_url=None,
     openapi_url=None if settings.environment == "production" else "/api/openapi.json",
@@ -189,6 +198,8 @@ def secured_response(response: Response, request_id: str, path: str = "") -> Res
 
 app.include_router(system_router)
 app.include_router(dns_router)
+app.include_router(cases_router)
+app.include_router(records_router)
 
 site_root = settings.site_root
 assets_dir = site_root / "assets"
