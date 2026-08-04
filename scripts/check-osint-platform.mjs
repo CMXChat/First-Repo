@@ -11,6 +11,8 @@ const requiredFiles = [
   'assets/cmx-tool-shell.css',
   'assets/cmx-case-context.js',
   'assets/cmx-case-context.css',
+  'assets/cmx-case-capture.js',
+  'assets/cmx-case-capture.css',
   'assets/cases-state-sync.js',
   'assets/cases-operator-workspace.js',
   'assets/cases-operator-workspace.css',
@@ -48,6 +50,7 @@ const javascriptFiles = [
   'assets/cmx-ops-core.js',
   'assets/cmx-ops-runtime.js',
   'assets/cmx-case-context.js',
+  'assets/cmx-case-capture.js',
   'assets/cases-state-sync.js',
   'assets/cases-operator-workspace.js',
   'assets/cases-operator-records.js',
@@ -131,11 +134,13 @@ checkPageModule('cases/index.html', 'assets/cases-workbench.js', [
   '/assets/cases-workbench.css',
   '/assets/cmx-tool-shell.css'
 ]);
+checkSafeModule('assets/cmx-case-capture.js');
 checkSafeModule('assets/cases-state-sync.js');
 checkSafeModule('assets/cases-operator-workspace.js');
 checkSafeModule('assets/cases-operator-records.js');
 checkCasesOperatorLoader();
 checkCaseContextLoader();
+checkDirectCapturePolicy();
 
 function checkPageModule(page, module, requiredReferences) {
   const pagePath = join(root, page);
@@ -173,7 +178,12 @@ function checkCaseContextLoader() {
   ['/osint', '/phone', '/search', '/metadata', '/missing'].forEach((route) => {
     if (!loader.includes(`'${route}'`)) failures.push(`assets/cmx-page-standard.js must register ${route} for active case context`);
   });
-  ['/assets/cmx-case-context.js', '/assets/cmx-case-context.css'].forEach((reference) => {
+  [
+    '/assets/cmx-case-context.js',
+    '/assets/cmx-case-context.css',
+    '/assets/cmx-case-capture.js',
+    '/assets/cmx-case-capture.css'
+  ].forEach((reference) => {
     if (!loader.includes(reference)) failures.push(`assets/cmx-page-standard.js must load ${reference}`);
   });
   [
@@ -187,6 +197,38 @@ function checkCaseContextLoader() {
   });
   if (!context.includes('captureExportPayload')) {
     failures.push('assets/cmx-case-context.js must capture exact Search and Metadata export payloads');
+  }
+}
+
+function checkDirectCapturePolicy() {
+  const capturePath = join(root, 'assets/cmx-case-capture.js');
+  const testPath = join(root, 'tests/browser/active-case-tools.spec.mjs');
+  if (!existsSync(capturePath) || !existsSync(testPath)) return;
+
+  const capture = readFileSync(capturePath, 'utf8');
+  const tests = readFileSync(testPath, 'utf8');
+  [
+    "source: 'sources'",
+    "finding: 'observations'",
+    "query: 'queries'",
+    'cmxCaptureDuplicateReview',
+    'Fields that will enter the case',
+    'Checking the latest case records for exact duplicates',
+    'The browser will not fetch, archive, screenshot, or copy third-party page contents'
+  ].forEach((required) => {
+    if (!capture.includes(required)) failures.push(`assets/cmx-case-capture.js must include direct capture policy marker: ${required}`);
+  });
+  [
+    'Direct capture writes source, finding and query records',
+    '#cmxCaptureDuplicate',
+    '#cmxCaptureFindingSource',
+    '#cmxCaptureQueryProvider',
+    'expect(externalRequests).toBe(0)'
+  ].forEach((required) => {
+    if (!tests.includes(required)) failures.push(`tests/browser/active-case-tools.spec.mjs must cover ${required}`);
+  });
+  if (/fetch\(\s*[`'\"]https?:\/\//i.test(capture)) {
+    failures.push('assets/cmx-case-capture.js must not fetch third-party URLs');
   }
 }
 
