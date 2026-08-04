@@ -6,21 +6,11 @@
   const TYPE_CONTROLS = '#enterBrief, [data-scenario-choice], [data-footer-preset], [data-quick-preset], [data-dock-preset], [data-drawer-preset]';
   const QUICK_ROUTE_CONTROLS = '[data-workspace-tab], [data-quick-route], [data-related-route], [data-nav-route], [data-context-route]';
   const ROUTES = {
-    individual: [
-      ['overview', 'Overview'], ['day', 'Day'], ['work', 'Work'], ['finance', 'Finance'], ['wellness', 'Wellness'], ['intelligence', 'Intelligence'], ['memory', 'Memory']
-    ],
-    couple: [
-      ['overview', 'Overview'], ['together', 'Together'], ['profiles', 'Profiles'], ['plans', 'Plans'], ['watch', 'Watch'], ['reflection', 'Reflection'], ['shared', 'Shared space']
-    ],
-    partners: [
-      ['overview', 'Overview'], ['executive', 'Executive pulse'], ['finance', 'Finance'], ['projects', 'Projects'], ['decisions', 'Decisions'], ['markets', 'Markets'], ['partners', 'Partners']
-    ],
-    trainer: [
-      ['overview', 'Overview'], ['today', 'Today'], ['habits', 'Habits'], ['progress', 'Progress'], ['recovery', 'Recovery'], ['coach', 'Coach'], ['schedule', 'Schedule']
-    ],
-    team: [
-      ['overview', 'Overview'], ['board', 'Operating board'], ['mywork', 'My work'], ['project', 'Project'], ['handoffs', 'Handoffs'], ['procedure', 'Procedure'], ['finance', 'Finance'], ['spaces', 'Spaces']
-    ]
+    individual: [['overview', 'Overview'], ['day', 'Day'], ['work', 'Work'], ['finance', 'Finance'], ['wellness', 'Wellness'], ['intelligence', 'Intelligence'], ['memory', 'Memory']],
+    couple: [['overview', 'Overview'], ['together', 'Together'], ['profiles', 'Profiles'], ['plans', 'Plans'], ['watch', 'Watch'], ['reflection', 'Reflection'], ['shared', 'Shared space']],
+    partners: [['overview', 'Overview'], ['executive', 'Executive pulse'], ['finance', 'Finance'], ['projects', 'Projects'], ['decisions', 'Decisions'], ['markets', 'Markets'], ['partners', 'Partners']],
+    trainer: [['overview', 'Overview'], ['today', 'Today'], ['habits', 'Habits'], ['progress', 'Progress'], ['recovery', 'Recovery'], ['coach', 'Coach'], ['schedule', 'Schedule']],
+    team: [['overview', 'Overview'], ['board', 'Operating board'], ['mywork', 'My work'], ['project', 'Project'], ['handoffs', 'Handoffs'], ['procedure', 'Procedure'], ['finance', 'Finance'], ['spaces', 'Spaces']]
   };
   const TAB_TO_ROUTE = {
     individual: { overview: 'overview', day: 'day', work: 'work', money: 'finance', wellness: 'wellness', intelligence: 'intelligence' },
@@ -48,10 +38,8 @@
   }
 
   function topOffset() {
-    const topbar = $('.topbar');
-    const navigator = $('#briefNavigatorBar');
-    const topbarHeight = topbar?.getBoundingClientRect().height || 0;
-    const navigatorHeight = navigator?.getBoundingClientRect().height || 0;
+    const topbarHeight = $('.topbar')?.getBoundingClientRect().height || 0;
+    const navigatorHeight = $('#briefNavigatorBar')?.getBoundingClientRect().height || 0;
     const mobile = window.matchMedia?.('(max-width: 760px)').matches;
     return Math.max(20, topbarHeight + (mobile ? 14 : Math.min(navigatorHeight, 54)) + 12);
   }
@@ -59,26 +47,18 @@
   function scrollElementIntoUsefulView(target, focus = true) {
     if (!target) return;
     const top = target.getBoundingClientRect().top + window.scrollY - topOffset();
-    window.scrollTo({
-      top: Math.max(0, top),
-      left: 0,
-      behavior: reducedMotion() ? 'auto' : 'smooth'
-    });
-    if (focus) {
-      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
-      window.setTimeout(() => {
-        try { target.focus({ preventScroll: true }); } catch {}
-      }, reducedMotion() ? 0 : 260);
-    }
+    window.scrollTo({ top: Math.max(0, top), left: 0, behavior: reducedMotion() ? 'auto' : 'smooth' });
+    if (!focus) return;
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    window.setTimeout(() => {
+      try { target.focus({ preventScroll: true }); } catch {}
+    }, reducedMotion() ? 0 : 260);
   }
 
   function usefulQuickTarget() {
     const panel = $('#briefWorkspacePanel');
     if (!panel) return null;
-    return $(
-      '.quick-signal-grid, .quick-compact-list, .quick-timeline, .quick-overview-lower, .quick-watch-card, .quick-quote-card, .quick-dayline, .full-workspace-open',
-      panel
-    ) || panel;
+    return $('.quick-signal-grid, .quick-compact-list, .quick-timeline, .quick-overview-lower, .quick-watch-card, .quick-quote-card, .quick-dayline, .full-workspace-open', panel) || panel;
   }
 
   function landOnQuickContent() {
@@ -112,8 +92,7 @@
     const token = resetToken;
     userCancelledReset = false;
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    const delays = [0, 40, 120, 260, 480, 760, 1040, duration];
-    delays.forEach(delay => window.setTimeout(() => {
+    [0, 40, 120, 260, 480, 760, 1040, duration].forEach(delay => window.setTimeout(() => {
       if (token !== resetToken || userCancelledReset) return;
       forceDocumentTop();
       try { $('#briefMain')?.focus?.({ preventScroll: true }); } catch {}
@@ -144,11 +123,8 @@
       updateJumpControl();
       return;
     }
-    const navigator = $('#briefNavigatorBar');
-    const workspace = $('#briefWorkspace');
-    const anchor = navigator || workspace;
+    const anchor = $('#briefNavigatorBar') || $('#briefWorkspace');
     if (!anchor) return;
-
     const nav = document.createElement('nav');
     nav.id = 'briefRouteJump';
     nav.className = 'brief-route-jump';
@@ -229,14 +205,11 @@
     }, { once: true });
 
     window.addEventListener('brief:navigation-close', () => window.setTimeout(refreshNavigationUi, 120));
+    if (!document.body.classList.contains('is-locked')) settleAtTrueTop(1300);
     [80, 260, 680, 1300, 2400].forEach(delay => window.setTimeout(refreshNavigationUi, delay));
   }
 
-  window.BRIEF_FLOW_POLISH = {
-    landOnQuickContent,
-    settleAtTrueTop,
-    refreshNavigationUi
-  };
+  window.BRIEF_FLOW_POLISH = { landOnQuickContent, settleAtTrueTop, refreshNavigationUi };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();
