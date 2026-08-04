@@ -6,6 +6,7 @@
   const clientSessionKey = 'cmx_session_v4';
   const clientSessionMaxAgeMs = 12 * 60 * 60 * 1000;
   const guardedRoutes = new Set(['/directory', '/cases', '/osint', '/phone', '/metadata', '/search', '/missing', '/resources']);
+  const caseContextRoutes = new Set(['/osint', '/phone', '/metadata', '/search', '/missing']);
   const directoryVisible = new Set(['/', ...guardedRoutes]);
   const removedRoutes = new Set(['/manual', '/menu', '/workspace', '/collab6', '/collab7', '/pythontest', '/test.html', '/report']);
   const sensitiveRoutes = new Set(['/build', '/callmax', '/project']);
@@ -27,6 +28,7 @@
   if (guardedRoutes.has(currentPath) && root.dataset.cmxModern !== 'true') loadToolHardening();
   applySearchPrefill();
   loadCasesStateSync();
+  loadCaseContext();
 
   function hasActiveClientSession() {
     try {
@@ -59,6 +61,25 @@
     script.src = '/assets/cases-state-sync.js?v=20260804-2';
     script.defer = true;
     script.dataset.cmxCasesStateSync = 'true';
+    document.head.appendChild(script);
+  }
+
+  function loadCaseContext() {
+    if (!caseContextRoutes.has(currentPath)) return;
+
+    if (!document.querySelector('link[href^="/assets/cmx-case-context.css"]')) {
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = '/assets/cmx-case-context.css?v=20260804-2';
+      style.dataset.cmxCaseContext = 'true';
+      document.head.appendChild(style);
+    }
+
+    if (document.querySelector('script[src^="/assets/cmx-case-context.js"], script[data-cmx-case-context]')) return;
+    const script = document.createElement('script');
+    script.src = '/assets/cmx-case-context.js?v=20260804-2';
+    script.async = false;
+    script.dataset.cmxCaseContext = 'true';
     document.head.appendChild(script);
   }
 
