@@ -7,7 +7,8 @@ const enhancementScripts = [
   'assets/news-polish.js',
   'assets/news-navigation.js',
   'assets/news-navigation-state.js',
-  'assets/news-resilience.js'
+  'assets/news-resilience.js',
+  'assets/news-resilience-bounds.js'
 ];
 
 async function loadNews(page) {
@@ -16,16 +17,15 @@ async function loadNews(page) {
   for (const path of enhancementScripts) await page.addScriptTag({ url: `/${path}` });
   await page.waitForSelector('#newsSectionMap');
   await page.waitForSelector('#newsHelpButton');
-  await page.waitForFunction(() => {
-    const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
-    const loaded = name => links.some(link => link.href.includes(name) && Boolean(link.sheet));
-    return Boolean(
-      document.querySelector('#newsHelpLayer')
-      && window.CMX_NEWS_RESILIENCE
-      && loaded('/assets/news-navigation.css')
-      && loaded('/assets/news-resilience.css')
-    );
-  });
+  await page.waitForFunction(() => Boolean(
+    document.querySelector('#newsHelpLayer')
+    && window.CMX_NEWS_RESILIENCE
+    && window.CMX_NEWS_RESILIENCE_BOUNDS
+  ));
+  await page.evaluate(() => new Promise(resolve => {
+    window.CMX_NEWS_RESILIENCE_BOUNDS.applyBounds();
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  }));
 }
 
 async function visibleViewport(page) {
@@ -70,6 +70,7 @@ test('help and drawer remain inside the visible viewport', async ({ page }) => {
   await expect(page.locator('#newsHelpLayer')).toBeHidden();
   await page.locator('#newsOpenSectionDrawer').click();
   await expect(page.locator('.news-drawer-panel')).toBeVisible();
+  await page.evaluate(() => window.CMX_NEWS_RESILIENCE_BOUNDS.applyBounds());
   const drawerBox = await page.locator('.news-drawer-panel').boundingBox();
   const drawerViewport = await visibleViewport(page);
   expect(drawerBox).not.toBeNull();
