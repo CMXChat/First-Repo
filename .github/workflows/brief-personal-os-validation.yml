@@ -1,0 +1,47 @@
+name: Brief Personal OS Validation
+
+on:
+  pull_request:
+    paths:
+      - 'brief/**'
+      - 'assets/brief/**'
+      - 'tests/brief-personal-os*'
+      - '.github/workflows/brief-personal-os-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  personal-os:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run static Personal OS smoke test
+        run: node tests/brief-personal-os-smoke.test.js
+
+      - name: Install Playwright test runner
+        run: npm install --no-save @playwright/test
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Personal OS browser tests
+        run: npx playwright test --config=tests/brief-personal-os.playwright.config.cjs
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-personal-os-failures
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
