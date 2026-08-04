@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     cloudflare_access_team_domain: str = ""
     cloudflare_access_audience: str = ""
     allowed_hosts_csv: str = "localhost,127.0.0.1,testserver,db.cmxchat.com"
+    database_url: str = "sqlite+pysqlite:///:memory:"
+    database_auto_create: bool = True
     dns_timeout_seconds: float = Field(default=8.0, ge=1.0, le=30.0)
     dns_cache_ttl_seconds: int = Field(default=60, ge=0, le=3600)
     api_rate_limit_per_minute: int = Field(default=60, ge=1, le=10000)
@@ -30,13 +32,19 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_security_boundary(self) -> "Settings":
-        if self.environment in {"staging", "production"} and self.auth_mode != "cloudflare":
+        protected_environment = self.environment in {"staging", "production"}
+        if protected_environment and self.auth_mode != "cloudflare":
             raise ValueError("staging and production require CMX_AUTH_MODE=cloudflare")
         if self.auth_mode == "cloudflare":
             if not self.cloudflare_access_team_domain.strip():
                 raise ValueError("CMX_CLOUDFLARE_ACCESS_TEAM_DOMAIN is required")
             if not self.cloudflare_access_audience.strip():
                 raise ValueError("CMX_CLOUDFLARE_ACCESS_AUDIENCE is required")
+        if protected_environment:
+            if not self.database_url.startswith("postgresql+psycopg://"):
+                raise ValueError("staging and production require PostgreSQL through psycopg")
+            if self.database_auto_create:
+                raise ValueError("staging and production require migrations, not automatic table creation")
         return self
 
     @property
