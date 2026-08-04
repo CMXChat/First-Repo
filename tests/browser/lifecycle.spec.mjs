@@ -62,7 +62,11 @@ test('lifecycle page restores a soft-deleted case', async ({ page, request }) =>
   await page.locator('#confirmLifecycleAction').click();
 
   await expect(page.getByText(title, { exact: true })).toHaveCount(0);
-  await expect(page.locator('#deletedCount')).toHaveText('0');
+  const deleted = await request.get('/api/cases/deleted?limit=200');
+  expect(deleted.status()).toBe(200);
+  expect((await deleted.json()).some((item) => item.id === record.id)).toBeFalsy();
+  const restored = await request.get(`/api/cases/${record.id}`);
+  expect(restored.status()).toBe(200);
 });
 
 test('lifecycle page permanently purges only after typed confirmation', async ({ page, request }) => {
