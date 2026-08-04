@@ -10,7 +10,10 @@ const requiredFiles = [
   'assets/cmx-tool-hardening.js',
   'assets/cmx-tool-shell.css',
   'assets/search-workbench.js',
+  'assets/metadata-workbench.js',
+  'assets/metadata-workbench.css',
   'search/index.html',
+  'metadata/index.html',
   'SECURITY.md',
   'docs/OSINT_PLATFORM_ROADMAP.md'
 ];
@@ -24,7 +27,8 @@ const javascriptFiles = [
   'assets/cmx-tool-hardening.js',
   'assets/cmx-ops-core.js',
   'assets/cmx-ops-runtime.js',
-  'assets/search-workbench.js'
+  'assets/search-workbench.js',
+  'assets/metadata-workbench.js'
 ];
 
 for (const file of javascriptFiles) {
@@ -47,36 +51,47 @@ const bannedPatterns = [
   { pattern: /```||/, label: 'trailing editor artifact' }
 ];
 
-const migratedPages = ['search/index.html'];
+const migratedPages = ['search/index.html', 'metadata/index.html'];
 for (const file of migratedPages) {
   if (!existsSync(join(root, file))) continue;
   const source = readFileSync(join(root, file), 'utf8');
   for (const { pattern, label } of bannedPatterns) {
     if (pattern.test(source)) failures.push(`${file} contains ${label}`);
   }
+  if (!/data-cmx-modern="true"/.test(source)) failures.push(`${file} must declare data-cmx-modern="true"`);
+  checkLocalReferences(file, source);
 }
 
-const searchHtmlPath = join(root, 'search/index.html');
-if (existsSync(searchHtmlPath)) {
-  const searchHtml = readFileSync(searchHtmlPath, 'utf8');
-  if (!/data-cmx-modern="true"/.test(searchHtml)) failures.push('search/index.html must declare data-cmx-modern="true"');
-  if (!/\/assets\/search-workbench\.js/.test(searchHtml)) failures.push('search/index.html must load the modular search workbench');
-  if (!/\/assets\/cmx-tool-shell\.css/.test(searchHtml)) failures.push('search/index.html must load the modular tool shell stylesheet');
-  checkLocalReferences('search/index.html', searchHtml);
-}
+checkPageModule('search/index.html', 'assets/search-workbench.js', [
+  '/assets/search-workbench.js',
+  '/assets/cmx-tool-shell.css'
+]);
+checkPageModule('metadata/index.html', 'assets/metadata-workbench.js', [
+  '/assets/metadata-workbench.js',
+  '/assets/metadata-workbench.css',
+  '/assets/cmx-tool-shell.css'
+]);
 
-const searchModulePath = join(root, 'assets/search-workbench.js');
-if (existsSync(searchModulePath)) {
-  const searchModule = readFileSync(searchModulePath, 'utf8');
+function checkPageModule(page, module, requiredReferences) {
+  const pagePath = join(root, page);
+  const modulePath = join(root, module);
+  if (!existsSync(pagePath) || !existsSync(modulePath)) return;
+
+  const pageSource = readFileSync(pagePath, 'utf8');
+  requiredReferences.forEach((reference) => {
+    if (!pageSource.includes(reference)) failures.push(`${page} must reference ${reference}`);
+  });
+
+  const moduleSource = readFileSync(modulePath, 'utf8');
   const unsafeSinks = [
     /\.innerHTML\s*=/,
     /insertAdjacentHTML\s*\(/,
     /document\.write\s*\(/
   ];
   unsafeSinks.forEach((pattern) => {
-    if (pattern.test(searchModule)) failures.push(`assets/search-workbench.js contains unsafe HTML sink: ${pattern}`);
+    if (pattern.test(moduleSource)) failures.push(`${module} contains unsafe HTML sink: ${pattern}`);
   });
-  if (/localStorage\./.test(searchModule)) failures.push('assets/search-workbench.js must not persist research identifiers in localStorage');
+  if (/localStorage\./.test(moduleSource)) failures.push(`${module} must not persist research data in localStorage`);
 }
 
 function checkLocalReferences(file, source) {
@@ -95,4 +110,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`OSINT platform checks passed for ${migratedPages.length} migrated tool page.`);
+console.log(`OSINT platform checks passed for ${migratedPages.length} migrated tool pages.`);
