@@ -7,11 +7,14 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const index = read('brief/index.html');
-const config = read('assets/brief/brief-config.js');
 const navigation = read('assets/brief/brief-navigation.js');
+const runtime = read('assets/brief/brief-navigation-runtime.js');
+const bridge = read('assets/brief/brief-terminal-bridge.js');
 const styles = read('assets/brief/brief-navigation.css');
 
 new vm.Script(navigation, { filename: 'brief-navigation.js' });
+new vm.Script(runtime, { filename: 'brief-navigation-runtime.js' });
+new vm.Script(bridge, { filename: 'brief-terminal-bridge.js' });
 
 assert.match(navigation, /const ROUTES = \{/);
 assert.match(navigation, /individual:/);
@@ -41,6 +44,22 @@ assert.match(navigation, /sessionStorage/);
 assert.match(navigation, /window\.BRIEF_NAVIGATION/);
 assert.doesNotMatch(navigation, /new MutationObserver/);
 
+assert.match(runtime, /setQuickRoute/);
+assert.match(runtime, /#briefWorkspace/);
+assert.match(runtime, /briefWorkspacePanel/);
+assert.match(runtime, /restoreUrlAfterEntry/);
+assert.match(runtime, /data-quick-route/);
+assert.match(runtime, /data-related-route/);
+assert.match(runtime, /data-nav-route/);
+assert.match(runtime, /window\.BRIEF_NAVIGATION/);
+assert.doesNotMatch(runtime, /new MutationObserver/);
+
+assert.match(bridge, /NAVIGATION_VERSION/);
+assert.match(bridge, /brief-navigation\.css/);
+assert.match(bridge, /brief-navigation\.js/);
+assert.match(bridge, /brief-navigation-runtime\.js/);
+assert.match(bridge, /loadNavigation\(\)/);
+
 assert.match(styles, /position: sticky/);
 assert.match(styles, /brief-navigator-bar/);
 assert.match(styles, /brief-navigation-drawer/);
@@ -56,6 +75,5 @@ assert.match(styles, /forced-colors: active/);
 assert.match(styles, /@supports not \(\(-webkit-backdrop-filter/);
 
 assert.match(index, /brief-config\.js\?v=20260803-\d+/);
-assert.ok(config.includes('brief-navigation.css') || !config.includes('briefNavigationStyle'));
 
 console.log('Brief interconnected navigation smoke test passed.');
