@@ -1,0 +1,53 @@
+name: News Browser Validation
+
+on:
+  pull_request:
+    paths:
+      - 'assets/news-resilience.js'
+      - 'assets/news-resilience.css'
+      - 'assets/news-navigation.js'
+      - 'assets/news-navigation-state.js'
+      - 'assets/news-navigation.css'
+      - 'assets/news-loader.js'
+      - 'assets/news-workspace.js'
+      - 'assets/news-polish.js'
+      - 'assets/news-media.js'
+      - 'news/index.html'
+      - 'tests/news-browser-e2e.spec.cjs'
+      - 'tests/news-playwright.config.cjs'
+      - '.github/workflows/news-browser-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/news-resilience.js'
+      - 'assets/news-resilience.css'
+      - 'assets/news-navigation.js'
+      - 'assets/news-navigation-state.js'
+      - 'assets/news-navigation.css'
+      - 'assets/news-loader.js'
+      - 'assets/news-workspace.js'
+      - 'assets/news-polish.js'
+      - 'assets/news-media.js'
+      - 'news/index.html'
+      - 'tests/news-browser-e2e.spec.cjs'
+      - 'tests/news-playwright.config.cjs'
+      - '.github/workflows/news-browser-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save @playwright/test@1.55.0
+          npx playwright install --with-deps chromium firefox webkit
+      - name: Run desktop and mobile news checks
+        run: npx playwright test --config=tests/news-playwright.config.cjs
