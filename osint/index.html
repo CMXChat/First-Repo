@@ -1,32 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" data-cmx-title="CMX OSINT Console" data-cmx-category="OSINT" data-cmx-status="Active" data-cmx-version="2.2" data-cmx-standard="on" data-cmx-modern="true">
+<html lang="en" data-cmx-title="CMX OSINT Console" data-cmx-category="OSINT" data-cmx-status="Active" data-cmx-version="2.3" data-cmx-standard="on" data-cmx-modern="true">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   <meta name="referrer" content="no-referrer">
   <title>CMX OSINT Console</title>
-  <meta name="description" content="Private CMX workspace for normalized public-source entities, DNS evidence, safe pivots, and session observations.">
+  <meta name="description" content="Private CMX workspace for normalized public-source entities, DNS evidence, bounded infrastructure enrichment, safe pivots, and session observations.">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
   <link rel="canonical" href="https://db.cmxchat.com/osint/">
   <meta property="og:title" content="CMX OSINT Console">
-  <meta property="og:description" content="Private CMX workspace for normalized public-source entities, DNS evidence, safe pivots, and session observations.">
+  <meta property="og:description" content="Private CMX workspace for normalized public-source entities, DNS evidence, bounded infrastructure enrichment, safe pivots, and session observations.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="CMX Restricted Node">
   <meta property="og:url" content="https://db.cmxchat.com/osint/">
   <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="CMX OSINT Console">
-  <meta name="twitter:description" content="Private CMX workspace for normalized public-source entities, DNS evidence, safe pivots, and session observations.">
+  <meta name="twitter:description" content="Private CMX workspace for normalized public-source entities, DNS evidence, bounded infrastructure enrichment, safe pivots, and session observations.">
   <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png">
   <link rel="stylesheet" href="/assets/cmx-tool-shell.css?v=20260804-1">
   <link rel="stylesheet" href="/assets/osint-workbench.css?v=20260804-1">
+  <link rel="stylesheet" href="/assets/osint-enrichment.css?v=20260804-1">
   <link rel="stylesheet" href="/assets/cmx-case-context.css?v=20260804-1">
   <link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260731-1">
   <script src="/assets/cmx-page-standard.js?v=20260804-1" defer></script>
   <script src="/assets/osint-workbench.js?v=20260804-2" defer></script>
   <script src="/assets/cmx-case-context.js?v=20260804-1" defer></script>
+  <script src="/assets/osint-enrichment.js?v=20260804-1" defer></script>
 </head>
 <body>
   <header class="cmx-tool-topbar">
@@ -51,7 +53,7 @@
     <section class="cmx-grid two">
       <article class="cmx-card">
         <h2>Entity intake</h2>
-        <p class="cmx-card-copy">Choose a type or let CMX detect it. Inputs remain in the current tab unless you open an external pivot, save to an active case, or export the session.</p>
+        <p class="cmx-card-copy">Choose a type or let CMX detect it. Inputs remain in the current tab unless you open an external pivot, save to an active case, run a protected enrichment adapter, or export the session.</p>
         <div class="osint-intake">
           <div class="cmx-field">
             <label for="entityType">Entity type</label>
@@ -79,7 +81,7 @@
           <button class="cmx-button primary" id="analyzeEntity" type="button">Analyze entity</button>
           <button class="cmx-button" id="clearEntity" type="button">Clear entity</button>
         </div>
-        <p class="cmx-notice warn cmx-section"><strong>Boundary:</strong> DNS uses the authenticated CMX gateway when FastAPI is active. Static transition mode can use a clearly labeled direct Google Public DNS fallback. Reputation, profile, archive, and routing checks run only when you choose an external link.</p>
+        <p class="cmx-notice warn cmx-section"><strong>Boundary:</strong> DNS and infrastructure enrichment use authenticated same-origin gateways when FastAPI is active. Static transition mode can use only the clearly labeled direct Google Public DNS fallback. Reputation, profile, archive, and routing checks run only when you choose an external link.</p>
       </article>
 
       <article class="cmx-card">
@@ -131,6 +133,53 @@
         <summary>Normalized DNS response JSON</summary>
         <pre class="osint-json" id="dnsRaw"></pre>
       </details>
+    </section>
+
+    <section class="cmx-card cmx-section" id="enrichmentSection">
+      <div class="osint-section-title">
+        <div>
+          <h2>Bounded infrastructure enrichment</h2>
+          <p>Collect normalized public infrastructure evidence through the protected FastAPI origin.</p>
+        </div>
+      </div>
+      <div class="osint-enrichment-controls">
+        <div class="cmx-field">
+          <label for="enrichmentTarget">Domain, public IP, ASN, or URL</label>
+          <input class="cmx-input" id="enrichmentTarget" autocomplete="off" spellcheck="false" placeholder="example.com, 8.8.8.8, AS13335, or https://example.com/path">
+        </div>
+        <div class="osint-enrichment-actions">
+          <button class="cmx-button primary" id="enrichRdap" type="button">Run RDAP</button>
+          <button class="cmx-button" id="enrichHttp" type="button">Inspect HTTP</button>
+          <button class="cmx-button" id="enrichTls" type="button">Inspect TLS</button>
+          <button class="cmx-button" id="enrichCt" type="button">Search CT</button>
+          <button class="cmx-button danger" id="enrichCancel" type="button" disabled>Cancel</button>
+        </div>
+      </div>
+      <p class="cmx-notice warn cmx-section"><strong>Collection boundary:</strong> RDAP uses IANA bootstrap data. HTTP inspection permits standard HTTP or HTTPS ports, pins a permitted public IP, sends a HEAD request, reads selected headers only, and never follows redirects or reads the response body. TLS performs a handshake only. Certificate Transparency returns a bounded, deduplicated public certificate set. Provider output does not automatically establish identity, ownership, causation, or current service availability.</p>
+      <p class="osint-enrichment-status" id="enrichmentStatus" role="status" aria-live="polite">Server enrichment requires the protected FastAPI origin.</p>
+
+      <div class="osint-enrichment-result osint-hidden" id="enrichmentResult">
+        <div class="osint-enrichment-provenance" id="enrichmentProvenance"></div>
+        <div class="osint-enrichment-summary" id="enrichmentSummary"></div>
+        <div class="osint-enrichment-records" id="enrichmentRecords"></div>
+        <details>
+          <summary>Normalized enrichment JSON</summary>
+          <pre class="osint-enrichment-json" id="enrichmentRaw"></pre>
+        </details>
+
+        <section class="osint-enrichment-save osint-hidden" id="enrichmentSaveBox" aria-label="Save enrichment finding">
+          <h3>Save normalized finding</h3>
+          <p class="cmx-card-copy">Review the exact observation fields below. Saving creates one owner-scoped observation in the selected case. Confidence remains unrated until an analyst evaluates the provider output.</p>
+          <dl class="osint-enrichment-disclosure" id="enrichmentSaveDisclosure"></dl>
+          <div class="osint-enrichment-duplicate" id="enrichmentDuplicate" hidden>
+            <p id="enrichmentDuplicateText"></p>
+            <label><input id="enrichmentDuplicateReview" type="checkbox"><span>I reviewed the existing observation and still want to create another record.</span></label>
+          </div>
+          <div class="cmx-actions">
+            <button class="cmx-button good" id="enrichmentSave" type="button" disabled>Save finding to active case</button>
+          </div>
+        </section>
+      </div>
     </section>
 
     <section class="cmx-card cmx-section">
