@@ -1,5 +1,24 @@
 'use strict';
 
+/**
+ * CMX GATE LIBRARY: Restricted Node Gate (`restricted-node`)
+ *
+ * This is the fixed credential policy for the root Restricted Node experience.
+ * It is root-specific and depends on helpers, session keys, gate markup, and
+ * terminal launch behavior defined by `index.html` and `cmx-ops-core.js`.
+ * Do not treat this file as the reusable Black Prompt Gate.
+ *
+ * Credential rotation rules:
+ * - Never commit or comment the plaintext credential.
+ * - Generate a new random salt and PBKDF2-SHA256 verifier.
+ * - Keep 600,000 iterations unless the documented policy changes.
+ * - Bump state/migration versions when stale failures or sessions must clear.
+ * - Cache-bust this script in `index.html` after changing credential material.
+ *
+ * Canonical handoff:
+ * `docs/concepts/cmx-gates-system-ai-handoff-2026-08-04.md`
+ */
+
 const FIXED_GATE_STATE_KEY = 'cmx_gate_state_v2';
 const FIXED_GATE_MIGRATION_KEY = 'cmx_fixed_gate_v2';
 const FIXED_GATE_ITERATIONS = 600000;

@@ -1,14 +1,44 @@
 'use strict';
 
+/**
+ * CMX GATE LIBRARY: Black Prompt Gate (`black-prompt`)
+ *
+ * Visual contract: the locked viewport stays completely black and shows only
+ * the white `password: ` prompt until the user submits. Do not add branding,
+ * cards, borders, help text, or a visible button unless the owner explicitly
+ * changes the Black Prompt design contract.
+ *
+ * Integration contract:
+ * - Root element: `data-cmx-gate="black-prompt"`.
+ * - Protected elements: `[data-cmx-gated-content]`.
+ * - Optional session scope: `data-cmx-gate-id`.
+ * - Optional force prompt, delay, and redirect attributes are documented in
+ *   `assets/gates/README.md`.
+ *
+ * Credential rotation rules:
+ * - Never commit or comment the plaintext credential.
+ * - Replace the random salt and PBKDF2-SHA256 verifier together.
+ * - Keep 600,000 iterations unless the documented policy changes.
+ * - Bump state/session key versions when existing unlock state must expire.
+ * - Cache-bust this script on every consuming page after behavioral changes.
+ *
+ * Canonical handoff:
+ * `docs/concepts/cmx-gates-system-ai-handoff-2026-08-04.md`
+ */
+
 (() => {
   const root = document.documentElement;
   if (root.dataset.cmxGate !== 'black-prompt') return;
 
   const GATE_NAME = 'Black Prompt Gate';
   const ITERATIONS = 600000;
+
+  // Encoded credential material only. The plaintext credential is never stored.
   const SALT = 'H9jnkUr1jKwn+NbZvWqXw5WQxSpP/HOg/mR3ckPbx6w=';
   const VERIFIER = 'asdL6NWjTfGhdr0eP9QFwokjIUpBg/1Gha9gFhFGL4k=';
   const STATE_KEY = 'cmx_gate_black_prompt_state_v1';
+
+  // Session unlocks are isolated by the declared gate ID or current pathname.
   const scope = root.dataset.cmxGateId || window.location.pathname;
   const SESSION_KEY = `cmx_gate_black_prompt_session_v1:${scope}`;
   const successDelay = Math.max(250, Number(root.dataset.cmxGateDelay || 700));
