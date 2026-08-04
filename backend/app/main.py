@@ -212,6 +212,7 @@ app.mount("/assets", StaticFiles(directory=assets_dir, check_dir=True), name="as
 PAGE_ROUTES: dict[str, str] = {
     "/": "index.html",
     "/directory": "directory/index.html",
+    "/cases": "cases/index.html",
     "/osint": "osint/index.html",
     "/phone": "phone/index.html",
     "/metadata": "metadata/index.html",
