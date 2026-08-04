@@ -8,7 +8,6 @@
 body.brief-onboarding-open {
   overflow: hidden !important;
   overscroll-behavior: none;
-  touch-action: none;
 }
 
 .brief-onboarding-layer {

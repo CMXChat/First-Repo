@@ -206,9 +206,12 @@ iframe {
   min-height: 48px;
 }
 
-.brief-keyboard-visible .scenario-dock,
-.brief-keyboard-visible .brief-tour-invite {
+.brief-keyboard-visible .scenario-dock {
   transform: translateY(calc(-1 * var(--brief-keyboard-inset)));
+}
+
+.brief-keyboard-visible .brief-tour-invite {
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--brief-keyboard-inset));
 }
 
 @supports (height: 100dvh) {

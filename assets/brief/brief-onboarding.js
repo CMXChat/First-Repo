@@ -45,7 +45,8 @@
     tourOpen: false,
     returnFocus: null,
     appAriaHidden: null,
-    positionTimer: 0
+    positionTimer: 0,
+    stepRetries: 0
   };
 
   function readStorage(key, fallback = '') {
@@ -295,11 +296,19 @@
     const next = Math.max(0, Math.min(STEPS.length - 1, index));
     const step = STEPS[next];
     const target = targetForStep(next);
-    if (!step || !target) {
+    if (!step) return;
+    if (!target) {
+      state.stepRetries += 1;
+      if (state.stepRetries < 12) {
+        window.setTimeout(() => showStep(next), 200);
+        return;
+      }
+      state.stepRetries = 0;
       if (next < STEPS.length - 1) showStep(next + 1);
-      else closeTour(true);
+      else closeTour(false);
       return;
     }
+    state.stepRetries = 0;
     state.current = next;
     $('#briefTourCount').textContent = `STEP ${next + 1} OF ${STEPS.length}`;
     $('#briefTourTitle').textContent = step.title;
@@ -318,7 +327,7 @@
     const layer = $('#briefTourLayer');
     if (!layer) return;
     state.tourOpen = true;
-    state.returnFocus = document.activeElement;
+    state.returnFocus = $('#explainButton') || document.activeElement;
     layer.hidden = false;
     document.body.classList.add('brief-onboarding-open');
     setAppInert(true);

@@ -21,7 +21,7 @@ window.BRIEF_CONFIG = {
 
   const build = {
     device: '20260803-3',
-    onboarding: '20260803-1',
+    onboarding: '20260803-2',
     entry: '20260803-5',
     upgrade: '20260803-5',
     live: '20260803-5',
