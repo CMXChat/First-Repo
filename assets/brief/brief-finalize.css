@@ -1,4 +1,4 @@
-/* Final product hierarchy: navigation stays available, but Full workspace never forces the Map open. */
+/* Final product integrity: optional map, direct Full workspace entry, complete theme coverage and clear product discovery. */
 
 #briefNavigatorBar .brief-you-are-here,
 #briefNavigatorBar .brief-sticky-routes {
@@ -9,8 +9,89 @@
   white-space: nowrap;
 }
 
-[data-open-full-workspace] {
+[data-open-full-workspace],
+[data-open-brief-map],
+[data-start-vision] {
   cursor: pointer;
+}
+
+.brief-related-routes [data-open-full-workspace],
+.brief-related-routes [data-open-brief-map] {
+  min-height: 40px;
+}
+
+.brief-related-routes [data-open-full-workspace] {
+  border-color: rgba(116, 190, 255, .42);
+}
+
+.brief-related-routes [data-open-brief-map] {
+  border-style: dashed;
+}
+
+/* The product vision is discoverable from Quick briefing, not hidden behind Help. */
+.brief-vision-entry-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(18px, 3vw, 36px);
+  align-items: center;
+  margin: 20px 0;
+  padding: clamp(22px, 4vw, 38px);
+  overflow: hidden;
+  border: 1px solid var(--brief-ui-line, rgba(255,255,255,.12));
+  border-radius: 24px;
+  color: var(--brief-ui-text, #f4f7fb);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(89, 166, 255, .16), transparent 42%),
+    radial-gradient(circle at 92% 110%, rgba(177, 117, 255, .13), transparent 40%),
+    var(--brief-ui-card, #0b0f16);
+  box-shadow: var(--brief-ui-shadow, 0 24px 70px rgba(0,0,0,.3));
+}
+
+.brief-vision-entry-card > div {
+  min-width: 0;
+}
+
+.brief-vision-entry-card span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  color: var(--brief-ui-blue, #8dccff);
+}
+
+.brief-vision-entry-card strong {
+  display: block;
+  max-width: 780px;
+  font-size: clamp(20px, 3vw, 34px);
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+
+.brief-vision-entry-card p {
+  max-width: 720px;
+  margin: 12px 0 0;
+  color: var(--brief-ui-muted, #a3adba);
+  line-height: 1.6;
+}
+
+.brief-vision-entry-card button {
+  min-height: 48px;
+  max-width: 230px;
+  padding: 12px 18px;
+  border: 1px solid rgba(116, 190, 255, .48);
+  border-radius: 14px;
+  color: #07121e;
+  background: linear-gradient(135deg, #b9e0ff, #65b4ff);
+  font-weight: 800;
+  line-height: 1.2;
+  box-shadow: 0 12px 30px rgba(55, 151, 230, .22);
+}
+
+.brief-vision-entry-card button:hover,
+.brief-vision-entry-card button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 38px rgba(55, 151, 230, .3);
 }
 
 /* Explicit fallback for browsers that do not support :has(). */
@@ -23,6 +104,319 @@
   min-height: 104px;
 }
 
+/* Final theme contract. Every major surface follows the selected mode. */
+html[data-theme='light'] body,
+html[data-theme='light'] #briefApp,
+html[data-theme='light'] main {
+  color: #142235;
+  background-color: #f3f6fa;
+}
+
+html:not([data-theme='light']) body,
+html:not([data-theme='light']) #briefApp,
+html:not([data-theme='light']) main {
+  color: #f3f7fb;
+  background-color: #000;
+}
+
+html[data-theme='light'] :is(
+  .hero,
+  .next-up-panel,
+  .brief-section,
+  .weather-now,
+  .forecast-item,
+  .music-feature,
+  .spotify-embed-panel,
+  .favorite-track,
+  .scenario-stage,
+  .priority-card,
+  .focus-card,
+  .education-hero,
+  .daily-rhythm-grid > *,
+  .shared-card,
+  .connection-card,
+  .memory-card,
+  .brief-workspace-panel,
+  .quick-signal-card,
+  .quick-next-action,
+  .quick-quote-card,
+  .quick-dayline,
+  .quick-compact-list,
+  .quick-timeline li,
+  .quick-watch-card,
+  .brief-priority-visuals,
+  .polish-kpi,
+  .polish-chart-card,
+  .polish-ring-card,
+  .polish-decision-card,
+  .polish-workload-card,
+  .polish-team-flow,
+  .polish-team-board > section,
+  .polish-team-board article,
+  .polish-handoff-visual,
+  .polish-handoff-visual > article,
+  .polish-finance-bars,
+  .team-space-map,
+  .team-space-grid article,
+  .team-role-console,
+  .team-role-card,
+  .team-role-detail,
+  .team-role-detail > div,
+  .team-progress-panel,
+  .team-handoff-board,
+  .team-procedure-board,
+  .team-procedure-board article,
+  .team-finance-watch,
+  .team-finance-watch article,
+  .team-security-boundary,
+  .brief-terminal-panel,
+  .brief-terminal-output,
+  .brief-terminal-form,
+  .relationship-watch-card,
+  .relationship-watch-media,
+  .brief-navigator-bar,
+  .brief-navigation-panel,
+  .brief-navigation-location,
+  .brief-navigation-depth,
+  .brief-vision-panel,
+  .brief-vision-visual,
+  .brief-vision-copy blockquote
+) {
+  color: #142235;
+  border-color: #d4dee8;
+  background-color: #fff;
+  box-shadow: 0 20px 55px rgba(42,61,84,.1);
+}
+
+html:not([data-theme='light']) :is(
+  .next-up-panel,
+  .weather-now,
+  .forecast-item,
+  .music-feature,
+  .spotify-embed-panel,
+  .favorite-track,
+  .scenario-stage,
+  .priority-card,
+  .focus-card,
+  .education-hero,
+  .daily-rhythm-grid > *,
+  .shared-card,
+  .connection-card,
+  .memory-card,
+  .brief-workspace-panel,
+  .quick-next-action,
+  .quick-quote-card,
+  .quick-dayline,
+  .quick-compact-list,
+  .quick-timeline li,
+  .quick-watch-card,
+  .brief-priority-visuals,
+  .brief-terminal-panel,
+  .brief-terminal-output,
+  .brief-terminal-form,
+  .brief-navigator-bar,
+  .brief-navigation-panel,
+  .brief-navigation-location,
+  .brief-navigation-depth,
+  .brief-vision-panel,
+  .brief-vision-visual,
+  .brief-vision-copy blockquote
+) {
+  color: #f3f7fb;
+  border-color: rgba(255,255,255,.105);
+  background-color: #0a0d13;
+}
+
+html[data-theme='light'] :is(
+  .hero p,
+  .brief-section p,
+  .next-up-panel p,
+  .weather-now p,
+  .forecast-item small,
+  .music-feature p,
+  .spotify-embed-panel p,
+  .favorite-track p,
+  .priority-card p,
+  .focus-card p,
+  .education-hero p,
+  .daily-rhythm-grid p,
+  .shared-card p,
+  .connection-card p,
+  .memory-card p,
+  .quick-signal-card p,
+  .quick-signal-card small,
+  .quick-next-action p,
+  .quick-quote-card footer,
+  .quick-timeline small,
+  .quick-compact-list small,
+  .quick-watch-card p,
+  .brief-vision-panel p,
+  .brief-vision-panel small,
+  .brief-navigation-panel p,
+  .brief-navigation-panel small,
+  .brief-terminal-line.is-system
+) {
+  color: #566576 !important;
+}
+
+html:not([data-theme='light']) :is(
+  .hero p,
+  .brief-section p,
+  .next-up-panel p,
+  .weather-now p,
+  .forecast-item small,
+  .music-feature p,
+  .spotify-embed-panel p,
+  .favorite-track p,
+  .priority-card p,
+  .focus-card p,
+  .education-hero p,
+  .daily-rhythm-grid p,
+  .shared-card p,
+  .connection-card p,
+  .memory-card p,
+  .quick-signal-card p,
+  .quick-signal-card small,
+  .quick-next-action p,
+  .quick-quote-card footer,
+  .quick-timeline small,
+  .quick-compact-list small,
+  .quick-watch-card p,
+  .brief-vision-panel p,
+  .brief-vision-panel small,
+  .brief-navigation-panel p,
+  .brief-navigation-panel small
+) {
+  color: #a3adba;
+}
+
+/* Keep the signal cards expressive in both modes without sacrificing contrast. */
+html[data-theme='light'] .quick-signal-card.tone-blue {
+  background: linear-gradient(145deg, #fff, #edf7ff);
+}
+
+html[data-theme='light'] .quick-signal-card.tone-amber {
+  background: linear-gradient(145deg, #fff, #fff7e7);
+}
+
+html[data-theme='light'] .quick-signal-card.tone-violet {
+  background: linear-gradient(145deg, #fff, #f6efff);
+}
+
+html[data-theme='light'] .quick-signal-card.tone-green {
+  background: linear-gradient(145deg, #fff, #edf9f2);
+}
+
+html[data-theme='light'] .quick-signal-card.tone-pink {
+  background: linear-gradient(145deg, #fff, #fff0f7);
+}
+
+html:not([data-theme='light']) .quick-signal-card.tone-blue {
+  background: linear-gradient(145deg, #0b0f16, rgba(48,132,205,.13));
+}
+
+html:not([data-theme='light']) .quick-signal-card.tone-amber {
+  background: linear-gradient(145deg, #0b0f16, rgba(211,145,45,.12));
+}
+
+html:not([data-theme='light']) .quick-signal-card.tone-violet {
+  background: linear-gradient(145deg, #0b0f16, rgba(142,86,211,.13));
+}
+
+html:not([data-theme='light']) .quick-signal-card.tone-green {
+  background: linear-gradient(145deg, #0b0f16, rgba(53,157,100,.12));
+}
+
+html:not([data-theme='light']) .quick-signal-card.tone-pink {
+  background: linear-gradient(145deg, #0b0f16, rgba(210,84,145,.12));
+}
+
+html[data-theme='light'] :is(
+  .brief-sticky-route,
+  .brief-drawer-routes button,
+  .brief-recent-routes button,
+  .brief-drawer-presets button,
+  .brief-navigation-depth button,
+  .brief-related-routes button,
+  .brief-context-nav button,
+  .quiet-button,
+  .icon-button,
+  .secondary-action,
+  .text-action
+) {
+  color: #2f4b63;
+  border-color: #c6d5e3;
+  background-color: #f7fafc;
+}
+
+html[data-theme='light'] :is(
+  .brief-sticky-route[aria-current='location'],
+  .brief-drawer-routes button[aria-current='location'],
+  .brief-drawer-presets button.is-active,
+  .brief-navigation-depth button.is-active
+) {
+  color: #07121e;
+  border-color: #8dbcdc;
+  background-color: #e6f3fc;
+}
+
+html:not([data-theme='light']) :is(
+  .brief-sticky-route,
+  .brief-drawer-routes button,
+  .brief-recent-routes button,
+  .brief-drawer-presets button,
+  .brief-navigation-depth button,
+  .brief-related-routes button,
+  .brief-context-nav button
+) {
+  color: #c6d0dc;
+  border-color: rgba(255,255,255,.12);
+  background-color: rgba(255,255,255,.025);
+}
+
+html[data-theme='light'] :is(input, select, textarea) {
+  color: #142235;
+  border-color: #c6d5e3;
+  background-color: #fff;
+}
+
+html:not([data-theme='light']) :is(input, select, textarea) {
+  color: #f3f7fb;
+  border-color: rgba(255,255,255,.14);
+  background-color: #080b10;
+}
+
+html[data-theme='light'] :is(.brief-vision-layer, .brief-navigation-drawer) {
+  color: #142235;
+}
+
+html[data-theme='light'] :is(.brief-vision-backdrop, .brief-navigation-backdrop) {
+  background: rgba(29,43,58,.38);
+}
+
+html:not([data-theme='light']) :is(.brief-vision-backdrop, .brief-navigation-backdrop) {
+  background: rgba(0,0,0,.74);
+}
+
+/* Every interactive control gets a visible keyboard state. */
+#briefApp :is(button, a[href], [role='button'], input, select, textarea):focus-visible,
+#briefVisionLayer :is(button, a[href]):focus-visible,
+#briefNavigationDrawer :is(button, a[href]):focus-visible {
+  outline: 3px solid rgba(94, 174, 241, .72);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .brief-vision-entry-card {
+    grid-template-columns: 1fr;
+  }
+
+  .brief-vision-entry-card button {
+    width: 100%;
+    max-width: none;
+  }
+}
+
 @media (max-width: 620px) {
   .brief-help-actions {
     grid-template-columns: 1fr;
@@ -30,6 +424,15 @@
 
   .brief-help-actions #briefTipsToggle {
     grid-column: auto;
+  }
+
+  .brief-related-routes {
+    align-items: stretch;
+  }
+
+  .brief-related-routes [data-open-full-workspace],
+  .brief-related-routes [data-open-brief-map] {
+    width: 100%;
   }
 }
 
@@ -39,11 +442,33 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .brief-vision-entry-card {
+    padding: 20px;
+    border-radius: 19px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   #briefNavigatorBar,
-  [data-open-full-workspace] {
+  [data-open-full-workspace],
+  [data-open-brief-map],
+  [data-start-vision],
+  .brief-vision-entry-card button {
     scroll-behavior: auto;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .brief-vision-entry-card,
+  .brief-vision-entry-card button,
+  [data-open-full-workspace],
+  [data-open-brief-map] {
+    border: 2px solid ButtonText;
+    color: ButtonText;
+    background: ButtonFace;
+    box-shadow: none;
   }
 }
