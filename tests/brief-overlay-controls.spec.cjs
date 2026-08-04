@@ -66,6 +66,7 @@ async function surfaceState(locator, page) {
 
 async function expectInteractiveSurface(locator, page, label = 'surface') {
   await expect(locator).toHaveCount(1);
+  await expect.poll(async () => (await surfaceState(locator, page)).opacity).toBeGreaterThan(0.98);
   const result = await surfaceState(locator, page);
   console.log(`SURFACE_STATE ${label}: ${JSON.stringify(result)}`);
 
@@ -77,7 +78,7 @@ async function expectInteractiveSurface(locator, page, label = 'surface') {
   expect(result.rect.top, JSON.stringify(result)).toBeLessThan(result.viewport.height);
   expect(result.display, JSON.stringify(result)).not.toBe('none');
   expect(result.visibility, JSON.stringify(result)).not.toBe('hidden');
-  expect(result.opacity, JSON.stringify(result)).toBeGreaterThan(0.8);
+  expect(result.opacity, JSON.stringify(result)).toBeGreaterThan(0.98);
   expect(result.pointerEvents, JSON.stringify(result)).not.toBe('none');
   expect(result.topInside, JSON.stringify(result)).toBe(true);
 }
@@ -112,12 +113,16 @@ test('terminal opens above its backdrop and all terminal close flows work', asyn
   await enterPersonalBriefing(page);
 
   const trigger = page.locator('#briefSystemCommandButton');
+  const input = page.locator('#briefTerminalInput');
   await expect(trigger).toBeVisible();
   await trigger.click();
 
   await expect(page.locator('body')).toHaveClass(/brief-terminal-open/);
   await expectInteractiveSurface(page.locator('#briefTerminal.brief-terminal-system-drawer'), page, 'terminal-header-open');
-  await expect(page.locator('#briefTerminalInput')).toBeFocused();
+  await expect(input).toBeFocused();
+  await input.fill('help');
+  await input.press('Enter');
+  await expect(input).toHaveValue('');
 
   await page.locator('[data-terminal-close]').click();
   await expect(page.locator('body')).not.toHaveClass(/brief-terminal-open/);
@@ -128,6 +133,11 @@ test('terminal opens above its backdrop and all terminal close flows work', asyn
   await expectInteractiveSurface(page.locator('#briefTerminal.brief-terminal-system-drawer'), page, 'terminal-dock-open');
   await page.keyboard.press('Escape');
   await expect(page.locator('body')).not.toHaveClass(/brief-terminal-open/);
+
+  await page.locator('#briefSystemSwitcher').click();
+  await expectInteractiveSurface(page.locator('#briefSystemSwitcherLayer .brief-system-drawer'), page, 'switcher-after-terminal');
+  await page.locator('#briefSystemSwitcherLayer [data-system-close]').last().click();
+  await expect(page.locator('body')).not.toHaveClass(/brief-system-overlay-open|brief-terminal-open/);
 });
 
 test('More menu and guided tour open, remain visible and close without leaving blur', async ({ page }) => {
