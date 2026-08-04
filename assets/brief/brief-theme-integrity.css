@@ -1,0 +1,403 @@
+/* Centralized theme integrity for briefing surfaces, cards, maps, media and mobile controls. */
+
+:root,
+html:not([data-theme='light']) {
+  color-scheme: dark;
+  --brief-ui-page: #000000;
+  --brief-ui-surface: #0a0d13;
+  --brief-ui-surface-soft: #10151d;
+  --brief-ui-card: #0b0f16;
+  --brief-ui-card-soft: rgba(255,255,255,.028);
+  --brief-ui-line: rgba(255,255,255,.105);
+  --brief-ui-line-strong: rgba(126,190,248,.32);
+  --brief-ui-text: #f3f7fb;
+  --brief-ui-muted: #a3adba;
+  --brief-ui-subtle: #7f8b99;
+  --brief-ui-blue: #8dccff;
+  --brief-ui-shadow: 0 24px 70px rgba(0,0,0,.34);
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+  --brief-ui-page: #f3f6fa;
+  --brief-ui-surface: #ffffff;
+  --brief-ui-surface-soft: #f5f8fb;
+  --brief-ui-card: #ffffff;
+  --brief-ui-card-soft: #f7f9fc;
+  --brief-ui-line: #d4dee8;
+  --brief-ui-line-strong: #a8c9e5;
+  --brief-ui-text: #142235;
+  --brief-ui-muted: #566576;
+  --brief-ui-subtle: #6e7c8c;
+  --brief-ui-blue: #075f9f;
+  --brief-ui-shadow: 0 20px 55px rgba(42,61,84,.12);
+}
+
+html[data-theme='light'] body {
+  background-color: var(--brief-ui-page);
+  color: var(--brief-ui-text);
+}
+
+html:not([data-theme='light']) body {
+  background-color: var(--brief-ui-page);
+  color: var(--brief-ui-text);
+}
+
+/* Shared surface contract. */
+.brief-workspace-panel,
+.quick-signal-card,
+.quick-next-action,
+.quick-quote-card,
+.quick-dayline,
+.quick-compact-list,
+.quick-timeline li,
+.quick-watch-card,
+.brief-priority-visuals,
+.polish-kpi,
+.polish-chart-card,
+.polish-ring-card,
+.polish-decision-card,
+.polish-workload-card,
+.polish-team-flow,
+.polish-team-flow > div,
+.polish-team-board > section,
+.polish-team-board article,
+.polish-handoff-visual,
+.polish-handoff-visual > article,
+.polish-finance-bars,
+.team-space-map,
+.team-space-grid article,
+.team-role-console,
+.team-role-card,
+.team-role-detail,
+.team-role-detail > div,
+.team-progress-panel,
+.team-handoff-board,
+.team-procedure-board,
+.team-procedure-board article,
+.team-finance-watch,
+.team-finance-watch article,
+.team-security-boundary,
+.brief-terminal-panel,
+.brief-terminal-output,
+.brief-terminal-form,
+.relationship-watch-card,
+.relationship-watch-media,
+.brief-navigator-bar,
+.brief-navigation-panel,
+.brief-navigation-location,
+.brief-navigation-depth,
+.brief-glass-panel,
+.brief-tour-bubble,
+.brief-tour-invite {
+  color: var(--brief-ui-text);
+  border-color: var(--brief-ui-line);
+}
+
+html:not([data-theme='light']) .quick-signal-card,
+html:not([data-theme='light']) .quick-dayline,
+html:not([data-theme='light']) .quick-compact-list,
+html:not([data-theme='light']) .quick-timeline li,
+html:not([data-theme='light']) .polish-kpi,
+html:not([data-theme='light']) .polish-chart-card,
+html:not([data-theme='light']) .polish-ring-card,
+html:not([data-theme='light']) .polish-workload-card,
+html:not([data-theme='light']) .polish-team-flow,
+html:not([data-theme='light']) .polish-team-board > section,
+html:not([data-theme='light']) .polish-handoff-visual,
+html:not([data-theme='light']) .polish-finance-bars,
+html:not([data-theme='light']) .team-space-grid article,
+html:not([data-theme='light']) .team-role-card,
+html:not([data-theme='light']) .team-procedure-board article,
+html:not([data-theme='light']) .team-finance-watch article {
+  background-color: var(--brief-ui-card-soft);
+}
+
+html:not([data-theme='light']) .polish-team-flow > div,
+html:not([data-theme='light']) .polish-team-board article,
+html:not([data-theme='light']) .team-role-detail > div {
+  background-color: var(--brief-ui-card);
+}
+
+html[data-theme='light'] .brief-workspace-panel,
+html[data-theme='light'] .quick-signal-card,
+html[data-theme='light'] .quick-next-action,
+html[data-theme='light'] .quick-quote-card,
+html[data-theme='light'] .quick-dayline,
+html[data-theme='light'] .quick-compact-list,
+html[data-theme='light'] .quick-timeline li,
+html[data-theme='light'] .quick-watch-card,
+html[data-theme='light'] .brief-priority-visuals,
+html[data-theme='light'] .polish-kpi,
+html[data-theme='light'] .polish-chart-card,
+html[data-theme='light'] .polish-ring-card,
+html[data-theme='light'] .polish-decision-card,
+html[data-theme='light'] .polish-workload-card,
+html[data-theme='light'] .polish-team-flow,
+html[data-theme='light'] .polish-team-flow > div,
+html[data-theme='light'] .polish-team-board > section,
+html[data-theme='light'] .polish-team-board article,
+html[data-theme='light'] .polish-handoff-visual,
+html[data-theme='light'] .polish-handoff-visual > article,
+html[data-theme='light'] .polish-finance-bars,
+html[data-theme='light'] .team-space-map,
+html[data-theme='light'] .team-space-grid article,
+html[data-theme='light'] .team-role-console,
+html[data-theme='light'] .team-role-card,
+html[data-theme='light'] .team-role-detail,
+html[data-theme='light'] .team-role-detail > div,
+html[data-theme='light'] .team-progress-panel,
+html[data-theme='light'] .team-handoff-board,
+html[data-theme='light'] .team-procedure-board,
+html[data-theme='light'] .team-procedure-board article,
+html[data-theme='light'] .team-finance-watch,
+html[data-theme='light'] .team-finance-watch article,
+html[data-theme='light'] .team-security-boundary,
+html[data-theme='light'] .relationship-watch-card,
+html[data-theme='light'] .relationship-watch-media {
+  color: var(--brief-ui-text);
+  border-color: var(--brief-ui-line);
+  background-color: var(--brief-ui-card);
+  box-shadow: var(--brief-ui-shadow);
+}
+
+/* Muted copy must never inherit dark-mode gray in light mode. */
+html[data-theme='light'] .quick-signal-card p,
+html[data-theme='light'] .quick-signal-card small,
+html[data-theme='light'] .quick-next-action p,
+html[data-theme='light'] .quick-quote-card footer,
+html[data-theme='light'] .quick-timeline small,
+html[data-theme='light'] .quick-compact-list small,
+html[data-theme='light'] .quick-watch-card p,
+html[data-theme='light'] .polish-visual-head > p,
+html[data-theme='light'] .polish-kpi small,
+html[data-theme='light'] .polish-decision-card p,
+html[data-theme='light'] .polish-workload-list small,
+html[data-theme='light'] .polish-team-flow small,
+html[data-theme='light'] .polish-team-board small,
+html[data-theme='light'] .polish-team-board p,
+html[data-theme='light'] .polish-handoff-visual article span,
+html[data-theme='light'] .polish-finance-bars article small,
+html[data-theme='light'] .team-space-grid p,
+html[data-theme='light'] .team-role-card small,
+html[data-theme='light'] .team-role-detail p,
+html[data-theme='light'] .team-progress-line small,
+html[data-theme='light'] .team-procedure-board p,
+html[data-theme='light'] .team-finance-watch small,
+html[data-theme='light'] .team-security-boundary small,
+html[data-theme='light'] .relationship-watch-load-status,
+html[data-theme='light'] .brief-terminal-line.is-system,
+html[data-theme='light'] .brief-navigation-panel > footer span,
+html[data-theme='light'] .brief-recent-routes p {
+  color: var(--brief-ui-muted) !important;
+}
+
+html:not([data-theme='light']) .quick-signal-card p,
+html:not([data-theme='light']) .quick-signal-card small,
+html:not([data-theme='light']) .quick-next-action p,
+html:not([data-theme='light']) .quick-quote-card footer,
+html:not([data-theme='light']) .quick-timeline small,
+html:not([data-theme='light']) .quick-compact-list small,
+html:not([data-theme='light']) .polish-kpi small,
+html:not([data-theme='light']) .polish-decision-card p,
+html:not([data-theme='light']) .polish-team-flow small,
+html:not([data-theme='light']) .polish-team-board p,
+html:not([data-theme='light']) .team-space-grid p,
+html:not([data-theme='light']) .team-role-card small,
+html:not([data-theme='light']) .team-role-detail p {
+  color: var(--brief-ui-muted);
+}
+
+/* Chart and progress readability. */
+html[data-theme='light'] .polish-sparkline text {
+  fill: #20384f;
+}
+
+html[data-theme='light'] .polish-sparkline .polish-axis-label {
+  fill: #617183;
+}
+
+html[data-theme='light'] .polish-sparkline circle {
+  fill: #ffffff;
+  stroke: #247db9;
+}
+
+html[data-theme='light'] .polish-chart-line {
+  stroke: #1676b5;
+}
+
+html[data-theme='light'] .polish-chart-area {
+  fill: rgba(30,126,190,.14);
+}
+
+html[data-theme='light'] .polish-ring::before {
+  background: #ffffff;
+}
+
+html[data-theme='light'] .polish-ring span,
+html[data-theme='light'] .team-progress-line li > span {
+  color: #142235;
+}
+
+html[data-theme='light'] .team-progress-line li > span {
+  background: #ffffff;
+}
+
+html[data-theme='light'] .team-progress-line li.is-complete > span {
+  color: #0d4f2d;
+  background: #e7f8ef;
+}
+
+html[data-theme='light'] .team-progress-line li.is-in-progress > span {
+  color: #6b3e00;
+  background: #fff4df;
+}
+
+/* Navigation and drawer contrast. */
+html[data-theme='light'] .brief-navigator-bar,
+html[data-theme='light'] .brief-navigation-panel,
+html[data-theme='light'] .brief-navigation-location,
+html[data-theme='light'] .brief-navigation-depth {
+  color: var(--brief-ui-text);
+  border-color: var(--brief-ui-line);
+  background-color: rgba(255,255,255,.94);
+}
+
+html[data-theme='light'] .brief-sticky-route,
+html[data-theme='light'] .brief-drawer-routes button,
+html[data-theme='light'] .brief-recent-routes button,
+html[data-theme='light'] .brief-drawer-presets button,
+html[data-theme='light'] .brief-navigation-depth button {
+  color: #41566b;
+}
+
+html[data-theme='light'] .brief-sticky-route[aria-current='location'],
+html[data-theme='light'] .brief-drawer-routes button[aria-current='location'],
+html[data-theme='light'] .brief-drawer-presets button.is-active,
+html[data-theme='light'] .brief-navigation-depth button.is-active {
+  color: #07121e;
+}
+
+html:not([data-theme='light']) .brief-navigation-panel,
+html:not([data-theme='light']) .brief-navigator-bar {
+  background-color: rgba(7,11,18,.92);
+}
+
+/* Terminal and media remain legible in both themes. */
+html[data-theme='light'] .brief-terminal-panel,
+html[data-theme='light'] .brief-terminal-output,
+html[data-theme='light'] .brief-terminal-form {
+  color: var(--brief-ui-text);
+  border-color: var(--brief-ui-line);
+  background-color: #ffffff;
+}
+
+html[data-theme='light'] .brief-terminal-form input {
+  color: #111b28;
+}
+
+html[data-theme='light'] .quick-watch-card b,
+html[data-theme='light'] .relationship-watch-card a,
+html[data-theme='light'] .quick-signal-card[data-quick-route]::after {
+  color: #075f9f;
+}
+
+/* Permanent top map control and narrow-device toolbar safety. */
+.brief-top-map-button {
+  position: relative;
+}
+
+.brief-top-map-button > span {
+  display: block;
+  font-size: 17px;
+  line-height: 1;
+  transform: translateY(-.5px);
+}
+
+.brief-top-map-button.is-active {
+  color: #07121e !important;
+  border-color: #8dccff !important;
+  background: linear-gradient(135deg, #a8d7ff, #61afff) !important;
+  box-shadow: 0 0 0 3px rgba(97,175,255,.15), 0 8px 22px rgba(61,151,229,.22) !important;
+}
+
+.top-actions {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.top-actions::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    gap: 6px;
+  }
+
+  .brand > span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+  }
+
+  .brand {
+    flex: 0 0 30px;
+    width: 30px;
+    min-width: 30px;
+  }
+
+  .top-actions {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    max-width: calc(100vw - 50px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+  }
+
+  .top-actions > button {
+    scroll-snap-align: end;
+  }
+}
+
+@media (max-width: 350px) {
+  .top-actions {
+    gap: 3px !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .brief-workspace-panel,
+  .quick-signal-card,
+  .quick-next-action,
+  .quick-quote-card,
+  .quick-dayline,
+  .quick-compact-list,
+  .brief-priority-visuals,
+  .polish-kpi,
+  .polish-chart-card,
+  .polish-ring-card,
+  .polish-team-board > section,
+  .polish-team-board article,
+  .brief-navigation-panel,
+  .brief-navigator-bar {
+    border-width: 2px;
+  }
+}
+
+@media (forced-colors: active) {
+  .brief-top-map-button {
+    border: 2px solid ButtonText !important;
+    background: ButtonFace !important;
+    color: ButtonText !important;
+  }
+
+  .brief-top-map-button.is-active {
+    background: Highlight !important;
+    color: HighlightText !important;
+  }
+}
