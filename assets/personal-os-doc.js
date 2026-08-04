@@ -58,7 +58,43 @@
     });
   }
 
+  function installDemoCallout() {
+    if (document.getElementById('personalOsDocDemo')) return;
+
+    if (!document.getElementById('personalOsDocDemoStyle')) {
+      const style = document.createElement('link');
+      style.id = 'personalOsDocDemoStyle';
+      style.rel = 'stylesheet';
+      style.href = '/assets/personal-os-doc-demo.css?v=20260804-1';
+      document.head.appendChild(style);
+    }
+
+    const footer = document.querySelector('.document-footer');
+    if (!footer) return;
+
+    const callout = document.createElement('section');
+    callout.id = 'personalOsDocDemo';
+    callout.className = 'document-demo-callout';
+    callout.setAttribute('aria-labelledby', 'personalOsDocDemoTitle');
+    callout.innerHTML = `
+      <div class="document-demo-copy">
+        <span class="document-demo-status">Active development preview</span>
+        <h2 id="personalOsDocDemoTitle">See the current demo</h2>
+        <p>The demo is still in active development. Its interface, structure, data connections, and daily operating flow will continue changing substantially as the Personal OS is built. The final experience will look and behave very differently from this early preview.</p>
+      </div>
+      <div class="document-demo-action">
+        <a class="document-demo-button" href="/brief/">
+          <span>See demo</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <span class="document-demo-note">Uses fictional demonstration data. Features and presentation are still in progress.</span>
+      </div>`;
+
+    footer.insertAdjacentElement('beforebegin', callout);
+  }
+
   applyTheme(readTheme());
+  installDemoCallout();
 
   themeButton?.addEventListener('click', () => {
     applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
