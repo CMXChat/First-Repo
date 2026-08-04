@@ -7,6 +7,7 @@ on:
       - 'assets/news-navigation-state.js'
       - 'assets/news-navigation.css'
       - 'assets/news-resilience.js'
+      - 'assets/news-resilience-bounds.js'
       - 'assets/news-resilience.css'
       - 'assets/news-loader.js'
       - 'assets/news-workspace.js'
@@ -24,6 +25,7 @@ on:
       - 'assets/news-navigation-state.js'
       - 'assets/news-navigation.css'
       - 'assets/news-resilience.js'
+      - 'assets/news-resilience-bounds.js'
       - 'assets/news-resilience.css'
       - 'assets/news-loader.js'
       - 'assets/news-workspace.js'
@@ -53,6 +55,7 @@ jobs:
           node --check assets/news-navigation.js
           node --check assets/news-navigation-state.js
           node --check assets/news-resilience.js
+          node --check assets/news-resilience-bounds.js
           node --check assets/news-workspace.js
           node --check assets/news-polish.js
           node --check tests/news-browser-e2e.spec.cjs
