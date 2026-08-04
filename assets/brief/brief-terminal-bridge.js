@@ -27,7 +27,7 @@
   const TERMINAL_SUMMARY = 'demo navigation · backend later';
   const NAVIGATION_VERSION = '20260803-6';
   const INTERFACE_VERSION = '20260803-2';
-  const FINAL_VERSION = '20260803-2';
+  const FINAL_VERSION = '20260804-1';
 
   let initialized = false;
   let lastPreset = '';
