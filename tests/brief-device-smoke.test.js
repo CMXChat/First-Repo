@@ -193,6 +193,11 @@ const scrollCalls = [];
 const windowMock = new EventTargetMock();
 windowMock.window = windowMock;
 windowMock.document = documentMock;
+windowMock.location = { hash: '', pathname: '/brief/', search: '' };
+windowMock.history = {
+  state: null,
+  replaceState(state) { this.state = state; }
+};
 windowMock.setTimeout = setTimeout;
 windowMock.requestAnimationFrame = callback => { callback(); return 1; };
 windowMock.cancelAnimationFrame = () => {};
