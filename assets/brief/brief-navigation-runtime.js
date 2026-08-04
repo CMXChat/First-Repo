@@ -67,6 +67,13 @@
     return tab;
   }
 
+  function releaseDrawerBackground(delay = 180) {
+    window.setTimeout(() => {
+      const drawer = $('#briefNavigationDrawer');
+      if (!drawer || drawer.hidden || !drawer.classList.contains('is-visible')) setAppInert(false);
+    }, delay);
+  }
+
   function setQuickRoute(routeId, push = true) {
     const current = preset();
     const tab = TAB_BY_ROUTE[current]?.[routeId] || 'overview';
@@ -80,12 +87,16 @@
       window.setTimeout(() => $('#briefWorkspacePanel')?.focus({ preventScroll: true }), reducedMotion() ? 0 : 260);
       canonicalUrl(routeId, 'quick', push);
       window.BRIEF_NAVIGATION?.close?.(false);
+      releaseDrawerBackground(220);
       scheduleEnhancements();
     }, 70);
   }
 
   function canonicalizeFullRoute(routeId, push = true) {
-    window.setTimeout(() => canonicalUrl(routeId, 'full', push), 220);
+    window.setTimeout(() => {
+      canonicalUrl(routeId, 'full', push);
+      releaseDrawerBackground(140);
+    }, 220);
   }
 
   function interceptNavigation() {
@@ -207,6 +218,7 @@
         }, 40);
       }
       if (event.target.closest?.('[data-nav-close]')) setAppInert(false);
+      if (event.target.closest?.('#briefDrawerPresets button, #briefRecentRoutes button, #briefDrawerRoutes [data-nav-route]')) releaseDrawerBackground(260);
     }, true);
     window.addEventListener('keydown', event => {
       if (event.key === 'Escape') setAppInert(false);
@@ -225,7 +237,7 @@
     navigationRecoveryCount += 1;
     const script = document.createElement('script');
     script.id = 'briefNavigationRecoveryScript';
-    script.src = `/assets/brief/brief-navigation.js?v=20260803-1-recovery-${navigationRecoveryCount}`;
+    script.src = `/assets/brief/brief-navigation.js?v=20260803-2-recovery-${navigationRecoveryCount}`;
     script.async = false;
     script.addEventListener('load', () => {
       script.removeAttribute('id');
