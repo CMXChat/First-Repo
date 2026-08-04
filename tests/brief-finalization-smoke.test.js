@@ -86,7 +86,8 @@ assert.match(flow, /briefRouteJump/);
 assert.match(flow, /data-flow-top/);
 assert.match(flow, /brief:preset-change/);
 assert.match(flow, /history\.scrollRestoration = 'manual'/);
-assert.match(flow, /data-brief-content-landed/);
+assert.match(flow, /dataset\.briefContentLanded/);
+assert.match(flow, /dataset\.briefEntryAtTop/);
 assert.doesNotMatch(flow, /new MutationObserver/);
 assert.doesNotMatch(flow, /setInterval/);
 
@@ -140,6 +141,7 @@ assert.match(visionV2, /data-vision-choice/);
 assert.match(visionV2, /briefVisionXp/);
 assert.match(visionV2, /trapFocus/);
 assert.match(visionV2, /Escape/);
+assert.match(visionV2, /helpVisible/);
 assert.match(visionV2, /window\.BRIEF_VISION_TOUR/);
 assert.doesNotMatch(visionV2, /setInterval/);
 assert.doesNotMatch(visionV2, /new MutationObserver/);
