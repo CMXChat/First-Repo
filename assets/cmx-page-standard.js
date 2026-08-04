@@ -23,7 +23,7 @@
   }
 
   root.dataset.cmxAccess = guardedRoutes.has(currentPath) ? 'client-session' : 'public-entry';
-  if (guardedRoutes.has(currentPath)) loadToolHardening();
+  if (guardedRoutes.has(currentPath) && root.dataset.cmxModern !== 'true') loadToolHardening();
 
   function hasActiveClientSession() {
     try {
