@@ -184,6 +184,8 @@ const scrollCalls = [];
 const windowMock = new EventTargetMock();
 windowMock.window = windowMock;
 windowMock.document = documentMock;
+windowMock.location = { hash: '', pathname: '/brief/', search: '' };
+windowMock.history = { state: null, replaceState() {} };
 windowMock.setTimeout = setTimeout;
 windowMock.requestAnimationFrame = callback => {
   callback(Date.now());
