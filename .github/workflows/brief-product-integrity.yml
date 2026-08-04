@@ -1,0 +1,44 @@
+name: Brief Product Integrity
+
+on:
+  pull_request:
+    paths:
+      - 'brief/**'
+      - 'assets/brief/**'
+      - 'tests/brief-*.test.js'
+      - '.github/workflows/brief-product-integrity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'brief/**'
+      - 'assets/brief/**'
+      - 'tests/brief-*.test.js'
+      - '.github/workflows/brief-product-integrity.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  static-product-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate briefing scripts
+        run: |
+          node --check assets/brief/brief-terminal-bridge.js
+          node --check assets/brief/brief-theme-integrity.js
+          node --check assets/brief/brief-navigation.js
+          node --check assets/brief/brief-navigation-runtime.js
+          node --check assets/brief/brief-map-top.js
+          node --check assets/brief/brief-vision-tour.js
+          node --check assets/brief/brief-finalize.js
+
+      - name: Run briefing smoke tests
+        run: |
+          set -e
+          for test in tests/brief-*.test.js; do
+            echo "Running $test"
+            node "$test"
+          done
