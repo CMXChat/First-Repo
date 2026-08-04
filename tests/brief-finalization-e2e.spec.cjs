@@ -34,6 +34,34 @@ async function insideViewport(locator) {
   expect(bounds.bottom).toBeLessThanOrEqual(bounds.height + 3);
 }
 
+test('Mobile entry always begins at the true document top', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    localStorage.setItem('cmxBriefDemo:onboarding:tips', 'off');
+  });
+  await page.goto('/brief/?mobile-entry-top=1', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#briefEntryRadio')).toBeVisible();
+  await page.locator('.brief-entry-radio-card.is-individual').click();
+
+  await page.evaluate(() => {
+    document.documentElement.style.overflow = 'auto';
+    document.body.style.overflow = 'auto';
+    document.body.style.minHeight = '4000px';
+    window.scrollTo(0, 1200);
+    document.documentElement.scrollTop = 1200;
+    document.body.scrollTop = 1200;
+  });
+  await expect.poll(() => page.evaluate(() => window.scrollY || document.documentElement.scrollTop || document.body.scrollTop)).toBeGreaterThan(100);
+
+  await page.locator('#enterBrief').click({ force: true });
+  await expect(page.locator('body')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#briefWorkspace')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.scrollY || document.documentElement.scrollTop || document.body.scrollTop)).toBeLessThanOrEqual(1);
+  await expect(page.locator('.topbar')).toBeInViewport();
+});
+
 test('Map remains optional and its controls stay synchronized', async ({ page }) => {
   await enter(page);
   const drawer = page.locator('#briefNavigationDrawer');
