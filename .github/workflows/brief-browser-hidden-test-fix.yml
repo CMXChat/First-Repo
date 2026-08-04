@@ -1,0 +1,41 @@
+name: Fix Hidden Team Flow Browser Assertion
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-browser-hidden-test-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Measure the visible Quick Team card
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('tests/brief-browser-e2e.spec.cjs')
+          text = path.read_text()
+          old = "  await expectReadable(page.locator('.polish-team-flow > div').first(), 'strong');\n  await page.locator('[data-depth-choice=\"full\"]').click();"
+          new = "  await expectReadable(page.locator('.polish-workload-card'), 'strong');\n  await page.locator('[data-depth-choice=\"full\"]').click();"
+          if old not in text:
+              raise SystemExit('hidden Team flow assertion not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+
+      - name: Validate test syntax
+        run: node --check tests/brief-browser-e2e.spec.cjs
+
+      - name: Commit corrected browser assertion
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/brief-browser-e2e.spec.cjs
+          git commit -m 'Measure visible Team card before Full workspace'
+          git push
