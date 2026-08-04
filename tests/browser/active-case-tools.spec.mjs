@@ -204,3 +204,76 @@ test('Direct capture writes source, finding and query records without fetching t
   )).toBeTruthy();
   expect(externalRequests).toBe(0);
 });
+
+test('OSINT enrichment cancels stale work and saves one normalized finding to the active case', async ({ page, request }) => {
+  const record = await createCase(request, `Enrichment active case ${Date.now()}`, 'osint');
+  let providerRequests = 0;
+
+  await page.route('**/api/enrichment/rdap?*', async (route) => {
+    const target = new URL(route.request().url()).searchParams.get('target') || '';
+    if (target === 'old.example.com') {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        adapter: 'rdap',
+        provider: 'IANA-bootstrapped RDAP service (rdap.registry.example)',
+        source_url: `https://rdap.registry.example/domain/${target}`,
+        collected_at: '2026-08-04T18:30:00+00:00',
+        target,
+        target_type: 'domain',
+        result: {
+          object_class_name: 'domain',
+          handle: `HANDLE-${target}`,
+          status: ['active'],
+          ldh_name: target.toUpperCase(),
+          nameservers: ['NS1.EXAMPLE.NET']
+        },
+        cache_hit: false,
+        requested_by: 'development:browser@example.test'
+      })
+    });
+  });
+
+  await page.route('https://rdap.registry.example/**', async (route) => {
+    providerRequests += 1;
+    await route.abort();
+  });
+
+  await openTool(page, '/osint', record.id);
+  await page.locator('#enrichmentTarget').fill('old.example.com');
+  await page.getByRole('button', { name: 'Run RDAP' }).click();
+  await expect(page.getByRole('button', { name: 'Cancel' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Cancel' }).click();
+
+  await page.locator('#enrichmentTarget').fill('example.com');
+  await page.getByRole('button', { name: 'Run RDAP' }).click();
+  await expect(page.locator('#enrichmentResult')).toBeVisible();
+  await expect(page.locator('#enrichmentProvenance')).toContainText('rdap.registry.example');
+  await expect(page.locator('#enrichmentSummary')).toContainText('EXAMPLE.COM');
+  await expect(page.locator('#enrichmentSaveDisclosure')).toContainText('enrichment_rdap');
+  await expect(page.getByRole('button', { name: 'Save finding to active case' })).toBeEnabled();
+
+  await page.waitForTimeout(650);
+  await expect(page.locator('#enrichmentProvenance')).toContainText('example.com');
+  await expect(page.locator('#enrichmentProvenance')).not.toContainText('old.example.com');
+
+  await page.getByRole('button', { name: 'Save finding to active case' }).click();
+  await expect(page.locator('#enrichmentStatus')).toContainText(/Saved enrichment_rdap observation/i);
+
+  await page.getByRole('button', { name: 'Save finding to active case' }).click();
+  await expect(page.locator('#enrichmentDuplicate')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Save finding to active case' })).toBeDisabled();
+
+  const detailResponse = await request.get(`/api/cases/${record.id}`);
+  expect(detailResponse.status()).toBe(200);
+  const detail = await detailResponse.json();
+  const observations = detail.observations.filter((item) => item.kind === 'enrichment_rdap');
+  expect(observations).toHaveLength(1);
+  expect(observations[0].value_text).toContain('example.com');
+  expect(observations[0].confidence).toBe('unrated');
+  expect(observations[0].note).toContain('IANA-bootstrapped RDAP service');
+  expect(providerRequests).toBe(0);
+});
