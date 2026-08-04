@@ -33,6 +33,15 @@ async function openProtected(page, path) {
   );
 }
 
+async function openCaseCreation(page) {
+  const title = page.locator('#caseTitle');
+  if (await title.isVisible()) return;
+  const toggle = page.getByRole('button', { name: 'New case', exact: true });
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(title).toBeVisible();
+}
+
 async function createPersistentCase(request, title, caseType = 'general') {
   const response = await request.post('/api/cases', {
     headers: writeHeaders,
@@ -182,6 +191,7 @@ test('Metadata renders an adversarial filename as text', async ({ page }) => {
 test('Cases creates and renders an adversarial title safely', async ({ page }) => {
   await openProtected(page, '/cases');
   await expect(page.locator('#backendBadge')).toHaveText(/Backend connected/i);
+  await openCaseCreation(page);
 
   const title = `<img src=x onerror=window.__cmxCaseXss=1> ${Date.now()}`;
   await page.locator('#caseTitle').fill(title);
@@ -198,6 +208,7 @@ test('Cases creates and renders an adversarial title safely', async ({ page }) =
 test('Cases imports a Search session through the visible workspace', async ({ page }) => {
   await openProtected(page, '/cases');
   await expect(page.locator('#backendBadge')).toHaveText(/Backend connected/i);
+  await openCaseCreation(page);
 
   const title = `Import case ${Date.now()}`;
   await page.locator('#caseTitle').fill(title);
