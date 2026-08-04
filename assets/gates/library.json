@@ -1,16 +1,41 @@
 {
-  "version": 1,
-  "updated": "2026-08-04",
+  "version": 2,
+  "updated": "2026-08-04T15:25:00-04:00",
+  "documentation": "/docs/concepts/cmx-gates-system-ai-handoff-2026-08-04.md",
   "gates": [
+    {
+      "id": "restricted-node",
+      "name": "Restricted Node Gate",
+      "status": "active-root-integrated",
+      "reusability": "root-specific",
+      "description": "The blue CMX boot, authentication, and restricted terminal experience used by the repository root.",
+      "route": "/",
+      "markup": "/index.html",
+      "stylesheet": "/assets/cmx-terminal.css",
+      "authPolicy": "/assets/cmx-auth-policy.js",
+      "runtime": [
+        "/assets/cmx-ops-core.js",
+        "/assets/cmx-ops-site.js",
+        "/assets/cmx-ops-intel.js",
+        "/assets/cmx-ops-runtime.js"
+      ],
+      "preview": "/",
+      "credentialPolicy": "PBKDF2-SHA256 fixed verifier",
+      "iterations": 600000,
+      "securityBoundary": "client-side deterrent"
+    },
     {
       "id": "black-prompt",
       "name": "Black Prompt Gate",
+      "status": "active-reusable",
+      "reusability": "drop-in-static-theme",
       "description": "A full-screen black command prompt showing only a white password prompt until authentication.",
       "stylesheet": "/assets/gates/cmx-gate-black-prompt.css",
       "script": "/assets/gates/cmx-gate-black-prompt.js",
       "preview": "/gate-library/black-prompt/",
       "credentialPolicy": "PBKDF2-SHA256 fixed verifier",
-      "iterations": 600000
+      "iterations": 600000,
+      "securityBoundary": "client-side deterrent"
     }
   ]
 }
