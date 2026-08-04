@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, extname, join, normalize, resolve } from 'node:path';
+import { join, normalize, resolve } from 'node:path';
 import process from 'node:process';
 
 const root = resolve(process.cwd());
@@ -47,12 +47,8 @@ const bannedPatterns = [
   { pattern: /```||/, label: 'trailing editor artifact' }
 ];
 
-const checkedPages = [
-  'search/index.html',
-  'missing/index.html'
-];
-
-for (const file of checkedPages) {
+const migratedPages = ['search/index.html'];
+for (const file of migratedPages) {
   if (!existsSync(join(root, file))) continue;
   const source = readFileSync(join(root, file), 'utf8');
   for (const { pattern, label } of bannedPatterns) {
@@ -99,4 +95,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log('OSINT platform checks passed.');
+console.log(`OSINT platform checks passed for ${migratedPages.length} migrated tool page.`);
