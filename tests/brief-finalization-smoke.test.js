@@ -30,6 +30,11 @@ assert.match(bridge, /briefVisionStyle/);
 assert.match(bridge, /briefFinalizeScript/);
 assert.match(bridge, /briefVisionScript/);
 assert.match(bridge, /script\.addEventListener\('error', finish/);
+assert.match(bridge, /installEntryTopReset/);
+assert.match(bridge, /resetEntryPosition/);
+assert.match(bridge, /history\.scrollRestoration = 'manual'/);
+assert.match(bridge, /#enterBrief/);
+assert.match(bridge, /requestAnimationFrame/);
 assert.ok(bridge.indexOf("briefFinalizeStyle") > bridge.indexOf("briefThemeIntegrityStyle"));
 assert.ok(bridge.indexOf("briefFinalizeScript") > bridge.indexOf("briefVisionScript"));
 
