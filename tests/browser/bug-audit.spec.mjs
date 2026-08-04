@@ -90,7 +90,11 @@ test('case created through the visible form appears without a manual refresh', a
   await grantClientSession(page);
   await page.goto('/cases', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#backendBadge')).toHaveText(/Backend connected/i);
-  await page.getByRole('button', { name: 'New case' }).click();
+  const toggle = page.locator('#operatorNewCase');
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#operatorCaseDrawer')).toBeVisible();
   await page.locator('#caseTitle').fill(title);
   await page.locator('#caseAuthorization').fill('Authorized visible create regression');
   await page.locator('#createCase').click();
