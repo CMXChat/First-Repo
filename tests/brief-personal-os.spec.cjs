@@ -16,6 +16,7 @@ async function enterPersonalBriefing(page) {
   await expect(page.locator('body')).not.toHaveClass(/is-locked/);
   await expect(page.locator('#briefPersonalOS')).toBeVisible();
   await expect(page.locator('body')).toHaveClass(/brief-full-home-ready/);
+  await expect(page.locator('body')).toHaveClass(/brief-personal-os-stability-ready/);
 }
 
 async function reenterAfterReload(page) {
@@ -31,11 +32,13 @@ async function expectNoDocumentScroll(page) {
     innerHeight: window.innerHeight,
     documentHeight: document.documentElement.scrollHeight,
     bodyHeight: document.body.scrollHeight,
-    overflow: getComputedStyle(document.body).overflow
+    overflow: getComputedStyle(document.body).overflow,
+    pageY: window.scrollY
   }));
   expect(metrics.overflow).toBe('hidden');
   expect(metrics.documentHeight).toBeLessThanOrEqual(metrics.innerHeight + 4);
   expect(metrics.bodyHeight).toBeLessThanOrEqual(metrics.innerHeight + 4);
+  expect(metrics.pageY).toBeLessThanOrEqual(1);
 }
 
 test('desktop opens with the full operating picture inside the OS viewport', async ({ page }) => {
@@ -90,12 +93,19 @@ test('Quick is optional and the selected depth persists for future visits', asyn
   await expect(page.locator('.brief-os-home-module:visible')).toHaveCount(8);
 });
 
-test('Full home uses progressive disclosure and local task completion', async ({ page }) => {
+test('Full home uses progressive disclosure, visible actions and local task completion', async ({ page }) => {
   await enterPersonalBriefing(page);
   const messages = page.locator('[data-home-module="messages"]');
-  await messages.locator('summary').click();
+  const summary = messages.locator('summary');
+  await expect(summary).toBeVisible();
+  await expect(summary).toHaveCSS('border-radius', '999px');
+  await summary.click();
   await expect(messages.locator('details')).toHaveAttribute('open', '');
   await expect(messages).toHaveClass(/is-expanded/);
+
+  const action = messages.locator('.brief-os-home-detail > button');
+  await expect(action).toBeVisible();
+  await expect(action).toHaveCSS('border-radius', '999px');
 
   const task = page.locator('[data-home-module="tasks"] [data-brief-home-task]').first();
   await task.click();
@@ -120,22 +130,25 @@ test('detail mode is deliberate and returns to the OS', async ({ page }) => {
   await expectNoDocumentScroll(page);
 });
 
-test('OS command opens the repaired terminal and closes cleanly', async ({ page }) => {
+test('terminal entry points are removed and About links to the product document', async ({ page }) => {
   await enterPersonalBriefing(page);
-  const desktopCommand = page.locator('.brief-os-rail-footer [data-os-command]');
-  const commandTrigger = await desktopCommand.isVisible()
-    ? desktopCommand
-    : page.locator('#briefSystemCommandButton');
-  await expect(commandTrigger).toBeVisible();
-  await commandTrigger.click();
-  await expect(page.locator('#briefTerminal')).toBeVisible();
-  await expect(page.locator('body')).toHaveClass(/brief-terminal-open/);
-  await page.locator('[data-terminal-close]').click();
+
+  await expect(page.locator('#briefSystemCommandButton')).toHaveCount(0);
+  await expect(page.locator('#briefSystemTerminalDock')).toHaveCount(0);
+  await expect(page.locator('[data-terminal-open]:visible')).toHaveCount(0);
+  await expect(page.locator('[data-os-command]:visible')).toHaveCount(0);
   await expect(page.locator('#briefTerminal')).toBeHidden();
   await expect(page.locator('body')).not.toHaveClass(/brief-terminal-open/);
+
+  const about = page.locator('#briefSystemAboutButton');
+  await expect(about).toBeVisible();
+  await expect(about).toHaveAttribute('href', '/doc/');
+
+  await page.locator('#briefOsNav [data-os-open="system"]').click();
+  await expect(page.locator('[data-os-screen="system"] [data-brief-about]')).toHaveAttribute('href', '/doc/');
 });
 
-test('mobile defaults to compact full cards and expands sections individually', async ({ page }) => {
+test('mobile defaults to compact full cards, scrolls internally and never strands blur', async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await enterPersonalBriefing(page);
 
@@ -145,10 +158,12 @@ test('mobile defaults to compact full cards and expands sections individually', 
   await expect(page.locator('#briefSystemSwitcherLayer')).toBeVisible();
   await page.locator('#briefSystemSwitcherLayer [data-system-close]').last().click();
   await expect(page.locator('#briefSystemSwitcherLayer')).toBeHidden();
+  await expect(page.locator('body')).not.toHaveClass(/brief-system-overlay-open|brief-terminal-open/);
 
   await expect(page.locator('body')).toHaveAttribute('data-brief-os-depth', 'full');
   await expect(page.locator('#briefOsDepthSwitch')).toBeVisible();
   await expect(page.locator('.brief-os-home-module')).toHaveCount(8);
+  await expect(page.locator('#briefSystemTerminalDock')).toHaveCount(0);
 
   const navBox = await page.locator('#briefOsNav').boundingBox();
   const executiveBox = await page.locator('[data-home-module="executive"]').boundingBox();
@@ -157,6 +172,15 @@ test('mobile defaults to compact full cards and expands sections individually', 
   expect(navBox.y).toBeGreaterThan(790);
   expect(executiveBox.y).toBeLessThan(280);
   expect(executiveBox.height).toBeLessThan(310);
+
+  const activeScreen = page.locator('[data-os-screen="today"]');
+  const internalScroll = await activeScreen.evaluate(node => {
+    node.scrollTop = Math.min(420, node.scrollHeight - node.clientHeight);
+    return { top: node.scrollTop, windowY: window.scrollY, max: node.scrollHeight - node.clientHeight };
+  });
+  expect(internalScroll.max).toBeGreaterThan(0);
+  expect(internalScroll.top).toBeGreaterThan(0);
+  expect(internalScroll.windowY).toBeLessThanOrEqual(1);
 
   const goals = page.locator('[data-home-module="goals"]');
   await goals.scrollIntoViewIfNeeded();
