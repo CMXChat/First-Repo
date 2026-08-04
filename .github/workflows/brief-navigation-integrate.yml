@@ -1,0 +1,114 @@
+name: Integrate Brief Navigation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-navigation-integrate.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch routing and wire assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(text, old, new, label):
+              if old not in text:
+                  raise SystemExit(f'missing marker: {label}')
+              return text.replace(old, new, 1)
+
+          path = Path('assets/brief/brief-navigation.js')
+          text = path.read_text()
+          text = replace_once(
+              text,
+              "  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];\n",
+              "  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];\n  const selectorValue = value => String(value || '').replace(/[^a-z0-9_-]/gi, '');\n",
+              'selector compatibility helper'
+          )
+          text = text.replace('CSS.escape(tab)', 'selectorValue(tab)')
+          text = replace_once(
+              text,
+              "    const selected = routeById(route);\n    const target = actualTarget(selected);\n    url.hash = target?.id ? target.id : '';",
+              "    const selected = routeById(route);\n    const target = current.depth === 'quick' ? $('#briefWorkspace') : actualTarget(selected);\n    url.hash = target?.id ? target.id : '';",
+              'quick URL target'
+          )
+          text = replace_once(
+              text,
+              "      window.setTimeout(() => {\n        scrollToRoute(route, options.focus === true);\n        rememberRoute(route);",
+              "      window.setTimeout(() => {\n        if (nextDepth === 'quick') {\n          const workspace = $('#briefWorkspace');\n          workspace?.scrollIntoView({ behavior: smoothBehavior(), block: 'start', inline: 'nearest' });\n          if (options.focus === true) window.setTimeout(() => $('#briefWorkspacePanel')?.focus({ preventScroll: true }), smoothBehavior() === 'auto' ? 0 : 260);\n        } else {\n          scrollToRoute(route, options.focus === true);\n        }\n        rememberRoute(route);",
+              'quick workspace routing'
+          )
+          text = replace_once(
+              text,
+              "    window.addEventListener('brief:device-fallback-open', () => {\n      scheduleRender();\n      window.setTimeout(applyUrlState, 420);\n    });",
+              "    window.addEventListener('brief:device-fallback-open', () => {\n      scheduleRender();\n      window.setTimeout(applyUrlState, 420);\n    });\n    $('#enterBrief')?.addEventListener('click', () => {\n      window.setTimeout(() => {\n        if (!document.body.classList.contains('is-locked')) {\n          scheduleRender();\n          applyUrlState();\n        }\n      }, 620);\n    });",
+              'standard entry URL restore'
+          )
+          path.write_text(text)
+
+          path = Path('assets/brief/brief-config.js')
+          text = path.read_text()
+          text = replace_once(text, "    polish: '20260803-2'", "    polish: '20260803-2',\n    navigation: '20260803-1'", 'navigation build version')
+          text = replace_once(
+              text,
+              "  loadStyle('briefPolishStyle', `/assets/brief/brief-polish.css?v=${build.polish}`);",
+              "  loadStyle('briefPolishStyle', `/assets/brief/brief-polish.css?v=${build.polish}`);\n  loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${build.navigation}`);",
+              'navigation stylesheet'
+          )
+          text = replace_once(
+              text,
+              "                                loadScript('briefPolishScript', `/assets/brief/brief-polish.js?v=${build.polish}`);",
+              "                                loadScript('briefPolishScript', `/assets/brief/brief-polish.js?v=${build.polish}`, () => {\n                                  loadScript('briefNavigationScript', `/assets/brief/brief-navigation.js?v=${build.navigation}`);\n                                });",
+              'navigation script'
+          )
+          path.write_text(text)
+
+          path = Path('brief/index.html')
+          text = path.read_text()
+          import re
+          text, count = re.subn(r'brief-config\.js\?v=20260803-\d+', 'brief-config.js?v=20260803-16', text, count=1)
+          if count != 1:
+              raise SystemExit('config cache marker not found')
+          path.write_text(text)
+
+          path = Path('.github/workflows/brief-device-smoke.yml')
+          text = path.read_text()
+          if "tests/brief-navigation-smoke.test.js" not in text:
+              text = text.replace("      - 'tests/brief-onboarding-smoke.test.js'", "      - 'tests/brief-onboarding-smoke.test.js'\n      - 'tests/brief-navigation-smoke.test.js'", 1)
+              pull = text.find('pull_request:')
+              pos = text.find("      - 'tests/brief-onboarding-smoke.test.js'", pull)
+              if pos == -1:
+                  raise SystemExit('pull request onboarding path not found')
+              end = pos + len("      - 'tests/brief-onboarding-smoke.test.js'")
+              text = text[:end] + "\n      - 'tests/brief-navigation-smoke.test.js'" + text[end:]
+              marker = "      - name: Run onboarding and browser compatibility smoke test\n        run: node tests/brief-onboarding-smoke.test.js"
+              addition = marker + "\n\n      - name: Run interconnected navigation smoke test\n        run: node tests/brief-navigation-smoke.test.js"
+              text = replace_once(text, marker, addition, 'navigation smoke step')
+          path.write_text(text)
+          PY
+
+      - name: Validate integration
+        run: |
+          node --check assets/brief/brief-config.js
+          node --check assets/brief/brief-navigation.js
+          node tests/brief-navigation-smoke.test.js
+          node tests/brief-device-smoke.test.js
+          node tests/brief-stability-smoke.test.js
+          node tests/brief-workspace-team-smoke.test.js
+
+      - name: Commit navigation integration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/brief/brief-navigation.js assets/brief/brief-config.js brief/index.html .github/workflows/brief-device-smoke.yml
+          git commit -m 'Wire interconnected briefing navigation'
+          git push
