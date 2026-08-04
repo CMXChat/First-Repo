@@ -194,6 +194,18 @@ def test_imports_all_supported_cmx_session_schemas() -> None:
         assert result["sources_created"] == 1
         assert result["observations_created"] == 4
 
+        missing_detail_response = client.get(f"/api/cases/{missing_case}", headers=HEADERS)
+        assert missing_detail_response.status_code == 200, missing_detail_response.text
+        missing_detail = missing_detail_response.json()
+        imported_source = missing_detail["sources"][0]
+        linked_observations = [
+            item
+            for item in missing_detail["observations"]
+            if item["kind"] in {"fact", "lead", "timeline"}
+        ]
+        assert len(linked_observations) == 3
+        assert {item["source_id"] for item in linked_observations} == {imported_source["id"]}
+
         for case_id in (osint_case, phone_case, search_case, metadata_case, missing_case):
             response = client.get(f"/api/cases/{case_id}", headers=HEADERS)
             assert response.status_code == 200, response.text
