@@ -5,6 +5,7 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   let attempts = 0;
   let timer = 0;
+  let openingVision = false;
 
   const COPY = new Map([
     ['Open full workspace map', 'Open full workspace'],
@@ -36,6 +37,16 @@
       if (target && !target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
       window.setTimeout(() => target?.focus?.({ preventScroll: true }), reducedMotion() ? 0 : 260);
     }, 120);
+  }
+
+  function openVisionAfterHelp() {
+    if (openingVision) return;
+    openingVision = true;
+    window.BRIEF_ONBOARDING?.closeHelp?.(false);
+    window.setTimeout(() => {
+      window.BRIEF_VISION_TOUR?.open?.();
+      openingVision = false;
+    }, reducedMotion() ? 0 : 190);
   }
 
   function simplifyNavigator() {
@@ -86,6 +97,13 @@
 
   function install() {
     document.addEventListener('click', event => {
+      if (event.target.closest?.('#briefStartVision')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openVisionAfterHelp();
+        return;
+      }
+
       const full = event.target.closest?.('[data-open-full-workspace], [data-open-full-map]');
       if (full) {
         event.preventDefault();
@@ -110,7 +128,7 @@
     schedule(80);
   }
 
-  window.BRIEF_FINALIZE = { apply, openFullWorkspace };
+  window.BRIEF_FINALIZE = { apply, openFullWorkspace, openVisionAfterHelp };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();
