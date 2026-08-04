@@ -1,0 +1,54 @@
+name: Extract Brief Interface Failures
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/brief-interface-extract-failures.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract concise failure context
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path('docs/brief-interface-validation.md').read_text(errors='replace')
+          text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', source)
+          lines = text.splitlines()
+          patterns = (
+              'failed', 'Error:', 'TimeoutError', 'AssertionError', 'Expected:', 'Received:',
+              'expect(', 'locator(', 'Call log:', 'at tests/', 'contrast ', 'horizontal overflow',
+              'toBeVisible', 'toHaveAttribute', 'toEqual', 'toBeGreaterThan'
+          )
+          blocks = []
+          seen = set()
+          for i, line in enumerate(lines):
+              if any(pattern.lower() in line.lower() for pattern in patterns):
+                  start = max(0, i - 5)
+                  end = min(len(lines), i + 14)
+                  key = (start, end)
+                  if key in seen:
+                      continue
+                  seen.add(key)
+                  blocks.append('\n'.join(lines[start:end]))
+          output = '# Brief interface browser failures\n\n' + '\n\n---\n\n'.join(blocks[-120:])
+          Path('docs/brief-interface-failures.md').write_text(output)
+          PY
+
+      - name: Commit failure summary
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/brief-interface-failures.md
+          git commit -m 'Record concise briefing browser failures'
+          git push
