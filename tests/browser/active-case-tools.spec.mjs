@@ -89,7 +89,7 @@ test('Metadata saves the exact exported SHA-256 registration to the active case'
     buffer: Buffer.from('CMX active-case metadata regression sample')
   });
   await expect(page.locator('#exportAll')).toBeEnabled();
-  await expect(page.locator('#detailRows')).toContainText('sha256', { ignoreCase: true });
+  await expect(page.locator('#detailRows')).toContainText(/sha-?256/i);
   await saveSnapshot(page);
 
   const detailResponse = await request.get(`/api/cases/${record.id}`);
@@ -117,7 +117,7 @@ test('Missing Person saves the authorized header, source and fact to the active 
 
   await page.locator('#factText').fill(fact);
   await page.locator('#factSource').fill(sourceLabel);
-  await page.locator('#factConfidence').selectOption('high');
+  await page.locator('#factConfidence').selectOption('confirmed');
   await page.locator('#addFact').click();
   await saveSnapshot(page);
 
