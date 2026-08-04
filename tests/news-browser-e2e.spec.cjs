@@ -17,9 +17,14 @@ async function loadNews(page) {
   await page.waitForSelector('#newsSectionMap');
   await page.waitForSelector('#newsHelpButton');
   await page.waitForFunction(() => {
-    const layer = document.querySelector('#newsHelpLayer');
-    const stylesheetLoaded = [...document.styleSheets].some(sheet => sheet.href?.includes('/assets/news-resilience.css'));
-    return Boolean(layer && stylesheetLoaded && window.CMX_NEWS_RESILIENCE);
+    const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+    const loaded = name => links.some(link => link.href.includes(name) && Boolean(link.sheet));
+    return Boolean(
+      document.querySelector('#newsHelpLayer')
+      && window.CMX_NEWS_RESILIENCE
+      && loaded('/assets/news-navigation.css')
+      && loaded('/assets/news-resilience.css')
+    );
   });
 }
 
