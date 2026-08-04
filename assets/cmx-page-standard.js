@@ -9,6 +9,7 @@
   const directoryVisible = new Set(['/', ...guardedRoutes]);
   const removedRoutes = new Set(['/manual', '/menu', '/workspace', '/collab6', '/collab7', '/pythontest', '/test.html', '/report']);
   const sensitiveRoutes = new Set(['/build', '/callmax', '/project']);
+  const blockedNavigationDestinations = new Set(['/', '/directory']);
 
   root.dataset.cmxVisibility ||= directoryVisible.has(currentPath) ? 'Directory-visible' : 'Direct-link-only';
   ensureMeta('name', 'referrer', 'no-referrer');
@@ -100,6 +101,11 @@
       }
 
       if (!destination) return;
+      if (blockedNavigationDestinations.has(destination)) {
+        if (anchor.closest('.links, .gate-actions')) anchor.remove();
+        else unlinkAnchor(anchor);
+        return;
+      }
       if (removedRoutes.has(destination) || sensitiveRoutes.has(destination)) {
         if (anchor.closest('.links, .gate-actions')) anchor.remove();
         else unlinkAnchor(anchor);
@@ -127,11 +133,12 @@
   bar.className = 'cmx-standard-bar';
   bar.setAttribute('aria-label', 'CMX private page controls');
 
-  const home = document.createElement('a');
+  const home = document.createElement('button');
+  home.type = 'button';
   home.className = 'cmx-standard-home';
-  home.href = '/directory';
   home.textContent = 'CMX';
   home.setAttribute('aria-label', 'Open Operations Directory');
+  home.addEventListener('click', () => window.location.assign('/directory'));
 
   const titleElement = document.createElement('span');
   titleElement.className = 'cmx-standard-title';
