@@ -1,5 +1,10 @@
 const { test, expect } = require('@playwright/test');
 
+const enhancementStyles = [
+  'assets/news-navigation.css',
+  'assets/news-resilience.css'
+];
+
 const enhancementScripts = [
   'assets/news-upgrades.js',
   'assets/news-experience.js',
@@ -19,18 +24,24 @@ async function loadNews(page) {
   });
   await page.goto('/assets/cmx-news.html', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => Boolean(window.CMX_NEWS_BRIEF && document.querySelector('#briefContent')));
+  for (const path of enhancementStyles) await page.addStyleTag({ url: `/${path}` });
   for (const path of enhancementScripts) await page.addScriptTag({ url: `/${path}` });
   await page.waitForSelector('#newsSectionMap');
   await page.waitForSelector('#newsHelpButton');
-  await page.waitForFunction(() => Boolean(
-    document.querySelector('#newsHelpLayer')
-    && window.CMX_NEWS_RESILIENCE
-    && window.CMX_NEWS_RESILIENCE_BOUNDS
-  ));
-  await page.evaluate(() => new Promise(resolve => {
-    window.CMX_NEWS_RESILIENCE_BOUNDS.applyBounds();
-    requestAnimationFrame(() => requestAnimationFrame(resolve));
-  }));
+  await page.waitForFunction(() => {
+    const drawer = document.querySelector('#newsSectionDrawer');
+    const panel = document.querySelector('.news-drawer-panel');
+    return Boolean(
+      drawer
+      && panel
+      && document.querySelector('#newsHelpLayer')
+      && window.CMX_NEWS_RESILIENCE
+      && window.CMX_NEWS_RESILIENCE_BOUNDS
+      && getComputedStyle(drawer).position === 'fixed'
+      && getComputedStyle(panel).overflowY === 'auto'
+    );
+  });
+  await page.evaluate(() => window.CMX_NEWS_RESILIENCE_BOUNDS.applyBounds());
 }
 
 async function visibleViewport(page) {
