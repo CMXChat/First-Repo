@@ -1,0 +1,58 @@
+/* Late-loaded repair layer for briefing overlays and the body-level terminal portal. */
+
+body.brief-system-ready > #briefTerminal.brief-terminal-system-drawer {
+  display: block !important;
+  position: fixed !important;
+  z-index: 1005 !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(calc(100% + 40px)) !important;
+}
+
+body.brief-system-ready.brief-terminal-open > #briefTerminal.brief-terminal-system-drawer,
+body.brief-system-ready.brief-terminal-open > #briefTerminal.brief-terminal-system-drawer[data-system-visibility-repair='true'] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+}
+
+body.brief-system-ready:not(.brief-terminal-open) > #briefTerminal.brief-terminal-system-drawer {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.brief-system-ready > #briefTerminal.brief-terminal-system-drawer,
+body.brief-system-ready > #briefTerminal.brief-terminal-system-drawer * {
+  box-sizing: border-box;
+}
+
+body.brief-system-ready > #briefTerminal.brief-terminal-system-drawer .brief-terminal-panel,
+body.brief-system-ready > #briefTerminal.brief-terminal-system-drawer .brief-terminal-panel[open],
+body.brief-system-ready > #briefTerminal.brief-terminal-system-drawer .brief-terminal-shell,
+body.brief-system-ready > #briefTerminal.brief-terminal-system-drawer .brief-terminal-body {
+  display: block !important;
+}
+
+body.brief-system-ready .brief-system-overlay:not([hidden]),
+body.brief-system-ready .brief-system-tour-layer:not([hidden]) {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.brief-system-ready .brief-system-overlay:not([hidden]) > .brief-system-drawer,
+body.brief-system-ready .brief-system-overlay:not([hidden]) > .brief-system-tour {
+  position: relative;
+  z-index: 2;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.brief-system-ready .brief-system-overlay:not([hidden]) > .brief-system-overlay-backdrop {
+  z-index: 1;
+}
