@@ -17,6 +17,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .api.cases import router as cases_router
 from .api.dns import router as dns_router
+from .api.imports import router as imports_router
 from .api.records import router as records_router
 from .api.system import router as system_router
 from .config import Settings, get_settings
@@ -200,6 +201,7 @@ app.include_router(system_router)
 app.include_router(dns_router)
 app.include_router(cases_router)
 app.include_router(records_router)
+app.include_router(imports_router)
 
 site_root = settings.site_root
 assets_dir = site_root / "assets"
