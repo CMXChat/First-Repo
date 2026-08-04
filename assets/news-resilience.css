@@ -216,11 +216,11 @@
 }
 
 .news-section-drawer {
+  inset: auto;
   top: var(--news-viewport-top, 0px);
   left: var(--news-viewport-left, 0px);
   width: var(--news-viewport-width, 100vw);
   height: var(--news-viewport-height, 100dvh);
-  inset: auto;
   box-sizing: border-box;
 }
 
