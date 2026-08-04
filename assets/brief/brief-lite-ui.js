@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-4';
+  const VERSION = '20260804-5';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -78,6 +78,9 @@
   ensureStyle('briefSystemStyle', '/assets/brief/brief-system.css');
   ensureStyle('briefSystemFixStyle', '/assets/brief/brief-system-fixes.css');
   ensureStyle('briefOverlayControlsFixStyle', '/assets/brief/brief-overlay-controls-fix.css');
-  if (shouldLoadPersonalOs()) ensureStyle('briefPersonalOsStyle', '/assets/brief/brief-personal-os.css');
+  if (shouldLoadPersonalOs()) {
+    ensureStyle('briefPersonalOsStyle', '/assets/brief/brief-personal-os.css');
+    ensureStyle('briefPersonalOsDensityStyle', '/assets/brief/brief-personal-os-density.css');
+  }
   loadSystemScript();
 })();
