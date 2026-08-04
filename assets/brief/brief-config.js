@@ -42,12 +42,29 @@ window.BRIEF_CONFIG = {
     team: 'Team + project'
   };
 
+  function clearEntryHash() {
+    if (!window.location.hash) return;
+    try {
+      window.history.replaceState(window.history.state, '', `${window.location.pathname}${window.location.search}`);
+    } catch {}
+  }
+
   function forceTop() {
+    clearEntryHash();
     const gate = document.getElementById('entryGate');
+    const app = document.getElementById('briefApp');
+    const main = document.getElementById('briefMain');
     if (gate) gate.scrollTop = 0;
+    if (app) app.scrollTop = 0;
+    if (main) main.scrollTop = 0;
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }
+
+  function holdEntryAtTop() {
+    window.requestAnimationFrame(() => window.requestAnimationFrame(forceTop));
+    [0, 60, 180, 360, 700, 1100].forEach(delay => window.setTimeout(forceTop, delay));
   }
 
   function installEntryController() {
@@ -89,6 +106,7 @@ window.BRIEF_CONFIG = {
     let selectedValue = '';
     let appReady = Boolean(window.BRIEF_APP);
     let queuedOpen = false;
+    let entryOpened = false;
 
     const validChoice = value => Object.prototype.hasOwnProperty.call(labels, value);
 
@@ -114,6 +132,13 @@ window.BRIEF_CONFIG = {
     select.addEventListener('input', acceptSelection);
     select.addEventListener('change', acceptSelection);
 
+    const bodyObserver = new MutationObserver(() => {
+      if (entryOpened || document.body.classList.contains('is-locked') || !validChoice(selectedValue)) return;
+      entryOpened = true;
+      holdEntryAtTop();
+    });
+    bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
     enter.addEventListener('click', event => {
       const choice = validChoice(selectedValue) ? selectedValue : (validChoice(select.value) ? select.value : '');
       if (!choice) {
@@ -126,7 +151,7 @@ window.BRIEF_CONFIG = {
 
       selectedValue = choice;
       select.value = choice;
-      forceTop();
+      holdEntryAtTop();
 
       if (!appReady || !window.BRIEF_APP) {
         event.preventDefault();
@@ -148,8 +173,7 @@ window.BRIEF_CONFIG = {
         document.getElementById('entryGate')?.classList.add('is-hidden');
         document.getElementById('briefApp')?.setAttribute('aria-hidden', 'false');
         try { sessionStorage.setItem(`${window.BRIEF_CONFIG.storagePrefix}:entered`, 'true'); } catch {}
-        forceTop();
-        window.setTimeout(forceTop, 80);
+        holdEntryAtTop();
         try { document.getElementById('briefMain')?.focus({ preventScroll: true }); } catch { document.getElementById('briefMain')?.focus(); }
         window.dispatchEvent(new CustomEvent('brief:device-fallback-open', { detail: { preset: selectedValue } }));
       }, 450);
