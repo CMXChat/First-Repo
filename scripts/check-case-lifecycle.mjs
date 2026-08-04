@@ -12,6 +12,7 @@ const required = [
   'backend/app/platform.py',
   'backend/app/hardened.py',
   'backend/app/write_security.py',
+  'backend/app/api/lifecycle.py',
   'backend/compose.platform.yml',
   'backend/tests/test_platform.py',
   'backend/tests/test_lifecycle.py',
@@ -52,8 +53,17 @@ if (existsSync(jsPath)) {
   if (!source.includes('/api/cases/retention-due')) failures.push('Lifecycle client must load retention-due cases.');
   if (!source.includes('/api/cases/deleted')) failures.push('Lifecycle client must load soft-deleted cases.');
   if (!source.includes('/audit')) failures.push('Lifecycle client must expose audit history.');
-  if (!source.includes('/restore')) failures.push('Lifecycle client must expose restore.');
-  if (!source.includes('/purge')) failures.push('Lifecycle client must expose purge.');
+  if (!/openDialog\(['"]restore['"]/.test(source)) failures.push('Lifecycle client must expose restore.');
+  if (!/openDialog\(['"]purge['"]/.test(source)) failures.push('Lifecycle client must expose purge.');
+  if (!source.includes('${state.pendingAction}')) failures.push('Lifecycle mutations must use the reviewed pending action path.');
+}
+
+const lifecycleApiPath = join(root, 'backend/app/api/lifecycle.py');
+if (existsSync(lifecycleApiPath)) {
+  const source = readFileSync(lifecycleApiPath, 'utf8');
+  for (const route of ['@router.get("/deleted"', '@router.get("/retention-due"', '@router.get("/{case_id}/audit"', '@router.post("/{case_id}/restore"', '@router.post("/{case_id}/purge"']) {
+    if (!source.includes(route)) failures.push(`Lifecycle API must expose ${route}.`);
+  }
 }
 
 const platformPath = join(root, 'backend/app/platform.py');
