@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="CMX Cases" data-cmx-category="Operations" data-cmx-status="Active" data-cmx-version="1.0" data-cmx-standard="on" data-cmx-modern="true">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>CMX Cases</title>
+  <meta name="description" content="Private CMX case workspace for persistent entities, observations, sources, queries, evidence, relationships, notes and session imports.">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <link rel="canonical" href="https://db.cmxchat.com/cases/">
+  <meta property="og:title" content="CMX Cases">
+  <meta property="og:description" content="Private CMX case workspace for persistent research records and controlled imports.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CMX Restricted Node">
+  <meta property="og:url" content="https://db.cmxchat.com/cases/">
+  <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CMX Cases">
+  <meta name="twitter:description" content="Private CMX case workspace for persistent research records and controlled imports.">
+  <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png">
+  <link rel="stylesheet" href="/assets/cmx-tool-shell.css?v=20260804-1">
+  <link rel="stylesheet" href="/assets/cases-workbench.css?v=20260804-1">
+  <link rel="stylesheet" href="/assets/cmx-page-standard.css?v=20260804-1">
+  <script src="/assets/cmx-page-standard.js?v=20260804-2" defer></script>
+  <script src="/assets/cases-workbench.js?v=20260804-1" defer></script>
+</head>
+<body>
+  <header class="cmx-tool-topbar">
+    <div class="cmx-tool-brand">
+      <span class="cmx-tool-mark" aria-hidden="true">▦</span>
+      <span class="cmx-tool-title">CMX Cases</span>
+    </div>
+    <span class="cmx-status">Session <strong id="sessionId">LOCAL</strong></span>
+  </header>
+
+  <main class="cmx-container">
+    <section class="cmx-hero">
+      <p class="cmx-eyebrow">Persistent operator workspace</p>
+      <h1>Move verified research out of temporary browser sessions.</h1>
+      <p>Create access-scoped cases, import CMX tool exports, review linked records, preserve evidence hashes, and keep operational state behind the authenticated FastAPI origin.</p>
+    </section>
+
+    <noscript>
+      <p class="cmx-notice warn"><strong>JavaScript required:</strong> The case workspace communicates with the authenticated same-origin API.</p>
+    </noscript>
+
+    <section class="cases-status">
+      <div class="cases-status-copy">
+        <strong id="backendTitle">Checking the protected case service</strong>
+        <span id="backendCopy">The page will remain read-only if this hostname is still using static hosting.</span>
+      </div>
+      <div class="cmx-actions">
+        <span class="cases-badge warn" id="backendBadge">Checking backend</span>
+        <button class="cmx-button" id="refreshCases" type="button">Refresh cases</button>
+      </div>
+    </section>
+
+    <section class="cmx-card cmx-section">
+      <h2>Create a case</h2>
+      <p class="cmx-card-copy">The authorization basis is required. Use a neutral title and avoid unnecessary sensitive information.</p>
+      <div class="cases-form-grid">
+        <div class="cmx-field">
+          <label for="caseTitle">Case title</label>
+          <input class="cmx-input" id="caseTitle" maxlength="240" placeholder="Neutral internal title">
+        </div>
+        <div class="cmx-field">
+          <label for="caseType">Case type</label>
+          <select class="cmx-select" id="caseType">
+            <option value="general">General research</option>
+            <option value="osint">OSINT investigation</option>
+            <option value="missing_person">Missing person</option>
+            <option value="security_review">Security review</option>
+            <option value="identity_review">Identity review</option>
+          </select>
+        </div>
+        <div class="cmx-field">
+          <label for="caseUrgency">Urgency</label>
+          <select class="cmx-select" id="caseUrgency">
+            <option value="standard">Standard</option>
+            <option value="time-sensitive">Time-sensitive</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+        <div class="cmx-field">
+          <label for="caseRetention">Retention review date</label>
+          <input class="cmx-input" id="caseRetention" type="datetime-local">
+        </div>
+      </div>
+      <div class="cmx-field cmx-section">
+        <label for="caseAuthorization">Authorization or legitimate basis</label>
+        <textarea class="cmx-textarea" id="caseAuthorization" maxlength="4000" placeholder="Who authorized the work, the legitimate purpose, and who receives credible findings"></textarea>
+      </div>
+      <div class="cmx-field cmx-section">
+        <label for="caseSummaryInput">Initial summary</label>
+        <textarea class="cmx-textarea" id="caseSummaryInput" maxlength="10000" placeholder="Scope, limitations, and known starting context"></textarea>
+      </div>
+      <div class="cmx-actions cmx-section">
+        <button class="cmx-button primary" id="createCase" type="button">Create persistent case</button>
+      </div>
+      <p class="cmx-notice" id="caseFormMessage">No case data is saved until the protected API accepts the request.</p>
+    </section>
+
+    <section class="cases-layout cmx-section">
+      <article class="cmx-card">
+        <div class="cases-detail-head">
+          <div>
+            <h2>Cases</h2>
+            <p><strong id="caseCount">0</strong> active records for the current Access identity.</p>
+          </div>
+        </div>
+        <div class="cmx-empty cmx-section" id="caseListEmpty">No persistent cases available.</div>
+        <div class="cases-list cmx-section" id="caseList"></div>
+      </article>
+
+      <article class="cmx-card">
+        <div class="cases-detail-empty" id="caseDetailEmpty">
+          <div class="cmx-empty">Select a case to review its persistent records.</div>
+        </div>
+
+        <div class="cases-hidden" id="caseDetail">
+          <div class="cases-detail-head">
+            <div>
+              <h2 id="detailTitle"></h2>
+              <p class="cmx-code" id="detailId"></p>
+            </div>
+            <div class="cmx-actions">
+              <button class="cmx-button good" id="exportCase" type="button">Export case JSON</button>
+              <button class="cmx-button danger" id="archiveCase" type="button">Archive case</button>
+            </div>
+          </div>
+
+          <div class="cases-form-grid cmx-section">
+            <div class="cmx-field">
+              <label for="detailStatus">Status</label>
+              <select class="cmx-select" id="detailStatus">
+                <option value="open">Open</option>
+                <option value="paused">Paused</option>
+                <option value="closed">Closed</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+            <div class="cmx-field">
+              <label for="detailUrgency">Urgency</label>
+              <select class="cmx-select" id="detailUrgency">
+                <option value="standard">Standard</option>
+                <option value="time-sensitive">Time-sensitive</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+          <div class="cmx-actions cmx-section">
+            <button class="cmx-button primary" id="saveCaseState" type="button">Save case state</button>
+          </div>
+
+          <div class="cases-summary cmx-section">
+            <div class="cases-kv"><div class="cases-kv-label">Type</div><div class="cases-kv-value" id="detailType"></div></div>
+            <div class="cases-kv"><div class="cases-kv-label">Updated</div><div class="cases-kv-value" id="detailUpdated"></div></div>
+            <div class="cases-kv"><div class="cases-kv-label">Retention review</div><div class="cases-kv-value" id="detailRetention"></div></div>
+          </div>
+          <div class="cases-kv cmx-section"><div class="cases-kv-label">Authorization basis</div><div class="cases-kv-value" id="detailAuthorization"></div></div>
+          <div class="cases-kv cmx-section"><div class="cases-kv-label">Summary</div><div class="cases-kv-value" id="detailSummary"></div></div>
+
+          <h3 class="cmx-section">Record counts</h3>
+          <div class="cases-counts">
+            <div class="cases-count"><strong id="countEntities">0</strong><span>Entities</span></div>
+            <div class="cases-count"><strong id="countObservations">0</strong><span>Observations</span></div>
+            <div class="cases-count"><strong id="countSources">0</strong><span>Sources</span></div>
+            <div class="cases-count"><strong id="countQueries">0</strong><span>Queries</span></div>
+            <div class="cases-count"><strong id="countEvidence">0</strong><span>Evidence</span></div>
+            <div class="cases-count"><strong id="countRelationships">0</strong><span>Relationships</span></div>
+            <div class="cases-count"><strong id="countNotes">0</strong><span>Notes</span></div>
+          </div>
+
+          <section class="cmx-card cmx-section">
+            <h3>Import a CMX tool session</h3>
+            <p class="cmx-card-copy">Accepted schemas: OSINT, Phone, Search, Metadata, and Missing Person. JSON is limited to 2 MB and imported into the selected case.</p>
+            <div class="cases-import-drop" id="importDrop" role="button" tabindex="0">
+              <div><strong>Choose or drop a CMX JSON export</strong><span>Nothing is uploaded until you select Import.</span></div>
+            </div>
+            <input id="importFile" type="file" accept="application/json,.json" hidden>
+            <pre class="cases-import-preview cmx-section" id="importPreview">No CMX session export selected.</pre>
+            <div class="cmx-actions cmx-section">
+              <button class="cmx-button primary" id="importSession" type="button" disabled>Import into selected case</button>
+              <button class="cmx-button" id="clearImport" type="button">Clear import</button>
+            </div>
+            <div class="cases-import-result cmx-section" id="importResult"></div>
+          </section>
+
+          <section class="cmx-card cmx-section">
+            <h3>Add analyst note</h3>
+            <div class="cmx-field">
+              <label for="noteInput">Note</label>
+              <textarea class="cmx-textarea" id="noteInput" maxlength="20000" placeholder="Reasoning, contradiction, limitation, or next action"></textarea>
+            </div>
+            <div class="cmx-actions cmx-section"><button class="cmx-button" id="addNote" type="button">Add note</button></div>
+          </section>
+
+          <div class="cases-record-grid cmx-section">
+            <section class="cases-record-panel"><h3>Entities</h3><div class="cases-record-list" id="entityRecords"></div></section>
+            <section class="cases-record-panel"><h3>Observations</h3><div class="cases-record-list" id="observationRecords"></div></section>
+            <section class="cases-record-panel"><h3>Sources</h3><div class="cases-record-list" id="sourceRecords"></div></section>
+            <section class="cases-record-panel"><h3>Queries</h3><div class="cases-record-list" id="queryRecords"></div></section>
+            <section class="cases-record-panel"><h3>Evidence</h3><div class="cases-record-list" id="evidenceRecords"></div></section>
+            <section class="cases-record-panel"><h3>Relationships</h3><div class="cases-record-list" id="relationshipRecords"></div></section>
+            <section class="cases-record-panel"><h3>Analyst notes</h3><div class="cases-record-list" id="noteRecords"></div></section>
+          </div>
+
+          <details class="cmx-section">
+            <summary>Current case API response</summary>
+            <pre class="cases-json" id="caseRawJson"></pre>
+          </details>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="cmx-toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
