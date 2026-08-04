@@ -108,12 +108,16 @@
       document.head.appendChild(style);
     }
 
-    if (!document.querySelector('script[data-cmx-cases-operator]')) {
-      const script = document.createElement('script');
-      script.src = '/assets/cases-operator-workspace.js?v=20260804-1';
-      script.async = false;
-      script.dataset.cmxCasesOperator = 'true';
-      document.head.appendChild(script);
-    }
+    loadScript('/assets/cases-operator-workspace.js?v=20260804-1', 'workspace');
+    loadScript('/assets/cases-operator-records.js?v=20260804-1', 'records');
+  }
+
+  function loadScript(src, role) {
+    if (document.querySelector(`script[data-cmx-cases-operator="${role}"]`)) return;
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.dataset.cmxCasesOperator = role;
+    document.head.appendChild(script);
   }
 })();
