@@ -14,6 +14,7 @@ const requiredFiles = [
   'assets/cases-state-sync.js',
   'assets/cases-operator-workspace.js',
   'assets/cases-operator-workspace.css',
+  'assets/cases-operator-responsive.css',
   'assets/cases-operator-records.js',
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
@@ -152,6 +153,7 @@ function checkCasesOperatorLoader() {
   [
     '/assets/cases-operator-workspace.js',
     '/assets/cases-operator-workspace.css',
+    '/assets/cases-operator-responsive.css',
     '/assets/cases-operator-records.js'
   ].forEach((reference) => {
     if (!source.includes(reference)) failures.push(`assets/cases-state-sync.js must load ${reference}`);
