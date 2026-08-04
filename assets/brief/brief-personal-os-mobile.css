@@ -1,0 +1,30 @@
+/* Mobile dashboard composition. Keep Today useful within one operating viewport. */
+
+@media (max-width: 720px) {
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-grid.is-command {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto auto auto;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-command-card,
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-next-card {
+    grid-column: 1 / -1;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card {
+    display: grid;
+    width: auto;
+    min-width: 0;
+    margin: 0 !important;
+  }
+}
+
+@media (max-height: 700px) and (max-width: 720px) {
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-grid.is-command {
+    grid-template-rows: auto auto;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card {
+    display: none;
+  }
+}
