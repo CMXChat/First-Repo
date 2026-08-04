@@ -57,8 +57,11 @@ requireMarker('backend/tests/test_enrichment.py', 'canonicalizes_unicode_path');
 requireMarker('backend/tests/test_enrichment.py', 'end_to_end_timeout');
 requireMarker('backend/tests/test_routing.py', 'malformed_path_identifiers');
 requireMarker('backend/tests/test_routing.py', 'rpki_states_remain_explicit');
+requireMarker('backend/tests/test_routing_cancellation.py', 'does_not_retain_completed_provider_task');
 requireMarker('tests/browser/routing.spec.mjs', 'providerRequests');
 requireMarker('tests/browser/routing.spec.mjs', 'not labeled malicious');
+requireMarker('tests/browser/routing-guards.spec.mjs', 'failed duplicate preflight');
+requireMarker('tests/browser/routing-guards.spec.mjs', 'startsWith(\'routing_\')');
 
 function requireMarker(file, marker) {
   const path = join(root, file);
