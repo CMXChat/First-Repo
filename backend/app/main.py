@@ -17,6 +17,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .api.cases import router as cases_router
 from .api.dns import router as dns_router
+from .api.enrichment import router as enrichment_router
 from .api.imports import router as imports_router
 from .api.lifecycle import router as lifecycle_router
 from .api.records import router as records_router
@@ -26,6 +27,7 @@ from .db import create_database_engine, create_session_factory, initialize_datab
 from .logging import configure_logging
 from .security import AccessIdentity, authenticate_request
 from .services.dns import DnsResolverService
+from .services.enrichment import EnrichmentService
 
 configure_logging()
 logger = logging.getLogger("cmx.request")
@@ -66,12 +68,13 @@ async def lifespan(app: FastAPI):
     app.state.session_factory = create_session_factory(database_engine)
 
     client = httpx.AsyncClient(
-        headers={"User-Agent": "CMX-Restricted-Node/0.2"},
+        headers={"User-Agent": "CMX-Restricted-Node/0.3"},
         follow_redirects=False,
         limits=httpx.Limits(max_connections=20, max_keepalive_connections=10),
     )
     app.state.http_client = client
     app.state.dns_resolver = DnsResolverService(client, settings)
+    app.state.enrichment_service = EnrichmentService(client, settings)
     logger.info("application_started", extra={"event": "application_started"})
     yield
     await client.aclose()
@@ -81,7 +84,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="CMX Restricted Node API",
-    version="0.2.0",
+    version="0.3.0",
     docs_url=None if settings.environment == "production" else "/api/docs",
     redoc_url=None,
     openapi_url=None if settings.environment == "production" else "/api/openapi.json",
@@ -200,6 +203,7 @@ def secured_response(response: Response, request_id: str, path: str = "") -> Res
 
 app.include_router(system_router)
 app.include_router(dns_router)
+app.include_router(enrichment_router)
 app.include_router(lifecycle_router)
 app.include_router(cases_router)
 app.include_router(records_router)
