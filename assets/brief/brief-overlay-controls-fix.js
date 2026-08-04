@@ -5,7 +5,8 @@
 
   const api = {
     portalTerminal,
-    verifyOpenSurface
+    verifyOpenSurface,
+    focusTerminalInput
   };
 
   function terminal() {
@@ -31,6 +32,24 @@
     return true;
   }
 
+  function focusTerminalInput() {
+    if (!document.body.classList.contains('brief-terminal-open')) return false;
+
+    const node = terminal();
+    const input = document.getElementById('briefTerminalInput');
+    if (!node || !input || input.disabled) return false;
+
+    if (document.activeElement && node.contains(document.activeElement)) return true;
+
+    try {
+      input.focus({ preventScroll: true });
+    } catch {
+      input.focus();
+    }
+
+    return document.activeElement === input;
+  }
+
   function verifyOpenSurface() {
     const node = terminal();
     if (!node || !document.body.classList.contains('brief-terminal-open')) return;
@@ -47,21 +66,30 @@
     }
   }
 
+  function settleTerminalOpen() {
+    if (!document.body.classList.contains('brief-terminal-open')) return;
+    portalTerminal();
+    verifyOpenSurface();
+    focusTerminalInput();
+  }
+
+  function scheduleOpenSettlement() {
+    [0, 80, 180, 320].forEach(delay => window.setTimeout(settleTerminalOpen, delay));
+  }
+
   function install() {
     portalTerminal();
 
     document.addEventListener('click', event => {
       if (!event.target.closest?.('[data-terminal-open], #briefSystemCommandButton')) return;
       portalTerminal();
-      window.setTimeout(verifyOpenSurface, 0);
-      window.setTimeout(verifyOpenSurface, 100);
+      scheduleOpenSettlement();
     }, true);
 
     const observer = new MutationObserver(records => {
       if (!records.some(record => record.type === 'attributes' && record.attributeName === 'class')) return;
       if (document.body.classList.contains('brief-terminal-open')) {
-        portalTerminal();
-        window.requestAnimationFrame(verifyOpenSurface);
+        scheduleOpenSettlement();
       }
     });
 
