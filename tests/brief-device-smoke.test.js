@@ -194,8 +194,8 @@ const windowMock = new EventTargetMock();
 windowMock.window = windowMock;
 windowMock.document = documentMock;
 windowMock.setTimeout = setTimeout;
-windowMock.requestAnimationFrame = callback => setTimeout(callback, 0);
-windowMock.cancelAnimationFrame = handle => clearTimeout(handle);
+windowMock.requestAnimationFrame = callback => { callback(); return 1; };
+windowMock.cancelAnimationFrame = () => {};
 windowMock.scrollTo = options => scrollCalls.push(options);
 windowMock.CustomEvent = class CustomEventMock {
   constructor(type, options = {}) { this.type = type; this.detail = options.detail; }
