@@ -23,6 +23,7 @@
   }
 
   root.dataset.cmxAccess = guardedRoutes.has(currentPath) ? 'client-session' : 'public-entry';
+  if (guardedRoutes.has(currentPath)) loadToolHardening();
 
   function hasActiveClientSession() {
     try {
@@ -38,6 +39,15 @@
     } catch {
       return false;
     }
+  }
+
+  function loadToolHardening() {
+    if (document.querySelector('script[data-cmx-tool-hardening]')) return;
+    const script = document.createElement('script');
+    script.src = '/assets/cmx-tool-hardening.js?v=20260803-1';
+    script.defer = true;
+    script.dataset.cmxToolHardening = 'true';
+    document.head.appendChild(script);
   }
 
   function unlinkAnchor(anchor) {
