@@ -1,191 +1,133 @@
 # Brief Goal Intelligence Worklog
 
-**Purpose:** Durable continuation record for the Goal Intelligence work related to the future `/brief` project.  
+**Purpose:** Durable continuation record for the future `/brief` Goal Intelligence project.  
 **Created:** August 4, 2026  
 **Last updated:** August 4, 2026  
 **Repository:** `CMXChat/First-Repo`  
 **Working branch:** `agent/goal-intelligence-prototype`  
 **Draft PR:** `#34`  
-**Current route:** `/goals-lab/`  
-**Current roadmap position:** Step 3, Part 3 complete; Step 3, Part 4 is next  
-**Latest validated implementation commit:** `72bb4c040eb9a0f1a7b3ccdffb3a8581ffc84614`  
-**Production boundary:** `/brief` remains untouched. Nothing in this worklog authorizes production integration.
+**Prototype route:** `/goals-lab/`  
+**Current roadmap position:** Step 3 complete; Step 4 prepared and ready to begin  
+**Latest validated prototype implementation:** `72bb4c040eb9a0f1a7b3ccdffb3a8581ffc84614`  
+**Step 3 closeout commit:** `041ae2e8810775eeb3ccce7db21824788cb056a3`  
+**Step 4 plan commit:** `ed0e9c2ef18bdc4595add278ba1792b220b3e5aa`  
+**Production boundary:** Goal Intelligence work does not touch `/brief` until its later integration phase.
 
 ## How Future Context Windows Should Continue
 
-Read these files in this order:
+Read these files in order:
 
 1. `docs/concepts/brief-goal-intelligence-worklog.md`
-2. `docs/concepts/brief-goal-intelligence-concept-2026-08-04.md`
-3. `docs/concepts/goal-intelligence-step-3-prototype-2026-08-04.md`
-4. Draft PR `#34`
+2. `docs/concepts/goal-intelligence-step-4-engine-plan.md`
+3. `docs/concepts/goal-intelligence-step-3-closeout-2026-08-04.md`
+4. `docs/concepts/brief-goal-intelligence-concept-2026-08-04.md`
+5. `docs/concepts/goal-intelligence-step-3-prototype-2026-08-04.md`
+6. Draft PR `#34`
 
-Use this worklog as the current operational status. Use the dated concept file for the larger idea and the Step 3 report for implementation detail.
+Use this worklog as the current operational status. The dated concept file explains the larger idea. The Step 3 files preserve prototype evidence and decisions. The Step 4 plan defines the next implementation phase.
 
-## Current Objective
+## Current Decision
 
-Complete Step 3, Part 4 by making an explicit prototype decision:
+Step 3 is closed successfully.
 
-- Revise Step 3 again
-- Advance to Step 4 deterministic engine hardening
-- Prepare the later FastAPI storage contract without building it yet
-- Narrow or stop the concept
-
-The current evidence supports advancing to Step 4, but that decision has not been finalized in this worklog.
-
-## Current Product Decision
-
-The primary daily path is:
+The prototype proved the smallest useful loop:
 
 ```text
 Goal Pulse
   ↓
 Quick check-in
   ↓
-One active question
+One useful question
   ↓
 One recommended action
   ↓
-Record outcome or evidence
+Outcome or evidence
+  ↓
+Updated state
 ```
 
-Goal definition, planning context, evidence, and history remain available through expanders. They no longer compete visually with the normal daily loop.
+The page was simplified so daily guidance stays prominent while planning context, evidence and history remain available through expanders.
 
-## Current Prototype Behavior
-
-- The page opens on Goal Pulse, Today’s Update, and One Useful Question.
-- Check-in and question appear before goal editing in reading order and on mobile.
-- The full goal editor is collapsed by default.
-- The main goal-editing path keeps title, desired outcome, current milestone, and difficulty visible.
-- Motivation, baseline, success definition, priority, and visibility live inside Planning Context.
-- Optional check-in notes live inside Add Context.
-- Evidence and history live inside a secondary Records drawer.
-- Sticky navigation is limited to Pulse, Update, Question, Goal, and Records.
-- Sprint difficulty requires an end date of today or later.
-- A saved Sprint date persists and appears in Goal Pulse.
-- Existing Step 2 fields remain in the data model.
-- The prototype still uses browser-only storage and deterministic rules.
-
-## Completed Work
+## Completed Roadmap Work
 
 ### Step 0
 
-- Preserved the dated idea as a living concept document.
+- Preserved the dated concept.
 
 ### Step 1
 
-- Defined the smallest working goal loop and MVP behavior.
+- Defined the MVP interaction and acceptance criteria.
 
 ### Step 2
 
-- Defined the structured data model for goals, check-ins, questions, answers, recommendations, outcomes, evidence, history, visibility, and freshness.
+- Drafted the structured data model for goals, milestones, check-ins, questions, answers, recommendations, outcomes, evidence, trajectory, confidence, privacy and history.
 
-### Step 3, Part 1
+### Step 3
 
-- Built the isolated `/goals-lab/` frontend prototype.
-- Added goal editing, difficulty, check-ins, questions, recommendations, evidence, outcomes, trajectory, confidence, Goal Pulse, local persistence, and responsive layouts.
+- Built `/goals-lab/` as an isolated browser prototype.
+- Added five difficulty modes, check-ins, one active question, recommendations, outcomes, evidence, Goal Pulse, state history and browser persistence.
+- Added desktop Chromium and Pixel 5 Playwright coverage.
+- Fixed immediate repeated-question behavior.
+- Reordered the interface around daily use.
+- Collapsed full planning and record-management surfaces by default.
+- Added bounded Sprint mode with a required end date.
+- Passed browser, static, privacy, secret, navigation and terminal-theme checks.
+- Formally closed Step 3 and approved advancement to Step 4.
 
-### Step 3, Part 2
+## Step 4 Objective
 
-- Added desktop Chromium and Pixel 5 Playwright validation.
-- Fixed an answered blocker question repeating immediately.
-- Confirmed persistence, responsive containment, difficulty behavior, check-ins, evidence, outcomes, theme, and navigation.
+Extract the deterministic goal rules into a pure, testable engine that accepts structured state and explicit events, then returns structured results without reading or changing the DOM.
 
-### Step 3, Part 3
+The engine must eventually own:
 
-- Created this dedicated worklog for context-window continuity.
-- Reordered the experience around the daily goal loop.
-- Collapsed full goal editing, planning context, optional check-in context, and records.
-- Reduced sticky navigation from six destinations to five focused destinations.
-- Added a required temporary end date for Sprint difficulty.
-- Preserved the original structured fields and local storage behavior.
-- Extended source smoke coverage for the Part 3 layer.
-- Extended Playwright coverage for collapsed defaults, reading order, Sprint validation and persistence, records navigation, and the existing goal loop.
-- Passed desktop Chromium and Pixel 5 browser validation.
-- Passed CMX Static Validation, Privacy Audit, Secret Scan, Navigation Link Guard, and Terminal Theme Guard.
+- Difficulty and effort calculation
+- Trajectory and confidence
+- Question selection
+- Repeated-question prevention
+- Recommendation selection
+- Sprint expiry
+- Check-in, outcome and evidence transitions
+- Validation and history events
 
-## Part 3 Product Review Findings
+The first implementation action is to extract difficulty, effort, trajectory and confidence into pure functions with unit tests.
 
-### Keep
+## Step 4 Boundary
 
-- Goal Pulse as the dominant output
-- Four-field quick check-in
-- One active question
-- One recommendation with visible evidence basis
-- Difficulty as a workload control
-- Evidence separated from user claims
-- State history
+Do not add these during Step 4:
 
-### De-emphasize
-
-- Full goal definition during daily use
-- Optional written check-in context
-- Evidence entry and history review
-- Prototype boundary explanations after the user understands the lab
-
-### Defer
-
-- Moving repeated-question repair from `part2.js` into the core deterministic engine
-- Multi-goal switching
-- Backend persistence
+- FastAPI
+- PostgreSQL
 - Authentication
-- AI model reasoning
-- Connectors
-- Any `/brief` integration
+- Connected accounts
+- AI model calls
+- `/brief` integration
 
-## Validation Record
+## Separate `/brief` Bug Track
 
-Validated implementation commit:
+The user has confirmed these live `/brief` issues:
 
-`72bb4c040eb9a0f1a7b3ccdffb3a8581ffc84614`
+- The top-left briefing/profile control only produces a blurred screen.
+- Opening the terminal also only produces a blurred screen.
+- Music autoplay fails and displays feedback near the bottom.
+- The entry instruction to choose a briefing may need stronger prominence.
 
-Successful workflows:
+These issues must be investigated and fixed on a separate branch and PR. They are not Step 4 Goal Intelligence work.
 
-- Goal Intelligence Browser Validation
-- CMX Static Validation
-- CMX Privacy Audit
-- CMX Secret Scan
-- CMX Navigation Link Guard
-- CMX Terminal Theme Guard
+## Current Next Actions
 
-Configured browser projects:
-
-- Chromium desktop
-- Chromium with Pixel 5 emulation
-
-## Files Added or Extended During Part 3
-
-```text
-docs/concepts/brief-goal-intelligence-worklog.md
-goals-lab/part3.js
-goals-lab/part3.css
-goals-lab/part2.js
-tests/goals-lab-browser-e2e.spec.cjs
-tests/goals-lab-smoke.test.js
-```
-
-## Known Existing `/brief` Issues
-
-These are recorded only. They are not part of the current branch work:
-
-- The terminal interaction blurs the page instead of working correctly.
-- The login instruction telling users to choose a briefing may need more prominence.
-- Music autoplay fails and shows feedback near the bottom.
-
-## Next Action
-
-Perform Step 3, Part 4 as a short decision checkpoint. Unless new evidence argues against it, advance to Step 4 and move the deterministic logic into a cleaner, testable core before adding FastAPI or AI reasoning.
-
-Do not touch `/brief` during that decision or during Step 4.
+1. Reproduce the top-left control and terminal failures with browser tests on a separate `/brief` bugfix branch.
+2. Repair the overlay/drawer interaction and check related controls and close flows.
+3. Keep `/brief` fixes out of PR `#34`.
+4. Begin Step 4 Part 1 afterward by extracting pure difficulty, effort, trajectory and confidence rules.
 
 ## Update Discipline
 
-After every meaningful implementation part:
+After each meaningful part:
 
-1. Update the current roadmap position near the top.
-2. Add the completed change under Completed Work.
-3. Record defects, decisions, and deferred work honestly.
-4. Replace Next Action with the exact continuation point.
-5. Include the latest validated implementation commit and PR status when known.
+1. Update the roadmap position.
+2. Record completed work and defects.
+3. Replace Current Next Actions with the exact continuation point.
+4. Include relevant branch, PR and validated commit information.
+5. Keep `/brief` bugfix work separate from Goal Intelligence engine work.
 
-This file is a progress record, not a permanent rulebook. It can be revised when the product direction changes.
+This is a living progress record, not a permanent rulebook.
