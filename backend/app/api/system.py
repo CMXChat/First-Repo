@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request, status
+from sqlalchemy import text
 
 from ..config import Settings, get_settings
 from ..security import AccessIdentity
@@ -16,15 +17,25 @@ async def live() -> dict[str, str]:
 
 
 @router.get("/api/health/ready")
-async def ready(request: Request) -> dict[str, str]:
+def ready(request: Request) -> dict[str, str]:
     settings: Settings = get_settings()
     identity: AccessIdentity | None = getattr(request.state, "identity", None)
+    try:
+        with request.app.state.session_factory() as session:
+            session.execute(text("SELECT 1"))
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database readiness check failed",
+        ) from exc
+
     return {
         "status": "ready",
         "service": "cmx-restricted-node",
         "environment": settings.environment,
         "auth_mode": settings.auth_mode,
-        "identity": identity.email if identity else "health-check",
+        "database": "ready",
+        "identity": identity.subject if identity else "health-check",
         "time": datetime.now(UTC).isoformat(),
     }
 
