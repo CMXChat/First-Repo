@@ -188,34 +188,127 @@ Implemented:
 
 See `docs/PHASE_4_DIRECT_CAPTURE_VALIDATION.md` for the validated implementation head and detailed test scope.
 
-## Next slice: Server-side domain and network enrichment
+## Completed slice 5: Bounded infrastructure enrichment
 
-Add bounded server-side adapters that collect structured public infrastructure data without placing provider credentials or unrestricted network access in the browser.
+The protected OSINT workspace now provides same-origin server adapters for:
+
+1. RDAP
+2. HTTP response headers
+3. TLS certificate metadata
+4. Certificate Transparency
+
+### RDAP
+
+Implemented:
+
+- domain, public IP, and ASN targets
+- IANA bootstrap provider selection
+- HTTPS provider boundary
+- redirect refusal
+- bounded JSON collection
+- normalized registration, network, autonomous-system, event, entity, nameserver, secure-DNS, status, and notice fields
+- provider, source URL, collection time, requester, and cache disclosure
+
+### HTTP response inspection
+
+Implemented:
+
+- HTTP and HTTPS URLs only
+- standard ports only
+- embedded-credential and fragment rejection
+- public-address resolution and validation
+- pinned resolved-address connection
+- validated Host header and TLS SNI preservation
+- one `HEAD` request
+- bounded selected-header reading
+- no response-body read
+- no redirect following
+- cookie exclusion
+
+### TLS certificate inspection
+
+Implemented:
+
+- public domain or public IP targets
+- port 443 only
+- handshake without an HTTP request
+- protocol, cipher, ALPN, verification state, verification error, SHA-256 fingerprint, serial number, subject, issuer, validity, and bounded Subject Alternative Names
+- explicit unverified state when certificate validation fails
+
+### Certificate Transparency
+
+Implemented:
+
+- fixed server-side `crt.sh` provider
+- normalized public domains
+- optional subdomain inclusion
+- bounded provider response and record count
+- certificate-record deduplication
+- provider provenance and collection time
+- explicit limitation that certificate issuance does not prove current ownership or service availability
+
+### Network and SSRF safeguards
+
+Implemented:
+
+- rejection of private, loopback, link-local, multicast, reserved, unspecified, and otherwise non-global IP addresses
+- pre-resolution and validation of every candidate target address
+- connection to a pre-resolved permitted address
+- no automatic target redirects
+- bounded request time, response bytes, HTTP header bytes, cache lifetime, and normalized records
+- same-origin browser API use only
+- no general-purpose proxy or browser provider fetch path
+- logging rules that exclude query strings, targets, and provider payloads
+
+### Operator save and UX safeguards
+
+Implemented:
+
+- current-entity target prefill
+- explicit adapter actions
+- pending, completed, cancelled, and failed states
+- request cancellation and stale-result rejection
+- normalized provenance and JSON display
+- explicit save-field disclosure
+- `unrated` confidence by default
+- fresh selected-case duplicate preflight before write
+- explicit acknowledgement before an intentional duplicate
+- one owner-scoped observation transaction per saved result
+- provider output never becomes an automatic identity, ownership, causation, reputation, or current-service conclusion
+- pointer-transparent decorative CMX status chrome so fixed UI cannot block page controls
+- desktop, mobile, backend, PostgreSQL, privacy, secret, source-policy, container, and migration regressions
+
+See `docs/PHASE_5_ENRICHMENT_VALIDATION.md` for the validated implementation head and detailed network boundary.
+
+## Next slice: BGP and RPKI context
+
+Extend the protected infrastructure boundary with routing context while preserving the current conservative interpretation model.
 
 The first pass should support:
 
-- RDAP for domains, IP addresses and autonomous system numbers
-- HTTP response status and selected security headers
-- TLS certificate subject, issuer, validity and fingerprint summaries
-- Certificate Transparency lookups with provider provenance
-- bounded timeouts, response-size limits and allowlisted protocols
-- cache state, collection time and provider identity on every result
-- rate limits and cancellation-safe browser behavior
-- explicit operator save into the active case
-- no automatic conversion of enrichment output into a verified conclusion
-- desktop, mobile, backend and PostgreSQL regressions
+- prefix-to-origin ASN lookup
+- ASN-to-announced-prefix lookup
+- BGP route visibility from a fixed, reviewed public provider
+- RPKI Route Origin Authorization state
+- valid, invalid, not-found, and unavailable result states
+- provider, source URL, collection time, cache state, and query target disclosure
+- bounded timeouts, response bytes, and record counts
+- public IP, prefix, and ASN validation
+- no arbitrary URL input for routing providers
+- explicit operator save into the active case with `unrated` confidence
+- restrained relationship suggestions that require operator review before creation
+- desktop, mobile, backend, PostgreSQL, privacy, and source-policy regressions
 
-BGP and RPKI views should follow after the RDAP, HTTP, TLS and Certificate Transparency adapter boundary is stable.
+The interface must separate observed routing data from conclusions about ownership, control, compromise, attribution, or malicious activity.
 
 ## Later slices
 
-1. Add BGP and RPKI adapters and restrained network relationship views.
-2. Add isolated deep metadata and OCR workers.
-3. Add evidence manifests, screenshots, hashes and custody notes.
-4. Add explicit analyst-state editing for verified, inferred, conflicting, ruled-out and unverified records.
-5. Add restrained relationship comparison views.
-6. Add a local inline SVG icon set and compact first-use header treatment.
-7. Add persistent banners for disconnected, partial, unsaved and failed platform states.
+1. Add isolated deep metadata and OCR workers.
+2. Add evidence manifests, screenshots, hashes and custody notes.
+3. Add explicit analyst-state editing for verified, inferred, conflicting, ruled-out and unverified records.
+4. Add restrained relationship comparison views.
+5. Add a local inline SVG icon set and compact first-use header treatment.
+6. Add persistent banners for disconnected, partial, unsaved and failed platform states.
 
 ## Safety and release gate
 
