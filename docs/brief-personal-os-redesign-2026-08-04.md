@@ -3,28 +3,78 @@
 **Date:** August 4, 2026  
 **Repository:** `CMXChat/First-Repo`  
 **Branch:** `agent/brief-personal-os-shell`  
+**Draft PR:** `#37`  
 **Depends on:** draft PR `#35`  
-**Status:** Major interaction redesign in validation  
+**Status:** Full-first Personal OS implementation in validation  
 **Production status:** Not merged or deployed
 
-## Product Decision
+## Current Product Decision
 
-The default `/brief` experience should behave like a personal operating system, not a long report.
+The default `/brief` experience is a Personal OS home screen that opens with the complete operating picture.
 
-The old continuous page remains available as an optional deep-detail view. It is no longer the default interaction model.
+Full View is the default for every new user and every briefing type. Quick View remains available as an optional lens. Once a person changes the depth, that preference is saved on the current device and restored on later visits.
 
-## Default Structure
+This is a presentation-layer decision. It does not change the briefing generation engine, scenario data model, Spaces, permissions, Goal Intelligence engine, connectors, automations, or backend APIs.
 
-The OS uses six function applications:
+## Alignment of the Two Directions
+
+The complete briefing should be visible immediately, but the old continuous report should not return as the default interface.
+
+The aligned model is:
+
+- one fixed Personal OS shell
+- one Full home screen containing every applicable section
+- concise cards with progressive disclosure
+- Quick View as an optional condensed lens
+- app-style function pages for deeper work
+- the older continuous report available only as a deliberate detail surface
+
+This provides situational awareness without turning the landing experience into a long notification feed or a large stack of oversized sections.
+
+## Full Home
+
+The default home composes the existing briefing records into these modules:
+
+1. Executive Summary
+2. Priorities
+3. Calendar
+4. Messages and coordination
+5. Tasks
+6. Goals
+7. Updates
+8. Insights
+
+Each module shows its most important items first. Additional information remains inside `Show More` controls or a relevant function link.
+
+The module layer derives its presentation from existing scenario records. It does not introduce new network requests or backend contracts.
+
+## Quick View
+
+Quick View keeps only the immediate Executive Summary, Priorities, and Calendar modules.
+
+It is intended for a person who has already reviewed the full operating picture and wants a shorter lens during the day.
+
+Rules:
+
+- Full is the default when no saved preference exists.
+- Switching to Quick or back to Full is saved locally.
+- A saved preference affects only that device.
+- The selected depth does not change the underlying data or briefing generation.
+
+## Function Applications
+
+The shell retains six stable function applications:
 
 1. Today
-2. Day or the scenario-specific timeline
+2. Day or scenario timeline
 3. Work, Plans, Decisions, Training, or My Work
 4. Private, Profiles, Partners, Coach, or Spaces
 5. Insight, Reflection, Signals, Progress, or Handoffs
 6. System
 
-Labels adapt to the selected Personal, Relationship, Business, Trainer, or Team briefing.
+Labels adapt to Personal, Relationship, Business, Trainer, and Team briefings.
+
+The home screen gives the full picture. The function applications provide deeper operating surfaces without requiring the user to scroll through every module first.
 
 ## Navigation Model
 
@@ -32,92 +82,90 @@ Desktop uses a compact application rail.
 
 Mobile uses a six-application bottom dock.
 
-Every application occupies one viewport-sized screen. Moving between applications uses a horizontal animated transition. The document itself stays locked to the viewport, so normal use does not become a long page scroll.
-
 Navigation methods include:
 
 - application rail or bottom dock
 - Previous and Next buttons
-- a context-aware next CTA
+- context-aware next actions
 - keyboard left and right arrows
 - touch swipe
 - URL state through the `os` query parameter
+- optional Guided Flow
 
-## Guided Movement
+Guided Flow advances through the function applications once and stops at System. Manual navigation stops it.
 
-Normal operation remains deliberate. The interface does not unexpectedly move while the user is reading or acting.
+## Progressive Disclosure
 
-An optional Guided Flow advances through the applications once, then stops at System. Any manual navigation stops the flow.
+Full does not mean fully expanded.
 
-## Condensation
+Every module follows the same hierarchy:
 
-The redesign reduces oversized desktop cards and repeated explanation sections.
+1. Section name and current count
+2. One or two important items
+3. Optional concise context
+4. `Show More` for secondary items
+5. A relevant function or detail action
 
-The default Today screen contains:
+This keeps the complete operating picture present while limiting visual noise.
 
-- one current command
-- one next event
-- one context card
-- one following action
+## Mobile Rules
 
-The action screen uses a compact queue with local completion state. The spaces screen separates private and approved shared records into two panes. The intelligence screen keeps only signals that affect timing, ownership, risk, or the next action.
+Full View remains the default on mobile.
+
+- modules render as compact single-column cards
+- each card expands independently
+- Full and Quick controls remain directly available
+- the page document remains locked to the viewport
+- content scrolls inside the active OS screen
+- the bottom application dock stays available
+- no horizontal overflow is allowed
 
 ## Deep Detail Boundary
 
-Detailed schedule, priorities, memory, connections, and the full continuous report remain available through explicit detail buttons.
+Detailed schedule, priorities, memory, connections, and the original continuous report remain available through explicit detail actions.
 
-Opening detail mode temporarily restores the existing long-form modules and provides a fixed Return to Personal OS control. Returning restores the prior OS application and locks the document back to the viewport.
+Opening detail mode temporarily restores the existing long-form modules and adds a fixed Return to Personal OS control. Returning restores the previous application and viewport lock.
 
-## Existing Controls
+## Existing Controls Preserved
 
-The redesign preserves:
-
-- briefing/profile switcher
-- repaired terminal
-- terminal close and Escape behavior
-- top-level More and Tour controls
-- selected briefing preset
-- existing fictional scenario data
+- repaired briefing switcher
+- repaired terminal and close flows
+- More controls
 - light and dark themes
+- current fictional scenario data
+- preset switching
+- the complete underlying report
 
-## Responsive Rules
+## Validation Requirements
 
-### Desktop
+The dedicated Personal OS validation covers:
 
-- compact left application rail
-- fixed command bar
-- one active application screen
-- internal screen scrolling only when needed
-- reduced maximum heading and card sizes
-
-### Mobile
-
-- bottom application dock
-- compact top controls
-- horizontal application movement
-- no default document scrolling
-- internal screen scrolling for content that exceeds the available height
-
-## Validation
-
-The dedicated validation covers:
-
-- JavaScript syntax and structural contracts
-- desktop viewport lock
-- hidden continuous report during OS use
+- Full as the default for a new user
+- all eight home modules present
+- Quick View optional and locally persisted
+- progressive disclosure
+- local task completion
+- fixed viewport and no default document scrolling
 - animated application movement
-- Next and keyboard navigation
-- deliberate detail mode and return flow
-- terminal opening from the OS
-- mobile bottom navigation
-- horizontal overflow protection
-- guided flow completion and stop state
+- Previous, Next, keyboard, and swipe navigation
+- deliberate detail mode and return
+- terminal opening and closing
+- compact mobile cards
+- mobile section expansion
+- overflow protection
+- Guided Flow completion
+
+The overlay repair suite and complete underlying briefing smoke chain remain separate compatibility gates.
 
 ## Files
 
 ```text
 assets/brief/brief-personal-os.js
 assets/brief/brief-personal-os.css
+assets/brief/brief-personal-os-density.css
+assets/brief/brief-personal-os-mobile.css
+assets/brief/brief-full-home.js
+assets/brief/brief-full-home.css
 assets/brief/brief-lite-ui.js
 assets/brief/brief-lite-ui.css
 tests/brief-personal-os-smoke.test.js
@@ -133,7 +181,9 @@ This branch starts from the terminal and overlay repair branch so the Personal O
 The intended review order is:
 
 1. Review and merge PR `#35`.
-2. Rebase or retarget the Personal OS PR onto `main` after `#35` lands.
-3. Review the OS interaction model separately.
+2. Rebase or retarget PR `#37` onto `main`.
+3. Review the Full-first Personal OS presentation separately.
+
+Goal Intelligence Step 4 remains in PR `#34` and must not be mixed into this presentation change.
 
 Nothing should be described as live until the relevant PRs are merged and deployed.
