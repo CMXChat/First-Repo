@@ -100,16 +100,19 @@
   }, 0);
 
   function loadOperatorWorkspace() {
-    if (!document.querySelector('link[data-cmx-cases-operator]')) {
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = '/assets/cases-operator-workspace.css?v=20260804-1';
-      style.dataset.cmxCasesOperator = 'true';
-      document.head.appendChild(style);
-    }
-
+    loadStyle('/assets/cases-operator-workspace.css?v=20260804-1', 'workspace');
+    loadStyle('/assets/cases-operator-responsive.css?v=20260804-1', 'responsive');
     loadScript('/assets/cases-operator-workspace.js?v=20260804-1', 'workspace');
     loadScript('/assets/cases-operator-records.js?v=20260804-1', 'records');
+  }
+
+  function loadStyle(href, role) {
+    if (document.querySelector(`link[data-cmx-cases-operator="${role}"]`)) return;
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = href;
+    style.dataset.cmxCasesOperator = role;
+    document.head.appendChild(style);
   }
 
   function loadScript(src, role) {
