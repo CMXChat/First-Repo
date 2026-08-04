@@ -65,13 +65,15 @@ test('routing lookup cancels stale work and saves one provenance-bound observati
   await expect(page.locator('#routingSection')).toBeVisible();
   await expect(page.locator('.cmx-case-context-select')).toHaveValue(record.id);
 
+  const routingSection = page.locator('#routingSection');
+  const cancel = routingSection.getByRole('button', { name: 'Cancel', exact: true });
   await page.locator('#routingResource').fill('1.1.1.1');
-  await page.getByRole('button', { name: 'Find origin' }).click();
-  await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toBeEnabled();
-  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await routingSection.getByRole('button', { name: 'Find origin' }).click();
+  await expect(cancel).toBeEnabled();
+  await cancel.click();
 
   await page.locator('#routingResource').fill('8.8.8.8');
-  await page.getByRole('button', { name: 'Find origin' }).click();
+  await routingSection.getByRole('button', { name: 'Find origin' }).click();
   await expect(page.locator('#routingResult')).toBeVisible();
   await expect(page.locator('#routingSummary')).toContainText('8.8.8.0/24');
   await expect(page.locator('#routingSummary')).toContainText('AS15169');
@@ -82,12 +84,10 @@ test('routing lookup cancels stale work and saves one provenance-bound observati
   await page.waitForTimeout(650);
   await expect(page.locator('#routingSummary')).not.toContainText('1.1.1.0/24');
 
-  await page.getByRole('button', { name: 'Save routing observation' }).click();
+  await routingSection.getByRole('button', { name: 'Save routing observation' }).click();
   await expect(page.locator('#routingStatus')).toContainText(/Saved routing_network_info observation/i);
-
-  await page.getByRole('button', { name: 'Save routing observation' }).click();
   await expect(page.locator('#routingDuplicate')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Save routing observation' })).toBeDisabled();
+  await expect(routingSection.getByRole('button', { name: 'Save routing observation' })).toBeDisabled();
 
   const detailResponse = await request.get(`/api/cases/${record.id}`);
   expect(detailResponse.status()).toBe(200);
@@ -138,7 +138,7 @@ test('invalid RPKI remains a routing state and is not labeled malicious', async 
   await expect(page.locator('#routingSection')).toBeVisible();
   await page.locator('#routingResource').fill('8.8.8.0/24');
   await page.locator('#routingAsn').fill('AS15169');
-  await page.getByRole('button', { name: 'Validate RPKI' }).click();
+  await page.locator('#routingSection').getByRole('button', { name: 'Validate RPKI' }).click();
 
   await expect(page.locator('#routingSummary')).toContainText('RPKI invalid');
   await expect(page.locator('#routingSummary')).not.toContainText(/malicious|compromised|attack/i);
