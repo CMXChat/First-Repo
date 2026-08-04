@@ -10,12 +10,12 @@
       kicker: '01 · MORNING',
       title: 'You wake up. The day is already sorted.',
       body: 'Weather, plans, priorities, public changes and the one thing most likely to throw the day off are already condensed before you start moving.',
-      note: 'The point is not more information. It is less uncertainty.',
+      note: 'You start with a clearer day.',
       visual: 'morning'
     },
     {
       kicker: '02 · SOUND',
-      title: 'It sounds like you, not a robot.',
+      title: 'Your morning can have its own sound.',
       body: 'Your Spotify favorites can shape the mood. An approved voice can read the briefing. Music, narration and silence stay under your control.',
       note: 'A briefing can feel personal without pretending to be a person.',
       visual: 'sound'
@@ -36,9 +36,9 @@
     },
     {
       kicker: '05 · GROWTH',
-      title: 'It learns through correction, not assumption.',
+      title: 'Corrections teach it what matters.',
       body: 'Lessons, quizzes, workouts, habits and accountability can improve with approved history. A correction should outweigh an old guess, and temporary context should be allowed to expire.',
-      note: 'The goal is useful memory, not permanent judgment.',
+      note: 'Useful memory should stay revisable.',
       visual: 'growth'
     },
     {
@@ -159,7 +159,7 @@
     createLayer();
     if (state.open || document.body.classList.contains('is-locked')) return;
     state.open = true;
-    state.returnFocus = $('#explainButton') || document.activeElement;
+    state.returnFocus = document.activeElement || $('#explainButton');
     window.BRIEF_ONBOARDING?.closeHelp?.(false);
     const layer = $('#briefVisionLayer');
     layer.hidden = false;
@@ -167,6 +167,7 @@
     setAppInert(true);
     show(0);
     window.requestAnimationFrame(() => layer.classList.add('is-visible'));
+    window.dispatchEvent(new CustomEvent('brief:vision-open'));
   }
 
   function close() {
@@ -179,6 +180,7 @@
       document.body.classList.remove('brief-vision-open');
       setAppInert(false);
       state.returnFocus?.focus?.();
+      window.dispatchEvent(new CustomEvent('brief:vision-close'));
     }, reducedMotion() ? 0 : 160);
   }
 
