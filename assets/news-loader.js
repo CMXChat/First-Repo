@@ -12,14 +12,14 @@
     const token = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const html = await response.text();
     const refreshedHtml = html
-      .replace(/(<link rel="stylesheet" href="\/assets\/news-media\.css[^>]*>)/, `$1\n  <link rel="stylesheet" href="/assets/news-weather-modern.css?v=${token}" />`)
+      .replace(/(<link rel="stylesheet" href="\/assets\/news-media\.css[^>]*>)/, `$1\n  <link rel="stylesheet" href="/assets/news-weather-modern.css?v=${token}" />\n  <link rel="stylesheet" href="/assets/news-navigation.css?v=${token}" />\n  <link rel="stylesheet" href="/assets/news-resilience.css?v=${token}" />`)
       .replace(/\/assets\/news-data\.js(?:\?[^"']*)?/g, `/assets/news-data.js?v=${token}`)
       .replace(/(<script src="\/assets\/news-data\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/daily-song.js?v=${token}" defer></script>\n  <script src="/assets/news-song-sync.js?v=${token}" defer></script>\n  <script src="/assets/daily-weather.js?v=${token}" defer></script>\n  <script src="/assets/news-weather-sync.js?v=${token}" defer></script>\n  <script src="/assets/daily-culture.js?v=${token}" defer></script>\n  <script src="/assets/news-culture-sync.js?v=${token}" defer></script>`)
       .replace(/\/assets\/daily-video\.js(?:\?[^"']*)?/g, `/assets/daily-video.js?v=${token}`)
       .replace(/\/assets\/news\.js(?:\?[^"']*)?/g, `/assets/news.js?v=${token}`)
       .replace(/(<script src="\/assets\/news\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-weather-modern.js?v=${token}" defer></script>`)
       .replace(/\/assets\/news-media\.js(?:\?[^"']*)?/g, `/assets/news-media.js?v=${token}`)
-      .replace(/(<script src="\/assets\/news-media\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-upgrades.js?v=${token}" defer></script>\n  <script src="/assets/news-experience.js?v=${token}" defer></script>\n  <script src="/assets/news-workspace.js?v=${token}" defer></script>\n  <script src="/assets/news-polish.js?v=${token}" defer></script>\n  <script src="/assets/news-navigation.js?v=${token}" defer></script>\n  <script src="/assets/news-navigation-state.js?v=${token}" defer></script>`)
+      .replace(/(<script src="\/assets\/news-media\.js[^>]*><\/script>)/, `$1\n  <script src="/assets/news-upgrades.js?v=${token}" defer></script>\n  <script src="/assets/news-experience.js?v=${token}" defer></script>\n  <script src="/assets/news-workspace.js?v=${token}" defer></script>\n  <script src="/assets/news-polish.js?v=${token}" defer></script>\n  <script src="/assets/news-navigation.js?v=${token}" defer></script>\n  <script src="/assets/news-navigation-state.js?v=${token}" defer></script>\n  <script src="/assets/news-resilience.js?v=${token}" defer></script>\n  <script src="/assets/news-resilience-bounds.js?v=${token}" defer></script>`)
       .replace(/\/assets\/news-weather-modern\.css(?:\?[^"']*)?/g, `/assets/news-weather-modern.css?v=${token}`)
       .replace(/\/assets\/news-weather-modern\.js(?:\?[^"']*)?/g, `/assets/news-weather-modern.js?v=${token}`);
 

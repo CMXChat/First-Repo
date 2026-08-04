@@ -1,0 +1,84 @@
+name: News Browser Validation
+
+on:
+  pull_request:
+    paths:
+      - 'assets/news-resilience.js'
+      - 'assets/news-resilience-bounds.js'
+      - 'assets/news-resilience.css'
+      - 'assets/news-navigation.js'
+      - 'assets/news-navigation-state.js'
+      - 'assets/news-navigation.css'
+      - 'assets/news-loader.js'
+      - 'assets/news-workspace.js'
+      - 'assets/news-polish.js'
+      - 'assets/news-media.js'
+      - 'news/index.html'
+      - 'tests/news-browser-e2e.spec.cjs'
+      - 'tests/news-playwright.config.cjs'
+      - '.github/workflows/news-browser-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/news-resilience.js'
+      - 'assets/news-resilience-bounds.js'
+      - 'assets/news-resilience.css'
+      - 'assets/news-navigation.js'
+      - 'assets/news-navigation-state.js'
+      - 'assets/news-navigation.css'
+      - 'assets/news-loader.js'
+      - 'assets/news-workspace.js'
+      - 'assets/news-polish.js'
+      - 'assets/news-media.js'
+      - 'news/index.html'
+      - 'tests/news-browser-e2e.spec.cjs'
+      - 'tests/news-playwright.config.cjs'
+      - '.github/workflows/news-browser-validation.yml'
+
+concurrency:
+  group: news-browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save @playwright/test@1.55.0
+          npx playwright install-deps webkit
+          npx playwright install chromium firefox webkit
+      - name: Run desktop and mobile news checks
+        id: browser
+        continue-on-error: true
+        run: |
+          set +e
+          npx playwright test --config=tests/news-playwright.config.cjs --reporter=line > /tmp/news-browser.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          {
+            echo '## News browser test summary'
+            echo
+            grep -E 'Running [0-9]+ tests|[0-9]+ passed|[0-9]+ failed|[0-9]+ flaky|[0-9]+ skipped|Error:|TimeoutError|expect\(|locator\.|Test timeout|\[[^]]+\] ›' /tmp/news-browser.log | tail -240 || true
+          } > /tmp/news-browser-summary.md
+          cat /tmp/news-browser-summary.md
+      - name: Upload concise browser report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-browser-report
+          path: |
+            /tmp/news-browser-summary.md
+            /tmp/news-browser.log
+          retention-days: 3
+      - name: Enforce browser pass
+        if: always()
+        run: test "${{ steps.browser.outputs.status }}" = "0"
