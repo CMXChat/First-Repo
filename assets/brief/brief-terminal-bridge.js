@@ -25,9 +25,9 @@
   };
   const TERMINAL_INTRO = 'Demo navigation shell today. Protected data, files, connectors and approved actions belong to the future backend.';
   const TERMINAL_SUMMARY = 'demo navigation · backend later';
-  const NAVIGATION_VERSION = '20260803-6';
-  const INTERFACE_VERSION = '20260803-2';
-  const FINAL_VERSION = '20260803-2';
+  const NAVIGATION_VERSION = '20260803-7';
+  const INTERFACE_VERSION = '20260803-3';
+  const FINAL_VERSION = '20260803-3';
 
   let initialized = false;
   let lastPreset = '';
@@ -199,9 +199,9 @@
   function loadProductLayers() {
     loadStyle('briefNavigationStyle', `/assets/brief/brief-navigation.css?v=${NAVIGATION_VERSION}`);
     loadStyle('briefNavigationRuntimeStyle', `/assets/brief/brief-navigation-runtime.css?v=${NAVIGATION_VERSION}`);
+    loadStyle('briefVisionStyle', `/assets/brief/brief-vision-tour.css?v=${FINAL_VERSION}`);
     loadStyle('briefThemeIntegrityStyle', `/assets/brief/brief-theme-integrity.css?v=${INTERFACE_VERSION}`);
     loadStyle('briefFinalizeStyle', `/assets/brief/brief-finalize.css?v=${FINAL_VERSION}`);
-    loadStyle('briefVisionStyle', `/assets/brief/brief-vision-tour.css?v=${FINAL_VERSION}`);
 
     loadScript('briefThemeIntegrityScript', `/assets/brief/brief-theme-integrity.js?v=${INTERFACE_VERSION}`);
     loadScript('briefNavigationScript', `/assets/brief/brief-navigation.js?v=${NAVIGATION_VERSION}`, () => {
@@ -209,8 +209,8 @@
       loadScript('briefTopMapScript', `/assets/brief/brief-map-top.js?v=${INTERFACE_VERSION}`);
     });
 
-    loadScript('briefFinalizeScript', `/assets/brief/brief-finalize.js?v=${FINAL_VERSION}`);
     loadScript('briefVisionScript', `/assets/brief/brief-vision-tour.js?v=${FINAL_VERSION}`);
+    loadScript('briefFinalizeScript', `/assets/brief/brief-finalize.js?v=${FINAL_VERSION}`);
   }
 
   function installCommandBridge() {
