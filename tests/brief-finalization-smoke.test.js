@@ -1,3 +1,4 @@
+// Validation-only branch trigger. Product assertions remain unchanged.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
