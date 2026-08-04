@@ -21,7 +21,8 @@ for (const [name, source] of Object.entries({ config, entry, device, experience,
   new vm.Script(source, { filename: `${name}.js` });
 }
 
-assert.match(config, /device: '20260803-2'/);
+assert.match(config, /device: '20260803-3'/);
+assert.match(config, /onboarding: '20260803-[2-9]'/);
 assert.match(config, /entry: '20260803-5'/);
 assert.match(config, /live: '20260803-5'/);
 assert.match(config, /experience: '20260803-4'/);
