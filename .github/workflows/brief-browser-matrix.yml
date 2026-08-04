@@ -6,20 +6,24 @@ on:
     paths:
       - 'brief/**'
       - 'assets/brief/**'
+      - 'assets/daily-song.js'
       - 'assets/daily-video.js'
       - 'tests/brief-browser-e2e.spec.cjs'
       - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/brief-finalization-e2e.spec.cjs'
+      - 'tests/brief-mobile-first-pass.spec.cjs'
       - 'tests/playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
   pull_request:
     paths:
       - 'brief/**'
       - 'assets/brief/**'
+      - 'assets/daily-song.js'
       - 'assets/daily-video.js'
       - 'tests/brief-browser-e2e.spec.cjs'
       - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/brief-finalization-e2e.spec.cjs'
+      - 'tests/brief-mobile-first-pass.spec.cjs'
       - 'tests/playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
 
