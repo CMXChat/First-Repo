@@ -1,0 +1,69 @@
+/* Final product hierarchy: Quick uses cards and pills. Full keeps a compact section rail. */
+
+body[data-brief-depth='quick'] #briefNavigatorBar {
+  display: none !important;
+}
+
+body[data-brief-depth='full'] #briefNavigatorBar {
+  display: grid;
+}
+
+#briefNavigatorBar {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+#briefNavigatorBar #briefMapButton {
+  display: none !important;
+}
+
+#briefNavigatorBar .brief-you-are-here {
+  min-width: 0;
+}
+
+#briefNavigatorBar .brief-sticky-routes {
+  min-width: 0;
+}
+
+#briefBackToQuick {
+  white-space: nowrap;
+}
+
+[data-open-full-workspace] {
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  #briefNavigatorBar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  #briefNavigatorBar .brief-you-are-here {
+    grid-column: 1;
+  }
+
+  #briefNavigatorBar .brief-sticky-routes {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  #briefBackToQuick {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  #briefBackToQuick {
+    max-width: 132px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #briefNavigatorBar,
+  [data-open-full-workspace] {
+    scroll-behavior: auto;
+  }
+}
