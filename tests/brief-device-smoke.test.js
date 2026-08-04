@@ -194,6 +194,8 @@ const windowMock = new EventTargetMock();
 windowMock.window = windowMock;
 windowMock.document = documentMock;
 windowMock.setTimeout = setTimeout;
+windowMock.requestAnimationFrame = callback => setTimeout(callback, 0);
+windowMock.cancelAnimationFrame = handle => clearTimeout(handle);
 windowMock.scrollTo = options => scrollCalls.push(options);
 windowMock.CustomEvent = class CustomEventMock {
   constructor(type, options = {}) { this.type = type; this.detail = options.detail; }
@@ -205,7 +207,10 @@ const context = {
   sessionStorage: { setItem() {} },
   CustomEvent: windowMock.CustomEvent,
   MutationObserver: MutationObserverMock,
+  requestAnimationFrame: windowMock.requestAnimationFrame,
+  cancelAnimationFrame: windowMock.cancelAnimationFrame,
   setTimeout,
+  clearTimeout,
   console
 };
 vm.createContext(context);
