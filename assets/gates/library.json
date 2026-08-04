@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "updated": "2026-08-04",
+  "gates": [
+    {
+      "id": "black-prompt",
+      "name": "Black Prompt Gate",
+      "description": "A full-screen black command prompt showing only a white password prompt until authentication.",
+      "stylesheet": "/assets/gates/cmx-gate-black-prompt.css",
+      "script": "/assets/gates/cmx-gate-black-prompt.js",
+      "preview": "/gate-library/black-prompt/",
+      "credentialPolicy": "PBKDF2-SHA256 fixed verifier",
+      "iterations": 600000
+    }
+  ]
+}
