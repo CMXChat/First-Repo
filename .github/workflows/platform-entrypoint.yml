@@ -20,6 +20,7 @@ on:
       - 'assets/osint-workbench.js'
       - 'tests/browser/lifecycle.spec.mjs'
       - 'tests/browser/platform.spec.mjs'
+      - 'tests/browser/cases-operator-workspace.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
   push:
@@ -44,6 +45,7 @@ on:
       - 'assets/osint-workbench.js'
       - 'tests/browser/lifecycle.spec.mjs'
       - 'tests/browser/platform.spec.mjs'
+      - 'tests/browser/cases-operator-workspace.spec.mjs'
       - 'playwright.config.mjs'
       - '.github/workflows/platform-entrypoint.yml'
 
@@ -136,12 +138,12 @@ jobs:
       - name: Run desktop platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/lifecycle.spec.mjs tests/browser/cases-operator-workspace.spec.mjs --config=playwright.config.mjs --project=chromium-desktop
 
       - name: Run mobile platform regressions
         env:
           CMX_BROWSER_BASE_URL: http://127.0.0.1:8000
-        run: npx playwright test tests/browser/platform.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
+        run: npx playwright test tests/browser/platform.spec.mjs tests/browser/cases-operator-workspace.spec.mjs --config=playwright.config.mjs --project=chromium-mobile
 
       - name: Upload platform failure artifacts
         if: failure()
