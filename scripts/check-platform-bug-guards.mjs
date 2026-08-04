@@ -52,7 +52,7 @@ requireMarker('backend/tests/test_enrichment.py', 'canonicalizes_unicode_path');
 requireMarker('backend/tests/test_enrichment.py', 'end_to_end_timeout');
 requireMarker('backend/tests/test_routing.py', 'malformed_path_identifiers');
 requireMarker('backend/tests/test_routing.py', 'rpki_states_remain_explicit');
-requireMarker('tests/browser/routing.spec.mjs', 'zero direct');
+requireMarker('tests/browser/routing.spec.mjs', 'providerRequests');
 requireMarker('tests/browser/routing.spec.mjs', 'not labeled malicious');
 
 function requireMarker(file, marker) {
