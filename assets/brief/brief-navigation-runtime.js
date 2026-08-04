@@ -18,6 +18,7 @@
   };
 
   let initialized = false;
+  let restoring = false;
 
   function preset() {
     return window.BRIEF_APP?.getPreset?.() || 'individual';
@@ -78,24 +79,39 @@
     }, true);
   }
 
+  function requestedState() {
+    const url = new URL(window.location.href);
+    const requestedPreset = VIEW_TO_PRESET[url.searchParams.get('view')] || preset();
+    const requestedTab = url.searchParams.get('tab') || 'overview';
+    const requestedDepth = url.searchParams.get('depth') === 'full' ? 'full' : 'quick';
+    const route = Object.entries(TAB_BY_ROUTE[requestedPreset] || {}).find(([, tab]) => tab === requestedTab)?.[0] || 'overview';
+    return { requestedPreset, requestedTab, requestedDepth, route };
+  }
+
+  function applyRequestedUrl() {
+    if (restoring || document.body.classList.contains('is-locked') || !window.BRIEF_NAVIGATION) return;
+    restoring = true;
+    const { requestedPreset, requestedDepth, route } = requestedState();
+    if (requestedPreset !== preset()) {
+      window.BRIEF_NAVIGATION.switchPreset?.(requestedPreset, { route, depth: requestedDepth, push: false, focus: false });
+    } else if (requestedDepth === 'quick') {
+      setQuickRoute(route, false);
+    } else {
+      window.BRIEF_NAVIGATION.navigate?.(route, { depth: 'full', push: false, focus: false });
+    }
+    window.setTimeout(() => { restoring = false; }, 900);
+  }
+
   function restoreUrlAfterEntry() {
     $('#enterBrief')?.addEventListener('click', () => {
-      window.setTimeout(() => {
-        if (document.body.classList.contains('is-locked')) return;
-        const url = new URL(window.location.href);
-        const requestedPreset = VIEW_TO_PRESET[url.searchParams.get('view')] || preset();
-        const requestedTab = url.searchParams.get('tab') || 'overview';
-        const requestedDepth = url.searchParams.get('depth') === 'full' ? 'full' : 'quick';
-        const route = Object.entries(TAB_BY_ROUTE[requestedPreset] || {}).find(([, tab]) => tab === requestedTab)?.[0] || 'overview';
-        if (requestedPreset !== preset()) {
-          window.BRIEF_NAVIGATION?.switchPreset?.(requestedPreset, { route, depth: requestedDepth, push: false, focus: false });
-        } else if (requestedDepth === 'quick') {
-          setQuickRoute(route, false);
-        } else {
-          window.BRIEF_NAVIGATION?.navigate?.(route, { depth: 'full', push: false, focus: false });
-        }
-      }, 720);
+      window.setTimeout(applyRequestedUrl, 720);
     }, true);
+    window.addEventListener('brief:device-fallback-open', () => window.setTimeout(applyRequestedUrl, 520));
+    window.addEventListener('popstate', () => window.setTimeout(applyRequestedUrl, 80));
+    window.addEventListener('hashchange', () => window.setTimeout(applyRequestedUrl, 80));
+    window.addEventListener('pageshow', event => {
+      if (event.persisted || !document.body.classList.contains('is-locked')) window.setTimeout(applyRequestedUrl, 520);
+    });
   }
 
   function patchPublicApi() {
@@ -111,6 +127,7 @@
       return originalNavigate?.(route, options);
     };
     api.__runtimePatched = true;
+    if (!document.body.classList.contains('is-locked')) window.setTimeout(applyRequestedUrl, 180);
     return true;
   }
 
