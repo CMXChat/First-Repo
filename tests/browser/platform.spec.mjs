@@ -14,7 +14,7 @@ const protectedRoutes = [
   ['/metadata', 'CMX Metadata Inspector'],
   ['/search', 'CMX Search Workbench'],
   ['/missing', 'CMX Missing-Person Research'],
-  ['/resources', 'OSINT Resource Library']
+  ['/resources', 'CMX OSINT Resources']
 ];
 
 async function grantClientSession(page) {
@@ -27,7 +27,10 @@ async function openProtected(page, path) {
   await grantClientSession(page);
   const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
   expect(response?.ok()).toBeTruthy();
-  await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}/?$`));
+  const expectedUrl = new URL(path, 'http://127.0.0.1:8000');
+  await expect(page).toHaveURL((url) =>
+    url.pathname === expectedUrl.pathname && url.search === expectedUrl.search
+  );
 }
 
 async function createPersistentCase(request, title, caseType = 'general') {
@@ -164,13 +167,14 @@ test('Cases opens the exact case requested by the active-case context', async ({
 });
 
 test('Metadata renders an adversarial filename as text', async ({ page }) => {
+  const filename = '<img src=x onerror=window.__cmxXss=1>.txt';
   await openProtected(page, '/metadata');
   await page.locator('#fileInput').setInputFiles({
-    name: '<img src=x onerror=window.__cmxXss=1>.txt',
+    name: filename,
     mimeType: 'text/plain',
     buffer: Buffer.from('safe text sample')
   });
-  await expect(page.getByText('<img src=x onerror=window.__cmxXss=1>.txt', { exact: true })).toBeVisible();
+  await expect(page.locator('#detailTitle')).toHaveText(filename);
   await expect(page.locator('img[src="x"]')).toHaveCount(0);
   expect(await page.evaluate(() => window.__cmxXss)).toBeUndefined();
 });
