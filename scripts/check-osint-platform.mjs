@@ -14,6 +14,7 @@ const requiredFiles = [
   'assets/cases-state-sync.js',
   'assets/cases-operator-workspace.js',
   'assets/cases-operator-workspace.css',
+  'assets/cases-operator-records.js',
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/metadata-workbench.css',
@@ -47,6 +48,7 @@ const javascriptFiles = [
   'assets/cmx-case-context.js',
   'assets/cases-state-sync.js',
   'assets/cases-operator-workspace.js',
+  'assets/cases-operator-records.js',
   'assets/search-workbench.js',
   'assets/metadata-workbench.js',
   'assets/osint-workbench.js',
@@ -128,6 +130,7 @@ checkPageModule('cases/index.html', 'assets/cases-workbench.js', [
 ]);
 checkSafeModule('assets/cases-state-sync.js');
 checkSafeModule('assets/cases-operator-workspace.js');
+checkSafeModule('assets/cases-operator-records.js');
 checkCasesOperatorLoader();
 
 function checkPageModule(page, module, requiredReferences) {
@@ -148,7 +151,8 @@ function checkCasesOperatorLoader() {
   const source = readFileSync(loaderPath, 'utf8');
   [
     '/assets/cases-operator-workspace.js',
-    '/assets/cases-operator-workspace.css'
+    '/assets/cases-operator-workspace.css',
+    '/assets/cases-operator-records.js'
   ].forEach((reference) => {
     if (!source.includes(reference)) failures.push(`assets/cases-state-sync.js must load ${reference}`);
   });
