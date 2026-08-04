@@ -76,14 +76,16 @@
     }
   }
 
-  function closeDrawerForHelp() {
+  function drawerIsOpen() {
     const drawer = $('#newsSectionDrawer');
-    if (!drawer || drawer.hidden) return;
-    $('[data-news-drawer-close]', drawer)?.click();
+    return Boolean(drawer && !drawer.hidden);
   }
 
-  function closeHelpForDrawer() {
-    if (helpOpen) closeHelp(false);
+  function closeDrawerForHelp() {
+    const drawer = $('#newsSectionDrawer');
+    if (!drawer || drawer.hidden) return false;
+    $('[data-news-drawer-close]', drawer)?.click();
+    return true;
   }
 
   function buildHelp() {
@@ -141,7 +143,11 @@
 
   function openHelp() {
     buildHelp();
-    closeDrawerForHelp();
+    if (drawerIsOpen()) {
+      closeDrawerForHelp();
+      window.setTimeout(openHelp, reducedMotion() ? 0 : 170);
+      return;
+    }
     const layer = $('#newsHelpLayer');
     const button = $('#newsHelpButton');
     if (!layer || helpOpen) return;
@@ -197,7 +203,9 @@
 
   function applyCapabilities() {
     const readButton = $('#newsReadBrief');
-    if (readButton && !('speechSynthesis' in window)) {
+    const speechUnavailable = typeof window.speechSynthesis?.speak !== 'function'
+      || typeof window.SpeechSynthesisUtterance !== 'function';
+    if (readButton && speechUnavailable) {
       readButton.disabled = true;
       readButton.classList.add('is-unavailable');
       readButton.textContent = 'Read aloud unavailable';
@@ -245,7 +253,12 @@
 
   function bindOverlayCoordination() {
     document.addEventListener('click', event => {
-      if (event.target.closest?.('#newsOpenSectionDrawer')) closeHelpForDrawer();
+      const trigger = event.target.closest?.('#newsOpenSectionDrawer');
+      if (!trigger || !helpOpen) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      closeHelp(false);
+      window.setTimeout(() => trigger.click(), reducedMotion() ? 0 : 160);
     }, true);
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && helpOpen) closeHelp();
