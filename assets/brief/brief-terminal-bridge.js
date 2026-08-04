@@ -25,7 +25,7 @@
   };
   const TERMINAL_INTRO = 'Demo shell now. Protected data entry and file uploads can come through this terminal or the dashboard once the backend is live.';
   const TERMINAL_SUMMARY = 'demo now · backend reserved';
-  const NAVIGATION_VERSION = '20260803-2';
+  const NAVIGATION_VERSION = '20260803-4';
 
   let initialized = false;
   let lastPreset = '';
