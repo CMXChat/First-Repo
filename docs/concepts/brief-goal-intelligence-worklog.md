@@ -11,6 +11,7 @@
 **Latest validated prototype implementation:** `72bb4c040eb9a0f1a7b3ccdffb3a8581ffc84614`  
 **Step 3 closeout commit:** `041ae2e8810775eeb3ccce7db21824788cb056a3`  
 **Step 4 plan commit:** `ed0e9c2ef18bdc4595add278ba1792b220b3e5aa`  
+**Separate `/brief` bugfix PR:** `#35`, draft, not merged  
 **Production boundary:** Goal Intelligence work does not touch `/brief` until its later integration phase.
 
 ## How Future Context Windows Should Continue
@@ -23,6 +24,7 @@ Read these files in order:
 4. `docs/concepts/brief-goal-intelligence-concept-2026-08-04.md`
 5. `docs/concepts/goal-intelligence-step-3-prototype-2026-08-04.md`
 6. Draft PR `#34`
+7. For the separate live-page bug track, read PR `#35` and `docs/brief-overlay-controls-fix-2026-08-04.md` on branch `agent/brief-overlay-controls-fix`
 
 Use this worklog as the current operational status. The dated concept file explains the larger idea. The Step 3 files preserve prototype evidence and decisions. The Step 4 plan defines the next implementation phase.
 
@@ -102,23 +104,43 @@ Do not add these during Step 4:
 - AI model calls
 - `/brief` integration
 
-## Separate `/brief` Bug Track
+## Separate `/brief` Bug Track Status
 
-The user has confirmed these live `/brief` issues:
+Branch: `agent/brief-overlay-controls-fix`  
+Draft PR: `#35`  
+Status: Implemented and validated in draft; not merged or deployed
 
-- The top-left briefing/profile control only produces a blurred screen.
-- Opening the terminal also only produces a blurred screen.
-- Music autoplay fails and displays feedback near the bottom.
-- The entry instruction to choose a briefing may need stronger prominence.
+The user reported:
 
-These issues must be investigated and fixed on a separate branch and PR. They are not Step 4 Goal Intelligence work.
+- The top-left briefing/profile control produced a blurred screen.
+- Opening the terminal also produced a blurred screen.
+
+The terminal failure was reproduced in desktop and mobile browser automation. Its state opened correctly, but the terminal remained hidden inside legacy `#briefMain` while the body-level backdrop remained visible.
+
+The repair:
+
+- portals the terminal to `document.body`
+- gives it explicit body-level visibility and stacking states
+- restores input focus after late page scripts
+- preserves header and dock triggers, close button, Escape, and command submission
+- adds regression coverage for the top-left switcher, terminal, More menu, tour, and sequential open/close flows
+
+Validated flows include desktop Chromium, Pixel 5 sizing, a real `help` command, the complete briefing smoke chain through media and polish, and repository static, privacy, secret, navigation, and terminal-theme guards.
+
+The broader cross-browser matrix remains the final gate for PR `#35`.
+
+Deferred from PR `#35`:
+
+- autoplay restrictions and the music-failure message
+- stronger entry instruction hierarchy
+- Goal Intelligence engine work
 
 ## Current Next Actions
 
-1. Reproduce the top-left control and terminal failures with browser tests on a separate `/brief` bugfix branch.
-2. Repair the overlay/drawer interaction and check related controls and close flows.
-3. Keep `/brief` fixes out of PR `#34`.
-4. Begin Step 4 Part 1 afterward by extracting pure difficulty, effort, trajectory and confidence rules.
+1. Finish the final cross-browser status check for draft PR `#35`.
+2. Keep PR `#35` unmerged until reviewed.
+3. Begin Step 4 Part 1 on PR `#34` by extracting pure difficulty, effort, trajectory, and confidence rules with unit tests.
+4. Do not combine Step 4 engine changes with `/brief` bugfix files.
 
 ## Update Discipline
 
