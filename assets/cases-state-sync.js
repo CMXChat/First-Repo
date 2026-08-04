@@ -100,10 +100,19 @@
   }, 0);
 
   function loadOperatorWorkspace() {
+    installCriticalResponsiveStyle();
     loadStyle('/assets/cases-operator-workspace.css?v=20260804-1', 'workspace');
     loadStyle('/assets/cases-operator-responsive.css?v=20260804-1', 'responsive');
     loadScript('/assets/cases-operator-workspace.js?v=20260804-1', 'workspace');
     loadScript('/assets/cases-operator-records.js?v=20260804-1', 'records');
+  }
+
+  function installCriticalResponsiveStyle() {
+    if (document.querySelector('style[data-cmx-cases-critical]')) return;
+    const style = document.createElement('style');
+    style.dataset.cmxCasesCritical = 'true';
+    style.textContent = 'html{scroll-behavior:auto!important}@media(max-width:1080px){.cases-layout>.cases-operator-sidebar{position:relative!important;top:auto!important;z-index:0!important;max-height:none!important;overflow:visible!important}.cases-layout>.cmx-card:last-child{position:relative;z-index:1;min-width:0}}@media(max-width:760px){.cases-view-tabs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow:visible!important}.cases-view-tab{width:100%!important}}';
+    document.head.appendChild(style);
   }
 
   function loadStyle(href, role) {
