@@ -20,6 +20,12 @@ class Settings(BaseSettings):
     database_auto_create: bool = True
     dns_timeout_seconds: float = Field(default=8.0, ge=1.0, le=30.0)
     dns_cache_ttl_seconds: int = Field(default=60, ge=0, le=3600)
+    enrichment_timeout_seconds: float = Field(default=8.0, ge=1.0, le=20.0)
+    enrichment_cache_ttl_seconds: int = Field(default=300, ge=0, le=3600)
+    enrichment_bootstrap_ttl_seconds: int = Field(default=86400, ge=300, le=604800)
+    enrichment_max_response_bytes: int = Field(default=1_048_576, ge=65536, le=5_242_880)
+    enrichment_max_header_bytes: int = Field(default=65536, ge=8192, le=262144)
+    enrichment_max_records: int = Field(default=100, ge=1, le=500)
     api_rate_limit_per_minute: int = Field(default=60, ge=1, le=10000)
     trust_proxy_headers: bool = True
 
