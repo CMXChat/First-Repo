@@ -95,8 +95,8 @@ test('Metadata saves the exact exported SHA-256 registration to the active case'
   const detailResponse = await request.get(`/api/cases/${record.id}`);
   expect(detailResponse.status()).toBe(200);
   const detail = await detailResponse.json();
-  expect(detail.evidence.length).toBeGreaterThan(0);
-  expect(detail.evidence.some((item) => /^[a-f0-9]{64}$/.test(item.sha256))).toBeTruthy();
+  expect(detail.evidence_items.length).toBeGreaterThan(0);
+  expect(detail.evidence_items.some((item) => /^[a-f0-9]{64}$/.test(item.sha256))).toBeTruthy();
 });
 
 test('Missing Person saves the authorized header, source and fact to the active case', async ({ page, request }) => {
