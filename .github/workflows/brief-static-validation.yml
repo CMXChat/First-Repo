@@ -56,3 +56,5 @@ jobs:
           git add docs/brief-static-validation.md
           git commit -m 'Record final briefing source validation'
           git push
+
+# Rerun after updating the URL restoration assertion.
