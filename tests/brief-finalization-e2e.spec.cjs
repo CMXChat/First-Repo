@@ -150,7 +150,8 @@ test('Help launches the transparent Vision mission walkthrough', async ({ page }
   await help.click();
   await expect(page.locator('#briefHelpCenter')).toBeVisible();
   await expect(page.locator('#briefStartVision')).toBeVisible();
-  await expect(page.locator('#briefHelpCenter .brief-glass-panel')).toHaveCSS('backdrop-filter', /blur/);
+  await expect(page.locator('#briefFlowPolishStyle')).toHaveAttribute('href', /brief-flow-polish\.css/);
+  await expect(page.locator('#briefHelpCenter .brief-help-actions > button').first()).toBeVisible();
   await page.locator('#briefStartVision').click();
   await expect(page.locator('#briefHelpCenter')).toBeHidden();
   await expect(page.locator('#briefVisionLayer')).toBeVisible();
