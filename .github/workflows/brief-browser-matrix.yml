@@ -8,6 +8,7 @@ on:
       - 'assets/brief/**'
       - 'assets/daily-video.js'
       - 'tests/brief-browser-e2e.spec.cjs'
+      - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
   pull_request:
@@ -16,6 +17,7 @@ on:
       - 'assets/brief/**'
       - 'assets/daily-video.js'
       - 'tests/brief-browser-e2e.spec.cjs'
+      - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
 
@@ -25,7 +27,7 @@ permissions:
 jobs:
   browser-matrix:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
