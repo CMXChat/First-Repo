@@ -11,14 +11,17 @@ const loaderCss = read('assets/brief/brief-lite-ui.css');
 const os = read('assets/brief/brief-personal-os.js');
 const css = read('assets/brief/brief-personal-os.css');
 const density = read('assets/brief/brief-personal-os-density.css');
+const mobile = read('assets/brief/brief-personal-os-mobile.css');
 
 new vm.Script(loader, { filename: 'brief-lite-ui.js' });
 new vm.Script(os, { filename: 'brief-personal-os.js' });
 
 assert.match(loader, /briefPersonalOsStyle/);
 assert.match(loader, /briefPersonalOsDensityStyle/);
+assert.match(loader, /briefPersonalOsMobileStyle/);
 assert.match(loader, /brief-personal-os\.css/);
 assert.match(loader, /brief-personal-os-density\.css/);
+assert.match(loader, /brief-personal-os-mobile\.css/);
 assert.match(loader, /brief-personal-os\.js/);
 assert.match(loader, /loadPersonalOsScript/);
 assert.match(loader, /personal-os-test/);
@@ -26,6 +29,7 @@ assert.match(loader, /browser-test/);
 assert.match(loader, /overlay-test/);
 assert.match(loaderCss, /brief-personal-os\.css/);
 assert.match(loaderCss, /brief-personal-os-density\.css/);
+assert.match(loaderCss, /brief-personal-os-mobile\.css/);
 
 assert.match(os, /const APP_MAP/);
 assert.match(os, /Personal briefing operating system/);
@@ -60,5 +64,10 @@ assert.match(density, /briefSystemMoreButton/);
 assert.match(density, /brief-os-command-card h2/);
 assert.match(density, /brief-os-next-card ul/);
 assert.match(density, /@media \(max-width: 720px\)/);
+
+assert.match(mobile, /Mobile dashboard composition/);
+assert.match(mobile, /grid-template-columns: repeat\(2/);
+assert.match(mobile, /grid-column: 1 \/ -1/);
+assert.match(mobile, /max-height: 700px/);
 
 console.log('Brief Personal OS smoke test passed.');
