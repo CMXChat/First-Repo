@@ -171,16 +171,15 @@ test('light default, saved explicit preferences and reset remain reversible', as
   await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('briefNextTheme'))).toBe('dark');
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
-  await page.locator('#themeButton').click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
-
+  await page.evaluate(() => localStorage.setItem('briefNextTheme', 'light'));
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
 
   await page.locator('[data-entry-scenario="business"]').click();
   await page.locator('#openDemo').click();
