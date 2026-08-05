@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260805-2" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260805-2" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260805-2" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260805-1" />
 </head>
 <body data-entered="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -37,7 +38,10 @@
         </span>
       </label>
 
-      <button class="primary-button entry-open" id="openDemo" type="button" disabled>Choose a context first</button>
+      <div class="entry-actions">
+        <button class="primary-button entry-open" id="openDemo" type="button" disabled>Choose a context first</button>
+        <a class="secondary-button doc-entry-link" href="/doc/">Read product overview <span aria-hidden="true">↗</span></a>
+      </div>
       <p class="entry-note">Fictional private-looking records remain clearly labeled. Real private data would require protected authentication and permissions.</p>
     </div>
   </section>
@@ -57,6 +61,7 @@
 
         <div class="topbar-actions">
           <span class="today-label" id="todayLabel"></span>
+          <a class="doc-topbar-link" href="/doc/" aria-label="Read the Personal OS product overview"><span class="doc-link-label">Read overview</span><span aria-hidden="true">↗</span></a>
           <button class="round-button" id="mediaButton" type="button" aria-label="Open soundtrack" aria-expanded="false">♪</button>
           <button class="round-button" id="themeButton" type="button" aria-label="Switch theme" aria-pressed="true">◐</button>
         </div>
@@ -214,6 +219,15 @@
               <li><strong>Protected:</strong> real accounts require authentication, scoped permissions, logs and revocation.</li>
               <li><strong>Approved action:</strong> consequential changes still require confirmation.</li>
             </ul>
+          </section>
+
+          <section class="doc-cta-card" aria-label="Read the full Personal OS product overview">
+            <div>
+              <p class="eyebrow">FULL PRODUCT OVERVIEW</p>
+              <h2>See how Spaces, memory, goals, permissions, and chosen AI models work together.</h2>
+              <p>Read the complete product document for the operating model, trust controls, architecture, current reality, and planned platform.</p>
+            </div>
+            <a class="primary-button doc-cta-button" href="/doc/">Read the full overview <span aria-hidden="true">↗</span></a>
           </section>
         </section>
 
