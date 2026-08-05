@@ -1,11 +1,17 @@
 (() => {
   'use strict';
 
+  const SPOTIFY_IFRAME_API_SRC = 'https://open.spotify.com/embed/iframe-api/v1';
+
   const state = {
     scenarioId: '',
-    audio: null,
+    controller: null,
+    controllerReady: false,
+    loadedTrackId: '',
     playing: false,
-    entryPlaybackRequested: false
+    entryPlaybackRequested: false,
+    apiRequested: false,
+    apiFailed: false
   };
 
   const $ = selector => document.querySelector(selector);
@@ -18,6 +24,17 @@
     return scenario(id)?.soundtrack || null;
   }
 
+  function spotifyUri(id = state.scenarioId) {
+    const current = track(id);
+    return current?.spotifyTrackId ? `spotify:track:${current.spotifyTrackId}` : '';
+  }
+
+  function spotifyEmbedUrl(id = state.scenarioId) {
+    const current = track(id);
+    if (!current?.spotifyTrackId) return '';
+    return `https://open.spotify.com/embed/track/${encodeURIComponent(current.spotifyTrackId)}?utm_source=generator&theme=0`;
+  }
+
   function setStatus(message) {
     const node = $('#mediaStatus');
     if (node) node.textContent = message;
@@ -26,140 +43,192 @@
   function syncButton() {
     const button = $('#previewButton');
     if (!button) return;
-    const current = track();
-    const available = Boolean(current?.previewUrl);
-    button.disabled = !available;
+    button.disabled = !state.controllerReady;
     button.setAttribute('aria-pressed', String(state.playing));
-    if (!available) {
-      button.textContent = 'Preview unavailable in Phase 1';
+    button.textContent = state.playing
+      ? 'Pause Spotify soundtrack'
+      : state.controllerReady
+        ? 'Play Spotify soundtrack'
+        : 'Loading Spotify player...';
+  }
+
+  function normalizeSpotifyFrame() {
+    const frame = document.querySelector('.media-sheet iframe[src*="open.spotify.com/embed"]');
+    if (!frame) return;
+    frame.id = 'spotifyFrame';
+    frame.title = `Play ${track()?.title || 'the selected soundtrack'} on Spotify`;
+    frame.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+    frame.setAttribute('loading', 'eager');
+  }
+
+  function renderFallbackFrame() {
+    const host = $('#spotifyFrame');
+    const source = spotifyEmbedUrl();
+    if (!host || !source) return;
+
+    if (host.tagName === 'IFRAME') {
+      if (host.getAttribute('src') !== source) host.src = source;
       return;
     }
-    button.textContent = state.playing ? 'Pause soundtrack preview' : 'Play soundtrack preview';
+
+    const frame = document.createElement('iframe');
+    frame.id = 'spotifyFrame';
+    frame.title = `Play ${track()?.title || 'the selected soundtrack'} on Spotify`;
+    frame.loading = 'eager';
+    frame.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+    frame.src = source;
+    host.replaceWith(frame);
   }
 
-  function destroyAudio() {
-    if (!state.audio) return;
-    state.audio.pause();
-    state.audio.src = '';
-    state.audio = null;
-    state.playing = false;
-  }
-
-  function buildAudio(current) {
-    destroyAudio();
-    if (!current?.previewUrl) {
-      syncButton();
-      return;
-    }
-
-    const audio = new Audio(current.previewUrl);
-    audio.preload = 'metadata';
-    audio.volume = 0.32;
-    audio.addEventListener('play', () => {
-      state.playing = true;
-      setStatus(`Playing the authorized preview of ${current.title}.`);
-      syncButton();
-    });
-    audio.addEventListener('pause', () => {
-      state.playing = false;
-      syncButton();
-    });
-    audio.addEventListener('ended', () => {
-      state.playing = false;
-      audio.currentTime = 0;
-      setStatus('Preview complete. Spotify remains available for provider playback.');
-      syncButton();
-    });
-    audio.addEventListener('error', () => {
-      state.playing = false;
-      setStatus('The preview could not load. Use the Spotify player instead.');
-      syncButton();
-    });
-    state.audio = audio;
-    syncButton();
-  }
-
-  function setScenario(id) {
-    const current = scenario(id);
-    if (!current) return;
-    const sameScenario = state.scenarioId === id;
-    state.scenarioId = id;
-    const currentTrack = current.soundtrack;
-
-    const title = $('#trackTitle');
-    const artist = $('#trackArtist');
-    const note = $('#trackNote');
-    const frame = $('#spotifyFrame');
-
-    if (title) title.textContent = currentTrack.title;
-    if (artist) artist.textContent = currentTrack.artist;
-    if (note) note.textContent = currentTrack.note;
-    if (frame) {
-      const nextSource = `https://open.spotify.com/embed/track/${encodeURIComponent(currentTrack.spotifyTrackId)}?utm_source=generator&theme=0`;
-      if (frame.getAttribute('src') !== nextSource) frame.src = nextSource;
-      frame.title = `Play ${currentTrack.title} by ${currentTrack.artist} on Spotify`;
-    }
-
-    if (!sameScenario || (!state.audio && currentTrack.previewUrl)) buildAudio(currentTrack);
-    else syncButton();
-
-    if (currentTrack.previewUrl) {
-      setStatus('The authorized preview can start from the entry click or the preview control.');
-    } else if (state.entryPlaybackRequested) {
-      setStatus('A soundtrack was requested, but this Phase 1 record has no authorized preview URL. Use the Spotify player with a direct tap.');
-    } else {
-      setStatus('Phase 1 establishes one media controller. Authorized preview playback and browser fallback testing are completed in the media phase.');
-    }
-  }
-
-  async function playPreview() {
+  function loadCurrentTrack() {
     const current = track();
-    if (!current?.previewUrl || !state.audio) {
-      setStatus('No authorized preview is configured yet. Spotify remains available with a direct tap.');
+    if (!current?.spotifyTrackId) return;
+
+    if (state.controllerReady && state.controller && state.loadedTrackId !== current.spotifyTrackId) {
+      state.controller.loadEntity(spotifyUri());
+      state.loadedTrackId = current.spotifyTrackId;
+      state.playing = false;
+      setStatus(`Spotify is ready with ${current.title}. Opening the demo can start it from the same click.`);
+      syncButton();
+      return;
+    }
+
+    if (state.apiFailed) renderFallbackFrame();
+  }
+
+  function playProvider() {
+    const current = track();
+    if (!state.controllerReady || !state.controller || !current) {
+      setStatus('Spotify is still loading. Open the music panel and tap play if the browser does not begin automatically.');
       syncButton();
       return false;
     }
 
     try {
-      await state.audio.play();
+      state.controller.play();
+      setStatus(`Starting ${current.title} from your Open demo click...`);
       return true;
     } catch {
       state.playing = false;
-      setStatus('The browser blocked preview playback. Tap the preview control to try again.');
+      setStatus('The browser blocked Spotify playback. Tap the soundtrack control once to start it.');
       syncButton();
       return false;
     }
   }
 
   function pause() {
-    if (!state.audio) return;
-    state.audio.pause();
+    if (!state.controllerReady || !state.controller) return;
+    try {
+      state.controller.pause();
+    } catch {}
+  }
+
+  function attachController(controller) {
+    state.controller = controller;
+
+    controller.addListener('ready', () => {
+      state.controllerReady = true;
+      state.loadedTrackId = track()?.spotifyTrackId || '';
+      normalizeSpotifyFrame();
+      setStatus(`Spotify is ready with ${track()?.title || 'the selected soundtrack'}.`);
+      syncButton();
+
+      if (state.entryPlaybackRequested) playProvider();
+    });
+
+    controller.addListener('playback_started', event => {
+      state.playing = true;
+      state.entryPlaybackRequested = false;
+      setStatus(`Playing ${track()?.title || 'the selected soundtrack'} through Spotify.`);
+      syncButton();
+      if (event?.data?.playingURI) state.loadedTrackId = event.data.playingURI.split(':').pop();
+    });
+
+    controller.addListener('playback_update', event => {
+      if (typeof event?.data?.isPaused !== 'boolean') return;
+      state.playing = !event.data.isPaused;
+      syncButton();
+    });
+  }
+
+  function createSpotifyController(IFrameAPI) {
+    const host = $('#spotifyFrame');
+    const uri = spotifyUri();
+    if (!host || host.tagName === 'IFRAME' || !uri || !IFrameAPI?.createController) return;
+
+    IFrameAPI.createController(host, {
+      uri,
+      width: '100%',
+      height: 152,
+      theme: 'dark'
+    }, attachController);
+  }
+
+  function installSpotifyApi() {
+    if (state.apiRequested) return;
+    state.apiRequested = true;
+
+    if (window.BRIEF_SPOTIFY_IFRAME_API?.createController) {
+      createSpotifyController(window.BRIEF_SPOTIFY_IFRAME_API);
+      return;
+    }
+
+    window.onSpotifyIframeApiReady = IFrameAPI => createSpotifyController(IFrameAPI);
+
+    const script = document.createElement('script');
+    script.src = SPOTIFY_IFRAME_API_SRC;
+    script.async = true;
+    script.dataset.briefSpotifyApi = 'true';
+    script.addEventListener('error', () => {
+      state.apiFailed = true;
+      renderFallbackFrame();
+      setStatus('Spotify loaded in tap-to-play mode because its playback controller was unavailable.');
+      syncButton();
+    }, { once: true });
+    document.head.append(script);
+  }
+
+  function setScenario(id) {
+    const current = scenario(id);
+    if (!current) return;
+    state.scenarioId = id;
+    const currentTrack = current.soundtrack;
+
+    const title = $('#trackTitle');
+    const artist = $('#trackArtist');
+    const note = $('#trackNote');
+
+    if (title) title.textContent = currentTrack.title;
+    if (artist) artist.textContent = currentTrack.artist;
+    if (note) note.textContent = currentTrack.note;
+
+    installSpotifyApi();
+    loadCurrentTrack();
+
+    if (!state.controllerReady && !state.apiFailed) {
+      setStatus(`Preparing ${currentTrack.title} so your Open demo click can start it.`);
+    }
+    syncButton();
   }
 
   function togglePreview() {
-    if (state.audio && !state.audio.paused) {
+    if (state.playing) {
       pause();
       return;
     }
-    playPreview();
+    playProvider();
   }
 
   function requestEntryPlayback(id, enabled) {
     state.entryPlaybackRequested = Boolean(enabled);
     setScenario(id);
-    if (!enabled) return false;
 
-    /*
-     * This call is intentionally made synchronously from the user's Open demo
-     * click by brief-demo-app.js. Phase 3 will add authorized preview URLs and
-     * browser-specific verification without changing the ownership model.
-     */
-    if (!state.audio) {
-      setStatus('A soundtrack was requested, but no authorized preview is configured yet. Spotify requires a direct provider tap.');
+    if (!enabled) {
+      setStatus('Automatic soundtrack playback is off for this entry.');
       return false;
     }
-    playPreview();
-    return true;
+
+    return playProvider();
   }
 
   function open() {
@@ -190,11 +259,16 @@
     state.entryPlaybackRequested = false;
   }
 
+  document.addEventListener('click', event => {
+    const option = event.target.closest('[data-entry-scenario]');
+    if (option?.dataset.entryScenario) setScenario(option.dataset.entryScenario);
+  });
+
   window.BRIEF_DEMO_MEDIA = {
     setScenario,
     requestEntryPlayback,
     togglePreview,
-    playPreview,
+    playPreview: playProvider,
     pause,
     open,
     close,
