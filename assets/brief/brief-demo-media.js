@@ -105,8 +105,8 @@
     }
 
     try {
-      state.controller.play();
       setStatus(`Starting ${current.title} from your Open demo click...`);
+      state.controller.play();
       return true;
     } catch {
       state.playing = false;
@@ -128,8 +128,14 @@
 
     controller.addListener('ready', () => {
       state.controllerReady = true;
-      state.loadedTrackId = track()?.spotifyTrackId || '';
       normalizeSpotifyFrame();
+
+      const desiredTrackId = track()?.spotifyTrackId || '';
+      if (desiredTrackId && state.loadedTrackId !== desiredTrackId) {
+        controller.loadEntity(spotifyUri());
+        state.loadedTrackId = desiredTrackId;
+      }
+
       setStatus(`Spotify is ready with ${track()?.title || 'the selected soundtrack'}.`);
       syncButton();
 
@@ -153,9 +159,11 @@
 
   function createSpotifyController(IFrameAPI) {
     const host = $('#spotifyFrame');
+    const current = track();
     const uri = spotifyUri();
-    if (!host || host.tagName === 'IFRAME' || !uri || !IFrameAPI?.createController) return;
+    if (!host || host.tagName === 'IFRAME' || !uri || !IFrameAPI?.createController || !current) return;
 
+    state.loadedTrackId = current.spotifyTrackId;
     IFrameAPI.createController(host, {
       uri,
       width: '100%',
