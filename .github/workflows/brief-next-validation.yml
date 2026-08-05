@@ -8,8 +8,11 @@ on:
       - 'assets/cmx-routes.json'
       - 'tests/brief-next*'
       - '.github/workflows/brief-next-validation.yml'
-      - 'docs/brief/**'
   workflow_dispatch:
+
+concurrency:
+  group: brief-next-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
