@@ -1,14 +1,14 @@
 # `/brief` Current Recovery and Simplification Status
 
-Last updated: **August 5, 2026 at 1:58 PM ET**
+Last updated: **August 5, 2026 at 2:18 PM ET**
 
 ## Read order
 
-1. Read this file for the live checkpoint.
-2. Read `docs/brief/IDEAS.md` for approved ideas, decisions, deferrals, and completed idea work.
-3. Read `docs/brief/PHASE-1-WORKLOG.md` before editing Brief Next.
-4. Read `docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md` for the broader phased plan.
-5. Read `docs/brief-recovery-handoff.md` only when legacy recovery context is needed.
+1. `docs/brief/CURRENT.md`
+2. `docs/brief/IDEAS.md`
+3. `docs/brief/PHASE-1-WORKLOG.md`
+4. `docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md`
+5. `docs/brief-recovery-handoff.md` for legacy recovery only
 
 ## Live repository state
 
@@ -16,91 +16,145 @@ Last updated: **August 5, 2026 at 1:58 PM ET**
 Repository: CMXChat/First-Repo
 Development branch: agent/brief-demo-v2
 Development draft PR: #42
-Staging publish PR: #43, merged
-Staging publish commit on main: dff74d998c0e3c411909fa466ea680c3126ee55e
-Staging route: https://db.cmxchat.com/brief-next/
+Current staging route: https://db.cmxchat.com/brief-next/
 Existing production route: https://db.cmxchat.com/brief/
-Production /brief files changed by staging publish: no
+Production /brief changed: no
+Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
+Validation run: 31034883845
 ```
 
-The isolated Brief Next frontend is now present on `main`. The existing GitHub Pages workflow deploys the whole repository after a push to `main`, so merging PR #43 triggered the staging deployment.
+The new adaptive full-view and dark-default slice is validated on the development branch and is ready for an isolated staging publish.
 
-Direct HTTP verification from the current assistant environment is still unresolved because the web fetch returns a cache miss and the local container cannot resolve the custom domain. Source publication to `main`, the deployment trigger, and the staging route files are verified. A browser review of the custom domain is the next live confirmation.
+## Latest product decisions
 
-## Latest heading decision
+### Dark first
 
-The previous headings were still too large and looked more like promotional landing-page typography than an operating platform.
+- first visits begin in dark mode
+- HTML begins dark to prevent a light flash
+- the base uses black and charcoal instead of a blue page background
+- blue remains an accent for intelligence, selection, links, and action
+- a deliberately saved light preference remains respected
+- reset does not reset the theme
 
-The current staging source uses these caps:
+### Focused views remain primary
+
+The main navigation is now:
+
+1. Today
+2. Workspace
+3. Spaces
+4. How it works
+5. Everything
+
+Everything appears at the end and is optional.
+
+### Everything full view
+
+Everything provides one complete scrollable briefing with:
+
+- executive overview
+- weather and hourly conditions
+- stats
+- daily flow
+- every Workspace category
+- private and shared Space context
+- adaptive briefing explanation
+- future app and alarm concept
+- privacy boundary
+- links back to focused views
+- links into specific Workspace tabs
+- jump navigation through the long page
+
+Focused views remain faster for normal daily use.
+
+### Stable shell, adaptive composition
+
+The demo now explains that each interactive update can be composed after approved information is gathered and researched.
+
+The AI may choose:
+
+- charts for trends
+- timelines for schedule and sequence
+- comparisons for choices
+- maps for location and routing
+- alerts for risk and confirmation
+- shared action lists for couples, families, teams, and projects
+
+The guardrail is explicit: personalized does not mean unpredictable.
+
+Navigation, privacy controls, source visibility, accessibility, and familiar locations remain stable while useful modules adapt to the content.
+
+### Future app and alarm
+
+The demo now explains a possible app experience that:
+
+- begins at a selected alarm time
+- rotates approved music from a connected Spotify account
+- uses saved preferences and daily context
+- reads the executive overview
+- continues into the interactive briefing
+- includes snooze, skip, privacy, and provider controls
+
+It is clearly labeled as a future concept requiring native permissions, provider rules, protected authentication, and tested fallbacks.
+
+## Architecture
 
 ```text
-Desktop entry H1: max 2.75rem
-Desktop Today H1: max 3.25rem
-Desktop view H1: max 2.5rem
-Mobile entry H1: max 2rem
-Mobile Today H1: max 2.2rem
-Mobile view and explainer headings: max 2rem
+brief-next/index.html
+  stable product surfaces and asset loading
+
+assets/brief-next/brief-demo-data.js
+  five scenario records and daily demo content
+
+assets/brief-next/brief-demo-experience.js
+  Everything navigation extension, full-view rendering, adaptive composition, and app-alarm explanation
+
+assets/brief-next/brief-demo-app.js
+  sole owner of entry, scenario, view, tab, theme, URL, and global rendering state
+
+assets/brief-next/brief-demo-media.js
+  sole owner of preview audio and the Spotify provider player
+
+assets/brief-next/brief-demo-explainers.js
+  memory and People and Spaces examples
+
+assets/brief-next/brief-demo.css
+  core responsive design
+
+assets/brief-next/brief-demo-explainers.css
+  explainer components and heading hierarchy
+
+assets/brief-next/brief-demo-experience.css
+  black dark foundation, Everything view, adaptive modules, and five-button mobile navigation
 ```
 
-The dedicated mobile browser test requires entry and Today headings to remain at or below 36px in the tested 390px viewport.
+`brief-demo-app.js` emits an explicit `briefdemo:scenariochange` lifecycle event. The Everything module listens and rerenders without owning global application state.
 
-Status: **implemented, validated, and included in staging publish**
-
-## Staging publish scope
-
-PR #43 was created directly from `main` and included only:
-
-- `brief-next/index.html`
-- isolated `assets/brief-next/` files
-- `/brief-next/` route registration
-- Brief Next static tests
-- Brief Next desktop and mobile browser tests
-- the isolated Brief Next validation workflow
-
-It did not include:
-
-- changes to `brief/`
-- changes to `assets/brief/`
-- the legacy workspace restoration
-- terminal or overlay changes
-- Goal Intelligence work
-- the stacked recovery branch
-
-## Staging validation
+## Validation
 
 ```text
-PR: #43
-Publish source commit: d7f222b6736e0cdd4d37ab5dcf83aa472166e484
-Merged main commit: dff74d998c0e3c411909fa466ea680c3126ee55e
-Brief Next Validation run: 31032190532
-Static job: 92395371330, passed
-Browser job: 92395371574, passed
+Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
+Workflow: Brief Next Validation
+Run: 31034883845
+Static job: 92404364989, passed
+Browser job: 92404365175, passed
 ```
 
-Additional repository checks passed:
+The suite confirms:
 
-- CMX Static Validation
-- CMX Navigation Link Guard
-- CMX Secret Scan
-- CMX Terminal Theme Guard
-
-The CMX Privacy Audit still reports the known unrelated `/doc` Black Prompt Gate mismatch. That failure is not caused by Brief Next and remains isolated in PR #38.
-
-## Current staging experience
-
-- five selectable contexts
-- soundtrack selected by default
-- read-aloud absent
-- smaller platform-style headings
-- Today, Workspace, Spaces, and How it works navigation
-- strong weather and timing presentation
-- compact changing stats
-- memory versus regular-AI examples
-- Relationship, Family, and Team Space examples
-- concise privacy boundaries
-- examples of data becoming a briefing, alarm, plan, preparation, automation, learning record, or approved action
-- one Spotify provider iframe
-- no terminal or command-line architecture
+- dark is the first-visit default
+- the dark background token is `#05070b`
+- saved light preference persists
+- reset preserves theme and restores soundtrack selection
+- five desktop and mobile navigation buttons render
+- Everything is the final navigation option
+- Everything renders nine major sections
+- jump navigation works structurally
+- all Workspace categories appear
+- specific full-view Workspace links open the correct focused tab
+- scenario changes update Everything
+- adaptive component and Spotify alarm explanations render
+- weather, stats, focused views, Spaces, memory examples, media drawer, headings, and mobile overflow remain valid
 
 ## Automation status
 
@@ -108,29 +162,41 @@ The legacy `Refresh Brief Concept` automation remains paused.
 
 Do not restart it until:
 
-- the staging interface is reviewed
-- the final data-editing contract is documented
-- the exact automation-editable files are selected
+- staging is reviewed
+- the data-editing contract is documented
+- automation-editable files are selected
 - tests protect those boundaries
 - production `/brief/` cutover is approved
 
 ## Publishing distance
 
-The reviewable staging route is now published from `main`.
+Completed:
+
+- reversible staging architecture
+- first-pass focused interface
+- memory versus normal AI
+- People and Spaces
+- privacy explanation
+- black dark-first theme
+- optional full Everything view
+- adaptive composition explanation
+- future app and alarm explanation
+- focused desktop/mobile validation
 
 Remaining before replacing `/brief/`:
 
-1. User visual review of staging.
-2. Focused visual corrections from that review.
-3. Contrast, keyboard, focus, and accessibility review.
-4. Common editing map and daily data contract.
-5. Authorized preview audio and autoplay fallback.
-6. Final cutover and rollback validation.
+1. Publish this validated slice to staging.
+2. User review of the full view on desktop and mobile.
+3. Focused visual corrections.
+4. Contrast, keyboard, focus, and accessibility review.
+5. Common editing map and daily data contract.
+6. Authorized preview audio and autoplay fallback.
+7. Final cutover and rollback validation.
 
 ## Exact next action
 
-1. Review `https://db.cmxchat.com/brief-next/` on desktop and mobile.
-2. Record specific visual and content feedback.
-3. Apply the next focused correction on `agent/brief-demo-v2`.
-4. Publish approved staging corrections through a small clean PR to `main`.
-5. Keep `/brief/` untouched until explicit cutover approval.
+1. Publish revision `1175826cafc71719e100b56a525f768b40fd7122` through a clean branch from `main`.
+2. Keep `/brief/` untouched.
+3. Review `https://db.cmxchat.com/brief-next/` after deployment.
+4. Record feedback on Everything, dark surfaces, navigation density, and repetition.
+5. Begin the editing-map and accessibility checkpoint after the visual review.
