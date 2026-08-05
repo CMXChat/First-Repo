@@ -1,0 +1,296 @@
+/* Personal OS stability and action hierarchy. Terminal UI is intentionally dormant for this phase. */
+
+#briefSystemCommandButton,
+#briefSystemTerminalDock,
+#briefTerminal,
+[data-terminal-open],
+[data-os-command] {
+  display: none !important;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) {
+  width: var(--brief-os-visible-width, 100%);
+  height: var(--brief-os-visible-height, 100dvh);
+  min-height: var(--brief-os-visible-height, 100dvh);
+  overflow: hidden !important;
+  overflow-anchor: none;
+}
+
+body.brief-personal-os-ready:not(.brief-personal-os-detail-open) .brief-personal-os {
+  height: calc(var(--brief-os-visible-height, 100dvh) - var(--brief-os-header));
+  max-height: calc(var(--brief-os-visible-height, 100dvh) - var(--brief-os-header));
+}
+
+.brief-os-viewport,
+.brief-os-screen {
+  overflow-anchor: none;
+}
+
+.brief-os-screen {
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+.brief-system-header-actions > a,
+.brief-os-rail-footer > a,
+.brief-os-directory-grid > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.brief-system-header-actions > a {
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  min-width: 58px;
+  min-height: 40px;
+  padding: 7px 10px;
+  color: var(--brief-os-muted, #9ba8b8);
+  border: 1px solid var(--brief-os-line, rgba(255,255,255,.12));
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+}
+
+.brief-system-header-actions > a span {
+  color: var(--brief-os-text, #fff);
+  font-size: 1rem;
+  font-weight: 850;
+}
+
+.brief-system-header-actions > a small {
+  font-size: .56rem;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.brief-os-rail-footer > a {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-height: 50px;
+  padding: 7px;
+  color: var(--brief-os-muted);
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+
+.brief-os-rail-footer > a:hover,
+.brief-os-rail-footer > a:focus-visible,
+.brief-system-header-actions > a:hover,
+.brief-system-header-actions > a:focus-visible {
+  color: var(--brief-os-text);
+  border-color: var(--brief-os-line-strong);
+  outline: none;
+  background: rgba(105,183,255,.08);
+}
+
+.brief-os-directory-grid > a {
+  display: grid;
+  grid-template-columns: 38px minmax(0,1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 10px;
+  min-height: 72px;
+  padding: 12px;
+  color: var(--brief-os-muted);
+  text-align: left;
+  border: 1px solid var(--brief-os-line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.025);
+}
+
+.brief-os-directory-grid > a > span {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--brief-os-blue);
+  border: 1px solid var(--brief-os-line);
+  border-radius: 11px;
+  background: rgba(105,183,255,.06);
+}
+
+.brief-os-directory-grid > a strong {
+  color: var(--brief-os-text);
+  font-size: .78rem;
+}
+
+.brief-os-directory-grid > a small {
+  color: var(--brief-os-muted);
+  font-size: .62rem;
+}
+
+.brief-os-directory-grid > a:hover,
+.brief-os-directory-grid > a:focus-visible {
+  border-color: var(--brief-os-line-strong);
+  outline: none;
+  transform: translateY(-1px);
+  background: rgba(105,183,255,.07);
+}
+
+.brief-system-more-about {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 12px 14px;
+  color: inherit;
+  text-decoration: none;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.brief-system-more-about span {
+  color: #fff;
+  font-weight: 800;
+}
+
+.brief-system-more-about small {
+  color: #9ca9b8;
+  font-size: .72rem;
+  line-height: 1.35;
+}
+
+.brief-system-more-about:hover,
+.brief-system-more-about:focus-visible {
+  outline: none;
+  background: rgba(105,183,255,.08);
+}
+
+/* Clear, compact action language across both the OS and retained legacy cards. */
+.brief-os-primary-actions button,
+.brief-os-next-card > button,
+.brief-os-timeline-panel header button,
+.brief-os-context-panel > button,
+.brief-os-decision-card > button,
+.brief-os-signal > button,
+.brief-os-home-detail > button,
+.brief-os-flowbar > button,
+.brief-system-home-actions button,
+.brief-system-inline-actions button,
+.brief-system-plan-layout header button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 12px;
+  color: var(--brief-os-blue-soft, #b9e3ff);
+  font-size: .66rem;
+  font-weight: 850;
+  line-height: 1;
+  border: 1px solid var(--brief-os-line-strong, rgba(112,190,255,.42));
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(105,183,255,.13), rgba(105,183,255,.045));
+  box-shadow: 0 7px 20px rgba(0,0,0,.1);
+  cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+
+.brief-os-primary-actions button:hover,
+.brief-os-primary-actions button:focus-visible,
+.brief-os-next-card > button:hover,
+.brief-os-next-card > button:focus-visible,
+.brief-os-home-detail > button:hover,
+.brief-os-home-detail > button:focus-visible,
+.brief-os-flowbar > button:hover,
+.brief-os-flowbar > button:focus-visible,
+.brief-system-home-actions button:hover,
+.brief-system-home-actions button:focus-visible,
+.brief-system-inline-actions button:hover,
+.brief-system-inline-actions button:focus-visible {
+  color: var(--brief-os-text, #fff);
+  border-color: #9ed8ff;
+  outline: none;
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgba(105,183,255,.22), rgba(105,183,255,.08));
+  box-shadow: 0 10px 24px rgba(44,137,211,.16);
+}
+
+.brief-os-home-module summary {
+  width: fit-content;
+  min-height: 30px;
+  margin-top: 3px;
+  padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--brief-os-line-strong) 74%, var(--brief-os-line));
+  border-radius: 999px;
+  background: rgba(105,183,255,.055);
+}
+
+.brief-os-home-module summary:hover,
+.brief-os-home-module summary:focus-visible {
+  color: var(--brief-os-text);
+  border-color: var(--brief-os-line-strong);
+  outline: none;
+  background: rgba(105,183,255,.11);
+}
+
+.brief-system-home-grid article[data-system-link] {
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.brief-system-home-grid article[data-system-link]:hover,
+.brief-system-home-grid article[data-system-link]:focus-visible {
+  border-color: rgba(120,198,255,.52);
+  outline: none;
+  transform: translateY(-2px);
+  background: linear-gradient(145deg, rgba(91,176,244,.11), rgba(255,255,255,.025));
+  box-shadow: 0 14px 30px rgba(0,0,0,.16);
+}
+
+.brief-system-home-grid article[data-system-link] > b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 31px;
+  margin-top: 5px;
+  padding: 7px 11px;
+  color: #b9e3ff;
+  font-size: .68rem;
+  border: 1px solid rgba(112,190,255,.42);
+  border-radius: 999px;
+  background: rgba(105,183,255,.08);
+}
+
+@media (max-width: 720px) {
+  body.brief-personal-os-ready:not(.brief-personal-os-detail-open) .brief-personal-os {
+    height: var(--brief-os-visible-height, 100dvh);
+    max-height: var(--brief-os-visible-height, 100dvh);
+  }
+
+  .brief-system-header-actions > a {
+    min-width: 52px;
+    padding-inline: 8px;
+  }
+
+  .brief-system-header-actions > a small {
+    display: none;
+  }
+
+  .brief-os-home-module summary,
+  .brief-os-home-detail > button,
+  .brief-os-primary-actions button,
+  .brief-os-next-card > button {
+    min-height: 38px;
+    padding-inline: 13px;
+    font-size: .69rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brief-system-home-grid article[data-system-link],
+  .brief-os-directory-grid > a,
+  .brief-os-home-detail > button,
+  .brief-os-primary-actions button {
+    transition: none !important;
+  }
+}

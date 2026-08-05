@@ -1,0 +1,341 @@
+/* Final density pass: one compact OS surface, no duplicate legacy header row. */
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) {
+  --brief-os-header: 0px;
+  --brief-os-flow: 46px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header {
+  inset: 0;
+  min-height: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header-inner {
+  position: fixed;
+  top: 8px;
+  right: 9px;
+  z-index: 760;
+  display: flex;
+  justify-content: flex-end;
+  width: auto;
+  min-height: 38px;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header .brief-system-profile,
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header-actions > button {
+  display: none !important;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header #briefSystemCommandButton,
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header #briefSystemMoreButton {
+  display: inline-flex !important;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  border-radius: 11px;
+  pointer-events: auto;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header #briefSystemCommandButton small,
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header #briefSystemMoreButton small {
+  display: none;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header-actions {
+  display: flex;
+  gap: 5px;
+  pointer-events: none;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-personal-os {
+  inset: 0;
+  height: 100dvh;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar {
+  min-height: 62px;
+  padding: 8px 102px 8px 18px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar h1 {
+  font-size: clamp(1.15rem, 2.1vw, 1.65rem);
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar-actions button {
+  min-height: 36px;
+  padding: 6px 9px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen {
+  padding: clamp(12px, 1.7vw, 20px);
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-grid.is-command {
+  min-height: min(520px, calc(100dvh - 145px));
+  gap: 10px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-command-card {
+  padding: clamp(22px, 3vw, 36px);
+  border-radius: 19px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-greeting {
+  margin-top: 20px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-command-card h2 {
+  font-size: clamp(1.9rem, 4vw, 3.25rem);
+  line-height: .97;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-primary-actions {
+  margin-top: 19px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-next-card {
+  min-height: 178px;
+  padding: 17px;
+  border-radius: 17px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card {
+  min-height: 94px;
+  padding: 14px;
+  border-radius: 14px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-heading {
+  margin-bottom: 12px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-heading h2 {
+  font-size: clamp(1.55rem, 3.2vw, 2.55rem);
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-timeline-panel,
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-action-list,
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-space-layout > section,
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-context-panel,
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-decision-card {
+  border-radius: 17px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-flowbar {
+  min-height: 46px;
+  padding: 5px 14px;
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-flowbar > button {
+  min-height: 34px;
+  padding: 5px 10px;
+}
+
+@media (min-width: 721px) {
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) {
+    --brief-os-rail: 178px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-nav button {
+    min-height: 49px;
+  }
+}
+
+@media (max-width: 720px) {
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) {
+    --brief-os-flow: 40px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header-inner {
+    top: 7px;
+    right: 7px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header #briefSystemCommandButton,
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-system-header #briefSystemMoreButton {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-main {
+    grid-template-rows: 52px minmax(0,1fr) 40px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-personal-os {
+    grid-template-rows: minmax(0,1fr) 54px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-rail {
+    padding-top: 3px;
+    padding-bottom: max(3px, env(safe-area-inset-bottom));
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-nav button {
+    min-height: 44px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar {
+    grid-template-columns: minmax(0,1fr) auto;
+    min-height: 52px;
+    padding: 5px 83px 5px 10px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar h1 {
+    font-size: 1.12rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar > div:first-child > span {
+    font-size: .54rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar-actions {
+    gap: 3px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar-actions button {
+    width: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 4px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-commandbar-actions [data-os-prev] {
+    display: none;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen {
+    padding: 8px 9px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-grid.is-command {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: 0;
+    gap: 8px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-command-card {
+    min-height: 0;
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-greeting {
+    margin: 13px 0 5px;
+    font-size: .72rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-command-card h2 {
+    font-size: clamp(1.75rem, 9vw, 2.35rem);
+    line-height: .98;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-command-card > p:last-of-type {
+    margin-top: 10px;
+    font-size: .78rem;
+    line-height: 1.45;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-primary-actions {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 6px;
+    margin-top: 13px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-primary-actions button {
+    width: 100%;
+    min-height: 38px;
+    padding: 7px 8px;
+    font-size: .76rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-next-card {
+    min-height: 0;
+    padding: 14px 15px;
+    border-radius: 15px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-next-card h3 {
+    margin: 8px 0 4px;
+    font-size: 1.02rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-next-card ul {
+    display: none;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-next-card button {
+    min-height: 34px;
+    margin-top: 7px;
+    padding: 6px 9px;
+    font-size: .7rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card {
+    display: inline-grid;
+    width: calc(50% - 5px);
+    min-height: 78px;
+    padding: 11px;
+    vertical-align: top;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card:nth-of-type(3) {
+    margin-right: 6px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card strong {
+    margin: 5px 0 2px;
+    font-size: .78rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card p {
+    display: none;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-heading {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-screen-heading h2 {
+    font-size: 1.55rem;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-flowbar {
+    min-height: 40px;
+    padding: 3px 9px;
+  }
+
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-flowbar > button {
+    min-height: 32px;
+    max-width: 140px;
+    padding: 4px 8px;
+    font-size: .68rem;
+  }
+}
+
+@media (max-width: 420px) {
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-primary-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-height: 700px) and (max-width: 720px) {
+  body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) .brief-os-mini-card {
+    display: none;
+  }
+}

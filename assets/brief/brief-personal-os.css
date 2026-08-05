@@ -1,0 +1,1389 @@
+/* CMX Personal OS shell. The default experience is one active application, not one long report. */
+
+:root {
+  --brief-os-bg: #03060a;
+  --brief-os-panel: #091019;
+  --brief-os-panel-2: #0d1622;
+  --brief-os-card: rgba(255,255,255,.045);
+  --brief-os-line: rgba(255,255,255,.105);
+  --brief-os-line-strong: rgba(112,190,255,.42);
+  --brief-os-text: #f5f8fb;
+  --brief-os-muted: #91a0b1;
+  --brief-os-blue: #72beff;
+  --brief-os-blue-soft: #b9e3ff;
+  --brief-os-green: #7ce0b8;
+  --brief-os-amber: #f0c879;
+  --brief-os-rail: 196px;
+  --brief-os-header: 74px;
+  --brief-os-flow: 58px;
+  --brief-os-shadow: 0 24px 70px rgba(0,0,0,.32);
+}
+
+html[data-theme='light'] {
+  --brief-os-bg: #edf3f8;
+  --brief-os-panel: #ffffff;
+  --brief-os-panel-2: #f5f8fb;
+  --brief-os-card: #ffffff;
+  --brief-os-line: #d4dee8;
+  --brief-os-line-strong: #91c4e9;
+  --brief-os-text: #132235;
+  --brief-os-muted: #5d6d7d;
+  --brief-os-blue: #1678ba;
+  --brief-os-blue-soft: #075d98;
+  --brief-os-green: #167c5a;
+  --brief-os-amber: #8e6418;
+  --brief-os-shadow: 0 22px 58px rgba(40,66,92,.12);
+}
+
+body.brief-personal-os-ready:not(.is-locked):not(.brief-personal-os-detail-open) {
+  height: 100dvh;
+  min-height: 100dvh;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  background: var(--brief-os-bg);
+}
+
+body.brief-personal-os-ready:not(.brief-personal-os-detail-open) #briefMain,
+body.brief-personal-os-ready:not(.brief-personal-os-detail-open) #briefSystemShell,
+body.brief-personal-os-ready:not(.brief-personal-os-detail-open) #briefWorkspace,
+body.brief-personal-os-ready:not(.brief-personal-os-detail-open) #briefApp > footer {
+  display: none !important;
+}
+
+body.brief-personal-os-ready:not(.brief-personal-os-detail-open) #briefSystemTerminalDock {
+  display: none !important;
+}
+
+body.brief-personal-os-ready.is-locked #briefPersonalOS {
+  display: none !important;
+}
+
+body.brief-personal-os-ready:not(.is-locked) #briefPersonalOS {
+  display: grid;
+}
+
+body.brief-personal-os-ready .brief-system-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 700;
+  min-height: var(--brief-os-header);
+  padding-top: max(8px, env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--brief-os-bg) 88%, transparent);
+}
+
+body.brief-personal-os-ready .brief-system-header-inner {
+  width: calc(100% - 28px);
+  max-width: none;
+}
+
+body.brief-personal-os-ready .brief-system-profile {
+  padding: 7px 10px 7px 8px;
+  border-radius: 13px;
+}
+
+body.brief-personal-os-ready .brief-system-orb {
+  width: 30px;
+  height: 30px;
+  flex-basis: 30px;
+}
+
+body.brief-personal-os-ready .brief-system-header-actions > button {
+  min-height: 40px;
+  padding: 7px 10px;
+  border-radius: 12px;
+}
+
+.brief-personal-os {
+  position: fixed;
+  inset: var(--brief-os-header) 0 0;
+  z-index: 240;
+  grid-template-columns: var(--brief-os-rail) minmax(0,1fr);
+  width: 100%;
+  height: calc(100dvh - var(--brief-os-header));
+  color: var(--brief-os-text);
+  background:
+    radial-gradient(circle at 82% -10%, rgba(81,170,246,.16), transparent 30%),
+    linear-gradient(145deg, var(--brief-os-bg), color-mix(in srgb, var(--brief-os-panel) 58%, var(--brief-os-bg)));
+  overflow: hidden;
+}
+
+.brief-os-rail {
+  display: grid;
+  grid-template-rows: auto minmax(0,1fr) auto;
+  min-height: 0;
+  padding: 15px 12px max(14px, env(safe-area-inset-bottom));
+  border-right: 1px solid var(--brief-os-line);
+  background: color-mix(in srgb, var(--brief-os-panel) 92%, transparent);
+  box-shadow: 18px 0 50px rgba(0,0,0,.12);
+}
+
+.brief-os-identity button,
+.brief-os-rail-footer button,
+.brief-os-nav button,
+.brief-os-commandbar button,
+.brief-os-flowbar button,
+.brief-os-screen button {
+  font: inherit;
+}
+
+.brief-os-identity button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px;
+  color: var(--brief-os-text);
+  text-align: left;
+  border: 1px solid var(--brief-os-line);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255,255,255,.045), transparent);
+  cursor: pointer;
+}
+
+.brief-os-identity-orb {
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  border: 1px solid rgba(180,226,255,.7);
+  border-radius: 9px;
+  background:
+    linear-gradient(135deg, rgba(190,232,255,.94), rgba(86,175,246,.9) 45%, rgba(24,64,101,.95));
+  box-shadow: 0 0 18px rgba(83,174,247,.28);
+}
+
+.brief-os-identity button > span:last-child {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.brief-os-identity small,
+.brief-os-nav small,
+.brief-os-rail-footer small {
+  color: var(--brief-os-muted);
+  font-size: .59rem;
+  font-weight: 850;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.brief-os-identity strong {
+  overflow: hidden;
+  color: var(--brief-os-text);
+  font-size: .84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brief-os-nav {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-height: 0;
+  margin-top: 15px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.brief-os-nav::-webkit-scrollbar { display: none; }
+
+.brief-os-nav button {
+  display: grid;
+  grid-template-columns: 32px minmax(0,1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 9px;
+  width: 100%;
+  min-height: 54px;
+  padding: 8px 9px;
+  color: var(--brief-os-muted);
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.brief-os-nav button > span {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--brief-os-blue);
+  font-size: 1rem;
+  border: 1px solid var(--brief-os-line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.025);
+}
+
+.brief-os-nav strong {
+  color: inherit;
+  font-size: .8rem;
+}
+
+.brief-os-nav button:hover,
+.brief-os-nav button:focus-visible {
+  color: var(--brief-os-text);
+  border-color: var(--brief-os-line);
+  background: rgba(255,255,255,.035);
+  outline: none;
+}
+
+.brief-os-nav button[aria-current='page'] {
+  color: var(--brief-os-text);
+  border-color: var(--brief-os-line-strong);
+  background:
+    linear-gradient(135deg, rgba(105,183,255,.16), rgba(105,183,255,.04));
+  box-shadow: inset 3px 0 0 var(--brief-os-blue);
+}
+
+.brief-os-nav button[aria-current='page'] > span {
+  color: #06121d;
+  border-color: #b9e4ff;
+  background: linear-gradient(135deg, #ccecff, #75c2ff);
+}
+
+.brief-os-rail-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding-top: 11px;
+  border-top: 1px solid var(--brief-os-line);
+}
+
+.brief-os-rail-footer button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-height: 50px;
+  padding: 7px;
+  color: var(--brief-os-muted);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.brief-os-rail-footer button:hover,
+.brief-os-rail-footer button:focus-visible {
+  color: var(--brief-os-text);
+  border-color: var(--brief-os-line-strong);
+  outline: none;
+  background: rgba(105,183,255,.07);
+}
+
+.brief-os-rail-footer span {
+  color: var(--brief-os-blue);
+  font-weight: 900;
+}
+
+.brief-os-main {
+  display: grid;
+  grid-template-rows: auto minmax(0,1fr) var(--brief-os-flow);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.brief-os-commandbar {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 72px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--brief-os-line);
+  background: color-mix(in srgb, var(--brief-os-panel) 82%, transparent);
+}
+
+.brief-os-commandbar > div:first-child {
+  min-width: 0;
+}
+
+.brief-os-commandbar > div:first-child span,
+.brief-os-screen-heading span,
+.brief-os-card-label span,
+.brief-os-next-card > span,
+.brief-os-mini-card > span,
+.brief-os-timeline-panel header span,
+.brief-os-context-panel > div:first-child span,
+.brief-os-decision-card > span,
+.brief-os-space-layout header span,
+.brief-os-space-layout article > span,
+.brief-os-signal > span,
+.brief-os-system-note > span {
+  color: var(--brief-os-blue);
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.brief-os-commandbar h1 {
+  margin: 2px 0 0;
+  color: var(--brief-os-text);
+  font-size: clamp(1.25rem, 2.6vw, 2rem);
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.brief-os-commandbar-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--brief-os-muted);
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.brief-os-commandbar-meta span,
+.brief-os-commandbar-meta time {
+  padding: 6px 9px;
+  border: 1px solid var(--brief-os-line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.025);
+}
+
+.brief-os-commandbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brief-os-commandbar-actions button {
+  min-height: 38px;
+  padding: 7px 11px;
+  color: var(--brief-os-muted);
+  border: 1px solid var(--brief-os-line);
+  border-radius: 11px;
+  background: rgba(255,255,255,.025);
+  cursor: pointer;
+}
+
+.brief-os-commandbar-actions button:hover,
+.brief-os-commandbar-actions button:focus-visible,
+.brief-os-commandbar-actions button[aria-pressed='true'] {
+  color: var(--brief-os-text);
+  border-color: var(--brief-os-line-strong);
+  outline: none;
+  background: rgba(105,183,255,.09);
+}
+
+.brief-os-viewport {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.brief-os-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform .48s cubic-bezier(.2,.72,.22,1);
+  will-change: transform;
+}
+
+.brief-os-track.is-no-animation {
+  transition: none !important;
+}
+
+.brief-os-screen {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(14px, 2.4vw, 28px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brief-os-line-strong) transparent;
+  opacity: .56;
+  transform: scale(.985);
+  transition: opacity .34s ease, transform .4s ease;
+}
+
+.brief-os-screen.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.brief-os-screen-grid {
+  display: grid;
+  gap: 12px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.brief-os-screen-grid.is-command {
+  grid-template-columns: minmax(0,1.55fr) minmax(270px,.72fr);
+  grid-template-rows: minmax(210px,1fr) auto;
+  min-height: min(610px, calc(100dvh - 230px));
+}
+
+.brief-os-command-card,
+.brief-os-next-card,
+.brief-os-mini-card,
+.brief-os-timeline-panel,
+.brief-os-context-panel,
+.brief-os-action-list,
+.brief-os-decision-card,
+.brief-os-space-layout > section,
+.brief-os-signal,
+.brief-os-directory-grid button,
+.brief-os-system-note {
+  border: 1px solid var(--brief-os-line);
+  background:
+    radial-gradient(circle at 100% 0, rgba(105,183,255,.09), transparent 35%),
+    linear-gradient(145deg, var(--brief-os-panel), color-mix(in srgb, var(--brief-os-panel-2) 76%, var(--brief-os-bg)));
+  box-shadow: var(--brief-os-shadow);
+}
+
+.brief-os-command-card {
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  padding: clamp(24px, 4vw, 52px);
+  border-radius: 24px;
+}
+
+.brief-os-card-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brief-os-card-label small {
+  color: var(--brief-os-muted);
+  font-size: .68rem;
+}
+
+.brief-os-greeting {
+  margin: 30px 0 8px;
+  color: var(--brief-os-muted);
+  font-size: .82rem;
+  font-weight: 750;
+}
+
+.brief-os-command-card h2 {
+  max-width: 790px;
+  margin: 0;
+  color: var(--brief-os-text);
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  line-height: .94;
+  letter-spacing: -.06em;
+}
+
+.brief-os-command-card > p:last-of-type {
+  max-width: 690px;
+  margin: 16px 0 0;
+  color: var(--brief-os-muted);
+  font-size: clamp(.88rem, 1.4vw, 1rem);
+  line-height: 1.6;
+}
+
+.brief-os-primary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 26px;
+}
+
+.brief-os-primary-actions button,
+.brief-os-next-card button,
+.brief-os-context-panel > button,
+.brief-os-decision-card button,
+.brief-os-signal button,
+.brief-os-timeline-panel header button {
+  min-height: 42px;
+  padding: 9px 13px;
+  color: var(--brief-os-text);
+  border: 1px solid var(--brief-os-line-strong);
+  border-radius: 11px;
+  background: rgba(105,183,255,.09);
+  cursor: pointer;
+}
+
+.brief-os-primary-actions button:first-child {
+  color: #05111c;
+  border-color: #bde5ff;
+  background: linear-gradient(135deg, #c9ebff, #70bfff);
+  font-weight: 850;
+}
+
+.brief-os-next-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 210px;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.brief-os-next-card h3 {
+  margin: 14px 0 6px;
+  color: var(--brief-os-text);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.08;
+}
+
+.brief-os-next-card p,
+.brief-os-next-card li,
+.brief-os-mini-card p,
+.brief-os-screen-heading p,
+.brief-os-context-panel p,
+.brief-os-action-list p,
+.brief-os-decision-card p,
+.brief-os-space-layout p,
+.brief-os-signal p,
+.brief-os-system-note p {
+  color: var(--brief-os-muted);
+  line-height: 1.52;
+}
+
+.brief-os-next-card > p {
+  margin: 0 0 10px;
+  font-size: .77rem;
+  font-weight: 800;
+}
+
+.brief-os-next-card ul {
+  display: grid;
+  gap: 5px;
+  margin: 4px 0 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.brief-os-next-card li {
+  font-size: .76rem;
+}
+
+.brief-os-next-card li::before {
+  content: '•';
+  margin-right: 7px;
+  color: var(--brief-os-blue);
+}
+
+.brief-os-next-card button {
+  width: fit-content;
+  margin-top: auto;
+}
+
+.brief-os-mini-card {
+  min-height: 114px;
+  padding: 17px;
+  border-radius: 17px;
+}
+
+.brief-os-mini-card strong {
+  display: block;
+  margin: 8px 0 5px;
+  color: var(--brief-os-text);
+  font-size: .95rem;
+}
+
+.brief-os-mini-card p {
+  margin: 0;
+  font-size: .73rem;
+}
+
+.brief-os-screen-heading {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(250px,.65fr);
+  align-items: end;
+  gap: 24px;
+  width: min(1120px, 100%);
+  margin: 0 auto 16px;
+}
+
+.brief-os-screen-heading h2 {
+  margin: 4px 0 0;
+  color: var(--brief-os-text);
+  font-size: clamp(1.8rem, 4vw, 3.3rem);
+  line-height: .96;
+  letter-spacing: -.055em;
+}
+
+.brief-os-screen-heading p {
+  margin: 0;
+  font-size: .82rem;
+}
+
+.brief-os-day-layout,
+.brief-os-action-layout,
+.brief-os-space-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1.45fr) minmax(280px,.72fr);
+  gap: 12px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.brief-os-timeline-panel,
+.brief-os-action-list,
+.brief-os-space-layout > section {
+  padding: 18px;
+  border-radius: 20px;
+}
+
+.brief-os-timeline-panel header,
+.brief-os-space-layout header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--brief-os-line);
+}
+
+.brief-os-timeline-panel header button {
+  min-height: 34px;
+  padding: 6px 9px;
+  font-size: .7rem;
+}
+
+.brief-os-timeline {
+  display: grid;
+}
+
+.brief-os-timeline article {
+  display: grid;
+  grid-template-columns: 88px 18px minmax(0,1fr);
+  align-items: stretch;
+  min-height: 72px;
+}
+
+.brief-os-timeline time {
+  align-self: start;
+  padding-top: 17px;
+  color: var(--brief-os-muted);
+  font-size: .73rem;
+  font-weight: 800;
+}
+
+.brief-os-timeline i {
+  position: relative;
+  width: 1px;
+  margin: 0 auto;
+  background: var(--brief-os-line);
+}
+
+.brief-os-timeline i::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--brief-os-panel);
+  border-radius: 50%;
+  background: var(--brief-os-muted);
+  transform: translateX(-50%);
+}
+
+.brief-os-timeline article.is-next i::before {
+  background: var(--brief-os-blue);
+  box-shadow: 0 0 14px rgba(105,183,255,.58);
+}
+
+.brief-os-timeline article > div {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  padding: 15px 0 13px 13px;
+  border-bottom: 1px solid var(--brief-os-line);
+}
+
+.brief-os-timeline strong,
+.brief-os-action-list strong,
+.brief-os-space-layout strong,
+.brief-os-signal strong {
+  color: var(--brief-os-text);
+}
+
+.brief-os-timeline small,
+.brief-os-action-list small,
+.brief-os-space-layout small {
+  color: var(--brief-os-muted);
+  font-size: .7rem;
+}
+
+.brief-os-context-panel,
+.brief-os-decision-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.brief-os-context-panel > div:first-child strong,
+.brief-os-decision-card strong {
+  display: block;
+  margin: 12px 0 6px;
+  color: var(--brief-os-text);
+  font-size: 1.25rem;
+}
+
+.brief-os-context-panel > div:first-child p {
+  margin: 0;
+  font-size: .76rem;
+}
+
+.brief-os-hour-strip {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 7px;
+  margin: 18px 0;
+}
+
+.brief-os-hour-strip span {
+  display: grid;
+  gap: 2px;
+  padding: 10px;
+  border: 1px solid var(--brief-os-line);
+  border-radius: 12px;
+  background: rgba(255,255,255,.025);
+}
+
+.brief-os-hour-strip small,
+.brief-os-hour-strip em {
+  color: var(--brief-os-muted);
+  font-size: .64rem;
+  font-style: normal;
+}
+
+.brief-os-hour-strip strong {
+  color: var(--brief-os-text);
+}
+
+.brief-os-context-panel > button,
+.brief-os-decision-card button {
+  margin-top: auto;
+}
+
+.brief-os-action-list {
+  display: grid;
+  gap: 8px;
+}
+
+.brief-os-action-list article {
+  display: grid;
+  grid-template-columns: 38px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 86px;
+  padding: 12px;
+  border: 1px solid var(--brief-os-line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.022);
+}
+
+.brief-os-action-list article.is-complete {
+  opacity: .55;
+}
+
+.brief-os-action-list article.is-complete strong {
+  text-decoration: line-through;
+}
+
+.brief-os-action-list article > button:first-child {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--brief-os-blue);
+  border: 1px solid var(--brief-os-line-strong);
+  border-radius: 12px;
+  background: rgba(105,183,255,.07);
+  cursor: pointer;
+}
+
+.brief-os-action-list article > div {
+  min-width: 0;
+}
+
+.brief-os-action-list p {
+  margin: 5px 0;
+  font-size: .74rem;
+}
+
+.brief-os-action-list article > button:last-child {
+  padding: 7px 9px;
+  color: var(--brief-os-muted);
+  border: 1px solid var(--brief-os-line);
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.brief-os-decision-card p {
+  font-size: .8rem;
+}
+
+.brief-os-space-layout {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+}
+
+.brief-os-space-layout > section {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.brief-os-space-layout header small {
+  color: var(--brief-os-muted);
+}
+
+.brief-os-space-layout article {
+  display: grid;
+  gap: 5px;
+  padding: 13px;
+  border: 1px solid var(--brief-os-line);
+  border-radius: 13px;
+  background: rgba(255,255,255,.022);
+}
+
+.brief-os-space-layout article p {
+  margin: 0;
+  font-size: .72rem;
+}
+
+.brief-os-space-layout .is-shared {
+  border-color: color-mix(in srgb, var(--brief-os-green) 42%, var(--brief-os-line));
+}
+
+.brief-os-space-layout .is-shared header span {
+  color: var(--brief-os-green);
+}
+
+.brief-os-intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.brief-os-signal {
+  min-height: 150px;
+  padding: 19px;
+  border-radius: 18px;
+}
+
+.brief-os-signal.is-strong {
+  border-color: var(--brief-os-line-strong);
+}
+
+.brief-os-signal.is-wide {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0,.8fr) minmax(0,1.4fr) auto;
+  align-items: center;
+  gap: 18px;
+  min-height: 112px;
+}
+
+.brief-os-signal strong {
+  display: block;
+  margin: 12px 0 6px;
+  font-size: 1.1rem;
+}
+
+.brief-os-signal p {
+  margin: 0;
+  font-size: .77rem;
+}
+
+.brief-os-signal.is-wide strong {
+  margin: 0;
+}
+
+.brief-os-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 10px;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.brief-os-directory-grid button {
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  min-height: 128px;
+  padding: 16px;
+  color: var(--brief-os-text);
+  text-align: left;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.brief-os-directory-grid button:hover,
+.brief-os-directory-grid button:focus-visible {
+  border-color: var(--brief-os-line-strong);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.brief-os-directory-grid button > span {
+  color: var(--brief-os-blue);
+  font-size: 1.15rem;
+}
+
+.brief-os-directory-grid button small {
+  color: var(--brief-os-muted);
+  font-size: .67rem;
+}
+
+.brief-os-system-note {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr);
+  align-items: center;
+  gap: 20px;
+  width: min(1120px, 100%);
+  margin: 12px auto 0;
+  padding: 16px 18px;
+  border-radius: 15px;
+}
+
+.brief-os-system-note p {
+  margin: 0;
+  font-size: .76rem;
+}
+
+.brief-os-flowbar {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 16px;
+  min-height: var(--brief-os-flow);
+  padding: 8px 20px;
+  border-top: 1px solid var(--brief-os-line);
+  background: color-mix(in srgb, var(--brief-os-panel) 90%, transparent);
+}
+
+.brief-os-flowbar > div {
+  display: flex;
+  gap: 6px;
+}
+
+.brief-os-flowbar > div button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--brief-os-line-strong);
+  opacity: .35;
+  cursor: pointer;
+}
+
+.brief-os-flowbar > div button[aria-current='step'] {
+  width: 22px;
+  border-radius: 999px;
+  opacity: 1;
+  background: var(--brief-os-blue);
+}
+
+.brief-os-flowbar p {
+  overflow: hidden;
+  margin: 0;
+  color: var(--brief-os-muted);
+  font-size: .72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brief-os-flowbar > button {
+  min-height: 38px;
+  padding: 7px 12px;
+  color: var(--brief-os-text);
+  border: 1px solid var(--brief-os-line-strong);
+  border-radius: 11px;
+  background: rgba(105,183,255,.08);
+  cursor: pointer;
+}
+
+.brief-os-return {
+  position: fixed;
+  top: 92px;
+  left: 18px;
+  z-index: 610;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 8px 12px;
+  color: var(--brief-os-text);
+  border: 1px solid var(--brief-os-line-strong);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--brief-os-panel) 94%, transparent);
+  box-shadow: var(--brief-os-shadow);
+  cursor: pointer;
+}
+
+body.brief-personal-os-detail-open {
+  overflow: auto !important;
+  padding-bottom: 90px !important;
+}
+
+body.brief-personal-os-detail-open #briefPersonalOS {
+  display: none !important;
+}
+
+body.brief-personal-os-detail-open #briefOsReturn {
+  display: inline-flex;
+}
+
+body.brief-personal-os-detail-open #briefMain,
+body.brief-personal-os-detail-open #briefSystemShell,
+body.brief-personal-os-detail-open #briefWorkspace,
+body.brief-personal-os-detail-open #briefApp > footer {
+  display: block !important;
+}
+
+body.brief-personal-os-detail-open #briefSystemShell {
+  margin-top: 90px;
+}
+
+body.brief-os-auto-running .brief-os-flowbar {
+  border-top-color: var(--brief-os-line-strong);
+  box-shadow: inset 0 2px 0 rgba(105,183,255,.12);
+}
+
+@media (max-width: 960px) {
+  :root { --brief-os-rail: 82px; }
+
+  .brief-os-identity button {
+    justify-content: center;
+  }
+
+  .brief-os-identity button > span:last-child,
+  .brief-os-nav strong,
+  .brief-os-nav small,
+  .brief-os-rail-footer small {
+    display: none;
+  }
+
+  .brief-os-nav button {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    min-height: 52px;
+    padding: 7px;
+  }
+
+  .brief-os-nav button > span {
+    grid-row: auto;
+  }
+
+  .brief-os-rail-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .brief-os-screen-grid.is-command {
+    grid-template-columns: minmax(0,1.25fr) minmax(240px,.75fr);
+  }
+
+  .brief-os-directory-grid {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --brief-os-header: 66px;
+    --brief-os-flow: 52px;
+  }
+
+  body.brief-personal-os-ready .brief-system-header {
+    min-height: var(--brief-os-header);
+    padding: max(5px, env(safe-area-inset-top)) 8px 5px;
+  }
+
+  body.brief-personal-os-ready .brief-system-header-inner {
+    width: 100%;
+    min-height: 50px;
+  }
+
+  body.brief-personal-os-ready .brief-system-profile {
+    max-width: calc(100vw - 160px);
+  }
+
+  body.brief-personal-os-ready .brief-system-profile small {
+    display: none;
+  }
+
+  body.brief-personal-os-ready .brief-system-header-actions > button {
+    width: 40px;
+    padding: 6px;
+  }
+
+  body.brief-personal-os-ready .brief-system-header-actions > button small {
+    display: none;
+  }
+
+  .brief-personal-os {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0,1fr) 62px;
+  }
+
+  .brief-os-rail {
+    grid-row: 2;
+    display: block;
+    padding: 5px max(7px, env(safe-area-inset-right)) max(5px, env(safe-area-inset-bottom)) max(7px, env(safe-area-inset-left));
+    border-top: 1px solid var(--brief-os-line);
+    border-right: 0;
+    background: color-mix(in srgb, var(--brief-os-panel) 94%, transparent);
+  }
+
+  .brief-os-identity,
+  .brief-os-rail-footer {
+    display: none;
+  }
+
+  .brief-os-nav {
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    gap: 3px;
+    height: 100%;
+    margin: 0;
+    overflow: visible;
+  }
+
+  .brief-os-nav button {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    align-content: center;
+    min-height: 48px;
+    padding: 3px;
+    border-radius: 10px;
+  }
+
+  .brief-os-nav button > span {
+    grid-row: auto;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    background: transparent;
+  }
+
+  .brief-os-nav button[aria-current='page'] {
+    box-shadow: inset 0 -2px 0 var(--brief-os-blue);
+  }
+
+  .brief-os-main {
+    grid-row: 1;
+  }
+
+  .brief-os-commandbar {
+    grid-template-columns: minmax(0,1fr) auto;
+    min-height: 58px;
+    padding: 7px 11px;
+  }
+
+  .brief-os-commandbar-meta {
+    display: none;
+  }
+
+  .brief-os-commandbar-actions {
+    gap: 4px;
+  }
+
+  .brief-os-commandbar-actions button {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 5px 8px;
+  }
+
+  .brief-os-commandbar-actions [data-os-auto] {
+    width: 36px;
+    overflow: hidden;
+    color: transparent;
+  }
+
+  .brief-os-commandbar-actions [data-os-auto]::before {
+    content: '▶';
+    color: var(--brief-os-text);
+  }
+
+  .brief-os-screen {
+    padding: 11px;
+  }
+
+  .brief-os-screen-grid.is-command,
+  .brief-os-day-layout,
+  .brief-os-action-layout,
+  .brief-os-space-layout {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .brief-os-command-card {
+    grid-row: auto;
+    min-height: 260px;
+    padding: 24px 20px;
+  }
+
+  .brief-os-command-card h2 {
+    font-size: clamp(2rem, 11vw, 3.1rem);
+  }
+
+  .brief-os-next-card {
+    min-height: 185px;
+  }
+
+  .brief-os-screen-heading {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 11px;
+  }
+
+  .brief-os-screen-heading h2 {
+    font-size: clamp(1.65rem, 9vw, 2.5rem);
+  }
+
+  .brief-os-screen-heading p {
+    font-size: .74rem;
+  }
+
+  .brief-os-action-list article {
+    grid-template-columns: 36px minmax(0,1fr);
+  }
+
+  .brief-os-action-list article > button:last-child {
+    grid-column: 2;
+    width: fit-content;
+  }
+
+  .brief-os-intelligence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brief-os-signal.is-wide {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .brief-os-directory-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+
+  .brief-os-directory-grid button {
+    min-height: 104px;
+  }
+
+  .brief-os-system-note {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .brief-os-flowbar {
+    grid-template-columns: auto minmax(0,1fr);
+    gap: 10px;
+    padding: 6px 11px;
+  }
+
+  .brief-os-flowbar p {
+    display: none;
+  }
+
+  .brief-os-flowbar > button {
+    justify-self: end;
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .brief-os-return {
+    top: 72px;
+    left: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brief-os-nav button > span {
+    width: 25px;
+    height: 25px;
+    font-size: .9rem;
+  }
+
+  .brief-os-commandbar h1 {
+    font-size: 1.25rem;
+  }
+
+  .brief-os-primary-actions {
+    display: grid;
+  }
+
+  .brief-os-primary-actions button {
+    width: 100%;
+  }
+
+  .brief-os-hour-strip {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    overflow-x: auto;
+  }
+
+  .brief-os-hour-strip span {
+    min-width: 72px;
+  }
+}
+
+@media (max-height: 620px) and (min-width: 721px) {
+  .brief-os-commandbar {
+    min-height: 58px;
+  }
+
+  .brief-os-flowbar {
+    min-height: 48px;
+  }
+
+  .brief-os-command-card {
+    padding: 24px;
+  }
+
+  .brief-os-command-card h2 {
+    font-size: clamp(2rem, 5.5vw, 3.1rem);
+  }
+
+  .brief-os-screen-grid.is-command {
+    min-height: 420px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brief-os-track,
+  .brief-os-screen,
+  .brief-os-nav button,
+  .brief-os-directory-grid button {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .brief-os-nav button[aria-current='page'],
+  .brief-os-primary-actions button:first-child,
+  .brief-os-command-card,
+  .brief-os-next-card,
+  .brief-os-mini-card,
+  .brief-os-timeline-panel,
+  .brief-os-context-panel,
+  .brief-os-action-list,
+  .brief-os-decision-card,
+  .brief-os-space-layout > section,
+  .brief-os-signal,
+  .brief-os-directory-grid button {
+    border: 1px solid CanvasText;
+  }
+}
