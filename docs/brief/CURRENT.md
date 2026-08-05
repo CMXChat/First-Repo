@@ -1,6 +1,6 @@
 # `/brief` Current Recovery Status
 
-Last updated: **August 5, 2026 at 12:43 PM ET**
+Last updated: **August 5, 2026 at 12:45 PM ET**
 
 Read this file first for the live checkpoint. Then read:
 
@@ -15,10 +15,11 @@ Branch: agent/brief-recovery-step-1
 Draft PR: #41
 PR title: Restore complete /brief workspace baseline
 PR base: main
-PR head: a1b0a3417fcab54e5fc34459baa4e38dd6fe15bb
 PR state: open draft
 PR mergeable calculation: true
 ```
+
+The branch head changes whenever this status file is updated. Check PR #41 for the latest head SHA. The stable product recovery commit is recorded below.
 
 ## Completed in Step 1
 
@@ -40,6 +41,7 @@ brief: restore complete workspace module
 
 - Reorganized `docs/brief-recovery-handoff.md` into a status-first continuity document.
 - Added `docs/brief/README.md` as the docs index.
+- Added this small live status file so future contexts do not need to scan the full handoff first.
 - Opened draft PR #41 so the recovery remains reviewable and separate from PR #35 and PR #37.
 
 ## Current branch scope
@@ -57,12 +59,12 @@ Only one product file is changed. The other files are continuity documentation.
 
 ## Validation completed
 
-- branch starts from current documented `main` base: pass
+- branch starts from the documented `main` base: pass
 - known-good blob identity: pass
 - product restore limited to the intended workspace module: pass
 - branch mergeability calculation: pass
-- existing GitHub workflow runs attached to the PR head: none found
-- combined commit status checks attached to the PR head: none found
+- existing GitHub workflow runs attached during inspection: none found
+- combined commit status checks attached during inspection: none found
 
 The absence of checks is a validation gap, not a passing result.
 
