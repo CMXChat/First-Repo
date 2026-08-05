@@ -1,197 +1,221 @@
 # `/brief` Current Recovery and Simplification Status
 
-Last updated: **August 5, 2026 at 12:50 PM ET**
+Last updated: **August 5, 2026 at 2:18 PM ET**
 
-Read this file first. Then read:
+## Read order
 
-- `docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md` for the approved planning direction
-- `docs/brief-recovery-handoff.md` for the complete recovery history and bug inventory
-- `docs/brief/README.md` for the documentation index
+1. `docs/brief/CURRENT.md`
+2. `docs/brief/IDEAS.md`
+3. `docs/brief/PHASE-1-WORKLOG.md`
+4. `docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md`
+5. `docs/brief-recovery-handoff.md` for legacy recovery only
 
-## Current repository state
+## Live repository state
 
 ```text
 Repository: CMXChat/First-Repo
-Branch: agent/brief-recovery-step-1
-Draft PR: #41
-PR title: Restore complete /brief workspace baseline
-PR base: main
-PR state: open draft
-PR mergeable calculation: true
+Development branch: agent/brief-demo-v2
+Development draft PR: #42
+Adaptive staging publish PR: #44, merged
+Adaptive staging merge commit: 52bdf372e438d298e9bed39f293baf0d98d52d0a
+Staging route: https://db.cmxchat.com/brief-next/
+Existing production route: https://db.cmxchat.com/brief/
+Production /brief changed: no
+Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
+Development validation run: 31034883845
+Staging PR validation run: 31035274638
 ```
 
-The branch head changes when continuity documentation is updated. Check PR #41 for the latest head SHA.
+The dark-default and adaptive Everything checkpoint is now merged into `main`. The existing GitHub Pages workflow is triggered by pushes to `main`, so the staging deployment was triggered by PR #44.
 
-The stable product recovery commit remains:
+Source on `main` is verified. Direct custom-domain HTTP verification remains unavailable from the current assistant web environment, so browser review is the live confirmation step.
+
+## Latest product decisions
+
+### Dark first
+
+- first visits begin in dark mode
+- HTML begins dark to prevent a light flash
+- the base uses black and charcoal instead of a blue page background
+- blue remains an accent for intelligence, selection, links, and action
+- a deliberately saved light preference remains respected
+- reset does not reset the theme
+
+### Focused views remain primary
+
+The main navigation is now:
+
+1. Today
+2. Workspace
+3. Spaces
+4. How it works
+5. Everything
+
+Everything appears at the end and is optional.
+
+### Everything full view
+
+Everything provides one complete scrollable briefing with:
+
+- executive overview
+- weather and hourly conditions
+- stats
+- daily flow
+- every Workspace category
+- private and shared Space context
+- adaptive briefing explanation
+- future app and alarm concept
+- privacy boundary
+- links back to focused views
+- links into specific Workspace tabs
+- jump navigation through the long page
+
+Focused views remain faster for normal daily use.
+
+### Stable shell, adaptive composition
+
+The demo explains that each interactive update can be composed after approved information is gathered and researched.
+
+The AI may choose:
+
+- charts for trends
+- timelines for schedule and sequence
+- comparisons for choices
+- maps for location and routing
+- alerts for risk and confirmation
+- shared action lists for couples, families, teams, and projects
+
+The guardrail is explicit: personalized does not mean unpredictable.
+
+Navigation, privacy controls, source visibility, accessibility, and familiar locations remain stable while useful modules adapt to the content.
+
+### Future app and alarm
+
+The demo explains a possible app experience that:
+
+- begins at a selected alarm time
+- rotates approved music from a connected Spotify account
+- uses saved preferences and daily context
+- reads the executive overview
+- continues into the interactive briefing
+- includes snooze, skip, privacy, and provider controls
+
+It is clearly labeled as a future concept requiring native permissions, provider rules, protected authentication, and tested fallbacks.
+
+## Architecture
 
 ```text
-0b3cba3de40434ac24598580bd9f38790036e58a
-brief: restore complete workspace module
+brief-next/index.html
+  stable product surfaces and asset loading
+
+assets/brief-next/brief-demo-data.js
+  five scenario records and daily demo content
+
+assets/brief-next/brief-demo-experience.js
+  Everything navigation extension, full-view rendering, adaptive composition, and app-alarm explanation
+
+assets/brief-next/brief-demo-app.js
+  sole owner of entry, scenario, view, tab, theme, URL, and global rendering state
+
+assets/brief-next/brief-demo-media.js
+  sole owner of preview audio and the Spotify provider player
+
+assets/brief-next/brief-demo-explainers.js
+  memory and People and Spaces examples
+
+assets/brief-next/brief-demo.css
+  core responsive design
+
+assets/brief-next/brief-demo-explainers.css
+  explainer components and heading hierarchy
+
+assets/brief-next/brief-demo-experience.css
+  black dark foundation, Everything view, adaptive modules, and five-button mobile navigation
 ```
 
-The restored workspace blob remains:
+`brief-demo-app.js` emits an explicit `briefdemo:scenariochange` lifecycle event. The Everything module listens and rerenders without owning global application state.
+
+## Validation
+
+### Development validation
 
 ```text
-5a0967ef6eca9f5b2e175a7ca0578b089c04fa86
+Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
+Run: 31034883845
+Static job: 92404364989, passed
+Browser job: 92404365175, passed
 ```
 
-## New product direction
-
-The intended destination for `/brief` is now a focused, editable, reversible demonstration of what the product can become.
-
-The goal is not to preserve every current interaction on the primary path. The goal is to:
-
-- make the demo understandable within the first minute
-- keep all five use cases without rendering all five at once
-- reduce the number of state owners and runtime layers
-- make most copy and scenario changes editable in one data file
-- rebuild soundtrack behavior around a direct user gesture
-- use one Spotify provider player
-- preserve the existing implementation as a rollback and reference point
-- perform every change in small documented checkpoints
-
-The complete strategy is recorded in:
+### Clean staging PR validation
 
 ```text
-docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md
+PR: #44
+Staging source commit: f5dfa90de43b149d98b18a4fbc3687f332baade1
+Run: 31035274638
+Static job: 92405680264, passed
+Browser job: 92405680241, passed
+Merged main commit: 52bdf372e438d298e9bed39f293baf0d98d52d0a
 ```
 
-No simplified-demo product code has been created yet.
+The suite confirms:
 
-## Architecture assessment
+- dark is the first-visit default
+- the dark background token is `#05070b`
+- saved light preference persists
+- reset preserves theme and restores soundtrack selection
+- five desktop and mobile navigation buttons render
+- Everything is the final navigation option
+- Everything renders nine major sections
+- jump navigation works structurally
+- all Workspace categories appear
+- specific full-view Workspace links open the correct focused tab
+- scenario changes update Everything
+- adaptive component and Spotify alarm explanations render
+- weather, stats, focused views, Spaces, memory examples, media drawer, headings, and mobile overflow remain valid
 
-The visible current loader chain uses roughly:
+The repository-wide privacy audit still reports the pre-existing `/doc` gate mismatch. It is unrelated to the six Brief Next files in PR #44.
 
-```text
-4 stylesheets loaded directly by brief/index.html
-12 scripts loaded directly by brief/index.html
-12 stylesheets loaded by brief-config.js
-18 scripts loaded by brief-config.js
-2 stylesheets and 1 script loaded by brief-lite-ui.js
-```
+## Automation status
 
-That is approximately 49 CSS and JavaScript resources from the visible chain alone.
+The legacy `Refresh Brief Concept` automation remains paused.
 
-The current application also has overlapping ownership across:
+Do not restart it until:
 
-- `brief-core.js`
-- `brief-workspace.js`
-- `brief-system.js`
-- entry, device, onboarding, upgrade, live, daily, experience, terminal, relationship, team, polish, and overlay layers
+- staging is reviewed
+- the data-editing contract is documented
+- automation-editable files are selected
+- tests protect those boundaries
+- production `/brief/` cutover is approved
 
-Several of these layers change the same profile, entry, scroll, depth, tab, URL, navigation, and media states. This is the main architectural problem.
+## Publishing distance
 
-## Media assessment
+Completed:
 
-Current music behavior is divided across:
+- reversible staging architecture
+- first-pass focused interface
+- memory versus normal AI
+- People and Spaces
+- privacy explanation
+- black dark-first theme
+- optional full Everything view
+- adaptive composition explanation
+- future app and alarm explanation
+- focused desktop/mobile validation
+- adaptive staging publication
 
-- the entry checkbox
-- preview audio in `brief-core.js`
-- the header audio button
-- the music-section preview button
-- the featured Spotify iframe
-- recommendation cards that replace the featured iframe
-- additional Spotify iframes created by `brief-daily.js`
-- narration and music-volume coordination
+Remaining before replacing `/brief/`:
 
-The entry flow also uses delayed opening and competing handlers. The simplified version should call preview `audio.play()` directly inside the entry click that the user initiated.
+1. User review of the published full view on desktop and mobile.
+2. Focused visual corrections.
+3. Contrast, keyboard, focus, and accessibility review.
+4. Common editing map and daily data contract.
+5. Authorized preview audio and autoplay fallback.
+6. Final cutover and rollback validation.
 
-Spotify should use one embed or iFrame API controller and remain a user-controlled provider player. The demo should not promise that Spotify itself can autoplay in every browser.
+## Exact next action
 
-## Current validation snapshot
-
-### Passed on recent PR #41 heads
-
-```text
-CMX Static Validation
-CMX Secret Scan
-CMX Navigation Link Guard
-CMX Terminal Theme Guard
-```
-
-### Known inherited failure: combined `/brief` smoke workflow
-
-Root failure:
-
-```text
-ReferenceError: MutationObserver is not defined
-```
-
-Classification:
-
-- Node VM test harness deficiency
-- not caused by the restored workspace blob
-- focused mock update already exists on PR #35
-
-### Known unrelated failure: CMX Privacy Audit
-
-Root failure:
-
-```text
-doc/index.html is not recognized as using the Black Prompt Gate contract
-```
-
-Classification:
-
-- `/doc` audit contract issue
-- unrelated to the restored `/brief` workspace
-- focused audit update already exists on PR #38
-
-### Browser Matrix
-
-Latest inspected run:
-
-```text
-Run: 31026970607
-Job: 92377811749
-State at checkpoint: in progress
-```
-
-The browser engines were installed and the Chromium, Firefox, WebKit, iPhone, and Android step was still running. This file must be updated when a completed result is available.
-
-## PR direction
-
-### PR #41
-
-Keep as the restored baseline and continuity record. Do not turn it into the full simplification rewrite.
-
-### PR #35
-
-Pause automatic merge. Review for small reusable pieces, especially the Node browser mocks. Do not inherit the complete overlay and terminal architecture by default.
-
-### PR #37
-
-Pause as a product branch. The new direction favors a smaller architecture instead of expanding the current Personal OS shell.
-
-### PR #38
-
-Keep separate. Its privacy-audit adjustment may still be useful independently for `/doc`.
-
-## Proposed implementation phases
-
-```text
-Phase 0: preserve and understand the restored baseline
-Phase 1: build a parallel reversible demo foundation
-Phase 2: consolidate the content and user story
-Phase 3: rebuild preview autoplay and Spotify behavior
-Phase 4: visual polish, accessibility, and editability
-Phase 5: review and cut over to /brief
-Phase 6: remove obsolete layers deliberately
-```
-
-## Exact next approval requested
-
-Approve **Phase 1: Build the reversible demo foundation**.
-
-Phase 1 will:
-
-1. Create a new branch named `agent/brief-demo-v2` from the accepted baseline.
-2. Build a parallel `brief-next/` surface and `assets/brief-next/` asset folder.
-3. Use one scenario state, one app controller, one media controller, one data file, and one stylesheet.
-4. Implement the simple entry choice, one overview, one detail workspace, and all five profiles through the same layout.
-5. Include one media slot but postpone final autoplay and Spotify integration to Phase 3.
-6. Add focused desktop and mobile tests.
-7. Leave the current `/brief` untouched.
-8. Update this file after every meaningful commit and test result.
-
-Approval does not authorize deleting the current `/brief`, merging PR #35 or PR #37, or replacing the production route.
+1. Review `https://db.cmxchat.com/brief-next/` after the Pages deployment finishes.
+2. Inspect Everything, the five-button mobile navigation, dark surfaces, repetition, and jump links.
+3. Record specific corrections.
+4. Begin the editing-map and accessibility checkpoint after visual review.
+5. Keep `/brief/` untouched until explicit cutover approval.
