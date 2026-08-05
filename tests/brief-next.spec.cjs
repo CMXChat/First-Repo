@@ -59,7 +59,13 @@ async function openScenario(page, id) {
   expect(playback.actual).toBe(playback.expected);
 }
 
-test('desktop demo keeps weather, stats, selective navigation and entry soundtrack playback', async ({ page }, testInfo) => {
+async function expectNoVisibleEllipses(page) {
+  const text = await page.locator('body').innerText();
+  expect(text).not.toContain('...');
+  expect(text).not.toContain('…');
+}
+
+test('desktop demo keeps weather, stats, navigation and entry soundtrack playback', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
   await openScenario(page, 'personal');
 
@@ -75,6 +81,14 @@ test('desktop demo keeps weather, stats, selective navigation and entry soundtra
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
   await expect(page.locator('#workspaceTabs button')).toHaveCount(5);
   await expect(page.locator('#workspacePanel .detail-card')).toHaveCount(3);
+
+  const firstTab = page.locator('#workspaceTabs [data-workspace-tab]').first();
+  const secondTab = page.locator('#workspaceTabs [data-workspace-tab]').nth(1);
+  await firstTab.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(secondTab).toBeFocused();
+  await expect(secondTab).toHaveAttribute('aria-selected', 'true');
+  await expect(firstTab).toHaveAttribute('tabindex', '-1');
 
   await page.locator('#scenarioSelect').selectOption('team');
   await expect(page.locator('#railContextTitle')).toHaveText('Team and project');
@@ -92,9 +106,10 @@ test('desktop demo keeps weather, stats, selective navigation and entry soundtra
   await expect(page.locator('#previewButton')).toHaveText('Play Spotify soundtrack');
   await page.locator('[data-close-media]').first().click();
   await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
+  await expectNoVisibleEllipses(page);
 });
 
-test('Everything preserves a scrollable full view with interlinking', async ({ page }, testInfo) => {
+test('Everything keeps a full view with clear interlinking and plain copy', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Full-view behavior is covered in the desktop project.');
   await openScenario(page, 'relationship');
 
@@ -106,10 +121,11 @@ test('Everything preserves a scrollable full view with interlinking', async ({ p
   await expect(page.locator('.full-workspace-group')).toHaveCount(5);
   await expect(page.locator('.component-choice-grid article')).toHaveCount(6);
   await expect(page.locator('.alarm-flow article')).toHaveCount(4);
-  await expect(page.locator('#all-adaptive')).toContainText('approved data is gathered, researched and checked');
-  await expect(page.locator('#all-adaptive')).toContainText('Personalized does not mean unpredictable');
-  await expect(page.locator('#all-alarm')).toContainText('connected Spotify account');
-  await expect(page.locator('#all-alarm')).toContainText('executive overview');
+  await expect(page.locator('#all-adaptive')).toContainText('Personal OS checks the approved information');
+  await expect(page.locator('#all-adaptive')).toContainText('The layout can adapt and still feel familiar');
+  await expect(page.locator('#all-alarm')).toContainText('approved music from Spotify');
+  await expect(page.locator('#all-alarm')).toContainText('short overview');
+  await expect(page.locator('#all-privacy')).toContainText('More information should come with more control');
 
   await page.locator('[data-full-workspace-tab="plans"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
@@ -118,13 +134,14 @@ test('Everything preserves a scrollable full view with interlinking', async ({ p
   await page.locator('#primaryNav [data-primary-view="everything"]').click();
   await page.locator('#scenarioSelect').selectOption('team');
   await expect(page.locator('#all-spaces')).toContainText('Project Space');
-  await expect(page.locator('#all-workspace')).toContainText('Every category for this team and project briefing');
+  await expect(page.locator('#all-workspace')).toContainText('Every category in this team and project briefing');
 
   await page.locator('.full-end-nav [data-go-view="how"]').click();
   await expect(page.locator('[data-view-panel="how"]')).toBeVisible();
+  await expectNoVisibleEllipses(page);
 });
 
-test('memory and People and Spaces examples explain the product interactively', async ({ page }, testInfo) => {
+test('memory and People and Spaces examples use plain copy and proper tab behavior', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Interactive product explanation is covered in the desktop project.');
   await openScenario(page, 'relationship');
 
@@ -133,19 +150,25 @@ test('memory and People and Spaces examples explain the product interactively', 
   await expect(page.locator('[data-memory-example]')).toHaveCount(4);
   await expect(page.locator('[data-space-example]')).toHaveCount(3);
 
-  await page.locator('[data-memory-example="correction"]').click();
-  await expect(page.locator('#memoryComparison')).toContainText('A direct correction can replace a weaker inference');
+  const continuity = page.locator('[data-memory-example="continuity"]');
+  const correction = page.locator('[data-memory-example="correction"]');
+  await continuity.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(correction).toBeFocused();
+  await expect(correction).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#memoryComparison')).toContainText('A direct correction can replace a weaker guess');
   await expect(page.locator('#memoryComparison')).toContainText('Previous belief: archived');
 
   await page.locator('[data-space-example="family"]').click();
-  await expect(page.locator('#spaceExamplePanel')).toContainText('One household briefing');
+  await expect(page.locator('#spaceExamplePanel')).toContainText('One household Brief with separate private records');
   await expect(page.locator('#spaceExamplePanel')).toContainText('Current expenses and bills');
-  await expect(page.locator('#spaceExamplePanel')).toContainText('Parent-private notes');
+  await expect(page.locator('#spaceExamplePanel')).toContainText('Parent notes');
   await expect(page.locator('.outcome-grid article')).toHaveCount(8);
   await expect(page.locator('.privacy-callout')).toContainText('PRIVATE FIRST');
+  await expectNoVisibleEllipses(page);
 });
 
-test('mobile demo keeps focused navigation plus optional Everything', async ({ page }, testInfo) => {
+test('mobile demo keeps focused navigation plus the full view', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
   await installSpotifyMock(page);
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
@@ -158,6 +181,7 @@ test('mobile demo keeps focused navigation plus optional Everything', async ({ p
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
 
   await page.locator('[data-entry-scenario="relationship"]').click();
+  await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
   await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
   await expect(page.locator('#mobileNav')).toBeVisible();
@@ -181,6 +205,7 @@ test('mobile demo keeps focused navigation plus optional Everything', async ({ p
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
+  await expectNoVisibleEllipses(page);
 });
 
 test('light default, saved dark preference and reset remain reversible', async ({ page }, testInfo) => {
@@ -196,6 +221,7 @@ test('light default, saved dark preference and reset remain reversible', async (
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
   await page.locator('[data-entry-scenario="business"]').click();
+  await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
   await page.locator('#resetDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
@@ -203,6 +229,7 @@ test('light default, saved dark preference and reset remain reversible', async (
   await expect(page.locator('#openDemo')).toBeDisabled();
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('[data-entry-scenario]').first()).toBeFocused();
 
   await page.evaluate(() => localStorage.removeItem('personal_os_brief_theme_v2'));
   await page.reload({ waitUntil: 'domcontentloaded' });
