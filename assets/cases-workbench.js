@@ -142,10 +142,11 @@
   }
 
   function enableWorkspace(enabled) {
-    [els.refresh, els.create, els.saveState, els.archive, els.export, els.addNote, els.importButton]
+    [els.refresh, els.create, els.saveState, els.archive, els.export, els.addNote]
       .forEach((element) => { element.disabled = !enabled; });
     els.importDrop.tabIndex = enabled ? 0 : -1;
     els.importFile.disabled = !enabled;
+    syncImportButton();
   }
 
   async function loadCases() {
@@ -281,8 +282,8 @@
         ? payload.entries.length
         : ['observations', 'dns', 'sources', 'facts', 'leads', 'timeline'].reduce((total, key) => total + (Array.isArray(payload[key]) ? payload[key].length : 0), 0);
       els.importPreview.textContent = `File: ${file.name}\nSchema: ${String(payload.schema || 'missing')}\nTop-level records: ${count}\nSize: ${formatBytes(file.size)}`;
-      els.importButton.disabled = !state.selectedId;
       els.importResult.replaceChildren();
+      syncImportButton();
     } catch (error) {
       clearImport();
       notify(error instanceof Error ? error.message : 'Unable to parse the import file.');
@@ -293,13 +294,14 @@
     if (!state.detail || !state.importPayload || state.busy) return notify('Select a case and choose a CMX JSON export.');
     setBusy(true);
     try {
-      const result = await api(`/api/cases/${encodeURIComponent(state.detail.id)}/imports`, {
+      const caseId = state.detail.id;
+      const result = await api(`/api/cases/${encodeURIComponent(caseId)}/imports`, {
         method: 'POST',
         body: { payload: state.importPayload }
       });
       renderImportResult(result);
       notify(`Imported ${result.schema}.`);
-      await selectCase(state.detail.id);
+      await selectCase(caseId);
     } catch (error) {
       notify(error.message);
     } finally {
@@ -340,6 +342,7 @@
     els.detail.classList.toggle('cases-hidden', !item);
     if (!item) {
       els.rawJson.textContent = '';
+      syncImportButton();
       return;
     }
 
@@ -400,7 +403,7 @@
     }));
 
     els.rawJson.textContent = JSON.stringify(item, null, 2);
-    els.importButton.disabled = !state.importPayload;
+    syncImportButton();
   }
 
   function renderRecords(container, records, describe) {
@@ -467,7 +470,7 @@
     els.importFile.value = '';
     els.importPreview.textContent = 'No CMX session export selected.';
     els.importResult.replaceChildren();
-    els.importButton.disabled = true;
+    syncImportButton();
   }
 
   function exportSelectedCase() {
@@ -526,6 +529,17 @@
       button.disabled = busy || button.dataset.wasDisabled === 'true';
       if (!busy) delete button.dataset.wasDisabled;
     });
+    syncImportButton();
+  }
+
+  function syncImportButton() {
+    els.importButton.disabled = !(
+      state.backend &&
+      !state.busy &&
+      state.selectedId &&
+      state.detail &&
+      state.importPayload
+    );
   }
 
   function resetCreateForm() {
