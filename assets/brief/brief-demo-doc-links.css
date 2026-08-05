@@ -1,0 +1,106 @@
+/* Clear, reciprocal navigation between the briefing demo and product overview. */
+.entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.doc-entry-link,
+.doc-topbar-link,
+.doc-cta-button {
+  text-decoration: none;
+}
+
+.doc-topbar-link {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  color: var(--ink-strong);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  box-shadow: 0 6px 18px rgba(31, 67, 100, 0.06);
+  font-size: 0.75rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.doc-topbar-link:hover,
+.doc-topbar-link:focus-visible {
+  color: var(--blue-deep);
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.doc-cta-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  margin-top: 22px;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid color-mix(in srgb, var(--blue) 34%, var(--line));
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--blue) 15%, transparent), transparent 24rem),
+    linear-gradient(135deg, var(--blue-soft), color-mix(in srgb, var(--surface) 94%, transparent));
+  box-shadow: var(--shadow-soft);
+}
+
+.doc-cta-card h2 {
+  max-width: 720px;
+  margin: 8px 0 10px;
+  color: var(--ink-strong);
+  font-size: clamp(1.45rem, 3vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.doc-cta-card p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.doc-cta-button {
+  min-width: 210px;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .doc-topbar-link {
+    min-height: 38px;
+    padding: 8px 11px;
+  }
+
+  .doc-topbar-link .doc-link-label {
+    display: none;
+  }
+
+  .doc-cta-card {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-cta-button {
+    width: fit-content;
+  }
+}
+
+@media (max-width: 620px) {
+  .entry-actions {
+    display: grid;
+  }
+
+  .entry-actions .primary-button,
+  .entry-actions .secondary-button {
+    width: 100%;
+  }
+
+  .doc-cta-button {
+    width: 100%;
+  }
+}
