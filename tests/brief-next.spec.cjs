@@ -43,10 +43,13 @@ async function openScenario(page, id) {
   await installSpotifyMock(page);
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.locator('#entrySoundtrack')).toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
   await expect(page.locator('#readOnEntry')).toHaveCount(0);
+
+  await page.locator('#entrySoundtrack').check();
   await page.locator(`[data-entry-scenario="${id}"]`).click();
   await expect(page.locator('#openDemo')).toBeEnabled();
+  await expect(page.locator('#previewButton')).toBeEnabled();
   await page.locator('#openDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('#demoApp')).toHaveAttribute('aria-hidden', 'false');
@@ -65,7 +68,16 @@ async function expectNoVisibleEllipses(page) {
   expect(text).not.toContain('…');
 }
 
-test('desktop demo keeps weather, stats, navigation and entry soundtrack playback', async ({ page }, testInfo) => {
+async function expectNoHorizontalOverflow(page) {
+  const overflow = await page.evaluate(() => ({
+    document: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    body: document.body.scrollWidth - document.body.clientWidth
+  }));
+  expect(overflow.document).toBeLessThanOrEqual(1);
+  expect(overflow.body).toBeLessThanOrEqual(1);
+}
+
+test('desktop demo keeps weather, stats, navigation and opt-in soundtrack playback', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
   await openScenario(page, 'personal');
 
@@ -101,11 +113,13 @@ test('desktop demo keeps weather, stats, navigation and entry soundtrack playbac
 
   await page.locator('#mediaButton').click();
   await expect(page.locator('#mediaDrawer')).toHaveClass(/is-open/);
+  await expect(page.locator('#mediaDrawer')).not.toHaveAttribute('inert', '');
   await expect(page.locator('#spotifyFrame')).toHaveCount(1);
   await expect(page.locator('#spotifyFrame')).toHaveAttribute('src', /open\.spotify\.com\/embed\/track\/1eyzqe2QqGZUmfcPZtrIyt/);
   await expect(page.locator('#previewButton')).toHaveText('Play Spotify soundtrack');
   await page.locator('[data-close-media]').first().click();
   await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
+  await expect(page.locator('#mediaDrawer')).toHaveAttribute('inert', '');
   await expectNoVisibleEllipses(page);
 });
 
@@ -168,7 +182,7 @@ test('memory and People and Spaces examples use plain copy and proper tab behavi
   await expectNoVisibleEllipses(page);
 });
 
-test('mobile demo keeps focused navigation plus the full view', async ({ page }, testInfo) => {
+test('mobile demo keeps every view contained and the How map compact', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
   await installSpotifyMock(page);
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
@@ -178,10 +192,12 @@ test('mobile demo keeps focused navigation plus the full view', async ({ page },
   expect(bg).toBe('#edf3f8');
   const entryHeadingSize = await page.locator('#entryTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(entryHeadingSize).toBeLessThanOrEqual(36);
-  await expect(page.locator('#entrySoundtrack')).toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
 
+  await page.locator('#entrySoundtrack').check();
   await page.locator('[data-entry-scenario="relationship"]').click();
   await expect(page.locator('#openDemo')).toBeEnabled();
+  await expect(page.locator('#previewButton')).toBeEnabled();
   await page.locator('#openDemo').click();
   await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
   await expect(page.locator('#mobileNav')).toBeVisible();
@@ -191,20 +207,27 @@ test('mobile demo keeps focused navigation plus the full view', async ({ page },
   const heroHeadingSize = await page.locator('#heroTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(heroHeadingSize).toBeLessThanOrEqual(36);
 
-  await page.locator('#mobileNav [data-primary-view="everything"]').click();
-  await expect(page.locator('[data-view-panel="everything"]')).toBeVisible();
-  await expect(page.locator('#everythingJumpNav')).toBeVisible();
+  for (const view of ['today', 'workspace', 'spaces', 'how', 'everything']) {
+    await page.locator(`#mobileNav [data-primary-view="${view}"]`).click();
+    await expect(page.locator(`[data-view-panel="${view}"]`)).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+  }
+
+  await page.locator('#mobileNav [data-primary-view="how"]').click();
+  await page.locator('[data-memory-example="preference"]').click();
+  await page.locator('[data-space-example="team"]').click();
+  await expectNoHorizontalOverflow(page);
+
+  const maxFoundationHeight = await page.locator('.foundation-map > *').evaluateAll(nodes =>
+    Math.max(...nodes.map(node => node.getBoundingClientRect().height))
+  );
+  expect(maxFoundationHeight).toBeLessThanOrEqual(220);
 
   await page.locator('#mobileNav [data-primary-view="workspace"]').click();
-  await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
-  await expect(page.locator('#workspaceTabs')).toBeVisible();
-
   await page.locator('#scenarioSelect').selectOption('trainer');
   await expect(page.locator('#railContextTitle')).toHaveText('Trainer and student');
   await expect(page.locator('#workspacePanel .detail-card')).toHaveCount(3);
-
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  expect(overflow).toBeLessThanOrEqual(1);
+  await expectNoHorizontalOverflow(page);
   await expectNoVisibleEllipses(page);
 });
 
@@ -227,7 +250,7 @@ test('light default, saved dark preference and reset remain reversible', async (
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
   await expect(page.locator('#entry')).toBeVisible();
   await expect(page.locator('#openDemo')).toBeDisabled();
-  await expect(page.locator('#entrySoundtrack')).toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('[data-entry-scenario]').first()).toBeFocused();
 
