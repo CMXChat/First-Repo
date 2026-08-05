@@ -1,6 +1,6 @@
 # Personal OS Briefing Ideas Register
 
-Last updated: **August 5, 2026 at 1:30 PM ET**
+Last updated: **August 5, 2026 at 1:44 PM ET**
 
 This file records approved product ideas, design decisions, deferred concepts, and completed implementation checkpoints for `/brief-next/` and the eventual `/brief/` cutover.
 
@@ -27,7 +27,7 @@ The primary difference from a regular AI chat should be visible through interact
 - normal AI may remember a preference without showing how it is used
 - Personal OS should let the user inspect, correct, restrict, share, or delete memory
 
-Status: **approved and active**
+Status: **implemented as an interactive first-pass explanation on August 5, 2026**
 
 ## Daily experience
 
@@ -51,7 +51,7 @@ The default entry soundtrack option should be selected.
 
 Read-aloud should remain unchecked and should not return to the main entry path until audio behavior is stable and the setting is intentionally designed.
 
-Status: **soundtrack default approved for current checkpoint**
+Status: **soundtrack default completed; read-aloud remains absent**
 
 ## Data beyond a dashboard
 
@@ -74,7 +74,7 @@ The demo should explain and eventually demonstrate how approved data can become:
 - a correction to memory
 - an approved action after confirmation
 
-Status: **approved, staged across current and later phases**
+Status: **eight outcome types are now explained; real actions and automations remain later-phase work**
 
 ## People and Spaces
 
@@ -117,7 +117,7 @@ Approved interactive examples:
 - restricted finance, HR, credentials, and leadership preparation
 - shared operating history without full account exposure
 
-Status: **approved; Family Space is an explanatory example, not a sixth main scenario yet**
+Status: **Relationship, Family, and Team examples implemented; Family remains explanatory, not a sixth main scenario**
 
 ## Privacy and account protection
 
@@ -136,7 +136,7 @@ The product should communicate:
 - audit history for important changes
 - no implication that a frontend gate is secure authentication
 
-Status: **approved and already partially implemented**
+Status: **first-pass privacy callout and Space-specific protection examples implemented**
 
 ## Design direction
 
@@ -155,7 +155,7 @@ Approved refinements:
 - use progressive disclosure
 - keep normal edits predictable for developers and AI
 
-Status: **mobile heading refinement approved for current checkpoint**
+Status: **mobile heading scale completed and browser-tested; broader visual review remains open**
 
 ## Editability, automation, and replication
 
@@ -179,7 +179,7 @@ Implementation principles:
 - tests protect the ownership model
 - every meaningful change updates the Markdown checkpoint files
 
-Status: **approved and binding**
+Status: **binding; the explainer component uses a reusable schema and does not become a second app controller**
 
 ## News and daily updates
 
@@ -232,18 +232,34 @@ Production `/brief/` should not be replaced until:
 - rollback is prepared
 - explicit cutover approval is given
 
-Status: **not approved for cutover yet**
+Status: **memory and Space storytelling plus mobile heading work are complete; cutover remains unapproved**
 
-## Current approved implementation slice
+## Completed implementation slice: August 5, 2026
 
-1. Select soundtrack by default on entry and after reset.
-2. Keep read-aloud absent and unchecked.
-3. Reduce mobile entry and hero heading scale.
-4. Add an interactive regular-AI versus Personal-OS memory comparison.
-5. Add interactive Relationship, Family, and Team Space examples.
-6. Add concise examples of what approved data can become beyond a dashboard.
-7. Keep privacy explanations brief and visible.
-8. Extend tests for these behaviors.
-9. Update `CURRENT.md` and `PHASE-1-WORKLOG.md` after validation.
+- [x] Select soundtrack by default on entry and after reset.
+- [x] Keep read-aloud absent and unchecked.
+- [x] Reduce mobile entry and hero heading scale.
+- [x] Add an interactive regular-AI versus Personal-OS memory comparison.
+- [x] Add interactive Relationship, Family, and Team Space examples.
+- [x] Add concise examples of what approved data can become beyond a dashboard.
+- [x] Keep privacy explanations brief and visible.
+- [x] Extend static and desktop/mobile browser tests.
+- [x] Review relevant open PRs and record carry-forward decisions.
+- [x] Pause the legacy `/brief` daily refresh automation.
 
-Status: **in progress**
+Validation:
+
+```text
+Product revision: 5e02ff8caafd160e3802b0caaca6802ad672038a
+Workflow run: 31030913507
+Static job: 92391543795, passed
+Browser rerun job: 92391542885, passed
+```
+
+## Next idea checkpoint
+
+- visually review the new explanation sections at desktop, short-height laptop, tablet, and phone sizes
+- measure contrast and inspect spacing
+- create the common-editing map for scenario data, explainer examples, media, and layout
+- decide whether Family should remain an explainer or become a main scenario after user review
+- begin authorized preview-audio selection only after the visual review
