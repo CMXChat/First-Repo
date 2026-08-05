@@ -4,6 +4,24 @@
   const data = window.BRIEF_DEMO_DATA;
   if (!data?.scenarios) return;
 
+  function loadVisualIntelligence() {
+    if (!document.querySelector('link[data-brief-visuals]')) {
+      const stylesheet = document.createElement('link');
+      stylesheet.rel = 'stylesheet';
+      stylesheet.href = '/assets/brief-next/brief-demo-visuals.css?v=20260805-1';
+      stylesheet.dataset.briefVisuals = 'true';
+      document.head.append(stylesheet);
+    }
+
+    if (!document.querySelector('script[data-brief-visuals]')) {
+      const script = document.createElement('script');
+      script.src = '/assets/brief-next/brief-demo-visuals.js?v=20260805-1';
+      script.async = false;
+      script.dataset.briefVisuals = 'true';
+      document.body.append(script);
+    }
+  }
+
   if (!data.navigation.some(item => item.id === 'everything')) {
     data.navigation.push({ id: 'everything', label: 'Everything' });
   }
@@ -158,6 +176,10 @@
         ${sectionButton('spaces', 'Review Spaces')}
         ${sectionButton('how', 'Understand the system')}
       </nav>`;
+
+    document.dispatchEvent(new CustomEvent('briefdemo:everythingrender', {
+      detail: { scenarioId: scenario.id }
+    }));
   }
 
   function openWorkspaceTab(tab) {
@@ -181,4 +203,5 @@
   renderJumpNav();
   renderEverything();
   installEvents();
+  loadVisualIntelligence();
 })();
