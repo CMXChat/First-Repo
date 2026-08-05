@@ -20,8 +20,9 @@ const appJs = read('assets/brief-next/brief-demo-app.js');
 const explainersJs = read('assets/brief-next/brief-demo-explainers.js');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
-assert.match(html, /<html lang="en" data-theme="dark">/);
-assert.match(html, /<meta name="theme-color" content="#05070b"/);
+assert.match(html, /<html lang="en" data-theme="light">/);
+assert.match(html, /<meta name="theme-color" content="#edf3f8"/);
+assert.match(html, /id="themeButton"[^>]+aria-label="Switch to dark theme"[^>]+aria-pressed="false"/);
 assert.match(html, /<meta name="robots" content="noindex, nofollow/);
 assert.match(html, /<link rel="canonical" href="https:\/\/db\.cmxchat\.com\/brief-next\/"/);
 assert.match(html, /id="entryScenarioGrid"/);
@@ -70,8 +71,9 @@ for (const scenario of Object.values(data.scenarios)) {
   assert.ok(scenario.space.shared.length >= 3);
 }
 
-assert.match(appJs, /theme: 'dark'/);
-assert.match(appJs, /localStorage\.getItem\('briefNextTheme'\) \|\| 'dark'/);
+assert.match(appJs, /theme: 'light'/);
+assert.match(appJs, /localStorage\.getItem\('briefNextTheme'\) \|\| 'light'/);
+assert.match(appJs, /state\.theme = 'light'/);
 assert.match(appJs, /new CustomEvent\('briefdemo:scenariochange'/);
 assert.match(appJs, /function selectView\(/);
 assert.match(appJs, /function setScenario\(/);
