@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 async function openScenario(page, id) {
-  await page.goto('/brief-next/');
+  await page.goto('/brief-next/', { waitUntil: 'domcontentloaded' });
   await page.locator(`[data-entry-scenario="${id}"]`).click();
   await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
@@ -9,7 +9,8 @@ async function openScenario(page, id) {
   await expect(page.locator('#demoApp')).toHaveAttribute('aria-hidden', 'false');
 }
 
-test('desktop demo keeps weather, stats and selective navigation', async ({ page }) => {
+test('desktop demo keeps weather, stats and selective navigation', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
   await openScenario(page, 'personal');
 
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
@@ -39,7 +40,8 @@ test('desktop demo keeps weather, stats and selective navigation', async ({ page
   await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
 });
 
-test('mobile demo navigates without a forced long document', async ({ page }) => {
+test('mobile demo navigates without a forced long document', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
   await openScenario(page, 'relationship');
 
   await expect(page.locator('#mobileNav')).toBeVisible();
@@ -57,7 +59,8 @@ test('mobile demo navigates without a forced long document', async ({ page }) =>
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test('theme and reset controls remain reversible', async ({ page }) => {
+test('theme and reset controls remain reversible', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium', 'Control reversibility is covered in the desktop project.');
   await openScenario(page, 'business');
 
   await page.locator('#themeButton').click();
