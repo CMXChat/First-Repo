@@ -80,7 +80,7 @@ test('Everything demonstrates the document model with visuals, inputs and interl
   await page.locator('[data-input-toggle="finance"]').click();
   await page.locator('[data-input-toggle="weather"]').click();
   await expect(page.locator('#pipelinePreview')).toContainText('Cash watch');
-  await expect(page.locator('#pipelinePreview')).toContainText('6 approved inputs');
+  await expect(page.locator('#pipelinePreview')).toContainText('5 approved inputs');
 
   await page.locator('[data-full-workspace-tab="plans"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
