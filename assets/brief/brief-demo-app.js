@@ -1,6 +1,25 @@
 (() => {
   'use strict';
 
+  const THEME_STORAGE_KEY = 'personal_os_brief_theme_v2';
+
+  function readInitialTheme() {
+    try {
+      const urlTheme = new URL(window.location.href).searchParams.get('theme');
+      if (urlTheme === 'light' || urlTheme === 'dark') return urlTheme;
+      const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      return storedTheme === 'dark' ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
+  }
+
+  const initialTheme = readInitialTheme();
+  document.documentElement.dataset.theme = initialTheme;
+  document.documentElement.style.colorScheme = initialTheme;
+  const initialThemeMeta = document.querySelector('meta[name="theme-color"]');
+  if (initialThemeMeta) initialThemeMeta.content = initialTheme === 'dark' ? '#05070b' : '#edf3f8';
+
   const data = window.BRIEF_DEMO_DATA;
   if (!data?.scenarios) return;
 
@@ -15,7 +34,7 @@
     scenarioId: data.meta.defaultScenario,
     view: 'today',
     tab: '',
-    theme: 'dark'
+    theme: initialTheme
   };
 
   function escapeHtml(value) {
@@ -284,15 +303,16 @@
   }
 
   function setTheme(theme, persist = true) {
-    state.theme = theme === 'light' ? 'light' : 'dark';
+    state.theme = theme === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.theme = state.theme;
+    document.documentElement.style.colorScheme = state.theme;
     const button = $('#themeButton');
     button?.setAttribute('aria-pressed', String(state.theme === 'dark'));
     button?.setAttribute('aria-label', state.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
     const themeMeta = document.querySelector('meta[name="theme-color"]');
     if (themeMeta) themeMeta.content = state.theme === 'dark' ? '#05070b' : '#edf3f8';
     if (persist) {
-      try { localStorage.setItem('briefNextTheme', state.theme); } catch {}
+      try { localStorage.setItem(THEME_STORAGE_KEY, state.theme); } catch {}
     }
   }
 
@@ -382,11 +402,7 @@
     state.view = urlState.view;
     state.tab = normalizeTab(new URL(window.location.href).searchParams.get('tab') || '');
 
-    try {
-      state.theme = localStorage.getItem('briefNextTheme') || 'dark';
-    } catch {
-      state.theme = 'dark';
-    }
+    try { localStorage.removeItem('briefNextTheme'); } catch {}
 
     setTheme(state.theme, false);
     setText('#todayLabel', formatDate());
