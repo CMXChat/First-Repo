@@ -1,0 +1,462 @@
+from __future__ import annotations
+
+import asyncio
+import json
+import time
+from collections import OrderedDict
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from ipaddress import ip_address, ip_network
+from typing import Any, Awaitable, Callable
+from urllib.parse import urlencode
+
+import httpx
+
+from ..config import Settings
+from .enrichment import (
+    EnrichmentBlockedTarget,
+    EnrichmentResponseTooLarge,
+    EnrichmentUpstreamError,
+    EnrichmentValidationError,
+)
+
+RIPESTAT_BASE = "https://stat.ripe.net/data"
+SOURCE_APP = "cmx-restricted-node"
+CACHE_MAX_ENTRIES = 512
+
+
+@dataclass(slots=True)
+class RoutingCacheEntry:
+    expires_at: float
+    value: dict[str, Any]
+
+
+class RoutingService:
+    """Bounded RIPEstat routing and RPKI adapters with fixed provider endpoints."""
+
+    def __init__(self, client: httpx.AsyncClient, settings: Settings) -> None:
+        self.client = client
+        self.settings = settings
+        self._cache: OrderedDict[tuple[str, str], RoutingCacheEntry] = OrderedDict()
+        self._inflight: dict[tuple[str, str], asyncio.Task[dict[str, Any]]] = {}
+        self._lock = asyncio.Lock()
+
+    async def origin(self, resource: str) -> tuple[dict[str, Any], bool]:
+        normalized, resource_type = normalize_network_resource(resource, allow_ip=True, allow_prefix=True)
+        adapter = "network_info" if resource_type == "ip" else "prefix_overview"
+        endpoint = "network-info" if resource_type == "ip" else "prefix-overview"
+        return await self._cached(
+            ("origin", normalized),
+            lambda: self._collect_origin(endpoint, adapter, normalized, resource_type),
+        )
+
+    async def announced_prefixes(self, asn: str) -> tuple[dict[str, Any], bool]:
+        normalized = normalize_asn(asn)
+        return await self._cached(
+            ("announced_prefixes", normalized),
+            lambda: self._collect_announced_prefixes(normalized),
+        )
+
+    async def visibility(self, resource: str) -> tuple[dict[str, Any], bool]:
+        normalized, resource_type = normalize_network_resource(resource, allow_ip=True, allow_prefix=True)
+        return await self._cached(
+            ("visibility", normalized),
+            lambda: self._collect_visibility(normalized, resource_type),
+        )
+
+    async def rpki(self, prefix: str, asn: str) -> tuple[dict[str, Any], bool]:
+        normalized_prefix, resource_type = normalize_network_resource(prefix, allow_ip=False, allow_prefix=True)
+        if resource_type != "prefix":
+            raise EnrichmentValidationError("RPKI validation requires a public IP prefix")
+        normalized_asn = normalize_asn(asn)
+        return await self._cached(
+            ("rpki", f"{normalized_prefix}:{normalized_asn}"),
+            lambda: self._collect_rpki(normalized_prefix, normalized_asn),
+        )
+
+    async def _cached(
+        self,
+        key: tuple[str, str],
+        producer: Callable[[], Awaitable[dict[str, Any]]],
+    ) -> tuple[dict[str, Any], bool]:
+        now = time.monotonic()
+        async with self._lock:
+            self._prune(now)
+            cached = self._cache.get(key)
+            if cached is not None:
+                self._cache.move_to_end(key)
+                return cached.value, True
+            task = self._inflight.get(key)
+            if task is None:
+                task = asyncio.create_task(
+                    asyncio.wait_for(
+                        producer(),
+                        timeout=self.settings.enrichment_timeout_seconds,
+                    )
+                )
+                self._inflight[key] = task
+                task.add_done_callback(
+                    lambda completed, cache_key=key: self._discard_completed_inflight(cache_key, completed)
+                )
+
+        try:
+            value = await asyncio.shield(task)
+        finally:
+            if task.done():
+                self._discard_completed_inflight(key, task)
+
+        if self.settings.enrichment_cache_ttl_seconds > 0:
+            async with self._lock:
+                self._prune(time.monotonic())
+                existing = self._cache.get(key)
+                if existing is not None:
+                    self._cache.move_to_end(key)
+                    return existing.value, True
+                self._cache[key] = RoutingCacheEntry(
+                    expires_at=time.monotonic() + self.settings.enrichment_cache_ttl_seconds,
+                    value=value,
+                )
+                self._cache.move_to_end(key)
+                while len(self._cache) > CACHE_MAX_ENTRIES:
+                    self._cache.popitem(last=False)
+        return value, False
+
+    def _discard_completed_inflight(
+        self,
+        key: tuple[str, str],
+        task: asyncio.Task[dict[str, Any]],
+    ) -> None:
+        if self._inflight.get(key) is task and task.done():
+            self._inflight.pop(key, None)
+
+    def _prune(self, now: float) -> None:
+        expired = [key for key, entry in self._cache.items() if entry.expires_at <= now]
+        for key in expired:
+            self._cache.pop(key, None)
+
+    async def _collect_origin(
+        self,
+        endpoint: str,
+        adapter: str,
+        resource: str,
+        resource_type: str,
+    ) -> dict[str, Any]:
+        source_url = ripestat_url(endpoint, resource=resource)
+        payload = await self._fetch_data(source_url)
+        if adapter == "network_info":
+            prefix = safe_public_prefix(payload.get("prefix"))
+            asns = normalize_asn_list(payload.get("asns"))
+            result = {
+                "resource": resource,
+                "resource_type": resource_type,
+                "matched_prefix": prefix,
+                "origin_asns": asns,
+                "routed": bool(prefix and asns),
+            }
+        else:
+            asns = normalize_asn_objects(payload.get("asns"))
+            result = {
+                "resource": safe_public_prefix(payload.get("resource")) or resource,
+                "resource_type": resource_type,
+                "announced": bool(payload.get("announced")),
+                "origin_asns": asns,
+                "is_less_specific": bool(payload.get("is_less_specific")),
+                "related_prefixes": normalize_prefix_list(payload.get("related_prefixes")),
+                "actual_related_count": safe_count(payload.get("actual_num_related"), 1_000_000),
+                "filtered_count": safe_count(payload.get("num_filtered_out"), 1_000_000),
+                "query_time": safe_text(payload.get("query_time"), 100),
+            }
+        return routing_envelope(adapter, source_url, resource, result)
+
+    async def _collect_announced_prefixes(self, asn: str) -> dict[str, Any]:
+        source_url = ripestat_url("announced-prefixes", resource=f"AS{asn}")
+        payload = await self._fetch_data(source_url)
+        provider_records = as_list(payload.get("prefixes"))
+        records: list[dict[str, Any]] = []
+        for item in provider_records[: self.settings.enrichment_max_records]:
+            if not isinstance(item, dict):
+                continue
+            prefix = safe_public_prefix(item.get("prefix"))
+            if not prefix:
+                continue
+            timelines = []
+            for timeline in as_list(item.get("timelines"))[:10]:
+                if not isinstance(timeline, dict):
+                    continue
+                timelines.append({
+                    "start": safe_text(timeline.get("starttime"), 100),
+                    "end": safe_text(timeline.get("endtime"), 100),
+                })
+            records.append({"prefix": prefix, "timelines": timelines})
+        result = {
+            "asn": asn,
+            "prefixes": records,
+            "returned_records": len(records),
+            "provider_record_count": len(provider_records),
+            "query_start": safe_text(payload.get("query_starttime"), 100),
+            "query_end": safe_text(payload.get("query_endtime"), 100),
+            "earliest_time": safe_text(payload.get("earliest_time"), 100),
+            "latest_time": safe_text(payload.get("latest_time"), 100),
+            "truncated": len(provider_records) > len(records),
+        }
+        return routing_envelope("announced_prefixes", source_url, f"AS{asn}", result)
+
+    async def _collect_visibility(self, resource: str, resource_type: str) -> dict[str, Any]:
+        source_url = ripestat_url("looking-glass", resource=resource, look_back_limit="86400")
+        payload = await self._fetch_data(source_url)
+        collectors: list[dict[str, Any]] = []
+        peer_budget = self.settings.enrichment_max_records
+        provider_peer_count = 0
+        for collector in as_list(payload.get("rrcs"))[:20]:
+            if not isinstance(collector, dict):
+                continue
+            provider_peers = as_list(collector.get("peers"))
+            provider_peer_count += len(provider_peers)
+            if peer_budget <= 0:
+                continue
+            peers = []
+            for peer in provider_peers:
+                if not isinstance(peer, dict) or peer_budget <= 0:
+                    break
+                prefix = safe_public_prefix(peer.get("prefix"))
+                origin_asn = strict_identifier_int(
+                    peer.get("asn_origin") if peer.get("asn_origin") is not None else peer.get("asn_orgin"),
+                    4_294_967_295,
+                )
+                peers.append({
+                    "peer": safe_public_ip(peer.get("peer")),
+                    "prefix": prefix,
+                    "origin_asn": origin_asn,
+                    "origin_type": safe_text(peer.get("origin"), 40),
+                    "as_path": normalize_as_path(peer.get("as_path")),
+                    "last_updated": safe_text(peer.get("last_updated"), 100),
+                    "latest_time": safe_text(peer.get("latest_time") or peer.get("lastest_time"), 100),
+                })
+                peer_budget -= 1
+            collectors.append({
+                "rrc": safe_text(collector.get("rrc"), 40),
+                "location": safe_text(collector.get("location"), 200),
+                "peers": peers,
+            })
+        returned_peer_count = sum(len(item["peers"]) for item in collectors)
+        result = {
+            "resource": resource,
+            "resource_type": resource_type,
+            "latest_time": safe_text(payload.get("latest_time"), 100),
+            "collectors": collectors,
+            "collector_count": len(collectors),
+            "peer_records": returned_peer_count,
+            "provider_peer_count": provider_peer_count,
+            "truncated": provider_peer_count > returned_peer_count,
+        }
+        return routing_envelope("route_visibility", source_url, resource, result)
+
+    async def _collect_rpki(self, prefix: str, asn: str) -> dict[str, Any]:
+        source_url = ripestat_url("rpki-validation", resource=asn, prefix=prefix)
+        payload = await self._fetch_data(source_url)
+        provider_status = safe_text(payload.get("status"), 80).lower()
+        state_map = {
+            "valid": "valid",
+            "invalid_asn": "invalid",
+            "invalid_length": "invalid",
+            "unknown": "not_found",
+        }
+        provider_asn = normalize_asn_or_default(payload.get("resource"), asn)
+        result = {
+            "prefix": safe_public_prefix(payload.get("prefix")) or prefix,
+            "asn": provider_asn,
+            "state": state_map.get(provider_status, "unavailable"),
+            "provider_status": provider_status or "unavailable",
+            "description": safe_text(payload.get("description"), 2000),
+        }
+        return routing_envelope("rpki_validation", source_url, f"{prefix} AS{asn}", result)
+
+    async def _fetch_data(self, source_url: str) -> dict[str, Any]:
+        try:
+            async with self.client.stream(
+                "GET",
+                source_url,
+                timeout=self.settings.enrichment_timeout_seconds,
+                headers={"accept": "application/json"},
+            ) as response:
+                if 300 <= response.status_code < 400:
+                    raise EnrichmentUpstreamError("RIPEstat redirect was refused")
+                if response.status_code != 200:
+                    raise EnrichmentUpstreamError(f"RIPEstat returned HTTP {response.status_code}")
+                body = bytearray()
+                async for chunk in response.aiter_bytes():
+                    body.extend(chunk)
+                    if len(body) > self.settings.enrichment_max_response_bytes:
+                        raise EnrichmentResponseTooLarge("RIPEstat response exceeded the configured size limit")
+        except httpx.TimeoutException as exc:
+            raise TimeoutError("RIPEstat request timed out") from exc
+        except httpx.HTTPError as exc:
+            raise EnrichmentUpstreamError("RIPEstat request failed") from exc
+
+        try:
+            payload = json.loads(body)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise EnrichmentUpstreamError("RIPEstat returned invalid JSON") from exc
+        if not isinstance(payload, dict):
+            raise EnrichmentUpstreamError("RIPEstat returned an unexpected response")
+        if payload.get("status") != "ok" or not isinstance(payload.get("data"), dict):
+            messages = as_list(payload.get("messages"))
+            message = safe_text(payload.get("message"), 500)
+            if not message and messages:
+                message = safe_text(messages[0], 500)
+            raise EnrichmentUpstreamError(message or "RIPEstat reported an unavailable result")
+        return payload["data"]
+
+
+def normalize_network_resource(
+    value: Any,
+    *,
+    allow_ip: bool,
+    allow_prefix: bool,
+) -> tuple[str, str]:
+    text = safe_text(value, 200)
+    if not text:
+        raise EnrichmentValidationError("Enter a public IP address or prefix")
+    if "/" in text:
+        if not allow_prefix:
+            raise EnrichmentValidationError("This routing lookup does not accept prefixes")
+        try:
+            network = ip_network(text, strict=False)
+        except ValueError as exc:
+            raise EnrichmentValidationError("Enter a valid IP prefix") from exc
+        if network.prefixlen == 0 or not network.is_global:
+            raise EnrichmentBlockedTarget("Routing lookups permit public global prefixes only")
+        return str(network), "prefix"
+    if not allow_ip:
+        raise EnrichmentValidationError("Enter a public IP prefix")
+    try:
+        address = ip_address(text)
+    except ValueError as exc:
+        raise EnrichmentValidationError("Enter a valid public IP address") from exc
+    if not address.is_global:
+        raise EnrichmentBlockedTarget("Routing lookups permit public global IP addresses only")
+    return str(address), "ip"
+
+
+def normalize_asn(value: Any) -> str:
+    text = safe_text(value, 40).upper()
+    if text.startswith("AS"):
+        text = text[2:]
+    if not text.isdigit():
+        raise EnrichmentValidationError("Enter an ASN such as AS13335")
+    number = int(text)
+    if number < 1 or number > 4_294_967_295:
+        raise EnrichmentValidationError("ASN is outside the supported public range")
+    return str(number)
+
+
+def normalize_asn_or_default(value: Any, fallback: str) -> str:
+    try:
+        return normalize_asn(value)
+    except EnrichmentValidationError:
+        return fallback
+
+
+def ripestat_url(endpoint: str, **params: str) -> str:
+    query = urlencode({**params, "sourceapp": SOURCE_APP})
+    return f"{RIPESTAT_BASE}/{endpoint}/data.json?{query}"
+
+
+def routing_envelope(adapter: str, source_url: str, target: str, result: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "adapter": adapter,
+        "provider": "RIPEstat Data API",
+        "source_url": source_url,
+        "collected_at": datetime.now(UTC).isoformat(),
+        "target": target,
+        "result": result,
+        "limitation": "Routing observations describe public control-plane visibility and RPKI state. They do not establish ownership, control, attribution, compromise, or malicious activity.",
+    }
+
+
+def normalize_asn_list(value: Any) -> list[int]:
+    output = []
+    for item in as_list(value)[:100]:
+        number = strict_identifier_int(str(item).upper().removeprefix("AS"), 4_294_967_295)
+        if number and number not in output:
+            output.append(number)
+    return output
+
+
+def normalize_asn_objects(value: Any) -> list[dict[str, Any]]:
+    output = []
+    for item in as_list(value)[:100]:
+        if isinstance(item, dict):
+            asn = strict_identifier_int(item.get("asn"), 4_294_967_295)
+            if asn:
+                output.append({"asn": asn, "holder": safe_text(item.get("holder"), 500)})
+        else:
+            asn = strict_identifier_int(item, 4_294_967_295)
+            if asn:
+                output.append({"asn": asn, "holder": ""})
+    return output
+
+
+def normalize_as_path(value: Any) -> list[int]:
+    output = []
+    for item in as_list(value)[:100]:
+        number = strict_identifier_int(item, 4_294_967_295)
+        if number:
+            output.append(number)
+    return output
+
+
+def normalize_prefix_list(value: Any) -> list[str]:
+    output = []
+    for item in as_list(value)[:100]:
+        candidate = item.get("prefix") if isinstance(item, dict) else item
+        prefix = safe_public_prefix(candidate)
+        if prefix and prefix not in output:
+            output.append(prefix)
+    return output
+
+
+def safe_public_prefix(value: Any) -> str:
+    text = safe_text(value, 200)
+    if not text:
+        return ""
+    try:
+        network = ip_network(text, strict=False)
+    except ValueError:
+        return ""
+    return str(network) if network.prefixlen and network.is_global else ""
+
+
+def safe_public_ip(value: Any) -> str:
+    text = safe_text(value, 100)
+    if not text:
+        return ""
+    try:
+        address = ip_address(text)
+    except ValueError:
+        return ""
+    return str(address) if address.is_global else ""
+
+
+def strict_identifier_int(value: Any, maximum: int) -> int:
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return number if 1 <= number <= maximum else 0
+
+
+def safe_count(value: Any, maximum: int) -> int:
+    try:
+        number = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return max(0, min(maximum, number))
+
+
+def safe_text(value: Any, limit: int) -> str:
+    return str(value or "").strip()[:limit]
+
+
+def as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []

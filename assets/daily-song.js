@@ -11,7 +11,10 @@ window.CMX_DAILY_SONG = {
   "directLine": "Shared: one good reaction and one completed action can change the whole read of a day.",
   "spotifyUrl": "https://open.spotify.com/track/63EE2SUGzs6z6CHHLFbHYo",
   "spotifyLinkLabel": "play Walking On Sunshine on Spotify",
-  "previewUrl": "",
+  "previewUrl": "https://audio-ssl.itunes.apple.com/apple-assets-us-std-000001/AudioPreview71/v4/d8/11/bc/d811bc10-63dd-2096-e758-ffaffd169674/mzaf_8841194066911631635.plus.aac.p.m4a",
+  "previewProvider": "iTunes",
+  "previewSourceUrl": "https://music.apple.com/us/song/walking-on-sunshine/724739482",
+  "previewAttribution": "Preview provided courtesy of iTunes.",
   "selectedFor": "2026-08-04",
   "published": "today's shared pick",
   "recommendations": [

@@ -17,12 +17,16 @@ for (const [name, source] of Object.entries({ bridge, finalize, vision })) {
   new vm.Script(source, { filename: `${name}.js` });
 }
 
-assert.match(index, /brief-terminal-bridge\.js\?v=20260803-\d+/);
-assert.match(bridge, /briefFinalizeStyle/);
-assert.match(bridge, /briefVisionStyle/);
-assert.match(bridge, /briefFinalizeScript/);
-assert.match(bridge, /briefVisionScript/);
-assert.match(bridge, /script\.addEventListener\('error', finish/);
+assert.match(index, /brief-terminal-bridge\.js\?v=20260804-\d+/);
+assert.match(bridge, /briefThemeIntegrityStyle/);
+assert.match(bridge, /briefSystemStyle/);
+assert.match(bridge, /briefSystemFixStyle/);
+assert.match(bridge, /briefThemeIntegrityScript/);
+assert.match(bridge, /briefSystemScript/);
+assert.doesNotMatch(bridge, /briefFinalizeStyle/);
+assert.doesNotMatch(bridge, /briefVisionStyle/);
+assert.doesNotMatch(bridge, /briefFinalizeScript/);
+assert.doesNotMatch(bridge, /briefVisionScript/);
 
 assert.match(finalize, /data-open-full-workspace/);
 assert.match(finalize, /removeAttribute\('data-open-full-map'\)/);

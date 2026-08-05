@@ -1,0 +1,60 @@
+name: Case lifecycle source policy
+
+on:
+  pull_request:
+    paths:
+      - 'cases/lifecycle/**'
+      - 'assets/case-lifecycle.*'
+      - 'backend/app/platform.py'
+      - 'backend/app/hardened.py'
+      - 'backend/app/write_security.py'
+      - 'backend/compose.platform.yml'
+      - 'backend/tests/test_platform.py'
+      - 'backend/tests/test_lifecycle.py'
+      - 'backend/tests/test_write_security.py'
+      - 'scripts/check-case-lifecycle.mjs'
+      - '.github/workflows/lifecycle-source.yml'
+  push:
+    branches:
+      - main
+      - 'agent/**'
+    paths:
+      - 'cases/lifecycle/**'
+      - 'assets/case-lifecycle.*'
+      - 'backend/app/platform.py'
+      - 'backend/app/hardened.py'
+      - 'backend/app/write_security.py'
+      - 'backend/compose.platform.yml'
+      - 'backend/tests/test_platform.py'
+      - 'backend/tests/test_lifecycle.py'
+      - 'backend/tests/test_write_security.py'
+      - 'scripts/check-case-lifecycle.mjs'
+      - '.github/workflows/lifecycle-source.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lifecycle-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate lifecycle source
+        run: node scripts/check-case-lifecycle.mjs
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Compile platform assembly
+        working-directory: backend
+        run: python -m compileall -q app/platform.py app/hardened.py app/write_security.py

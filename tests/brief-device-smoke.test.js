@@ -116,6 +116,13 @@ class ElementMock extends EventTargetMock {
   }
 }
 
+class MutationObserverMock {
+  constructor(callback) { this.callback = callback; }
+  observe() {}
+  disconnect() {}
+  takeRecords() { return []; }
+}
+
 function makeEvent(type) {
   return {
     type,
@@ -177,17 +184,28 @@ const scrollCalls = [];
 const windowMock = new EventTargetMock();
 windowMock.window = windowMock;
 windowMock.document = documentMock;
+windowMock.location = { hash: '', pathname: '/brief/', search: '' };
+windowMock.history = { state: null, replaceState() {} };
 windowMock.setTimeout = setTimeout;
+windowMock.requestAnimationFrame = callback => {
+  callback(Date.now());
+  return 1;
+};
+windowMock.cancelAnimationFrame = () => {};
 windowMock.scrollTo = options => scrollCalls.push(options);
 windowMock.CustomEvent = class CustomEventMock {
   constructor(type, options = {}) { this.type = type; this.detail = options.detail; }
 };
+windowMock.MutationObserver = MutationObserverMock;
 
 const context = {
   window: windowMock,
   document: documentMock,
   sessionStorage: { setItem() {} },
   CustomEvent: windowMock.CustomEvent,
+  MutationObserver: MutationObserverMock,
+  requestAnimationFrame: windowMock.requestAnimationFrame,
+  cancelAnimationFrame: windowMock.cancelAnimationFrame,
   setTimeout,
   console
 };

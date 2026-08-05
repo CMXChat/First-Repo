@@ -16,6 +16,7 @@ LEGACY_KEYS.forEach((key) => { localStorage.removeItem(key); sessionStorage.remo
 
 const ROUTES = {
   directory: { path: '/directory', label: 'Operations Directory' },
+  cases: { path: '/cases', label: 'Persistent Cases' },
   osint: { path: '/osint', label: 'OSINT console' },
   phone: { path: '/phone', label: 'Phone intelligence' },
   metadata: { path: '/metadata', label: 'Metadata extractor' },
@@ -42,6 +43,26 @@ function readJson(storage, key, fallback) {
 
 function writeJson(storage, key, value) {
   storage.setItem(key, JSON.stringify(value));
+}
+
+function approvedReturnPath() {
+  const raw = new URLSearchParams(window.location.search).get('return');
+  if (!raw) return null;
+
+  try {
+    const url = new URL(raw, window.location.origin);
+    if (url.origin !== window.location.origin) return null;
+
+    const normalizedPath = url.pathname === '/'
+      ? '/'
+      : url.pathname.replace(/\/index\.html$/i, '').replace(/\/+$/, '');
+    const approvedPaths = new Set(Object.values(ROUTES).map((route) => route.path));
+    if (!approvedPaths.has(normalizedPath)) return null;
+
+    return `${normalizedPath}${url.search}${url.hash}`;
+  } catch {
+    return null;
+  }
 }
 
 function toBase64(bytes) {
@@ -179,6 +200,7 @@ function launch() {
   user = ADMIN_USERNAME;
   history = [];
   historyIndex = 0;
+  writeJson(sessionStorage, KEY.session, { username: ADMIN_USERNAME, at: Date.now() });
   $('#gate').classList.add('hidden');
   $('#app').classList.remove('hidden');
   $('#promptUser').textContent = ADMIN_USERNAME;
@@ -190,6 +212,14 @@ function launch() {
   line('Type "help" for available systems.', 'dim');
   line('');
   resetIdleTimer();
+
+  const returnPath = approvedReturnPath();
+  if (returnPath) {
+    line(`Opening approved route: ${returnPath}`, 'info');
+    setTimeout(() => window.location.replace(returnPath), 180);
+    return;
+  }
+
   setTimeout(() => $('#commandInput').focus(), 80);
 }
 

@@ -34,3 +34,86 @@ body.brief-system-ready[data-brief-system-mode='workspace'][data-brief-system-pr
 body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace[hidden] {
   display: block !important;
 }
+
+/* Full View must preserve the signal rail's grid contract. The broad flex rule in
+   brief-system.css compressed the ticker into a narrow column on phones. */
+body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace .brief-signal-rail {
+  display: grid !important;
+  min-width: 0;
+  width: 100%;
+}
+
+body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace .brief-signal-window {
+  min-width: 0;
+  width: 100%;
+}
+
+body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace .brief-signal-strip {
+  flex-wrap: nowrap;
+  min-width: max-content;
+}
+
+body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace .brief-signal-strip span {
+  flex: 0 0 auto;
+  writing-mode: horizontal-tb !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+}
+
+.music-preview-attribution {
+  margin: 8px 0 0;
+  color: var(--muted, #9ca7b5);
+  font-size: .72rem;
+  line-height: 1.45;
+}
+
+.music-preview-attribution a {
+  color: #78baff;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  body.brief-system-ready[data-brief-system-mode='full'] .brief-system-shell {
+    position: relative;
+    top: auto;
+    z-index: 300;
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+
+  body.brief-system-ready[data-brief-system-mode='full'] .brief-system-full-bar {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 9px;
+    border-radius: 14px;
+  }
+
+  body.brief-system-ready[data-brief-system-mode='full'] .brief-system-full-bar nav {
+    display: none !important;
+  }
+
+  body.brief-system-ready[data-brief-system-mode='full'] .brief-system-full-bar > div strong {
+    display: none;
+  }
+
+  body.brief-system-ready[data-brief-system-mode='full'] .brief-system-full-bar > button {
+    width: auto;
+    min-height: 38px;
+    margin: 0;
+    padding: 7px 10px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 620px) {
+  body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace .brief-signal-rail {
+    grid-template-columns: 1fr !important;
+    border-radius: 20px;
+  }
+
+  body.brief-system-ready[data-brief-system-mode='full'] #briefWorkspace .brief-signal-rail > button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,95 @@
+name: Platform staging acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Protected platform origin, for example https://db-staging.cmxchat.com
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  protected-platform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: staging
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate inputs and staging secrets
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          case "$BASE_URL" in
+            https://*) ;;
+            *) echo "base_url must use HTTPS" >&2; exit 1 ;;
+          esac
+          test -n "$CLIENT_ID"
+          test -n "$CLIENT_SECRET"
+
+      - name: Verify authenticated identity and readiness
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          for path in /api/whoami /api/health/ready /cases /cases/lifecycle; do
+            curl --fail --silent --show-error \
+              -H "CF-Access-Client-Id: $CLIENT_ID" \
+              -H "CF-Access-Client-Secret: $CLIENT_SECRET" \
+              -H "Accept: application/json,text/html" \
+              "$BASE_URL$path" >/dev/null
+          done
+
+      - name: Verify hardened cross-site write rejection
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          status="$(curl --silent --show-error --output /tmp/cross-site.json --write-out '%{http_code}' \
+            -X POST \
+            -H "CF-Access-Client-Id: $CLIENT_ID" \
+            -H "CF-Access-Client-Secret: $CLIENT_SECRET" \
+            -H 'Sec-Fetch-Site: cross-site' \
+            -H 'Origin: https://attacker.invalid' \
+            -H 'Content-Type: application/json' \
+            --data '{"case_type":"security_test","title":"must not be created","authorization_basis":"rejected request"}' \
+            "$BASE_URL/api/cases")"
+          cat /tmp/cross-site.json
+          test "$status" = "403"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Chromium test dependencies
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Run lifecycle acceptance on desktop and mobile
+        env:
+          CMX_BROWSER_BASE_URL: ${{ inputs.base_url }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: npx playwright test --config=playwright.platform-staging.config.mjs
+
+      - name: Upload staging failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-staging-failure-artifacts
+          path: |
+            playwright-platform-staging-report
+            test-results
+            /tmp/cross-site.json
+          if-no-files-found: ignore
+          retention-days: 7
