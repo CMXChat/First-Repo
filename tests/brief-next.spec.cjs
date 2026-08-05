@@ -68,7 +68,7 @@ test('mobile demo navigates without a forced long document', async ({ page }, te
   await page.goto('/brief-next/', { waitUntil: 'domcontentloaded' });
 
   const entryHeadingSize = await page.locator('#entryTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
-  expect(entryHeadingSize).toBeLessThanOrEqual(44);
+  expect(entryHeadingSize).toBeLessThanOrEqual(36);
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
 
   await page.locator('[data-entry-scenario="relationship"]').click();
@@ -77,7 +77,7 @@ test('mobile demo navigates without a forced long document', async ({ page }, te
   await expect(page.locator('#mobileNav button')).toHaveCount(4);
 
   const heroHeadingSize = await page.locator('#heroTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
-  expect(heroHeadingSize).toBeLessThanOrEqual(44);
+  expect(heroHeadingSize).toBeLessThanOrEqual(36);
 
   await page.locator('#mobileNav [data-primary-view="workspace"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
