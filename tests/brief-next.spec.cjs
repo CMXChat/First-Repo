@@ -117,7 +117,7 @@ test('desktop demo keeps weather, stats, navigation and opt-in soundtrack playba
   await expect(page.locator('#spotifyFrame')).toHaveCount(1);
   await expect(page.locator('#spotifyFrame')).toHaveAttribute('src', /open\.spotify\.com\/embed\/track\/1eyzqe2QqGZUmfcPZtrIyt/);
   await expect(page.locator('#previewButton')).toHaveText('Play Spotify soundtrack');
-  await page.locator('[data-close-media]').first().click();
+  await page.locator('.media-heading [data-close-media]').click();
   await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
   await expect(page.locator('#mediaDrawer')).toHaveAttribute('inert', '');
   await expectNoVisibleEllipses(page);
