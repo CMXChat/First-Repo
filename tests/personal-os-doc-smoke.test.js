@@ -9,8 +9,10 @@ const htmlPath = path.join(root, 'doc/index.html');
 const cssPath = path.join(root, 'assets/personal-os-doc.css');
 const editorialCssPath = path.join(root, 'assets/personal-os-doc-editorial.css');
 const jsPath = path.join(root, 'assets/personal-os-doc.js');
+const gateJsPath = path.join(root, 'assets/gates/cmx-gate-black-prompt.js');
+const routesPath = path.join(root, 'assets/cmx-routes.json');
 
-for (const filePath of [htmlPath, cssPath, editorialCssPath, jsPath]) {
+for (const filePath of [htmlPath, cssPath, editorialCssPath, jsPath, gateJsPath, routesPath]) {
   assert.ok(fs.existsSync(filePath), `Missing required Personal OS document file: ${filePath}`);
 }
 
@@ -18,6 +20,8 @@ const html = fs.readFileSync(htmlPath, 'utf8');
 const css = fs.readFileSync(cssPath, 'utf8');
 const editorialCss = fs.readFileSync(editorialCssPath, 'utf8');
 const js = fs.readFileSync(jsPath, 'utf8');
+const gateJs = fs.readFileSync(gateJsPath, 'utf8');
+const routes = JSON.parse(fs.readFileSync(routesPath, 'utf8'));
 
 assert.match(html, /data-cmx-gate="black-prompt"/);
 assert.match(html, /data-cmx-gate-id="personal-os-document"/);
@@ -25,6 +29,20 @@ assert.match(html, /data-cmx-gated-content hidden/);
 assert.match(html, /class="cmx-black-prompt-locked"/);
 assert.match(html, /meta name="referrer" content="no-referrer"/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
+
+assert.match(gateJs, /PUBLIC_GATE_BYPASS_IDS/);
+assert.match(gateJs, /personal-os-document/);
+assert.match(gateJs, /function revealPublicRoute\(/);
+assert.match(gateJs, /PUBLIC_GATE_BYPASS_IDS\.has\(root\.dataset\.cmxGateId\)/);
+assert.ok(
+  gateJs.indexOf('PUBLIC_GATE_BYPASS_IDS.has(root.dataset.cmxGateId)') < gateJs.indexOf('function buildGate()'),
+  'The public document bypass must return before the password prompt is built.'
+);
+
+const docRoute = routes.routes.find((route) => route.path === '/doc/');
+assert.ok(docRoute, '/doc/ must remain registered.');
+assert.equal(docRoute.gated, false, '/doc/ must be public and must not require a password.');
+assert.match(docRoute.description, /Public noindex product narrative/);
 
 for (const id of [
   'overview',
