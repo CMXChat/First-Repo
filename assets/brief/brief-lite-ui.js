@@ -1,7 +1,13 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-8';
+  const VERSION = '20260804-9';
+  const LEGACY_VALIDATION_PARAMS = [
+    'brief-test',
+    'browser-test',
+    'finalization-test',
+    'theme-sweep'
+  ];
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -19,14 +25,21 @@
     try { return new URL(window.location.href).searchParams; } catch { return new URLSearchParams(); }
   }
 
-  function shouldLoadPersonalOs() {
+  function shouldLoadSystem() {
     const query = params();
     if (query.has('personal-os-test')) return true;
-    return !query.has('browser-test') && !query.has('overlay-test');
+    return !LEGACY_VALIDATION_PARAMS.some(key => query.has(key));
+  }
+
+  function shouldLoadPersonalOs() {
+    if (!shouldLoadSystem()) return false;
+    const query = params();
+    if (query.has('personal-os-test')) return true;
+    return !query.has('overlay-test');
   }
 
   function shouldLoadStability() {
-    return !params().has('browser-test');
+    return shouldLoadSystem() && !params().has('browser-test');
   }
 
   function loadStabilityScript() {
@@ -117,6 +130,8 @@
     script.addEventListener('load', loadRepairScript, { once: true });
     document.head.appendChild(script);
   }
+
+  if (!shouldLoadSystem()) return;
 
   ensureStyle('briefSystemStyle', '/assets/brief/brief-system.css');
   ensureStyle('briefSystemFixStyle', '/assets/brief/brief-system-fixes.css');
