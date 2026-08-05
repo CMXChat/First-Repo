@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-2';
+  const VERSION = '20260804-3';
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
