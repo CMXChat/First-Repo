@@ -2,8 +2,8 @@
   'use strict';
 
   const SPOTIFY_IFRAME_API_SRC = 'https://open.spotify.com/embed/iframe-api/v1';
-  const TRACK_SETTLE_DELAY_MS = 650;
-  const API_TIMEOUT_MS = 9000;
+  const API_TIMEOUT_MS = 4000;
+  const TRACK_SETTLE_DELAY_MS = 350;
   const PLAYBACK_CONFIRM_MS = 1800;
 
   const state = {
@@ -13,13 +13,14 @@
     trackReady: false,
     loadedTrackId: '',
     playing: false,
-    entryPlaybackRequested: false,
     apiRequested: false,
     apiFailed: false,
-    trackReadyTimer: 0,
+    fallbackMode: false,
     apiTimeoutTimer: 0,
+    trackReadyTimer: 0,
     playbackConfirmTimer: 0,
-    entryObserver: null
+    opener: null,
+    previousBodyOverflow: ''
   };
 
   const $ = selector => document.querySelector(selector);
@@ -51,63 +52,9 @@
     return $('#entrySoundtrack')?.checked === true;
   }
 
-  function entryTrackIsReady(id = selectedEntryScenarioId()) {
-    const selected = scenario(id);
-    return Boolean(
-      selected?.soundtrack?.spotifyTrackId &&
-      state.controllerReady &&
-      state.trackReady &&
-      state.loadedTrackId === selected.soundtrack.spotifyTrackId
-    );
-  }
-
   function setStatus(message) {
     const node = $('#mediaStatus');
     if (node) node.textContent = message;
-  }
-
-  function syncButton() {
-    const button = $('#previewButton');
-    if (!button) return;
-    button.disabled = !state.controllerReady || !state.trackReady;
-    button.setAttribute('aria-pressed', String(state.playing));
-    button.textContent = state.playing
-      ? 'Pause Spotify soundtrack'
-      : state.controllerReady && state.trackReady
-        ? 'Play Spotify soundtrack'
-        : 'Loading Spotify player';
-  }
-
-  function syncEntryButton() {
-    const button = $('#openDemo');
-    const selectedId = selectedEntryScenarioId();
-    const selected = scenario(selectedId);
-    if (!button || !selected) return;
-
-    if (!entryWantsMusic()) {
-      button.disabled = false;
-      button.textContent = `Open ${selected.label} demo`;
-      button.dataset.soundtrackState = 'off';
-      return;
-    }
-
-    if (entryTrackIsReady(selectedId)) {
-      button.disabled = false;
-      button.textContent = `Open ${selected.label} demo`;
-      button.dataset.soundtrackState = 'ready';
-      return;
-    }
-
-    if (state.apiFailed) {
-      button.disabled = false;
-      button.textContent = `Open ${selected.label} demo`;
-      button.dataset.soundtrackState = 'fallback';
-      return;
-    }
-
-    button.disabled = true;
-    button.textContent = `Preparing ${selected.label} soundtrack`;
-    button.dataset.soundtrackState = 'preparing';
   }
 
   function clearTimer(name) {
@@ -116,22 +63,49 @@
     state[name] = 0;
   }
 
-  function markTrackReady(trackId, delay = TRACK_SETTLE_DELAY_MS) {
-    clearTimer('trackReadyTimer');
-    state.trackReady = false;
-    syncButton();
-    syncEntryButton();
+  function syncEntryButton() {
+    const button = $('#openDemo');
+    const selected = scenario(selectedEntryScenarioId());
+    if (!button || !selected) return;
 
-    state.trackReadyTimer = window.setTimeout(() => {
-      if (!state.controllerReady || state.loadedTrackId !== trackId) return;
-      state.trackReady = true;
-      setStatus(`Spotify is ready with ${track()?.title || 'the selected soundtrack'}.`);
-      syncButton();
-      syncEntryButton();
-      document.dispatchEvent(new CustomEvent('briefdemo:mediaready', {
-        detail: { scenarioId: state.scenarioId, trackId }
-      }));
-    }, Math.max(0, delay));
+    button.disabled = false;
+    button.textContent = `Open ${selected.label} demo`;
+    button.dataset.soundtrackState = entryWantsMusic()
+      ? state.controllerReady && state.trackReady
+        ? 'ready'
+        : state.fallbackMode
+          ? 'direct-tap'
+          : 'background'
+      : 'off';
+  }
+
+  function syncButton() {
+    const button = $('#previewButton');
+    if (!button) return;
+
+    button.hidden = state.fallbackMode;
+    if (state.fallbackMode) {
+      button.disabled = true;
+      button.setAttribute('aria-pressed', 'false');
+      button.textContent = 'Use the Spotify player below';
+      return;
+    }
+
+    button.disabled = !state.controllerReady || !state.trackReady;
+    button.setAttribute('aria-pressed', String(state.playing));
+    button.textContent = state.playing
+      ? 'Pause Spotify soundtrack'
+      : state.controllerReady && state.trackReady
+        ? 'Play Spotify soundtrack'
+        : 'Preparing Spotify player';
+  }
+
+  function setDrawerInert(isInert) {
+    const drawer = $('#mediaDrawer');
+    if (!drawer) return;
+    drawer.inert = isInert;
+    if (isInert) drawer.setAttribute('inert', '');
+    else drawer.removeAttribute('inert');
   }
 
   function normalizeSpotifyFrame() {
@@ -146,11 +120,22 @@
   function renderFallbackFrame() {
     const host = $('#spotifyFrame');
     const source = spotifyEmbedUrl();
-    if (!host || !source) return;
+    if (!host || !source) return null;
+
+    state.apiFailed = true;
+    state.fallbackMode = true;
+    state.controllerReady = false;
+    state.trackReady = false;
+    state.playing = false;
+    clearTimer('apiTimeoutTimer');
+    clearTimer('trackReadyTimer');
+    clearTimer('playbackConfirmTimer');
 
     if (host.tagName === 'IFRAME') {
       if (host.getAttribute('src') !== source) host.src = source;
-      return;
+      syncButton();
+      syncEntryButton();
+      return host;
     }
 
     const frame = document.createElement('iframe');
@@ -160,82 +145,95 @@
     frame.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
     frame.src = source;
     host.replaceWith(frame);
+    syncButton();
+    syncEntryButton();
+    return frame;
   }
 
   function failToFallback(message) {
-    state.apiFailed = true;
-    state.controllerReady = false;
-    state.trackReady = false;
-    clearTimer('apiTimeoutTimer');
     renderFallbackFrame();
     setStatus(message);
+  }
+
+  function markTrackReady(trackId, delay = TRACK_SETTLE_DELAY_MS) {
+    clearTimer('trackReadyTimer');
+    state.trackReady = false;
     syncButton();
-    syncEntryButton();
+
+    state.trackReadyTimer = window.setTimeout(() => {
+      if (!state.controllerReady || state.loadedTrackId !== trackId || state.fallbackMode) return;
+      state.trackReady = true;
+      setStatus(`Spotify is ready with ${track()?.title || 'the selected soundtrack'}.`);
+      syncButton();
+      syncEntryButton();
+      document.dispatchEvent(new CustomEvent('briefdemo:mediaready', {
+        detail: { scenarioId: state.scenarioId, trackId }
+      }));
+    }, Math.max(0, delay));
   }
 
   function loadCurrentTrack() {
     const current = track();
-    if (!current?.spotifyTrackId) return;
+    if (!current?.spotifyTrackId || state.fallbackMode) return;
 
     if (state.controllerReady && state.controller && state.loadedTrackId !== current.spotifyTrackId) {
       state.trackReady = false;
       state.controller.loadEntity(spotifyUri());
       state.loadedTrackId = current.spotifyTrackId;
       state.playing = false;
-      setStatus(`Loading ${current.title} before the demo opens.`);
+      setStatus(`Preparing ${current.title}.`);
       markTrackReady(current.spotifyTrackId);
       return;
     }
 
     if (state.controllerReady && state.loadedTrackId === current.spotifyTrackId && !state.trackReady) {
       markTrackReady(current.spotifyTrackId, 0);
-      return;
     }
-
-    if (state.apiFailed) renderFallbackFrame();
-    syncEntryButton();
   }
 
   function schedulePlaybackConfirmation() {
     clearTimer('playbackConfirmTimer');
     state.playbackConfirmTimer = window.setTimeout(() => {
-      if (state.playing || !state.entryPlaybackRequested) return;
-      state.entryPlaybackRequested = false;
-      setStatus('Spotify did not start on this device. Tap the visible Spotify control once.');
-      open();
+      if (state.playing) return;
+      setStatus('Spotify needs one direct tap on this device. Open the soundtrack and tap play in Spotify.');
     }, PLAYBACK_CONFIRM_MS);
   }
 
   function playProvider() {
     const current = track();
+    if (state.fallbackMode) {
+      const frame = renderFallbackFrame();
+      setStatus('Tap play in the Spotify player below.');
+      frame?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      return false;
+    }
+
     if (!state.controllerReady || !state.trackReady || !state.controller || !current) {
-      setStatus('Spotify is still preparing. Wait for the Open demo button to become ready.');
+      setStatus('Spotify is still preparing in the background. The Brief remains available.');
+      installSpotifyApi();
       syncButton();
-      syncEntryButton();
       return false;
     }
 
     try {
-      state.entryPlaybackRequested = true;
-      setStatus(`Starting ${current.title} from the Open demo tap.`);
+      setStatus(`Starting ${current.title}.`);
       state.controller.play();
       schedulePlaybackConfirmation();
       return true;
     } catch {
       state.playing = false;
-      state.entryPlaybackRequested = false;
-      setStatus('The browser blocked Spotify playback. Tap the soundtrack control once.');
+      setStatus('Spotify needs one direct tap on this device. Open the soundtrack and tap play in Spotify.');
       syncButton();
-      queueMicrotask(open);
       return false;
     }
   }
 
   function pause() {
-    if (!state.controllerReady || !state.controller) return;
-    try {
-      state.controller.pause();
-    } catch {}
+    if (state.controllerReady && state.controller) {
+      try {
+        state.controller.pause();
+      } catch {}
+    }
     state.playing = false;
     clearTimer('playbackConfirmTimer');
     syncButton();
@@ -246,6 +244,8 @@
 
     controller.addListener('ready', () => {
       clearTimer('apiTimeoutTimer');
+      if (state.fallbackMode) return;
+
       state.apiFailed = false;
       state.controllerReady = true;
       normalizeSpotifyFrame();
@@ -267,20 +267,16 @@
     controller.addListener('playback_started', event => {
       clearTimer('playbackConfirmTimer');
       state.playing = true;
-      state.entryPlaybackRequested = false;
       setStatus(`Playing ${track()?.title || 'the selected soundtrack'} through Spotify.`);
-      syncButton();
       if (event?.data?.playingURI) state.loadedTrackId = event.data.playingURI.split(':').pop();
+      syncButton();
     });
 
     controller.addListener('playback_update', event => {
       if (typeof event?.data?.isPaused !== 'boolean') return;
       state.playing = !event.data.isPaused;
       if (event?.data?.playingURI) state.loadedTrackId = event.data.playingURI.split(':').pop();
-      if (state.playing) {
-        clearTimer('playbackConfirmTimer');
-        state.entryPlaybackRequested = false;
-      }
+      if (state.playing) clearTimer('playbackConfirmTimer');
       syncButton();
     });
   }
@@ -289,11 +285,19 @@
     const host = $('#spotifyFrame');
     const current = track();
     const uri = spotifyUri();
-    if (!host || host.tagName === 'IFRAME' || !uri || !IFrameAPI?.createController || !current) return;
+    if (
+      state.fallbackMode ||
+      !host ||
+      host.tagName === 'IFRAME' ||
+      !uri ||
+      !IFrameAPI?.createController ||
+      !current
+    ) return;
 
     state.apiFailed = false;
     state.loadedTrackId = current.spotifyTrackId;
     state.trackReady = false;
+
     IFrameAPI.createController(host, {
       uri,
       width: '100%',
@@ -303,7 +307,7 @@
   }
 
   function installSpotifyApi() {
-    if (state.apiRequested) return;
+    if (state.apiRequested || state.fallbackMode) return;
     state.apiRequested = true;
 
     if (window.BRIEF_SPOTIFY_IFRAME_API?.createController) {
@@ -311,20 +315,28 @@
       return;
     }
 
-    window.onSpotifyIframeApiReady = IFrameAPI => createSpotifyController(IFrameAPI);
+    const previousReadyHandler = window.onSpotifyIframeApiReady;
+    window.onSpotifyIframeApiReady = IFrameAPI => {
+      if (typeof previousReadyHandler === 'function') {
+        try {
+          previousReadyHandler(IFrameAPI);
+        } catch {}
+      }
+      createSpotifyController(IFrameAPI);
+    };
 
     const script = document.createElement('script');
     script.src = SPOTIFY_IFRAME_API_SRC;
     script.async = true;
     script.dataset.briefSpotifyApi = 'true';
     script.addEventListener('error', () => {
-      failToFallback('Spotify is available in tap-to-play mode because its playback controller did not load.');
+      failToFallback('Spotify is ready in direct tap mode.');
     }, { once: true });
     document.head.append(script);
 
     state.apiTimeoutTimer = window.setTimeout(() => {
-      if (state.controllerReady) return;
-      failToFallback('Spotify took too long to prepare. The tap-to-play player is ready.');
+      if (state.controllerReady || state.fallbackMode) return;
+      failToFallback('Spotify is ready in direct tap mode.');
     }, API_TIMEOUT_MS);
   }
 
@@ -342,26 +354,34 @@
     if (artist) artist.textContent = currentTrack.artist;
     if (note) note.textContent = currentTrack.note;
 
-    installSpotifyApi();
-    loadCurrentTrack();
-
-    if (!state.controllerReady && !state.apiFailed) {
-      setStatus(`Preparing ${currentTrack.title} before the demo opens.`);
+    if (state.fallbackMode) {
+      renderFallbackFrame();
+      setStatus('Tap play in the Spotify player below.');
+    } else if (state.controllerReady) {
+      loadCurrentTrack();
+    } else {
+      setStatus('Spotify loads only when music is requested.');
     }
+
     syncButton();
     syncEntryButton();
   }
 
   function togglePreview() {
+    if (state.fallbackMode) {
+      playProvider();
+      return;
+    }
+
     if (state.playing) {
       pause();
       return;
     }
+
     playProvider();
   }
 
   function requestEntryPlayback(id, enabled) {
-    state.entryPlaybackRequested = Boolean(enabled);
     setScenario(id);
 
     if (!enabled) {
@@ -369,31 +389,34 @@
       return false;
     }
 
-    if (state.apiFailed) {
-      state.entryPlaybackRequested = false;
-      setStatus('Spotify needs one direct tap on this device.');
-      queueMicrotask(open);
-      return false;
+    installSpotifyApi();
+
+    if (state.controllerReady && state.trackReady) {
+      return playProvider();
     }
 
-    if (!entryTrackIsReady(id)) {
-      state.entryPlaybackRequested = false;
-      setStatus('Spotify is not ready yet. Wait for the entry button to finish preparing.');
-      syncEntryButton();
-      return false;
-    }
-
-    return playProvider();
+    setStatus('Spotify is preparing in the background. The Brief opened without waiting.');
+    return false;
   }
 
   function open() {
     const drawer = $('#mediaDrawer');
     const button = $('#mediaButton');
-    if (!drawer) return;
+    if (!drawer || drawer.classList.contains('is-open')) return;
+
+    state.opener = document.activeElement;
+    state.previousBodyOverflow = document.body.style.overflow;
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
+    setDrawerInert(false);
     button?.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
+
+    if (!state.controllerReady || !state.trackReady) {
+      renderFallbackFrame();
+      setStatus('Tap play in the Spotify player below.');
+    }
+
     drawer.querySelector('[data-close-media]')?.focus({ preventScroll: true });
   }
 
@@ -401,56 +424,49 @@
     const { restoreFocus = true } = options;
     const drawer = $('#mediaDrawer');
     const button = $('#mediaButton');
-    if (!drawer) return;
+    if (!drawer || !drawer.classList.contains('is-open')) return;
+
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
+    setDrawerInert(true);
     button?.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    document.body.style.overflow = state.previousBodyOverflow;
+
     if (restoreFocus && document.body.dataset.entered === 'true') {
-      button?.focus({ preventScroll: true });
+      const focusTarget = state.opener instanceof HTMLElement ? state.opener : button;
+      focusTarget?.focus({ preventScroll: true });
     }
+    state.opener = null;
   }
 
   function reset() {
     pause();
     close({ restoreFocus: false });
     clearTimer('playbackConfirmTimer');
-    state.entryPlaybackRequested = false;
     syncEntryButton();
   }
 
-  function installEntryReadinessGuard() {
-    document.addEventListener('click', event => {
-      const openButton = event.target.closest('#openDemo');
-      if (!openButton || !entryWantsMusic()) return;
-      const selectedId = selectedEntryScenarioId();
-      if (!selectedId || entryTrackIsReady(selectedId) || state.apiFailed) return;
+  function setSoundtrackDefaultOff() {
+    const choice = $('#entrySoundtrack');
+    if (choice) choice.checked = false;
+    syncEntryButton();
+  }
 
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      setStatus('The soundtrack is still preparing. Open the demo when the button becomes ready.');
-      syncEntryButton();
-    }, true);
-
+  function installEvents() {
     document.addEventListener('click', event => {
       const option = event.target.closest('[data-entry-scenario]');
       if (!option?.dataset.entryScenario) return;
       setScenario(option.dataset.entryScenario);
-      queueMicrotask(syncEntryButton);
     });
 
-    $('#entrySoundtrack')?.addEventListener('change', syncEntryButton);
+    $('#entrySoundtrack')?.addEventListener('change', () => {
+      if (entryWantsMusic()) installSpotifyApi();
+      syncEntryButton();
+    });
 
-    const grid = $('#entryScenarioGrid');
-    if (grid && 'MutationObserver' in window) {
-      state.entryObserver = new MutationObserver(syncEntryButton);
-      state.entryObserver.observe(grid, {
-        attributes: true,
-        attributeFilter: ['aria-pressed'],
-        childList: true,
-        subtree: true
-      });
-    }
+    $('#resetDemo')?.addEventListener('click', () => {
+      queueMicrotask(setSoundtrackDefaultOff);
+    });
   }
 
   window.BRIEF_DEMO_MEDIA = {
@@ -462,9 +478,18 @@
     open,
     close,
     reset,
-    isEntryReady: entryTrackIsReady
+    isEntryReady: () => true
   };
 
-  installEntryReadinessGuard();
+  setDrawerInert(true);
+  installEvents();
   setScenario(window.BRIEF_DEMO_DATA?.meta?.defaultScenario || 'personal');
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      queueMicrotask(setSoundtrackDefaultOff);
+    }, { once: true });
+  } else {
+    queueMicrotask(setSoundtrackDefaultOff);
+  }
 })();
