@@ -1,6 +1,6 @@
 {
-  "version": 22,
-  "updated": "2026-08-04",
+  "version": 23,
+  "updated": "2026-08-05",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
     {"path":"/directory/","name":"Operations Directory","description":"Approved directory for current active private tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -18,6 +18,7 @@
     {"path":"/plans/","name":"CMX Plans","description":"Dated private product and platform plan entries, beginning with the Personal OS briefing concept.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/doc/","name":"Personal OS Product Overview","description":"Gated light-first document explaining the Personal OS briefing, goals, Spaces, integrations, automations, memory, personalization and personal AI foundation.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/brief/","name":"CMX Personalized Briefing Concept","description":"Public noindex product demonstration for Personal, Relationship, Business, Trainer and Team briefings using sourced public information and clearly fictional private-looking records.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/brief-next/","name":"Personal OS Briefing Demo V2","description":"Reversible noindex demonstration of a focused Personal OS daily briefing with selective navigation, weather, stats, Spaces and one editable workspace.","category":"Product Concept","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference that remains direct-link-only until real server authorization exists.","category":"Internal","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/project/","name":"Callmax SEO Master Plan","description":"Client project planning resource.","category":"Client","status":"Active","visibility":"Build-only","directory":false,"gated":true},
     {"path":"/callmax/","name":"Callmax Workspace","description":"Callmax project workspace requiring review.","category":"Client","status":"Needs Review","visibility":"Build-only","directory":false,"gated":true},
