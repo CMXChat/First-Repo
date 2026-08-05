@@ -10,6 +10,12 @@ This folder is the starting point for `/brief` recovery, simplification, and pro
 
 Read this first. It contains the active branch, current route, completed checkpoint, validation state, and exact next action.
 
+### Approved ideas and decisions
+
+- [`IDEAS.md`](IDEAS.md)
+
+This is the durable register for approved user ideas, design decisions, deferred concepts, completed idea checkpoints, People and Spaces examples, memory direction, privacy principles, automation decisions, and cutover requirements.
+
 ### Active Phase 1 implementation record
 
 - [`PHASE-1-WORKLOG.md`](PHASE-1-WORKLOG.md)
@@ -54,6 +60,7 @@ Do not mix Goal Intelligence engine work into the reversible demo foundation.
 ## Documentation roles
 
 - `CURRENT.md`: replace with the latest short checkpoint
+- `IDEAS.md`: maintain approved ideas, decisions, deferrals, and completion states
 - `PHASE-1-WORKLOG.md`: append active Brief Next implementation checkpoints
 - `DEMO-SIMPLIFICATION-STRATEGY.md`: maintain the approved product and phase strategy
 - `brief-recovery-handoff.md`: preserve recovery history and legacy context
@@ -63,13 +70,15 @@ Do not mix Goal Intelligence engine work into the reversible demo foundation.
 ## Documentation rules
 
 1. Update `CURRENT.md` after each meaningful commit or test run.
-2. Update `PHASE-1-WORKLOG.md` after each Brief Next implementation checkpoint.
-3. Keep the broader product strategy stable unless the user changes direction.
-4. Put raw logs in evidence files, not in the live summary.
-5. Never rely on chat or `/tmp` as the only record of work.
-6. Record exact branches, commit SHAs, test results, blockers, and next actions.
-7. Keep production `/brief` untouched until explicit cutover approval.
-8. Do not reintroduce terminal ownership, duplicate state controllers, or multiple Spotify players into Brief Next.
+2. Update `IDEAS.md` whenever an idea is approved, rejected, deferred, implemented, or superseded.
+3. Update `PHASE-1-WORKLOG.md` after each Brief Next implementation checkpoint.
+4. Keep the broader product strategy stable unless the user changes direction.
+5. Put raw logs in evidence files, not in the live summary.
+6. Never rely on chat or `/tmp` as the only record of work.
+7. Record exact branches, commit SHAs, test results, blockers, and next actions.
+8. Keep production `/brief` untouched until explicit cutover approval.
+9. Do not reintroduce terminal ownership, duplicate state controllers, or multiple Spotify players into Brief Next.
+10. Mark completed idea work explicitly so the next context does not repeat it.
 
 ## Current active work
 
@@ -79,6 +88,7 @@ Base: agent/brief-recovery-step-1
 Route: /brief-next/
 Purpose: build and validate the reversible complex-simplicity Personal OS briefing demo
 Live status: docs/brief/CURRENT.md
+Ideas register: docs/brief/IDEAS.md
 Implementation worklog: docs/brief/PHASE-1-WORKLOG.md
 Strategy: docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md
 ```
