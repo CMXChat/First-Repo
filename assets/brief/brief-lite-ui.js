@@ -1,7 +1,26 @@
 (() => {
   'use strict';
 
-  const VERSION = '20260804-2';
+  const VERSION = '20260804-3';
+  const LEGACY_VALIDATION_PARAMS = [
+    'brief-test',
+    'browser-test',
+    'finalization-test',
+    'theme-sweep'
+  ];
+
+  function params() {
+    try {
+      return new URL(window.location.href).searchParams;
+    } catch {
+      return new URLSearchParams();
+    }
+  }
+
+  function shouldLoadSystem() {
+    const query = params();
+    return !LEGACY_VALIDATION_PARAMS.some(key => query.has(key));
+  }
 
   function ensureStyle(id, path) {
     const href = `${path}?v=${VERSION}`;
@@ -43,6 +62,8 @@
     script.addEventListener('load', loadRepairScript, { once: true });
     document.head.appendChild(script);
   }
+
+  if (!shouldLoadSystem()) return;
 
   ensureStyle('briefSystemStyle', '/assets/brief/brief-system.css');
   ensureStyle('briefSystemFixStyle', '/assets/brief/brief-system-fixes.css');
