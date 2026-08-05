@@ -12,10 +12,10 @@ const deviceJs = read('assets/brief/brief-device.js');
 const deviceCss = read('assets/brief/brief-device.css');
 
 assert.match(indexHtml, /noindex, nofollow/);
-assert.match(indexHtml, /<option value="" disabled selected>Choose the briefing you want to explore<\/option>/);
-assert.match(indexHtml, /<input id="musicOnEntry" type="checkbox"\s*\/>/);
-assert.match(indexHtml, /<input id="readOnEntry" type="checkbox"\s*\/>/);
-assert.match(indexHtml, /id="enterBrief"[^>]*disabled[^>]*aria-disabled="true"/);
+assert.match(indexHtml, /id="entryScenarioGrid"/);
+assert.match(indexHtml, /<input id="entrySoundtrack" type="checkbox" checked \/>/);
+assert.match(indexHtml, /id="openDemo"[^>]*disabled/);
+assert.match(indexHtml, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(configJs, /select\.dataset\.requiredChoice = 'true'/);
 assert.match(configJs, /select\.dataset\.liveRequired = 'true'/);
 assert.match(configJs, /Choose any entry preferences/);
