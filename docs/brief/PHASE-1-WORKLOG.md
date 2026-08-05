@@ -1,6 +1,6 @@
 # `/brief-next` Phase 1 Worklog
 
-Last updated: **August 5, 2026 at 1:24 PM ET**
+Last updated: **August 5, 2026 at 1:46 PM ET**
 
 ## Purpose
 
@@ -16,11 +16,11 @@ Branch: agent/brief-demo-v2
 Draft PR: #42
 PR base: agent/brief-recovery-step-1
 Route: /brief-next/
-Validated product head: 831eb8cba420517e1f6eaf44cb778a6ed3f3eb5d
+Validated product revision: 5e02ff8caafd160e3802b0caaca6802ad672038a
 Production /brief changed: no
 ```
 
-Phase 1 foundation is implemented and its isolated static and desktop/mobile browser suite passes.
+The Phase 1 foundation and the first memory, People and Spaces, privacy, soundtrack-default, and mobile-hierarchy refinement are implemented and passing isolated validation.
 
 The route remains Experimental and Direct-link-only. It is not approved for production cutover.
 
@@ -28,7 +28,7 @@ The route remains Experimental and Direct-link-only. It is not approved for prod
 
 The target is **complex simplicity**.
 
-A person who returns every day should continue noticing useful depth, movement, polish and intelligence. The interface should remain calm enough that the person understands their day before they need to understand the product.
+A returning user should notice useful depth, movement, polish, and intelligence without needing to learn a complicated application first.
 
 ### Retain
 
@@ -36,8 +36,9 @@ A person who returns every day should continue noticing useful depth, movement, 
 - compact stats that change by Space
 - view navigation instead of one endless scroll
 - one deeper category at a time
-- five use cases in one stable layout
+- five main use cases in one stable layout
 - private profiles and approved shared Spaces
+- reviewable memory and corrections
 - one soundtrack experience
 - one Spotify provider player
 - light and dark themes
@@ -46,6 +47,7 @@ A person who returns every day should continue noticing useful depth, movement, 
 ### Exclude
 
 - terminal and command-line navigation
+- consumer-social friends-list behavior during the current phase
 - multiple application state owners
 - competing depth systems
 - duplicate provider embeds
@@ -55,47 +57,53 @@ A person who returns every day should continue noticing useful depth, movement, 
 
 ## Vision inherited from `/doc`
 
-The new route implements the following product model:
+The route implements this model:
 
 1. The Daily Briefing is the visible daily experience.
 2. Goals give the system direction.
-3. Spaces separate personal, relationship, family, business, team and project contexts.
+3. Spaces separate personal, relationship, family, business, team, and project context.
 4. Connections bring approved information from existing services.
 5. Automations allow useful work to continue after the interface closes.
-6. Memory preserves sources, preferences, corrections, decisions and outcomes.
-7. Permissions control privacy, sharing and approved action.
-8. Personal OS can become a user-owned intelligence layer between the person, their information, their Spaces, connected services and chosen assistants.
+6. Memory preserves sources, preferences, corrections, decisions, and outcomes.
+7. Permissions control privacy, sharing, and approved action.
+8. Personal OS can become a user-owned intelligence layer between the person, their information, their Spaces, connected services, and chosen assistants.
 
-The demo shows this model through the application. It does not reproduce the full `/doc` document on the daily path.
+The application demonstrates this model without reproducing the full product document on the daily path.
 
 ## Ownership model
 
 ```text
 brief-next/index.html
-  stable semantic product surfaces
+  stable product surfaces and asset loading
 
 assets/brief-next/brief-demo-data.js
-  all normal copy and scenario records
+  five main scenarios and daily demo content
 
 assets/brief-next/brief-demo-app.js
-  entry, scenario, view, tab, theme, URL and rendering state
+  sole owner of entry, scenario, primary view, tab, theme, URL, and global rendering state
 
 assets/brief-next/brief-demo-media.js
-  preview audio, Spotify provider player and media drawer
+  sole owner of preview audio, entry playback request, Spotify iframe, and media drawer
+
+assets/brief-next/brief-demo-explainers.js
+  local reusable memory and People and Spaces explanation schema and interaction
 
 assets/brief-next/brief-demo.css
-  complete responsive visual system
+  core responsive visual system
+
+assets/brief-next/brief-demo-explainers.css
+  isolated explanation components and mobile hierarchy overrides
 ```
 
-No second controller should take ownership of these concerns.
+The explainer module has local component state only. It does not become a second application controller.
 
 ## Completed delivery parts
 
-### Part 1A: Editable data foundation
+### Part 1A: Editable scenario foundation
 
 Status: **complete**
 
-`assets/brief-next/brief-demo-data.js` contains:
+`brief-demo-data.js` contains:
 
 - Personal
 - Relationship
@@ -103,24 +111,23 @@ Status: **complete**
 - Trainer and student
 - Team and project
 - greetings and main briefing copy
-- next actions and recommendations
 - weather and hourly conditions
 - four compact stats per scenario
+- next actions and recommendations
 - daily flow
-- workspace categories and detail cards
-- private and shared Space examples
+- workspace categories and cards
+- private and shared Space records
 - soundtrack metadata
 
-Normal content changes should occur here without DOM editing.
+Normal daily demo content changes should happen here.
 
 ### Part 1B: Reversible application shell
 
 Status: **complete**
 
-`brief-next/index.html` contains:
+Implemented surfaces:
 
 - deliberate context entry
-- optional soundtrack request
 - sticky header
 - scenario switcher
 - desktop rail navigation
@@ -134,27 +141,28 @@ Status: **complete**
 
 The terminal and command line are absent.
 
-### Part 1C: Complex simplicity design system
+### Part 1C: Complex-simplicity design system
 
 Status: **first pass complete**
 
-`assets/brief-next/brief-demo.css` contains:
+Implemented:
 
-- light-first Personal OS design derived from `/doc`
+- light-first platform design derived from `/doc`
 - dark theme
-- large weather visualization
-- compact stat cards
-- selective workspace navigation
+- strong weather visualization
+- compact stats
+- selective navigation
 - private and shared Space presentation
-- desktop, tablet and mobile layouts
-- bounded media drawer
+- desktop, tablet, and mobile layouts
 - reduced-motion support
+- smaller mobile entry and hero headings
 
-Remaining review topics:
+Still requiring review:
 
 - short-height laptop behavior
-- real phone browser chrome and safe areas
+- real browser safe areas
 - measured contrast
+- keyboard and focus review beyond existing smoke coverage
 - returning-user density
 - final typography and spacing
 
@@ -162,7 +170,7 @@ Remaining review topics:
 
 Status: **complete**
 
-`assets/brief-next/brief-demo-app.js` owns:
+`brief-demo-app.js` owns:
 
 - entry
 - scenario
@@ -170,7 +178,7 @@ Status: **complete**
 - workspace tab
 - theme
 - URL state
-- rendering
+- global rendering
 
 It does not use polling or timeout chains for correctness.
 
@@ -178,170 +186,280 @@ It does not use polling or timeout chains for correctness.
 
 Status: **foundation complete**
 
-`assets/brief-next/brief-demo-media.js` provides:
+Implemented:
 
 - one media state
-- one preview audio position
+- one preview-audio position
 - one Spotify iframe
 - idempotent scenario changes
 - direct soundtrack request from the Open demo click
+- soundtrack selected by default
+- soundtrack default restored after reset
 - explicit fallback messages
 
-Deferred to the media phase:
+Deferred:
 
 - authorized preview URLs
 - audible entry playback verification
 - browser-specific autoplay fallback
-- Spotify iFrame API evaluation and implementation
+- Spotify iFrame API evaluation
 - provider control testing
 
-### Part 1F: Route registration
+Read-aloud remains absent from the entry path.
+
+### Part 1F: Memory and regular-AI comparison
+
+Status: **first pass complete**
+
+The How it works view now includes reusable interactive examples for:
+
+- continuity
+- corrections
+- outcomes
+- preferences
+
+The Personal OS side demonstrates:
+
+- source
+- confirmation state
+- Space scope
+- reviewability
+- history
+- replacement of weaker inferences
+- outcome-driven plan updates
+- user-owned media and presentation preferences
+
+### Part 1G: People and Spaces examples
+
+Status: **first pass complete**
+
+Implemented interactive examples:
+
+- Relationship Space
+- Family Space
+- Team Space
+
+Family Space demonstrates:
+
+- expenses and bills
+- chores and ownership
+- pickups and appointments
+- groceries and calendar changes
+- a shared household briefing
+- separate parent-private and member-private context
+
+Decision:
+
+- do not add a friends list during the current frontend phase
+- use People and Spaces with explicit roles and permissions
+- keep Family as an explanatory example for now, not a sixth main scenario
+
+### Part 1H: Data beyond the dashboard
+
+Status: **first pass complete**
+
+The demo now explains that approved context can become:
+
+- Brief
+- Alarm
+- Plan
+- Coordinate
+- Prepare
+- Automate
+- Learn
+- Act
+
+Real integrations and actions remain future work.
+
+### Part 1I: Privacy explanation
+
+Status: **first pass complete**
+
+The demo now communicates:
+
+- private first
+- purpose-scoped access
+- reviewable permissions
+- pause and revocation
+- logging and review
+- confirmation before consequential action
+- frontend demonstration versus server-side protection
+
+### Part 1J: Route and automation boundaries
 
 Status: **complete**
-
-`assets/cmx-routes.json` registers:
 
 ```text
 /brief-next/
 Status: Experimental
 Visibility: Direct-link-only
-Gated: false
-Indexing: noindex in the page
+Indexing: noindex
+Production /brief: untouched
 ```
 
-### Part 1G: Isolated validation
+The legacy `Refresh Brief Concept` daily automation is paused.
 
-Status: **passing**
+Do not restart it until the final data-editing contract is documented and the production frontend is approved.
 
-Files:
+## Draft review
 
-```text
-tests/brief-next-smoke.test.js
-tests/brief-next.spec.cjs
-tests/brief-next.playwright.config.cjs
-.github/workflows/brief-next-validation.yml
-```
+Reviewed open PRs and retained ideas selectively.
 
-#### Run 1
+### Carry forward
 
-```text
-Run: 31029391744
-Static job: 92385927993, passed
-Browser job: 92385927946, failed
-```
+- PR #27: interactive walkthrough missions, direct content landing, selective navigation
+- PR #37: progressive disclosure, concise Full-first richness, terminal removal, internal scrolling safety
+- PR #35: test-environment lessons
+- PR #38: concise `/doc` connection and gate-audit lesson
 
-The browser failure was caused by test project scoping. Desktop cases were also run on mobile, and the mobile case was also run on desktop. Three correctly matched product tests passed.
+### Do not carry forward
 
-Correction:
+- terminal repair as a product requirement
+- multiple depth controllers
+- overlapping overlays and stranded blur state
+- hidden duplicate dashboards
+- old architecture only because legacy tests expected it
 
-```text
-55665ec0f11fefeab356aa059fb95a25eed648a4
-brief next: scope browser checks by viewport project
-```
+Grok `/tmp` material remains inaccessible and is not a durable source.
 
-#### Run 2
+## Validation history
+
+### Foundation validation
 
 ```text
-Run: 31029568262
-Static job: 92386527858, passed
-Browser job: 92386527581, passed
-```
-
-#### Final scoped run
-
-Workflow triggers were limited to product, route, test and workflow changes. Documentation-only updates no longer rerun Chromium.
-
-```text
-Validated product head: 831eb8cba420517e1f6eaf44cb778a6ed3f3eb5d
 Run: 31029738516
 Static job: 92387097510, passed
 Browser job: 92387097462, passed
+Validated product revision: 831eb8cba420517e1f6eaf44cb778a6ed3f3eb5d
+```
+
+### Memory and Spaces refinement
+
+Product revision:
+
+```text
+5e02ff8caafd160e3802b0caaca6802ad672038a
+```
+
+Initial workflow attempt:
+
+```text
+Run: 31030913507
+Static job: 92391159461, passed
+Browser job: 92391159797
+Browser test step: passed
+Overall initial job: cancelled after documentation moved the PR head
+```
+
+Clean rerun:
+
+```text
+Static job: 92391543795, passed
+Browser job: 92391542885, passed
 ```
 
 Verified behavior:
 
-- JavaScript syntax parses
-- five scenarios remain editable records
+- JavaScript parses
+- five main scenarios remain editable records
 - no terminal architecture exists
-- one stylesheet and three product scripts load
 - one Spotify iframe exists
+- soundtrack is checked by default
+- read-aloud is absent
+- reset restores soundtrack default
 - desktop entry and navigation work
-- weather, stats and flow render
-- scenario switching works
-- workspace tabs work
-- Spaces render
+- weather, stats, flow, scenarios, workspace tabs, and Spaces work
+- memory comparison interaction works
+- Family Space interaction works
+- privacy and eight outcome examples render
 - mobile navigation works
 - tested mobile width has no horizontal overflow
-- theme switching works
-- reset returns to the entry state
+- mobile entry and hero headings remain below the test limit
+- theme and reset work
 
-## Commit map
+## Important commits in the current refinement
 
 ```text
-dd375d784062218f5a35b90910d43d0832496f76  editable scenario data
-730924efce5ddeefd90131cb9136ea4c26c4849f  reversible demo shell
-737d656dab618379cae746f8279156b60a7e50e4  visual design system
-7564e32833b8e37d94bd2fc7f950f31e216b415d  single media controller
-c9fc65ac3dbbaa9d2569187c052039d19df8af78  single app controller
-94f58b6efb7c60162921463495c15be5618cf150  idempotent media scenario updates
-e79ed9c19d839f3bf306fcf7d7cc5a754c00fd23  route registration
-66c2ab7f224547b4fd6e1f545d4aeeb6ad705096  static smoke test
-2e62993366a11ff9c681b5055adb257599dd706e  browser configuration
-75b1d0f39d8ab5e157e0687360e37cf65377a2c4  browser interaction tests
-3d654a882fd944885abc7bcdbdbccb60aa992d32  isolated workflow
-55665ec0f11fefeab356aa059fb95a25eed648a4  viewport project test correction
-831eb8cba420517e1f6eaf44cb778a6ed3f3eb5d  product-scoped workflow triggers
+a53580341d76615a439563d3df2f2c95c1845c7a  add ideas register
+06933dcfc4e2fe5b7f77d638b91b5dfb1f91ac5d  add memory and Spaces explainer module
+c7478da66a1825773cfec9e88ff0ddae2c4a6539  style explainers and mobile hierarchy
+9095e60ba9326770791fafe2eebc7189c9c95a10  load explainers and default soundtrack
+51bdccb41594e15a41bc75417e60c4907d183b3a  static explainer and soundtrack tests
+5e02ff8caafd160e3802b0caaca6802ad672038a  browser tests for memory, Family, and mobile hierarchy
 ```
 
-## Next Phase 1 part: Product Review and Refinement
+## Publishing distance
 
-This is the next implementation checkpoint.
+Completed:
+
+- architecture
+- reversible route
+- core daily interface
+- five scenarios
+- first-pass memory difference
+- first-pass People and Spaces story
+- first-pass privacy story
+- mobile heading correction
+- isolated static and browser validation
+
+Remaining before cutover review:
+
+1. Product and visual review across additional viewport shapes.
+2. Contrast, focus, and accessibility measurement.
+3. Common editing map and data-update contract.
+4. Authorized preview audio and autoplay fallback.
+5. Final content and media review.
+6. Route replacement and rollback rehearsal.
+
+The current practical estimate is **three major checkpoints before cutover review**, then the cutover checkpoint itself.
+
+## Next checkpoint: Product Review and Editing Map
 
 ### Review surfaces
 
-Test the route at:
-
 - 1440 × 1000 desktop
 - short-height laptop
-- tablet portrait and landscape
+- tablet portrait
+- tablet landscape
 - 390 × 844 phone
 - narrower phone width
 
-### Product questions
+### Review questions
 
-- Does Today feel useful before any explanation?
-- Is weather strong and informative without dominating every context?
-- Do stats orient the user without becoming decorative KPI filler?
-- Is movement between views faster than scrolling?
-- Do all five scenarios feel meaningfully different?
-- Does the workspace offer enough depth without becoming another overloaded dashboard?
-- Do Spaces communicate privacy and collaboration clearly?
-- Does How it works explain the `/doc` vision briefly?
+- Does Today feel valuable before any product explanation?
+- Is weather strong without overwhelming the selected Space?
+- Do stats orient the user without looking decorative?
+- Is moving among Today, Workspace, Spaces, and How faster than scrolling?
+- Are memory and Space examples understandable without reading `/doc`?
+- Does the Family example prove useful shared context without implying surveillance?
+- Does the interface look like a platform instead of an advertisement?
 - Would a returning daily user know where to look first?
 
-### Refinement outputs
+### Required outputs
 
-- density and hierarchy fixes
-- typography and contrast fixes
-- short-height and mobile-safe behavior
-- better active-view and transition feedback where useful
-- an editing map for common copy, data and layout changes
-- a documented decision about what remains for content consolidation, media and polish phases
+- visual findings
+- focused hierarchy and density corrections
+- measured contrast findings
+- keyboard and focus findings
+- an editing map for scenarios, weather, stats, Spaces, explainer examples, media, and layout
+- explicit remaining work for media and cutover
 
 ## Rules for future contexts
 
 1. Read `docs/brief/CURRENT.md` first.
-2. Read this worklog before editing Brief Next.
-3. Keep commits narrowly scoped.
-4. Update both files after meaningful checkpoints.
-5. Keep production `/brief` untouched during Phase 1.
-6. Do not add terminal or command-line ownership.
-7. Do not create another app or media state owner.
-8. Do not add another Spotify iframe.
-9. Keep normal content in `brief-demo-data.js`.
-10. Treat legacy code as reference material, not an architecture requirement.
-11. Do not begin final autoplay or cutover until product review is complete.
+2. Read `docs/brief/IDEAS.md` before making product decisions.
+3. Read this worklog before editing Brief Next.
+4. Keep commits narrowly scoped.
+5. Update all three files after meaningful checkpoints.
+6. Keep production `/brief` untouched until cutover approval.
+7. Do not add terminal or command-line ownership.
+8. Do not create another global app or media state owner.
+9. Do not add another Spotify iframe.
+10. Keep main scenario content in `brief-demo-data.js`.
+11. Keep explanatory examples in the reusable explainer schema.
+12. Mark completed ideas explicitly.
+13. Do not restart daily automation yet.
 
 ## Exact next action
 
-Inspect the rendered `/brief-next/` route visually and begin the first focused refinement commit. Start with daily-use hierarchy, weather and stats density, then verify short-height and phone behavior before expanding scope.
+Begin the Product Review and Editing Map checkpoint. Start with the new memory and People and Spaces sections, mobile platform hierarchy, and short-height behavior. Keep the scope visual and structural. Do not begin production cutover or final media integration yet.
