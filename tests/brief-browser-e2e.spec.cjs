@@ -131,6 +131,6 @@ test('Doc renders the plain-language copy audit', async ({ page }) => {
   await expect(page.locator('#statusTitle')).toHaveText('What works now and what still needs building.');
   await expect(page.locator('#architectureTitle')).toHaveText('A technical plan that stays understandable and controllable.');
   await expect(page.locator('#finalCtaTitle')).toHaveText('Open the current Personal OS Brief demo.');
-  await expect(page.locator('.status-list')).toContainText('A matching `/brief-next/` route used for testing');
+  await expect(page.locator('.status-list').first()).toContainText('A matching `/brief-next/` route used for testing');
   await expectPlainVisibleCopy(page);
 });
