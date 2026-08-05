@@ -3,54 +3,62 @@
 (() => {
   const root = document.documentElement;
   const themeButton = document.getElementById('themeToggle');
-  const themeLabel = document.getElementById('themeLabel');
-  const themeIcon = document.getElementById('themeIcon');
   const printButton = document.getElementById('printDocument');
   const progressBar = document.querySelector('.reading-progress span');
   const tocLinks = Array.from(document.querySelectorAll('.document-toc a'));
   const sections = Array.from(document.querySelectorAll('.document-section[id]'));
   const themeMeta = document.querySelector('meta[name="theme-color"]');
-  const documentFooter = document.querySelector('.document-footer');
-  const STORAGE_KEY = 'personal_os_doc_theme_v1';
+  const storageKey = 'personal_os_doc_theme_v2';
 
-  function readTheme() {
+  function getStoredTheme() {
     try {
-      const savedTheme = localStorage.getItem(STORAGE_KEY);
-      return savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'dark';
+      const stored = localStorage.getItem(storageKey);
+      return stored === 'light' || stored === 'dark' ? stored : null;
     } catch {
-      return 'dark';
+      return null;
     }
   }
 
-  function saveTheme(theme) {
+  function getRequestedTheme() {
+    const queryTheme = new URLSearchParams(window.location.search).get('theme');
+    if (queryTheme === 'light' || queryTheme === 'dark') return queryTheme;
+    return getStoredTheme() || 'dark';
+  }
+
+  function storeTheme(theme) {
     try {
-      localStorage.setItem(STORAGE_KEY, theme);
+      localStorage.setItem(storageKey, theme);
     } catch {
-      // Theme still works when browser storage is unavailable.
+      return;
     }
   }
 
   function applyTheme(theme, persist = false) {
     const nextTheme = theme === 'light' ? 'light' : 'dark';
-    root.dataset.theme = nextTheme;
+    const darkMode = nextTheme === 'dark';
 
-    if (themeLabel) themeLabel.textContent = nextTheme === 'dark' ? 'Light mode' : 'Dark mode';
-    if (themeIcon) themeIcon.textContent = nextTheme === 'dark' ? '☀' : '◐';
+    root.dataset.theme = nextTheme;
+    root.style.colorScheme = nextTheme;
+
     if (themeButton) {
-      themeButton.setAttribute('aria-label', `Switch to ${nextTheme === 'dark' ? 'light' : 'dark'} mode`);
-      themeButton.setAttribute('aria-pressed', String(nextTheme === 'dark'));
+      themeButton.setAttribute('aria-label', `Switch to ${darkMode ? 'light' : 'dark'} mode`);
+      themeButton.setAttribute('aria-pressed', String(darkMode));
+      themeButton.dataset.activeTheme = nextTheme;
     }
-    if (themeMeta) themeMeta.setAttribute('content', nextTheme === 'dark' ? '#07101d' : '#edf3f8');
-    if (documentFooter) {
-      documentFooter.innerHTML = '<strong>Personal OS</strong> · Private product overview · Dark mode is the default. Light mode and print controls are available at the top of the document.';
+
+    if (themeMeta) {
+      themeMeta.setAttribute('content', darkMode ? '#060a12' : '#edf3f8');
     }
-    if (persist) saveTheme(nextTheme);
+
+    if (persist) storeTheme(nextTheme);
   }
 
   function updateProgress() {
     if (!progressBar) return;
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = scrollable > 0 ? Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)) : 0;
+    const progress = scrollable > 0
+      ? Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100))
+      : 0;
     progressBar.style.width = `${progress}%`;
   }
 
@@ -58,12 +66,54 @@
     tocLinks.forEach((link) => {
       const current = link.getAttribute('href') === `#${id}`;
       link.classList.toggle('is-current', current);
-      if (current) link.setAttribute('aria-current', 'true');
+      if (current) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
   }
 
-  applyTheme(readTheme());
+  function installSectionTracking() {
+    if (!sections.length) return;
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible?.target?.id) setCurrentSection(visible.target.id);
+      }, {
+        rootMargin: '-18% 0px -66% 0px',
+        threshold: [0.04, 0.15, 0.35]
+      });
+
+      sections.forEach((section) => observer.observe(section));
+      return;
+    }
+
+    const updateFromScroll = () => {
+      const target = sections
+        .map((section) => ({ id: section.id, top: Math.abs(section.getBoundingClientRect().top - 130) }))
+        .sort((a, b) => a.top - b.top)[0];
+      if (target?.id) setCurrentSection(target.id);
+    };
+
+    window.addEventListener('scroll', updateFromScroll, { passive: true });
+    updateFromScroll();
+  }
+
+  function installFaqBehavior() {
+    const faqItems = Array.from(document.querySelectorAll('.faq-list details'));
+    faqItems.forEach((item) => {
+      item.addEventListener('toggle', () => {
+        if (!item.open) return;
+        faqItems.forEach((other) => {
+          if (other !== item) other.open = false;
+        });
+      });
+    });
+  }
+
+  applyTheme(getRequestedTheme());
 
   themeButton?.addEventListener('click', () => {
     applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
@@ -73,19 +123,9 @@
 
   window.addEventListener('scroll', updateProgress, { passive: true });
   window.addEventListener('resize', updateProgress, { passive: true });
+  window.addEventListener('pageshow', updateProgress);
+
   updateProgress();
-
-  if ('IntersectionObserver' in window && sections.length) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target?.id) setCurrentSection(visible.target.id);
-      },
-      { rootMargin: '-18% 0px -68% 0px', threshold: [0.05, 0.2, 0.5] }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-  }
+  installSectionTracking();
+  installFaqBehavior();
 })();

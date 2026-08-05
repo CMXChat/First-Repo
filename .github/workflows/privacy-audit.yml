@@ -54,7 +54,25 @@ jobs:
               '/brief/': {
                   'markers': ('data-sara-load-url=', 'data-sara-password-sha256='),
                   'assets': ('/assets/sara-brief-gate.css', '/assets/sara-brief-gate.js'),
+                  'requires_no_store': True,
               },
+          }
+
+          black_prompt_gate = {
+              'markers': (
+                  'data-cmx-gate="black-prompt"',
+                  'data-cmx-gate-id=',
+                  'data-cmx-gated-content',
+                  'cmx-black-prompt-locked',
+              ),
+              'assets': (
+                  '/assets/gates/cmx-gate-black-prompt.css',
+                  '/assets/gates/cmx-gate-black-prompt.js',
+              ),
+              # The reusable Black Prompt Gate is a documented client-side
+              # deterrent with a different markup contract from the shared gate.
+              # A static cache meta hint is not server-side cache enforcement.
+              'requires_no_store': False,
           }
 
           for route in routes:
@@ -84,6 +102,9 @@ jobs:
 
               if route.get('gated'):
                   custom_gate = custom_gates.get(path)
+                  if not custom_gate and 'data-cmx-gate="black-prompt"' in lower:
+                      custom_gate = black_prompt_gate
+
                   if custom_gate:
                       for marker in custom_gate['markers']:
                           if marker not in lower:
@@ -96,7 +117,9 @@ jobs:
                           failures.append(f'{file_path.as_posix()}: gated route lacks data-cmx-gated=true')
                       if '/assets/cmx-sensitive-gate.css' not in text or '/assets/cmx-sensitive-gate.js' not in text:
                           failures.append(f'{file_path.as_posix()}: gated route lacks shared gate assets')
-                  if 'http-equiv="cache-control"' not in lower or 'no-store' not in lower:
+
+                  requires_no_store = custom_gate.get('requires_no_store', True) if custom_gate else True
+                  if requires_no_store and ('http-equiv="cache-control"' not in lower or 'no-store' not in lower):
                       failures.append(f'{file_path.as_posix()}: gated route lacks static no-store hint')
                   if 'name="referrer"' not in lower or 'no-referrer' not in lower:
                       failures.append(f'{file_path.as_posix()}: gated route lacks no-referrer policy')

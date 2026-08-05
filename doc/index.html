@@ -1,620 +1,717 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light" data-cmx-gate="black-prompt" data-cmx-gate-id="personal-os-document" data-cmx-gate-delay="700">
+<html lang="en" data-theme="dark" data-cmx-gate="black-prompt" data-cmx-gate-id="personal-os-document" data-cmx-gate-delay="700">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#edf3f8" />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#060a12" />
+  <meta name="color-scheme" content="dark light" />
   <meta name="referrer" content="no-referrer" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'" />
-  <title>Personal OS · Product Overview</title>
-  <meta name="description" content="A private product overview for Personal OS, its daily briefings, goals, Spaces, connections, automations, memory, personalization and personal AI foundation." />
+  <title>Personal OS | Product Overview</title>
+  <meta name="description" content="A product overview of Personal OS, a private operating layer built around Spaces, structured memory, goals, briefings, permissions, connected services, and approved action." />
   <link rel="canonical" href="https://db.cmxchat.com/doc/" />
   <link rel="stylesheet" href="/assets/gates/cmx-gate-black-prompt.css?v=20260804-1" />
-  <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260804-1" />
+  <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260805-2" />
 </head>
 <body class="cmx-black-prompt-locked">
   <main data-cmx-gated-content hidden>
-    <a class="skip-link" href="#documentContent">Skip to document</a>
-
+    <a class="skip-link" href="#documentContent">Skip to the product overview</a>
     <div class="reading-progress" aria-hidden="true"><span></span></div>
 
     <header class="document-toolbar">
       <div class="document-toolbar-inner">
-        <div class="document-identity">
-          <div class="document-mark" aria-hidden="true">OS</div>
-          <div class="document-identity-copy">
+        <a class="document-identity" href="#top" aria-label="Personal OS product overview, return to top">
+          <span class="document-mark" aria-hidden="true">OS</span>
+          <span class="document-identity-copy">
             <strong>Personal OS</strong>
-            <span>Private product overview</span>
-          </div>
-        </div>
+            <span>Product overview</span>
+          </span>
+        </a>
+
+        <nav class="toolbar-links" aria-label="Primary document actions">
+          <a href="#overview">Overview</a>
+          <a href="#spaces">Spaces</a>
+          <a href="#memory">Memory</a>
+          <a href="#status">Status</a>
+        </nav>
 
         <div class="document-actions">
-          <button id="printDocument" class="document-action" type="button" aria-label="Print or save this document">
+          <a class="document-action document-action-primary" href="/brief/">
+            <span>Explore demo</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+          <button id="printDocument" class="document-action document-action-icon" type="button" aria-label="Print or save this document">
             <span aria-hidden="true">⇩</span>
-            <span class="print-label">Print</span>
           </button>
-          <button id="themeToggle" class="document-action" type="button" aria-label="Switch to dark mode" aria-pressed="false">
-            <span id="themeIcon" class="mode-icon" aria-hidden="true">◐</span>
-            <span id="themeLabel">Dark mode</span>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="true">
+            <span class="theme-toggle-track" aria-hidden="true">
+              <span class="theme-option theme-option-dark">Dark</span>
+              <span class="theme-option theme-option-light">Light</span>
+              <span class="theme-toggle-thumb"></span>
+            </span>
           </button>
         </div>
       </div>
     </header>
 
-    <div class="document-layout">
+    <div class="document-shell" id="top">
       <aside class="document-rail" aria-label="Document contents">
-        <div class="rail-card">
-          <p class="rail-label">Contents</p>
+        <div class="rail-panel">
+          <p class="rail-eyebrow">Contents</p>
           <nav class="document-toc">
-            <a href="#briefing">Daily Briefing</a>
-            <a href="#goals">Goals</a>
+            <a href="#overview">The whole idea</a>
+            <a href="#model">The operating model</a>
             <a href="#spaces">Spaces</a>
-            <a href="#connections">Connections</a>
-            <a href="#automations">Automations</a>
-            <a href="#voice">Alarms and Voice</a>
-            <a href="#personalization">Personalization</a>
-            <a href="#personal-ai">Personal AI</a>
-            <a href="#beyond-ai">More Than AI</a>
-            <a href="#action">From Information to Action</a>
-            <a href="#difference">What Makes It Different</a>
+            <a href="#memory">Memory</a>
+            <a href="#goals">Goals and direction</a>
+            <a href="#ritual">Daily ritual</a>
+            <a href="#relationships">People and coordination</a>
+            <a href="#ai-layer">Your chosen AI</a>
+            <a href="#trust">Trust and control</a>
+            <a href="#status">Current reality</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#scenarios">Scenarios</a>
+            <a href="#faq">Questions</a>
           </nav>
         </div>
-        <div class="rail-card">
-          <p class="rail-label">Reading note</p>
-          <p class="rail-note">This document explains the product in normal language. The daily briefing is the visible experience. Goals, Spaces, memory, connections and permissions form the foundation behind it.</p>
+
+        <div class="rail-panel rail-status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Active development</strong>
+            <p>The interface is a working demonstration. The secure multi-user platform remains under development.</p>
+          </div>
         </div>
       </aside>
 
       <article class="document-paper" id="documentContent">
-        <header class="document-cover">
-          <p class="cover-kicker">Product vision</p>
-          <h1>Personal OS</h1>
-          <p class="cover-subtitle">A private system for your goals, information, and daily life.</p>
-          <p class="cover-intro">Personal OS is a private platform that brings together the information people already manage across different parts of life and turns it into a clear daily briefing.</p>
+        <header class="hero" aria-labelledby="pageTitle">
+          <div class="hero-grid" aria-hidden="true"></div>
+          <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div>
+          <div class="hero-orbit hero-orbit-two" aria-hidden="true"></div>
 
-          <div class="cover-map" aria-label="Personal OS foundation">
-            <article>
-              <span>Understand</span>
-              <strong>Bring important information into one clear view.</strong>
-            </article>
-            <article>
-              <span>Direct</span>
-              <strong>Use goals and plans to decide what matters next.</strong>
-            </article>
-            <article>
-              <span>Act</span>
-              <strong>Turn briefings into approved actions and automations.</strong>
-            </article>
+          <div class="hero-copy">
+            <div class="hero-kicker-row">
+              <p class="hero-kicker">Private personal intelligence</p>
+              <span class="hero-status">Concept + working demo</span>
+            </div>
+            <h1 id="pageTitle">One operating layer for your life, relationships, family, and work.</h1>
+            <p class="hero-lead">Personal OS brings approved information, goals, memory, connected services, and chosen AI models into one controlled system. Spaces keep each part of life separate while allowing the right information to work together.</p>
+
+            <div class="hero-actions">
+              <a class="button button-primary" href="/brief/">
+                <span>Explore the briefing demo</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a class="button button-secondary" href="#overview">Understand it in one minute</a>
+            </div>
+
+            <p class="hero-disclosure">The current demo uses sourced public information and clearly fictional private-looking examples. Real accounts, secure connectors, durable memory, and server-side permissions are part of the planned platform.</p>
+          </div>
+
+          <div class="hero-system" aria-label="Personal OS system overview">
+            <div class="hero-system-center">
+              <span>Personal OS</span>
+              <strong>Your controlled context</strong>
+            </div>
+            <div class="hero-system-node node-brief"><span>Brief</span><strong>What matters now</strong></div>
+            <div class="hero-system-node node-spaces"><span>Spaces</span><strong>Who can use what</strong></div>
+            <div class="hero-system-node node-memory"><span>Memory</span><strong>What should persist</strong></div>
+            <div class="hero-system-node node-goals"><span>Goals</span><strong>Where the system directs attention</strong></div>
           </div>
         </header>
 
-        <div class="document-body">
-          <section class="document-section" aria-labelledby="introductionTitle">
-            <div class="section-heading">
-              <span class="section-number">00</span>
-              <div>
-                <p class="section-kicker">The idea</p>
-                <h2 id="introductionTitle">Built around the person</h2>
-              </div>
+        <section id="overview" class="document-section overview-section" aria-labelledby="overviewTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">The whole idea</p>
+              <h2 id="overviewTitle">Personal OS in one minute</h2>
             </div>
-            <div class="prose">
-              <p>Personal OS is a private platform that brings together the information people already manage across different parts of life and turns it into a clear daily briefing.</p>
-              <p>It can connect schedules, goals, tasks, messages, notes, projects, finances, routines, files, and shared plans. The purpose is to help the user understand what matters today, what changed, and what they should focus on next.</p>
-              <p>Instead of forcing every person into the same fixed dashboard, Personal OS organizes the experience around the user’s current information, goals, preferences, relationships, and responsibilities.</p>
-            </div>
-          </section>
+            <p class="section-intro">The product has one simple job: help a person or group understand the current situation, protect the right boundaries, and move the right thing forward.</p>
+          </div>
 
-          <section id="briefing" class="document-section" aria-labelledby="briefingTitle">
-            <div class="section-heading">
-              <span class="section-number">01</span>
+          <div class="overview-statement">
+            <p>Most digital tools hold one slice of your life. A calendar knows time. Email knows messages. A task manager knows assignments. An AI chat knows the context placed into that conversation.</p>
+            <p>Personal OS creates a stable layer above those tools. It organizes authorized information into Spaces, keeps useful memory with sources and correction controls, connects current reality to goals, and produces a focused Brief with actions that remain under human control.</p>
+          </div>
+
+          <div class="overview-grid" aria-label="Personal OS overview">
+            <article class="overview-card overview-card-brief">
+              <span class="overview-number">01</span>
               <div>
-                <p class="section-kicker">The daily experience</p>
-                <h2 id="briefingTitle">The Daily Briefing</h2>
+                <p class="card-label">Brief</p>
+                <h3>See the few things worth attention now.</h3>
+                <p>A morning view, team operating brief, family plan, relationship check-in, or focused project update can come from the same underlying system.</p>
               </div>
+            </article>
+            <article class="overview-card overview-card-spaces">
+              <span class="overview-number">02</span>
+              <div>
+                <p class="card-label">Spaces</p>
+                <h3>Keep contexts separate and coordinate safely.</h3>
+                <p>Personal, relationship, family, business, team, and project Spaces can each have their own people, memory, goals, data, rules, and daily view.</p>
+              </div>
+            </article>
+            <article class="overview-card overview-card-memory">
+              <span class="overview-number">03</span>
+              <div>
+                <p class="card-label">Memory</p>
+                <h3>Preserve useful context without surrendering control.</h3>
+                <p>Facts, self-reports, source records, preferences, decisions, and interpretations remain distinguishable, editable, exportable, and removable.</p>
+              </div>
+            </article>
+            <article class="overview-card overview-card-goals">
+              <span class="overview-number">04</span>
+              <div>
+                <p class="card-label">Goals</p>
+                <h3>Connect information to a direction.</h3>
+                <p>The system can identify blockers, ask one useful question, recommend one next action, record the result, and update the next Brief.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="core-difference">
+            <div class="core-difference-copy">
+              <p class="section-kicker">The central difference</p>
+              <h3>The AI can change. Your operating context stays yours.</h3>
+              <p>Personal OS owns the structure around the model: Spaces, permissions, memory, sources, goals, tools, approvals, and history. A default model can power the experience, while another cloud model or future local model can use the same controlled foundation.</p>
+            </div>
+            <div class="model-strip" aria-label="Replaceable AI model examples">
+              <span>Default model</span>
+              <span>Alternative model</span>
+              <span>Local model</span>
+              <span>Future model</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="model" class="document-section" aria-labelledby="modelTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">The operating model</p>
+              <h2 id="modelTitle">A continuous intelligence loop</h2>
+            </div>
+            <p class="section-intro">The loop matters more than any single dashboard, connector, model, or visual effect.</p>
+          </div>
+
+          <div class="loop-diagram" aria-label="Personal OS intelligence loop">
+            <div class="loop-step"><span>1</span><strong>Collect authorized information</strong><small>Public sources, user input, connected services, files, and events</small></div>
+            <div class="loop-arrow" aria-hidden="true">↓</div>
+            <div class="loop-step"><span>2</span><strong>Update the current state</strong><small>People, Spaces, goals, commitments, changes, blockers, and freshness</small></div>
+            <div class="loop-arrow" aria-hidden="true">↓</div>
+            <div class="loop-step"><span>3</span><strong>Reduce uncertainty</strong><small>Ask one question when the answer can change the decision</small></div>
+            <div class="loop-arrow" aria-hidden="true">↓</div>
+            <div class="loop-step"><span>4</span><strong>Recommend the next useful action</strong><small>Explain the reason, effort, expected result, evidence, and confidence</small></div>
+            <div class="loop-arrow" aria-hidden="true">↓</div>
+            <div class="loop-step"><span>5</span><strong>Record what happened</strong><small>Separate intention, self-report, evidence, verified result, and interpretation</small></div>
+            <div class="loop-arrow" aria-hidden="true">↓</div>
+            <div class="loop-step loop-step-final"><span>6</span><strong>Generate the next Brief</strong><small>Show the smallest useful amount for the person or Space</small></div>
+          </div>
+        </section>
+
+        <section id="spaces" class="document-section spaces-section" aria-labelledby="spacesTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">The shared architecture</p>
+              <h2 id="spacesTitle">Spaces make one system useful between people.</h2>
+            </div>
+            <p class="section-intro">A Space is a controlled environment for one part of life. It defines the people, information, memory, goals, tools, and permissions that belong together.</p>
+          </div>
+
+          <div class="spaces-map" aria-label="Examples of Personal OS Spaces">
+            <article class="space-card space-personal">
+              <span>Private</span>
+              <h3>Personal Space</h3>
+              <p>Your own goals, schedule, finances, health notes, private reflections, preferences, and memory.</p>
+            </article>
+            <article class="space-card space-relationship">
+              <span>Shared by approval</span>
+              <h3>Relationship Space</h3>
+              <p>Plans, rituals, promises, shared decisions, memories, schedules, and careful coordination between two people.</p>
+            </article>
+            <article class="space-card space-family">
+              <span>Household</span>
+              <h3>Family Space</h3>
+              <p>Appointments, school, chores, meals, care responsibilities, reminders, events, and age-appropriate access.</p>
+            </article>
+            <article class="space-card space-business">
+              <span>Role controlled</span>
+              <h3>Business Space</h3>
+              <p>Clients, revenue, decisions, meetings, projects, risks, responsibilities, and operating priorities.</p>
+            </article>
+            <article class="space-card space-team">
+              <span>Least privilege</span>
+              <h3>Team Space</h3>
+              <p>Member-specific work, handoffs, procedures, blockers, project truth, leadership context, and approved metrics.</p>
+            </article>
+            <article class="space-card space-project">
+              <span>Purpose limited</span>
+              <h3>Project Space</h3>
+              <p>One outcome, one working group, relevant files, milestones, decisions, sources, and a clear end state.</p>
+            </article>
+          </div>
+
+          <div class="space-boundary-demo">
+            <div class="boundary-person">
+              <div class="person-avatar" aria-hidden="true">A</div>
+              <strong>Person A</strong>
+              <span>Private context</span>
+            </div>
+            <div class="boundary-lines" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="boundary-center">
+              <span>Shared Space</span>
+              <strong>Approved information only</strong>
+              <small>Shared goals · agreements · plans · decisions</small>
+            </div>
+            <div class="boundary-lines" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="boundary-person">
+              <div class="person-avatar" aria-hidden="true">B</div>
+              <strong>Person B</strong>
+              <span>Private context</span>
+            </div>
+          </div>
+
+          <div class="prose-callout">
+            <strong>One fact may appear in several places only when the permission allows it.</strong>
+            <p>A calendar event may be relevant to a personal Brief, a family plan, and a project deadline. Personal OS can reference the same event across those contexts without exposing unrelated private information.</p>
+          </div>
+        </section>
+
+        <section id="memory" class="document-section memory-section" aria-labelledby="memoryTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Continuity with control</p>
+              <h2 id="memoryTitle">Memory should be organized, inspectable, and correctable.</h2>
+            </div>
+            <p class="section-intro">Useful continuity requires more than saving chat history. The system needs clear memory types, sources, dates, permissions, and revision controls.</p>
+          </div>
+
+          <div class="memory-layout">
+            <div class="memory-stack" role="list" aria-label="Personal OS memory layers">
+              <article class="memory-layer" role="listitem"><span>01</span><div><strong>Session context</strong><p>What matters during the current interaction.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>02</span><div><strong>Daily context</strong><p>Changes and events relevant to the current edition.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>03</span><div><strong>Short-term memory</strong><p>Active plans, recent decisions, current goals, and unresolved blockers.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>04</span><div><strong>Long-term profile</strong><p>Stable preferences, identities, routines, and confirmed relationships.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>05</span><div><strong>Shared memory</strong><p>Information explicitly approved for a relationship, family, business, or team Space.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>06</span><div><strong>Source records</strong><p>The original authorized information behind a claim.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>07</span><div><strong>Derived insight</strong><p>A pattern or interpretation labeled as analysis instead of confirmed fact.</p></div></article>
             </div>
 
-            <div class="prose">
-              <p>The main experience is a personal briefing.</p>
-              <p>A morning briefing may include:</p>
-              <ul>
-                <li>Today’s schedule.</li>
-                <li>Important priorities.</li>
-                <li>Progress on active goals.</li>
-                <li>Messages that need attention.</li>
-                <li>Financial or project reminders.</li>
-                <li>A workout or routine.</li>
-                <li>One recommended next action.</li>
+            <div class="memory-controls-card">
+              <p class="card-label">User controls</p>
+              <h3>The record can change when reality changes.</h3>
+              <ul class="check-list">
+                <li>Inspect what is stored</li>
+                <li>See the original source</li>
+                <li>Check when it was updated</li>
+                <li>Correct a mistaken record</li>
+                <li>Restrict it to one Space</li>
+                <li>Remove an interpretation</li>
+                <li>Export or delete data</li>
+                <li>Pause future learning</li>
               </ul>
-              <p>Later briefings can adjust to what has changed during the day. An evening view may focus on unfinished work, completed goals, useful reflections, and preparation for tomorrow.</p>
-              <p>The dashboard can give more attention to urgent information while keeping inactive sections out of the way. The user controls which topics appear, how much detail is shown, and what remains private.</p>
-            </div>
-
-            <div class="process-map" aria-label="Daily briefing process">
-              <div class="process-step"><span>1</span><strong>Current information</strong></div>
-              <div class="process-step"><span>2</span><strong>What changed?</strong></div>
-              <div class="process-step"><span>3</span><strong>What matters now?</strong></div>
-              <div class="process-step"><span>4</span><strong>What needs attention?</strong></div>
-              <div class="process-step"><span>5</span><strong>A clear daily briefing</strong></div>
-            </div>
-          </section>
-
-          <section id="goals" class="document-section" aria-labelledby="goalsTitle">
-            <div class="section-heading">
-              <span class="section-number">02</span>
-              <div>
-                <p class="section-kicker">Direction</p>
-                <h2 id="goalsTitle">Goals Give the System Direction</h2>
+              <div class="record-example">
+                <div><span>Source</span><strong>User check-in</strong></div>
+                <div><span>Type</span><strong>Self-reported</strong></div>
+                <div><span>Freshness</span><strong>Today, 8:12 AM</strong></div>
+                <div><span>Visibility</span><strong>Personal Space</strong></div>
               </div>
             </div>
+          </div>
+        </section>
 
-            <div class="prose">
-              <p>Goals help Personal OS understand what the user is trying to achieve.</p>
-              <p>A goal may be personal, professional, financial, educational, health-related, or shared with someone else.</p>
-              <p>Each goal can include:</p>
-              <ul>
-                <li>The desired result.</li>
-                <li>The current situation.</li>
-                <li>Important milestones.</li>
-                <li>Recent progress.</li>
-                <li>Current blockers.</li>
-                <li>The next useful action.</li>
-              </ul>
-              <p>The system can ask a clear question when it needs more information, such as how much time the user has, what stopped the previous action, or whether the goal has changed.</p>
-              <p>It then uses that answer to improve the next recommendation.</p>
+        <section id="goals" class="document-section goals-section" aria-labelledby="goalsTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">Direction</p>
+              <h2 id="goalsTitle">Goals turn context into movement.</h2>
             </div>
+            <p class="section-intro">The system should understand what the person or Space is trying to accomplish, what changed, what remains blocked, and which action has the highest current value.</p>
+          </div>
 
-            <div class="process-map" aria-label="Goal progress process">
-              <div class="process-step"><span>1</span><strong>Set a goal</strong></div>
-              <div class="process-step"><span>2</span><strong>Take one useful action</strong></div>
-              <div class="process-step"><span>3</span><strong>Record what happened</strong></div>
-              <div class="process-step"><span>4</span><strong>Adjust the plan</strong></div>
-              <div class="process-step"><span>5</span><strong>Show the next step in the briefing</strong></div>
-            </div>
-
-            <div class="prose">
-              <p>The purpose is to help the person make progress without overwhelming them with a large task list.</p>
-            </div>
-          </section>
-
-          <section id="spaces" class="document-section" aria-labelledby="spacesTitle">
-            <div class="section-heading">
-              <span class="section-number">03</span>
-              <div>
-                <p class="section-kicker">Separate contexts</p>
-                <h2 id="spacesTitle">Spaces</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Spaces are one of the most important parts of Personal OS.</p>
-              <p>A Space is a separate environment for a specific part of life, relationship, business, team, or project.</p>
-              <p>Examples include:</p>
-              <ul>
-                <li>Personal.</li>
-                <li>Relationship.</li>
-                <li>Family.</li>
-                <li>Business.</li>
-                <li>Team.</li>
-                <li>Project.</li>
-              </ul>
-            </div>
-
-            <div class="space-diagram" aria-label="Spaces around Personal OS">
-              <div class="space-column">
-                <div class="space-node">Personal Space</div>
-                <div class="space-node">Relationship Space</div>
-                <div class="space-node">Family Space</div>
-              </div>
-              <div class="space-core">
+          <div class="goal-board">
+            <div class="goal-summary">
+              <div class="goal-title-row">
                 <div>
-                  <span>Controlled foundation</span>
-                  <strong>Each Space has its own context, permissions and daily view.</strong>
+                  <span class="status-chip status-chip-designed">Designed</span>
+                  <p class="card-label">Goal Pulse</p>
+                  <h3>Launch a secure working backend</h3>
                 </div>
+                <div class="trajectory"><span>Trajectory</span><strong>Improving</strong></div>
               </div>
-              <div class="space-column">
-                <div class="space-node">Business Space</div>
-                <div class="space-node">Team Space</div>
-                <div class="space-node">Project Space</div>
+              <div class="goal-metrics">
+                <div><span>Difficulty</span><strong>Focused</strong></div>
+                <div><span>Milestone</span><strong>First working API route</strong></div>
+                <div><span>Blocker</span><strong>Deployment path unclear</strong></div>
+                <div><span>Confidence</span><strong>Moderate</strong></div>
               </div>
             </div>
+            <div class="goal-question">
+              <span>One useful question</span>
+              <strong>Is today’s priority understanding the code or proving that the route works?</strong>
+              <p>The answer changes the next action, effort, and success condition.</p>
+            </div>
+            <div class="goal-action">
+              <span>Recommended next action</span>
+              <strong>Run one local route and confirm the response.</strong>
+              <div class="goal-action-meta"><span>30 minutes</span><span>Expected result: working endpoint</span></div>
+            </div>
+          </div>
 
-            <div class="prose">
-              <p>Each Space can have its own:</p>
+          <div class="difficulty-grid" aria-label="Goal difficulty modes">
+            <article><span>1</span><h3>Recovery</h3><p>Protect continuity with one very small action.</p></article>
+            <article><span>2</span><h3>Sustainable</h3><p>Move steadily with a modest daily requirement.</p></article>
+            <article class="difficulty-active"><span>3</span><h3>Focused</h3><p>Complete one meaningful action with clear accountability.</p></article>
+            <article><span>4</span><h3>Stretch</h3><p>Use a larger action and expose the necessary tradeoffs.</p></article>
+            <article><span>5</span><h3>Sprint</h3><p>Run a temporary high-intensity period with an end date.</p></article>
+          </div>
+        </section>
+
+        <section id="ritual" class="document-section ritual-section" aria-labelledby="ritualTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">The daily experience</p>
+              <h2 id="ritualTitle">A briefing can become part of the morning itself.</h2>
+            </div>
+            <p class="section-intro">Personal OS can combine an alarm, selected music, voice, and a concise Brief into one user-controlled routine.</p>
+          </div>
+
+          <div class="ritual-stage">
+            <div class="ritual-phone" aria-label="Example Personal OS morning briefing">
+              <div class="ritual-phone-top"><span>7:00</span><span>Personal Space</span></div>
+              <div class="ritual-greeting">
+                <span>Good morning</span>
+                <strong>Your day is ready.</strong>
+              </div>
+              <div class="ritual-now-playing">
+                <div class="album-shape" aria-hidden="true"><span></span></div>
+                <div><span>Opening track</span><strong>Your selected morning song</strong></div>
+                <button type="button" aria-label="Example play control" disabled>▶</button>
+              </div>
+              <div class="ritual-brief-card"><span>Schedule</span><strong>One meeting at 10:00 AM</strong></div>
+              <div class="ritual-brief-card"><span>Priority</span><strong>Finish the first project milestone</strong></div>
+              <div class="ritual-brief-card"><span>Weather</span><strong>Rain after 3:00 PM</strong></div>
+              <div class="ritual-brief-card ritual-action-card"><span>Recommended first action</span><strong>30 focused minutes before email</strong></div>
+            </div>
+
+            <div class="ritual-options">
+              <article><span class="ritual-icon" aria-hidden="true">◷</span><div><h3>Alarm</h3><p>Choose the time, days, Space, and routine.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">♪</span><div><h3>Music</h3><p>Start with a selected song or playlist after a permitted user action.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">◉</span><div><h3>Voice</h3><p>Read the full Brief or only the sections safe to speak aloud.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">↻</span><div><h3>Response</h3><p>Answer a question, record progress, save a thought, or create a reminder by voice.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">◇</span><div><h3>Adaptation</h3><p>Use different routines for weekdays, weekends, travel, recovery, or a shared household.</p></div></article>
+            </div>
+          </div>
+        </section>
+
+        <section id="relationships" class="document-section relationship-section" aria-labelledby="relationshipsTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">Complex human coordination</p>
+              <h2 id="relationshipsTitle">The system can help people coordinate without collapsing their boundaries.</h2>
+            </div>
+            <p class="section-intro">The most important shared use cases involve context that belongs to more than one person and still requires careful privacy, consent, and interpretation.</p>
+          </div>
+
+          <div class="relationship-grid">
+            <article class="relationship-card">
+              <p class="card-label">Couples</p>
+              <h3>Shared plans with separate private context</h3>
+              <p>A Relationship Space can hold plans, rituals, decisions, promises, shared goals, and approved memories while each person retains a separate Personal Space.</p>
               <ul>
-                <li>Goals.</li>
-                <li>Dashboard.</li>
-                <li>Information.</li>
-                <li>Files.</li>
-                <li>Connections.</li>
-                <li>Automations.</li>
-                <li>Briefings.</li>
-                <li>Members.</li>
-                <li>Privacy settings.</li>
+                <li>Compare schedules before suggesting time together</li>
+                <li>Track an agreement after both people approve it</li>
+                <li>Summarize stated concerns without declaring a winner</li>
+                <li>Keep private information out of the shared view</li>
               </ul>
-              <p>This means a business partner can see shared project information without gaining access to personal notes. A couple can share plans and goals while keeping private information separate. A team member can see the work relevant to their role without seeing the entire organization.</p>
-              <p>Spaces allow different parts of life to work together without mixing everything into one account or one dashboard.</p>
-              <p>A calendar event may appear in a personal briefing, a project Space, and a shared family plan, depending on the permissions chosen by the user.</p>
-            </div>
-
-            <div class="permission-band" aria-label="Space permission examples">
-              <div><strong>Personal</strong><span>Private by default</span></div>
-              <div><strong>Shared</strong><span>Approved people only</span></div>
-              <div><strong>Role-based</strong><span>Relevant work only</span></div>
-              <div><strong>Connected</strong><span>Scoped account access</span></div>
-            </div>
-          </section>
-
-          <section id="connections" class="document-section" aria-labelledby="connectionsTitle">
-            <div class="section-heading">
-              <span class="section-number">04</span>
-              <div>
-                <p class="section-kicker">Existing services</p>
-                <h2 id="connectionsTitle">Connections to Existing Services</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Personal OS can connect to the services the user already relies on.</p>
-              <p>These may include:</p>
+            </article>
+            <article class="relationship-card">
+              <p class="card-label">Families</p>
+              <h3>A household operating layer</h3>
+              <p>A Family Space can organize care, school, meals, appointments, travel, events, medication reminders, chores, and household decisions with age-appropriate permissions.</p>
               <ul>
-                <li>Calendar.</li>
-                <li>Email.</li>
-                <li>Music.</li>
-                <li>Task and project tools.</li>
-                <li>Cloud files.</li>
-                <li>Financial accounts.</li>
-                <li>Fitness tools.</li>
-                <li>Notes.</li>
-                <li>Communication and business software.</li>
+                <li>Show each person only what they need</li>
+                <li>Coordinate several calendars and locations</li>
+                <li>Preserve family memories and important dates</li>
+                <li>Escalate a missed responsibility to the right adult</li>
               </ul>
-              <p>Connections are optional.</p>
-              <p>The user should always know:</p>
-              <ul>
-                <li>What information is being accessed.</li>
-                <li>Which Space can use it.</li>
-                <li>Whether it can appear in a briefing.</li>
-                <li>Whether the platform can only read it or also take action.</li>
-                <li>How to pause or disconnect it.</li>
+            </article>
+            <article class="relationship-card relationship-card-wide">
+              <p class="card-label">Teams and organizations</p>
+              <h3>One shared truth with role-specific access</h3>
+              <p>A Team Space can hold the project state, responsibilities, handoffs, procedures, risks, decisions, and approved financial signals. Leadership may see broader operating context while each member sees relevant work and the information needed to complete it.</p>
+              <div class="team-flow">
+                <span>Private member profile</span>
+                <span aria-hidden="true">→</span>
+                <span>Role Space</span>
+                <span aria-hidden="true">→</span>
+                <span>Project truth</span>
+                <span aria-hidden="true">→</span>
+                <span>Leadership context</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="mediation-principles">
+            <article><span>01</span><h3>Use stated information</h3><p>The system should not invent motives or treat an inference as a fact.</p></article>
+            <article><span>02</span><h3>Expose conflicts clearly</h3><p>Show where schedules, goals, responsibilities, or decisions disagree.</p></article>
+            <article><span>03</span><h3>Keep approval visible</h3><p>A shared record changes after the relevant people confirm the decision.</p></article>
+            <article><span>04</span><h3>Support human judgment</h3><p>The system can prepare context and options. People remain responsible for the relationship and the decision.</p></article>
+          </div>
+        </section>
+
+        <section id="ai-layer" class="document-section ai-section" aria-labelledby="aiTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Model-independent intelligence</p>
+              <h2 id="aiTitle">Your chosen AI works inside a controlled operating layer.</h2>
+            </div>
+            <p class="section-intro">The model receives the context, tools, and permissions needed for the current task. Personal OS keeps the long-term product state outside the model.</p>
+          </div>
+
+          <div class="ai-architecture">
+            <div class="ai-model-column">
+              <div class="ai-model-card ai-model-default"><span>Default</span><strong>Primary model</strong></div>
+              <div class="ai-model-card"><span>Choice</span><strong>Alternative cloud model</strong></div>
+              <div class="ai-model-card"><span>Private</span><strong>Future local model</strong></div>
+            </div>
+            <div class="ai-connector" aria-hidden="true"><span></span><strong>Uses</strong><span></span></div>
+            <div class="ai-foundation-card">
+              <p class="card-label">Stable Personal OS foundation</p>
+              <div class="foundation-grid">
+                <span>Spaces</span>
+                <span>Permissions</span>
+                <span>Memory</span>
+                <span>Sources</span>
+                <span>Goals</span>
+                <span>Typed tools</span>
+                <span>Approval rules</span>
+                <span>Audit history</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ai-roles-grid">
+            <article><h3>Research</h3><p>Find and compare current public information with sources.</p></article>
+            <article><h3>Organize</h3><p>Turn authorized data into structured state that the user can inspect.</p></article>
+            <article><h3>Reason</h3><p>Identify the relevant change, blocker, question, or next action.</p></article>
+            <article><h3>Draft</h3><p>Prepare messages, plans, tasks, reports, schedules, or summaries.</p></article>
+            <article><h3>Act with approval</h3><p>Use typed tools within a defined Space and permission scope.</p></article>
+          </div>
+        </section>
+
+        <section id="trust" class="document-section trust-section" aria-labelledby="trustTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">Trust as product infrastructure</p>
+              <h2 id="trustTitle">Every important item should answer four questions.</h2>
+            </div>
+            <p class="section-intro">Where did this come from? How fresh is it? Who can use it? What can the system do with it?</p>
+          </div>
+
+          <div class="trust-grid">
+            <article class="trust-card"><span class="trust-icon" aria-hidden="true">⌁</span><h3>Source</h3><p>Public source, connected account, user report, uploaded file, shared record, or system analysis.</p></article>
+            <article class="trust-card"><span class="trust-icon" aria-hidden="true">◷</span><h3>Freshness</h3><p>Last updated, last synchronized, historical date, or confirmation required.</p></article>
+            <article class="trust-card"><span class="trust-icon" aria-hidden="true">◎</span><h3>Visibility</h3><p>Private, shared, role-based, leadership-only, goal-specific, or excluded from Briefs.</p></article>
+            <article class="trust-card"><span class="trust-icon" aria-hidden="true">✓</span><h3>Action scope</h3><p>Read only, draft only, ask first, approved write, recurring automation, or disconnected.</p></article>
+          </div>
+
+          <div class="source-labels" aria-label="Example Personal OS data labels">
+            <span>LIVE PUBLIC</span>
+            <span>CONNECTED</span>
+            <span>SELF-REPORTED</span>
+            <span>REMEMBERED</span>
+            <span>DEMO</span>
+            <span>ANALYSIS</span>
+            <span>SUGGESTED</span>
+            <span>REQUIRES APPROVAL</span>
+          </div>
+
+          <div class="security-note">
+            <div>
+              <p class="card-label">Current gate</p>
+              <h3>A deliberate entry experience, not the final security boundary.</h3>
+            </div>
+            <p>The current Black Prompt Gate is useful for controlled presentation and casual privacy. Production protection requires edge or server enforcement, authenticated sessions, authorization, protected storage, connector scopes, encryption, audit logs, and revocable access.</p>
+          </div>
+        </section>
+
+        <section id="status" class="document-section status-section" aria-labelledby="statusTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">Current reality</p>
+              <h2 id="statusTitle">A strong demonstration with a clear path to the real platform.</h2>
+            </div>
+            <p class="section-intro">The document separates what exists from what has been designed or planned so the product can be ambitious without overstating its current state.</p>
+          </div>
+
+          <div class="status-columns">
+            <div class="status-column">
+              <div class="status-column-heading"><span class="status-chip status-chip-live">Demonstrated</span><h3>Available in the current project</h3></div>
+              <ul class="status-list">
+                <li>Five briefing contexts: Personal, Relationship, Business, Trainer, and Team</li>
+                <li>Focused and deeper briefing views</li>
+                <li>Dark and light appearance</li>
+                <li>Sourced public information and fictional private-looking examples</li>
+                <li>Frontend demonstrations of Spaces, memory, connections, goals, media, and permissions</li>
+                <li>Mobile, browser, theme, navigation, and accessibility validation work</li>
+                <li>A separate experimental `/brief-next/` direction</li>
               </ul>
-              <p>These connections allow Personal OS to understand what is actually happening without requiring the person to manually copy everything into another app.</p>
             </div>
-
-            <div class="feature-grid" aria-label="Connection benefits">
-              <article class="feature-card"><h3>One approved view</h3><p>Useful information can be brought together without replacing the services people already use.</p></article>
-              <article class="feature-card"><h3>Clear boundaries</h3><p>Every connection can be limited by Space, purpose, access level and user permission.</p></article>
-            </div>
-          </section>
-
-          <section id="automations" class="document-section" aria-labelledby="automationsTitle">
-            <div class="section-heading">
-              <span class="section-number">05</span>
-              <div>
-                <p class="section-kicker">Work that continues</p>
-                <h2 id="automationsTitle">Automations</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Automations allow the platform to keep working after the user closes the dashboard.</p>
-              <p>They can handle repeated tasks, scheduled actions, and conditions that need to be watched.</p>
-              <p>Examples include:</p>
-              <ul>
-                <li>Create a morning briefing every day.</li>
-                <li>Check whether an important email received a reply.</li>
-                <li>Remind the user when a deadline is approaching.</li>
-                <li>Watch for a change in weather before a trip.</li>
-                <li>Move unfinished work into tomorrow’s plan.</li>
-                <li>Prepare a weekly goal review.</li>
-                <li>Notify a team when a project becomes blocked.</li>
-                <li>Create a reminder after a bill or appointment appears.</li>
-                <li>Generate a business summary at the end of the week.</li>
-                <li>Ask for a check-in when a goal has not moved.</li>
+            <div class="status-column">
+              <div class="status-column-heading"><span class="status-chip status-chip-planned">Planned</span><h3>Required for the production platform</h3></div>
+              <ul class="status-list">
+                <li>Secure user accounts and server sessions</li>
+                <li>FastAPI application services</li>
+                <li>PostgreSQL durable product state</li>
+                <li>Private memory and correction history</li>
+                <li>Real connector permission management</li>
+                <li>Scheduled research, synchronization, and briefing jobs</li>
+                <li>Deterministic Goal Intelligence engine</li>
+                <li>AI reasoning over limited structured context</li>
+                <li>Auditable approval-gated actions</li>
+                <li>Multi-user and multi-Space administration</li>
               </ul>
-              <p>Automations should always have a clear purpose.</p>
-              <p>The user should be able to see what is running, pause it, change it, or delete it.</p>
-              <p>An automation may belong to one person or one Space. A team automation should not gain access to private information from another part of the user’s life.</p>
             </div>
+          </div>
 
-            <div class="process-map" aria-label="Automation process">
-              <div class="process-step"><span>1</span><strong>A schedule or condition</strong></div>
-              <div class="process-step"><span>2</span><strong>Approved information</strong></div>
-              <div class="process-step"><span>3</span><strong>A focused check</strong></div>
-              <div class="process-step"><span>4</span><strong>A useful update or action</strong></div>
-              <div class="process-step"><span>5</span><strong>Visible user control</strong></div>
+          <div class="roadmap-row" aria-label="Personal OS development sequence">
+            <article><span>1</span><strong>Prove the daily experience</strong></article>
+            <article><span>2</span><strong>Stabilize the product shell</strong></article>
+            <article><span>3</span><strong>Prove the goal loop</strong></article>
+            <article><span>4</span><strong>Add structured storage</strong></article>
+            <article><span>5</span><strong>Add AI reasoning</strong></article>
+            <article><span>6</span><strong>Add authorized connectors</strong></article>
+            <article><span>7</span><strong>Enable approved actions</strong></article>
+          </div>
+        </section>
+
+        <section id="architecture" class="document-section architecture-section" aria-labelledby="architectureTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Technical direction</p>
+              <h2 id="architectureTitle">A product layer that remains understandable and controllable.</h2>
             </div>
-          </section>
+            <p class="section-intro">The technical plan keeps structured product state, AI reasoning, connectors, and user-facing interfaces separate enough to test, replace, and secure.</p>
+          </div>
 
-          <section id="voice" class="document-section" aria-labelledby="voiceTitle">
-            <div class="section-heading">
-              <span class="section-number">06</span>
-              <div>
-                <p class="section-kicker">Part of the routine</p>
-                <h2 id="voiceTitle">Alarms, Voice, and Music</h2>
-              </div>
+          <div class="architecture-stack" aria-label="Planned Personal OS architecture">
+            <article class="architecture-layer"><span>Experience</span><strong>Brief · Goals · Spaces · Memory · Settings</strong><p>Responsive interfaces for individuals and shared groups.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>Application</span><strong>FastAPI · Typed APIs · Permissions · Approval flows</strong><p>Server-side product logic and controlled tool access.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>State</span><strong>PostgreSQL · Files · Audit history · Search</strong><p>Durable records for users, Spaces, goals, memory, sources, and revisions.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>Intelligence</span><strong>Rules · Retrieval · Chosen AI models · Structured outputs</strong><p>Focused reasoning over the minimum relevant context.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>Connections</span><strong>Calendar · Email · Files · Projects · Music · Finance · Public data</strong><p>Optional sources with explicit read, write, sync, and Space scopes.</p></article>
+          </div>
+
+          <div class="architecture-principles">
+            <article><h3>Human approval</h3><p>Meaningful writes, external actions, and production changes remain approval controlled.</p></article>
+            <article><h3>Structured records</h3><p>Critical facts, identities, permissions, dates, tasks, and goals belong in typed records.</p></article>
+            <article><h3>Replaceable components</h3><p>Models, connectors, and interfaces can change without erasing the user’s operating context.</p></article>
+            <article><h3>Visible provenance</h3><p>The product can explain the information and evidence behind a recommendation.</p></article>
+          </div>
+        </section>
+
+        <section id="scenarios" class="document-section scenarios-section" aria-labelledby="scenariosTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">One platform, different contexts</p>
+              <h2 id="scenariosTitle">The same foundation can serve very different lives.</h2>
             </div>
+            <p class="section-intro">Each scenario uses a different Space, permission model, vocabulary, data mix, and daily output while preserving the same core architecture.</p>
+          </div>
 
-            <div class="prose">
-              <p>Personal OS can become part of a person’s routine before they open the full dashboard.</p>
-              <p>A user may choose an alarm time, music, a voice, and the length of the spoken briefing.</p>
+          <div class="scenario-grid">
+            <article class="scenario-card">
+              <span class="scenario-index">01</span>
+              <p class="card-label">Personal</p>
+              <h3>Start the day with direction.</h3>
+              <p>Schedule, work, money, wellness, goals, learning, music, reminders, and one useful next action.</p>
+            </article>
+            <article class="scenario-card">
+              <span class="scenario-index">02</span>
+              <p class="card-label">Relationship and family</p>
+              <h3>Coordinate shared life with boundaries.</h3>
+              <p>Plans, calendars, responsibilities, rituals, memories, decisions, and private context that stays private.</p>
+            </article>
+            <article class="scenario-card">
+              <span class="scenario-index">03</span>
+              <p class="card-label">Founder and business</p>
+              <h3>Connect operating reality to decisions.</h3>
+              <p>Clients, revenue, cash, projects, meetings, opportunities, risks, priorities, and follow-up actions.</p>
+            </article>
+            <article class="scenario-card">
+              <span class="scenario-index">04</span>
+              <p class="card-label">Team and project</p>
+              <h3>Give each person the context needed to deliver.</h3>
+              <p>My work, project truth, handoffs, procedures, blockers, workload, approved finance, and leadership visibility.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="faq" class="document-section faq-section" aria-labelledby="faqTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Questions</p>
+              <h2 id="faqTitle">What readers usually need clarified</h2>
             </div>
+          </div>
 
-            <div class="voice-card">
-              <blockquote>Good morning. You have one meeting at 10:00. Your main priority is to finish the first project milestone. Rain is expected this afternoon. Your recommended first action will take about 30 minutes.</blockquote>
-              <footer>Example morning briefing</footer>
-            </div>
+          <div class="faq-list">
+            <details>
+              <summary>Is Personal OS an AI model?</summary>
+              <p>Personal OS is the product layer around AI models. It manages Spaces, permissions, structured memory, sources, goals, tools, approvals, and history. A model provides reasoning and generation within that controlled context.</p>
+            </details>
+            <details>
+              <summary>Why are Spaces so important?</summary>
+              <p>Spaces let one platform support private life and shared coordination without mixing everything together. Each Space defines its members, memory, goals, tools, data, and visibility rules.</p>
+            </details>
+            <details>
+              <summary>Can different AI models use the same Personal OS?</summary>
+              <p>That is the intended direction. The operating context remains stable while the user or system selects an appropriate model. Provider changes should not require rebuilding the user’s goals, memory, permissions, and Spaces.</p>
+            </details>
+            <details>
+              <summary>Does the current demo use real private data?</summary>
+              <p>No. The public demonstration uses sourced public information and clearly fictional private-looking records. Real private data requires the planned secure backend, authentication, protected storage, and connector permissions.</p>
+            </details>
+            <details>
+              <summary>Can the system mediate family, relationship, or team issues?</summary>
+              <p>It can organize stated information, expose conflicts, compare schedules, summarize approved positions, track agreements, and suggest practical options. It should not diagnose people, invent motives, take sides, or replace professional judgment.</p>
+            </details>
+            <details>
+              <summary>What makes the alarm, music, and voice experience different?</summary>
+              <p>The routine can be built from the same approved context that powers the Brief. A selected alarm can begin a user-controlled music and voice experience, then allow spoken check-ins, reminders, and updates without forcing the user through a full dashboard.</p>
+            </details>
+          </div>
+        </section>
 
-            <div class="prose">
-              <p>The experience could begin with a selected song or playlist, followed by a spoken briefing built from the user’s approved information.</p>
-              <p>The user may customize:</p>
-              <ul>
-                <li>Alarm time.</li>
-                <li>Music.</li>
-                <li>Voice.</li>
-                <li>Briefing length.</li>
-                <li>Topics.</li>
-                <li>Level of detail.</li>
-                <li>Which Spaces are included.</li>
-                <li>Which information is safe to speak aloud.</li>
-                <li>Different routines for weekdays, weekends, or travel.</li>
-              </ul>
-              <p>Voice may also allow the user to answer a question, record progress, save a thought, complete a check-in, or create a reminder without opening a form.</p>
-            </div>
-          </section>
-
-          <section id="personalization" class="document-section" aria-labelledby="personalizationTitle">
-            <div class="section-heading">
-              <span class="section-number">07</span>
-              <div>
-                <p class="section-kicker">Learns with permission</p>
-                <h2 id="personalizationTitle">Personalization</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Personal OS becomes more useful as the user teaches it what matters.</p>
-              <p>It can learn from:</p>
-              <ul>
-                <li>Questions and answers.</li>
-                <li>Corrections.</li>
-                <li>Completed or skipped actions.</li>
-                <li>Preferred sections.</li>
-                <li>Music and voice choices.</li>
-                <li>Daily routines.</li>
-                <li>Connected accounts.</li>
-                <li>Changes in goals.</li>
-                <li>Activity inside different Spaces.</li>
-              </ul>
-              <p>Personalization may affect which sections appear first, how detailed the briefing is, which goals need attention, and what kind of recommendation fits the person’s day.</p>
-              <p>The dashboard can also give more space to information that matters that day while reducing sections that have no meaningful updates.</p>
-              <p>The user can change, remove, or limit what the system remembers.</p>
-              <p>The platform should improve over time without becoming confusing or taking control away from the person using it.</p>
-            </div>
-
-            <div class="feature-grid" aria-label="Personalization controls">
-              <article class="feature-card"><h3>Useful memory</h3><p>Preferences, decisions, corrections and outcomes can stay organized instead of disappearing into separate conversations.</p></article>
-              <article class="feature-card"><h3>User correction</h3><p>The person can review, change, restrict or remove what the platform remembers.</p></article>
-              <article class="feature-card"><h3>Adaptive presentation</h3><p>The dashboard can change emphasis and detail based on the information that matters that day.</p></article>
-              <article class="feature-card"><h3>Space-specific behavior</h3><p>Personal, shared and work contexts can each use different rules, routines and presentation.</p></article>
-            </div>
-          </section>
-
-          <section id="personal-ai" class="document-section" aria-labelledby="personalAiTitle">
-            <div class="section-heading">
-              <span class="section-number">08</span>
-              <div>
-                <p class="section-kicker">A chosen assistant</p>
-                <h2 id="personalAiTitle">Personal AI</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Personal OS can eventually connect with a person’s preferred AI assistant.</p>
-              <p>With permission, the assistant could understand the user’s goals, plans, schedule, preferences, connected accounts, recent progress, and the Spaces it is allowed to access.</p>
-              <p>This would give the assistant useful continuity without requiring the user to explain their situation again in every conversation.</p>
-              <p>A personal AI could help by:</p>
-              <ul>
-                <li>Preparing briefings and progress reviews.</li>
-                <li>Finding information across approved accounts and files.</li>
-                <li>Suggesting actions that support active goals.</li>
-                <li>Adjusting plans when circumstances change.</li>
-                <li>Drafting messages, reports, tasks, and schedules.</li>
-                <li>Watching for deadlines, replies, risks, or important changes.</li>
-                <li>Running approved automations.</li>
-                <li>Taking permitted actions across connected services.</li>
-              </ul>
-              <p>For example, it could notice that a goal is falling behind, check the user’s calendar, identify an available period, and suggest a realistic next step. After receiving approval, it could prepare the task, reminder, or calendar block.</p>
-              <p>Spaces would control what the assistant can understand and use.</p>
-              <p>An assistant working inside a Business Space could access approved projects, meetings, files, and goals without receiving access to private relationship or financial information from another Space.</p>
-              <p>The user would decide:</p>
-              <ul>
-                <li>Which assistant can connect.</li>
-                <li>Which Spaces it can access.</li>
-                <li>What information it can read.</li>
-                <li>What actions it can prepare.</li>
-                <li>Which actions require confirmation.</li>
-                <li>What it may remember.</li>
-                <li>When its access should end.</li>
-              </ul>
-              <p>Personal OS does not have to replace every AI assistant. It can provide the organized context, goals, history, permissions, and tools that allow a chosen assistant to become genuinely personal and useful.</p>
-            </div>
-          </section>
-
-          <section id="beyond-ai" class="document-section" aria-labelledby="beyondAiTitle">
-            <div class="section-heading">
-              <span class="section-number">09</span>
-              <div>
-                <p class="section-kicker">The deeper difference</p>
-                <h2 id="beyondAiTitle">More Than a Normal AI Assistant</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Most AI assistants mainly work from the current conversation. They may remember a few preferences, but they usually do not have a complete, organized view of the person’s goals, relationships, responsibilities, history, and connected services.</p>
-              <p>Personal OS gives a chosen AI a structured foundation to work from.</p>
-              <p>With permission, that foundation can include:</p>
-              <ul>
-                <li>Long-term goals and active plans.</li>
-                <li>Confirmed preferences and routines.</li>
-                <li>Past decisions, corrections, and results.</li>
-                <li>Calendar events, tasks, files, and connected accounts.</li>
-                <li>Personal, relationship, family, business, and project Spaces.</li>
-                <li>Clear rules about what is private, shared, temporary, or safe to use.</li>
-                <li>A record of what the AI recommended and what happened afterward.</li>
-              </ul>
-              <p>This information would be stored in an organized personal database instead of being scattered across separate conversations.</p>
-              <p>The user could review, correct, restrict, or delete what the platform remembers.</p>
-            </div>
-
-            <div class="ai-foundation" aria-label="Personal AI foundation">
-              <div class="ai-foundation-column">
-                <div class="ai-foundation-node">Personal database and memory</div>
-                <div class="ai-foundation-node">Goals and plans</div>
-                <div class="ai-foundation-node">Spaces and relationships</div>
-                <div class="ai-foundation-node">Connected accounts</div>
-                <div class="ai-foundation-node">Permissions and history</div>
-              </div>
-              <div class="ai-foundation-arrow" aria-hidden="true">→</div>
-              <div class="ai-foundation-result"><strong>A personal AI that understands the situation and can provide better guidance, coordination and approved action.</strong></div>
-            </div>
-
-            <div class="prose">
-              <h3>Better Continuity</h3>
-              <p>The user would not need to explain the same background every time they start a new conversation or use a different assistant.</p>
-              <p>The AI could understand the current plan, recent progress, unresolved blockers, and previous decisions before offering guidance.</p>
-
-              <h3>More Useful Personalization</h3>
-              <p>Recommendations could reflect the person’s real schedule, preferred working style, available energy, responsibilities, and past results.</p>
-              <p>The system could learn that a person responds better to one focused action, prefers shorter morning briefings, needs financial information separated from personal reflection, or wants different routines inside different Spaces.</p>
-
-              <h3>Connections Between People</h3>
-              <p>Spaces can give people a shared area for approved information, goals, plans, responsibilities, and decisions.</p>
-              <p>A couple could use a Relationship Space. Business partners could use a Business Space. A family or team could have its own shared environment.</p>
-              <p>Each person would keep a separate private space. Shared access would only apply to information intentionally placed in the shared Space.</p>
-            </div>
-
-            <div class="mediation-panel">
-              <div class="prose">
-                <h3>Mediation and Coordination</h3>
-                <p>Inside a shared Space, the system could help people understand each other’s stated priorities, identify where plans conflict, summarize agreements, and suggest practical next steps.</p>
-                <p>For example, it could:</p>
-                <ul>
-                  <li>Compare two people’s schedules before suggesting a plan.</li>
-                  <li>Show where responsibilities are unclear.</li>
-                  <li>Summarize each person’s stated concerns without taking sides.</li>
-                  <li>Track promises and agreed actions.</li>
-                  <li>Identify decisions that still need approval.</li>
-                  <li>Suggest a fair division of work.</li>
-                  <li>Prepare a neutral discussion outline.</li>
-                  <li>Keep private information out of the shared conversation.</li>
-                  <li>Record the final agreement once everyone approves it.</li>
-                </ul>
-                <p>The system should support clearer communication without pretending to replace human judgment, professional counseling, or the people involved.</p>
-              </div>
-            </div>
-
-            <div class="prose">
-              <h3>A User-Owned Intelligence Layer</h3>
-              <p>Personal OS can become the organized layer between the user, their information, their Spaces, their connected services, and whichever AI assistants they choose to use.</p>
-              <p>The user would not be locked into one assistant.</p>
-              <p>Different approved assistants could work from the same goals, permissions, history, and personal context without each one building a separate and incomplete version of the person.</p>
-              <p>This is what allows Personal OS to grow beyond a chatbot. It becomes a private, user-controlled foundation that helps AI understand the person’s real life and act within the plans, relationships, and boundaries they have chosen.</p>
-            </div>
-          </section>
-
-          <section id="action" class="document-section" aria-labelledby="actionTitle">
-            <div class="section-heading">
-              <span class="section-number">10</span>
-              <div>
-                <p class="section-kicker">Useful outcomes</p>
-                <h2 id="actionTitle">From Information to Action</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Personal OS is designed to help the user act on the information it shows.</p>
-              <p>A briefing item could become:</p>
-              <ul>
-                <li>A reminder.</li>
-                <li>A calendar event.</li>
-                <li>A task.</li>
-                <li>A saved note.</li>
-                <li>A goal update.</li>
-                <li>A message draft.</li>
-                <li>A workout.</li>
-                <li>A shared plan.</li>
-                <li>An automation.</li>
-                <li>A follow-up for another person.</li>
-              </ul>
-              <p>This creates a simple cycle:</p>
-            </div>
-
-            <div class="process-map" aria-label="Information to action cycle">
-              <div class="process-step"><span>1</span><strong>Information</strong></div>
-              <div class="process-step"><span>2</span><strong>Understanding</strong></div>
-              <div class="process-step"><span>3</span><strong>Action</strong></div>
-              <div class="process-step"><span>4</span><strong>Result</strong></div>
-              <div class="process-step"><span>5</span><strong>A better next briefing</strong></div>
-            </div>
-          </section>
-
-          <section id="difference" class="document-section" aria-labelledby="differenceTitle">
-            <div class="section-heading">
-              <span class="section-number">11</span>
-              <div>
-                <p class="section-kicker">The complete model</p>
-                <h2 id="differenceTitle">What Makes It Different</h2>
-              </div>
-            </div>
-
-            <div class="prose">
-              <p>Personal OS combines several ideas that are usually separated across different apps.</p>
-            </div>
-
-            <div class="difference-grid">
-              <article class="difference-card"><h3>Goal-oriented</h3><p>Information is connected to what the user is trying to achieve.</p></article>
-              <article class="difference-card"><h3>Personalized</h3><p>The experience improves through preferences, questions, corrections, and results.</p></article>
-              <article class="difference-card"><h3>Connected</h3><p>It can bring together information from approved services.</p></article>
-              <article class="difference-card"><h3>Organized through Spaces</h3><p>Personal, shared, business, and project information remain separate while still working together.</p></article>
-              <article class="difference-card"><h3>Automated</h3><p>Repeated tasks, reminders, summaries, and checks can run without constant manual input.</p></article>
-              <article class="difference-card"><h3>Flexible</h3><p>It can support one person, a couple, a family, a business, or a team.</p></article>
-              <article class="difference-card"><h3>Actionable</h3><p>Briefing items can become tasks, reminders, events, automations, and goal updates.</p></article>
-              <article class="difference-card"><h3>AI-ready</h3><p>A chosen personal assistant can work from approved goals, context, and permissions.</p></article>
-              <article class="difference-card"><h3>Built on structured memory</h3><p>The user’s history, preferences, corrections, and decisions can remain organized and usable.</p></article>
-              <article class="difference-card"><h3>Useful between people</h3><p>Shared Spaces can support planning, coordination, responsibility, and communication.</p></article>
-              <article class="difference-card"><h3>User-owned</h3><p>The person controls access, sharing, memory, connections, and important actions.</p></article>
-              <article class="difference-card"><h3>Private</h3><p>Information remains separated by Space, permission, and purpose.</p></article>
-            </div>
-
-            <div class="prose">
-              <p>The larger idea is a system that understands the user’s approved information, keeps their goals visible, and gives them a clearer view of what matters each day.</p>
-            </div>
-
-            <div class="final-equation" aria-label="Personal OS summary">
-              <div class="final-equation-row">
-                <span>Your information</span>
-                <span>Your goals</span>
-                <span>Your Spaces</span>
-                <span>Your connections</span>
-                <span>Your automations</span>
-                <span>Your preferences</span>
-                <span>Your chosen personal AI</span>
-              </div>
-              <div class="final-equation-arrow" aria-hidden="true">↓</div>
-              <div class="final-equation-result">A clear daily briefing</div>
-              <div class="final-equation-arrow" aria-hidden="true">↓</div>
-              <div class="final-equation-result">A useful next action</div>
-              <div class="final-equation-arrow" aria-hidden="true">↓</div>
-              <div class="final-equation-result">A system that improves with you</div>
-            </div>
-          </section>
-        </div>
+        <section class="final-cta" aria-labelledby="finalCtaTitle">
+          <div class="final-cta-glow" aria-hidden="true"></div>
+          <div>
+            <p class="section-kicker">See the idea in motion</p>
+            <h2 id="finalCtaTitle">Explore the current Personal OS briefing demonstration.</h2>
+            <p>The demo is an active-development preview of the daily experience. Its interface, data structure, connections, Goals, memory, and backend will continue changing as the product moves toward the full system described here.</p>
+          </div>
+          <a class="button button-primary button-large" href="/brief/">
+            <span>Open the demo</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+          <p class="final-cta-note">Current demonstration · Public noindex page · Sourced public information · Fictional private-looking examples</p>
+        </section>
 
         <footer class="document-footer">
-          <strong>Personal OS</strong> · Private product overview · Light mode is the default. Dark mode and print controls are available at the top of the document.
+          <div><strong>Personal OS</strong><span>A private operating layer built around Spaces, memory, goals, and approved action.</span></div>
+          <div class="footer-actions"><a href="#top">Back to top</a><a href="/brief/">Explore demo</a></div>
         </footer>
       </article>
     </div>
@@ -622,6 +719,6 @@
 
   <noscript>This private document requires JavaScript and authorization.</noscript>
   <script src="/assets/gates/cmx-gate-black-prompt.js?v=20260804-1" defer></script>
-  <script src="/assets/personal-os-doc.js?v=20260804-1" defer></script>
+  <script src="/assets/personal-os-doc.js?v=20260805-2" defer></script>
 </body>
 </html>
