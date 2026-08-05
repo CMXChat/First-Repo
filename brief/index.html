@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src https://open.spotify.com; media-src https:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://open.spotify.com; style-src 'self'; img-src 'self' data:; frame-src https://open.spotify.com; media-src https:; connect-src https://open.spotify.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
   <title>Personal OS Briefing Demo</title>
   <meta name="description" content="A focused, reversible demonstration of a private daily briefing shaped by goals, Spaces, connections and permissions." />
   <link rel="canonical" href="https://db.cmxchat.com/brief/" />
@@ -34,7 +34,7 @@
         <input id="entrySoundtrack" type="checkbox" checked />
         <span>
           <strong>Start the soundtrack after opening</strong>
-          <small>The preview will use one direct playback request. Spotify remains a separate provider player.</small>
+          <small>Your Open demo click will also request Spotify playback. Browser or account settings can still require one direct tap.</small>
         </span>
       </label>
 
@@ -256,10 +256,10 @@
           <span class="track-art" aria-hidden="true">♪</span>
           <div><strong id="trackTitle"></strong><p id="trackArtist"></p><small id="trackNote"></small></div>
         </div>
-        <button class="primary-button media-play" id="previewButton" type="button">Preview unavailable in Phase 1</button>
-        <p class="media-status" id="mediaStatus">Phase 1 establishes one media controller. Direct preview playback and fallback behavior are completed in the media phase.</p>
-        <iframe id="spotifyFrame" title="Spotify provider player" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <p class="provider-note">Spotify is a provider-controlled player and may still require a direct tap depending on browser, device, account and provider rules.</p>
+        <button class="primary-button media-play" id="previewButton" type="button" disabled>Loading Spotify player...</button>
+        <p class="media-status" id="mediaStatus">Preparing Spotify so the selected soundtrack can start from the Open demo click.</p>
+        <div id="spotifyFrame" aria-label="Spotify provider player"></div>
+        <p class="provider-note">Playback is requested from the Open demo click. Spotify, Safari, browser autoplay settings, device policy, or account state may still require one direct tap.</p>
       </section>
     </aside>
   </div>
@@ -267,7 +267,7 @@
   <noscript>This demonstration requires JavaScript to switch Spaces and render the selected briefing.</noscript>
   <script src="/assets/brief/brief-demo-data.js?v=20260805-2" defer></script>
   <script src="/assets/brief/brief-demo-experience.js?v=20260805-2" defer></script>
-  <script src="/assets/brief/brief-demo-media.js?v=20260805-2" defer></script>
+  <script src="/assets/brief/brief-demo-media.js?v=20260805-3" defer></script>
   <script src="/assets/brief/brief-demo-app.js?v=20260805-2" defer></script>
   <script src="/assets/brief/brief-demo-explainers.js?v=20260805-2" defer></script>
 </body>
