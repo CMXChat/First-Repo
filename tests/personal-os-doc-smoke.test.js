@@ -69,9 +69,12 @@ assert.match(css, /@media \(max-width: 680px\)/);
 assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(css, /@media print/);
 
-assert.match(editorialCss, /Personal OS editorial light mode/);
+assert.match(editorialCss, /Personal OS classic light refinement/);
 assert.match(editorialCss, /html\[data-theme="light"\] \.document-paper/);
-assert.match(editorialCss, /font-family: Georgia/);
+assert.match(editorialCss, /font-family: inherit/);
+assert.match(editorialCss, /border-radius: 32px/);
+assert.match(editorialCss, /linear-gradient\(135deg, #087bd6, #5164df/);
+assert.doesNotMatch(editorialCss, /font-family: Georgia/);
 assert.match(editorialCss, /@media \(max-width: 680px\)/);
 assert.match(editorialCss, /@media print/);
 
