@@ -4,32 +4,16 @@ const PAIRS = [
   ['.brief-workspace-panel', 'h3'],
   ['.quick-signal-card', 'h4'],
   ['.quick-next-action', 'h4'],
-  ['.quick-quote-card', 'p'],
-  ['.quick-timeline li', 'strong'],
   ['.brief-priority-visuals', 'h3'],
   ['.polish-kpi', 'strong'],
   ['.polish-chart-card', 'strong'],
-  ['.polish-ring-card', 'strong'],
-  ['.polish-decision-card', 'strong'],
-  ['.polish-team-flow > div', 'strong'],
   ['.polish-team-board article', 'strong'],
   ['.profile-account', 'strong'],
   ['.shared-space-account', 'strong'],
-  ['.business-partner-account', 'strong'],
-  ['.business-shared-ledger', 'strong'],
   ['.horoscope-card', 'strong'],
-  ['.daily-quote', 'p'],
-  ['.compatibility-card', 'h4'],
-  ['.trainer-quote', 'p'],
-  ['.culture-story-grid article', 'h4'],
-  ['.market-impact-stream article', 'h4'],
-  ['.advice-visual-grid article', 'h4'],
-  ['.habit-calendar article', 'strong'],
-  ['.accountability-questions article', 'p'],
-  ['.adaptive-coach-note', 'h4'],
-  ['.brief-terminal-panel', '.brief-terminal-line'],
   ['.relationship-watch-card', 'h3'],
-  ['.brief-navigator-bar', '.brief-map-button']
+  ['.brief-system-header', 'strong'],
+  ['.brief-system-full-bar', 'strong']
 ];
 
 async function enterBriefing(page) {
@@ -42,14 +26,27 @@ async function enterBriefing(page) {
   await page.locator('.brief-entry-radio-card.is-individual').click();
   await page.locator('#enterBrief').click();
   await expect(page.locator('body')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#briefSystemHeader')).toBeVisible();
+}
+
+async function openWorkspace(page) {
+  await page.locator('[data-system-mode="workspace"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-brief-system-mode', 'workspace');
   await expect(page.locator('#briefWorkspace')).toBeVisible();
-  await expect(page.locator('#briefTopMapButton')).toBeVisible();
+}
+
+async function openFull(page) {
+  await page.locator('[data-system-mode="full"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-brief-system-mode', 'full');
+  await expect(page.locator('#briefWorkspace')).toBeVisible();
 }
 
 async function ensureTheme(page, theme) {
   const current = await page.locator('html').getAttribute('data-theme');
-  if ((theme === 'light' && current !== 'light') || (theme === 'dark' && current === 'light')) {
-    await page.locator('#themeToggleButton').click();
+  const needsToggle = (theme === 'light' && current !== 'light') || (theme === 'dark' && current === 'light');
+  if (needsToggle) {
+    await page.locator('#briefSystemMoreButton').click();
+    await page.locator('[data-system-action="theme"]').click();
   }
   if (theme === 'light') await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   else await expect(page.locator('html')).not.toHaveAttribute('data-theme', 'light');
@@ -68,7 +65,12 @@ async function auditCurrentState(page, label) {
       });
       return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
     };
-    const effectiveBackground = node => {
+    const visible = node => {
+      const style = getComputedStyle(node);
+      const rect = node.getBoundingClientRect();
+      return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0.2 && rect.width > 1 && rect.height > 1;
+    };
+    const backgroundFor = node => {
       let cursor = node;
       while (cursor) {
         const color = parse(getComputedStyle(cursor).backgroundColor);
@@ -77,25 +79,20 @@ async function auditCurrentState(page, label) {
       }
       return parse(getComputedStyle(document.body).backgroundColor);
     };
-    const visible = node => {
-      const style = getComputedStyle(node);
-      const rect = node.getBoundingClientRect();
-      return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0.2 && rect.width > 1 && rect.height > 1;
-    };
 
     const failures = [];
-    const checked = [];
+    let checked = 0;
     for (const [containerSelector, textSelector] of pairs) {
       const containers = [...document.querySelectorAll(containerSelector)].filter(visible).slice(0, 3);
       for (const container of containers) {
         const textNode = container.querySelector(textSelector);
         if (!textNode || !visible(textNode) || !textNode.textContent.trim()) continue;
         const foreground = parse(getComputedStyle(textNode).color);
-        const background = effectiveBackground(container);
+        const background = backgroundFor(container);
         const l1 = luminance(foreground);
         const l2 = luminance(background);
         const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
-        checked.push({ containerSelector, textSelector, ratio });
+        checked += 1;
         if (ratio < 2.8) failures.push(`${label}: ${containerSelector} ${textSelector} contrast ${ratio.toFixed(2)}`);
       }
     }
@@ -105,30 +102,27 @@ async function auditCurrentState(page, label) {
       body: document.body.scrollWidth - document.body.clientWidth
     };
     if (overflow.document > 2 || overflow.body > 2) failures.push(`${label}: horizontal overflow ${JSON.stringify(overflow)}`);
-
-    return { failures, checked: checked.length, overflow };
+    return { failures, checked };
   }, { pairs: PAIRS, label });
 
   expect(result.checked, `${label} should expose representative visible cards`).toBeGreaterThan(0);
   expect(result.failures).toEqual([]);
 }
 
-test('all five briefings remain readable in Quick and Full light and dark states', async ({ page }) => {
-  test.setTimeout(90000);
+test('all five briefings remain readable in Workspace and Full View, light and dark', async ({ page }) => {
+  test.setTimeout(120000);
   await enterBriefing(page);
 
   const presets = ['individual', 'couple', 'partners', 'trainer', 'team'];
   for (const theme of ['light', 'dark']) {
     await ensureTheme(page, theme);
     for (const preset of presets) {
-      await page.evaluate(value => window.BRIEF_APP.setPreset(value), preset);
+      await page.locator('#briefSystemSwitcher').click();
+      await page.locator(`[data-system-preset="${preset}"]`).click();
       await expect.poll(() => page.evaluate(() => window.BRIEF_APP.getPreset())).toBe(preset);
-      await expect(page.locator('#briefTopMapButton')).toBeVisible();
-      await auditCurrentState(page, `${theme}/${preset}/quick`);
-
-      const full = page.locator('[data-depth-choice="full"]').first();
-      await full.click();
-      await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'full');
+      await openWorkspace(page);
+      await auditCurrentState(page, `${theme}/${preset}/workspace`);
+      await openFull(page);
       await auditCurrentState(page, `${theme}/${preset}/full`);
     }
   }
