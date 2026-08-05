@@ -4,33 +4,216 @@
   const data = window.BRIEF_DEMO_DATA;
   if (!data?.scenarios) return;
 
+  function mergeCopy(target, source) {
+    Object.entries(source).forEach(([key, value]) => {
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        if (!target[key] || typeof target[key] !== 'object') target[key] = {};
+        mergeCopy(target[key], value);
+        return;
+      }
+      target[key] = value;
+    });
+  }
+
+  mergeCopy(data, {
+    meta: {
+      title: 'Your day, already organized.',
+      description: 'A working daily briefing with clear Spaces, permissions, goals, and next steps.'
+    },
+    scenarios: {
+      personal: {
+        headline: 'Here is what your day looks like.',
+        summary: 'Your schedule, priorities, bills, movement, and next steps are in one place.',
+        recommendation: {
+          title: 'Send the revised scope before the afternoon gets busy.',
+          detail: 'It clears the main blocker and keeps the later focus window open.'
+        },
+        details: {
+          day: {
+            title: 'Your whole day in one view',
+            summary: 'See the timing, conditions, and open windows without a long scroll.'
+          },
+          work: {
+            title: 'Projects, messages, and owners',
+            summary: 'This view shows only the work that affects the next decision.'
+          },
+          money: {
+            title: 'Money items that need a look',
+            summary: 'The demo uses made-up records because no secure finance account is connected.'
+          },
+          wellness: {
+            title: 'A realistic movement plan for today',
+            summary: 'A shorter plan can still keep the habit alive.'
+          },
+          connections: {
+            title: 'What is connected and what is not',
+            summary: 'Each service shows whether it is live, made up, disconnected, or planned.'
+          }
+        },
+        soundtrack: { note: 'A bright track for getting one real task done.' }
+      },
+      relationship: {
+        short: 'Two private profiles and one shared Space',
+        headline: 'Start with reassurance, then handle the plan.',
+        summary: 'Each person keeps a private profile. The shared Space holds only the plans, promises, and details both people approved.',
+        recommendation: {
+          title: 'Confirm the plan without reopening every old problem.',
+          detail: 'Use the shared facts, name what still needs approval, and keep private thoughts private.'
+        },
+        details: {
+          together: {
+            title: 'One shared priority and one small repair',
+            summary: 'Shared facts stay separate from each person’s private thoughts.'
+          },
+          profiles: {
+            title: 'Two people keep two private profiles',
+            summary: 'Joining a shared Space does not open either person’s private memory.'
+          },
+          plans: {
+            title: 'Shared decisions with owners and dates',
+            summary: 'A plan is easier to follow when it has an owner and a clear approval state.'
+          },
+          reflection: {
+            title: 'Reflection that stays practical',
+            summary: 'The Brief can help with repair, appreciation, and clearer communication while both people make their own decisions.'
+          },
+          connections: {
+            title: 'Shared services with clear limits',
+            summary: 'Each connection can be limited to the couple Space and one clear use.'
+          }
+        }
+      },
+      business: {
+        short: 'A shared company view with private partner notes',
+        headline: 'One clear view of the company today.',
+        summary: 'Partners can see cash, projects, risks, and decisions without opening each other’s private notes.',
+        recommendation: {
+          title: 'Collect the cash before adding fixed cost.',
+          detail: 'Approve the contractor after the expected payments arrive.'
+        },
+        weather: {
+          condition: 'Cross-city workday',
+          advice: 'Cash timing matters more than the weather in this example.'
+        },
+        details: {
+          executive: {
+            title: 'The operating picture at a glance',
+            summary: 'Revenue helps, but cash, owners, and deadlines decide what happens next.'
+          },
+          finance: {
+            title: 'Cash, margin, and exposure',
+            summary: 'Money data becomes useful when it leads to a clear decision.'
+          },
+          projects: {
+            title: 'Risks, owners, and deadlines',
+            summary: 'Work without an owner is easy to miss.'
+          },
+          decisions: {
+            title: 'Turn evidence into a decision, owner, and date',
+            summary: 'Repeated debates can become simple written rules.'
+          },
+          connections: {
+            title: 'Business connections with clear limits',
+            summary: 'The company Space receives company records, not personal life.'
+          }
+        },
+        soundtrack: { note: 'A bright track for a company review.' }
+      },
+      trainer: {
+        headline: 'Adjust the plan and keep the accountability.',
+        summary: 'Training, recovery, habits, and check-ins stay useful when the record shows what actually happened.',
+        recommendation: {
+          title: 'Use the smaller plan when readiness is low.',
+          detail: 'Record the change so the coach can plan the next session from real evidence.'
+        },
+        details: {
+          today: {
+            title: 'One workout, one check-in, and one clear choice',
+            summary: 'The plan can change while the goal stays in view.'
+          },
+          habits: {
+            title: 'Use patterns to start a conversation',
+            summary: 'A pattern is useful context, not a permanent label.'
+          },
+          progress: {
+            title: 'Use completed work as evidence',
+            summary: 'Completed sessions, corrections, and repeated results matter more than motivational copy.'
+          },
+          recovery: {
+            title: 'Sleep, pain, and readiness can change today’s plan',
+            summary: 'Unusual pain calls for a pause and qualified help when needed.'
+          },
+          connections: {
+            title: 'Fitness data needs health boundaries',
+            summary: 'The data can support coaching. Qualified care still belongs with a professional.'
+          }
+        }
+      },
+      team: {
+        short: 'Roles, handoffs, and one shared project record',
+        headline: 'Everyone needs the same goal, with different access.',
+        summary: 'Members see the work they need. Project leads keep the wider view and restricted details.',
+        recommendation: {
+          title: 'Assign the missing handoff before adding more work.',
+          detail: 'A task with no receiver is the clearest release risk.'
+        },
+        weather: {
+          condition: 'Release window open',
+          advice: 'The real condition here is blocker status and owner clarity.'
+        },
+        details: {
+          mywork: {
+            title: 'Your work without the whole company',
+            summary: 'A member sees what they own, what blocks it, and the approved details needed to finish.'
+          },
+          project: {
+            title: 'One timeline with visible blockers',
+            summary: 'Status changes when the evidence changes.'
+          },
+          handoffs: {
+            title: 'Every handoff needs a sender, receiver, and proof',
+            summary: 'The same handoff rule works for delivery, operations, care, and field work.'
+          },
+          procedures: {
+            title: 'Prepare before the launch',
+            summary: 'Restricted details can support readiness without entering the general team Space.'
+          },
+          connections: {
+            title: 'Connect tools by role and purpose',
+            summary: 'The project Space receives only the records needed for the work.'
+          }
+        }
+      }
+    }
+  });
+
   if (!data.navigation.some(item => item.id === 'everything')) {
     data.navigation.push({ id: 'everything', label: 'Everything' });
   }
 
   const adaptiveSteps = [
-    ['Gather', 'Read only the approved APIs, MCP tools, calendars, files, accounts, public sources and Space records needed for this update.'],
-    ['Research', 'Check what changed, compare sources, resolve conflicts and identify missing context before presenting conclusions.'],
-    ['Interpret', 'Use goals, permissions, memory, corrections, preferences and recent outcomes to decide what matters now.'],
-    ['Compose', 'Select the clearest modules for the available data while keeping navigation, privacy controls and core locations stable.'],
-    ['Interact', 'Let the user open evidence, change a view, correct memory, approve an action or ask the system to go deeper.'],
-    ['Learn', 'Record the confirmed outcome so tomorrow’s briefing can become more useful without hiding how it changed.']
+    ['Gather', 'Read only the approved sources needed for this update.'],
+    ['Check', 'See what changed, compare sources, and flag missing information.'],
+    ['Choose', 'Use goals, permissions, memory, and recent results to decide what matters today.'],
+    ['Build', 'Show the clearest cards, lists, charts, or maps for the available information.'],
+    ['Review', 'Let the user open sources, change views, correct memory, or approve an action.'],
+    ['Save', 'Record the confirmed result for the next Brief.']
   ];
 
   const componentChoices = [
-    ['Trend', 'Chart', 'Use a graph when movement over time changes the decision.'],
-    ['Schedule', 'Timeline', 'Use a timeline when sequence, timing or ownership matters.'],
+    ['Trend', 'Chart', 'Use a graph when change over time affects the decision.'],
+    ['Schedule', 'Timeline', 'Use a timeline when order, timing, or ownership matters.'],
     ['Choice', 'Comparison', 'Use a comparison when the user needs to choose between real options.'],
-    ['Location', 'Map', 'Use a map when travel, weather, proximity or routing affects the plan.'],
-    ['Risk', 'Alert', 'Use a focused alert when something needs review, confirmation or escalation.'],
-    ['Coordination', 'Shared actions', 'Use an ownership list for couples, families, teams and project Spaces.']
+    ['Location', 'Map', 'Use a map when travel, weather, distance, or routing affects the plan.'],
+    ['Risk', 'Alert', 'Use a clear alert when something needs review, approval, or escalation.'],
+    ['Coordination', 'Shared actions', 'Use an owner list for couples, families, teams, and project Spaces.']
   ];
 
   const alarmSteps = [
-    ['Wake', 'Begin at the user’s selected time with quiet controls for snooze, skip and privacy.'],
-    ['Soundtrack', 'Rotate approved music from the connected Spotify account using listening history, saved preferences and the day’s context.'],
-    ['Executive overview', 'Read a short summary of what changed, what matters and the first useful action.'],
-    ['Continue', 'Move directly into the interactive briefing, calendar, route, message or task that deserves attention.']
+    ['Wake', 'Start at the selected time with clear controls for snooze, skip, and privacy.'],
+    ['Soundtrack', 'Play approved music from the connected Spotify account.'],
+    ['Overview', 'Read a short summary of what changed, what matters, and the first useful step.'],
+    ['Continue', 'Open the calendar, route, message, task, or Brief that needs attention.']
   ];
 
   const escapeHtml = value => {
@@ -53,12 +236,12 @@
     const items = [
       ['all-overview', 'Overview'],
       ['all-weather', 'Weather'],
-      ['all-signals', 'Signals'],
+      ['all-signals', 'Numbers'],
       ['all-flow', 'Flow'],
       ['all-workspace', 'Workspace'],
       ['all-spaces', 'Spaces'],
-      ['all-adaptive', 'Adaptive brief'],
-      ['all-alarm', 'Alarm concept'],
+      ['all-adaptive', 'Adaptive Brief'],
+      ['all-alarm', 'Morning concept'],
       ['all-privacy', 'Privacy']
     ];
     host.innerHTML = items.map(([id, label]) => `<a href="#${id}">${escapeHtml(label)}</a>`).join('');
@@ -72,8 +255,8 @@
     host.innerHTML = `
       <section class="full-section full-overview" id="all-overview">
         <div class="full-section-heading">
-          <div><p class="eyebrow">EXECUTIVE OVERVIEW</p><h2>${escapeHtml(scenario.headline)}</h2></div>
-          ${sectionButton('today', 'Open focused Today view')}
+          <div><p class="eyebrow">OVERVIEW</p><h2>${escapeHtml(scenario.headline)}</h2></div>
+          ${sectionButton('today', 'Open Today view')}
         </div>
         <p class="full-lead">${escapeHtml(scenario.summary)}</p>
         <div class="full-overview-grid">
@@ -94,18 +277,18 @@
       </section>
 
       <section class="full-section" id="all-signals">
-        <div class="full-section-heading"><div><p class="eyebrow">AT A GLANCE</p><h2>Signals worth seeing</h2></div></div>
+        <div class="full-section-heading"><div><p class="eyebrow">AT A GLANCE</p><h2>Useful numbers</h2></div></div>
         <div class="full-stat-grid">${scenario.stats.map(item => `<article><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong><small>${escapeHtml(item.note)}</small></article>`).join('')}</div>
       </section>
 
       <section class="full-section" id="all-flow">
-        <div class="full-section-heading"><div><p class="eyebrow">SEQUENCE</p><h2>The day in motion</h2></div></div>
+        <div class="full-section-heading"><div><p class="eyebrow">ORDER</p><h2>The day in order</h2></div></div>
         <ol class="full-flow">${scenario.flow.map(item => `<li><time>${escapeHtml(item.time)}</time><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.meta)}</span></li>`).join('')}</ol>
       </section>
 
       <section class="full-section" id="all-workspace">
         <div class="full-section-heading">
-          <div><p class="eyebrow">ALL WORKSPACE CATEGORIES</p><h2>Every category for this ${escapeHtml(scenario.label.toLowerCase())} briefing</h2></div>
+          <div><p class="eyebrow">WORKSPACE CATEGORIES</p><h2>Every category in this ${escapeHtml(scenario.label.toLowerCase())} briefing</h2></div>
           ${sectionButton('workspace', 'Use focused Workspace')}
         </div>
         <div class="full-workspace-stack">${scenario.tabs.map(tab => {
@@ -131,32 +314,32 @@
 
       <section class="full-section adaptive-section" id="all-adaptive">
         <div class="full-section-heading">
-          <div><p class="eyebrow">STABLE SHELL, ADAPTIVE COMPOSITION</p><h2>The full dashboard can be composed again for every interactive update.</h2></div>
-          ${sectionButton('how', 'See the Personal OS foundation')}
+          <div><p class="eyebrow">FAMILIAR LAYOUT, FLEXIBLE CONTENT</p><h2>The full view can change with the information.</h2></div>
+          ${sectionButton('how', 'See how Personal OS works')}
         </div>
-        <p class="full-lead">After approved data is gathered, researched and checked, the AI can choose the clearest presentation for that day. Navigation, privacy controls and familiar locations stay stable. The useful modules, charts and explanations adapt to the actual content.</p>
+        <p class="full-lead">Personal OS checks the approved information, then chooses a clear way to show it. Navigation, privacy controls, and main locations stay familiar. The useful cards, charts, and explanations can change with the day.</p>
         <ol class="adaptive-process">${adaptiveSteps.map(([title, detail], index) => `<li><span>${String(index + 1).padStart(2, '0')}</span><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></div></li>`).join('')}</ol>
         <div class="component-choice-grid">${componentChoices.map(([input, component, reason]) => `<article><span>${escapeHtml(input)}</span><strong>${escapeHtml(component)}</strong><p>${escapeHtml(reason)}</p></article>`).join('')}</div>
-        <aside class="adaptive-note"><strong>Personalized does not mean unpredictable.</strong><p>The system can redesign the information layer while preserving user control, accessibility, source visibility and a familiar way back to focused views.</p></aside>
+        <aside class="adaptive-note"><strong>The layout can adapt and still feel familiar.</strong><p>Controls, sources, and the way back to focused views stay in predictable places.</p></aside>
       </section>
 
       <section class="full-section alarm-section" id="all-alarm">
-        <div class="full-section-heading"><div><p class="eyebrow">FUTURE APP CONCEPT</p><h2>Wake up with music and the executive overview.</h2></div><button class="text-button" type="button" data-open-media-from-full>Open today’s soundtrack <span aria-hidden="true">→</span></button></div>
-        <p class="full-lead">A future Personal OS app could rotate music each morning from the user’s connected Spotify account, then read the concise executive overview before opening the interactive briefing.</p>
+        <div class="full-section-heading"><div><p class="eyebrow">FUTURE APP IDEA</p><h2>Wake up with music and a short overview.</h2></div><button class="text-button" type="button" data-open-media-from-full>Open today’s soundtrack <span aria-hidden="true">→</span></button></div>
+        <p class="full-lead">A future Personal OS app could play approved music from Spotify, read a short overview, and then open the interactive Brief.</p>
         <div class="alarm-flow">${alarmSteps.map(([title, detail], index) => `<article><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></article>`).join('')}</div>
-        <p class="future-boundary">Concept only: real playback, voice, alarms and account access require native-device permissions, provider rules, explicit controls and protected authentication.</p>
+        <p class="future-boundary">This is a concept. Real playback, voice, alarms, and account access need device permissions, provider support, clear controls, and secure sign-in.</p>
       </section>
 
       <section class="full-section full-privacy" id="all-privacy">
-        <div><p class="eyebrow">PRIVATE FIRST</p><h2>More data should create more control, not more exposure.</h2></div>
-        <p>Connections stay purpose-scoped. Memories stay reviewable. Shared Spaces receive only approved context. Important actions remain confirmable, logged and revocable.</p>
+        <div><p class="eyebrow">PRIVATE FIRST</p><h2>More information should come with more control.</h2></div>
+        <p>Connections have a clear purpose. Memories can be reviewed. Shared Spaces receive only approved records. Important actions need confirmation and stay in the history.</p>
       </section>
 
       <nav class="full-end-nav" aria-label="Continue exploring the briefing">
         ${sectionButton('today', 'Return to Today')}
         ${sectionButton('workspace', 'Open Workspace')}
         ${sectionButton('spaces', 'Review Spaces')}
-        ${sectionButton('how', 'Understand the system')}
+        ${sectionButton('how', 'See how it works')}
       </nav>`;
   }
 

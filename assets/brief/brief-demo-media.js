@@ -75,7 +75,7 @@
       ? 'Pause Spotify soundtrack'
       : state.controllerReady && state.trackReady
         ? 'Play Spotify soundtrack'
-        : 'Loading Spotify player...';
+        : 'Loading Spotify player';
   }
 
   function syncEntryButton() {
@@ -106,7 +106,7 @@
     }
 
     button.disabled = true;
-    button.textContent = `Preparing ${selected.label} soundtrack...`;
+    button.textContent = `Preparing ${selected.label} soundtrack`;
     button.dataset.soundtrackState = 'preparing';
   }
 
@@ -182,7 +182,7 @@
       state.controller.loadEntity(spotifyUri());
       state.loadedTrackId = current.spotifyTrackId;
       state.playing = false;
-      setStatus(`Loading ${current.title} before the demo opens...`);
+      setStatus(`Loading ${current.title} before the demo opens.`);
       markTrackReady(current.spotifyTrackId);
       return;
     }
@@ -201,7 +201,7 @@
     state.playbackConfirmTimer = window.setTimeout(() => {
       if (state.playing || !state.entryPlaybackRequested) return;
       state.entryPlaybackRequested = false;
-      setStatus('Spotify did not accept automatic playback on this device. Tap the visible Spotify control once to start it.');
+      setStatus('Spotify did not start on this device. Tap the visible Spotify control once.');
       open();
     }, PLAYBACK_CONFIRM_MS);
   }
@@ -217,16 +217,16 @@
 
     try {
       state.entryPlaybackRequested = true;
-      setStatus(`Starting ${current.title} from your Open demo click...`);
+      setStatus(`Starting ${current.title} from the Open demo tap.`);
       state.controller.play();
       schedulePlaybackConfirmation();
       return true;
     } catch {
       state.playing = false;
       state.entryPlaybackRequested = false;
-      setStatus('The browser blocked Spotify playback. Tap the soundtrack control once to start it.');
+      setStatus('The browser blocked Spotify playback. Tap the soundtrack control once.');
       syncButton();
-      open();
+      queueMicrotask(open);
       return false;
     }
   }
@@ -236,6 +236,9 @@
     try {
       state.controller.pause();
     } catch {}
+    state.playing = false;
+    clearTimer('playbackConfirmTimer');
+    syncButton();
   }
 
   function attachController(controller) {
@@ -273,6 +276,7 @@
     controller.addListener('playback_update', event => {
       if (typeof event?.data?.isPaused !== 'boolean') return;
       state.playing = !event.data.isPaused;
+      if (event?.data?.playingURI) state.loadedTrackId = event.data.playingURI.split(':').pop();
       if (state.playing) {
         clearTimer('playbackConfirmTimer');
         state.entryPlaybackRequested = false;
@@ -314,13 +318,13 @@
     script.async = true;
     script.dataset.briefSpotifyApi = 'true';
     script.addEventListener('error', () => {
-      failToFallback('Spotify loaded in tap-to-play mode because its playback controller was unavailable.');
+      failToFallback('Spotify is available in tap-to-play mode because its playback controller did not load.');
     }, { once: true });
     document.head.append(script);
 
     state.apiTimeoutTimer = window.setTimeout(() => {
       if (state.controllerReady) return;
-      failToFallback('Spotify took too long to prepare. The normal tap-to-play player is available instead.');
+      failToFallback('Spotify took too long to prepare. The tap-to-play player is ready.');
     }, API_TIMEOUT_MS);
   }
 
@@ -361,13 +365,20 @@
     setScenario(id);
 
     if (!enabled) {
-      setStatus('Automatic soundtrack playback is off for this entry.');
+      setStatus('Soundtrack playback is off for this entry.');
+      return false;
+    }
+
+    if (state.apiFailed) {
+      state.entryPlaybackRequested = false;
+      setStatus('Spotify needs one direct tap on this device.');
+      queueMicrotask(open);
       return false;
     }
 
     if (!entryTrackIsReady(id)) {
       state.entryPlaybackRequested = false;
-      setStatus('Spotify was not ready in time. Wait for the entry button to finish preparing the soundtrack.');
+      setStatus('Spotify is not ready yet. Wait for the entry button to finish preparing.');
       syncEntryButton();
       return false;
     }
@@ -386,7 +397,8 @@
     drawer.querySelector('[data-close-media]')?.focus({ preventScroll: true });
   }
 
-  function close() {
+  function close(options = {}) {
+    const { restoreFocus = true } = options;
     const drawer = $('#mediaDrawer');
     const button = $('#mediaButton');
     if (!drawer) return;
@@ -394,12 +406,14 @@
     drawer.setAttribute('aria-hidden', 'true');
     button?.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
-    button?.focus({ preventScroll: true });
+    if (restoreFocus && document.body.dataset.entered === 'true') {
+      button?.focus({ preventScroll: true });
+    }
   }
 
   function reset() {
     pause();
-    close();
+    close({ restoreFocus: false });
     clearTimer('playbackConfirmTimer');
     state.entryPlaybackRequested = false;
     syncEntryButton();

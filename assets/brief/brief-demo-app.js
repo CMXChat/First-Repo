@@ -200,9 +200,12 @@
     const host = $('#workspaceTabs');
     if (!host) return;
     state.tab = normalizeTab(state.tab);
-    host.innerHTML = allowedTabs().map(item => `
-      <button type="button" role="tab" id="brief-next-tab-${escapeHtml(item.id)}" data-workspace-tab="${escapeHtml(item.id)}" aria-selected="${item.id === state.tab}" aria-controls="workspacePanel">${escapeHtml(item.label)}</button>
-    `).join('');
+    host.innerHTML = allowedTabs().map(item => {
+      const active = item.id === state.tab;
+      return `
+        <button type="button" role="tab" id="brief-next-tab-${escapeHtml(item.id)}" data-workspace-tab="${escapeHtml(item.id)}" aria-selected="${active}" aria-controls="workspacePanel" tabindex="${active ? 0 : -1}">${escapeHtml(item.label)}</button>
+      `;
+    }).join('');
   }
 
   function renderWorkspacePanel() {
@@ -235,11 +238,31 @@
   function setWorkspaceTab(tab, options = {}) {
     state.tab = normalizeTab(tab);
     $$('[data-workspace-tab]').forEach(button => {
-      button.setAttribute('aria-selected', String(button.dataset.workspaceTab === state.tab));
+      const active = button.dataset.workspaceTab === state.tab;
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
     });
     renderWorkspacePanel();
     updateUrl(options.push === true);
     if (options.focus) $('#workspacePanel')?.focus({ preventScroll: true });
+  }
+
+  function moveWorkspaceTab(event) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    const tabs = $$('[data-workspace-tab]');
+    const currentIndex = tabs.indexOf(event.target);
+    if (currentIndex < 0 || !tabs.length) return;
+
+    event.preventDefault();
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    if (event.key === 'Home') nextIndex = 0;
+    if (event.key === 'End') nextIndex = tabs.length - 1;
+
+    const next = tabs[nextIndex];
+    setWorkspaceTab(next.dataset.workspaceTab, { push: true, focus: false });
+    next.focus();
   }
 
   function renderSpaces() {
@@ -340,6 +363,7 @@
     renderEntry();
     setEntrySelection('');
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    queueMicrotask(() => $('[data-entry-scenario]')?.focus({ preventScroll: true }));
   }
 
   function installEvents() {
@@ -352,6 +376,7 @@
     $('#scenarioSelect')?.addEventListener('change', event => setScenario(event.target.value, { push: true }));
     $('#homeButton')?.addEventListener('click', () => selectView('today', { push: true }));
     $('#resetDemo')?.addEventListener('click', resetDemo);
+    $('#workspaceTabs')?.addEventListener('keydown', moveWorkspaceTab);
 
     document.addEventListener('click', event => {
       const viewButton = event.target.closest('[data-primary-view]');
