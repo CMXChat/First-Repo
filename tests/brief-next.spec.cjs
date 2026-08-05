@@ -15,7 +15,7 @@ async function openScenario(page, id) {
 }
 
 test('desktop demo keeps weather, stats, selective navigation and overview access', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
+  test.skip(!testInfo.project.name.startsWith('desktop-'), 'Desktop navigation is tested only in desktop projects.');
   await openScenario(page, 'personal');
 
   await expect(page.locator('#primaryNav button')).toHaveCount(5);
@@ -50,7 +50,7 @@ test('desktop demo keeps weather, stats, selective navigation and overview acces
 });
 
 test('Everything preserves a scrollable full view with a final overview link', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium', 'Full-view behavior is covered in the desktop project.');
+  test.skip(!testInfo.project.name.startsWith('desktop-'), 'Full-view behavior is covered in desktop projects.');
   await openScenario(page, 'relationship');
 
   await page.locator('#primaryNav [data-primary-view="everything"]').click();
@@ -81,7 +81,7 @@ test('Everything preserves a scrollable full view with a final overview link', a
 });
 
 test('memory and People and Spaces examples explain the product interactively', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium', 'Interactive product explanation is covered in the desktop project.');
+  test.skip(!testInfo.project.name.startsWith('desktop-'), 'Interactive product explanation is covered in desktop projects.');
   await openScenario(page, 'relationship');
 
   await page.locator('#primaryNav [data-primary-view="how"]').click();
@@ -102,7 +102,7 @@ test('memory and People and Spaces examples explain the product interactively', 
 });
 
 test('mobile demo keeps focused navigation, overview access and optional Everything', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
+  test.skip(!testInfo.project.name.startsWith('mobile-'), 'Mobile navigation is tested only in mobile projects.');
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
@@ -141,7 +141,7 @@ test('mobile demo keeps focused navigation, overview access and optional Everyth
 });
 
 test('light default, saved dark preference and reset remain reversible', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium', 'Control reversibility is covered in the desktop project.');
+  test.skip(!testInfo.project.name.startsWith('desktop-'), 'Control reversibility is covered in desktop projects.');
   await openScenario(page, 'business');
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
