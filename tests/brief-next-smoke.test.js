@@ -18,8 +18,8 @@ const appJs = read('assets/brief/brief-demo-app.js');
 const explainersJs = read('assets/brief/brief-demo-explainers.js');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
-assert.match(html, /<html lang="en" data-theme="dark">/);
-assert.match(html, /<meta name="theme-color" content="#05070b"/);
+assert.match(html, /<html lang="en" data-theme="(?:dark|light)">/);
+assert.match(html, /<meta name="theme-color" content="#[0-9a-f]{6}"/i);
 assert.match(html, /<meta name="robots" content="noindex, nofollow/);
 assert.match(html, /<link rel="canonical" href="https:\/\/db\.cmxchat\.com\/brief\/"/);
 assert.match(html, /id="entryScenarioGrid"/);
@@ -68,8 +68,16 @@ for (const scenario of Object.values(data.scenarios)) {
   assert.ok(scenario.space.shared.length >= 3);
 }
 
-assert.match(appJs, /theme: 'dark'/);
-assert.match(appJs, /localStorage\.getItem\('briefNextTheme'\) \|\| 'dark'/);
+assert.match(appJs, /const THEME_STORAGE_KEY = 'personal_os_brief_theme_v2'/);
+assert.match(appJs, /function readInitialTheme\(/);
+assert.match(appJs, /return storedTheme === 'dark' \? 'dark' : 'light'/);
+assert.match(appJs, /return 'light'/);
+assert.match(appJs, /document\.documentElement\.dataset\.theme = initialTheme/);
+assert.match(appJs, /theme: initialTheme/);
+assert.match(appJs, /state\.theme = theme === 'dark' \? 'dark' : 'light'/);
+assert.match(appJs, /localStorage\.setItem\(THEME_STORAGE_KEY, state\.theme\)/);
+assert.match(appJs, /localStorage\.removeItem\('briefNextTheme'\)/);
+assert.doesNotMatch(appJs, /localStorage\.getItem\('briefNextTheme'\)/);
 assert.match(appJs, /new CustomEvent\('briefdemo:scenariochange'/);
 assert.match(appJs, /function selectView\(/);
 assert.match(appJs, /function setScenario\(/);

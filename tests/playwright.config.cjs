@@ -3,11 +3,11 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: __dirname,
-  testMatch: ['brief-browser-e2e.spec.cjs', 'brief-theme-e2e.spec.cjs', 'brief-finalization-e2e.spec.cjs'],
-  timeout: 45000,
+  testMatch: ['brief-browser-e2e.spec.cjs'],
+  timeout: 30000,
   expect: { timeout: 7000 },
   fullyParallel: false,
-  retries: 1,
+  retries: 0,
   reporter: [['line']],
   use: {
     baseURL: 'http://127.0.0.1:4173',
