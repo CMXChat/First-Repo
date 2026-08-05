@@ -5,31 +5,33 @@ on:
     branches: [main]
     paths:
       - 'brief/**'
+      - 'brief-next/**'
       - 'assets/brief/**'
-      - 'assets/daily-video.js'
-      - 'tests/brief-browser-e2e.spec.cjs'
-      - 'tests/brief-theme-e2e.spec.cjs'
-      - 'tests/brief-finalization-e2e.spec.cjs'
-      - 'tests/playwright.config.cjs'
+      - 'assets/cmx-routes.json'
+      - 'tests/brief-next.spec.cjs'
+      - 'tests/brief-browser-matrix.playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
   pull_request:
     paths:
       - 'brief/**'
+      - 'brief-next/**'
       - 'assets/brief/**'
-      - 'assets/daily-video.js'
-      - 'tests/brief-browser-e2e.spec.cjs'
-      - 'tests/brief-theme-e2e.spec.cjs'
-      - 'tests/brief-finalization-e2e.spec.cjs'
-      - 'tests/playwright.config.cjs'
+      - 'assets/cmx-routes.json'
+      - 'tests/brief-next.spec.cjs'
+      - 'tests/brief-browser-matrix.playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
+
+concurrency:
+  group: brief-browser-matrix-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
   browser-matrix:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -45,14 +47,16 @@ jobs:
       - name: Install browser engines
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Run Chromium, Firefox, WebKit, iPhone and Android tests
-        run: npx playwright test --config=tests/playwright.config.cjs
+      - name: Run current Brief across Chromium, Firefox, WebKit, iPhone and Android
+        run: npx playwright test --config=tests/brief-browser-matrix.playwright.config.cjs
 
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: brief-browser-test-results
-          path: test-results
+          path: |
+            test-results
+            playwright-report
           if-no-files-found: ignore
           retention-days: 7
