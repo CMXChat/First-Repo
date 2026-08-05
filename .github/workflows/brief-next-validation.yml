@@ -1,0 +1,53 @@
+name: Brief Next Validation
+
+on:
+  pull_request:
+    paths:
+      - 'brief-next/**'
+      - 'assets/brief-next/**'
+      - 'assets/cmx-routes.json'
+      - 'tests/brief-next*'
+      - '.github/workflows/brief-next-validation.yml'
+      - 'docs/brief/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run Brief Next static smoke test
+        run: node tests/brief-next-smoke.test.js
+
+  browser-smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright test runner
+        run: npm install --no-save @playwright/test@1.55.0
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run desktop and mobile Brief Next tests
+        run: npx playwright test --config=tests/brief-next.playwright.config.cjs
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-next-playwright-artifacts
+          path: |
+            test-results
+            playwright-report
+          if-no-files-found: ignore
