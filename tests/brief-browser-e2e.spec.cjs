@@ -138,7 +138,7 @@ test('Spotify failure never blocks entry or opens the drawer automatically', asy
   await expect(page.locator('#previewButton')).toBeHidden();
   await expect(page.locator('#spotifyFrame')).toHaveAttribute('src', /open\.spotify\.com\/embed\/track\//);
 
-  await page.locator('[data-close-media]').first().click();
+  await page.locator('.media-heading [data-close-media]').click();
   await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
   await expect(page.locator('#mediaDrawer')).toHaveAttribute('inert', '');
 });
