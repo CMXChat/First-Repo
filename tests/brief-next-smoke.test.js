@@ -18,12 +18,14 @@ const appJs = read('assets/brief/brief-demo-app.js');
 const explainersJs = read('assets/brief/brief-demo-explainers.js');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
-assert.match(html, /<html lang="en" data-theme="dark">/);
-assert.match(html, /<meta name="theme-color" content="#05070b"/);
+assert.match(html, /<html lang="en" data-theme="light">/);
+assert.match(html, /<meta name="theme-color" content="#edf3f8"/);
 assert.match(html, /<meta name="robots" content="noindex, nofollow/);
 assert.match(html, /<link rel="canonical" href="https:\/\/db\.cmxchat\.com\/brief\/"/);
 assert.match(html, /id="entryScenarioGrid"/);
 assert.match(html, /id="entrySoundtrack" type="checkbox" checked/);
+assert.match(html, /id="entryDocLink" href="\/doc\/"/);
+assert.match(html, /id="briefDocLink" href="\/doc\/"/);
 assert.doesNotMatch(html, /readOnEntry|read aloud/i);
 assert.match(html, /data-view-panel="today"/);
 assert.match(html, /data-view-panel="workspace"/);
@@ -68,8 +70,8 @@ for (const scenario of Object.values(data.scenarios)) {
   assert.ok(scenario.space.shared.length >= 3);
 }
 
-assert.match(appJs, /theme: 'dark'/);
-assert.match(appJs, /localStorage\.getItem\('briefNextTheme'\) \|\| 'dark'/);
+assert.match(appJs, /theme: 'light'/);
+assert.match(appJs, /localStorage\.getItem\('briefNextTheme'\) \|\| 'light'/);
 assert.match(appJs, /new CustomEvent\('briefdemo:scenariochange'/);
 assert.match(appJs, /function selectView\(/);
 assert.match(appJs, /function setScenario\(/);
@@ -86,6 +88,7 @@ assert.match(experienceJs, /Chart/);
 assert.match(experienceJs, /Timeline/);
 assert.match(experienceJs, /Wake up with music and the executive overview/);
 assert.match(experienceJs, /connected Spotify account/);
+assert.match(experienceJs, /id="everythingDocLink" href="\/doc\/"/);
 assert.match(experienceJs, /briefdemo:scenariochange/);
 assert.doesNotMatch(experienceJs, /setTimeout|setInterval/);
 
@@ -125,5 +128,11 @@ assert.ok(stagingRoute, '/brief-next/ staging copy must remain registered.');
 assert.equal(stagingRoute.status, 'Experimental');
 assert.equal(stagingRoute.visibility, 'Direct-link-only');
 assert.equal(stagingRoute.gated, false);
+
+const docRoute = routes.routes.find(item => item.path === '/doc/');
+assert.ok(docRoute, '/doc/ must remain registered.');
+assert.equal(docRoute.status, 'Active');
+assert.equal(docRoute.visibility, 'Direct-link-only');
+assert.equal(docRoute.gated, false);
 
 console.log('Brief static smoke test passed.');
