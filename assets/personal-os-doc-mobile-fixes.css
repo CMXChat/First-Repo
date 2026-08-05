@@ -1,0 +1,29 @@
+/* Mobile containment for the final document call to action. */
+.final-cta {
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.final-cta > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.final-cta h2,
+.final-cta p,
+.final-cta span {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 680px) {
+  .final-cta .button {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .final-cta-note {
+    width: 100%;
+  }
+}

@@ -71,6 +71,42 @@
   white-space: nowrap;
 }
 
+/* Keep Spotify rendered while the drawer is closed so it can initialize before entry. */
+.media-drawer {
+  display: block;
+  opacity: 0;
+  visibility: visible;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+body[data-entered="false"] #mediaDrawer {
+  visibility: visible;
+}
+
+.media-drawer .drawer-backdrop {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.media-drawer .media-sheet {
+  transform: translateX(102%);
+  transition: transform 220ms ease;
+}
+
+.media-drawer.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.media-drawer.is-open .drawer-backdrop {
+  opacity: 1;
+}
+
+.media-drawer.is-open .media-sheet {
+  transform: translateX(0);
+}
+
 /* Light-theme contrast repairs for the special Everything sections. */
 html[data-theme="light"] .alarm-section,
 html[data-theme="light"] .full-privacy {

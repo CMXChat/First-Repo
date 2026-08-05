@@ -22,6 +22,7 @@ async function openCurrentBrief(page, route = '/brief/') {
 }
 
 async function enterScenario(page, scenario = 'personal') {
+  await page.locator('#entrySoundtrack').uncheck();
   await page.locator(`[data-entry-scenario="${scenario}"]`).click();
   await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
@@ -75,4 +76,41 @@ test('explicit theme query remains reversible on production and staging routes',
     await expect(page.locator('#entry')).toBeVisible();
     await expectNoHorizontalOverflow(page);
   }
+});
+
+test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('link[data-personal-os-mobile-fixes="true"]')).toHaveCount(1);
+
+  const cta = page.locator('.final-cta');
+  await cta.scrollIntoViewIfNeeded();
+  await expect(cta).toBeVisible();
+
+  const containment = await page.evaluate(() => {
+    const section = document.querySelector('.final-cta');
+    const heading = section?.querySelector('h2');
+    const button = section?.querySelector('.button');
+    const viewport = document.documentElement.clientWidth;
+    const sectionRect = section?.getBoundingClientRect();
+    const buttonRect = button?.getBoundingClientRect();
+
+    return {
+      documentOverflow: document.documentElement.scrollWidth - viewport,
+      bodyOverflow: document.body.scrollWidth - document.body.clientWidth,
+      sectionRight: sectionRect?.right || 0,
+      buttonRight: buttonRect?.right || 0,
+      viewport,
+      headingOverflow: heading ? heading.scrollWidth - heading.clientWidth : 0,
+      sectionColumns: section ? getComputedStyle(section).gridTemplateColumns : ''
+    };
+  });
+
+  expect(containment.documentOverflow).toBeLessThanOrEqual(1);
+  expect(containment.bodyOverflow).toBeLessThanOrEqual(1);
+  expect(containment.sectionRight).toBeLessThanOrEqual(containment.viewport + 1);
+  expect(containment.buttonRight).toBeLessThanOrEqual(containment.viewport + 1);
+  expect(containment.headingOverflow).toBeLessThanOrEqual(1);
+  expect(containment.sectionColumns).not.toBe('none');
 });

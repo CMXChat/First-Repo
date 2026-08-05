@@ -11,6 +11,7 @@
   const storageKey = 'personal_os_doc_theme_v3';
   const editorialStylesheet = '/assets/personal-os-doc-editorial.css?v=20260805-1';
   const desktopTuningStylesheet = '/assets/personal-os-doc-desktop-tuning.css?v=20260805-1';
+  const mobileFixStylesheet = '/assets/personal-os-doc-mobile-fixes.css?v=20260805-1';
 
   function installStylesheet(href, dataAttribute) {
     if (document.querySelector(`link[href="${href}"]`)) return;
@@ -127,6 +128,7 @@
 
   installStylesheet(editorialStylesheet, 'personalOsEditorial');
   installStylesheet(desktopTuningStylesheet, 'personalOsDesktopTuning');
+  installStylesheet(mobileFixStylesheet, 'personalOsMobileFixes');
   applyTheme(getRequestedTheme());
 
   themeButton?.addEventListener('click', () => {
