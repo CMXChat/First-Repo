@@ -54,6 +54,12 @@ jobs:
               '/brief/': {
                   'markers': ('data-sara-load-url=', 'data-sara-password-sha256='),
                   'assets': ('/assets/sara-brief-gate.css', '/assets/sara-brief-gate.js'),
+                  'requires_no_store': True,
+              },
+              '/doc/': {
+                  'markers': ('data-cmx-gate="black-prompt"', 'data-cmx-gated-content'),
+                  'assets': ('/assets/gates/cmx-gate-black-prompt.css', '/assets/gates/cmx-gate-black-prompt.js'),
+                  'requires_no_store': False,
               },
           }
 
@@ -96,7 +102,8 @@ jobs:
                           failures.append(f'{file_path.as_posix()}: gated route lacks data-cmx-gated=true')
                       if '/assets/cmx-sensitive-gate.css' not in text or '/assets/cmx-sensitive-gate.js' not in text:
                           failures.append(f'{file_path.as_posix()}: gated route lacks shared gate assets')
-                  if 'http-equiv="cache-control"' not in lower or 'no-store' not in lower:
+                  requires_no_store = not custom_gate or custom_gate.get('requires_no_store', True)
+                  if requires_no_store and ('http-equiv="cache-control"' not in lower or 'no-store' not in lower):
                       failures.append(f'{file_path.as_posix()}: gated route lacks static no-store hint')
                   if 'name="referrer"' not in lower or 'no-referrer' not in lower:
                       failures.append(f'{file_path.as_posix()}: gated route lacks no-referrer policy')
