@@ -166,9 +166,7 @@
   }
 
   function installEvents() {
-    document.getElementById('scenarioSelect')?.addEventListener('change', event => renderEverything(event.target.value));
-    document.getElementById('openDemo')?.addEventListener('click', () => queueMicrotask(() => renderEverything(selectedScenarioId())));
-    window.addEventListener('popstate', () => queueMicrotask(() => renderEverything(selectedScenarioId())));
+    document.addEventListener('briefdemo:scenariochange', event => renderEverything(event.detail?.scenarioId));
 
     document.addEventListener('click', event => {
       const workspaceButton = event.target.closest('[data-full-workspace-tab]');
