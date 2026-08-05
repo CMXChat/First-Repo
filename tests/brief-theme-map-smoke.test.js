@@ -17,13 +17,15 @@ new vm.Script(bridge, { filename: 'brief-terminal-bridge.js' });
 new vm.Script(topMap, { filename: 'brief-map-top.js' });
 new vm.Script(theme, { filename: 'brief-theme-integrity.js' });
 
-assert.match(index, /brief-terminal-bridge\.js\?v=20260803-\d+/);
+assert.match(index, /brief-terminal-bridge\.js\?v=20260804-\d+/);
+assert.match(bridge, /const THEME_VERSION = '20260804-\d+'/);
+assert.match(bridge, /const SYSTEM_VERSION = '20260804-\d+'/);
 assert.match(bridge, /brief-theme-integrity\.css/);
 assert.match(bridge, /brief-theme-integrity\.js/);
-assert.match(bridge, /brief-map-top\.js/);
-assert.match(bridge, /NAVIGATION_VERSION = '20260803-6'/);
-assert.match(bridge, /INTERFACE_VERSION = '20260803-2'/);
-assert.match(bridge, /FINAL_VERSION = '20260803-2'/);
+assert.match(bridge, /brief-system\.css/);
+assert.match(bridge, /brief-system-fixes\.css/);
+assert.match(bridge, /brief-system\.js/);
+assert.match(bridge, /loadProductLayers\(\)/);
 
 assert.match(topMap, /briefTopMapButton/);
 assert.match(topMap, /brief-map-top\.css/);
