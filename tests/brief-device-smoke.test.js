@@ -69,6 +69,22 @@ class EventTargetMock {
   }
 }
 
+class MutationObserverMock {
+  constructor(callback) {
+    this.callback = callback;
+    this.targets = [];
+  }
+  observe(target, options = {}) {
+    this.targets.push({ target, options });
+  }
+  disconnect() {
+    this.targets = [];
+  }
+  takeRecords() {
+    return [];
+  }
+}
+
 class ElementMock extends EventTargetMock {
   constructor(id = '', tag = 'div') {
     super();
@@ -177,7 +193,14 @@ const scrollCalls = [];
 const windowMock = new EventTargetMock();
 windowMock.window = windowMock;
 windowMock.document = documentMock;
+windowMock.location = { hash: '', pathname: '/brief/', search: '' };
+windowMock.history = {
+  state: null,
+  replaceState(state) { this.state = state; }
+};
 windowMock.setTimeout = setTimeout;
+windowMock.requestAnimationFrame = callback => { callback(); return 1; };
+windowMock.cancelAnimationFrame = () => {};
 windowMock.scrollTo = options => scrollCalls.push(options);
 windowMock.CustomEvent = class CustomEventMock {
   constructor(type, options = {}) { this.type = type; this.detail = options.detail; }
@@ -188,7 +211,11 @@ const context = {
   document: documentMock,
   sessionStorage: { setItem() {} },
   CustomEvent: windowMock.CustomEvent,
+  MutationObserver: MutationObserverMock,
+  requestAnimationFrame: windowMock.requestAnimationFrame,
+  cancelAnimationFrame: windowMock.cancelAnimationFrame,
   setTimeout,
+  clearTimeout,
   console
 };
 vm.createContext(context);

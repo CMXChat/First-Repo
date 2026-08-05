@@ -1,4 +1,2 @@
-@import url('/assets/brief/brief-system.css?v=20260804-1');
-@import url('/assets/brief/brief-system-fixes.css?v=20260804-1');
-
-/* Compatibility entry point retained for cached /brief HTML. */
+/* Compatibility entry point retained for cached /brief HTML.
+   Route-aware styles are loaded by brief-lite-ui.js. */

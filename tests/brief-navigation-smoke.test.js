@@ -55,14 +55,16 @@ assert.match(runtime, /data-nav-route/);
 assert.match(runtime, /window\.BRIEF_NAVIGATION/);
 assert.doesNotMatch(runtime, /new MutationObserver/);
 
-assert.match(bridge, /NAVIGATION_VERSION/);
-assert.match(bridge, /FINAL_VERSION/);
-assert.match(bridge, /brief-navigation\.css/);
-assert.match(bridge, /brief-navigation\.js/);
-assert.match(bridge, /brief-navigation-runtime\.js/);
+assert.match(bridge, /THEME_VERSION/);
+assert.match(bridge, /SYSTEM_VERSION/);
+assert.match(bridge, /brief-theme-integrity\.css/);
+assert.match(bridge, /brief-system\.css/);
+assert.match(bridge, /brief-system-fixes\.css/);
+assert.match(bridge, /brief-theme-integrity\.js/);
+assert.match(bridge, /brief-system\.js/);
 assert.match(bridge, /loadProductLayers\(\)/);
-assert.match(bridge, /briefFinalizeScript/);
-assert.match(bridge, /briefVisionScript/);
+assert.match(bridge, /installCommandBridge\(\)/);
+assert.match(bridge, /window\.BRIEF_SYSTEM/);
 
 assert.match(styles, /position: sticky/);
 assert.match(styles, /brief-navigator-bar/);
@@ -78,7 +80,8 @@ assert.match(styles, /prefers-reduced-motion: reduce/);
 assert.match(styles, /forced-colors: active/);
 assert.match(styles, /@supports not \(\(-webkit-backdrop-filter/);
 
-assert.match(index, /brief-config\.js\?v=20260803-\d+/);
-assert.match(index, /brief-terminal-bridge\.js\?v=20260803-\d+/);
+assert.match(index, /brief-terminal-bridge\.js\?v=20260804-\d+/);
+assert.match(index, /brief-lite-ui\.js\?v=20260804-\d+/);
+assert.match(index, /brief-lite-ui\.css\?v=20260804-\d+/);
 
 console.log('Brief interconnected navigation smoke test passed.');

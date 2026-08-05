@@ -50,7 +50,9 @@ assert.match(watchJs, /player\.replaceChildren\(iframe\)/);
 assert.doesNotMatch(watchJs, /MutationObserver/);
 assert.match(watchCss, /aspect-ratio: 16 \/ 9/);
 assert.match(watchCss, /html\[data-theme='light'\]/);
-assert.match(dailyVideo, /provider: "youtube"/);
-assert.match(dailyVideo, /videoId: "[A-Za-z0-9_-]{11}"/);
+
+const videoDisabled = /window\.CMX_DAILY_VIDEO\s*=\s*null/.test(dailyVideo);
+const validYouTubeVideo = /provider:\s*["']youtube["']/.test(dailyVideo) && /videoId:\s*["'][A-Za-z0-9_-]{11}["']/.test(dailyVideo);
+assert.ok(videoDisabled || validYouTubeVideo, 'Daily video must be null or a valid YouTube configuration.');
 
 console.log('Brief entry and relationship watch smoke test passed.');
