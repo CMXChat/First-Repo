@@ -94,8 +94,10 @@ assert.match(appJs, /new CustomEvent\('briefdemo:scenariochange'/);
 assert.match(appJs, /function selectView\(/);
 assert.match(appJs, /function setScenario\(/);
 assert.match(appJs, /function setWorkspaceTab\(/);
+assert.match(appJs, /function moveWorkspaceTab\(/);
 assert.match(appJs, /requestEntryPlayback\(selected, \$\('#entrySoundtrack'\)\?\.checked === true\)/);
 assert.match(appJs, /\$\('#entrySoundtrack'\)\.checked = true/);
+assert.match(appJs, /queueMicrotask\(\(\) => \$\('\[data-entry-scenario\]'\)\?\.focus/);
 assert.doesNotMatch(appJs, /setTimeout|setInterval/);
 assert.doesNotMatch(appJs, /terminal|command line/i);
 
@@ -136,10 +138,9 @@ assert.doesNotMatch(explainersJs, /This is not a social friends list/);
 assert.doesNotMatch(explainersJs, /setTimeout|setInterval/);
 
 assert.match(docJs, /const plainCopy = new Map/);
-assert.match(docJs, /What works now and what still needs building/);
+assert.match(docJs, /\['A strong demonstration with a clear path to the real platform\.', 'What works now and what still needs building\.'\]/);
 assert.match(docJs, /A matching `\/brief-next\/` route used for testing/);
 assert.match(docJs, /applyPlainCopy\(\)/);
-assert.doesNotMatch(docJs, /A strong demonstration with a clear path to the real platform/);
 
 assert.match(css, /\.weather-card/);
 assert.match(css, /\.stats-grid/);
