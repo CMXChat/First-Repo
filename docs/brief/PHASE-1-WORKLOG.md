@@ -15,19 +15,18 @@ Repository: CMXChat/First-Repo
 Development branch: agent/brief-demo-v2
 Draft PR: #42
 PR base: agent/brief-recovery-step-1
-Route: /brief-next/
+Staging route: /brief-next/
+Adaptive staging PR: #44, merged
+Adaptive staging main commit: 52bdf372e438d298e9bed39f293baf0d98d52d0a
 Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
-Validation run: 31034883845
 Production /brief changed: no
 ```
 
-The dark-default and adaptive Everything checkpoint is implemented and passing isolated static and desktop/mobile browser validation.
+The dark-default and adaptive Everything checkpoint is implemented, validated twice, and merged into `main` for staging review.
 
 ## Product standard
 
 The target is **complex simplicity**.
-
-A returning user should see useful depth, movement, and intelligence without learning a complicated application first.
 
 ### Primary path
 
@@ -40,7 +39,7 @@ A returning user should see useful depth, movement, and intelligence without lea
 
 - Everything
 
-Everything preserves the complete long-form briefing without forcing long scrolling on every visitor.
+Everything preserves a complete long-form briefing without forcing long scrolling on every visitor.
 
 ### Retain
 
@@ -97,11 +96,11 @@ assets/brief-next/brief-demo-experience.css
   black dark foundation, Everything layout, adaptive modules, and five-button mobile navigation
 ```
 
-`brief-demo-app.js` emits `briefdemo:scenariochange`. The Everything module listens to that lifecycle event and does not own global state.
+`brief-demo-app.js` emits `briefdemo:scenariochange`. The Everything module listens and does not own global state.
 
-## Completed delivery parts
+## Completed delivery
 
-### Editable scenario foundation
+### Scenario foundation
 
 Status: **complete**
 
@@ -119,7 +118,7 @@ Main scenario data remains in `brief-demo-data.js`:
 - private and shared Space records
 - soundtrack metadata
 
-### Focused application shell
+### Focused shell
 
 Status: **complete**
 
@@ -138,50 +137,34 @@ Status: **complete**
 
 ### Dark-first platform theme
 
-Status: **complete first pass**
+Status: **complete first pass and published**
 
-- HTML begins dark to avoid a light flash
+- HTML begins dark
 - first visits default dark
 - base background is near-black `#05070b`
 - dark surfaces use charcoal layers
 - blue remains an accent
 - saved light preference persists
-- theme meta color updates with the toggle
+- theme meta color updates
 - reset preserves theme
 
-### Memory and normal-AI difference
+### Memory and normal AI
 
 Status: **complete first pass**
 
-Interactive examples cover:
-
-- continuity
-- correction
-- outcomes
-- preferences
-- sources
-- confirmation state
-- Space scope
-- reviewability
-- replacement of weaker assumptions
+Interactive examples cover continuity, correction, outcomes, preferences, sources, confirmation state, Space scope, reviewability, and replacement of weaker assumptions.
 
 ### People and Spaces
 
 Status: **complete first pass**
 
-Interactive examples cover:
-
-- Relationship
-- Family
-- Team
-
-Family includes expenses, chores, pickups, appointments, groceries, calendar changes, and private boundaries.
+Relationship, Family, and Team examples are implemented. Family includes expenses, chores, pickups, appointments, groceries, calendar changes, and private boundaries.
 
 A social friends list remains deferred.
 
 ### Everything full view
 
-Status: **complete first pass**
+Status: **complete first pass and published**
 
 Everything is the fifth and final navigation item.
 
@@ -204,9 +187,9 @@ Everything changes with the selected scenario through the application lifecycle 
 
 ### Stable shell, adaptive composition
 
-Status: **complete first-pass explanation**
+Status: **complete first-pass explanation and published**
 
-The demo now explains this update cycle:
+The demo explains this update cycle:
 
 1. Gather approved APIs, MCP tools, calendars, files, accounts, public sources, and Space records.
 2. Research changes and compare sources.
@@ -215,20 +198,13 @@ The demo now explains this update cycle:
 5. Support user interaction, correction, and approval.
 6. Learn from confirmed outcomes.
 
-Adaptive component examples:
+Adaptive component examples include chart, timeline, comparison, map, alert, and shared action list.
 
-- chart
-- timeline
-- comparison
-- map
-- alert
-- shared action list
-
-Guardrail: the information layer adapts while navigation, privacy controls, accessibility, and source visibility remain stable.
+The information layer adapts while navigation, privacy controls, accessibility, and source visibility remain stable.
 
 ### Future app and alarm
 
-Status: **concept implemented**
+Status: **concept implemented and published**
 
 The demo explains a possible app that:
 
@@ -293,13 +269,24 @@ Browser rerun: 92391542885, passed
 Revision: 5e02ff8caafd160e3802b0caaca6802ad672038a
 ```
 
-### Adaptive Everything and dark default
+### Adaptive Everything development validation
 
 ```text
 Run: 31034883845
 Static: 92404364989, passed
 Browser: 92404365175, passed
 Revision: 1175826cafc71719e100b56a525f768b40fd7122
+```
+
+### Adaptive Everything clean staging validation
+
+```text
+PR: #44
+Source commit: f5dfa90de43b149d98b18a4fbc3687f332baade1
+Run: 31035274638
+Static: 92405680264, passed
+Browser: 92405680241, passed
+Merged main commit: 52bdf372e438d298e9bed39f293baf0d98d52d0a
 ```
 
 Validated behavior:
@@ -318,56 +305,35 @@ Validated behavior:
 - adaptive component and future Spotify alarm explanations
 - existing weather, stats, focused views, Spaces, memory, media, mobile headings, and overflow behavior
 
-## Current checkpoint commits
+The repository-wide privacy audit still reports the pre-existing `/doc` gate mismatch. It is unrelated to the Brief Next staging files.
 
-```text
-523204b7fc98b0b74142b532cf42b72c7e7fc577  add adaptive Everything renderer
-1ac153ba12511ee348cc604d1e3a2e79ecc48900  add dark foundation and full-view styles
-be3ae0d2da8bb9135910108b4e8bbb970793cb5d  load Everything and dark-first HTML
-62bc48bbc12caf6a31773ff6fbb255bd0f28da0c  default dark and add scenario lifecycle
-2f40fe87075091a2a7d3f703ff091e3aca3e1627  consume scenario lifecycle in Everything
-cc2050764bff9325bf9b7d9ca5e70d598f93a3d2  extend static validation
-1175826cafc71719e100b56a525f768b40fd7122  extend browser validation
-```
+## Publishing status
 
-## Publishing distance
+The adaptive checkpoint is published to `main` through PR #44.
 
-Completed:
+The existing GitHub Pages workflow deploys after pushes to `main`. Source publication and the deployment trigger are verified. Custom-domain browser review is the next live confirmation.
 
-- architecture
-- reversible route
-- focused interface
-- five scenarios
-- memory difference
-- People and Spaces
-- privacy story
-- dark-first black theme
-- optional complete full view
-- adaptive composition explanation
-- future app and alarm explanation
-- focused static and browser validation
+## Remaining before `/brief/` cutover review
 
-Remaining before `/brief/` cutover review:
-
-1. Publish the validated checkpoint to staging.
-2. User visual review on desktop and mobile.
-3. Focused density and repetition corrections.
-4. Contrast, keyboard, focus, and accessibility measurement.
-5. Common editing map and daily data contract.
-6. Authorized preview audio and autoplay fallback.
-7. Route replacement and rollback rehearsal.
+1. User visual review on desktop and mobile.
+2. Focused density and repetition corrections.
+3. Contrast, keyboard, focus, and accessibility measurement.
+4. Common editing map and daily data contract.
+5. Authorized preview audio and autoplay fallback.
+6. Route replacement and rollback rehearsal.
 
 ## Next checkpoint
 
-Publish the validated product revision through a clean branch from `main`, keeping `/brief/` untouched.
+Review the published staging route:
 
-After staging review:
+- Everything section length and repetition
+- five-button mobile density
+- sticky jump navigation on short screens
+- dark surface contrast and hierarchy
+- interlink clarity
+- future app and alarm explanation
 
-- inspect Everything for excessive repetition
-- review five-button mobile density
-- review sticky jump navigation on short screens
-- measure contrast and keyboard behavior
-- create the editing map and automation-safe data contract
+After visual review, begin the editing-map and accessibility checkpoint.
 
 ## Rules for future contexts
 
