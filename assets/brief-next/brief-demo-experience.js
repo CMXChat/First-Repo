@@ -72,13 +72,26 @@
   function protectMobileNavigation() {
     const nav = document.getElementById('mobileNav');
     if (!nav) return;
-    nav.style.zIndex = '2000';
+
+    if (nav.parentElement !== document.body) document.body.append(nav);
+    nav.hidden = document.body.dataset.entered !== 'true';
+    nav.style.zIndex = '2200';
     nav.style.pointerEvents = 'auto';
     nav.style.isolation = 'isolate';
+
     nav.querySelectorAll('button').forEach(button => {
       button.style.position = 'relative';
       button.style.zIndex = '2';
       button.style.pointerEvents = 'auto';
+    });
+  }
+
+  function observeEntryState() {
+    if (!('MutationObserver' in window) || !document.body) return;
+    const observer = new MutationObserver(protectMobileNavigation);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['data-entered']
     });
   }
 
@@ -173,5 +186,6 @@
   renderEverything();
   installEvents();
   loadVisualIntelligence();
+  observeEntryState();
   protectMobileNavigation();
 })();
