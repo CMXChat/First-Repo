@@ -1,10 +1,10 @@
 # Personal OS Briefing Ideas Register
 
-Last updated: **August 5, 2026 at 1:44 PM ET**
+Last updated: **August 5, 2026 at 2:18 PM ET**
 
-This file records approved product ideas, design decisions, deferred concepts, and completed implementation checkpoints for `/brief-next/` and the eventual `/brief/` cutover.
+This file records approved product ideas, completed checkpoints, deferred concepts, and active design rules for `/brief-next/` and the eventual `/brief/` cutover.
 
-Read this file together with:
+Read with:
 
 - `docs/brief/CURRENT.md`
 - `docs/brief/PHASE-1-WORKLOG.md`
@@ -12,105 +12,175 @@ Read this file together with:
 
 ## Product center
 
-The core product story is deeper than a dashboard.
+Personal OS is deeper than a dashboard or one AI conversation.
 
-Personal OS should demonstrate how a user-owned memory and permissions layer can help a chosen AI understand useful context across time, people, accounts, goals, and Spaces.
+The product should demonstrate a user-owned memory and permission layer that helps a chosen AI understand useful context across time, people, accounts, goals, outcomes, and Spaces.
 
-The primary difference from a regular AI chat should be visible through interaction:
+Approved differences from a normal AI chat:
 
-- normal AI mainly responds to the current conversation
-- Personal OS can use reviewable memory with sources, dates, corrections, confidence, sensitivity, expiry, and sharing rules
-- normal AI often ends after giving advice
-- Personal OS can record what happened, connect the outcome to a goal, and improve the next briefing
-- normal AI may mix context loosely
-- Personal OS separates personal, relationship, family, business, team, and project Spaces
-- normal AI may remember a preference without showing how it is used
-- Personal OS should let the user inspect, correct, restrict, share, or delete memory
+- reviewable memory with sources, dates, confidence, corrections, sensitivity, expiry, and sharing rules
+- continuity across conversations and daily briefings
+- outcomes that improve later plans
+- separate personal, relationship, family, business, team, and project Spaces
+- user control to inspect, correct, restrict, share, or delete memory
+- approved actions and automations after the conversation ends
 
-Status: **implemented as an interactive first-pass explanation on August 5, 2026**
+Status: **implemented as an interactive first-pass explanation**
 
 ## Daily experience
-
-The Daily Briefing remains the visible experience.
-
-It should feel useful enough for repeated daily use while staying immediately understandable.
 
 Retain:
 
 - strong weather and timing
 - compact changing stats
 - one next action
-- selective navigation instead of one endless page
+- selective navigation
 - one deeper category at a time
+- optional full long-form review
 - music selected from approved preferences or connected accounts
-- optional future voice and alarm routines
+- future voice and alarm routines
 - light and dark themes
-- enough visual depth to reward returning users
+- enough visual depth for repeated daily use
 
-The default entry soundtrack option should be selected.
+Current decisions:
 
-Read-aloud should remain unchecked and should not return to the main entry path until audio behavior is stable and the setting is intentionally designed.
+- dark is the first-visit default
+- the dark foundation should be black and charcoal with blue intelligence accents
+- a deliberately saved light preference should remain respected
+- soundtrack is selected by default
+- read-aloud remains absent from entry until audio behavior is intentionally designed
 
-Status: **soundtrack default completed; read-aloud remains absent**
+Status: **implemented and browser-tested on the development branch**
+
+## Focused views and Everything
+
+Focused navigation remains the primary experience:
+
+1. Today
+2. Workspace
+3. Spaces
+4. How it works
+
+An optional fifth view named **Everything** is approved.
+
+Everything should:
+
+- appear at the end of desktop and mobile navigation
+- preserve the ability to scroll through the complete briefing
+- never become the forced default
+- include a jump navigation for major sections
+- include links back into focused views
+- open specific Workspace categories directly
+- update when the selected scenario changes
+- remain one rendering surface, not another application shell
+
+Status: **implemented and browser-tested on the development branch**
+
+## Stable shell, adaptive composition
+
+The full dashboard may be composed again for each interactive update after the required data is gathered and checked.
+
+Approved model:
+
+1. Gather approved APIs, MCP tools, files, calendars, accounts, public sources, and Space records.
+2. Research changes, compare sources, resolve conflicts, and identify missing context.
+3. Interpret information through goals, permissions, memory, corrections, preferences, and outcomes.
+4. Select the clearest components for the actual data.
+5. Let the user inspect sources, navigate, correct memory, or approve action.
+6. Record confirmed outcomes for the next briefing.
+
+Possible adaptive components:
+
+- chart for a meaningful trend
+- timeline for schedule and sequence
+- comparison for choices
+- map for location, weather, travel, or routing
+- alert for risk or required confirmation
+- shared action list for couples, families, teams, and projects
+
+Important guardrail:
+
+**Personalized does not mean unpredictable.**
+
+The information layer may adapt, while core navigation, permissions, accessibility, source visibility, and familiar locations remain stable.
+
+Status: **implemented as a clear first-pass explanation in Everything**
 
 ## Data beyond a dashboard
 
-The demo should explain and eventually demonstrate how approved data can become:
+Approved outcomes include:
 
-- a morning briefing
-- an alarm and spoken summary
-- a selected song or playlist
-- a reminder
-- a calendar block
-- a task or handoff
-- a draft message or report
-- a goal adjustment
-- a recurring automation
-- a condition watch
-- a relationship or family coordination summary
-- a business operating review
-- a weekly progress review
-- a question when the system needs clarification
-- a correction to memory
-- an approved action after confirmation
+- morning briefing
+- alarm and spoken executive overview
+- selected music or playlist
+- reminder
+- calendar block
+- task or handoff
+- draft message or report
+- goal adjustment
+- recurring automation
+- condition watch
+- relationship or family coordination summary
+- business operating review
+- weekly progress review
+- clarification question
+- memory correction
+- approved action after confirmation
 
-Status: **eight outcome types are now explained; real actions and automations remain later-phase work**
+Status: **explained in focused and full views; real actions remain later-phase work**
+
+## Future app and alarm concept
+
+The viewer should know that a Personal OS app is under consideration.
+
+Approved concept:
+
+- begin at the user’s selected alarm time
+- rotate approved music from the connected Spotify account
+- use listening history, saved preferences, and daily context
+- read the concise executive overview
+- provide snooze, skip, privacy, and playback controls
+- continue directly into the relevant interactive briefing, calendar, route, message, or task
+
+Boundary:
+
+Real alarms, voice, playback, and account access require native-device permissions, provider rules, explicit controls, protected authentication, and tested fallbacks.
+
+Status: **implemented as a clearly labeled future concept in Everything**
 
 ## People and Spaces
 
 Do not add a consumer-social friends list during the current frontend phase.
 
-A friends list would imply a social network and create unnecessary questions about messaging, discovery, invitations, presence, moderation, and public identity.
-
-Use a clearer **People and Spaces** model instead:
+Use a clearer People and Spaces model:
 
 - people appear because they belong to an approved Space
-- each person or role has a clear relationship to that Space
+- each person or role has a defined relationship to that Space
 - private context remains private
-- shared information enters the Space deliberately
+- shared information enters deliberately
 - permissions explain who can read, contribute, approve, or act
 
-Approved interactive examples:
+Approved examples:
 
 ### Relationship Space
 
 - two private profiles
 - approved plans and promises
 - shared calendar items
-- decisions that require both people
+- decisions requiring both people
 - neutral coordination without exposing private processing
 
 ### Family Space
 
-- current household expenses
+- household expenses and bills
 - chores and ownership
-- school pickups or appointments
-- groceries and household supplies
-- family calendar changes
+- pickups and appointments
+- groceries and supplies
+- calendar changes
 - one shared household briefing
-- parent-private or member-private notes remain outside the shared briefing
+- parent-private and member-private boundaries
 
-### Business or Team Space
+### Team or business Space
 
 - projects, blockers, handoffs, decisions, and owners
 - role-based access
@@ -121,145 +191,140 @@ Status: **Relationship, Family, and Team examples implemented; Family remains ex
 
 ## Privacy and account protection
 
-Privacy should be explained briefly, clearly, and interestingly.
-
-The product should communicate:
+Communicate briefly and clearly:
 
 - private first
-- purpose-scoped access
-- least-privilege connections
+- purpose-scoped and least-privilege connections
 - visible connection status
 - reviewable memory
 - separate private and shared records
 - confirmation before consequential actions
-- access that can be paused or revoked
-- audit history for important changes
-- no implication that a frontend gate is secure authentication
+- pause and revocation
+- audit history
+- no claim that a frontend gate is secure authentication
 
-Status: **first-pass privacy callout and Space-specific protection examples implemented**
+Status: **implemented through focused examples, full-view boundaries, and honest demo labels**
 
 ## Design direction
 
 The target remains **complex simplicity**.
 
-The interface should feel like an official system or platform, not an advertising landing page.
+Approved rules:
 
-Approved refinements:
+- official system or platform feel
+- black and charcoal dark foundation
+- blue used as an intelligence accent
+- restrained heading sizes
+- weather remains visually strong
+- stats must orient the user, not decorate the page
+- interactive explanations should feel like product behavior
+- progressive disclosure remains the primary path
+- Everything remains optional
 
-- reduce oversized mobile entry and hero headings
-- preserve the current visual quality
-- maintain strong weather presentation
-- keep app-like navigation
-- avoid empty decorative KPI cards
-- make interactive explanations feel like product behavior, not a slide deck
-- use progressive disclosure
-- keep normal edits predictable for developers and AI
-
-Status: **mobile heading scale completed and browser-tested; broader visual review remains open**
+Status: **active and binding**
 
 ## Editability, automation, and replication
 
-The frontend should be built for:
+Build for:
 
 - automation
 - duplication
 - replication
 - editability
 - adaptability
-- reuse across different people and Spaces
-- daily data replacement without redesigning the interface
+- reuse across people and Spaces
+- daily data replacement without redesigning the entire interface manually
 
-Implementation principles:
+Implementation rules:
 
-- visible scenario content belongs in structured data
+- scenario content remains structured
 - one application controller owns global state
-- media has one owner
-- explanatory components use a small reusable schema
-- avoid one-off selectors and duplicated dashboards
-- tests protect the ownership model
-- every meaningful change updates the Markdown checkpoint files
+- one media controller owns playback surfaces
+- explanatory components use reusable schemas
+- Everything listens to the application’s scenario lifecycle
+- avoid duplicate dashboards and timeout-driven correctness
+- tests protect ownership and navigation
+- Markdown checkpoints are updated after meaningful work
 
-Status: **binding; the explainer component uses a reusable schema and does not become a second app controller**
+Status: **binding**
 
 ## News and daily updates
 
 Current recommendation:
 
-- keep weather and time-sensitive conditions as the strongest proof of daily refresh
-- do not make generic news a central requirement during the frontend stabilization phase
-- add a daily update automation only after the product and data contract are complete
+- weather and changing conditions remain the strongest daily-refresh proof
+- generic news is not required during frontend stabilization
+- daily automation returns only after the frontend and data contract are approved
 
-The legacy `Refresh Brief Concept` automation is paused.
+The legacy `Refresh Brief Concept` automation remains paused.
 
-Status: **completed on August 5, 2026**
+Status: **complete**
 
-## Draft and prior-work review
+## Draft review
 
-Ideas worth carrying forward from earlier drafts:
+Carry forward:
 
-- interactive walkthrough missions from PR #27
-- selective navigation and direct content landing from PR #27
-- progressive disclosure and concise Full-first richness from PR #37
-- terminal removal and safe internal scrolling from PR #37
-- visible permission choices and approved-action framing from the earlier Vision work
-- test harness lessons from PR #35
-- concise `/doc` connection from PR #38
+- PR #27 interactive walkthrough and selective navigation ideas
+- PR #37 progressive disclosure, richer presentation, terminal removal, and safe scrolling
+- PR #35 test-environment lessons
+- PR #38 concise `/doc` connection and privacy-audit lesson
 
-Ideas not carried into Brief Next:
+Do not carry forward:
 
-- terminal repair as a product requirement
+- terminal repair as a Brief Next requirement
 - multiple depth controllers
-- overlapping overlays and blur state
+- overlapping overlays and stranded blur states
 - hidden duplicate dashboards
-- preserving old architecture only because tests expected it
+- old architecture only because old tests expected it
 
-Grok `/tmp` work remains inaccessible and is not treated as a source of truth.
+Grok `/tmp` material is not a durable source of truth.
 
-Status: **reviewed on August 5, 2026**
+Status: **reviewed**
 
 ## Publishing decision
 
-`/brief-next/` remains the experimental route.
+`/brief-next/` remains staging.
 
-Production `/brief/` should not be replaced until:
+Do not replace `/brief/` until:
 
-- product review is complete
-- memory and Spaces storytelling is strong
-- mobile typography and short-height behavior are reviewed
+- visual review is complete
+- mobile and short-height behavior are reviewed
+- contrast and accessibility are verified
+- editing map and daily data contract are complete
 - media behavior is tested
-- accessibility and contrast are verified
-- content editing instructions are complete
 - rollback is prepared
 - explicit cutover approval is given
 
-Status: **memory and Space storytelling plus mobile heading work are complete; cutover remains unapproved**
+## Completed checkpoint: Adaptive Everything and dark default
 
-## Completed implementation slice: August 5, 2026
-
-- [x] Select soundtrack by default on entry and after reset.
-- [x] Keep read-aloud absent and unchecked.
-- [x] Reduce mobile entry and hero heading scale.
-- [x] Add an interactive regular-AI versus Personal-OS memory comparison.
-- [x] Add interactive Relationship, Family, and Team Space examples.
-- [x] Add concise examples of what approved data can become beyond a dashboard.
-- [x] Keep privacy explanations brief and visible.
-- [x] Extend static and desktop/mobile browser tests.
-- [x] Review relevant open PRs and record carry-forward decisions.
-- [x] Pause the legacy `/brief` daily refresh automation.
+- [x] Add Everything as the fifth navigation option.
+- [x] Keep focused views primary.
+- [x] Add jump links through the full briefing.
+- [x] Render all Workspace categories in the full view.
+- [x] Add links back to focused views and specific Workspace tabs.
+- [x] Explain adaptive charts, timelines, maps, comparisons, alerts, and shared actions.
+- [x] Explain research across approved APIs, MCP tools, connections, public sources, memory, and Spaces.
+- [x] Add the future Spotify alarm and spoken executive-overview concept.
+- [x] Make dark the first-visit default.
+- [x] Restore a black and charcoal visual foundation.
+- [x] Preserve a deliberately saved light preference.
+- [x] Keep soundtrack selected after reset.
+- [x] Extend static and browser validation.
 
 Validation:
 
 ```text
-Product revision: 5e02ff8caafd160e3802b0caaca6802ad672038a
-Workflow run: 31030913507
-Static job: 92391543795, passed
-Browser rerun job: 92391542885, passed
+Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
+Workflow run: 31034883845
+Static job: 92404364989, passed
+Browser job: 92404365175, passed
 ```
 
 ## Next idea checkpoint
 
-- visually review the new explanation sections at desktop, short-height laptop, tablet, and phone sizes
-- measure contrast and inspect spacing
-- create the common-editing map for scenario data, explainer examples, media, and layout
-- decide whether Family should remain an explainer or become a main scenario after user review
-- begin authorized preview-audio selection only after the visual review
+- publish the validated adaptive full-view slice to staging
+- visually review Everything on desktop and mobile
+- inspect whether any section is too repetitive or too long
+- create the common editing map and daily data contract
+- measure contrast and keyboard behavior
+- begin authorized preview-audio selection only after visual review
