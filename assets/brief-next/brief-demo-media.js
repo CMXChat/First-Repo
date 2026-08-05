@@ -82,6 +82,7 @@
   function setScenario(id) {
     const current = scenario(id);
     if (!current) return;
+    const sameScenario = state.scenarioId === id;
     state.scenarioId = id;
     const currentTrack = current.soundtrack;
 
@@ -94,11 +95,14 @@
     if (artist) artist.textContent = currentTrack.artist;
     if (note) note.textContent = currentTrack.note;
     if (frame) {
-      frame.src = `https://open.spotify.com/embed/track/${encodeURIComponent(currentTrack.spotifyTrackId)}?utm_source=generator&theme=0`;
+      const nextSource = `https://open.spotify.com/embed/track/${encodeURIComponent(currentTrack.spotifyTrackId)}?utm_source=generator&theme=0`;
+      if (frame.getAttribute('src') !== nextSource) frame.src = nextSource;
       frame.title = `Play ${currentTrack.title} by ${currentTrack.artist} on Spotify`;
     }
 
-    buildAudio(currentTrack);
+    if (!sameScenario || (!state.audio && currentTrack.previewUrl)) buildAudio(currentTrack);
+    else syncButton();
+
     if (currentTrack.previewUrl) {
       setStatus('The authorized preview can start from the entry click or the preview control.');
     } else if (state.entryPlaybackRequested) {
