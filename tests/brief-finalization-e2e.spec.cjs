@@ -11,7 +11,7 @@ async function enter(page) {
   await page.locator('.brief-entry-radio-card.is-individual').click();
   await page.locator('#enterBrief').click();
   await expect(page.locator('body')).not.toHaveClass(/is-locked/);
-  await expect(page.locator('#briefWorkspace')).toBeVisible();
+  await expect(page.locator('#briefSystemHeader')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('data-brief-finalized', 'true');
 }
 
@@ -34,17 +34,16 @@ async function insideViewport(locator) {
   expect(bounds.bottom).toBeLessThanOrEqual(bounds.height + 3);
 }
 
-test('Full workspace opens directly and leaves Map optional', async ({ page }) => {
+test('Full View opens directly and returns to the workspace', async ({ page }) => {
   await enter(page);
-  await expect(page.locator('#briefMapButton')).toBeVisible();
-  await expect(page.locator('#briefTopMapButton')).toBeVisible();
-  const full = page.locator('[data-open-full-workspace]').first();
-  await expect(full).toBeVisible();
-  await full.click();
-  await expect(page.locator('body')).toHaveAttribute('data-brief-depth', 'full');
-  await expect(page.locator('#briefNavigationDrawer')).toBeHidden();
-  await expect(page.locator('#briefMapButton')).toBeVisible();
-  await expect(page.locator('#briefNavigatorBar')).toBeVisible();
+  await page.locator('[data-system-mode="full"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-brief-system-mode', 'full');
+  await expect(page.locator('#briefSystemFullBar')).toBeVisible();
+  await expect(page.locator('#briefWorkspace')).toBeVisible();
+  await page.locator('[data-return-workspace]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-brief-system-mode', 'workspace');
+  await expect(page.locator('#briefSystemFullBar')).toBeHidden();
+  await expect(page.locator('#briefWorkspace')).toBeVisible();
 });
 
 test('Help launches a clean manual Vision walkthrough', async ({ page }) => {
