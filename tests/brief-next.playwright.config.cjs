@@ -15,7 +15,7 @@ module.exports = {
   webServer: {
     command: 'python3 -m http.server 4173 --bind 127.0.0.1',
     cwd: path.resolve(__dirname, '..'),
-    url: 'http://127.0.0.1:4173/brief-next/',
+    url: 'http://127.0.0.1:4173/brief/',
     reuseExistingServer: true,
     timeout: 20000
   },

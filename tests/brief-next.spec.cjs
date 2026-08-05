@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 async function openScenario(page, id) {
-  await page.goto('/brief-next/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
   await expect(page.locator('#readOnEntry')).toHaveCount(0);
@@ -98,7 +98,7 @@ test('memory and People and Spaces examples explain the product interactively', 
 
 test('mobile demo keeps focused navigation plus optional Everything', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
-  await page.goto('/brief-next/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const bg = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());

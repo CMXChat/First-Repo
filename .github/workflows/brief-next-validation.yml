@@ -1,17 +1,18 @@
-name: Brief Next Validation
+name: Brief Validation
 
 on:
   pull_request:
     paths:
+      - 'brief/**'
       - 'brief-next/**'
-      - 'assets/brief-next/**'
+      - 'assets/brief/**'
       - 'assets/cmx-routes.json'
       - 'tests/brief-next*'
       - '.github/workflows/brief-next-validation.yml'
   workflow_dispatch:
 
 concurrency:
-  group: brief-next-${{ github.ref }}
+  group: brief-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -27,7 +28,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run Brief Next static smoke test
+      - name: Run Brief static smoke test
         run: node tests/brief-next-smoke.test.js
 
   browser-smoke:
@@ -43,13 +44,13 @@ jobs:
         run: npm install --no-save @playwright/test@1.55.0
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Run desktop and mobile Brief Next tests
+      - name: Run desktop and mobile Brief tests
         run: npx playwright test --config=tests/brief-next.playwright.config.cjs
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: brief-next-playwright-artifacts
+          name: brief-playwright-artifacts
           path: |
             test-results
             playwright-report
