@@ -71,27 +71,33 @@
 
   function protectMobileNavigation() {
     const nav = document.getElementById('mobileNav');
-    if (!nav) return;
+    const app = document.getElementById('demoApp');
+    const layout = app?.querySelector('.app-layout');
+    if (!nav || !app || !layout) return;
 
-    if (nav.parentElement !== document.body) document.body.append(nav);
+    if (nav.parentElement !== app || nav.nextElementSibling !== layout) {
+      app.insertBefore(nav, layout);
+    }
 
     const mobile = window.matchMedia?.('(max-width: 860px)').matches === true;
     const entered = document.body.dataset.entered === 'true';
     nav.hidden = !entered;
     nav.style.display = mobile && entered ? 'grid' : 'none';
-    nav.style.position = 'fixed';
-    nav.style.top = 'auto';
-    nav.style.right = '10px';
-    nav.style.bottom = '10px';
-    nav.style.left = '10px';
-    nav.style.width = 'auto';
-    nav.style.maxWidth = 'none';
+    nav.style.position = 'sticky';
+    nav.style.inset = 'auto';
+    nav.style.top = 'var(--header-height)';
+    nav.style.right = 'auto';
+    nav.style.bottom = 'auto';
+    nav.style.left = 'auto';
+    nav.style.width = 'calc(100% - 20px)';
+    nav.style.maxWidth = '760px';
+    nav.style.margin = '8px auto 0';
     nav.style.gridTemplateColumns = 'repeat(5, minmax(0, 1fr))';
-    nav.style.zIndex = '2147483647';
+    nav.style.zIndex = '640';
     nav.style.pointerEvents = 'auto';
     nav.style.isolation = 'isolate';
-    nav.style.transform = 'translate3d(0, 0, 0)';
-    nav.style.contain = 'layout paint';
+    nav.style.transform = 'none';
+    nav.style.contain = 'none';
     nav.style.background = 'var(--surface)';
     nav.style.backdropFilter = 'none';
     nav.style.webkitBackdropFilter = 'none';
