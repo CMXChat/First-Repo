@@ -1,5 +1,5 @@
 {
-  "version": 25,
+  "version": 26,
   "updated": "2026-08-05",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -17,8 +17,8 @@
     {"path":"/updates/","name":"CMX Platform Notes & Brief","description":"Terminal-style daily notes plus the complete linked project briefing for AI, APIs, frontend and backend connection, security, phases, current status and platform changes.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/plans/","name":"CMX Plans","description":"Dated private product and platform plan entries, beginning with the Personal OS briefing concept.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/doc/","name":"Personal OS Product Overview","description":"Gated product narrative explaining Personal OS as a private operating layer built around Spaces, structured memory, goals, briefings, chosen AI models, permissions, shared coordination and approved action.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
-    {"path":"/brief/","name":"Personal OS Briefing Demo","description":"Primary public noindex demonstration with a dark default, focused navigation, weather, stats, Spaces, memory, media and scenario-specific workspaces for Personal, Relationship, Business, Trainer and Team contexts.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
-    {"path":"/brief-next/","name":"Personal OS Briefing Legacy Redirect","description":"Compatibility route that redirects previous /brief-next/ links to the active /brief/ demonstration.","category":"Legacy","status":"Legacy","visibility":"Legacy","directory":false,"gated":false},
+    {"path":"/brief/","name":"Personal OS Briefing Demo","description":"Primary public noindex demonstration with focused navigation, weather, stats, Spaces, memory, media and scenario-specific workspaces for Personal, Relationship, Business, Trainer and Team contexts.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/brief-next/","name":"Personal OS Briefing Staging Copy","description":"Standalone noindex copy of the active Personal OS briefing interface retained for comparison, rollback and continued staging review.","category":"Product Concept","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference that remains direct-link-only until real server authorization exists.","category":"Internal","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/project/","name":"Callmax SEO Master Plan","description":"Client project planning resource.","category":"Client","status":"Active","visibility":"Build-only","directory":false,"gated":true},
     {"path":"/callmax/","name":"Callmax Workspace","description":"Callmax project workspace requiring review.","category":"Client","status":"Needs Review","visibility":"Build-only","directory":false,"gated":true},

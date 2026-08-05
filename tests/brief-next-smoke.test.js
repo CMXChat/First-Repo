@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const html = read('brief/index.html');
-const legacyHtml = read('brief-next/index.html');
+const stagingHtml = read('brief-next/index.html');
 const css = read('assets/brief/brief-demo.css');
 const explainerCss = read('assets/brief/brief-demo-explainers.css');
 const experienceCss = read('assets/brief/brief-demo-experience.css');
@@ -40,8 +40,12 @@ assert.equal((html.match(/<iframe\b/g) || []).length, 1, 'The briefing should ha
 assert.equal((html.match(/<script src=/g) || []).length, 5, 'The briefing should load data, experience, media, app and explainer scripts.');
 assert.equal((html.match(/<link rel="stylesheet"/g) || []).length, 3, 'The briefing should load core, explainer and experience stylesheets.');
 assert.ok(html.indexOf('brief-demo-experience.js') < html.indexOf('brief-demo-app.js'), 'Experience configuration must extend navigation before the app initializes.');
-assert.match(legacyHtml, /http-equiv="refresh" content="0; url=\/brief\/"/);
-assert.match(legacyHtml, /href="\/brief\/"/);
+
+assert.doesNotMatch(stagingHtml, /http-equiv="refresh"/i);
+assert.match(stagingHtml, /id="entryScenarioGrid"/);
+assert.match(stagingHtml, /data-view-panel="everything"/);
+assert.match(stagingHtml, /\/assets\/brief\/brief-demo-app\.js/);
+assert.equal(stagingHtml, html, 'The staging route should render the same standalone briefing interface as /brief/.');
 
 assert.doesNotThrow(() => new Function(dataJs));
 assert.doesNotThrow(() => new Function(experienceJs));
@@ -116,8 +120,10 @@ assert.equal(route.visibility, 'Direct-link-only');
 assert.equal(route.status, 'Active');
 assert.equal(route.gated, false);
 
-const legacyRoute = routes.routes.find(item => item.path === '/brief-next/');
-assert.ok(legacyRoute, '/brief-next/ redirect must remain registered.');
-assert.equal(legacyRoute.status, 'Legacy');
+const stagingRoute = routes.routes.find(item => item.path === '/brief-next/');
+assert.ok(stagingRoute, '/brief-next/ staging copy must remain registered.');
+assert.equal(stagingRoute.status, 'Experimental');
+assert.equal(stagingRoute.visibility, 'Direct-link-only');
+assert.equal(stagingRoute.gated, false);
 
 console.log('Brief static smoke test passed.');
