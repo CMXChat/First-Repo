@@ -15,7 +15,7 @@
     scenarioId: data.meta.defaultScenario,
     view: 'today',
     tab: '',
-    theme: 'dark'
+    theme: 'light'
   };
 
   function escapeHtml(value) {
@@ -383,9 +383,9 @@
     state.tab = normalizeTab(new URL(window.location.href).searchParams.get('tab') || '');
 
     try {
-      state.theme = localStorage.getItem('briefNextTheme') || 'dark';
+      state.theme = localStorage.getItem('briefNextTheme') || 'light';
     } catch {
-      state.theme = 'dark';
+      state.theme = 'light';
     }
 
     setTheme(state.theme, false);
