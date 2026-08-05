@@ -10,14 +10,15 @@
   const themeMeta = document.querySelector('meta[name="theme-color"]');
   const storageKey = 'personal_os_doc_theme_v3';
   const editorialStylesheet = '/assets/personal-os-doc-editorial.css?v=20260805-1';
+  const desktopTuningStylesheet = '/assets/personal-os-doc-desktop-tuning.css?v=20260805-1';
 
-  function installEditorialStyles() {
-    if (document.querySelector(`link[href="${editorialStylesheet}"]`)) return;
+  function installStylesheet(href, dataAttribute) {
+    if (document.querySelector(`link[href="${href}"]`)) return;
 
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = editorialStylesheet;
-    link.dataset.personalOsEditorial = 'true';
+    link.href = href;
+    link.dataset[dataAttribute] = 'true';
     document.head.append(link);
   }
 
@@ -124,7 +125,8 @@
     });
   }
 
-  installEditorialStyles();
+  installStylesheet(editorialStylesheet, 'personalOsEditorial');
+  installStylesheet(desktopTuningStylesheet, 'personalOsDesktopTuning');
   applyTheme(getRequestedTheme());
 
   themeButton?.addEventListener('click', () => {
