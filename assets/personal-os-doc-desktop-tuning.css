@@ -1,0 +1,12 @@
+/* Desktop-only type refinement for the Personal OS product overview. */
+@media (min-width: 1181px) {
+  .hero h1 {
+    max-width: 700px;
+    font-size: clamp(3rem, 5.2vw, 5.05rem);
+  }
+
+  html[data-theme="light"] .hero h1 {
+    max-width: 690px;
+    font-size: clamp(2.8rem, 4.8vw, 4.35rem);
+  }
+}
