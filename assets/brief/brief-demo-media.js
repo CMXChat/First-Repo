@@ -412,9 +412,12 @@
     button?.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
 
-    if (!state.controllerReady || !state.trackReady) {
+    if (state.fallbackMode || state.apiFailed || !state.controllerReady) {
       renderFallbackFrame();
       setStatus('Tap play in the Spotify player below.');
+    } else if (!state.trackReady) {
+      loadCurrentTrack();
+      setStatus(`Preparing ${track()?.title || 'the selected soundtrack'}.`);
     }
 
     drawer.querySelector('[data-close-media]')?.focus({ preventScroll: true });
