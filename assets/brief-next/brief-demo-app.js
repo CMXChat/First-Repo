@@ -15,7 +15,7 @@
     scenarioId: data.meta.defaultScenario,
     view: 'today',
     tab: '',
-    theme: 'light'
+    theme: 'dark'
   };
 
   function escapeHtml(value) {
@@ -253,6 +253,7 @@
     renderSpaces();
     window.BRIEF_DEMO_MEDIA?.setScenario(id);
     updateUrl(options.push === true);
+    document.dispatchEvent(new CustomEvent('briefdemo:scenariochange', { detail: { scenarioId: id } }));
   }
 
   function selectView(view, options = {}) {
@@ -283,11 +284,13 @@
   }
 
   function setTheme(theme, persist = true) {
-    state.theme = theme === 'dark' ? 'dark' : 'light';
+    state.theme = theme === 'light' ? 'light' : 'dark';
     document.documentElement.dataset.theme = state.theme;
     const button = $('#themeButton');
     button?.setAttribute('aria-pressed', String(state.theme === 'dark'));
     button?.setAttribute('aria-label', state.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.content = state.theme === 'dark' ? '#05070b' : '#edf3f8';
     if (persist) {
       try { localStorage.setItem('briefNextTheme', state.theme); } catch {}
     }
@@ -297,7 +300,6 @@
     const selected = state.entrySelection;
     if (!validScenarios.has(selected)) return;
 
-    /* Keep the playback request inside the direct user click. */
     window.BRIEF_DEMO_MEDIA?.requestEntryPlayback(selected, $('#entrySoundtrack')?.checked === true);
 
     state.entered = true;
@@ -313,7 +315,7 @@
     state.entrySelection = '';
     document.body.dataset.entered = 'false';
     $('#demoApp')?.setAttribute('aria-hidden', 'true');
-    $('#entrySoundtrack').checked = false;
+    $('#entrySoundtrack').checked = true;
     window.BRIEF_DEMO_MEDIA?.reset();
     renderEntry();
     setEntrySelection('');
@@ -381,9 +383,9 @@
     state.tab = normalizeTab(new URL(window.location.href).searchParams.get('tab') || '');
 
     try {
-      state.theme = localStorage.getItem('briefNextTheme') || (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      state.theme = localStorage.getItem('briefNextTheme') || 'dark';
     } catch {
-      state.theme = 'light';
+      state.theme = 'dark';
     }
 
     setTheme(state.theme, false);

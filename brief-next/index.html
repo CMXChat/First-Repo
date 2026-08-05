@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#edf3f8" />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#05070b" />
+  <meta name="color-scheme" content="dark light" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="referrer" content="no-referrer" />
@@ -12,8 +12,9 @@
   <title>Personal OS Briefing Demo</title>
   <meta name="description" content="A focused, reversible demonstration of a private daily briefing shaped by goals, Spaces, connections and permissions." />
   <link rel="canonical" href="https://db.cmxchat.com/brief-next/" />
-  <link rel="stylesheet" href="/assets/brief-next/brief-demo.css?v=20260805-1" />
-  <link rel="stylesheet" href="/assets/brief-next/brief-demo-explainers.css?v=20260805-1" />
+  <link rel="stylesheet" href="/assets/brief-next/brief-demo.css?v=20260805-2" />
+  <link rel="stylesheet" href="/assets/brief-next/brief-demo-explainers.css?v=20260805-2" />
+  <link rel="stylesheet" href="/assets/brief-next/brief-demo-experience.css?v=20260805-2" />
 </head>
 <body data-entered="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -57,7 +58,7 @@
         <div class="topbar-actions">
           <span class="today-label" id="todayLabel"></span>
           <button class="round-button" id="mediaButton" type="button" aria-label="Open soundtrack" aria-expanded="false">♪</button>
-          <button class="round-button" id="themeButton" type="button" aria-label="Switch theme" aria-pressed="false">◐</button>
+          <button class="round-button" id="themeButton" type="button" aria-label="Switch theme" aria-pressed="true">◐</button>
         </div>
       </div>
     </header>
@@ -215,6 +216,15 @@
             </ul>
           </section>
         </section>
+
+        <section class="view-panel" data-view-panel="everything" aria-labelledby="everythingTitle" hidden>
+          <header class="view-heading full-view-heading">
+            <div><p class="eyebrow">OPTIONAL FULL VIEW</p><h1 id="everythingTitle">Everything in one scrollable briefing.</h1></div>
+            <p>Focused views remain the faster default. Everything preserves the complete long-form option for review, exploration and handoff.</p>
+          </header>
+          <nav class="everything-jump-nav" id="everythingJumpNav" aria-label="Jump through the full briefing"></nav>
+          <div class="everything-content" id="everythingContent"></div>
+        </section>
       </main>
     </div>
 
@@ -241,9 +251,10 @@
   </div>
 
   <noscript>This demonstration requires JavaScript to switch Spaces and render the selected briefing.</noscript>
-  <script src="/assets/brief-next/brief-demo-data.js?v=20260805-1" defer></script>
-  <script src="/assets/brief-next/brief-demo-media.js?v=20260805-1" defer></script>
-  <script src="/assets/brief-next/brief-demo-app.js?v=20260805-1" defer></script>
-  <script src="/assets/brief-next/brief-demo-explainers.js?v=20260805-1" defer></script>
+  <script src="/assets/brief-next/brief-demo-data.js?v=20260805-2" defer></script>
+  <script src="/assets/brief-next/brief-demo-experience.js?v=20260805-2" defer></script>
+  <script src="/assets/brief-next/brief-demo-media.js?v=20260805-2" defer></script>
+  <script src="/assets/brief-next/brief-demo-app.js?v=20260805-2" defer></script>
+  <script src="/assets/brief-next/brief-demo-explainers.js?v=20260805-2" defer></script>
 </body>
 </html>
