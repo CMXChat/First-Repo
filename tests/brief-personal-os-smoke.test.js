@@ -39,13 +39,13 @@ assert.match(loader, /loadPersonalOsScript/);
 assert.match(loader, /loadFullHomeScript/);
 assert.match(loader, /loadStabilityScript/);
 assert.match(loader, /personal-os-test/);
+assert.match(loader, /brief-test/);
 assert.match(loader, /browser-test/);
+assert.match(loader, /finalization-test/);
+assert.match(loader, /theme-sweep/);
 assert.match(loader, /overlay-test/);
-assert.match(loaderCss, /brief-personal-os\.css/);
-assert.match(loaderCss, /brief-personal-os-density\.css/);
-assert.match(loaderCss, /brief-personal-os-mobile\.css/);
-assert.match(loaderCss, /brief-full-home\.css/);
-assert.match(loaderCss, /brief-personal-os-stability\.css/);
+assert.doesNotMatch(loaderCss, /@import/);
+assert.match(loaderCss, /Route-aware shell and Personal OS styles are loaded by brief-lite-ui\.js/);
 
 assert.match(os, /const APP_MAP/);
 assert.match(os, /Personal briefing operating system/);
