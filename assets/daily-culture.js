@@ -1,82 +1,17 @@
 window.CMX_DAILY_CULTURE = {
-  "generated": "Researched and refreshed August 4, 2026",
+  "generated": "Researched and refreshed August 5, 2026",
   "items": [
     {
-      "audience": "shared",
-      "priority": 100,
-      "label": "what to stream",
-      "status": "VERIFIED",
-      "title": "This week's releases offer one warm pick and one darker pick",
-      "text": "The Associated Press highlights the return of Ted Lasso, Billie Eilish's concert film, the romantic comedy You, Me & Tuscany, and the thriller series The Shards among the August 3–9 releases.",
-      "detailsLabel": "The useful shortlist",
-      "details": [
-        "Ted Lasso returns with a women's-team storyline.",
-        "Billie Eilish: Hit Me Hard and Soft: The Tour (Live) arrives on Paramount+.",
-        "You, Me & Tuscany is the lighter shared option.",
-        "The Shards is the darker suspense pick."
-      ],
-      "whyItMatters": "It gives Jay and Crystal a current shared-watch choice without dumping an entire release calendar on them.",
-      "watchNext": "Confirm New Zealand service availability before choosing the shared watch.",
-      "sources": [
-        {"label":"Associated Press streaming guide","url":"https://apnews.com/article/dfa7f10a03a09dfd0a044f1c30aebba9","published":"July 31, 2026"}
-      ]
+      "audience":"shared","priority":100,"label":"what to stream","status":"VERIFIED","title":"This week's strongest shared-watch options split neatly by mood","text":"The Associated Press highlights Ted Lasso and You, Me & Tuscany for a lighter shared watch, while The Shards offers a darker suspense option and Billie Eilish's concert film covers the music side.","detailsLabel":"The useful shortlist","details":["Ted Lasso returns with a women's-team storyline.","You, Me & Tuscany is the lighter romantic-comedy option.","The Shards is the darker suspense pick.","Billie Eilish: Hit Me Hard and Soft: The Tour (Live) is the concert-film option."],"whyItMatters":"It gives Jay and Crystal a simple mood-based choice instead of another long release list.","watchNext":"Confirm New Zealand service availability before choosing.","sources":[{"label":"Associated Press streaming guide","url":"https://apnews.com/article/dfa7f10a03a09dfd0a044f1c30aebba9","published":"July 31, 2026"}]
     },
     {
-      "audience": "crystal",
-      "priority": 96,
-      "label": "Australian celebrity court",
-      "status": "CIVIL DEFAMATION RULING",
-      "title": "Rebel Wilson won the case, but the judgment was not a total endorsement",
-      "text": "Australian reporting says Rebel Wilson prevailed in a defamation dispute tied to Instagram posts about The Deb. The result is a civil ruling, not a criminal finding, and reporting notes reputational criticism remained in the judgment.",
-      "detailsLabel": "Why the label matters",
-      "details": [
-        "This was a civil defamation proceeding.",
-        "Winning the case does not make every disputed statement accurate.",
-        "The written reasons matter more than victory-language headlines."
-      ],
-      "whyItMatters": "It is a current Australian celebrity legal story where careful wording changes the meaning.",
-      "watchNext": "Any appeal notice, costs ruling, or publication of fuller reasons.",
-      "sources": [
-        {"label":"AAP celebrity desk","url":"https://aapnews.aap.com.au/topics/celebrity","published":"August 3, 2026"}
-      ]
+      "audience":"crystal","priority":96,"label":"Australia and New Zealand film","status":"REPORTED INDUSTRY DEVELOPMENT","title":"A delayed Australian film-tax change may push a major production toward New Zealand","text":"Australian reporting says a producer warned that a roughly A$30 million project and associated jobs could move to New Zealand because promised Producer Offset changes remain unlegislated.","detailsLabel":"What is actually confirmed","details":["The warning comes from a producer, not a completed relocation announcement.","The dispute concerns uncertainty around qualifying production expenditure rules.","Australia's parliament is due to resume on August 11."],"whyItMatters":"It is a current Australia-New Zealand culture story about where film work, talent, and production spending may land.","watchNext":"Whether legislation advances or the production formally confirms a move.","sources":[{"label":"The Australian film-industry report","url":"https://www.theaustralian.com.au/culture/australia-set-to-lose-30m-film-and-1000-jobs-to-new-zealand/news-story/4033502bf3939edc3842cbd3bcedecd6","published":"August 3, 2026"}]
     },
     {
-      "audience": "crystal",
-      "priority": 92,
-      "label": "Waikato culture",
-      "status": "OFFICIAL LISTING",
-      "title": "Hamilton's August calendar is unusually Crystal-coded",
-      "text": "Hamilton Gardens lists Sonic Boom on August 8, the city's first Most Wuthering Heights Day on August 9, and Aotearoa in Bloom on August 13.",
-      "detailsLabel": "Three different moods",
-      "details": [
-        "Sonic Boom is a home-town children's concert.",
-        "Wuthering Heights Day brings the red-dress dance tradition to Kirikiriroa.",
-        "Aotearoa in Bloom focuses on native flowering plants through an illustrated talk."
-      ],
-      "whyItMatters": "Music, theatrical chaos, flowers, and local culture have all somehow formed a committee.",
-      "watchNext": "Check event pages for final times, access, and ticket details.",
-      "sources": [
-        {"label":"Hamilton Gardens upcoming events","url":"https://hamiltongardens.co.nz/","published":"August 2026 listings"}
-      ]
+      "audience":"jay","priority":92,"label":"Brooklyn nature","status":"REPORTED","title":"Cownose rays turned up in Newtown Creek","text":"A school of cownose rays was spotted in the polluted Brooklyn-Queens waterway, adding to recent wildlife sightings that some local experts view as encouraging evidence of ecological recovery.","detailsLabel":"Keep the optimism accurate","details":["Newtown Creek remains a federal Superfund site.","Wildlife sightings are encouraging but do not mean cleanup is complete.","Full remediation is still expected to take years."],"whyItMatters":"It is a hopeful local story with enough reality attached to keep it from becoming environmental wishful thinking.","watchNext":"Additional verified wildlife sightings and official cleanup milestones.","sources":[{"label":"Newtown Creek wildlife report","url":"https://nypost.com/2026/08/04/science/school-of-rays-spotted-in-nyc-superfund-creek-gives-hope/","published":"August 4, 2026"}]
     },
     {
-      "audience": "shared",
-      "priority": 88,
-      "label": "lighter internet culture",
-      "status": "CURRENT RELEASE",
-      "title": "Big Walk turns cooperative wandering into the point",
-      "text": "The new game from the creators of Untitled Goose Game is built around exploring and solving things together instead of trying to beat each other.",
-      "detailsLabel": "Why it stands out",
-      "details": [
-        "It is designed as a cooperative social game.",
-        "The appeal is conversation, discovery, and low-stakes problem solving.",
-        "It offers a different shared-activity idea than watching another episode."
-      ],
-      "whyItMatters": "A shared activity that rewards cooperation is a better fit than competitive misery disguised as bonding.",
-      "watchNext": "Platform availability and whether remote play works well across their devices.",
-      "sources": [
-        {"label":"Associated Press streaming and games guide","url":"https://apnews.com/article/dfa7f10a03a09dfd0a044f1c30aebba9","published":"July 31, 2026"}
-      ]
+      "audience":"shared","priority":88,"label":"lighter science","status":"UPCOMING OBSERVATION","title":"A spent Falcon 9 stage is expected to hit the Moon today","text":"Researchers published an observing plan for a predicted August 5 impact near Einstein Crater, where professional and amateur astronomers may try to record the flash and ejecta plume.","detailsLabel":"Why scientists care","details":["The event may help test methods for locating impacts on the lunar surface.","Researchers are interested in plume behavior and future seismic experiments.","The exact brightness and visibility remain uncertain."],"whyItMatters":"It is a rare same-day science event that is interesting without requiring either person to become a space-debris expert before breakfast.","watchNext":"Whether observatories report a successful detection.","sources":[{"label":"Observational planning paper","url":"https://arxiv.org/abs/2607.14625","published":"July 16, 2026"}]
     }
   ]
 };
