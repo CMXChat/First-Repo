@@ -1,14 +1,16 @@
 const { test, expect } = require('@playwright/test');
 
-async function resetThemeStorage(page) {
-  await page.addInitScript(() => {
+async function prepareFreshPage(page, route = '/brief/') {
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await page.evaluate(() => {
     localStorage.clear();
     sessionStorage.clear();
   });
+  await page.reload({ waitUntil: 'domcontentloaded' });
 }
 
 async function openCurrentBrief(page, route = '/brief/') {
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await prepareFreshPage(page, route);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
   await expect(page.locator('#entry')).toBeVisible();
@@ -38,10 +40,6 @@ async function expectNoHorizontalOverflow(page) {
   expect(overflow.body).toBeLessThanOrEqual(1);
 }
 
-test.beforeEach(async ({ page }) => {
-  await resetThemeStorage(page);
-});
-
 test('current Brief opens in light mode and remains usable across devices', async ({ page }) => {
   await openCurrentBrief(page);
   await enterScenario(page, 'personal');
@@ -64,6 +62,8 @@ test('current Brief opens in light mode and remains usable across devices', asyn
 });
 
 test('explicit theme query remains reversible on production and staging routes', async ({ page }) => {
+  await prepareFreshPage(page);
+
   for (const route of ['/brief/', '/brief-next/']) {
     await page.goto(`${route}?theme=dark`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
