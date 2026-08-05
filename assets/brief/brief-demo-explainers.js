@@ -4,26 +4,26 @@
   const memoryExamples = {
     continuity: {
       label: 'Continuity',
-      regular: 'A regular AI mostly works from the current conversation. Important background may need to be explained again or may remain buried in old chats.',
-      personal: 'Personal OS can prepare a reviewable record of goals, decisions, preferences, corrections, and recent outcomes before the next briefing or conversation begins.',
+      regular: 'A normal chat usually depends on the current conversation. You may need to explain important background again.',
+      personal: 'Personal OS can prepare a record of goals, decisions, preferences, corrections, and recent results before the next Brief starts.',
       record: ['Source: user correction', 'Confidence: confirmed', 'Scope: Personal Space', 'Review: available anytime']
     },
     correction: {
       label: 'Correction',
-      regular: 'A stale assumption may continue shaping answers until the user notices and corrects it again.',
-      personal: 'A direct correction can replace a weaker inference, preserve when it changed, and prevent the old assumption from quietly returning.',
+      regular: 'An old assumption can keep shaping replies until the user notices it and corrects it again.',
+      personal: 'A direct correction can replace a weaker guess, record when it changed, and stop the old assumption from returning.',
       record: ['Previous belief: archived', 'Correction: user confirmed', 'Effective: immediately', 'History: preserved']
     },
     outcome: {
       label: 'Outcome',
-      regular: 'The conversation may end after a recommendation, with no structured record of whether the advice worked.',
-      personal: 'The result can become evidence. The next plan can respond to what was completed, skipped, changed, or learned.',
+      regular: 'A chat can end after giving advice, with no clear record of what happened next.',
+      personal: 'The result becomes useful evidence. The next plan can respond to what was completed, skipped, changed, or learned.',
       record: ['Action: completed', 'Outcome: useful', 'Goal impact: positive', 'Next plan: adjusted']
     },
     preference: {
       label: 'Preference',
-      regular: 'A preference may be remembered loosely without a clear setting, source, or place where it applies.',
-      personal: 'Music, voice, briefing length, detail level, and presentation can become user-owned settings that differ by Space, routine, or device.',
+      regular: 'A preference may be remembered loosely, with no clear setting or record of where it applies.',
+      personal: 'Music, voice, Brief length, detail, and layout can become settings that belong to the user and can differ by Space or device.',
       record: ['Morning music: enabled', 'Read aloud: disabled', 'Detail: concise first', 'Applies to: Personal Space']
     }
   };
@@ -31,36 +31,36 @@
   const spaceExamples = {
     relationship: {
       label: 'Relationship',
-      title: 'Two private profiles and one approved shared Space',
-      members: ['Maya: private profile', 'Jordan: private profile', 'Couple Space: approved context'],
-      shared: ['Travel plan and booking owner', 'Shared calendar changes', 'Promises and decisions requiring both people'],
-      protected: 'Private messages, personal reflections, individual financial context, and unshared memories stay outside the Couple Space.'
+      title: 'Two private profiles and one shared Space',
+      members: ['Maya: private profile', 'Jordan: private profile', 'Couple Space: approved records'],
+      shared: ['Travel plan and booking owner', 'Shared calendar changes', 'Promises and decisions approved by both people'],
+      protected: 'Private messages, personal reflections, individual finances, and unshared memories stay outside the Couple Space.'
     },
     family: {
       label: 'Family',
-      title: 'One household briefing without exposing every family member',
-      members: ['Parent or guardian roles', 'Children or dependents by appropriate role', 'Family Space: household coordination'],
-      shared: ['Current expenses and bills', 'Chores and ownership', 'Pickups, appointments, groceries, and calendar changes'],
-      protected: 'Parent-private notes, member-private concerns, credentials, and unrelated personal accounts remain separate from the family briefing.'
+      title: 'One household Brief with separate private records',
+      members: ['Parent or guardian roles', 'Children or dependents with suitable access', 'Family Space: household plans'],
+      shared: ['Current expenses and bills', 'Chores and owners', 'Pickups, appointments, groceries, and calendar changes'],
+      protected: 'Parent notes, private concerns, passwords, and unrelated accounts stay outside the family Brief.'
     },
     team: {
       label: 'Team',
-      title: 'One mission with role-based access',
-      members: ['Member: assigned work', 'Lead: project-wide view', 'Project Space: approved operating truth'],
-      shared: ['Goals, blockers, handoffs, owners, and deadlines', 'Approved decisions and release history', 'Relevant files and connected-tool updates'],
-      protected: 'HR context, credentials, private preparation, leadership notes, and unrelated company systems remain restricted.'
+      title: 'One project goal with role-based access',
+      members: ['Member: assigned work', 'Lead: project-wide view', 'Project Space: approved project record'],
+      shared: ['Goals, blockers, handoffs, owners, and deadlines', 'Approved decisions and release history', 'Relevant files and tool updates'],
+      protected: 'HR records, passwords, private preparation, leadership notes, and unrelated company tools stay restricted.'
     }
   };
 
   const outcomes = [
-    ['Brief', 'Prepare what changed, what matters, and what should happen next.'],
-    ['Alarm', 'Begin a routine with approved music, voice, and a short spoken briefing.'],
+    ['Brief', 'Show what changed, what matters, and what should happen next.'],
+    ['Alarm', 'Start a routine with approved music, voice, and a short spoken Brief.'],
     ['Plan', 'Turn goals and current conditions into a realistic next step.'],
-    ['Coordinate', 'Summarize shared plans, responsibilities, decisions, and missing approvals.'],
+    ['Coordinate', 'Summarize shared plans, owners, decisions, and missing approvals.'],
     ['Prepare', 'Draft a task, calendar block, message, report, or handoff for review.'],
     ['Automate', 'Run a scheduled check or watch a condition after the user closes the page.'],
-    ['Learn', 'Record corrections and outcomes so the next recommendation improves.'],
-    ['Act', 'Carry out an approved action only after the right confirmation and permission checks.']
+    ['Learn', 'Save corrections and results so the next recommendation uses better information.'],
+    ['Act', 'Carry out an approved action after the right permission and confirmation checks.']
   ];
 
   const escapeHtml = value => {
@@ -80,34 +80,34 @@
     section.innerHTML = `
       <header class="explainer-heading">
         <div>
-          <p class="eyebrow">THE CORE DIFFERENCE</p>
-          <h2>Memory and Spaces turn AI into a controlled personal intelligence layer.</h2>
+          <p class="eyebrow">THE MAIN DIFFERENCE</p>
+          <h2>Memory and Spaces give AI clear limits and useful history.</h2>
         </div>
-        <p>The examples below show continuity, correction, shared context, and useful action without pretending the public demo has private account access.</p>
+        <p>These examples show how Personal OS can keep context, accept corrections, share selected records, and prepare useful work.</p>
       </header>
 
       <section class="memory-demo" aria-labelledby="memoryDemoTitle">
         <div class="explainer-title-row">
-          <div><span>01</span><h3 id="memoryDemoTitle">What changes when memory is reviewable?</h3></div>
-          <p>Choose a memory behavior to compare a normal chat with Personal OS.</p>
+          <div><span>01</span><h3 id="memoryDemoTitle">What changes when memory can be reviewed?</h3></div>
+          <p>Choose an example to compare normal chat with Personal OS.</p>
         </div>
         <div class="explainer-tabs" id="memoryExampleTabs" role="tablist" aria-label="Memory comparison examples"></div>
-        <div class="memory-comparison" id="memoryComparison" aria-live="polite"></div>
+        <div class="memory-comparison" id="memoryComparison" role="tabpanel" tabindex="0" aria-live="polite"></div>
       </section>
 
       <section class="spaces-demo" aria-labelledby="spacesDemoTitle">
         <div class="explainer-title-row">
-          <div><span>02</span><h3 id="spacesDemoTitle">How can people share context without sharing everything?</h3></div>
-          <p>People appear because they belong to an approved Space. This is not a social friends list.</p>
+          <div><span>02</span><h3 id="spacesDemoTitle">How can people share context and keep private boundaries?</h3></div>
+          <p>People appear only when they belong to an approved Space.</p>
         </div>
         <div class="explainer-tabs" id="spaceExampleTabs" role="tablist" aria-label="People and Spaces examples"></div>
-        <article class="space-example-panel" id="spaceExamplePanel" aria-live="polite"></article>
+        <article class="space-example-panel" id="spaceExamplePanel" role="tabpanel" tabindex="0" aria-live="polite"></article>
       </section>
 
       <section class="outcomes-demo" aria-labelledby="outcomesTitle">
         <div class="explainer-title-row">
-          <div><span>03</span><h3 id="outcomesTitle">What can approved data become?</h3></div>
-          <p>The dashboard is only one surface. The same structured context can support routines, coordination, preparation, and approved action.</p>
+          <div><span>03</span><h3 id="outcomesTitle">What can approved information help create?</h3></div>
+          <p>The same records can support a Brief, routine, plan, handoff, or approved action.</p>
         </div>
         <div class="outcome-grid">${outcomes.map(([title, detail]) => `
           <article><span>${escapeHtml(title)}</span><p>${escapeHtml(detail)}</p></article>
@@ -116,24 +116,32 @@
 
       <aside class="privacy-callout">
         <span>PRIVATE FIRST</span>
-        <strong>Each memory and connection needs a purpose, a Space, an access level, and a way to pause or revoke it.</strong>
-        <p>Important actions should remain visible, logged, and confirmable. The frontend demonstrates the rules. Real protection belongs behind authentication and server-side permissions.</p>
+        <strong>Every memory and connection needs a purpose, a Space, an access level, and a clear off switch.</strong>
+        <p>Important actions stay visible and need confirmation. This demo shows the rules. Real protection belongs behind secure sign-in and server permissions.</p>
       </aside>`;
 
     boundary.insertAdjacentElement('beforebegin', section);
     return section;
   }
 
+  function selectTab(groupSelector, selectedId, dataName) {
+    const tabs = [...document.querySelectorAll(groupSelector)];
+    tabs.forEach(button => {
+      const active = button.dataset[dataName] === selectedId;
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+    });
+  }
+
   function renderMemory(id = 'continuity') {
     const selected = memoryExamples[id] || memoryExamples.continuity;
-    document.querySelectorAll('[data-memory-example]').forEach(button => {
-      button.setAttribute('aria-selected', String(button.dataset.memoryExample === id));
-    });
+    selectTab('[data-memory-example]', id, 'memoryExample');
     const host = document.getElementById('memoryComparison');
     if (!host) return;
+    host.setAttribute('aria-labelledby', `memory-tab-${id}`);
     host.innerHTML = `
       <article class="comparison-card regular-ai">
-        <span>REGULAR AI CHAT</span>
+        <span>NORMAL CHAT</span>
         <h4>${escapeHtml(selected.label)}</h4>
         <p>${escapeHtml(selected.regular)}</p>
       </article>
@@ -147,18 +155,33 @@
 
   function renderSpace(id = 'relationship') {
     const selected = spaceExamples[id] || spaceExamples.relationship;
-    document.querySelectorAll('[data-space-example]').forEach(button => {
-      button.setAttribute('aria-selected', String(button.dataset.spaceExample === id));
-    });
+    selectTab('[data-space-example]', id, 'spaceExample');
     const host = document.getElementById('spaceExamplePanel');
     if (!host) return;
+    host.setAttribute('aria-labelledby', `space-tab-${id}`);
     host.innerHTML = `
       <header><span>${escapeHtml(selected.label)} SPACE</span><h4>${escapeHtml(selected.title)}</h4></header>
       <div class="space-example-columns">
         <section><strong>People and roles</strong><ul>${selected.members.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>
-        <section><strong>Shared briefing can include</strong><ul>${selected.shared.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>
+        <section><strong>The shared Brief can include</strong><ul>${selected.shared.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>
       </div>
       <p class="space-protection"><strong>Protected:</strong> ${escapeHtml(selected.protected)}</p>`;
+  }
+
+  function moveTabFocus(event, selector) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    const tabs = [...document.querySelectorAll(selector)];
+    const currentIndex = tabs.indexOf(event.target);
+    if (currentIndex < 0) return;
+
+    event.preventDefault();
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    if (event.key === 'Home') nextIndex = 0;
+    if (event.key === 'End') nextIndex = tabs.length - 1;
+    tabs[nextIndex]?.focus();
+    tabs[nextIndex]?.click();
   }
 
   function installDefaultSoundtrack() {
@@ -176,12 +199,12 @@
     if (section) {
       const memoryTabs = document.getElementById('memoryExampleTabs');
       memoryTabs.innerHTML = Object.entries(memoryExamples).map(([id, item], index) => `
-        <button type="button" role="tab" data-memory-example="${escapeHtml(id)}" aria-selected="${index === 0}">${escapeHtml(item.label)}</button>
+        <button id="memory-tab-${escapeHtml(id)}" type="button" role="tab" data-memory-example="${escapeHtml(id)}" aria-controls="memoryComparison" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}">${escapeHtml(item.label)}</button>
       `).join('');
 
       const spaceTabs = document.getElementById('spaceExampleTabs');
       spaceTabs.innerHTML = Object.entries(spaceExamples).map(([id, item], index) => `
-        <button type="button" role="tab" data-space-example="${escapeHtml(id)}" aria-selected="${index === 0}">${escapeHtml(item.label)}</button>
+        <button id="space-tab-${escapeHtml(id)}" type="button" role="tab" data-space-example="${escapeHtml(id)}" aria-controls="spaceExamplePanel" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}">${escapeHtml(item.label)}</button>
       `).join('');
 
       section.addEventListener('click', event => {
@@ -193,6 +216,9 @@
         const spaceButton = event.target.closest('[data-space-example]');
         if (spaceButton) renderSpace(spaceButton.dataset.spaceExample);
       });
+
+      memoryTabs.addEventListener('keydown', event => moveTabFocus(event, '[data-memory-example]'));
+      spaceTabs.addEventListener('keydown', event => moveTabFocus(event, '[data-space-example]'));
 
       renderMemory();
       renderSpace();
