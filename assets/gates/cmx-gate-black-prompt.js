@@ -30,34 +30,6 @@
   const root = document.documentElement;
   if (root.dataset.cmxGate !== 'black-prompt') return;
 
-  const PUBLIC_GATE_BYPASS_IDS = new Set(['personal-os-document']);
-
-  function revealPublicRoute() {
-    root.removeAttribute('data-cmx-gate');
-    root.removeAttribute('data-cmx-gate-id');
-    root.removeAttribute('data-cmx-gate-delay');
-
-    document.querySelectorAll('[data-cmx-gated-content]').forEach((element) => {
-      element.hidden = false;
-      element.removeAttribute('aria-hidden');
-      element.removeAttribute('data-cmx-gated-content');
-    });
-
-    if (document.body) {
-      document.body.classList.remove('cmx-black-prompt-locked');
-      document.body.classList.add('cmx-black-prompt-unlocked');
-    }
-  }
-
-  if (PUBLIC_GATE_BYPASS_IDS.has(root.dataset.cmxGateId)) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', revealPublicRoute, { once: true });
-    } else {
-      revealPublicRoute();
-    }
-    return;
-  }
-
   const GATE_NAME = 'Black Prompt Gate';
   const ITERATIONS = 600000;
 
