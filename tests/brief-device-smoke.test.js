@@ -20,6 +20,7 @@ assert.match(html, /id="openDemo"[^>]*disabled/);
 assert.match(html, /id="themeButton"/);
 assert.match(html, /id="mobileNav"/);
 assert.match(html, /id="mediaDrawer"/);
+assert.match(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /brief-demo-app\.js/);
 assert.match(html, /brief-demo-media\.js/);
 assert.doesNotMatch(html, /id="profileSelect"|id="musicOnEntry"|id="readOnEntry"|id="enterBrief"/);
