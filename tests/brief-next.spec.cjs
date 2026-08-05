@@ -1,6 +1,46 @@
 const { test, expect } = require('@playwright/test');
 
+async function installSpotifyMock(page) {
+  await page.addInitScript(() => {
+    window.__spotifyPlayCalls = [];
+    window.__spotifyLoadedUris = [];
+
+    window.BRIEF_SPOTIFY_IFRAME_API = {
+      createController(element, options, callback) {
+        const listeners = {};
+        let uri = options.uri;
+        const frame = document.createElement('iframe');
+        frame.src = `https://open.spotify.com/embed/track/${uri.split(':').pop()}?test=1`;
+        element.replaceWith(frame);
+
+        const controller = {
+          addListener(name, handler) {
+            listeners[name] = handler;
+            if (name === 'ready') queueMicrotask(() => handler({ data: {} }));
+          },
+          loadEntity(nextUri) {
+            uri = nextUri;
+            window.__spotifyLoadedUris.push(nextUri);
+            frame.src = `https://open.spotify.com/embed/track/${uri.split(':').pop()}?test=1`;
+          },
+          play() {
+            window.__spotifyPlayCalls.push(uri);
+            listeners.playback_started?.({ data: { playingURI: uri } });
+            listeners.playback_update?.({ data: { playingURI: uri, isPaused: false } });
+          },
+          pause() {
+            listeners.playback_update?.({ data: { playingURI: uri, isPaused: true } });
+          }
+        };
+
+        callback(controller);
+      }
+    };
+  });
+}
+
 async function openScenario(page, id) {
+  await installSpotifyMock(page);
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
@@ -10,9 +50,16 @@ async function openScenario(page, id) {
   await page.locator('#openDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('#demoApp')).toHaveAttribute('aria-hidden', 'false');
+  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
+
+  const playback = await page.evaluate(scenarioId => ({
+    actual: window.__spotifyPlayCalls.at(-1),
+    expected: `spotify:track:${window.BRIEF_DEMO_DATA.scenarios[scenarioId].soundtrack.spotifyTrackId}`
+  }), id);
+  expect(playback.actual).toBe(playback.expected);
 }
 
-test('desktop demo keeps weather, stats and selective navigation', async ({ page }, testInfo) => {
+test('desktop demo keeps weather, stats, selective navigation and entry soundtrack playback', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
   await openScenario(page, 'personal');
 
@@ -22,6 +69,7 @@ test('desktop demo keeps weather, stats and selective navigation', async ({ page
   await expect(page.locator('#weatherTemperature')).toHaveText('82');
   await expect(page.locator('#statsGrid .stat-card')).toHaveCount(4);
   await expect(page.locator('#flowList li')).toHaveCount(4);
+  await expect(page.locator('#mediaStatus')).toContainText('Playing You Get What You Give through Spotify');
 
   await page.locator('#primaryNav [data-primary-view="workspace"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
@@ -41,6 +89,7 @@ test('desktop demo keeps weather, stats and selective navigation', async ({ page
   await expect(page.locator('#mediaDrawer')).toHaveClass(/is-open/);
   await expect(page.locator('#spotifyFrame')).toHaveCount(1);
   await expect(page.locator('#spotifyFrame')).toHaveAttribute('src', /open\.spotify\.com\/embed\/track\/1eyzqe2QqGZUmfcPZtrIyt/);
+  await expect(page.locator('#previewButton')).toHaveText('Play Spotify soundtrack');
   await page.locator('[data-close-media]').first().click();
   await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
 });
@@ -98,6 +147,7 @@ test('memory and People and Spaces examples explain the product interactively', 
 
 test('mobile demo keeps focused navigation plus optional Everything', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
+  await installSpotifyMock(page);
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
@@ -109,6 +159,7 @@ test('mobile demo keeps focused navigation plus optional Everything', async ({ p
 
   await page.locator('[data-entry-scenario="relationship"]').click();
   await page.locator('#openDemo').click();
+  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
   await expect(page.locator('#mobileNav')).toBeVisible();
   await expect(page.locator('#mobileNav button')).toHaveCount(5);
   await expect(page.locator('#mobileNav button').last()).toHaveText('Everything');
