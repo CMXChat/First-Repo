@@ -81,8 +81,11 @@ assert.match(css, /@media \(max-width: 620px\)/);
 assert.match(css, /prefers-reduced-motion/);
 assert.match(explainerCss, /\.memory-comparison/);
 assert.match(explainerCss, /\.space-example-panel/);
+assert.match(explainerCss, /\.entry-card h1/);
+assert.match(explainerCss, /font-size: clamp\(1\.5rem, 6\.8vw, 2rem\)/);
 assert.match(explainerCss, /\.hero-copy h1/);
-assert.match(explainerCss, /font-size: clamp\(1\.95rem, 9\.5vw, 2\.75rem\)/);
+assert.match(explainerCss, /font-size: clamp\(1\.75rem, 7\.8vw, 2\.2rem\)/);
+assert.match(explainerCss, /\.view-heading h1/);
 
 const route = routes.routes.find(item => item.path === '/brief-next/');
 assert.ok(route, '/brief-next/ must be registered.');
