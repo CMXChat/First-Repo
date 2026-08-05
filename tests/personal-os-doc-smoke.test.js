@@ -7,14 +7,16 @@ const path = require('node:path');
 const root = process.cwd();
 const htmlPath = path.join(root, 'doc/index.html');
 const cssPath = path.join(root, 'assets/personal-os-doc.css');
+const editorialCssPath = path.join(root, 'assets/personal-os-doc-editorial.css');
 const jsPath = path.join(root, 'assets/personal-os-doc.js');
 
-for (const filePath of [htmlPath, cssPath, jsPath]) {
+for (const filePath of [htmlPath, cssPath, editorialCssPath, jsPath]) {
   assert.ok(fs.existsSync(filePath), `Missing required Personal OS document file: ${filePath}`);
 }
 
 const html = fs.readFileSync(htmlPath, 'utf8');
 const css = fs.readFileSync(cssPath, 'utf8');
+const editorialCss = fs.readFileSync(editorialCssPath, 'utf8');
 const js = fs.readFileSync(jsPath, 'utf8');
 
 assert.match(html, /data-cmx-gate="black-prompt"/);
@@ -67,7 +69,16 @@ assert.match(css, /@media \(max-width: 680px\)/);
 assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(css, /@media print/);
 
-assert.match(js, /personal_os_doc_theme_v2/);
+assert.match(editorialCss, /Personal OS editorial light mode/);
+assert.match(editorialCss, /html\[data-theme="light"\] \.document-paper/);
+assert.match(editorialCss, /font-family: Georgia/);
+assert.match(editorialCss, /@media \(max-width: 680px\)/);
+assert.match(editorialCss, /@media print/);
+
+assert.match(js, /personal_os_doc_theme_v3/);
+assert.match(js, /personal-os-doc-editorial\.css/);
+assert.match(js, /return getStoredTheme\(\) \|\| 'light'/);
+assert.match(js, /nextTheme = theme === 'dark' \? 'dark' : 'light'/);
 assert.match(js, /IntersectionObserver/);
 assert.match(js, /window\.print/);
 assert.match(js, /aria-current/);

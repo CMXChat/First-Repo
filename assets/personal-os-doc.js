@@ -8,7 +8,18 @@
   const tocLinks = Array.from(document.querySelectorAll('.document-toc a'));
   const sections = Array.from(document.querySelectorAll('.document-section[id]'));
   const themeMeta = document.querySelector('meta[name="theme-color"]');
-  const storageKey = 'personal_os_doc_theme_v2';
+  const storageKey = 'personal_os_doc_theme_v3';
+  const editorialStylesheet = '/assets/personal-os-doc-editorial.css?v=20260805-1';
+
+  function installEditorialStyles() {
+    if (document.querySelector(`link[href="${editorialStylesheet}"]`)) return;
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = editorialStylesheet;
+    link.dataset.personalOsEditorial = 'true';
+    document.head.append(link);
+  }
 
   function getStoredTheme() {
     try {
@@ -22,7 +33,7 @@
   function getRequestedTheme() {
     const queryTheme = new URLSearchParams(window.location.search).get('theme');
     if (queryTheme === 'light' || queryTheme === 'dark') return queryTheme;
-    return getStoredTheme() || 'dark';
+    return getStoredTheme() || 'light';
   }
 
   function storeTheme(theme) {
@@ -34,7 +45,7 @@
   }
 
   function applyTheme(theme, persist = false) {
-    const nextTheme = theme === 'light' ? 'light' : 'dark';
+    const nextTheme = theme === 'dark' ? 'dark' : 'light';
     const darkMode = nextTheme === 'dark';
 
     root.dataset.theme = nextTheme;
@@ -47,7 +58,7 @@
     }
 
     if (themeMeta) {
-      themeMeta.setAttribute('content', darkMode ? '#060a12' : '#edf3f8');
+      themeMeta.setAttribute('content', darkMode ? '#060a12' : '#e9ece8');
     }
 
     if (persist) storeTheme(nextTheme);
@@ -113,6 +124,7 @@
     });
   }
 
+  installEditorialStyles();
   applyTheme(getRequestedTheme());
 
   themeButton?.addEventListener('click', () => {
