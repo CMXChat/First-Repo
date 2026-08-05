@@ -9,8 +9,9 @@ const htmlPath = path.join(root, 'doc/index.html');
 const cssPath = path.join(root, 'assets/personal-os-doc.css');
 const editorialCssPath = path.join(root, 'assets/personal-os-doc-editorial.css');
 const jsPath = path.join(root, 'assets/personal-os-doc.js');
+const routesPath = path.join(root, 'assets/cmx-routes.json');
 
-for (const filePath of [htmlPath, cssPath, editorialCssPath, jsPath]) {
+for (const filePath of [htmlPath, cssPath, editorialCssPath, jsPath, routesPath]) {
   assert.ok(fs.existsSync(filePath), `Missing required Personal OS document file: ${filePath}`);
 }
 
@@ -18,13 +19,23 @@ const html = fs.readFileSync(htmlPath, 'utf8');
 const css = fs.readFileSync(cssPath, 'utf8');
 const editorialCss = fs.readFileSync(editorialCssPath, 'utf8');
 const js = fs.readFileSync(jsPath, 'utf8');
+const routes = JSON.parse(fs.readFileSync(routesPath, 'utf8'));
 
-assert.match(html, /data-cmx-gate="black-prompt"/);
-assert.match(html, /data-cmx-gate-id="personal-os-document"/);
-assert.match(html, /data-cmx-gated-content hidden/);
-assert.match(html, /class="cmx-black-prompt-locked"/);
+assert.doesNotMatch(html, /data-cmx-gate=/);
+assert.doesNotMatch(html, /data-cmx-gated-content/);
+assert.doesNotMatch(html, /cmx-black-prompt-locked/);
+assert.doesNotMatch(html, /cmx-gate-black-prompt\.(?:css|js)/);
+assert.match(html, /<body>\s*<main>/);
 assert.match(html, /meta name="referrer" content="no-referrer"/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
+assert.match(html, /Public overview/);
+assert.match(html, /This noindex overview contains product explanation and fictional examples/);
+
+const route = routes.routes.find(item => item.path === '/doc/');
+assert.ok(route, '/doc/ must be registered.');
+assert.equal(route.status, 'Active');
+assert.equal(route.visibility, 'Direct-link-only');
+assert.equal(route.gated, false);
 
 for (const id of [
   'overview',

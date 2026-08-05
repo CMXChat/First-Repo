@@ -2,8 +2,10 @@ const { test, expect } = require('@playwright/test');
 
 async function openScenario(page, id) {
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
+  await expect(page.locator('#entryDocLink')).toBeVisible();
+  await expect(page.locator('#entryDocLink')).toHaveAttribute('href', '/doc/');
   await expect(page.locator('#readOnEntry')).toHaveCount(0);
   await page.locator(`[data-entry-scenario="${id}"]`).click();
   await expect(page.locator('#openDemo')).toBeEnabled();
@@ -12,12 +14,14 @@ async function openScenario(page, id) {
   await expect(page.locator('#demoApp')).toHaveAttribute('aria-hidden', 'false');
 }
 
-test('desktop demo keeps weather, stats and selective navigation', async ({ page }, testInfo) => {
+test('desktop demo keeps weather, stats, selective navigation and overview access', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
   await openScenario(page, 'personal');
 
   await expect(page.locator('#primaryNav button')).toHaveCount(5);
   await expect(page.locator('#primaryNav button').last()).toHaveText('Everything');
+  await expect(page.locator('#briefDocLink')).toBeVisible();
+  await expect(page.locator('#briefDocLink')).toHaveAttribute('href', '/doc/');
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect(page.locator('#weatherTemperature')).toHaveText('82');
   await expect(page.locator('#statsGrid .stat-card')).toHaveCount(4);
@@ -45,7 +49,7 @@ test('desktop demo keeps weather, stats and selective navigation', async ({ page
   await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
 });
 
-test('Everything preserves a scrollable full view with interlinking', async ({ page }, testInfo) => {
+test('Everything preserves a scrollable full view with a final overview link', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Full-view behavior is covered in the desktop project.');
   await openScenario(page, 'relationship');
 
@@ -61,6 +65,7 @@ test('Everything preserves a scrollable full view with interlinking', async ({ p
   await expect(page.locator('#all-adaptive')).toContainText('Personalized does not mean unpredictable');
   await expect(page.locator('#all-alarm')).toContainText('connected Spotify account');
   await expect(page.locator('#all-alarm')).toContainText('executive overview');
+  await expect(page.locator('#everythingDocLink')).toHaveAttribute('href', '/doc/');
 
   await page.locator('[data-full-workspace-tab="plans"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
@@ -96,22 +101,24 @@ test('memory and People and Spaces examples explain the product interactively', 
   await expect(page.locator('.privacy-callout')).toContainText('PRIVATE FIRST');
 });
 
-test('mobile demo keeps focused navigation plus optional Everything', async ({ page }, testInfo) => {
+test('mobile demo keeps focused navigation, overview access and optional Everything', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   const bg = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());
-  expect(bg).toBe('#05070b');
+  expect(bg).toBe('#edf3f8');
   const entryHeadingSize = await page.locator('#entryTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(entryHeadingSize).toBeLessThanOrEqual(36);
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
+  await expect(page.locator('#entryDocLink')).toBeVisible();
 
   await page.locator('[data-entry-scenario="relationship"]').click();
   await page.locator('#openDemo').click();
   await expect(page.locator('#mobileNav')).toBeVisible();
   await expect(page.locator('#mobileNav button')).toHaveCount(5);
   await expect(page.locator('#mobileNav button').last()).toHaveText('Everything');
+  await expect(page.locator('#briefDocLink')).toBeVisible();
 
   const heroHeadingSize = await page.locator('#heroTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(heroHeadingSize).toBeLessThanOrEqual(36);
@@ -119,6 +126,7 @@ test('mobile demo keeps focused navigation plus optional Everything', async ({ p
   await page.locator('#mobileNav [data-primary-view="everything"]').click();
   await expect(page.locator('[data-view-panel="everything"]')).toBeVisible();
   await expect(page.locator('#everythingJumpNav')).toBeVisible();
+  await expect(page.locator('#everythingDocLink')).toBeVisible();
 
   await page.locator('#mobileNav [data-primary-view="workspace"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
@@ -132,17 +140,17 @@ test('mobile demo keeps focused navigation plus optional Everything', async ({ p
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test('dark default, saved light preference and reset remain reversible', async ({ page }, testInfo) => {
+test('light default, saved dark preference and reset remain reversible', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Control reversibility is covered in the desktop project.');
   await openScenario(page, 'business');
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
+  await page.locator('#themeButton').click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
   await page.locator('[data-entry-scenario="business"]').click();
   await page.locator('#openDemo').click();
@@ -151,5 +159,5 @@ test('dark default, saved light preference and reset remain reversible', async (
   await expect(page.locator('#entry')).toBeVisible();
   await expect(page.locator('#openDemo')).toBeDisabled();
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });

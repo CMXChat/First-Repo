@@ -157,6 +157,7 @@
         ${sectionButton('workspace', 'Open Workspace')}
         ${sectionButton('spaces', 'Review Spaces')}
         ${sectionButton('how', 'Understand the system')}
+        <a class="text-button" id="everythingDocLink" href="/doc/">Read the product overview <span aria-hidden="true">→</span></a>
       </nav>`;
   }
 
