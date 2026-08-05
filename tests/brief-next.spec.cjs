@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 async function openScenario(page, id) {
   await page.goto('/brief-next/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
   await expect(page.locator('#readOnEntry')).toHaveCount(0);
   await page.locator(`[data-entry-scenario="${id}"]`).click();
@@ -125,9 +125,9 @@ test('mobile demo keeps focused navigation plus optional rich Everything', async
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Mobile navigation is tested only in the mobile project.');
   await page.goto('/brief-next/', { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   const bg = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());
-  expect(bg).toBe('#05070b');
+  expect(bg).toBe('#edf3f8');
   const entryHeadingSize = await page.locator('#entryTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(entryHeadingSize).toBeLessThanOrEqual(36);
   await expect(page.locator('#entrySoundtrack')).toBeChecked();
@@ -162,11 +162,19 @@ test('mobile demo keeps focused navigation plus optional rich Everything', async
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test('dark default, saved light preference and reset remain reversible', async ({ page }, testInfo) => {
+test('light default, saved explicit preferences and reset remain reversible', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Control reversibility is covered in the desktop project.');
   await openScenario(page, 'business');
 
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('#themeButton')).toHaveAttribute('aria-pressed', 'false');
+  await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+
   await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
