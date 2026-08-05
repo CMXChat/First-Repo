@@ -2,7 +2,7 @@
 
 Last updated: **August 5, 2026 at 2:18 PM ET**
 
-This file records approved product ideas, completed checkpoints, deferred concepts, and active design rules for `/brief-next/` and the eventual `/brief/` cutover.
+This file records approved ideas, completed checkpoints, deferred concepts, and active design rules for `/brief-next/` and the eventual `/brief/` cutover.
 
 Read with:
 
@@ -50,7 +50,7 @@ Current decisions:
 - soundtrack is selected by default
 - read-aloud remains absent from entry until audio behavior is intentionally designed
 
-Status: **implemented and browser-tested on the development branch**
+Status: **implemented, browser-tested, and published to staging**
 
 ## Focused views and Everything
 
@@ -68,13 +68,13 @@ Everything should:
 - appear at the end of desktop and mobile navigation
 - preserve the ability to scroll through the complete briefing
 - never become the forced default
-- include a jump navigation for major sections
+- include jump navigation
 - include links back into focused views
 - open specific Workspace categories directly
 - update when the selected scenario changes
 - remain one rendering surface, not another application shell
 
-Status: **implemented and browser-tested on the development branch**
+Status: **implemented, browser-tested, and published to staging**
 
 ## Stable shell, adaptive composition
 
@@ -104,7 +104,7 @@ Important guardrail:
 
 The information layer may adapt, while core navigation, permissions, accessibility, source visibility, and familiar locations remain stable.
 
-Status: **implemented as a clear first-pass explanation in Everything**
+Status: **implemented as a first-pass explanation and published to staging**
 
 ## Data beyond a dashboard
 
@@ -146,7 +146,7 @@ Boundary:
 
 Real alarms, voice, playback, and account access require native-device permissions, provider rules, explicit controls, protected authentication, and tested fallbacks.
 
-Status: **implemented as a clearly labeled future concept in Everything**
+Status: **implemented as a clearly labeled future concept and published to staging**
 
 ## People and Spaces
 
@@ -310,21 +310,27 @@ Do not replace `/brief/` until:
 - [x] Preserve a deliberately saved light preference.
 - [x] Keep soundtrack selected after reset.
 - [x] Extend static and browser validation.
+- [x] Publish the validated slice to staging through clean PR #44.
 
-Validation:
+Validation and publication:
 
 ```text
 Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
-Workflow run: 31034883845
-Static job: 92404364989, passed
-Browser job: 92404365175, passed
+Development run: 31034883845
+Development static: 92404364989, passed
+Development browser: 92404365175, passed
+Staging PR: #44
+Staging run: 31035274638
+Staging static: 92405680264, passed
+Staging browser: 92405680241, passed
+Merged main commit: 52bdf372e438d298e9bed39f293baf0d98d52d0a
 ```
 
 ## Next idea checkpoint
 
-- publish the validated adaptive full-view slice to staging
 - visually review Everything on desktop and mobile
-- inspect whether any section is too repetitive or too long
+- inspect five-button mobile density and sticky jump navigation
+- remove any repetition that does not help understanding
 - create the common editing map and daily data contract
 - measure contrast and keyboard behavior
 - begin authorized preview-audio selection only after visual review
