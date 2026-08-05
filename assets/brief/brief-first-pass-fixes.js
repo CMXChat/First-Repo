@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  let preferenceTouched = false;
+
   function validHttps(value) {
     try {
       return new URL(String(value || '')).protocol === 'https:';
@@ -9,7 +11,7 @@
     }
   }
 
-  function initialize() {
+  function applyMusicPreference() {
     const song = window.CMX_DAILY_SONG || null;
     const option = document.getElementById('musicOnEntry');
     const gateCopy = document.getElementById('gateSongName');
@@ -17,9 +19,15 @@
     const hasPreview = Boolean(song && validHttps(song.previewUrl));
 
     if (option) {
+      if (option.dataset.firstPassMusicBound !== 'true') {
+        option.dataset.firstPassMusicBound = 'true';
+        option.addEventListener('change', () => {
+          preferenceTouched = true;
+        });
+      }
       option.disabled = !hasPreview;
-      option.checked = hasPreview;
       option.setAttribute('aria-disabled', String(!hasPreview));
+      if (!preferenceTouched) option.checked = hasPreview;
     }
 
     if (gateCopy) {
@@ -46,6 +54,13 @@
 
     attribution.append(text, document.createTextNode(' '), link);
     previewNote.insertAdjacentElement('afterend', attribution);
+  }
+
+  function initialize() {
+    applyMusicPreference();
+    [0, 120, 420, 900, 1600].forEach(delay => window.setTimeout(applyMusicPreference, delay));
+    window.addEventListener('brief:ready', applyMusicPreference);
+    window.addEventListener('brief:device-fallback-open', applyMusicPreference);
   }
 
   if (document.readyState === 'loading') {
