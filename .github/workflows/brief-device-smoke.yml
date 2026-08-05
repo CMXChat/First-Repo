@@ -1,38 +1,24 @@
-name: Brief Device, Onboarding, Navigation, Theme, Vision, Terminal, Media, Stability, Workspace and Polish Tests
+name: Brief Device and Interface Compatibility Tests
 
 on:
   push:
     branches: [main]
     paths:
       - 'brief/**'
+      - 'brief-next/**'
       - 'assets/brief/**'
-      - 'assets/daily-video.js'
+      - 'assets/cmx-routes.json'
       - 'tests/brief-device-smoke.test.js'
-      - 'tests/brief-onboarding-smoke.test.js'
-      - 'tests/brief-navigation-smoke.test.js'
-      - 'tests/brief-theme-map-smoke.test.js'
-      - 'tests/brief-finalization-smoke.test.js'
-      - 'tests/brief-terminal-smoke.test.js'
-      - 'tests/brief-entry-watch-smoke.test.js'
-      - 'tests/brief-stability-smoke.test.js'
-      - 'tests/brief-workspace-team-smoke.test.js'
-      - 'tests/brief-polish-smoke.test.js'
+      - 'tests/brief-next-smoke.test.js'
       - '.github/workflows/brief-device-smoke.yml'
   pull_request:
     paths:
       - 'brief/**'
+      - 'brief-next/**'
       - 'assets/brief/**'
-      - 'assets/daily-video.js'
+      - 'assets/cmx-routes.json'
       - 'tests/brief-device-smoke.test.js'
-      - 'tests/brief-onboarding-smoke.test.js'
-      - 'tests/brief-navigation-smoke.test.js'
-      - 'tests/brief-theme-map-smoke.test.js'
-      - 'tests/brief-finalization-smoke.test.js'
-      - 'tests/brief-terminal-smoke.test.js'
-      - 'tests/brief-entry-watch-smoke.test.js'
-      - 'tests/brief-stability-smoke.test.js'
-      - 'tests/brief-workspace-team-smoke.test.js'
-      - 'tests/brief-polish-smoke.test.js'
+      - 'tests/brief-next-smoke.test.js'
       - '.github/workflows/brief-device-smoke.yml'
 
 permissions:
@@ -51,32 +37,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Run briefing device smoke test
+      - name: Run current Brief device and theme smoke test
         run: node tests/brief-device-smoke.test.js
 
-      - name: Run onboarding and browser compatibility smoke test
-        run: node tests/brief-onboarding-smoke.test.js
-
-      - name: Run interconnected navigation smoke test
-        run: node tests/brief-navigation-smoke.test.js
-
-      - name: Run map and theme integrity smoke test
-        run: node tests/brief-theme-map-smoke.test.js
-
-      - name: Run final navigation and vision smoke test
-        run: node tests/brief-finalization-smoke.test.js
-
-      - name: Run briefing terminal smoke test
-        run: node tests/brief-terminal-smoke.test.js
-
-      - name: Run entry and relationship watch smoke test
-        run: node tests/brief-entry-watch-smoke.test.js
-
-      - name: Run briefing stability smoke test
-        run: node tests/brief-stability-smoke.test.js
-
-      - name: Run workspace and Team smoke test
-        run: node tests/brief-workspace-team-smoke.test.js
-
-      - name: Run polish and media refresh smoke test
-        run: node tests/brief-polish-smoke.test.js
+      - name: Run current Brief interface smoke test
+        run: node tests/brief-next-smoke.test.js
