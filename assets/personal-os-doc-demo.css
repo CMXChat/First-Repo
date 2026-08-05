@@ -1,0 +1,173 @@
+.document-demo-callout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(22px, 4vw, 52px);
+  margin: clamp(54px, 8vw, 92px) 0 18px;
+  padding: clamp(28px, 5vw, 52px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, #2c8fd6 36%, var(--line, #d4dee8));
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(61,157,226,.24), transparent 38%),
+    linear-gradient(145deg, color-mix(in srgb, #0f3451 12%, var(--paper, #fff)), color-mix(in srgb, #2a7eb7 8%, var(--paper, #fff)));
+  box-shadow: 0 28px 80px rgba(25,64,96,.14);
+}
+
+.document-demo-callout::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 0 52%, rgba(255,255,255,.08) 52% 53%, transparent 53% 100%);
+}
+
+.document-demo-copy,
+.document-demo-action {
+  position: relative;
+  z-index: 1;
+}
+
+.document-demo-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: #1678ba;
+  font-size: .72rem;
+  font-weight: 850;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.document-demo-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #42a8ec;
+  box-shadow: 0 0 0 6px rgba(66,168,236,.12), 0 0 22px rgba(66,168,236,.42);
+}
+
+.document-demo-callout h2 {
+  margin: 0;
+  color: var(--ink, #132235);
+  font-size: clamp(1.8rem, 4vw, 3.15rem);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.document-demo-callout p {
+  max-width: 68ch;
+  margin: 16px 0 0;
+  color: var(--muted, #5d6d7d);
+  font-size: clamp(.95rem, 1.4vw, 1.06rem);
+  line-height: 1.65;
+}
+
+.document-demo-action {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-width: min(240px, 100%);
+}
+
+.document-demo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-width: 220px;
+  min-height: 64px;
+  padding: 16px 24px;
+  color: #06121d;
+  font-size: 1rem;
+  font-weight: 900;
+  text-decoration: none;
+  border: 1px solid rgba(199,235,255,.9);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #d8f2ff, #7fc8f5 54%, #55a9df);
+  box-shadow: 0 18px 40px rgba(31,129,194,.26);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.document-demo-button span:last-child {
+  font-size: 1.3rem;
+  transition: transform .2s ease;
+}
+
+.document-demo-button:hover,
+.document-demo-button:focus-visible {
+  outline: none;
+  transform: translateY(-2px);
+  filter: saturate(1.08);
+  box-shadow: 0 24px 48px rgba(31,129,194,.34);
+}
+
+.document-demo-button:hover span:last-child,
+.document-demo-button:focus-visible span:last-child {
+  transform: translateX(4px);
+}
+
+.document-demo-note {
+  max-width: 250px;
+  color: var(--muted, #5d6d7d);
+  font-size: .72rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+html[data-theme='dark'] .document-demo-callout {
+  border-color: rgba(109,190,247,.34);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(54,151,220,.22), transparent 38%),
+    linear-gradient(145deg, rgba(15,39,59,.94), rgba(8,21,34,.98));
+  box-shadow: 0 30px 80px rgba(0,0,0,.34);
+}
+
+html[data-theme='dark'] .document-demo-status { color: #83cfff; }
+html[data-theme='dark'] .document-demo-callout h2 { color: #f4f9fd; }
+html[data-theme='dark'] .document-demo-callout p,
+html[data-theme='dark'] .document-demo-note { color: #a9b8c6; }
+
+@media (max-width: 760px) {
+  .document-demo-callout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 26px 22px;
+    border-radius: 22px;
+  }
+
+  .document-demo-action {
+    justify-items: stretch;
+  }
+
+  .document-demo-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .document-demo-note {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .document-demo-button,
+  .document-demo-button span:last-child {
+    transition: none;
+  }
+}
+
+@media print {
+  .document-demo-callout {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+
+  .document-demo-button {
+    color: #132235;
+    box-shadow: none;
+  }
+}
