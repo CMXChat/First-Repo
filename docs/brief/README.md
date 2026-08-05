@@ -4,17 +4,23 @@ This folder is the starting point for `/brief` recovery, stabilization, and prod
 
 ## Start here
 
-### Current recovery state
+### Live checkpoint
+
+- [`CURRENT.md`](CURRENT.md)
+
+Read this first. It contains the active branch, draft PR, completed checkpoint, validation gap, and exact next action.
+
+### Full recovery handoff
 
 - [`../brief-recovery-handoff.md`](../brief-recovery-handoff.md)
 
-Read this before editing `/brief`. It contains the active branch, exact commits, current blocker, repair sequence, validation matrix, and next action.
+Read this before editing product code. It contains the complete repair sequence, bug inventory, PR dependency map, validation matrix, working rules, and change log.
 
 ### Raw browser failures
 
 - [`../brief-interface-failures.md`](../brief-interface-failures.md)
 
-This file contains captured Playwright failures and should remain a raw evidence source. Keep conclusions and current status in the recovery handoff instead of adding more planning prose to the raw log.
+This file contains captured Playwright failures and should remain a raw evidence source. Keep conclusions and current status in `CURRENT.md` and the recovery handoff instead of adding more planning prose to the raw log.
 
 ## Related implementation reports
 
@@ -33,11 +39,18 @@ Goal Intelligence work is related to the long-term Personal OS concept but remai
 
 Do not mix Goal Intelligence changes into the recovery branch.
 
+## Documentation roles
+
+- `CURRENT.md`: replace with the latest short checkpoint
+- `brief-recovery-handoff.md`: maintain the durable plan, history, and full context
+- `brief-interface-failures.md`: preserve raw test evidence
+- dated implementation reports: keep tied to their branch or PR
+
 ## Documentation rules
 
-1. Keep the recovery handoff status-first and current.
-2. Append a checkpoint after each meaningful commit or test run.
-3. Put raw logs in evidence files, not in the status summary.
+1. Update `CURRENT.md` after each meaningful commit or test run.
+2. Append important checkpoints to the full recovery handoff.
+3. Put raw logs in evidence files, not in the live summary.
 4. Keep implementation reports tied to their branch or PR.
 5. Never rely on chat or `/tmp` as the only record of work.
 6. Record exact commit SHAs, test results, blockers, and next actions.
@@ -47,6 +60,8 @@ Do not mix Goal Intelligence changes into the recovery branch.
 
 ```text
 Branch: agent/brief-recovery-step-1
+Draft PR: #41
 Purpose: restore and validate the complete brief workspace baseline
-Primary handoff: docs/brief-recovery-handoff.md
+Live status: docs/brief/CURRENT.md
+Full handoff: docs/brief-recovery-handoff.md
 ```
