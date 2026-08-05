@@ -12,6 +12,8 @@ const experienceCss = read('assets/brief/brief-demo-experience.css');
 const docLinksCss = read('assets/brief/brief-demo-doc-links.css');
 const appJs = read('assets/brief/brief-demo-app.js');
 const mediaJs = read('assets/brief/brief-demo-media.js');
+const docJs = read('assets/personal-os-doc.js');
+const docMobileCss = read('assets/personal-os-doc-mobile-fixes.css');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
 assert.match(html, /noindex, nofollow/);
@@ -39,6 +41,15 @@ assert.match(appJs, /localStorage\.removeItem\('briefNextTheme'\)/);
 assert.match(appJs, /localStorage\.setItem\(THEME_STORAGE_KEY, state\.theme\)/);
 assert.doesNotMatch(appJs, /localStorage\.getItem\('briefNextTheme'\)/);
 
+assert.match(mediaJs, /const TRACK_SETTLE_DELAY_MS = 650/);
+assert.match(mediaJs, /function syncEntryButton\(/);
+assert.match(mediaJs, /Preparing \$\{selected\.label\} soundtrack/);
+assert.match(mediaJs, /function entryTrackIsReady\(/);
+assert.match(mediaJs, /event\.stopImmediatePropagation\(\)/);
+assert.match(mediaJs, /state\.controller\.play\(\)/);
+assert.match(mediaJs, /setScenario\(window\.BRIEF_DEMO_DATA\?\.meta\?\.defaultScenario/);
+assert.match(mediaJs, /Spotify did not accept automatic playback/);
+
 assert.match(css, /:root\s*\{[\s\S]*--bg: #edf3f8/);
 assert.match(css, /html\[data-theme="dark"\]/);
 assert.match(css, /\.mobile-nav/);
@@ -52,6 +63,16 @@ assert.match(docLinksCss, /html\[data-theme="light"\] \.full-privacy/);
 assert.match(docLinksCss, /html\[data-theme="light"\] \.alarm-section \.alarm-flow article/);
 assert.match(docLinksCss, /html\[data-theme="dark"\] \.alarm-section/);
 assert.match(docLinksCss, /html\[data-theme="dark"\] \.full-privacy/);
+assert.match(docLinksCss, /\.media-drawer \{[\s\S]*display: block/);
+assert.match(docLinksCss, /body\[data-entered="false"\] #mediaDrawer/);
+assert.match(docLinksCss, /\.media-drawer\.is-open \.media-sheet/);
+
+assert.match(docJs, /personal-os-doc-mobile-fixes\.css/);
+assert.match(docJs, /personalOsMobileFixes/);
+assert.match(docMobileCss, /\.final-cta \{[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
+assert.match(docMobileCss, /\.final-cta > \*/);
+assert.match(docMobileCss, /overflow-wrap: anywhere/);
+assert.match(docMobileCss, /@media \(max-width: 680px\)/);
 
 const route = routes.routes.find(item => item.path === '/brief/');
 assert.ok(route, '/brief/ must remain registered.');
