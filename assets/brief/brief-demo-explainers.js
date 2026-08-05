@@ -182,15 +182,16 @@
     if (event.key === 'End') nextIndex = tabs.length - 1;
     tabs[nextIndex]?.focus();
     tabs[nextIndex]?.click();
+    tabs[nextIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
   function installDefaultSoundtrack() {
     const choice = document.getElementById('entrySoundtrack');
-    if (choice) choice.checked = true;
+    if (choice) choice.checked = false;
 
     document.getElementById('resetDemo')?.addEventListener('click', () => {
       const resetChoice = document.getElementById('entrySoundtrack');
-      if (resetChoice) resetChoice.checked = true;
+      if (resetChoice) resetChoice.checked = false;
     });
   }
 
@@ -211,10 +212,14 @@
         const memoryButton = event.target.closest('[data-memory-example]');
         if (memoryButton) {
           renderMemory(memoryButton.dataset.memoryExample);
+          memoryButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
           return;
         }
         const spaceButton = event.target.closest('[data-space-example]');
-        if (spaceButton) renderSpace(spaceButton.dataset.spaceExample);
+        if (spaceButton) {
+          renderSpace(spaceButton.dataset.spaceExample);
+          spaceButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        }
       });
 
       memoryTabs.addEventListener('keydown', event => moveTabFocus(event, '[data-memory-example]'));
