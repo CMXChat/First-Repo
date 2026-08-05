@@ -1,13 +1,14 @@
-# `/brief` Current Recovery Status
+# `/brief` Current Recovery and Simplification Status
 
-Last updated: **August 5, 2026 at 12:48 PM ET**
+Last updated: **August 5, 2026 at 12:50 PM ET**
 
-Read this file first for the live checkpoint. Then read:
+Read this file first. Then read:
 
-- `docs/brief-recovery-handoff.md` for the full plan, bug inventory, and history
+- `docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md` for the approved planning direction
+- `docs/brief-recovery-handoff.md` for the complete recovery history and bug inventory
 - `docs/brief/README.md` for the documentation index
 
-## Current state
+## Current repository state
 
 ```text
 Repository: CMXChat/First-Repo
@@ -19,53 +20,87 @@ PR state: open draft
 PR mergeable calculation: true
 ```
 
-The branch head changes whenever documentation is updated. Check PR #41 for the latest head SHA. The stable product recovery commit is recorded below.
+The branch head changes when continuity documentation is updated. Check PR #41 for the latest head SHA.
 
-## Completed in Step 1
-
-- Created the isolated recovery branch from `main`.
-- Restored only `assets/brief/brief-workspace.js` from the verified Git blob in commit `b185daf`.
-- Avoided sending or rebuilding the 30KB file through chat.
-- Verified the restored file blob is exactly:
-
-```text
-5a0967ef6eca9f5b2e175a7ca0578b089c04fa86
-```
-
-- Verified the product-code restore commit is:
+The stable product recovery commit remains:
 
 ```text
 0b3cba3de40434ac24598580bd9f38790036e58a
 brief: restore complete workspace module
 ```
 
-- Reorganized `docs/brief-recovery-handoff.md` into a status-first continuity document.
-- Added `docs/brief/README.md` as the docs index.
-- Added this small live status file so future contexts do not need to scan the full handoff first.
-- Opened draft PR #41 so the recovery remains reviewable and separate from PR #35 and PR #37.
-
-## Current branch scope
-
-Compared with `main`, the branch contains:
+The restored workspace blob remains:
 
 ```text
-assets/brief/brief-workspace.js
-docs/brief-recovery-handoff.md
-docs/brief/README.md
-docs/brief/CURRENT.md
+5a0967ef6eca9f5b2e175a7ca0578b089c04fa86
 ```
 
-Only one product file is changed. The other files are continuity documentation.
+## New product direction
 
-## Validation snapshot
+The intended destination for `/brief` is now a focused, editable, reversible demonstration of what the product can become.
 
-The following workflow snapshot was inspected for PR head:
+The goal is not to preserve every current interaction on the primary path. The goal is to:
+
+- make the demo understandable within the first minute
+- keep all five use cases without rendering all five at once
+- reduce the number of state owners and runtime layers
+- make most copy and scenario changes editable in one data file
+- rebuild soundtrack behavior around a direct user gesture
+- use one Spotify provider player
+- preserve the existing implementation as a rollback and reference point
+- perform every change in small documented checkpoints
+
+The complete strategy is recorded in:
 
 ```text
-2bec4919752ad6aa4d31117d0993add64047697f
+docs/brief/DEMO-SIMPLIFICATION-STRATEGY.md
 ```
 
-### Passed
+No simplified-demo product code has been created yet.
+
+## Architecture assessment
+
+The visible current loader chain uses roughly:
+
+```text
+4 stylesheets loaded directly by brief/index.html
+12 scripts loaded directly by brief/index.html
+12 stylesheets loaded by brief-config.js
+18 scripts loaded by brief-config.js
+2 stylesheets and 1 script loaded by brief-lite-ui.js
+```
+
+That is approximately 49 CSS and JavaScript resources from the visible chain alone.
+
+The current application also has overlapping ownership across:
+
+- `brief-core.js`
+- `brief-workspace.js`
+- `brief-system.js`
+- entry, device, onboarding, upgrade, live, daily, experience, terminal, relationship, team, polish, and overlay layers
+
+Several of these layers change the same profile, entry, scroll, depth, tab, URL, navigation, and media states. This is the main architectural problem.
+
+## Media assessment
+
+Current music behavior is divided across:
+
+- the entry checkbox
+- preview audio in `brief-core.js`
+- the header audio button
+- the music-section preview button
+- the featured Spotify iframe
+- recommendation cards that replace the featured iframe
+- additional Spotify iframes created by `brief-daily.js`
+- narration and music-volume coordination
+
+The entry flow also uses delayed opening and competing handlers. The simplified version should call preview `audio.play()` directly inside the entry click that the user initiated.
+
+Spotify should use one embed or iFrame API controller and remain a user-controlled provider player. The demo should not promise that Spotify itself can autoplay in every browser.
+
+## Current validation snapshot
+
+### Passed on recent PR #41 heads
 
 ```text
 CMX Static Validation
@@ -74,27 +109,9 @@ CMX Navigation Link Guard
 CMX Terminal Theme Guard
 ```
 
-### Failed: combined `/brief` smoke workflow
+### Known inherited failure: combined `/brief` smoke workflow
 
-Run:
-
-```text
-31026734698
-```
-
-Job:
-
-```text
-92377019954
-```
-
-First failing command:
-
-```text
-node tests/brief-device-smoke.test.js
-```
-
-Failure:
+Root failure:
 
 ```text
 ReferenceError: MutationObserver is not defined
@@ -102,77 +119,79 @@ ReferenceError: MutationObserver is not defined
 
 Classification:
 
-- The failure occurs in the Node VM test harness while evaluating the entry controller.
-- It is not a syntax error in the restored workspace module.
-- `main` lacks a `MutationObserver` mock and several browser-environment mocks in `tests/brief-device-smoke.test.js`.
-- PR #35 already contains the focused test-harness patch adding `MutationObserverMock`, location, history, animation-frame, and timer mocks.
-- No duplicate test patch was copied into PR #41.
+- Node VM test harness deficiency
+- not caused by the restored workspace blob
+- focused mock update already exists on PR #35
 
-### Failed: CMX Privacy Audit
+### Known unrelated failure: CMX Privacy Audit
 
-Run:
+Root failure:
 
 ```text
-31026734815
-```
-
-Job:
-
-```text
-92377017279
-```
-
-Failures:
-
-```text
-doc/index.html: gated route lacks data-cmx-gated=true
-doc/index.html: gated route lacks shared gate assets
-doc/index.html: gated route lacks static no-store hint
+doc/index.html is not recognized as using the Black Prompt Gate contract
 ```
 
 Classification:
 
-- This is unrelated to the restored workspace file.
-- `/doc` uses the reusable Black Prompt Gate, while the audit on `main` recognizes only the shared gate and `/brief` custom gate.
-- PR #38 already contains the audit update that recognizes the Black Prompt Gate contract.
-- No `/doc` or privacy-audit change was copied into PR #41.
+- `/doc` audit contract issue
+- unrelated to the restored `/brief` workspace
+- focused audit update already exists on PR #38
 
-### In progress at this checkpoint
+### Browser Matrix
+
+Latest inspected run:
 
 ```text
-Brief Browser Matrix
-Run: 31026734775
-Job: 92377018030
+Run: 31026970607
+Job: 92377811749
+State at checkpoint: in progress
 ```
 
-At the checkpoint, the browser engines were installed and the Chromium, Firefox, WebKit, iPhone, and Android test step was still running.
+The browser engines were installed and the Chromium, Firefox, WebKit, iPhone, and Android step was still running. This file must be updated when a completed result is available.
 
-## What the validation means
+## PR direction
 
-- The restored Git blob identity is confirmed.
-- Static validation passed.
-- Two failing checks are inherited repository or dependency-branch issues, not evidence that the restored blob was truncated again.
-- PR #41 is still not ready to merge because the browser matrix result is incomplete and the inherited blockers must be sequenced deliberately.
-- Absence of a workspace-specific failure so far is not enough to declare the restore fully validated.
+### PR #41
 
-## Not completed yet
+Keep as the restored baseline and continuity record. Do not turn it into the full simplification rewrite.
 
-- final result and logs for Browser Matrix run `31026734775`
-- independent JavaScript syntax command against the restored branch
-- focused `/brief` entry and workspace browser confirmation
-- merge of PR #41
-- depth, navigation, onboarding, viewport, pointer, or contrast fixes
-- PR #35 repair or merge
-- PR #37 update or merge
+### PR #35
 
-## Exact next action
+Pause automatic merge. Review for small reusable pieces, especially the Node browser mocks. Do not inherit the complete overlay and terminal architecture by default.
 
-After authorization:
+### PR #37
 
-1. Inspect the completed result and logs for Browser Matrix run `31026734775`.
-2. Keep PR #41 limited to the restored workspace baseline and continuity docs unless the evidence proves a restore-specific correction is required.
-3. Decide the dependency sequence for the existing PR #35 smoke-harness fix and PR #38 privacy-audit fix.
-4. Run the focused entry and workspace validation against the correct combined branch state.
-5. Update this file immediately with exact results and the next action.
+Pause as a product branch. The new direction favors a smaller architecture instead of expanding the current Personal OS shell.
 
-Do not begin the depth, navigation, mobile, or contrast patches until the restored baseline and dependency sequence are understood.
+### PR #38
+
+Keep separate. Its privacy-audit adjustment may still be useful independently for `/doc`.
+
+## Proposed implementation phases
+
+```text
+Phase 0: preserve and understand the restored baseline
+Phase 1: build a parallel reversible demo foundation
+Phase 2: consolidate the content and user story
+Phase 3: rebuild preview autoplay and Spotify behavior
+Phase 4: visual polish, accessibility, and editability
+Phase 5: review and cut over to /brief
+Phase 6: remove obsolete layers deliberately
+```
+
+## Exact next approval requested
+
+Approve **Phase 1: Build the reversible demo foundation**.
+
+Phase 1 will:
+
+1. Create a new branch named `agent/brief-demo-v2` from the accepted baseline.
+2. Build a parallel `brief-next/` surface and `assets/brief-next/` asset folder.
+3. Use one scenario state, one app controller, one media controller, one data file, and one stylesheet.
+4. Implement the simple entry choice, one overview, one detail workspace, and all five profiles through the same layout.
+5. Include one media slot but postpone final autoplay and Spotify integration to Phase 3.
+6. Add focused desktop and mobile tests.
+7. Leave the current `/brief` untouched.
+8. Update this file after every meaningful commit and test result.
+
+Approval does not authorize deleting the current `/brief`, merging PR #35 or PR #37, or replacing the production route.
