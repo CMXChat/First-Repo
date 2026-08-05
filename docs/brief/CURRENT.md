@@ -16,14 +16,19 @@ Last updated: **August 5, 2026 at 2:18 PM ET**
 Repository: CMXChat/First-Repo
 Development branch: agent/brief-demo-v2
 Development draft PR: #42
-Current staging route: https://db.cmxchat.com/brief-next/
+Adaptive staging publish PR: #44, merged
+Adaptive staging merge commit: 52bdf372e438d298e9bed39f293baf0d98d52d0a
+Staging route: https://db.cmxchat.com/brief-next/
 Existing production route: https://db.cmxchat.com/brief/
 Production /brief changed: no
 Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
-Validation run: 31034883845
+Development validation run: 31034883845
+Staging PR validation run: 31035274638
 ```
 
-The new adaptive full-view and dark-default slice is validated on the development branch and is ready for an isolated staging publish.
+The dark-default and adaptive Everything checkpoint is now merged into `main`. The existing GitHub Pages workflow is triggered by pushes to `main`, so the staging deployment was triggered by PR #44.
+
+Source on `main` is verified. Direct custom-domain HTTP verification remains unavailable from the current assistant web environment, so browser review is the live confirmation step.
 
 ## Latest product decisions
 
@@ -69,7 +74,7 @@ Focused views remain faster for normal daily use.
 
 ### Stable shell, adaptive composition
 
-The demo now explains that each interactive update can be composed after approved information is gathered and researched.
+The demo explains that each interactive update can be composed after approved information is gathered and researched.
 
 The AI may choose:
 
@@ -86,7 +91,7 @@ Navigation, privacy controls, source visibility, accessibility, and familiar loc
 
 ### Future app and alarm
 
-The demo now explains a possible app experience that:
+The demo explains a possible app experience that:
 
 - begins at a selected alarm time
 - rotates approved music from a connected Spotify account
@@ -132,12 +137,24 @@ assets/brief-next/brief-demo-experience.css
 
 ## Validation
 
+### Development validation
+
 ```text
 Validated product revision: 1175826cafc71719e100b56a525f768b40fd7122
-Workflow: Brief Next Validation
 Run: 31034883845
 Static job: 92404364989, passed
 Browser job: 92404365175, passed
+```
+
+### Clean staging PR validation
+
+```text
+PR: #44
+Staging source commit: f5dfa90de43b149d98b18a4fbc3687f332baade1
+Run: 31035274638
+Static job: 92405680264, passed
+Browser job: 92405680241, passed
+Merged main commit: 52bdf372e438d298e9bed39f293baf0d98d52d0a
 ```
 
 The suite confirms:
@@ -155,6 +172,8 @@ The suite confirms:
 - scenario changes update Everything
 - adaptive component and Spotify alarm explanations render
 - weather, stats, focused views, Spaces, memory examples, media drawer, headings, and mobile overflow remain valid
+
+The repository-wide privacy audit still reports the pre-existing `/doc` gate mismatch. It is unrelated to the six Brief Next files in PR #44.
 
 ## Automation status
 
@@ -182,21 +201,21 @@ Completed:
 - adaptive composition explanation
 - future app and alarm explanation
 - focused desktop/mobile validation
+- adaptive staging publication
 
 Remaining before replacing `/brief/`:
 
-1. Publish this validated slice to staging.
-2. User review of the full view on desktop and mobile.
-3. Focused visual corrections.
-4. Contrast, keyboard, focus, and accessibility review.
-5. Common editing map and daily data contract.
-6. Authorized preview audio and autoplay fallback.
-7. Final cutover and rollback validation.
+1. User review of the published full view on desktop and mobile.
+2. Focused visual corrections.
+3. Contrast, keyboard, focus, and accessibility review.
+4. Common editing map and daily data contract.
+5. Authorized preview audio and autoplay fallback.
+6. Final cutover and rollback validation.
 
 ## Exact next action
 
-1. Publish revision `1175826cafc71719e100b56a525f768b40fd7122` through a clean branch from `main`.
-2. Keep `/brief/` untouched.
-3. Review `https://db.cmxchat.com/brief-next/` after deployment.
-4. Record feedback on Everything, dark surfaces, navigation density, and repetition.
-5. Begin the editing-map and accessibility checkpoint after the visual review.
+1. Review `https://db.cmxchat.com/brief-next/` after the Pages deployment finishes.
+2. Inspect Everything, the five-button mobile navigation, dark surfaces, repetition, and jump links.
+3. Record specific corrections.
+4. Begin the editing-map and accessibility checkpoint after visual review.
+5. Keep `/brief/` untouched until explicit cutover approval.
