@@ -74,10 +74,27 @@
     if (!nav) return;
 
     if (nav.parentElement !== document.body) document.body.append(nav);
-    nav.hidden = document.body.dataset.entered !== 'true';
-    nav.style.zIndex = '2200';
+
+    const mobile = window.matchMedia?.('(max-width: 860px)').matches === true;
+    const entered = document.body.dataset.entered === 'true';
+    nav.hidden = !entered;
+    nav.style.display = mobile && entered ? 'grid' : 'none';
+    nav.style.position = 'fixed';
+    nav.style.top = 'auto';
+    nav.style.right = '10px';
+    nav.style.bottom = '10px';
+    nav.style.left = '10px';
+    nav.style.width = 'auto';
+    nav.style.maxWidth = 'none';
+    nav.style.gridTemplateColumns = 'repeat(5, minmax(0, 1fr))';
+    nav.style.zIndex = '2147483647';
     nav.style.pointerEvents = 'auto';
     nav.style.isolation = 'isolate';
+    nav.style.transform = 'translate3d(0, 0, 0)';
+    nav.style.contain = 'layout paint';
+    nav.style.background = 'var(--surface)';
+    nav.style.backdropFilter = 'none';
+    nav.style.webkitBackdropFilter = 'none';
 
     nav.querySelectorAll('button').forEach(button => {
       button.style.position = 'relative';
@@ -93,6 +110,8 @@
       attributes: true,
       attributeFilter: ['data-entered']
     });
+    window.addEventListener('resize', protectMobileNavigation, { passive: true });
+    window.visualViewport?.addEventListener('resize', protectMobileNavigation, { passive: true });
   }
 
   function renderJumpNav() {
