@@ -158,6 +158,10 @@ test('section pagers and guarded swipes move between views on mobile', async ({ 
   await expect(workspacePager.locator('[data-section-view]')).toHaveCount(2);
   await workspacePager.locator('[data-section-view="spaces"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-view', 'spaces');
+
+  const spacesPager = page.locator('[data-view-panel="spaces"] .section-pager');
+  await spacesPager.locator('[data-section-view="workspace"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'workspace');
   await workspacePager.locator('[data-section-view="today"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-view', 'today');
 
