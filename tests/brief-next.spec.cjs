@@ -54,6 +54,7 @@ async function openScenario(page, id) {
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('#demoApp')).toHaveAttribute('aria-hidden', 'false');
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
+  await expect(page.locator('.section-pager')).toHaveCount(5);
   await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
 
   const playback = await page.evaluate(scenarioId => ({
@@ -155,7 +156,7 @@ test('Everything keeps a full view with clear interlinking and plain copy', asyn
   await expect(page.locator('#all-spaces')).toContainText('Project Space');
   await expect(page.locator('#all-workspace')).toContainText('Every category in this team and project briefing');
 
-  await page.locator('.full-end-nav [data-go-view="how"]').click();
+  await page.locator('[data-view-panel="everything"] [data-section-view="how"]').click();
   await expect(page.locator('[data-view-panel="how"]')).toBeVisible();
   await expectNoVisibleEllipses(page);
 });
@@ -205,6 +206,7 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   await expect(page.locator('#previewButton')).toBeEnabled();
   await page.locator('#openDemo').click();
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
+  await expect(page.locator('.section-pager')).toHaveCount(5);
   await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
   await expect(page.locator('#mobileNav')).toBeVisible();
   await expect(page.locator('#mobileNav button')).toHaveCount(5);
