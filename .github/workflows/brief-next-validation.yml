@@ -1,11 +1,13 @@
-name: Brief Validation
+name: Spaces Browser Validation
 
 on:
   pull_request:
     paths:
+      - 'spaces/**'
       - 'brief/**'
       - 'brief-next/**'
       - 'assets/brief/**'
+      - 'assets/spaces-legacy-redirect.js'
       - 'assets/cmx-routes.json'
       - 'tests/brief-next*'
       - 'tests/brief-section-navigation-smoke.test.js'
@@ -13,7 +15,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: brief-${{ github.ref }}
+  group: spaces-browser-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -29,7 +31,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run Brief static smoke test
+      - name: Run Spaces static smoke tests
         run: |
           node tests/brief-next-smoke.test.js
           node tests/brief-section-navigation-smoke.test.js
@@ -47,13 +49,13 @@ jobs:
         run: npm install --no-save @playwright/test@1.55.0
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Run desktop and mobile Brief tests
+      - name: Run desktop and mobile Spaces tests
         run: npx playwright test --config=tests/brief-next.playwright.config.cjs
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: brief-playwright-artifacts
+          name: spaces-playwright-artifacts
           path: |
             test-results
             playwright-report
