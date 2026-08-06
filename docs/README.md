@@ -2,7 +2,7 @@
 
 Last reconciled: **August 5, 2026**  
 Repository: `CMXChat/First-Repo`  
-Verified code baseline: `5c7eef899f3357854492e2d3918f5915eb536b6b`
+Verified code baseline: `7b2d4e9dd85ac0011b1cb9d8426c39270b143705`
 
 ## Read this first
 
@@ -11,10 +11,11 @@ The repository changed substantially on August 5. Current code and route policy 
 Use this order when starting work:
 
 1. `docs/2026-08-05-repository-reconciliation.md`
-2. `docs/brief-recovery-handoff.md`
-3. `docs/cmx-brief-master-context.md`
-4. `docs/brief-interface-validation.md`
-5. Current source, tests, workflows, and `assets/cmx-routes.json`
+2. `docs/personal-os-release-safeguards.md`
+3. `docs/brief-recovery-handoff.md`
+4. `docs/cmx-brief-master-context.md`
+5. `docs/brief-interface-validation.md`
+6. Current source, tests, workflows, and `assets/cmx-routes.json`
 
 ## Current operational documents
 
@@ -22,6 +23,7 @@ Use this order when starting work:
 |---|---|---|
 | `README.md` | Current | Index and document authority rules. |
 | `2026-08-05-repository-reconciliation.md` | Current | Full comparison between the August 4 notes and the August 5 repository. |
+| `personal-os-release-safeguards.md` | Current | Release gate, production smoke, accessibility, cache, parity, inventory, and docs-freshness safeguards. |
 | `brief-recovery-handoff.md` | Current | Safe continuity handoff for `/brief`, `/brief-next`, and `/doc`. |
 | `cmx-brief-master-context.md` | Current | Product, architecture, trust, and roadmap context. |
 | `brief-interface-validation.md` | Current | Active validation contract for the shipping interface. |
@@ -73,11 +75,15 @@ These documents preserve decisions and product thinking. Their dates and origina
 The August 5 interface pass also established these current expectations:
 
 - visible Brief and Doc copy should be plain, direct, and free of generated-sounding filler
+- every briefing entry, reset, and context switch should return to Today
+- the Today hero should lead users into the page without creating a mobile dead end
 - workspace tabs must support keyboard navigation and correct ARIA state
 - returning to the entry screen must restore focus predictably
-- Spotify fallback must remain usable when the provider controller fails
+- Spotify must never block entry and its fallback must remain usable when the provider controller fails
 - rendered-copy checks should protect the user-facing wording, not only source strings
 - `/brief/` and `/brief-next/` should remain aligned unless a staging difference is documented
+- active Brief asset changes must carry a new cache-version query
+- the demo and current-versus-planned product boundaries must remain visible
 
 ## Documentation rules
 

@@ -1,0 +1,32 @@
+name: Personal OS Maintenance Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 14 * * 3'
+
+permissions:
+  contents: read
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository with history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate documentation freshness
+        run: node scripts/validate-docs-freshness.mjs
+      - name: Generate Brief asset inventory
+        run: node scripts/inventory-brief-assets.mjs --out-dir=artifacts/personal-os
+      - name: Upload maintenance inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: personal-os-maintenance-inventory
+          path: artifacts/personal-os
+          retention-days: 30

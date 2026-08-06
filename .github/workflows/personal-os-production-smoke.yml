@@ -1,0 +1,41 @@
+name: Personal OS Production Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Production origin to validate
+        required: false
+        default: https://db.cmxchat.com
+  schedule:
+    - cron: '17 13 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: personal-os-production-smoke
+  cancel-in-progress: true
+
+jobs:
+  production-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate deployed Personal OS routes and assets
+        env:
+          PERSONAL_OS_BASE_URL: ${{ inputs.base_url || 'https://db.cmxchat.com' }}
+        run: node scripts/validate-production-personal-os.mjs 2>&1 | tee production-smoke.log
+      - name: Upload production smoke log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: personal-os-production-smoke-log
+          path: production-smoke.log
+          retention-days: 14
