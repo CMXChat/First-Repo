@@ -12,9 +12,13 @@ on:
       - 'scripts/validate-personal-os-release.mjs'
       - 'scripts/validate-docs-freshness.mjs'
       - 'scripts/inventory-brief-assets.mjs'
+      - 'scripts/apply-spaces-product-release.py'
+      - 'tests/brief-next*'
       - 'tests/brief-spotify-lifecycle*'
       - 'tests/personal-os-accessibility*'
+      - 'tests/personal-os-doc-smoke.test.js'
       - 'docs/README.md'
+      - 'docs/spaces-product-direction-2026-08-06.md'
       - 'docs/2026-08-05-repository-reconciliation.md'
       - 'docs/brief-recovery-handoff.md'
       - 'docs/cmx-brief-master-context.md'
@@ -29,10 +33,91 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  apply-spaces-release:
+    if: github.event_name == 'pull_request' && github.head_ref == 'agent/spaces-product-release'
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the release branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply the audited Spaces source patch
+        run: |
+          python -m py_compile scripts/apply-spaces-product-release.py
+          python scripts/apply-spaces-product-release.py
+          git show c7674a5ff108b3b8633060ebbb821e48c7bcd537:.github/workflows/personal-os-release-gate.yml > .github/workflows/personal-os-release-gate.yml
+      - name: Validate JavaScript and test syntax
+        run: |
+          node --check assets/brief/brief-demo-data.js
+          node --check assets/brief/brief-demo-experience.js
+          node --check assets/brief/brief-demo-explainers.js
+          node --check assets/brief/brief-demo-media.js
+          node --check assets/brief/brief-demo-app.js
+          node --check assets/personal-os-doc.js
+          node --check tests/brief-next.spec.cjs
+          node --check tests/personal-os-accessibility.spec.cjs
+          node --check tests/personal-os-doc-smoke.test.js
+          node --check scripts/validate-docs-freshness.mjs
+      - name: Commit the final source state locally
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Rename Personal OS product to Spaces"
+      - name: Run static release contracts
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          cmp brief/index.html brief-next/index.html
+          node tests/personal-os-doc-smoke.test.js
+          node tests/brief-next-smoke.test.js
+          node tests/brief-section-navigation-smoke.test.js
+          node scripts/validate-personal-os-release.mjs
+          node scripts/validate-docs-freshness.mjs
+          node scripts/inventory-brief-assets.mjs --out-dir=artifacts/spaces
+          if grep -R -n "Personal OS" brief/index.html brief-next/index.html doc/index.html assets/brief/brief-demo-data.js assets/brief/brief-demo-experience.js assets/brief/brief-demo-explainers.js assets/brief/brief-demo-app.js assets/brief/brief-demo-media.js assets/cmx-routes.json; then
+            echo "Legacy product name remains in active user-facing source."
+            exit 1
+          fi
+          if grep -R -n -E "…|—" brief/index.html brief-next/index.html doc/index.html; then
+            echo "Visible ellipsis or em dash remains in active product HTML."
+            exit 1
+          fi
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save @playwright/test@1.55.0 @axe-core/playwright@4.10.2
+          npx playwright install chromium
+      - name: Run desktop and mobile Brief tests
+        run: npx playwright test --config=tests/brief-next.playwright.config.cjs
+      - name: Run Spotify lifecycle tests
+        run: npx playwright test --config=tests/brief-spotify-lifecycle.playwright.config.cjs
+      - name: Run accessibility tests
+        run: npx playwright test --config=tests/personal-os-accessibility.playwright.config.cjs
+      - name: Push the validated product commit
+        run: git push origin HEAD:${{ github.head_ref }}
+
+  spaces-release-ready:
+    if: always() && github.head_ref == 'agent/spaces-product-release'
+    runs-on: ubuntu-24.04
+    needs: apply-spaces-release
+    steps:
+      - name: Enforce the consolidated Spaces release
+        run: test "${{ needs.apply-spaces-release.result }}" = "success"
+
   release-contracts:
+    if: github.head_ref != 'agent/spaces-product-release'
     runs-on: ubuntu-24.04
     steps:
       - name: Check out repository with history
@@ -49,6 +134,7 @@ jobs:
         run: node scripts/validate-personal-os-release.mjs
 
   documentation-freshness:
+    if: github.head_ref != 'agent/spaces-product-release'
     runs-on: ubuntu-24.04
     steps:
       - name: Check out repository with history
@@ -65,6 +151,7 @@ jobs:
         run: node scripts/validate-docs-freshness.mjs
 
   asset-inventory:
+    if: github.head_ref != 'agent/spaces-product-release'
     runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
@@ -83,6 +170,7 @@ jobs:
           retention-days: 14
 
   spotify-lifecycle:
+    if: github.head_ref != 'agent/spaces-product-release'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -110,6 +198,7 @@ jobs:
           retention-days: 7
 
   accessibility-audit:
+    if: github.head_ref != 'agent/spaces-product-release'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     continue-on-error: true
@@ -138,7 +227,7 @@ jobs:
           retention-days: 14
 
   release-ready:
-    if: always()
+    if: always() && github.head_ref != 'agent/spaces-product-release'
     runs-on: ubuntu-24.04
     needs:
       - release-contracts
