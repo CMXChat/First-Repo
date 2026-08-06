@@ -1,64 +1,64 @@
 window.CMX_NEWS_BRIEF = {
   "meta": {
-    "status": "midweek forward-motion edition",
-    "date": "Wednesday, August 5, 2026 in Brooklyn · Wednesday, August 5, 2026 in Waikato",
-    "generated": "Updated August 5, 2026 at 6:00 AM Brooklyn time",
-    "summary": "A concise shared edition about turning a working prototype into a clearer product story, protecting trust from fear-driven assumptions, and choosing one small action in each important area.",
+    "status": "heat, proof, and shared-choice edition",
+    "date": "Thursday, August 6, 2026 in Brooklyn · Thursday, August 6, 2026 in Waikato",
+    "generated": "Updated August 6, 2026 at 6:00 AM Brooklyn time",
+    "summary": "A concise edition about protecting energy in difficult weather, turning Jay's working prototype into outward career proof, and giving Crystal simple ways to shape the product.",
     "sectionOrder": ["priority","spotify","opening","activity","crystal","weather","whatJayBuilt","style","culture","local","relationship","progress","nextSteps","productVision","horoscope","quote","questions"]
   },
   "priority": [
-    {"audience":"shared","priority":100,"label":"what matters today","title":"The project has moved from idea to evidence","text":"Crystal's positive reaction to the music and Jay's follow-through at the gym gave the briefing two useful proofs: the experience can create a shared moment, and the page can support real action."},
-    {"audience":"jay","priority":96,"label":"career","status":"NEXT ACTION","title":"Turn visible work into one application","text":"The product now demonstrates research, writing, design thinking, personalization, and operations. One office-role application is still the most valuable next step."},
-    {"audience":"shared","priority":92,"label":"relationship","title":"Let today's evidence speak louder than tomorrow's fear","text":"Trust is rebuilt by direct questions, honest answers, and repeated behavior. A feared outcome should not be treated as a confirmed plan."}
+    {"audience":"jay","priority":100,"label":"what matters today","title":"Brooklyn heat changes the movement plan","text":"With temperatures forecast into the low-to-mid 90s and late thunderstorm risk, early indoor movement and steady hydration are the sensible choices."},
+    {"audience":"shared","priority":97,"label":"product","title":"The briefing now has real user evidence","text":"Crystal's positive reaction to the music showed that one thoughtful daily choice can create a genuine shared moment across distance."},
+    {"audience":"jay","priority":94,"label":"career","title":"Send one proof beyond the project","text":"The most valuable next step remains one office-role application that uses the briefing as evidence of research, writing, design thinking, and follow-through."}
   ],
   "opening": [
-    {"audience":"shared","priority":100,"label":"the quick read","title":"A working product, a better question, and a manageable Wednesday","text":"Jay has a clearer story to show Crystal at /brief, Brooklyn turns more humid with only a spot shower risk, and Waikato has a colder mixed forecast that rewards flexible outdoor timing."},
-    {"audience":"shared","priority":94,"label":"one-minute plan","title":"Keep today small enough to finish","text":"One application, one manageable movement session, one calm relationship check-in, and one piece of Crystal feedback are enough."}
+    {"audience":"shared","priority":100,"label":"the quick read","title":"Hot in Brooklyn, changeable in Waikato, and one clear next move","text":"Brooklyn faces oppressive heat and a late storm chance. Waikato has afternoon showers and a colder evening. The shared project is clearer, but Jay's next useful win happens outside the repository."},
+    {"audience":"shared","priority":95,"label":"one-minute plan","title":"Protect energy, choose one shared thing, finish one outward action","text":"Jay keeps movement weather-safe and sends one application. Crystal chooses one part of the briefing to shape. Both pick one song, show, or small activity that has nothing to do with fixing the relationship."}
   ],
   "activity": [
-    {"audience":"jay","priority":100,"label":"Jay's check-in","status":"SELF-REPORTED","title":"The last confirmed movement result was a treadmill session","text":"Jay followed through at the gym after working from the library. No new duration, distance, or workout details were reported, so today's useful goal is simply to repeat a manageable action."},
-    {"audience":"jay","priority":94,"label":"work progress","status":"VERIFIED IN REPOSITORY","title":"The briefing demo now explains the larger product clearly","text":"The /brief page demonstrates how one platform can adapt to an individual, a couple, business partners, or a trainer and student while keeping shared spaces and private information distinct.","url":"https://db.cmxchat.com/brief/","linkLabel":"open the product demonstration"}
+    {"audience":"jay","priority":100,"label":"Jay's check-in","status":"SELF-REPORTED","title":"The latest confirmed fitness result is still the treadmill session","text":"Jay made it to the gym after working from the library. No newer workout details were reported, so today's goal is consistency without overreaching in the heat."},
+    {"audience":"jay","priority":96,"label":"work progress","status":"VERIFIED IN REPOSITORY","title":"The product story is now easier to show","text":"The couple briefing at /news demonstrates personal use, while /brief shows how the same idea could adapt for individuals, families, partners, trainers, and businesses.","url":"https://db.cmxchat.com/brief/","linkLabel":"open the product demonstration"}
   ],
   "crystal": [
-    {"audience":"crystal","priority":100,"label":"your part in the product","title":"Your taste already changed the roadmap","text":"Liking the Cranberries pick showed that music is one of the strongest daily rituals on the page. The easiest next contribution is choosing whether tomorrow should feel softer, brighter, stranger, or more energetic."},
-    {"audience":"crystal","priority":94,"label":"shared watch","title":"Choose warmth or suspense this week","text":"The current AP streaming guide offers Ted Lasso and You, Me & Tuscany on the lighter side, with The Shards as the darker option.","url":"https://apnews.com/article/dfa7f10a03a09dfd0a044f1c30aebba9","linkLabel":"see the current streaming guide"}
+    {"audience":"crystal","priority":100,"label":"your influence","title":"The Cranberries reaction was useful product feedback","text":"That one response confirmed that music should remain a core ritual, not a decorative extra. The next useful choice is whether the page should become more romantic, more playful, more practical, or more surprising."},
+    {"audience":"crystal","priority":95,"label":"Waikato creative idea","title":"Let native planting inspire a jewelry or flower sketch","text":"More than 9,000 native seedlings were recently planted at Wainui Reserve, with another 1,400 added near Manu Bay. A simple leaf, seedling, or curved hillside form could become a clean gold, pink, and black design prompt.","url":"https://www.waikatodistrict.govt.nz/news/all-news","linkLabel":"see Waikato District updates"}
   ],
   "whatJayBuilt": [
-    {"audience":"shared","priority":100,"label":"behind the build","title":"The page is becoming a briefing product instead of a collection of cards","text":"Jay has been shaping a product that organizes weather, music, priorities, memories, schedules, and approved shared information around the people using it.","whyItMatters":"The same foundation could support an individual, couple, family, founder, or business without making every version feel identical.","watchNext":"The future step is secure interaction so Crystal can react, vote, correct, save, and shape the next edition directly."}
+    {"audience":"shared","priority":100,"label":"behind the build","title":"The page is becoming a product people can recognize in their own lives","text":"Jay has moved beyond a private update page and built a clearer demonstration of how one daily briefing can organize weather, music, priorities, memories, and approved shared information around different people.","whyItMatters":"The same idea can feel personal for a couple, practical for a family, focused for an individual, or operational for a business.","watchNext":"The most important future feature is secure participation so Crystal can react, vote, correct, save, and influence tomorrow directly."}
   ],
   "style": [
-    {"audience":"crystal","priority":100,"label":"jewelry prompt","title":"Use one bold shape and let the empty space help","text":"For a gold, pink, and black piece, choose one flower or curved form, keep one section open, and use black as structure instead of filling every surface.","whyItMatters":"The result can feel dramatic without becoming crowded.","watchNext":"Sketch one version with less detail than feels natural. That may be the stronger one."}
+    {"audience":"crystal","priority":100,"label":"style and jewelry","title":"Try a native-leaf silhouette with one open curve","text":"Use gold for the main form, a soft pink stone or enamel detail, and black only as a narrow outline or clasp.","whyItMatters":"The open curve keeps the piece dramatic without making it visually heavy.","watchNext":"Sketch one version with a single leaf and one with a pair, then keep the cleaner shape."}
   ],
   "localNews": [
-    {"audience":"jay","priority":100,"label":"Brooklyn bright spot","status":"REPORTED","title":"Cownose rays appeared in Newtown Creek","text":"A school of cownose rays was recently seen in the Brooklyn-Queens waterway. Experts quoted in local reporting see the wildlife activity as a hopeful sign, while stressing that the Superfund cleanup is still unfinished.","whyItMatters":"It is a rare local environmental story that is genuinely hopeful without pretending the problem is solved.","sources":[{"label":"Newtown Creek wildlife report","url":"https://nypost.com/2026/08/04/science/school-of-rays-spotted-in-nyc-superfund-creek-gives-hope/","published":"August 4, 2026"}]},
-    {"audience":"crystal","priority":94,"label":"Waikato practical note","status":"CURRENT FORECAST","title":"Cold starts and changeable shower timing make flexibility useful","text":"Hamilton forecasts cluster around a 14°C high, 4°C low, light easterly winds, and a variable shower risk. A short walk or run is better planned around the clearest local window than a fixed time.","sources":[{"label":"Hamilton WeatherWatch forecast","url":"https://www.weatherwatch.co.nz/forecasts/Hamilton%2C%2520Waikato","published":"August 5, 2026 outlook"}]}
+    {"audience":"jay","priority":100,"label":"Brooklyn practical","status":"CURRENT FORECAST","title":"Heat and isolated late storms deserve a conservative plan","text":"Brooklyn is forecast near 94°F with heat-index values potentially higher and isolated thunderstorms later in the day.","whyItMatters":"Outdoor exercise becomes less useful when heat and humidity raise the strain.","sources":[{"label":"Brooklyn extended forecast","url":"https://www.timeanddate.com/weather/%40z-us-11207/ext","published":"August 6, 2026 forecast"}]},
+    {"audience":"crystal","priority":96,"label":"Waikato environment","status":"VERIFIED COUNCIL UPDATE","title":"Thousands of native seedlings were planted near Raglan","text":"Waikato District Council reports 9,257 native trees and shrubs planted at Wainui Reserve and another 1,400 on the hillside at Manu Bay.","whyItMatters":"It is a practical local good-news story about restoration, landscape, and community effort.","sources":[{"label":"Waikato District Council news","url":"https://www.waikatodistrict.govt.nz/news/all-news","published":"July 23, 2026"}]}
   ],
   "relationship": [
-    {"audience":"shared","priority":100,"label":"relationship checkpoint","title":"Fear can be honest without becoming an accusation","text":"Jay can say he is scared of being hurt without claiming Crystal intends to hurt him. Crystal can respond to the real concern without being forced to prove the future."},
-    {"audience":"shared","priority":96,"label":"one workable rule","title":"Name the fear, then ask for present evidence","text":"Use one sentence for the fear, one direct question, and one concrete behavior that would help. Do not turn reassurance into an endless test."},
-    {"audience":"shared","priority":92,"label":"appreciation","title":"Small pictures still carry weight","text":"Jay appreciates the everyday pictures Crystal sends because they make the distance feel less abstract."}
+    {"audience":"shared","priority":100,"label":"relationship checkpoint","title":"Fear deserves honesty, not prophecy","text":"Jay can name a fear of being hurt without treating it as proof of Crystal's intent. Crystal can answer the present concern without being asked to guarantee the entire future."},
+    {"audience":"shared","priority":96,"label":"one workable rule","title":"Use one fear, one question, one present action","text":"Say the fear plainly, ask one direct question, then agree on one behavior that helps today. Stop before reassurance becomes an endless test."},
+    {"audience":"shared","priority":92,"label":"appreciation","title":"Small pictures still close distance","text":"Jay values the everyday pictures Crystal sends because they make her world feel present and shared."}
   ],
   "progress": [
-    {"audience":"shared","priority":100,"label":"product","status":"CLEARER","title":"The story is easier to understand","text":"/news is the personal couple version. /brief is the broader product demonstration."},
-    {"audience":"jay","priority":96,"label":"fitness","status":"MOMENTUM","title":"The last result was action, not intention","text":"Jay changed the previous day's fitness outcome by going to the gym."},
-    {"audience":"jay","priority":92,"label":"career","status":"NEEDS EXPOSURE","title":"The next proof must leave the project","text":"Send one application to turn private capability into a public opportunity."}
+    {"audience":"shared","priority":100,"label":"product","status":"VALIDATED","title":"Music created a real shared moment","text":"Crystal's reaction gave the project a useful signal from an actual user."},
+    {"audience":"jay","priority":96,"label":"fitness","status":"REPEATABLE","title":"The next target is consistency, not punishment","text":"A short indoor session counts more than an ambitious outdoor plan in oppressive heat."},
+    {"audience":"jay","priority":92,"label":"career","status":"NEXT PROOF","title":"One application turns private capability outward","text":"Use the project as evidence, then send it somewhere that can create an opportunity."}
   ],
   "nextSteps": [
-    {"audience":"shared","priority":100,"label":"today","title":"Four small wins are enough","items":["Jay sends one office-role application","Jay repeats one manageable movement action","Crystal gives one simple reaction to /brief","Both use one calm question instead of a prediction"]}
+    {"audience":"shared","priority":100,"label":"today","title":"Four useful wins","items":["Jay sends one office-role application","Jay chooses weather-safe movement","Crystal chooses one product direction","Both pick one shared song, show, or activity"]}
   ],
   "productVision": [
-    {"audience":"shared","priority":100,"label":"product vision","title":"A daily page that changes around the people using it","text":"The long-term product could combine approved information, music, priorities, memories, weather, schedules, and useful actions for individuals, couples, families, and businesses."}
+    {"audience":"shared","priority":100,"label":"product vision","title":"A briefing that organizes the day around real people","text":"The long-term product could combine approved information, music, priorities, memories, weather, schedules, and actions for individuals, couples, families, and businesses."}
   ],
   "horoscope": [
-    {"audience":"jay","priority":100,"label":"Virgo for fun","status":"ENTERTAINMENT","title":"Jay","text":"A finished outward-facing action will do more for today than another invisible refinement."},
-    {"audience":"crystal","priority":99,"label":"Virgo for fun","status":"ENTERTAINMENT","title":"Crystal","text":"Your quick reaction may be more useful than a long review. Keep the good part and point at the boring part."}
+    {"audience":"jay","priority":100,"label":"Virgo for fun","status":"ENTERTAINMENT","title":"Jay","text":"Today rewards a finished outward step more than another private improvement."},
+    {"audience":"crystal","priority":99,"label":"Virgo for fun","status":"ENTERTAINMENT","title":"Crystal","text":"One honest preference may shape the whole experience more than a detailed review."}
   ],
   "quote": [
-    {"audience":"shared","priority":100,"label":"one line to keep","title":"Trust grows in the space between a clear question and a consistent answer.","text":"Today's useful work is small, visible, and repeatable."}
+    {"audience":"shared","priority":100,"label":"one line to keep","title":"A good day does not need to solve the future. It needs one honest choice repeated well.","text":"Protect energy, ask clearly, and let visible actions do some of the talking."}
   ],
   "questions": [
-    {"audience":"jay","priority":100,"label":"for Jay","title":"What one office role did you actually apply for today?"},
-    {"audience":"crystal","priority":99,"label":"for Crystal","title":"Which part of /brief should the couple page borrow next?"},
-    {"audience":"shared","priority":98,"label":"for both","title":"What is one small shared thing worth doing today without discussing the project?"}
+    {"audience":"jay","priority":100,"label":"for Jay","title":"Which office role did you send one application to?"},
+    {"audience":"crystal","priority":99,"label":"for Crystal","title":"Should tomorrow feel more romantic, playful, practical, or surprising?"},
+    {"audience":"shared","priority":98,"label":"for both","title":"What one shared thing will you do today that is not about the project or repairing anything?"}
   ]
 };
