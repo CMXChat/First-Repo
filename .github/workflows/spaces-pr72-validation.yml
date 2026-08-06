@@ -1,6 +1,12 @@
 name: Spaces PR 72 Validation
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/spaces-pr72-trigger'
+  schedule:
+    - cron: '*/5 * * * *'
   issue_comment:
     types: [created]
 
@@ -11,7 +17,10 @@ permissions:
 
 jobs:
   validate:
-    if: github.event.issue.pull_request && github.event.issue.number == 72 && github.event.comment.body == '/validate-spaces-pr72'
+    if: >-
+      github.event_name == 'push' ||
+      github.event_name == 'schedule' ||
+      (github.event.issue.pull_request && github.event.issue.number == 72 && github.event.comment.body == '/validate-spaces-pr72')
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
