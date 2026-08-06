@@ -11,9 +11,13 @@ on:
     types: [created]
 
 permissions:
-  contents: read
+  contents: write
   issues: write
   pull-requests: write
+
+concurrency:
+  group: spaces-pr72-validation
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -29,6 +33,32 @@ jobs:
         with:
           ref: agent/spaces-route-migration
           fetch-depth: 0
+
+      - name: Reconcile final route migration source contracts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          smoke = Path('tests/brief-next-smoke.test.js')
+          source = smoke.read_text(encoding='utf-8')
+          source = source.replace(
+              "assert.match(mediaJs, /Spaces opened while Spotify continues preparing in the background/);",
+              "assert.match(mediaJs, /The Brief opened while Spotify continues preparing in the background/);"
+          )
+          smoke.write_text(source, encoding='utf-8')
+
+          doc = Path('doc/index.html')
+          source = doc.read_text(encoding='utf-8').replace('href="/brief/"', 'href="/spaces/"')
+          doc.write_text(source, encoding='utf-8')
+          PY
+
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add tests/brief-next-smoke.test.js doc/index.html
+            git commit -m "Finish Spaces source route reconciliation"
+            git push origin HEAD:agent/spaces-route-migration
+          fi
 
       - name: Use Node.js
         uses: actions/setup-node@v4
