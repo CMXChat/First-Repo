@@ -1,0 +1,160 @@
+name: Personal OS Release Gate
+
+on:
+  pull_request:
+    paths:
+      - 'brief/**'
+      - 'brief-next/**'
+      - 'doc/**'
+      - 'assets/brief/**'
+      - 'assets/personal-os-doc*'
+      - 'assets/cmx-routes.json'
+      - 'scripts/validate-personal-os-release.mjs'
+      - 'scripts/validate-docs-freshness.mjs'
+      - 'scripts/inventory-brief-assets.mjs'
+      - 'tests/brief-spotify-lifecycle*'
+      - 'tests/personal-os-accessibility*'
+      - 'docs/README.md'
+      - 'docs/2026-08-05-repository-reconciliation.md'
+      - 'docs/brief-recovery-handoff.md'
+      - 'docs/cmx-brief-master-context.md'
+      - 'docs/brief-interface-validation.md'
+      - 'docs/brief-interface-failures.md'
+      - 'docs/personal-os-release-safeguards.md'
+      - '.github/workflows/personal-os-release-gate.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: personal-os-release-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release-contracts:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository with history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate route, parity, boundary and cache contracts
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/validate-personal-os-release.mjs
+
+  documentation-freshness:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository with history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate operational documentation
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/validate-docs-freshness.mjs
+
+  asset-inventory:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate and inventory Brief assets
+        run: node scripts/inventory-brief-assets.mjs --out-dir=artifacts/personal-os
+      - name: Upload Brief asset inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-asset-inventory
+          path: artifacts/personal-os
+          retention-days: 14
+
+  spotify-lifecycle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: npm install --no-save @playwright/test@1.55.0
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test Spotify lifecycle fallbacks
+        run: npx playwright test --config=tests/brief-spotify-lifecycle.playwright.config.cjs
+      - name: Upload Spotify test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-spotify-lifecycle-artifacts
+          path: |
+            test-results
+            playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
+
+  accessibility-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright and axe
+        run: npm install --no-save @playwright/test@1.55.0 @axe-core/playwright@4.10.2
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run automated WCAG audit
+        run: npx playwright test --config=tests/personal-os-accessibility.playwright.config.cjs
+      - name: Upload accessibility artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: personal-os-accessibility-artifacts
+          path: |
+            test-results
+            playwright-report
+          if-no-files-found: ignore
+          retention-days: 14
+
+  release-ready:
+    if: always()
+    runs-on: ubuntu-24.04
+    needs:
+      - release-contracts
+      - documentation-freshness
+      - asset-inventory
+      - spotify-lifecycle
+      - accessibility-audit
+    steps:
+      - name: Enforce required release checks
+        run: |
+          echo "Contracts: ${{ needs.release-contracts.result }}"
+          echo "Docs: ${{ needs.documentation-freshness.result }}"
+          echo "Inventory: ${{ needs.asset-inventory.result }}"
+          echo "Spotify: ${{ needs.spotify-lifecycle.result }}"
+          echo "Accessibility advisory: ${{ needs.accessibility-audit.result }}"
+          test "${{ needs.release-contracts.result }}" = "success"
+          test "${{ needs.documentation-freshness.result }}" = "success"
+          test "${{ needs.asset-inventory.result }}" = "success"
+          test "${{ needs.spotify-lifecycle.result }}" = "success"
