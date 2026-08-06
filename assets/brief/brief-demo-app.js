@@ -79,6 +79,17 @@
     } catch {}
   }
 
+  function clearBriefUrlState() {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('scenario');
+      url.searchParams.delete('view');
+      url.searchParams.delete('tab');
+      url.hash = '';
+      history.replaceState(null, '', url);
+    } catch {}
+  }
+
   function formatDate() {
     return new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
@@ -325,6 +336,13 @@
     }
   }
 
+  function startScenario(id, options = {}) {
+    if (!validScenarios.has(id)) return;
+    state.view = 'today';
+    setScenario(id, { push: options.push === true });
+    selectView('today', { push: false, focus: options.focus !== false });
+  }
+
   function setTheme(theme, persist = true) {
     state.theme = theme === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.theme = state.theme;
@@ -348,20 +366,23 @@
     state.entered = true;
     document.body.dataset.entered = 'true';
     $('#demoApp')?.setAttribute('aria-hidden', 'false');
-    setScenario(selected, { push: false });
-    selectView(state.view, { push: false, focus: true });
+    startScenario(selected, { push: false, focus: true });
     updateUrl(false);
   }
 
   function resetDemo() {
     state.entered = false;
     state.entrySelection = '';
+    state.view = 'today';
+    state.tab = '';
     document.body.dataset.entered = 'false';
     $('#demoApp')?.setAttribute('aria-hidden', 'true');
     $('#entrySoundtrack').checked = true;
     window.BRIEF_DEMO_MEDIA?.reset();
+    selectView('today', { push: false, focus: false });
     renderEntry();
     setEntrySelection('');
+    clearBriefUrlState();
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     queueMicrotask(() => $('[data-entry-scenario]')?.focus({ preventScroll: true }));
   }
@@ -373,7 +394,7 @@
     });
 
     $('#openDemo')?.addEventListener('click', openDemo);
-    $('#scenarioSelect')?.addEventListener('change', event => setScenario(event.target.value, { push: true }));
+    $('#scenarioSelect')?.addEventListener('change', event => startScenario(event.target.value, { push: true, focus: true }));
     $('#homeButton')?.addEventListener('click', () => selectView('today', { push: true }));
     $('#resetDemo')?.addEventListener('click', resetDemo);
     $('#workspaceTabs')?.addEventListener('keydown', moveWorkspaceTab);
@@ -424,7 +445,7 @@
   function init() {
     const urlState = readUrlState();
     state.scenarioId = urlState.scenario || data.meta.defaultScenario;
-    state.view = urlState.view;
+    state.view = 'today';
     state.tab = normalizeTab(new URL(window.location.href).searchParams.get('tab') || '');
 
     try { localStorage.removeItem('briefNextTheme'); } catch {}
@@ -436,7 +457,7 @@
     renderScenarioSelect();
     renderNavigation();
     setScenario(state.scenarioId, { push: false });
-    selectView(state.view, { push: false, focus: false });
+    selectView('today', { push: false, focus: false });
     if (urlState.scenario) setEntrySelection(urlState.scenario);
     installEvents();
   }
