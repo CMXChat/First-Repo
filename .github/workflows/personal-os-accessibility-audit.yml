@@ -1,0 +1,41 @@
+name: Personal OS Accessibility Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '31 14 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: personal-os-accessibility-audit
+  cancel-in-progress: true
+
+jobs:
+  accessibility:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright and axe
+        run: npm install --no-save @playwright/test@1.55.0 @axe-core/playwright@4.10.2
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run desktop and mobile WCAG audit
+        run: npx playwright test --config=tests/personal-os-accessibility.playwright.config.cjs
+      - name: Upload accessibility artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: personal-os-accessibility-audit
+          path: |
+            test-results
+            playwright-report
+          if-no-files-found: ignore
+          retention-days: 30
