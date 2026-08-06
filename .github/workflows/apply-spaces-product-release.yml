@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/spaces-product-release
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -22,7 +25,7 @@ jobs:
       - name: Check out branch without external actions
         env:
           GH_TOKEN: ${{ github.token }}
-          HEAD_BRANCH: ${{ github.ref_name }}
+          HEAD_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           git init .
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
@@ -72,4 +75,4 @@ jobs:
           fi
 
       - name: Push the validated release branch
-        run: git push origin HEAD:${{ github.ref_name }}
+        run: git push origin HEAD:${{ github.head_ref || github.ref_name }}
