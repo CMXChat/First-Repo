@@ -161,7 +161,7 @@
     clearTimer('playbackConfirmTimer');
     state.playbackConfirmTimer = window.setTimeout(() => {
       if (state.playing) return;
-      setStatus('Spotify needs one direct tap on this device. Open the soundtrack and tap play in Spotify.');
+      setStatus('Spotify needs one direct tap on this device, so open the soundtrack and press play in Spotify.');
     }, PLAYBACK_CONFIRM_MS);
   }
 
@@ -175,7 +175,7 @@
     }
 
     if (!state.controllerReady || !state.trackReady || !state.controller || !current) {
-      setStatus('Spotify is still preparing in the background. The Brief remains available.');
+      setStatus('Spotify is still preparing in the background, but the Brief is ready to use.');
       installSpotifyApi();
       syncButton();
       return false;
@@ -189,7 +189,7 @@
       return true;
     } catch {
       state.playing = false;
-      setStatus('Spotify needs one direct tap on this device. Open the soundtrack and tap play in Spotify.');
+      setStatus('Spotify needs one direct tap on this device, so open the soundtrack and press play in Spotify.');
       syncButton();
       return false;
     }
@@ -412,7 +412,7 @@
     }
 
     state.pendingEntryPlayback = true;
-    setStatus('Spotify is preparing in the background. The Brief opened without waiting.');
+    setStatus('The Brief opened while Spotify continues preparing in the background.');
     return false;
   }
 

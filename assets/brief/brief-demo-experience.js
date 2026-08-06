@@ -17,15 +17,15 @@
 
   mergeCopy(data, {
     meta: {
-      title: 'Your day, already organized.',
-      description: 'A working daily briefing with clear Spaces, permissions, goals, and next steps.'
+      title: 'A clear view of what matters today',
+      description: 'A working daily briefing that organizes approved information around clear Spaces, permissions, goals, and next steps.'
     },
     scenarios: {
       personal: {
-        headline: 'Here is what your day looks like.',
-        summary: 'Your schedule, priorities, bills, movement, and next steps are in one place.',
+        headline: 'Here’s what your day looks like',
+        summary: 'Your schedule, priorities, bills, movement, and next steps are together in one place.',
         recommendation: {
-          title: 'Send the revised scope before the afternoon gets busy.',
+          title: 'Send the revised scope before the afternoon fills up',
           detail: 'It clears the main blocker and keeps the later focus window open.'
         },
         details: {
@@ -54,8 +54,8 @@
       },
       relationship: {
         short: 'Two private profiles and one shared Space',
-        headline: 'Start with reassurance, then handle the plan.',
-        summary: 'Each person keeps a private profile. The shared Space holds only the plans, promises, and details both people approved.',
+        headline: 'Start with reassurance, then work through the plan',
+        summary: 'Each person keeps a private profile, and the shared Space holds only the plans, promises, and details both people approved.',
         recommendation: {
           title: 'Confirm the plan without reopening every old problem.',
           detail: 'Use the shared facts, name what still needs approval, and keep private thoughts private.'
@@ -85,7 +85,7 @@
       },
       business: {
         short: 'A shared company view with private partner notes',
-        headline: 'One clear view of the company today.',
+        headline: 'See the company clearly before making today’s decisions',
         summary: 'Partners can see cash, projects, risks, and decisions without opening each other’s private notes.',
         recommendation: {
           title: 'Collect the cash before adding fixed cost.',
@@ -120,7 +120,7 @@
         soundtrack: { note: 'A bright track for a company review.' }
       },
       trainer: {
-        headline: 'Adjust the plan and keep the accountability.',
+        headline: 'Adjust the plan without losing accountability',
         summary: 'Training, recovery, habits, and check-ins stay useful when the record shows what actually happened.',
         recommendation: {
           title: 'Use the smaller plan when readiness is low.',
@@ -145,14 +145,14 @@
           },
           connections: {
             title: 'Fitness data needs health boundaries',
-            summary: 'The data can support coaching. Qualified care still belongs with a professional.'
+            summary: 'The data can support coaching, but qualified care still belongs with a professional.'
           }
         }
       },
       team: {
         short: 'Roles, handoffs, and one shared project record',
-        headline: 'Everyone needs the same goal, with different access.',
-        summary: 'Members see the work they need. Project leads keep the wider view and restricted details.',
+        headline: 'Give everyone the same goal and only the access they need',
+        summary: 'Members see the work they need, and project leads keep the wider view and restricted details.',
         recommendation: {
           title: 'Assign the missing handoff before adding more work.',
           detail: 'A task with no receiver is the clearest release risk.'
@@ -314,25 +314,25 @@
 
       <section class="full-section adaptive-section" id="all-adaptive">
         <div class="full-section-heading">
-          <div><p class="eyebrow">FAMILIAR LAYOUT, FLEXIBLE CONTENT</p><h2>The full view can change with the information.</h2></div>
+          <div><p class="eyebrow">FAMILIAR LAYOUT, FLEXIBLE CONTENT</p><h2>The full view adapts to the information available</h2></div>
           ${sectionButton('how', 'See how Personal OS works')}
         </div>
-        <p class="full-lead">Personal OS checks the approved information, then chooses a clear way to show it. Navigation, privacy controls, and main locations stay familiar. The useful cards, charts, and explanations can change with the day.</p>
+        <p class="full-lead">Personal OS checks the approved information and chooses a clear way to show it. Navigation, privacy controls, and the main locations stay familiar even when the useful cards, charts, and explanations change with the day.</p>
         <ol class="adaptive-process">${adaptiveSteps.map(([title, detail], index) => `<li><span>${String(index + 1).padStart(2, '0')}</span><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></div></li>`).join('')}</ol>
         <div class="component-choice-grid">${componentChoices.map(([input, component, reason]) => `<article><span>${escapeHtml(input)}</span><strong>${escapeHtml(component)}</strong><p>${escapeHtml(reason)}</p></article>`).join('')}</div>
-        <aside class="adaptive-note"><strong>The layout can adapt and still feel familiar.</strong><p>Controls, sources, and the way back to focused views stay in predictable places.</p></aside>
+        <aside class="adaptive-note"><strong>The layout can adapt without becoming confusing.</strong><p>Controls, sources, and the path back to focused views stay in predictable places.</p></aside>
       </section>
 
       <section class="full-section alarm-section" id="all-alarm">
-        <div class="full-section-heading"><div><p class="eyebrow">FUTURE APP IDEA</p><h2>Wake up with music and a short overview.</h2></div><button class="text-button" type="button" data-open-media-from-full>Open today’s soundtrack <span aria-hidden="true">→</span></button></div>
+        <div class="full-section-heading"><div><p class="eyebrow">FUTURE APP IDEA</p><h2>Start the morning with music and a short overview</h2></div><button class="text-button" type="button" data-open-media-from-full>Open today’s soundtrack <span aria-hidden="true">→</span></button></div>
         <p class="full-lead">A future Personal OS app could play approved music from Spotify, read a short overview, and then open the interactive Brief.</p>
         <div class="alarm-flow">${alarmSteps.map(([title, detail], index) => `<article><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></article>`).join('')}</div>
-        <p class="future-boundary">This is a concept. Real playback, voice, alarms, and account access need device permissions, provider support, clear controls, and secure sign-in.</p>
+        <p class="future-boundary">This concept would require device permissions, provider support, clear controls, and secure sign-in for real playback, voice, alarms, and account access.</p>
       </section>
 
       <section class="full-section full-privacy" id="all-privacy">
-        <div><p class="eyebrow">PRIVATE FIRST</p><h2>More information should come with more control.</h2></div>
-        <p>Connections have a clear purpose. Memories can be reviewed. Shared Spaces receive only approved records. Important actions need confirmation and stay in the history.</p>
+        <div><p class="eyebrow">PRIVATE FIRST</p><h2>More information requires more control</h2></div>
+        <p>Connections have a clear purpose, memories remain reviewable, shared Spaces receive only approved records, and important actions require confirmation before they are added to the history.</p>
       </section>
 
       <nav class="full-end-nav" aria-label="Continue exploring the briefing">

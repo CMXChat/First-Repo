@@ -2,7 +2,7 @@
 
 Last reconciled: **August 6, 2026**  
 Repository: `CMXChat/First-Repo`  
-Verified code baseline: `0b6013525b6b7c37a83cd450fe37b74683ac36f1`
+Verified code baseline: `aa2991db2e83624de7804e5d1f4255003387c4f4`
 
 ## Read this first
 
@@ -77,12 +77,13 @@ These documents preserve earlier decisions and product thinking. Keep their date
 - Product documentation remains available from the entry screen and the How it works view, not from the live header.
 - Mobile safe-area spacing must keep topbar controls away from the browser edge.
 - The theme control should remain visually prominent in light and dark mode.
-- The scenario chooser is a labelled group of native buttons using `aria-pressed`; do not restore `role="listitem"` on those buttons.
+- The scenario chooser is a labelled listbox of native buttons using `role="option"` and `aria-selected`; do not combine `aria-pressed` with `role="listitem"`.
 - Scenario descriptions and Today-view secondary weather text must remain WCAG AA compliant.
 
 ## Current quality rules
 
 - visible Brief and Doc copy should be plain, direct, and free of generated-sounding filler
+- vary sentence length and combine related thoughts instead of stacking short declarations that sound generated
 - every briefing entry, reset, and context switch should return to Today
 - the Today hero should lead users into the page without creating a mobile dead end
 - workspace tabs must support keyboard navigation and correct ARIA state
