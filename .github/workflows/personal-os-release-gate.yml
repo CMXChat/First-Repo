@@ -12,6 +12,7 @@ on:
       - 'assets/spaces-legacy-redirect.js'
       - 'assets/cmx-routes.json'
       - 'scripts/validate-personal-os-release.mjs'
+      - 'scripts/validate-production-personal-os.mjs'
       - 'scripts/validate-docs-freshness.mjs'
       - 'scripts/inventory-brief-assets.mjs'
       - 'tests/brief-spotify-lifecycle*'
@@ -25,6 +26,7 @@ on:
       - 'docs/brief-interface-failures.md'
       - 'docs/personal-os-release-safeguards.md'
       - '.github/workflows/personal-os-release-gate.yml'
+      - '.github/workflows/personal-os-production-smoke.yml'
   workflow_dispatch:
 
 concurrency:
