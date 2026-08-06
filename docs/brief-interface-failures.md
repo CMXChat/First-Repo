@@ -1,27 +1,49 @@
-# Brief Interface Failure and Risk Register
+# Spaces Interface Failure and Risk Register
 
 Last reconciled: **August 6, 2026**  
 Repository: `CMXChat/First-Repo`  
-Safeguard baseline inspected before this repair: `0b6013525b6b7c37a83cd450fe37b74683ac36f1`
+Verified main baseline: `788bf77fcd21750af08e9e694fa6995d1208cc2a`  
+Legacy filename retained: `docs/brief-interface-failures.md`
 
 ## Current shipping surfaces
 
-- `/brief/` is the active Personal OS briefing demo.
-- `/brief-next/` is the byte-aligned staging and rollback copy.
-- `/doc/` is the public noindex Personal OS product overview.
-- The active Brief runtime is the `brief-demo-*` family referenced by both Brief route files.
+- `/spaces/` is the active public noindex Spaces demo.
+- `/brief/` is the public noindex compatibility route for older links and bookmarks.
+- `/brief-next/` is the public noindex pre-migration rollback snapshot.
+- `/doc/` is the public noindex Spaces product overview.
+- The active runtime is the `brief-demo-*` family referenced by `/spaces/`.
 
-Old failures from the retired modular interface remain in Git history. They are not current blockers unless they reproduce against the active routes and assets above.
+Old failures from retired interfaces remain in Git history. They are not current blockers until they reproduce against `/spaces/`, the compatibility redirect, or the current assets.
 
 ## Resolved or superseded issues
 
+### Incomplete product rename
+
+The interface and documentation had adopted the Spaces name while the active route, canonical URL, route registry, tests, and release contracts still treated `/brief/` as the product surface. The migration establishes `/spaces/` as the canonical route and keeps `/brief/` as a compatibility redirect.
+
+### Production and rollback parity conflict
+
+The former byte-parity contract prevented a route migration because `/brief/` and `/brief-next/` could not serve different purposes. The current contract separates active, legacy, and rollback surfaces. `/brief-next/` remains available without controlling the production route.
+
+### Shared calendars were implied
+
+The prior product material described calendars, multi-calendar coordination, shared Spaces, alarms, and voice, but did not define shared calendars as a first-class permission model. The current migration document and Spaces How view define approved availability, events, responsibilities, rides, leave-by times, and private-event boundaries.
+
+### Alarm and voice boundaries
+
+Alarm and voice concepts already existed, but their control model needed a single operational definition. The current model keeps both planned, opt-in, reviewable, pausable, and restricted by person, device, room, time, and Space. Sensitive material defaults to silent display.
+
+### Spotify status semantics
+
+The media status now uses `aria-live="polite"` so asynchronous provider state can be announced without interrupting the user. The labeled Spotify host now has an explicit `region` role.
+
 ### Retired modular Brief failures
 
-Failures involving the former `brief-workspace.js`, depth persistence, detached map controls, guided tours, terminal overlays, and old selector contracts are superseded by the active standalone Brief implementation.
+Failures involving the former `brief-workspace.js`, depth persistence, detached map controls, guided tours, terminal overlays, and old selector contracts are superseded by the active standalone Spaces implementation.
 
 ### Light-first rendering and plain-language copy
 
-Both Brief routes begin with light HTML and a light theme color. Saved dark mode and explicit theme selection remain supported. The visible Brief and Doc copy has also received the current plain-language pass.
+Spaces begins with light HTML and a light theme color. Saved dark mode and explicit theme selection remain supported. The visible Spaces and Doc copy has received the current plain-language pass.
 
 ### Workspace keyboard behavior and reset focus
 
@@ -33,116 +55,98 @@ The Spotify controller is prepared while the entry screen is visible. The final 
 
 ### Topbar placement and controls
 
-The live header now contains the soundtrack and theme controls only. The documentation shortcut was removed from the live topbar while documentation remains available on the entry screen and inside How it works. Mobile safe-area spacing keeps the buttons away from the browser edge, and the theme control uses the prominent neon treatment requested for the interface.
+The live header contains the soundtrack and theme controls. Documentation remains available on the entry screen and inside How it works. Mobile safe-area spacing keeps the buttons away from the browser edge.
 
-### Scenario selector ARIA
+### Scenario selector ARIA and contrast
 
-Resolved in PR #68. The entry chooser is an accessible labelled group of native toggle buttons. The buttons keep `aria-pressed` for screen-reader state and no longer override their native button role with `role="listitem"`.
+The entry chooser is a labelled group of native toggle buttons. The buttons keep `aria-pressed` and do not override their native button role. Shared light-theme component rules retain the repaired scenario-description, weather-label, and time contrast.
 
-This preserves:
+### Documentation diagram contrast and mobile CTA
 
-- mouse and touch selection
-- keyboard activation through native buttons
-- visible selected styling
-- announced pressed state
-- the Personal, Relationship, Business, Trainer, and Team choices
-
-### Entry scenario-description contrast
-
-Resolved in the shared light-theme component rule. Scenario descriptions now use `#5f7084` on the light entry surface, above the 4.5:1 AA threshold without increasing visual weight.
-
-### Today-view secondary contrast
-
-Resolved across the shared components instead of only the first axe targets:
-
-- `.muted-pill` now uses `#66768a`
-- the hourly row secondary token now uses `#596b80`
-- hourly times are semantic `<time>` elements using `#2f4257`
-- all hourly secondary labels inherit the repaired component rule
-
-### Personal OS documentation diagram contrast
-
-Resolved consistently in the light documentation theme:
-
-- `.boundary-center > small` now uses `#617286`
-- `.memory-index` now uses dark ink `#10253a` on the coral number treatment
-
-Both treatments clear the AA threshold while retaining the existing diagram hierarchy.
-
-### `/doc/` password gate and mobile CTA overflow
-
-The overview remains intentionally ungated, public, and noindex. It contains no client-side password-gate markup. The mobile final CTA remains covered by its containment rules.
+The overview retains its repaired diagram colors and mobile containment. It remains public, ungated, and noindex, with no client-side password-gate markup.
 
 ## Active risks and safeguards
 
+### GitHub Actions did not start for the app-authored pull request
+
+The current pull request has no workflow runs or commit statuses at the time of this reconciliation. This is unknown verification status. Historical PR #68 failures and earlier green checks cannot prove the current branch.
+
+The branch includes updated workflows and static contracts, but merge still requires a real workflow run or an equivalent reviewed execution of the same commands.
+
+### `/doc/` contains legacy literal demo links
+
+The four current Doc buttons still use `/brief/` in the source HTML. The compatibility route sends those clicks to `/spaces/`, preserves URL state, and provides a no-JavaScript fallback, so user navigation is not broken. A later direct-source cleanup can replace the four attributes when the large document is edited for another substantive reason. The release validator accepts either route during this compatibility period.
+
 ### Production-domain observation
 
-Local and pull-request browser suites cannot prove the deployed domain, edge cache, or provider behavior. `Personal OS Production Smoke` remains installed for deployed-route status, first-response policy, route parity, local asset reachability, cache versions, reciprocal links, demo boundaries, and ungated Doc policy.
+Local and pull-request browser suites cannot prove the deployed domain, edge cache, or provider behavior. Production smoke must verify `/spaces/`, `/brief/`, `/brief-next/`, and `/doc/` after merge, including the redirect, first-response theme, noindex policy, active asset reachability, cache versions, reciprocal navigation, demo boundaries, and ungated Doc policy.
 
 ### Cache versions
 
-The cache-version safeguard from PR #67 remains intact. Every modified active Brief JavaScript or CSS asset in PR #68 has a corresponding version-query change through the active route reference chain in both route files.
+Active cache enforcement now follows the asset references in `/spaces/`. A modified active JavaScript or CSS file requires a new version query in the active route. The rollback snapshot does not control production cache state.
 
-### Brief and staging parity
+### Legacy redirect timing
 
-`brief/index.html` and `brief-next/index.html` remain byte-for-byte aligned. A future intentional staging difference requires an explicit documented exception. Parity enforcement was not relaxed for this repair.
+The external redirect script is deferred and the fallback meta refresh waits one second. The script should replace the page before the fallback fires in normal browsers. Browser coverage must continue to verify query-string and hash preservation.
 
 ### Spotify remains externally constrained
 
-The application can request playback from the final user gesture and expose a fallback. It cannot override Chrome autoplay rules, device settings, provider availability, or Spotify account restrictions. Some users may still need one direct tap inside Spotify.
+The application can request playback from the final user gesture and expose a fallback. It cannot override browser autoplay rules, device settings, provider availability, or Spotify account restrictions. Some users may still need one direct tap inside Spotify.
 
 ### Manual accessibility review remains necessary
 
 Automated axe coverage is required on desktop and mobile Chromium, but it does not replace manual review. Before a public launch, also verify:
 
-- screen-reader reading order and announcements
-- keyboard-only use across every view and drawer
-- 200% and 400% zoom
-- forced colors and high contrast
-- reduced motion
-- touch target spacing on real devices
-- focus after scrolling, resetting, switching contexts, and closing media
-- the external Spotify interface with assistive technology
+- screen-reader reading order and announcements;
+- keyboard-only use across every view and drawer;
+- 200% and 400% zoom;
+- forced colors and high contrast;
+- reduced motion;
+- touch target spacing on real devices;
+- focus after scrolling, resetting, switching contexts, and closing media;
+- the external Spotify interface with assistive technology.
 
-### Legacy Brief assets remain under review
+### Legacy assets remain under review
 
-The inventory still identifies 59 unreferenced legacy Brief candidates. PR #68 does not delete or reclassify them. Deletion requires a separate historical and dependency review across routes, tests, workflows, documentation, and Git history.
+The inventory identifies active Spaces entries, active dependencies, rollback-only entries, unreferenced demo-family assets, unreferenced legacy candidates, and empty placeholders. This migration does not delete unreferenced files. Deletion requires a separate historical and dependency review.
 
-### Demo versus live-product boundary
+### Demo and live-product boundary
 
-The Brief remains clearly identified as a demo and the Doc retains its current-versus-planned product status. The interface must not imply that authentication, durable memory, live private connectors, permissions enforcement, encrypted storage, or action execution already exists.
+Spaces remains clearly identified as a demo and the Doc retains its current-versus-planned product status. The interface must not imply that authentication, durable memory, live private connectors, permissions enforcement, encrypted storage, shared-calendar enforcement, alarm delivery, voice capture, or action execution already exists.
 
 ## Safeguards that must remain installed
 
 Do not remove or weaken:
 
-- the production smoke workflow
-- Brief and Brief Next parity enforcement
-- cache-version enforcement
-- demo-versus-live boundary checks
-- documentation freshness checks
-- Spotify lifecycle tests
-- accessibility workflows
-- active and legacy asset inventory checks
+- the production smoke workflow;
+- active, compatibility, rollback, and documentation route contracts;
+- cache-version enforcement for active Spaces assets;
+- demo-versus-live boundary checks;
+- documentation freshness checks;
+- Spotify lifecycle tests;
+- browser-matrix and accessibility workflows;
+- active and rollback asset inventory checks.
 
 ## External and planned-platform gaps
 
 These are product gaps, not regressions in the static demo:
 
-- authenticated accounts
-- persistent Spaces
-- structured memory service
-- Goal Intelligence backend
-- live data connectors
-- model selection and orchestration
-- shared permissions enforcement
-- action approvals
-- encrypted storage
-- server audit logs
-- production observability
+- authenticated accounts;
+- persistent Spaces;
+- structured memory service;
+- Goal Intelligence backend;
+- live data connectors;
+- shared-calendar connectors and permission enforcement;
+- model selection and orchestration;
+- action approvals;
+- encrypted storage;
+- server audit logs;
+- production observability;
+- alarm scheduling and delivery;
+- voice capture, narration, and device controls.
 
 ## How to record a new failure
 
 For each current failure, include the verified commit SHA, affected route, browser and viewport, exact reproduction, current selector or source file, expected and observed behavior, supporting trace or workflow, environment, and whether the cause is code, deployment, accessibility, or an external provider.
 
-Do not add an old failure here without first proving it exists in the active interface.
+Do not add an old failure without first proving it exists in the active Spaces experience or one of the current route contracts.
