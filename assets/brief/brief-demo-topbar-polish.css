@@ -42,6 +42,24 @@ html[data-theme="dark"] #themeButton {
   text-shadow: none;
 }
 
+/* Shared AA contrast repairs for the entry chooser and Today weather components. */
+html[data-theme="light"] .entry-option small {
+  color: #5f7084;
+}
+
+html[data-theme="light"] .muted-pill {
+  color: #66768a;
+}
+
+html[data-theme="light"] .hourly-item,
+html[data-theme="light"] .hourly-item small {
+  color: #596b80;
+}
+
+html[data-theme="light"] .hourly-item time {
+  color: #2f4257;
+}
+
 @media (max-width: 860px) {
   .topbar {
     padding-top: max(10px, env(safe-area-inset-top));
