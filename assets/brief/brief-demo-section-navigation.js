@@ -28,7 +28,7 @@
     '[data-swipe-lock]'
   ].join(',');
 
-  let touchState = null;
+  let gestureState = null;
 
   function installStyles() {
     if (document.querySelector('link[data-brief-section-navigation]')) return;
@@ -139,40 +139,39 @@
     return Math.max(64, Math.min(104, window.innerWidth * 0.18));
   }
 
-  function handleTouchStart(event) {
-    if (document.body.dataset.entered !== 'true' || event.touches.length !== 1) return;
+  function beginGesture({ x, y, target, pointerId = null }) {
+    if (document.body.dataset.entered !== 'true') return;
     if (document.getElementById('mediaDrawer')?.classList.contains('is-open')) return;
-    if (shouldIgnoreSwipe(event.target)) return;
+    if (shouldIgnoreSwipe(target)) return;
+    if (x <= EDGE_GUARD_PX || x >= window.innerWidth - EDGE_GUARD_PX) return;
 
-    const point = event.touches[0];
-    if (point.clientX <= EDGE_GUARD_PX || point.clientX >= window.innerWidth - EDGE_GUARD_PX) return;
-
-    touchState = {
-      x: point.clientX,
-      y: point.clientY,
+    gestureState = {
+      x,
+      y,
+      pointerId,
       startedAt: performance.now(),
       view: document.body.dataset.view,
       cancelled: false
     };
   }
 
-  function handleTouchMove(event) {
-    if (!touchState || event.touches.length !== 1) return;
-    const point = event.touches[0];
-    const horizontal = Math.abs(point.clientX - touchState.x);
-    const vertical = Math.abs(point.clientY - touchState.y);
-    if (vertical > 18 && vertical > horizontal * 1.1) touchState.cancelled = true;
+  function moveGesture({ x, y, pointerId = null }) {
+    if (!gestureState) return;
+    if (gestureState.pointerId !== null && pointerId !== gestureState.pointerId) return;
+    const horizontal = Math.abs(x - gestureState.x);
+    const vertical = Math.abs(y - gestureState.y);
+    if (vertical > 18 && vertical > horizontal * 1.1) gestureState.cancelled = true;
   }
 
-  function handleTouchEnd(event) {
-    const start = touchState;
-    touchState = null;
-    if (!start || start.cancelled || event.changedTouches.length !== 1) return;
+  function endGesture({ x, y, pointerId = null }) {
+    const start = gestureState;
+    gestureState = null;
+    if (!start || start.cancelled) return;
+    if (start.pointerId !== null && pointerId !== start.pointerId) return;
     if (start.view !== document.body.dataset.view) return;
 
-    const point = event.changedTouches[0];
-    const deltaX = point.clientX - start.x;
-    const deltaY = point.clientY - start.y;
+    const deltaX = x - start.x;
+    const deltaY = y - start.y;
     const horizontal = Math.abs(deltaX);
     const vertical = Math.abs(deltaY);
     const duration = performance.now() - start.startedAt;
@@ -188,6 +187,47 @@
     if (deltaX > 0 && views[index - 1]) openView(views[index - 1].id, 'previous');
   }
 
+  function handlePointerDown(event) {
+    if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    beginGesture({
+      x: event.clientX,
+      y: event.clientY,
+      target: event.target,
+      pointerId: event.pointerId
+    });
+  }
+
+  function handlePointerMove(event) {
+    if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    moveGesture({ x: event.clientX, y: event.clientY, pointerId: event.pointerId });
+  }
+
+  function handlePointerUp(event) {
+    if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    endGesture({ x: event.clientX, y: event.clientY, pointerId: event.pointerId });
+  }
+
+  function handleTouchStart(event) {
+    if (event.touches.length !== 1) return;
+    const point = event.touches[0];
+    beginGesture({ x: point.clientX, y: point.clientY, target: event.target });
+  }
+
+  function handleTouchMove(event) {
+    if (event.touches.length !== 1) return;
+    const point = event.touches[0];
+    moveGesture({ x: point.clientX, y: point.clientY });
+  }
+
+  function handleTouchEnd(event) {
+    if (event.changedTouches.length !== 1) {
+      gestureState = null;
+      return;
+    }
+    const point = event.changedTouches[0];
+    endGesture({ x: point.clientX, y: point.clientY });
+  }
+
   function installEvents() {
     document.addEventListener('click', event => {
       const button = event.target.closest('[data-section-view]');
@@ -195,10 +235,18 @@
       openView(button.dataset.sectionView, button.dataset.sectionDirection || 'next');
     });
 
+    if ('PointerEvent' in window) {
+      main.addEventListener('pointerdown', handlePointerDown, { passive: true });
+      main.addEventListener('pointermove', handlePointerMove, { passive: true });
+      main.addEventListener('pointerup', handlePointerUp, { passive: true });
+      main.addEventListener('pointercancel', () => { gestureState = null; }, { passive: true });
+      return;
+    }
+
     main.addEventListener('touchstart', handleTouchStart, { passive: true });
     main.addEventListener('touchmove', handleTouchMove, { passive: true });
     main.addEventListener('touchend', handleTouchEnd, { passive: true });
-    main.addEventListener('touchcancel', () => { touchState = null; }, { passive: true });
+    main.addEventListener('touchcancel', () => { gestureState = null; }, { passive: true });
   }
 
   installStyles();
