@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - agent/personal-os-natural-copy-pass
+  pull_request:
+    branches:
+      - agent/brief-topbar-music-polish
 
 permissions:
   contents: write
@@ -15,6 +18,7 @@ jobs:
       - name: Check out branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
 
       - name: Apply audited copy rewrite
@@ -47,4 +51,4 @@ jobs:
             doc/index.html \
             docs/README.md
           git commit -m "Rewrite Personal OS copy in a natural voice"
-          git push origin HEAD:${GITHUB_REF_NAME}
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
