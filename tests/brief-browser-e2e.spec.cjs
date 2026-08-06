@@ -49,6 +49,15 @@ async function expectPlainVisibleCopy(page) {
   expect(text).not.toContain('A strong demonstration with a clear path to the real platform');
 }
 
+async function selectPrimaryView(page, view) {
+  const desktopButton = page.locator(`#primaryNav [data-primary-view="${view}"]`);
+  if (await desktopButton.isVisible()) {
+    await desktopButton.click();
+    return;
+  }
+  await page.locator(`#mobileNav [data-primary-view="${view}"]`).click();
+}
+
 test('current Brief opens in light mode and remains usable across devices', async ({ page }) => {
   await openCurrentBrief(page);
   await enterScenario(page, 'personal');
@@ -83,7 +92,7 @@ test('every briefing entry and context switch starts on Today', async ({ page })
   await expect(page).toHaveURL(/view=today/);
   expect(new URL(page.url()).searchParams.has('tab')).toBe(false);
 
-  await page.locator('#primaryNav [data-primary-view="how"]').click();
+  await selectPrimaryView(page, 'how');
   await expect(page.locator('[data-view-panel="how"]')).toBeVisible();
   await page.locator('#resetDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
@@ -94,7 +103,7 @@ test('every briefing entry and context switch starts on Today', async ({ page })
   await expect(page.locator('body')).toHaveAttribute('data-view', 'today');
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
 
-  await page.locator('#primaryNav [data-primary-view="workspace"]').click();
+  await selectPrimaryView(page, 'workspace');
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
   await page.locator('#scenarioSelect').selectOption('business');
   await expect(page.locator('body')).toHaveAttribute('data-scenario', 'business');
