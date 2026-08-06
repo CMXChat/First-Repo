@@ -16,6 +16,7 @@
     apiRequested: false,
     apiFailed: false,
     fallbackMode: false,
+    pendingEntryPlayback: false,
     apiTimeoutTimer: 0,
     trackReadyTimer: 0,
     playbackConfirmTimer: 0,
@@ -127,6 +128,7 @@
     state.controllerReady = false;
     state.trackReady = false;
     state.playing = false;
+    state.pendingEntryPlayback = false;
     clearTimer('apiTimeoutTimer');
     clearTimer('trackReadyTimer');
     clearTimer('playbackConfirmTimer');
@@ -155,42 +157,6 @@
     setStatus(message);
   }
 
-  function markTrackReady(trackId, delay = TRACK_SETTLE_DELAY_MS) {
-    clearTimer('trackReadyTimer');
-    state.trackReady = false;
-    syncButton();
-
-    state.trackReadyTimer = window.setTimeout(() => {
-      if (!state.controllerReady || state.loadedTrackId !== trackId || state.fallbackMode) return;
-      state.trackReady = true;
-      setStatus(`Spotify is ready with ${track()?.title || 'the selected soundtrack'}.`);
-      syncButton();
-      syncEntryButton();
-      document.dispatchEvent(new CustomEvent('briefdemo:mediaready', {
-        detail: { scenarioId: state.scenarioId, trackId }
-      }));
-    }, Math.max(0, delay));
-  }
-
-  function loadCurrentTrack() {
-    const current = track();
-    if (!current?.spotifyTrackId || state.fallbackMode) return;
-
-    if (state.controllerReady && state.controller && state.loadedTrackId !== current.spotifyTrackId) {
-      state.trackReady = false;
-      state.controller.loadEntity(spotifyUri());
-      state.loadedTrackId = current.spotifyTrackId;
-      state.playing = false;
-      setStatus(`Preparing ${current.title}.`);
-      markTrackReady(current.spotifyTrackId);
-      return;
-    }
-
-    if (state.controllerReady && state.loadedTrackId === current.spotifyTrackId && !state.trackReady) {
-      markTrackReady(current.spotifyTrackId, 0);
-    }
-  }
-
   function schedulePlaybackConfirmation() {
     clearTimer('playbackConfirmTimer');
     state.playbackConfirmTimer = window.setTimeout(() => {
@@ -216,6 +182,7 @@
     }
 
     try {
+      state.pendingEntryPlayback = false;
       setStatus(`Starting ${current.title}.`);
       state.controller.play();
       schedulePlaybackConfirmation();
@@ -228,6 +195,49 @@
     }
   }
 
+  function playPendingEntryRequest() {
+    if (!state.pendingEntryPlayback || !entryWantsMusic()) return;
+    state.pendingEntryPlayback = false;
+    playProvider();
+  }
+
+  function markTrackReady(trackId, delay = TRACK_SETTLE_DELAY_MS) {
+    clearTimer('trackReadyTimer');
+    state.trackReady = false;
+    syncButton();
+
+    state.trackReadyTimer = window.setTimeout(() => {
+      if (!state.controllerReady || state.loadedTrackId !== trackId || state.fallbackMode) return;
+      state.trackReady = true;
+      setStatus(`Spotify is ready with ${track()?.title || 'the selected soundtrack'}.`);
+      syncButton();
+      syncEntryButton();
+      document.dispatchEvent(new CustomEvent('briefdemo:mediaready', {
+        detail: { scenarioId: state.scenarioId, trackId }
+      }));
+      queueMicrotask(playPendingEntryRequest);
+    }, Math.max(0, delay));
+  }
+
+  function loadCurrentTrack() {
+    const current = track();
+    if (!current?.spotifyTrackId || state.fallbackMode) return;
+
+    if (state.controllerReady && state.controller && state.loadedTrackId !== current.spotifyTrackId) {
+      state.trackReady = false;
+      state.controller.loadEntity(spotifyUri());
+      state.loadedTrackId = current.spotifyTrackId;
+      state.playing = false;
+      setStatus(`Preparing ${current.title}.`);
+      markTrackReady(current.spotifyTrackId);
+      return;
+    }
+
+    if (state.controllerReady && state.loadedTrackId === current.spotifyTrackId && !state.trackReady) {
+      markTrackReady(current.spotifyTrackId, 0);
+    }
+  }
+
   function pause() {
     if (state.controllerReady && state.controller) {
       try {
@@ -235,6 +245,7 @@
       } catch {}
     }
     state.playing = false;
+    state.pendingEntryPlayback = false;
     clearTimer('playbackConfirmTimer');
     syncButton();
   }
@@ -266,6 +277,7 @@
 
     controller.addListener('playback_started', event => {
       clearTimer('playbackConfirmTimer');
+      state.pendingEntryPlayback = false;
       state.playing = true;
       setStatus(`Playing ${track()?.title || 'the selected soundtrack'} through Spotify.`);
       if (event?.data?.playingURI) state.loadedTrackId = event.data.playingURI.split(':').pop();
@@ -317,6 +329,7 @@
 
     const previousReadyHandler = window.onSpotifyIframeApiReady;
     window.onSpotifyIframeApiReady = IFrameAPI => {
+      window.BRIEF_SPOTIFY_IFRAME_API = IFrameAPI;
       if (typeof previousReadyHandler === 'function') {
         try {
           previousReadyHandler(IFrameAPI);
@@ -359,6 +372,8 @@
       setStatus('Tap play in the Spotify player below.');
     } else if (state.controllerReady) {
       loadCurrentTrack();
+    } else if (state.apiRequested) {
+      setStatus(`Preparing ${currentTrack.title} in the background.`);
     } else {
       setStatus('Spotify loads only when music is requested.');
     }
@@ -385,6 +400,7 @@
     setScenario(id);
 
     if (!enabled) {
+      state.pendingEntryPlayback = false;
       setStatus('Soundtrack playback is off for this entry.');
       return false;
     }
@@ -395,6 +411,7 @@
       return playProvider();
     }
 
+    state.pendingEntryPlayback = true;
     setStatus('Spotify is preparing in the background. The Brief opened without waiting.');
     return false;
   }
@@ -446,24 +463,43 @@
     pause();
     close({ restoreFocus: false });
     clearTimer('playbackConfirmTimer');
+    setSoundtrackDefaultOff();
     syncEntryButton();
   }
 
   function setSoundtrackDefaultOff() {
     const choice = $('#entrySoundtrack');
     if (choice) choice.checked = false;
+    state.pendingEntryPlayback = false;
     syncEntryButton();
   }
 
+  function enableSoundtrackForScenarioChoice() {
+    const choice = $('#entrySoundtrack');
+    if (!choice || choice.checked) return;
+    choice.checked = true;
+    choice.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
   function installEvents() {
+    document.addEventListener('pointerdown', event => {
+      if (!event.target.closest('[data-entry-scenario]')) return;
+      enableSoundtrackForScenarioChoice();
+    }, { capture: true, passive: true });
+
     document.addEventListener('click', event => {
       const option = event.target.closest('[data-entry-scenario]');
       if (!option?.dataset.entryScenario) return;
+      enableSoundtrackForScenarioChoice();
       setScenario(option.dataset.entryScenario);
     });
 
     $('#entrySoundtrack')?.addEventListener('change', () => {
-      if (entryWantsMusic()) installSpotifyApi();
+      if (entryWantsMusic()) {
+        installSpotifyApi();
+      } else {
+        state.pendingEntryPlayback = false;
+      }
       syncEntryButton();
     });
 
@@ -487,12 +523,9 @@
   setDrawerInert(true);
   installEvents();
   setScenario(window.BRIEF_DEMO_DATA?.meta?.defaultScenario || 'personal');
+  setSoundtrackDefaultOff();
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      queueMicrotask(setSoundtrackDefaultOff);
-    }, { once: true });
-  } else {
-    queueMicrotask(setSoundtrackDefaultOff);
-  }
+  // Prepare Spotify while the entry screen is visible so the final Open demo
+  // tap can start playback inside Chrome's user-activation window.
+  installSpotifyApi();
 })();
