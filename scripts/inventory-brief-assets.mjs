@@ -37,12 +37,11 @@ const files = fs.readdirSync(assetDir)
   .filter(name => /\.(?:js|css)$/.test(name))
   .sort();
 const known = new Set(files);
-const briefDirect = directReferences(read('brief/index.html'));
-const stagingDirect = directReferences(read('brief-next/index.html'));
+const spacesDirect = directReferences(read('spaces/index.html'));
+const rollbackDirect = directReferences(read('brief-next/index.html'));
 
-if (JSON.stringify([...briefDirect]) !== JSON.stringify([...stagingDirect])) {
-  failures.push('Production and staging routes have different direct Brief asset entrypoints.');
-}
+if (!spacesDirect.size) failures.push('The active `/spaces/` route has no direct Brief asset entrypoints.');
+if (!rollbackDirect.size) failures.push('The `/brief-next/` rollback snapshot has no direct Brief asset entrypoints.');
 
 const graph = new Map();
 for (const file of files) {
@@ -51,7 +50,7 @@ for (const file of files) {
 }
 
 const reachable = new Set();
-const queue = [...briefDirect];
+const queue = [...spacesDirect];
 while (queue.length) {
   const file = queue.shift();
   if (reachable.has(file)) continue;
@@ -67,18 +66,21 @@ while (queue.length) {
 
 const rows = files.map(file => {
   const stats = fs.statSync(path.join(assetDir, file));
-  const direct = briefDirect.has(file);
+  const direct = spacesDirect.has(file);
   const active = reachable.has(file);
+  const rollback = rollbackDirect.has(file);
   const empty = stats.size === 0;
   const classification = direct
-    ? 'active direct entry'
+    ? 'active Spaces entry'
     : active
-      ? 'active dependency'
-      : empty
-        ? 'empty legacy placeholder'
-        : file.startsWith('brief-demo-')
-          ? 'unreferenced demo-family asset'
-          : 'unreferenced legacy candidate';
+      ? 'active Spaces dependency'
+      : rollback
+        ? 'rollback snapshot entry'
+        : empty
+          ? 'empty legacy placeholder'
+          : file.startsWith('brief-demo-')
+            ? 'unreferenced demo-family asset'
+            : 'unreferenced legacy candidate';
 
   if (active && empty) failures.push(`Active asset is empty: assets/brief/${file}`);
   return { file, bytes: stats.size, classification };
@@ -87,20 +89,22 @@ const rows = files.map(file => {
 const summary = {
   generatedAt: new Date().toISOString(),
   total: rows.length,
-  direct: rows.filter(row => row.classification === 'active direct entry').length,
-  activeDependencies: rows.filter(row => row.classification === 'active dependency').length,
+  direct: rows.filter(row => row.classification === 'active Spaces entry').length,
+  activeDependencies: rows.filter(row => row.classification === 'active Spaces dependency').length,
+  rollbackEntries: rows.filter(row => row.classification === 'rollback snapshot entry').length,
   unreferenced: rows.filter(row => row.classification.startsWith('unreferenced')).length,
   emptyLegacy: rows.filter(row => row.classification === 'empty legacy placeholder').length
 };
 
 const markdown = [
-  '# Brief Asset Inventory',
+  '# Spaces Asset Inventory',
   '',
   `Generated: ${summary.generatedAt}`,
   '',
   `- Total JS/CSS assets: ${summary.total}`,
-  `- Direct route entries: ${summary.direct}`,
-  `- Reachable dependencies: ${summary.activeDependencies}`,
+  `- Direct active Spaces entries: ${summary.direct}`,
+  `- Reachable active dependencies: ${summary.activeDependencies}`,
+  `- Rollback-only entries: ${summary.rollbackEntries}`,
   `- Unreferenced candidates: ${summary.unreferenced}`,
   `- Empty legacy placeholders: ${summary.emptyLegacy}`,
   '',
@@ -120,7 +124,7 @@ if (!checkOnly) {
 console.log(markdown);
 
 if (failures.length) {
-  console.error('\nBrief asset inventory checks failed:');
+  console.error('\nSpaces asset inventory checks failed:');
   for (const message of failures) console.error(`- ${message}`);
   process.exit(1);
 }
