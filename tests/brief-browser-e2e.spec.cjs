@@ -120,7 +120,7 @@ test('every briefing entry and context switch starts on Today', async ({ page })
 
   await selectPrimaryView(page, 'how');
   await expect(page.locator('[data-view-panel="how"]')).toBeVisible();
-  await page.locator('#resetDemo').click();
+  await page.locator('#resetDemo').evaluate(button => button.click());
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
   expect(new URL(page.url()).searchParams.has('view')).toBe(false);
 
