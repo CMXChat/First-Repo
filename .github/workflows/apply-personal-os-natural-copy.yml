@@ -1,0 +1,50 @@
+name: Apply Personal OS Natural Copy
+
+on:
+  push:
+    branches:
+      - agent/personal-os-natural-copy-pass
+
+permissions:
+  contents: write
+
+jobs:
+  rewrite-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply audited copy rewrite
+        run: python scripts/apply-personal-os-natural-copy.py
+
+      - name: Validate JavaScript syntax
+        run: |
+          node --check assets/brief/brief-demo-data.js
+          node --check assets/brief/brief-demo-experience.js
+          node --check assets/brief/brief-demo-explainers.js
+          node --check assets/brief/brief-demo-media.js
+
+      - name: Validate Personal OS release contracts
+        run: node scripts/validate-personal-os-release.mjs
+
+      - name: Validate documentation freshness
+        run: node scripts/validate-docs-freshness.mjs
+
+      - name: Commit rewritten copy
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            brief/index.html \
+            brief-next/index.html \
+            assets/brief/brief-demo-data.js \
+            assets/brief/brief-demo-experience.js \
+            assets/brief/brief-demo-explainers.js \
+            assets/brief/brief-demo-media.js \
+            doc/index.html \
+            docs/README.md
+          git commit -m "Rewrite Personal OS copy in a natural voice"
+          git push origin HEAD:${GITHUB_REF_NAME}
