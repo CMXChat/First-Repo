@@ -33,7 +33,18 @@ jobs:
           git checkout -B "${HEAD_BRANCH}" FETCH_HEAD
 
       - name: Apply audited copy rewrite
-        run: python scripts/apply-personal-os-natural-copy.py
+        run: |
+          python scripts/apply-personal-os-natural-copy.py
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/README.md')
+          text = path.read_text(encoding='utf-8')
+          old = '- The scenario chooser is a labelled listbox of native buttons using `role="option"` and `aria-selected`; do not combine `aria-pressed` with `role="listitem"`.'
+          new = '- The scenario chooser is a labelled group of native toggle buttons using `aria-pressed`; do not restore `role="listitem"` on those buttons.'
+          if text.count(old) != 1:
+              raise RuntimeError('expected temporary scenario-chooser documentation line exactly once')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
 
       - name: Validate JavaScript syntax
         run: |
