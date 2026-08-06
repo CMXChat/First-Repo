@@ -10,8 +10,8 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'" />
-  <title>Personal OS | Product Overview</title>
-  <meta name="description" content="A product overview of Personal OS, a private operating layer built around Spaces, structured memory, goals, briefings, permissions, connected services, and approved action." />
+  <title>Spaces | Context-Driven Workspace and Daily Brief</title>
+  <meta name="description" content="Spaces is a context-driven workspace that organizes memory, documents, tasks, calendars, people, and connected accounts around the parts of life that matter." />
   <link rel="canonical" href="https://db.cmxchat.com/doc/" />
   <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260805-2" />
 </head>
@@ -22,10 +22,10 @@
 
     <header class="document-toolbar">
       <div class="document-toolbar-inner">
-        <a class="document-identity" href="#top" aria-label="Personal OS product overview, return to top">
-          <span class="document-mark" aria-hidden="true">OS</span>
+        <a class="document-identity" href="#top" aria-label="Spaces product overview, return to top">
+          <span class="document-mark" aria-hidden="true">SP</span>
           <span class="document-identity-copy">
-            <strong>Personal OS</strong>
+            <strong>Spaces</strong>
             <span>Product overview</span>
           </span>
         </a>
@@ -62,7 +62,8 @@
           <p class="rail-eyebrow">Contents</p>
           <nav class="document-toc">
             <a href="#overview">The whole idea</a>
-            <a href="#model">The operating model</a>
+            <a href="#model">How it works</a>
+            <a href="#inputs">How a Space learns</a>
             <a href="#spaces">Spaces</a>
             <a href="#memory">Memory</a>
             <a href="#goals">Goals and direction</a>
@@ -94,32 +95,32 @@
 
           <div class="hero-copy">
             <div class="hero-kicker-row">
-              <p class="hero-kicker">Private personal intelligence</p>
+              <p class="hero-kicker">Context-driven workspace</p>
               <span class="hero-status">Concept + working demo</span>
             </div>
-            <h1 id="pageTitle">One operating layer for your life, relationships, family, and work.</h1>
-            <p class="hero-lead">Personal OS brings approved information, goals, memory, connected services, and chosen AI models into one controlled system. Spaces keep each part of life separate while allowing the right information to work together.</p>
+            <h1 id="pageTitle">Open the part of your life you’re working in</h1>
+            <p class="hero-lead">Spaces brings the people, files, conversations, memory, goals, and connected accounts for that part of life into one continuing context.</p>
 
             <div class="hero-actions">
               <a class="button button-primary" href="/brief/">
-                <span>Explore the briefing demo</span>
+                <span>Explore the Spaces Brief demo</span>
                 <span aria-hidden="true">↗</span>
               </a>
               <a class="button button-secondary" href="#overview">Understand it in one minute</a>
             </div>
 
-            <p class="hero-disclosure">The current demo uses sourced public information and clearly fictional private-looking examples because real accounts, secure connectors, durable memory, and server-side permissions are still part of the planned platform.</p>
+            <p class="hero-disclosure">The current demo uses sourced public information and clearly fictional private-looking examples. Real accounts, connected services, durable memory, and server-side permissions belong to the secure platform still being built.</p>
           </div>
 
-          <div class="hero-system" aria-label="Personal OS system overview">
+          <div class="hero-system" aria-label="Spaces system overview">
             <div class="hero-system-center">
-              <span>Personal OS</span>
-              <strong>Your controlled context</strong>
+              <span>Spaces</span>
+              <strong>Your current context</strong>
             </div>
             <div class="hero-system-node node-brief"><span>Brief</span><strong>What matters now</strong></div>
-            <div class="hero-system-node node-spaces"><span>Spaces</span><strong>Who can use what</strong></div>
+            <div class="hero-system-node node-spaces"><span>Context</span><strong>Who and what belongs</strong></div>
             <div class="hero-system-node node-memory"><span>Memory</span><strong>What should persist</strong></div>
-            <div class="hero-system-node node-goals"><span>Goals</span><strong>Where the system directs attention</strong></div>
+            <div class="hero-system-node node-goals"><span>Goals</span><strong>Where attention should go</strong></div>
           </div>
         </header>
 
@@ -127,23 +128,24 @@
           <div class="section-heading section-heading-wide">
             <div>
               <p class="section-kicker">The whole idea</p>
-              <h2 id="overviewTitle">Personal OS in one minute</h2>
+              <h2 id="overviewTitle">Spaces in one minute</h2>
             </div>
-            <p class="section-intro">The product has one simple job: help a person or group understand the current situation, protect the right boundaries, and move the right thing forward.</p>
+            <p class="section-intro">Spaces helps a person or group open the right context, understand what changed, protect the right boundaries, and move the next useful thing forward.</p>
           </div>
 
           <div class="overview-statement">
-            <p>Most digital tools understand only one slice of your life: the calendar knows your time, email holds your messages, task managers track assignments, and an AI chat knows only the context placed into that conversation.</p>
-            <p>Personal OS creates a stable layer above those tools. It organizes authorized information into Spaces, keeps useful memory with sources and correction controls, connects current reality to goals, and produces a focused Brief with actions that remain under human control.</p>
+            <p>Most digital tools understand one slice of your life. A calendar knows time, email holds messages, task managers track assignments, and a new AI chat usually starts with whatever you explain again.</p>
+            <p>Spaces begins with the part of life you are working in. The people, documents, conversations, memory, goals, deadlines, and connected accounts for that Space are already organized, so you can continue without rebuilding the context.</p>
+            <p>Chat remains available when it helps, alongside Brief, Documents, Research, Projects, Memory, Tasks, Calendar, Files, and Notes. Every module works from the same approved context.</p>
           </div>
 
-          <div class="overview-grid" aria-label="Personal OS overview">
+          <div class="overview-grid" aria-label="Spaces overview">
             <article class="overview-card overview-card-brief">
               <span class="overview-number">01</span>
               <div>
                 <p class="card-label">Brief</p>
                 <h3>See the few things that deserve attention now</h3>
-                <p>A morning view, team operating brief, family plan, relationship check-in, or focused project update can come from the same underlying system.</p>
+                <p>A morning view, team operating brief, family plan, relationship check-in, or focused project update can come from the same underlying Space.</p>
               </div>
             </article>
             <article class="overview-card overview-card-spaces">
@@ -167,7 +169,7 @@
               <div>
                 <p class="card-label">Goals</p>
                 <h3>Connect information to a clear direction</h3>
-                <p>The system can identify blockers, ask one useful question, recommend one next action, record the result, and update the next Brief.</p>
+                <p>The Space can identify blockers, ask one useful question, recommend one next action, record the result, and update the next Brief.</p>
               </div>
             </article>
           </div>
@@ -175,8 +177,8 @@
           <div class="core-difference">
             <div class="core-difference-copy">
               <p class="section-kicker">The central difference</p>
-              <h3>The AI can change while your operating context remains yours</h3>
-              <p>Personal OS owns the structure around the model: Spaces, permissions, memory, sources, goals, tools, approvals, and history. A default model can power the experience, while another cloud model or future local model can use the same controlled foundation.</p>
+              <h3>The model can change while the Space keeps its history</h3>
+              <p>Spaces keeps permissions, memory, sources, goals, tools, approvals, and history outside the model. A default model can power the experience, while another cloud model or future local model can work from the same controlled foundation.</p>
             </div>
             <div class="model-strip" aria-label="Replaceable AI model examples">
               <span>Default model</span>
@@ -190,13 +192,13 @@
         <section id="model" class="document-section" aria-labelledby="modelTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">The operating model</p>
+              <p class="section-kicker">How it works</p>
               <h2 id="modelTitle">A continuous intelligence loop</h2>
             </div>
             <p class="section-intro">The loop matters more than any single dashboard, connector, model, or visual effect.</p>
           </div>
 
-          <div class="loop-diagram" aria-label="Personal OS intelligence loop">
+          <div class="loop-diagram" aria-label="Spaces intelligence loop">
             <div class="loop-step"><span>1</span><strong>Collect authorized information</strong><small>Public sources, user input, connected services, files, and events</small></div>
             <div class="loop-arrow" aria-hidden="true">↓</div>
             <div class="loop-step"><span>2</span><strong>Update the current state</strong><small>People, Spaces, goals, commitments, changes, blockers, and freshness</small></div>
@@ -211,16 +213,38 @@
           </div>
         </section>
 
+        <section id="inputs" class="document-section" aria-labelledby="inputsTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">How the context builds</p>
+              <h2 id="inputsTitle">A Space learns from connected accounts, direct input, and corrections</h2>
+            </div>
+            <p class="section-intro">Most of the work should happen after the user chooses what to connect and which Space can use it. Spaces asks a short question only when the answer could change the next step.</p>
+          </div>
+
+          <div class="architecture-principles">
+            <article><h3>Connected accounts</h3><p>Calendar, email, files, project tools, finance, music, and other approved services can supply records within a clear read, write, sync, and Space scope.</p></article>
+            <article><h3>Direct input</h3><p>A note, uploaded document, voice update, form, import, or conversation can add context without forcing the user through a long setup process.</p></article>
+            <article><h3>Focused questions</h3><p>The AI can ask one clear question when a missing answer would change a recommendation, deadline, permission, or decision.</p></article>
+            <article><h3>Corrections</h3><p>A direct user correction replaces a weaker guess, keeps the earlier record in revision history, and updates the next Brief.</p></article>
+          </div>
+
+          <div class="prose-callout">
+            <strong>Connecting an account does not give every Space access to everything.</strong>
+            <p>The user chooses the service, purpose, permission, and Space. The connection stays visible in settings and can be limited, paused, or removed.</p>
+          </div>
+        </section>
+
         <section id="spaces" class="document-section spaces-section" aria-labelledby="spacesTitle">
           <div class="section-heading section-heading-wide">
             <div>
               <p class="section-kicker">The shared architecture</p>
-              <h2 id="spacesTitle">Spaces let one system work across different people and contexts</h2>
+              <h2 id="spacesTitle">Every meaningful part of life can have its own Space</h2>
             </div>
-            <p class="section-intro">A Space is a controlled environment for one part of life. It defines the people, information, memory, goals, tools, and permissions that belong together.</p>
+            <p class="section-intro">A Space is the continuing context for one part of life. It can hold people, documents, conversations, memory, tasks, calendars, files, projects, research, decisions, history, goals, and the permissions that keep them in the right place.</p>
           </div>
 
-          <div class="spaces-map" aria-label="Examples of Personal OS Spaces">
+          <div class="spaces-map" aria-label="Examples of Spaces">
             <article class="space-card space-personal">
               <span>Private</span>
               <h3>Personal Space</h3>
@@ -259,17 +283,13 @@
               <strong>Person A</strong>
               <span>Private context</span>
             </div>
-            <div class="boundary-lines" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
+            <div class="boundary-lines" aria-hidden="true"><span></span><span></span><span></span></div>
             <div class="boundary-center">
               <span>Shared Space</span>
               <strong>Approved information only</strong>
               <small>Shared goals · agreements · plans · decisions</small>
             </div>
-            <div class="boundary-lines" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
+            <div class="boundary-lines" aria-hidden="true"><span></span><span></span><span></span></div>
             <div class="boundary-person">
               <div class="person-avatar" aria-hidden="true">B</div>
               <strong>Person B</strong>
@@ -279,7 +299,12 @@
 
           <div class="prose-callout">
             <strong>One fact may appear in several places only when the permission allows it.</strong>
-            <p>A calendar event may be relevant to a personal Brief, a family plan, and a project deadline. Personal OS can reference the same event across those contexts without exposing unrelated private information.</p>
+            <p>A calendar event may be relevant to a personal Brief, a family plan, and a project deadline. Spaces can reference the same event across those contexts without exposing unrelated private information.</p>
+          </div>
+
+          <div class="prose-callout" data-spaces-document-knowledge>
+            <strong>Documents become connected knowledge inside a Space.</strong>
+            <p>Every document belongs to at least one Space and can relate to people, projects, decisions, meetings, research, memories, tasks, and Briefs. The relationship matters as much as the file itself.</p>
           </div>
         </section>
 
@@ -287,13 +312,13 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">Continuity with control</p>
-              <h2 id="memoryTitle">Memory needs to stay organized, inspectable, and correctable</h2>
+              <h2 id="memoryTitle">Memory belongs to the Space and stays under the user’s control</h2>
             </div>
-            <p class="section-intro">Useful continuity requires more than saving chat history. The system needs clear memory types, sources, dates, permissions, and revision controls.</p>
+            <p class="section-intro">Useful continuity needs more than old chat history. Each record needs a source, date, type, Space, permission, and revision history that the user can inspect.</p>
           </div>
 
           <div class="memory-layout">
-            <div class="memory-stack" role="list" aria-label="Personal OS memory layers">
+            <div class="memory-stack" role="list" aria-label="Spaces memory layers">
               <article class="memory-layer" role="listitem"><span>01</span><div><strong>Session context</strong><p>What matters during the current interaction.</p></div></article>
               <article class="memory-layer" role="listitem"><span>02</span><div><strong>Daily context</strong><p>Changes and events relevant to the current edition.</p></div></article>
               <article class="memory-layer" role="listitem"><span>03</span><div><strong>Short-term memory</strong><p>Active plans, recent decisions, current goals, and unresolved blockers.</p></div></article>
@@ -304,17 +329,19 @@
             </div>
 
             <div class="memory-controls-card">
-              <p class="card-label">User controls</p>
-              <h3>The record should change when reality changes</h3>
+              <p class="card-label">Planned Memory &amp; Data settings</p>
+              <h3>Review, correct, move, export, or delete what the Space remembers</h3>
               <ul class="check-list">
                 <li>Inspect what is stored</li>
                 <li>See the original source</li>
                 <li>Check when it was updated</li>
                 <li>Correct a mistaken record</li>
-                <li>Restrict it to one Space</li>
+                <li>Move or restrict it to one Space</li>
                 <li>Remove an interpretation</li>
                 <li>Export or delete data</li>
                 <li>Pause future learning</li>
+                <li data-spaces-memory-setting>Change a connected source’s permissions</li>
+                <li data-spaces-memory-setting>Disconnect an account from the Space</li>
               </ul>
               <div class="record-example">
                 <div><span>Source</span><strong>User check-in</strong></div>
@@ -379,16 +406,13 @@
               <p class="section-kicker">The daily experience</p>
               <h2 id="ritualTitle">A briefing can become part of the morning routine</h2>
             </div>
-            <p class="section-intro">Personal OS can combine an alarm, selected music, voice, and a concise Brief into one user-controlled routine.</p>
+            <p class="section-intro">Spaces can combine an alarm, selected music, voice, and a concise Brief into one user-controlled routine.</p>
           </div>
 
           <div class="ritual-stage">
-            <div class="ritual-phone" aria-label="Example Personal OS morning briefing">
+            <div class="ritual-phone" aria-label="Example Spaces morning briefing">
               <div class="ritual-phone-top"><span>7:00</span><span>Personal Space</span></div>
-              <div class="ritual-greeting">
-                <span>Good morning</span>
-                <strong>Your day is ready.</strong>
-              </div>
+              <div class="ritual-greeting"><span>Good morning</span><strong>Your day is ready.</strong></div>
               <div class="ritual-now-playing">
                 <div class="album-shape" aria-hidden="true"><span></span></div>
                 <div><span>Opening track</span><strong>Your selected morning song</strong></div>
@@ -447,13 +471,7 @@
               <h3>One shared truth with role-specific access</h3>
               <p>A Team Space can hold the project state, responsibilities, handoffs, procedures, risks, decisions, and approved financial signals. Leadership may see broader operating context while each member sees relevant work and the information needed to complete it.</p>
               <div class="team-flow">
-                <span>Private member profile</span>
-                <span aria-hidden="true">→</span>
-                <span>Role Space</span>
-                <span aria-hidden="true">→</span>
-                <span>Project truth</span>
-                <span aria-hidden="true">→</span>
-                <span>Leadership context</span>
+                <span>Private member profile</span><span aria-hidden="true">→</span><span>Role Space</span><span aria-hidden="true">→</span><span>Project truth</span><span aria-hidden="true">→</span><span>Leadership context</span>
               </div>
             </article>
           </div>
@@ -470,9 +488,9 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">Model-independent intelligence</p>
-              <h2 id="aiTitle">Your chosen AI works inside a controlled operating layer.</h2>
+              <h2 id="aiTitle">Use the AI model you choose inside the current Space</h2>
             </div>
-            <p class="section-intro">The model receives the context, tools, and permissions needed for the current task, while Personal OS keeps the long-term product state outside the model.</p>
+            <p class="section-intro">The model receives only the context, tools, and permissions needed for the current task. The Space keeps its long-term records, settings, and history outside the model.</p>
           </div>
 
           <div class="ai-architecture">
@@ -483,16 +501,9 @@
             </div>
             <div class="ai-connector" aria-hidden="true"><span></span><strong>Uses</strong><span></span></div>
             <div class="ai-foundation-card">
-              <p class="card-label">Stable Personal OS foundation</p>
+              <p class="card-label">Stable Spaces foundation</p>
               <div class="foundation-grid">
-                <span>Spaces</span>
-                <span>Permissions</span>
-                <span>Memory</span>
-                <span>Sources</span>
-                <span>Goals</span>
-                <span>Typed tools</span>
-                <span>Approval rules</span>
-                <span>Audit history</span>
+                <span>Spaces</span><span>Permissions</span><span>Memory</span><span>Sources</span><span>Goals</span><span>Typed tools</span><span>Approval rules</span><span>Audit history</span>
               </div>
             </div>
           </div>
@@ -522,15 +533,8 @@
             <article class="trust-card"><span class="trust-icon" aria-hidden="true">✓</span><h3>Action scope</h3><p>Read only, draft only, ask first, approved write, recurring automation, or disconnected.</p></article>
           </div>
 
-          <div class="source-labels" aria-label="Example Personal OS data labels">
-            <span>LIVE PUBLIC</span>
-            <span>CONNECTED</span>
-            <span>SELF-REPORTED</span>
-            <span>REMEMBERED</span>
-            <span>DEMO</span>
-            <span>ANALYSIS</span>
-            <span>SUGGESTED</span>
-            <span>REQUIRES APPROVAL</span>
+          <div class="source-labels" aria-label="Example Spaces data labels">
+            <span>LIVE PUBLIC</span><span>CONNECTED</span><span>SELF-REPORTED</span><span>REMEMBERED</span><span>DEMO</span><span>ANALYSIS</span><span>SUGGESTED</span><span>REQUIRES APPROVAL</span>
           </div>
 
           <div class="security-note">
@@ -538,7 +542,7 @@
               <p class="card-label">Public overview</p>
               <h3>The product narrative is open, but private product data still requires real protection</h3>
             </div>
-            <p>This noindex overview contains product explanation and fictional examples, so it does not need a client-side password prompt. Real Personal OS accounts and private records require edge or server enforcement, authenticated sessions, authorization, protected storage, connector scopes, encryption, audit logs, and revocable access.</p>
+            <p>This noindex overview contains product explanation and fictional examples, so it does not need a client-side password prompt. Real Spaces accounts and private records require edge or server enforcement, authenticated sessions, authorization, protected storage, connector scopes, encryption, audit logs, and revocable access.</p>
           </div>
         </section>
 
@@ -548,7 +552,7 @@
               <p class="section-kicker">Current reality</p>
               <h2 id="statusTitle">The current demo shows the product direction and the work still required</h2>
             </div>
-            <p class="section-intro">The document separates what exists from what has been designed or planned so the product can be ambitious without overstating its current state.</p>
+            <p class="section-intro">This section separates what exists from what has been designed or planned, so the product direction stays clear without overstating the current demo.</p>
           </div>
 
           <div class="status-columns">
@@ -561,7 +565,7 @@
                 <li>Sourced public information and fictional private-looking examples</li>
                 <li>Frontend demonstrations of Spaces, memory, connections, goals, media, and permissions</li>
                 <li>Mobile, browser, theme, navigation, and accessibility validation work</li>
-                <li>A separate experimental `/brief-next/` direction</li>
+                <li>A matching `/brief-next/` route used for testing and rollback</li>
               </ul>
             </div>
             <div class="status-column">
@@ -581,7 +585,7 @@
             </div>
           </div>
 
-          <div class="roadmap-row" aria-label="Personal OS development sequence">
+          <div class="roadmap-row" aria-label="Spaces development sequence">
             <article><span>1</span><strong>Prove the daily experience</strong></article>
             <article><span>2</span><strong>Stabilize the product shell</strong></article>
             <article><span>3</span><strong>Prove the goal loop</strong></article>
@@ -601,8 +605,8 @@
             <p class="section-intro">The technical plan keeps structured product state, AI reasoning, connectors, and user-facing interfaces separate enough to test, replace, and secure.</p>
           </div>
 
-          <div class="architecture-stack" aria-label="Planned Personal OS architecture">
-            <article class="architecture-layer"><span>Experience</span><strong>Brief · Goals · Spaces · Memory · Settings</strong><p>Responsive interfaces for individuals and shared groups.</p></article>
+          <div class="architecture-stack" aria-label="Planned Spaces architecture">
+            <article class="architecture-layer"><span>Experience</span><strong>Brief · Documents · Projects · Research · Memory · Tasks · Calendar · Files · Settings</strong><p>Different modules, one shared Space context.</p></article>
             <div class="architecture-arrow" aria-hidden="true">↓</div>
             <article class="architecture-layer"><span>Application</span><strong>FastAPI · Typed APIs · Permissions · Approval flows</strong><p>Server-side product logic and controlled tool access.</p></article>
             <div class="architecture-arrow" aria-hidden="true">↓</div>
@@ -619,6 +623,12 @@
             <article><h3>Replaceable components</h3><p>Models, connectors, and interfaces can change without erasing the user’s operating context.</p></article>
             <article><h3>Visible provenance</h3><p>The product can explain the information and evidence behind a recommendation.</p></article>
           </div>
+
+          <div class="prose-callout" data-cloudflare-context>
+            <strong>Cloudflare could become infrastructure beneath Spaces.</strong>
+            <p>Cloudflare OS is aimed at developers building agent runtimes, sandboxes, tools, and orchestration. Spaces is the user-facing product built around context, continuity, memory, and action. They operate at different layers, and Cloudflare could power part of the backend without changing the experience people use.</p>
+            <a class="button button-secondary" href="https://os.cloudflare.app/" target="_blank" rel="noopener noreferrer">View Cloudflare OS <span aria-hidden="true">↗</span></a>
+          </div>
         </section>
 
         <section id="scenarios" class="document-section scenarios-section" aria-labelledby="scenariosTitle">
@@ -631,30 +641,10 @@
           </div>
 
           <div class="scenario-grid">
-            <article class="scenario-card">
-              <span class="scenario-index">01</span>
-              <p class="card-label">Personal</p>
-              <h3>Start the day knowing what needs attention</h3>
-              <p>Schedule, work, money, wellness, goals, learning, music, reminders, and one useful next action.</p>
-            </article>
-            <article class="scenario-card">
-              <span class="scenario-index">02</span>
-              <p class="card-label">Relationship and family</p>
-              <h3>Coordinate shared life without losing private boundaries</h3>
-              <p>Plans, calendars, responsibilities, rituals, memories, decisions, and private context that stays private.</p>
-            </article>
-            <article class="scenario-card">
-              <span class="scenario-index">03</span>
-              <p class="card-label">Founder and business</p>
-              <h3>Use the operating picture to make better decisions</h3>
-              <p>Clients, revenue, cash, projects, meetings, opportunities, risks, priorities, and follow-up actions.</p>
-            </article>
-            <article class="scenario-card">
-              <span class="scenario-index">04</span>
-              <p class="card-label">Team and project</p>
-              <h3>Give each person the context they need to deliver</h3>
-              <p>My work, project truth, handoffs, procedures, blockers, workload, approved finance, and leadership visibility.</p>
-            </article>
+            <article class="scenario-card"><span class="scenario-index">01</span><p class="card-label">Personal</p><h3>Start the day knowing what needs attention</h3><p>Schedule, work, money, wellness, goals, learning, music, reminders, and one useful next action.</p></article>
+            <article class="scenario-card"><span class="scenario-index">02</span><p class="card-label">Relationship and family</p><h3>Coordinate shared life without losing private boundaries</h3><p>Plans, calendars, responsibilities, rituals, memories, decisions, and private context that stays private.</p></article>
+            <article class="scenario-card"><span class="scenario-index">03</span><p class="card-label">Founder and business</p><h3>Use the operating picture to make better decisions</h3><p>Clients, revenue, cash, projects, meetings, opportunities, risks, priorities, and follow-up actions.</p></article>
+            <article class="scenario-card"><span class="scenario-index">04</span><p class="card-label">Team and project</p><h3>Give each person the context they need to deliver</h3><p>My work, project truth, handoffs, procedures, blockers, workload, approved finance, and leadership visibility.</p></article>
           </div>
         </section>
 
@@ -662,35 +652,19 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">Questions</p>
-              <h2 id="faqTitle">Common questions about the product</h2>
+              <h2 id="faqTitle">Common questions about Spaces</h2>
             </div>
           </div>
 
           <div class="faq-list">
-            <details>
-              <summary>Is Personal OS an AI model?</summary>
-              <p>Personal OS is the product layer around AI models, managing Spaces, permissions, structured memory, sources, goals, tools, approvals, and history while the selected model handles reasoning and generation inside that controlled context.</p>
-            </details>
-            <details>
-              <summary>Why are Spaces so important?</summary>
-              <p>Spaces prevent private life and shared coordination from being mixed together by defining the members, memory, goals, tools, data, and visibility rules for each context.</p>
-            </details>
-            <details>
-              <summary>Can different AI models use the same Personal OS?</summary>
-              <p>Yes. The operating context is designed to remain stable while the user or system selects an appropriate model, so changing providers does not require rebuilding goals, memory, permissions, or Spaces.</p>
-            </details>
-            <details>
-              <summary>Does the current demo use real private data?</summary>
-              <p>No. The public demo uses sourced public information and clearly fictional private-looking records because real private data requires authentication, protected storage, a secure backend, and controlled connector permissions.</p>
-            </details>
-            <details>
-              <summary>Can the system mediate family, relationship, or team issues?</summary>
-              <p>It can organize stated information, expose conflicts, compare schedules, summarize approved positions, track agreements, and suggest practical options, but it should never diagnose people, invent motives, take sides, or replace professional judgment.</p>
-            </details>
-            <details>
-              <summary>What makes the alarm, music, and voice experience different?</summary>
-              <p>The routine uses the same approved context as the Brief, allowing a selected alarm to begin a user-controlled music and voice experience before moving into spoken check-ins, reminders, or updates without forcing the user through a full dashboard.</p>
-            </details>
+            <details><summary>Is Spaces an AI model?</summary><p>Spaces is the product around the model. It keeps the contexts, permissions, memory, sources, goals, tools, approvals, and history that let a chosen model work inside clear limits.</p></details>
+            <details><summary>Why is the product organized around Spaces?</summary><p>Each Space keeps one part of life coherent. A Business Space can understand clients and projects, while a Family Space uses family plans and responsibilities without pulling unrelated work records into the conversation.</p></details>
+            <details><summary>How does a Space get its information?</summary><p>Information can come from connected accounts, uploaded files, notes, voice updates, forms, imports, conversations, public sources, and short questions from the AI. Every source needs a purpose, permission, and Space.</p></details>
+            <details><summary>Can users correct what a Space remembers?</summary><p>That is part of the planned Memory &amp; Data settings. Users should be able to inspect sources, correct records, move information between Spaces, remove interpretations, change connector permissions, export data, delete records, and pause future learning.</p></details>
+            <details><summary>Can different AI models use the same Space?</summary><p>Yes. The Space is designed to keep its goals, memory, permissions, and history while the user or system selects a suitable model for the task.</p></details>
+            <details><summary>Does the current demo use real private data?</summary><p>No. The public demo uses sourced public information and clearly fictional private-looking records. Real private data requires authentication, protected storage, server-side permissions, limited connector scopes, and revocable access.</p></details>
+            <details><summary>Can Spaces help with family, relationship, or team decisions?</summary><p>Spaces can organize what people stated, expose schedule or responsibility conflicts, track approved agreements, and prepare practical options. People remain responsible for the relationship and the decision.</p></details>
+            <details><summary>What makes the alarm, music, and voice experience useful?</summary><p>The routine can use the same approved context as the Brief, so music, voice, reminders, and spoken check-ins begin from the current Space instead of a blank screen.</p></details>
           </div>
         </section>
 
@@ -698,8 +672,8 @@
           <div class="final-cta-glow" aria-hidden="true"></div>
           <div>
             <p class="section-kicker">See the idea in motion</p>
-            <h2 id="finalCtaTitle">Explore the current Personal OS briefing demo</h2>
-            <p>The demo is an active-development preview of the daily experience, and its interface, data structure, connections, goals, memory, and backend will continue changing as the product moves toward the full system described here.</p>
+            <h2 id="finalCtaTitle">Explore the current Spaces Brief demo</h2>
+            <p>The demo previews the daily experience while secure accounts, connected services, durable memory, settings, and the backend continue moving toward the full product described here.</p>
           </div>
           <a class="button button-primary button-large" href="/brief/">
             <span>Open the demo</span>
@@ -709,7 +683,7 @@
         </section>
 
         <footer class="document-footer">
-          <div><strong>Personal OS</strong><span>A private operating layer built around Spaces, memory, goals, and approved action.</span></div>
+          <div><strong>Spaces</strong><span>A context-driven workspace built around continuity, memory, clear boundaries, and useful action.</span></div>
           <div class="footer-actions"><a href="#top">Back to top</a><a href="/brief/">Explore demo</a></div>
         </footer>
       </article>
@@ -717,6 +691,6 @@
   </main>
 
   <noscript>This overview remains readable without JavaScript. Theme switching, section tracking, and print controls require JavaScript.</noscript>
-  <script src="/assets/personal-os-doc.js?v=20260805-2" defer></script>
+  <script src="/assets/personal-os-doc.js?v=20260806-1" defer></script>
 </body>
 </html>
