@@ -49,8 +49,8 @@ test('Brief staging entry has no serious automated WCAG violations', async ({ pa
   await expectNoSeriousAxeViolations(page, 'Brief Next entry');
 });
 
-test('Personal OS document has no serious automated WCAG violations', async ({ page }) => {
+test('Spaces document has no serious automated WCAG violations', async ({ page }) => {
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('main')).toBeVisible();
-  await expectNoSeriousAxeViolations(page, 'Personal OS document');
+  await expectNoSeriousAxeViolations(page, 'Spaces document');
 });
