@@ -1,12 +1,14 @@
-name: Brief Device and Interface Compatibility Tests
+name: Spaces Device and Interface Compatibility Tests
 
 on:
   push:
     branches: [main]
     paths:
+      - 'spaces/**'
       - 'brief/**'
       - 'brief-next/**'
       - 'assets/brief/**'
+      - 'assets/spaces-legacy-redirect.js'
       - 'assets/cmx-routes.json'
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-next-smoke.test.js'
@@ -14,9 +16,11 @@ on:
       - '.github/workflows/brief-device-smoke.yml'
   pull_request:
     paths:
+      - 'spaces/**'
       - 'brief/**'
       - 'brief-next/**'
       - 'assets/brief/**'
+      - 'assets/spaces-legacy-redirect.js'
       - 'assets/cmx-routes.json'
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-next-smoke.test.js'
@@ -39,11 +43,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Run current Brief device and theme smoke test
+      - name: Run Spaces device, route and theme smoke test
         run: node tests/brief-device-smoke.test.js
 
-      - name: Run current Brief interface smoke test
+      - name: Run Spaces active, legacy and rollback smoke test
         run: node tests/brief-next-smoke.test.js
 
-      - name: Run Brief section navigation smoke test
+      - name: Run Spaces section navigation smoke test
         run: node tests/brief-section-navigation-smoke.test.js
