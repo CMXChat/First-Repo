@@ -15,14 +15,13 @@ async function openCurrentBrief(page, route = '/brief/') {
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
   await expect(page.locator('#entry')).toBeVisible();
   await expect(page.locator('[data-entry-scenario]')).toHaveCount(5);
-  await expect(page.locator('#entrySoundtrack')).toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
 
   const background = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());
   expect(background).toBe('#edf3f8');
 }
 
 async function enterScenario(page, scenario = 'personal') {
-  await page.locator('#entrySoundtrack').uncheck();
   await page.locator(`[data-entry-scenario="${scenario}"]`).click();
   await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
@@ -70,6 +69,78 @@ test('current Brief opens in light mode and remains usable across devices', asyn
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
+});
+
+test('mobile How view remains contained and uses compact foundation cards', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await openCurrentBrief(page);
+  await enterScenario(page, 'team');
+
+  await page.locator('#mobileNav [data-primary-view="how"]').click();
+  await expect(page.locator('[data-view-panel="how"]')).toBeVisible();
+  await expect(page.locator('#intelligenceExplainers')).toBeVisible();
+
+  await page.locator('[data-memory-example="preference"]').click();
+  await page.locator('[data-space-example="team"]').click();
+  await expectNoHorizontalOverflow(page);
+
+  const layout = await page.evaluate(() => {
+    const viewport = document.documentElement.clientWidth;
+    const selectors = [
+      '.foundation-map',
+      '.foundation-map > *',
+      '.intelligence-explainers',
+      '.explainer-tabs',
+      '.memory-comparison',
+      '.comparison-card',
+      '.space-example-panel'
+    ];
+    const rects = selectors.flatMap(selector =>
+      [...document.querySelectorAll(selector)].map(node => {
+        const rect = node.getBoundingClientRect();
+        return { selector, left: rect.left, right: rect.right, width: rect.width, height: rect.height };
+      })
+    );
+    const foundationHeights = [...document.querySelectorAll('.foundation-map > *')]
+      .map(node => node.getBoundingClientRect().height);
+
+    return {
+      viewport,
+      rects,
+      maxFoundationHeight: Math.max(...foundationHeights)
+    };
+  });
+
+  for (const rect of layout.rects) {
+    expect(rect.left, `${rect.selector} should stay inside the left edge`).toBeGreaterThanOrEqual(-1);
+    expect(rect.right, `${rect.selector} should stay inside the right edge`).toBeLessThanOrEqual(layout.viewport + 1);
+    expect(rect.width, `${rect.selector} should not exceed the viewport`).toBeLessThanOrEqual(layout.viewport + 1);
+  }
+  expect(layout.maxFoundationHeight).toBeLessThanOrEqual(220);
+});
+
+test('Spotify failure never blocks entry or opens the drawer automatically', async ({ page }) => {
+  await page.route('https://open.spotify.com/**', route => route.abort());
+  await openCurrentBrief(page);
+
+  await page.locator('#entrySoundtrack').check();
+  await page.locator('[data-entry-scenario="team"]').click();
+  await expect(page.locator('#openDemo')).toBeEnabled();
+  await page.locator('#openDemo').click();
+
+  await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
+  await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
+  await expect(page.locator('#mediaDrawer')).toHaveAttribute('inert', '');
+
+  await page.locator('#mediaButton').click();
+  await expect(page.locator('#mediaDrawer')).toHaveClass(/is-open/);
+  await expect(page.locator('#mediaDrawer')).not.toHaveAttribute('inert', '');
+  await expect(page.locator('#previewButton')).toBeHidden();
+  await expect(page.locator('#spotifyFrame')).toHaveAttribute('src', /open\.spotify\.com\/embed\/track\//);
+
+  await page.locator('.media-heading [data-close-media]').click();
+  await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
+  await expect(page.locator('#mediaDrawer')).toHaveAttribute('inert', '');
 });
 
 test('explicit theme query remains reversible on production and staging routes', async ({ page }) => {

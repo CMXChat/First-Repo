@@ -113,17 +113,21 @@ assert.doesNotMatch(experienceJs, /approved APIs, MCP tools/);
 assert.doesNotMatch(experienceJs, /setTimeout|setInterval/);
 
 assert.match(mediaJs, /SPOTIFY_IFRAME_API_SRC = 'https:\/\/open\.spotify\.com\/embed\/iframe-api\/v1'/);
-assert.match(mediaJs, /window\.onSpotifyIframeApiReady = IFrameAPI => createSpotifyController\(IFrameAPI\)/);
+assert.match(mediaJs, /const API_TIMEOUT_MS = 4000/);
+assert.match(mediaJs, /window\.onSpotifyIframeApiReady = IFrameAPI =>/);
 assert.match(mediaJs, /IFrameAPI\.createController\(/);
 assert.match(mediaJs, /state\.controller\.play\(\)/);
 assert.match(mediaJs, /function requestEntryPlayback\(/);
-assert.match(mediaJs, /if \(state\.apiFailed\)/);
-assert.match(mediaJs, /queueMicrotask\(open\)/);
-assert.match(mediaJs, /close\(\{ restoreFocus: false \}\)/);
-assert.match(mediaJs, /state\.playing = false;/);
-assert.match(mediaJs, /event\.target\.closest\('\[data-entry-scenario\]'\)/);
+assert.match(mediaJs, /button\.disabled = false/);
+assert.match(mediaJs, /Spotify is preparing in the background\. The Brief opened without waiting\./);
+assert.match(mediaJs, /function setDrawerInert\(/);
+assert.match(mediaJs, /drawer\.inert = isInert/);
+assert.match(mediaJs, /button\.hidden = state\.fallbackMode/);
+assert.match(mediaJs, /queueMicrotask\(setSoundtrackDefaultOff\)/);
 assert.match(mediaJs, /document\.createElement\('iframe'\)/);
-assert.match(mediaJs, /tap-to-play mode because its playback controller did not load/);
+assert.match(mediaJs, /Spotify is ready in direct tap mode/);
+assert.doesNotMatch(mediaJs, /event\.stopImmediatePropagation\(\)/);
+assert.doesNotMatch(mediaJs, /queueMicrotask\(open\)/);
 assert.doesNotMatch(mediaJs, /Loading Spotify player\.\.\.|Preparing [^'`\n]*\.\.\./);
 
 assert.match(explainersJs, /const memoryExamples = \{/);
@@ -133,6 +137,8 @@ assert.match(explainersJs, /People appear only when they belong to an approved S
 assert.match(explainersJs, /role="tabpanel"/);
 assert.match(explainersJs, /aria-controls="memoryComparison"/);
 assert.match(explainersJs, /ArrowLeft/);
+assert.match(explainersJs, /choice\.checked = false/);
+assert.match(explainersJs, /scrollIntoView\(\{ block: 'nearest', inline: 'nearest' \}\)/);
 assert.match(explainersJs, /PRIVATE FIRST/);
 assert.doesNotMatch(explainersJs, /This is not a social friends list/);
 assert.doesNotMatch(explainersJs, /setTimeout|setInterval/);
@@ -156,6 +162,10 @@ assert.match(experienceCss, /\.everything-content/);
 assert.match(experienceCss, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
 assert.match(docLinksCss, /\.doc-topbar-link/);
 assert.match(docLinksCss, /\.doc-cta-card/);
+assert.match(docLinksCss, /body\s*\{[\s\S]*overflow-x: clip/);
+assert.match(docLinksCss, /\.intelligence-explainers\s*\{[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
+assert.match(docLinksCss, /\.foundation-map\s*\{[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
+assert.match(docLinksCss, /\.comparison-card,[\s\S]*overflow-wrap: anywhere/);
 assert.match(docLinksCss, /@media \(max-width: 620px\)/);
 
 const route = routes.routes.find(item => item.path === '/brief/');
