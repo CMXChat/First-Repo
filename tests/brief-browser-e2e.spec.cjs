@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-async function prepareFreshPage(page, route = '/brief/') {
+async function prepareFreshPage(page, route = '/spaces/') {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => {
     localStorage.clear();
@@ -9,7 +9,7 @@ async function prepareFreshPage(page, route = '/brief/') {
   await page.reload({ waitUntil: 'domcontentloaded' });
 }
 
-async function openCurrentBrief(page, route = '/brief/') {
+async function openCurrentBrief(page, route = '/spaces/') {
   await prepareFreshPage(page, route);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
@@ -83,7 +83,7 @@ async function dispatchSwipe(page, selector, { startX, startY = 360, endX, endY 
   }, { startX, startY, endX, endY });
 }
 
-test('current Brief opens in light mode and remains usable across devices', async ({ page }) => {
+test('current Spaces demo opens in light mode and remains usable across devices', async ({ page }) => {
   await openCurrentBrief(page);
   await enterScenario(page, 'personal');
   await expect(page.locator('#weatherTemperature')).toHaveText('82');
@@ -107,7 +107,7 @@ test('current Brief opens in light mode and remains usable across devices', asyn
 });
 
 test('every briefing entry and context switch starts on Today', async ({ page }) => {
-  await openCurrentBrief(page, '/brief/?scenario=team&view=everything&tab=plans');
+  await openCurrentBrief(page, '/spaces/?scenario=team&view=everything&tab=plans');
 
   await page.locator('[data-entry-scenario="team"]').click();
   await page.locator('#openDemo').click();
@@ -260,10 +260,17 @@ test('Spotify failure never blocks entry or opens the drawer automatically', asy
   await expect(page.locator('#mediaDrawer')).toHaveAttribute('inert', '');
 });
 
-test('explicit theme query remains reversible on production and staging routes', async ({ page }) => {
+test('legacy Brief route preserves URL state while redirecting to Spaces', async ({ page }) => {
+  await page.goto('/brief/?theme=dark#how', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/spaces\/\?theme=dark#how$/);
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('#entry')).toBeVisible();
+});
+
+test('explicit theme query remains reversible on active and rollback routes', async ({ page }) => {
   await prepareFreshPage(page);
 
-  for (const route of ['/brief/', '/brief-next/']) {
+  for (const route of ['/spaces/', '/brief-next/']) {
     await page.goto(`${route}?theme=dark`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
@@ -280,7 +287,7 @@ test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ 
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.locator('link[data-personal-os-mobile-fixes="true"]')).toHaveCount(1);
+  await expect(page.locator('link[data-spaces-mobile-fixes="true"]')).toHaveCount(1);
 
   const cta = page.locator('.final-cta');
   await cta.scrollIntoViewIfNeeded();
@@ -315,10 +322,10 @@ test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ 
 
 test('Doc renders the plain-language copy audit', async ({ page }) => {
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#pageTitle')).toHaveText('One place to organize your personal life, shared Spaces, and work.');
-  await expect(page.locator('#statusTitle')).toHaveText('What works now and what still needs building.');
-  await expect(page.locator('#architectureTitle')).toHaveText('A technical plan that stays understandable and controllable.');
-  await expect(page.locator('#finalCtaTitle')).toHaveText('Open the current Personal OS Brief demo.');
+  await expect(page.locator('#pageTitle')).toHaveText('Open the part of your life you’re working in');
+  await expect(page.locator('#statusTitle')).toHaveText('The current demo shows the product direction and the work still required');
+  await expect(page.locator('#architectureTitle')).toHaveText('Keep the product architecture understandable and controllable');
+  await expect(page.locator('#finalCtaTitle')).toHaveText('Explore the current Spaces Brief demo');
   await expect(page.locator('.status-list').first()).toContainText('A matching `/brief-next/` route used for testing');
   await expectPlainVisibleCopy(page);
 });
