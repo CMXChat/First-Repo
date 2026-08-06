@@ -5,26 +5,14 @@ on:
     branches: [main]
     paths:
       - '.github/spaces-pr72-trigger'
-  schedule:
-    - cron: '*/5 * * * *'
-  issue_comment:
-    types: [created]
 
 permissions:
   contents: write
   issues: write
   pull-requests: write
 
-concurrency:
-  group: spaces-pr72-validation
-  cancel-in-progress: true
-
 jobs:
   validate:
-    if: >-
-      github.event_name == 'push' ||
-      github.event_name == 'schedule' ||
-      (github.event.issue.pull_request && github.event.issue.number == 72 && github.event.comment.body == '/validate-spaces-pr72')
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
