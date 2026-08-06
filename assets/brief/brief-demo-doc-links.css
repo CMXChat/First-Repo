@@ -1,3 +1,5 @@
+@import url('/assets/brief/brief-demo-topbar-polish.css?v=20260806-1');
+
 /* Clear, reciprocal navigation between the briefing demo and product overview. */
 .entry-actions {
   display: flex;
