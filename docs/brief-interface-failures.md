@@ -2,7 +2,7 @@
 
 Last reconciled: **August 5, 2026**  
 Repository: `CMXChat/First-Repo`  
-Verified product baseline: `5c7eef899f3357854492e2d3918f5915eb536b6b`
+Verified product baseline: `7b2d4e9dd85ac0011b1cb9d8426c39270b143705`
 
 ## Status of the previous failure dump
 
@@ -34,7 +34,7 @@ Resolved. Both `/brief/` and `/brief-next/` now begin with light HTML and a ligh
 
 ### Light-mode special-section contrast
 
-Repaired for the current interface with explicit light-theme treatment for alarm, privacy, goal, connection, and Everything-view sections.
+Repaired for the current interface with explicit light-theme treatment for alarm, privacy, goal, connection, and Everything-view sections. The broader automated audit still found separate contrast issues listed below.
 
 ### Generated-sounding or overly complex visible copy
 
@@ -50,7 +50,7 @@ Repaired so focus returns to a useful entry control instead of remaining in hidd
 
 ### Media fallback behavior
 
-Improved so Spotify controller failure or rejected playback exposes a usable direct-play path.
+Improved so Spotify controller failure or rejected playback exposes a usable direct-play path. Deterministic mocked lifecycle tests now cover silent refusal, thrown playback, track switching, and API timeout.
 
 ### `/doc/` password gate
 
@@ -60,142 +60,165 @@ Resolved. The product overview contains no Black Prompt Gate markup or gate asse
 
 Repaired with dedicated containment rules and focused coverage.
 
-## Active risks and open issues
+## Active findings
 
-### P1: Production domain and CDN are not covered by local tests
+### P1: Entry scenario buttons use unsupported ARIA
 
-Current browser suites use a local static server.
+The first automated axe audit found a critical `aria-allowed-attr` violation on `/brief/` and `/brief-next/` in desktop and mobile Chromium.
 
-Impact:
+Current pattern:
 
-- stale CDN assets may survive a correct merge
-- production security headers can differ from HTML meta policy
-- route rewrites and cache propagation are not verified
-- real mobile rendering can differ from emulation
+- scenario controls are buttons
+- each button has `role="listitem"`
+- each button also uses `aria-pressed`
 
-Suggested fix:
+Axe reports `aria-pressed` as unsupported for the explicit `listitem` role. The finding applies to the Personal, Relationship, Business, Trainer, and Team scenario buttons.
 
-- add a post-deploy smoke workflow or release check against `db.cmxchat.com`
+Required review:
 
-### P1: Same-version assets can remain stale
+- use a valid selection pattern such as native buttons inside list items, a radio group, or another supported composite
+- preserve keyboard selection, visible state, and announced state
+- rerun the desktop and mobile audit after the active Brief editing context finishes
 
-Several Brief JavaScript files changed during the final copy and accessibility pass while their query-string versions remained unchanged.
+### P1: Entry scenario descriptions miss the contrast threshold
 
-Impact:
+The small descriptions under the scenario names use `#65768a` on `#f7fafe`. Axe measured `4.44:1`; the required minimum for that text size is `4.5:1`.
 
-- a browser or edge cache can serve old code with new HTML or tests
-- source verification can disagree with production behavior
-- same-day fixes may appear missing after deployment
+Affected surfaces:
 
-Suggested fix:
+- `/brief/` entry
+- `/brief-next/` entry
+- desktop and mobile Chromium
 
-- define asset version rules
-- bump versions for cache-sensitive releases
-- verify deployed file content after propagation
+### P1: Today view contains low-contrast secondary text
 
-### P1: `/brief/` and `/brief-next/` can drift
+The automated audit reported serious contrast violations in desktop and mobile Chromium.
 
-The two pages currently share the same HTML blob and assets, and a later commit deliberately realigned them. No dedicated check enforces that relationship.
+Reported targets include:
 
-Impact:
+- `.muted-pill`
+- `.hourly-item:nth-child(1) > span`
+- `.hourly-item:nth-child(1) > small`
+- `.hourly-item:nth-child(2) > span`
 
-- staging may stop representing production
-- a fix can be applied to only one route
-- rollback expectations can become false
+The complete weather row and muted token set should be reviewed instead of changing only the first reported nodes.
 
-Suggested fix:
+### P1: Personal OS document contains low-contrast diagram labels
 
-- add a parity test with documented allowed differences
+The automated audit reported serious contrast violations in desktop and mobile Chromium.
 
-### P1: Spotify playback remains externally constrained
+Reported targets include:
 
-The implementation can prepare the provider and request playback. It cannot override browser autoplay policy or provider requirements.
+- `.boundary-center > small`, measured at `4.18:1`
+- numbered spans inside the first memory-layer cards, measured at `4.11:1`
 
-Impact:
+The complete boundary and memory-diagram token set should be reviewed for consistent AA contrast.
 
-- some users still need one direct tap
-- provider delay or failure changes the entry experience
-- live playback cannot be guaranteed by repository tests
+## Active risks and safeguards
 
-Suggested fix:
+### P1: Production domain and CDN need a first recorded smoke result
 
-- add mocked iframe-controller lifecycle tests
-- preserve the direct-play fallback
-- keep product copy honest
+Local browser suites use a local static server. PR #67 adds a daily and manual `Personal OS Production Smoke` workflow for `db.cmxchat.com`.
 
-### P1: Accessibility coverage is incomplete
+The workflow checks:
 
-Keyboard tabs and reset focus are now covered, but the interface has not received a complete audit.
+- deployed route status and redirects
+- first-response light mode and noindex policy
+- Brief and staging parity
+- local asset reachability and cache versions
+- reciprocal links
+- ungated Doc markup and route policy
+- visible demo and planned-product boundaries
 
-Missing coverage includes:
+Residual risk:
 
-- screen-reader reading order
-- heading and landmark review
-- zoom and text reflow
-- forced colors
-- reduced motion
-- touch target review on real devices
-- structured automated accessibility scanning
+- the first live-domain workflow result is still pending
+- production response headers and real-device behavior need continued observation
 
-### P2: Legacy Brief modules remain in the repository
+### P1: Cache versions must move with active asset changes
 
-The current route uses `brief-demo-*`, while many modules from the previous implementation remain under `assets/brief/` with historical tests and workflows.
+PR #67 adds differential enforcement. A modified active Brief JavaScript or CSS file must receive a new version query in the route HTML.
 
-Impact:
+Residual risk:
 
-- future agents can edit the wrong system
-- duplicate concepts increase maintenance cost
-- old workflows can fail for reasons unrelated to production
-- deletion without analysis could remove a still-used dependency
+- existing same-version deployments are not retroactively repaired by the safeguard
+- production propagation still needs the deployed-domain smoke check
 
-Suggested fix:
+### P1: `/brief/` and `/brief-next/` parity is now enforced
 
-- generate a dependency inventory from route HTML, imports, tests, workflows, and docs
-- classify each old module as active, retained library, historical reference, or removable
-- clean up in a dedicated PR
+PR #67 compares the two HTML files byte for byte and verifies their active asset references.
 
-### P2: Validation ownership is distributed
+Residual risk:
 
-There are multiple workflows, smoke files, browser configurations, and historical standards.
+- a future intentional staging difference needs an explicit documented exception instead of silently disabling the guard
 
-Impact:
+### P1: Spotify remains externally constrained
 
-- no single release signal
-- new checks can target retired selectors
-- a green subset can be mistaken for full validation
+The implementation and mocked lifecycle suite can validate application behavior. They cannot override browser autoplay policy, provider availability, or account requirements.
 
-Suggested fix:
+Residual risk:
 
-- define one release workflow or required-check set for `/brief`, `/brief-next`, `/doc`, privacy, accessibility interactions, and route policy
+- some users still need one direct Spotify tap
+- live provider behavior needs production observation
+- copy must continue to describe this limitation honestly
 
-### P2: Documentation can become stale without detection
+### P1: Accessibility coverage now exposes known failures
 
-The previous handoff remained authoritative-looking after the architecture changed.
+PR #67 adds automated desktop and mobile axe coverage and a strict weekly audit. Accessibility remains advisory in the pull-request release gate while another context is actively changing the interface.
 
-Impact:
+Still required:
 
-- future work can restore obsolete code
-- closed PRs can be treated as active dependencies
-- historical failures can be mistaken for current defects
+- fix the recorded ARIA and contrast findings
+- run screen-reader reading-order review
+- test 200% and 400% zoom
+- test forced colors
+- test reduced motion
+- review touch targets on real devices
+- verify focus behavior across every view and drawer
+- review the external Spotify iframe with assistive technology
 
-Suggested fix:
+### P2: Legacy Brief modules require a deletion decision
 
-- add freshness checks for verified SHAs, route paths, source files, selectors, and PR-state claims
+The generated inventory found:
 
-### P2: Static demo can be mistaken for a live Personal OS
+- 68 JavaScript and CSS files under `assets/brief/`
+- 9 active direct `brief-demo-*` entries
+- 59 unreferenced legacy candidates
+- no empty placeholders
 
-The interface intentionally looks private and connected, but the data is fictional and repository-driven.
+The inventory is a classification aid, not deletion approval.
 
-Impact:
+Required next step:
 
-- visitors can overestimate current capabilities
-- future copy can imply real accounts, memory, permissions, or integrations
+- search every candidate across route HTML, tests, workflows, docs, and Git history
+- classify each as retained library, historical reference, or removable
+- perform cleanup in a dedicated PR after the active Brief work stabilizes
 
-Suggested fix:
+### P2: Validation now has one surrounding release gate
 
-- retain visible fictional-data labels
-- separate Demonstrated and Planned sections
-- avoid claiming live connector or backend behavior until it exists
+PR #67 adds a unified `Personal OS Release Gate` for contracts, docs freshness, inventory, Spotify lifecycle, and advisory accessibility.
+
+Residual decision:
+
+- choose which GitHub checks become required in branch protection
+- decide when accessibility moves from advisory to required
+
+### P2: Documentation freshness is now checked
+
+PR #67 blocks known obsolete operational claims, verifies the documented baseline exists, and requires material product changes to update current operational documentation.
+
+Residual risk:
+
+- semantic architecture changes can still require human judgment
+- dated concept files must remain historical instead of being rewritten as current contracts
+
+### P2: Demo versus live-product boundary is now protected
+
+The release contract requires the Brief to remain identified as a demo and the Doc to retain its current-versus-planned status section. It also prevents `/doc/` from regaining client-side password markup unnoticed.
+
+Residual risk:
+
+- new visible copy and data presentation still need human review for implied live functionality
 
 ## External and planned-platform gaps
 
