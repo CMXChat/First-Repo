@@ -29,6 +29,7 @@
   ].join(',');
 
   let gestureState = null;
+  let lastPointerTouchAt = 0;
 
   function installStyles() {
     if (document.querySelector('link[data-brief-section-navigation]')) return;
@@ -187,8 +188,13 @@
     if (deltaX > 0 && views[index - 1]) openView(views[index - 1].id, 'previous');
   }
 
+  function pointerTouchIsRecent() {
+    return performance.now() - lastPointerTouchAt < 700;
+  }
+
   function handlePointerDown(event) {
     if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    lastPointerTouchAt = performance.now();
     beginGesture({
       x: event.clientX,
       y: event.clientY,
@@ -199,27 +205,30 @@
 
   function handlePointerMove(event) {
     if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    lastPointerTouchAt = performance.now();
     moveGesture({ x: event.clientX, y: event.clientY, pointerId: event.pointerId });
   }
 
   function handlePointerUp(event) {
     if (event.pointerType !== 'touch' || !event.isPrimary) return;
+    lastPointerTouchAt = performance.now();
     endGesture({ x: event.clientX, y: event.clientY, pointerId: event.pointerId });
   }
 
   function handleTouchStart(event) {
-    if (event.touches.length !== 1) return;
+    if (pointerTouchIsRecent() || event.touches.length !== 1) return;
     const point = event.touches[0];
     beginGesture({ x: point.clientX, y: point.clientY, target: event.target });
   }
 
   function handleTouchMove(event) {
-    if (event.touches.length !== 1) return;
+    if (pointerTouchIsRecent() || event.touches.length !== 1) return;
     const point = event.touches[0];
     moveGesture({ x: point.clientX, y: point.clientY });
   }
 
   function handleTouchEnd(event) {
+    if (pointerTouchIsRecent()) return;
     if (event.changedTouches.length !== 1) {
       gestureState = null;
       return;
@@ -240,7 +249,6 @@
       main.addEventListener('pointermove', handlePointerMove, { passive: true });
       main.addEventListener('pointerup', handlePointerUp, { passive: true });
       main.addEventListener('pointercancel', () => { gestureState = null; }, { passive: true });
-      return;
     }
 
     main.addEventListener('touchstart', handleTouchStart, { passive: true });
