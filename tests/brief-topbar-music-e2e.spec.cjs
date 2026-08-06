@@ -49,9 +49,10 @@ async function installSpotifyControllerMock(page) {
   });
 }
 
-test('Brief mobile topbar is spaced, focused, and starts the selected soundtrack', async ({ page }) => {
+test('Spaces mobile topbar is spaced, focused, and starts the selected soundtrack', async ({ page }) => {
   await installSpotifyControllerMock(page);
-  await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/spaces\//);
   await page.evaluate(() => {
     localStorage.clear();
     sessionStorage.clear();
