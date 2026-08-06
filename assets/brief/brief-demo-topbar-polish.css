@@ -1,4 +1,4 @@
-/* Focused mobile topbar polish for the Personal OS Brief. */
+/* Focused mobile topbar polish for the Spaces Brief. */
 .doc-topbar-link {
   display: none !important;
 }
@@ -58,6 +58,33 @@ html[data-theme="light"] .hourly-item small {
 
 html[data-theme="light"] .hourly-item time {
   color: #2f4257;
+}
+
+/* Keep the native Space selector readable in both themes and on mobile. */
+.topbar-context select {
+  color-scheme: light;
+}
+
+.topbar-context select option {
+  color: #081426;
+  background-color: #ffffff;
+}
+
+html[data-theme="dark"] .topbar-context {
+  border-color: var(--line-strong);
+  background: #0d1827;
+}
+
+html[data-theme="dark"] .topbar-context select {
+  color: #f7fbff;
+  -webkit-text-fill-color: #f7fbff;
+  background-color: #0d1827;
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .topbar-context select option {
+  color: #f7fbff;
+  background-color: #0d1827;
 }
 
 @media (max-width: 860px) {
