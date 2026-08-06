@@ -204,6 +204,15 @@
     document.head.append(script);
   }
 
+  function loadCopyPolish() {
+    if (document.querySelector('script[data-personal-os-copy-polish]')) return;
+    const script = document.createElement('script');
+    script.src = '/assets/personal-os-copy-polish.js?v=20260806-1';
+    script.async = false;
+    script.dataset.personalOsCopyPolish = 'true';
+    document.head.append(script);
+  }
+
   function init() {
     const section = createSection();
     if (section) {
@@ -240,6 +249,7 @@
 
     installDefaultSoundtrack();
     loadSectionNavigation();
+    loadCopyPolish();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
