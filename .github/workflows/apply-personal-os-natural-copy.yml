@@ -15,11 +15,15 @@ jobs:
   rewrite-copy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 0
+      - name: Check out branch without external actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${HEAD_BRANCH}"
+          git checkout -B "${HEAD_BRANCH}" FETCH_HEAD
 
       - name: Apply audited copy rewrite
         run: python scripts/apply-personal-os-natural-copy.py
