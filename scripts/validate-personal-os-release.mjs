@@ -97,7 +97,12 @@ for (const [surface, html] of [
 
 assert(/<title>[^<]*Demo[^<]*<\/title>/i.test(brief), '`/brief/` title must identify the surface as a demo.');
 assert(/fictional|sample|demonstration|demo records|working demo/i.test(brief), '`/brief/` must visibly distinguish demonstration data from a live connected product.');
-assert(/What works now and what still needs building/i.test(doc), '`/doc/` must preserve the current-versus-planned product boundary.');
+assert(
+  /id=["']status["']/i.test(doc) &&
+  /Current reality/i.test(doc) &&
+  /separates what exists from what has been designed or planned/i.test(doc),
+  '`/doc/` must preserve the current-versus-planned product boundary.'
+);
 assert(/href=["']\/doc\/["']/i.test(brief), '`/brief/` must retain a product overview link.');
 assert(/href=["']\/brief\/["']/i.test(doc), '`/doc/` must retain a demo link.');
 assert(!/cmx-gate-black-prompt|data-cmx-gate|type=["']password["']/i.test(doc), '`/doc/` contains password-gate markup or assets.');
