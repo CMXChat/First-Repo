@@ -333,3 +333,59 @@ iframe {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Keep the opening card focused on the briefing and make the continuation obvious. */
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+  color: var(--blue-deep);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.hero-actions > * {
+  display: none !important;
+}
+
+.hero-actions::before {
+  content: 'Scroll through today';
+}
+
+.hero-actions::after {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: var(--blue-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: 0 7px 18px rgba(31, 67, 100, 0.08);
+  content: '↓';
+  font-size: 0.95rem;
+  animation: brief-scroll-cue 1.8s ease-in-out infinite;
+}
+
+@keyframes brief-scroll-cue {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+@media (max-width: 620px) {
+  .hero-actions {
+    display: flex;
+    margin-top: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-actions::after {
+    animation: none;
+  }
+}
