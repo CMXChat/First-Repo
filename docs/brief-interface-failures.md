@@ -67,15 +67,13 @@ The overview retains its repaired diagram colors and mobile containment. It rema
 
 ## Active risks and safeguards
 
-### GitHub Actions did not start for the app-authored pull request
+### GitHub Actions validation path
 
-The current pull request has no workflow runs or commit statuses at the time of this reconciliation. This is unknown verification status. Historical PR #68 failures and earlier green checks cannot prove the current branch.
+App-authored pull-request events did not start the normal workflow set, so historical PR #68 results could not prove this branch. A temporary default-branch validator now checks out the exact PR branch and runs the static contracts, documentation freshness, asset inventory, full browser matrix, focused desktop and mobile tests, Spotify lifecycle suite, and accessibility audit before merge. The temporary validator and trigger must be removed after final verification.
 
-The branch includes updated workflows and static contracts, but merge still requires a real workflow run or an equivalent reviewed execution of the same commands.
+### `/doc/` routes directly to `/spaces/`
 
-### `/doc/` contains legacy literal demo links
-
-The four current Doc buttons still use `/brief/` in the source HTML. The compatibility route sends those clicks to `/spaces/`, preserves URL state, and provides a no-JavaScript fallback, so user navigation is not broken. A later direct-source cleanup can replace the four attributes when the large document is edited for another substantive reason. The release validator accepts either route during this compatibility period.
+All current Doc demo buttons now use `/spaces/` in the source HTML. `/brief/` remains available only for older bookmarks and external references, with query-string and hash preservation through the compatibility redirect.
 
 ### Production-domain observation
 
