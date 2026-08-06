@@ -11,7 +11,7 @@ const navigationCss = read('assets/brief/brief-demo-section-navigation.css');
 
 assert.doesNotThrow(() => new Function(navigationJs));
 assert.match(explainersJs, /brief-demo-section-navigation\.js\?v=20260805-1/);
-assert.match(explainersJs, /data-brief-section-navigation-loader/);
+assert.match(explainersJs, /briefSectionNavigationLoader/);
 
 assert.match(navigationJs, /const EDGE_GUARD_PX = 32/);
 assert.match(navigationJs, /const MAX_SWIPE_DURATION_MS = 900/);
