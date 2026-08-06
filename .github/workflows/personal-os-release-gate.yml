@@ -1,13 +1,15 @@
-name: Personal OS Release Gate
+name: Spaces Release Gate
 
 on:
   pull_request:
     paths:
+      - 'spaces/**'
       - 'brief/**'
       - 'brief-next/**'
       - 'doc/**'
       - 'assets/brief/**'
       - 'assets/personal-os-doc*'
+      - 'assets/spaces-legacy-redirect.js'
       - 'assets/cmx-routes.json'
       - 'scripts/validate-personal-os-release.mjs'
       - 'scripts/validate-docs-freshness.mjs'
@@ -16,6 +18,7 @@ on:
       - 'tests/personal-os-accessibility*'
       - 'docs/README.md'
       - 'docs/2026-08-05-repository-reconciliation.md'
+      - 'docs/2026-08-06-spaces-route-migration.md'
       - 'docs/brief-recovery-handoff.md'
       - 'docs/cmx-brief-master-context.md'
       - 'docs/brief-interface-validation.md'
@@ -25,7 +28,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: personal-os-release-${{ github.ref }}
+  group: spaces-release-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -43,7 +46,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate route, parity, boundary and cache contracts
+      - name: Validate route, boundary and cache contracts
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: node scripts/validate-personal-os-release.mjs
@@ -73,12 +76,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate and inventory Brief assets
+      - name: Validate and inventory Spaces assets
         run: node scripts/inventory-brief-assets.mjs --out-dir=artifacts/personal-os
-      - name: Upload Brief asset inventory
+      - name: Upload Spaces asset inventory
         uses: actions/upload-artifact@v4
         with:
-          name: brief-asset-inventory
+          name: spaces-asset-inventory
           path: artifacts/personal-os
           retention-days: 14
 
@@ -102,7 +105,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: brief-spotify-lifecycle-artifacts
+          name: spaces-spotify-lifecycle-artifacts
           path: |
             test-results
             playwright-report
@@ -130,7 +133,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: personal-os-accessibility-artifacts
+          name: spaces-accessibility-artifacts
           path: |
             test-results
             playwright-report
