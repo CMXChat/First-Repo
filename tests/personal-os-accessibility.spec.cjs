@@ -18,35 +18,42 @@ async function expectNoSeriousAxeViolations(page, label) {
   expect(blocking, `${label}\n${formatViolations(blocking)}`).toEqual([]);
 }
 
-async function openBrief(page, route = '/brief/') {
+async function openSpaces(page, route = '/spaces/') {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/spaces\//);
   await expect(page.locator('#entry')).toBeVisible();
   await page.locator('[data-entry-scenario="personal"]').click();
   await page.locator('#openDemo').click();
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
 }
 
-test('Brief entry has no serious automated WCAG violations', async ({ page }) => {
-  await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
+test('Spaces entry has no serious automated WCAG violations', async ({ page }) => {
+  await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#entry')).toBeVisible();
-  await expectNoSeriousAxeViolations(page, 'Brief entry');
+  await expectNoSeriousAxeViolations(page, 'Spaces entry');
 });
 
-test('Brief Today and How views have no serious automated WCAG violations', async ({ page }) => {
-  await openBrief(page, '/brief/');
-  await expectNoSeriousAxeViolations(page, 'Brief Today');
+test('Spaces Today and How views have no serious automated WCAG violations', async ({ page }) => {
+  await openSpaces(page);
+  await expectNoSeriousAxeViolations(page, 'Spaces Today');
 
   const desktopHow = page.locator('#primaryNav [data-primary-view="how"]');
   if (await desktopHow.isVisible()) await desktopHow.click();
   else await page.locator('#mobileNav [data-primary-view="how"]').click();
   await expect(page.locator('[data-view-panel="how"]')).toBeVisible();
-  await expectNoSeriousAxeViolations(page, 'Brief How');
+  await expectNoSeriousAxeViolations(page, 'Spaces How');
 });
 
-test('Brief staging entry has no serious automated WCAG violations', async ({ page }) => {
+test('Legacy Brief route redirects to Spaces', async ({ page }) => {
+  await page.goto('/brief/?theme=dark#how', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/spaces\/\?theme=dark#how$/);
+  await expect(page.locator('#entry')).toBeVisible();
+});
+
+test('Brief rollback snapshot entry has no serious automated WCAG violations', async ({ page }) => {
   await page.goto('/brief-next/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#entry')).toBeVisible();
-  await expectNoSeriousAxeViolations(page, 'Brief Next entry');
+  await expectNoSeriousAxeViolations(page, 'Brief Next rollback entry');
 });
 
 test('Spaces document has no serious automated WCAG violations', async ({ page }) => {
