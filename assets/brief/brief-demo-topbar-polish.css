@@ -1,0 +1,112 @@
+/* Focused mobile topbar polish for the Spaces Brief. */
+.doc-topbar-link {
+  display: none !important;
+}
+
+#themeButton {
+  color: #ffffff;
+  border-color: color-mix(in srgb, #65d7ff 72%, #ffffff);
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.34), transparent 38%),
+    linear-gradient(145deg, #138fd8, #005a9f 72%);
+  box-shadow:
+    0 0 0 1px rgba(83, 207, 255, 0.28),
+    0 0 18px rgba(45, 169, 223, 0.55),
+    0 10px 24px rgba(0, 80, 145, 0.3);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.78);
+}
+
+#themeButton:hover,
+#themeButton:focus-visible {
+  color: #ffffff;
+  border-color: #b6ecff;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.42), transparent 40%),
+    linear-gradient(145deg, #24a9ed, #0068b5 72%);
+  box-shadow:
+    0 0 0 2px rgba(101, 215, 255, 0.26),
+    0 0 24px rgba(45, 169, 223, 0.72),
+    0 12px 28px rgba(0, 80, 145, 0.34);
+}
+
+html[data-theme="dark"] #themeButton {
+  color: #07101d;
+  border-color: #a7ecff;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.62), transparent 34%),
+    linear-gradient(145deg, #8ee7ff, #40bde9 68%, #188fca);
+  box-shadow:
+    0 0 0 1px rgba(142, 231, 255, 0.4),
+    0 0 24px rgba(89, 201, 244, 0.72),
+    0 12px 28px rgba(0, 0, 0, 0.34);
+  text-shadow: none;
+}
+
+/* Shared AA contrast repairs for the entry chooser and Today weather components. */
+html[data-theme="light"] .entry-option small {
+  color: #5f7084;
+}
+
+html[data-theme="light"] .muted-pill {
+  color: #66768a;
+}
+
+html[data-theme="light"] .hourly-item,
+html[data-theme="light"] .hourly-item small {
+  color: #596b80;
+}
+
+html[data-theme="light"] .hourly-item time {
+  color: #2f4257;
+}
+
+/* Keep the native Space selector readable in both themes and on mobile. */
+.topbar-context select {
+  color-scheme: light;
+}
+
+.topbar-context select option {
+  color: #081426;
+  background-color: #ffffff;
+}
+
+html[data-theme="dark"] .topbar-context {
+  border-color: var(--line-strong);
+  background: #0d1827;
+}
+
+html[data-theme="dark"] .topbar-context select {
+  color: #f7fbff;
+  -webkit-text-fill-color: #f7fbff;
+  background-color: #0d1827;
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] .topbar-context select option {
+  color: #f7fbff;
+  background-color: #0d1827;
+}
+
+@media (max-width: 860px) {
+  .topbar {
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+
+  .topbar-inner {
+    width: calc(100% - 24px);
+  }
+
+  .topbar-actions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 430px) {
+  .topbar {
+    padding-top: max(9px, env(safe-area-inset-top));
+  }
+
+  .topbar-inner {
+    width: calc(100% - 20px);
+  }
+}

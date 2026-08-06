@@ -200,6 +200,15 @@ html[data-theme="light"] .security-note {
   background: #f7fafd;
 }
 
+/* Keep diagram labels above WCAG AA without making the light theme visually heavy. */
+html[data-theme="light"] .boundary-center > small {
+  color: #617286;
+}
+
+html[data-theme="light"] .memory-index {
+  color: #10253a;
+}
+
 html[data-theme="light"] .final-cta {
   border-top: 1px solid rgba(49, 82, 113, 0.13);
   background:

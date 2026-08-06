@@ -102,7 +102,7 @@
     const host = $('#entryScenarioGrid');
     if (!host) return;
     host.innerHTML = Object.values(data.scenarios).map((item, index) => `
-      <button class="entry-option" type="button" role="listitem" data-entry-scenario="${escapeHtml(item.id)}" aria-pressed="${item.id === state.entrySelection}">
+      <button class="entry-option" type="button" data-entry-scenario="${escapeHtml(item.id)}" aria-pressed="${item.id === state.entrySelection}">
         <span>${String(index + 1).padStart(2, '0')}</span>
         <strong>${escapeHtml(item.label)}</strong>
         <small>${escapeHtml(item.short)}</small>
@@ -151,7 +151,7 @@
     if (!host) return;
     host.innerHTML = item.hourly.map(hour => `
       <article class="hourly-item">
-        <span>${escapeHtml(hour.time)}</span>
+        <time>${escapeHtml(hour.time)}</time>
         <strong>${escapeHtml(hour.temp)}°</strong>
         <small>${escapeHtml(hour.rain)}% rain</small>
       </article>

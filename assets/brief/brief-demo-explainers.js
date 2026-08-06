@@ -4,7 +4,7 @@
   const memoryExamples = {
     continuity: {
       label: 'Continuity',
-      regular: 'A normal chat usually depends on the current conversation. You may need to explain important background again.',
+      regular: 'A normal chat usually depends on the current conversation, so important background may need to be explained again.',
       personal: 'Personal OS can prepare a record of goals, decisions, preferences, corrections, and recent results before the next Brief starts.',
       record: ['Source: user correction', 'Confidence: confirmed', 'Scope: Personal Space', 'Review: available anytime']
     },
@@ -17,7 +17,7 @@
     outcome: {
       label: 'Outcome',
       regular: 'A chat can end after giving advice, with no clear record of what happened next.',
-      personal: 'The result becomes useful evidence. The next plan can respond to what was completed, skipped, changed, or learned.',
+      personal: 'The result becomes useful evidence, allowing the next plan to respond to what was completed, skipped, changed, or learned.',
       record: ['Action: completed', 'Outcome: useful', 'Goal impact: positive', 'Next plan: adjusted']
     },
     preference: {
@@ -81,7 +81,7 @@
       <header class="explainer-heading">
         <div>
           <p class="eyebrow">THE MAIN DIFFERENCE</p>
-          <h2>Memory and Spaces give AI clear limits and useful history.</h2>
+          <h2>Memory and Spaces give AI useful context without removing clear limits</h2>
         </div>
         <p>These examples show how Personal OS can keep context, accept corrections, share selected records, and prepare useful work.</p>
       </header>
@@ -117,7 +117,7 @@
       <aside class="privacy-callout">
         <span>PRIVATE FIRST</span>
         <strong>Every memory and connection needs a purpose, a Space, an access level, and a clear off switch.</strong>
-        <p>Important actions stay visible and need confirmation. This demo shows the rules. Real protection belongs behind secure sign-in and server permissions.</p>
+        <p>Important actions remain visible and require confirmation, while the demo explains the rules and leaves real protection to secure sign-in and server-side permissions.</p>
       </aside>`;
 
     boundary.insertAdjacentElement('beforebegin', section);

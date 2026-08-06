@@ -9,13 +9,14 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://open.spotify.com; style-src 'self'; img-src 'self' data:; frame-src https://open.spotify.com; media-src https:; connect-src https://open.spotify.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
-  <title>Personal OS Briefing Demo</title>
-  <meta name="description" content="A working demo of a private daily briefing built around goals, Spaces, approved connections, and clear permissions." />
+  <title>Spaces Brief Demo</title>
+  <meta name="description" content="A working demo of Spaces, showing how one context can bring together a Brief, memory, goals, connected information, permissions, and next steps." />
   <link rel="canonical" href="https://db.cmxchat.com/brief/" />
   <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260805-2" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260805-2" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260805-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260805-1" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260806-3" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260806-3" />
 </head>
 <body data-entered="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -23,26 +24,26 @@
   <section class="entry" id="entry" aria-labelledby="entryTitle">
     <div class="entry-backdrop" aria-hidden="true"></div>
     <div class="entry-card">
-      <div class="entry-mark" aria-hidden="true">OS</div>
-      <p class="eyebrow">PERSONAL OS DEMO</p>
-      <h1 id="entryTitle">Choose a briefing to explore.</h1>
-      <p class="entry-copy">The layout stays familiar. The people, permissions, priorities, numbers, Spaces, and next steps change with your choice.</p>
+      <div class="entry-mark" aria-hidden="true">SP</div>
+      <p class="eyebrow">SPACES DEMO</p>
+      <h1 id="entryTitle">Choose the Space you want to open</h1>
+      <p class="entry-copy">Each Space changes the people, permissions, priorities, records, and next steps while the product stays familiar.</p>
 
-      <div class="entry-grid" id="entryScenarioGrid" role="list" aria-label="Demo contexts"></div>
+      <div class="entry-grid" id="entryScenarioGrid" role="group" aria-label="Demo Spaces"></div>
 
       <label class="soundtrack-choice">
         <input id="entrySoundtrack" type="checkbox" checked />
         <span>
           <strong>Play the soundtrack when the demo opens</strong>
-          <small>The final Open demo tap asks Spotify to play. Some devices may still ask you to tap Spotify once.</small>
+          <small>Opening the demo asks Spotify to play, though some devices may still require one tap inside Spotify.</small>
         </span>
       </label>
 
       <div class="entry-actions">
-        <button class="primary-button entry-open" id="openDemo" type="button" disabled>Choose a context first</button>
+        <button class="primary-button entry-open" id="openDemo" type="button" disabled>Choose a Space first</button>
         <a class="secondary-button doc-entry-link" href="/doc/">Read product overview <span aria-hidden="true">↗</span></a>
       </div>
-      <p class="entry-note">All private-looking records are fictional and labeled. Real private data would need secure sign-in and permissions.</p>
+      <p class="entry-note">The private-looking records are fictional and clearly labeled because real private data would require secure sign-in and permission controls.</p>
     </div>
   </section>
 
@@ -50,18 +51,17 @@
     <header class="topbar">
       <div class="topbar-inner">
         <button class="identity" id="homeButton" type="button" aria-label="Open today view">
-          <span class="identity-mark" aria-hidden="true">OS</span>
-          <span class="identity-copy"><strong>Personal OS</strong><small>Daily briefing demo</small></span>
+          <span class="identity-mark" aria-hidden="true">SP</span>
+          <span class="identity-copy"><strong>Spaces</strong><small>Context-driven briefing demo</small></span>
         </button>
 
         <div class="topbar-context">
           <label for="scenarioSelect">Space</label>
-          <select id="scenarioSelect" aria-label="Switch demonstration context"></select>
+          <select id="scenarioSelect" aria-label="Switch Space"></select>
         </div>
 
         <div class="topbar-actions">
           <span class="today-label" id="todayLabel"></span>
-          <a class="doc-topbar-link" href="/doc/" aria-label="Read the Personal OS product overview"><span class="doc-link-label">Read overview</span><span aria-hidden="true">↗</span></a>
           <button class="round-button" id="mediaButton" type="button" aria-label="Open soundtrack" aria-expanded="false">♪</button>
           <button class="round-button" id="themeButton" type="button" aria-label="Switch to dark theme" aria-pressed="false">◐</button>
         </div>
@@ -80,7 +80,7 @@
           <strong id="railContextTitle">Personal</strong>
           <p id="railContextCopy">One person, one useful day</p>
         </div>
-        <button class="rail-reset" id="resetDemo" type="button">Choose another demo</button>
+        <button class="rail-reset" id="resetDemo" type="button">Choose another Space</button>
       </aside>
 
       <main id="demoMain" tabindex="-1">
@@ -158,7 +158,7 @@
 
         <section class="view-panel" data-view-panel="workspace" aria-labelledby="workspaceTitle" hidden>
           <header class="view-heading">
-            <div><p class="eyebrow">MORE DETAIL</p><h1 id="workspaceTitle">Open one part of the briefing at a time.</h1></div>
+            <div><p class="eyebrow">MORE DETAIL</p><h1 id="workspaceTitle">Open the part of this Space you need</h1></div>
             <p>Each example has its own categories and records, while the app stays familiar.</p>
           </header>
           <nav class="workspace-tabs" id="workspaceTabs" role="tablist" aria-label="Workspace categories"></nav>
@@ -167,7 +167,7 @@
 
         <section class="view-panel" data-view-panel="spaces" aria-labelledby="spacesTitle" hidden>
           <header class="view-heading">
-            <div><p class="eyebrow">CLEAR BOUNDARIES</p><h1 id="spacesTitle">Private profiles and approved shared Spaces.</h1></div>
+            <div><p class="eyebrow">CLEAR BOUNDARIES</p><h1 id="spacesTitle">Keep private profiles separate and share only what belongs in the Space</h1></div>
             <p>People can share selected records without opening every private detail.</p>
           </header>
           <div class="space-overview">
@@ -193,8 +193,8 @@
 
         <section class="view-panel" data-view-panel="how" aria-labelledby="howTitle" hidden>
           <header class="view-heading">
-            <div><p class="eyebrow">HOW IT WORKS</p><h1 id="howTitle">The Brief is what you see. Personal OS keeps the context behind it.</h1></div>
-            <p>Goals show direction. Spaces set boundaries. Connections bring in approved data. Memory keeps useful history. Automations handle repeat work.</p>
+            <div><p class="eyebrow">HOW IT WORKS</p><h1 id="howTitle">The Brief shows what matters now, and the Space keeps the context behind it</h1></div>
+            <p>Goals provide direction, each Space sets the boundary, approved connections bring in data, memory keeps useful history, and automations handle repeat work.</p>
           </header>
 
           <div class="foundation-map">
@@ -206,13 +206,13 @@
           </div>
 
           <div class="how-grid">
-            <article><span>Understand</span><h2>Put the useful information in one clear view.</h2><p>Extra sections stay hidden until they affect timing, risk, ownership, or the next step.</p></article>
-            <article><span>Choose</span><h2>Use goals and plans to decide what needs attention.</h2><p>The same app can support personal, relationship, business, training, and team briefings.</p></article>
-            <article><span>Act</span><h2>Turn the Brief into approved work.</h2><p>Secure access, permission checks, and confirmations sit behind the interface.</p></article>
+            <article><span>Understand</span><h2>Bring the useful information into one clear view</h2><p>Extra sections stay hidden until they affect timing, risk, ownership, or the next step.</p></article>
+            <article><span>Choose</span><h2>Use goals and plans to decide what deserves attention</h2><p>The same app can support personal, relationship, business, training, and team briefings.</p></article>
+            <article><span>Act</span><h2>Prepare useful work and keep important actions behind approval</h2><p>Secure access, permission checks, and confirmations sit behind the interface.</p></article>
           </div>
 
           <section class="boundary-card">
-            <div><p class="eyebrow">WHAT THIS DEMO USES</p><h2>Public data can be live. Private-looking records stay fictional until secure connections exist.</h2></div>
+            <div><p class="eyebrow">WHAT THIS DEMO USES</p><h2>Public data can be live, but private-looking records stay fictional until secure connections are available.</h2></div>
             <ul>
               <li><strong>Public:</strong> weather, news, and market information can come from sourced public services.</li>
               <li><strong>Fictional:</strong> messages, finances, health records, and company records in this demo.</li>
@@ -221,10 +221,10 @@
             </ul>
           </section>
 
-          <section class="doc-cta-card" aria-label="Read the full Personal OS product overview">
+          <section class="doc-cta-card" aria-label="Read the full Spaces product overview">
             <div>
               <p class="eyebrow">FULL PRODUCT OVERVIEW</p>
-              <h2>See how the full product works.</h2>
+              <h2>Read the full Spaces product overview</h2>
               <p>Read about Spaces, memory, goals, permissions, model choice, security, and the planned backend.</p>
             </div>
             <a class="primary-button doc-cta-button" href="/doc/">Read the full overview <span aria-hidden="true">↗</span></a>
@@ -233,8 +233,8 @@
 
         <section class="view-panel" data-view-panel="everything" aria-labelledby="everythingTitle" hidden>
           <header class="view-heading full-view-heading">
-            <div><p class="eyebrow">FULL VIEW</p><h1 id="everythingTitle">The full briefing in one page.</h1></div>
-            <p>The focused views are faster. This page keeps every section together for a longer review.</p>
+            <div><p class="eyebrow">FULL VIEW</p><h1 id="everythingTitle">Review the complete briefing on one page</h1></div>
+            <p>Focused views are faster, but this page keeps every section together for a longer review.</p>
           </header>
           <nav class="everything-jump-nav" id="everythingJumpNav" aria-label="Jump through the full briefing"></nav>
           <div class="everything-content" id="everythingContent"></div>
@@ -259,16 +259,17 @@
         <button class="primary-button media-play" id="previewButton" type="button" disabled>Loading Spotify player</button>
         <p class="media-status" id="mediaStatus">Preparing Spotify before the demo opens.</p>
         <div id="spotifyFrame" aria-label="Spotify provider player"></div>
-        <p class="provider-note">The Open demo tap asks Spotify to play. Some browsers, devices, or Spotify accounts may still require one direct tap.</p>
+        <p class="provider-note">Opening the demo asks Spotify to play, though some browsers, devices, or Spotify accounts may still require one direct tap.</p>
       </section>
     </aside>
   </div>
 
   <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
-  <script src="/assets/brief/brief-demo-data.js?v=20260805-2" defer></script>
-  <script src="/assets/brief/brief-demo-experience.js?v=20260805-3" defer></script>
-  <script src="/assets/brief/brief-demo-media.js?v=20260805-4" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260805-3" defer></script>
-  <script src="/assets/brief/brief-demo-explainers.js?v=20260805-3" defer></script>
+  <script src="/assets/brief/brief-demo-data.js?v=20260806-2" defer></script>
+  <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
+  <script src="/assets/brief/brief-demo-experience.js?v=20260806-2" defer></script>
+  <script src="/assets/brief/brief-demo-media.js?v=20260806-2" defer></script>
+  <script src="/assets/brief/brief-demo-app.js?v=20260806-1" defer></script>
+  <script src="/assets/brief/brief-demo-explainers.js?v=20260806-2" defer></script>
 </body>
 </html>

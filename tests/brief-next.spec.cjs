@@ -83,6 +83,7 @@ test('desktop demo keeps weather, stats, navigation and opt-in soundtrack playba
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
   await openScenario(page, 'personal');
 
+  await expect(page.locator('.identity-copy strong')).toHaveText('Spaces');
   await expect(page.locator('#primaryNav button')).toHaveCount(5);
   await expect(page.locator('#primaryNav button').last()).toHaveText('Everything');
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
@@ -138,11 +139,11 @@ test('Everything keeps a full view with clear interlinking and plain copy', asyn
   await expect(page.locator('.full-workspace-group')).toHaveCount(5);
   await expect(page.locator('.component-choice-grid article')).toHaveCount(6);
   await expect(page.locator('.alarm-flow article')).toHaveCount(4);
-  await expect(page.locator('#all-adaptive')).toContainText('Personal OS checks the approved information');
-  await expect(page.locator('#all-adaptive')).toContainText('The layout can adapt and still feel familiar');
+  await expect(page.locator('#all-adaptive')).toContainText('Spaces checks the approved information');
+  await expect(page.locator('#all-adaptive')).toContainText('The layout can adapt without becoming confusing');
   await expect(page.locator('#all-alarm')).toContainText('approved music from Spotify');
   await expect(page.locator('#all-alarm')).toContainText('short overview');
-  await expect(page.locator('#all-privacy')).toContainText('More information should come with more control');
+  await expect(page.locator('#all-privacy')).toContainText('More information requires more control');
 
   await page.locator('[data-full-workspace-tab="plans"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
@@ -248,6 +249,25 @@ test('light default, saved dark preference and reset remain reversible', async (
   await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
+
+  const selectorStyles = await page.locator('#scenarioSelect').evaluate((select) => {
+    const selectStyle = getComputedStyle(select);
+    const optionStyle = getComputedStyle(select.options[0]);
+    return {
+      color: selectStyle.color,
+      backgroundColor: selectStyle.backgroundColor,
+      colorScheme: selectStyle.colorScheme,
+      optionColor: optionStyle.color,
+      optionBackgroundColor: optionStyle.backgroundColor
+    };
+  });
+  expect(selectorStyles.colorScheme).toContain('dark');
+  expect(selectorStyles.color).not.toBe('rgba(0, 0, 0, 0)');
+  expect(selectorStyles.backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
+  expect(selectorStyles.optionColor).not.toBe('rgba(0, 0, 0, 0)');
+  expect(selectorStyles.optionBackgroundColor).not.toBe('rgba(0, 0, 0, 0)');
+  await page.locator('#scenarioSelect').selectOption('team');
+  await expect(page.locator('#railContextTitle')).toHaveText('Team and project');
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
