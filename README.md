@@ -114,3 +114,5 @@ This project is also intended to provide practical experience with:
 - Cloudflare Access and Tunnel
 - Logging, monitoring, backups, and rollback
 - AI tools, MCP connectors, and safe automation
+
+<!-- GitHub Pages deployment trigger: 2026-08-06T15:04:00-04:00 -->
