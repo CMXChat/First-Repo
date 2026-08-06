@@ -10,6 +10,7 @@ on:
       - 'assets/cmx-routes.json'
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-next-smoke.test.js'
+      - 'tests/brief-section-navigation-smoke.test.js'
       - '.github/workflows/brief-device-smoke.yml'
   pull_request:
     paths:
@@ -19,6 +20,7 @@ on:
       - 'assets/cmx-routes.json'
       - 'tests/brief-device-smoke.test.js'
       - 'tests/brief-next-smoke.test.js'
+      - 'tests/brief-section-navigation-smoke.test.js'
       - '.github/workflows/brief-device-smoke.yml'
 
 permissions:
@@ -42,3 +44,6 @@ jobs:
 
       - name: Run current Brief interface smoke test
         run: node tests/brief-next-smoke.test.js
+
+      - name: Run Brief section navigation smoke test
+        run: node tests/brief-section-navigation-smoke.test.js

@@ -8,6 +8,7 @@ on:
       - 'assets/brief/**'
       - 'assets/cmx-routes.json'
       - 'tests/brief-next*'
+      - 'tests/brief-section-navigation-smoke.test.js'
       - '.github/workflows/brief-next-validation.yml'
   workflow_dispatch:
 
@@ -29,7 +30,9 @@ jobs:
         with:
           node-version: 22
       - name: Run Brief static smoke test
-        run: node tests/brief-next-smoke.test.js
+        run: |
+          node tests/brief-next-smoke.test.js
+          node tests/brief-section-navigation-smoke.test.js
 
   browser-smoke:
     runs-on: ubuntu-24.04

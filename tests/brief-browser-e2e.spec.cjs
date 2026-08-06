@@ -58,12 +58,38 @@ async function selectPrimaryView(page, view) {
   await page.locator(`#mobileNav [data-primary-view="${view}"]`).click();
 }
 
+async function dispatchSwipe(page, selector, { startX, startY = 360, endX, endY = startY }) {
+  await page.locator(selector).evaluate((target, points) => {
+    const emit = (type, x, y, active) => {
+      const touch = {
+        identifier: 1,
+        target,
+        clientX: x,
+        clientY: y,
+        pageX: x,
+        pageY: y,
+        screenX: x,
+        screenY: y
+      };
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      Object.defineProperty(event, 'touches', { value: active ? [touch] : [] });
+      Object.defineProperty(event, 'changedTouches', { value: [touch] });
+      target.dispatchEvent(event);
+    };
+
+    emit('touchstart', points.startX, points.startY, true);
+    emit('touchmove', points.endX, points.endY, true);
+    emit('touchend', points.endX, points.endY, false);
+  }, { startX, startY, endX, endY });
+}
+
 test('current Brief opens in light mode and remains usable across devices', async ({ page }) => {
   await openCurrentBrief(page);
   await enterScenario(page, 'personal');
   await expect(page.locator('#weatherTemperature')).toHaveText('82');
   await expect(page.locator('#primaryNav button')).toHaveCount(5);
   await expect(page.locator('#mobileNav button')).toHaveCount(5);
+  await expect(page.locator('.section-pager')).toHaveCount(5);
   await expectNoHorizontalOverflow(page);
   await expectPlainVisibleCopy(page);
 
@@ -94,7 +120,7 @@ test('every briefing entry and context switch starts on Today', async ({ page })
 
   await selectPrimaryView(page, 'how');
   await expect(page.locator('[data-view-panel="how"]')).toBeVisible();
-  await page.locator('#resetDemo').click();
+  await page.locator('#resetDemo').evaluate(button => button.click());
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
   expect(new URL(page.url()).searchParams.has('view')).toBe(false);
 
@@ -111,6 +137,55 @@ test('every briefing entry and context switch starts on Today', async ({ page })
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect(page).toHaveURL(/scenario=business/);
   await expect(page).toHaveURL(/view=today/);
+});
+
+test('section pagers and guarded swipes move between views on mobile', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-android', 'Touch navigation is validated in the Android project.');
+  await openCurrentBrief(page);
+  await enterScenario(page, 'trainer');
+
+  await expect(page.locator('.section-pager')).toHaveCount(5);
+  const todayPager = page.locator('[data-view-panel="today"] .section-pager');
+  await expect(todayPager.locator('[data-section-view]')).toHaveCount(1);
+  await expect(todayPager.locator('[data-section-view="workspace"]')).toContainText('Workspace');
+  await expect(todayPager.locator('.section-swipe-hint')).toBeVisible();
+
+  await todayPager.locator('[data-section-view="workspace"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'workspace');
+  await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
+
+  const workspacePager = page.locator('[data-view-panel="workspace"] .section-pager');
+  await expect(workspacePager.locator('[data-section-view]')).toHaveCount(2);
+  await workspacePager.locator('[data-section-view="spaces"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'spaces');
+
+  const spacesPager = page.locator('[data-view-panel="spaces"] .section-pager');
+  await spacesPager.locator('[data-section-view="workspace"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'workspace');
+  await workspacePager.locator('[data-section-view="today"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'today');
+
+  await dispatchSwipe(page, '#demoMain', { startX: 320, endX: 90 });
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'workspace');
+  await dispatchSwipe(page, '#demoMain', { startX: 80, endX: 310 });
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'today');
+
+  await dispatchSwipe(page, '#demoMain', { startX: 10, endX: 280 });
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'today');
+
+  await selectPrimaryView(page, 'how');
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'how');
+  await dispatchSwipe(page, '#memoryExampleTabs', { startX: 320, startY: 120, endX: 80, endY: 120 });
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'how');
+
+  await dispatchSwipe(page, '#demoMain', { startX: 320, endX: 80 });
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'everything');
+  await dispatchSwipe(page, '#demoMain', { startX: 320, endX: 80 });
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'everything');
+
+  await page.locator('[data-view-panel="everything"] [data-section-view="today"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'today');
+  await expectNoHorizontalOverflow(page);
 });
 
 test('mobile How view remains contained and uses compact foundation cards', async ({ page }) => {

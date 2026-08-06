@@ -1,0 +1,188 @@
+/* Section-to-section navigation for the Brief. */
+.full-end-nav {
+  display: none !important;
+}
+
+.section-pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 4px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+.section-pager.is-first {
+  grid-template-columns: minmax(0, 420px);
+  justify-content: end;
+}
+
+.section-pager-button {
+  display: flex;
+  min-width: 0;
+  min-height: 78px;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 16px;
+  color: var(--ink-strong);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface-soft);
+  cursor: pointer;
+  text-align: left;
+  touch-action: manipulation;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.section-pager-button.is-next {
+  justify-content: flex-end;
+  text-align: right;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 70%, var(--surface)), var(--surface));
+}
+
+.section-pager-button.is-restart {
+  justify-content: flex-start;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 46%, var(--surface)), var(--surface));
+}
+
+.section-pager-button:hover,
+.section-pager-button:focus-visible {
+  border-color: color-mix(in srgb, var(--blue) 62%, var(--line));
+  background: var(--blue-soft);
+  box-shadow: 0 12px 30px rgba(31, 67, 100, 0.1);
+  transform: translateY(-1px);
+}
+
+.section-pager-copy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.section-pager-copy small {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.section-pager-copy strong {
+  overflow-wrap: anywhere;
+  font-size: 0.98rem;
+  line-height: 1.2;
+}
+
+.section-pager-arrow {
+  display: grid;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: var(--blue-deep);
+  border: 1px solid color-mix(in srgb, var(--blue) 30%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.section-swipe-hint {
+  display: none;
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
+#demoMain[data-section-direction="next"] .view-panel.is-active {
+  animation: brief-section-next 230ms ease both;
+}
+
+#demoMain[data-section-direction="previous"] .view-panel.is-active {
+  animation: brief-section-previous 230ms ease both;
+}
+
+@keyframes brief-section-next {
+  from {
+    opacity: 0.35;
+    transform: translateX(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes brief-section-previous {
+  from {
+    opacity: 0.35;
+    transform: translateX(-22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 860px) {
+  .section-pager {
+    margin-top: 16px;
+    margin-bottom: 18px;
+    padding: 12px;
+  }
+
+  .section-pager-button {
+    min-height: 74px;
+    padding: 12px 13px;
+  }
+
+  .section-swipe-hint {
+    display: block;
+  }
+}
+
+@media (max-width: 430px) {
+  .section-pager {
+    gap: 8px;
+    padding: 9px;
+    border-radius: 20px;
+  }
+
+  .section-pager-button {
+    min-height: 70px;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 15px;
+  }
+
+  .section-pager-copy small {
+    font-size: 0.56rem;
+    letter-spacing: 0.06em;
+  }
+
+  .section-pager-copy strong {
+    font-size: 0.84rem;
+  }
+
+  .section-pager-arrow {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #demoMain[data-section-direction] .view-panel.is-active,
+  .section-pager-button {
+    animation: none;
+    transition: none;
+  }
+}

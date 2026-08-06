@@ -195,6 +195,15 @@
     });
   }
 
+  function loadSectionNavigation() {
+    if (document.querySelector('script[data-brief-section-navigation-loader]')) return;
+    const script = document.createElement('script');
+    script.src = '/assets/brief/brief-demo-section-navigation.js?v=20260805-1';
+    script.async = false;
+    script.dataset.briefSectionNavigationLoader = 'true';
+    document.head.append(script);
+  }
+
   function init() {
     const section = createSection();
     if (section) {
@@ -230,6 +239,7 @@
     }
 
     installDefaultSoundtrack();
+    loadSectionNavigation();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
