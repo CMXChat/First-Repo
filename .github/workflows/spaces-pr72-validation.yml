@@ -1,0 +1,79 @@
+name: Spaces PR 72 Validation
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  validate:
+    if: github.event.issue.pull_request && github.event.issue.number == 72 && github.event.comment.body == '/validate-spaces-pr72'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out Spaces branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/spaces-route-migration
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run static route and interface checks
+        run: |
+          node tests/brief-device-smoke.test.js
+          node tests/brief-next-smoke.test.js
+          node tests/brief-section-navigation-smoke.test.js
+          BASE_SHA="$(git merge-base origin/main HEAD)" node scripts/validate-personal-os-release.mjs
+          BASE_SHA="$(git merge-base origin/main HEAD)" node scripts/validate-docs-freshness.mjs
+          node scripts/inventory-brief-assets.mjs --out-dir=artifacts/spaces
+
+      - name: Install Playwright and axe
+        run: npm install --no-save @playwright/test@1.55.0 @axe-core/playwright@4.10.2
+
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run browser matrix
+        run: npx playwright test --config=tests/playwright.config.cjs
+
+      - name: Run focused Spaces browser validation
+        run: npx playwright test --config=tests/brief-next.playwright.config.cjs
+
+      - name: Run Spotify lifecycle validation
+        run: npx playwright test --config=tests/brief-spotify-lifecycle.playwright.config.cjs
+
+      - name: Run accessibility validation
+        run: npx playwright test --config=tests/personal-os-accessibility.playwright.config.cjs
+
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spaces-pr72-validation
+          path: |
+            artifacts/spaces
+            test-results
+            playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Report result to PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            gh pr comment 72 --body "✅ Full Spaces validation passed: static contracts, documentation freshness, asset inventory, browser matrix, focused desktop/mobile tests, Spotify lifecycle, and accessibility. Run: $RUN_URL"
+          else
+            gh pr comment 72 --body "❌ Full Spaces validation failed. Review the job logs and artifacts before merging. Run: $RUN_URL"
+          fi
