@@ -4,7 +4,7 @@
 
 ## Current state
 
-The site is currently static. Existing pages run in the browser and no Python backend, database, AI service, MCP server, worker queue, or production automation is active.
+The site is currently static. Existing pages run in the browser and no Python backend, database, AI service, MCP server, worker queue, authenticated connector layer, or production automation is active.
 
 The current repository includes:
 
@@ -15,6 +15,16 @@ The current repository includes:
 - A custom 404 page
 - Static privacy and secret checks
 - Build, backend, AI, architecture, and update planning pages
+- The public noindex Spaces product demo and product overview
+
+## Spaces product routes
+
+- `/spaces/` is the canonical public noindex Spaces demo.
+- `/doc/` is the public noindex Spaces product overview and current-versus-planned reference.
+- `/brief/` is a legacy compatibility route that redirects old links and bookmarks to `/spaces/`.
+- `/brief-next/` is the pre-migration rollback snapshot and does not define the active product surface.
+
+The Brief is the focused daily experience inside a Space. Shared calendars, adaptive alarms, and voice remain planned capabilities with explicit permission, privacy, and user-control requirements. The static demo does not prove that those backend capabilities exist.
 
 ## Main planning pages
 
@@ -94,9 +104,12 @@ Each assistant must have a defined purpose, audience, context scope, tool allowl
 - Use feature branches for meaningful changes.
 - Keep `main` reviewable and production-oriented.
 - Validate route registry changes.
+- Run the Spaces route, browser, accessibility, Spotify, cache, inventory, and documentation safeguards before merge.
+- Do not treat an empty GitHub Actions check list as a successful release.
 - Do not commit credentials, tokens, private keys, or production configuration.
 - Do not add arbitrary URL fetchers, command execution, or browser-stored sensitive data.
 - Preserve existing active routes during backend migration unless a removal is explicitly approved.
+- Keep `/brief/` available as a compatibility redirect while external references may still use it.
 - Update `/updates/` when the platform direction, page responsibilities, or implementation state changes.
 
 ## Learning purpose
