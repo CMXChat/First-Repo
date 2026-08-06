@@ -143,7 +143,7 @@ assert.match(mediaJs, /function playPendingEntryRequest\(/);
 assert.match(mediaJs, /function enableSoundtrackForScenarioChoice\(/);
 assert.match(mediaJs, /document\.addEventListener\('pointerdown'/);
 assert.match(mediaJs, /button\.disabled = false/);
-assert.match(mediaJs, /The Brief opened while Spotify continues preparing in the background/);
+assert.match(mediaJs, /Spaces opened while Spotify continues preparing in the background/);
 assert.match(mediaJs, /function setDrawerInert\(/);
 assert.match(mediaJs, /drawer\.inert = isInert/);
 assert.match(mediaJs, /Prepare Spotify while the entry screen is visible/);
