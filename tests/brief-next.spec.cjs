@@ -53,6 +53,7 @@ async function openScenario(page, id) {
   await page.locator('#openDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('#demoApp')).toHaveAttribute('aria-hidden', 'false');
+  await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
 
   const playback = await page.evaluate(scenarioId => ({
@@ -104,6 +105,7 @@ test('desktop demo keeps weather, stats, navigation and opt-in soundtrack playba
 
   await page.locator('#scenarioSelect').selectOption('team');
   await expect(page.locator('#railContextTitle')).toHaveText('Team and project');
+  await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect(page.locator('#statsGrid .stat-card')).toHaveCount(4);
 
   await page.locator('#primaryNav [data-primary-view="spaces"]').click();
@@ -147,6 +149,9 @@ test('Everything keeps a full view with clear interlinking and plain copy', asyn
 
   await page.locator('#primaryNav [data-primary-view="everything"]').click();
   await page.locator('#scenarioSelect').selectOption('team');
+  await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
+  await page.locator('#primaryNav [data-primary-view="everything"]').click();
+  await expect(page.locator('[data-view-panel="everything"]')).toBeVisible();
   await expect(page.locator('#all-spaces')).toContainText('Project Space');
   await expect(page.locator('#all-workspace')).toContainText('Every category in this team and project briefing');
 
@@ -199,6 +204,7 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   await expect(page.locator('#openDemo')).toBeEnabled();
   await expect(page.locator('#previewButton')).toBeEnabled();
   await page.locator('#openDemo').click();
+  await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
   await expect(page.locator('#mobileNav')).toBeVisible();
   await expect(page.locator('#mobileNav button')).toHaveCount(5);
@@ -226,6 +232,7 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   await page.locator('#mobileNav [data-primary-view="workspace"]').click();
   await page.locator('#scenarioSelect').selectOption('trainer');
   await expect(page.locator('#railContextTitle')).toHaveText('Trainer and student');
+  await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect(page.locator('#workspacePanel .detail-card')).toHaveCount(3);
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleEllipses(page);
@@ -246,6 +253,7 @@ test('light default, saved dark preference and reset remain reversible', async (
   await page.locator('[data-entry-scenario="business"]').click();
   await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
+  await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await page.locator('#resetDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
   await expect(page.locator('#entry')).toBeVisible();
