@@ -101,7 +101,12 @@ if (surfaces['/doc/']) {
   const html = surfaces['/doc/'].text;
   assert(!/cmx-gate-black-prompt|data-cmx-gate|type=["']password["']/i.test(html), 'Deployed `/doc/` contains gate markup or assets.');
   assert(/href=["']\/brief\/["']/i.test(html), 'Deployed `/doc/` is missing its `/brief/` link.');
-  assert(/What works now and what still needs building/i.test(html), 'Deployed `/doc/` lost its current-versus-planned boundary.');
+  assert(
+    /id=["']status["']/i.test(html) &&
+    /Current reality/i.test(html) &&
+    /separates what exists from what has been designed or planned/i.test(html),
+    'Deployed `/doc/` lost its current-versus-planned boundary.'
+  );
 }
 
 try {
