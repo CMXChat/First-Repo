@@ -14,7 +14,7 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
   await expect(page.locator('#entry')).toBeVisible();
-  await expect(page.locator('[data-entry-scenario]')).toHaveCount(5);
+  await expect(page.locator('[data-entry-scenario]')).toHaveCount(6);
   await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
 
   const background = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());
@@ -44,6 +44,9 @@ async function expectPlainVisibleCopy(page) {
   const text = await page.locator('body').innerText();
   expect(text).not.toContain('...');
   expect(text).not.toContain('…');
+  expect(text).not.toContain('—');
+  expect(text).not.toMatch(/\b(?:rather than|instead of)\b/i);
+  expect(text).not.toMatch(/\b(?:is not|does not|are not|isn't|aren't|doesn't)\b[^.!?\n]{0,100}\bbut\b/i);
   expect(text).not.toContain('Personalized does not mean unpredictable');
   expect(text).not.toContain('STABLE SHELL, ADAPTIVE COMPOSITION');
   expect(text).not.toContain('A strong demonstration with a clear path to the real platform');
@@ -104,6 +107,92 @@ test('current Spaces demo opens in light mode and remains usable across devices'
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
+});
+
+test('Personal habits and the Family briefing use the richer workspace modules', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.endsWith('-desktop'), 'Rich workspace coverage runs in desktop browser projects.');
+  await openCurrentBrief(page);
+  await enterScenario(page, 'personal');
+
+  await selectPrimaryView(page, 'workspace');
+  await page.locator('[data-workspace-tab="habits"]').click();
+  await expect(page.locator('.habit-tracker-row')).toHaveCount(3);
+  await expect(page.locator('.habit-tracker-row').first()).toContainText('4 this week');
+  await expect(page.locator('.habit-tracker-row').first()).toContainText('16-day record');
+  await expect(page.locator('.workspace-boundary-note')).toContainText('Personal habit remains private');
+
+  await page.locator('#scenarioSelect').selectOption('family');
+  await expect(page.locator('body')).toHaveAttribute('data-scenario', 'family');
+  await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
+  await expect(page.locator('#heroTitle')).toHaveText('The household plan is clear before everyone starts moving');
+  await expect(page.locator('#statsGrid')).toContainText('Chores open');
+
+  await selectPrimaryView(page, 'workspace');
+  await page.locator('[data-workspace-tab="calendar"]').click();
+  await expect(page.locator('.family-calendar-day')).toHaveCount(3);
+  await expect(page.locator('.family-calendar')).toContainText('Availability only');
+  await expect(page.locator('.family-calendar')).toContainText('Zoe’s appointment');
+
+  await page.locator('[data-workspace-tab="chores"]').click();
+  await expect(page.locator('.household-column')).toHaveCount(3);
+  await expect(page.locator('.household-board')).toContainText('Unload dishwasher');
+
+  await page.locator('[data-workspace-tab="shopping"]').click();
+  await expect(page.locator('.shopping-groups > section')).toHaveCount(3);
+  await expect(page.locator('.shopping-groups li')).toHaveCount(7);
+
+  await selectPrimaryView(page, 'everything');
+  await expect(page.locator('#all-weather .full-weather-card')).toBeVisible();
+  await expect(page.locator('#all-weather .weather-visual')).toBeVisible();
+  await expect(page.locator('#all-weather .weather-range')).toContainText('High 82°');
+  await expect(page.locator('#all-workspace')).toContainText('Every category in this family briefing');
+  await expectNoHorizontalOverflow(page);
+});
+
+test('mobile tab rows keep the document aligned and selected labels readable', async ({ page }, testInfo) => {
+  test.skip(!['chromium-android', 'webkit-iphone'].includes(testInfo.project.name), 'Touch containment runs in mobile browser projects.');
+  await page.setViewportSize({ width: 360, height: 800 });
+  await openCurrentBrief(page);
+  await enterScenario(page, 'relationship');
+  await selectPrimaryView(page, 'workspace');
+
+  await page.locator('[data-workspace-tab="connections"]').click();
+  await page.locator('[data-workspace-tab="together"]').click();
+
+  const workspaceState = await page.evaluate(() => {
+    const selected = document.querySelector('.workspace-tabs button[aria-selected="true"]');
+    const layout = document.querySelector('.app-layout')?.getBoundingClientRect();
+    return {
+      windowX: window.scrollX,
+      documentX: document.documentElement.scrollLeft,
+      bodyX: document.body.scrollLeft,
+      selectedColor: selected ? getComputedStyle(selected).color : '',
+      layoutLeft: layout?.left || 0,
+      layoutRight: layout?.right || 0,
+      viewport: document.documentElement.clientWidth
+    };
+  });
+
+  expect(workspaceState.windowX).toBe(0);
+  expect(workspaceState.documentX).toBe(0);
+  expect(workspaceState.bodyX).toBe(0);
+  expect(workspaceState.selectedColor).toBe('rgb(255, 255, 255)');
+  expect(workspaceState.layoutLeft).toBeGreaterThanOrEqual(-1);
+  expect(workspaceState.layoutRight).toBeLessThanOrEqual(workspaceState.viewport + 1);
+
+  await selectPrimaryView(page, 'how');
+  await page.locator('[data-space-example="family"]').click();
+  const explainerColor = await page.locator('[data-space-example="family"]').evaluate(node => getComputedStyle(node).color);
+  expect(explainerColor).toBe('rgb(255, 255, 255)');
+  await page.locator('.space-example-open').click();
+  await expect(page.locator('body')).toHaveAttribute('data-scenario', 'family');
+  await expect(page.locator('body')).toHaveAttribute('data-view', 'today');
+  await expect(page.locator('#heroTitle')).toHaveText('The household plan is clear before everyone starts moving');
+  await selectPrimaryView(page, 'workspace');
+  await page.locator('[data-workspace-tab="access"]').click();
+  await expect(page.locator('[data-workspace-tab="access"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('.workspace-panel')).toContainText('Useful family access with age-appropriate limits');
+  await expectNoHorizontalOverflow(page);
 });
 
 test('every briefing entry and context switch starts on Today', async ({ page }) => {

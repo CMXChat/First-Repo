@@ -94,7 +94,7 @@ test('desktop demo keeps weather, stats, navigation and opt-in soundtrack playba
 
   await page.locator('#primaryNav [data-primary-view="workspace"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
-  await expect(page.locator('#workspaceTabs button')).toHaveCount(5);
+  await expect(page.locator('#workspaceTabs button')).toHaveCount(6);
   await expect(page.locator('#workspacePanel .detail-card')).toHaveCount(3);
 
   const firstTab = page.locator('#workspaceTabs [data-workspace-tab]').first();
@@ -140,7 +140,8 @@ test('Everything keeps a full view with clear interlinking and plain copy', asyn
   await expect(page.locator('.component-choice-grid article')).toHaveCount(6);
   await expect(page.locator('.alarm-flow article')).toHaveCount(4);
   await expect(page.locator('#all-adaptive')).toContainText('Spaces checks the approved information');
-  await expect(page.locator('#all-adaptive')).toContainText('The layout can adapt without becoming confusing');
+  await expect(page.locator('#all-adaptive')).toContainText('The layout stays familiar as the briefing changes');
+  await expect(page.locator('#all-weather .full-weather-card')).toBeVisible();
   await expect(page.locator('#all-alarm')).toContainText('approved music from Spotify');
   await expect(page.locator('#all-alarm')).toContainText('short overview');
   await expect(page.locator('#all-privacy')).toContainText('More information requires more control');

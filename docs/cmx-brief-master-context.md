@@ -1,4 +1,4 @@
-# CMX Personal OS and `/brief` Master Context
+# CMX Spaces and Daily Brief Master Context
 
 Last reconciled: **August 5, 2026**  
 Repository: `CMXChat/First-Repo`  
@@ -29,14 +29,15 @@ The current repository demonstrates this product direction. It does not yet deli
 
 ## Current public surfaces
 
-### `/brief/`
+### `/spaces/`
 
 The primary public noindex product demo.
 
 It includes:
 
-- Personal, Relationship, Business, Trainer, and Team contexts
-- focused Today, Spaces, Memory, Goals, and How views
+- Personal, Relationship, Family, Business, Trainer, and Team contexts
+- focused Today, Workspace, Spaces, How, and Everything views
+- private habit tracking plus household calendar, chore, shopping, and access examples
 - an optional Everything view
 - fictional private-looking data with explicit labels
 - scenario-specific people, priorities, permissions, numbers, Spaces, and actions
@@ -49,7 +50,11 @@ It includes:
 
 ### `/brief-next/`
 
-A public noindex standalone staging and rollback copy. It currently shares the same HTML blob and assets as `/brief/`.
+A public noindex pre-migration rollback snapshot.
+
+### `/brief/`
+
+A legacy compatibility route that redirects to `/spaces/` while preserving query and hash state.
 
 ### `/doc/`
 
@@ -69,7 +74,7 @@ It explains:
 - planned architecture
 - scenarios and frequently asked questions
 
-It is intentionally ungated, uses plainer product language, and links back to `/brief/`.
+It is intentionally ungated, uses plainer product language, and links back to `/spaces/`.
 
 ## Current frontend architecture
 
@@ -77,8 +82,9 @@ The shipping Brief experience is a focused static application built from `brief-
 
 Primary files:
 
-- `brief/index.html`
-- `brief-next/index.html`
+- `spaces/index.html`
+- `brief/index.html` for the compatibility redirect
+- `brief-next/index.html` for the rollback snapshot
 - `assets/brief/brief-demo-data.js`
 - `assets/brief/brief-demo-app.js`
 - `assets/brief/brief-demo-experience.js`

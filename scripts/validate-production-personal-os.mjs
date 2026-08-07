@@ -125,7 +125,7 @@ if (surfaces['/doc/']) {
   assert(
     /id=["']status["']/i.test(html) &&
     /Current reality/i.test(html) &&
-    /separates what exists from what has been designed or planned/i.test(html),
+    /separates demonstrated work from planned platform work/i.test(html),
     'Deployed `/doc/` lost its current-versus-planned boundary.'
   );
   assert(/alarm/i.test(html) && /voice/i.test(html) && /calendar/i.test(html), 'Deployed `/doc/` lost calendar, alarm, or voice product context.');

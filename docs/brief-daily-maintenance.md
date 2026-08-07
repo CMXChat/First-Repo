@@ -42,8 +42,8 @@ Every current item explains why it matters. Astrology remains entertainment and 
 
 Use it for safe rotations and fictional demonstrations:
 
-- Music for Personal, Relationship, Business, Trainer and Team
-- Daily quotes for all five briefings
+- Music for Personal, Relationship, Family, Business, Trainer and Team
+- Daily quotes for all six briefings
 - Fictional personal scorecards, reports, inboxes and project health
 - Fictional relationship profiles and approved shared-space examples
 - Fictional business-partner private and shared records
@@ -66,15 +66,16 @@ Edit values, not renderer logic or object structure.
 - Loading, loaded and delayed states remain visible in text.
 - An invalid or missing video must not break the Relationship briefing.
 
-## Five briefing types
+## Six briefing types
 
 The permanent briefing set is:
 
 1. Personal
 2. Relationship
-3. Business
-4. Trainer + student
-5. Team + project
+3. Family
+4. Business
+5. Trainer + student
+6. Team + project
 
 Business remains partner and management focused. Team is a distinct member-facing and project-facing demonstration with:
 
@@ -107,6 +108,7 @@ Pill tabs are scenario specific:
 
 - Personal: Overview, Day, Work, Finance, Wellness, Intelligence
 - Relationship: Overview, Together, Profiles, Plans, Watch, Reflection
+- Family: Overview, Calendar, Chores, Shopping, People and access
 - Business: Overview, Finance, Projects, Decisions, Markets, Partners
 - Trainer: Overview, Today, Habits, Progress, Recovery, Coach
 - Team: Overview, My work, Project, Handoffs, Procedure, Finance, Spaces

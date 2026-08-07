@@ -1,11 +1,13 @@
 (() => {
   'use strict';
 
+  const data = window.BRIEF_DEMO_DATA;
+
   const memoryExamples = {
     continuity: {
       label: 'Continuity',
       regular: 'A normal chat usually depends on the current conversation, so important background may need to be explained again.',
-      personal: 'Personal OS can prepare a record of goals, decisions, preferences, corrections, and recent results before the next Brief starts.',
+      personal: 'Spaces can prepare a record of goals, decisions, preferences, corrections, and recent results before the next Brief starts.',
       record: ['Source: user correction', 'Confidence: confirmed', 'Scope: Personal Space', 'Review: available anytime']
     },
     correction: {
@@ -16,13 +18,13 @@
     },
     outcome: {
       label: 'Outcome',
-      regular: 'A chat can end after giving advice, with no clear record of what happened next.',
+      regular: 'A chat can end after giving advice while the outcome remains outside the conversation.',
       personal: 'The result becomes useful evidence, allowing the next plan to respond to what was completed, skipped, changed, or learned.',
       record: ['Action: completed', 'Outcome: useful', 'Goal impact: positive', 'Next plan: adjusted']
     },
     preference: {
       label: 'Preference',
-      regular: 'A preference may be remembered loosely, with no clear setting or record of where it applies.',
+      regular: 'A preference may be remembered loosely, leaving its setting and scope unclear.',
       personal: 'Music, voice, Brief length, detail, and layout can become settings that belong to the user and can differ by Space or device.',
       record: ['Morning music: enabled', 'Read aloud: disabled', 'Detail: concise first', 'Applies to: Personal Space']
     }
@@ -31,6 +33,7 @@
   const spaceExamples = {
     relationship: {
       label: 'Relationship',
+      scenarioId: 'relationship',
       title: 'Two private profiles and one shared Space',
       members: ['Maya: private profile', 'Jordan: private profile', 'Couple Space: approved records'],
       shared: ['Travel plan and booking owner', 'Shared calendar changes', 'Promises and decisions approved by both people'],
@@ -38,6 +41,7 @@
     },
     family: {
       label: 'Family',
+      scenarioId: 'family',
       title: 'One household Brief with separate private records',
       members: ['Parent or guardian roles', 'Children or dependents with suitable access', 'Family Space: household plans'],
       shared: ['Current expenses and bills', 'Chores and owners', 'Pickups, appointments, groceries, and calendar changes'],
@@ -45,6 +49,7 @@
     },
     team: {
       label: 'Team',
+      scenarioId: 'team',
       title: 'One project goal with role-based access',
       members: ['Member: assigned work', 'Lead: project-wide view', 'Project Space: approved project record'],
       shared: ['Goals, blockers, handoffs, owners, and deadlines', 'Approved decisions and release history', 'Relevant files and tool updates'],
@@ -81,15 +86,15 @@
       <header class="explainer-heading">
         <div>
           <p class="eyebrow">THE MAIN DIFFERENCE</p>
-          <h2>Memory and Spaces give AI useful context without removing clear limits</h2>
+          <h2>Memory and Spaces give AI useful context inside clear limits</h2>
         </div>
-        <p>These examples show how Personal OS can keep context, accept corrections, share selected records, and prepare useful work.</p>
+        <p>These examples show how Spaces can keep context, accept corrections, share selected records, and prepare useful work.</p>
       </header>
 
       <section class="memory-demo" aria-labelledby="memoryDemoTitle">
         <div class="explainer-title-row">
           <div><span>01</span><h3 id="memoryDemoTitle">What changes when memory can be reviewed?</h3></div>
-          <p>Choose an example to compare normal chat with Personal OS.</p>
+          <p>Choose an example to compare normal chat with Spaces.</p>
         </div>
         <div class="explainer-tabs" id="memoryExampleTabs" role="tablist" aria-label="Memory comparison examples"></div>
         <div class="memory-comparison" id="memoryComparison" role="tabpanel" tabindex="0" aria-live="polite"></div>
@@ -146,7 +151,7 @@
         <p>${escapeHtml(selected.regular)}</p>
       </article>
       <article class="comparison-card personal-os-memory">
-        <span>PERSONAL OS</span>
+        <span>SPACES</span>
         <h4>Reviewable ${escapeHtml(selected.label.toLowerCase())}</h4>
         <p>${escapeHtml(selected.personal)}</p>
         <ul>${selected.record.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
@@ -165,7 +170,8 @@
         <section><strong>People and roles</strong><ul>${selected.members.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>
         <section><strong>The shared Brief can include</strong><ul>${selected.shared.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>
       </div>
-      <p class="space-protection"><strong>Protected:</strong> ${escapeHtml(selected.protected)}</p>`;
+      <p class="space-protection"><strong>Protected:</strong> ${escapeHtml(selected.protected)}</p>
+      <button class="secondary-button space-example-open" type="button" data-open-space-scenario="${escapeHtml(selected.scenarioId)}">Open the ${escapeHtml(selected.label)} briefing</button>`;
   }
 
   function moveTabFocus(event, selector) {
@@ -228,6 +234,14 @@
         if (spaceButton) {
           renderSpace(spaceButton.dataset.spaceExample);
           spaceButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          return;
+        }
+        const scenarioButton = event.target.closest('[data-open-space-scenario]');
+        if (scenarioButton) {
+          const select = document.getElementById('scenarioSelect');
+          if (!select || !data.scenarios[scenarioButton.dataset.openSpaceScenario]) return;
+          select.value = scenarioButton.dataset.openSpaceScenario;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
         }
       });
 

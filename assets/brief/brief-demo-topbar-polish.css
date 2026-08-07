@@ -123,8 +123,80 @@ html[data-theme="light"] .section-pager-button {
   color: #52657a;
 }
 
+/* Selected controls keep their intended white label after the light-theme repair above. */
+html[data-theme="light"] .explainer-tabs button[aria-selected="true"],
+html[data-theme="light"] .workspace-tabs button[aria-selected="true"] {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+/* Keep horizontally scrollable controls from shifting the document viewport on touch devices. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.app,
+.topbar,
+.topbar-inner,
+.app-layout,
+#demoMain,
+.view-panel,
+.workspace-tabs,
+.workspace-panel,
+.detail-grid,
+.detail-card,
+.habit-tracker,
+.habit-tracker-row,
+.habit-week,
+.family-calendar,
+.family-calendar-day,
+.household-board,
+.household-column,
+.shopping-groups,
+.shopping-groups > section,
+.everything-content,
+.full-section {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.workspace-tabs,
+.explainer-tabs,
+.everything-jump-nav {
+  width: 100%;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: 8px;
+  scroll-snap-type: inline proximity;
+  touch-action: pan-x;
+}
+
+.workspace-tabs button,
+.explainer-tabs button,
+.everything-jump-nav a {
+  scroll-snap-align: start;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
 @media (max-width: 620px) {
   html[data-theme="light"] .foundation-center {
     background: linear-gradient(150deg, #0068b5, #004a86);
+  }
+
+  .mobile-nav button {
+    padding-inline: 0;
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: nowrap;
+    font-size: clamp(0.55rem, 2.35vw, 0.62rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
   }
 }

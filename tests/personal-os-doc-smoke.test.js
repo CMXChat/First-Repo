@@ -28,7 +28,10 @@ assert.match(html, /<body>\s*<main>/);
 assert.match(html, /meta name="referrer" content="no-referrer"/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
 assert.match(html, /Public overview/);
-assert.match(html, /This noindex overview contains product explanation and fictional examples/);
+assert.match(html, /This public noindex overview contains product explanation and fictional examples/);
+assert.equal((html.match(/class="scenario-card"/g) || []).length, 6);
+assert.match(html, /Six briefing contexts: Personal, Relationship, Family, Business, Trainer, and Team/);
+assert.match(html, /Trainer and student/);
 
 const docRoute = routes.routes.find((route) => route.path === '/doc/');
 assert.ok(docRoute, '/doc/ must remain registered.');
