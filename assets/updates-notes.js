@@ -22,6 +22,26 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-07-spaces-active-product-demo',
+    timestamp: '2026-08-07T16:18:00-04:00',
+    title: 'Spaces is now the active product demo',
+    status: 'complete',
+    body: [
+      'The Personal OS direction was renamed to Spaces and /spaces/ is now the canonical demo route. /brief/ remains only as a compatibility redirect, while /brief-next/ is kept as a rollback snapshot.',
+      'The demo now covers seven different contexts instead of one generic dashboard, including Personal, Family, business-partner and accountant-client use cases. Each Space changes the people, permissions, priorities and records while keeping the same product structure.',
+      'Shared calendars, private habits, project and money views, contextual conversation controls, Spotify choices, light and dark themes, mobile behavior and accessibility were all expanded and tested. Private-looking records remain fictional and connected actions stay review-only or clearly marked as planned.',
+      '/doc/ was updated alongside the demo with the current product model, connected inputs and memory controls, the relationship to Cloudflare agent infrastructure, market and investment research, the reviewed product gap, a protection sequence, and the proposed first paid wedge for remote business partners and small teams.',
+      'Fresh visits now open in light mode. Calendar changes, payments, transfers, filings, trading, live AI, voice, alarms and other connected actions still require the future backend, identity and permission layer before they can operate for real.'
+    ],
+    links: [
+      { url: '/spaces/', label: 'Open Spaces' },
+      { url: '/doc/', label: 'Open Product Document' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['spaces', 'product', 'demo', 'documentation'],
+    pinned: true
+  },
+  {
     id: '2026-08-02-sara-hebrew-personal-brief',
     timestamp: '2026-08-02T22:15:00-04:00',
     title: 'Hebrew personal briefing created for Sara',
