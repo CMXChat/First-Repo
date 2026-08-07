@@ -2,7 +2,7 @@
 
 Last reconciled: **August 7, 2026**
 Repository: `CMXChat/First-Repo`
-Verified product baseline: `706a1bac94a507d4619cc16d2858ac09b2a75820`
+Verified product baseline: `6bab140fa8abf644acc1216cc86b2af841eeebf1`
 Primary deployment: `https://db.cmxchat.com/`
 
 ## Purpose
@@ -42,8 +42,9 @@ It includes:
 - an accountant-client ledger, portfolio view, deadlines, goals, and rules
 - compact priority notices and short user corrections
 - three direct links to signature modules in every context
-- section-aware conversation entry with contextual prompt choices
-- a rotating entry rail of practical Spaces ideas
+- selective section-aware star controls with contextual prompt choices and a centered conversation dialog
+- a responsive two-column mobile entry and a rotating pill of practical Spaces ideas
+- honest inline and bottom notices for demo actions that need the secure backend
 - an optional Everything view
 - fictional private-looking data with explicit labels
 - scenario-specific people, priorities, permissions, numbers, Spaces, and actions
@@ -77,10 +78,20 @@ It explains:
 - model choice and permissions
 - trust boundaries
 - current demonstrated behavior
+- illustrative Family calendar and Accountant-client input previews
+- a reviewed adjacent-product comparison and staged investment case
 - planned architecture
 - scenarios and frequently asked questions
 
 It is intentionally ungated, uses plainer product language, and links back to `/spaces/`.
+
+### Adjacent product landscape
+
+The `/doc/` comparison uses official product pages for ChatGPT Projects and apps, Notion AI, Motion, Cozi, Monarch, and Cloudflare Agents. These products validate demand for contained AI context, connected tools, work orchestration, schedule automation, family coordination, financial clarity, and durable agent infrastructure.
+
+The documented opportunity comes from the combined Spaces layer: cross-domain daily Briefs, separately governed private and shared contexts, editable memory, section-level AI entry, personalized ranking, and approval-gated actions. The gap statement applies only to the reviewed product set and must be refreshed during formal market diligence.
+
+Cloudflare’s Agents SDK could supply durable identity, local SQL state, real-time connections, scheduling, recoverable execution, tools, and human approval patterns beneath the product. A future ChatGPT app or plugin could provide an optional distribution surface. Spaces retains the experience, schemas, context graph, permission model, and trust relationship.
 
 ## Current frontend architecture
 

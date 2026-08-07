@@ -1,6 +1,12 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
+test.beforeEach(async ({ page }) => {
+  // Accessibility coverage remains deterministic and offline. Spotify behavior
+  // is exercised with a controller mock in its dedicated lifecycle suite.
+  await page.route('https://open.spotify.com/**', route => route.abort());
+});
+
 function formatViolations(violations) {
   return violations.map(violation => {
     const nodes = violation.nodes.slice(0, 4).map(node => node.target.join(' ')).join(', ');

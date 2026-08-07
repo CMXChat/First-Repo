@@ -287,6 +287,9 @@
     button.setAttribute('aria-pressed', 'true');
     button.textContent = 'Tuesday draft prepared';
     status.textContent = button.dataset.actionResult || 'The draft is ready for review.';
+    document.dispatchEvent(new CustomEvent('briefdemo:backendrequired', {
+      detail: { message: 'Draft prepared in the demo. Sending calendar changes requires the secure backend and both partners’ approval.' }
+    }));
   });
 
   window.BRIEF_DEMO_ADVANCED = { renderDetail };

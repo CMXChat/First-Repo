@@ -2,7 +2,7 @@
 
 Last reconciled: **August 7, 2026**
 Repository: `CMXChat/First-Repo`
-Starting code baseline: `706a1bac94a507d4619cc16d2858ac09b2a75820`
+Starting code baseline: `6bab140fa8abf644acc1216cc86b2af841eeebf1`
 
 ## Start here
 
@@ -107,15 +107,17 @@ Questions should appear only when the answer can change a recommendation, status
 
 ## Section conversations and module discovery
 
-Every major Brief section can open the same conversation sheet with its current Space and section already named. Contextual prompt choices help a person ask about evidence, timing, permissions, risks, or the next useful step without typing a long setup.
+Information-rich sections can open the same compact conversation dialog with the current Space and section already named. The control is a small star with an accessible name and appears where the section offers enough context to support a useful question. Contextual prompt choices help a person ask about evidence, timing, permissions, risks, or the next useful step without typing a long setup.
 
-The public demo prepares and displays this handoff. A signed-in product would attach authorized records, source labels, permission scope, and approved tools before calling a model. External actions would still require the approval rules for that Space.
+The centered public dialog prepares and displays this handoff. A signed-in product would attach authorized records, source labels, permission scope, and approved tools before calling a model. Demo actions that need the future backend raise a small bottom notice, and external actions would still require the approval rules for that Space.
 
 Every scenario also defines three standout modules. They appear after the opening Brief as direct links into the relevant workspace tab, so the Family calendar, Accounting cash sheet, Business projects, and other signature views remain easy to find.
 
-The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left, has previous and next controls, pauses during interaction, and respects reduced-motion settings. Its examples show what context can enable without claiming that alarms, connected actions, or private records already work in the public demo.
+The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left, has previous and next controls, pauses during interaction, and respects reduced-motion settings. The thin pill changes its restrained accent across violet, green, pink, amber, and cyan so each idea change is visible without adding another large card. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability is described with its account, permission, or backend boundary.
 
-On desktop, the entry layer owns a visible vertical scrollbar and can reach the full card at short viewport heights. On mobile, the page remains vertically scrollable while wide financial tables scroll only inside their own sheet.
+The entry grid uses a constrained track so intrinsic card widths cannot push the panel to the right. It fits without vertical movement at 1917×938, 1280×720, 1024×768, 390×844, and 360×800 in the current Chromium geometry checks. Smaller desktop windows receive a visible clickable scroll-progress rail. Short phones retain normal vertical touch scrolling, while wide financial tables scroll only inside their own sheet.
+
+`/doc/` includes two clearly fictional interface previews: a Family calendar with covered private details and an Accountant-client correction. A section-level prompt connects those previews to the conversation model. The investment section compares the reviewed product set through official product links and limits its gap claim to that set.
 
 ## Music and appearance
 
@@ -136,11 +138,12 @@ The top-right soundtrack and appearance buttons share the same button surface. T
 | `assets/brief/brief-demo-advanced.css` | Isolated styles for advanced modules, mobile financial-sheet geometry, seven-card entry, alerts, corrections, and music choices |
 | `assets/brief/brief-demo-experience.js` | Everything view, weather, habits, family boards, and shared-calendar renderers |
 | `assets/brief/brief-demo-media.js` | Spotify readiness, playback fallback, and per-scenario track choices |
-| `assets/brief/brief-demo-conversation.js` | Entry carousel timing and the static section-aware conversation handoff |
-| `assets/brief/brief-demo-conversation.css` | Entry scrolling, carousel, discovery links, contextual AI sheet, and layered card surfaces |
+| `assets/brief/brief-demo-conversation.js` | Entry carousel timing, overflow progress control, and the static section-aware conversation handoff |
+| `assets/brief/brief-demo-conversation.css` | Responsive entry fit, pill carousel, overflow affordance, discovery links, centered contextual conversation, backend notice, and layered card surfaces |
 | `assets/brief/brief-demo-explainers.js` | Product explanation tabs and scenario jump controls |
 | `assets/brief/brief-demo-topbar-polish.css` | Topbar controls, theme icon treatment, and compact polish |
-| `doc/index.html` | Readable product overview without JavaScript |
+| `doc/index.html` | Readable product overview, illustrative interface teases, reviewed product comparison, investment case, and current boundaries without JavaScript |
+| `assets/personal-os-doc.css` | Product overview layout, visual teases, comparison table, investment section, responsive behavior, and print styling |
 | `assets/personal-os-doc.js` | Document theme, section tracking, and synchronized product wording |
 | `tests/brief-browser-e2e.spec.cjs` | Active desktop, mobile, scenario, navigation, copy, and interaction coverage |
 | `tests/brief-spotify-lifecycle.spec.cjs` | Provider readiness, fallback, and alternate-track lifecycle coverage |
@@ -174,14 +177,15 @@ Before publishing a Spaces change:
 5. Run desktop and mobile accessibility checks.
 6. Run Spotify lifecycle tests.
 7. Check light and dark themes.
-8. Check narrow mobile layouts for document-level horizontal movement.
+8. Check the Spaces entry at 360×800 and 390×844, then confirm a 375×667 screen can reach the actions through normal vertical scrolling.
 9. Check that the Accounting sheet keeps Category, Planned, and the horizontal cue readable at 360 pixels wide.
 10. Check the spreadsheet’s own horizontal scroll without moving the page.
-11. Open contextual AI from a focused card and an advanced workspace section.
+11. Open the contextual conversation from a focused card and an advanced workspace section. Confirm the star stays compact, the dialog is centered, the Space and section remain in scope, and a prepared backend action raises the bottom notice.
 12. Confirm entry remains silent until the soundtrack control receives a direct tap.
 13. Scan rendered copy for banned writing patterns.
 14. Verify `/brief/` preserves query and hash state when it redirects.
-15. Verify the deployed `/spaces/` and `/doc/` assets after merge.
+15. Check `/doc/` interface previews, investment comparison, external source links, and local table scrolling in both themes.
+16. Verify the deployed `/spaces/` and `/doc/` assets after merge.
 
 ## Publishing and recovery
 
@@ -189,8 +193,8 @@ Ship this work through a pull request. Wait for every required check, merge thro
 
 GitHub history supports a clean recovery:
 
-- To restore the state after PR #73, revert the new feature merge in a new pull request.
-- To restore the state after PR #72, revert the new feature merge first, then revert PR #73.
+- After the entry and `/doc/` follow-up merges, revert its merge commit to return to the verified PR #75 state.
+- To restore the state after PR #73 or PR #72, revert every later merge in reverse order through reviewed pull requests.
 - A separate restore branch can also start from either merge commit and return through review.
 
 Use revert commits on `main`. Do not rewrite shared history with a force push or hard reset.

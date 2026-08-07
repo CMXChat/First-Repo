@@ -87,11 +87,11 @@ The model can change while the Space keeps its context. Models, runtimes, agent 
 
 ## Cloudflare
 
-Cloudflare OS is developer infrastructure for agents, runtimes, sandboxes, tools, and orchestration. Spaces is the user-facing experience for context, continuity, memory, and action.
+Cloudflare’s Agents SDK is developer infrastructure for durable identity, local SQL state, real-time connections, scheduled work, recoverable execution, tools, and human approval patterns. Spaces is the user-facing experience for context, continuity, memory, and action.
 
-Cloudflare could power part of the backend in the future without becoming the product itself.
+Cloudflare could power part of the backend. A future ChatGPT app or plugin could provide an optional distribution surface into the same governed backend. Spaces retains the product experience, schemas, context graph, permission model, and trust relationship.
 
-Reference: https://os.cloudflare.app/
+Reference: https://developers.cloudflare.com/agents/
 
 ## Product test
 

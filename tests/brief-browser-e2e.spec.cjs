@@ -1,5 +1,11 @@
 const { test, expect } = require('@playwright/test');
 
+test.beforeEach(async ({ page }) => {
+  // Browser coverage should stay deterministic and offline. Spotify controller
+  // behavior has its own mocked lifecycle suite.
+  await page.route('https://open.spotify.com/**', route => route.abort());
+});
+
 async function prepareFreshPage(page, route = '/spaces/') {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => {
@@ -128,37 +134,110 @@ test('current Spaces demo opens in light mode and remains usable across devices'
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
 });
 
-test('desktop entry keeps its full content reachable and advances the idea carousel', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop entry overflow runs in Chromium.');
+test('desktop entry fits common screens, stays centered and exposes small-window scrolling', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop entry geometry runs in Chromium.');
   await page.setViewportSize({ width: 1280, height: 720 });
   await openCurrentBrief(page);
 
-  const entryScroll = await page.locator('#entry').evaluate(entry => {
+  const entryFit = await page.locator('#entry').evaluate(entry => {
     const style = getComputedStyle(entry);
+    const card = entry.querySelector('.entry-card').getBoundingClientRect();
+    const tip = entry.querySelector('.entry-tip-carousel').getBoundingClientRect();
     const maxScroll = entry.scrollHeight - entry.clientHeight;
-    entry.scrollTop = maxScroll;
     return {
       overflowY: style.overflowY,
+      scrollbarColor: style.scrollbarColor,
       maxScroll,
-      scrollTop: entry.scrollTop,
-      gutter: style.scrollbarGutter
+      gutter: style.scrollbarGutter,
+      leftMargin: card.left,
+      rightMargin: innerWidth - card.right,
+      tipHeight: tip.height
     };
   });
-  expect(entryScroll.overflowY).toBe('scroll');
-  expect(entryScroll.maxScroll).toBeGreaterThan(100);
-  expect(entryScroll.scrollTop).toBeGreaterThan(100);
-  expect(entryScroll.gutter).toContain('stable');
+  expect(entryFit.overflowY).toBe('scroll');
+  expect(entryFit.scrollbarColor).not.toBe('auto');
+  expect(entryFit.maxScroll).toBeLessThanOrEqual(1);
+  expect(entryFit.gutter).toContain('stable');
+  expect(Math.abs(entryFit.leftMargin - entryFit.rightMargin)).toBeLessThanOrEqual(2);
+  expect(entryFit.tipHeight).toBeLessThanOrEqual(66);
+  await expect(page.locator('#entryScrollControl')).toBeHidden();
   await expect(page.locator('#openDemo')).toBeInViewport();
 
+  const firstTipAccent = await page.locator('#entryTipCarousel').evaluate(carousel => {
+    const strong = carousel.querySelector('[data-entry-tip]:not([aria-hidden="true"]) strong');
+    return {
+      border: getComputedStyle(carousel).borderColor,
+      text: strong ? getComputedStyle(strong).color : ''
+    };
+  });
   await page.locator('[data-entry-tip-next]').click();
   await expect(page.locator('#entryTipPosition')).toHaveText('2 / 5');
   await expect(page.locator('[data-entry-tip]').nth(1)).toHaveAttribute('aria-hidden', 'false');
+  const secondTipAccent = await page.locator('#entryTipCarousel').evaluate(carousel => {
+    const strong = carousel.querySelector('[data-entry-tip]:not([aria-hidden="true"]) strong');
+    return {
+      border: getComputedStyle(carousel).borderColor,
+      text: strong ? getComputedStyle(strong).color : ''
+    };
+  });
+  expect(secondTipAccent.border).not.toBe(firstTipAccent.border);
+  expect(secondTipAccent.text).not.toBe(firstTipAccent.text);
+
+  await page.setViewportSize({ width: 1024, height: 768 });
+  const compactFit = await page.locator('.entry-card').evaluate(card => {
+    const rect = card.getBoundingClientRect();
+    return {
+      leftMargin: rect.left,
+      rightMargin: innerWidth - rect.right,
+      pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  });
+  expect(Math.abs(compactFit.leftMargin - compactFit.rightMargin)).toBeLessThanOrEqual(2);
+  expect(compactFit.pageOverflow).toBeLessThanOrEqual(1);
+
+  await page.setViewportSize({ width: 800, height: 650 });
+  await expect(page.locator('#entryScrollControl')).toBeVisible();
+  const smallWindow = await page.locator('#entry').evaluate(entry => ({
+    maxScroll: entry.scrollHeight - entry.clientHeight,
+    pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  }));
+  expect(smallWindow.maxScroll).toBeGreaterThan(100);
+  expect(smallWindow.pageOverflow).toBeLessThanOrEqual(1);
+  await page.locator('#entryScrollControl').click();
+  await expect.poll(() => page.locator('#entry').evaluate(entry => entry.scrollTop)).toBeGreaterThan(80);
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.locator('#entry').evaluate(entry => entry.scrollTo({ top: 0, behavior: 'auto' }));
+  const phoneFit = await page.locator('#entry').evaluate(entry => {
+    const carousel = entry.querySelector('.entry-tip-carousel');
+    const track = entry.querySelector('#entryTipTrack');
+    const activeTip = carousel.querySelector('[data-entry-tip]:not([aria-hidden="true"])');
+    return {
+      maxScroll: entry.scrollHeight - entry.clientHeight,
+      pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      optionCount: entry.querySelectorAll('[data-entry-scenario]').length,
+      pillRadius: parseFloat(getComputedStyle(carousel).borderRadius),
+      pillHeight: carousel.getBoundingClientRect().height,
+      trackTransition: getComputedStyle(track).transitionDuration,
+      wordTransition: getComputedStyle(activeTip).transitionDuration
+    };
+  });
+  expect(phoneFit.maxScroll).toBeLessThanOrEqual(1);
+  expect(phoneFit.pageOverflow).toBeLessThanOrEqual(1);
+  expect(phoneFit.optionCount).toBe(7);
+  expect(phoneFit.pillRadius).toBeGreaterThan(100);
+  expect(phoneFit.pillHeight).toBeLessThanOrEqual(60);
+  expect(phoneFit.trackTransition).not.toBe('0s');
+  expect(phoneFit.wordTransition).not.toBe('0s');
 });
 
 test('section conversations and standout modules keep the current Space in scope', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'The contextual conversation flow runs once in Chromium.');
   await openCurrentBrief(page);
   await enterScenario(page, 'family');
+
+  await expect(page.locator('[data-view-panel="today"] .section-ai-button:visible')).toHaveCount(4);
+  await expect(page.locator('body')).not.toContainText('Ask AI');
 
   await expect(page.locator('.space-highlight')).toHaveCount(3);
   await expect(page.locator('#spaceHighlights')).toContainText('Shared calendar');
@@ -168,10 +247,38 @@ test('section conversations and standout modules keep the current Space in scope
   await expect(page.locator('.family-calendar-day')).toHaveCount(3);
 
   const trigger = page.locator('.workspace-panel-heading [data-ai-trigger]');
+  await expect(trigger).toHaveText('✦');
+  await expect(trigger).toHaveAttribute('aria-label', /Open a conversation about/);
   await trigger.click();
   await expect(page.locator('#spacesAiDialog')).toBeVisible();
+  await expect(page.locator('#spacesAiTitle')).toHaveText('Continue with this section');
   await expect(page.locator('#spacesAiContext')).toContainText('Family');
   await expect(page.locator('#spacesAiContext')).toContainText('A shared calendar that keeps private event details covered');
+  await expect(page.locator('.spaces-ai-explainer')).toContainText('After a secure backend is connected');
+  const dialogGeometry = await page.locator('#spacesAiDialog').evaluate(dialog => {
+    const rect = dialog.getBoundingClientRect();
+    return {
+      leftGap: rect.left,
+      rightGap: innerWidth - rect.right,
+      topGap: rect.top,
+      bottomGap: innerHeight - rect.bottom,
+      width: rect.width
+    };
+  });
+  await page.waitForTimeout(220);
+  const settledDialogGeometry = await page.locator('#spacesAiDialog').evaluate(dialog => {
+    const rect = dialog.getBoundingClientRect();
+    return {
+      leftGap: rect.left,
+      rightGap: innerWidth - rect.right,
+      topGap: rect.top,
+      bottomGap: innerHeight - rect.bottom,
+      width: rect.width
+    };
+  });
+  expect(dialogGeometry.width).toBeLessThanOrEqual(622);
+  expect(Math.abs(settledDialogGeometry.leftGap - settledDialogGeometry.rightGap)).toBeLessThanOrEqual(2);
+  expect(Math.abs(settledDialogGeometry.topGap - settledDialogGeometry.bottomGap)).toBeLessThanOrEqual(2);
   await expect(page.locator('[data-ai-prompt]')).toHaveCount(3);
   await page.locator('[data-ai-prompt]').first().click();
   await expect(page.locator('#spacesAiInput')).not.toHaveValue('');
@@ -210,6 +317,8 @@ test('Business partners and Accountant and client use complete advanced workspac
   await expect(page.locator('.partner-calendar-day[data-highlighted="true"]')).toContainText('UV 8');
   await page.locator('[data-demo-module-action]').click();
   await expect(page.locator('[data-module-action-status]')).toContainText('Both partners still need to approve');
+  await expect(page.locator('#spacesDemoNotice')).toBeVisible();
+  await expect(page.locator('#spacesDemoNotice')).toContainText('requires the secure backend');
 
   await page.locator('[data-workspace-tab="concerns"]').click();
   await expect(page.locator('.concern-grid article')).toHaveCount(3);
@@ -648,6 +757,10 @@ test('Doc renders the plain-language copy audit', async ({ page }) => {
   await expect(page.locator('#statusTitle')).toHaveText('The current demo shows the product direction and the work still required');
   await expect(page.locator('#architectureTitle')).toHaveText('Keep the product architecture understandable and controllable');
   await expect(page.locator('#finalCtaTitle')).toHaveText('Explore the current Spaces Brief demo');
+  await expect(page.locator('.product-preview-stage')).toHaveCount(1);
+  await expect(page.locator('#investment')).toHaveCount(1);
+  await expect(page.locator('.market-table-shell')).toContainText('Adjacent products reviewed');
+  await expect(page.locator('#investment a[href="https://developers.cloudflare.com/agents/"]')).toHaveCount(1);
   await expect(page.locator('.status-list').first()).toContainText('A separate `/brief-next/` snapshot retained for rollback reference');
   await expectPlainVisibleCopy(page);
 });
