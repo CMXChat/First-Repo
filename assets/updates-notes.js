@@ -22,6 +22,25 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-07-development-environment',
+    timestamp: '2026-08-07T16:37:00-04:00',
+    title: 'Development Environment added as its own learning project',
+    status: 'complete',
+    body: [
+      'Created the protected /environment/ route as the working specification for a Python-first development environment built around learning through real projects.',
+      'The page maps the development lifecycle, proposed project structure, AI authority boundaries, learning loop, recovery playbooks, acceptance criteria and a searchable technical question register.',
+      'Confirmed direction is separated from proposed defaults and unresolved choices so versions, dependency management, ORM, hosting and other technical decisions are not presented as settled before they are actually chosen.',
+      'The environment requirements also live in a repository document so the page can evolve without losing the underlying operating principles, guardrails, handbook requirements and long-term independence goal.'
+    ],
+    links: [
+      { url: '/environment/', label: 'Open Development Environment' },
+      { url: '/architecture/', label: 'Open Architecture' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['environment', 'python', 'learning', 'ai'],
+    pinned: true
+  },
+  {
     id: '2026-08-07-spaces-active-product-demo',
     timestamp: '2026-08-07T16:18:00-04:00',
     title: 'Spaces is now the active product demo',

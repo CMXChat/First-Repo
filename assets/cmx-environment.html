@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-cmx-title="Development Environment" data-cmx-category="Operational" data-cmx-status="Active" data-cmx-version="1.0">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#eef4f8" />
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex" />
+<title>Development Environment</title>
+<meta name="description" content="Python-first development environment specification, learning workflow, guardrails, recovery model and technical decision register." />
+<style>
+:root{
+  --bg:#eef4f8;
+  --panel:#ffffff;
+  --panel-2:#f6f9fb;
+  --text:#102033;
+  --muted:#647487;
+  --faint:#8c99a6;
+  --line:#dbe4eb;
+  --blue:#1468d4;
+  --blue-strong:#0b4fa8;
+  --blue-soft:#e8f2ff;
+  --green:#18794e;
+  --green-soft:#e9f7ef;
+  --amber:#9a6700;
+  --amber-soft:#fff6dc;
+  --red:#b42318;
+  --red-soft:#fff0ef;
+  --ink:#07111f;
+  --shadow:0 18px 45px rgba(23,45,74,.09);
+  --radius:24px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  --sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+html[data-theme="dark"]{
+  --bg:#07111f;
+  --panel:#0d1a2a;
+  --panel-2:#102238;
+  --text:#edf5ff;
+  --muted:#9db0c5;
+  --faint:#71859a;
+  --line:#213750;
+  --blue:#69a9ff;
+  --blue-strong:#9bc6ff;
+  --blue-soft:#102c4d;
+  --green:#68d39b;
+  --green-soft:#102b22;
+  --amber:#ffd166;
+  --amber-soft:#342a0f;
+  --red:#ff8e86;
+  --red-soft:#371917;
+  --ink:#030810;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 var(--sans);-webkit-text-size-adjust:100%}
+a{color:inherit}
+button,input{font:inherit}
+button{color:inherit}
+::selection{background:var(--blue);color:#fff}
+.skip-link{position:fixed;left:12px;top:10px;z-index:1000;background:var(--text);color:var(--bg);padding:9px 12px;border-radius:10px;transform:translateY(-160%)}
+.skip-link:focus{transform:translateY(0)}
+.topbar{position:sticky;top:0;z-index:80;border-bottom:1px solid color-mix(in srgb,var(--line) 85%,transparent);background:color-mix(in srgb,var(--bg) 89%,transparent);backdrop-filter:blur(18px)}
+.topbar-inner{width:min(1240px,calc(100% - 32px));margin:0 auto;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 12px/1 var(--mono);letter-spacing:.05em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+html[data-theme="dark"] .brand-mark{background:#fff;color:#07111f}
+.brand-copy{display:grid;gap:1px}.brand-copy strong{font-size:13px;letter-spacing:.02em}.brand-copy span{font:10px/1.3 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.top-actions{display:flex;align-items:center;gap:9px}
+.icon-button,.mini-button{border:1px solid var(--line);background:var(--panel);border-radius:12px;min-height:40px;padding:0 13px;cursor:pointer;box-shadow:0 4px 16px rgba(20,40,70,.04)}
+.icon-button:hover,.mini-button:hover{border-color:color-mix(in srgb,var(--blue) 45%,var(--line));background:var(--blue-soft)}
+.shell{width:min(1240px,calc(100% - 32px));margin:0 auto;padding:26px 0 80px}
+.hero{position:relative;overflow:hidden;border-radius:34px;background:linear-gradient(135deg,#07111f 0%,#0b2038 55%,#12395d 100%);color:#fff;padding:58px clamp(24px,5vw,68px) 46px;box-shadow:0 26px 70px rgba(7,17,31,.18)}
+.hero::before{content:"";position:absolute;right:-130px;top:-170px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(73,160,255,.31),rgba(73,160,255,0) 68%)}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,black,transparent 85%);pointer-events:none}
+.hero-content{position:relative;z-index:2;max-width:900px}
+.eyebrow{margin:0 0 13px;font:700 11px/1.4 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#9ec8ff}
+.hero h1{margin:0;max-width:820px;font-size:clamp(38px,7vw,76px);line-height:.98;letter-spacing:-.055em;font-weight:760}
+.hero-copy{margin:24px 0 0;max-width:760px;font-size:clamp(17px,2vw,21px);line-height:1.55;color:#cddbeb}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0}.hero-tags span{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.075);padding:8px 10px;border-radius:999px;font:11px/1 var(--mono);color:#eef6ff}
+.hero-status{position:relative;z-index:2;margin-top:42px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.status-tile{min-height:104px;border:1px solid rgba(255,255,255,.13);background:rgba(5,14,27,.38);border-radius:18px;padding:16px;backdrop-filter:blur(8px)}
+.status-tile span{display:block;font:10px/1.4 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:#8eabc9;margin-bottom:7px}.status-tile strong{display:block;font-size:15px;line-height:1.35}
+.jump{display:flex;gap:7px;overflow:auto;padding:18px 2px 4px;margin:0 -2px;scrollbar-width:none}.jump::-webkit-scrollbar{display:none}.jump a{white-space:nowrap;text-decoration:none;border:1px solid var(--line);background:var(--panel);padding:8px 11px;border-radius:999px;font-size:12px;color:var(--muted)}.jump a:hover{color:var(--blue-strong);border-color:var(--blue)}
+.section{scroll-margin-top:92px;padding:58px 0 0}
+.section-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,480px);align-items:end;gap:28px;margin-bottom:22px}
+.kicker{margin:0 0 6px;font:700 10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--blue-strong)}
+.section h2{margin:0;font-size:clamp(27px,4vw,43px);line-height:1.08;letter-spacing:-.04em}.section-head>p{margin:0;color:var(--muted);font-size:15px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.principle{padding:22px;min-height:180px}.num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--blue-soft);color:var(--blue-strong);font:700 11px/1 var(--mono);margin-bottom:30px}.principle h3{margin:0 0 7px;font-size:17px}.principle p{margin:0;color:var(--muted)}
+.lifecycle-wrap{padding:24px;overflow:hidden}.lifecycle{display:grid;grid-template-columns:repeat(8,minmax(120px,1fr));gap:0;overflow:auto;padding:8px 2px 12px;scrollbar-width:thin}.life-step{position:relative;min-width:130px;padding:0 14px 0 0}.life-step:not(:last-child)::after{content:"";position:absolute;top:14px;left:35px;right:0;height:1px;background:var(--line)}.life-dot{position:relative;z-index:2;width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--panel);border:2px solid var(--blue);color:var(--blue-strong);font:700 10px/1 var(--mono)}.life-step h3{margin:15px 0 5px;font-size:13px}.life-step p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.anatomy{display:grid;grid-template-columns:minmax(320px,.9fr) minmax(0,1.1fr);gap:12px}.tree{padding:25px;background:var(--ink);color:#e8f1fb;border-color:#13243a;box-shadow:0 20px 55px rgba(7,17,31,.18)}.tree-top{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:18px}.tree-top strong{font:13px/1.4 var(--mono)}.tree-top span{font:10px/1 var(--mono);color:#7792ad}.tree pre{margin:0;font:13px/1.75 var(--mono);white-space:pre-wrap;color:#c4d4e5}.tree .blue{color:#69a9ff}.anatomy-notes{display:grid;grid-template-columns:1fr 1fr;gap:12px}.small-card{padding:20px}.small-card h3{margin:0 0 6px;font-size:15px}.small-card p{margin:0;color:var(--muted);font-size:13px}
+.boundaries{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.boundary{padding:22px}.boundary-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.boundary h3{margin:0;font-size:16px}.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font:700 9px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase}.pill.green{background:var(--green-soft);color:var(--green)}.pill.amber{background:var(--amber-soft);color:var(--amber)}.pill.red{background:var(--red-soft);color:var(--red)}.pill.blue{background:var(--blue-soft);color:var(--blue-strong)}.boundary ul{margin:0;padding:0;list-style:none}.boundary li{padding:9px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px}.boundary li:first-child{border-top:0}.boundary li strong{color:var(--text)}
+.learn-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}.learn-step{position:relative;padding:18px;min-height:165px}.learn-step span{font:700 10px/1 var(--mono);color:var(--blue-strong)}.learn-step h3{font-size:14px;margin:25px 0 6px}.learn-step p{font-size:12px;color:var(--muted);margin:0}.learn-step:not(:last-child)::after{content:"→";position:absolute;right:-11px;top:50%;z-index:3;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--bg);color:var(--blue-strong);font-weight:800}
+.decision-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.decision-column{padding:20px}.decision-column header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.decision-column h3{margin:0;font-size:16px}.decision-list{display:grid;gap:8px}.decision{padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--panel-2)}.decision strong{display:block;font-size:13px;margin-bottom:3px}.decision span{display:block;color:var(--muted);font-size:12px}
+.registry-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.filters{display:flex;gap:7px;overflow:auto;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:8px 11px;white-space:nowrap;cursor:pointer;font-size:12px}.filter[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}.question-search{width:min(360px,100%);border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px 12px;outline:none}.question-search:focus{border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 18%,transparent)}
+.question-groups{display:grid;gap:10px}.question-group{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}.question-group summary{cursor:pointer;list-style:none;padding:17px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}.question-group summary::-webkit-details-marker{display:none}.question-group summary strong{font-size:14px}.question-group summary span{font:10px/1 var(--mono);color:var(--muted)}.question-group[open] summary{border-bottom:1px solid var(--line)}.question-list{margin:0;padding:6px 18px 14px 38px}.question-list li{padding:8px 0;color:var(--muted)}.question-list li::marker{color:var(--blue)}.question-list strong{color:var(--text)}
+.recovery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.recovery-card{padding:20px}.recovery-card header{display:flex;align-items:center;gap:10px;margin-bottom:12px}.recovery-card h3{margin:0;font-size:15px}.recovery-card ol{margin:0;padding-left:19px}.recovery-card li{padding:4px 0;color:var(--muted);font-size:13px}.recovery-card code{font:12px/1.5 var(--mono);color:var(--blue-strong)}
+.example{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:12px}.example-intro{padding:28px}.example-intro h3{font-size:25px;line-height:1.1;letter-spacing:-.03em;margin:0 0 11px}.example-intro p{margin:0;color:var(--muted)}.example-checks{padding:20px}.check-row{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:12px 0;border-top:1px solid var(--line)}.check-row:first-child{border-top:0}.check-icon{width:24px;height:24px;border-radius:8px;background:var(--blue-soft);color:var(--blue-strong);display:grid;place-items:center;font:700 10px/1 var(--mono)}.check-row strong{display:block;font-size:13px}.check-row span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.acceptance{padding:24px}.acceptance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}.acceptance-item{display:flex;gap:10px;padding:13px 0;border-top:1px solid var(--line)}.acceptance-item:nth-child(-n+2){border-top:0}.acceptance-item span:first-child{color:var(--blue-strong);font-weight:800}.acceptance-item strong{display:block;font-size:13px}.acceptance-item p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.footer{margin-top:62px;padding:24px 0 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:12px}.footer-links{display:flex;gap:14px}.footer a{color:var(--blue-strong)}
+.hidden{display:none!important}
+@media(max-width:1000px){.hero-status{grid-template-columns:1fr 1fr}.principles{grid-template-columns:1fr 1fr}.boundaries{grid-template-columns:1fr}.learn-flow{grid-template-columns:repeat(3,1fr)}.decision-grid{grid-template-columns:1fr}.anatomy,.example{grid-template-columns:1fr}.section-head{grid-template-columns:1fr;align-items:start}.section-head>p{max-width:720px}}
+@media(max-width:700px){.topbar-inner,.shell{width:min(100% - 24px,1240px)}.brand-copy span{display:none}.hero{padding:38px 20px 26px;border-radius:24px}.hero h1{font-size:42px}.hero-copy{font-size:16px}.hero-status{grid-template-columns:1fr}.principles{grid-template-columns:1fr}.anatomy-notes{grid-template-columns:1fr}.learn-flow{grid-template-columns:1fr}.learn-step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-15px}.registry-tools{align-items:stretch;flex-direction:column}.question-search{width:100%}.recovery{grid-template-columns:1fr}.acceptance-grid{grid-template-columns:1fr}.acceptance-item:nth-child(2){border-top:1px solid var(--line)}.section{padding-top:46px}.section h2{font-size:30px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to environment spec</a>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/environment/" aria-label="Development Environment home">
+      <span class="brand-mark" aria-hidden="true">ENV</span>
+      <span class="brand-copy"><strong>Development Environment</strong><span>learning platform / technical spec</span></span>
+    </a>
+    <div class="top-actions">
+      <a class="mini-button" href="/architecture/" style="display:inline-flex;align-items:center;text-decoration:none">Architecture</a>
+      <button class="icon-button" id="themeToggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">◐</button>
+    </div>
+  </div>
+</header>
+<main id="main" class="shell">
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="hero-content">
+      <p class="eyebrow">Python-first · local-first · AI-assisted</p>
+      <h1 id="heroTitle">Build with AI. Understand the stack.</h1>
+      <p class="hero-copy">A development environment for learning backend development while building real applications. The setup should make structure visible, keep risky actions controlled, and leave enough of the machinery exposed that every project teaches you something.</p>
+      <div class="hero-tags" aria-label="Core environment principles">
+        <span>FASTAPI PRIMARY</span><span>GITHUB SOURCE OF TRUTH</span><span>ISOLATED PROJECTS</span><span>EXPLANATION-FIRST AI</span><span>RECOVERABLE BY DESIGN</span>
+      </div>
+    </div>
+    <div class="hero-status">
+      <article class="status-tile"><span>Primary path</span><strong>Python + FastAPI</strong></article>
+      <article class="status-tile"><span>Project model</span><strong>Isolated and reproducible</strong></article>
+      <article class="status-tile"><span>Change history</span><strong>Git and GitHub</strong></article>
+      <article class="status-tile"><span>Learning mode</span><strong>Explain, build, test, review</strong></article>
+    </div>
+  </section>
+
+  <nav class="jump" aria-label="Environment sections">
+    <a href="#principles">Principles</a><a href="#lifecycle">Lifecycle</a><a href="#anatomy">Project anatomy</a><a href="#guardrails">AI guardrails</a><a href="#learning">Learning loop</a><a href="#decisions">Decisions</a><a href="#questions">Open questions</a><a href="#recovery">Recovery</a><a href="#example">Example project</a><a href="#ready">Ready when</a>
+  </nav>
+
+  <section class="section" id="principles">
+    <div class="section-head"><div><p class="kicker">01 / operating principles</p><h2>What this environment should protect</h2></div><p>The environment has two jobs at the same time: help ship useful software and make the work understandable enough that dependence on AI falls over time.</p></div>
+    <div class="principles">
+      <article class="card principle"><span class="num">01</span><h3>Learning stays visible</h3><p>When a route, model, migration, container or test appears, the environment should explain what it is, where it belongs and why the project needs it.</p></article>
+      <article class="card principle"><span class="num">02</span><h3>Architecture stays predictable</h3><p>Routes, services, database code, models, tests and configuration should have stable homes so generated work does not reorganize the project on every request.</p></article>
+      <article class="card principle"><span class="num">03</span><h3>Projects stay isolated</h3><p>Experiments should have their own environments and containers. Breaking one project should not damage another project or a production service.</p></article>
+      <article class="card principle"><span class="num">04</span><h3>Risky changes stay reviewable</h3><p>Dependency changes, schema migrations, destructive commands, secrets, large file changes and deployment actions should be visible before they happen.</p></article>
+      <article class="card principle"><span class="num">05</span><h3>Recovery stays simple</h3><p>Git checkpoints, database backups, disposable sandboxes and repeatable deployment steps should make a bad AI change annoying instead of catastrophic.</p></article>
+      <article class="card principle"><span class="num">06</span><h3>Local work stays portable</h3><p>Open-source defaults, Docker and documented configuration should keep projects movable between a laptop, a VPS and hosted services without rebuilding the architecture.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="lifecycle">
+    <div class="section-head"><div><p class="kicker">02 / delivery path</p><h2>One understandable route from idea to production</h2></div><p>Every real project should follow the same recognizable path. AI can help at each stage, while permissions and checks get stricter as the work moves closer to production.</p></div>
+    <div class="card lifecycle-wrap">
+      <div class="lifecycle" aria-label="Development lifecycle">
+        <article class="life-step"><span class="life-dot">1</span><h3>Local</h3><p>Write code, learn the stack and run the app on the machine.</p></article>
+        <article class="life-step"><span class="life-dot">2</span><h3>Sandbox</h3><p>Run isolated experiments with bounded access and disposable state.</p></article>
+        <article class="life-step"><span class="life-dot">3</span><h3>Validate</h3><p>Tests, linting, types and migration checks run before completion.</p></article>
+        <article class="life-step"><span class="life-dot">4</span><h3>Git</h3><p>Review the diff, checkpoint the work and keep a clean history.</p></article>
+        <article class="life-step"><span class="life-dot">5</span><h3>Staging</h3><p>Use production-like services without touching real production data.</p></article>
+        <article class="life-step"><span class="life-dot">6</span><h3>Production</h3><p>Deploy a known revision with explicit secrets and release steps.</p></article>
+        <article class="life-step"><span class="life-dot">7</span><h3>Observe</h3><p>Read health, logs and errors after release.</p></article>
+        <article class="life-step"><span class="life-dot">8</span><h3>Recover</h3><p>Rollback code or restore data using a documented procedure.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="anatomy">
+    <div class="section-head"><div><p class="kicker">03 / project anatomy</p><h2>A stable place for every kind of code</h2></div><p>This is the shape the environment should aim for. Exact names can change once the stack is finalized, but the separation of concerns should remain clear.</p></div>
+    <div class="anatomy">
+      <article class="card tree">
+        <div class="tree-top"><strong>example-fastapi-project/</strong><span>PROPOSED SHAPE</span></div>
+<pre><span class="blue">app/</span>
+  main.py              # application entry
+  <span class="blue">api/</span>                # HTTP routes
+    routes/
+  <span class="blue">services/</span>           # business logic
+  <span class="blue">models/</span>             # database models
+  <span class="blue">schemas/</span>            # request/response shapes
+  <span class="blue">db/</span>                 # database session + queries
+  <span class="blue">core/</span>               # config, security, shared rules
+<span class="blue">tests/</span>                # automated checks
+<span class="blue">migrations/</span>           # database changes
+Dockerfile
+compose.yaml
+.env.example
+pyproject.toml
+README.md</pre>
+      </article>
+      <div class="anatomy-notes">
+        <article class="card small-card"><h3>Routes stay thin</h3><p>Endpoints receive input, call the right service, and return a response. Heavy logic should not collect inside route files.</p></article>
+        <article class="card small-card"><h3>Services hold behavior</h3><p>Business rules live in Python functions or classes that can be tested without pretending every action is an HTTP request.</p></article>
+        <article class="card small-card"><h3>Database changes are explicit</h3><p>Schema changes should produce migrations that can be inspected, applied, reversed where practical, and backed up before risky production changes.</p></article>
+        <article class="card small-card"><h3>Configuration stays outside code</h3><p>Real secrets live in environment variables or an approved secret store. <code>.env.example</code> documents expected settings without containing credentials.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="guardrails">
+    <div class="section-head"><div><p class="kicker">04 / AI authority</p><h2>Helpful access with hard edges</h2></div><p>AI should work inside the project with the permissions needed for the task. Higher-risk actions should stop for review instead of inheriting unlimited authority.</p></div>
+    <div class="boundaries">
+      <article class="card boundary"><div class="boundary-head"><h3>Routine work</h3><span class="pill green">allowed</span></div><ul><li><strong>Read</strong> approved project files and documentation.</li><li><strong>Create</strong> routes, services, schemas and tests inside the expected folders.</li><li><strong>Run</strong> allowlisted development and test commands.</li><li><strong>Explain</strong> diffs, errors and the technology involved.</li><li><strong>Prepare</strong> Git changes on a working branch.</li></ul></article>
+      <article class="card boundary"><div class="boundary-head"><h3>Review first</h3><span class="pill amber">approval</span></div><ul><li><strong>Add or upgrade</strong> project dependencies.</li><li><strong>Change</strong> database schema or migration history.</li><li><strong>Modify</strong> architecture across many files.</li><li><strong>Delete</strong> important files, data or containers.</li><li><strong>Deploy</strong> staging or production revisions.</li><li><strong>Use</strong> credentials or external provider actions.</li></ul></article>
+      <article class="card boundary"><div class="boundary-head"><h3>Blocked by design</h3><span class="pill red">blocked</span></div><ul><li>Hardcode secrets, tokens or passwords into source.</li><li>Receive unrestricted access to unrelated projects or the whole machine.</li><li>Silently rewrite protected configuration or Git history.</li><li>Bypass tests, review gates or production approval.</li><li>Run arbitrary destructive shell commands without an explicit boundary.</li></ul></article>
+    </div>
+  </section>
+
+  <section class="section" id="learning">
+    <div class="section-head"><div><p class="kicker">05 / learning loop</p><h2>Every AI change should leave understanding behind</h2></div><p>The environment should teach through real work. Explanations stay tied to the exact files, commands and concepts being used in the project.</p></div>
+    <div class="learn-flow">
+      <article class="card learn-step"><span>01</span><h3>You describe the goal</h3><p>Example: add a project creation endpoint.</p></article>
+      <article class="card learn-step"><span>02</span><h3>AI maps the change</h3><p>Files, concepts, risks and expected behavior are shown first.</p></article>
+      <article class="card learn-step"><span>03</span><h3>The stack is explained</h3><p>Endpoint, schema, service, model and migration are explained in context.</p></article>
+      <article class="card learn-step"><span>04</span><h3>The change is built</h3><p>Work stays inside the agreed structure and current project scope.</p></article>
+      <article class="card learn-step"><span>05</span><h3>Checks run</h3><p>Tests and validation produce evidence before completion is claimed.</p></article>
+      <article class="card learn-step"><span>06</span><h3>You review the diff</h3><p>Git shows exactly what changed and gives you a clean recovery point.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="decisions">
+    <div class="section-head"><div><p class="kicker">06 / decision board</p><h2>Separate what is known from what still needs a choice</h2></div><p>This page should get more specific as the environment is finalized. Open items stay visibly open until there is a reason to lock them down.</p></div>
+    <div class="decision-grid">
+      <article class="card decision-column"><header><h3>Confirmed direction</h3><span class="pill green">locked</span></header><div class="decision-list">
+        <div class="decision"><strong>Python is the primary backend language</strong><span>Learning and project templates should center on Python.</span></div>
+        <div class="decision"><strong>FastAPI is the primary application template</strong><span>Real backend work should use one main framework before adding alternatives.</span></div>
+        <div class="decision"><strong>GitHub remains source control</strong><span>Changes need readable diffs, checkpoints and recoverable history.</span></div>
+        <div class="decision"><strong>Secrets stay out of source</strong><span>Environment configuration should document required keys without exposing them.</span></div>
+        <div class="decision"><strong>AI works inside guardrails</strong><span>Risky, destructive and architectural changes require stronger checks.</span></div>
+      </div></article>
+      <article class="card decision-column"><header><h3>Strong default candidates</h3><span class="pill blue">proposed</span></header><div class="decision-list">
+        <div class="decision"><strong>PostgreSQL</strong><span>Default relational database for applications that need durable structured data.</span></div>
+        <div class="decision"><strong>Docker + Compose</strong><span>Repeatable local services and portable deployment packaging.</span></div>
+        <div class="decision"><strong>Alembic</strong><span>Migration history if SQLAlchemy-based models are selected.</span></div>
+        <div class="decision"><strong>pytest</strong><span>Simple, standard Python testing path with strong ecosystem support.</span></div>
+        <div class="decision"><strong>Uvicorn</strong><span>Likely ASGI server for development and a production deployment component.</span></div>
+      </div></article>
+      <article class="card decision-column"><header><h3>Still open</h3><span class="pill amber">decide</span></header><div class="decision-list">
+        <div class="decision"><strong>Python and FastAPI versions</strong><span>Choose a stable baseline and document the upgrade policy.</span></div>
+        <div class="decision"><strong>Dependency manager</strong><span>Decide between uv, pip-based workflows, Poetry or another documented choice.</span></div>
+        <div class="decision"><strong>ORM and model pattern</strong><span>SQLAlchemy, SQLModel or another approach still needs a clear reason.</span></div>
+        <div class="decision"><strong>Linting and type checking</strong><span>Pick the default tools and define what must pass before release.</span></div>
+        <div class="decision"><strong>Hosting and deployment target</strong><span>Keep the template portable while choosing a simple first deployment path.</span></div>
+      </div></article>
+    </div>
+  </section>
+
+  <section class="section" id="questions">
+    <div class="section-head"><div><p class="kicker">07 / technical question registry</p><h2>Questions that need real answers before the setup is considered finished</h2></div><p>These questions are grouped so they can turn into documented decisions over time. Search them or filter by area.</p></div>
+    <div class="registry-tools">
+      <div class="filters" role="group" aria-label="Filter technical questions">
+        <button class="filter" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="filter" type="button" data-filter="python" aria-pressed="false">Python</button>
+        <button class="filter" type="button" data-filter="data" aria-pressed="false">Data</button>
+        <button class="filter" type="button" data-filter="sandbox" aria-pressed="false">Sandbox</button>
+        <button class="filter" type="button" data-filter="ai" aria-pressed="false">AI</button>
+        <button class="filter" type="button" data-filter="quality" aria-pressed="false">Quality</button>
+        <button class="filter" type="button" data-filter="git" aria-pressed="false">Git</button>
+        <button class="filter" type="button" data-filter="deploy" aria-pressed="false">Deploy</button>
+        <button class="filter" type="button" data-filter="security" aria-pressed="false">Security</button>
+      </div>
+      <label><span class="hidden">Search technical questions</span><input class="question-search" id="questionSearch" type="search" placeholder="Search questions" /></label>
+    </div>
+    <div class="question-groups" id="questionGroups">
+      <details class="question-group" data-topic="python" open><summary><strong>Python, FastAPI and project structure</strong><span>10 QUESTIONS</span></summary><ol class="question-list">
+        <li>Which Python version becomes the standard baseline?</li><li>Which FastAPI version and setup are we standardizing on?</li><li>What manages dependencies: <strong>uv, pip, Poetry</strong> or something else?</li><li>Does every project receive its own Python virtual environment?</li><li>What runs FastAPI in development and production: Uvicorn, Gunicorn or another setup?</li><li>What folder structure is the default template?</li><li>How strictly are routes, services, models, schemas and database code separated?</li><li>Which configuration belongs in code, environment variables and local developer files?</li><li>What does a brand-new project contain before any feature code is written?</li><li>How are framework and package upgrades introduced without destabilizing existing projects?</li>
+      </ol></details>
+      <details class="question-group" data-topic="data"><summary><strong>Database, SQL and migrations</strong><span>10 QUESTIONS</span></summary><ol class="question-list">
+        <li>Which database is the default for real applications?</li><li>Can PostgreSQL run locally with no external service required?</li><li>Which ORM or database layer is used: SQLAlchemy, SQLModel or something else?</li><li>Are Alembic or another migration tool included from the start?</li><li>Will the learning path include basic SQL so the ORM does not hide the database completely?</li><li>What happens when AI proposes a schema change?</li><li>What backup happens before a risky production migration?</li><li>How do local and production backup and restore procedures differ?</li><li>Is Redis included at the start, and what exact problem would justify adding it?</li><li>How will file uploads and object storage fit in when projects need images, PDFs or larger files?</li>
+      </ol></details>
+      <details class="question-group" data-topic="sandbox"><summary><strong>Docker, Compose and sandbox isolation</strong><span>9 QUESTIONS</span></summary><ol class="question-list">
+        <li>Is Docker part of every project or only projects that need it?</li><li>When does Docker Compose become the default for FastAPI plus PostgreSQL and other services?</li><li>What does <strong>sandbox</strong> mean technically in this environment?</li><li>Does each project receive its own isolated container or sandbox boundary?</li><li>How do you create, reset and delete a sandbox?</li><li>Can AI operate inside the sandbox without unrestricted access to other projects or the host machine?</li><li>Which directories, networks and commands are exposed inside a sandbox?</li><li>How is disposable test data separated from persistent project data?</li><li>What is the fastest clean reset when an experiment leaves the environment in a bad state?</li>
+      </ol></details>
+      <details class="question-group" data-topic="ai"><summary><strong>AI tools, MCP, skills and permissions</strong><span>12 QUESTIONS</span></summary><ol class="question-list">
+        <li>Which AI coding tools are expected to work with the environment?</li><li>Does the setup depend on one AI provider or can the provider change?</li><li>Where are the AI instruction and guardrail files stored so they can be read and edited directly?</li><li>Which MCP servers or tool adapters are included?</li><li>Which skills are included, and which are custom, official or community-maintained?</li><li>How are filesystem, shell, database, GitHub and deployment permissions separated?</li><li>Which destructive commands require explicit approval?</li><li>Can AI add dependencies without approval?</li><li>Can AI change database structure without presenting the migration and risk first?</li><li>Can AI access only the current project instead of the whole development machine?</li><li>How are provider usage limits and runaway agent loops controlled?</li><li>Which parts of the environment still work normally when no AI tool is connected?</li>
+      </ol></details>
+      <details class="question-group" data-topic="quality"><summary><strong>Tests, linting and release validation</strong><span>8 QUESTIONS</span></summary><ol class="question-list">
+        <li>Will AI run tests before reporting a feature as finished?</li><li>Which testing framework is configured by default?</li><li>Which formatter and linter are used?</li><li>Is static type checking included, and how strict should it be for a beginner project?</li><li>What validation must pass before a branch is considered ready?</li><li>What validation must pass before staging or production?</li><li>How are dependency and package security checks handled?</li><li>How do we keep the release checklist understandable enough to run manually when needed?</li>
+      </ol></details>
+      <details class="question-group" data-topic="git"><summary><strong>Git, GitHub and recovery checkpoints</strong><span>8 QUESTIONS</span></summary><ol class="question-list">
+        <li>What Git workflow is recommended for someone still learning?</li><li>When should a new branch be created?</li><li>Do checkpoints happen automatically before large AI changes or only when requested?</li><li>How should commits be sized and named?</li><li>What should be reviewed in a diff before accepting generated code?</li><li>What is the fastest recovery method after a bad change across many files?</li><li>When should a pull request be used even on a one-person project?</li><li>How do Git recovery and database recovery work together when code and schema changed at the same time?</li>
+      </ol></details>
+      <details class="question-group" data-topic="deploy"><summary><strong>Deployment, staging and portability</strong><span>12 QUESTIONS</span></summary><ol class="question-list">
+        <li>What does one-click deployment actually execute?</li><li>Where is the first recommended FastAPI deployment target?</li><li>Can the deployment provider change later without rebuilding the application?</li><li>Does Docker keep the same project portable between laptop, VPS and another provider?</li><li>How are domains and HTTPS handled?</li><li>Where do production environment variables and secrets live?</li><li>How are production logs viewed when something breaks?</li><li>What monitoring is included or documented?</li><li>What restarts the application after a crash?</li><li>How are local, development, staging and production environments kept separate?</li><li>How do you rollback a bad deployment?</li><li>Which parts can be self-hosted later to reduce provider lock-in?</li>
+      </ol></details>
+      <details class="question-group" data-topic="security"><summary><strong>Authentication and security basics</strong><span>9 QUESTIONS</span></summary><ol class="question-list">
+        <li>How do users and authentication fit into the base template when a project needs them?</li><li>Which security basics belong in the initial template and which are intentionally added later?</li><li>How are rate limiting, CORS, HTTPS and security headers taught and configured?</li><li>How are package and framework security updates tracked?</li><li>Does every project include a safe <code>.env.example</code>?</li><li>How are secrets kept out of logs, prompts, browser code and Git history?</li><li>What happens if a secret is accidentally committed?</li><li>How are backups protected and who can restore them?</li><li>What production actions require stronger authentication or confirmation?</li>
+      </ol></details>
+      <details class="question-group" data-topic="ai"><summary><strong>Ownership, handbook and long-term independence</strong><span>8 QUESTIONS</span></summary><ol class="question-list">
+        <li>What parts are automated and what parts does the handbook deliberately teach you to do manually?</li><li>What files, templates, scripts, configs, skills and example projects make up the finished environment?</li><li>Will all code and configuration live in repositories and accounts under your control?</li><li>Can every important workflow be recreated from the handbook and repository if the original setup disappears?</li><li>How does the handbook separate what AI is doing from what Python, FastAPI, Git, Docker or PostgreSQL are doing?</li><li>Does the handbook cover common failures such as dependency conflicts, server startup, database connections, migrations and deployment?</li><li>Is there one example project that demonstrates the complete lifecycle from local code through API, database, tests and deployment?</li><li>After a few months, which tasks should you be able to perform without AI assistance?</li>
+      </ol></details>
+    </div>
+  </section>
+
+  <section class="section" id="recovery">
+    <div class="section-head"><div><p class="kicker">08 / recovery playbook</p><h2>Bad changes need boring recovery paths</h2></div><p>Recovery should rely on known tools and documented checkpoints. The goal is to make failure diagnosable and reversible without guessing.</p></div>
+    <div class="recovery">
+      <article class="card recovery-card"><header><span class="pill red">code</span><h3>AI changed too much</h3></header><ol><li>Stop new changes and inspect <code>git diff</code>.</li><li>Identify the last known-good commit.</li><li>Save any useful work on a separate branch if needed.</li><li>Restore or revert the bad files using Git.</li><li>Re-run tests before continuing.</li></ol></article>
+      <article class="card recovery-card"><header><span class="pill amber">database</span><h3>Migration went bad</h3></header><ol><li>Stop writes if production data could be affected.</li><li>Check the migration revision and database state.</li><li>Use the documented downgrade only when it is safe.</li><li>Restore the pre-migration backup when rollback cannot safely repair the data.</li><li>Fix the migration in development before another production attempt.</li></ol></article>
+      <article class="card recovery-card"><header><span class="pill blue">runtime</span><h3>Server will not start</h3></header><ol><li>Read the first meaningful error in the logs.</li><li>Confirm environment variables and dependency install state.</li><li>Check the database and required services.</li><li>Run the application locally with the documented development command.</li><li>Reduce the problem to one failing component before changing architecture.</li></ol></article>
+      <article class="card recovery-card"><header><span class="pill green">deploy</span><h3>Production release failed</h3></header><ol><li>Keep the failed revision identified.</li><li>Inspect health checks and deployment logs.</li><li>Rollback to the last known-good image or commit.</li><li>Confirm the previous version is healthy.</li><li>Reproduce the failure in staging before trying again.</li></ol></article>
+    </div>
+  </section>
+
+  <section class="section" id="example">
+    <div class="section-head"><div><p class="kicker">09 / example lifecycle</p><h2>One small project that touches the whole stack</h2></div><p>The environment should include an example that is simple enough to understand and complete enough to demonstrate the real workflow.</p></div>
+    <div class="example">
+      <article class="card example-intro"><p class="kicker">EXAMPLE PROJECT</p><h3>Projects API</h3><p>Create, list and update projects with FastAPI and PostgreSQL. The example starts locally, adds a migration and tests, runs through Git, reaches staging, deploys, and demonstrates rollback and restore.</p></article>
+      <article class="card example-checks">
+        <div class="check-row"><span class="check-icon">01</span><div><strong>Create the FastAPI app</strong><span>Understand application startup, routes and automatic API docs.</span></div></div>
+        <div class="check-row"><span class="check-icon">02</span><div><strong>Add request and response schemas</strong><span>Learn validation and the difference between API shapes and database rows.</span></div></div>
+        <div class="check-row"><span class="check-icon">03</span><div><strong>Add PostgreSQL</strong><span>Create the project table, database session and first migration.</span></div></div>
+        <div class="check-row"><span class="check-icon">04</span><div><strong>Add tests</strong><span>Test route behavior and service logic before deployment.</span></div></div>
+        <div class="check-row"><span class="check-icon">05</span><div><strong>Containerize it</strong><span>Run the same application and database through Docker Compose.</span></div></div>
+        <div class="check-row"><span class="check-icon">06</span><div><strong>Deploy and recover</strong><span>Use staging, production configuration, health checks, logs and a rollback exercise.</span></div></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="ready">
+    <div class="section-head"><div><p class="kicker">10 / acceptance standard</p><h2>The environment is ready when these answers are concrete</h2></div><p>A polished interface does not make the environment finished. The workflows need to be repeatable, inspectable and teachable.</p></div>
+    <div class="card acceptance"><div class="acceptance-grid">
+      <div class="acceptance-item"><span>✓</span><div><strong>A new FastAPI project can be created from the standard template</strong><p>The folder structure, dependency setup and local commands are documented.</p></div></div>
+      <div class="acceptance-item"><span>✓</span><div><strong>Local PostgreSQL can be started, migrated, backed up and restored</strong><p>The database workflow is understandable without a hosted provider.</p></div></div>
+      <div class="acceptance-item"><span>✓</span><div><strong>AI permissions and instruction files are visible</strong><p>You can inspect and change the rules that control generated work.</p></div></div>
+      <div class="acceptance-item"><span>✓</span><div><strong>Tests and release checks have one documented command path</strong><p>Completion means checks actually ran.</p></div></div>
+      <div class="acceptance-item"><span>✓</span><div><strong>Bad code and bad data changes have recovery procedures</strong><p>Git rollback and database restore are both demonstrated.</p></div></div>
+      <div class="acceptance-item"><span>✓</span><div><strong>Staging and production are clearly separate</strong><p>Secrets, data and deployment actions do not blur across environments.</p></div></div>
+      <div class="acceptance-item"><span>✓</span><div><strong>The example project completes the full lifecycle</strong><p>Local development, API, database, tests, Git, deployment, logs and rollback are all covered.</p></div></div>
+      <div class="acceptance-item"><span>✓</span><div><strong>The handbook can gradually get out of the way</strong><p>The long-term result is independent understanding, not permanent dependence on instructions.</p></div></div>
+    </div></div>
+  </section>
+
+  <footer class="footer">
+    <span>Development Environment · private technical reference · v1.0</span>
+    <div class="footer-links"><a href="/architecture/">Architecture</a><a href="/build/">Build Lab</a><a href="/updates/">Platform Notes</a></div>
+  </footer>
+</main>
+<script>
+(() => {
+  const root = document.documentElement;
+  const themeButton = document.querySelector('#themeToggle');
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+
+  function setTheme(theme) {
+    root.dataset.theme = theme;
+    const dark = theme === 'dark';
+    themeButton.setAttribute('aria-pressed', String(dark));
+    themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    if (metaTheme) metaTheme.setAttribute('content', dark ? '#07111f' : '#eef4f8');
+  }
+  themeButton.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+  const filters = [...document.querySelectorAll('.filter')];
+  const groups = [...document.querySelectorAll('.question-group')];
+  const search = document.querySelector('#questionSearch');
+  let activeFilter = 'all';
+
+  function applyQuestionFilter() {
+    const term = search.value.trim().toLowerCase();
+    groups.forEach(group => {
+      const topicMatches = activeFilter === 'all' || group.dataset.topic === activeFilter;
+      const textMatches = !term || group.textContent.toLowerCase().includes(term);
+      group.classList.toggle('hidden', !(topicMatches && textMatches));
+      if (term && topicMatches && textMatches) group.open = true;
+    });
+  }
+
+  filters.forEach(button => button.addEventListener('click', () => {
+    activeFilter = button.dataset.filter;
+    filters.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    applyQuestionFilter();
+  }));
+  search.addEventListener('input', applyQuestionFilter);
+})();
+</script>
+</body>
+</html>

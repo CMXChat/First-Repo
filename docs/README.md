@@ -21,10 +21,13 @@ Use this order when starting Spaces work:
 9. `docs/brief-interface-failures.md`
 10. Current source, tests, workflows, and `assets/cmx-routes.json`
 
+For the Python-first learning and development environment, start with `docs/development-environment-requirements.md` and `/environment/`.
+
 ## Current operational documents
 
 | File | Purpose |
 |---|---|
+| `development-environment-requirements.md` | Requirements for the Python-first development environment, project structure, AI guardrails, learning behavior, recovery, deployment, handbook, and acceptance standard. |
 | `spaces-demo-continuity.md` | Current seven-scenario product, responsive entry, product-document investment comparison, design, data, validation, publishing, and rollback contract. |
 | `2026-08-06-spaces-route-migration.md` | Canonical route decision plus shared-calendar, alarm, voice, compatibility, and release contracts. |
 | `spaces-product-direction-2026-08-06.md` | Current product name, category, doctrine, input model, memory settings, and Cloudflare relationship. |
@@ -47,10 +50,25 @@ Use this order when starting Spaces work:
 
 ## Current routes
 
+- `/environment/`: protected direct-link Python-first development environment specification and learning workflow.
 - `/spaces/`: canonical public noindex Spaces demo, light in the initial HTML, with manual dark mode.
 - `/brief/`: public noindex compatibility route that redirects old links and bookmarks to `/spaces/` while preserving query strings and hashes.
 - `/brief-next/`: public noindex pre-migration rollback snapshot; it is intentionally separate from the active route.
 - `/doc/`: public noindex Spaces product overview, light by default, without a password gate.
+
+## Development environment contract
+
+- Python is the primary backend language and FastAPI is the primary application template.
+- Confirmed direction, proposed defaults, and unresolved choices remain visibly separate.
+- Project structure should keep routes, services, schemas, database code, models, tests, migrations, and configuration in predictable locations.
+- AI may handle routine project work inside defined boundaries while dependencies, schema changes, destructive commands, broad architecture changes, secrets, and deployment receive stronger review controls.
+- Secrets remain outside source and browser code.
+- Git and GitHub provide checkpoints, reviewable diffs, branches, commits, pull requests, and recovery.
+- Local development, sandboxes, validation, staging, production, observation, and rollback should form one understandable lifecycle.
+- Database backup and restore are part of the normal operating model.
+- The handbook should explain both the workflow and the underlying technology.
+- The example project should demonstrate the full lifecycle from local FastAPI through database, tests, deployment, logs, rollback, and restore.
+- The long-term goal is increasing independence from both the handbook and AI for routine work.
 
 ## Spaces experience contract
 
