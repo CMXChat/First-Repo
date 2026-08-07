@@ -23,6 +23,10 @@ body[data-scenario="team"] { --space-accent: #7256b4; }
   margin-block: auto;
 }
 
+.entry-card h1 {
+  max-width: none;
+}
+
 .entry-option {
   min-width: 0;
 }
@@ -319,22 +323,30 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
 .section-ai-button {
   display: inline-flex;
   flex: 0 0 auto;
+  position: relative;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 31px;
+  height: 31px;
   padding: 0;
   color: var(--blue-deep);
   border: 1px solid color-mix(in srgb, var(--blue) 33%, var(--line));
   border-radius: 50%;
   background: color-mix(in srgb, var(--blue-soft) 58%, var(--surface));
-  box-shadow: 0 7px 18px color-mix(in srgb, var(--blue) 8%, transparent);
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--blue) 8%, transparent);
   cursor: pointer;
+}
+
+.section-ai-button::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
 }
 
 .section-ai-button > span {
   color: var(--blue);
-  font-size: 0.9rem;
+  font-size: 0.76rem;
   line-height: 1;
 }
 

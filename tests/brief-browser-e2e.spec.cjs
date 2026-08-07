@@ -142,6 +142,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   const entryFit = await page.locator('#entry').evaluate(entry => {
     const style = getComputedStyle(entry);
     const card = entry.querySelector('.entry-card').getBoundingClientRect();
+    const heading = entry.querySelector('.entry-card h1').getBoundingClientRect();
     const tip = entry.querySelector('.entry-tip-carousel').getBoundingClientRect();
     const actions = entry.querySelector('.entry-actions').getBoundingClientRect();
     const activeCopy = entry.querySelector('[data-entry-tip]:not([aria-hidden="true"]) p');
@@ -153,6 +154,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       gutter: style.scrollbarGutter,
       leftMargin: card.left,
       rightMargin: innerWidth - card.right,
+      headingHeight: heading.height,
       tipHeight: tip.height,
       actionGap: actions.top - tip.bottom,
       wordAnimation: getComputedStyle(activeCopy).animationName
@@ -163,6 +165,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(entryFit.maxScroll).toBeLessThanOrEqual(1);
   expect(entryFit.gutter).toContain('stable');
   expect(Math.abs(entryFit.leftMargin - entryFit.rightMargin)).toBeLessThanOrEqual(2);
+  expect(entryFit.headingHeight).toBeLessThanOrEqual(50);
   expect(entryFit.tipHeight).toBeLessThanOrEqual(66);
   expect(entryFit.actionGap).toBeGreaterThanOrEqual(10);
   expect(entryFit.wordAnimation).toContain('entry-tip-copy-in');
@@ -258,6 +261,18 @@ test('section conversations and standout modules keep the current Space in scope
   const trigger = page.locator('.workspace-panel-heading [data-ai-trigger]');
   await expect(trigger).toHaveText('✦');
   await expect(trigger).toHaveAttribute('aria-label', /Open a conversation about/);
+  const triggerGeometry = await trigger.evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const hitArea = getComputedStyle(button, '::before');
+    return {
+      width: rect.width,
+      height: rect.height,
+      hitInset: Math.abs(parseFloat(hitArea.inset))
+    };
+  });
+  expect(triggerGeometry.width).toBeLessThanOrEqual(32);
+  expect(triggerGeometry.height).toBeLessThanOrEqual(32);
+  expect(triggerGeometry.width + (triggerGeometry.hitInset * 2)).toBeGreaterThanOrEqual(44);
   await trigger.click();
   await expect(page.locator('#spacesAiDialog')).toBeVisible();
   await expect(page.locator('#spacesAiTitle')).toHaveText('Continue with this section');
