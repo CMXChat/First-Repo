@@ -37,7 +37,40 @@ jobs:
 
           doc = Path('doc/index.html')
           source = doc.read_text(encoding='utf-8').replace('href="/brief/"', 'href="/spaces/"')
+          doc_link = '  <link rel="stylesheet" href="/assets/spaces-accessibility.css?v=20260806-1" />\n'
+          doc_anchor = '  <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260805-2" />\n'
+          if doc_link not in source:
+              source = source.replace(doc_anchor, doc_anchor + doc_link, 1)
           doc.write_text(source, encoding='utf-8')
+
+          spaces = Path('spaces/index.html')
+          source = spaces.read_text(encoding='utf-8')
+          spaces_link = '  <link rel="stylesheet" href="/assets/spaces-accessibility.css?v=20260806-1" />\n'
+          spaces_anchor = '  <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260806-3" />\n'
+          if spaces_link not in source:
+              source = source.replace(spaces_anchor, spaces_anchor + spaces_link, 1)
+          spaces.write_text(source, encoding='utf-8')
+
+          accessibility = Path('assets/spaces-accessibility.css')
+          accessibility.write_text('''/* Light-theme contrast corrections shared by the Spaces demo and product overview. */
+html[data-theme="light"] body[data-entered] {
+  --muted: #5c6e82 !important;
+}
+
+html[data-theme="light"] body[data-entered] .muted-pill {
+  color: #5c6e82 !important;
+}
+
+html[data-theme="light"] body:not([data-entered]) {
+  --muted: #5b6f84 !important;
+  --blue: #0062ad !important;
+  --pink: #ad477f !important;
+}
+
+html[data-theme="light"] body:not([data-entered]) .boundary-center > small {
+  color: #596b80 !important;
+}
+''', encoding='utf-8')
 
           risk = Path('docs/brief-interface-failures.md')
           source = risk.read_text(encoding='utf-8')
@@ -51,8 +84,8 @@ jobs:
           if ! git diff --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add tests/brief-next-smoke.test.js doc/index.html docs/brief-interface-failures.md
-            git commit -m "Finish Spaces source and documentation reconciliation"
+            git add tests/brief-next-smoke.test.js doc/index.html spaces/index.html assets/spaces-accessibility.css docs/brief-interface-failures.md
+            git commit -m "Fix Spaces light-theme contrast"
             git push origin HEAD:agent/spaces-route-migration
           fi
 
