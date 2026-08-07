@@ -79,12 +79,21 @@ test('Spaces topbar remains contained, mobile-safe, and starts the selected soun
     const shellStyle = shell ? getComputedStyle(shell) : null;
     const theme = document.querySelector('#themeButton');
     const themeStyle = theme ? getComputedStyle(theme) : null;
+    const music = document.querySelector('#mediaButton');
+    const musicStyle = music ? getComputedStyle(music) : null;
+    const themeIcon = theme?.querySelector('span');
+    const themeIconStyle = themeIcon ? getComputedStyle(themeIcon) : null;
     return {
       top: rect.top,
       right: rect.right,
       viewportWidth: document.documentElement.clientWidth,
       paddingTop: Number.parseFloat(shellStyle?.paddingTop || '0'),
-      backgroundImage: themeStyle?.backgroundImage || '',
+      themeBackground: themeStyle?.backgroundColor || '',
+      musicBackground: musicStyle?.backgroundColor || '',
+      themeBorderRadius: themeStyle?.borderRadius || '',
+      musicBorderRadius: musicStyle?.borderRadius || '',
+      outerTextShadow: themeStyle?.textShadow || '',
+      iconTextShadow: themeIconStyle?.textShadow || '',
       boxShadow: themeStyle?.boxShadow || 'none'
     };
   });
@@ -94,7 +103,10 @@ test('Spaces topbar remains contained, mobile-safe, and starts the selected soun
   if ((page.viewportSize()?.width || 0) <= 860) {
     expect(topbar.paddingTop).toBeGreaterThanOrEqual(9);
   }
-  expect(topbar.backgroundImage).toContain('linear-gradient');
+  expect(topbar.themeBackground).toBe(topbar.musicBackground);
+  expect(topbar.themeBorderRadius).toBe(topbar.musicBorderRadius);
+  expect(topbar.outerTextShadow).toBe('none');
+  expect(topbar.iconTextShadow).not.toBe('none');
   expect(topbar.boxShadow).not.toBe('none');
 
   await page.locator('#themeButton').click();

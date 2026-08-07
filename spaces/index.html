@@ -10,13 +10,14 @@
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://open.spotify.com; style-src 'self'; img-src 'self' data:; frame-src https://open.spotify.com; media-src https:; connect-src https://open.spotify.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
   <title>Spaces Demo</title>
-  <meta name="description" content="A working demo of Spaces, with personal habit tracking, family coordination, shared calendars, memory, goals, connected information, permissions, voice routines, and next steps." />
+  <meta name="description" content="A working demo of Spaces, with personal, family, business partner, accountant-client, training, and project briefings built around approved information, memory, permissions, and next steps." />
   <link rel="canonical" href="https://db.cmxchat.com/spaces/" />
   <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260807-1" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260807-2" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260807-3" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260807-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260807-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260807-2" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260807-3" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260807-3" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260807-1" />
 </head>
 <body data-entered="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -63,7 +64,7 @@
         <div class="topbar-actions">
           <span class="today-label" id="todayLabel"></span>
           <button class="round-button" id="mediaButton" type="button" aria-label="Open soundtrack" aria-expanded="false">♪</button>
-          <button class="round-button" id="themeButton" type="button" aria-label="Switch to dark theme" aria-pressed="false">◐</button>
+          <button class="round-button" id="themeButton" type="button" aria-label="Switch to dark theme" aria-pressed="false"><span aria-hidden="true">◐</span></button>
         </div>
       </div>
     </header>
@@ -108,6 +109,12 @@
             </aside>
           </div>
 
+          <section class="priority-notice" id="priorityNotice" aria-labelledby="priorityTitle" hidden>
+            <span class="priority-mark" aria-hidden="true">!</span>
+            <div class="priority-copy"><span id="priorityLabel"></span><strong id="priorityTitle"></strong><small id="priorityDetail"></small></div>
+            <button class="secondary-button priority-review" id="priorityReview" type="button">Review</button>
+          </section>
+
           <div class="today-grid">
             <section class="weather-card" aria-labelledby="weatherTitle">
               <div class="weather-heading">
@@ -144,7 +151,10 @@
               <span id="recommendationLabel"></span>
               <h2 id="recommendationTitle"></h2>
               <p id="recommendationDetail"></p>
-              <button class="text-button" type="button" data-go-view="workspace">See why <span aria-hidden="true">→</span></button>
+              <div class="recommendation-actions">
+                <button class="text-button" type="button" data-go-view="workspace">See why <span aria-hidden="true">→</span></button>
+                <button class="text-button" id="briefUpdateButton" type="button">Update this Brief <span aria-hidden="true">↗</span></button>
+              </div>
             </section>
 
             <section class="flow-card" aria-labelledby="flowTitle">
@@ -207,7 +217,7 @@
 
           <div class="how-grid">
             <article><span>Understand</span><h2>Bring the useful information into one clear view</h2><p>Extra sections stay hidden until they affect timing, risk, ownership, or the next step.</p></article>
-            <article><span>Choose</span><h2>Use goals and plans to decide what deserves attention</h2><p>The same app can support personal, relationship, family, business, training, and team briefings.</p></article>
+            <article><span>Choose</span><h2>Use goals and plans to decide what deserves attention</h2><p>The same app can support personal, relationship, family, business partner, accountant-client, training, and team briefings.</p></article>
             <article><span>Act</span><h2>Prepare useful work and keep important actions behind approval</h2><p>Secure access, permission checks, and confirmations sit behind the interface.</p></article>
           </div>
 
@@ -254,6 +264,26 @@
 
     <nav class="mobile-nav" id="mobileNav" aria-label="Mobile briefing navigation"></nav>
 
+    <dialog class="brief-update-dialog" id="briefUpdateDialog" aria-labelledby="briefUpdateTitle">
+      <section class="brief-update-shell">
+        <header class="brief-update-heading">
+          <div><p class="eyebrow">QUICK USER UPDATE</p><h2 id="briefUpdateTitle">Help the next Brief use better information</h2></div>
+          <button class="round-button" id="closeBriefUpdate" type="button" aria-label="Close Brief update">×</button>
+        </header>
+        <p class="brief-update-question" id="briefUpdateQuestion"></p>
+        <div class="brief-update-choices" id="briefUpdateChoices" role="group" aria-label="Quick update choices"></div>
+        <label class="brief-correction-label" for="briefCorrectionInput">Optional correction
+          <input id="briefCorrectionInput" type="text" maxlength="120" autocomplete="off" />
+        </label>
+        <p class="brief-update-boundary">This interaction stays inside the demo. A real account would show the source, revision history, affected Space, and a review step before memory changes.</p>
+        <p class="brief-update-status" id="briefUpdateStatus" aria-live="polite"></p>
+        <div class="brief-update-actions">
+          <button class="secondary-button" id="cancelBriefUpdate" type="button">Close</button>
+          <button class="primary-button" id="saveBriefUpdate" type="button">Save demo update</button>
+        </div>
+      </section>
+    </dialog>
+
     <aside class="media-drawer" id="mediaDrawer" aria-labelledby="mediaTitle" aria-hidden="true">
       <button class="drawer-backdrop" type="button" data-close-media aria-label="Close soundtrack"></button>
       <section class="media-sheet">
@@ -266,6 +296,8 @@
           <span class="track-art" aria-hidden="true">♪</span>
           <div><strong id="trackTitle"></strong><p id="trackArtist"></p><small id="trackNote"></small></div>
         </div>
+        <button class="secondary-button track-choice-toggle" id="trackChoiceToggle" type="button" aria-expanded="false" aria-controls="trackChoices">Choose another song</button>
+        <div class="track-choices" id="trackChoices" aria-label="Soundtrack choices" hidden></div>
         <button class="primary-button media-play" id="previewButton" type="button" disabled>Loading Spotify player</button>
         <p class="media-status" id="mediaStatus" aria-live="polite">Preparing Spotify before the demo opens.</p>
         <div id="spotifyFrame" role="region" aria-label="Spotify provider player"></div>
@@ -275,11 +307,12 @@
   </div>
 
   <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
-  <script src="/assets/brief/brief-demo-data.js?v=20260807-2" defer></script>
+  <script src="/assets/brief/brief-demo-data.js?v=20260807-3" defer></script>
+  <script src="/assets/brief/brief-demo-advanced.js?v=20260807-1" defer></script>
   <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
-  <script src="/assets/brief/brief-demo-experience.js?v=20260807-2" defer></script>
-  <script src="/assets/brief/brief-demo-media.js?v=20260806-2" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260807-2" defer></script>
-  <script src="/assets/brief/brief-demo-explainers.js?v=20260807-2" defer></script>
+  <script src="/assets/brief/brief-demo-experience.js?v=20260807-3" defer></script>
+  <script src="/assets/brief/brief-demo-media.js?v=20260807-3" defer></script>
+  <script src="/assets/brief/brief-demo-app.js?v=20260807-3" defer></script>
+  <script src="/assets/brief/brief-demo-explainers.js?v=20260807-3" defer></script>
 </body>
 </html>

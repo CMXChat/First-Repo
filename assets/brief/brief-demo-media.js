@@ -21,17 +21,32 @@
     trackReadyTimer: 0,
     playbackConfirmTimer: 0,
     opener: null,
-    previousBodyOverflow: ''
+    previousBodyOverflow: '',
+    selectedTrackIds: {},
+    choicesOpen: false
   };
 
   const $ = selector => document.querySelector(selector);
+
+  function escapeHtml(value) {
+    const node = document.createElement('div');
+    node.textContent = String(value ?? '');
+    return node.innerHTML;
+  }
 
   function scenario(id = state.scenarioId) {
     return window.BRIEF_DEMO_DATA?.scenarios?.[id] || null;
   }
 
+  function availableTracks(id = state.scenarioId) {
+    const primary = scenario(id)?.soundtrack;
+    return primary ? [primary, ...(primary.alternates || [])] : [];
+  }
+
   function track(id = state.scenarioId) {
-    return scenario(id)?.soundtrack || null;
+    const choices = availableTracks(id);
+    const selectedId = state.selectedTrackIds[id];
+    return choices.find(item => item.spotifyTrackId === selectedId) || choices[0] || null;
   }
 
   function spotifyUri(id = state.scenarioId) {
@@ -56,6 +71,45 @@
   function setStatus(message) {
     const node = $('#mediaStatus');
     if (node) node.textContent = message;
+  }
+
+  function setChoicesOpen(open) {
+    state.choicesOpen = open === true;
+    const button = $('#trackChoiceToggle');
+    const host = $('#trackChoices');
+    if (button) {
+      button.setAttribute('aria-expanded', String(state.choicesOpen));
+      button.textContent = state.choicesOpen ? 'Hide song choices' : 'Choose another song';
+    }
+    if (host) host.hidden = !state.choicesOpen;
+  }
+
+  function renderTrackSummary() {
+    const current = track();
+    if (!current) return;
+    const title = $('#trackTitle');
+    const artist = $('#trackArtist');
+    const note = $('#trackNote');
+    if (title) title.textContent = current.title;
+    if (artist) artist.textContent = current.artist;
+    if (note) note.textContent = current.note;
+  }
+
+  function renderTrackChoices() {
+    const host = $('#trackChoices');
+    if (!host) return;
+    const current = track();
+    host.innerHTML = availableTracks().map(item => `
+      <button class="track-choice" type="button" data-track-choice="${escapeHtml(item.spotifyTrackId)}" aria-pressed="${item.spotifyTrackId === current?.spotifyTrackId}">
+        <span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.artist)}</small></span>
+        <b>${item.spotifyTrackId === current?.spotifyTrackId ? 'Selected' : 'Choose'}</b>
+      </button>
+    `).join('');
+  }
+
+  function renderTrackUi() {
+    renderTrackSummary();
+    renderTrackChoices();
   }
 
   function clearTimer(name) {
@@ -357,15 +411,13 @@
     const current = scenario(id);
     if (!current) return;
     state.scenarioId = id;
-    const currentTrack = current.soundtrack;
-
-    const title = $('#trackTitle');
-    const artist = $('#trackArtist');
-    const note = $('#trackNote');
-
-    if (title) title.textContent = currentTrack.title;
-    if (artist) artist.textContent = currentTrack.artist;
-    if (note) note.textContent = currentTrack.note;
+    const choices = availableTracks(id);
+    if (!choices.some(item => item.spotifyTrackId === state.selectedTrackIds[id])) {
+      state.selectedTrackIds[id] = choices[0]?.spotifyTrackId || '';
+    }
+    const currentTrack = track(id);
+    setChoicesOpen(false);
+    renderTrackUi();
 
     if (state.fallbackMode) {
       renderFallbackFrame();
@@ -380,6 +432,24 @@
 
     syncButton();
     syncEntryButton();
+  }
+
+  function selectTrack(trackId) {
+    const selected = availableTracks().find(item => item.spotifyTrackId === trackId);
+    if (!selected) return false;
+    pause();
+    state.selectedTrackIds[state.scenarioId] = selected.spotifyTrackId;
+    renderTrackUi();
+
+    if (state.fallbackMode) {
+      renderFallbackFrame();
+      setStatus(`Selected ${selected.title}. Tap play in the Spotify player below.`);
+    } else if (state.controllerReady) {
+      loadCurrentTrack();
+    } else {
+      setStatus(`Selected ${selected.title}. Spotify will prepare it when playback is requested.`);
+    }
+    return true;
   }
 
   function togglePreview() {
@@ -463,6 +533,9 @@
     pause();
     close({ restoreFocus: false });
     clearTimer('playbackConfirmTimer');
+    state.selectedTrackIds = {};
+    setScenario(state.scenarioId || window.BRIEF_DEMO_DATA?.meta?.defaultScenario || 'personal');
+    setChoicesOpen(false);
     setSoundtrackDefaultOff();
     syncEntryButton();
   }
@@ -503,6 +576,14 @@
       syncEntryButton();
     });
 
+    $('#trackChoiceToggle')?.addEventListener('click', () => setChoicesOpen(!state.choicesOpen));
+
+    $('#trackChoices')?.addEventListener('click', event => {
+      const button = event.target.closest('[data-track-choice]');
+      if (!button) return;
+      selectTrack(button.dataset.trackChoice);
+    });
+
     $('#resetDemo')?.addEventListener('click', () => {
       queueMicrotask(setSoundtrackDefaultOff);
     });
@@ -517,6 +598,7 @@
     open,
     close,
     reset,
+    selectTrack,
     isEntryReady: () => true
   };
 

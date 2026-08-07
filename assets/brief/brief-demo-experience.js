@@ -83,42 +83,6 @@
           }
         }
       },
-      business: {
-        short: 'A shared company view with private partner notes',
-        headline: 'See the company clearly before making today’s decisions',
-        summary: 'Partners can see cash, projects, risks, and decisions while private notes remain separate.',
-        recommendation: {
-          title: 'Collect the cash before adding fixed cost.',
-          detail: 'Approve the contractor after the expected payments arrive.'
-        },
-        weather: {
-          condition: 'Cross-city workday',
-          advice: 'Cash timing matters more than the weather in this example.'
-        },
-        details: {
-          executive: {
-            title: 'The operating picture at a glance',
-            summary: 'Revenue helps, but cash, owners, and deadlines decide what happens next.'
-          },
-          finance: {
-            title: 'Cash, margin, and exposure',
-            summary: 'Money data becomes useful when it leads to a clear decision.'
-          },
-          projects: {
-            title: 'Risks, owners, and deadlines',
-            summary: 'Unowned work is easy to miss.'
-          },
-          decisions: {
-            title: 'Turn evidence into a decision, owner, and date',
-            summary: 'Repeated debates can become simple written rules.'
-          },
-          connections: {
-            title: 'Business connections with clear limits',
-            summary: 'The company Space receives approved company records while personal records stay in their original Spaces.'
-          }
-        },
-        soundtrack: { note: 'A bright track for a company review.' }
-      },
       trainer: {
         headline: 'Adjust the plan while keeping accountability',
         summary: 'Training, recovery, habits, and check-ins stay useful when the record shows what actually happened.',
@@ -285,7 +249,7 @@
             </div>
             <div class="weather-range"><span>High <b>${escapeHtml(scenario.weather.high)}</b>°</span><span>Low <b>${escapeHtml(scenario.weather.low)}</b>°</span></div>
           </div>
-          <div class="hourly-strip">${scenario.weather.hourly.map(hour => `<article class="hourly-item"><time>${escapeHtml(hour.time)}</time><strong>${escapeHtml(hour.temp)}°</strong><small>${escapeHtml(hour.rain)}% rain</small></article>`).join('')}</div>
+          <div class="hourly-strip">${scenario.weather.hourly.map(hour => `<article class="hourly-item"><time>${escapeHtml(hour.time)}</time><strong>${escapeHtml(hour.temp)}°</strong><small>${escapeHtml(hour.label || `${hour.rain}% rain`)}</small></article>`).join('')}</div>
         </article>
       </section>
 

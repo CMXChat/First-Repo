@@ -14,7 +14,7 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
   await expect(page.locator('#entry')).toBeVisible();
-  await expect(page.locator('[data-entry-scenario]')).toHaveCount(6);
+  await expect(page.locator('[data-entry-scenario]')).toHaveCount(7);
   await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
 
   const background = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());
@@ -96,6 +96,24 @@ test('current Spaces demo opens in light mode and remains usable across devices'
   await expectNoHorizontalOverflow(page);
   await expectPlainVisibleCopy(page);
 
+  const topbarControls = await page.evaluate(() => {
+    const music = getComputedStyle(document.getElementById('mediaButton'));
+    const theme = getComputedStyle(document.getElementById('themeButton'));
+    const icon = getComputedStyle(document.querySelector('#themeButton > span'));
+    return {
+      musicBackground: music.backgroundColor,
+      themeBackground: theme.backgroundColor,
+      musicRadius: music.borderRadius,
+      themeRadius: theme.borderRadius,
+      outerTextShadow: theme.textShadow,
+      iconTextShadow: icon.textShadow
+    };
+  });
+  expect(topbarControls.themeBackground).toBe(topbarControls.musicBackground);
+  expect(topbarControls.themeRadius).toBe(topbarControls.musicRadius);
+  expect(topbarControls.outerTextShadow).toBe('none');
+  expect(topbarControls.iconTextShadow).not.toBe('none');
+
   await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
@@ -107,6 +125,146 @@ test('current Spaces demo opens in light mode and remains usable across devices'
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
+});
+
+test('Business partners and Accountant and client use complete advanced workspaces', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.endsWith('-desktop'), 'Advanced workspace coverage runs in desktop browser projects.');
+  await openCurrentBrief(page);
+  await enterScenario(page, 'business');
+
+  await expect(page.locator('#priorityNotice')).toBeVisible();
+  await expect(page.locator('#priorityNotice')).toContainText('9.4 weeks');
+  await selectPrimaryView(page, 'workspace');
+
+  await expect(page.locator('.partner-lane')).toHaveCount(2);
+  await expect(page.locator('.partner-operations')).toContainText('4:00 PM ET');
+  await expect(page.locator('.partner-operations')).toContainText('6:00 AM AEST');
+
+  await page.locator('[data-workspace-tab="projects"]').click();
+  await expect(page.locator('.project-row')).toHaveCount(4);
+  await expect(page.locator('.project-dashboard')).toContainText('Harbor Health launch');
+
+  await page.locator('[data-workspace-tab="deals"]').click();
+  await expect(page.locator('.deal-stage')).toHaveCount(3);
+  await expect(page.locator('.deal-pipeline')).toContainText('$68k');
+
+  await page.locator('[data-workspace-tab="calendar"]').click();
+  await expect(page.locator('.partner-calendar-day')).toHaveCount(3);
+  await expect(page.locator('.partner-calendar-day[data-highlighted="true"]')).toContainText('BEACH DAY');
+  await expect(page.locator('.partner-calendar-day[data-highlighted="true"]')).toContainText('UV 8');
+  await page.locator('[data-demo-module-action]').click();
+  await expect(page.locator('[data-module-action-status]')).toContainText('Both partners still need to approve');
+
+  await page.locator('[data-workspace-tab="concerns"]').click();
+  await expect(page.locator('.concern-grid article')).toHaveCount(3);
+
+  await page.locator('#scenarioSelect').selectOption('accounting');
+  await expect(page.locator('body')).toHaveAttribute('data-scenario', 'accounting');
+  await expect(page.locator('#priorityNotice')).toContainText('$1,250 card autopay');
+
+  await page.locator('#briefUpdateButton').click();
+  await expect(page.locator('#briefUpdateDialog')).toBeVisible();
+  await expect(page.locator('#briefUpdateQuestion')).toContainText('$840 startup client payment');
+  await page.locator('[data-check-in-choice="Partial"]').click();
+  await page.locator('#briefCorrectionInput').fill('$420 received');
+  await page.locator('#saveBriefUpdate').click();
+  await expect(page.locator('#briefUpdateStatus')).toContainText('Partial · $420 received');
+  await page.locator('#cancelBriefUpdate').click();
+
+  await selectPrimaryView(page, 'workspace');
+  await expect(page.locator('.finance-people article')).toHaveCount(2);
+  await expect(page.locator('.advisor-quote')).toContainText('Priya Shah');
+
+  await page.locator('[data-workspace-tab="cash"]').click();
+  await expect(page.locator('.financial-sheet tbody tr')).toHaveCount(8);
+  await expect(page.locator('.financial-sheet')).toContainText('Living + flexible');
+
+  await page.locator('[data-workspace-tab="portfolio"]').click();
+  await expect(page.locator('.asset-grid article')).toHaveCount(4);
+  await expect(page.locator('.market-rail')).toContainText('VTI');
+
+  await page.locator('[data-workspace-tab="deadlines"]').click();
+  await expect(page.locator('.deadline-ledger li')).toHaveCount(4);
+
+  await page.locator('[data-workspace-tab="rules"]').click();
+  await expect(page.locator('.goal-stack article')).toHaveCount(3);
+  await expect(page.locator('.rule-list li')).toHaveCount(4);
+  await expectNoHorizontalOverflow(page);
+  await expectPlainVisibleCopy(page);
+});
+
+test('every active Space keeps visible copy free of banned writing patterns', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'One browser is enough for the rendered-copy audit.');
+  await openCurrentBrief(page);
+  await enterScenario(page, 'personal');
+
+  const scenarioIds = await page.evaluate(() => Object.keys(window.BRIEF_DEMO_DATA.scenarios));
+  for (const scenarioId of scenarioIds) {
+    if (scenarioId !== 'personal') {
+      await page.locator('#scenarioSelect').selectOption(scenarioId);
+      await expect(page.locator('body')).toHaveAttribute('data-scenario', scenarioId);
+    }
+
+    await expectPlainVisibleCopy(page);
+    await selectPrimaryView(page, 'workspace');
+    const tabIds = await page.locator('[data-workspace-tab]').evaluateAll(buttons => buttons.map(button => button.dataset.workspaceTab));
+    for (const tabId of tabIds) {
+      await page.locator(`[data-workspace-tab="${tabId}"]`).click();
+      await expectPlainVisibleCopy(page);
+    }
+
+    for (const viewId of ['spaces', 'how', 'everything']) {
+      await selectPrimaryView(page, viewId);
+      await expectPlainVisibleCopy(page);
+    }
+
+    await selectPrimaryView(page, 'today');
+  }
+});
+
+test('Accounting spreadsheet scroll stays inside its mobile workspace', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-android', 'Accounting mobile containment runs in the Android project.');
+  await page.setViewportSize({ width: 360, height: 800 });
+  await openCurrentBrief(page);
+  await enterScenario(page, 'accounting');
+
+  const selectorFit = await page.locator('#scenarioSelect').evaluate(select => {
+    const style = getComputedStyle(select);
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const labelWidth = context.measureText(select.selectedOptions[0].textContent.trim()).width;
+    const horizontalPadding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    return {
+      label: select.selectedOptions[0].textContent.trim(),
+      availableWidth: select.clientWidth,
+      requiredWidth: Math.ceil(labelWidth + horizontalPadding + 20)
+    };
+  });
+  expect(selectorFit.label).toBe('Accountant and client');
+  expect(selectorFit.availableWidth).toBeGreaterThanOrEqual(selectorFit.requiredWidth);
+
+  await selectPrimaryView(page, 'workspace');
+  await page.locator('[data-workspace-tab="cash"]').click();
+
+  const scrollState = await page.locator('.financial-sheet-scroll').evaluate(host => {
+    host.scrollLeft = host.scrollWidth;
+    return {
+      hostOverflow: host.scrollWidth - host.clientWidth,
+      hostScrollLeft: host.scrollLeft,
+      documentX: document.documentElement.scrollLeft,
+      windowX: window.scrollX
+    };
+  });
+  expect(scrollState.hostOverflow).toBeGreaterThan(100);
+  expect(scrollState.hostScrollLeft).toBeGreaterThan(0);
+  expect(scrollState.documentX).toBe(0);
+  expect(scrollState.windowX).toBe(0);
+  await expectNoHorizontalOverflow(page);
+
+  await page.locator('[data-workspace-tab="portfolio"]').click();
+  await expect(page.locator('.asset-grid article')).toHaveCount(4);
+  await expectNoHorizontalOverflow(page);
 });
 
 test('Personal habits and the Family briefing use the richer workspace modules', async ({ page }, testInfo) => {

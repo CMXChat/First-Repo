@@ -1,8 +1,8 @@
 # CMX Documentation Index
 
-Last reconciled: **August 6, 2026**  
-Repository: `CMXChat/First-Repo`  
-Verified code baseline: `17bfe11785712a412743adf0dbe2ce90b1bb9d9c`
+Last reconciled: **August 7, 2026**
+Repository: `CMXChat/First-Repo`
+Verified code baseline: `54d6d3e83346f5324b36ec5f02a5742c2dc91511`
 
 ## Read this first
 
@@ -10,20 +10,22 @@ Current code, tests, workflows, route policy, and current operational documents 
 
 Use this order when starting Spaces work:
 
-1. `docs/2026-08-06-spaces-route-migration.md`
-2. `docs/spaces-product-direction-2026-08-06.md`
-3. `docs/2026-08-05-repository-reconciliation.md`
-4. `docs/personal-os-release-safeguards.md`
-5. `docs/brief-recovery-handoff.md`
-6. `docs/cmx-brief-master-context.md`
-7. `docs/brief-interface-validation.md`
-8. `docs/brief-interface-failures.md`
-9. Current source, tests, workflows, and `assets/cmx-routes.json`
+1. `docs/spaces-demo-continuity.md`
+2. `docs/2026-08-06-spaces-route-migration.md`
+3. `docs/spaces-product-direction-2026-08-06.md`
+4. `docs/2026-08-05-repository-reconciliation.md`
+5. `docs/personal-os-release-safeguards.md`
+6. `docs/brief-recovery-handoff.md`
+7. `docs/cmx-brief-master-context.md`
+8. `docs/brief-interface-validation.md`
+9. `docs/brief-interface-failures.md`
+10. Current source, tests, workflows, and `assets/cmx-routes.json`
 
 ## Current operational documents
 
 | File | Purpose |
 |---|---|
+| `spaces-demo-continuity.md` | Current seven-scenario product, design, data, editing, validation, publishing, and rollback contract. |
 | `2026-08-06-spaces-route-migration.md` | Canonical route decision plus shared-calendar, alarm, voice, compatibility, and release contracts. |
 | `spaces-product-direction-2026-08-06.md` | Current product name, category, doctrine, input model, memory settings, and Cloudflare relationship. |
 | `2026-08-05-repository-reconciliation.md` | Comparison between the August 4 notes and the August 5 repository. |
@@ -57,6 +59,9 @@ Use this order when starting Spaces work:
 - `/brief-next/` is a rollback snapshot and must not be required to match `/spaces/` byte for byte.
 - The Space selector must remain readable and operable in light and dark mode on desktop and mobile.
 - The live topbar contains the soundtrack and theme controls.
+- The active demo contains seven contexts, including Business partners and Accountant and client.
+- Each context can show one compact priority notice and one short correction question.
+- Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
 - Scenario buttons use native button semantics with `aria-pressed`.
 - Secondary text remains WCAG AA compliant.

@@ -96,6 +96,23 @@ test('switching context loads the selected scenario track through the controller
   expect(loaded).toBe(expected);
 });
 
+test('each briefing can switch to an alternate Spotify choice', async ({ page }) => {
+  await mockSpotify(page, 'success');
+  await openWithSoundtrack(page, 'accounting');
+
+  await page.locator('#mediaButton').click();
+  await page.locator('#trackChoiceToggle').click();
+  await expect(page.locator('[data-track-choice]')).toHaveCount(3);
+
+  const alternate = await page.evaluate(() => window.BRIEF_DEMO_DATA.scenarios.accounting.soundtrack.alternates[0]);
+  await page.locator(`[data-track-choice="${alternate.spotifyTrackId}"]`).click();
+
+  await expect(page.locator('#trackTitle')).toHaveText(alternate.title);
+  await expect(page.locator(`[data-track-choice="${alternate.spotifyTrackId}"]`)).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => page.evaluate(() => window.__spotifyLoadedUris.at(-1) || '')).toBe(`spotify:track:${alternate.spotifyTrackId}`);
+  await expect(page.locator('#mediaStatus')).toContainText(alternate.title);
+});
+
 test('Spotify API timeout falls back to the official direct-tap embed', async ({ page }) => {
   await page.route('https://open.spotify.com/embed/iframe-api/v1', route => route.fulfill({
     status: 200,

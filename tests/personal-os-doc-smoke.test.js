@@ -29,8 +29,10 @@ assert.match(html, /meta name="referrer" content="no-referrer"/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
 assert.match(html, /Public overview/);
 assert.match(html, /This public noindex overview contains product explanation and fictional examples/);
-assert.equal((html.match(/class="scenario-card"/g) || []).length, 6);
-assert.match(html, /Six briefing contexts: Personal, Relationship, Family, Business, Trainer, and Team/);
+assert.equal((html.match(/class="scenario-card(?:\s|\")/g) || []).length, 7);
+assert.match(html, /Seven briefing contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team/);
+assert.match(html, /Accountant and Client Space/);
+assert.match(html, /New York and Sydney time/);
 assert.match(html, /Trainer and student/);
 
 const docRoute = routes.routes.find((route) => route.path === '/doc/');

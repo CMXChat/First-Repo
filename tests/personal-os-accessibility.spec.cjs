@@ -86,6 +86,39 @@ test('Personal habit tracking remains accessible in both themes', async ({ page 
   await expectNoSeriousAxeViolations(page, 'Spaces Personal habits dark theme');
 });
 
+test('Business partner and accountant-client modules have no serious automated WCAG violations', async ({ page }) => {
+  await openSpaces(page, '/spaces/', 'business');
+
+  const desktopWorkspace = page.locator('#primaryNav [data-primary-view="workspace"]');
+  if (await desktopWorkspace.isVisible()) await desktopWorkspace.click();
+  else await page.locator('#mobileNav [data-primary-view="workspace"]').click();
+  await page.locator('[data-workspace-tab="calendar"]').click();
+  await expect(page.locator('.partner-calendar')).toBeVisible();
+  await expectNoSeriousAxeViolations(page, 'Spaces Business partner calendar');
+
+  await page.locator('#scenarioSelect').selectOption('accounting');
+  if (await desktopWorkspace.isVisible()) await desktopWorkspace.click();
+  else await page.locator('#mobileNav [data-primary-view="workspace"]').click();
+  await page.locator('[data-workspace-tab="cash"]').click();
+  await expect(page.locator('.financial-sheet')).toBeVisible();
+  await expectNoSeriousAxeViolations(page, 'Spaces Accountant and client cash plan');
+
+  await page.locator('[data-workspace-tab="portfolio"]').click();
+  await expect(page.locator('.portfolio-dashboard')).toBeVisible();
+  await expectNoSeriousAxeViolations(page, 'Spaces Accountant and client portfolio');
+
+  await page.locator('#themeButton').click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expectNoSeriousAxeViolations(page, 'Spaces Accountant and client portfolio dark theme');
+
+  await page.locator('#scenarioSelect').selectOption('business');
+  if (await desktopWorkspace.isVisible()) await desktopWorkspace.click();
+  else await page.locator('#mobileNav [data-primary-view="workspace"]').click();
+  await page.locator('[data-workspace-tab="calendar"]').click();
+  await expect(page.locator('.partner-calendar')).toBeVisible();
+  await expectNoSeriousAxeViolations(page, 'Spaces Business partner calendar dark theme');
+});
+
 test('Legacy Brief route redirects to Spaces', async ({ page }) => {
   await page.goto('/brief/?theme=dark#how', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/spaces\/\?theme=dark#how$/);

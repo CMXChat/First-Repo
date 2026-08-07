@@ -13,6 +13,8 @@ const css = read('assets/brief/brief-demo.css');
 const experienceCss = read('assets/brief/brief-demo-experience.css');
 const docLinksCss = read('assets/brief/brief-demo-doc-links.css');
 const topbarPolishCss = read('assets/brief/brief-demo-topbar-polish.css');
+const advancedCss = read('assets/brief/brief-demo-advanced.css');
+const advancedJs = read('assets/brief/brief-demo-advanced.js');
 const appJs = read('assets/brief/brief-demo-app.js');
 const mediaJs = read('assets/brief/brief-demo-media.js');
 const spacesRuntimeJs = read('assets/brief/brief-spaces-runtime.js');
@@ -39,10 +41,12 @@ assert.match(html, /<strong>Voice:<\/strong>/);
 assert.doesNotMatch(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /class="secondary-button doc-entry-link" href="\/doc\/"/);
 assert.match(html, /class="primary-button doc-cta-button" href="\/doc\/"/);
-assert.match(html, /brief-demo-app\.js\?v=20260807-2/);
-assert.match(html, /brief-demo-media\.js\?v=20260806-2/);
-assert.match(html, /brief-demo-doc-links\.css\?v=20260807-2/);
-assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-2/);
+assert.match(html, /brief-demo-app\.js\?v=20260807-3/);
+assert.match(html, /brief-demo-media\.js\?v=20260807-3/);
+assert.match(html, /brief-demo-doc-links\.css\?v=20260807-3/);
+assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-3/);
+assert.match(html, /brief-demo-advanced\.css\?v=20260807-1/);
+assert.match(html, /brief-demo-advanced\.js\?v=20260807-1/);
 assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
 assert.match(html, /Choose the Space you want to open/);
 assert.match(html, /Play the soundtrack when the demo opens/);
@@ -60,7 +64,7 @@ assert.match(redirectJs, /window\.location\.replace\(target\.href\)/);
 assert.doesNotMatch(rollbackHtml, /http-equiv="refresh"/i);
 assert.match(rollbackHtml, /<title>Spaces Brief Demo<\/title>/);
 
-for (const source of [redirectJs, appJs, mediaJs, spacesRuntimeJs, docJs]) {
+for (const source of [redirectJs, appJs, mediaJs, advancedJs, spacesRuntimeJs, docJs]) {
   assert.doesNotThrow(() => new Function(source));
 }
 
@@ -102,17 +106,20 @@ assert.match(css, /@media \(max-width:/);
 assert.match(css, /prefers-reduced-motion/);
 assert.match(experienceCss, /\.everything-content/);
 assert.match(experienceCss, /overflow-x/);
-assert.match(docLinksCss, /brief-demo-topbar-polish\.css\?v=20260807-2/);
+assert.match(docLinksCss, /brief-demo-topbar-polish\.css\?v=20260807-3/);
 assert.match(docLinksCss, /\.media-drawer \{[\s\S]*display: block/);
 assert.match(docLinksCss, /body\s*\{[\s\S]*overflow-x: clip/);
 assert.match(docLinksCss, /@media \(max-width: 620px\)/);
 assert.match(topbarPolishCss, /\.doc-topbar-link\s*\{[\s\S]*display: none !important/);
-assert.match(topbarPolishCss, /#themeButton\s*\{[\s\S]*linear-gradient/);
+assert.match(topbarPolishCss, /#themeButton\s*\{[\s\S]*background: color-mix/);
+assert.match(topbarPolishCss, /#themeButton > span\s*\{[\s\S]*text-shadow/);
 assert.match(topbarPolishCss, /html\[data-theme="dark"\] #themeButton/);
 assert.match(topbarPolishCss, /html\[data-theme="dark"\] \.topbar-context select/);
 assert.match(topbarPolishCss, /-webkit-text-fill-color: #f7fbff/);
 assert.match(topbarPolishCss, /color-scheme: dark/);
 assert.match(topbarPolishCss, /safe-area-inset-top/);
+assert.match(advancedCss, /@media \(max-width: 620px\)/);
+assert.match(advancedCss, /\.financial-sheet-scroll\s*\{[\s\S]*overflow-x: auto/);
 
 assert.match(docJs, /personal-os-doc-mobile-fixes\.css/);
 assert.match(docJs, /spacesMobileFixes/);

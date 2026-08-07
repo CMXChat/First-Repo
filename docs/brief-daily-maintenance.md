@@ -1,4 +1,6 @@
-# `/brief` Daily Maintenance Rules
+# Legacy `/brief` Daily Maintenance Rules
+
+This file describes the retired modular daily-update runtime. Use `docs/spaces-demo-continuity.md` for the active `/spaces/` data, renderer, copy, testing, and release contract.
 
 ## Product structure
 
@@ -42,8 +44,8 @@ Every current item explains why it matters. Astrology remains entertainment and 
 
 Use it for safe rotations and fictional demonstrations:
 
-- Music for Personal, Relationship, Family, Business, Trainer and Team
-- Daily quotes for all six briefings
+- Music for Personal, Relationship, Family, Business, Accounting, Trainer and Team
+- Daily quotes for all seven briefings
 - Fictional personal scorecards, reports, inboxes and project health
 - Fictional relationship profiles and approved shared-space examples
 - Fictional business-partner private and shared records
@@ -66,7 +68,7 @@ Edit values, not renderer logic or object structure.
 - Loading, loaded and delayed states remain visible in text.
 - An invalid or missing video must not break the Relationship briefing.
 
-## Six briefing types
+## Seven briefing types
 
 The permanent briefing set is:
 
@@ -74,8 +76,9 @@ The permanent briefing set is:
 2. Relationship
 3. Family
 4. Business
-5. Trainer + student
-6. Team + project
+5. Accountant + client
+6. Trainer + student
+7. Team + project
 
 Business remains partner and management focused. Team is a distinct member-facing and project-facing demonstration with:
 

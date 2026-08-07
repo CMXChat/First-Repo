@@ -18,6 +18,7 @@ on:
       - 'tests/brief-spotify-lifecycle*'
       - 'tests/personal-os-accessibility*'
       - 'docs/README.md'
+      - 'docs/spaces-demo-continuity.md'
       - 'docs/2026-08-05-repository-reconciliation.md'
       - 'docs/2026-08-06-spaces-route-migration.md'
       - 'docs/brief-recovery-handoff.md'

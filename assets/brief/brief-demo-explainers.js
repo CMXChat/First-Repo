@@ -47,6 +47,14 @@
       shared: ['Current expenses and bills', 'Chores and owners', 'Pickups, appointments, groceries, and calendar changes'],
       protected: 'Parent notes, private concerns, passwords, and unrelated accounts stay outside the family Brief.'
     },
+    accounting: {
+      label: 'Accountant + client',
+      scenarioId: 'accounting',
+      title: 'One shared financial review with professional boundaries',
+      members: ['Daniel: client and final decision-maker', 'Priya: accountant and professional reviewer', 'Shared Space: approved records and questions'],
+      shared: ['Income, expenses, bills, tax preparation, asset summaries, and goals', 'Accountant notes, client corrections, decision rules, and deadlines', 'Prepared actions that wait for the client’s approval'],
+      protected: 'Credentials, unrelated personal records, firm-only notes, and every other client record stay outside this Space.'
+    },
     team: {
       label: 'Team',
       scenarioId: 'team',

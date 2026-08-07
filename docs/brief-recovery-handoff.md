@@ -1,8 +1,8 @@
 # `/spaces` Current Handoff
 
-Last reconciled: **August 5, 2026**  
-Repository: `CMXChat/First-Repo`  
-Verified product baseline: `5c7eef899f3357854492e2d3918f5915eb536b6b`
+Last reconciled: **August 7, 2026**
+Repository: `CMXChat/First-Repo`
+Verified product baseline: `54d6d3e83346f5324b36ec5f02a5742c2dc91511`
 
 ## Current status
 
@@ -10,7 +10,7 @@ Verified product baseline: `5c7eef899f3357854492e2d3918f5915eb536b6b`
 
 The shipping `/spaces/` experience is a focused standalone Spaces demo built from the `brief-demo-*` assets. `/brief/` is a state-preserving compatibility redirect, `/brief-next/` is a pre-migration rollback snapshot, and `/doc/` is the connected public noindex product overview.
 
-Read `docs/2026-08-05-repository-reconciliation.md` for the full comparison and remaining gaps.
+Read `docs/spaces-demo-continuity.md` first for the current product, editing, validation, and recovery contract.
 
 ## Current route contract
 
@@ -19,12 +19,15 @@ Read `docs/2026-08-05-repository-reconciliation.md` for the full comparison and 
 - primary public noindex demo
 - light in the initial HTML and theme resolver
 - manual dark mode remains available and persists
-- six contexts: Personal, Relationship, Family, Business, Trainer, and Team
+- seven contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team
 - focused Today, Workspace, Spaces, How, and Everything views
 - Personal habit tracking and Family household coordination examples
+- remote partner time zones, projects, deals, concerns, and prepared calendar changes
+- accountant-client cash, ledger, portfolio, bill, tax, goal, and rule examples
+- one compact priority notice and one short correction question per context
 - optional Everything view
 - links to `/doc/` at entry and in the How view
-- Spotify soundtrack integration with readiness and fallback behavior
+- Spotify soundtrack integration with three choices per context, readiness, and fallback behavior
 - keyboard-aware workspace tabs
 - predictable focus when returning to entry
 - plain-language visible copy protected by rendered-copy checks
@@ -54,14 +57,17 @@ Read `docs/2026-08-05-repository-reconciliation.md` for the full comparison and 
 The current `/spaces/` page loads:
 
 - `assets/brief/brief-demo-data.js`
+- `assets/brief/brief-demo-advanced.js`
 - `assets/brief/brief-demo-experience.js`
 - `assets/brief/brief-demo-media.js`
 - `assets/brief/brief-demo-app.js`
 - `assets/brief/brief-demo-explainers.js`
 - `assets/brief/brief-demo.css`
+- `assets/brief/brief-demo-advanced.css`
 - `assets/brief/brief-demo-experience.css`
 - `assets/brief/brief-demo-explainers.css`
 - `assets/brief/brief-demo-doc-links.css`
+- `assets/brief/brief-demo-topbar-polish.css`
 
 Do not assume the older modular files under `assets/brief/` are part of the shipping page. Check the route HTML before editing or deleting legacy modules.
 
@@ -99,6 +105,9 @@ Do not promise universal autoplay. Browser policy, Safari, Spotify state, device
 - returning to the entry screen restores focus to a useful control
 - reset behavior must not strand focus inside hidden application content
 - visible copy should stay direct and easy to understand
+- prepared demo actions must state that no external change has been sent
+- priority notices open the relevant workspace tab
+- short answers and corrections remain optional and local to the current demo session
 
 ## Current validation ownership
 
@@ -153,6 +162,7 @@ Before a release claim, run or verify the relevant workflows against the current
 
 1. current source and route registry
 2. current tests and workflow results
-3. `docs/2026-08-05-repository-reconciliation.md`
-4. this handoff
-5. older standards and dated concept documents
+3. `docs/spaces-demo-continuity.md`
+4. `docs/2026-08-05-repository-reconciliation.md`
+5. this handoff
+6. older standards and dated concept documents

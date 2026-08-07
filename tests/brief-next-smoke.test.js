@@ -15,8 +15,10 @@ const explainerCss = read('assets/brief/brief-demo-explainers.css');
 const experienceCss = read('assets/brief/brief-demo-experience.css');
 const docLinksCss = read('assets/brief/brief-demo-doc-links.css');
 const topbarPolishCss = read('assets/brief/brief-demo-topbar-polish.css');
+const advancedCss = read('assets/brief/brief-demo-advanced.css');
 const docEditorialCss = read('assets/personal-os-doc-editorial.css');
 const dataJs = read('assets/brief/brief-demo-data.js');
+const advancedJs = read('assets/brief/brief-demo-advanced.js');
 const spacesRuntimeJs = read('assets/brief/brief-spaces-runtime.js');
 const experienceJs = read('assets/brief/brief-demo-experience.js');
 const mediaJs = read('assets/brief/brief-demo-media.js');
@@ -57,21 +59,25 @@ assert.match(html, /<strong>Voice:<\/strong>/);
 assert.match(html, /class="secondary-button doc-entry-link" href="\/doc\/"/);
 assert.doesNotMatch(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /class="primary-button doc-cta-button" href="\/doc\/"/);
-assert.match(html, /brief-demo-explainers\.css\?v=20260807-2/);
+assert.match(html, /brief-demo-explainers\.css\?v=20260807-3/);
 assert.match(html, /brief-demo-experience\.css\?v=20260807-2/);
-assert.match(html, /brief-demo-doc-links\.css\?v=20260807-2/);
-assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-2/);
+assert.match(html, /brief-demo-doc-links\.css\?v=20260807-3/);
+assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-3/);
+assert.match(html, /brief-demo-advanced\.css\?v=20260807-1/);
 assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
-assert.match(html, /brief-demo-data\.js\?v=20260807-2/);
-assert.match(html, /brief-demo-experience\.js\?v=20260807-2/);
-assert.match(html, /brief-demo-app\.js\?v=20260807-2/);
-assert.match(html, /brief-demo-explainers\.js\?v=20260807-2/);
+assert.match(html, /brief-demo-data\.js\?v=20260807-3/);
+assert.match(html, /brief-demo-advanced\.js\?v=20260807-1/);
+assert.match(html, /brief-demo-experience\.js\?v=20260807-3/);
+assert.match(html, /brief-demo-media\.js\?v=20260807-3/);
+assert.match(html, /brief-demo-app\.js\?v=20260807-3/);
+assert.match(html, /brief-demo-explainers\.js\?v=20260807-3/);
 assert.doesNotMatch(html, /terminal|command line|brief-system/i);
 assert.equal((html.match(/href="\/doc\/"/g) || []).length, 2, 'Documentation should remain available at entry and inside How it works, not in the live header.');
 assert.equal((html.match(/<iframe\b/g) || []).length, 0, 'Spotify should be created by its official controller or the tap-to-play fallback.');
-assert.equal((html.match(/<script src=/g) || []).length, 6, 'Spaces should load data, branding, experience, media, app and explainer scripts.');
-assert.equal((html.match(/<link rel="stylesheet"/g) || []).length, 5, 'Spaces should load core, explainer, experience, Doc-link and topbar stylesheets.');
+assert.equal((html.match(/<script src=/g) || []).length, 7, 'Spaces should load data, advanced modules, branding, experience, media, app and explainer scripts.');
+assert.equal((html.match(/<link rel="stylesheet"/g) || []).length, 6, 'Spaces should load core, explainer, experience, Doc-link, topbar and advanced stylesheets.');
 assert.ok(html.indexOf('brief-demo-data.js') < html.indexOf('brief-spaces-runtime.js'), 'Spaces branding must load after the data source.');
+assert.ok(html.indexOf('brief-demo-data.js') < html.indexOf('brief-demo-advanced.js'), 'Advanced modules must load after their data source.');
 assert.ok(html.indexOf('brief-spaces-runtime.js') < html.indexOf('brief-demo-experience.js'), 'Spaces branding must update the data before the experience initializes.');
 
 assert.match(legacyHtml, /<title>Spaces has moved<\/title>/);
@@ -88,7 +94,7 @@ assert.match(rollbackHtml, /canonical" href="https:\/\/db\.cmxchat\.com\/brief\/
 assert.match(rollbackHtml, /id="entryScenarioGrid"/);
 assert.notEqual(rollbackHtml, html, 'The rollback snapshot is intentionally separate from the active `/spaces/` route.');
 
-for (const source of [dataJs, spacesRuntimeJs, experienceJs, mediaJs, appJs, explainersJs, docJs]) {
+for (const source of [dataJs, advancedJs, spacesRuntimeJs, experienceJs, mediaJs, appJs, explainersJs, docJs]) {
   assert.doesNotThrow(() => new Function(source));
 }
 
@@ -97,12 +103,15 @@ vm.createContext(context);
 vm.runInContext(dataJs, context);
 const data = context.window.BRIEF_DEMO_DATA;
 assert.ok(data);
-assert.deepEqual(Object.keys(data.scenarios), ['personal', 'relationship', 'family', 'business', 'trainer', 'team']);
+assert.deepEqual(Object.keys(data.scenarios), ['personal', 'relationship', 'family', 'business', 'accounting', 'trainer', 'team']);
 for (const scenario of Object.values(data.scenarios)) {
   assert.ok(scenario.weather.hourly.length >= 4, `${scenario.id} should include useful weather movement.`);
   assert.equal(scenario.stats.length, 4, `${scenario.id} should include four compact stats.`);
   assert.ok(scenario.tabs.length >= 5, `${scenario.id} should include selective workspace navigation.`);
   assert.ok(scenario.soundtrack.spotifyTrackId, `${scenario.id} should include one Spotify provider track.`);
+  assert.equal(scenario.soundtrack.alternates.length, 2, `${scenario.id} should include two alternate soundtracks.`);
+  assert.ok(scenario.priority?.targetTab, `${scenario.id} should include a priority target.`);
+  assert.equal(scenario.checkIn?.choices.length, 3, `${scenario.id} should include three quick answers.`);
   assert.ok(scenario.space.private.length >= 3);
   assert.ok(scenario.space.shared.length >= 3);
 }
@@ -112,6 +121,12 @@ assert.equal(data.scenarios.family.details.calendar.layout, 'calendar');
 assert.equal(data.scenarios.family.details.chores.layout, 'board');
 assert.equal(data.scenarios.family.details.shopping.layout, 'checklist');
 assert.ok(data.scenarios.family.details.calendar.days.some(day => day.events.some(event => event.kind === 'Availability only')));
+assert.equal(data.scenarios.business.details.executive.layout, 'partner-operations');
+assert.equal(data.scenarios.business.details.projects.projects.length, 4);
+assert.equal(data.scenarios.business.details.calendar.days.find(day => day.highlighted)?.day, 'Tuesday');
+assert.equal(data.scenarios.accounting.label, 'Accountant and client');
+assert.equal(data.scenarios.accounting.details.cash.rows.length, 8);
+assert.equal(data.scenarios.accounting.details.portfolio.assets.length, 4);
 
 assert.match(spacesRuntimeJs, /const legacyName = 'Personal OS'/);
 assert.match(spacesRuntimeJs, /const productName = 'Spaces'/);
@@ -130,6 +145,9 @@ assert.match(appJs, /function renderHabitTracker\(/);
 assert.match(appJs, /function renderFamilyCalendar\(/);
 assert.match(appJs, /function renderHouseholdBoard\(/);
 assert.match(appJs, /function renderShoppingList\(/);
+assert.match(appJs, /BRIEF_DEMO_ADVANCED\?\.renderDetail/);
+assert.match(appJs, /function renderPriority\(/);
+assert.match(appJs, /function saveBriefUpdate\(/);
 assert.match(appJs, /function keepDocumentAligned\(/);
 assert.match(appJs, /requestEntryPlayback\(selected, \$\('#entrySoundtrack'\)\?\.checked === true\)/);
 assert.match(appJs, /<button class="entry-option" type="button" data-entry-scenario=/);
@@ -143,7 +161,7 @@ assert.match(experienceJs, /Read only the approved sources needed for this updat
 assert.match(experienceJs, /The layout stays familiar as the briefing changes/);
 assert.match(experienceJs, /Start the morning with music and a short overview/);
 assert.match(experienceJs, /class="weather-card full-weather-card"/);
-assert.match(experienceJs, /The operating picture at a glance/);
+assert.doesNotMatch(experienceJs, /business:\s*\{/);
 assert.match(experienceJs, /briefdemo:scenariochange/);
 assert.doesNotMatch(experienceJs, /Personalized does not mean unpredictable/);
 assert.doesNotMatch(experienceJs, /approved APIs, MCP tools/);
@@ -162,6 +180,8 @@ assert.match(mediaJs, /function requestEntryPlayback\(/);
 assert.match(mediaJs, /pendingEntryPlayback/);
 assert.match(mediaJs, /function playPendingEntryRequest\(/);
 assert.match(mediaJs, /function enableSoundtrackForScenarioChoice\(/);
+assert.match(mediaJs, /function renderTrackChoices\(/);
+assert.match(mediaJs, /function selectTrack\(/);
 assert.match(mediaJs, /document\.addEventListener\('pointerdown'/);
 assert.match(mediaJs, /button\.disabled = false/);
 assert.match(mediaJs, /The Brief opened while Spotify continues preparing in the background/);
@@ -179,6 +199,7 @@ assert.match(explainersJs, /role="tabpanel"/);
 assert.match(explainersJs, /aria-controls="memoryComparison"/);
 assert.match(explainersJs, /ArrowLeft/);
 assert.match(explainersJs, /PRIVATE FIRST/);
+assert.match(explainersJs, /Accountant \+ client/);
 assert.doesNotMatch(explainersJs, /This is not a social friends list/);
 
 assert.match(docJs, /Spaces \| Context-Driven Workspace and Daily Brief/);
@@ -196,7 +217,7 @@ assert.match(css, /prefers-reduced-motion/);
 assert.match(explainerCss, /\.memory-comparison/);
 assert.match(experienceCss, /--bg: #05070b/);
 assert.match(experienceCss, /\.everything-jump-nav/);
-assert.match(docLinksCss, /brief-demo-topbar-polish\.css\?v=20260807-2/);
+assert.match(docLinksCss, /brief-demo-topbar-polish\.css\?v=20260807-3/);
 assert.match(docLinksCss, /body\s*\{[\s\S]*overflow-x: clip/);
 assert.match(docLinksCss, /@media \(max-width: 620px\)/);
 assert.match(topbarPolishCss, /\.doc-topbar-link\s*\{[\s\S]*display: none !important/);
@@ -204,6 +225,13 @@ assert.match(topbarPolishCss, /html\[data-theme="dark"\] \.topbar-context select
 assert.match(topbarPolishCss, /color-scheme: dark/);
 assert.match(topbarPolishCss, /-webkit-text-fill-color: #f7fbff/);
 assert.match(topbarPolishCss, /safe-area-inset-top/);
+assert.match(topbarPolishCss, /#themeButton > span/);
+assert.match(advancedCss, /\.partner-operations/);
+assert.match(advancedCss, /\.financial-sheet-scroll/);
+assert.match(advancedCss, /\.track-choices/);
+assert.match(advancedJs, /function renderPartnerCalendar\(/);
+assert.match(advancedJs, /function renderSpreadsheet\(/);
+assert.match(advancedJs, /function renderPortfolio\(/);
 assert.match(docEditorialCss, /\.boundary-center > small\s*\{[\s\S]*color: #617286/);
 assert.match(docEditorialCss, /\.memory-index\s*\{[\s\S]*color: #10253a/);
 
