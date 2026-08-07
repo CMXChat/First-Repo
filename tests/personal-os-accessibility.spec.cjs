@@ -9,6 +9,8 @@ function formatViolations(violations) {
 }
 
 async function expectNoSeriousAxeViolations(page, label) {
+  // Wait for view-entry transitions so axe evaluates final rendered colors.
+  await page.waitForTimeout(300);
   const results = await new AxeBuilder({ page })
     .exclude('iframe[src*="open.spotify.com"]')
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
