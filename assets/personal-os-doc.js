@@ -157,8 +157,8 @@
       architecturePrinciples.insertAdjacentHTML('afterend', `
         <div class="prose-callout" data-cloudflare-context>
           <strong>Cloudflare could become infrastructure beneath Spaces.</strong>
-          <p>Cloudflare OS is aimed at developers building agent runtimes, sandboxes, tools, and orchestration. Spaces is the user-facing product built around context, continuity, memory, and action. They operate at different layers, and Cloudflare could power part of the backend while the experience remains consistent for users.</p>
-          <a class="button button-secondary" href="https://os.cloudflare.app/" target="_blank" rel="noopener noreferrer">View Cloudflare OS <span aria-hidden="true">↗</span></a>
+          <p>Cloudflare’s Agents SDK provides durable identity, local SQL state, real-time connections, scheduling, recoverable execution, tools, and human approval patterns. Spaces would remain the user-facing product for context, continuity, memory, and action.</p>
+          <a class="button button-secondary" href="https://developers.cloudflare.com/agents/" target="_blank" rel="noopener noreferrer">View Cloudflare Agents <span aria-hidden="true">↗</span></a>
         </div>
       `);
     }

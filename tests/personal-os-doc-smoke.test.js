@@ -29,6 +29,7 @@ assert.match(html, /meta name="referrer" content="no-referrer"/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
 assert.match(html, /Public overview/);
 assert.match(html, /This public noindex overview contains product explanation and fictional examples/);
+assert.match(html, /personal-os-doc\.js\?v=20260807-4/);
 assert.equal((html.match(/class="scenario-card(?:\s|\")/g) || []).length, 7);
 assert.match(html, /Seven briefing contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team/);
 assert.match(html, /Accountant and Client Space/);
@@ -52,6 +53,7 @@ for (const id of [
   'ai-layer',
   'trust',
   'status',
+  'investment',
   'architecture',
   'scenarios',
   'faq'
@@ -66,7 +68,8 @@ assert.match(js, /Memory belongs to the Space and stays under the user’s contr
 assert.match(js, /Planned Memory & Data settings/);
 assert.match(js, /The model can change while the Space keeps its history/);
 assert.match(js, /Cloudflare could become infrastructure beneath Spaces/);
-assert.match(js, /https:\/\/os\.cloudflare\.app\//);
+assert.match(js, /https:\/\/developers\.cloudflare\.com\/agents\//);
+assert.doesNotMatch(js, /Cloudflare OS|os\.cloudflare\.app/);
 assert.match(js, /Brief · Documents · Projects · Research · Memory · Tasks · Calendar · Files · Settings/);
 assert.match(js, /spaces_doc_theme_v1/);
 assert.match(js, /personal_os_doc_theme_v3/);
@@ -80,6 +83,11 @@ assert.match(css, /\.theme-toggle/);
 assert.match(css, /@media \(max-width: 680px\)/);
 assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(css, /@media print/);
+assert.match(html, /class="product-preview-stage"/);
+assert.match(html, /Adjacent products reviewed from official product pages in August 2026/);
+assert.match(html, /Across these official product descriptions, no single product presents the full combination shown here/);
+assert.match(html, /https:\/\/developers\.cloudflare\.com\/agents\//);
+assert.doesNotMatch(html, /Cloudflare OS|os\.cloudflare\.app/);
 assert.match(editorialCss, /classic light refinement/i);
 assert.match(editorialCss, /html\[data-theme="light"\] \.document-paper/);
 assert.match(editorialCss, /@media \(max-width: 680px\)/);

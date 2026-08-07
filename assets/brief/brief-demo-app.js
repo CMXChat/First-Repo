@@ -382,7 +382,7 @@
           <h2>${escapeHtml(detail.title)}</h2>
           <p>${escapeHtml(detail.summary)}</p>
         </div>
-        <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="workspace" data-ai-title="${escapeHtml(detail.title)}"><span aria-hidden="true">✦</span> Ask AI</button>
+        <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="workspace" data-ai-title="${escapeHtml(detail.title)}" aria-label="Open a conversation about ${escapeHtml(detail.title)}" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button>
       </header>
       ${renderDetailBody(detail)}
     `;

@@ -18,18 +18,23 @@
   <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260807-3" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260807-3" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260807-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260807-1" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260807-3" />
 </head>
 <body data-entered="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
 
   <section class="entry" id="entry" aria-labelledby="entryTitle">
     <div class="entry-backdrop" aria-hidden="true"></div>
+    <button class="entry-scroll-control" id="entryScrollControl" type="button" aria-controls="entry" aria-label="Scroll down to the rest of the entry" hidden>
+      <span class="entry-scroll-label">Scroll</span>
+      <span class="entry-scroll-rail" aria-hidden="true"><i></i></span>
+      <span class="entry-scroll-arrow" aria-hidden="true">↓</span>
+    </button>
     <div class="entry-card">
       <div class="entry-mark" aria-hidden="true">SP</div>
       <p class="eyebrow">SPACES DEMO</p>
       <h1 id="entryTitle">Choose the Space you want to open</h1>
-      <p class="entry-copy">Each Space changes the people, permissions, priorities, records, and next steps while the product stays familiar. This demo shows complete examples so you can judge the range. A real account would start with a few useful sections and grow when the context calls for it.</p>
+      <p class="entry-copy">Each Space changes the people, permissions, priorities, and records while the product stays familiar. These complete examples show the range. A real account would begin with fewer sections and grow with the context.</p>
 
       <div class="entry-grid" id="entryScenarioGrid" role="group" aria-label="Demo Spaces"></div>
 
@@ -37,24 +42,24 @@
         <div class="entry-tip-viewport">
           <div class="entry-tip-track" id="entryTipTrack">
             <article class="entry-tip" data-entry-tip aria-label="Tip 1 of 5">
-              <span>PLATFORM IDEA</span>
-              <p><strong>Build an alarm from tomorrow’s context.</strong> Use the approved calendar, weather, route, first priority, and chosen soundtrack to prepare the morning.</p>
+              <span>SMART MORNING</span>
+              <p><strong>Wake up ready for tomorrow.</strong><span class="entry-tip-detail"> With permission, Spaces can bring together your alarm, calendar, weather, route, first priority, and a soundtrack chosen for the morning.</span></p>
             </article>
             <article class="entry-tip" data-entry-tip aria-label="Tip 2 of 5" aria-hidden="true">
               <span>CONTEXTUAL AI</span>
-              <p><strong>Start a conversation from the section you are viewing.</strong> The section, Space, sources, and permission scope can travel with the prompt.</p>
+              <p><strong>Ask from the section in front of you.</strong><span class="entry-tip-detail"> Spaces can carry the section, its sources, and the right permission scope into the conversation.</span></p>
             </article>
             <article class="entry-tip" data-entry-tip aria-label="Tip 3 of 5" aria-hidden="true">
-              <span>FAMILY COORDINATION</span>
-              <p><strong>Turn a shared calendar into a useful household plan.</strong> Bring together rides, appointments, chores, shopping, weather, and approved availability.</p>
+              <span>SHARED PLANNING</span>
+              <p><strong>Keep the whole family moving.</strong><span class="entry-tip-detail"> Bring together rides, appointments, chores, shopping, weather, and only the availability each person agreed to share.</span></p>
             </article>
             <article class="entry-tip" data-entry-tip aria-label="Tip 4 of 5" aria-hidden="true">
               <span>PREPARED ACTION</span>
-              <p><strong>Protect a day off across two time zones.</strong> Prepare the affected meetings, then wait for both business partners to review the draft.</p>
+              <p><strong>Protect a day off across two time zones.</strong><span class="entry-tip-detail"> Spaces can find the affected meetings, prepare the changes, and wait for both partners to approve them.</span></p>
             </article>
             <article class="entry-tip" data-entry-tip aria-label="Tip 5 of 5" aria-hidden="true">
-              <span>DEMO CONTROL</span>
-              <p><strong>Choose music after Spaces opens.</strong> The top-right music button offers three tracks, and Spotify may require one direct tap before playback begins.</p>
+              <span>PERSONALIZED MUSIC</span>
+              <p><strong>Hear something that fits your taste and the moment.</strong><span class="entry-tip-detail"> With Spotify or another music account connected, Spaces can personalize the soundtrack from what you already enjoy and keep other choices one tap away.</span></p>
             </article>
           </div>
         </div>
@@ -123,7 +128,6 @@
               <div class="hero-actions">
                 <button class="primary-button" type="button" data-go-view="workspace">Open workspace</button>
                 <button class="secondary-button" type="button" data-go-view="spaces">View Spaces</button>
-                <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="overview" data-ai-title="Today overview"><span aria-hidden="true">✦</span> Ask AI</button>
               </div>
             </article>
 
@@ -133,7 +137,6 @@
               <p id="nextDetail"></p>
               <div class="card-inline-actions">
                 <button class="text-button" type="button" data-go-view="workspace">Open details <span aria-hidden="true">→</span></button>
-                <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="next" data-ai-title="Next up"><span aria-hidden="true">✦</span> Ask AI</button>
               </div>
             </aside>
           </div>
@@ -143,7 +146,7 @@
             <div class="priority-copy"><span id="priorityLabel"></span><strong id="priorityTitle"></strong><small id="priorityDetail"></small></div>
             <div class="priority-actions">
               <button class="secondary-button priority-review" id="priorityReview" type="button">Review</button>
-              <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="priority" data-ai-title="Priority notice"><span aria-hidden="true">✦</span> Ask AI</button>
+              <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="priority" data-ai-title="Priority notice" aria-label="Open a conversation about the priority notice" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button>
             </div>
           </section>
 
@@ -164,7 +167,7 @@
                 </div>
                 <div class="section-heading-actions">
                   <span class="source-pill muted-pill">DEMO CONDITION</span>
-                  <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="weather" data-ai-title="Weather and timing"><span aria-hidden="true">✦</span> Ask AI</button>
+                  <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="weather" data-ai-title="Weather and timing" aria-label="Open a conversation about weather and timing" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button>
                 </div>
               </div>
               <div class="weather-main">
@@ -183,7 +186,7 @@
             <section class="stats-panel" aria-labelledby="statsTitle">
               <div class="panel-heading">
                 <div><p class="eyebrow">AT A GLANCE</p><h2 id="statsTitle">Useful numbers</h2></div>
-                <div class="panel-heading-side"><p>These numbers change with the selected Space.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="numbers" data-ai-title="Useful numbers"><span aria-hidden="true">✦</span> Ask AI</button></div>
+                <div class="panel-heading-side"><p>These numbers change with the selected Space.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="numbers" data-ai-title="Useful numbers" aria-label="Open a conversation about the useful numbers" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button></div>
               </div>
               <div class="stats-grid" id="statsGrid"></div>
             </section>
@@ -197,14 +200,13 @@
               <div class="recommendation-actions">
                 <button class="text-button" type="button" data-go-view="workspace">See why <span aria-hidden="true">→</span></button>
                 <button class="text-button" id="briefUpdateButton" type="button">Update this Brief <span aria-hidden="true">↗</span></button>
-                <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="recommendation" data-ai-title="Recommended next move"><span aria-hidden="true">✦</span> Ask AI</button>
+                <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="recommendation" data-ai-title="Recommended next move" aria-label="Open a conversation about the recommended next move" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button>
               </div>
             </section>
 
             <section class="flow-card" aria-labelledby="flowTitle">
               <div class="panel-heading compact-heading">
                 <div><p class="eyebrow">TODAY'S FLOW</p><h2 id="flowTitle">Move through the day</h2></div>
-                <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="flow" data-ai-title="Today's flow"><span aria-hidden="true">✦</span> Ask AI</button>
               </div>
               <ol id="flowList" class="flow-list"></ol>
             </section>
@@ -214,7 +216,7 @@
         <section class="view-panel" data-view-panel="workspace" aria-labelledby="workspaceTitle" hidden>
           <header class="view-heading">
             <div><p class="eyebrow">MORE DETAIL</p><h1 id="workspaceTitle">Open the part of this Space you need</h1></div>
-            <div class="view-heading-tools"><p>Each example has its own categories and records, while the app stays familiar.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="workspace" data-ai-title="Workspace"><span aria-hidden="true">✦</span> Ask AI</button></div>
+            <div class="view-heading-tools"><p>Each example has its own categories and records, while the app stays familiar.</p></div>
           </header>
           <nav class="workspace-tabs" id="workspaceTabs" role="tablist" aria-label="Workspace categories"></nav>
           <section class="workspace-panel" id="workspacePanel" role="tabpanel" tabindex="-1"></section>
@@ -223,7 +225,7 @@
         <section class="view-panel" data-view-panel="spaces" aria-labelledby="spacesTitle" hidden>
           <header class="view-heading">
             <div><p class="eyebrow">CLEAR BOUNDARIES</p><h1 id="spacesTitle">Keep private profiles separate and share only what belongs in the Space</h1></div>
-            <div class="view-heading-tools"><p>People can share selected records while private details stay in their original profiles.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="permissions" data-ai-title="People and permissions"><span aria-hidden="true">✦</span> Ask AI</button></div>
+            <div class="view-heading-tools"><p>People can share selected records while private details stay in their original profiles.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="permissions" data-ai-title="People and permissions" aria-label="Open a conversation about people and permissions" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button></div>
           </header>
           <div class="space-overview">
             <section class="space-card private-space">
@@ -249,7 +251,7 @@
         <section class="view-panel" data-view-panel="how" aria-labelledby="howTitle" hidden>
           <header class="view-heading">
             <div><p class="eyebrow">HOW IT WORKS</p><h1 id="howTitle">The Brief shows what matters now, and the Space keeps the context behind it</h1></div>
-            <div class="view-heading-tools"><p>Goals provide direction, each Space sets the boundary, approved connections bring in data, memory keeps useful history, and automations handle repeat work.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="how" data-ai-title="How Spaces works"><span aria-hidden="true">✦</span> Ask AI</button></div>
+            <div class="view-heading-tools"><p>Goals provide direction, each Space sets the boundary, approved connections bring in data, memory keeps useful history, and automations handle repeat work.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="how" data-ai-title="How Spaces works" aria-label="Open a conversation about how Spaces works" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button></div>
           </header>
 
           <div class="foundation-map">
@@ -299,7 +301,7 @@
         <section class="view-panel" data-view-panel="everything" aria-labelledby="everythingTitle" hidden>
           <header class="view-heading full-view-heading">
             <div><p class="eyebrow">FULL VIEW</p><h1 id="everythingTitle">Review the complete briefing on one page</h1></div>
-            <div class="view-heading-tools"><p>The full view keeps every section together for a longer review. Focused views provide a shorter path to one topic.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="everything" data-ai-title="Complete briefing"><span aria-hidden="true">✦</span> Ask AI</button></div>
+            <div class="view-heading-tools"><p>The full view keeps every section together for a longer review. Focused views provide a shorter path to one topic.</p><button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="everything" data-ai-title="Complete briefing" aria-label="Open a conversation about the complete briefing" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button></div>
           </header>
           <nav class="everything-jump-nav" id="everythingJumpNav" aria-label="Jump through the full briefing"></nav>
           <div class="everything-content" id="everythingContent"></div>
@@ -331,23 +333,26 @@
 
     <dialog class="spaces-ai-dialog" id="spacesAiDialog" aria-labelledby="spacesAiTitle">
       <section class="spaces-ai-shell">
-        <div class="spaces-ai-handle" aria-hidden="true"></div>
         <header class="spaces-ai-heading">
-          <div><p class="eyebrow">SECTION CONVERSATION</p><h2 id="spacesAiTitle">Ask about this section</h2></div>
+          <div><p class="eyebrow">CONTEXTUAL CONVERSATION</p><h2 id="spacesAiTitle">Continue with this section</h2></div>
           <button class="round-button" id="closeSpacesAi" type="button" aria-label="Close section conversation">×</button>
         </header>
         <p class="spaces-ai-context" id="spacesAiContext"></p>
-        <p class="spaces-ai-intro">The prompt carries this section’s context into the conversation. A signed-in Space would also apply the current sources, visibility rules, and tool permissions.</p>
+        <div class="spaces-ai-explainer">
+          <p class="spaces-ai-intro">Your question can carry this section and its current Space into one focused conversation. After a secure backend is connected, the conversation can include deeper records, source details, visibility rules, and approved tools.</p>
+          <p class="spaces-ai-connection"><i aria-hidden="true"></i><span><strong>Demo preview.</strong> Live AI answers and private records need secure sign-in and backend connection.</span></p>
+        </div>
         <div class="spaces-ai-prompts" id="spacesAiPrompts" aria-label="Suggested prompts"></div>
         <form id="spacesAiForm">
-          <label for="spacesAiInput">What do you want to know or change?</label>
-          <textarea id="spacesAiInput" rows="3" maxlength="500" placeholder="Ask one focused question"></textarea>
-          <button class="primary-button" type="submit">Start demo conversation</button>
+          <label for="spacesAiInput">Ask, correct, or redirect this section</label>
+          <textarea id="spacesAiInput" rows="2" maxlength="500" placeholder="Add one focused question or correction"></textarea>
+          <button class="primary-button" type="submit">Preview context handoff</button>
         </form>
         <div class="spaces-ai-preview" id="spacesAiPreview" aria-live="polite" hidden></div>
-        <p class="spaces-ai-boundary">This static page prepares the conversation path. Real model responses, connected records, durable memory, and external actions require the signed-in platform.</p>
       </section>
     </dialog>
+
+    <div class="spaces-demo-notice" id="spacesDemoNotice" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <aside class="media-drawer" id="mediaDrawer" aria-labelledby="mediaTitle" aria-hidden="true">
       <button class="drawer-backdrop" type="button" data-close-media aria-label="Close soundtrack"></button>
@@ -373,12 +378,12 @@
 
   <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
   <script src="/assets/brief/brief-demo-data.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-advanced.js?v=20260807-2" defer></script>
+  <script src="/assets/brief/brief-demo-advanced.js?v=20260807-3" defer></script>
   <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
-  <script src="/assets/brief/brief-demo-experience.js?v=20260807-4" defer></script>
+  <script src="/assets/brief/brief-demo-experience.js?v=20260807-5" defer></script>
   <script src="/assets/brief/brief-demo-media.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260807-4" defer></script>
+  <script src="/assets/brief/brief-demo-app.js?v=20260807-5" defer></script>
   <script src="/assets/brief/brief-demo-explainers.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-conversation.js?v=20260807-1" defer></script>
+  <script src="/assets/brief/brief-demo-conversation.js?v=20260807-3" defer></script>
 </body>
 </html>

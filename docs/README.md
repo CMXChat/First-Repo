@@ -2,7 +2,7 @@
 
 Last reconciled: **August 7, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `706a1bac94a507d4619cc16d2858ac09b2a75820`
+Verified code baseline: `6bab140fa8abf644acc1216cc86b2af841eeebf1`
 
 ## Read this first
 
@@ -25,7 +25,7 @@ Use this order when starting Spaces work:
 
 | File | Purpose |
 |---|---|
-| `spaces-demo-continuity.md` | Current seven-scenario product, design, data, editing, validation, publishing, and rollback contract. |
+| `spaces-demo-continuity.md` | Current seven-scenario product, responsive entry, product-document investment comparison, design, data, validation, publishing, and rollback contract. |
 | `2026-08-06-spaces-route-migration.md` | Canonical route decision plus shared-calendar, alarm, voice, compatibility, and release contracts. |
 | `spaces-product-direction-2026-08-06.md` | Current product name, category, doctrine, input model, memory settings, and Cloudflare relationship. |
 | `2026-08-05-repository-reconciliation.md` | Comparison between the August 4 notes and the August 5 repository. |
@@ -62,7 +62,7 @@ Use this order when starting Spaces work:
 - The active demo contains seven contexts, including Business partners and Accountant and client.
 - Each context can show one compact priority notice and one short correction question.
 - Each context links to three signature modules and can open a conversation from the current section.
-- The entry card rotates through practical product ideas and remains vertically scrollable on short desktop viewports.
+- The entry card rotates through practical product ideas in a thin changing-accent pill, fits common desktop and mobile viewports, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
 - Scenario buttons use native button semantics with `aria-pressed`.

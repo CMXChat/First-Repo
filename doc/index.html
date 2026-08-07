@@ -13,7 +13,7 @@
   <title>Spaces | Context-Driven Workspace and Daily Brief</title>
   <meta name="description" content="Spaces is a context-driven workspace that organizes memory, documents, tasks, calendars, people, and connected accounts around the parts of life that matter." />
   <link rel="canonical" href="https://db.cmxchat.com/doc/" />
-  <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260807-2" />
+  <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260807-3" />
 </head>
 <body>
   <main>
@@ -72,6 +72,7 @@
             <a href="#ai-layer">Your chosen AI</a>
             <a href="#trust">Trust and control</a>
             <a href="#status">Current reality</a>
+            <a href="#investment">Why invest</a>
             <a href="#architecture">Architecture</a>
             <a href="#scenarios">Scenarios</a>
             <a href="#faq">Questions</a>
@@ -227,6 +228,57 @@
             <article><h3>Direct input</h3><p>A note, uploaded document, voice update, form, import, or section-level conversation can add context through a short, focused path.</p></article>
             <article><h3>Focused questions</h3><p>The AI can ask one clear question when a missing answer would change a recommendation, deadline, permission, or decision.</p></article>
             <article><h3>Corrections</h3><p>A direct user correction replaces a weaker guess, keeps the earlier record in revision history, and updates the next Brief.</p></article>
+          </div>
+
+          <div class="product-preview-stage" aria-label="Illustrative future Spaces interfaces">
+            <header class="product-preview-heading">
+              <div>
+                <span>PRODUCT PREVIEW</span>
+                <h3>Small interactions can keep a Space current</h3>
+              </div>
+              <p>These previews extend the strongest demo patterns. They show how a shared schedule, one short correction, and a section-level question can use the same visual language.</p>
+            </header>
+
+            <div class="product-preview-grid">
+              <article class="calendar-preview" aria-labelledby="calendarPreviewTitle">
+                <header>
+                  <div><span>FAMILY SPACE · TUESDAY</span><h4 id="calendarPreviewTitle">A beach day with the household still in view</h4></div>
+                  <b>SHARED</b>
+                </header>
+                <div class="calendar-preview-week" role="list" aria-label="Example week">
+                  <span role="listitem"><small>MON</small><strong>10</strong></span>
+                  <span role="listitem" data-active="true"><small>TUE</small><strong>11</strong><i aria-hidden="true"></i></span>
+                  <span role="listitem"><small>WED</small><strong>12</strong><i aria-hidden="true"></i></span>
+                  <span role="listitem"><small>THU</small><strong>13</strong></span>
+                  <span role="listitem"><small>FRI</small><strong>14</strong><i aria-hidden="true"></i></span>
+                </div>
+                <div class="calendar-preview-events">
+                  <div data-owner="family"><time>8:00</time><span><strong>Beach day · Jamie + Ava</strong><small>Travel window and packing list attached</small></span><b>$86</b></div>
+                  <div data-owner="adult"><time>2:15</time><span><strong>Dentist · Morgan</strong><small>Ride owner still needed</small></span><b>ASK</b></div>
+                  <div data-owner="private"><time>4:30</time><span><strong>Busy</strong><small>Private event details stay covered</small></span><b>PRIVATE</b></div>
+                </div>
+                <div class="calendar-preview-weather"><span>78°</span><strong>UV 8</strong><p>Pack water, SPF 50, hats, and a shaded lunch stop.</p></div>
+              </article>
+
+              <article class="input-preview" aria-labelledby="inputPreviewTitle">
+                <header><span>ACCOUNTANT + CLIENT</span><b>QUICK UPDATE</b></header>
+                <p class="input-preview-label">ONE USEFUL QUESTION</p>
+                <h4 id="inputPreviewTitle">Did the $840 startup client payment arrive?</h4>
+                <div class="input-preview-choices" aria-label="Illustrative answer choices">
+                  <span>Yes</span><span data-selected="true">Partial · $420</span><span>Not yet</span>
+                </div>
+                <div class="input-preview-field"><span>SHORT CORRECTION</span><strong>$420 received Friday</strong></div>
+                <div class="input-preview-result"><span aria-hidden="true">✓</span><p><strong>Ready to update the cash plan</strong><small>Priya sees the approved result after confirmation.</small></p></div>
+              </article>
+            </div>
+
+            <div class="context-prompt-preview">
+              <span>ASK FROM THIS SECTION</span>
+              <p>If the beach day moves to Wednesday, which events, costs, and weather details change?</p>
+              <div><b>Family</b><b>Calendar</b><b>Weather</b><b>Approved records</b></div>
+              <strong>Start conversation <span aria-hidden="true">→</span></strong>
+            </div>
+            <p class="product-preview-note">Fictional interface examples. Production records, conversations, and updates require authentication, scoped sources, and user approval.</p>
           </div>
 
           <div class="prose-callout">
@@ -613,6 +665,90 @@
           </div>
         </section>
 
+        <section id="investment" class="document-section investment-section" aria-labelledby="investmentTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">The investment case</p>
+              <h2 id="investmentTitle">Why this is a credible product investment</h2>
+            </div>
+            <p class="section-intro">Established products already prove that people want help with projects, schedules, family coordination, finances, and connected tools. The opportunity is to bring those needs into one governed daily product that carries context forward and keeps private and shared records in the right place.</p>
+          </div>
+
+          <div class="investment-thesis">
+            <div>
+              <span>THE PRODUCT THESIS</span>
+              <h3>The valuable layer is the context and trust system</h3>
+            </div>
+            <p>Models, connectors, and agent runtimes will keep improving. Spaces can own the durable product state around them: people, permissions, sources, goals, corrections, routines, approvals, and the history that makes tomorrow’s Brief more useful than today’s.</p>
+          </div>
+
+          <div class="market-table-shell" role="region" aria-label="Adjacent product comparison" tabindex="0">
+            <table class="market-table">
+              <caption>Adjacent products reviewed from official product pages in August 2026</caption>
+              <thead><tr><th scope="col">Current category</th><th scope="col">What existing products prove</th><th scope="col">Where Spaces concentrates</th></tr></thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><a href="https://help.openai.com/en/articles/10169521-projects-in-chatgpt" target="_blank" rel="noopener noreferrer">ChatGPT Projects</a> + <a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt" target="_blank" rel="noopener noreferrer">apps</a></th>
+                  <td>Project-contained memory, connected context, role controls, and app actions are useful parts of an AI workspace.</td>
+                  <td>A recurring Brief and modular operating view across personal and shared Spaces, with source, freshness, and approval visible inside each section.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.notion.com/product/ai" target="_blank" rel="noopener noreferrer">Notion AI</a></th>
+                  <td>Workspace context, connected search, agents, recurring automation, model choice, and governance have clear value for teams.</td>
+                  <td>Role-aware contexts across personal life, households, advisors, partners, and teams, delivered through a daily priority view.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.usemotion.com/" target="_blank" rel="noopener noreferrer">Motion</a></th>
+                  <td>People want AI to prioritize tasks, plan calendars, manage projects, surface risk, and reduce manual coordination.</td>
+                  <td>Scheduling becomes one signal among goals, weather, money, relationships, permissions, commitments, and user corrections.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.cozi.com/" target="_blank" rel="noopener noreferrer">Cozi</a></th>
+                  <td>Families benefit from shared calendars, color-coded ownership, reminders, shopping, and task lists in one place.</td>
+                  <td>Private profiles and a shared Family Space can coordinate approved availability while preserving covered details and role boundaries.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.monarch.com/" target="_blank" rel="noopener noreferrer">Monarch</a></th>
+                  <td>Connected accounts, budgets, goals, reports, and collaboration with a partner or professional support better money decisions.</td>
+                  <td>Approved money signals become one governed lens inside the wider life context and an accountant-client decision workflow.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="reviewed-gap">
+            <span>THE REVIEWED-SET GAP</span>
+            <p>Across these official product descriptions, no single product presents the full combination shown here: cross-domain daily Briefs, separately governed personal and shared Spaces, editable memory, section-level AI entry, personalized ranking, and approval-gated action. This conclusion applies to the products reviewed and should be refreshed during formal diligence.</p>
+          </div>
+
+          <div class="investment-case-grid">
+            <article><span>01</span><h3>Demand already exists around each ingredient</h3><p>AI workspaces, team operating tools, schedule automation, family coordination, and finance dashboards each support established product categories.</p></article>
+            <article><span>02</span><h3>The accumulated context can become defensible</h3><p>Permission choices, corrections, schemas, routines, interaction signals, and approval history create governed product state that remains useful as models change.</p></article>
+            <article><span>03</span><h3>Capital can fund a narrow daily wedge first</h3><p>A first release can prove the daily Brief, corrections, connectors, and one shared Space before the product expands across every demonstrated scenario.</p></article>
+            <article><span>04</span><h3>The important proof stays measurable</h3><p>Activation, connected-source use, D7 and D30 return, Brief-to-action rate, corrections, shared invitations, and permission comprehension can guide each stage.</p></article>
+          </div>
+
+          <div class="infrastructure-opportunity">
+            <div>
+              <span>WHY NOW</span>
+              <h3>Agent infrastructure can reduce the cost of building the layer beneath Spaces</h3>
+              <p><a href="https://developers.cloudflare.com/agents/" target="_blank" rel="noopener noreferrer">Cloudflare’s Agents SDK</a> provides durable identity, local SQL state, real-time connections, scheduled work, recoverable execution, tools, and human approval patterns. Spaces would still own the experience, schemas, permission model, context graph, and user trust.</p>
+            </div>
+            <div class="infrastructure-layers" aria-label="Product and infrastructure layers">
+              <span><small>USER PRODUCT</small><strong>Spaces experience + trust model</strong></span>
+              <span><small>RUNTIME OPTION</small><strong>Cloudflare Agents infrastructure</strong></span>
+              <span><small>DISTRIBUTION OPTION</small><strong>Web, mobile, or a future ChatGPT app</strong></span>
+            </div>
+            <p class="distribution-note"><a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt" target="_blank" rel="noopener noreferrer">ChatGPT apps and plugins</a> could provide an optional access point later. Cloudflare supplies runtime infrastructure; the app or plugin would provide a distribution surface into the same governed Spaces backend.</p>
+          </div>
+
+          <div class="investment-conclusion">
+            <span>THE RESPONSIBLE INVESTMENT</span>
+            <strong>Fund the context, trust, and daily-use loop in stages.</strong>
+            <p>Spaces is worth funding as a staged product experiment when each release must prove retention and trust. The first serious build should establish secure identity, one reliable Brief, scoped connectors, direct corrections, and one shared Space before broader expansion.</p>
+          </div>
+        </section>
+
         <section id="architecture" class="document-section architecture-section" aria-labelledby="architectureTitle">
           <div class="section-heading">
             <div>
@@ -642,9 +778,9 @@
           </div>
 
           <div class="prose-callout" data-cloudflare-context>
-            <strong>Cloudflare could become infrastructure beneath Spaces.</strong>
-            <p>Cloudflare OS is aimed at developers building agent runtimes, sandboxes, tools, and orchestration. Spaces is the user-facing product built around context, continuity, memory, and action. They operate at different layers, and Cloudflare could power part of the backend while the experience remains consistent for users.</p>
-            <a class="button button-secondary" href="https://os.cloudflare.app/" target="_blank" rel="noopener noreferrer">View Cloudflare OS <span aria-hidden="true">↗</span></a>
+            <strong>Cloudflare’s Agents SDK could become infrastructure beneath Spaces.</strong>
+            <p>The runtime already provides durable identity, state, real-time connections, scheduling, recovery, model choice, tools, and human approval patterns. Spaces would remain the user-facing product with its own context graph, permissions, schemas, Brief composition, and interaction design.</p>
+            <a class="button button-secondary" href="https://developers.cloudflare.com/agents/" target="_blank" rel="noopener noreferrer">View Cloudflare Agents <span aria-hidden="true">↗</span></a>
           </div>
         </section>
 
@@ -713,6 +849,6 @@
   </main>
 
   <noscript>This overview remains readable without JavaScript. Theme switching, section tracking, and print controls require JavaScript.</noscript>
-  <script src="/assets/personal-os-doc.js?v=20260807-3" defer></script>
+  <script src="/assets/personal-os-doc.js?v=20260807-4" defer></script>
 </body>
 </html>

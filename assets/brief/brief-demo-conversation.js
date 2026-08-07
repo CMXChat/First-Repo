@@ -32,6 +32,14 @@
     restoreFocus: true
   };
 
+  const entryScrollState = {
+    frame: 0
+  };
+
+  const noticeState = {
+    timer: 0
+  };
+
   function currentScenario() {
     const id = document.body.dataset.scenario || data.meta.defaultScenario;
     return data.scenarios[id] || data.scenarios[data.meta.defaultScenario];
@@ -57,6 +65,7 @@
     if (!track || !tips.length) return;
 
     carouselState.index = (nextIndex + tips.length) % tips.length;
+    track.closest('.entry-tip-carousel')?.setAttribute('data-tip-index', String(carouselState.index));
     track.style.transform = `translateX(-${carouselState.index * 100}%)`;
     tips.forEach((tip, index) => {
       const active = index === carouselState.index;
@@ -250,6 +259,21 @@
     preview.scrollIntoView({ block: 'nearest', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
   }
 
+  function showDemoNotice(message) {
+    const notice = $('#spacesDemoNotice');
+    if (!notice || !message) return;
+    notice.textContent = message;
+    notice.classList.add('is-visible');
+    window.clearTimeout(noticeState.timer);
+    noticeState.timer = window.setTimeout(() => notice.classList.remove('is-visible'), 4400);
+  }
+
+  function installBackendNotice() {
+    document.addEventListener('briefdemo:backendrequired', event => {
+      showDemoNotice(event.detail?.message || 'This live action becomes available after secure sign-in and backend connection.');
+    });
+  }
+
   function installCarousel() {
     const carousel = $('#entryTipCarousel');
     if (!carousel) return;
@@ -264,6 +288,53 @@
     document.addEventListener('visibilitychange', scheduleCarousel);
     reduceMotion.addEventListener?.('change', scheduleCarousel);
     showTip(0);
+  }
+
+  function refreshEntryScroll() {
+    entryScrollState.frame = 0;
+    const entry = $('#entry');
+    const control = $('#entryScrollControl');
+    if (!entry || !control) return;
+
+    const maximum = Math.max(0, entry.scrollHeight - entry.clientHeight);
+    const overflowing = maximum > 8 && document.body.dataset.entered !== 'true';
+    control.hidden = !overflowing;
+    if (!overflowing) return;
+
+    const progress = Math.min(1, Math.max(0, entry.scrollTop / maximum));
+    const atEnd = progress > 0.96;
+    control.style.setProperty('--entry-scroll-progress', progress.toFixed(4));
+    control.setAttribute('aria-label', atEnd ? 'Return to the top of the entry' : 'Scroll down to the rest of the entry');
+    const arrow = $('.entry-scroll-arrow', control);
+    if (arrow) arrow.textContent = atEnd ? '↑' : '↓';
+  }
+
+  function queueEntryScrollRefresh() {
+    if (entryScrollState.frame) return;
+    entryScrollState.frame = window.requestAnimationFrame(refreshEntryScroll);
+  }
+
+  function installEntryScroll() {
+    const entry = $('#entry');
+    const control = $('#entryScrollControl');
+    if (!entry || !control) return;
+
+    entry.addEventListener('scroll', queueEntryScrollRefresh, { passive: true });
+    window.addEventListener('resize', queueEntryScrollRefresh, { passive: true });
+    control.addEventListener('click', () => {
+      const maximum = Math.max(0, entry.scrollHeight - entry.clientHeight);
+      const atEnd = maximum > 0 && entry.scrollTop / maximum > 0.96;
+      entry.scrollTo({
+        top: atEnd ? 0 : Math.min(maximum, entry.scrollTop + entry.clientHeight * 0.72),
+        behavior: reduceMotion.matches ? 'auto' : 'smooth'
+      });
+    });
+
+    if ('ResizeObserver' in window) {
+      const observer = new ResizeObserver(queueEntryScrollRefresh);
+      observer.observe($('.entry-card', entry) || entry);
+    }
+    queueEntryScrollRefresh();
   }
 
   function installConversation() {
@@ -306,6 +377,8 @@
 
   function init() {
     installCarousel();
+    installEntryScroll();
+    installBackendNotice();
     installConversation();
   }
 
