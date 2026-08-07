@@ -2,274 +2,29 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#edf3f8" />
-  <meta name="color-scheme" content="dark light" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://open.spotify.com; style-src 'self'; img-src 'self' data:; frame-src https://open.spotify.com; media-src https:; connect-src https://open.spotify.com; object-src 'none'; base-uri 'none'; form-action 'none'" />
-  <title>Spaces Brief Demo</title>
-  <meta name="description" content="A working demo of Spaces, showing how one context can bring together a Brief, memory, goals, connected information, permissions, and next steps." />
-  <link rel="canonical" href="https://db.cmxchat.com/brief/" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260805-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260805-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260805-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260806-3" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260806-3" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'unsafe-inline'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <meta http-equiv="refresh" content="1; url=/spaces/" />
+  <title>Spaces has moved</title>
+  <link rel="canonical" href="https://db.cmxchat.com/spaces/" />
+  <style>
+    :root { color-scheme: light dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #edf3f8; color: #102130; }
+    main { width: min(34rem, calc(100% - 2rem)); padding: 2rem; border: 1px solid #c9d7e2; border-radius: 1rem; background: #fff; box-shadow: 0 1rem 3rem rgba(16, 33, 48, .1); }
+    p { line-height: 1.6; }
+    a { color: #075fa8; font-weight: 700; }
+    @media (prefers-color-scheme: dark) { body { background: #07111a; color: #e8f2f9; } main { background: #0d1b27; border-color: #294052; } a { color: #70bfff; } }
+  </style>
+  <script src="/assets/spaces-legacy-redirect.js?v=20260806-1" defer></script>
 </head>
-<body data-entered="false" data-view="today" data-scenario="personal">
-  <a class="skip-link" href="#demoMain">Skip to briefing</a>
-
-  <section class="entry" id="entry" aria-labelledby="entryTitle">
-    <div class="entry-backdrop" aria-hidden="true"></div>
-    <div class="entry-card">
-      <div class="entry-mark" aria-hidden="true">SP</div>
-      <p class="eyebrow">SPACES DEMO</p>
-      <h1 id="entryTitle">Choose the Space you want to open</h1>
-      <p class="entry-copy">Each Space changes the people, permissions, priorities, records, and next steps while the product stays familiar.</p>
-
-      <div class="entry-grid" id="entryScenarioGrid" role="group" aria-label="Demo Spaces"></div>
-
-      <label class="soundtrack-choice">
-        <input id="entrySoundtrack" type="checkbox" checked />
-        <span>
-          <strong>Play the soundtrack when the demo opens</strong>
-          <small>Opening the demo asks Spotify to play, though some devices may still require one tap inside Spotify.</small>
-        </span>
-      </label>
-
-      <div class="entry-actions">
-        <button class="primary-button entry-open" id="openDemo" type="button" disabled>Choose a Space first</button>
-        <a class="secondary-button doc-entry-link" href="/doc/">Read product overview <span aria-hidden="true">↗</span></a>
-      </div>
-      <p class="entry-note">The private-looking records are fictional and clearly labeled because real private data would require secure sign-in and permission controls.</p>
-    </div>
-  </section>
-
-  <div class="app" id="demoApp" aria-hidden="true">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <button class="identity" id="homeButton" type="button" aria-label="Open today view">
-          <span class="identity-mark" aria-hidden="true">SP</span>
-          <span class="identity-copy"><strong>Spaces</strong><small>Context-driven briefing demo</small></span>
-        </button>
-
-        <div class="topbar-context">
-          <label for="scenarioSelect">Space</label>
-          <select id="scenarioSelect" aria-label="Switch Space"></select>
-        </div>
-
-        <div class="topbar-actions">
-          <span class="today-label" id="todayLabel"></span>
-          <button class="round-button" id="mediaButton" type="button" aria-label="Open soundtrack" aria-expanded="false">♪</button>
-          <button class="round-button" id="themeButton" type="button" aria-label="Switch to dark theme" aria-pressed="false">◐</button>
-        </div>
-      </div>
-    </header>
-
-    <div class="app-layout">
-      <aside class="rail" aria-label="Briefing navigation">
-        <div class="rail-card">
-          <p class="rail-label">Navigate</p>
-          <nav id="primaryNav" class="primary-nav"></nav>
-        </div>
-        <div class="rail-card context-card">
-          <span class="status-dot" aria-hidden="true"></span>
-          <p class="rail-label">Current context</p>
-          <strong id="railContextTitle">Personal</strong>
-          <p id="railContextCopy">One person, one useful day</p>
-        </div>
-        <button class="rail-reset" id="resetDemo" type="button">Choose another Space</button>
-      </aside>
-
-      <main id="demoMain" tabindex="-1">
-        <section class="view-panel is-active" data-view-panel="today" aria-labelledby="heroTitle">
-          <div class="hero-grid">
-            <article class="hero-copy">
-              <div class="hero-meta">
-                <span class="source-pill">FOCUSED DEMO</span>
-                <span id="heroDate"></span>
-              </div>
-              <p class="greeting" id="greeting"></p>
-              <h1 id="heroTitle"></h1>
-              <p class="hero-summary" id="heroSummary"></p>
-              <div class="hero-actions">
-                <button class="primary-button" type="button" data-go-view="workspace">Open workspace</button>
-                <button class="secondary-button" type="button" data-go-view="spaces">View Spaces</button>
-              </div>
-            </article>
-
-            <aside class="next-card">
-              <div class="card-topline"><span>Next up</span><time id="nextTime"></time></div>
-              <h2 id="nextTitle"></h2>
-              <p id="nextDetail"></p>
-              <button class="text-button" type="button" data-go-view="workspace">Open details <span aria-hidden="true">→</span></button>
-            </aside>
-          </div>
-
-          <div class="today-grid">
-            <section class="weather-card" aria-labelledby="weatherTitle">
-              <div class="weather-heading">
-                <div>
-                  <p class="eyebrow">CONDITION THAT CHANGES THE DAY</p>
-                  <h2 id="weatherTitle">Weather and timing</h2>
-                </div>
-                <span class="source-pill muted-pill">DEMO CONDITION</span>
-              </div>
-              <div class="weather-main">
-                <div class="weather-visual" aria-hidden="true"><span class="weather-sun"></span><span class="weather-cloud cloud-one"></span><span class="weather-cloud cloud-two"></span></div>
-                <div class="weather-reading">
-                  <p id="weatherLocation"></p>
-                  <strong><span id="weatherTemperature"></span>°</strong>
-                  <h3 id="weatherCondition"></h3>
-                  <p id="weatherAdvice"></p>
-                </div>
-                <div class="weather-range"><span>High <b id="weatherHigh"></b>°</span><span>Low <b id="weatherLow"></b>°</span></div>
-              </div>
-              <div class="hourly-strip" id="hourlyStrip"></div>
-            </section>
-
-            <section class="stats-panel" aria-labelledby="statsTitle">
-              <div class="panel-heading">
-                <div><p class="eyebrow">AT A GLANCE</p><h2 id="statsTitle">Useful numbers</h2></div>
-                <p>These numbers change with the selected Space.</p>
-              </div>
-              <div class="stats-grid" id="statsGrid"></div>
-            </section>
-          </div>
-
-          <div class="today-lower">
-            <section class="recommendation-card">
-              <span id="recommendationLabel"></span>
-              <h2 id="recommendationTitle"></h2>
-              <p id="recommendationDetail"></p>
-              <button class="text-button" type="button" data-go-view="workspace">See why <span aria-hidden="true">→</span></button>
-            </section>
-
-            <section class="flow-card" aria-labelledby="flowTitle">
-              <div class="panel-heading compact-heading">
-                <div><p class="eyebrow">TODAY'S FLOW</p><h2 id="flowTitle">Move through the day</h2></div>
-              </div>
-              <ol id="flowList" class="flow-list"></ol>
-            </section>
-          </div>
-        </section>
-
-        <section class="view-panel" data-view-panel="workspace" aria-labelledby="workspaceTitle" hidden>
-          <header class="view-heading">
-            <div><p class="eyebrow">MORE DETAIL</p><h1 id="workspaceTitle">Open the part of this Space you need</h1></div>
-            <p>Each example has its own categories and records, while the app stays familiar.</p>
-          </header>
-          <nav class="workspace-tabs" id="workspaceTabs" role="tablist" aria-label="Workspace categories"></nav>
-          <section class="workspace-panel" id="workspacePanel" role="tabpanel" tabindex="-1"></section>
-        </section>
-
-        <section class="view-panel" data-view-panel="spaces" aria-labelledby="spacesTitle" hidden>
-          <header class="view-heading">
-            <div><p class="eyebrow">CLEAR BOUNDARIES</p><h1 id="spacesTitle">Keep private profiles separate and share only what belongs in the Space</h1></div>
-            <p>People can share selected records without opening every private detail.</p>
-          </header>
-          <div class="space-overview">
-            <section class="space-card private-space">
-              <span class="space-label">PRIVATE BY DEFAULT</span>
-              <h2 id="privateSpaceTitle">Private context</h2>
-              <ul id="privateSpaceList"></ul>
-            </section>
-            <div class="space-bridge" aria-hidden="true"><span>Approved sharing</span><i>→</i></div>
-            <section class="space-card shared-space">
-              <span class="space-label">APPROVED SHARED SPACE</span>
-              <h2 id="sharedSpaceTitle"></h2>
-              <ul id="sharedSpaceList"></ul>
-            </section>
-          </div>
-          <section class="permission-strip" aria-label="Permission principles">
-            <article><span>01</span><strong>Private first</strong><p>Records begin with the person or role they belong to.</p></article>
-            <article><span>02</span><strong>Clear purpose</strong><p>Sharing needs a Space and a reason.</p></article>
-            <article><span>03</span><strong>Easy to review</strong><p>Access, memory, and automations stay visible.</p></article>
-            <article><span>04</span><strong>Easy to stop</strong><p>The user can pause, correct, or remove access.</p></article>
-          </section>
-        </section>
-
-        <section class="view-panel" data-view-panel="how" aria-labelledby="howTitle" hidden>
-          <header class="view-heading">
-            <div><p class="eyebrow">HOW IT WORKS</p><h1 id="howTitle">The Brief shows what matters now, and the Space keeps the context behind it</h1></div>
-            <p>Goals provide direction, each Space sets the boundary, approved connections bring in data, memory keeps useful history, and automations handle repeat work.</p>
-          </header>
-
-          <div class="foundation-map">
-            <article class="foundation-node"><span>Goals</span><strong>What the person wants to change</strong></article>
-            <article class="foundation-node"><span>Spaces</span><strong>Where information and permissions belong</strong></article>
-            <article class="foundation-center"><span>Daily experience</span><strong>Briefing</strong><p>What changed, what matters now, and what comes next.</p></article>
-            <article class="foundation-node"><span>Connections</span><strong>Approved calendars, email, files, finance, music, and tools</strong></article>
-            <article class="foundation-node"><span>Memory</span><strong>Sources, corrections, preferences, and results</strong></article>
-          </div>
-
-          <div class="how-grid">
-            <article><span>Understand</span><h2>Bring the useful information into one clear view</h2><p>Extra sections stay hidden until they affect timing, risk, ownership, or the next step.</p></article>
-            <article><span>Choose</span><h2>Use goals and plans to decide what deserves attention</h2><p>The same app can support personal, relationship, business, training, and team briefings.</p></article>
-            <article><span>Act</span><h2>Prepare useful work and keep important actions behind approval</h2><p>Secure access, permission checks, and confirmations sit behind the interface.</p></article>
-          </div>
-
-          <section class="boundary-card">
-            <div><p class="eyebrow">WHAT THIS DEMO USES</p><h2>Public data can be live, but private-looking records stay fictional until secure connections are available.</h2></div>
-            <ul>
-              <li><strong>Public:</strong> weather, news, and market information can come from sourced public services.</li>
-              <li><strong>Fictional:</strong> messages, finances, health records, and company records in this demo.</li>
-              <li><strong>Protected:</strong> real accounts need sign-in, limited permissions, logs, and a way to remove access.</li>
-              <li><strong>Approved action:</strong> important changes still need confirmation.</li>
-            </ul>
-          </section>
-
-          <section class="doc-cta-card" aria-label="Read the full Spaces product overview">
-            <div>
-              <p class="eyebrow">FULL PRODUCT OVERVIEW</p>
-              <h2>Read the full Spaces product overview</h2>
-              <p>Read about Spaces, memory, goals, permissions, model choice, security, and the planned backend.</p>
-            </div>
-            <a class="primary-button doc-cta-button" href="/doc/">Read the full overview <span aria-hidden="true">↗</span></a>
-          </section>
-        </section>
-
-        <section class="view-panel" data-view-panel="everything" aria-labelledby="everythingTitle" hidden>
-          <header class="view-heading full-view-heading">
-            <div><p class="eyebrow">FULL VIEW</p><h1 id="everythingTitle">Review the complete briefing on one page</h1></div>
-            <p>Focused views are faster, but this page keeps every section together for a longer review.</p>
-          </header>
-          <nav class="everything-jump-nav" id="everythingJumpNav" aria-label="Jump through the full briefing"></nav>
-          <div class="everything-content" id="everythingContent"></div>
-        </section>
-      </main>
-    </div>
-
-    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile briefing navigation"></nav>
-
-    <aside class="media-drawer" id="mediaDrawer" aria-labelledby="mediaTitle" aria-hidden="true">
-      <button class="drawer-backdrop" type="button" data-close-media aria-label="Close soundtrack"></button>
-      <section class="media-sheet">
-        <div class="drawer-handle" aria-hidden="true"></div>
-        <header class="media-heading">
-          <div><p class="eyebrow">SOUNDTRACK</p><h2 id="mediaTitle">Music for this context</h2></div>
-          <button class="round-button" type="button" data-close-media aria-label="Close soundtrack">×</button>
-        </header>
-        <div class="track-summary">
-          <span class="track-art" aria-hidden="true">♪</span>
-          <div><strong id="trackTitle"></strong><p id="trackArtist"></p><small id="trackNote"></small></div>
-        </div>
-        <button class="primary-button media-play" id="previewButton" type="button" disabled>Loading Spotify player</button>
-        <p class="media-status" id="mediaStatus">Preparing Spotify before the demo opens.</p>
-        <div id="spotifyFrame" aria-label="Spotify provider player"></div>
-        <p class="provider-note">Opening the demo asks Spotify to play, though some browsers, devices, or Spotify accounts may still require one direct tap.</p>
-      </section>
-    </aside>
-  </div>
-
-  <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
-  <script src="/assets/brief/brief-demo-data.js?v=20260806-2" defer></script>
-  <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
-  <script src="/assets/brief/brief-demo-experience.js?v=20260806-2" defer></script>
-  <script src="/assets/brief/brief-demo-media.js?v=20260806-2" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260806-1" defer></script>
-  <script src="/assets/brief/brief-demo-explainers.js?v=20260806-2" defer></script>
+<body>
+  <main aria-labelledby="pageTitle">
+    <p>Legacy route</p>
+    <h1 id="pageTitle">Spaces now lives at <code>/spaces/</code></h1>
+    <p>You are being redirected. Saved query parameters and section links will be carried forward when JavaScript is available.</p>
+    <p><a href="/spaces/">Open Spaces now</a></p>
+  </main>
 </body>
 </html>

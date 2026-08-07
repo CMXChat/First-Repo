@@ -1,23 +1,31 @@
-name: Brief Browser Matrix
+name: Spaces Browser Matrix
 
 on:
   push:
     branches: [main]
     paths:
+      - 'spaces/**'
       - 'brief/**'
+      - 'brief-next/**'
       - 'assets/brief/**'
+      - 'assets/spaces-legacy-redirect.js'
       - 'assets/daily-video.js'
       - 'tests/brief-browser-e2e.spec.cjs'
+      - 'tests/brief-topbar-music-e2e.spec.cjs'
       - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/brief-finalization-e2e.spec.cjs'
       - 'tests/playwright.config.cjs'
       - '.github/workflows/brief-browser-matrix.yml'
   pull_request:
     paths:
+      - 'spaces/**'
       - 'brief/**'
+      - 'brief-next/**'
       - 'assets/brief/**'
+      - 'assets/spaces-legacy-redirect.js'
       - 'assets/daily-video.js'
       - 'tests/brief-browser-e2e.spec.cjs'
+      - 'tests/brief-topbar-music-e2e.spec.cjs'
       - 'tests/brief-theme-e2e.spec.cjs'
       - 'tests/brief-finalization-e2e.spec.cjs'
       - 'tests/playwright.config.cjs'
@@ -45,14 +53,14 @@ jobs:
       - name: Install browser engines
         run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Run Chromium, Firefox, WebKit, iPhone and Android tests
+      - name: Run Chromium, Firefox, WebKit, iPhone and Android Spaces tests
         run: npx playwright test --config=tests/playwright.config.cjs
 
       - name: Upload failure artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: brief-browser-test-results
+          name: spaces-browser-test-results
           path: test-results
           if-no-files-found: ignore
           retention-days: 7

@@ -48,7 +48,7 @@ html[data-theme="light"] .entry-option small {
 }
 
 html[data-theme="light"] .muted-pill {
-  color: #66768a;
+  color: #596b80;
 }
 
 html[data-theme="light"] .hourly-item,
@@ -108,5 +108,23 @@ html[data-theme="dark"] .topbar-context select option {
 
   .topbar-inner {
     width: calc(100% - 20px);
+  }
+}
+
+
+/* AA contrast repairs for light-theme explainers and compact mobile cards. */
+html[data-theme="light"] .boundary-center,
+html[data-theme="light"] .explainer-tabs button,
+html[data-theme="light"] .comparison-card p,
+html[data-theme="light"] .space-example-panel p,
+html[data-theme="light"] .space-example-panel li,
+html[data-theme="light"] .outcome-grid p,
+html[data-theme="light"] .section-pager-button {
+  color: #52657a;
+}
+
+@media (max-width: 620px) {
+  html[data-theme="light"] .foundation-center {
+    background: linear-gradient(150deg, #0068b5, #004a86);
   }
 }

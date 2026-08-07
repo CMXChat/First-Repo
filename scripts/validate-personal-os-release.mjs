@@ -38,10 +38,6 @@ function extractAssets(html) {
   return refs;
 }
 
-function sameEntries(left, right) {
-  return JSON.stringify([...left.entries()]) === JSON.stringify([...right.entries()]);
-}
-
 function gitOutput(args) {
   try {
     return execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -68,26 +64,25 @@ function versionFor(refs, assetPath) {
   return refs.get(`/${assetPath}`)?.query.get('v') || '';
 }
 
-const brief = read('brief/index.html');
+const spaces = read('spaces/index.html');
+const legacyBrief = read('brief/index.html');
 const briefNext = read('brief-next/index.html');
 const doc = read('doc/index.html');
 const routesRaw = read('assets/cmx-routes.json');
+const migrationDoc = read('docs/2026-08-06-spaces-route-migration.md');
 
-assert(brief === briefNext, '`/brief/` and `/brief-next/` are no longer byte-for-byte aligned. Document an intentional staging difference before allowing drift.');
+const spacesAssets = extractAssets(spaces);
 
-const briefAssets = extractAssets(brief);
-const briefNextAssets = extractAssets(briefNext);
-assert(sameEntries(briefAssets, briefNextAssets), '`/brief/` and `/brief-next/` reference different assets or cache versions.');
-
-for (const [assetUrl, metadata] of briefAssets) {
+for (const [assetUrl, metadata] of spacesAssets) {
   if (!assetUrl.startsWith('/assets/brief/')) continue;
-  assert(metadata.query.has('v'), `Active Brief asset is missing a cache version: ${assetUrl}`);
+  assert(metadata.query.has('v'), `Active Spaces asset is missing a cache version: ${assetUrl}`);
   const relativePath = assetUrl.slice(1);
-  assert(fs.existsSync(path.join(root, relativePath)), `Active Brief asset does not exist: ${relativePath}`);
+  assert(fs.existsSync(path.join(root, relativePath)), `Active Spaces asset does not exist: ${relativePath}`);
 }
 
 for (const [surface, html] of [
-  ['/brief/', brief],
+  ['/spaces/', spaces],
+  ['/brief/', legacyBrief],
   ['/brief-next/', briefNext],
   ['/doc/', doc]
 ]) {
@@ -95,17 +90,34 @@ for (const [surface, html] of [
   assert(/<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html), `${surface} must remain noindex.`);
 }
 
-assert(/<title>[^<]*Demo[^<]*<\/title>/i.test(brief), '`/brief/` title must identify the surface as a demo.');
-assert(/fictional|sample|demonstration|demo records|working demo/i.test(brief), '`/brief/` must visibly distinguish demonstration data from a live connected product.');
+assert(/<title>[^<]*Demo[^<]*<\/title>/i.test(spaces), '`/spaces/` title must identify the surface as a demo.');
+assert(/fictional|sample|demonstration|demo records|working demo/i.test(spaces), '`/spaces/` must visibly distinguish demonstration data from a live connected product.');
+assert(/href=["']\/doc\/["']/i.test(spaces), '`/spaces/` must retain a product overview link.');
+assert(/https:\/\/db\.cmxchat\.com\/spaces\//i.test(spaces), '`/spaces/` must use the canonical Spaces URL.');
+assert(/shared calendars/i.test(spaces), '`/spaces/` must retain the shared-calendar coordination concept.');
+assert(/adaptive alarm/i.test(spaces), '`/spaces/` must retain the adaptive alarm concept.');
+assert(/<strong>Voice:<\/strong>/i.test(spaces), '`/spaces/` must retain the bounded voice concept.');
+assert(/aria-live=["']polite["']/i.test(spaces), '`/spaces/` must announce asynchronous media status changes.');
+assert(/id=["']spotifyFrame["'][^>]*role=["']region["']/i.test(spaces), '`/spaces/` Spotify container must have an explicit region role.');
+
+assert(/https:\/\/db\.cmxchat\.com\/spaces\//i.test(legacyBrief), '`/brief/` must canonicalize to `/spaces/`.');
+assert(/http-equiv=["']refresh["'][^>]*\/spaces\//i.test(legacyBrief), '`/brief/` must include a no-JavaScript redirect fallback to `/spaces/`.');
+assert(/spaces-legacy-redirect\.js/i.test(legacyBrief), '`/brief/` must preserve query strings and hashes through the external redirect helper.');
+assert(/window\.location\.replace/i.test(read('assets/spaces-legacy-redirect.js')), 'Legacy redirect helper must replace browser history instead of adding a redirect hop.');
+
 assert(
   /id=["']status["']/i.test(doc) &&
   /Current reality/i.test(doc) &&
   /separates what exists from what has been designed or planned/i.test(doc),
   '`/doc/` must preserve the current-versus-planned product boundary.'
 );
-assert(/href=["']\/doc\/["']/i.test(brief), '`/brief/` must retain a product overview link.');
-assert(/href=["']\/brief\/["']/i.test(doc), '`/doc/` must retain a demo link.');
+assert(/href=["']\/(?:spaces|brief)\/["']/i.test(doc), '`/doc/` must retain a working demo link during the compatibility migration.');
 assert(!/cmx-gate-black-prompt|data-cmx-gate|type=["']password["']/i.test(doc), '`/doc/` contains password-gate markup or assets.');
+assert(/alarm/i.test(doc) && /voice/i.test(doc) && /calendar/i.test(doc), '`/doc/` must retain calendar, alarm, and voice concepts.');
+
+assert(/Shared calendars/i.test(migrationDoc), 'Migration documentation must define shared calendars explicitly.');
+assert(/Alarm and launch routine/i.test(migrationDoc), 'Migration documentation must define the alarm and launch routine.');
+assert(/^## Voice$/mi.test(migrationDoc), 'Migration documentation must define bounded voice behavior.');
 
 let routes = null;
 try {
@@ -115,46 +127,60 @@ try {
 }
 
 if (routes?.routes) {
-  for (const routePath of ['/brief/', '/brief-next/', '/doc/']) {
+  const expected = [
+    ['/spaces/', 'Active', false],
+    ['/brief/', 'Legacy', false],
+    ['/brief-next/', 'Experimental', false],
+    ['/doc/', 'Active', false]
+  ];
+
+  for (const [routePath, status, gated] of expected) {
     const route = routes.routes.find(item => item.path === routePath);
     assert(Boolean(route), `Route registry is missing ${routePath}.`);
-    if (route) assert(route.gated === false, `${routePath} must remain ungated in the route registry.`);
+    if (!route) continue;
+    assert(route.status === status, `${routePath} must have status ${status}, found ${route.status}.`);
+    assert(route.gated === gated, `${routePath} must remain ungated in the route registry.`);
   }
+
+  const spacesRoute = routes.routes.find(item => item.path === '/spaces/');
+  assert(/shared-calendar|shared calendar/i.test(spacesRoute?.description || ''), 'The `/spaces/` route description must mention shared-calendar coordination.');
 }
 
 const baseSha = process.env.BASE_SHA || process.argv.find(argument => argument.startsWith('--base='))?.slice(7) || '';
 if (baseSha && !/^0+$/.test(baseSha)) {
   const changed = gitOutput(['diff', '--name-only', `${baseSha}...HEAD`]).split('\n').filter(Boolean);
-  const changedActiveAssets = changed.filter(file => /^assets\/brief\/.*\.(?:js|css)$/.test(file) && briefAssets.has(`/${file}`));
+  const changedActiveAssets = changed.filter(file => /^assets\/brief\/.*\.(?:js|css)$/.test(file) && spacesAssets.has(`/${file}`));
 
   if (changedActiveAssets.length) {
-    const baseBrief = readAtCommit(baseSha, 'brief/index.html');
-    const baseRefs = extractAssets(baseBrief);
+    const baseSpaces = readAtCommit(baseSha, 'spaces/index.html') || readAtCommit(baseSha, 'brief/index.html');
+    const baseRefs = extractAssets(baseSpaces);
 
     for (const asset of changedActiveAssets) {
       const previousVersion = versionFor(baseRefs, asset);
-      const currentVersion = versionFor(briefAssets, asset);
+      const currentVersion = versionFor(spacesAssets, asset);
       assert(
         Boolean(currentVersion) && currentVersion !== previousVersion,
         `Cache version was not changed for modified active asset ${asset}. Previous: ${previousVersion || '(none)'}, current: ${currentVersion || '(none)'}.`
       );
     }
   } else {
-    note('No active Brief runtime assets changed in this comparison.');
+    note('No active Spaces runtime assets changed in this comparison.');
   }
 } else {
   note('BASE_SHA was not supplied, so differential cache-version enforcement was skipped.');
 }
 
+note('`/brief-next/` is intentionally a pre-migration rollback snapshot and is no longer required to match the active route byte-for-byte.');
+
 if (notes.length) {
-  console.log('Personal OS release notes:');
+  console.log('Spaces release notes:');
   for (const message of notes) console.log(`- ${message}`);
 }
 
 if (failures.length) {
-  console.error('\nPersonal OS release validation failed:');
+  console.error('\nSpaces release validation failed:');
   for (const message of failures) console.error(`- ${message}`);
   process.exit(1);
 }
 
-console.log(`Personal OS release validation passed with ${briefAssets.size} versioned local Brief assets.`);
+console.log(`Spaces release validation passed with ${spacesAssets.size} versioned local active assets.`);

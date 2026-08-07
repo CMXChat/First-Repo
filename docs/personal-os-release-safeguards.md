@@ -1,143 +1,144 @@
-# Personal OS Release Safeguards
+# Spaces Release Safeguards
 
 Created: **August 5, 2026**  
 Last reconciled: **August 6, 2026**  
-Safeguard merge commit: `0b6013525b6b7c37a83cd450fe37b74683ac36f1`
+Verified main baseline: `788bf77fcd21750af08e9e694fa6995d1208cc2a`  
+Legacy filename retained: `docs/personal-os-release-safeguards.md`
 
 ## Scope
 
-PR #67 added release protection around `/brief/`, `/brief-next/`, `/doc/`, and the active Personal OS assets. PR #68 repairs the current header, Spotify entry lifecycle, ARIA structure, and contrast findings while preserving every safeguard installed by PR #67.
+The safeguards cover the active `/spaces/` experience, the `/brief/` compatibility redirect, the `/brief-next/` rollback snapshot, `/doc/`, the active `assets/brief/` runtime, and the operational documents that define the product boundary.
 
-No safeguard workflow, parity rule, cache rule, product-boundary check, accessibility suite, Spotify lifecycle test, documentation-freshness check, or asset-inventory check is removed or weakened by the repair.
+The former `/brief/` and `/brief-next/` byte-parity rule is retired. The routes now have different jobs:
+
+- `/spaces/` is the active demo.
+- `/brief/` redirects old links and bookmarks to `/spaces/`.
+- `/brief-next/` preserves the pre-migration interface as a rollback snapshot.
+- `/doc/` explains the product, architecture, permissions, current reality, and planned capabilities.
 
 ## Installed safeguards
 
-### Personal OS Release Gate
+### Spaces Release Gate
 
 The release gate combines:
 
-- route, noindex, light-first, reciprocal-link, demo-boundary, and ungated-Doc contracts
-- `/brief/` and `/brief-next/` parity
-- differential cache-version enforcement for modified active Brief assets
-- documentation freshness
-- active and legacy Brief asset inventory
-- mocked Spotify lifecycle behavior
-- automated accessibility coverage
+- route, noindex, light-first, canonical, demo-boundary, and ungated-Doc contracts;
+- active Spaces asset existence and cache-version checks;
+- compatibility redirect checks, including query-string and hash preservation;
+- active, legacy, rollback, and documentation route-policy checks;
+- documentation freshness;
+- active and rollback asset inventory;
+- mocked Spotify lifecycle behavior;
+- automated accessibility coverage.
 
-The focused repair must merge only after the required gate is green.
+A route migration is not ready to merge until the required jobs run and pass. An empty check list is unknown status, not a green release.
 
-### Production-domain smoke validation
+### Browser matrix
 
-`Personal OS Production Smoke` checks the deployed domain for:
+The browser matrix covers Chromium, Firefox, WebKit, an iPhone profile, and an Android profile. The active entrypoint is `/spaces/`. Selected compatibility tests may begin at `/brief/` to prove the redirect still reaches the active app with URL state preserved.
 
-- HTTP status and unexpected redirects on `/brief/`, `/brief-next/`, and `/doc/`
-- first-response light mode and noindex policy
-- Brief and staging parity
-- versioned and reachable local assets
-- reciprocal documentation links
-- ungated Doc markup and route policy
-- visible demo and current-versus-planned boundaries
+The browser suite verifies:
 
-This workflow remains the source of truth for deployment and edge behavior after merge.
+- light-first rendering and saved theme behavior;
+- entry, reset, and Space switching;
+- desktop and mobile navigation;
+- workspace tabs and keyboard behavior;
+- mobile containment and guarded swipes;
+- soundtrack controls and fallback behavior;
+- the legacy redirect path.
+
+### Route and product contracts
+
+The release validator requires:
+
+- `/spaces/` to stay noindex, use the canonical Spaces URL, identify itself as a demo, and link to `/doc/`;
+- `/brief/` to stay noindex and redirect to `/spaces/` with a visible fallback;
+- `/brief-next/` to stay noindex and remain registered as a rollback snapshot;
+- `/doc/` to stay noindex, ungated, and explicit about current and planned capabilities;
+- the route registry to mark `/spaces/` Active, `/brief/` Legacy, `/brief-next/` Experimental, and `/doc/` Active;
+- shared-calendar, alarm, voice, permission, and revocation language to remain documented.
 
 ### Cache-version enforcement
 
-When an active `assets/brief/*.js` or `assets/brief/*.css` file changes, the active reference chain and both Brief route files must receive a new version query. PR #68 follows that rule for the repaired application and component stylesheet.
+When an active `assets/brief/*.js` or `assets/brief/*.css` file changes, the version query used by `/spaces/` must change. The validator compares the active reference against the pull request base. A legacy route or rollback snapshot does not control the active cache version.
 
-### Brief and staging parity
+### Compatibility redirect
 
-`brief/index.html` and `brief-next/index.html` are compared byte for byte and by active asset reference. PR #68 keeps them aligned. Intentional staging drift still requires a documented exception before any guard can change.
+The `/brief/` route uses a self-hosted script and a no-JavaScript meta-refresh fallback. The script must:
+
+- use `window.location.replace()` so the redirect does not add a useless browser-history step;
+- preserve the query string;
+- preserve the hash;
+- remain covered by static and browser tests.
 
 ### Mocked Spotify lifecycle coverage
 
 The Spotify suite covers application behavior without depending on the live provider during CI:
 
-- controller readiness while the entry chooser is visible
-- playback requested from the final Open demo user gesture
-- silent autoplay refusal
-- thrown `play()` calls
-- scenario track switching through `loadEntity()`
-- iframe API timeout and direct-tap fallback
-- entry remaining usable and the drawer remaining controllable
+- controller readiness while the entry chooser is visible;
+- playback requested from the final Open demo user gesture;
+- silent autoplay refusal;
+- thrown `play()` calls;
+- scenario track switching through `loadEntity()`;
+- iframe API timeout and direct-tap fallback;
+- entry remaining usable and the drawer remaining controllable.
 
-The implementation cannot override Chrome autoplay rules, device policy, Spotify availability, or account restrictions. User-facing copy continues to state that one direct Spotify tap may still be required.
+The implementation cannot override browser autoplay rules, device policy, Spotify availability, or account restrictions. User-facing copy must continue to state that one direct Spotify tap may still be required.
 
 ### Accessibility audit
 
-The axe audit covers the Brief entry and active views plus the Personal OS document in desktop and mobile Chromium against WCAG A and AA rules.
+The axe audit covers the Spaces entry, active Today and How views, the legacy redirect, the rollback entry, and the product document in desktop and mobile Chromium against WCAG A and AA rules.
 
-#### Findings repaired in PR #68
+Current interface requirements include:
 
-**Brief and Brief Next entry**
-
-- The chooser is now a labelled `role="group"` containing native buttons.
-- Each native button retains `aria-pressed` and no longer uses the incompatible `role="listitem"` override.
-- Scenario descriptions now use `#5f7084` on the light entry surface, clearing the 4.5:1 AA threshold.
-
-**Brief Today**
-
-- `.muted-pill` now uses the repaired shared color `#66768a`.
-- hourly secondary labels use `#596b80`.
-- hourly times are semantic `<time>` elements using `#2f4257`.
-- the repair applies across the complete weather row, not only the first axe targets.
-
-**Personal OS document**
-
-- `.boundary-center > small` now uses `#617286`.
-- `.memory-index` now uses `#10253a` on the coral number treatment.
-- the repair is shared across the relevant diagram components.
+- native scenario buttons inside a labelled group;
+- visible and announced toggle state;
+- keyboard-operable workspace tabs;
+- focus restoration after closing media and resetting the demo;
+- an `aria-live="polite"` media status;
+- an explicitly named Spotify region;
+- AA secondary-text contrast in the entry, weather, and documentation diagrams.
 
 Automated testing does not replace manual review. Before a public launch, manually verify screen-reader order, keyboard-only use, 200% and 400% zoom, reduced motion, forced colors, touch targets, focus transitions, disabled states, and the external Spotify interface with assistive technology.
 
-### Legacy asset inventory
+### Asset inventory
 
-The inventory still classifies the Brief asset tree as active entries, active dependencies, unreferenced demo-family assets, unreferenced legacy candidates, and empty placeholders.
+The asset inventory begins with the files referenced by `/spaces/`, follows active JavaScript and CSS dependencies, identifies rollback-only entries from `/brief-next/`, and classifies remaining files for later review.
 
-The recorded inventory remains:
-
-- 68 JavaScript and CSS files under `assets/brief/`
-- 9 active direct route entries
-- 59 unreferenced legacy candidates
-- 0 empty legacy placeholders
-
-PR #68 does not delete the 59 candidates. Unreferenced does not mean safe to remove. A separate PR must review route references, tests, workflows, documentation, dependency chains, and Git history before deletion.
+Unreferenced does not mean safe to delete. A separate change must review route references, tests, workflows, documentation, dependency chains, and Git history before removal.
 
 ### Documentation freshness
 
-Material Personal OS route or runtime changes must update current operational documentation. The verified baseline in `docs/README.md` must remain within the accepted commit distance and must resolve to an existing commit.
+Material Spaces route, runtime, permission, or product-boundary changes must update a current operational document. `docs/README.md` records the verified code baseline and lists the current reading order. The migration document is required to define shared calendars, the alarm and launch routine, and bounded voice behavior.
 
-PR #68 updates:
+### Demo and live-product boundary
 
-- `docs/README.md`
-- `docs/brief-interface-failures.md`
-- `docs/personal-os-release-safeguards.md`
-
-### Demo versus live-product boundary
-
-The Brief must remain identified as a demo. The Doc must retain its current-versus-planned status, remain public noindex, and remain free of a client-side password gate. Static demonstrations do not prove authentication, durable memory, live private connectors, server permissions, encrypted storage, or action execution.
+Spaces must remain identified as a demo. `/doc/` must retain its current-versus-planned status and stay free of a client-side password gate. Static pages do not prove authentication, durable memory, live private connectors, server permissions, encrypted storage, action execution, shared-calendar enforcement, alarm delivery, or voice capture.
 
 ## Current release checklist
 
-A Personal OS interface change is ready to merge only when:
+A Spaces interface or route change is ready to merge only when:
 
-- `/brief/` and `/brief-next/` are byte-for-byte aligned
-- changed active Brief assets carry updated cache versions
-- route contracts pass
-- documentation freshness passes
-- asset inventory passes without unauthorized deletion
-- Spotify lifecycle tests pass
-- desktop and mobile Chromium accessibility scans pass
-- the Personal OS Release Gate is green
-- required production smoke protections remain installed
+- `/spaces/` loads the working demo;
+- `/brief/` redirects correctly and preserves URL state;
+- `/brief-next/` remains available as the rollback snapshot;
+- changed active assets carry updated cache versions;
+- route and product-boundary contracts pass;
+- documentation freshness passes;
+- asset inventory passes without unauthorized deletion;
+- Spotify lifecycle tests pass;
+- browser-matrix tests pass;
+- desktop and mobile Chromium accessibility scans pass or have an explicitly reviewed advisory result;
+- required GitHub Actions jobs have actually run;
+- production smoke protections remain installed for post-merge deployment verification.
 
 ## Remaining manual decisions
 
 These safeguards do not decide:
 
-- which of the 59 unreferenced legacy candidates should be retained or deleted
-- whether `/brief-next/` should eventually become a deliberately different staging surface
-- which checks should be marked required in branch protection
-- what deployment event should trigger an immediate production smoke run
-- the final manual screen-reader and real-device acceptance result
-
-Those decisions remain separate from this focused repair.
+- which unreferenced legacy candidates should be retained or deleted;
+- how long `/brief-next/` should remain as a rollback snapshot;
+- which checks should be marked required in branch protection;
+- what deployment event should trigger an immediate production smoke run;
+- the final manual screen-reader and real-device acceptance result;
+- when shared calendars, alarms, and voice move from planned concepts into authenticated backend work.

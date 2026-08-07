@@ -2,7 +2,7 @@
 
 Last reconciled: **August 6, 2026**  
 Repository: `CMXChat/First-Repo`  
-Verified code baseline: `0ec2eb2aa052c7d73a6fd9bd687754fb792401ec`
+Verified code baseline: `17bfe11785712a412743adf0dbe2ce90b1bb9d9c`
 
 ## Read this first
 
@@ -10,25 +10,27 @@ Current code, tests, workflows, route policy, and current operational documents 
 
 Use this order when starting Spaces work:
 
-1. `docs/spaces-product-direction-2026-08-06.md`
-2. `docs/2026-08-05-repository-reconciliation.md`
-3. `docs/personal-os-release-safeguards.md`
-4. `docs/brief-recovery-handoff.md`
-5. `docs/cmx-brief-master-context.md`
-6. `docs/brief-interface-validation.md`
-7. `docs/brief-interface-failures.md`
-8. Current source, tests, workflows, and `assets/cmx-routes.json`
+1. `docs/2026-08-06-spaces-route-migration.md`
+2. `docs/spaces-product-direction-2026-08-06.md`
+3. `docs/2026-08-05-repository-reconciliation.md`
+4. `docs/personal-os-release-safeguards.md`
+5. `docs/brief-recovery-handoff.md`
+6. `docs/cmx-brief-master-context.md`
+7. `docs/brief-interface-validation.md`
+8. `docs/brief-interface-failures.md`
+9. Current source, tests, workflows, and `assets/cmx-routes.json`
 
 ## Current operational documents
 
 | File | Purpose |
 |---|---|
+| `2026-08-06-spaces-route-migration.md` | Canonical route decision plus shared-calendar, alarm, voice, compatibility, and release contracts. |
 | `spaces-product-direction-2026-08-06.md` | Current product name, category, doctrine, input model, memory settings, and Cloudflare relationship. |
 | `2026-08-05-repository-reconciliation.md` | Comparison between the August 4 notes and the August 5 repository. |
-| `personal-os-release-safeguards.md` | Release gate, production smoke, accessibility, cache, parity, inventory, and documentation-freshness safeguards. The filename is retained for continuity. |
-| `brief-recovery-handoff.md` | Safe continuity handoff for `/brief/`, `/brief-next/`, and `/doc/`. |
+| `personal-os-release-safeguards.md` | Release gate, production smoke, accessibility, cache, inventory, and documentation-freshness safeguards. The filename is retained for continuity. |
+| `brief-recovery-handoff.md` | Historical continuity handoff for `/brief/`, `/brief-next/`, and `/doc/`; use the route migration document for the current route contract. |
 | `cmx-brief-master-context.md` | Product, architecture, trust, and roadmap context. |
-| `brief-interface-validation.md` | Active validation contract for the shipping interface. |
+| `brief-interface-validation.md` | Validation history and interface expectations that still apply to the active experience. |
 | `brief-interface-failures.md` | Resolved failures, remaining risks, and known constraints. |
 | `concepts/brief-program-status-and-roadmap-2026-08-05.md` | Dated snapshot from before the Spaces rename. |
 
@@ -37,26 +39,31 @@ Use this order when starting Spaces work:
 - The user-facing product name is **Spaces**.
 - Describe it as a context-driven workspace, personal intelligence platform, or platform built around Spaces.
 - Avoid AI OS, Personal OS, Life OS, Agent OS, and Intelligence OS in current user-facing copy.
-- Older dated documents may preserve the former name as history.
-- Legacy internal filenames, storage keys, test names, and workflow names can remain until a separate safe migration removes them.
+- Older dated documents may preserve former names and routes as history.
+- Legacy internal filenames, storage keys, test names, and workflow filenames can remain until a separate safe migration removes them.
+- The Brief is the focused daily experience inside a Space, not the product or canonical route name.
 
 ## Current routes
 
-- `/brief/`: public noindex Spaces Brief demo, light in the initial HTML, with manual dark mode.
-- `/brief-next/`: public noindex staging and rollback copy, kept byte-for-byte aligned with `/brief/`.
+- `/spaces/`: canonical public noindex Spaces demo, light in the initial HTML, with manual dark mode.
+- `/brief/`: public noindex compatibility route that redirects old links and bookmarks to `/spaces/` while preserving query strings and hashes.
+- `/brief-next/`: public noindex pre-migration rollback snapshot; it is intentionally separate from the active route.
 - `/doc/`: public noindex Spaces product overview, light by default, without a password gate.
 
-## Brief contract
+## Spaces experience contract
 
 - Every entry, reset, and Space switch returns to Today.
-- `/brief/` and `/brief-next/` remain aligned unless a staging difference is documented.
+- `/spaces/` is the active experience and `/brief/` must remain a working compatibility redirect.
+- `/brief-next/` is a rollback snapshot and must not be required to match `/spaces/` byte for byte.
 - The Space selector must remain readable and operable in light and dark mode on desktop and mobile.
 - The live topbar contains the soundtrack and theme controls.
 - Product documentation remains available from entry and How it works.
 - Scenario buttons use native button semantics with `aria-pressed`.
 - Secondary text remains WCAG AA compliant.
-- Spotify preparation never blocks the Brief.
+- Spotify preparation never blocks Spaces.
 - Provider limits and direct-tap fallback copy remain honest.
+- Shared calendars expose only approved Space-level coordination data, not unrelated private event details.
+- Alarm and voice behavior remain planned, opt-in, visible, reviewable, and limited by the current person, device, time, and Space.
 
 ## Copy standard
 
@@ -70,23 +77,25 @@ Use this order when starting Spaces work:
 
 Do not remove or weaken:
 
-- `Personal OS Production Smoke`, retained as a legacy internal workflow name
-- `Personal OS Release Gate`, retained as a legacy internal workflow name
-- Brief and Brief Next parity enforcement
-- cache-version enforcement
-- demo-versus-live boundary checks
-- documentation freshness checks
-- Spotify lifecycle tests
-- desktop and mobile Chromium accessibility workflows
-- active and legacy Brief asset inventory checks
+- the Spaces browser matrix across Chromium, Firefox, WebKit, iPhone, and Android profiles;
+- the Spaces release gate;
+- active-route, compatibility-route, rollback, and product-boundary checks;
+- cache-version enforcement for active Spaces assets;
+- demo-versus-live boundary checks;
+- documentation freshness checks;
+- Spotify lifecycle tests;
+- desktop and mobile Chromium accessibility workflows;
+- active and rollback Spaces asset inventory checks.
+
+The former Brief and Brief Next parity rule is retired because `/brief/` is now a redirect and `/brief-next/` is a rollback snapshot.
 
 ## Historical records
 
-Older Personal OS references describe the same project before the August 6, 2026 Spaces rename. Do not rewrite dated concept files to hide that decision history.
+Older Personal OS and `/brief/` references describe the same project before the August 6, 2026 Spaces route migration. Do not rewrite dated concept files to hide that decision history.
 
 ## Documentation rules
 
 - Record a verified commit SHA in current operational documents.
 - Recheck GitHub before describing an open branch, failure, or check as current.
 - Treat static browser demos as demonstrations. They do not prove a backend, authentication layer, memory service, connector, or live private data pipeline exists.
-- Update this index whenever a current document is added, superseded, or archived.
+- Update this index whenever a current document, route contract, or release safeguard is added, superseded, or archived.

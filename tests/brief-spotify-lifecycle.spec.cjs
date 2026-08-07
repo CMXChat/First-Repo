@@ -44,7 +44,8 @@ async function mockSpotify(page, mode = 'success') {
 }
 
 async function openWithSoundtrack(page, scenario = 'personal') {
-  await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/spaces\//);
   await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
   await page.locator('#entrySoundtrack').check();
   await page.locator(`[data-entry-scenario="${scenario}"]`).click();
@@ -107,7 +108,8 @@ test('Spotify API timeout falls back to the official direct-tap embed', async ({
     body: '<!doctype html><title>Spotify test frame</title>'
   }));
 
-  await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/spaces\//);
   await page.locator('#entrySoundtrack').check();
   await page.locator('[data-entry-scenario="relationship"]').click();
   await expect(page.locator('#openDemo')).toBeEnabled();

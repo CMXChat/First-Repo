@@ -49,9 +49,10 @@ async function installSpotifyControllerMock(page) {
   });
 }
 
-test('Brief mobile topbar is spaced, focused, and starts the selected soundtrack', async ({ page }) => {
+test('Spaces topbar remains contained, mobile-safe, and starts the selected soundtrack', async ({ page }) => {
   await installSpotifyControllerMock(page);
-  await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
+  await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/spaces\//);
   await page.evaluate(() => {
     localStorage.clear();
     sessionStorage.clear();
@@ -74,16 +75,25 @@ test('Brief mobile topbar is spaced, focused, and starts the selected soundtrack
 
   const topbar = await page.locator('.topbar-inner').evaluate(node => {
     const rect = node.getBoundingClientRect();
+    const shell = node.closest('.topbar');
+    const shellStyle = shell ? getComputedStyle(shell) : null;
     const theme = document.querySelector('#themeButton');
     const themeStyle = theme ? getComputedStyle(theme) : null;
     return {
       top: rect.top,
+      right: rect.right,
+      viewportWidth: document.documentElement.clientWidth,
+      paddingTop: Number.parseFloat(shellStyle?.paddingTop || '0'),
       backgroundImage: themeStyle?.backgroundImage || '',
       boxShadow: themeStyle?.boxShadow || 'none'
     };
   });
 
-  expect(topbar.top).toBeGreaterThanOrEqual(8);
+  expect(topbar.top).toBeGreaterThanOrEqual(0);
+  expect(topbar.right).toBeLessThanOrEqual(topbar.viewportWidth + 1);
+  if ((page.viewportSize()?.width || 0) <= 860) {
+    expect(topbar.paddingTop).toBeGreaterThanOrEqual(9);
+  }
   expect(topbar.backgroundImage).toContain('linear-gradient');
   expect(topbar.boxShadow).not.toBe('none');
 

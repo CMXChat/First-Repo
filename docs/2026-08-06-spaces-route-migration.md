@@ -1,0 +1,85 @@
+# Spaces Route Migration and Coordination Model
+
+Date: 2026-08-06  
+Status: implementation review  
+Primary route: `/spaces/`
+
+## Decision
+
+`/spaces/` is the canonical product demonstration route. `/brief/` remains only as a compatibility route for older bookmarks, documentation, and external references. It must redirect to `/spaces/` and preserve the query string and hash when JavaScript is available.
+
+`/doc/` remains the detailed product overview. The active experience and the overview are two views of the same product:
+
+- `/spaces/` demonstrates the daily and scenario-specific experience.
+- `/doc/` explains the product model, permissions, memory, goals, architecture, current reality, and planned backend.
+- `/brief-next/` is a pre-migration rollback snapshot and must not be treated as the active product route.
+
+## Problems found in the prior state
+
+1. The product name had changed to Spaces, but the primary route, canonical URL, route registry, tests, and release contracts still treated `/brief/` as the production surface.
+2. `/brief/` and `/brief-next/` were required to remain byte-for-byte identical, which prevented a safe route migration and confused production with rollback.
+3. Operational documentation described alarm, voice, and multi-calendar coordination, but shared calendars were not stated as a first-class product capability.
+4. The Spotify status region did not explicitly announce asynchronous state changes, and its labeled generic container did not have an explicit landmark role.
+5. App-authored commits did not consistently trigger fresh GitHub Actions runs, so historical green or red states cannot be treated as proof for the current branch.
+
+## Shared calendars
+
+Shared calendars are a Space-level coordination layer, not a merged copy of every participant's private calendar.
+
+A Relationship, Family, Team, or Project Space may combine approved calendar information such as:
+
+- availability windows;
+- shared events and deadlines;
+- responsibilities and owners;
+- rides, travel, and leave-by times;
+- school, care, household, and project commitments;
+- conflicts that affect the current Space.
+
+Private event titles, notes, attendees, locations, and unrelated commitments remain hidden unless the owner explicitly shares them. A Space can show a busy block or availability window without exposing the underlying event. Every calendar connection needs a person, source, permission scope, Space scope, freshness state, and revocation path.
+
+## Alarm and launch routine
+
+The alarm concept is an opt-in launch routine tied to the current Space and day. It can use approved context to determine when and how the routine starts.
+
+Examples include:
+
+- an earlier wake-up because an early meeting, commute, weather change, or airport departure changed the plan;
+- a different routine for weekdays, weekends, travel, recovery, or a shared household;
+- opening the relevant Space, music, schedule, weather, priority, and leave-by guidance together;
+- escalating only when the user has enabled that behavior.
+
+The system must never silently change an alarm with material consequences. It should explain the reason, show the proposed or active time, and provide a clear override, pause, and disable control.
+
+## Voice
+
+Voice is an optional interface for listening, capture, and bounded commands. It is not unrestricted ambient surveillance.
+
+The planned voice layer should support:
+
+- reading the full Brief or only sections safe to speak aloud;
+- push-to-talk and, later, an explicitly enabled wake word;
+- a visible and audible listening state;
+- adding a note, reminder, check-in, task, or correction to the current Space;
+- asking what is next, why a recommendation appeared, or when to leave;
+- device, room, person, time, and Space restrictions;
+- immediate mute, pause, history review, and deletion.
+
+Sensitive material must default to silent display. A household or shared device cannot read private Personal Space information aloud merely because the account is signed in.
+
+## Release expectations
+
+A release that changes the active Spaces experience should verify:
+
+- `/spaces/` loads the working demo and stays noindex;
+- `/brief/` redirects to `/spaces/` and remains noindex;
+- `/doc/` still explains the current-versus-planned boundary;
+- `/spaces/` links to `/doc/`;
+- the route registry marks `/spaces/` Active and `/brief/` Legacy;
+- all active JS and CSS assets exist and have cache versions;
+- browser, mobile, Spotify lifecycle, and accessibility checks target `/spaces/` as the primary route;
+- old `/brief/` bookmarks remain functional;
+- shared-calendar, alarm, voice, permission, and revocation language remains present.
+
+## Follow-up
+
+Source links in older historical documents may continue to mention `/brief/` when describing earlier work. User-facing navigation and current operational documentation should use `/spaces/`. The legacy route exists to prevent broken links while the repository history is cleaned up deliberately.

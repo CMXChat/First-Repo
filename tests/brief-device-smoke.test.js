@@ -5,8 +5,10 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-const html = read('brief/index.html');
-const stagingHtml = read('brief-next/index.html');
+const html = read('spaces/index.html');
+const legacyHtml = read('brief/index.html');
+const rollbackHtml = read('brief-next/index.html');
+const redirectJs = read('assets/spaces-legacy-redirect.js');
 const css = read('assets/brief/brief-demo.css');
 const experienceCss = read('assets/brief/brief-demo-experience.css');
 const docLinksCss = read('assets/brief/brief-demo-doc-links.css');
@@ -19,30 +21,46 @@ const docMobileCss = read('assets/personal-os-doc-mobile-fixes.css');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
 assert.match(html, /<html lang="en" data-theme="light">/);
-assert.match(html, /<title>Spaces Brief Demo<\/title>/);
+assert.match(html, /<title>Spaces Demo<\/title>/);
 assert.match(html, /<meta name="theme-color" content="#edf3f8"/);
 assert.match(html, /noindex, nofollow/);
+assert.match(html, /canonical" href="https:\/\/db\.cmxchat\.com\/spaces\/"/);
 assert.match(html, /id="entryScenarioGrid" role="group" aria-label="Demo Spaces"/);
 assert.match(html, /id="entrySoundtrack" type="checkbox" checked/);
 assert.match(html, /id="openDemo"[^>]*disabled/);
 assert.match(html, /id="themeButton"[^>]*aria-label="Switch to dark theme"[^>]*aria-pressed="false"/);
 assert.match(html, /id="mobileNav"/);
 assert.match(html, /id="mediaDrawer"/);
+assert.match(html, /id="mediaStatus" aria-live="polite"/);
+assert.match(html, /id="spotifyFrame" role="region" aria-label="Spotify provider player"/);
+assert.match(html, /Shared calendars:/);
+assert.match(html, /Adaptive alarm:/);
+assert.match(html, /<strong>Voice:<\/strong>/);
 assert.doesNotMatch(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /class="secondary-button doc-entry-link" href="\/doc\/"/);
 assert.match(html, /class="primary-button doc-cta-button" href="\/doc\/"/);
 assert.match(html, /brief-demo-app\.js\?v=20260806-1/);
 assert.match(html, /brief-demo-media\.js\?v=20260806-2/);
-assert.match(html, /brief-demo-doc-links\.css\?v=20260806-3/);
-assert.match(html, /brief-demo-topbar-polish\.css\?v=20260806-3/);
+assert.match(html, /brief-demo-doc-links\.css\?v=20260807-1/);
+assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-1/);
 assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
 assert.match(html, /Choose the Space you want to open/);
 assert.match(html, /Play the soundtrack when the demo opens/);
 assert.doesNotMatch(html, /Loading Spotify player\.\.\.|Preparing Spotify[^<]*\.\.\./);
 assert.doesNotMatch(html, /id="profileSelect"|id="musicOnEntry"|id="readOnEntry"|id="enterBrief"/);
-assert.equal(stagingHtml, html, 'The staging and production Brief routes should use the same current interface.');
 
-for (const source of [appJs, mediaJs, spacesRuntimeJs, docJs]) {
+assert.match(legacyHtml, /<title>Spaces has moved<\/title>/);
+assert.match(legacyHtml, /canonical" href="https:\/\/db\.cmxchat\.com\/spaces\/"/);
+assert.match(legacyHtml, /http-equiv="refresh" content="1; url=\/spaces\/"/);
+assert.match(legacyHtml, /spaces-legacy-redirect\.js\?v=20260806-1/);
+assert.match(legacyHtml, /href="\/spaces\/"/);
+assert.match(redirectJs, /target\.search = window\.location\.search/);
+assert.match(redirectJs, /target\.hash = window\.location\.hash/);
+assert.match(redirectJs, /window\.location\.replace\(target\.href\)/);
+assert.doesNotMatch(rollbackHtml, /http-equiv="refresh"/i);
+assert.match(rollbackHtml, /<title>Spaces Brief Demo<\/title>/);
+
+for (const source of [redirectJs, appJs, mediaJs, spacesRuntimeJs, docJs]) {
   assert.doesNotThrow(() => new Function(source));
 }
 
@@ -84,7 +102,7 @@ assert.match(css, /@media \(max-width:/);
 assert.match(css, /prefers-reduced-motion/);
 assert.match(experienceCss, /\.everything-content/);
 assert.match(experienceCss, /overflow-x/);
-assert.match(docLinksCss, /brief-demo-topbar-polish\.css\?v=20260806-2/);
+assert.match(docLinksCss, /brief-demo-topbar-polish\.css\?v=20260807-1/);
 assert.match(docLinksCss, /\.media-drawer \{[\s\S]*display: block/);
 assert.match(docLinksCss, /body\s*\{[\s\S]*overflow-x: clip/);
 assert.match(docLinksCss, /@media \(max-width: 620px\)/);
@@ -105,10 +123,19 @@ assert.match(docMobileCss, /\.final-cta \{[\s\S]*grid-template-columns: minmax\(
 assert.match(docMobileCss, /overflow-wrap: anywhere/);
 assert.match(docMobileCss, /@media \(max-width: 680px\)/);
 
-const route = routes.routes.find(item => item.path === '/brief/');
-assert.ok(route, '/brief/ must remain registered.');
-assert.equal(route.name, 'Spaces Brief Demo');
-assert.equal(route.gated, false);
-assert.equal(route.status, 'Active');
+const activeRoute = routes.routes.find(item => item.path === '/spaces/');
+assert.ok(activeRoute, '/spaces/ must be registered.');
+assert.equal(activeRoute.name, 'Spaces Demo');
+assert.equal(activeRoute.gated, false);
+assert.equal(activeRoute.status, 'Active');
 
-console.log('Spaces Brief device, topbar, soundtrack, accessibility, and light-theme smoke test passed.');
+const legacyRoute = routes.routes.find(item => item.path === '/brief/');
+assert.ok(legacyRoute, '/brief/ compatibility route must remain registered.');
+assert.equal(legacyRoute.status, 'Legacy');
+assert.equal(legacyRoute.gated, false);
+
+const rollbackRoute = routes.routes.find(item => item.path === '/brief-next/');
+assert.ok(rollbackRoute, '/brief-next/ rollback snapshot must remain registered.');
+assert.equal(rollbackRoute.status, 'Experimental');
+
+console.log('Spaces device, route, soundtrack, accessibility, and light-theme smoke test passed.');
