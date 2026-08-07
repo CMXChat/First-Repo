@@ -143,6 +143,8 @@ test('desktop entry fits common screens, stays centered and exposes small-window
     const style = getComputedStyle(entry);
     const card = entry.querySelector('.entry-card').getBoundingClientRect();
     const tip = entry.querySelector('.entry-tip-carousel').getBoundingClientRect();
+    const actions = entry.querySelector('.entry-actions').getBoundingClientRect();
+    const activeCopy = entry.querySelector('[data-entry-tip]:not([aria-hidden="true"]) p');
     const maxScroll = entry.scrollHeight - entry.clientHeight;
     return {
       overflowY: style.overflowY,
@@ -151,7 +153,9 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       gutter: style.scrollbarGutter,
       leftMargin: card.left,
       rightMargin: innerWidth - card.right,
-      tipHeight: tip.height
+      tipHeight: tip.height,
+      actionGap: actions.top - tip.bottom,
+      wordAnimation: getComputedStyle(activeCopy).animationName
     };
   });
   expect(entryFit.overflowY).toBe('scroll');
@@ -160,6 +164,8 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(entryFit.gutter).toContain('stable');
   expect(Math.abs(entryFit.leftMargin - entryFit.rightMargin)).toBeLessThanOrEqual(2);
   expect(entryFit.tipHeight).toBeLessThanOrEqual(66);
+  expect(entryFit.actionGap).toBeGreaterThanOrEqual(10);
+  expect(entryFit.wordAnimation).toContain('entry-tip-copy-in');
   await expect(page.locator('#entryScrollControl')).toBeHidden();
   await expect(page.locator('#openDemo')).toBeInViewport();
 
@@ -182,6 +188,9 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   });
   expect(secondTipAccent.border).not.toBe(firstTipAccent.border);
   expect(secondTipAccent.text).not.toBe(firstTipAccent.text);
+  await page.locator('[data-entry-tip-next]').evaluate(button => button.blur());
+  await page.mouse.move(0, 0);
+  await expect.poll(() => page.locator('#entryTipPosition').textContent(), { timeout: 6000 }).toBe('3 / 5');
 
   await page.setViewportSize({ width: 1024, height: 768 });
   const compactFit = await page.locator('.entry-card').evaluate(card => {

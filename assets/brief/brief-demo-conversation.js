@@ -56,7 +56,7 @@
     if (carouselState.paused || reduceMotion.matches || document.hidden) return;
     carouselState.timer = window.setTimeout(() => {
       showTip(carouselState.index + 1);
-    }, 6200);
+    }, 4200);
   }
 
   function showTip(nextIndex, options = {}) {
