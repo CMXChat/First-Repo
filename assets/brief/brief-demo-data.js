@@ -27,7 +27,8 @@ window.BRIEF_DEMO_DATA = {
       recommendation: {
         label: 'Recommended next move',
         title: 'Send the revised scope before the afternoon fills up',
-        detail: 'This clears the main work blocker and protects the later focus window.'
+        detail: 'This clears the main work blocker and protects the later focus window.',
+        targetTab: 'work'
       },
       priority: {
         label: 'Money review',
@@ -167,7 +168,7 @@ window.BRIEF_DEMO_DATA = {
       headline: 'Start with reassurance, then work through the plan',
       summary: 'Each person keeps a private profile while the shared Space holds plans, promises and approved context.',
       next: { time: '8:15 PM', title: 'Weekend travel check-in', detail: 'Ten calm minutes, then decide the booking owner.' },
-      recommendation: { label: 'Recommended next move', title: 'Confirm the plan and keep the discussion focused.', detail: 'Use the shared facts, name what still needs approval, and leave private processing private.' },
+      recommendation: { label: 'Recommended next move', title: 'Confirm the plan and keep the discussion focused.', detail: 'Use the shared facts, name what still needs approval, and leave private processing private.', targetTab: 'plans' },
       priority: { label: 'Needs both', title: 'The $300 trip transfer still needs approval', detail: 'The transfer remains prepared and untouched until both people confirm it.', tone: 'shared', targetTab: 'plans' },
       checkIn: { question: 'Is tonight’s 8:15 check-in still a good time?', choices: ['Yes', 'Move it', 'Skip tonight'], placeholder: 'Add a short timing update' },
       weather: { location: 'Shared trip context', temperature: 76, condition: 'Clear evening', high: 78, low: 65, advice: 'A short walk could make the check-in easier.', hourly: [{ time: 'Now', temp: 76, rain: 4 }, { time: '8 PM', temp: 73, rain: 5 }, { time: '10 PM', temp: 69, rain: 7 }, { time: 'Late', temp: 66, rain: 8 }] },
@@ -220,7 +221,8 @@ window.BRIEF_DEMO_DATA = {
       recommendation: {
         label: 'Household priority',
         title: 'Confirm the school pickup change before 2:45 PM',
-        detail: 'Once Elena accepts the handoff, both routes have clear coverage.'
+        detail: 'Once Elena accepts the handoff, both routes have clear coverage.',
+        targetTab: 'calendar'
       },
       priority: {
         label: 'Shopping watch',
@@ -384,7 +386,7 @@ window.BRIEF_DEMO_DATA = {
       headline: 'Run the same company from New York and Sydney',
       summary: 'Two remote partners see the shared operating picture, each partner’s approved concerns, and the work their teams need to move next.',
       next: { time: '4:00 PM ET · 6:00 AM AEST', title: 'Partner operating review', detail: 'Confirm cash timing, delivery capacity, and the two meetings affected by Tuesday’s beach day.' },
-      recommendation: { label: 'Shared operating priority', title: 'Protect the cash buffer before approving the new contractor', detail: 'The renewal and delayed receivable reduce the buffer below the partners’ ten-week rule.' },
+      recommendation: { label: 'Shared operating priority', title: 'Protect the cash buffer before approving the new contractor', detail: 'The renewal and delayed receivable reduce the buffer below the partners’ ten-week rule.', targetTab: 'concerns' },
       priority: { label: 'Operating buffer', title: 'Friday’s $6,400 renewal lowers the cash buffer to 9.4 weeks', detail: 'Review the renewal and receivable timing together before either partner approves new fixed cost.', tone: 'warning', targetTab: 'concerns' },
       checkIn: { question: 'Did the $18,000 client payment arrive?', choices: ['Received', 'Partial', 'Still waiting'], placeholder: 'Add the amount or one short correction' },
       weather: {
@@ -524,7 +526,7 @@ window.BRIEF_DEMO_DATA = {
       headline: 'See the whole money picture before deciding what moves next',
       summary: 'Daniel’s salary, side business, bills, taxes, savings, investing, and goals become one reviewable plan with his accountant, Priya.',
       next: { time: '3:30 PM', title: 'Monthly money review', detail: 'Confirm the client payment, protect the tax reserve, and review the card autopay before Monday.' },
-      recommendation: { label: 'Accountant priority', title: 'Move $380 into the tax reserve after the client payment clears', detail: 'That restores the agreed set-aside without using the personal emergency fund.' },
+      recommendation: { label: 'Accountant priority', title: 'Move $380 into the tax reserve after the client payment clears', detail: 'That restores the agreed set-aside without using the personal emergency fund.', targetTab: 'cash' },
       priority: { label: 'Budget floor', title: 'Monday’s $1,250 card autopay puts flexible spending $310 below plan', detail: 'Review two charges and move the payment date only if the card issuer and Daniel approve it.', tone: 'warning', targetTab: 'cash' },
       checkIn: { question: 'Did the $840 startup client payment arrive?', choices: ['Received', 'Partial', 'Still waiting'], placeholder: 'Add the received amount or a short correction' },
       weather: {
@@ -680,7 +682,7 @@ window.BRIEF_DEMO_DATA = {
     trainer: {
       id: 'trainer', label: 'Trainer and student', short: 'Goals, evidence and coaching boundaries', greeting: 'Good afternoon, Nina and Sam.', headline: 'The plan should adapt while keeping accountability.', summary: 'Training, recovery, habits, and check-ins stay useful because the system records evidence and respects health boundaries.',
       next: { time: '6:00 PM', title: 'Upper-body session', detail: 'Complete the warm-up check before choosing normal or reduced volume.' },
-      recommendation: { label: 'Recommended next move', title: 'Use the smaller plan if readiness is low.', detail: 'Recording each adaptation improves future recommendations.' },
+      recommendation: { label: 'Recommended next move', title: 'Use the smaller plan if readiness is low.', detail: 'Recording each adaptation improves future recommendations.', targetTab: 'recovery' },
       priority: { label: 'Readiness check', title: 'Sleep is below the preferred range', detail: 'Use the warm-up check before choosing normal or reduced volume.', tone: 'info', targetTab: 'recovery' },
       checkIn: { question: 'How does your readiness feel right now?', choices: ['Ready', 'Reduce volume', 'Rest today'], placeholder: 'Add one short note about energy or pain' },
       weather: { location: 'Training window', temperature: 79, condition: 'Warm and dry', high: 81, low: 68, advice: 'Indoor training should be comfortable, but hydrate before the session.', hourly: [{ time: 'Now', temp: 79, rain: 5 }, { time: '6 PM', temp: 78, rain: 6 }, { time: '8 PM', temp: 73, rain: 8 }, { time: 'Late', temp: 69, rain: 9 }] },
@@ -711,7 +713,7 @@ window.BRIEF_DEMO_DATA = {
     team: {
       id: 'team', label: 'Team and project', short: 'Roles, handoffs and shared project truth', greeting: 'Good afternoon, Atlas team.', headline: 'Give everyone the same goal with access matched to their role', summary: 'Members receive role-relevant work, while project leads keep the broader operating picture and restricted context.',
       next: { time: '3:00 PM', title: 'Release readiness review', detail: 'Confirm the final blocker, handoff owner and rollback decision.' },
-      recommendation: { label: 'Recommended next move', title: 'Resolve the unowned handoff before adding more work.', detail: 'A visible dependency with no receiver is the highest operational risk.' },
+      recommendation: { label: 'Recommended next move', title: 'Resolve the unowned handoff before adding more work.', detail: 'A visible dependency with no receiver is the highest operational risk.', targetTab: 'handoffs' },
       priority: { label: 'Release warning', title: 'The QA-to-release handoff still has no receiver', detail: 'Assign the owner before the readiness review so the release decision uses a complete chain.', tone: 'warning', targetTab: 'handoffs' },
       checkIn: { question: 'Is the final handoff owner confirmed?', choices: ['Confirmed', 'Choose owner', 'Still blocked'], placeholder: 'Add the owner or one short blocker update' },
       weather: { location: 'Project conditions', temperature: 74, condition: 'Release window open', high: 76, low: 63, advice: 'The meaningful condition is blocker status and owner clarity.', hourly: [{ time: 'Now', temp: 74, rain: 11 }, { time: 'Review', temp: 75, rain: 12 }, { time: 'Release', temp: 72, rain: 10 }, { time: 'Close', temp: 68, rain: 9 }] },

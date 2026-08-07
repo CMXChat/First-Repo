@@ -93,6 +93,27 @@ Cloudflare could power part of the backend. A future ChatGPT app or plugin could
 
 Reference: https://developers.cloudflare.com/agents/
 
+## Market, protection, and capitalization
+
+The market is established in parts. Current products validate AI workspaces, scheduling, team coordination, family organization, finance visibility, connected tools, and agent infrastructure. The reviewed official product set does not show the full Spaces combination, but that review is not a global market search, patent search, or freedom to operate opinion.
+
+Patentability remains an open question. A broad claim to an AI workspace or life assistant is unlikely to be enough. Counsel would need to identify a novel, nonobvious, eligible technical implementation. Candidate areas for review include permission scoped context, provenance and freshness, private and shared derivation, user revision history, personalized ranking, and approval controls across Spaces.
+
+The public demo makes timing important. Record inventors, diagrams, prototypes, technical decisions, and public disclosure dates now. Use the USPTO Patent Public Search and qualified patent counsel for prior art and claim analysis. If counsel recommends a provisional application, it needs enough technical detail to support the later claims and normally must be followed by a related nonprovisional application within 12 months.
+
+Use layered protection. Keep internal ranking, evaluation, and connector methods confidential with reasonable access controls. Clear the final brand before seeking trademark registration. Preserve human authorship records for code, copy, and original visual work.
+
+The recommended first paid wedge is remote business partners and small teams. This audience has an identifiable buyer, frequent shared decisions, connected work data, and less regulated risk than beginning with financial advice or money movement. Prove one secure shared Space, one reliable Brief, direct corrections, scoped connections, permissions, and approved actions. Measure activation, weekly return, Brief to action rate, shared invitations, correction use, permission comprehension, and paid retention before expanding to household and professional client plans.
+
+Official starting points:
+
+- https://www.uspto.gov/patents/search/patent-public-search
+- https://www.uspto.gov/patents/laws/examination-policy/subject-matter-eligibility
+- https://www.uspto.gov/patents/basics/apply/provisional-application
+- https://www.uspto.gov/sites/default/files/documents/tradesecretsiptoolkit.pdf
+- https://www.uspto.gov/trademarks/basics
+- https://www.copyright.gov/what-is-copyright/
+
 ## Product test
 
 Every feature should improve at least one of these:

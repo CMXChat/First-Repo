@@ -142,7 +142,10 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   const entryFit = await page.locator('#entry').evaluate(entry => {
     const style = getComputedStyle(entry);
     const card = entry.querySelector('.entry-card').getBoundingClientRect();
+    const heading = entry.querySelector('.entry-card h1').getBoundingClientRect();
     const tip = entry.querySelector('.entry-tip-carousel').getBoundingClientRect();
+    const actions = entry.querySelector('.entry-actions').getBoundingClientRect();
+    const activeCopy = entry.querySelector('[data-entry-tip]:not([aria-hidden="true"]) p');
     const maxScroll = entry.scrollHeight - entry.clientHeight;
     return {
       overflowY: style.overflowY,
@@ -151,7 +154,10 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       gutter: style.scrollbarGutter,
       leftMargin: card.left,
       rightMargin: innerWidth - card.right,
-      tipHeight: tip.height
+      headingHeight: heading.height,
+      tipHeight: tip.height,
+      actionGap: actions.top - tip.bottom,
+      wordAnimation: getComputedStyle(activeCopy).animationName
     };
   });
   expect(entryFit.overflowY).toBe('scroll');
@@ -159,7 +165,10 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(entryFit.maxScroll).toBeLessThanOrEqual(1);
   expect(entryFit.gutter).toContain('stable');
   expect(Math.abs(entryFit.leftMargin - entryFit.rightMargin)).toBeLessThanOrEqual(2);
+  expect(entryFit.headingHeight).toBeLessThanOrEqual(50);
   expect(entryFit.tipHeight).toBeLessThanOrEqual(66);
+  expect(entryFit.actionGap).toBeGreaterThanOrEqual(10);
+  expect(entryFit.wordAnimation).toContain('entry-tip-copy-in');
   await expect(page.locator('#entryScrollControl')).toBeHidden();
   await expect(page.locator('#openDemo')).toBeInViewport();
 
@@ -182,6 +191,9 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   });
   expect(secondTipAccent.border).not.toBe(firstTipAccent.border);
   expect(secondTipAccent.text).not.toBe(firstTipAccent.text);
+  await page.locator('[data-entry-tip-next]').evaluate(button => button.blur());
+  await page.mouse.move(0, 0);
+  await expect.poll(() => page.locator('#entryTipPosition').textContent(), { timeout: 6000 }).toBe('3 / 5');
 
   await page.setViewportSize({ width: 1024, height: 768 });
   const compactFit = await page.locator('.entry-card').evaluate(card => {
@@ -249,6 +261,18 @@ test('section conversations and standout modules keep the current Space in scope
   const trigger = page.locator('.workspace-panel-heading [data-ai-trigger]');
   await expect(trigger).toHaveText('✦');
   await expect(trigger).toHaveAttribute('aria-label', /Open a conversation about/);
+  const triggerGeometry = await trigger.evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const hitArea = getComputedStyle(button, '::before');
+    return {
+      width: rect.width,
+      height: rect.height,
+      hitInset: Math.abs(parseFloat(hitArea.inset))
+    };
+  });
+  expect(triggerGeometry.width).toBeLessThanOrEqual(32);
+  expect(triggerGeometry.height).toBeLessThanOrEqual(32);
+  expect(triggerGeometry.width + (triggerGeometry.hitInset * 2)).toBeGreaterThanOrEqual(44);
   await trigger.click();
   await expect(page.locator('#spacesAiDialog')).toBeVisible();
   await expect(page.locator('#spacesAiTitle')).toHaveText('Continue with this section');
@@ -470,8 +494,10 @@ test('Personal habits and the Family briefing use the richer workspace modules',
   await expect(page.locator('#heroTitle')).toHaveText('The household plan is clear before everyone starts moving');
   await expect(page.locator('#statsGrid')).toContainText('Chores open');
 
-  await selectPrimaryView(page, 'workspace');
-  await page.locator('[data-workspace-tab="calendar"]').click();
+  await expect(page.locator('#recommendationViewLabel')).toHaveText('Open Calendar');
+  await page.locator('#recommendationViewButton').click();
+  await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
+  await expect(page.locator('[data-workspace-tab="calendar"]')).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('.family-calendar-day')).toHaveCount(3);
   await expect(page.locator('.family-calendar')).toContainText('Availability only');
   await expect(page.locator('.family-calendar')).toContainText('Zoe’s appointment');
@@ -716,8 +742,9 @@ test('explicit theme query remains reversible on active and rollback routes', as
 
 test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
+  await page.goto('/doc/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
   await expect(page.locator('link[data-spaces-mobile-fixes="true"]')).toHaveCount(1);
 
   const cta = page.locator('.final-cta');
