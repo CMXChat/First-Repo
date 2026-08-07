@@ -2725,3 +2725,9 @@ html[data-theme="light"] .final-cta-note {
     color: #0a1420;
   }
 }
+
+
+/* Boundary note contrast in the light document theme. */
+html[data-theme="light"] .boundary-center small {
+  color: #53657a;
+}
