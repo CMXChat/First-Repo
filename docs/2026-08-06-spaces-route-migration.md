@@ -24,7 +24,7 @@ Primary route: `/spaces/`
 
 ## Shared calendars
 
-Shared calendars are a Space-level coordination layer, not a merged copy of every participant's private calendar.
+Shared calendars coordinate approved Space-level information. Each participant's private calendar remains separate.
 
 A Relationship, Family, Team, or Project Space may combine approved calendar information such as:
 
@@ -36,6 +36,22 @@ A Relationship, Family, Team, or Project Space may combine approved calendar inf
 - conflicts that affect the current Space.
 
 Private event titles, notes, attendees, locations, and unrelated commitments remain hidden unless the owner explicitly shares them. A Space can show a busy block or availability window without exposing the underlying event. Every calendar connection needs a person, source, permission scope, Space scope, freshness state, and revocation path.
+
+## Current Family and Personal demonstrations
+
+The active `/spaces/` demo now includes six contexts: Personal, Relationship, Family, Business, Trainer, and Team.
+
+The Family briefing demonstrates:
+
+- a household Today view with appointments, pickups, chores, shopping, meals, and approval needs;
+- an approved shared calendar that can show a private event as an availability-only block;
+- a chore board with owners, deadlines, and visible status;
+- a shared shopping list with claimed, open, and completed items;
+- age-appropriate access examples for adults, teens, and children.
+
+The Personal briefing includes a private habit view with weekly completion, current rhythm, and best recorded streak. A habit stays in the Personal Space until the user approves a specific result, plan, or time for another Space.
+
+All private-looking records in these demonstrations are fictional. The interface shows the intended behavior, while authenticated profiles, calendar enforcement, durable habit history, connector permissions, and multi-user writes remain production platform work.
 
 ## Alarm and launch routine
 
@@ -77,6 +93,9 @@ A release that changes the active Spaces experience should verify:
 - the route registry marks `/spaces/` Active and `/brief/` Legacy;
 - all active JS and CSS assets exist and have cache versions;
 - browser, mobile, Spotify lifecycle, and accessibility checks target `/spaces/` as the primary route;
+- all six briefing contexts remain reachable, contained, and clearly fictional where private-looking records appear;
+- selected controls keep readable contrast in both themes;
+- horizontally scrollable tab rows do not shift the document viewport;
 - old `/brief/` bookmarks remain functional;
 - shared-calendar, alarm, voice, permission, and revocation language remains present.
 

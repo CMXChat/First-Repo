@@ -82,7 +82,7 @@
     text('#overview .section-intro', 'Spaces helps a person or group open the right context, understand what changed, protect the right boundaries, and move the next useful thing forward.');
     html('#overview .overview-statement', `
       <p>Most digital tools understand one slice of your life. A calendar knows time, email holds messages, task managers track assignments, and a new AI chat usually starts with whatever you explain again.</p>
-      <p>Spaces begins with the part of life you are working in. The people, documents, conversations, memory, goals, deadlines, and connected accounts for that Space are already organized, so you can continue without rebuilding the context.</p>
+      <p>Spaces begins with the part of life you are working in. The people, documents, conversations, memory, goals, deadlines, and connected accounts for that Space are already organized, so you can continue from existing context.</p>
       <p>Chat remains available when it helps, alongside Brief, Documents, Research, Projects, Memory, Tasks, Calendar, Files, and Notes. Every module works from the same approved context.</p>
     `);
     document.querySelector('#overview .overview-grid')?.setAttribute('aria-label', 'Spaces overview');
@@ -102,12 +102,12 @@
           </div>
           <div class="architecture-principles">
             <article><h3>Connected accounts</h3><p>Calendar, email, files, project tools, finance, music, and other approved services can supply records within a clear read, write, sync, and Space scope.</p></article>
-            <article><h3>Direct input</h3><p>A note, uploaded document, voice update, form, import, or conversation can add context without forcing the user through a long setup process.</p></article>
+            <article><h3>Direct input</h3><p>A note, uploaded document, voice update, form, import, or conversation can add context through a short, focused path.</p></article>
             <article><h3>Focused questions</h3><p>The AI can ask one clear question when a missing answer would change a recommendation, deadline, permission, or decision.</p></article>
             <article><h3>Corrections</h3><p>A direct user correction replaces a weaker guess, keeps the earlier record in revision history, and updates the next Brief.</p></article>
           </div>
           <div class="prose-callout">
-            <strong>Connecting an account does not give every Space access to everything.</strong>
+            <strong>Every connected account uses a specific Space, purpose, and permission scope.</strong>
             <p>The user chooses the service, purpose, permission, and Space. The connection stays visible in settings and can be limited, paused, or removed.</p>
           </div>
         </section>
@@ -143,7 +143,7 @@
     text('#ai-layer .section-intro', 'The model receives only the context, tools, and permissions needed for the current task. The Space keeps its long-term records, settings, and history outside the model.');
     text('#ai-layer .ai-foundation-card .card-label', 'Stable Spaces foundation');
 
-    text('#status .section-intro', 'This section separates what exists from what has been designed or planned, so the product direction stays clear without overstating the current demo.');
+    text('#status .section-intro', 'This section separates demonstrated work from planned platform work and keeps the current product status precise.');
 
     const experienceLayer = document.querySelector('#architecture .architecture-layer');
     if (experienceLayer) {
@@ -157,7 +157,7 @@
       architecturePrinciples.insertAdjacentHTML('afterend', `
         <div class="prose-callout" data-cloudflare-context>
           <strong>Cloudflare could become infrastructure beneath Spaces.</strong>
-          <p>Cloudflare OS is aimed at developers building agent runtimes, sandboxes, tools, and orchestration. Spaces is the user-facing product built around context, continuity, memory, and action. They operate at different layers, and Cloudflare could power part of the backend without changing the experience people use.</p>
+          <p>Cloudflare OS is aimed at developers building agent runtimes, sandboxes, tools, and orchestration. Spaces is the user-facing product built around context, continuity, memory, and action. They operate at different layers, and Cloudflare could power part of the backend while the experience remains consistent for users.</p>
           <a class="button button-secondary" href="https://os.cloudflare.app/" target="_blank" rel="noopener noreferrer">View Cloudflare OS <span aria-hidden="true">↗</span></a>
         </div>
       `);
@@ -166,13 +166,13 @@
     text('#faqTitle', 'Common questions about Spaces');
     html('#faq .faq-list', `
       <details><summary>Is Spaces an AI model?</summary><p>Spaces is the product around the model. It keeps the contexts, permissions, memory, sources, goals, tools, approvals, and history that let a chosen model work inside clear limits.</p></details>
-      <details><summary>Why is the product organized around Spaces?</summary><p>Each Space keeps one part of life coherent. A Business Space can understand clients and projects, while a Family Space uses family plans and responsibilities without pulling unrelated work records into the conversation.</p></details>
+      <details><summary>Why is the product organized around Spaces?</summary><p>Each Space keeps one part of life coherent. A Business Space can understand clients and projects, while a Family Space keeps family plans and responsibilities separate from unrelated work records.</p></details>
       <details><summary>How does a Space get its information?</summary><p>Information can come from connected accounts, uploaded files, notes, voice updates, forms, imports, conversations, public sources, and short questions from the AI. Every source needs a purpose, permission, and Space.</p></details>
       <details><summary>Can users correct what a Space remembers?</summary><p>That is part of the planned Memory & Data settings. Users should be able to inspect sources, correct records, move information between Spaces, remove interpretations, change connector permissions, export data, delete records, and pause future learning.</p></details>
       <details><summary>Can different AI models use the same Space?</summary><p>Yes. The Space is designed to keep its goals, memory, permissions, and history while the user or system selects a suitable model for the task.</p></details>
-      <details><summary>Does the current demo use real private data?</summary><p>No. The public demo uses sourced public information and clearly fictional private-looking records. Real private data requires authentication, protected storage, server-side permissions, limited connector scopes, and revocable access.</p></details>
+      <details><summary>What data does the current demo use?</summary><p>The public demo uses sourced public information and clearly fictional private-looking records. Real private data requires authentication, protected storage, server-side permissions, limited connector scopes, and revocable access.</p></details>
       <details><summary>Can Spaces help with family, relationship, or team decisions?</summary><p>Spaces can organize what people stated, expose schedule or responsibility conflicts, track approved agreements, and prepare practical options. People remain responsible for the relationship and the decision.</p></details>
-      <details><summary>What makes the alarm, music, and voice experience useful?</summary><p>The routine can use the same approved context as the Brief, so music, voice, reminders, and spoken check-ins begin from the current Space instead of a blank screen.</p></details>
+      <details><summary>What makes the alarm, music, and voice experience useful?</summary><p>The routine can use the same approved context as the Brief, so music, voice, reminders, and spoken check-ins begin from the current Space with the needed context already available.</p></details>
     `);
 
     text('.final-cta h2', 'Explore the current Spaces Brief demo');

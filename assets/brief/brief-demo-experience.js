@@ -31,7 +31,7 @@
         details: {
           day: {
             title: 'Your whole day in one view',
-            summary: 'See the timing, conditions, and open windows without a long scroll.'
+            summary: 'See the timing, conditions, and open windows in one practical view.'
           },
           work: {
             title: 'Projects, messages, and owners',
@@ -39,14 +39,14 @@
           },
           money: {
             title: 'Money items that need a look',
-            summary: 'The demo uses made-up records because no secure finance account is connected.'
+            summary: 'The demo uses made-up records while secure finance connections remain planned.'
           },
           wellness: {
             title: 'A realistic movement plan for today',
             summary: 'A shorter plan can still keep the habit alive.'
           },
           connections: {
-            title: 'What is connected and what is not',
+            title: 'Connection status and permission scope',
             summary: 'Each service shows whether it is live, made up, disconnected, or planned.'
           }
         },
@@ -57,7 +57,7 @@
         headline: 'Start with reassurance, then work through the plan',
         summary: 'Each person keeps a private profile, and the shared Space holds only the plans, promises, and details both people approved.',
         recommendation: {
-          title: 'Confirm the plan without reopening every old problem.',
+          title: 'Confirm the plan and keep the discussion focused.',
           detail: 'Use the shared facts, name what still needs approval, and keep private thoughts private.'
         },
         details: {
@@ -67,7 +67,7 @@
           },
           profiles: {
             title: 'Two people keep two private profiles',
-            summary: 'Joining a shared Space does not open either person’s private memory.'
+            summary: 'Each person’s private memory stays in their own profile.'
           },
           plans: {
             title: 'Shared decisions with owners and dates',
@@ -86,7 +86,7 @@
       business: {
         short: 'A shared company view with private partner notes',
         headline: 'See the company clearly before making today’s decisions',
-        summary: 'Partners can see cash, projects, risks, and decisions without opening each other’s private notes.',
+        summary: 'Partners can see cash, projects, risks, and decisions while private notes remain separate.',
         recommendation: {
           title: 'Collect the cash before adding fixed cost.',
           detail: 'Approve the contractor after the expected payments arrive.'
@@ -106,7 +106,7 @@
           },
           projects: {
             title: 'Risks, owners, and deadlines',
-            summary: 'Work without an owner is easy to miss.'
+            summary: 'Unowned work is easy to miss.'
           },
           decisions: {
             title: 'Turn evidence into a decision, owner, and date',
@@ -114,13 +114,13 @@
           },
           connections: {
             title: 'Business connections with clear limits',
-            summary: 'The company Space receives company records, not personal life.'
+            summary: 'The company Space receives approved company records while personal records stay in their original Spaces.'
           }
         },
         soundtrack: { note: 'A bright track for a company review.' }
       },
       trainer: {
-        headline: 'Adjust the plan without losing accountability',
+        headline: 'Adjust the plan while keeping accountability',
         summary: 'Training, recovery, habits, and check-ins stay useful when the record shows what actually happened.',
         recommendation: {
           title: 'Use the smaller plan when readiness is low.',
@@ -133,7 +133,7 @@
           },
           habits: {
             title: 'Use patterns to start a conversation',
-            summary: 'A pattern is useful context, not a permanent label.'
+            summary: 'A pattern adds temporary context that the user can review and correct.'
           },
           progress: {
             title: 'Use completed work as evidence',
@@ -155,7 +155,7 @@
         summary: 'Members see the work they need, and project leads keep the wider view and restricted details.',
         recommendation: {
           title: 'Assign the missing handoff before adding more work.',
-          detail: 'A task with no receiver is the clearest release risk.'
+          detail: 'The missing receiver is the clearest release risk.'
         },
         weather: {
           condition: 'Release window open',
@@ -163,7 +163,7 @@
         },
         details: {
           mywork: {
-            title: 'Your work without the whole company',
+            title: 'Your role-specific work',
             summary: 'A member sees what they own, what blocks it, and the approved details needed to finish.'
           },
           project: {
@@ -176,7 +176,7 @@
           },
           procedures: {
             title: 'Prepare before the launch',
-            summary: 'Restricted details can support readiness without entering the general team Space.'
+            summary: 'Restricted details can support readiness while remaining in lead-access records.'
           },
           connections: {
             title: 'Connect tools by role and purpose',
@@ -270,10 +270,23 @@
           <div><p class="eyebrow">CONDITION</p><h2>Weather and timing</h2></div>
           ${sectionButton('today', 'Open weather in Today')}
         </div>
-        <div class="full-weather-grid">
-          <article class="full-weather-now"><span>${escapeHtml(scenario.weather.location)}</span><strong>${escapeHtml(scenario.weather.temperature)}°</strong><h3>${escapeHtml(scenario.weather.condition)}</h3><p>${escapeHtml(scenario.weather.advice)}</p></article>
-          <div class="full-hourly">${scenario.weather.hourly.map(hour => `<article><span>${escapeHtml(hour.time)}</span><strong>${escapeHtml(hour.temp)}°</strong><small>${escapeHtml(hour.rain)}% rain</small></article>`).join('')}</div>
-        </div>
+        <article class="weather-card full-weather-card">
+          <div class="weather-heading">
+            <div><p class="eyebrow">CONDITION THAT CHANGES THE DAY</p><h3>Current conditions</h3></div>
+            <span class="source-pill muted-pill">DEMO CONDITION</span>
+          </div>
+          <div class="weather-main">
+            <div class="weather-visual" aria-hidden="true"><span class="weather-sun"></span><span class="weather-cloud cloud-one"></span><span class="weather-cloud cloud-two"></span></div>
+            <div class="weather-reading">
+              <p>${escapeHtml(scenario.weather.location)}</p>
+              <strong>${escapeHtml(scenario.weather.temperature)}°</strong>
+              <h3>${escapeHtml(scenario.weather.condition)}</h3>
+              <p>${escapeHtml(scenario.weather.advice)}</p>
+            </div>
+            <div class="weather-range"><span>High <b>${escapeHtml(scenario.weather.high)}</b>°</span><span>Low <b>${escapeHtml(scenario.weather.low)}</b>°</span></div>
+          </div>
+          <div class="hourly-strip">${scenario.weather.hourly.map(hour => `<article class="hourly-item"><time>${escapeHtml(hour.time)}</time><strong>${escapeHtml(hour.temp)}°</strong><small>${escapeHtml(hour.rain)}% rain</small></article>`).join('')}</div>
+        </article>
       </section>
 
       <section class="full-section" id="all-signals">
@@ -314,18 +327,18 @@
 
       <section class="full-section adaptive-section" id="all-adaptive">
         <div class="full-section-heading">
-          <div><p class="eyebrow">FAMILIAR LAYOUT, FLEXIBLE CONTENT</p><h2>The full view adapts to the information available</h2></div>
-          ${sectionButton('how', 'See how Personal OS works')}
+          <div><p class="eyebrow">ADAPTIVE BRIEF</p><h2>Choose the clearest view for the information available</h2></div>
+          ${sectionButton('how', 'See how Spaces works')}
         </div>
-        <p class="full-lead">Personal OS checks the approved information and chooses a clear way to show it. Navigation, privacy controls, and the main locations stay familiar even when the useful cards, charts, and explanations change with the day.</p>
+        <p class="full-lead">Spaces checks the approved information and presents it with the view that best supports the next decision. Navigation, privacy controls, and the main locations stay familiar as the useful cards, calendars, boards, charts, and explanations change with the day.</p>
         <ol class="adaptive-process">${adaptiveSteps.map(([title, detail], index) => `<li><span>${String(index + 1).padStart(2, '0')}</span><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></div></li>`).join('')}</ol>
         <div class="component-choice-grid">${componentChoices.map(([input, component, reason]) => `<article><span>${escapeHtml(input)}</span><strong>${escapeHtml(component)}</strong><p>${escapeHtml(reason)}</p></article>`).join('')}</div>
-        <aside class="adaptive-note"><strong>The layout can adapt without becoming confusing.</strong><p>Controls, sources, and the path back to focused views stay in predictable places.</p></aside>
+        <aside class="adaptive-note"><strong>The layout stays familiar as the briefing changes.</strong><p>Controls, sources, and the path back to focused views remain in predictable places.</p></aside>
       </section>
 
       <section class="full-section alarm-section" id="all-alarm">
         <div class="full-section-heading"><div><p class="eyebrow">FUTURE APP IDEA</p><h2>Start the morning with music and a short overview</h2></div><button class="text-button" type="button" data-open-media-from-full>Open today’s soundtrack <span aria-hidden="true">→</span></button></div>
-        <p class="full-lead">A future Personal OS app could play approved music from Spotify, read a short overview, and then open the interactive Brief.</p>
+        <p class="full-lead">A future Spaces app could play approved music from Spotify, read a short overview, and then open the interactive Brief.</p>
         <div class="alarm-flow">${alarmSteps.map(([title, detail], index) => `<article><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></article>`).join('')}</div>
         <p class="future-boundary">This concept would require device permissions, provider support, clear controls, and secure sign-in for real playback, voice, alarms, and account access.</p>
       </section>

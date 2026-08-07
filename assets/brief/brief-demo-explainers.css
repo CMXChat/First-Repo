@@ -248,6 +248,11 @@
   color: var(--ink-strong);
 }
 
+.space-example-open {
+  width: fit-content;
+  margin-top: 16px;
+}
+
 .outcome-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

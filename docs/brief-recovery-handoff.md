@@ -1,4 +1,4 @@
-# `/brief` Current Handoff
+# `/spaces` Current Handoff
 
 Last reconciled: **August 5, 2026**  
 Repository: `CMXChat/First-Repo`  
@@ -8,21 +8,22 @@ Verified product baseline: `5c7eef899f3357854492e2d3918f5915eb536b6b`
 
 `main` is not in the damaged state described by the previous version of this file. The old recovery instructions, stacked PR dependency map, and requirement to restore `brief-workspace.js` are superseded.
 
-The shipping `/brief/` experience is a focused standalone Personal OS demo built from the `brief-demo-*` assets. `/brief-next/` is retained as a full staging and rollback copy. `/doc/` is the connected public noindex product overview.
+The shipping `/spaces/` experience is a focused standalone Spaces demo built from the `brief-demo-*` assets. `/brief/` is a state-preserving compatibility redirect, `/brief-next/` is a pre-migration rollback snapshot, and `/doc/` is the connected public noindex product overview.
 
 Read `docs/2026-08-05-repository-reconciliation.md` for the full comparison and remaining gaps.
 
 ## Current route contract
 
-### `/brief/`
+### `/spaces/`
 
 - primary public noindex demo
 - light in the initial HTML and theme resolver
 - manual dark mode remains available and persists
-- five contexts: Personal, Relationship, Business, Trainer, and Team
-- focused Today, Spaces, Memory, Goals, and How views
+- six contexts: Personal, Relationship, Family, Business, Trainer, and Team
+- focused Today, Workspace, Spaces, How, and Everything views
+- Personal habit tracking and Family household coordination examples
 - optional Everything view
-- links to `/doc/` at entry, in the header, and in the How view
+- links to `/doc/` at entry and in the How view
 - Spotify soundtrack integration with readiness and fallback behavior
 - keyboard-aware workspace tabs
 - predictable focus when returning to entry
@@ -30,10 +31,14 @@ Read `docs/2026-08-05-repository-reconciliation.md` for the full comparison and 
 
 ### `/brief-next/`
 
-- public noindex staging and rollback copy
-- currently uses the same HTML blob and shared assets as `/brief/`
-- canonical points to `/brief/`
+- public noindex pre-migration rollback snapshot
 - must remain independently loadable
+
+### `/brief/`
+
+- legacy compatibility route
+- redirects to `/spaces/`
+- preserves query and hash state when JavaScript is available
 
 ### `/doc/`
 
@@ -41,12 +46,12 @@ Read `docs/2026-08-05-repository-reconciliation.md` for the full comparison and 
 - noindex and nofollow
 - light by default
 - no password gate or Black Prompt Gate assets
-- links to `/brief/`
+- links to `/spaces/`
 - plain-language product copy
 
 ## Shipping asset chain
 
-The current `/brief/` and `/brief-next/` pages load:
+The current `/spaces/` page loads:
 
 - `assets/brief/brief-demo-data.js`
 - `assets/brief/brief-demo-experience.js`

@@ -108,7 +108,7 @@ assert(/window\.location\.replace/i.test(read('assets/spaces-legacy-redirect.js'
 assert(
   /id=["']status["']/i.test(doc) &&
   /Current reality/i.test(doc) &&
-  /separates what exists from what has been designed or planned/i.test(doc),
+  /separates demonstrated work from planned platform work/i.test(doc),
   '`/doc/` must preserve the current-versus-planned product boundary.'
 );
 assert(/href=["']\/(?:spaces|brief)\/["']/i.test(doc), '`/doc/` must retain a working demo link during the compatibility migration.');
