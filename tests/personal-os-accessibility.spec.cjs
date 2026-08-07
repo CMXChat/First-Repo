@@ -39,6 +39,11 @@ test('Spaces Today and How views have no serious automated WCAG violations', asy
   await openSpaces(page);
   await expectNoSeriousAxeViolations(page, 'Spaces Today');
 
+  await page.locator('.weather-card [data-ai-trigger]').click();
+  await expect(page.locator('#spacesAiDialog')).toBeVisible();
+  await expectNoSeriousAxeViolations(page, 'Spaces section conversation');
+  await page.locator('#closeSpacesAi').click();
+
   const desktopHow = page.locator('#primaryNav [data-primary-view="how"]');
   if (await desktopHow.isVisible()) await desktopHow.click();
   else await page.locator('#mobileNav [data-primary-view="how"]').click();

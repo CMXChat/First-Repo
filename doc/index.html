@@ -136,7 +136,7 @@
           <div class="overview-statement">
             <p>Most digital tools understand one slice of your life. A calendar knows time, email holds messages, task managers track assignments, and a new AI chat usually starts with whatever you explain again.</p>
             <p>Spaces begins with the part of life you are working in. The people, documents, conversations, memory, goals, deadlines, and connected accounts for that Space are already organized, so you can continue from existing context.</p>
-            <p>Chat remains available when it helps, alongside Brief, Documents, Research, Projects, Memory, Tasks, Calendar, Files, and Notes. Every module works from the same approved context.</p>
+            <p>Conversation stays available at the level the user needs. A person can ask from the whole Space or open a focused conversation from a weather card, cash sheet, calendar, project board, or another section. The current section supplies the starting scope, and the user can expand or narrow it.</p>
           </div>
 
           <div class="overview-grid" aria-label="Spaces overview">
@@ -224,7 +224,7 @@
 
           <div class="architecture-principles">
             <article><h3>Connected accounts</h3><p>Calendar, email, files, project tools, finance, music, and other approved services can supply records within a clear read, write, sync, and Space scope.</p></article>
-            <article><h3>Direct input</h3><p>A note, uploaded document, voice update, form, import, or conversation can add context through a short, focused path.</p></article>
+            <article><h3>Direct input</h3><p>A note, uploaded document, voice update, form, import, or section-level conversation can add context through a short, focused path.</p></article>
             <article><h3>Focused questions</h3><p>The AI can ask one clear question when a missing answer would change a recommendation, deadline, permission, or decision.</p></article>
             <article><h3>Corrections</h3><p>A direct user correction replaces a weaker guess, keeps the earlier record in revision history, and updates the next Brief.</p></article>
           </div>
@@ -518,6 +518,7 @@
           </div>
 
           <div class="ai-roles-grid">
+            <article><h3>Continue from a section</h3><p>Start with the current card, calendar, chart, sheet, or project view and carry its approved Space context into the conversation.</p></article>
             <article><h3>Research</h3><p>Find and compare current public information with sources.</p></article>
             <article><h3>Organize</h3><p>Turn authorized data into structured state that the user can inspect.</p></article>
             <article><h3>Reason</h3><p>Identify the relevant change, blocker, question, or next action.</p></article>
@@ -574,11 +575,14 @@
                 <li>Partner time zones, team progress, deal pipeline, shared concerns, and prepared calendar changes</li>
                 <li>Accountant-client cash planning, portfolio context, deadlines, goals, and editable rules</li>
                 <li>Priority notices, short user corrections, and three soundtrack choices in every Brief</li>
+                <li>Section-aware conversation prompts with a clear static-demo handoff</li>
+                <li>Rotating entry ideas plus direct links to three standout modules in every Space</li>
+                <li>Music available from the top-right control, with direct-tap provider limits stated in the interface</li>
                 <li>Dark and light appearance</li>
                 <li>Sourced public information and fictional private-looking examples</li>
                 <li>Frontend demonstrations of Spaces, memory, connections, goals, media, and permissions</li>
                 <li>Mobile, browser, theme, navigation, and accessibility validation work</li>
-                <li>A matching `/brief-next/` route used for testing and rollback</li>
+                <li>A separate `/brief-next/` snapshot retained for rollback reference</li>
               </ul>
             </div>
             <div class="status-column">
@@ -678,6 +682,7 @@
             <details><summary>How does a Space get its information?</summary><p>Information can come from connected accounts, uploaded files, notes, voice updates, forms, imports, conversations, public sources, and short questions from the AI. Every source needs a purpose, permission, and Space.</p></details>
             <details><summary>Can users correct what a Space remembers?</summary><p>That is part of the planned Memory &amp; Data settings. Users should be able to inspect sources, correct records, move information between Spaces, remove interpretations, change connector permissions, export data, delete records, and pause future learning.</p></details>
             <details><summary>How does the Brief decide what appears first?</summary><p>The current demo combines a user’s stated priorities with time, impact, risk, commitments, and recent changes. Engagement can help tune presentation over time, but important facts remain visible even when they are less interesting.</p></details>
+            <details><summary>What happens when I ask AI from a section?</summary><p>The current demo prepares a prompt with the selected Space and section, then shows the context handoff. A production account would add authorized records, source labels, permission scope, and approved tools before sending the request to a model.</p></details>
             <details><summary>Can different AI models use the same Space?</summary><p>Yes. The Space is designed to keep its goals, memory, permissions, and history while the user or system selects a suitable model for the task.</p></details>
             <details><summary>What data does the current demo use?</summary><p>The public demo uses sourced public information and clearly fictional private-looking records. Real private data requires authentication, protected storage, server-side permissions, limited connector scopes, and revocable access.</p></details>
             <details><summary>Can Spaces help with family, relationship, or team decisions?</summary><p>Spaces can organize what people stated, expose schedule or responsibility conflicts, track approved agreements, and prepare practical options. People remain responsible for the relationship and the decision.</p></details>

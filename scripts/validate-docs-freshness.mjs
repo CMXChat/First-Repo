@@ -93,6 +93,8 @@ if (baseSha && !/^0+$/.test(baseSha)) {
     'assets/cmx-routes.json',
     'assets/spaces-legacy-redirect.js',
     'assets/brief/brief-demo-app.js',
+    'assets/brief/brief-demo-advanced.js',
+    'assets/brief/brief-demo-conversation.js',
     'assets/brief/brief-demo-data.js',
     'assets/brief/brief-demo-experience.js',
     'assets/brief/brief-demo-explainers.js',

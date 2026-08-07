@@ -1052,23 +1052,67 @@ html[data-theme="dark"] {
   color: var(--muted);
 }
 
+.financial-sheet-toolbar b {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 7px;
+  color: var(--blue-deep);
+  border: 1px solid color-mix(in srgb, var(--blue) 24%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--blue-soft) 58%, var(--surface));
+  font-size: 0.6rem;
+  white-space: nowrap;
+}
+
+.financial-sheet-caption {
+  margin: 0;
+  padding: 13px 18px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-soft);
+  font-size: 0.72rem;
+}
+
 .financial-sheet-scroll {
+  width: 100%;
   min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
 }
 
 .financial-sheet {
   width: 100%;
   min-width: 780px;
+  table-layout: fixed;
   border-collapse: collapse;
   color: var(--ink);
 }
 
 .financial-sheet caption {
-  padding: 14px 18px;
-  color: var(--muted);
-  text-align: left;
-  font-size: 0.72rem;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
+.financial-sheet .sheet-category-column {
+  width: 190px;
+}
+
+.financial-sheet .sheet-money-column {
+  width: 145px;
+}
+
+.financial-sheet .sheet-status-column {
+  width: 155px;
 }
 
 .financial-sheet th,
@@ -1085,7 +1129,10 @@ html[data-theme="dark"] {
   left: 0;
   z-index: 2;
   text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
   background: var(--surface-soft);
+  box-shadow: 8px 0 14px -14px color-mix(in srgb, var(--ink-strong) 60%, transparent);
 }
 
 .financial-sheet thead th {
@@ -1094,6 +1141,11 @@ html[data-theme="dark"] {
   font-size: 0.65rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.financial-sheet thead th:first-child {
+  z-index: 3;
+  background: var(--surface);
 }
 
 .financial-sheet tbody th {
@@ -1649,6 +1701,49 @@ html[data-theme="dark"] .asset-grid article[data-asset-tone="amber"] { --asset-c
 
   .partner-calendar-day li {
     grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .financial-sheet-toolbar {
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .financial-sheet-toolbar div {
+    gap: 5px;
+  }
+
+  .financial-sheet-toolbar small {
+    display: none;
+  }
+
+  .financial-sheet-caption {
+    padding: 11px 12px;
+    font-size: 0.68rem;
+  }
+
+  .financial-sheet {
+    min-width: 670px;
+  }
+
+  .financial-sheet .sheet-category-column {
+    width: 142px;
+  }
+
+  .financial-sheet .sheet-money-column {
+    width: 126px;
+  }
+
+  .financial-sheet .sheet-status-column {
+    width: 150px;
+  }
+
+  .financial-sheet th,
+  .financial-sheet td {
+    padding: 12px 10px;
+  }
+
+  .sheet-scroll-note {
+    padding: 10px 12px 13px;
   }
 }
 

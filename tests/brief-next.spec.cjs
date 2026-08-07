@@ -43,25 +43,17 @@ async function openScenario(page, id) {
   await installSpotifyMock(page);
   await page.goto('/brief/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
   await expect(page.locator('#readOnEntry')).toHaveCount(0);
 
-  await page.locator('#entrySoundtrack').check();
   await page.locator(`[data-entry-scenario="${id}"]`).click();
   await expect(page.locator('#openDemo')).toBeEnabled();
-  await expect(page.locator('#previewButton')).toBeEnabled();
   await page.locator('#openDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('#demoApp')).toHaveAttribute('aria-hidden', 'false');
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect(page.locator('.section-pager')).toHaveCount(5);
-  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
-
-  const playback = await page.evaluate(scenarioId => ({
-    actual: window.__spotifyPlayCalls.at(-1),
-    expected: `spotify:track:${window.BRIEF_DEMO_DATA.scenarios[scenarioId].soundtrack.spotifyTrackId}`
-  }), id);
-  expect(playback.actual).toBe(playback.expected);
+  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBe(0);
 }
 
 async function expectNoVisibleEllipses(page) {
@@ -79,7 +71,7 @@ async function expectNoHorizontalOverflow(page) {
   expect(overflow.body).toBeLessThanOrEqual(1);
 }
 
-test('desktop demo keeps weather, stats, navigation and opt-in soundtrack playback', async ({ page }, testInfo) => {
+test('desktop demo keeps weather, stats, navigation and user-started soundtrack playback', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop navigation is tested only in the desktop project.');
   await openScenario(page, 'personal');
 
@@ -90,7 +82,11 @@ test('desktop demo keeps weather, stats, navigation and opt-in soundtrack playba
   await expect(page.locator('#weatherTemperature')).toHaveText('82');
   await expect(page.locator('#statsGrid .stat-card')).toHaveCount(4);
   await expect(page.locator('#flowList li')).toHaveCount(4);
+  await page.locator('#mediaButton').click();
+  await expect(page.locator('#previewButton')).toBeEnabled();
+  await page.locator('#previewButton').click();
   await expect(page.locator('#mediaStatus')).toContainText('Playing You Get What You Give through Spotify');
+  await page.locator('.media-heading [data-close-media]').click();
 
   await page.locator('#primaryNav [data-primary-view="workspace"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
@@ -200,16 +196,14 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   expect(bg).toBe('#edf3f8');
   const entryHeadingSize = await page.locator('#entryTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(entryHeadingSize).toBeLessThanOrEqual(36);
-  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
 
-  await page.locator('#entrySoundtrack').check();
   await page.locator('[data-entry-scenario="relationship"]').click();
   await expect(page.locator('#openDemo')).toBeEnabled();
-  await expect(page.locator('#previewButton')).toBeEnabled();
   await page.locator('#openDemo').click();
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect(page.locator('.section-pager')).toHaveCount(5);
-  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
+  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBe(0);
   await expect(page.locator('#mobileNav')).toBeVisible();
   await expect(page.locator('#mobileNav button')).toHaveCount(5);
   await expect(page.locator('#mobileNav button').last()).toHaveText('Everything');
@@ -281,7 +275,7 @@ test('light default, saved dark preference and reset remain reversible', async (
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
   await expect(page.locator('#entry')).toBeVisible();
   await expect(page.locator('#openDemo')).toBeDisabled();
-  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('[data-entry-scenario]').first()).toBeFocused();
 

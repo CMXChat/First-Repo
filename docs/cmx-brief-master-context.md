@@ -2,7 +2,7 @@
 
 Last reconciled: **August 7, 2026**
 Repository: `CMXChat/First-Repo`
-Verified product baseline: `54d6d3e83346f5324b36ec5f02a5742c2dc91511`
+Verified product baseline: `706a1bac94a507d4619cc16d2858ac09b2a75820`
 Primary deployment: `https://db.cmxchat.com/`
 
 ## Purpose
@@ -41,6 +41,9 @@ It includes:
 - remote-partner operations across New York and Sydney
 - an accountant-client ledger, portfolio view, deadlines, goals, and rules
 - compact priority notices and short user corrections
+- three direct links to signature modules in every context
+- section-aware conversation entry with contextual prompt choices
+- a rotating entry rail of practical Spaces ideas
 - an optional Everything view
 - fictional private-looking data with explicit labels
 - scenario-specific people, priorities, permissions, numbers, Spaces, and actions
@@ -94,6 +97,7 @@ Primary files:
 - `assets/brief/brief-demo-experience.js`
 - `assets/brief/brief-demo-explainers.js`
 - `assets/brief/brief-demo-media.js`
+- `assets/brief/brief-demo-conversation.js`
 - related `brief-demo-*` CSS
 
 The older modular Brief implementation remains in the repository. It is not the active asset chain loaded by the current route HTML. Future cleanup requires a dependency inventory before deletion.
@@ -131,8 +135,8 @@ The interface:
 
 - preloads the selected scenario soundtrack
 - offers two alternate tracks for each scenario
-- waits for readiness when entry music is enabled
-- uses the Open demo click to request playback
+- keeps entry silent
+- uses a direct choice in the top-right music drawer to request playback
 - confirms playback state when the provider reports it
 - falls back to a normal embedded player after API failure or timeout
 - exposes a direct-play path when one tap is required
@@ -219,6 +223,8 @@ A final release claim should still be based on a fresh complete run and a deploy
 - plain-language product and interface copy
 - product overview and trust narrative
 - seven purpose-built contexts with advanced Business, Accounting, Family, Personal, and Team views
+- contextual conversation entry and direct discovery links for signature modules
+- a mobile-contained financial sheet and a short-viewport desktop entry scrollbar
 
 ### Planned
 

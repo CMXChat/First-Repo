@@ -16,7 +16,6 @@
     apiRequested: false,
     apiFailed: false,
     fallbackMode: false,
-    pendingEntryPlayback: false,
     apiTimeoutTimer: 0,
     trackReadyTimer: 0,
     playbackConfirmTimer: 0,
@@ -58,14 +57,6 @@
     const current = track(id);
     if (!current?.spotifyTrackId) return '';
     return `https://open.spotify.com/embed/track/${encodeURIComponent(current.spotifyTrackId)}?utm_source=generator&theme=0`;
-  }
-
-  function selectedEntryScenarioId() {
-    return $('[data-entry-scenario][aria-pressed="true"]')?.dataset.entryScenario || '';
-  }
-
-  function entryWantsMusic() {
-    return $('#entrySoundtrack')?.checked === true;
   }
 
   function setStatus(message) {
@@ -118,22 +109,6 @@
     state[name] = 0;
   }
 
-  function syncEntryButton() {
-    const button = $('#openDemo');
-    const selected = scenario(selectedEntryScenarioId());
-    if (!button || !selected) return;
-
-    button.disabled = false;
-    button.textContent = `Open ${selected.label} demo`;
-    button.dataset.soundtrackState = entryWantsMusic()
-      ? state.controllerReady && state.trackReady
-        ? 'ready'
-        : state.fallbackMode
-          ? 'direct-tap'
-          : 'background'
-      : 'off';
-  }
-
   function syncButton() {
     const button = $('#previewButton');
     if (!button) return;
@@ -182,7 +157,6 @@
     state.controllerReady = false;
     state.trackReady = false;
     state.playing = false;
-    state.pendingEntryPlayback = false;
     clearTimer('apiTimeoutTimer');
     clearTimer('trackReadyTimer');
     clearTimer('playbackConfirmTimer');
@@ -190,7 +164,6 @@
     if (host.tagName === 'IFRAME') {
       if (host.getAttribute('src') !== source) host.src = source;
       syncButton();
-      syncEntryButton();
       return host;
     }
 
@@ -202,7 +175,6 @@
     frame.src = source;
     host.replaceWith(frame);
     syncButton();
-    syncEntryButton();
     return frame;
   }
 
@@ -229,14 +201,13 @@
     }
 
     if (!state.controllerReady || !state.trackReady || !state.controller || !current) {
-      setStatus('Spotify is still preparing in the background, but the Brief is ready to use.');
+      setStatus('Spotify is preparing in the background while the Brief remains ready to use.');
       installSpotifyApi();
       syncButton();
       return false;
     }
 
     try {
-      state.pendingEntryPlayback = false;
       setStatus(`Starting ${current.title}.`);
       state.controller.play();
       schedulePlaybackConfirmation();
@@ -249,12 +220,6 @@
     }
   }
 
-  function playPendingEntryRequest() {
-    if (!state.pendingEntryPlayback || !entryWantsMusic()) return;
-    state.pendingEntryPlayback = false;
-    playProvider();
-  }
-
   function markTrackReady(trackId, delay = TRACK_SETTLE_DELAY_MS) {
     clearTimer('trackReadyTimer');
     state.trackReady = false;
@@ -265,11 +230,9 @@
       state.trackReady = true;
       setStatus(`Spotify is ready with ${track()?.title || 'the selected soundtrack'}.`);
       syncButton();
-      syncEntryButton();
       document.dispatchEvent(new CustomEvent('briefdemo:mediaready', {
         detail: { scenarioId: state.scenarioId, trackId }
       }));
-      queueMicrotask(playPendingEntryRequest);
     }, Math.max(0, delay));
   }
 
@@ -299,7 +262,6 @@
       } catch {}
     }
     state.playing = false;
-    state.pendingEntryPlayback = false;
     clearTimer('playbackConfirmTimer');
     syncButton();
   }
@@ -326,12 +288,10 @@
       }
 
       syncButton();
-      syncEntryButton();
     });
 
     controller.addListener('playback_started', event => {
       clearTimer('playbackConfirmTimer');
-      state.pendingEntryPlayback = false;
       state.playing = true;
       setStatus(`Playing ${track()?.title || 'the selected soundtrack'} through Spotify.`);
       if (event?.data?.playingURI) state.loadedTrackId = event.data.playingURI.split(':').pop();
@@ -431,7 +391,6 @@
     }
 
     syncButton();
-    syncEntryButton();
   }
 
   function selectTrack(trackId) {
@@ -466,26 +425,6 @@
     playProvider();
   }
 
-  function requestEntryPlayback(id, enabled) {
-    setScenario(id);
-
-    if (!enabled) {
-      state.pendingEntryPlayback = false;
-      setStatus('Soundtrack playback is off for this entry.');
-      return false;
-    }
-
-    installSpotifyApi();
-
-    if (state.controllerReady && state.trackReady) {
-      return playProvider();
-    }
-
-    state.pendingEntryPlayback = true;
-    setStatus('The Brief opened while Spotify continues preparing in the background.');
-    return false;
-  }
-
   function open() {
     const drawer = $('#mediaDrawer');
     const button = $('#mediaButton');
@@ -499,9 +438,12 @@
     button?.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
 
-    if (state.fallbackMode || state.apiFailed || !state.controllerReady) {
+    if (state.fallbackMode || state.apiFailed) {
       renderFallbackFrame();
       setStatus('Tap play in the Spotify player below.');
+    } else if (!state.controllerReady) {
+      installSpotifyApi();
+      setStatus('Preparing Spotify. Playback may require one direct tap on this device.');
     } else if (!state.trackReady) {
       loadCurrentTrack();
       setStatus(`Preparing ${track()?.title || 'the selected soundtrack'}.`);
@@ -536,44 +478,13 @@
     state.selectedTrackIds = {};
     setScenario(state.scenarioId || window.BRIEF_DEMO_DATA?.meta?.defaultScenario || 'personal');
     setChoicesOpen(false);
-    setSoundtrackDefaultOff();
-    syncEntryButton();
-  }
-
-  function setSoundtrackDefaultOff() {
-    const choice = $('#entrySoundtrack');
-    if (choice) choice.checked = false;
-    state.pendingEntryPlayback = false;
-    syncEntryButton();
-  }
-
-  function enableSoundtrackForScenarioChoice() {
-    const choice = $('#entrySoundtrack');
-    if (!choice || choice.checked) return;
-    choice.checked = true;
-    choice.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   function installEvents() {
-    document.addEventListener('pointerdown', event => {
-      if (!event.target.closest('[data-entry-scenario]')) return;
-      enableSoundtrackForScenarioChoice();
-    }, { capture: true, passive: true });
-
     document.addEventListener('click', event => {
       const option = event.target.closest('[data-entry-scenario]');
       if (!option?.dataset.entryScenario) return;
-      enableSoundtrackForScenarioChoice();
       setScenario(option.dataset.entryScenario);
-    });
-
-    $('#entrySoundtrack')?.addEventListener('change', () => {
-      if (entryWantsMusic()) {
-        installSpotifyApi();
-      } else {
-        state.pendingEntryPlayback = false;
-      }
-      syncEntryButton();
     });
 
     $('#trackChoiceToggle')?.addEventListener('click', () => setChoicesOpen(!state.choicesOpen));
@@ -584,14 +495,10 @@
       selectTrack(button.dataset.trackChoice);
     });
 
-    $('#resetDemo')?.addEventListener('click', () => {
-      queueMicrotask(setSoundtrackDefaultOff);
-    });
   }
 
   window.BRIEF_DEMO_MEDIA = {
     setScenario,
-    requestEntryPlayback,
     togglePreview,
     playPreview: playProvider,
     pause,
@@ -605,9 +512,8 @@
   setDrawerInert(true);
   installEvents();
   setScenario(window.BRIEF_DEMO_DATA?.meta?.defaultScenario || 'personal');
-  setSoundtrackDefaultOff();
 
-  // Prepare Spotify while the entry screen is visible so the final Open demo
-  // tap can start playback inside Chrome's user-activation window.
+  // Prepare Spotify while the entry screen is visible so the music control is
+  // ready soon after the user opens a Space.
   installSpotifyApi();
 })();

@@ -49,7 +49,7 @@ async function installSpotifyControllerMock(page) {
   });
 }
 
-test('Spaces topbar remains contained, mobile-safe, and starts the selected soundtrack', async ({ page }) => {
+test('Spaces topbar remains contained, mobile-safe, and starts music from its own control', async ({ page }) => {
   await installSpotifyControllerMock(page);
   await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/spaces\//);
@@ -60,18 +60,22 @@ test('Spaces topbar remains contained, mobile-safe, and starts the selected soun
   await page.reload({ waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('#entry')).toBeVisible();
-  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
   await page.waitForFunction(() => window.__briefSpotifyControllerReady === true);
 
   await page.locator('[data-entry-scenario="personal"]').click();
-  await expect(page.locator('#entrySoundtrack')).toBeChecked();
   await page.locator('#openDemo').click();
 
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('.doc-topbar-link')).toHaveCount(0);
   await expect(page.locator('#mediaButton')).toBeVisible();
   await expect(page.locator('#themeButton')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.__briefSpotifyPlayCalls)).toBe(0);
+  await page.locator('#mediaButton').click();
+  await expect(page.locator('#previewButton')).toBeEnabled();
+  await page.locator('#previewButton').click();
   await page.waitForFunction(() => window.__briefSpotifyPlayCalls >= 1);
+  await page.locator('.media-heading [data-close-media]').click();
 
   const topbar = await page.locator('.topbar-inner').evaluate(node => {
     const rect = node.getBoundingClientRect();

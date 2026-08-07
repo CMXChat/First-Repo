@@ -199,16 +199,6 @@
     tabs[nextIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
-  function installDefaultSoundtrack() {
-    const choice = document.getElementById('entrySoundtrack');
-    if (choice) choice.checked = false;
-
-    document.getElementById('resetDemo')?.addEventListener('click', () => {
-      const resetChoice = document.getElementById('entrySoundtrack');
-      if (resetChoice) resetChoice.checked = false;
-    });
-  }
-
   function loadSectionNavigation() {
     if (document.querySelector('script[data-brief-section-navigation-loader]')) return;
     const script = document.createElement('script');
@@ -260,7 +250,6 @@
       renderSpace();
     }
 
-    installDefaultSoundtrack();
     loadSectionNavigation();
   }
 

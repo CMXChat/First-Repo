@@ -15,7 +15,8 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
   await expect(page.locator('#entry')).toBeVisible();
   await expect(page.locator('[data-entry-scenario]')).toHaveCount(7);
-  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
+  await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
+  await expect(page.locator('[data-entry-tip]')).toHaveCount(5);
 
   const background = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());
   expect(background).toBe('#edf3f8');
@@ -125,6 +126,61 @@ test('current Spaces demo opens in light mode and remains usable across devices'
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
+});
+
+test('desktop entry keeps its full content reachable and advances the idea carousel', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop entry overflow runs in Chromium.');
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await openCurrentBrief(page);
+
+  const entryScroll = await page.locator('#entry').evaluate(entry => {
+    const style = getComputedStyle(entry);
+    const maxScroll = entry.scrollHeight - entry.clientHeight;
+    entry.scrollTop = maxScroll;
+    return {
+      overflowY: style.overflowY,
+      maxScroll,
+      scrollTop: entry.scrollTop,
+      gutter: style.scrollbarGutter
+    };
+  });
+  expect(entryScroll.overflowY).toBe('scroll');
+  expect(entryScroll.maxScroll).toBeGreaterThan(100);
+  expect(entryScroll.scrollTop).toBeGreaterThan(100);
+  expect(entryScroll.gutter).toContain('stable');
+  await expect(page.locator('#openDemo')).toBeInViewport();
+
+  await page.locator('[data-entry-tip-next]').click();
+  await expect(page.locator('#entryTipPosition')).toHaveText('2 / 5');
+  await expect(page.locator('[data-entry-tip]').nth(1)).toHaveAttribute('aria-hidden', 'false');
+});
+
+test('section conversations and standout modules keep the current Space in scope', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'The contextual conversation flow runs once in Chromium.');
+  await openCurrentBrief(page);
+  await enterScenario(page, 'family');
+
+  await expect(page.locator('.space-highlight')).toHaveCount(3);
+  await expect(page.locator('#spaceHighlights')).toContainText('Shared calendar');
+  await page.locator('[data-highlight-tab="calendar"]').click();
+  await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
+  await expect(page.locator('[data-workspace-tab="calendar"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('.family-calendar-day')).toHaveCount(3);
+
+  const trigger = page.locator('.workspace-panel-heading [data-ai-trigger]');
+  await trigger.click();
+  await expect(page.locator('#spacesAiDialog')).toBeVisible();
+  await expect(page.locator('#spacesAiContext')).toContainText('Family');
+  await expect(page.locator('#spacesAiContext')).toContainText('A shared calendar that keeps private event details covered');
+  await expect(page.locator('[data-ai-prompt]')).toHaveCount(3);
+  await page.locator('[data-ai-prompt]').first().click();
+  await expect(page.locator('#spacesAiInput')).not.toHaveValue('');
+  await page.locator('#spacesAiForm button[type="submit"]').click();
+  await expect(page.locator('#spacesAiPreview')).toContainText('Conversation context prepared');
+  await expect(page.locator('#spacesAiPreview')).toContainText('approved records');
+  await page.locator('#closeSpacesAi').click();
+  await expect(trigger).toBeFocused();
+  await expectNoHorizontalOverflow(page);
 });
 
 test('Business partners and Accountant and client use complete advanced workspaces', async ({ page }, testInfo) => {
@@ -246,6 +302,26 @@ test('Accounting spreadsheet scroll stays inside its mobile workspace', async ({
 
   await selectPrimaryView(page, 'workspace');
   await page.locator('[data-workspace-tab="cash"]').click();
+
+  const initialSheetFit = await page.locator('.financial-sheet-scroll').evaluate(host => {
+    const firstColumn = host.querySelector('thead th:first-child');
+    const plannedColumn = host.querySelector('thead th:nth-child(2)');
+    const hostRect = host.getBoundingClientRect();
+    const firstRect = firstColumn.getBoundingClientRect();
+    const plannedRect = plannedColumn.getBoundingClientRect();
+    const visiblePlannedWidth = Math.max(0, Math.min(hostRect.right, plannedRect.right) - Math.max(hostRect.left, plannedRect.left));
+    return {
+      firstColumnWidth: firstRect.width,
+      plannedColumnWidth: plannedRect.width,
+      visiblePlannedWidth,
+      hostWidth: hostRect.width
+    };
+  });
+  expect(initialSheetFit.firstColumnWidth).toBeLessThanOrEqual(150);
+  expect(initialSheetFit.visiblePlannedWidth).toBeGreaterThanOrEqual(110);
+  expect(initialSheetFit.plannedColumnWidth).toBeGreaterThanOrEqual(120);
+  await expect(page.locator('.financial-sheet-caption')).toBeVisible();
+  await expect(page.locator('.financial-sheet-toolbar')).toContainText('Swipe columns');
 
   const scrollState = await page.locator('.financial-sheet-scroll').evaluate(host => {
     host.scrollLeft = host.scrollWidth;
@@ -487,7 +563,6 @@ test('Spotify failure never blocks entry or opens the drawer automatically', asy
   await page.route('https://open.spotify.com/**', route => route.abort());
   await openCurrentBrief(page);
 
-  await page.locator('#entrySoundtrack').check();
   await page.locator('[data-entry-scenario="team"]').click();
   await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
@@ -573,6 +648,6 @@ test('Doc renders the plain-language copy audit', async ({ page }) => {
   await expect(page.locator('#statusTitle')).toHaveText('The current demo shows the product direction and the work still required');
   await expect(page.locator('#architectureTitle')).toHaveText('Keep the product architecture understandable and controllable');
   await expect(page.locator('#finalCtaTitle')).toHaveText('Explore the current Spaces Brief demo');
-  await expect(page.locator('.status-list').first()).toContainText('A matching `/brief-next/` route used for testing');
+  await expect(page.locator('.status-list').first()).toContainText('A separate `/brief-next/` snapshot retained for rollback reference');
   await expectPlainVisibleCopy(page);
 });

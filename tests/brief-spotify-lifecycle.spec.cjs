@@ -43,48 +43,50 @@ async function mockSpotify(page, mode = 'success') {
   }, { mode });
 }
 
-async function openWithSoundtrack(page, scenario = 'personal') {
+async function openBrief(page, scenario = 'personal') {
   await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/spaces\//);
-  await expect(page.locator('#entrySoundtrack')).not.toBeChecked();
-  await page.locator('#entrySoundtrack').check();
+  await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
   await page.locator(`[data-entry-scenario="${scenario}"]`).click();
   await expect(page.locator('#openDemo')).toBeEnabled();
-  await expect(page.locator('#previewButton')).toBeEnabled();
   await page.locator('#openDemo').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
 }
 
-test('silent Spotify playback refusal becomes a direct-tap message without opening the drawer', async ({ page }) => {
-  await mockSpotify(page, 'silent-play');
-  await openWithSoundtrack(page, 'personal');
-
-  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
-  await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
-  await expect(page.locator('#mediaStatus')).toContainText('one direct tap', { timeout: 3000 });
-
+async function openSoundtrack(page) {
   await page.locator('#mediaButton').click();
   await expect(page.locator('#mediaDrawer')).toHaveClass(/is-open/);
+  await expect(page.locator('#previewButton')).toBeEnabled();
+}
+
+test('silent Spotify playback refusal becomes a direct-tap message after the user asks for music', async ({ page }) => {
+  await mockSpotify(page, 'silent-play');
+  await openBrief(page, 'personal');
+
+  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBe(0);
+  await openSoundtrack(page);
+  await page.locator('#previewButton').click();
+  await expect.poll(() => page.evaluate(() => window.__spotifyPlayCalls.length)).toBeGreaterThan(0);
+  await expect(page.locator('#mediaStatus')).toContainText('one direct tap', { timeout: 3000 });
   await expect(page.locator('#spotifyFrame')).toHaveAttribute('src', /open\.spotify\.com\/embed\/track\//);
 });
 
 test('Spotify play exception never blocks entry or traps focus', async ({ page }) => {
   await mockSpotify(page, 'throw-play');
-  await openWithSoundtrack(page, 'team');
+  await openBrief(page, 'team');
 
-  await expect(page.locator('#mediaDrawer')).not.toHaveClass(/is-open/);
-  await expect(page.locator('#mediaStatus')).toContainText('one direct tap');
   await page.locator('#mediaButton').focus();
-  await page.locator('#mediaButton').click();
-  await expect(page.locator('#mediaDrawer')).toHaveClass(/is-open/);
+  await openSoundtrack(page);
+  await page.locator('#previewButton').click();
+  await expect(page.locator('#mediaStatus')).toContainText('one direct tap');
   await page.locator('.media-heading [data-close-media]').click();
   await expect(page.locator('#mediaButton')).toBeFocused();
 });
 
 test('switching context loads the selected scenario track through the controller', async ({ page }) => {
   await mockSpotify(page, 'success');
-  await openWithSoundtrack(page, 'personal');
+  await openBrief(page, 'personal');
 
   await page.locator('#scenarioSelect').selectOption('team');
   await expect(page.locator('body')).toHaveAttribute('data-scenario', 'team');
@@ -98,9 +100,9 @@ test('switching context loads the selected scenario track through the controller
 
 test('each briefing can switch to an alternate Spotify choice', async ({ page }) => {
   await mockSpotify(page, 'success');
-  await openWithSoundtrack(page, 'accounting');
+  await openBrief(page, 'accounting');
 
-  await page.locator('#mediaButton').click();
+  await openSoundtrack(page);
   await page.locator('#trackChoiceToggle').click();
   await expect(page.locator('[data-track-choice]')).toHaveCount(3);
 
@@ -127,7 +129,6 @@ test('Spotify API timeout falls back to the official direct-tap embed', async ({
 
   await page.goto('/spaces/', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/spaces\//);
-  await page.locator('#entrySoundtrack').check();
   await page.locator('[data-entry-scenario="relationship"]').click();
   await expect(page.locator('#openDemo')).toBeEnabled();
   await page.locator('#openDemo').click();
