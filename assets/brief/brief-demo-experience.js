@@ -193,6 +193,7 @@
   };
 
   const sectionButton = (view, label) => `<button class="text-button" type="button" data-go-view="${escapeHtml(view)}">${escapeHtml(label)} <span aria-hidden="true">→</span></button>`;
+  const aiButton = (title, kind = 'section') => `<button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="${escapeHtml(kind)}" data-ai-title="${escapeHtml(title)}"><span aria-hidden="true">✦</span> Ask AI</button>`;
 
   function renderJumpNav() {
     const host = document.getElementById('everythingJumpNav');
@@ -220,7 +221,7 @@
       <section class="full-section full-overview" id="all-overview">
         <div class="full-section-heading">
           <div><p class="eyebrow">OVERVIEW</p><h2>${escapeHtml(scenario.headline)}</h2></div>
-          ${sectionButton('today', 'Open Today view')}
+          <div class="full-section-actions">${sectionButton('today', 'Open Today view')}${aiButton('Briefing overview', 'overview')}</div>
         </div>
         <p class="full-lead">${escapeHtml(scenario.summary)}</p>
         <div class="full-overview-grid">
@@ -232,7 +233,7 @@
       <section class="full-section" id="all-weather">
         <div class="full-section-heading">
           <div><p class="eyebrow">CONDITION</p><h2>Weather and timing</h2></div>
-          ${sectionButton('today', 'Open weather in Today')}
+          <div class="full-section-actions">${sectionButton('today', 'Open weather in Today')}${aiButton('Weather and timing', 'weather')}</div>
         </div>
         <article class="weather-card full-weather-card">
           <div class="weather-heading">
@@ -254,19 +255,19 @@
       </section>
 
       <section class="full-section" id="all-signals">
-        <div class="full-section-heading"><div><p class="eyebrow">AT A GLANCE</p><h2>Useful numbers</h2></div></div>
+        <div class="full-section-heading"><div><p class="eyebrow">AT A GLANCE</p><h2>Useful numbers</h2></div>${aiButton('Useful numbers', 'numbers')}</div>
         <div class="full-stat-grid">${scenario.stats.map(item => `<article><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong><small>${escapeHtml(item.note)}</small></article>`).join('')}</div>
       </section>
 
       <section class="full-section" id="all-flow">
-        <div class="full-section-heading"><div><p class="eyebrow">ORDER</p><h2>The day in order</h2></div></div>
+        <div class="full-section-heading"><div><p class="eyebrow">ORDER</p><h2>The day in order</h2></div>${aiButton('The day in order', 'flow')}</div>
         <ol class="full-flow">${scenario.flow.map(item => `<li><time>${escapeHtml(item.time)}</time><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.meta)}</span></li>`).join('')}</ol>
       </section>
 
       <section class="full-section" id="all-workspace">
         <div class="full-section-heading">
           <div><p class="eyebrow">WORKSPACE CATEGORIES</p><h2>Every category in this ${escapeHtml(scenario.label.toLowerCase())} briefing</h2></div>
-          ${sectionButton('workspace', 'Use focused Workspace')}
+          <div class="full-section-actions">${sectionButton('workspace', 'Use focused Workspace')}${aiButton('Workspace categories', 'workspace')}</div>
         </div>
         <div class="full-workspace-stack">${scenario.tabs.map(tab => {
           const detail = scenario.details[tab.id];
@@ -281,7 +282,7 @@
       <section class="full-section" id="all-spaces">
         <div class="full-section-heading">
           <div><p class="eyebrow">PEOPLE AND PERMISSIONS</p><h2>${escapeHtml(scenario.space.title)}</h2></div>
-          ${sectionButton('spaces', 'Open Spaces view')}
+          <div class="full-section-actions">${sectionButton('spaces', 'Open Spaces view')}${aiButton('People and permissions', 'permissions')}</div>
         </div>
         <div class="full-space-grid">
           <article><span>PRIVATE CONTEXT</span><ul>${scenario.space.private.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></article>
@@ -292,7 +293,7 @@
       <section class="full-section adaptive-section" id="all-adaptive">
         <div class="full-section-heading">
           <div><p class="eyebrow">ADAPTIVE BRIEF</p><h2>Choose the clearest view for the information available</h2></div>
-          ${sectionButton('how', 'See how Spaces works')}
+          <div class="full-section-actions">${sectionButton('how', 'See how Spaces works')}${aiButton('Adaptive Brief', 'how')}</div>
         </div>
         <p class="full-lead">Spaces checks the approved information and presents it with the view that best supports the next decision. Navigation, privacy controls, and the main locations stay familiar as the useful cards, calendars, boards, charts, and explanations change with the day.</p>
         <ol class="adaptive-process">${adaptiveSteps.map(([title, detail], index) => `<li><span>${String(index + 1).padStart(2, '0')}</span><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></div></li>`).join('')}</ol>
@@ -301,14 +302,14 @@
       </section>
 
       <section class="full-section alarm-section" id="all-alarm">
-        <div class="full-section-heading"><div><p class="eyebrow">FUTURE APP IDEA</p><h2>Start the morning with music and a short overview</h2></div><button class="text-button" type="button" data-open-media-from-full>Open today’s soundtrack <span aria-hidden="true">→</span></button></div>
+        <div class="full-section-heading"><div><p class="eyebrow">FUTURE APP IDEA</p><h2>Start the morning with music and a short overview</h2></div><div class="full-section-actions"><button class="text-button" type="button" data-open-media-from-full>Open today’s soundtrack <span aria-hidden="true">→</span></button>${aiButton('Morning routine concept', 'how')}</div></div>
         <p class="full-lead">A future Spaces app could play approved music from Spotify, read a short overview, and then open the interactive Brief.</p>
         <div class="alarm-flow">${alarmSteps.map(([title, detail], index) => `<article><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(detail)}</p></article>`).join('')}</div>
         <p class="future-boundary">This concept would require device permissions, provider support, clear controls, and secure sign-in for real playback, voice, alarms, and account access.</p>
       </section>
 
       <section class="full-section full-privacy" id="all-privacy">
-        <div><p class="eyebrow">PRIVATE FIRST</p><h2>More information requires more control</h2></div>
+        <div><p class="eyebrow">PRIVATE FIRST</p><h2>More information requires more control</h2>${aiButton('Privacy and control', 'permissions')}</div>
         <p>Connections have a clear purpose, memories remain reviewable, shared Spaces receive only approved records, and important actions require confirmation before they are added to the history.</p>
       </section>
 

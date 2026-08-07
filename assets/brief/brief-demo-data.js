@@ -67,6 +67,11 @@ window.BRIEF_DEMO_DATA = {
         { time: '5:30', title: 'Movement window', meta: 'Weather supported' },
         { time: '8:00', title: 'Daily close', meta: 'Prepare tomorrow' }
       ],
+      highlights: [
+        { tab: 'habits', label: 'Private habits', detail: 'Weekly rhythm, streak records, and approved sharing' },
+        { tab: 'money', label: 'Money review', detail: 'Bills, open categories, and approval boundaries' },
+        { tab: 'day', label: 'Day plan', detail: 'Timing, conditions, and useful open windows' }
+      ],
       tabs: [
         { id: 'day', label: 'Day' },
         { id: 'work', label: 'Work' },
@@ -178,6 +183,11 @@ window.BRIEF_DEMO_DATA = {
         { time: '8:30', title: 'Booking decision', meta: 'Needs both' },
         { time: 'Later', title: 'Shared media', meta: 'Optional ritual' }
       ],
+      highlights: [
+        { tab: 'plans', label: 'Shared plans', detail: 'Owners, timing, and decisions that need both people' },
+        { tab: 'profiles', label: 'Private profiles', detail: 'Separate personal context with one approved shared layer' },
+        { tab: 'reflection', label: 'Practical reflection', detail: 'Repair, appreciation, and one useful change' }
+      ],
       tabs: [{ id: 'together', label: 'Together' }, { id: 'profiles', label: 'Profiles' }, { id: 'plans', label: 'Plans' }, { id: 'reflection', label: 'Reflection' }, { id: 'connections', label: 'Connections' }],
       details: {
         together: { title: 'One shared priority and one small repair', summary: 'Approved information stays separate from private processing.', cards: [{ label: 'Approved plan', title: 'Review travel at 8:15 PM', detail: 'Both people can see and change this item.' }, { label: 'Shared promise', title: 'Pause difficult decisions after 10 PM', detail: 'A clear rule for difficult evenings.' }, { label: 'Needs both', title: 'Move $300 into the trip fund', detail: 'The transfer waits for both approvals.' }] },
@@ -249,6 +259,11 @@ window.BRIEF_DEMO_DATA = {
         { time: '3:10', title: 'School pickup', meta: 'Elena' },
         { time: '3:35', title: 'Leave for appointment', meta: 'Marcus and Zoe' },
         { time: '5:45', title: 'Dinner and household reset', meta: 'Shared routine' }
+      ],
+      highlights: [
+        { tab: 'calendar', label: 'Shared calendar', detail: 'Appointments, rides, and private availability blocks' },
+        { tab: 'chores', label: 'Chore board', detail: 'Clear owners, due times, and completed work' },
+        { tab: 'shopping', label: 'Shopping list', detail: 'Claimed items and a shared household checkoff' }
       ],
       tabs: [
         { id: 'home', label: 'Home' },
@@ -394,6 +409,11 @@ window.BRIEF_DEMO_DATA = {
         { time: '5:00 ET', title: 'Delivery and staffing', meta: 'Eli owns capacity' },
         { time: '5:35 ET', title: 'Tuesday calendar draft', meta: 'Needs both partners' }
       ],
+      highlights: [
+        { tab: 'calendar', label: 'Tuesday beach plan', detail: 'Two time zones, UV guidance, and prepared meeting changes' },
+        { tab: 'projects', label: 'Team projects', detail: 'Owners, progress, blockers, and next evidence' },
+        { tab: 'deals', label: 'Deal pipeline', detail: 'Forecast stages, values, and collection boundaries' }
+      ],
       tabs: [
         { id: 'executive', label: 'Partner view' },
         { id: 'projects', label: 'Projects' },
@@ -529,6 +549,11 @@ window.BRIEF_DEMO_DATA = {
         { time: '4:00', title: 'Review investing and startup spend', meta: 'Rules first' },
         { time: '4:15', title: 'Record decisions and owners', meta: 'Shared review history' }
       ],
+      highlights: [
+        { tab: 'cash', label: 'Cash plan', detail: 'A spreadsheet view of planned, actual, and remaining money' },
+        { tab: 'portfolio', label: 'Asset dashboard', detail: 'Allocation, illustrative market movement, and review notes' },
+        { tab: 'deadlines', label: 'Tax and bills', detail: 'Amounts, dates, owners, and approval states' }
+      ],
       tabs: [
         { id: 'overview', label: 'Advisor view' },
         { id: 'cash', label: 'Cash plan' },
@@ -661,6 +686,11 @@ window.BRIEF_DEMO_DATA = {
       weather: { location: 'Training window', temperature: 79, condition: 'Warm and dry', high: 81, low: 68, advice: 'Indoor training should be comfortable, but hydrate before the session.', hourly: [{ time: 'Now', temp: 79, rain: 5 }, { time: '6 PM', temp: 78, rain: 6 }, { time: '8 PM', temp: 73, rain: 8 }, { time: 'Late', temp: 69, rain: 9 }] },
       stats: [{ label: 'Week complete', value: '3/4', note: 'One planned today' }, { label: 'Sleep', value: '6.5h', note: 'Reduce if needed' }, { label: 'Pain flags', value: '0', note: 'Check again' }, { label: 'Protein', value: '72%', note: 'Target progress' }],
       flow: [{ time: '5:45', title: 'Readiness check', meta: 'Student' }, { time: '6:00', title: 'Training session', meta: 'Adaptive plan' }, { time: '7:10', title: 'Log evidence', meta: 'Sets and notes' }, { time: 'Tomorrow', title: 'Coach review', meta: 'Adjust next step' }],
+      highlights: [
+        { tab: 'today', label: 'Readiness plan', detail: 'One workout, one check-in, and a realistic choice' },
+        { tab: 'habits', label: 'Habit rhythm', detail: 'Patterns that can start a useful coaching conversation' },
+        { tab: 'recovery', label: 'Recovery view', detail: 'Sleep, pain, and signals that can change the plan' }
+      ],
       tabs: [{ id: 'today', label: 'Today' }, { id: 'habits', label: 'Habits' }, { id: 'progress', label: 'Progress' }, { id: 'recovery', label: 'Recovery' }, { id: 'connections', label: 'Connections' }],
       details: {
         today: { title: 'One workout, one check-in, one adaptive decision', summary: 'The plan can change while the goal stays in view.', cards: [{ label: 'Warm-up', title: 'Check coordination and pain', detail: 'Choose normal or reduced volume after the check.' }, { label: 'Main work', title: 'Upper-body session', detail: 'Keep the progression simple.' }, { label: 'Close', title: 'Log what happened', detail: 'Evidence improves the next recommendation.' }] },
@@ -687,6 +717,11 @@ window.BRIEF_DEMO_DATA = {
       weather: { location: 'Project conditions', temperature: 74, condition: 'Release window open', high: 76, low: 63, advice: 'The meaningful condition is blocker status and owner clarity.', hourly: [{ time: 'Now', temp: 74, rain: 11 }, { time: 'Review', temp: 75, rain: 12 }, { time: 'Release', temp: 72, rain: 10 }, { time: 'Close', temp: 68, rain: 9 }] },
       stats: [{ label: 'Project health', value: '82%', note: 'Fictional' }, { label: 'Open blockers', value: '2', note: 'One unowned' }, { label: 'Handoffs', value: '4', note: 'Three accepted' }, { label: 'Release', value: 'Today', note: 'Approval pending' }],
       flow: [{ time: '1:30', title: 'Member work', meta: 'Role view' }, { time: '3:00', title: 'Readiness review', meta: 'Project Space' }, { time: '4:00', title: 'Release decision', meta: 'Lead approval' }, { time: '5:00', title: 'Record outcome', meta: 'Shared history' }],
+      highlights: [
+        { tab: 'project', label: 'Project dashboard', detail: 'Progress, blockers, workload, and next evidence' },
+        { tab: 'handoffs', label: 'Handoffs', detail: 'Sender, receiver, timing, and proof of completion' },
+        { tab: 'procedures', label: 'Launch procedures', detail: 'Readiness steps with role-based visibility' }
+      ],
       tabs: [{ id: 'mywork', label: 'My work' }, { id: 'project', label: 'Project' }, { id: 'handoffs', label: 'Handoffs' }, { id: 'procedures', label: 'Procedures' }, { id: 'connections', label: 'Connections' }],
       details: {
         mywork: { title: 'Your role-specific work', summary: 'A member sees what they own, what blocks it, and the approved context they need.', cards: [{ label: 'Next', title: 'Finish responsive review', detail: 'Sam owns this task, which is due before the readiness review.' }, { label: 'Dependency', title: 'Content approval', detail: 'Waiting on Jordan.' }, { label: 'Context', title: 'Release goal', detail: 'Protect the mobile experience.' }] },

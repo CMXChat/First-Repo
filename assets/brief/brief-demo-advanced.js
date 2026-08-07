@@ -157,10 +157,12 @@
   function renderSpreadsheet(detail) {
     return `
       <div class="financial-sheet-shell">
-        <div class="financial-sheet-toolbar"><span>AUGUST PLAN</span><div><i></i><small>Shared review sheet</small></div></div>
+        <div class="financial-sheet-toolbar"><span>AUGUST PLAN</span><div><i></i><small>Shared review sheet</small><b>Swipe columns <span aria-hidden="true">→</span></b></div></div>
+        <p class="financial-sheet-caption">${escapeHtml(detail.caption)}</p>
         <div class="financial-sheet-scroll" role="region" aria-label="Scrollable fictional monthly cash plan" tabindex="0">
           <table class="financial-sheet">
             <caption>${escapeHtml(detail.caption)}</caption>
+            <colgroup><col class="sheet-category-column"><col class="sheet-money-column"><col class="sheet-money-column"><col class="sheet-money-column"><col class="sheet-status-column"></colgroup>
             <thead><tr>${detail.columns.map(column => `<th scope="col">${escapeHtml(column)}</th>`).join('')}</tr></thead>
             <tbody>
               ${detail.rows.map(row => `

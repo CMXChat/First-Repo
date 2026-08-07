@@ -183,6 +183,19 @@
     `).join('');
   }
 
+  function renderHighlights(items = []) {
+    const host = $('#spaceHighlights');
+    if (!host) return;
+    host.innerHTML = items.map((item, index) => `
+      <button class="space-highlight" type="button" data-highlight-tab="${escapeHtml(item.tab)}">
+        <span>${String(index + 1).padStart(2, '0')}</span>
+        <strong>${escapeHtml(item.label)}</strong>
+        <small>${escapeHtml(item.detail)}</small>
+        <b>Open module <i aria-hidden="true">→</i></b>
+      </button>
+    `).join('');
+  }
+
   function renderPriority(item) {
     const host = $('#priorityNotice');
     const button = $('#priorityReview');
@@ -216,6 +229,7 @@
     renderWeather(item.weather);
     renderStats(item.stats);
     renderFlow(item.flow);
+    renderHighlights(item.highlights);
   }
 
   function allowedTabs() {
@@ -362,10 +376,13 @@
     }
     host.setAttribute('aria-labelledby', `brief-next-tab-${state.tab}`);
     host.innerHTML = `
-      <header>
-        <p class="eyebrow">${escapeHtml(currentScenario().label)} WORKSPACE</p>
-        <h2>${escapeHtml(detail.title)}</h2>
-        <p>${escapeHtml(detail.summary)}</p>
+      <header class="workspace-panel-heading">
+        <div>
+          <p class="eyebrow">${escapeHtml(currentScenario().label)} WORKSPACE</p>
+          <h2>${escapeHtml(detail.title)}</h2>
+          <p>${escapeHtml(detail.summary)}</p>
+        </div>
+        <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="workspace" data-ai-title="${escapeHtml(detail.title)}"><span aria-hidden="true">✦</span> Ask AI</button>
       </header>
       ${renderDetailBody(detail)}
     `;
@@ -381,6 +398,7 @@
     renderWorkspacePanel();
     revealWorkspaceTab($(`[data-workspace-tab="${CSS.escape(state.tab)}"]`));
     updateUrl(options.push === true);
+    document.dispatchEvent(new CustomEvent('briefdemo:tabchange', { detail: { scenarioId: state.scenarioId, view: state.view, tab: state.tab } }));
     if (options.focus) $('#workspacePanel')?.focus({ preventScroll: true });
   }
 
@@ -514,6 +532,7 @@
       renderWorkspacePanel();
     }
     updateUrl(options.push === true);
+    document.dispatchEvent(new CustomEvent('briefdemo:viewchange', { detail: { scenarioId: state.scenarioId, view: next, tab: state.tab } }));
 
     if (options.focus !== false) {
       $('#demoMain')?.focus({ preventScroll: true });
@@ -546,8 +565,6 @@
     const selected = state.entrySelection;
     if (!validScenarios.has(selected)) return;
 
-    window.BRIEF_DEMO_MEDIA?.requestEntryPlayback(selected, $('#entrySoundtrack')?.checked === true);
-
     state.entered = true;
     document.body.dataset.entered = 'true';
     $('#demoApp')?.setAttribute('aria-hidden', 'false');
@@ -562,7 +579,6 @@
     state.tab = '';
     document.body.dataset.entered = 'false';
     $('#demoApp')?.setAttribute('aria-hidden', 'true');
-    $('#entrySoundtrack').checked = true;
     window.BRIEF_DEMO_MEDIA?.reset();
     closeBriefUpdate();
     selectView('today', { push: false, focus: false });
@@ -608,6 +624,13 @@
       const goButton = event.target.closest('[data-go-view]');
       if (goButton) {
         selectView(goButton.dataset.goView, { push: true });
+        return;
+      }
+
+      const highlightButton = event.target.closest('[data-highlight-tab]');
+      if (highlightButton) {
+        selectView('workspace', { push: true, focus: false });
+        setWorkspaceTab(highlightButton.dataset.highlightTab, { push: false, focus: true });
         return;
       }
 

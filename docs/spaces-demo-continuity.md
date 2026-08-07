@@ -2,7 +2,7 @@
 
 Last reconciled: **August 7, 2026**
 Repository: `CMXChat/First-Repo`
-Starting code baseline: `54d6d3e83346f5324b36ec5f02a5742c2dc91511`
+Starting code baseline: `706a1bac94a507d4619cc16d2858ac09b2a75820`
 
 ## Start here
 
@@ -105,11 +105,23 @@ A production implementation should also record:
 
 Questions should appear only when the answer can change a recommendation, status, deadline, permission, or prepared decision. Typing remains optional for routine updates.
 
+## Section conversations and module discovery
+
+Every major Brief section can open the same conversation sheet with its current Space and section already named. Contextual prompt choices help a person ask about evidence, timing, permissions, risks, or the next useful step without typing a long setup.
+
+The public demo prepares and displays this handoff. A signed-in product would attach authorized records, source labels, permission scope, and approved tools before calling a model. External actions would still require the approval rules for that Space.
+
+Every scenario also defines three standout modules. They appear after the opening Brief as direct links into the relevant workspace tab, so the Family calendar, Accounting cash sheet, Business projects, and other signature views remain easy to find.
+
+The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left, has previous and next controls, pauses during interaction, and respects reduced-motion settings. Its examples show what context can enable without claiming that alarms, connected actions, or private records already work in the public demo.
+
+On desktop, the entry layer owns a visible vertical scrollbar and can reach the full card at short viewport heights. On mobile, the page remains vertically scrollable while wide financial tables scroll only inside their own sheet.
+
 ## Music and appearance
 
 Every scenario has one primary Spotify track and two alternate choices. The music drawer can open the alternate list, switch the selected track, and keep provider fallback behavior honest.
 
-Browser and Spotify policy can require a direct tap. The provider must never block entry into Spaces.
+Entry stays silent. Music starts only after the person opens the top-right drawer and chooses play. Browser and Spotify policy can require a direct tap, and the provider must never block entry into Spaces.
 
 The top-right soundtrack and appearance buttons share the same button surface. The appearance icon carries a restrained white-blue glow so it remains easy to notice without adding a glowing border around the control.
 
@@ -117,13 +129,15 @@ The top-right soundtrack and appearance buttons share the same button surface. T
 
 | File | Responsibility |
 |---|---|
-| `spaces/index.html` | Active shell, priority notice, correction dialog, soundtrack choices, asset order, and cache versions |
+| `spaces/index.html` | Active shell, entry ideas, priority notice, correction and conversation dialogs, soundtrack choices, asset order, and cache versions |
 | `assets/brief/brief-demo-data.js` | Seven scenario definitions and all fictional records |
 | `assets/brief/brief-demo-app.js` | Entry, navigation, workspace rendering, priority notice, and short correction flow |
 | `assets/brief/brief-demo-advanced.js` | Business, Accounting, and Team advanced renderers plus local prepared-action behavior |
-| `assets/brief/brief-demo-advanced.css` | Isolated styles for advanced modules, seven-card entry, alerts, corrections, and music choices |
+| `assets/brief/brief-demo-advanced.css` | Isolated styles for advanced modules, mobile financial-sheet geometry, seven-card entry, alerts, corrections, and music choices |
 | `assets/brief/brief-demo-experience.js` | Everything view, weather, habits, family boards, and shared-calendar renderers |
 | `assets/brief/brief-demo-media.js` | Spotify readiness, playback fallback, and per-scenario track choices |
+| `assets/brief/brief-demo-conversation.js` | Entry carousel timing and the static section-aware conversation handoff |
+| `assets/brief/brief-demo-conversation.css` | Entry scrolling, carousel, discovery links, contextual AI sheet, and layered card surfaces |
 | `assets/brief/brief-demo-explainers.js` | Product explanation tabs and scenario jump controls |
 | `assets/brief/brief-demo-topbar-polish.css` | Topbar controls, theme icon treatment, and compact polish |
 | `doc/index.html` | Readable product overview without JavaScript |
@@ -161,10 +175,13 @@ Before publishing a Spaces change:
 6. Run Spotify lifecycle tests.
 7. Check light and dark themes.
 8. Check narrow mobile layouts for document-level horizontal movement.
-9. Check the spreadsheet’s own horizontal scroll without moving the page.
-10. Scan rendered copy for banned writing patterns.
-11. Verify `/brief/` preserves query and hash state when it redirects.
-12. Verify the deployed `/spaces/` and `/doc/` assets after merge.
+9. Check that the Accounting sheet keeps Category, Planned, and the horizontal cue readable at 360 pixels wide.
+10. Check the spreadsheet’s own horizontal scroll without moving the page.
+11. Open contextual AI from a focused card and an advanced workspace section.
+12. Confirm entry remains silent until the soundtrack control receives a direct tap.
+13. Scan rendered copy for banned writing patterns.
+14. Verify `/brief/` preserves query and hash state when it redirects.
+15. Verify the deployed `/spaces/` and `/doc/` assets after merge.
 
 ## Publishing and recovery
 

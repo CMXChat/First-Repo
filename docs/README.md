@@ -2,7 +2,7 @@
 
 Last reconciled: **August 7, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `54d6d3e83346f5324b36ec5f02a5742c2dc91511`
+Verified code baseline: `706a1bac94a507d4619cc16d2858ac09b2a75820`
 
 ## Read this first
 
@@ -61,10 +61,13 @@ Use this order when starting Spaces work:
 - The live topbar contains the soundtrack and theme controls.
 - The active demo contains seven contexts, including Business partners and Accountant and client.
 - Each context can show one compact priority notice and one short correction question.
+- Each context links to three signature modules and can open a conversation from the current section.
+- The entry card rotates through practical product ideas and remains vertically scrollable on short desktop viewports.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
 - Scenario buttons use native button semantics with `aria-pressed`.
 - Secondary text remains WCAG AA compliant.
+- Entry remains silent; soundtrack playback begins from a direct action in the top-right music drawer.
 - Spotify preparation never blocks Spaces.
 - Provider limits and direct-tap fallback copy remain honest.
 - Shared calendars expose only approved Space-level coordination data, not unrelated private event details.

@@ -14,7 +14,9 @@ const experienceCss = read('assets/brief/brief-demo-experience.css');
 const docLinksCss = read('assets/brief/brief-demo-doc-links.css');
 const topbarPolishCss = read('assets/brief/brief-demo-topbar-polish.css');
 const advancedCss = read('assets/brief/brief-demo-advanced.css');
+const conversationCss = read('assets/brief/brief-demo-conversation.css');
 const advancedJs = read('assets/brief/brief-demo-advanced.js');
+const conversationJs = read('assets/brief/brief-demo-conversation.js');
 const appJs = read('assets/brief/brief-demo-app.js');
 const mediaJs = read('assets/brief/brief-demo-media.js');
 const spacesRuntimeJs = read('assets/brief/brief-spaces-runtime.js');
@@ -28,7 +30,9 @@ assert.match(html, /<meta name="theme-color" content="#edf3f8"/);
 assert.match(html, /noindex, nofollow/);
 assert.match(html, /canonical" href="https:\/\/db\.cmxchat\.com\/spaces\/"/);
 assert.match(html, /id="entryScenarioGrid" role="group" aria-label="Demo Spaces"/);
-assert.match(html, /id="entrySoundtrack" type="checkbox" checked/);
+assert.doesNotMatch(html, /id="entrySoundtrack"|type="checkbox"/);
+assert.match(html, /id="entryTipCarousel"/);
+assert.match(html, /Build an alarm from tomorrow’s context/);
 assert.match(html, /id="openDemo"[^>]*disabled/);
 assert.match(html, /id="themeButton"[^>]*aria-label="Switch to dark theme"[^>]*aria-pressed="false"/);
 assert.match(html, /id="mobileNav"/);
@@ -41,15 +45,17 @@ assert.match(html, /<strong>Voice:<\/strong>/);
 assert.doesNotMatch(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /class="secondary-button doc-entry-link" href="\/doc\/"/);
 assert.match(html, /class="primary-button doc-cta-button" href="\/doc\/"/);
-assert.match(html, /brief-demo-app\.js\?v=20260807-3/);
-assert.match(html, /brief-demo-media\.js\?v=20260807-3/);
+assert.match(html, /brief-demo-app\.js\?v=20260807-4/);
+assert.match(html, /brief-demo-media\.js\?v=20260807-4/);
 assert.match(html, /brief-demo-doc-links\.css\?v=20260807-3/);
 assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-3/);
-assert.match(html, /brief-demo-advanced\.css\?v=20260807-1/);
-assert.match(html, /brief-demo-advanced\.js\?v=20260807-1/);
+assert.match(html, /brief-demo-advanced\.css\?v=20260807-2/);
+assert.match(html, /brief-demo-advanced\.js\?v=20260807-2/);
+assert.match(html, /brief-demo-conversation\.css\?v=20260807-1/);
+assert.match(html, /brief-demo-conversation\.js\?v=20260807-1/);
 assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
 assert.match(html, /Choose the Space you want to open/);
-assert.match(html, /Play the soundtrack when the demo opens/);
+assert.match(html, /Choose music after Spaces opens/);
 assert.doesNotMatch(html, /Loading Spotify player\.\.\.|Preparing Spotify[^<]*\.\.\./);
 assert.doesNotMatch(html, /id="profileSelect"|id="musicOnEntry"|id="readOnEntry"|id="enterBrief"/);
 
@@ -64,7 +70,7 @@ assert.match(redirectJs, /window\.location\.replace\(target\.href\)/);
 assert.doesNotMatch(rollbackHtml, /http-equiv="refresh"/i);
 assert.match(rollbackHtml, /<title>Spaces Brief Demo<\/title>/);
 
-for (const source of [redirectJs, appJs, mediaJs, advancedJs, spacesRuntimeJs, docJs]) {
+for (const source of [redirectJs, appJs, mediaJs, advancedJs, conversationJs, spacesRuntimeJs, docJs]) {
   assert.doesNotThrow(() => new Function(source));
 }
 
@@ -85,13 +91,9 @@ assert.match(spacesRuntimeJs, /MutationObserver/);
 
 assert.match(mediaJs, /const API_TIMEOUT_MS = 4000/);
 assert.match(mediaJs, /const TRACK_SETTLE_DELAY_MS = 350/);
-assert.match(mediaJs, /pendingEntryPlayback/);
-assert.match(mediaJs, /function syncEntryButton\(/);
+assert.doesNotMatch(mediaJs, /pendingEntryPlayback|entrySoundtrack|requestEntryPlayback/);
 assert.match(mediaJs, /function setDrawerInert\(/);
 assert.match(mediaJs, /state\.controller\.play\(\)/);
-assert.match(mediaJs, /function playPendingEntryRequest\(/);
-assert.match(mediaJs, /function enableSoundtrackForScenarioChoice\(/);
-assert.match(mediaJs, /document\.addEventListener\('pointerdown'/);
 assert.match(mediaJs, /Spotify needs one direct tap on this device/);
 assert.match(mediaJs, /Spotify is ready in direct tap mode/);
 assert.match(mediaJs, /Prepare Spotify while the entry screen is visible/);
@@ -120,6 +122,12 @@ assert.match(topbarPolishCss, /color-scheme: dark/);
 assert.match(topbarPolishCss, /safe-area-inset-top/);
 assert.match(advancedCss, /@media \(max-width: 620px\)/);
 assert.match(advancedCss, /\.financial-sheet-scroll\s*\{[\s\S]*overflow-x: auto/);
+assert.match(advancedCss, /\.sheet-category-column/);
+assert.match(conversationCss, /\.entry-tip-track/);
+assert.match(conversationCss, /\.spaces-ai-dialog/);
+assert.match(conversationCss, /\.space-discovery-track/);
+assert.match(conversationJs, /function openConversation\(/);
+assert.match(conversationJs, /Conversation context prepared/);
 
 assert.match(docJs, /personal-os-doc-mobile-fixes\.css/);
 assert.match(docJs, /spacesMobileFixes/);
