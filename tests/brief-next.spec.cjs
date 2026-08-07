@@ -170,7 +170,7 @@ test('memory and People and Spaces examples use plain copy and proper tab behavi
   await page.locator('#primaryNav [data-primary-view="how"]').click();
   await expect(page.locator('#intelligenceExplainers')).toBeVisible();
   await expect(page.locator('[data-memory-example]')).toHaveCount(4);
-  await expect(page.locator('[data-space-example]')).toHaveCount(3);
+  await expect(page.locator('[data-space-example]')).toHaveCount(4);
 
   const continuity = page.locator('[data-memory-example="continuity"]');
   const correction = page.locator('[data-memory-example="correction"]');

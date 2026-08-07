@@ -1,19 +1,19 @@
 # CMX Spaces and Daily Brief Master Context
 
-Last reconciled: **August 5, 2026**  
-Repository: `CMXChat/First-Repo`  
-Verified product baseline: `5c7eef899f3357854492e2d3918f5915eb536b6b`  
+Last reconciled: **August 7, 2026**
+Repository: `CMXChat/First-Repo`
+Verified product baseline: `54d6d3e83346f5324b36ec5f02a5742c2dc91511`
 Primary deployment: `https://db.cmxchat.com/`
 
 ## Purpose
 
-This file is the current product and technical context for the Personal OS demo, its product overview, and the future platform direction. It replaces the August 4 assumptions that described the older modular Brief runtime as the active production implementation.
+This file holds the broad product and technical context for the Spaces demo, its product overview, and the future platform direction. Read `docs/spaces-demo-continuity.md` first for the current seven-scenario implementation contract.
 
 For the detailed comparison, read `docs/2026-08-05-repository-reconciliation.md`.
 
 ## Product definition
 
-Personal OS is a proposed private operating layer built around:
+Spaces is a proposed private operating layer built around:
 
 - Spaces for separate life and work contexts
 - structured, inspectable memory
@@ -35,15 +35,18 @@ The primary public noindex product demo.
 
 It includes:
 
-- Personal, Relationship, Family, Business, Trainer, and Team contexts
+- Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team contexts
 - focused Today, Workspace, Spaces, How, and Everything views
 - private habit tracking plus household calendar, chore, shopping, and access examples
+- remote-partner operations across New York and Sydney
+- an accountant-client ledger, portfolio view, deadlines, goals, and rules
+- compact priority notices and short user corrections
 - an optional Everything view
 - fictional private-looking data with explicit labels
 - scenario-specific people, priorities, permissions, numbers, Spaces, and actions
 - responsive desktop and mobile navigation
 - light-first HTML and theme behavior with manual dark mode
-- context-aware Spotify soundtrack integration
+- context-aware Spotify soundtrack integration with three choices per context
 - keyboard-aware workspace tabs and reset focus
 - direct links to the full product overview
 - plain-language visible copy
@@ -86,6 +89,7 @@ Primary files:
 - `brief/index.html` for the compatibility redirect
 - `brief-next/index.html` for the rollback snapshot
 - `assets/brief/brief-demo-data.js`
+- `assets/brief/brief-demo-advanced.js`
 - `assets/brief/brief-demo-app.js`
 - `assets/brief/brief-demo-experience.js`
 - `assets/brief/brief-demo-explainers.js`
@@ -126,6 +130,7 @@ The demo uses Spotify's iframe controller.
 The interface:
 
 - preloads the selected scenario soundtrack
+- offers two alternate tracks for each scenario
 - waits for readiness when entry music is enabled
 - uses the Open demo click to request playback
 - confirms playback state when the provider reports it
@@ -213,6 +218,7 @@ A final release claim should still be based on a fresh complete run and a deploy
 - keyboard-aware tabs and focus repair
 - plain-language product and interface copy
 - product overview and trust narrative
+- seven purpose-built contexts with advanced Business, Accounting, Family, Personal, and Team views
 
 ### Planned
 
@@ -228,14 +234,14 @@ A final release claim should still be based on a fresh complete run and a deploy
 
 ## Near-term priorities
 
-1. add production-domain smoke checks
-2. enforce `/brief/` and `/brief-next/` parity
-3. define asset cache-version rules and verify deployed content
-4. mock Spotify controller readiness and fallback states
+1. keep production-domain smoke checks current
+2. preserve the `/brief/` compatibility redirect and `/brief-next/` rollback snapshot
+3. enforce asset cache-version rules and verify deployed content
+4. keep Spotify controller readiness, choices, and fallback states covered
 5. inventory legacy Brief assets before cleanup
-6. define one release checklist and required-check set
-7. complete a broader accessibility audit
-8. add documentation freshness checks
+6. maintain one release checklist and required-check set
+7. keep accessibility coverage broad across themes and contexts
+8. keep operational documentation current
 9. preserve clear demo and future-platform labels
 
 ## Documentation authority
@@ -244,7 +250,8 @@ Use this order:
 
 1. current source and route registry
 2. current tests and workflow results
-3. `docs/2026-08-05-repository-reconciliation.md`
-4. this file
-5. supporting standards
-6. dated historical concepts
+3. `docs/spaces-demo-continuity.md`
+4. `docs/2026-08-05-repository-reconciliation.md`
+5. this file
+6. supporting standards
+7. dated historical concepts

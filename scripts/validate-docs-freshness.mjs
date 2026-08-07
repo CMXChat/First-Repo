@@ -7,6 +7,7 @@ const failures = [];
 
 const currentDocs = [
   'docs/README.md',
+  'docs/spaces-demo-continuity.md',
   'docs/2026-08-05-repository-reconciliation.md',
   'docs/brief-recovery-handoff.md',
   'docs/cmx-brief-master-context.md',

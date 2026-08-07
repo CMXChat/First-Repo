@@ -34,7 +34,8 @@
     scenarioId: data.meta.defaultScenario,
     view: 'today',
     tab: '',
-    theme: initialTheme
+    theme: initialTheme,
+    checkInChoice: ''
   };
 
   function escapeHtml(value) {
@@ -153,7 +154,7 @@
       <article class="hourly-item">
         <time>${escapeHtml(hour.time)}</time>
         <strong>${escapeHtml(hour.temp)}°</strong>
-        <small>${escapeHtml(hour.rain)}% rain</small>
+        <small>${escapeHtml(hour.label || `${hour.rain}% rain`)}</small>
       </article>
     `).join('');
   }
@@ -182,6 +183,24 @@
     `).join('');
   }
 
+  function renderPriority(item) {
+    const host = $('#priorityNotice');
+    const button = $('#priorityReview');
+    if (!host) return;
+    if (!item) {
+      host.hidden = true;
+      if (button) button.dataset.priorityTab = '';
+      return;
+    }
+
+    host.hidden = false;
+    host.dataset.priorityTone = item.tone || 'warning';
+    setText('#priorityLabel', item.label);
+    setText('#priorityTitle', item.title);
+    setText('#priorityDetail', item.detail);
+    if (button) button.dataset.priorityTab = item.targetTab || '';
+  }
+
   function renderToday() {
     const item = currentScenario();
     setText('#greeting', item.greeting);
@@ -193,6 +212,7 @@
     setText('#recommendationLabel', item.recommendation.label);
     setText('#recommendationTitle', item.recommendation.title);
     setText('#recommendationDetail', item.recommendation.detail);
+    renderPriority(item.priority);
     renderWeather(item.weather);
     renderStats(item.stats);
     renderFlow(item.flow);
@@ -294,6 +314,8 @@
   }
 
   function renderDetailBody(detail) {
+    const advancedMarkup = window.BRIEF_DEMO_ADVANCED?.renderDetail(detail);
+    if (advancedMarkup) return advancedMarkup;
     if (detail.layout === 'habits') return renderHabitTracker(detail);
     if (detail.layout === 'calendar') return renderFamilyCalendar(detail);
     if (detail.layout === 'board') return renderHouseholdBoard(detail);
@@ -398,10 +420,69 @@
     if (select) select.value = item.id;
   }
 
+  function renderBriefUpdate() {
+    const item = currentScenario().checkIn;
+    const choices = $('#briefUpdateChoices');
+    state.checkInChoice = '';
+    setText('#briefUpdateQuestion', item?.question || 'What should this Brief know for the next update?');
+    setText('#briefUpdateStatus', '');
+    if (choices) {
+      choices.innerHTML = (item?.choices || ['Confirmed', 'Needs a change', 'Ask later']).map(choice => `
+        <button type="button" data-check-in-choice="${escapeHtml(choice)}" aria-pressed="false">${escapeHtml(choice)}</button>
+      `).join('');
+    }
+    const input = $('#briefCorrectionInput');
+    if (input) {
+      input.value = '';
+      input.placeholder = item?.placeholder || 'Add one short correction';
+    }
+  }
+
+  function openBriefUpdate() {
+    const dialog = $('#briefUpdateDialog');
+    if (!dialog) return;
+    renderBriefUpdate();
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    queueMicrotask(() => $('[data-check-in-choice]', dialog)?.focus({ preventScroll: true }));
+  }
+
+  function closeBriefUpdate() {
+    const dialog = $('#briefUpdateDialog');
+    if (!dialog?.open) return;
+    if (typeof dialog.close === 'function') dialog.close();
+    else dialog.removeAttribute('open');
+    $('#briefUpdateButton')?.focus({ preventScroll: true });
+  }
+
+  function chooseBriefUpdate(button) {
+    const host = $('#briefUpdateChoices');
+    if (!host) return;
+    state.checkInChoice = button.dataset.checkInChoice || '';
+    $$('[data-check-in-choice]', host).forEach(choice => {
+      choice.setAttribute('aria-pressed', String(choice === button));
+    });
+  }
+
+  function saveBriefUpdate() {
+    const correction = $('#briefCorrectionInput')?.value.trim() || '';
+    if (!state.checkInChoice && !correction) {
+      setText('#briefUpdateStatus', 'Choose one answer or add a short correction first.');
+      $('#briefUpdateChoices [data-check-in-choice]')?.focus({ preventScroll: true });
+      return;
+    }
+
+    const summary = [state.checkInChoice, correction].filter(Boolean).join(' · ');
+    setText('#briefUpdateStatus', `Saved inside this demo: ${summary}. A production Space would show the source and revision before using it in the next Brief.`);
+    $('#saveBriefUpdate')?.setAttribute('data-update-saved', 'true');
+  }
+
   function setScenario(id, options = {}) {
     if (!validScenarios.has(id)) return;
     state.scenarioId = id;
     state.tab = normalizeTab('');
+    state.checkInChoice = '';
+    closeBriefUpdate();
     document.body.dataset.scenario = id;
     renderContextLabels();
     renderToday();
@@ -483,6 +564,7 @@
     $('#demoApp')?.setAttribute('aria-hidden', 'true');
     $('#entrySoundtrack').checked = true;
     window.BRIEF_DEMO_MEDIA?.reset();
+    closeBriefUpdate();
     selectView('today', { push: false, focus: false });
     renderEntry();
     setEntrySelection('');
@@ -502,6 +584,19 @@
     $('#homeButton')?.addEventListener('click', () => selectView('today', { push: true }));
     $('#resetDemo')?.addEventListener('click', resetDemo);
     $('#workspaceTabs')?.addEventListener('keydown', moveWorkspaceTab);
+    $('#briefUpdateButton')?.addEventListener('click', openBriefUpdate);
+    $('#closeBriefUpdate')?.addEventListener('click', closeBriefUpdate);
+    $('#cancelBriefUpdate')?.addEventListener('click', closeBriefUpdate);
+    $('#saveBriefUpdate')?.addEventListener('click', saveBriefUpdate);
+    $('#briefUpdateChoices')?.addEventListener('click', event => {
+      const button = event.target.closest('[data-check-in-choice]');
+      if (button) chooseBriefUpdate(button);
+    });
+    $('#priorityReview')?.addEventListener('click', event => {
+      const targetTab = event.currentTarget.dataset.priorityTab;
+      selectView('workspace', { push: true });
+      if (targetTab) setWorkspaceTab(targetTab, { push: false, focus: true });
+    });
 
     document.addEventListener('click', event => {
       const viewButton = event.target.closest('[data-primary-view]');

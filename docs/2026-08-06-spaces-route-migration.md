@@ -39,7 +39,7 @@ Private event titles, notes, attendees, locations, and unrelated commitments rem
 
 ## Current Family and Personal demonstrations
 
-The active `/spaces/` demo now includes six contexts: Personal, Relationship, Family, Business, Trainer, and Team.
+The active `/spaces/` demo now includes seven contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team.
 
 The Family briefing demonstrates:
 
@@ -52,6 +52,24 @@ The Family briefing demonstrates:
 The Personal briefing includes a private habit view with weekly completion, current rhythm, and best recorded streak. A habit stays in the Personal Space until the user approves a specific result, plan, or time for another Space.
 
 All private-looking records in these demonstrations are fictional. The interface shows the intended behavior, while authenticated profiles, calendar enforcement, durable habit history, connector permissions, and multi-user writes remain production platform work.
+
+## Current Business and Accounting demonstrations
+
+The Business Partner briefing demonstrates:
+
+- New York and Sydney local time with one protected decision window;
+- separate partner colors plus a shared operations lane;
+- teams, project progress, deals, cash rules, and approved concerns;
+- a highlighted Tuesday beach day with weather, UV, preparation, and a reviewable meeting-change draft.
+
+The Accountant and Client briefing demonstrates:
+
+- a client with salary income and a separate side business;
+- an accountant note, monthly cash sheet, asset allocation, bills, tax preparation, goals, and editable rules;
+- a compact budget warning and a short client correction question;
+- professional boundaries around filing, tax, legal, investment, payment, and account actions.
+
+Prepared actions change local demo state only. A real external write requires authenticated accounts, clear permissions, a reviewable draft, and human approval.
 
 ## Alarm and launch routine
 
@@ -93,7 +111,7 @@ A release that changes the active Spaces experience should verify:
 - the route registry marks `/spaces/` Active and `/brief/` Legacy;
 - all active JS and CSS assets exist and have cache versions;
 - browser, mobile, Spotify lifecycle, and accessibility checks target `/spaces/` as the primary route;
-- all six briefing contexts remain reachable, contained, and clearly fictional where private-looking records appear;
+- all seven briefing contexts remain reachable, contained, and clearly fictional where private-looking records appear;
 - selected controls keep readable contrast in both themes;
 - horizontally scrollable tab rows do not shift the document viewport;
 - old `/brief/` bookmarks remain functional;

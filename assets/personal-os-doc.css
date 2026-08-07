@@ -998,7 +998,8 @@ html[data-theme="light"] .theme-option-light {
 }
 
 .space-business span,
-.space-project span {
+.space-project span,
+.space-accounting span {
   color: var(--green);
   border-color: color-mix(in srgb, var(--green) 34%, var(--line));
   background: color-mix(in srgb, var(--green) 9%, transparent);
@@ -2016,6 +2017,11 @@ html[data-theme="light"] .ritual-phone {
   font-size: 1.34rem;
 }
 
+.scenario-card-wide {
+  grid-column: 1 / -1;
+  min-height: 210px;
+}
+
 .faq-list {
   display: grid;
   gap: 10px;
@@ -2540,6 +2546,10 @@ html[data-theme="light"] .final-cta-note {
     grid-column: auto;
   }
 
+  .scenario-card-wide {
+    grid-column: auto;
+  }
+
   .team-flow span[aria-hidden="true"] {
     display: none;
   }
@@ -2729,5 +2739,4 @@ html[data-theme="light"] .final-cta-note {
     color: #0a1420;
   }
 }
-
 

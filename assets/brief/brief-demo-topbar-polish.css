@@ -4,42 +4,57 @@
 }
 
 #themeButton {
-  color: #ffffff;
-  border-color: color-mix(in srgb, #65d7ff 72%, #ffffff);
-  background:
-    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.34), transparent 38%),
-    linear-gradient(145deg, #138fd8, #005a9f 72%);
-  box-shadow:
-    0 0 0 1px rgba(83, 207, 255, 0.28),
-    0 0 18px rgba(45, 169, 223, 0.55),
-    0 10px 24px rgba(0, 80, 145, 0.3);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.78);
+  color: var(--ink-strong);
+  border-color: var(--line-strong);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  box-shadow: 0 6px 18px rgba(31, 67, 100, 0.06);
+  text-shadow: none;
+}
+
+#themeButton > span {
+  color: #0877bd;
+  font-size: 1.16rem;
+  line-height: 1;
+  text-shadow:
+    0 0 5px rgba(57, 190, 245, 0.7),
+    0 0 11px rgba(57, 190, 245, 0.3);
 }
 
 #themeButton:hover,
 #themeButton:focus-visible {
-  color: #ffffff;
-  border-color: #b6ecff;
-  background:
-    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.42), transparent 40%),
-    linear-gradient(145deg, #24a9ed, #0068b5 72%);
-  box-shadow:
-    0 0 0 2px rgba(101, 215, 255, 0.26),
-    0 0 24px rgba(45, 169, 223, 0.72),
-    0 12px 28px rgba(0, 80, 145, 0.34);
+  color: var(--blue-deep);
+  border-color: var(--blue);
+  background: var(--blue-soft);
+  box-shadow: 0 8px 22px rgba(31, 67, 100, 0.1);
+}
+
+#themeButton:hover > span,
+#themeButton:focus-visible > span {
+  color: #0068b5;
+  text-shadow:
+    0 0 6px rgba(57, 190, 245, 0.9),
+    0 0 14px rgba(57, 190, 245, 0.46);
 }
 
 html[data-theme="dark"] #themeButton {
-  color: #07101d;
-  border-color: #a7ecff;
-  background:
-    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.62), transparent 34%),
-    linear-gradient(145deg, #8ee7ff, #40bde9 68%, #188fca);
-  box-shadow:
-    0 0 0 1px rgba(142, 231, 255, 0.4),
-    0 0 24px rgba(89, 201, 244, 0.72),
-    0 12px 28px rgba(0, 0, 0, 0.34);
+  color: var(--ink-strong);
+  border-color: var(--line-strong);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
   text-shadow: none;
+}
+
+html[data-theme="dark"] #themeButton > span {
+  color: #eefcff;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.9),
+    0 0 13px rgba(89, 201, 244, 0.82);
+}
+
+html[data-theme="dark"] #themeButton:hover,
+html[data-theme="dark"] #themeButton:focus-visible {
+  border-color: var(--blue);
+  background: var(--blue-soft);
 }
 
 /* Shared AA contrast repairs for the entry chooser and Today weather components. */
@@ -62,6 +77,8 @@ html[data-theme="light"] .hourly-item time {
 
 /* Keep the native Space selector readable in both themes and on mobile. */
 .topbar-context select {
+  width: 260px;
+  max-width: min(260px, calc(100vw - 100px));
   color-scheme: light;
 }
 
