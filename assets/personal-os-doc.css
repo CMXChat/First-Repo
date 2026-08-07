@@ -1042,9 +1042,13 @@ html[data-theme="light"] .theme-option-light {
 }
 
 .boundary-person span,
-.boundary-center span,
-.boundary-center small {
+.boundary-center span {
   color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.boundary-center small {
+  color: var(--muted-strong);
   font-size: 0.68rem;
 }
 
@@ -2727,7 +2731,3 @@ html[data-theme="light"] .final-cta-note {
 }
 
 
-/* Boundary note contrast in the light document theme. */
-html[data-theme="light"] .boundary-center small {
-  color: #1f364d;
-}
