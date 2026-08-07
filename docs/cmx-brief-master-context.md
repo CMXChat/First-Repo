@@ -91,6 +91,8 @@ The `/doc/` comparison uses official product pages for ChatGPT Projects and apps
 
 The documented opportunity comes from the combined Spaces layer: cross-domain daily Briefs, separately governed private and shared contexts, editable memory, section-level AI entry, personalized ranking, and approval-gated actions. The gap statement applies only to the reviewed product set and must be refreshed during formal market diligence.
 
+The `/doc/` investment section now separates adjacent demand, the reviewed product gap, unproven patentability, and formal diligence that remains undone. It recommends recording invention and public disclosure dates, running prior art and claim analysis with qualified counsel, considering a detailed provisional only when the technical record supports it, and layering trade secret, trademark, and copyright practices around the product. The recommended first paid wedge is remote business partners and small teams, followed by household and professional client plans after trust controls and paid retention are proven.
+
 Cloudflare’s Agents SDK could supply durable identity, local SQL state, real-time connections, scheduling, recoverable execution, tools, and human approval patterns beneath the product. A future ChatGPT app or plugin could provide an optional distribution surface. Spaces retains the experience, schemas, context graph, permission model, and trust relationship.
 
 ## Current frontend architecture

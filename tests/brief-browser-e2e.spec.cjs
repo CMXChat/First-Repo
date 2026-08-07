@@ -494,8 +494,10 @@ test('Personal habits and the Family briefing use the richer workspace modules',
   await expect(page.locator('#heroTitle')).toHaveText('The household plan is clear before everyone starts moving');
   await expect(page.locator('#statsGrid')).toContainText('Chores open');
 
-  await selectPrimaryView(page, 'workspace');
-  await page.locator('[data-workspace-tab="calendar"]').click();
+  await expect(page.locator('#recommendationViewLabel')).toHaveText('Open Calendar');
+  await page.locator('#recommendationViewButton').click();
+  await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
+  await expect(page.locator('[data-workspace-tab="calendar"]')).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('.family-calendar-day')).toHaveCount(3);
   await expect(page.locator('.family-calendar')).toContainText('Availability only');
   await expect(page.locator('.family-calendar')).toContainText('Zoe’s appointment');
@@ -740,8 +742,9 @@ test('explicit theme query remains reversible on active and rollback routes', as
 
 test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
+  await page.goto('/doc/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
   await expect(page.locator('link[data-spaces-mobile-fixes="true"]')).toHaveCount(1);
 
   const cta = page.locator('.final-cta');

@@ -225,6 +225,11 @@
     setText('#recommendationLabel', item.recommendation.label);
     setText('#recommendationTitle', item.recommendation.title);
     setText('#recommendationDetail', item.recommendation.detail);
+    const recommendationButton = $('#recommendationViewButton');
+    const recommendationTab = normalizeTab(item.recommendation.targetTab || item.highlights?.[0]?.tab || '');
+    const recommendationTabLabel = item.tabs.find(tab => tab.id === recommendationTab)?.label || 'related module';
+    if (recommendationButton) recommendationButton.dataset.goTab = recommendationTab;
+    setText('#recommendationViewLabel', `Open ${recommendationTabLabel}`);
     renderPriority(item.priority);
     renderWeather(item.weather);
     renderStats(item.stats);
@@ -624,6 +629,7 @@
       const goButton = event.target.closest('[data-go-view]');
       if (goButton) {
         selectView(goButton.dataset.goView, { push: true });
+        if (goButton.dataset.goTab) setWorkspaceTab(goButton.dataset.goTab, { push: false, focus: true });
         return;
       }
 

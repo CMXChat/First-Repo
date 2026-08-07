@@ -45,7 +45,7 @@ assert.match(html, /<strong>Voice:<\/strong>/);
 assert.doesNotMatch(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /class="secondary-button doc-entry-link" href="\/doc\/"/);
 assert.match(html, /class="primary-button doc-cta-button" href="\/doc\/"/);
-assert.match(html, /brief-demo-app\.js\?v=20260807-5/);
+assert.match(html, /brief-demo-app\.js\?v=20260807-6/);
 assert.match(html, /brief-demo-media\.js\?v=20260807-4/);
 assert.match(html, /brief-demo-doc-links\.css\?v=20260807-3/);
 assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-3/);
