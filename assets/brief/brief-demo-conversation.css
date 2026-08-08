@@ -1101,14 +1101,37 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   min-height: 94px;
   align-content: start;
   gap: 4px;
+  overflow: hidden;
   padding: 12px 37px 12px 13px;
   color: var(--ink-strong);
-  border: 1px solid color-mix(in srgb, var(--blue) 44%, var(--line));
+  border: 1px solid color-mix(in srgb, var(--blue) 58%, var(--line));
   border-radius: 14px;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 58%, var(--surface)), var(--surface));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 82%, var(--surface)), var(--surface) 72%);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--blue) 10%, transparent);
   cursor: pointer;
   font: inherit;
   text-align: left;
+}
+
+.workspace-related-links button::before {
+  content: "";
+  position: absolute;
+  width: 82px;
+  height: 82px;
+  right: -37px;
+  bottom: -48px;
+  border: 1px solid color-mix(in srgb, var(--blue) 28%, transparent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 13px color-mix(in srgb, var(--blue) 5%, transparent),
+    0 0 32px color-mix(in srgb, var(--blue) 12%, transparent);
+  pointer-events: none;
+}
+
+.workspace-related-links button > :not(i) {
+  position: relative;
+  z-index: 1;
 }
 
 .workspace-related-links button small {
@@ -1153,12 +1176,13 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   color: var(--ink-strong);
   border-color: var(--blue);
   transform: translateY(-1px);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--blue) 17%, transparent);
 }
 
 .workspace-related-links button.is-current {
   color: var(--ink-strong);
   border-color: color-mix(in srgb, var(--ink-strong) 18%, var(--line));
-  background: var(--surface);
+  background: linear-gradient(145deg, var(--surface), color-mix(in srgb, var(--violet-soft) 34%, var(--surface)));
   cursor: default;
   opacity: 0.78;
 }
@@ -1166,6 +1190,11 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 .workspace-related-links button.is-current i {
   color: var(--green);
   background: color-mix(in srgb, var(--green) 12%, var(--surface));
+}
+
+.workspace-related-links button.is-current::before {
+  border-color: color-mix(in srgb, var(--violet) 22%, transparent);
+  box-shadow: 0 0 0 13px color-mix(in srgb, var(--violet) 5%, transparent);
 }
 
 @keyframes workspace-step-pulse {

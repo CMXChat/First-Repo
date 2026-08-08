@@ -53,7 +53,7 @@ assert.match(html, /brief-demo-doc-links\.css\?v=20260808-1/);
 assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-3/);
 assert.match(html, /brief-demo-advanced\.css\?v=20260808-1/);
 assert.match(html, /brief-demo-advanced\.js\?v=20260807-3/);
-assert.match(html, /brief-demo-conversation\.css\?v=20260808-9/);
+assert.match(html, /brief-demo-conversation\.css\?v=20260808-10/);
 assert.match(html, /brief-demo-conversation\.js\?v=20260808-1/);
 assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
 assert.match(html, /Open a briefing for the part of life you’re in/);
