@@ -133,8 +133,37 @@
   }
 
   function renderProjectDashboard(detail) {
+    const progress = detail.projects.map(project => clampProgress(project.progress));
+    const average = Math.round(progress.reduce((sum, value) => sum + value, 0) / Math.max(progress.length, 1));
+    const owned = detail.projects.filter(project => project.owner && project.owner !== 'Unassigned').length;
+    const blocked = detail.projects.filter(project => String(project.status).toLowerCase() === 'blocked').length;
     return `
       <div class="project-dashboard" aria-label="Fictional project progress">
+        <section class="project-command-view">
+          <div class="project-health-visual">
+            <div class="project-health-ring" style="--project-health:${average * 3.6}deg" role="img" aria-label="${average}% overall project health">
+              <span><strong>${average}%</strong><small>HEALTH</small></span>
+            </div>
+            <div><span>RELEASE PULSE</span><strong>${blocked ? 'One handoff is holding the release' : 'Release path is clear'}</strong><p>${owned} of ${detail.projects.length} workstreams have a named owner. The next review should resolve the receiver before more work enters the queue.</p></div>
+          </div>
+          <div class="project-burndown">
+            <header><div><span>OPEN WORK</span><strong>Release trajectory</strong></div><small>Fictional · 6 days</small></header>
+            <svg viewBox="0 0 520 150" role="img" aria-label="Open work trending down toward release">
+              <defs><linearGradient id="projectBurndownFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#168cff" stop-opacity=".36"/><stop offset="1" stop-color="#8f6cff" stop-opacity=".02"/></linearGradient></defs>
+              <path class="project-grid-line" d="M20 35H500M20 75H500M20 115H500"/>
+              <path class="project-area" d="M20 28 C90 30 105 51 180 55 S285 76 340 82 S430 105 500 116 L500 135 L20 135 Z"/>
+              <path class="project-line" d="M20 28 C90 30 105 51 180 55 S285 76 340 82 S430 105 500 116"/>
+              <g><circle cx="20" cy="28" r="5"/><circle cx="180" cy="55" r="5"/><circle cx="340" cy="82" r="5"/><circle cx="500" cy="116" r="7"/></g>
+            </svg>
+            <div class="project-chart-labels"><span>MON · 14</span><span>WED · 9</span><span>FRI · 5</span><strong>TODAY · 3</strong></div>
+          </div>
+        </section>
+        <div class="project-signal-strip" aria-label="Project signals">
+          <span><small>OWNERSHIP</small><strong>${owned}/${detail.projects.length}</strong><em>One receiver missing</em></span>
+          <span><small>BLOCKERS</small><strong>${blocked}</strong><em>QA to release</em></span>
+          <span><small>REVIEW</small><strong>3:00</strong><em>Decision window</em></span>
+          <span><small>RELEASE</small><strong>Today</strong><em>Approval pending</em></span>
+        </div>
         <div class="project-dashboard-heading"><span>WORKSTREAM</span><span>TEAM</span><span>PROGRESS</span><span>NEXT</span></div>
         ${detail.projects.map(project => `
           <article class="project-row" data-project-tone="${safeTone(project.tone)}">
@@ -277,7 +306,7 @@
       const y = height - 4 - ((value - min) / range) * (height - 8);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(' ');
-    return `<svg class="asset-sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false"><polyline points="${points}" fill="none" vector-effect="non-scaling-stroke"></polyline></svg>`;
+    return `<svg class="asset-sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false"><polygon points="0,${height} ${points} ${width},${height}" vector-effect="non-scaling-stroke"></polygon><polyline points="${points}" fill="none" vector-effect="non-scaling-stroke"></polyline><circle cx="${width}" cy="${points.split(' ').at(-1).split(',')[1]}" r="3.5"></circle></svg>`;
   }
 
   function renderPortfolio(detail) {
@@ -291,6 +320,31 @@
           <div class="market-track">${ticker}<span aria-hidden="true" class="market-repeat">${ticker}</span></div>
         </div>
         <p class="market-caption">SAMPLE DELAYED MARKET RAIL · INTERFACE DEMONSTRATION</p>
+        <section class="portfolio-command" aria-label="Fictional portfolio overview">
+          <div class="portfolio-performance">
+            <header><div><span>INVESTED ASSETS</span><strong>$48,620</strong><small><b>+$1,284</b> this quarter · fictional</small></div><div class="portfolio-range"><b>1M</b><b class="is-active">3M</b><b>1Y</b></div></header>
+            <div class="portfolio-chart">
+              <div class="portfolio-axis" aria-hidden="true"><i></i><i></i><i></i></div>
+              <svg viewBox="0 0 620 220" role="img" aria-label="Illustrative three month portfolio performance compared with a benchmark">
+                <defs><linearGradient id="portfolioAreaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#168cff" stop-opacity=".38"/><stop offset="1" stop-color="#168cff" stop-opacity=".02"/></linearGradient></defs>
+                <path class="portfolio-area" d="M15 166 C70 158 92 170 140 143 S220 135 264 109 S348 118 390 84 S470 78 515 53 S572 54 605 30 L605 205 L15 205 Z"/>
+                <path class="portfolio-benchmark" d="M15 172 C92 166 135 151 205 146 S310 122 370 113 S482 90 605 72"/>
+                <path class="portfolio-main-line" d="M15 166 C70 158 92 170 140 143 S220 135 264 109 S348 118 390 84 S470 78 515 53 S572 54 605 30"/>
+                <circle cx="605" cy="30" r="7"/>
+              </svg>
+              <div class="portfolio-chart-labels"><span>MAY</span><span>JUN</span><span>JUL</span><strong>AUG 8</strong></div>
+            </div>
+            <footer><span><i class="portfolio-key-main"></i>Portfolio <strong>+2.7%</strong></span><span><i class="portfolio-key-benchmark"></i>Reference mix <strong>+2.2%</strong></span><small>Delayed example</small></footer>
+          </div>
+          <aside class="portfolio-allocation">
+            <header><span>ALLOCATION</span><strong>Inside plan range</strong></header>
+            <div class="allocation-donut" role="img" aria-label="58% US market, 20% international, 15% bonds, and 7% investment cash"><span><strong>93%</strong><small>INVESTED</small></span></div>
+            <div class="allocation-legend">
+              ${detail.assets.map(asset => `<span data-asset-tone="${safeTone(asset.tone)}"><i></i><b>${escapeHtml(asset.symbol)}</b><small>${escapeHtml(asset.share)}%</small></span>`).join('')}
+            </div>
+            <p><strong>$216 remains</strong> in this month’s contribution plan after the tax reserve is funded.</p>
+          </aside>
+        </section>
         <div class="asset-grid">
           ${detail.assets.map(asset => `
             <article data-asset-tone="${safeTone(asset.tone)}">

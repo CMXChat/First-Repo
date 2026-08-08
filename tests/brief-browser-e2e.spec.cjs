@@ -25,6 +25,9 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
   await expect(page.locator('[data-entry-tip]')).toHaveCount(5);
   await expect(page.locator(`[data-entry-scenario="${expectedEntryScenario}"]`)).toHaveAttribute('aria-pressed', 'true');
+  if (await page.locator('#openDemo').isDisabled()) {
+    await page.locator(`[data-entry-scenario="${expectedEntryScenario}"]`).click();
+  }
   await expect(page.locator('#openDemo')).toBeEnabled();
   await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', expectedEntryScenario);
   if (expectedEntryScenario === 'personal') {
@@ -482,6 +485,10 @@ test('Business partners and Accountant and client use complete advanced workspac
   await expect(page.locator('.financial-sheet')).toContainText('Living + flexible');
 
   await page.locator('[data-workspace-tab="portfolio"]').click();
+  await expect(page.locator('.portfolio-command')).toBeVisible();
+  await expect(page.locator('.portfolio-chart svg')).toBeVisible();
+  await expect(page.locator('.allocation-donut')).toHaveAttribute('aria-label', /58% US market/);
+  await expect(page.locator('.allocation-legend span')).toHaveCount(4);
   await expect(page.locator('.asset-grid article')).toHaveCount(4);
   await expect(page.locator('.market-rail')).toContainText('VTI');
 
@@ -699,17 +706,21 @@ test('generic briefing cards are replaced by decision-shaped visuals', async ({ 
     personal: { day: '.decision-timeline', work: '.compact-status-board', money: '.brief-metric-bars', wellness: '.readiness-panel', connections: '.brief-connection-map' },
     relationship: { together: '.shared-orbit-view', profiles: '.shared-orbit-view', plans: '.handoff-visual', reflection: '.guided-brief-steps', connections: '.brief-connection-map' },
     trainer: { today: '.decision-timeline', habits: '.brief-metric-bars', progress: '.progress-trend-panel', recovery: '.readiness-panel', connections: '.brief-connection-map' },
-    team: { mywork: '.compact-status-board', handoffs: '.handoff-visual', procedures: '.guided-brief-steps', connections: '.brief-connection-map' }
+    team: { mywork: '.compact-status-board', project: '.project-command-view', handoffs: '.handoff-visual', procedures: '.guided-brief-steps', connections: '.brief-connection-map' }
   };
 
   for (const [scenario, sections] of Object.entries(scenarios)) {
-    if (page.locator('#scenarioSelect').inputValue() !== scenario) await page.locator('#scenarioSelect').selectOption(scenario);
+    if (await page.locator('#scenarioSelect').inputValue() !== scenario) await page.locator('#scenarioSelect').selectOption(scenario);
     await selectPrimaryView(page, 'workspace');
     for (const [tab, selector] of Object.entries(sections)) {
       await page.locator(`[data-workspace-tab="${tab}"]`).click();
       await expect(page.locator(`#workspacePanel ${selector}`)).toBeVisible();
     }
   }
+  await page.locator('[data-workspace-tab="project"]').click();
+  await expect(page.locator('#workspacePanel .project-health-ring')).toHaveAttribute('aria-label', /overall project health/);
+  await expect(page.locator('#workspacePanel .project-burndown svg')).toBeVisible();
+  await expect(page.locator('#workspacePanel .project-signal-strip > span')).toHaveCount(4);
   await expectNoHorizontalOverflow(page);
 });
 
