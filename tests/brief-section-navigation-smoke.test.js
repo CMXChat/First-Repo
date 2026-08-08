@@ -5,13 +5,17 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
+const spacesHtml = read('spaces/index.html');
 const explainersJs = read('assets/brief/brief-demo-explainers.js');
 const navigationJs = read('assets/brief/brief-demo-section-navigation.js');
 const navigationCss = read('assets/brief/brief-demo-section-navigation.css');
+const deepNavigationJs = read('assets/brief/brief-demo-deep-navigation.js');
 
 assert.doesNotThrow(() => new Function(navigationJs));
+assert.doesNotThrow(() => new Function(deepNavigationJs));
 assert.match(explainersJs, /brief-demo-section-navigation\.js\?v=20260805-1/);
 assert.match(explainersJs, /briefSectionNavigationLoader/);
+assert.match(spacesHtml, /brief-demo-deep-navigation\.js\?v=20260808-1/);
 
 assert.match(navigationJs, /const EDGE_GUARD_PX = 32/);
 assert.match(navigationJs, /const MAX_SWIPE_DURATION_MS = 900/);
@@ -39,5 +43,20 @@ assert.match(navigationCss, /#demoMain\[data-section-direction="previous"\]/);
 assert.match(navigationCss, /@media \(max-width: 430px\)/);
 assert.match(navigationCss, /prefers-reduced-motion/);
 assert.match(navigationCss, /\.full-end-nav \{[\s\S]*display: none !important/);
+
+assert.match(deepNavigationJs, /function workspaceDetailTarget\(/);
+assert.match(deepNavigationJs, /\.workspace-related-links, \.workspace-thread-links/);
+assert.match(deepNavigationJs, /\[data-workspace-continue\]/);
+assert.match(deepNavigationJs, /\[data-highlight-tab\]/);
+assert.match(deepNavigationJs, /\[data-full-workspace-tab\]/);
+assert.match(deepNavigationJs, /#priorityReview/);
+assert.match(deepNavigationJs, /\[data-go-view="workspace"\]/);
+assert.match(deepNavigationJs, /origin === 'all-weather'/);
+assert.match(deepNavigationJs, /origin === 'all-signals'/);
+assert.match(deepNavigationJs, /origin === 'all-flow'/);
+assert.match(deepNavigationJs, /\[data-view-panel="spaces"\] \.space-overview/);
+assert.match(deepNavigationJs, /\[data-view-panel="how"\] \.foundation-map/);
+assert.match(deepNavigationJs, /requestAnimationFrame/);
+assert.doesNotMatch(deepNavigationJs, /preventDefault\(\)/);
 
 console.log('Brief section navigation smoke test passed.');
