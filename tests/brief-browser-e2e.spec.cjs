@@ -79,6 +79,34 @@ async function selectPrimaryView(page, view) {
   await page.locator(`#mobileNav [data-primary-view="${view}"]`).click();
 }
 
+async function expectWorkspaceDestinationAligned(page) {
+  await expect.poll(() => page.evaluate(() => {
+    const topbar = document.querySelector('.topbar')?.getBoundingClientRect();
+    const navigation = document.querySelector('#workspaceTabNavigation')?.getBoundingClientRect();
+    const heading = document.querySelector('#workspacePanel .workspace-panel-heading')?.getBoundingClientRect();
+    if (!topbar || !navigation || !heading) return { aligned: false };
+    const gap = navigation.top - topbar.bottom;
+    return {
+      aligned: gap >= 4 && gap <= 28 && heading.top >= navigation.bottom && heading.top < innerHeight,
+      gap,
+      headingTop: heading.top,
+      navigationBottom: navigation.bottom,
+      viewportHeight: innerHeight
+    };
+  }), { timeout: 4000 }).toEqual(expect.objectContaining({ aligned: true }));
+}
+
+async function expectEverythingDestinationAligned(page, id) {
+  await expect.poll(() => page.evaluate(sectionId => {
+    const nav = document.querySelector('#everythingJumpNav');
+    const section = document.getElementById(sectionId);
+    if (!nav || !section) return Number.POSITIVE_INFINITY;
+    const stickyTop = Number.parseFloat(getComputedStyle(nav).top) || 0;
+    const expectedTop = stickyTop + nav.getBoundingClientRect().height + 12;
+    return Math.abs(section.getBoundingClientRect().top - expectedTop);
+  }, id), { timeout: 4000 }).toBeLessThanOrEqual(3);
+}
+
 async function dispatchSwipe(page, selector, { startX, startY = 360, endX, endY = startY }) {
   await page.locator(selector).evaluate((target, points) => {
     const emit = (type, x, y, active) => {
@@ -628,6 +656,45 @@ test('briefing sections expose named progress controls and working arrows', asyn
   await expect(hint).toContainText('Section 3 of 5');
   await expect(previous).toBeEnabled();
   await expectNoHorizontalOverflow(page);
+});
+
+test('purple interlinks land at the exact selected section on desktop and mobile', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'Exact interlink positioning runs once in Chromium at both target widths.');
+  test.setTimeout(60000);
+
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await openCurrentBrief(page);
+    await enterScenario(page, 'personal');
+
+    const highlight = page.locator('.space-highlight').first();
+    const highlightTarget = await highlight.getAttribute('data-highlight-tab');
+    await highlight.click();
+    await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
+    await expect(page.locator(`[data-workspace-tab="${highlightTarget}"]`)).toHaveAttribute('aria-selected', 'true');
+    await expectWorkspaceDestinationAligned(page);
+
+    const threadLink = page.locator('.workspace-thread-links [data-workspace-continue]').first();
+    const threadTarget = await threadLink.getAttribute('data-workspace-continue');
+    await threadLink.click();
+    await expect(page.locator(`[data-workspace-tab="${threadTarget}"]`)).toHaveAttribute('aria-selected', 'true');
+    await expectWorkspaceDestinationAligned(page);
+
+    const indexLink = page.locator('.workspace-related-links [data-workspace-continue]').first();
+    const indexTarget = await indexLink.getAttribute('data-workspace-continue');
+    await indexLink.click();
+    await expect(page.locator(`[data-workspace-tab="${indexTarget}"]`)).toHaveAttribute('aria-selected', 'true');
+    await expectWorkspaceDestinationAligned(page);
+
+    await selectPrimaryView(page, 'everything');
+    await expect(page.locator('#everythingJumpNav [data-everything-jump]')).toHaveCount(9);
+    for (const id of ['all-weather', 'all-workspace', 'all-privacy', 'all-overview']) {
+      await page.locator(`[data-everything-jump="${id}"]`).click();
+      await expect(page.locator(`[data-everything-jump="${id}"]`)).toHaveAttribute('aria-current', 'location');
+      await expectEverythingDestinationAligned(page, id);
+    }
+    await expectNoHorizontalOverflow(page);
+  }
 });
 
 test('every active Space keeps visible copy free of banned writing patterns', async ({ page }, testInfo) => {

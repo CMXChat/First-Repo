@@ -59,6 +59,24 @@
     if (node) node.textContent = value ?? '';
   }
 
+  function preferredScrollBehavior() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  }
+
+  function scrollBelowTopbar(target, gap = 14) {
+    if (!target) return;
+    const topbarBottom = Math.max(0, $('.topbar')?.getBoundingClientRect().bottom || 0);
+    const top = Math.max(0, window.scrollY + target.getBoundingClientRect().top - topbarBottom - gap);
+    window.scrollTo({ top, left: 0, behavior: preferredScrollBehavior() });
+  }
+
+  function alignWorkspaceDestination({ focus = true } = {}) {
+    window.requestAnimationFrame(() => {
+      scrollBelowTopbar($('#workspaceTabNavigation') || $('#workspacePanel'));
+      if (focus) $('#workspacePanel')?.focus({ preventScroll: true });
+    });
+  }
+
   function readUrlState() {
     try {
       const url = new URL(window.location.href);
@@ -674,7 +692,8 @@
     revealWorkspaceTab($(`[data-workspace-tab="${CSS.escape(state.tab)}"]`));
     updateUrl(options.push === true);
     document.dispatchEvent(new CustomEvent('briefdemo:tabchange', { detail: { scenarioId: state.scenarioId, view: state.view, tab: state.tab } }));
-    if (options.focus) $('#workspacePanel')?.focus({ preventScroll: true });
+    if (options.align) alignWorkspaceDestination({ focus: options.focus !== false });
+    else if (options.focus) $('#workspacePanel')?.focus({ preventScroll: true });
   }
 
   function moveWorkspaceTab(event) {
@@ -927,8 +946,8 @@
     });
     $('#priorityReview')?.addEventListener('click', event => {
       const targetTab = event.currentTarget.dataset.priorityTab;
-      selectView('workspace', { push: true });
-      if (targetTab) setWorkspaceTab(targetTab, { push: false, focus: true });
+      selectView('workspace', { push: true, focus: !targetTab });
+      if (targetTab) setWorkspaceTab(targetTab, { push: false, focus: true, align: true });
     });
 
     document.addEventListener('click', event => {
@@ -945,27 +964,32 @@
 
       const goButton = event.target.closest('[data-go-view]');
       if (goButton) {
-        selectView(goButton.dataset.goView, { push: true });
-        if (goButton.dataset.goTab) setWorkspaceTab(goButton.dataset.goTab, { push: false, focus: true });
+        const targetTab = goButton.dataset.goTab;
+        selectView(goButton.dataset.goView, { push: true, focus: !targetTab });
+        if (targetTab) setWorkspaceTab(targetTab, { push: false, focus: true, align: true });
         return;
       }
 
       const highlightButton = event.target.closest('[data-highlight-tab]');
       if (highlightButton) {
         selectView('workspace', { push: true, focus: false });
-        setWorkspaceTab(highlightButton.dataset.highlightTab, { push: false, focus: true });
+        setWorkspaceTab(highlightButton.dataset.highlightTab, { push: false, focus: true, align: true });
         return;
       }
 
       const tabButton = event.target.closest('[data-workspace-tab]');
       if (tabButton) {
-        setWorkspaceTab(tabButton.dataset.workspaceTab, { push: true, focus: true });
+        setWorkspaceTab(tabButton.dataset.workspaceTab, {
+          push: true,
+          focus: true,
+          align: tabButton.dataset.alignDestination === 'true'
+        });
         return;
       }
 
       const continueButton = event.target.closest('[data-workspace-continue]');
       if (continueButton) {
-        setWorkspaceTab(continueButton.dataset.workspaceContinue, { push: true, focus: true });
+        setWorkspaceTab(continueButton.dataset.workspaceContinue, { push: true, focus: true, align: true });
         return;
       }
 

@@ -264,6 +264,18 @@
     everythingProgressFrame = window.requestAnimationFrame(updateEverythingProgress);
   }
 
+  function scrollToEverythingSection(section, nav) {
+    if (!section || !nav) return;
+    const stickyTop = Number.parseFloat(window.getComputedStyle(nav).top) || 0;
+    const destinationOffset = stickyTop + nav.getBoundingClientRect().height + 12;
+    const top = Math.max(0, window.scrollY + section.getBoundingClientRect().top - destinationOffset);
+    window.scrollTo({
+      top,
+      left: 0,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
+  }
+
   function renderEverything(id = selectedScenarioId()) {
     const scenario = data.scenarios[id] || data.scenarios[data.meta.defaultScenario];
     const host = document.getElementById('everythingContent');
@@ -416,7 +428,13 @@
 
   function openWorkspaceTab(tab) {
     document.querySelector('[data-primary-view="workspace"]')?.click();
-    queueMicrotask(() => document.querySelector(`[data-workspace-tab="${CSS.escape(tab)}"]`)?.click());
+    queueMicrotask(() => {
+      const button = document.querySelector(`[data-workspace-tab="${CSS.escape(tab)}"]`);
+      if (!button) return;
+      button.dataset.alignDestination = 'true';
+      button.click();
+      delete button.dataset.alignDestination;
+    });
   }
 
   function installEvents() {
@@ -451,7 +469,7 @@
       if (jumpLink) {
         event.preventDefault();
         const section = document.getElementById(jumpLink.dataset.everythingJump);
-        section?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+        scrollToEverythingSection(section, document.getElementById('everythingJumpNav'));
         window.history.replaceState(null, '', `#${jumpLink.dataset.everythingJump}`);
         return;
       }

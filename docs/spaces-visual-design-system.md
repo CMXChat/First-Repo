@@ -171,6 +171,8 @@ Internal `/spaces/` and `/doc/` links normally stay in the same tab. This keeps 
 
 Explore is the focused category experience. Its complete category index is a primary visual module, not minor navigation. The active category is clearly marked. Every other category remains equally available and includes enough preview information to make the destination meaningful.
 
+Every control that changes an Explore category must also move the page to that category's opening controls and heading. It must never preserve a deep scroll position from the previous category. The landing offset is calculated from the rendered sticky header on desktop and mobile, so the selected category and its first useful context remain visible.
+
 Mobile uses a swipeable category rail. Active destinations should remain visible and easy to reach without causing page-level horizontal overflow.
 
 ### Everything
@@ -186,6 +188,8 @@ The sticky category navigator remains visible while the user scrolls. It:
 - includes a thin multicolor completion rail driven by page position;
 - reports its value through accessible progress semantics;
 - never pretends that data is still loading.
+
+Direct jumps in Everything account for both the topbar and the sticky category navigator. The destination heading remains immediately below those controls and fully visible.
 
 At the end, focused-view actions support continued product use and the final `/doc/` bridge continues into the product explanation.
 
