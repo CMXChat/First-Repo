@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260807-3" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260807-3" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260807-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-1" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-2" />
 </head>
 <body data-entered="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -31,12 +31,39 @@
       <span class="entry-scroll-arrow" aria-hidden="true">↓</span>
     </button>
     <div class="entry-card">
-      <div class="entry-mark" aria-hidden="true">SP</div>
-      <p class="eyebrow">SPACES DEMO</p>
-      <h1 id="entryTitle">Choose the Space you want to open</h1>
-      <p class="entry-copy">Each Space changes the people, permissions, priorities, and records while the product stays familiar. These complete examples show the range. A real account would begin with fewer sections and grow with the context.</p>
+      <div class="entry-brand-row">
+        <div class="entry-brand">
+          <div class="entry-mark" aria-hidden="true">SP</div>
+          <div>
+            <p class="eyebrow">SPACES</p>
+            <span>Shared briefing demo</span>
+          </div>
+        </div>
+        <details class="entry-demo-data">
+          <summary><i aria-hidden="true"></i>Demo data</summary>
+          <p>Private-looking records are fictional. Real accounts require secure sign-in, clear permissions, and protected storage.</p>
+        </details>
+      </div>
+      <h1 id="entryTitle">Open a briefing for the part of life you’re in</h1>
+      <p class="entry-copy">Each Space turns approved information into one clear briefing for you or the people sharing it. Shared details meet in that Space, while private details stay with their owner.</p>
 
+      <div class="entry-grid-heading"><span>Choose a briefing</span><small>Personal starts selected</small></div>
       <div class="entry-grid" id="entryScenarioGrid" role="group" aria-label="Demo Spaces"></div>
+
+      <section class="entry-space-preview" id="entrySpacePreview" data-entry-preview="personal" aria-labelledby="entryPreviewTitle" aria-live="polite" aria-atomic="true">
+        <div class="entry-preview-copy">
+          <p class="entry-preview-kicker" id="entryPreviewKicker"></p>
+          <h2 id="entryPreviewTitle"></h2>
+          <p id="entryPreviewCopy"></p>
+        </div>
+        <div class="entry-preview-glance">
+          <div class="entry-preview-metrics" id="entryPreviewMetrics"></div>
+          <div class="entry-preview-scopes">
+            <span><i class="entry-scope-private" aria-hidden="true"></i><b id="entryPreviewPrivate"></b></span>
+            <span><i class="entry-scope-shared" aria-hidden="true"></i><b id="entryPreviewShared"></b></span>
+          </div>
+        </div>
+      </section>
 
       <section class="entry-tip-carousel" id="entryTipCarousel" aria-label="Ways to use Spaces" aria-roledescription="carousel">
         <div class="entry-tip-viewport">
@@ -71,10 +98,9 @@
       </section>
 
       <div class="entry-actions">
-        <button class="primary-button entry-open" id="openDemo" type="button" disabled>Choose a Space first</button>
-        <a class="secondary-button doc-entry-link" href="/doc/">Read product overview <span aria-hidden="true">↗</span></a>
+        <button class="primary-button entry-open" id="openDemo" type="button"><span id="openDemoLabel">Open Personal Space</span><span aria-hidden="true">→</span></button>
+        <a class="secondary-button doc-entry-link" href="/doc/">Explore how Spaces works <span aria-hidden="true">↗</span></a>
       </div>
-      <p class="entry-note">The private-looking records are fictional and clearly labeled because real private data would require secure sign-in and permission controls.</p>
     </div>
   </section>
 
@@ -377,13 +403,13 @@
   </div>
 
   <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
-  <script src="/assets/brief/brief-demo-data.js?v=20260807-5" defer></script>
+  <script src="/assets/brief/brief-demo-data.js?v=20260808-1" defer></script>
   <script src="/assets/brief/brief-demo-advanced.js?v=20260807-3" defer></script>
   <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
   <script src="/assets/brief/brief-demo-experience.js?v=20260807-5" defer></script>
   <script src="/assets/brief/brief-demo-media.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260807-6" defer></script>
+  <script src="/assets/brief/brief-demo-app.js?v=20260808-1" defer></script>
   <script src="/assets/brief/brief-demo-explainers.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-conversation.js?v=20260807-4" defer></script>
+  <script src="/assets/brief/brief-demo-conversation.js?v=20260808-1" defer></script>
 </body>
 </html>

@@ -30,7 +30,7 @@ assert.match(html, /meta name="referrer" content="no-referrer"/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
 assert.match(html, /Public overview/);
 assert.match(html, /This public noindex overview contains product explanation and fictional examples/);
-assert.match(html, /personal-os-doc\.js\?v=20260807-4/);
+assert.match(html, /personal-os-doc\.js\?v=20260808-1/);
 assert.match(html, /personal-os-doc\.css\?v=20260807-4/);
 assert.equal((html.match(/class="scenario-card(?:\s|\")/g) || []).length, 7);
 assert.match(html, /Seven briefing contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team/);
@@ -63,8 +63,9 @@ for (const id of [
   assert.match(html, new RegExp(`id="${id}"`), `Missing required section: ${id}`);
 }
 
-assert.match(js, /Spaces \| Context-Driven Workspace and Daily Brief/);
-assert.match(js, /Open the part of your life you’re working in/);
+assert.match(js, /Spaces \| Shared Briefings and Context-Driven Workspace/);
+assert.match(js, /One briefing for the part of life you’re in/);
+assert.match(js, /Who can see which details/);
 assert.match(js, /A Space learns from connected accounts, direct input, and corrections/);
 assert.match(js, /Memory belongs to the Space and stays under the user’s control/);
 assert.match(js, /Planned Memory & Data settings/);

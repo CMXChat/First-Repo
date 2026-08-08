@@ -16,6 +16,15 @@ window.BRIEF_DEMO_DATA = {
       id: 'personal',
       label: 'Personal',
       short: 'One person, one useful day',
+      entryPreview: {
+        badge: 'Start here',
+        kicker: 'PERSONAL BRIEF',
+        title: 'Your day is already sorted by what matters next',
+        copy: 'Calendar, money, weather, work, and habits form one current view. Everything begins private, and you choose what another Space can receive.',
+        metrics: [{ label: 'Next', value: '2:30 PM' }, { label: 'Actions', value: '3' }, { label: 'Default', value: 'Private' }],
+        privateLabel: 'Personal records stay private',
+        sharedLabel: 'Only chosen details can leave this Space'
+      },
       greeting: 'Good afternoon, Alex.',
       headline: 'Here’s what your day looks like',
       summary: 'Schedule, priorities, money, movement and useful context are organized around what matters next.',
@@ -164,6 +173,15 @@ window.BRIEF_DEMO_DATA = {
       id: 'relationship',
       label: 'Relationship',
       short: 'Two private profiles, one approved shared Space',
+      entryPreview: {
+        badge: 'Two people',
+        kicker: 'RELATIONSHIP BRIEF',
+        title: 'One shared plan built from what both people approved',
+        copy: 'Plans, commitments, and decisions meet here. Maya and Jordan keep separate private profiles beside the shared Space.',
+        metrics: [{ label: 'Shared plans', value: '3' }, { label: 'Needs both', value: '1' }, { label: 'Check-in', value: '8:15 PM' }],
+        privateLabel: 'Each person keeps a private profile',
+        sharedLabel: 'Approved plans appear for both'
+      },
       greeting: 'Good evening, Maya and Jordan.',
       headline: 'Start with reassurance, then work through the plan',
       summary: 'Each person keeps a private profile while the shared Space holds plans, promises and approved context.',
@@ -210,6 +228,15 @@ window.BRIEF_DEMO_DATA = {
       id: 'family',
       label: 'Family',
       short: 'One household Brief with clear owners and private boundaries',
+      entryPreview: {
+        badge: 'Household',
+        kicker: 'FAMILY BRIEF',
+        title: 'The household sees what changed and who owns it',
+        copy: 'Appointments, rides, chores, shopping, and approved availability become one family briefing with clear owners.',
+        metrics: [{ label: 'Appointments', value: '3' }, { label: 'Shopping', value: 'Milk low' }, { label: 'Pickup', value: 'Covered' }],
+        privateLabel: 'Covered events keep their details private',
+        sharedLabel: 'Household plans show the agreed details'
+      },
       greeting: 'Good afternoon, Rivera family.',
       headline: 'The household plan is clear before everyone starts moving',
       summary: 'Appointments, pickups, chores, shopping, meals, and approved calendar changes are organized in one shared view while private events stay private.',
@@ -382,6 +409,15 @@ window.BRIEF_DEMO_DATA = {
       id: 'business',
       label: 'Business partners',
       short: 'Two time zones, one shared operating view',
+      entryPreview: {
+        badge: 'Remote partners',
+        kicker: 'BUSINESS PARTNER BRIEF',
+        title: 'New York and Sydney share one operating picture',
+        copy: 'Priorities, teams, deals, concerns, and prepared decisions meet in the company Space across both workdays.',
+        metrics: [{ label: 'New York', value: '4:00 PM' }, { label: 'Sydney', value: '6:00 AM' }, { label: 'Waiting', value: '2 decisions' }],
+        privateLabel: 'Each partner keeps private preparation',
+        sharedLabel: 'Company facts and approved concerns meet here'
+      },
       greeting: 'Good afternoon, Amina. Good morning, Eli.',
       headline: 'Run the same company from New York and Sydney',
       summary: 'Two remote partners see the shared operating picture, each partner’s approved concerns, and the work their teams need to move next.',
@@ -522,6 +558,15 @@ window.BRIEF_DEMO_DATA = {
       id: 'accounting',
       label: 'Accountant and client',
       short: 'A shared money review with professional boundaries',
+      entryPreview: {
+        badge: 'Professional',
+        kicker: 'ACCOUNTANT AND CLIENT BRIEF',
+        title: 'The money review shows what changed and what needs approval',
+        copy: 'Income, expenses, taxes, assets, deadlines, and the accountant’s guidance form one reviewable plan.',
+        metrics: [{ label: 'Free cash', value: '$1,420' }, { label: 'Tax reserve', value: '82%' }, { label: 'Next review', value: '3:30 PM' }],
+        privateLabel: 'Unshared records remain with their owner',
+        sharedLabel: 'Approved financial records support the review'
+      },
       greeting: 'Good afternoon, Daniel and Priya.',
       headline: 'See the whole money picture before deciding what moves next',
       summary: 'Daniel’s salary, side business, bills, taxes, savings, investing, and goals become one reviewable plan with his accountant, Priya.',
@@ -680,7 +725,17 @@ window.BRIEF_DEMO_DATA = {
       }
     },
     trainer: {
-      id: 'trainer', label: 'Trainer and student', short: 'Goals, evidence and coaching boundaries', greeting: 'Good afternoon, Nina and Sam.', headline: 'The plan should adapt while keeping accountability.', summary: 'Training, recovery, habits, and check-ins stay useful because the system records evidence and respects health boundaries.',
+      id: 'trainer', label: 'Trainer and student', short: 'Goals, evidence and coaching boundaries',
+      entryPreview: {
+        badge: 'Coaching',
+        kicker: 'TRAINER AND STUDENT BRIEF',
+        title: 'The plan adapts to recovery and verified progress',
+        copy: 'Training, readiness, habits, and coach feedback stay current while protected health context keeps its own boundary.',
+        metrics: [{ label: 'Week', value: '3 of 4' }, { label: 'Readiness', value: 'Check first' }, { label: 'Pain flags', value: '0' }],
+        privateLabel: 'Protected health context stays scoped',
+        sharedLabel: 'Approved progress supports coaching'
+      },
+      greeting: 'Good afternoon, Nina and Sam.', headline: 'The plan should adapt while keeping accountability.', summary: 'Training, recovery, habits, and check-ins stay useful because the system records evidence and respects health boundaries.',
       next: { time: '6:00 PM', title: 'Upper-body session', detail: 'Complete the warm-up check before choosing normal or reduced volume.' },
       recommendation: { label: 'Recommended next move', title: 'Use the smaller plan if readiness is low.', detail: 'Recording each adaptation improves future recommendations.', targetTab: 'recovery' },
       priority: { label: 'Readiness check', title: 'Sleep is below the preferred range', detail: 'Use the warm-up check before choosing normal or reduced volume.', tone: 'info', targetTab: 'recovery' },
@@ -711,7 +766,17 @@ window.BRIEF_DEMO_DATA = {
       }
     },
     team: {
-      id: 'team', label: 'Team and project', short: 'Roles, handoffs and shared project truth', greeting: 'Good afternoon, Atlas team.', headline: 'Give everyone the same goal with access matched to their role', summary: 'Members receive role-relevant work, while project leads keep the broader operating picture and restricted context.',
+      id: 'team', label: 'Team and project', short: 'Roles, handoffs and shared project truth',
+      entryPreview: {
+        badge: 'Project team',
+        kicker: 'TEAM AND PROJECT BRIEF',
+        title: 'Ownership, blockers, and handoffs stay visible to the right roles',
+        copy: 'The team sees one current project record, while leads and members receive the details their roles allow.',
+        metrics: [{ label: 'Projects', value: '4' }, { label: 'Blockers', value: '2' }, { label: 'Release', value: 'Today' }],
+        privateLabel: 'Restricted lead context stays scoped',
+        sharedLabel: 'Role approved work reaches the team'
+      },
+      greeting: 'Good afternoon, Atlas team.', headline: 'Give everyone the same goal with access matched to their role', summary: 'Members receive role-relevant work, while project leads keep the broader operating picture and restricted context.',
       next: { time: '3:00 PM', title: 'Release readiness review', detail: 'Confirm the final blocker, handoff owner and rollback decision.' },
       recommendation: { label: 'Recommended next move', title: 'Resolve the unowned handoff before adding more work.', detail: 'A visible dependency with no receiver is the highest operational risk.', targetTab: 'handoffs' },
       priority: { label: 'Release warning', title: 'The QA-to-release handoff still has no receiver', detail: 'Assign the owner before the readiness review so the release decision uses a complete chain.', tone: 'warning', targetTab: 'handoffs' },
