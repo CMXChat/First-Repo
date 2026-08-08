@@ -2,7 +2,7 @@
 
 Last reconciled: **August 8, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `bc9f2051166fa0a57bec8aac1b47b0adc533dc6c`
+Verified code baseline: `14790b4ed5c9ed090d9f0c59413d00c8dd566b2b`
 
 ## Read this first
 
@@ -102,6 +102,9 @@ For the Python-first learning and development environment, start with `docs/deve
 - Avoid stacked slogan fragments and generated-sounding symmetry.
 - Keep demonstrated, fictional, and planned capabilities clearly separated.
 - Prefer final product wording in source files. A small compatibility adapter is acceptable when it protects a staged rename across dynamic legacy modules.
+- Use everyday product language in the briefing itself. Keep technical architecture in the product overview or an explicit explanation.
+- Do not use metaphorical weather, fake loading language, or technical labels where a person expects a real-world condition or plain answer.
+- Each briefing should make it easy to understand what changed, why it matters, and what to do next without repeating the privacy model on every card.
 
 ## Required safeguards
 
