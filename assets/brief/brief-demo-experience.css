@@ -765,7 +765,7 @@ html[data-theme="light"] .habit-tracker-row > footer strong {
 }
 
 .household-column[data-board-tone="week"] > header > span {
-  background: var(--amber);
+  background: var(--violet);
 }
 
 .household-column[data-board-tone="done"] > header > span {

@@ -494,6 +494,40 @@ test('Business partners and Accountant and client use complete advanced workspac
   await expectPlainVisibleCopy(page);
 });
 
+test('briefing sections explain their controls and expose arrows when needed', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'The section cues are validated at desktop and narrow widths.');
+  await page.setViewportSize({ width: 1140, height: 844 });
+  await openCurrentBrief(page);
+  await enterScenario(page, 'accounting');
+  const scrollCue = page.locator('[data-scroll-today]');
+  await expect(scrollCue).toBeVisible();
+  const initialPageScroll = await page.evaluate(() => scrollY);
+  await scrollCue.click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(initialPageScroll + 20);
+  await selectPrimaryView(page, 'workspace');
+
+  const tabs = page.locator('#workspaceTabs');
+  const previous = page.locator('[data-workspace-tab-step="previous"]');
+  const next = page.locator('[data-workspace-tab-step="next"]');
+  const hint = page.locator('#workspaceTabHint');
+  await expect(hint).toBeVisible();
+  await expect(hint).toHaveText('Choose any section above to open it');
+  await expect(next).toBeHidden();
+
+  await page.setViewportSize({ width: 520, height: 844 });
+  await expect(next).toBeVisible();
+  await expect(next).toBeEnabled();
+  await expect(previous).toBeDisabled();
+  await expect(hint).toHaveText('Choose a section, or use the right arrow to see more');
+
+  const initialScroll = await tabs.evaluate(node => node.scrollLeft);
+  await next.click();
+  await expect.poll(() => tabs.evaluate(node => node.scrollLeft)).toBeGreaterThan(initialScroll + 20);
+  await expect(previous).toBeEnabled();
+  await expect(hint).not.toHaveText('Choose a section, or use the right arrow to see more');
+  await expectNoHorizontalOverflow(page);
+});
+
 test('every active Space keeps visible copy free of banned writing patterns', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'One browser is enough for the rendered-copy audit.');
   await openCurrentBrief(page);
@@ -717,7 +751,7 @@ test('section pagers and guarded swipes move between views on mobile', async ({ 
   await expect(page.locator('.section-pager')).toHaveCount(5);
   const todayPager = page.locator('[data-view-panel="today"] .section-pager');
   await expect(todayPager.locator('[data-section-view]')).toHaveCount(1);
-  await expect(todayPager.locator('[data-section-view="workspace"]')).toContainText('Workspace');
+  await expect(todayPager.locator('[data-section-view="workspace"]')).toContainText('Explore');
   await expect(todayPager.locator('.section-swipe-hint')).toBeVisible();
 
   await todayPager.locator('[data-section-view="workspace"]').click();

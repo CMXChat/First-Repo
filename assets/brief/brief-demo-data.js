@@ -7,7 +7,7 @@ window.BRIEF_DEMO_DATA = {
   },
   navigation: [
     { id: 'today', label: 'Today' },
-    { id: 'workspace', label: 'Workspace' },
+    { id: 'workspace', label: 'Explore' },
     { id: 'spaces', label: 'Spaces' },
     { id: 'how', label: 'How it works' }
   ],

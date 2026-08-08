@@ -15,10 +15,10 @@
   <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260807-1" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260807-3" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260807-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260807-3" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260808-1" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260807-3" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260807-2" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-5" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260808-1" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-6" />
 </head>
 <body data-entered="false" data-entry-choice-made="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -156,8 +156,9 @@
               <h1 id="heroTitle"></h1>
               <p class="hero-summary" id="heroSummary"></p>
               <div class="hero-actions">
-                <button class="primary-button" type="button" data-go-view="workspace">Open workspace</button>
+                <button class="primary-button" type="button" data-go-view="workspace">Explore this briefing</button>
                 <button class="secondary-button" type="button" data-go-view="spaces">View Spaces</button>
+                <button class="hero-scroll-cue" type="button" data-scroll-today><span>Scroll through today</span><i aria-hidden="true">↓</i></button>
               </div>
             </article>
 
@@ -166,7 +167,7 @@
               <h2 id="nextTitle"></h2>
               <p id="nextDetail"></p>
               <div class="card-inline-actions">
-                <button class="text-button" type="button" data-go-view="workspace">Open details <span aria-hidden="true">→</span></button>
+                <button class="text-button" type="button" data-go-view="workspace">See briefing details <span aria-hidden="true">→</span></button>
               </div>
             </aside>
           </div>
@@ -182,8 +183,8 @@
 
           <section class="space-discovery" aria-labelledby="spaceDiscoveryTitle">
             <header>
-              <div><p class="eyebrow">EXPLORE THIS SPACE</p><h2 id="spaceDiscoveryTitle">Open the parts worth seeing</h2></div>
-              <p>Three standout modules from the selected Space. Each opens the focused workspace directly.</p>
+              <div><p class="eyebrow">MORE IN THIS BRIEFING</p><h2 id="spaceDiscoveryTitle">See what else is inside</h2></div>
+              <p>Open one of these previews, or choose Explore in the menu to see every section.</p>
             </header>
             <div class="space-discovery-track" id="spaceHighlights"></div>
           </section>
@@ -245,10 +246,15 @@
 
         <section class="view-panel" data-view-panel="workspace" aria-labelledby="workspaceTitle" hidden>
           <header class="view-heading">
-            <div><p class="eyebrow">MORE DETAIL</p><h1 id="workspaceTitle">Open the part of this Space you need</h1></div>
+            <div><p class="eyebrow">EVERY SECTION</p><h1 id="workspaceTitle">Choose the part of this briefing you need</h1></div>
             <div class="view-heading-tools"><p>Each example has its own categories and records, while the app stays familiar.</p></div>
           </header>
-          <nav class="workspace-tabs" id="workspaceTabs" role="tablist" aria-label="Workspace categories"></nav>
+          <div class="workspace-tab-navigation" id="workspaceTabNavigation">
+            <button class="workspace-tab-step is-previous" type="button" data-workspace-tab-step="previous" aria-label="Show previous briefing sections" hidden><span aria-hidden="true">←</span></button>
+            <nav class="workspace-tabs" id="workspaceTabs" role="tablist" aria-label="Briefing sections"></nav>
+            <button class="workspace-tab-step is-next" type="button" data-workspace-tab-step="next" aria-label="Show more briefing sections" hidden><span aria-hidden="true">→</span></button>
+          </div>
+          <p class="workspace-tab-hint" id="workspaceTabHint" aria-live="polite" hidden></p>
           <section class="workspace-panel" id="workspacePanel" role="tabpanel" tabindex="-1"></section>
         </section>
 
@@ -407,12 +413,12 @@
   </div>
 
   <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
-  <script src="/assets/brief/brief-demo-data.js?v=20260808-1" defer></script>
+  <script src="/assets/brief/brief-demo-data.js?v=20260808-2" defer></script>
   <script src="/assets/brief/brief-demo-advanced.js?v=20260807-3" defer></script>
   <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
   <script src="/assets/brief/brief-demo-experience.js?v=20260807-5" defer></script>
   <script src="/assets/brief/brief-demo-media.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260808-2" defer></script>
+  <script src="/assets/brief/brief-demo-app.js?v=20260808-3" defer></script>
   <script src="/assets/brief/brief-demo-explainers.js?v=20260807-4" defer></script>
   <script src="/assets/brief/brief-demo-conversation.js?v=20260808-1" defer></script>
 </body>

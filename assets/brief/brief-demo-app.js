@@ -414,7 +414,59 @@
     const inset = 10;
     if (buttonRect.left < hostRect.left + inset) host.scrollBy({ left: buttonRect.left - hostRect.left - inset, behavior: 'smooth' });
     if (buttonRect.right > hostRect.right - inset) host.scrollBy({ left: buttonRect.right - hostRect.right + inset, behavior: 'smooth' });
-    requestAnimationFrame(keepDocumentAligned);
+    requestAnimationFrame(() => {
+      keepDocumentAligned();
+      updateWorkspaceTabNavigation();
+    });
+  }
+
+  function updateWorkspaceTabNavigation() {
+    const host = $('#workspaceTabs');
+    const previous = $('[data-workspace-tab-step="previous"]');
+    const next = $('[data-workspace-tab-step="next"]');
+    const hint = $('#workspaceTabHint');
+    if (!host || !previous || !next || !hint) return;
+
+    const overflowing = host.scrollWidth > host.clientWidth + 6;
+    previous.hidden = !overflowing;
+    next.hidden = !overflowing;
+    hint.hidden = false;
+    if (!overflowing) {
+      hint.textContent = 'Choose any section above to open it';
+      return;
+    }
+
+    const atStart = host.scrollLeft <= 5;
+    const atEnd = host.scrollLeft + host.clientWidth >= host.scrollWidth - 5;
+    previous.disabled = atStart;
+    next.disabled = atEnd;
+    hint.textContent = atStart
+      ? 'Choose a section, or use the right arrow to see more'
+      : atEnd
+        ? 'Choose a section, or use the left arrow to go back'
+        : 'Choose a section, or use the arrows to see more';
+  }
+
+  function moveWorkspaceTabs(direction) {
+    const host = $('#workspaceTabs');
+    if (!host) return;
+    const distance = Math.max(180, host.clientWidth * 0.72);
+    host.scrollBy({
+      left: direction === 'previous' ? -distance : distance,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
+    window.setTimeout(updateWorkspaceTabNavigation, 280);
+  }
+
+  function scrollThroughToday() {
+    const target = ['#priorityNotice', '.space-discovery', '.today-grid', '.today-lower']
+      .map(selector => $(selector))
+      .find(node => node && !node.hidden && node.getClientRects().length > 0);
+    if (!target) return;
+    target.scrollIntoView({
+      block: 'start',
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
   }
 
   function renderWorkspaceTabs() {
@@ -427,6 +479,7 @@
         <button type="button" role="tab" id="brief-next-tab-${escapeHtml(item.id)}" data-workspace-tab="${escapeHtml(item.id)}" aria-selected="${active}" aria-controls="workspacePanel" tabindex="${active ? 0 : -1}">${escapeHtml(item.label)}</button>
       `;
     }).join('');
+    window.requestAnimationFrame(updateWorkspaceTabNavigation);
   }
 
   function renderWorkspacePanel() {
@@ -666,6 +719,9 @@
     $('#homeButton')?.addEventListener('click', () => selectView('today', { push: true }));
     $('#resetDemo')?.addEventListener('click', resetDemo);
     $('#workspaceTabs')?.addEventListener('keydown', moveWorkspaceTab);
+    $('#workspaceTabs')?.addEventListener('scroll', updateWorkspaceTabNavigation, { passive: true });
+    $('[data-workspace-tab-step="previous"]')?.addEventListener('click', () => moveWorkspaceTabs('previous'));
+    $('[data-workspace-tab-step="next"]')?.addEventListener('click', () => moveWorkspaceTabs('next'));
     $('#briefUpdateButton')?.addEventListener('click', openBriefUpdate);
     $('#closeBriefUpdate')?.addEventListener('click', closeBriefUpdate);
     $('#cancelBriefUpdate')?.addEventListener('click', closeBriefUpdate);
@@ -684,6 +740,11 @@
       const viewButton = event.target.closest('[data-primary-view]');
       if (viewButton) {
         selectView(viewButton.dataset.primaryView, { push: true });
+        return;
+      }
+
+      if (event.target.closest('[data-scroll-today]')) {
+        scrollThroughToday();
         return;
       }
 
@@ -731,6 +792,7 @@
     });
 
     window.addEventListener('scroll', keepDocumentAligned, { passive: true });
+    window.addEventListener('resize', updateWorkspaceTabNavigation, { passive: true });
   }
 
   function init() {
