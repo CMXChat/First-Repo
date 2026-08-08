@@ -348,19 +348,31 @@ iframe {
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
-.hero-actions > * {
+.hero-actions > *:not(.hero-scroll-cue) {
   display: none !important;
 }
 
-.hero-actions::before {
-  content: 'Scroll through today';
+.hero-scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  color: inherit;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
 }
 
-.hero-actions::after {
+.hero-scroll-cue i {
   display: grid;
+  flex: 0 0 30px;
   width: 30px;
   height: 30px;
   place-items: center;
@@ -369,9 +381,21 @@ iframe {
   border-radius: 999px;
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   box-shadow: 0 7px 18px rgba(31, 67, 100, 0.08);
-  content: '↓';
+  font-style: normal;
   font-size: 0.95rem;
   animation: brief-scroll-cue 1.8s ease-in-out infinite;
+}
+
+.hero-scroll-cue:hover i,
+.hero-scroll-cue:focus-visible i {
+  color: #fff;
+  border-color: var(--blue);
+  background: var(--blue-deep);
+}
+
+.hero-scroll-cue:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 
 @keyframes brief-scroll-cue {

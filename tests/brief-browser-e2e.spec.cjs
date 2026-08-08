@@ -28,7 +28,7 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('#openDemo')).toBeEnabled();
   await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', expectedEntryScenario);
   if (expectedEntryScenario === 'personal') {
-    await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Space');
+    await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Briefing');
     await expect(page.locator('#entryPreviewTitle')).toContainText('sorted by what matters next');
   }
 
@@ -193,7 +193,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', 'business');
   await expect(page.locator('#entryPreviewTitle')).toContainText('New York and Sydney');
   await expect(page.locator('#entryPreviewMetrics')).toContainText('2 decisions');
-  await expect(page.locator('#openDemoLabel')).toHaveText('Open Business partners Space');
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Business partners Briefing');
   await page.locator('[data-entry-scenario="personal"]').click();
 
   const firstTipAccent = await page.locator('#entryTipCarousel').evaluate(carousel => {
@@ -308,6 +308,51 @@ test('desktop entry fits common screens, stays centered and exposes small-window
 
   await page.locator('#entry').evaluate(entry => entry.scrollTo({ top: entry.scrollHeight, behavior: 'auto' }));
   await expect(page.locator('#openDemo')).toBeInViewport();
+});
+
+test('mobile reveals the selected briefing action only after a card tap', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-android', 'The sticky entry action runs once in mobile Chromium.');
+  await prepareFreshPage(page);
+
+  await expect(page.locator('body')).toHaveAttribute('data-entry-choice-made', 'false');
+  await expect(page.locator('#entryMobileChoiceHint')).toBeVisible();
+  await expect(page.locator('#entryMobileChoiceHint')).toHaveText('Tap one to continue');
+  await expect(page.locator('#openDemo')).toBeHidden();
+
+  await page.locator('[data-entry-scenario="family"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-entry-choice-made', 'true');
+  await expect(page.locator('#entryMobileChoiceHint')).toHaveText('Family selected');
+  await expect(page.locator('#openDemo')).toBeVisible();
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Family Briefing');
+
+  await expect.poll(async () => page.locator('[data-entry-scenario="family"]').evaluate(choice => {
+    const action = document.querySelector('#openDemo');
+    return action ? action.getBoundingClientRect().top - choice.getBoundingClientRect().bottom : -1;
+  })).toBeGreaterThanOrEqual(10);
+
+  const stickyAction = await page.locator('#openDemo').evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const style = getComputedStyle(button);
+    return {
+      position: style.position,
+      left: rect.left,
+      right: innerWidth - rect.right,
+      bottom: innerHeight - rect.bottom,
+      height: rect.height
+    };
+  });
+  expect(stickyAction.position).toBe('fixed');
+  expect(stickyAction.left).toBeGreaterThanOrEqual(13);
+  expect(stickyAction.right).toBeGreaterThanOrEqual(13);
+  expect(stickyAction.bottom).toBeGreaterThanOrEqual(9);
+  expect(stickyAction.height).toBeGreaterThanOrEqual(56);
+  await expectNoHorizontalOverflow(page);
+
+  await page.locator('[data-entry-scenario="accounting"]').click();
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Accountant and client Briefing');
+  await page.locator('#openDemo').click();
+  await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
+  await expect(page.locator('body')).toHaveAttribute('data-scenario', 'accounting');
 });
 
 test('section conversations and standout modules keep the current Space in scope', async ({ page }, testInfo) => {
@@ -447,6 +492,40 @@ test('Business partners and Accountant and client use complete advanced workspac
   await expect(page.locator('.rule-list li')).toHaveCount(4);
   await expectNoHorizontalOverflow(page);
   await expectPlainVisibleCopy(page);
+});
+
+test('briefing sections explain their controls and expose arrows when needed', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'The section cues are validated at desktop and narrow widths.');
+  await page.setViewportSize({ width: 1140, height: 844 });
+  await openCurrentBrief(page);
+  await enterScenario(page, 'accounting');
+  const scrollCue = page.locator('[data-scroll-today]');
+  await expect(scrollCue).toBeVisible();
+  const initialPageScroll = await page.evaluate(() => scrollY);
+  await scrollCue.click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(initialPageScroll + 20);
+  await selectPrimaryView(page, 'workspace');
+
+  const tabs = page.locator('#workspaceTabs');
+  const previous = page.locator('[data-workspace-tab-step="previous"]');
+  const next = page.locator('[data-workspace-tab-step="next"]');
+  const hint = page.locator('#workspaceTabHint');
+  await expect(hint).toBeVisible();
+  await expect(hint).toHaveText('Choose any section above to open it');
+  await expect(next).toBeHidden();
+
+  await page.setViewportSize({ width: 520, height: 844 });
+  await expect(next).toBeVisible();
+  await expect(next).toBeEnabled();
+  await expect(previous).toBeDisabled();
+  await expect(hint).toHaveText('Choose a section, or use the right arrow to see more');
+
+  const initialScroll = await tabs.evaluate(node => node.scrollLeft);
+  await next.click();
+  await expect.poll(() => tabs.evaluate(node => node.scrollLeft)).toBeGreaterThan(initialScroll + 20);
+  await expect(previous).toBeEnabled();
+  await expect(hint).not.toHaveText('Choose a section, or use the right arrow to see more');
+  await expectNoHorizontalOverflow(page);
 });
 
 test('every active Space keeps visible copy free of banned writing patterns', async ({ page }, testInfo) => {
@@ -672,7 +751,7 @@ test('section pagers and guarded swipes move between views on mobile', async ({ 
   await expect(page.locator('.section-pager')).toHaveCount(5);
   const todayPager = page.locator('[data-view-panel="today"] .section-pager');
   await expect(todayPager.locator('[data-section-view]')).toHaveCount(1);
-  await expect(todayPager.locator('[data-section-view="workspace"]')).toContainText('Workspace');
+  await expect(todayPager.locator('[data-section-view="workspace"]')).toContainText('Explore');
   await expect(todayPager.locator('.section-swipe-hint')).toBeVisible();
 
   await todayPager.locator('[data-section-view="workspace"]').click();

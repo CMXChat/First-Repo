@@ -30,6 +30,7 @@
 
   const state = {
     entered: false,
+    entryChoiceMade: false,
     entrySelection: data.meta.defaultScenario,
     scenarioId: data.meta.defaultScenario,
     view: 'today',
@@ -135,7 +136,38 @@
     }
   }
 
-  function setEntrySelection(id) {
+  function keepEntryChoiceVisible(trigger) {
+    if (!(trigger instanceof HTMLElement) || !window.matchMedia('(max-width: 620px)').matches) return;
+    window.requestAnimationFrame(() => {
+      const entry = $('#entry');
+      const open = $('#openDemo');
+      if (!entry || !open) return;
+      const choiceRect = trigger.getBoundingClientRect();
+      const actionRect = open.getBoundingClientRect();
+      const overlap = choiceRect.bottom - (actionRect.top - 14);
+      if (overlap <= 0) return;
+      entry.scrollBy({
+        top: overlap,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+      });
+    });
+  }
+
+  function confirmEntryChoice(selected, trigger) {
+    state.entryChoiceMade = true;
+    document.body.dataset.entryChoiceMade = 'true';
+    setText('#entryMobileChoiceHint', `${selected.label} selected`);
+
+    const open = $('#openDemo');
+    if (!open) return;
+    open.classList.remove('is-selection-ready');
+    void open.offsetWidth;
+    open.classList.add('is-selection-ready');
+    keepEntryChoiceVisible(trigger);
+    window.setTimeout(() => keepEntryChoiceVisible(trigger), 360);
+  }
+
+  function setEntrySelection(id, options = {}) {
     state.entrySelection = validScenarios.has(id) ? id : '';
     $$('[data-entry-scenario]').forEach(button => {
       button.setAttribute('aria-pressed', String(button.dataset.entryScenario === state.entrySelection));
@@ -144,8 +176,9 @@
     if (!open) return;
     const selected = data.scenarios[state.entrySelection];
     open.disabled = !selected;
-    setText('#openDemoLabel', selected ? `Open ${selected.label} Space` : 'Choose a Space');
+    setText('#openDemoLabel', selected ? `Open ${selected.label} Briefing` : 'Choose a Briefing');
     if (selected) renderEntryPreview(selected);
+    if (selected && options.userInitiated === true) confirmEntryChoice(selected, options.trigger);
   }
 
   function renderScenarioSelect() {
@@ -381,7 +414,59 @@
     const inset = 10;
     if (buttonRect.left < hostRect.left + inset) host.scrollBy({ left: buttonRect.left - hostRect.left - inset, behavior: 'smooth' });
     if (buttonRect.right > hostRect.right - inset) host.scrollBy({ left: buttonRect.right - hostRect.right + inset, behavior: 'smooth' });
-    requestAnimationFrame(keepDocumentAligned);
+    requestAnimationFrame(() => {
+      keepDocumentAligned();
+      updateWorkspaceTabNavigation();
+    });
+  }
+
+  function updateWorkspaceTabNavigation() {
+    const host = $('#workspaceTabs');
+    const previous = $('[data-workspace-tab-step="previous"]');
+    const next = $('[data-workspace-tab-step="next"]');
+    const hint = $('#workspaceTabHint');
+    if (!host || !previous || !next || !hint) return;
+
+    const overflowing = host.scrollWidth > host.clientWidth + 6;
+    previous.hidden = !overflowing;
+    next.hidden = !overflowing;
+    hint.hidden = false;
+    if (!overflowing) {
+      hint.textContent = 'Choose any section above to open it';
+      return;
+    }
+
+    const atStart = host.scrollLeft <= 5;
+    const atEnd = host.scrollLeft + host.clientWidth >= host.scrollWidth - 5;
+    previous.disabled = atStart;
+    next.disabled = atEnd;
+    hint.textContent = atStart
+      ? 'Choose a section, or use the right arrow to see more'
+      : atEnd
+        ? 'Choose a section, or use the left arrow to go back'
+        : 'Choose a section, or use the arrows to see more';
+  }
+
+  function moveWorkspaceTabs(direction) {
+    const host = $('#workspaceTabs');
+    if (!host) return;
+    const distance = Math.max(180, host.clientWidth * 0.72);
+    host.scrollBy({
+      left: direction === 'previous' ? -distance : distance,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
+    window.setTimeout(updateWorkspaceTabNavigation, 280);
+  }
+
+  function scrollThroughToday() {
+    const target = ['#priorityNotice', '.space-discovery', '.today-grid', '.today-lower']
+      .map(selector => $(selector))
+      .find(node => node && !node.hidden && node.getClientRects().length > 0);
+    if (!target) return;
+    target.scrollIntoView({
+      block: 'start',
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    });
   }
 
   function renderWorkspaceTabs() {
@@ -394,6 +479,7 @@
         <button type="button" role="tab" id="brief-next-tab-${escapeHtml(item.id)}" data-workspace-tab="${escapeHtml(item.id)}" aria-selected="${active}" aria-controls="workspacePanel" tabindex="${active ? 0 : -1}">${escapeHtml(item.label)}</button>
       `;
     }).join('');
+    window.requestAnimationFrame(updateWorkspaceTabNavigation);
   }
 
   function renderWorkspacePanel() {
@@ -604,16 +690,19 @@
 
   function resetDemo() {
     state.entered = false;
+    state.entryChoiceMade = false;
     state.entrySelection = data.meta.defaultScenario;
     state.view = 'today';
     state.tab = '';
     document.body.dataset.entered = 'false';
+    document.body.dataset.entryChoiceMade = 'false';
     $('#demoApp')?.setAttribute('aria-hidden', 'true');
     window.BRIEF_DEMO_MEDIA?.reset();
     closeBriefUpdate();
     selectView('today', { push: false, focus: false });
     renderEntry();
     setEntrySelection(data.meta.defaultScenario);
+    setText('#entryMobileChoiceHint', 'Tap one to continue');
     clearBriefUrlState();
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     queueMicrotask(() => $(`[data-entry-scenario="${data.meta.defaultScenario}"]`)?.focus({ preventScroll: true }));
@@ -622,7 +711,7 @@
   function installEvents() {
     $('#entryScenarioGrid')?.addEventListener('click', event => {
       const button = event.target.closest('[data-entry-scenario]');
-      if (button) setEntrySelection(button.dataset.entryScenario);
+      if (button) setEntrySelection(button.dataset.entryScenario, { userInitiated: true, trigger: button });
     });
 
     $('#openDemo')?.addEventListener('click', openDemo);
@@ -630,6 +719,9 @@
     $('#homeButton')?.addEventListener('click', () => selectView('today', { push: true }));
     $('#resetDemo')?.addEventListener('click', resetDemo);
     $('#workspaceTabs')?.addEventListener('keydown', moveWorkspaceTab);
+    $('#workspaceTabs')?.addEventListener('scroll', updateWorkspaceTabNavigation, { passive: true });
+    $('[data-workspace-tab-step="previous"]')?.addEventListener('click', () => moveWorkspaceTabs('previous'));
+    $('[data-workspace-tab-step="next"]')?.addEventListener('click', () => moveWorkspaceTabs('next'));
     $('#briefUpdateButton')?.addEventListener('click', openBriefUpdate);
     $('#closeBriefUpdate')?.addEventListener('click', closeBriefUpdate);
     $('#cancelBriefUpdate')?.addEventListener('click', closeBriefUpdate);
@@ -648,6 +740,11 @@
       const viewButton = event.target.closest('[data-primary-view]');
       if (viewButton) {
         selectView(viewButton.dataset.primaryView, { push: true });
+        return;
+      }
+
+      if (event.target.closest('[data-scroll-today]')) {
+        scrollThroughToday();
         return;
       }
 
@@ -695,6 +792,7 @@
     });
 
     window.addEventListener('scroll', keepDocumentAligned, { passive: true });
+    window.addEventListener('resize', updateWorkspaceTabNavigation, { passive: true });
   }
 
   function init() {
@@ -714,6 +812,7 @@
     setScenario(state.scenarioId, { push: false });
     selectView('today', { push: false, focus: false });
     setEntrySelection(urlState.scenario || data.meta.defaultScenario);
+    document.body.dataset.entryChoiceMade = 'false';
     installEvents();
   }
 

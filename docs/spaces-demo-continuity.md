@@ -1,6 +1,6 @@
 # Spaces Demo Continuity
 
-Last reconciled: **August 7, 2026**
+Last reconciled: **August 8, 2026**
 Repository: `CMXChat/First-Repo`
 Starting code baseline: `6bab140fa8abf644acc1216cc86b2af841eeebf1`
 
@@ -113,13 +113,19 @@ The centered public dialog prepares and displays this handoff. A signed-in produ
 
 Every scenario also defines three standout modules. They appear after the opening Brief as direct links into the relevant workspace tab, so the Family calendar, Accounting cash sheet, Business projects, and other signature views remain easy to find.
 
+The primary navigation calls the full module index `Explore`. The opening action, recommendation card, discovery previews, and mobile section pager all lead into it. Inside Explore, a compact cue tells the person that the category names are controls. Previous and next buttons appear only when the row extends beyond its visible width. The opening `Scroll through today` control moves to the next visible part of the Brief and respects reduced-motion preferences.
+
 The recommended next move also links to its exact supporting module. Its label names the destination, such as Calendar, Concerns, Cash plan, Recovery, or Handoffs, and opens that workspace tab directly. This keeps the strongest evidence connected to the recommendation without adding another navigation layer.
 
-The entrance defines a Space as one clear briefing built from approved information for a person or the people sharing it. Personal starts selected so the main action is ready. Every choice has a restrained visual identity and updates a compact preview with its priorities, current signals, private boundary, and approved shared scope. A small Demo data disclosure keeps the fictional-data boundary available without ending the entrance on a disclaimer.
+The entrance defines a Space as one clear briefing built from approved information for a person or the people sharing it. Personal is ready as the desktop starting point. The choices share one restrained visual treatment and update a compact mobile preview with priorities, current signals, private boundaries, and approved shared scope. A small Demo data disclosure keeps the fictional-data boundary available without ending the entrance on a disclaimer.
 
-The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left every 4.2 seconds, has previous and next controls, pauses during desktop hover or keyboard focus, and respects reduced-motion settings. Phone users can swipe in either direction, the numeric counter stays hidden on small screens, and automatic movement resumes after touch interaction. The compact phone controls sit beneath the words. The thin pill changes through paired pastel accents in violet, pink, teal, yellow, and cyan. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability names its account, permission, or backend boundary.
+The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left every 4.2 seconds, has previous and next controls, pauses during desktop hover or keyboard focus, and respects reduced-motion settings. Phone users can swipe in either direction, the numeric counter stays hidden on small screens, and automatic movement resumes after touch interaction. The compact phone controls sit beneath the words. The thin pill changes through paired pastel accents in violet, pink, teal, coral, and cyan. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability names its account, permission, or backend boundary.
+
+Priority warnings, trainer accents, financial watch states, and similar emphasis use the current coral, rose, or violet palette in both themes.
 
 Desktop uses a purpose-built entrance where the briefing choices, tips, and entry actions fit before the fold. The detailed selected-Space preview remains part of the more deliberate mobile and tablet flow. The light entrance uses the CMX blue family with quiet technical linework, while dark mode uses near-black with electric-blue depth. The briefing choices share one rich neutral card treatment, with color reserved for selection, the background, and the rotating platform tip.
+
+On phones, the primary entry action stays hidden until the person taps a briefing choice. It then appears as a safe-area-aware bottom action with the chosen briefing named in full, remains available while the person reviews other choices, and disappears when the briefing opens. Desktop keeps the existing inline action and gives it a brief visual confirmation when a choice changes. This interaction belongs to the entry controller and remains reversible without changing briefing data or routing.
 
 The entry grid uses constrained tracks so intrinsic card widths cannot push the panel to the right. It fits without vertical movement at 1917×938, 1280×720, and 1024×768 in the current Chromium geometry checks. Smaller desktop windows receive a visible clickable scroll-progress rail. Phones use full-width choices, comfortable reading sizes, and normal vertical touch scrolling. Wide financial tables scroll only inside their own sheet.
 
