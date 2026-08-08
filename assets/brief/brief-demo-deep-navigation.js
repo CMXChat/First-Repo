@@ -71,7 +71,6 @@
         '[data-highlight-tab]',
         '[data-full-workspace-tab]',
         '[data-workspace-tab]',
-        '[data-workspace-tab-step]',
         '#priorityReview',
         '[data-go-view="workspace"]'
       ].join(','));
