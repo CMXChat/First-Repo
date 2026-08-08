@@ -151,7 +151,9 @@ test('desktop entry fits common screens, stays centered and exposes small-window
     const style = getComputedStyle(entry);
     const card = entry.querySelector('.entry-card').getBoundingClientRect();
     const heading = entry.querySelector('.entry-card h1').getBoundingClientRect();
-    const preview = entry.querySelector('#entrySpacePreview').getBoundingClientRect();
+    const previewElement = entry.querySelector('#entrySpacePreview');
+    const preview = previewElement.getBoundingClientRect();
+    const grid = entry.querySelector('#entryScenarioGrid');
     const tip = entry.querySelector('.entry-tip-carousel').getBoundingClientRect();
     const actions = entry.querySelector('.entry-actions').getBoundingClientRect();
     const activeCopy = entry.querySelector('[data-entry-tip]:not([aria-hidden="true"]) p');
@@ -165,6 +167,8 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       rightMargin: innerWidth - card.right,
       headingHeight: heading.height,
       previewHeight: preview.height,
+      previewDisplay: getComputedStyle(previewElement).display,
+      gridColumnCount: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
       tipHeight: tip.height,
       actionGap: actions.top - tip.bottom,
       wordAnimation: getComputedStyle(activeCopy).animationName
@@ -176,7 +180,9 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(entryFit.gutter).toContain('stable');
   expect(Math.abs(entryFit.leftMargin - entryFit.rightMargin)).toBeLessThanOrEqual(2);
   expect(entryFit.headingHeight).toBeLessThanOrEqual(50);
+  expect(entryFit.previewDisplay).toBe('none');
   expect(entryFit.previewHeight).toBeLessThanOrEqual(110);
+  expect(entryFit.gridColumnCount).toBe(8);
   expect(entryFit.tipHeight).toBeLessThanOrEqual(66);
   expect(entryFit.actionGap).toBeGreaterThanOrEqual(10);
   expect(entryFit.wordAnimation).toContain('entry-tip-copy-in');
@@ -249,6 +255,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
     const openButton = entry.querySelector('#openDemo');
     const previewTitle = entry.querySelector('#entryPreviewTitle');
     const previewCopy = entry.querySelector('#entryPreviewCopy');
+    const preview = entry.querySelector('#entrySpacePreview');
     const position = entry.querySelector('#entryTipPosition');
     const controls = entry.querySelector('.entry-tip-controls').getBoundingClientRect();
     const carouselRect = carousel.getBoundingClientRect();
@@ -266,6 +273,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       optionDetailFontSize: parseFloat(getComputedStyle(optionDetail).fontSize),
       previewTitleFontSize: parseFloat(getComputedStyle(previewTitle).fontSize),
       previewCopyFontSize: parseFloat(getComputedStyle(previewCopy).fontSize),
+      previewDisplay: getComputedStyle(preview).display,
       openButtonFontSize: parseFloat(getComputedStyle(openButton).fontSize),
       openButtonHeight: openButton.getBoundingClientRect().height,
       positionDisplay: getComputedStyle(position).display,
@@ -286,6 +294,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(phoneFit.optionDetailFontSize).toBeGreaterThanOrEqual(14);
   expect(phoneFit.previewTitleFontSize).toBeGreaterThanOrEqual(20);
   expect(phoneFit.previewCopyFontSize).toBeGreaterThanOrEqual(14);
+  expect(phoneFit.previewDisplay).toBe('grid');
   expect(phoneFit.openButtonFontSize).toBeGreaterThanOrEqual(15);
   expect(phoneFit.openButtonHeight).toBeGreaterThanOrEqual(48);
   expect(phoneFit.positionDisplay).toBe('none');
