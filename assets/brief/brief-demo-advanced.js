@@ -133,8 +133,37 @@
   }
 
   function renderProjectDashboard(detail) {
+    const progress = detail.projects.map(project => clampProgress(project.progress));
+    const average = Math.round(progress.reduce((sum, value) => sum + value, 0) / Math.max(progress.length, 1));
+    const owned = detail.projects.filter(project => project.owner && project.owner !== 'Unassigned').length;
+    const blocked = detail.projects.filter(project => String(project.status).toLowerCase() === 'blocked').length;
     return `
       <div class="project-dashboard" aria-label="Fictional project progress">
+        <section class="project-command-view">
+          <div class="project-health-visual">
+            <div class="project-health-ring" style="--project-health:${average * 3.6}deg" role="img" aria-label="${average}% overall project health">
+              <span><strong>${average}%</strong><small>HEALTH</small></span>
+            </div>
+            <div><span>RELEASE PULSE</span><strong>${blocked ? 'One handoff is holding the release' : 'Release path is clear'}</strong><p>${owned} of ${detail.projects.length} workstreams have a named owner. The next review should resolve the receiver before more work enters the queue.</p></div>
+          </div>
+          <div class="project-burndown">
+            <header><div><span>OPEN WORK</span><strong>Release trajectory</strong></div><small>Fictional · 6 days</small></header>
+            <svg viewBox="0 0 520 150" role="img" aria-label="Open work trending down toward release">
+              <defs><linearGradient id="projectBurndownFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#168cff" stop-opacity=".36"/><stop offset="1" stop-color="#8f6cff" stop-opacity=".02"/></linearGradient></defs>
+              <path class="project-grid-line" d="M20 35H500M20 75H500M20 115H500"/>
+              <path class="project-area" d="M20 28 C90 30 105 51 180 55 S285 76 340 82 S430 105 500 116 L500 135 L20 135 Z"/>
+              <path class="project-line" d="M20 28 C90 30 105 51 180 55 S285 76 340 82 S430 105 500 116"/>
+              <g><circle cx="20" cy="28" r="5"/><circle cx="180" cy="55" r="5"/><circle cx="340" cy="82" r="5"/><circle cx="500" cy="116" r="7"/></g>
+            </svg>
+            <div class="project-chart-labels"><span>MON · 14</span><span>WED · 9</span><span>FRI · 5</span><strong>TODAY · 3</strong></div>
+          </div>
+        </section>
+        <div class="project-signal-strip" aria-label="Project signals">
+          <span><small>OWNERSHIP</small><strong>${owned}/${detail.projects.length}</strong><em>One receiver missing</em></span>
+          <span><small>BLOCKERS</small><strong>${blocked}</strong><em>QA to release</em></span>
+          <span><small>REVIEW</small><strong>3:00</strong><em>Decision window</em></span>
+          <span><small>RELEASE</small><strong>Today</strong><em>Approval pending</em></span>
+        </div>
         <div class="project-dashboard-heading"><span>WORKSTREAM</span><span>TEAM</span><span>PROGRESS</span><span>NEXT</span></div>
         ${detail.projects.map(project => `
           <article class="project-row" data-project-tone="${safeTone(project.tone)}">

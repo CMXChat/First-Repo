@@ -699,17 +699,21 @@ test('generic briefing cards are replaced by decision-shaped visuals', async ({ 
     personal: { day: '.decision-timeline', work: '.compact-status-board', money: '.brief-metric-bars', wellness: '.readiness-panel', connections: '.brief-connection-map' },
     relationship: { together: '.shared-orbit-view', profiles: '.shared-orbit-view', plans: '.handoff-visual', reflection: '.guided-brief-steps', connections: '.brief-connection-map' },
     trainer: { today: '.decision-timeline', habits: '.brief-metric-bars', progress: '.progress-trend-panel', recovery: '.readiness-panel', connections: '.brief-connection-map' },
-    team: { mywork: '.compact-status-board', handoffs: '.handoff-visual', procedures: '.guided-brief-steps', connections: '.brief-connection-map' }
+    team: { mywork: '.compact-status-board', project: '.project-command-view', handoffs: '.handoff-visual', procedures: '.guided-brief-steps', connections: '.brief-connection-map' }
   };
 
   for (const [scenario, sections] of Object.entries(scenarios)) {
-    if (page.locator('#scenarioSelect').inputValue() !== scenario) await page.locator('#scenarioSelect').selectOption(scenario);
+    if (await page.locator('#scenarioSelect').inputValue() !== scenario) await page.locator('#scenarioSelect').selectOption(scenario);
     await selectPrimaryView(page, 'workspace');
     for (const [tab, selector] of Object.entries(sections)) {
       await page.locator(`[data-workspace-tab="${tab}"]`).click();
       await expect(page.locator(`#workspacePanel ${selector}`)).toBeVisible();
     }
   }
+  await page.locator('[data-workspace-tab="project"]').click();
+  await expect(page.locator('#workspacePanel .project-health-ring')).toHaveAttribute('aria-label', /overall project health/);
+  await expect(page.locator('#workspacePanel .project-burndown svg')).toBeVisible();
+  await expect(page.locator('#workspacePanel .project-signal-strip > span')).toHaveCount(4);
   await expectNoHorizontalOverflow(page);
 });
 
