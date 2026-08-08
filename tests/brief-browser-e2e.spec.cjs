@@ -427,6 +427,7 @@ test('section conversations and standout modules keep the current Space in scope
 });
 
 test('Business partners and Accountant and client use complete advanced workspaces', async ({ page }, testInfo) => {
+  test.setTimeout(45000);
   test.skip(!testInfo.project.name.endsWith('-desktop'), 'Advanced workspace coverage runs in desktop browser projects.');
   await openCurrentBrief(page);
   await enterScenario(page, 'business');
@@ -515,15 +516,17 @@ test('briefing sections expose named progress controls and working arrows', asyn
   await expect(next).toBeVisible();
   await expect(next).toBeEnabled();
   await expect(page.locator('.workspace-next-section')).toContainText('Continue to Cash plan');
-  await expect(page.locator('.workspace-related-links')).toContainText('More inside this briefing');
-  await expect(page.locator('.workspace-related-links button')).toHaveCount(4);
+  await expect(page.locator('.workspace-related-links')).toContainText('Explore the full picture');
+  await expect(page.locator('.workspace-related-links button')).toHaveCount(5);
+  await expect(page.locator('.workspace-related-links button[aria-current="page"]')).toContainText('Viewing now');
   await expect.poll(() => page.locator('.workspace-related-links').evaluate(node => {
     const firstContent = node.nextElementSibling;
     return Boolean(firstContent && node.getBoundingClientRect().top < firstContent.getBoundingClientRect().top);
   })).toBe(true);
 
-  const relatedTarget = await page.locator('.workspace-related-links button').first().getAttribute('data-workspace-continue');
-  await page.locator('.workspace-related-links button').first().click();
+  const relatedLink = page.locator('.workspace-related-links button:not(:disabled)').first();
+  const relatedTarget = await relatedLink.getAttribute('data-workspace-continue');
+  await relatedLink.click();
   await expect(page.locator(`[data-workspace-tab="${relatedTarget}"]`)).toHaveAttribute('aria-selected', 'true');
   await page.locator('[data-workspace-tab="overview"]').click();
 
@@ -531,6 +534,7 @@ test('briefing sections expose named progress controls and working arrows', asyn
   await expect(page.locator('[data-workspace-tab="cash"]')).toHaveAttribute('aria-selected', 'true');
   await expect(hint).toContainText('Section 2 of 5');
   await expect(page.locator('.workspace-next-section')).toContainText('Continue to Portfolio');
+  await expect(page.locator('.workspace-thread-links button')).toHaveCount(2);
   await expect(previous).toBeEnabled();
 
   await page.setViewportSize({ width: 520, height: 844 });
@@ -676,6 +680,10 @@ test('Personal habits and the Family briefing use the richer workspace modules',
   await expect(page.locator('#all-weather .weather-visual')).toBeVisible();
   await expect(page.locator('#all-weather .weather-range')).toContainText('High 82°');
   await expect(page.locator('#all-workspace')).toContainText('Every category in this family briefing');
+  await expect(page.locator('#all-workspace .family-calendar-day')).toHaveCount(3);
+  await expect(page.locator('#all-workspace .household-column')).toHaveCount(3);
+  await expect(page.locator('#all-workspace .shopping-groups li')).toHaveCount(7);
+  await expect(page.locator('#all-workspace .full-workspace-visual')).toHaveCount(3);
   await expectNoHorizontalOverflow(page);
 });
 
