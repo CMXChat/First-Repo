@@ -198,6 +198,7 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   const entryHeadingSize = await page.locator('#entryTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(entryHeadingSize).toBeLessThanOrEqual(36);
   await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
+  await expect(page.locator('#entrySpacePreview')).toBeHidden();
 
   await page.locator('[data-entry-scenario="relationship"]').click();
   await expect(page.locator('#openDemo')).toBeEnabled();
@@ -208,6 +209,14 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   await expect(page.locator('#mobileNav')).toBeVisible();
   await expect(page.locator('#mobileNav button')).toHaveCount(5);
   await expect(page.locator('#mobileNav button').last()).toHaveText('Everything');
+  await expect(page.locator('#themeButton')).toContainText('Dark');
+  await expect(page.locator('#themeButton')).toContainText('Light');
+
+  await page.locator('#priorityRoutingButton').click();
+  await expect(page.locator('#priorityRoutingDialog')).toBeVisible();
+  await expect(page.locator('#priorityRoutingDialog')).toContainText('Shared decision routing');
+  await expect(page.locator('#priorityRoutingDialog')).toContainText('No message leaves this demo');
+  await page.locator('#closePriorityRouting').click();
 
   const heroHeadingSize = await page.locator('#heroTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));
   expect(heroHeadingSize).toBeLessThanOrEqual(36);
@@ -234,6 +243,20 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
   await expect(page.locator('#workspacePanel .decision-timeline')).toHaveCount(1);
   await expectNoHorizontalOverflow(page);
+
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.locator('#scenarioSelect').selectOption('team');
+  await page.locator('#mobileNav [data-primary-view="workspace"]').click();
+  await page.locator('[data-workspace-tab="project"]').click();
+  await expect(page.locator('.project-dashboard-heading')).toBeHidden();
+  expect(await page.locator('.project-command-view').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
+  await page.locator('#mobileNav [data-primary-view="everything"]').click();
+  expect(await page.locator('#everythingContent .project-command-view').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
+
+  await page.locator('#scenarioSelect').selectOption('accounting');
+  await page.locator('#mobileNav [data-primary-view="everything"]').click();
+  expect(await page.locator('#everythingContent .portfolio-command').evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
+  await expectNoHorizontalOverflow(page);
   await expectNoVisibleEllipses(page);
 });
 
@@ -242,9 +265,21 @@ test('light default, saved dark preference and reset remain reversible', async (
   await openScenario(page, 'business');
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('#themeButton')).toContainText('Dark');
+  await expect(page.locator('#themeButton')).toContainText('Light');
+  await expect.poll(() => page.locator('#themeButton').evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const thumb = button.querySelector('.theme-toggle-thumb').getBoundingClientRect();
+    return thumb.left > rect.left + rect.width / 3;
+  })).toBe(true);
   await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
+  await expect.poll(() => page.locator('#themeButton').evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const thumb = button.querySelector('.theme-toggle-thumb').getBoundingClientRect();
+    return thumb.left < rect.left + rect.width / 3;
+  })).toBe(true);
 
   const selectorStyles = await page.locator('#scenarioSelect').evaluate((select) => {
     const selectStyle = getComputedStyle(select);

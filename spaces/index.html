@@ -14,11 +14,11 @@
   <link rel="canonical" href="https://db.cmxchat.com/spaces/" />
   <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260808-1" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260807-3" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260808-4" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260808-1" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260807-3" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260808-4" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-15" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260808-6" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260808-2" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260808-1" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260808-6" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-16" />
 </head>
 <body data-entered="false" data-entry-choice-made="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -121,7 +121,13 @@
         <div class="topbar-actions">
           <span class="today-label" id="todayLabel"></span>
           <button class="round-button" id="mediaButton" type="button" aria-label="Open soundtrack" aria-expanded="false">♪</button>
-          <button class="round-button" id="themeButton" type="button" aria-label="Switch to dark theme" aria-pressed="false"><span aria-hidden="true">◐</span></button>
+          <button class="theme-toggle spaces-theme-toggle" id="themeButton" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+            <span class="theme-toggle-track" aria-hidden="true">
+              <span class="theme-option theme-option-dark">Dark</span>
+              <span class="theme-option theme-option-light">Light</span>
+              <span class="theme-toggle-thumb"></span>
+            </span>
+          </button>
         </div>
       </div>
     </header>
@@ -174,6 +180,10 @@
             <div class="priority-copy"><span id="priorityLabel"></span><strong id="priorityTitle"></strong><small id="priorityDetail"></small></div>
             <div class="priority-actions">
               <button class="secondary-button priority-review" id="priorityReview" type="button">Review</button>
+              <button class="secondary-button priority-routing" id="priorityRoutingButton" type="button" aria-haspopup="dialog" aria-controls="priorityRoutingDialog">
+                <span class="priority-route-icons" aria-hidden="true"><i>W</i><i>TXT</i></span>
+                <span><strong>Alert routing</strong><small id="priorityRouteSummary">Push + text</small></span>
+              </button>
               <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="priority" data-ai-title="Priority notice" aria-label="Open a conversation about the priority notice" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button>
             </div>
           </section>
@@ -364,6 +374,58 @@
       </section>
     </dialog>
 
+    <dialog class="priority-routing-dialog" id="priorityRoutingDialog" aria-labelledby="priorityRoutingTitle">
+      <section class="priority-routing-shell">
+        <header class="priority-routing-heading">
+          <div><p class="eyebrow">DEMO DELIVERY SETTINGS</p><h2 id="priorityRoutingTitle">Choose where priority alerts should go</h2></div>
+          <button class="round-button" id="closePriorityRouting" type="button" aria-label="Close priority alert settings">×</button>
+        </header>
+
+        <section class="priority-route-hero" aria-label="Priority alert route preview">
+          <div class="priority-route-context">
+            <span id="priorityRoutingContext">CURRENT BRIEFING</span>
+            <strong id="priorityRoutingLabel"></strong>
+            <p id="priorityRoutingRule"></p>
+          </div>
+          <div class="priority-route-map" aria-hidden="true">
+            <span class="route-map-source">!</span>
+            <i></i>
+            <span class="route-map-router"><b></b><b></b><b></b></span>
+            <i></i>
+            <span class="route-map-destinations"><b>W</b><b>TXT</b><b>●</b></span>
+          </div>
+        </section>
+
+        <div class="priority-routing-grid">
+          <section class="priority-channel-panel" aria-labelledby="priorityChannelTitle">
+            <header><div><span>DELIVERY CHANNELS</span><strong id="priorityChannelTitle">Route only what this Space allows</strong></div><small id="priorityChannelCount">0 active</small></header>
+            <div class="priority-channel-list" id="priorityChannelList"></div>
+          </section>
+
+          <aside class="priority-message-preview" aria-label="Example alert preview">
+            <header><span>MESSAGE PREVIEW</span><small id="priorityPreviewChannel">WhatsApp</small></header>
+            <div class="priority-message-phone">
+              <div class="priority-message-app"><span id="priorityPreviewIcon">W</span><div><strong id="priorityPreviewDestination"></strong><small>Spaces priority · demo</small></div><time>now</time></div>
+              <article><span id="priorityPreviewScope"></span><strong id="priorityPreviewTitle"></strong><p>Open the Brief to review the source, permission scope, and available action.</p><b>Review in Spaces</b></article>
+            </div>
+          </aside>
+        </div>
+
+        <section class="priority-escalation-rule" aria-label="Escalation rule preview">
+          <span><i aria-hidden="true">01</i><strong>First route</strong><small id="priorityFirstRoute"></small></span>
+          <span><i aria-hidden="true">02</i><strong>Fallback</strong><small id="priorityFallback"></small></span>
+          <span><i aria-hidden="true">03</i><strong>Quiet hours</strong><small id="priorityQuietHours"></small></span>
+        </section>
+
+        <p class="priority-routing-boundary"><strong>Preview only.</strong> No message leaves this demo. A real connection would require account sign-in, recipient approval, delivery logs, and a way to pause or revoke access.</p>
+        <p class="priority-routing-status" id="priorityRoutingStatus" aria-live="polite"></p>
+        <div class="priority-routing-actions">
+          <button class="secondary-button" id="cancelPriorityRouting" type="button">Close</button>
+          <button class="primary-button" id="savePriorityRouting" type="button">Save demo settings</button>
+        </div>
+      </section>
+    </dialog>
+
     <dialog class="spaces-ai-dialog" id="spacesAiDialog" aria-labelledby="spacesAiTitle">
       <section class="spaces-ai-shell">
         <header class="spaces-ai-heading">
@@ -410,12 +472,12 @@
   </div>
 
   <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
-  <script src="/assets/brief/brief-demo-data.js?v=20260808-4" defer></script>
+  <script src="/assets/brief/brief-demo-data.js?v=20260808-5" defer></script>
   <script src="/assets/brief/brief-demo-advanced.js?v=20260808-4" defer></script>
   <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
   <script src="/assets/brief/brief-demo-experience.js?v=20260808-3" defer></script>
   <script src="/assets/brief/brief-demo-media.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260808-10" defer></script>
+  <script src="/assets/brief/brief-demo-app.js?v=20260808-11" defer></script>
   <script src="/assets/brief/brief-demo-explainers.js?v=20260807-4" defer></script>
   <script src="/assets/brief/brief-demo-conversation.js?v=20260808-1" defer></script>
 </body>

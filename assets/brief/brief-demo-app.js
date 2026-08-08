@@ -36,8 +36,13 @@
     view: 'today',
     tab: '',
     theme: initialTheme,
-    checkInChoice: ''
+    checkInChoice: '',
+    alertRoutes: Object.create(null),
+    alertRestoreFocus: null
   };
+
+  const alertChannelIcons = { whatsapp: 'W', sms: 'TXT', push: '●', email: '@' };
+  const alertChannelNames = { whatsapp: 'WhatsApp', sms: 'text', push: 'push', email: 'email' };
 
   function escapeHtml(value) {
     const node = document.createElement('div');
@@ -275,6 +280,121 @@
     setText('#priorityTitle', item.title);
     setText('#priorityDetail', item.detail);
     if (button) button.dataset.priorityTab = item.targetTab || '';
+    renderPriorityRouteSummary();
+  }
+
+  function currentAlertRoute() {
+    return data.alertRoutes?.[state.scenarioId] || null;
+  }
+
+  function alertSelection(route = currentAlertRoute()) {
+    if (!route) return new Set();
+    if (!state.alertRoutes[state.scenarioId]) {
+      state.alertRoutes[state.scenarioId] = new Set(route.channels.filter(channel => channel.active).map(channel => channel.id));
+    }
+    return state.alertRoutes[state.scenarioId];
+  }
+
+  function activeAlertChannels(route = currentAlertRoute()) {
+    if (!route) return [];
+    const selected = alertSelection(route);
+    return route.channels.filter(channel => selected.has(channel.id));
+  }
+
+  function alertRouteSummary(route = currentAlertRoute()) {
+    const active = activeAlertChannels(route);
+    if (!active.length) return 'Delivery paused';
+    const names = active.map(channel => alertChannelNames[channel.id] || channel.label.toLowerCase());
+    if (names.length === 1) return names[0][0].toUpperCase() + names[0].slice(1);
+    if (names.length === 2) return `${names[0][0].toUpperCase() + names[0].slice(1)} + ${names[1]}`;
+    return `${names[0][0].toUpperCase() + names[0].slice(1)} + ${names.length - 1} more`;
+  }
+
+  function renderPriorityRouteSummary() {
+    const button = $('#priorityRoutingButton');
+    const route = currentAlertRoute();
+    if (button) button.hidden = !route;
+    setText('#priorityRouteSummary', alertRouteSummary(route));
+  }
+
+  function renderPriorityRoutingDialog() {
+    const route = currentAlertRoute();
+    const scenario = currentScenario();
+    const priority = scenario.priority;
+    const list = $('#priorityChannelList');
+    if (!route || !list) return;
+    const selected = alertSelection(route);
+    const active = activeAlertChannels(route);
+    const preview = active[0] || route.channels[0];
+
+    setText('#priorityRoutingContext', `${scenario.label.toUpperCase()} BRIEFING`);
+    setText('#priorityRoutingLabel', route.label);
+    setText('#priorityRoutingRule', route.rule);
+    setText('#priorityChannelCount', `${active.length} active`);
+    setText('#priorityFirstRoute', active.length ? `${active[0].label} · ${active[0].destination}` : 'All delivery paused');
+    setText('#priorityFallback', route.fallback);
+    setText('#priorityQuietHours', route.quietHours);
+    setText('#priorityPreviewChannel', active.length ? preview.label : 'Delivery paused');
+    setText('#priorityPreviewIcon', active.length ? (alertChannelIcons[preview.id] || '•') : 'Ⅱ');
+    setText('#priorityPreviewDestination', active.length ? preview.destination : 'No active destination');
+    setText('#priorityPreviewScope', active.length ? preview.scope.toUpperCase() : 'PREVIEW PAUSED');
+    setText('#priorityPreviewTitle', priority?.title || 'Priority update ready for review');
+    setText('#priorityRoutingStatus', '');
+
+    list.innerHTML = route.channels.map(channel => {
+      const enabled = selected.has(channel.id);
+      return `
+        <button class="priority-channel" type="button" role="switch" aria-checked="${enabled}" data-alert-channel="${escapeHtml(channel.id)}">
+          <span class="priority-channel-icon" data-channel="${escapeHtml(channel.id)}" aria-hidden="true">${escapeHtml(alertChannelIcons[channel.id] || '•')}</span>
+          <span class="priority-channel-copy"><strong>${escapeHtml(channel.label)}</strong><small>${escapeHtml(channel.destination)} · ${escapeHtml(channel.timing)}</small><em>${escapeHtml(channel.scope)}</em></span>
+          <span class="priority-channel-switch" aria-hidden="true"><i></i></span>
+        </button>`;
+    }).join('');
+  }
+
+  function openPriorityRouting(event) {
+    const dialog = $('#priorityRoutingDialog');
+    if (!dialog || !currentAlertRoute()) return;
+    state.alertRestoreFocus = event?.currentTarget || $('#priorityRoutingButton');
+    renderPriorityRoutingDialog();
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    queueMicrotask(() => $('[data-alert-channel]', dialog)?.focus({ preventScroll: true }));
+  }
+
+  function finishPriorityRoutingClose() {
+    const trigger = state.alertRestoreFocus;
+    state.alertRestoreFocus = null;
+    trigger?.focus({ preventScroll: true });
+  }
+
+  function closePriorityRouting({ restoreFocus = true } = {}) {
+    const dialog = $('#priorityRoutingDialog');
+    if (!dialog?.open) return;
+    if (!restoreFocus) state.alertRestoreFocus = null;
+    if (typeof dialog.close === 'function') dialog.close();
+    else {
+      dialog.removeAttribute('open');
+      finishPriorityRoutingClose();
+    }
+  }
+
+  function togglePriorityChannel(button) {
+    const route = currentAlertRoute();
+    const id = button.dataset.alertChannel;
+    if (!route?.channels.some(channel => channel.id === id)) return;
+    const selected = alertSelection(route);
+    if (selected.has(id)) selected.delete(id);
+    else selected.add(id);
+    renderPriorityRoutingDialog();
+    renderPriorityRouteSummary();
+    queueMicrotask(() => $(`[data-alert-channel="${id}"]`, $('#priorityRoutingDialog'))?.focus({ preventScroll: true }));
+  }
+
+  function savePriorityRouting() {
+    renderPriorityRouteSummary();
+    setText('#priorityRoutingStatus', 'Demo routing saved. No message was sent.');
+    $('#savePriorityRouting')?.setAttribute('data-routing-saved', 'true');
   }
 
   function renderToday() {
@@ -652,6 +772,7 @@
 
   function setScenario(id, options = {}) {
     if (!validScenarios.has(id)) return;
+    closePriorityRouting({ restoreFocus: false });
     state.scenarioId = id;
     state.tab = normalizeTab('');
     state.checkInChoice = '';
@@ -758,6 +879,7 @@
     $('#demoApp')?.setAttribute('aria-hidden', 'true');
     window.BRIEF_DEMO_MEDIA?.reset();
     closeBriefUpdate();
+    closePriorityRouting({ restoreFocus: false });
     selectView('today', { push: false, focus: false });
     renderEntry();
     setEntrySelection(data.meta.defaultScenario);
@@ -786,6 +908,19 @@
     $('#closeBriefUpdate')?.addEventListener('click', closeBriefUpdate);
     $('#cancelBriefUpdate')?.addEventListener('click', closeBriefUpdate);
     $('#saveBriefUpdate')?.addEventListener('click', saveBriefUpdate);
+    $('#priorityRoutingButton')?.addEventListener('click', openPriorityRouting);
+    $('#closePriorityRouting')?.addEventListener('click', () => closePriorityRouting());
+    $('#cancelPriorityRouting')?.addEventListener('click', () => closePriorityRouting());
+    $('#savePriorityRouting')?.addEventListener('click', savePriorityRouting);
+    $('#priorityChannelList')?.addEventListener('click', event => {
+      const button = event.target.closest('[data-alert-channel]');
+      if (button) togglePriorityChannel(button);
+    });
+    const priorityRoutingDialog = $('#priorityRoutingDialog');
+    priorityRoutingDialog?.addEventListener('click', event => {
+      if (event.target === priorityRoutingDialog) closePriorityRouting();
+    });
+    priorityRoutingDialog?.addEventListener('close', finishPriorityRoutingClose);
     $('#briefUpdateChoices')?.addEventListener('click', event => {
       const button = event.target.closest('[data-check-in-choice]');
       if (button) chooseBriefUpdate(button);

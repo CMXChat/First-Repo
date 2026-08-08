@@ -822,7 +822,8 @@ html[data-theme="dark"] .privacy-callout {
 .privacy-control-console ol p { display: block; }
 .privacy-control-console ol strong { color: var(--ink-strong); font-size: .7rem; }
 .privacy-control-console ol p { margin: 2px 0 0; color: var(--muted); font-size: .6rem; }
-.privacy-control-console ol b { padding: 4px 7px; color: #1a8a70; border-radius: 999px; background: color-mix(in srgb, #3ac9a4 12%, var(--surface)); font-size: .55rem; }
+.privacy-control-console ol b { padding: 4px 7px; color: #11705d; border-radius: 999px; background: color-mix(in srgb, #3ac9a4 12%, var(--surface)); font-size: .55rem; }
+html[data-theme="dark"] .privacy-control-console ol b { color: #63d3b6; }
 .privacy-control-console aside { align-self: stretch; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
 .privacy-control-console aside > div { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 9px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
 .privacy-control-console aside time { color: var(--muted); font-size: .62rem; }

@@ -11,6 +11,92 @@ window.BRIEF_DEMO_DATA = {
     { id: 'spaces', label: 'Spaces' },
     { id: 'how', label: 'How it works' }
   ],
+  alertRoutes: {
+    personal: {
+      label: 'Personal priority routing',
+      rule: 'Send when money, timing, or safety needs a decision.',
+      quietHours: 'Quiet hours: 10:30 PM to 7:00 AM',
+      fallback: 'Text after 10 minutes without a response',
+      channels: [
+        { id: 'push', label: 'Spaces push', destination: 'Alex’s phone', timing: 'Immediately', scope: 'Full alert', active: true },
+        { id: 'sms', label: 'Text message', destination: 'Trusted contact', timing: 'After 10 minutes', scope: 'Title and callback link', active: true },
+        { id: 'whatsapp', label: 'WhatsApp group', destination: 'Family check-in', timing: 'Paused', scope: 'Title only', active: false },
+        { id: 'email', label: 'Email digest', destination: 'Evening review', timing: '8:00 PM', scope: 'Daily summary', active: false }
+      ]
+    },
+    relationship: {
+      label: 'Shared decision routing',
+      rule: 'Send only when a shared plan needs both people.',
+      quietHours: 'Quiet hours: 10:00 PM to 8:00 AM',
+      fallback: 'Text both partners after 15 minutes',
+      channels: [
+        { id: 'whatsapp', label: 'WhatsApp group', destination: 'Maya + Jordan', timing: 'Immediately', scope: 'Shared facts only', active: true },
+        { id: 'push', label: 'Spaces push', destination: 'Both approved devices', timing: 'Immediately', scope: 'Full shared alert', active: true },
+        { id: 'sms', label: 'Text message', destination: 'Both partners', timing: 'After 15 minutes', scope: 'Title and approval link', active: true },
+        { id: 'email', label: 'Email recap', destination: 'Weekly shared recap', timing: 'Sunday', scope: 'Approved summary', active: false }
+      ]
+    },
+    family: {
+      label: 'Household priority routing',
+      rule: 'Send for pickups, appointments, safety, and uncovered tasks.',
+      quietHours: 'Quiet hours follow each adult’s schedule',
+      fallback: 'Text the adult currently responsible after 10 minutes',
+      channels: [
+        { id: 'whatsapp', label: 'WhatsApp group', destination: 'Home Base', timing: 'Immediately', scope: 'Household details', active: true },
+        { id: 'sms', label: 'Text message', destination: 'Adult on duty', timing: 'After 10 minutes', scope: 'Task and reply link', active: true },
+        { id: 'push', label: 'Spaces push', destination: 'Household devices', timing: 'Immediately', scope: 'Role-approved details', active: true },
+        { id: 'email', label: 'Email digest', destination: 'Adults only', timing: '7:30 PM', scope: 'Tomorrow’s plan', active: false }
+      ]
+    },
+    business: {
+      label: 'Partner escalation routing',
+      rule: 'Send for cash, delivery, client, or approval thresholds.',
+      quietHours: 'Uses New York and Sydney working hours',
+      fallback: 'Text the on-call partner after 10 minutes',
+      channels: [
+        { id: 'whatsapp', label: 'WhatsApp group', destination: 'Partner ops', timing: 'Immediately', scope: 'Approved company facts', active: true },
+        { id: 'sms', label: 'Text message', destination: 'On-call partner', timing: 'After 10 minutes', scope: 'Title and review link', active: true },
+        { id: 'push', label: 'Spaces push', destination: 'Both partners', timing: 'Immediately', scope: 'Full priority', active: true },
+        { id: 'email', label: 'Email digest', destination: 'Operating review', timing: 'Before shared overlap', scope: 'Decision summary', active: true }
+      ]
+    },
+    accounting: {
+      label: 'Financial review routing',
+      rule: 'Send when a deadline, reserve, or approval threshold changes.',
+      quietHours: 'Quiet hours: 9:00 PM to 8:00 AM',
+      fallback: 'Text the assigned reviewer after 30 minutes',
+      channels: [
+        { id: 'push', label: 'Spaces push', destination: 'Approved finance devices', timing: 'Immediately', scope: 'Full review alert', active: true },
+        { id: 'whatsapp', label: 'WhatsApp group', destination: 'Finance approvals', timing: 'Immediately', scope: 'Title only', active: true },
+        { id: 'sms', label: 'Text message', destination: 'Assigned reviewer', timing: 'After 30 minutes', scope: 'Deadline and secure link', active: true },
+        { id: 'email', label: 'Email digest', destination: 'Friday cash review', timing: 'Friday morning', scope: 'Approved financial summary', active: true }
+      ]
+    },
+    trainer: {
+      label: 'Training check-in routing',
+      rule: 'Send for readiness changes, pain flags, and missed check-ins.',
+      quietHours: 'Quiet hours: 9:30 PM to 7:00 AM',
+      fallback: 'Text the student before the training window',
+      channels: [
+        { id: 'whatsapp', label: 'WhatsApp group', destination: 'Training check-ins', timing: 'Immediately', scope: 'Plan and check-in only', active: true },
+        { id: 'push', label: 'Spaces push', destination: 'Trainer + student', timing: 'Immediately', scope: 'Role-approved details', active: true },
+        { id: 'sms', label: 'Text message', destination: 'Student phone', timing: 'Before session', scope: 'Check-in link', active: true },
+        { id: 'email', label: 'Email recap', destination: 'Weekly progress', timing: 'Sunday', scope: 'Approved evidence', active: false }
+      ]
+    },
+    team: {
+      label: 'Project escalation routing',
+      rule: 'Send for blockers, unowned handoffs, and release decisions.',
+      quietHours: 'Respects each member’s role and working hours',
+      fallback: 'Text the release owner after 10 minutes',
+      channels: [
+        { id: 'whatsapp', label: 'WhatsApp group', destination: 'Launch room', timing: 'Immediately', scope: 'Project-approved facts', active: true },
+        { id: 'sms', label: 'Text message', destination: 'Release owner', timing: 'After 10 minutes', scope: 'Blocker and review link', active: true },
+        { id: 'push', label: 'Spaces push', destination: 'Assigned members', timing: 'Immediately', scope: 'Role-specific details', active: true },
+        { id: 'email', label: 'Email digest', destination: 'Daily project recap', timing: '5:30 PM', scope: 'Project summary', active: true }
+      ]
+    }
+  },
   scenarios: {
     personal: {
       id: 'personal',

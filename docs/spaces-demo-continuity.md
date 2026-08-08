@@ -2,7 +2,7 @@
 
 Last reconciled: **August 8, 2026**
 Repository: `CMXChat/First-Repo`
-Starting code baseline: `6bab140fa8abf644acc1216cc86b2af841eeebf1`
+Starting code baseline: `50be686f28f9bc7fd9bc5d7043d2d527e4e50954`
 
 ## Start here
 
@@ -90,6 +90,8 @@ Family uses this pattern to show that milk is down to the last carton and alread
 
 Alerts should remain rare. A notice earns this position when it changes a near-term decision, prevents a missed responsibility, or confirms that a visible risk already has an owner.
 
+The notice also exposes one scenario-aware `Alert routing` preview. It can show Spaces push, WhatsApp group, text fallback, and email digest routes with realistic destinations, timing, quiet hours, and the exact information scope allowed through each route. This is local demo state and never sends a message. Real delivery requires authenticated provider connections, recipient approval, revocation, delivery logs, and failure handling. Sensitive details return the recipient to Spaces for source, permission, and action review.
+
 ## Direct input and correction contract
 
 Each scenario can define one short question with three quick answers and an optional one-line correction. The current demo saves the answer in local interface state for the active page session.
@@ -117,13 +119,13 @@ The primary navigation calls the full module index `Explore`. The opening action
 
 The recommended next move also links to its exact supporting module. Its label names the destination, such as Calendar, Concerns, Cash plan, Recovery, or Handoffs, and opens that workspace tab directly. This keeps the strongest evidence connected to the recommendation without adding another navigation layer.
 
-The entrance defines a Space as one clear briefing built from approved information for a person or the people sharing it. Personal is ready as the desktop starting point. The choices share one restrained visual treatment and update a compact mobile preview with priorities, current signals, private boundaries, and approved shared scope. A small Demo data disclosure keeps the fictional-data boundary available without ending the entrance on a disclaimer.
+The entrance defines a Space as one clear briefing built from approved information for a person or the people sharing it. Personal is ready as the desktop starting point. The choices share one restrained visual treatment. Tablet-sized layouts can update a selected-Space preview with priorities, current signals, private boundaries, and approved shared scope. Phones omit that repeated panel because the selected card, confirmation label, and open action already communicate the choice. A small Demo data disclosure keeps the fictional-data boundary available without ending the entrance on a disclaimer.
 
-The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left every 4.2 seconds, has previous and next controls, pauses during desktop hover or keyboard focus, and respects reduced-motion settings. Phone users can swipe in either direction, the numeric counter stays hidden on small screens, and automatic movement resumes after touch interaction. The compact phone controls sit beneath the words. The thin pill changes through paired pastel accents in violet, pink, teal, coral, and cyan. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability names its account, permission, or backend boundary.
+The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left every 4.2 seconds, pauses during desktop hover or keyboard focus, and respects reduced-motion settings. Previous and next arrow buttons are not shown. Phone users can swipe in either direction, the numeric counter stays hidden on small screens, and automatic movement resumes after touch interaction. The thin pill changes through paired pastel accents in violet, pink, teal, coral, and cyan. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability names its account, permission, or backend boundary.
 
 Priority warnings, trainer accents, financial watch states, and similar emphasis use the current coral, rose, or violet palette in both themes.
 
-Desktop uses a purpose-built entrance where the briefing choices, tips, and entry actions fit before the fold. The detailed selected-Space preview remains part of the more deliberate mobile and tablet flow. The light entrance uses the CMX blue family with quiet technical linework, while dark mode uses near-black with electric-blue depth. The briefing choices share one rich neutral card treatment, with color reserved for selection, the background, and the rotating platform tip.
+Desktop uses a purpose-built entrance where the briefing choices, tips, and entry actions fit before the fold. Tablet-sized layouts can retain the detailed selected-Space preview. Phones remove it to keep the entry focused. The light entrance uses the CMX blue family with quiet technical linework, while dark mode uses near-black with electric-blue depth. The briefing choices share one rich neutral card treatment, with color reserved for selection, the background, and the rotating platform tip.
 
 On phones, the natural bottom action is visible before a person chooses a briefing as a disabled `Choose a Briefing` control. Choosing a briefing changes the same control to `Open [type] Briefing`. A contextual sticky action can also appear after selection, but it yields while the natural action is visible so duplicate actions do not compete. The action disappears when the briefing opens. Desktop keeps the existing inline action and gives it a brief visual confirmation when a choice changes. This interaction belongs to the entry controller and remains reversible without changing briefing data or routing.
 
@@ -137,7 +139,7 @@ Every scenario has one primary Spotify track and two alternate choices. The musi
 
 Entry stays silent. Music starts only after the person opens the top-right drawer and chooses play. Browser and Spotify policy can require a direct tap, and the provider must never block entry into Spaces.
 
-The top-right soundtrack and appearance buttons share the same button surface. The appearance icon carries a restrained white-blue glow so it remains easy to notice without adding a glowing border around the control.
+The top-right soundtrack control remains compact. The appearance control matches `/doc/`: an explicit segmented `Dark` and `Light` button with a moving selected-state thumb. Both words remain visible, the accessible label names the next action, and the control does not rely on an ambiguous icon.
 
 ## Code map
 
@@ -145,7 +147,7 @@ The top-right soundtrack and appearance buttons share the same button surface. T
 |---|---|
 | `spaces/index.html` | Active shell, entry ideas, priority notice, correction and conversation dialogs, soundtrack choices, asset order, and cache versions |
 | `assets/brief/brief-demo-data.js` | Seven scenario definitions, entrance previews, and all fictional records |
-| `assets/brief/brief-demo-app.js` | Entrance selection and preview, navigation, workspace rendering, priority notice, and short correction flow |
+| `assets/brief/brief-demo-app.js` | Entrance selection and preview, navigation, workspace rendering, priority notice, alert-routing preview, and short correction flow |
 | `assets/brief/brief-demo-advanced.js` | Business, Accounting, and Team advanced renderers plus local prepared-action behavior |
 | `assets/brief/brief-demo-advanced.css` | Isolated styles for advanced modules, mobile financial-sheet geometry, seven-card entry, alerts, corrections, and music choices |
 | `assets/brief/brief-demo-experience.js` | Everything view, weather, habits, family boards, and shared-calendar renderers |
@@ -153,7 +155,7 @@ The top-right soundtrack and appearance buttons share the same button surface. T
 | `assets/brief/brief-demo-conversation.js` | Entry carousel timing and touch gestures, overflow progress control, and the static section-aware conversation handoff |
 | `assets/brief/brief-demo-conversation.css` | Entrance hierarchy, live preview, Space identities, desktop fit, readable mobile flow, pill carousel, overflow affordance, discovery links, centered contextual conversation, backend notice, and layered card surfaces |
 | `assets/brief/brief-demo-explainers.js` | Product explanation tabs and scenario jump controls |
-| `assets/brief/brief-demo-topbar-polish.css` | Topbar controls, theme icon treatment, and compact polish |
+| `assets/brief/brief-demo-topbar-polish.css` | Topbar controls, segmented appearance control, and compact polish |
 | `doc/index.html` | Readable product overview, illustrative interface teases, reviewed product comparison, investment case, and current boundaries without JavaScript |
 | `assets/personal-os-doc.css` | Product overview layout, visual teases, comparison table, investment section, responsive behavior, and print styling |
 | `assets/personal-os-doc.js` | Document theme, section tracking, and synchronized product wording |
@@ -189,7 +191,7 @@ Before publishing a Spaces change:
 5. Run desktop and mobile accessibility checks.
 6. Run Spotify lifecycle tests.
 7. Check light and dark themes.
-8. Check the Spaces entry at 360×800 and 390×844, confirm the choices and supporting copy remain readable, then reach the actions through normal vertical scrolling.
+8. Check the Spaces entry at 320×844, 360×800, 390×844, and 430×844. Confirm the large selected-Space preview is hidden on phones, the choices and supporting copy remain readable, and the disabled or selected action is reachable through normal vertical scrolling.
 9. Check that the Accounting sheet keeps Category, Planned, and the horizontal cue readable at 360 pixels wide.
 10. Check the spreadsheet’s own horizontal scroll without moving the page.
 11. Open the contextual conversation from a focused card and an advanced workspace section. Confirm the star stays compact, the dialog is centered, the Space and section remain in scope, and a prepared backend action raises the bottom notice.
@@ -197,7 +199,9 @@ Before publishing a Spaces change:
 13. Scan rendered copy for banned writing patterns.
 14. Verify `/brief/` preserves query and hash state when it redirects.
 15. Check `/doc/` interface previews, investment comparison, external source links, and local table scrolling in both themes.
-16. Verify the deployed `/spaces/` and `/doc/` assets after merge.
+16. Open alert routing in representative Personal, Family, Accounting, and Team contexts. Check scenario-specific destinations, switch state, focus restoration, mobile dialog containment, and the explicit no-send boundary.
+17. Check Team Project and Accounting Portfolio in focused and Everything views at 320, 360, 390, and 430 pixels. Charts must fit and tables may scroll only inside their named region.
+18. Verify the deployed `/spaces/` and `/doc/` assets after merge.
 
 ## Publishing and recovery
 
@@ -243,5 +247,13 @@ The Team and Project briefing uses a command view before its detailed workstream
 The Accountant and Client portfolio view uses a realistic hierarchy: total invested assets and contribution context, a combined three-month performance chart with a reference mix, an allocation ring with a labeled legend, then holding-level evidence. Individual holding sparklines include a filled trend area and current-position marker. Every market number remains explicitly fictional and delayed.
 
 The Personal Day and Family Home views use mixed-scale command layouts based on the information rather than a repeated dashboard grid. Personal Day combines a timeboxed afternoon, compact month calendar, weekly capacity pattern, and the three decisions that shape the plan. Family Home combines a household route, the month at a glance, owner and approval state, and a small life stream. The fictional family record includes Zoe's pediatric appointment, an appointment bag, and three homes saved for adult review. Commute and school-zone fit can enter the Family Brief, while prices and private notes remain in the adults' private profiles.
+
+The final audit round adds one contextual alert-routing setting beside each priority notice. Family can preview `Home Base` and an adult-on-duty fallback, Team can preview the `Launch room` and release owner, and every other context uses its own realistic route. The panel shows route scope, timing, quiet hours, message preview, switch state, and production permission requirements without sending anything.
+
+The `/spaces/` appearance control now uses the same labeled `Dark` and `Light` segmented design as `/doc/`. The `/doc/` daily-routine visual explains the priority route without adding another large dashboard. On phones, the entry removes the selected-Space preview panel to reduce repetition while preserving all seven choices and both stages of the open action.
+
+The narrow-layout audit found fixed 760-pixel project tracks and intrinsic portfolio tracks inside Everything. Project commands now collapse to a one-column visual, workstreams become mobile cards, and portfolio grids use bounded tracks. Automated checks cover every scenario and workspace tab at 320, 360, 390, and 430 pixels.
+
+The completion audit repeated the full review after those fixes. The desktop and Android Chromium suite passed 32 active checks with 12 intentional project skips, the focused rollback suite passed 5 active checks with 5 intentional project skips, and the accessibility matrix passed all 16 desktop and mobile checks. Static route, document, release, freshness, and asset-inventory contracts also passed. Visual review confirmed the simplified mobile entrance plus the Team project and Accounting portfolio compositions at 320 pixels.
 
 Visual research should be translated into product structure instead of copied as a skin. The useful patterns are mixed scale, embedded calendars, highlighted current points, clear chart comparison, activity patterns, strong legends, and a few composed surfaces. Spaces should preserve its lighter default theme, calm surrounding page, honest records, and scenario-specific meaning.

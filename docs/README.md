@@ -2,7 +2,7 @@
 
 Last reconciled: **August 8, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `1154a99d592e7e0f3b09258de6bfdd9df5a37a18`
+Verified code baseline: `50be686f28f9bc7fd9bc5d7043d2d527e4e50954`
 
 ## Read this first
 
@@ -78,11 +78,11 @@ For the Python-first learning and development environment, start with `docs/deve
 - `/spaces/` is the active experience and `/brief/` must remain a working compatibility redirect.
 - `/brief-next/` is a rollback snapshot and must not be required to match `/spaces/` byte for byte.
 - The Space selector must remain readable and operable in light and dark mode on desktop and mobile.
-- The live topbar contains the soundtrack and theme controls.
+- The live topbar contains the soundtrack control and the same explicit `Dark` and `Light` segmented appearance control used by `/doc/`.
 - The active demo contains seven contexts, including Business partners and Accountant and client.
-- Each context can show one compact priority notice and one short correction question.
+- Each context can show one compact priority notice, one scenario-aware alert-routing preview, and one short correction question.
 - Each context links to three signature modules and can open a conversation from the current section.
-- The entry defines Spaces as briefings built from approved information, starts with Personal selected, and changes a visual briefing and permission preview with each choice.
+- The entry defines Spaces as briefings built from approved information and starts with Personal selected. Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
 - The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
@@ -93,6 +93,7 @@ For the Python-first learning and development environment, start with `docs/deve
 - Provider limits and direct-tap fallback copy remain honest.
 - Shared calendars expose only approved Space-level coordination data, not unrelated private event details.
 - Alarm and voice behavior remain planned, opt-in, visible, reviewable, and limited by the current person, device, time, and Space.
+- Alert routing is a local demo setting. No WhatsApp, text, push, or email delivery occurs. Production delivery requires authenticated connections, recipient consent, route scope, revocation, logs, and failure handling.
 
 ## Copy standard
 
