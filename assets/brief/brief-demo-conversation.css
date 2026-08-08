@@ -1062,17 +1062,19 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 
 .workspace-related-links {
   display: grid;
-  gap: 13px;
-  margin-top: 22px;
-  padding: 18px;
+  gap: 11px;
+  margin: 0 0 22px;
+  padding: 15px;
   border: 1px solid color-mix(in srgb, var(--blue) 17%, var(--line));
   border-radius: 18px;
   background: color-mix(in srgb, var(--blue-soft) 34%, var(--surface));
 }
 
 .workspace-related-links > header {
-  display: grid;
-  gap: 3px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
 }
 
 .workspace-related-links > header span {
@@ -1089,17 +1091,17 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 
 .workspace-related-links > div {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
 }
 
 .workspace-related-links button {
   position: relative;
   display: grid;
-  min-height: 116px;
+  min-height: 94px;
   align-content: start;
   gap: 4px;
-  padding: 14px 42px 14px 15px;
+  padding: 12px 37px 12px 13px;
   color: var(--ink-strong);
   border: 1px solid color-mix(in srgb, var(--blue) 24%, var(--line));
   border-radius: 14px;
@@ -1129,13 +1131,13 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   font-size: 0.7rem;
   line-height: 1.4;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
 }
 
 .workspace-related-links button i {
   position: absolute;
-  top: 13px;
-  right: 13px;
+  top: 11px;
+  right: 11px;
   display: grid;
   width: 25px;
   height: 25px;
@@ -1653,15 +1655,28 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
   .workspace-related-links {
     gap: 12px;
     padding: 14px;
+    overflow: hidden;
+  }
+
+  .workspace-related-links > header {
+    display: grid;
+    gap: 2px;
   }
 
   .workspace-related-links > div {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    margin-inline: -2px;
+    padding: 2px 2px 7px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
   }
 
   .workspace-related-links button {
-    min-height: 104px;
+    flex: 0 0 min(76vw, 250px);
+    min-height: 100px;
+    scroll-snap-align: start;
   }
 
   .entry-scroll-control {

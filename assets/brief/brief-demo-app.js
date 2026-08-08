@@ -511,16 +511,16 @@
           ${next ? `<button class="workspace-next-section" type="button" data-workspace-continue="${escapeHtml(next.id)}"><span>Continue to ${escapeHtml(next.label)}</span><i aria-hidden="true">→</i></button>` : '<span class="workspace-section-complete">Final section</span>'}
         </div>
       </nav>
-      ${renderDetailBody(detail)}
       ${related.length ? `
         <nav class="workspace-related-links" aria-label="Explore more briefing sections">
-          <header><span>Explore more of this briefing</span><small>Each section opens another approved part of the same Space.</small></header>
+          <header><span>More inside this briefing</span><small>Open any connected section without losing your place.</small></header>
           <div>${related.map(item => {
             const relatedDetail = currentScenario().details[item.id];
             return `<button type="button" data-workspace-continue="${escapeHtml(item.id)}"><small>Briefing section</small><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(relatedDetail?.summary || 'Open the records and decisions connected to this part of the briefing.')}</span><i aria-hidden="true">→</i></button>`;
           }).join('')}</div>
         </nav>
       ` : ''}
+      ${renderDetailBody(detail)}
     `;
   }
 
