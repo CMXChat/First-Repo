@@ -85,8 +85,9 @@ test('Spaces topbar remains contained, mobile-safe, and starts music from its ow
     const themeStyle = theme ? getComputedStyle(theme) : null;
     const music = document.querySelector('#mediaButton');
     const musicStyle = music ? getComputedStyle(music) : null;
-    const themeIcon = theme?.querySelector('span');
-    const themeIconStyle = themeIcon ? getComputedStyle(themeIcon) : null;
+    const themeThumb = theme?.querySelector('.theme-toggle-thumb');
+    const themeRect = theme?.getBoundingClientRect();
+    const thumbRect = themeThumb?.getBoundingClientRect();
     return {
       top: rect.top,
       right: rect.right,
@@ -96,8 +97,9 @@ test('Spaces topbar remains contained, mobile-safe, and starts music from its ow
       musicBackground: musicStyle?.backgroundColor || '',
       themeBorderRadius: themeStyle?.borderRadius || '',
       musicBorderRadius: musicStyle?.borderRadius || '',
-      outerTextShadow: themeStyle?.textShadow || '',
-      iconTextShadow: themeIconStyle?.textShadow || '',
+      themeWidth: themeRect?.width || 0,
+      thumbWidth: thumbRect?.width || 0,
+      thumbOnRight: Boolean(themeRect && thumbRect && thumbRect.left > themeRect.left + themeRect.width / 3),
       boxShadow: themeStyle?.boxShadow || 'none'
     };
   });
@@ -107,10 +109,11 @@ test('Spaces topbar remains contained, mobile-safe, and starts music from its ow
   if ((page.viewportSize()?.width || 0) <= 860) {
     expect(topbar.paddingTop).toBeGreaterThanOrEqual(9);
   }
-  expect(topbar.themeBackground).toBe(topbar.musicBackground);
-  expect(topbar.themeBorderRadius).toBe(topbar.musicBorderRadius);
-  expect(topbar.outerTextShadow).toBe('none');
-  expect(topbar.iconTextShadow).not.toBe('none');
+  expect(topbar.themeBackground).toBeTruthy();
+  expect(topbar.themeBorderRadius).toBe('999px');
+  expect(topbar.themeWidth).toBeGreaterThanOrEqual(90);
+  expect(topbar.thumbWidth).toBeGreaterThanOrEqual(40);
+  expect(topbar.thumbOnRight).toBe(true);
   expect(topbar.boxShadow).not.toBe('none');
 
   await page.locator('#themeButton').click();

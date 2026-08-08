@@ -137,6 +137,10 @@ Avoid:
 
 All essential copy, controls, labels, chart keys, and active states must remain readable in both themes. Muted text still needs WCAG AA contrast at its rendered size. Color cannot be the only indicator of state.
 
+### Appearance control
+
+`/spaces/` and `/doc/` use the same explicit segmented `Dark` and `Light` control. The selected half has a moving thumb, the button keeps a visible text label in both states, and `aria-pressed` plus the accessible name explain the next action. Do not reduce the control to an ambiguous sun, moon, or half-circle icon.
+
 ## Shape, scale, and composition
 
 - Major composed modules use approximately 22 to 36 pixel corner radii.
@@ -220,6 +224,23 @@ A strong section combines:
 
 Do not use a chart where a short labeled value is clearer.
 
+### Priority delivery preview
+
+Each Brief may expose one scenario-aware `Alert routing` control beside its priority notice. This is the single entry point for delivery settings in the current demo. Do not repeat WhatsApp, text, push, or email buttons across ordinary cards.
+
+The preview should show:
+
+- the active Space and its priority rule;
+- realistic destinations appropriate to that Space;
+- immediate and fallback timing;
+- the narrow information scope allowed through each route;
+- quiet hours;
+- a message preview that returns the user to Spaces for source and action review;
+- clear switch state, keyboard focus, and restored trigger focus;
+- an explicit statement that no message was sent.
+
+WhatsApp and text are delivery routes, not substitutes for the Brief. Sensitive financial, health, relationship, or professional detail stays inside Spaces unless the configured scope and recipient permission explicitly allow it. A production connection requires authenticated accounts, recipient consent, revocation, delivery logs, and failure handling.
+
 ## Scenario realism
 
 Every scenario should have a recognizable operating language while sharing the same product system.
@@ -241,6 +262,7 @@ The entry should explain the depth of each Brief before the user commits.
 - Choices use rich neutral surfaces with a strong selected state.
 - The rotating product-idea pill can use brighter paired accents.
 - The selected Brief preview uses a light scenario-specific pastel field. Its three metrics sit on brighter lifted surfaces. Team and Project's lilac and pink balance is the reference for brightness, while Personal, Relationship, Family, Business, Accounting, and Training keep their own blue, rose, mint, peach, aqua, and blush identities.
+- The selected Brief preview remains available where the viewport has enough room to add understanding. Phones hide this large preview because the selected card, confirmation label, and open action already communicate the choice.
 - Desktop keeps the choice and action hierarchy compact enough for common viewports.
 - Mobile keeps the natural bottom action visible before any choice as a disabled `Choose a Briefing` control.
 - After a choice, the same natural action becomes `Open [type] Briefing`.
@@ -256,6 +278,8 @@ Mobile is a first-class composition, not a scaled desktop.
 - Sticky controls account for the mobile navigation and safe area.
 - Tap targets remain comfortable and labels remain explicit.
 - Complex three-column visuals collapse into a readable sequence with the meaning intact.
+- Project dashboards become one-column command views and card-shaped workstreams. A hidden desktop column heading must not leave a 760-pixel intrinsic track on phones.
+- Portfolio command views use `minmax(0, 1fr)` tracks so charts and allocation panels remain inside narrow Everything sections.
 - Charts retain labels, keys, and decision context.
 - Device concepts, rings, and maps scale without clipping.
 - Long pages keep location and continuation obvious.
@@ -337,6 +361,21 @@ Before a visual change ships, confirm:
 10. The page does not become a collection of equal boxes.
 11. Colors explain state or category instead of acting as decoration alone.
 12. Cache versions, static expectations, browser coverage, and production verification are updated.
+
+## Multi-perspective product audit
+
+Before a major demo round is called complete, review `/spaces/` and `/doc/` from these perspectives:
+
+- first-time user: the next useful action and product idea are understandable without prior explanation;
+- returning user: navigation is fast and repeated explanation does not block the Brief;
+- mobile user: 320, 360, 390, and 430 pixel widths contain every chart, dialog, control, and long label;
+- investor or buyer: the demo proves a differentiated workflow while current and planned capabilities remain precise;
+- product designer: every section has one dominant information shape and the page avoids equal-weight box repetition;
+- accessibility reviewer: keyboard order, focus restoration, contrast, semantics, reduced motion, and touch targets work;
+- technical buyer: sources, permission scope, demo boundaries, connector requirements, and failure states are visible;
+- privacy reviewer: external delivery cannot expose broader Space context than the named route permits.
+
+Remove or consolidate an element when it repeats a nearby explanation, competes with the primary action, adds visual weight without evidence, or becomes unusable at a supported width. Repeat the audit after fixes and record the completed result in `/updates/`.
 
 ## Change rule
 

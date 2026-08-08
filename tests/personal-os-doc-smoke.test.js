@@ -37,6 +37,10 @@ assert.match(html, /Seven briefing contexts: Personal, Relationship, Family, Bus
 assert.match(html, /Accountant and Client Space/);
 assert.match(html, /New York and Sydney time/);
 assert.match(html, /Trainer and student/);
+assert.match(html, /Priority route/);
+assert.match(html, /Push now · text after 10 minutes/);
+assert.match(html, /scenario-aware delivery-setting previews/);
+assert.match(html, /recipient consent, revocation, and delivery logs/);
 
 const docRoute = routes.routes.find((route) => route.path === '/doc/');
 assert.ok(docRoute, '/doc/ must remain registered.');

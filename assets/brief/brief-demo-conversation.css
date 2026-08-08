@@ -854,6 +854,7 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   }
 
   .entry-space-preview {
+    display: none;
     grid-template-columns: 1fr;
     gap: 9px;
   }
@@ -2003,6 +2004,7 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
   }
 
   .entry-space-preview {
+    display: none;
     grid-template-columns: 1fr;
     gap: 15px;
     min-height: 0;

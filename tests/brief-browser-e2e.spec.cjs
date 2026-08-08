@@ -117,24 +117,33 @@ test('current Spaces demo opens in light mode and remains usable across devices'
   const topbarControls = await page.evaluate(() => {
     const music = getComputedStyle(document.getElementById('mediaButton'));
     const theme = getComputedStyle(document.getElementById('themeButton'));
-    const icon = getComputedStyle(document.querySelector('#themeButton > span'));
+    const buttonRect = document.getElementById('themeButton').getBoundingClientRect();
+    const thumbRect = document.querySelector('#themeButton .theme-toggle-thumb').getBoundingClientRect();
     return {
       musicBackground: music.backgroundColor,
       themeBackground: theme.backgroundColor,
-      musicRadius: music.borderRadius,
       themeRadius: theme.borderRadius,
-      outerTextShadow: theme.textShadow,
-      iconTextShadow: icon.textShadow
+      themeWidth: buttonRect.width,
+      thumbWidth: thumbRect.width,
+      thumbOnRight: thumbRect.left > buttonRect.left + buttonRect.width / 3
     };
   });
-  expect(topbarControls.themeBackground).toBe(topbarControls.musicBackground);
-  expect(topbarControls.themeRadius).toBe(topbarControls.musicRadius);
-  expect(topbarControls.outerTextShadow).toBe('none');
-  expect(topbarControls.iconTextShadow).not.toBe('none');
+  await expect(page.locator('#themeButton')).toContainText('Dark');
+  await expect(page.locator('#themeButton')).toContainText('Light');
+  expect(topbarControls.themeBackground).toBeTruthy();
+  expect(topbarControls.themeRadius).toBe('999px');
+  expect(topbarControls.themeWidth).toBeGreaterThanOrEqual(90);
+  expect(topbarControls.thumbWidth).toBeGreaterThanOrEqual(40);
+  expect(topbarControls.thumbOnRight).toBe(true);
 
   await page.locator('#themeButton').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#05070b');
+  await expect.poll(() => page.locator('#themeButton').evaluate(button => {
+    const thumb = button.querySelector('.theme-toggle-thumb').getBoundingClientRect();
+    const rect = button.getBoundingClientRect();
+    return thumb.left < rect.left + rect.width / 3;
+  })).toBe(true);
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
@@ -292,7 +301,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(phoneFit.optionDetailFontSize).toBeGreaterThanOrEqual(14);
   expect(phoneFit.previewTitleFontSize).toBeGreaterThanOrEqual(20);
   expect(phoneFit.previewCopyFontSize).toBeGreaterThanOrEqual(14);
-  expect(phoneFit.previewDisplay).toBe('grid');
+  expect(phoneFit.previewDisplay).toBe('none');
   expect(phoneFit.openButtonFontSize).toBeGreaterThanOrEqual(15);
   expect(phoneFit.openButtonHeight).toBeGreaterThanOrEqual(48);
   expect(phoneFit.positionDisplay).toBe('absolute');
@@ -363,6 +372,9 @@ test('mobile reveals the selected briefing action only after a card tap', async 
   await page.locator('[data-entry-scenario="accounting"]').click();
   await expect(page.locator('#openDemoLabel')).toHaveText('Open Accountant and client Briefing');
   await expect(page.locator('#openDemoStickyLabel')).toHaveText('Open Accountant and client Briefing');
+  await page.locator('#entry').evaluate(entry => entry.scrollTo({ top: 0, behavior: 'auto' }));
+  await expect(page.locator('body')).toHaveAttribute('data-entry-bottom-action-visible', 'false');
+  await expect(page.locator('#openDemoSticky')).toBeVisible();
   await page.locator('#openDemoSticky').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('body')).toHaveAttribute('data-scenario', 'accounting');
@@ -512,6 +524,60 @@ test('Business partners and Accountant and client use complete advanced workspac
   await expectPlainVisibleCopy(page);
 });
 
+test('priority alerts expose scenario-aware demo routing with clear delivery boundaries', async ({ page }) => {
+  await openCurrentBrief(page);
+  await enterScenario(page, 'family');
+
+  const trigger = page.locator('#priorityRoutingButton');
+  await expect(trigger).toBeVisible();
+  await expect(page.locator('#priorityRouteSummary')).toHaveText('WhatsApp + 2 more');
+  await trigger.click();
+
+  const dialog = page.locator('#priorityRoutingDialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText('FAMILY BRIEFING');
+  await expect(dialog).toContainText('Home Base');
+  await expect(dialog).toContainText('Preview only');
+  await expect(page.locator('[data-alert-channel]')).toHaveCount(4);
+  await expect(page.locator('[data-alert-channel="whatsapp"]')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.locator('#priorityChannelCount')).toHaveText('3 active');
+
+  const dialogFit = await dialog.evaluate(node => {
+    const rect = node.getBoundingClientRect();
+    return {
+      left: rect.left,
+      right: rect.right,
+      top: rect.top,
+      bottom: rect.bottom,
+      viewportWidth: document.documentElement.clientWidth,
+      viewportHeight: innerHeight,
+      horizontalOverflow: node.scrollWidth - node.clientWidth
+    };
+  });
+  expect(dialogFit.left).toBeGreaterThanOrEqual(0);
+  expect(dialogFit.right).toBeLessThanOrEqual(dialogFit.viewportWidth + 1);
+  expect(dialogFit.top).toBeGreaterThanOrEqual(0);
+  expect(dialogFit.bottom).toBeLessThanOrEqual(dialogFit.viewportHeight + 1);
+  expect(dialogFit.horizontalOverflow).toBeLessThanOrEqual(1);
+
+  await page.locator('[data-alert-channel="whatsapp"]').click();
+  await expect(page.locator('[data-alert-channel="whatsapp"]')).toHaveAttribute('aria-checked', 'false');
+  await expect(page.locator('#priorityChannelCount')).toHaveText('2 active');
+  await expect(page.locator('#priorityRouteSummary')).toHaveText('Text + push');
+  await page.locator('#savePriorityRouting').click();
+  await expect(page.locator('#priorityRoutingStatus')).toHaveText('Demo routing saved. No message was sent.');
+  await page.locator('#cancelPriorityRouting').click();
+  await expect(trigger).toBeFocused();
+
+  await page.locator('#scenarioSelect').selectOption('team');
+  await page.locator('#priorityRoutingButton').click();
+  await expect(dialog).toContainText('TEAM AND PROJECT BRIEFING');
+  await expect(dialog).toContainText('Launch room');
+  await expect(dialog).toContainText('Release owner');
+  await page.locator('#closePriorityRouting').click();
+  await expectNoHorizontalOverflow(page);
+});
+
 test('briefing sections expose named progress controls and working arrows', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'The section cues are validated at desktop and narrow widths.');
   await page.setViewportSize({ width: 1140, height: 844 });
@@ -655,6 +721,47 @@ test('Accounting spreadsheet scroll stays inside its mobile workspace', async ({
 
   await page.locator('[data-workspace-tab="portfolio"]').click();
   await expect(page.locator('.asset-grid article')).toHaveCount(4);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('project and portfolio visuals collapse into the narrow Everything view without clipping', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-android', 'The narrow visual audit runs once in mobile Chromium.');
+  await page.setViewportSize({ width: 320, height: 844 });
+  await openCurrentBrief(page);
+  await enterScenario(page, 'team');
+
+  await selectPrimaryView(page, 'workspace');
+  await page.locator('[data-workspace-tab="project"]').click();
+  await expect(page.locator('.project-dashboard-heading')).toBeHidden();
+  await expect(page.locator('.project-row')).toHaveCount(4);
+  const workspaceProjectFit = await page.locator('.project-command-view').evaluate(node => ({
+    width: node.getBoundingClientRect().width,
+    parentWidth: node.parentElement.getBoundingClientRect().width,
+    overflow: node.scrollWidth - node.clientWidth,
+    columns: getComputedStyle(node).gridTemplateColumns.split(' ').length
+  }));
+  expect(workspaceProjectFit.width).toBeLessThanOrEqual(workspaceProjectFit.parentWidth + 1);
+  expect(workspaceProjectFit.overflow).toBeLessThanOrEqual(1);
+  expect(workspaceProjectFit.columns).toBe(1);
+
+  await selectPrimaryView(page, 'everything');
+  const everythingProjectFit = await page.locator('#everythingContent .project-command-view').evaluate(node => ({
+    width: node.getBoundingClientRect().width,
+    parentWidth: node.parentElement.getBoundingClientRect().width,
+    overflow: node.scrollWidth - node.clientWidth
+  }));
+  expect(everythingProjectFit.width).toBeLessThanOrEqual(everythingProjectFit.parentWidth + 1);
+  expect(everythingProjectFit.overflow).toBeLessThanOrEqual(1);
+
+  await page.locator('#scenarioSelect').selectOption('accounting');
+  await selectPrimaryView(page, 'everything');
+  const portfolioFit = await page.locator('#everythingContent .portfolio-command').evaluate(node => ({
+    width: node.getBoundingClientRect().width,
+    parentWidth: node.parentElement.getBoundingClientRect().width,
+    overflow: node.scrollWidth - node.clientWidth
+  }));
+  expect(portfolioFit.width).toBeLessThanOrEqual(portfolioFit.parentWidth + 1);
+  expect(portfolioFit.overflow).toBeLessThanOrEqual(1);
   await expectNoHorizontalOverflow(page);
 });
 
