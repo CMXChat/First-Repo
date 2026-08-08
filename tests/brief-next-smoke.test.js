@@ -65,7 +65,7 @@ assert.match(html, /class="secondary-button doc-entry-link" href="\/doc\/"/);
 assert.doesNotMatch(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /class="primary-button doc-cta-button" href="\/doc\/"/);
 assert.match(html, /brief-demo-explainers\.css\?v=20260807-3/);
-assert.match(html, /brief-demo-experience\.css\?v=20260807-2/);
+assert.match(html, /brief-demo-experience\.css\?v=20260808-1/);
 assert.match(html, /brief-demo-doc-links\.css\?v=20260808-1/);
 assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-3/);
 assert.match(html, /brief-demo-advanced\.css\?v=20260808-1/);
