@@ -1,8 +1,8 @@
 # CMX Documentation Index
 
-Last reconciled: **August 7, 2026**
+Last reconciled: **August 8, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `6bab140fa8abf644acc1216cc86b2af841eeebf1`
+Verified code baseline: `1154a99d592e7e0f3b09258de6bfdd9df5a37a18`
 
 ## Read this first
 
@@ -11,15 +11,16 @@ Current code, tests, workflows, route policy, and current operational documents 
 Use this order when starting Spaces work:
 
 1. `docs/spaces-demo-continuity.md`
-2. `docs/2026-08-06-spaces-route-migration.md`
-3. `docs/spaces-product-direction-2026-08-06.md`
-4. `docs/2026-08-05-repository-reconciliation.md`
-5. `docs/personal-os-release-safeguards.md`
-6. `docs/brief-recovery-handoff.md`
-7. `docs/cmx-brief-master-context.md`
-8. `docs/brief-interface-validation.md`
-9. `docs/brief-interface-failures.md`
-10. Current source, tests, workflows, and `assets/cmx-routes.json`
+2. `docs/spaces-visual-design-system.md`
+3. `docs/2026-08-06-spaces-route-migration.md`
+4. `docs/spaces-product-direction-2026-08-06.md`
+5. `docs/2026-08-05-repository-reconciliation.md`
+6. `docs/personal-os-release-safeguards.md`
+7. `docs/brief-recovery-handoff.md`
+8. `docs/cmx-brief-master-context.md`
+9. `docs/brief-interface-validation.md`
+10. `docs/brief-interface-failures.md`
+11. Current source, tests, workflows, and `assets/cmx-routes.json`
 
 For the Python-first learning and development environment, start with `docs/development-environment-requirements.md` and `/environment/`.
 
@@ -29,6 +30,7 @@ For the Python-first learning and development environment, start with `docs/deve
 |---|---|
 | `development-environment-requirements.md` | Requirements for the Python-first development environment, project structure, AI guardrails, learning behavior, recovery, deployment, handbook, and acceptance standard. |
 | `spaces-demo-continuity.md` | Current seven-scenario product, responsive entry, product-document investment comparison, design, data, validation, publishing, and rollback contract. |
+| `spaces-visual-design-system.md` | Current Spaces visual language, color direction, realistic visualization rules, interlinking, Everything progress, mobile behavior, accessibility, and review standard. |
 | `2026-08-06-spaces-route-migration.md` | Canonical route decision plus shared-calendar, alarm, voice, compatibility, and release contracts. |
 | `spaces-product-direction-2026-08-06.md` | Current product name, category, doctrine, input model, memory settings, and Cloudflare relationship. |
 | `2026-08-05-repository-reconciliation.md` | Comparison between the August 4 notes and the August 5 repository. |
@@ -119,6 +121,8 @@ The former Brief and Brief Next parity rule is retired because `/brief/` is now 
 ## Historical records
 
 Older Personal OS and `/brief/` references describe the same project before the August 6, 2026 Spaces route migration. Do not rewrite dated concept files to hide that decision history.
+
+`briefing-design-standard.md` records the earlier dark-first briefing baseline. It no longer controls the light-default `/spaces/` interface where it conflicts with `spaces-visual-design-system.md`.
 
 ## Documentation rules
 

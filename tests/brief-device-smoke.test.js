@@ -16,6 +16,7 @@ const topbarPolishCss = read('assets/brief/brief-demo-topbar-polish.css');
 const advancedCss = read('assets/brief/brief-demo-advanced.css');
 const conversationCss = read('assets/brief/brief-demo-conversation.css');
 const advancedJs = read('assets/brief/brief-demo-advanced.js');
+const experienceJs = read('assets/brief/brief-demo-experience.js');
 const conversationJs = read('assets/brief/brief-demo-conversation.js');
 const appJs = read('assets/brief/brief-demo-app.js');
 const mediaJs = read('assets/brief/brief-demo-media.js');
@@ -47,14 +48,17 @@ assert.match(html, /<strong>Voice:<\/strong>/);
 assert.doesNotMatch(html, /class="doc-topbar-link" href="\/doc\/"/);
 assert.match(html, /class="secondary-button doc-entry-link" href="\/doc\/"/);
 assert.match(html, /class="primary-button doc-cta-button" href="\/doc\/"/);
-assert.match(html, /brief-demo-app\.js\?v=20260808-9/);
+assert.match(html, /brief-demo-app\.js\?v=20260808-10/);
 assert.match(html, /brief-demo-media\.js\?v=20260807-4/);
 assert.match(html, /brief-demo-doc-links\.css\?v=20260808-1/);
 assert.match(html, /brief-demo-topbar-polish\.css\?v=20260807-3/);
-assert.match(html, /brief-demo-advanced\.css\?v=20260808-3/);
-assert.match(html, /brief-demo-advanced\.js\?v=20260808-3/);
-assert.match(html, /brief-demo-conversation\.css\?v=20260808-14/);
+assert.match(html, /brief-demo-experience\.css\?v=20260808-4/);
+assert.match(html, /brief-demo-advanced\.css\?v=20260808-4/);
+assert.match(html, /brief-demo-advanced\.js\?v=20260808-4/);
+assert.match(html, /brief-demo-data\.js\?v=20260808-4/);
+assert.match(html, /brief-demo-conversation\.css\?v=20260808-15/);
 assert.match(html, /brief-demo-conversation\.js\?v=20260808-1/);
+assert.match(html, /brief-demo-experience\.js\?v=20260808-3/);
 assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
 assert.match(html, /Open a briefing for the part of life you’re in/);
 assert.match(html, /data-entry-choice-made="false"/);
@@ -75,7 +79,7 @@ assert.match(redirectJs, /window\.location\.replace\(target\.href\)/);
 assert.doesNotMatch(rollbackHtml, /http-equiv="refresh"/i);
 assert.match(rollbackHtml, /<title>Spaces Brief Demo<\/title>/);
 
-for (const source of [redirectJs, appJs, mediaJs, advancedJs, conversationJs, spacesRuntimeJs, docJs]) {
+for (const source of [redirectJs, appJs, mediaJs, advancedJs, experienceJs, conversationJs, spacesRuntimeJs, docJs]) {
   assert.doesNotThrow(() => new Function(source));
 }
 
@@ -89,6 +93,8 @@ assert.match(appJs, /function moveWorkspaceTabs\(/);
 assert.match(appJs, /Continue to \$\{escapeHtml\(next\.label\)\}/);
 assert.match(appJs, /data-workspace-continue/);
 assert.match(appJs, /function scrollThroughToday\(/);
+assert.match(appJs, /function installEntryBottomActionObserver\(/);
+assert.match(appJs, /visibleHeight \/ actionRect\.height >= 0\.7/);
 assert.match(appJs, /ArrowLeft/);
 assert.match(appJs, /button\.tabIndex = active \? 0 : -1/);
 assert.match(appJs, /<button class="entry-option" type="button" data-entry-scenario=/);
@@ -97,6 +103,16 @@ assert.match(appJs, /entrySelection: data\.meta\.defaultScenario/);
 assert.match(appJs, /Open \$\{selected\.label\} Briefing/);
 assert.doesNotMatch(appJs, /role="listitem"/);
 assert.match(appJs, /<time>\$\{escapeHtml\(hour\.time\)\}<\/time>/);
+assert.match(experienceJs, /Progress through the complete briefing/);
+assert.match(experienceJs, /Read the full Spaces overview/);
+assert.match(experienceCss, /--everything-progress/);
+assert.match(experienceCss, /\.full-doc-bridge/);
+assert.match(advancedJs, /function renderMiniMonth\(/);
+assert.match(advancedJs, /class="personal-day-command"/);
+assert.match(advancedJs, /class="family-command"/);
+assert.match(advancedCss, /\.family-life-stream/);
+assert.match(conversationCss, /--entry-preview-pastel: #eaf6ff/);
+assert.match(conversationCss, /data-entry-preview="team"[^}]*--entry-preview-pastel: #f1edff/);
 
 assert.match(spacesRuntimeJs, /const productName = 'Spaces'/);
 assert.match(spacesRuntimeJs, /updateObject\(window\.BRIEF_DEMO_DATA\)/);

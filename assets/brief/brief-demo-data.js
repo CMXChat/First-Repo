@@ -92,9 +92,22 @@ window.BRIEF_DEMO_DATA = {
       ],
       details: {
         day: {
-          layout: 'decision-timeline',
+          layout: 'personal-day',
           title: 'Your day in one practical view',
           summary: 'Time, conditions and the next useful windows stay in one view.',
+          calendar: {
+            label: 'August 2026', days: 31, startOffset: 5, selected: 8, note: '3 fixed days',
+            markers: [{ day: 4, tone: 'personal' }, { day: 7, tone: 'shared' }, { day: 8, tone: 'care' }, { day: 12, tone: 'personal' }, { day: 18, tone: 'shared' }, { day: 24, tone: 'personal' }]
+          },
+          schedule: [
+            { time: '2:30 PM', title: 'Website review', context: 'Client work · prototype and questions', duration: '45m', tone: 'blue' },
+            { time: '3:30 PM', title: 'Protected focus', context: 'Send the revised scope', duration: '1h 45m', tone: 'violet' },
+            { time: '5:30 PM', title: 'Movement window', context: 'Weather supported', duration: '30m', tone: 'green' },
+            { time: '8:00 PM', title: 'Daily close', context: 'Place open work on tomorrow', duration: '15m', tone: 'amber' }
+          ],
+          capacity: [
+            { day: 'M', value: 82, label: 'Full' }, { day: 'T', value: 64, label: 'Good' }, { day: 'W', value: 91, label: 'Full' }, { day: 'T', value: 58, label: 'Open' }, { day: 'F', value: 73, label: 'Today', current: true }, { day: 'S', value: 32, label: 'Light' }, { day: 'S', value: 24, label: 'Light' }
+          ],
           cards: [
             { label: 'Next', title: 'Website review', detail: 'Prepare the prototype and two launch questions.' },
             { label: 'Later', title: 'Protected focus', detail: 'Keep 3:30 to 5:15 clear for the revised scope.' },
@@ -308,9 +321,24 @@ window.BRIEF_DEMO_DATA = {
       ],
       details: {
         home: {
-          layout: 'status-board',
+          layout: 'family-command',
           title: 'One household view with a clear next move',
           summary: 'The family Brief combines approved plans and responsibilities while each person keeps a separate private profile.',
+          calendar: {
+            label: 'August 2026', days: 31, startOffset: 5, selected: 8, note: '7 shared events',
+            markers: [{ day: 7, tone: 'shared' }, { day: 8, tone: 'care' }, { day: 9, tone: 'shared' }, { day: 12, tone: 'personal' }, { day: 16, tone: 'shared' }, { day: 21, tone: 'care' }, { day: 28, tone: 'personal' }]
+          },
+          timeline: [
+            { time: '2:45', label: 'Approval', title: 'Confirm pickup change', owner: 'Elena + Marcus', tone: 'amber' },
+            { time: '3:10', label: 'School', title: 'Pickup at the north entrance', owner: 'Elena', tone: 'blue' },
+            { time: '3:35', label: 'Care', title: 'Leave for Zoe’s pediatric appointment', owner: 'Marcus + Zoe', tone: 'rose' },
+            { time: '5:45', label: 'Home', title: 'Dinner and household reset', owner: 'Everyone', tone: 'green' }
+          ],
+          signals: [
+            { symbol: '+', label: 'CARE', title: 'Appointment bag is ready', detail: 'Insurance card, water, and the approved question list are packed for Zoe’s pediatric appointment at 4:00 PM.', status: 'Ready', tone: 'care' },
+            { symbol: '⌂', label: 'HOME SEARCH', title: '3 homes saved for adult review', detail: 'Two fit the commute and school-zone goals. Prices and private notes stay in the adult profile.', status: 'New', tone: 'home' },
+            { symbol: '✓', label: 'HOUSEHOLD', title: '4 chores remain open', detail: 'Every task has an owner, and two are already scheduled for the weekend.', status: 'Owned', tone: 'task' }
+          ],
           cards: [
             { label: 'Needs approval', title: 'School pickup change', detail: 'Elena can accept the handoff before 2:45 PM.', scope: 'Shared' },
             { label: 'Ready', title: 'Appointment bag packed', detail: 'Insurance card, water, and the question list are together.', scope: 'Shared' },
@@ -332,7 +360,7 @@ window.BRIEF_DEMO_DATA = {
               date: 'Fri 7',
               events: [
                 { time: '3:10 PM', title: 'School pickup', owner: 'Elena', kind: 'Shared' },
-                { time: '4:00 PM', title: 'Zoe’s appointment', owner: 'Marcus + Zoe', kind: 'Shared' },
+                { time: '4:00 PM', title: 'Zoe’s pediatric appointment', owner: 'Marcus + Zoe', kind: 'Shared care' },
                 { time: '6:30 PM', title: 'Busy block', owner: 'Private event', kind: 'Availability only' }
               ]
             },

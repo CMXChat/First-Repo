@@ -17,6 +17,46 @@
   const safeTone = value => String(value || 'neutral').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'neutral';
   const clampProgress = value => Math.max(0, Math.min(100, Number(value) || 0));
 
+  function renderMiniMonth(calendar) {
+    const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const markers = new Map((calendar.markers || []).map(marker => [Number(marker.day), safeTone(marker.tone)]));
+    const blanks = Array.from({ length: Number(calendar.startOffset) || 0 }, () => '<i aria-hidden="true"></i>').join('');
+    const days = Array.from({ length: Number(calendar.days) || 31 }, (_, index) => {
+      const day = index + 1;
+      const tone = markers.get(day);
+      return `<span class="${day === Number(calendar.selected) ? 'is-selected' : ''}${tone ? ' has-event' : ''}"${tone ? ` data-calendar-tone="${tone}"` : ''}${day === Number(calendar.selected) ? ' aria-current="date"' : ''}>${day}${tone ? '<b aria-hidden="true"></b>' : ''}</span>`;
+    }).join('');
+    return `<section class="mini-month" aria-label="${escapeHtml(calendar.label)} fictional calendar"><header><div><span>MONTH VIEW</span><strong>${escapeHtml(calendar.label)}</strong></div><small>${escapeHtml(calendar.note)}</small></header><div class="mini-month-weekdays" aria-hidden="true">${weekdays.map(day => `<b>${day}</b>`).join('')}</div><div class="mini-month-days">${blanks}${days}</div><footer><span><i></i>Shared</span><span><i></i>Personal</span><span><i></i>Care</span></footer></section>`;
+  }
+
+  function renderPersonalDay(detail) {
+    return `<div class="personal-day-command" aria-label="Fictional personal day plan">
+      <section class="personal-timebox">
+        <header><div><span>TODAY · TIMEBOXED</span><strong>A realistic plan for the hours that remain</strong></div><small>Fictional schedule</small></header>
+        <div class="timebox-scale" aria-hidden="true"><span>2 PM</span><span>4 PM</span><span>6 PM</span><span>8 PM</span></div>
+        <ol>${detail.schedule.map((item, index) => `<li data-day-tone="${safeTone(item.tone)}"><time>${escapeHtml(item.time)}</time><div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.context)}</span></div><b>${escapeHtml(item.duration)}</b>${index === 1 ? '<i>Focus</i>' : ''}</li>`).join('')}</ol>
+        <footer><span><i></i>4h 15m planned</span><strong>1h 15m remains open</strong></footer>
+      </section>
+      <aside class="personal-day-side">
+        ${renderMiniMonth(detail.calendar)}
+        <section class="day-capacity"><header><span>WEEKLY CAPACITY</span><strong>Protect the useful windows</strong></header><div>${detail.capacity.map(item => `<span class="${item.current ? 'is-current' : ''}" data-capacity="${clampProgress(item.value)}"><b>${escapeHtml(item.day)}</b><i><em></em></i><small>${escapeHtml(item.label)}</small></span>`).join('')}</div></section>
+      </aside>
+      <div class="personal-day-signals">${detail.cards.map((card, index) => `<article data-signal-tone="${['blue', 'violet', 'green'][index]}"><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></article>`).join('')}</div>
+    </div>`;
+  }
+
+  function renderFamilyCommand(detail) {
+    return `<div class="family-command" aria-label="Fictional family bird's-eye view">
+      <section class="family-day-route">
+        <header><div><span>HOUSEHOLD PULSE</span><strong>Friday in one route</strong></div><small>5 shared events · 1 approval</small></header>
+        <ol>${detail.timeline.map((item, index) => `<li data-family-tone="${safeTone(item.tone)}"><div class="family-route-time"><time>${escapeHtml(item.time)}</time><i aria-hidden="true"></i></div><div><small>${escapeHtml(item.label)}</small><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.owner)}</span></div><b>${index === 0 ? 'Review' : index === 1 ? 'Ready' : 'Planned'}</b></li>`).join('')}</ol>
+        <footer><span><i></i>All owners visible</span><strong>One private block contributes availability only</strong></footer>
+      </section>
+      ${renderMiniMonth(detail.calendar)}
+      <section class="family-life-stream"><header><div><span>LIFE AROUND THE CALENDAR</span><strong>Useful details without opening five apps</strong></div><small>Fictional household context</small></header><div>${detail.signals.map(signal => `<article data-family-tone="${safeTone(signal.tone)}"><span aria-hidden="true">${escapeHtml(signal.symbol)}</span><div><small>${escapeHtml(signal.label)}</small><strong>${escapeHtml(signal.title)}</strong><p>${escapeHtml(signal.detail)}</p></div><b>${escapeHtml(signal.status)}</b></article>`).join('')}</div></section>
+    </div>`;
+  }
+
   function renderHabitTracker(detail) {
     const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
     const completed = detail.habits.reduce((total, habit) => total + habit.days.filter(Boolean).length, 0);
@@ -25,8 +65,8 @@
     const dailyTotals = days.map((day, index) => ({ day, complete: detail.habits.filter(habit => habit.days[index]).length }));
     return `<div class="habit-tracker" aria-label="Fictional habit progress">
       <section class="habit-overview">
-        <div class="habit-overview-score"><div class="habit-score-ring" role="img" aria-label="${completed} of ${total} weekly habit check-ins complete" style="--habit-score:${percent * 3.6}deg"><span><strong>${percent}%</strong><small>THIS WEEK</small></span></div><div><small>WEEKLY RHYTHM</small><strong>${completed} of ${total} check-ins</strong><p>Consistency is strongest in the morning. Two open weekend windows can still improve the week without chasing a perfect score.</p></div></div>
-        <div class="habit-week-pattern"><header><span>Daily completion</span><small>Across ${detail.habits.length} private habits</small></header><div>${dailyTotals.map(item => `<span><b>${item.day}</b><i><em style="--daily-fill:${Math.round((item.complete / detail.habits.length) * 100)}%"></em></i><strong>${item.complete}/${detail.habits.length}</strong></span>`).join('')}</div></div>
+        <div class="habit-overview-score"><div class="habit-score-ring" role="img" aria-label="${completed} of ${total} weekly habit check-ins complete" data-habit-score="${percent}"><span><strong>${percent}%</strong><small>THIS WEEK</small></span></div><div><small>WEEKLY RHYTHM</small><strong>${completed} of ${total} check-ins</strong><p>Consistency is strongest in the morning. Two open weekend windows can still improve the week without chasing a perfect score.</p></div></div>
+        <div class="habit-week-pattern"><header><span>Daily completion</span><small>Across ${detail.habits.length} private habits</small></header><div>${dailyTotals.map(item => `<span data-daily-fill="${Math.round((item.complete / detail.habits.length) * 100)}"><b>${item.day}</b><i><em></em></i><strong>${item.complete}/${detail.habits.length}</strong></span>`).join('')}</div></div>
       </section>
       <header class="habit-list-heading"><div><span>HABIT DETAIL</span><strong>What happened each day</strong></div><small>Tap-free demo record · fictional data</small></header>
       ${detail.habits.map(habit => `
@@ -64,17 +104,17 @@
   function renderStatusBoard(detail) {
     const tones = ['active', 'waiting', 'context'];
     return `<div class="compact-status-board" aria-label="Current briefing status">${detail.cards.map((card, index) => `
-      <article data-status-tone="${tones[index % tones.length]}"><header><span><i aria-hidden="true"></i>${escapeHtml(card.label)}</span><b>${index === 0 ? 'Now' : index === 1 ? 'Watch' : 'Context'}</b></header><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p><div class="status-board-rail" aria-hidden="true"><i style="--status-fill:${[86, 58, 72][index % 3]}%"></i></div></article>`).join('')}</div>`;
+      <article data-status-tone="${tones[index % tones.length]}"><header><span><i aria-hidden="true"></i>${escapeHtml(card.label)}</span><b>${index === 0 ? 'Now' : index === 1 ? 'Watch' : 'Context'}</b></header><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p><div class="status-board-rail" aria-hidden="true"><i></i></div></article>`).join('')}</div>`;
   }
 
   function renderMetricBars(detail) {
     const values = [78, 56, 68];
     return `<div class="brief-metric-bars" aria-label="Illustrative briefing measures"><header><span>Current pattern</span><small>FICTIONAL DEMO VIEW</small></header><div>${detail.cards.map((card, index) => `
-      <article><div><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.title)}</strong></div><b>${values[index % values.length]}<small>/100</small></b><div class="brief-metric-track" role="img" aria-label="${escapeHtml(card.label)} illustrative level ${values[index % values.length]} out of 100"><i style="--metric-fill:${values[index % values.length]}%"></i></div><p>${escapeHtml(card.detail)}</p></article>`).join('')}</div></div>`;
+      <article><div><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.title)}</strong></div><b>${values[index % values.length]}<small>/100</small></b><div class="brief-metric-track" role="img" aria-label="${escapeHtml(card.label)} illustrative level ${values[index % values.length]} out of 100"><i></i></div><p>${escapeHtml(card.detail)}</p></article>`).join('')}</div></div>`;
   }
 
   function renderReadinessDial(detail) {
-    return `<div class="readiness-panel"><section class="readiness-score"><div class="readiness-dial" role="img" aria-label="Illustrative readiness 72 out of 100"><span><strong>72</strong><small>READY</small></span></div><div><small>ADAPTIVE VIEW</small><strong>Keep the plan useful</strong><p>Readiness changes the size of the next step while the goal stays visible.</p></div></section><div class="readiness-factors">${detail.cards.map((card, index) => `<article><span><i aria-hidden="true" style="--factor-level:${[72, 88, 64][index % 3]}%"></i></span><div><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></div></article>`).join('')}</div></div>`;
+    return `<div class="readiness-panel"><section class="readiness-score"><div class="readiness-dial" role="img" aria-label="Illustrative readiness 72 out of 100"><span><strong>72</strong><small>READY</small></span></div><div><small>ADAPTIVE VIEW</small><strong>Keep the plan useful</strong><p>Readiness changes the size of the next step while the goal stays visible.</p></div></section><div class="readiness-factors">${detail.cards.map(card => `<article><span><i aria-hidden="true"></i></span><div><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></div></article>`).join('')}</div></div>`;
   }
 
   function renderConnectionMap(detail) {
@@ -141,7 +181,7 @@
       <div class="project-dashboard" aria-label="Fictional project progress">
         <section class="project-command-view">
           <div class="project-health-visual">
-            <div class="project-health-ring" style="--project-health:${average * 3.6}deg" role="img" aria-label="${average}% overall project health">
+            <div class="project-health-ring" data-project-health="${average}" role="img" aria-label="${average}% overall project health">
               <span><strong>${average}%</strong><small>HEALTH</small></span>
             </div>
             <div><span>RELEASE PULSE</span><strong>${blocked ? 'One handoff is holding the release' : 'Release path is clear'}</strong><p>${owned} of ${detail.projects.length} workstreams have a named owner. The next review should resolve the receiver before more work enters the queue.</p></div>
@@ -397,6 +437,8 @@
   }
 
   const renderers = {
+    'personal-day': renderPersonalDay,
+    'family-command': renderFamilyCommand,
     'decision-timeline': renderDecisionTimeline,
     'status-board': renderStatusBoard,
     'metric-bars': renderMetricBars,

@@ -91,7 +91,7 @@ test('desktop demo keeps weather, stats, navigation and user-started soundtrack 
   await page.locator('#primaryNav [data-primary-view="workspace"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
   await expect(page.locator('#workspaceTabs button')).toHaveCount(6);
-  await expect(page.locator('#workspacePanel .decision-timeline')).toHaveCount(1);
+  await expect(page.locator('#workspacePanel .personal-day-command')).toHaveCount(1);
 
   const firstTab = page.locator('#workspaceTabs [data-workspace-tab]').first();
   const secondTab = page.locator('#workspaceTabs [data-workspace-tab]').nth(1);
@@ -131,7 +131,8 @@ test('Everything keeps a full view with clear interlinking and plain copy', asyn
   await expect(page.locator('[data-view-panel="everything"]')).toBeVisible();
   await expect(page.locator('#everythingJumpNav a')).toHaveCount(9);
   await expect(page.locator('#everythingContent .full-section')).toHaveCount(9);
-  await expect(page.locator('.full-stat-grid article')).toHaveCount(4);
+  await expect(page.locator('.full-signal-console')).toBeVisible();
+  await expect(page.locator('.full-signal-chart .signal-columns article')).toHaveCount(4);
   await expect(page.locator('.full-workspace-group')).toHaveCount(5);
   await expect(page.locator('.component-choice-grid article')).toHaveCount(6);
   await expect(page.locator('.alarm-flow article')).toHaveCount(4);

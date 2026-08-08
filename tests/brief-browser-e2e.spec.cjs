@@ -350,6 +350,16 @@ test('mobile reveals the selected briefing action only after a card tap', async 
   expect(stickyAction.height).toBeGreaterThanOrEqual(56);
   await expectNoHorizontalOverflow(page);
 
+  await page.locator('#entry').evaluate(entry => entry.scrollTo({ top: entry.scrollHeight, behavior: 'auto' }));
+  await expect(page.locator('#openDemo')).toBeInViewport();
+  await expect(page.locator('body')).toHaveAttribute('data-entry-bottom-action-visible', 'true');
+  await expect.poll(() => page.locator('#openDemoSticky').evaluate(button => ({
+    opacity: getComputedStyle(button).opacity,
+    pointerEvents: getComputedStyle(button).pointerEvents
+  }))).toEqual({ opacity: '0', pointerEvents: 'none' });
+
+  await page.locator('[data-entry-scenario="accounting"]').scrollIntoViewIfNeeded();
+
   await page.locator('[data-entry-scenario="accounting"]').click();
   await expect(page.locator('#openDemoLabel')).toHaveText('Open Accountant and client Briefing');
   await expect(page.locator('#openDemoStickyLabel')).toHaveText('Open Accountant and client Briefing');
@@ -668,13 +678,21 @@ test('Personal habits and the Family briefing use the richer workspace modules',
   await expect(page.locator('#heroTitle')).toHaveText('The household plan is clear before everyone starts moving');
   await expect(page.locator('#statsGrid')).toContainText('Chores open');
 
+  await selectPrimaryView(page, 'workspace');
+  await page.locator('[data-workspace-tab="home"]').click();
+  await expect(page.locator('#workspacePanel .family-command')).toBeVisible();
+  await expect(page.locator('#workspacePanel .mini-month [aria-current="date"]')).toHaveText('8');
+  await expect(page.locator('#workspacePanel .family-life-stream')).toContainText('3 homes saved for adult review');
+  await expect(page.locator('#workspacePanel .family-life-stream')).toContainText('pediatric appointment');
+  await selectPrimaryView(page, 'today');
+
   await expect(page.locator('#recommendationViewLabel')).toHaveText('Open Calendar');
   await page.locator('#recommendationViewButton').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
   await expect(page.locator('[data-workspace-tab="calendar"]')).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('.family-calendar-day')).toHaveCount(3);
   await expect(page.locator('.family-calendar')).toContainText('Availability only');
-  await expect(page.locator('.family-calendar')).toContainText('Zoe’s appointment');
+  await expect(page.locator('.family-calendar')).toContainText('Zoe’s pediatric appointment');
 
   await page.locator('[data-workspace-tab="chores"]').click();
   await expect(page.locator('.household-column')).toHaveCount(3);
@@ -693,6 +711,19 @@ test('Personal habits and the Family briefing use the richer workspace modules',
   await expect(page.locator('#all-workspace .household-column')).toHaveCount(3);
   await expect(page.locator('#all-workspace .shopping-groups li')).toHaveCount(7);
   await expect(page.locator('#all-workspace .full-workspace-visual')).toHaveCount(5);
+  await expect(page.locator('#everythingJumpNav [data-everything-jump]')).toHaveCount(9);
+  await expect(page.locator('#everythingJumpNav .everything-progress-rail')).toHaveAttribute('aria-valuenow', /\d+/);
+  await expect(page.locator('#all-signals .full-signal-console')).toBeVisible();
+  await expect(page.locator('#all-flow .full-flow-console')).toBeVisible();
+  await expect(page.locator('#all-spaces .full-space-map')).toBeVisible();
+  await expect(page.locator('#all-adaptive .adaptive-orchestrator')).toBeVisible();
+  await expect(page.locator('#all-alarm .morning-concept-stage')).toBeVisible();
+  await expect(page.locator('#all-privacy .privacy-control-console')).toBeVisible();
+  await expect(page.locator('.full-doc-bridge a')).toHaveAttribute('href', '/doc/');
+  expect(await page.locator('.signal-column i').first().evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(40);
+  await page.locator('[data-everything-jump="all-spaces"]').click();
+  await expect(page.locator('[data-everything-jump="all-spaces"]')).toHaveAttribute('aria-current', 'location');
+  expect(await page.locator('.everything-progress-rail').getAttribute('aria-valuenow')).not.toBe('0');
   await expectNoHorizontalOverflow(page);
 });
 
@@ -703,7 +734,7 @@ test('generic briefing cards are replaced by decision-shaped visuals', async ({ 
   await expect(page.locator('#primaryNav .primary-guide-link')).toHaveAttribute('href', '/doc/');
 
   const scenarios = {
-    personal: { day: '.decision-timeline', work: '.compact-status-board', money: '.brief-metric-bars', wellness: '.readiness-panel', connections: '.brief-connection-map' },
+    personal: { day: '.personal-day-command', work: '.compact-status-board', money: '.brief-metric-bars', wellness: '.readiness-panel', connections: '.brief-connection-map' },
     relationship: { together: '.shared-orbit-view', profiles: '.shared-orbit-view', plans: '.handoff-visual', reflection: '.guided-brief-steps', connections: '.brief-connection-map' },
     trainer: { today: '.decision-timeline', habits: '.brief-metric-bars', progress: '.progress-trend-panel', recovery: '.readiness-panel', connections: '.brief-connection-map' },
     team: { mywork: '.compact-status-board', project: '.project-command-view', handoffs: '.handoff-visual', procedures: '.guided-brief-steps', connections: '.brief-connection-map' }
@@ -721,6 +752,10 @@ test('generic briefing cards are replaced by decision-shaped visuals', async ({ 
   await expect(page.locator('#workspacePanel .project-health-ring')).toHaveAttribute('aria-label', /overall project health/);
   await expect(page.locator('#workspacePanel .project-burndown svg')).toBeVisible();
   await expect(page.locator('#workspacePanel .project-signal-strip > span')).toHaveCount(4);
+  await page.locator('#scenarioSelect').selectOption('personal');
+  await selectPrimaryView(page, 'workspace');
+  await page.locator('[data-workspace-tab="day"]').click();
+  expect(await page.locator('.day-capacity em').first().evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(20);
   await expectNoHorizontalOverflow(page);
 });
 

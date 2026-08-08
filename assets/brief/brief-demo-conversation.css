@@ -509,6 +509,8 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
 .entry-space-preview {
   --entry-preview-accent: #178fce;
   --entry-preview-secondary: #72d6ee;
+  --entry-preview-pastel: #eaf6ff;
+  --entry-preview-pastel-secondary: #f1efff;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(390px, 0.95fr);
   gap: 18px;
@@ -520,18 +522,18 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
   border: 1px solid color-mix(in srgb, var(--entry-preview-accent) 34%, var(--line));
   border-radius: 18px;
   background:
-    radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--entry-preview-accent) 12%, transparent), transparent 17rem),
-    radial-gradient(circle at 100% 50%, color-mix(in srgb, var(--entry-preview-secondary) 11%, transparent), transparent 18rem),
-    color-mix(in srgb, var(--surface-soft) 95%, var(--entry-preview-accent));
+    radial-gradient(circle at 0% 45%, color-mix(in srgb, var(--entry-preview-accent) 13%, transparent), transparent 17rem),
+    radial-gradient(circle at 100% 50%, color-mix(in srgb, var(--entry-preview-secondary) 14%, transparent), transparent 18rem),
+    linear-gradient(135deg, var(--entry-preview-pastel), var(--entry-preview-pastel-secondary));
   box-shadow: inset 0 1px color-mix(in srgb, #ffffff 66%, transparent);
 }
 
-.entry-space-preview[data-entry-preview="relationship"] { --entry-preview-accent: #db5d93; --entry-preview-secondary: #9b78f6; }
-.entry-space-preview[data-entry-preview="family"] { --entry-preview-accent: #17a781; --entry-preview-secondary: #8fd8a8; }
-.entry-space-preview[data-entry-preview="business"] { --entry-preview-accent: #df7a50; --entry-preview-secondary: #efb44e; }
-.entry-space-preview[data-entry-preview="accounting"] { --entry-preview-accent: #168876; --entry-preview-secondary: #41bfd1; }
-.entry-space-preview[data-entry-preview="trainer"] { --entry-preview-accent: #c64f7d; --entry-preview-secondary: #aa86ef; }
-.entry-space-preview[data-entry-preview="team"] { --entry-preview-accent: #795bc7; --entry-preview-secondary: #d370bd; }
+.entry-space-preview[data-entry-preview="relationship"] { --entry-preview-accent: #d9568e; --entry-preview-secondary: #9872ee; --entry-preview-pastel: #fff0f6; --entry-preview-pastel-secondary: #f2edff; }
+.entry-space-preview[data-entry-preview="family"] { --entry-preview-accent: #159879; --entry-preview-secondary: #48acd8; --entry-preview-pastel: #e9fbf3; --entry-preview-pastel-secondary: #edf8ff; }
+.entry-space-preview[data-entry-preview="business"] { --entry-preview-accent: #d86d45; --entry-preview-secondary: #dca52a; --entry-preview-pastel: #fff1e8; --entry-preview-pastel-secondary: #fff8df; }
+.entry-space-preview[data-entry-preview="accounting"] { --entry-preview-accent: #137e6d; --entry-preview-secondary: #369fc2; --entry-preview-pastel: #e9fbf7; --entry-preview-pastel-secondary: #edf8ff; }
+.entry-space-preview[data-entry-preview="trainer"] { --entry-preview-accent: #c84d79; --entry-preview-secondary: #9672e3; --entry-preview-pastel: #fff0f5; --entry-preview-pastel-secondary: #f3efff; }
+.entry-space-preview[data-entry-preview="team"] { --entry-preview-accent: #7456c9; --entry-preview-secondary: #d05da9; --entry-preview-pastel: #f1edff; --entry-preview-pastel-secondary: #fff0f7; }
 
 .entry-preview-copy {
   min-width: 0;
@@ -577,7 +579,30 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
   padding: 7px 8px;
   border: 1px solid color-mix(in srgb, var(--entry-preview-accent) 18%, var(--line));
   border-radius: 11px;
-  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  background: color-mix(in srgb, #ffffff 78%, var(--entry-preview-pastel));
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--entry-preview-accent) 7%, transparent), inset 0 1px rgba(255,255,255,.72);
+}
+
+.entry-preview-metrics > span:nth-child(2) {
+  background: color-mix(in srgb, #ffffff 74%, var(--entry-preview-pastel-secondary));
+}
+
+.entry-preview-metrics > span:nth-child(3) {
+  background: linear-gradient(135deg, color-mix(in srgb, #ffffff 80%, var(--entry-preview-pastel)), color-mix(in srgb, #ffffff 77%, var(--entry-preview-pastel-secondary)));
+}
+
+html[data-theme="dark"] .entry-space-preview {
+  background:
+    radial-gradient(circle at 0% 45%, color-mix(in srgb, var(--entry-preview-accent) 19%, transparent), transparent 17rem),
+    radial-gradient(circle at 100% 50%, color-mix(in srgb, var(--entry-preview-secondary) 17%, transparent), transparent 18rem),
+    linear-gradient(135deg, color-mix(in srgb, var(--surface) 86%, var(--entry-preview-accent)), color-mix(in srgb, var(--surface) 88%, var(--entry-preview-secondary)));
+}
+
+html[data-theme="dark"] .entry-preview-metrics > span,
+html[data-theme="dark"] .entry-preview-metrics > span:nth-child(2),
+html[data-theme="dark"] .entry-preview-metrics > span:nth-child(3) {
+  background: color-mix(in srgb, var(--surface-strong) 88%, var(--entry-preview-accent));
+  box-shadow: inset 0 1px color-mix(in srgb, #ffffff 8%, transparent);
 }
 
 .entry-preview-metrics small,
@@ -2077,6 +2102,7 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
   }
 
   body[data-entered="false"][data-entry-choice-made="true"][data-entry-bottom-action-visible="true"] #openDemoSticky {
+    animation: none;
     opacity: 0;
     pointer-events: none;
     transform: translate(-50%, 10px);
