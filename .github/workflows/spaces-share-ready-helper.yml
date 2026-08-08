@@ -21,6 +21,56 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
+          runtime = Path('assets/brief/brief-spaces-runtime.js')
+          text = runtime.read_text()
+          old_refresh = """  function refreshCurrentBrief() {
+    const select = document.getElementById('scenarioSelect');
+    if (!select?.value) return;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+"""
+          new_refresh = """  function refreshEntryCopy() {
+    const data = window.BRIEF_DEMO_DATA;
+    if (!data?.scenarios) return;
+
+    document.querySelectorAll('[data-entry-scenario]').forEach((button) => {
+      const item = data.scenarios[button.dataset.entryScenario];
+      if (!item) return;
+      const label = button.querySelector('strong');
+      const summary = button.querySelector('small');
+      if (label) label.textContent = item.label;
+      if (summary) summary.textContent = item.short;
+    });
+
+    const selectedId = document.querySelector('[data-entry-scenario][aria-pressed=\"true\"]')?.dataset.entryScenario || data.meta.defaultScenario;
+    const item = data.scenarios[selectedId];
+    if (!item) return;
+    const preview = item.entryPreview || {};
+    setText('#entryPreviewKicker', preview.kicker || `${item.label.toUpperCase()} BRIEF`);
+    setText('#entryPreviewTitle', preview.title || item.headline);
+    setText('#entryPreviewCopy', preview.copy || item.summary);
+    setText('#entryPreviewPrivate', preview.privateLabel || 'Private details stay with their owner');
+    setText('#entryPreviewShared', preview.sharedLabel || 'Only chosen details enter this Space');
+  }
+"""
+          if old_refresh in text:
+              text = text.replace(old_refresh, new_refresh)
+          elif 'function refreshEntryCopy()' not in text:
+              raise SystemExit('Runtime refresh function anchor not found')
+          text = text.replace('    refreshCurrentBrief();\n', '    refreshEntryCopy();\n')
+          generic_anchor = "    mergeCopy(data, finalCopy);\n    updateObject(data);\n"
+          generic_replacement = """    mergeCopy(data, finalCopy);
+    for (const scenario of Object.values(data.scenarios)) {
+      if (!scenario.entryPreview) scenario.entryPreview = {};
+      scenario.entryPreview.privateLabel = 'Private details stay with their owner';
+      scenario.entryPreview.sharedLabel = 'Only chosen details enter this Space';
+    }
+    updateObject(data);
+"""
+          if generic_anchor in text:
+              text = text.replace(generic_anchor, generic_replacement)
+          runtime.write_text(text)
+
           readme = Path('docs/README.md')
           text = readme.read_text()
           text = text.replace(
@@ -52,6 +102,8 @@ assert.match(spacesRuntimeJs, /Adjust today’s workout without losing the plan/
 assert.match(spacesRuntimeJs, /Everyone can see what they own and what’s blocking release/);
 assert.match(spacesRuntimeJs, /Brooklyn, New York/);
 assert.match(spacesRuntimeJs, /Mild and dry/);
+assert.match(spacesRuntimeJs, /Private details stay with their owner/);
+assert.match(spacesRuntimeJs, /Only chosen details enter this Space/);
 assert.doesNotMatch(spacesRuntimeJs, /Daniel’s financial month|Release window open/);
 """
           if runtime_extra not in text:
@@ -99,7 +151,7 @@ assert.doesNotMatch(spacesRuntimeJs, /Daniel’s financial month|Release window 
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/README.md tests/brief-next-smoke.test.js assets/updates-notes.js assets/cmx-updates.html
+          git add assets/brief/brief-spaces-runtime.js docs/README.md tests/brief-next-smoke.test.js assets/updates-notes.js assets/cmx-updates.html
           if git diff --cached --quiet; then
             echo "Nothing to update"
             exit 0
