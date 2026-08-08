@@ -82,6 +82,7 @@ For the Python-first learning and development environment, start with `docs/deve
 - The active demo contains seven contexts, including Business partners and Accountant and client.
 - Each context can show one compact priority notice, one scenario-aware alert-routing preview, and one short correction question.
 - Each context links to three signature modules and can open a conversation from the current section.
+- Contextual recommendation and continuation controls must carry the person through to the actual information they selected. When a click changes a view or workspace category first, the destination content is aligned in the viewport after that state change instead of stopping on another navigation cluster.
 - The entry defines Spaces as briefings built from approved information and starts with Personal selected. Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
 - The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
