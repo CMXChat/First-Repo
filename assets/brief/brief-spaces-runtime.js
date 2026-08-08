@@ -13,7 +13,7 @@
       personal: {
         short: 'Your day, priorities, money, routines, and next steps',
         entryPreview: {
-          title: 'Your day, sorted around what comes next',
+          title: 'Your day, sorted by what matters next',
           copy: 'See the schedule, work, money, weather, and routines that actually affect today. Personal details stay here unless you choose to share them.'
         },
         headline: 'Here’s what matters for the rest of today',
@@ -65,7 +65,7 @@
           title: 'Everyone can see today’s plan and who owns what',
           copy: 'Appointments, pickups, chores, shopping, and shared availability come together without exposing private calendar details.'
         },
-        headline: 'Everyone knows today’s plan',
+        headline: 'The household plan is clear before everyone starts moving',
         summary: 'The family can see rides, appointments, chores, shopping, and the one change that still needs approval.',
         recommendation: {
           title: 'Confirm the school pickup change by 2:45 PM',
@@ -102,7 +102,7 @@
         details: {
           executive: { title: 'The company in one glance', summary: 'See cash, delivery, pipeline, and the decisions that need both partners.' },
           projects: { title: 'Projects that need a decision', summary: 'Each project shows the owner, progress, blocker, and next move.' },
-          deals: { title: 'Pipeline you can actually act on', summary: 'Values stay tied to a stage, owner, and next step instead of being treated like collected cash.' },
+          deals: { title: 'Pipeline you can actually act on', summary: 'Every value shows its stage, owner, and next step, keeping pipeline distinct from collected cash.' },
           calendar: { title: 'New York and Sydney on one calendar', summary: 'Local times, shared windows, and prepared changes stay easy to understand before anything is sent.' },
           concerns: { title: 'What each partner wants on the table', summary: 'Shared concerns get an owner and review date. Private preparation stays private.' }
         }
@@ -120,7 +120,7 @@
           detail: '$380 closes the gap without touching the emergency fund.'
         },
         priority: {
-          title: 'Monday’s card payment puts flexible spending $310 over plan',
+          title: '$1,250 card autopay puts flexible spending $310 over plan',
           detail: 'Review the two open charges before the autopay runs.'
         },
         weather: {
@@ -355,7 +355,7 @@
     setText('.brief-update-boundary', 'Demo only. A real account would show what changed, where it came from, and let you review it before memory updates.');
     setText('#priorityRoutingTitle', 'Choose where important alerts should go');
     setText('.priority-routing-boundary', 'Preview only. Nothing is sent. A real connection would require sign-in, recipient approval, delivery history, and a way to turn it off.');
-    setText('#spacesAiTitle', 'Ask about this section');
+    setText('#spacesAiTitle', 'Continue with this section');
     setText('.spaces-ai-intro', 'Your question can use this section and the current Space as context. A connected version would still follow the Space’s permissions.');
     setText('.spaces-ai-connection span', 'Demo preview. Live answers and private records need a secure account connection.');
     setText('#spacesAiForm label', 'Ask a question or add a correction');
