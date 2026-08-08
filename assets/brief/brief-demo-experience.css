@@ -339,11 +339,21 @@ html[data-theme="dark"] .privacy-callout {
   font-size: 0.76rem;
 }
 
-.full-workspace-group > div {
+.full-workspace-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 9px;
   margin-top: 20px;
+}
+
+.full-workspace-visual {
+  margin-top: 22px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.full-workspace-visual > :first-child {
+  margin-top: 0;
 }
 
 .full-workspace-group section {

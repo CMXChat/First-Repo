@@ -271,9 +271,10 @@
         <div class="full-workspace-stack">${scenario.tabs.map(tab => {
           const detail = scenario.details[tab.id];
           if (!detail) return '';
+          const visual = window.BRIEF_DEMO_ADVANCED?.renderDetail(detail);
           return `<article class="full-workspace-group">
             <header><div><span>${escapeHtml(tab.label)}</span><h3>${escapeHtml(detail.title)}</h3><p>${escapeHtml(detail.summary)}</p></div><button type="button" class="secondary-button compact-action" data-full-workspace-tab="${escapeHtml(tab.id)}">Open ${escapeHtml(tab.label)}</button></header>
-            <div>${detail.cards.map(card => `<section><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></section>`).join('')}</div>
+            ${visual ? `<div class="full-workspace-visual">${visual}</div>` : `<div class="full-workspace-cards">${detail.cards.map(card => `<section><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></section>`).join('')}</div>`}
           </article>`;
         }).join('')}</div>
       </section>
@@ -326,7 +327,15 @@
   }
 
   function installEvents() {
-    document.addEventListener('briefdemo:scenariochange', event => renderEverything(event.detail?.scenarioId));
+    document.addEventListener('briefdemo:scenariochange', event => {
+      if (document.body?.dataset.view === 'everything') renderEverything(event.detail?.scenarioId);
+    });
+
+    document.addEventListener('briefdemo:viewchange', event => {
+      const host = document.getElementById('everythingContent');
+      if (event.detail?.view === 'everything') renderEverything(event.detail?.scenarioId);
+      else if (host) host.replaceChildren();
+    });
 
     document.addEventListener('click', event => {
       const workspaceButton = event.target.closest('[data-full-workspace-tab]');
@@ -339,6 +348,5 @@
   }
 
   renderJumpNav();
-  renderEverything();
   installEvents();
 })();

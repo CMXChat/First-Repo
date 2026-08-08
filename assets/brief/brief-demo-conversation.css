@@ -1062,12 +1062,13 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 
 .workspace-related-links {
   display: grid;
-  gap: 11px;
-  margin: 0 0 22px;
-  padding: 15px;
-  border: 1px solid color-mix(in srgb, var(--blue) 17%, var(--line));
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--blue-soft) 34%, var(--surface));
+  gap: 14px;
+  margin: 0 0 26px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--blue) 26%, var(--line));
+  border-radius: 22px;
+  background: radial-gradient(circle at 92% 0%, color-mix(in srgb, var(--violet-soft) 48%, transparent), transparent 28%), linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 52%, var(--surface)), var(--surface));
+  box-shadow: 0 18px 44px color-mix(in srgb, var(--blue) 8%, transparent);
 }
 
 .workspace-related-links > header {
@@ -1077,9 +1078,14 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   gap: 14px;
 }
 
+.workspace-related-links > header > div {
+  display: grid;
+  gap: 3px;
+}
+
 .workspace-related-links > header span {
   color: var(--ink-strong);
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 900;
 }
 
@@ -1087,6 +1093,18 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   color: var(--muted);
   font-size: 0.74rem;
   line-height: 1.35;
+}
+
+.workspace-related-links > header > b {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  color: var(--blue-deep);
+  border: 1px solid color-mix(in srgb, var(--blue) 24%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--blue-soft) 68%, var(--surface));
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .workspace-related-links > div {
@@ -1098,20 +1116,30 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 .workspace-related-links button {
   position: relative;
   display: grid;
-  min-height: 94px;
+  min-height: 132px;
   align-content: start;
   gap: 4px;
   overflow: hidden;
-  padding: 12px 37px 12px 13px;
+  padding: 17px 42px 15px 15px;
   color: var(--ink-strong);
   border: 1px solid color-mix(in srgb, var(--blue) 58%, var(--line));
-  border-radius: 14px;
+  border-radius: 17px;
   background:
     linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 82%, var(--surface)), var(--surface) 72%);
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--blue) 10%, transparent);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--blue) 11%, transparent);
   cursor: pointer;
   font: inherit;
   text-align: left;
+}
+
+.workspace-related-links button:nth-child(3n + 2)::before {
+  border-color: color-mix(in srgb, var(--violet) 30%, transparent);
+  box-shadow: 0 0 0 13px color-mix(in srgb, var(--violet) 6%, transparent), 0 0 32px color-mix(in srgb, var(--violet) 12%, transparent);
+}
+
+.workspace-related-links button:nth-child(3n)::before {
+  border-color: color-mix(in srgb, var(--green) 29%, transparent);
+  box-shadow: 0 0 0 13px color-mix(in srgb, var(--green) 5%, transparent), 0 0 32px color-mix(in srgb, var(--green) 10%, transparent);
 }
 
 .workspace-related-links button::before {
@@ -1134,6 +1162,19 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   z-index: 1;
 }
 
+.workspace-related-links button em {
+  position: absolute;
+  right: 11px;
+  bottom: -7px;
+  color: color-mix(in srgb, var(--blue) 10%, transparent);
+  font-size: 3.25rem;
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: -0.08em;
+  line-height: 1;
+  pointer-events: none;
+}
+
 .workspace-related-links button small {
   color: var(--blue-deep);
   font-size: 0.62rem;
@@ -1143,7 +1184,7 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 }
 
 .workspace-related-links button strong {
-  font-size: 0.88rem;
+  font-size: 1rem;
   line-height: 1.25;
 }
 
@@ -1151,10 +1192,10 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   display: -webkit-box;
   overflow: hidden;
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   line-height: 1.4;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
 }
 
 .workspace-related-links button i {
@@ -1175,8 +1216,8 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 .workspace-related-links button:focus-visible {
   color: var(--ink-strong);
   border-color: var(--blue);
-  transform: translateY(-1px);
-  box-shadow: 0 14px 30px color-mix(in srgb, var(--blue) 17%, transparent);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px color-mix(in srgb, var(--blue) 18%, transparent);
 }
 
 .workspace-related-links button.is-current {
@@ -1195,6 +1236,104 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 .workspace-related-links button.is-current::before {
   border-color: color-mix(in srgb, var(--violet) 22%, transparent);
   box-shadow: 0 0 0 13px color-mix(in srgb, var(--violet) 5%, transparent);
+}
+
+.workspace-thread-links {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 17px;
+  border: 1px solid color-mix(in srgb, var(--violet) 21%, var(--line));
+  border-radius: 20px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--violet-soft) 36%, var(--surface)), var(--surface) 64%);
+}
+
+.workspace-thread-links > header,
+.workspace-thread-links > header > div {
+  display: flex;
+  align-items: center;
+}
+
+.workspace-thread-links > header {
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.workspace-thread-links > header > div {
+  align-items: baseline;
+  gap: 9px;
+}
+
+.workspace-thread-links > header span {
+  color: var(--ink-strong);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.workspace-thread-links > header small,
+.workspace-thread-links button span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.workspace-thread-links > header > i {
+  color: var(--violet);
+  font-style: normal;
+}
+
+.workspace-thread-links > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.workspace-thread-links button {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  min-height: 98px;
+  padding: 14px 45px 14px 15px;
+  color: var(--ink-strong);
+  border: 1px solid color-mix(in srgb, var(--violet) 25%, var(--line));
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--surface) 92%, var(--violet-soft));
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.workspace-thread-links button small {
+  color: var(--violet);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workspace-thread-links button strong {
+  font-size: 0.92rem;
+}
+
+.workspace-thread-links button > i {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: var(--violet);
+  border-radius: 50%;
+  background: var(--violet-soft);
+  font-style: normal;
+  transform: translateY(-50%);
+}
+
+.workspace-thread-links button:hover,
+.workspace-thread-links button:focus-visible {
+  border-color: var(--violet);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--violet) 13%, transparent);
 }
 
 @keyframes workspace-step-pulse {
@@ -1705,6 +1844,10 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
     gap: 2px;
   }
 
+  .workspace-related-links > header > b {
+    justify-self: start;
+  }
+
   .workspace-related-links > div {
     display: flex;
     margin-inline: -2px;
@@ -1717,8 +1860,17 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
 
   .workspace-related-links button {
     flex: 0 0 min(76vw, 250px);
-    min-height: 100px;
+    min-height: 132px;
     scroll-snap-align: start;
+  }
+
+  .workspace-thread-links > header > div {
+    display: grid;
+    gap: 2px;
+  }
+
+  .workspace-thread-links > div {
+    grid-template-columns: 1fr;
   }
 
   .entry-scroll-control {

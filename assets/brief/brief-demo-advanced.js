@@ -17,6 +17,34 @@
   const safeTone = value => String(value || 'neutral').replace(/[^a-z0-9-]/gi, '').toLowerCase() || 'neutral';
   const clampProgress = value => Math.max(0, Math.min(100, Number(value) || 0));
 
+  function renderHabitTracker(detail) {
+    const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    return `<div class="habit-tracker" aria-label="Fictional habit progress">${detail.habits.map(habit => `
+      <article class="habit-tracker-row"><header><div><span>PRIVATE HABIT</span><h3>${escapeHtml(habit.name)}</h3></div><strong>${escapeHtml(habit.current)}</strong></header>
+      <div class="habit-week" aria-label="${escapeHtml(habit.name)} weekly completion">${habit.days.map((complete, index) => `<span class="${complete ? 'is-complete' : ''}" aria-label="${days[index]} ${complete ? 'complete' : 'open'}"><b>${days[index]}</b><i aria-hidden="true">${complete ? '✓' : ''}</i></span>`).join('')}</div>
+      <footer><span>${escapeHtml(habit.target)} target</span><span>${escapeHtml(habit.best)}</span><strong>${escapeHtml(habit.note)}</strong></footer></article>`).join('')}
+      <p class="workspace-boundary-note"><strong>Sharing rule:</strong> a Personal habit remains private unless the user approves a specific result, plan, or time for another Space.</p></div>`;
+  }
+
+  function renderFamilyCalendar(detail) {
+    return `<div class="family-calendar" aria-label="Fictional approved family calendar">${detail.days.map(day => `
+      <article class="family-calendar-day"><header><span>${escapeHtml(day.day)}</span><strong>${escapeHtml(day.date)}</strong></header><ol>${day.events.map(event => `
+        <li class="${event.kind === 'Availability only' ? 'is-private-block' : ''}"><time>${escapeHtml(event.time)}</time><div><strong>${escapeHtml(event.title)}</strong><small>${escapeHtml(event.owner)}</small></div><span>${escapeHtml(event.kind)}</span></li>`).join('')}</ol></article>`).join('')}
+      <p class="workspace-boundary-note"><strong>Calendar boundary:</strong> private titles, notes, attendees, and locations stay hidden. The Family Space can use an approved event or a simple busy block for coordination.</p></div>`;
+  }
+
+  function renderHouseholdBoard(detail) {
+    return `<div class="household-board" aria-label="Fictional family chore board">${detail.columns.map(column => `
+      <section class="household-column" data-board-tone="${escapeHtml(column.tone)}"><header><span aria-hidden="true"></span><h3>${escapeHtml(column.title)}</h3><small>${column.items.length}</small></header>
+      <div>${column.items.map(item => `<article><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.owner)}</p><small>${escapeHtml(item.due)}</small></article>`).join('')}</div></section>`).join('')}</div>`;
+  }
+
+  function renderShoppingList(detail) {
+    return `<div class="shopping-groups" aria-label="Fictional shared family shopping list">${detail.groups.map(group => `
+      <section><header><h3>${escapeHtml(group.title)}</h3><span>${group.items.filter(item => item.checked).length}/${group.items.length}</span></header><ul>${group.items.map(item => `
+        <li class="${item.checked ? 'is-checked' : ''}"><span class="shopping-check" aria-hidden="true">${item.checked ? '✓' : ''}</span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.owner)}</small></li>`).join('')}</ul></section>`).join('')}</div>`;
+  }
+
   function renderPartnerOperations(detail) {
     return `
       <div class="partner-operations">
@@ -260,6 +288,10 @@
   }
 
   const renderers = {
+    habits: renderHabitTracker,
+    calendar: renderFamilyCalendar,
+    board: renderHouseholdBoard,
+    checklist: renderShoppingList,
     'partner-operations': renderPartnerOperations,
     'project-dashboard': renderProjectDashboard,
     'deal-pipeline': renderDealPipeline,

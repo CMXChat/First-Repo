@@ -494,6 +494,9 @@
     const previous = tabs[activeIndex - 1];
     const next = tabs[activeIndex + 1];
     const sectionLinks = tabs;
+    const connectedSections = [...tabs.slice(activeIndex + 1), ...tabs.slice(0, activeIndex)]
+      .filter(item => item.id !== state.tab)
+      .slice(0, 2);
     host.setAttribute('aria-labelledby', `brief-next-tab-${state.tab}`);
     host.innerHTML = `
       <header class="workspace-panel-heading">
@@ -513,15 +516,25 @@
       </nav>
       ${sectionLinks.length ? `
         <nav class="workspace-related-links" aria-label="Explore more briefing sections">
-          <header><span>All sections in this briefing</span><small>Every approved category is available from here.</small></header>
+          <header><div><span>Explore the full picture</span><small>Five connected views. Each one changes what the briefing can tell you.</small></div><b>${tabs.length} views</b></header>
           <div>${sectionLinks.map(item => {
             const relatedDetail = currentScenario().details[item.id];
             const isCurrent = item.id === state.tab;
-            return `<button type="button" ${isCurrent ? 'class="is-current" aria-current="page" disabled' : `data-workspace-continue="${escapeHtml(item.id)}"`}><small>${isCurrent ? 'Viewing now' : 'Open section'}</small><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(relatedDetail?.summary || 'Open the records and decisions connected to this part of the briefing.')}</span><i aria-hidden="true">${isCurrent ? '✓' : '→'}</i></button>`;
+            const sectionNumber = tabs.findIndex(tab => tab.id === item.id) + 1;
+            return `<button type="button" ${isCurrent ? 'class="is-current" aria-current="page" disabled' : `data-workspace-continue="${escapeHtml(item.id)}"`}><em aria-hidden="true">0${sectionNumber}</em><small>${isCurrent ? 'Viewing now' : 'Discover next'}</small><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(relatedDetail?.summary || 'Open the records and decisions connected to this part of the briefing.')}</span><i aria-hidden="true">${isCurrent ? '✓' : '→'}</i></button>`;
           }).join('')}</div>
         </nav>
       ` : ''}
       ${renderDetailBody(detail)}
+      ${connectedSections.length ? `
+        <nav class="workspace-thread-links" aria-label="Continue into connected briefing sections">
+          <header><div><span>Continue the thread</span><small>The next useful context is already connected.</small></div><i aria-hidden="true">↗</i></header>
+          <div>${connectedSections.map((item, index) => {
+            const connectedDetail = currentScenario().details[item.id];
+            return `<button type="button" data-workspace-continue="${escapeHtml(item.id)}"><small>${index === 0 ? 'Recommended next' : 'Another angle'}</small><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(connectedDetail?.summary || 'See the related records and decisions in this view.')}</span><i aria-hidden="true">→</i></button>`;
+          }).join('')}</div>
+        </nav>
+      ` : ''}
     `;
   }
 
