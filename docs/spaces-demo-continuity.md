@@ -225,3 +225,13 @@ When another context window takes over, provide:
 - any cache or deployment propagation still pending.
 
 This record is more useful than a promise that the work is nearly finished. It lets the next person continue from verified state.
+
+## August 8 visual briefing release
+
+The current release replaces generic three-card briefing sections with visuals shaped around the decision in each section. These include timelines, status boards, metric bars, readiness dials, relationship maps, progress charts, handoff flows, and guided steps. The Everything view reuses these full visual modules so it remains the complete view instead of a reduced summary.
+
+The Personal habit view now explains weekly completion, daily rhythm, strongest pattern, the area that needs attention, and the next useful check-in. All displayed records remain fictional demo data.
+
+The entry carousel no longer shows previous and next arrow buttons. It continues to rotate automatically and supports touch swiping. On mobile, choosing a briefing reveals a contextual Open briefing action while the natural Open briefing button remains available at the bottom of the entry. The contextual action yields when the natural action is visible, avoiding duplicate competing controls.
+
+Spaces also keeps a visible path to the concept guide at `/doc/`. Internal guide and demo links stay in the same tab so users can move between the explanation and the product without accumulating duplicate tabs.
