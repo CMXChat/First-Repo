@@ -427,35 +427,34 @@
     const hint = $('#workspaceTabHint');
     if (!host || !previous || !next || !hint) return;
 
+    const tabs = allowedTabs();
+    const activeIndex = Math.max(0, tabs.findIndex(item => item.id === state.tab));
+    const active = tabs[activeIndex];
+    const previousSection = tabs[activeIndex - 1];
+    const nextSection = tabs[activeIndex + 1];
     const overflowing = host.scrollWidth > host.clientWidth + 6;
-    previous.hidden = !overflowing;
-    next.hidden = !overflowing;
+    previous.hidden = tabs.length < 2;
+    next.hidden = tabs.length < 2;
+    previous.disabled = !previousSection;
+    next.disabled = !nextSection;
+    previous.dataset.targetTab = previousSection?.id || '';
+    next.dataset.targetTab = nextSection?.id || '';
+    previous.setAttribute('aria-label', previousSection ? `Open previous section: ${previousSection.label}` : 'No previous briefing section');
+    next.setAttribute('aria-label', nextSection ? `Open next section: ${nextSection.label}` : 'No more briefing sections');
+    previous.title = previousSection ? `Previous: ${previousSection.label}` : '';
+    next.title = nextSection ? `Next: ${nextSection.label}` : '';
     hint.hidden = false;
-    if (!overflowing) {
-      hint.textContent = 'Choose any section above to open it';
-      return;
-    }
-
-    const atStart = host.scrollLeft <= 5;
-    const atEnd = host.scrollLeft + host.clientWidth >= host.scrollWidth - 5;
-    previous.disabled = atStart;
-    next.disabled = atEnd;
-    hint.textContent = atStart
-      ? 'Choose a section, or use the right arrow to see more'
-      : atEnd
-        ? 'Choose a section, or use the left arrow to go back'
-        : 'Choose a section, or use the arrows to see more';
+    hint.textContent = `Section ${activeIndex + 1} of ${tabs.length}: ${active?.label || 'Briefing section'}. Use the arrows or choose a section.`;
+    host.dataset.overflowing = String(overflowing);
   }
 
   function moveWorkspaceTabs(direction) {
-    const host = $('#workspaceTabs');
-    if (!host) return;
-    const distance = Math.max(180, host.clientWidth * 0.72);
-    host.scrollBy({
-      left: direction === 'previous' ? -distance : distance,
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-    });
-    window.setTimeout(updateWorkspaceTabNavigation, 280);
+    const tabs = allowedTabs();
+    const activeIndex = Math.max(0, tabs.findIndex(item => item.id === state.tab));
+    const targetIndex = direction === 'previous' ? activeIndex - 1 : activeIndex + 1;
+    const target = tabs[targetIndex];
+    if (!target) return;
+    setWorkspaceTab(target.id, { push: true, focus: true });
   }
 
   function scrollThroughToday() {
@@ -490,6 +489,11 @@
       host.innerHTML = '<p>No detail view is available for this category.</p>';
       return;
     }
+    const tabs = allowedTabs();
+    const activeIndex = Math.max(0, tabs.findIndex(item => item.id === state.tab));
+    const previous = tabs[activeIndex - 1];
+    const next = tabs[activeIndex + 1];
+    const related = tabs.filter(item => item.id !== state.tab);
     host.setAttribute('aria-labelledby', `brief-next-tab-${state.tab}`);
     host.innerHTML = `
       <header class="workspace-panel-heading">
@@ -500,7 +504,23 @@
         </div>
         <button class="section-ai-button" type="button" data-ai-trigger data-ai-kind="workspace" data-ai-title="${escapeHtml(detail.title)}" aria-label="Open a conversation about ${escapeHtml(detail.title)}" aria-haspopup="dialog" title="Use this section as conversation context"><span aria-hidden="true">✦</span></button>
       </header>
+      <nav class="workspace-section-progress" aria-label="Move through briefing sections">
+        <span><b>${activeIndex + 1}</b> of ${tabs.length}</span>
+        <div>
+          ${previous ? `<button class="workspace-previous-section" type="button" data-workspace-continue="${escapeHtml(previous.id)}"><span aria-hidden="true">←</span> ${escapeHtml(previous.label)}</button>` : ''}
+          ${next ? `<button class="workspace-next-section" type="button" data-workspace-continue="${escapeHtml(next.id)}"><span>Continue to ${escapeHtml(next.label)}</span><i aria-hidden="true">→</i></button>` : '<span class="workspace-section-complete">Final section</span>'}
+        </div>
+      </nav>
       ${renderDetailBody(detail)}
+      ${related.length ? `
+        <nav class="workspace-related-links" aria-label="Explore more briefing sections">
+          <header><span>Explore more of this briefing</span><small>Each section opens another approved part of the same Space.</small></header>
+          <div>${related.map(item => {
+            const relatedDetail = currentScenario().details[item.id];
+            return `<button type="button" data-workspace-continue="${escapeHtml(item.id)}"><small>Briefing section</small><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(relatedDetail?.summary || 'Open the records and decisions connected to this part of the briefing.')}</span><i aria-hidden="true">→</i></button>`;
+          }).join('')}</div>
+        </nav>
+      ` : ''}
     `;
   }
 
@@ -765,6 +785,12 @@
       const tabButton = event.target.closest('[data-workspace-tab]');
       if (tabButton) {
         setWorkspaceTab(tabButton.dataset.workspaceTab, { push: true, focus: true });
+        return;
+      }
+
+      const continueButton = event.target.closest('[data-workspace-continue]');
+      if (continueButton) {
+        setWorkspaceTab(continueButton.dataset.workspaceContinue, { push: true, focus: true });
         return;
       }
 

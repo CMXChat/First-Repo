@@ -494,7 +494,7 @@ test('Business partners and Accountant and client use complete advanced workspac
   await expectPlainVisibleCopy(page);
 });
 
-test('briefing sections explain their controls and expose arrows when needed', async ({ page }, testInfo) => {
+test('briefing sections expose named progress controls and working arrows', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'The section cues are validated at desktop and narrow widths.');
   await page.setViewportSize({ width: 1140, height: 844 });
   await openCurrentBrief(page);
@@ -511,20 +511,31 @@ test('briefing sections explain their controls and expose arrows when needed', a
   const next = page.locator('[data-workspace-tab-step="next"]');
   const hint = page.locator('#workspaceTabHint');
   await expect(hint).toBeVisible();
-  await expect(hint).toHaveText('Choose any section above to open it');
-  await expect(next).toBeHidden();
+  await expect(hint).toContainText('Section 1 of 5');
+  await expect(next).toBeVisible();
+  await expect(next).toBeEnabled();
+  await expect(page.locator('.workspace-next-section')).toContainText('Continue to Cash plan');
+  await expect(page.locator('.workspace-related-links')).toContainText('Explore more of this briefing');
+  await expect(page.locator('.workspace-related-links button')).toHaveCount(4);
+
+  const relatedTarget = await page.locator('.workspace-related-links button').first().getAttribute('data-workspace-continue');
+  await page.locator('.workspace-related-links button').first().click();
+  await expect(page.locator(`[data-workspace-tab="${relatedTarget}"]`)).toHaveAttribute('aria-selected', 'true');
+  await page.locator('[data-workspace-tab="overview"]').click();
+
+  await page.locator('.workspace-next-section').click();
+  await expect(page.locator('[data-workspace-tab="cash"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(hint).toContainText('Section 2 of 5');
+  await expect(page.locator('.workspace-next-section')).toContainText('Continue to Portfolio');
+  await expect(previous).toBeEnabled();
 
   await page.setViewportSize({ width: 520, height: 844 });
   await expect(next).toBeVisible();
   await expect(next).toBeEnabled();
-  await expect(previous).toBeDisabled();
-  await expect(hint).toHaveText('Choose a section, or use the right arrow to see more');
-
-  const initialScroll = await tabs.evaluate(node => node.scrollLeft);
   await next.click();
-  await expect.poll(() => tabs.evaluate(node => node.scrollLeft)).toBeGreaterThan(initialScroll + 20);
+  await expect(page.locator('[data-workspace-tab="portfolio"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(hint).toContainText('Section 3 of 5');
   await expect(previous).toBeEnabled();
-  await expect(hint).not.toHaveText('Choose a section, or use the right arrow to see more');
   await expectNoHorizontalOverflow(page);
 });
 
