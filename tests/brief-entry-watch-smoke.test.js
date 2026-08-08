@@ -44,13 +44,17 @@ assert.match(entryCss, /grid-template-columns: 1fr/);
 
 assert.match(watchJs, /currentPreset\(\) !== 'couple'/);
 assert.match(watchJs, /window\.CMX_DAILY_VIDEO/);
+assert.match(watchJs, /if \(!video\)/);
 assert.match(watchJs, /youtube-nocookie\.com\/embed/);
 assert.match(watchJs, /relationship-watch-poster/);
 assert.match(watchJs, /player\.replaceChildren\(iframe\)/);
 assert.doesNotMatch(watchJs, /MutationObserver/);
 assert.match(watchCss, /aspect-ratio: 16 \/ 9/);
 assert.match(watchCss, /html\[data-theme='light'\]/);
-assert.match(dailyVideo, /provider: "youtube"/);
-assert.match(dailyVideo, /videoId: "[A-Za-z0-9_-]{11}"/);
+
+const hasNoDailyVideo = /window\.CMX_DAILY_VIDEO\s*=\s*null/.test(dailyVideo);
+const hasValidYouTubeVideo = /provider:\s*["']youtube["']/.test(dailyVideo)
+  && /videoId:\s*["'][A-Za-z0-9_-]{11}["']/.test(dailyVideo);
+assert.ok(hasNoDailyVideo || hasValidYouTubeVideo, 'Daily video must be null or a valid YouTube record.');
 
 console.log('Brief entry and relationship watch smoke test passed.');

@@ -79,6 +79,6 @@ assert.match(styles, /forced-colors: active/);
 assert.match(styles, /@supports not \(\(-webkit-backdrop-filter/);
 
 assert.match(index, /brief-config\.js\?v=20260803-\d+/);
-assert.match(index, /brief-terminal-bridge\.js\?v=20260803-\d+/);
+assert.match(index, /brief-terminal-bridge\.js\?v=20260804-\d+/);
 
 console.log('Brief interconnected navigation smoke test passed.');
