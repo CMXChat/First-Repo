@@ -1,0 +1,57 @@
+name: Spaces Share Ready Helper
+
+on:
+  push:
+    branches:
+      - agent/spaces-share-ready-final
+
+permissions:
+  contents: write
+
+jobs:
+  apply-cache-bump:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/spaces-share-ready-final
+      - name: Update active Spaces runtime cache contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              'spaces/index.html': [
+                  ('brief-spaces-runtime.js?v=20260806-1', 'brief-spaces-runtime.js?v=20260808-1'),
+              ],
+              'tests/brief-next-smoke.test.js': [
+                  ('brief-spaces-runtime\\.js\\?v=20260806-1', 'brief-spaces-runtime\\.js\\?v=20260808-1'),
+              ],
+              'tests/brief-device-smoke.test.js': [
+                  ('brief-spaces-runtime\\.js\\?v=20260806-1', 'brief-spaces-runtime\\.js\\?v=20260808-1'),
+                  ('brief-spaces-runtime.js?v=20260806-1', 'brief-spaces-runtime.js?v=20260808-1'),
+              ],
+          }
+
+          for filename, pairs in replacements.items():
+              path = Path(filename)
+              text = path.read_text()
+              original = text
+              for old, new in pairs:
+                  text = text.replace(old, new)
+              if filename == 'spaces/index.html' and text == original:
+                  raise SystemExit('Spaces runtime cache reference was not found.')
+              path.write_text(text)
+          PY
+      - name: Commit helper result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add spaces/index.html tests/brief-next-smoke.test.js tests/brief-device-smoke.test.js
+          if git diff --cached --quiet; then
+            echo "Nothing to update"
+            exit 0
+          fi
+          git commit -m "Bump share-ready Spaces runtime cache"
+          git push origin HEAD:agent/spaces-share-ready-final
