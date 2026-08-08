@@ -1,0 +1,108 @@
+name: Spaces Share Ready Helper
+
+on:
+  push:
+    branches:
+      - agent/spaces-share-ready-final
+
+permissions:
+  contents: write
+
+jobs:
+  apply-final-notes:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/spaces-share-ready-final
+      - name: Apply final copy contracts and update note
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          readme = Path('docs/README.md')
+          text = readme.read_text()
+          text = text.replace(
+              'Verified code baseline: `bc9f2051166fa0a57bec8aac1b47b0adc533dc6c`',
+              'Verified code baseline: `14790b4ed5c9ed090d9f0c59413d00c8dd566b2b`'
+          )
+          copy_anchor = '- Prefer final product wording in source files. A small compatibility adapter is acceptable when it protects a staged rename across dynamic legacy modules.\n'
+          copy_extra = (
+              '- Use everyday product language in the briefing itself. Keep technical architecture in the product overview or an explicit explanation.\n'
+              '- Do not use metaphorical weather, fake loading language, or technical labels where a person expects a real-world condition or plain answer.\n'
+              '- Each briefing should make it easy to understand what changed, why it matters, and what to do next without repeating the privacy model on every card.\n'
+          )
+          if copy_extra not in text:
+              if copy_anchor not in text:
+                  raise SystemExit('Copy standard anchor not found in docs/README.md')
+              text = text.replace(copy_anchor, copy_anchor + copy_extra)
+          readme.write_text(text)
+
+          smoke = Path('tests/brief-next-smoke.test.js')
+          text = smoke.read_text()
+          runtime_anchor = "assert.match(spacesRuntimeJs, /const productName = 'Spaces'/);\n"
+          runtime_extra = """assert.match(spacesRuntimeJs, /Open the briefing you need right now/);
+assert.match(spacesRuntimeJs, /Your day, sorted around what comes next/);
+assert.match(spacesRuntimeJs, /Keep shared plans together and private thoughts separate/);
+assert.match(spacesRuntimeJs, /Everyone can see today’s plan and who owns what/);
+assert.match(spacesRuntimeJs, /Run one company across New York and Sydney/);
+assert.match(spacesRuntimeJs, /See where the money stands before deciding what moves next/);
+assert.match(spacesRuntimeJs, /Adjust today’s workout without losing the plan/);
+assert.match(spacesRuntimeJs, /Everyone can see what they own and what’s blocking release/);
+assert.match(spacesRuntimeJs, /Brooklyn, New York/);
+assert.match(spacesRuntimeJs, /Mild and dry/);
+assert.doesNotMatch(spacesRuntimeJs, /Daniel’s financial month|Release window open/);
+"""
+          if runtime_extra not in text:
+              if runtime_anchor not in text:
+                  raise SystemExit('Runtime assertion anchor not found')
+              text = text.replace(runtime_anchor, runtime_anchor + runtime_extra)
+          smoke.write_text(text)
+
+          notes = Path('assets/updates-notes.js')
+          text = notes.read_text()
+          note_anchor = 'window.CMX_DAILY_NOTES = [\n'
+          note = """  {
+    id: '2026-08-08-spaces-share-ready-final',
+    timestamp: '2026-08-08T17:20:00-04:00',
+    title: 'Spaces demo completed its share-ready copy and navigation pass',
+    status: 'complete',
+    body: [
+      'Rewrote the main interface and all seven briefing introductions so the demo reads like a product people can use, not a product specification. Headings, recommendations, priorities, section names, privacy copy, dialogs and helper text now use shorter everyday language.',
+      'Personal, Relationship, Family, Business partners, Accountant and client, Trainer and Team now explain their purpose in one pass and put the next decision first. Repeated words such as context, evidence, approved and clear were reduced where they did not help the person understand what to do.',
+      'Removed the forced financial and project weather metaphors. Accountant and Team briefings now show normal fictional weather in the weather module, while financial and release conditions stay in the parts of the briefing where they belong.',
+      'PR #94 was merged after every navigation, browser, release, privacy and compatibility check passed. Purple discovery cards, recommendations, continuation cards and Everything jumps now land on the selected information instead of another navigation layer.',
+      'The final pass keeps the private-data boundary explicit, keeps the demo records fictional, and preserves the mobile, accessibility, Spotify and release safeguards already validated in the previous product audit.'
+    ],
+    links: [
+      { url: '/spaces/', label: 'Open Spaces Demo' },
+      { url: '/doc/', label: 'Open Product Overview' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['spaces', 'copy', 'navigation', 'release'],
+    pinned: true
+  },
+"""
+          if "id: '2026-08-08-spaces-share-ready-final'" not in text:
+              if note_anchor not in text:
+                  raise SystemExit('Updates note anchor not found')
+              text = text.replace(note_anchor, note_anchor + note)
+          notes.write_text(text)
+
+          updates_html = Path('assets/cmx-updates.html')
+          text = updates_html.read_text()
+          text = text.replace('updates-notes.js?v=20260808-2', 'updates-notes.js?v=20260808-3')
+          updates_html.write_text(text)
+          PY
+      - name: Commit helper result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/README.md tests/brief-next-smoke.test.js assets/updates-notes.js assets/cmx-updates.html
+          if git diff --cached --quiet; then
+            echo "Nothing to update"
+            exit 0
+          fi
+          git commit -m "Record share-ready Spaces copy standard"
+          git push origin HEAD:agent/spaces-share-ready-final
