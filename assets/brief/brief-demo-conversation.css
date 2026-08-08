@@ -331,6 +331,20 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
   margin-top: 12px;
 }
 
+.entry-choice-hint-mobile {
+  display: none;
+}
+
+.entry-open.is-selection-ready {
+  animation: entry-open-confirm 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes entry-open-confirm {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--blue) 30%, transparent); }
+  55% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--blue) 10%, transparent), 0 12px 28px rgba(0, 88, 148, 0.2); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--blue) 0%, transparent); }
+}
+
 /* The entrance teaches the product by changing the briefing preview with the selected Space. */
 .entry-brand-row,
 .entry-brand,
@@ -1326,6 +1340,14 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
 }
 
 @media (max-width: 620px) {
+  .entry-choice-hint-desktop {
+    display: none;
+  }
+
+  .entry-choice-hint-mobile {
+    display: block;
+  }
+
   html {
     font-size: 17px;
   }
@@ -1385,6 +1407,10 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
     border-radius: 26px;
   }
 
+  body[data-entered="false"][data-entry-choice-made="true"] .entry-card {
+    padding-bottom: calc(97px + env(safe-area-inset-bottom));
+  }
+
   .entry-brand .entry-mark {
     width: 44px;
     height: 44px;
@@ -1440,6 +1466,7 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
     max-width: none;
     min-height: 102px;
     padding: 14px 15px;
+    scroll-margin-bottom: 84px;
   }
 
   .entry-option span {
@@ -1539,6 +1566,36 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
     min-height: 48px;
     padding: 11px 14px;
     font-size: 0.9rem;
+  }
+
+  body[data-entered="false"][data-entry-choice-made="false"] #openDemo {
+    display: none;
+  }
+
+  body[data-entered="false"][data-entry-choice-made="true"] #openDemo {
+    position: fixed;
+    left: 50%;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    width: min(calc(100% - 28px), 420px);
+    min-height: 56px;
+    padding: 13px 18px;
+    border: 1px solid rgba(164, 226, 255, 0.72);
+    background: linear-gradient(135deg, #005fa9, #008dcb);
+    box-shadow: 0 14px 36px rgba(0, 47, 85, 0.34), 0 0 0 4px rgba(225, 247, 255, 0.72);
+    transform: translateX(-50%);
+    animation: entry-open-mobile-arrive 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  body[data-entered="false"][data-entry-choice-made="true"] #openDemo:hover,
+  body[data-entered="false"][data-entry-choice-made="true"] #openDemo:focus-visible {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  @keyframes entry-open-mobile-arrive {
+    from { opacity: 0; transform: translate(-50%, 12px) scale(0.98); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
   }
 
   .entry-note {
@@ -1811,6 +1868,7 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
   .entry-tip,
   .entry-tip[data-active] > span,
   .entry-tip[data-active] p,
+  .entry-open,
   .space-highlight,
   .spaces-ai-dialog[open],
   .spaces-demo-notice {

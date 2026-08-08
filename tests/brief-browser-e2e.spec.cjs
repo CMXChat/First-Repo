@@ -28,7 +28,7 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('#openDemo')).toBeEnabled();
   await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', expectedEntryScenario);
   if (expectedEntryScenario === 'personal') {
-    await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Space');
+    await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Briefing');
     await expect(page.locator('#entryPreviewTitle')).toContainText('sorted by what matters next');
   }
 
@@ -193,7 +193,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', 'business');
   await expect(page.locator('#entryPreviewTitle')).toContainText('New York and Sydney');
   await expect(page.locator('#entryPreviewMetrics')).toContainText('2 decisions');
-  await expect(page.locator('#openDemoLabel')).toHaveText('Open Business partners Space');
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Business partners Briefing');
   await page.locator('[data-entry-scenario="personal"]').click();
 
   const firstTipAccent = await page.locator('#entryTipCarousel').evaluate(carousel => {
@@ -308,6 +308,51 @@ test('desktop entry fits common screens, stays centered and exposes small-window
 
   await page.locator('#entry').evaluate(entry => entry.scrollTo({ top: entry.scrollHeight, behavior: 'auto' }));
   await expect(page.locator('#openDemo')).toBeInViewport();
+});
+
+test('mobile reveals the selected briefing action only after a card tap', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-android', 'The sticky entry action runs once in mobile Chromium.');
+  await prepareFreshPage(page);
+
+  await expect(page.locator('body')).toHaveAttribute('data-entry-choice-made', 'false');
+  await expect(page.locator('#entryMobileChoiceHint')).toBeVisible();
+  await expect(page.locator('#entryMobileChoiceHint')).toHaveText('Tap one to continue');
+  await expect(page.locator('#openDemo')).toBeHidden();
+
+  await page.locator('[data-entry-scenario="family"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-entry-choice-made', 'true');
+  await expect(page.locator('#entryMobileChoiceHint')).toHaveText('Family selected');
+  await expect(page.locator('#openDemo')).toBeVisible();
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Family Briefing');
+
+  await expect.poll(async () => page.locator('[data-entry-scenario="family"]').evaluate(choice => {
+    const action = document.querySelector('#openDemo');
+    return action ? action.getBoundingClientRect().top - choice.getBoundingClientRect().bottom : -1;
+  })).toBeGreaterThanOrEqual(10);
+
+  const stickyAction = await page.locator('#openDemo').evaluate(button => {
+    const rect = button.getBoundingClientRect();
+    const style = getComputedStyle(button);
+    return {
+      position: style.position,
+      left: rect.left,
+      right: innerWidth - rect.right,
+      bottom: innerHeight - rect.bottom,
+      height: rect.height
+    };
+  });
+  expect(stickyAction.position).toBe('fixed');
+  expect(stickyAction.left).toBeGreaterThanOrEqual(13);
+  expect(stickyAction.right).toBeGreaterThanOrEqual(13);
+  expect(stickyAction.bottom).toBeGreaterThanOrEqual(9);
+  expect(stickyAction.height).toBeGreaterThanOrEqual(56);
+  await expectNoHorizontalOverflow(page);
+
+  await page.locator('[data-entry-scenario="accounting"]').click();
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Accountant and client Briefing');
+  await page.locator('#openDemo').click();
+  await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
+  await expect(page.locator('body')).toHaveAttribute('data-scenario', 'accounting');
 });
 
 test('section conversations and standout modules keep the current Space in scope', async ({ page }, testInfo) => {

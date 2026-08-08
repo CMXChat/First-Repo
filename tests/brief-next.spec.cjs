@@ -275,7 +275,7 @@ test('light default, saved dark preference and reset remain reversible', async (
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'false');
   await expect(page.locator('#entry')).toBeVisible();
   await expect(page.locator('#openDemo')).toBeEnabled();
-  await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Space');
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Briefing');
   await expect(page.locator('[data-entry-scenario="personal"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', 'personal');
   await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
