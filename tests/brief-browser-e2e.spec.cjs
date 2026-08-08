@@ -203,7 +203,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       text: strong ? getComputedStyle(strong).color : ''
     };
   });
-  await page.locator('[data-entry-tip-next]').click();
+  await dispatchSwipe(page, '#entryTipCarousel', { startX: 700, endX: 300 });
   await expect(page.locator('#entryTipPosition')).toHaveText('2 / 5');
   await expect(page.locator('[data-entry-tip]').nth(1)).toHaveAttribute('aria-hidden', 'false');
   const secondTipAccent = await page.locator('#entryTipCarousel').evaluate(carousel => {
@@ -215,7 +215,6 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   });
   expect(secondTipAccent.border).not.toBe(firstTipAccent.border);
   expect(secondTipAccent.text).not.toBe(firstTipAccent.text);
-  await page.locator('[data-entry-tip-next]').evaluate(button => button.blur());
   await page.mouse.move(0, 0);
   await expect.poll(() => page.locator('#entryTipPosition').textContent(), { timeout: 6000 }).toBe('3 / 5');
 
@@ -257,8 +256,6 @@ test('desktop entry fits common screens, stays centered and exposes small-window
     const previewCopy = entry.querySelector('#entryPreviewCopy');
     const preview = entry.querySelector('#entrySpacePreview');
     const position = entry.querySelector('#entryTipPosition');
-    const controls = entry.querySelector('.entry-tip-controls').getBoundingClientRect();
-    const carouselRect = carousel.getBoundingClientRect();
     return {
       maxScroll: entry.scrollHeight - entry.clientHeight,
       pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -276,9 +273,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       previewDisplay: getComputedStyle(preview).display,
       openButtonFontSize: parseFloat(getComputedStyle(openButton).fontSize),
       openButtonHeight: openButton.getBoundingClientRect().height,
-      positionDisplay: getComputedStyle(position).display,
-      controlsTop: controls.top,
-      carouselBottom: carouselRect.bottom
+      positionDisplay: getComputedStyle(position).position
     };
   });
   expect(phoneFit.maxScroll).toBeGreaterThan(150);
@@ -297,8 +292,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(phoneFit.previewDisplay).toBe('grid');
   expect(phoneFit.openButtonFontSize).toBeGreaterThanOrEqual(15);
   expect(phoneFit.openButtonHeight).toBeGreaterThanOrEqual(48);
-  expect(phoneFit.positionDisplay).toBe('none');
-  expect(phoneFit.controlsTop).toBeGreaterThanOrEqual(phoneFit.carouselBottom);
+  expect(phoneFit.positionDisplay).toBe('absolute');
 
   const beforeSwipe = await page.locator('#entryTipPosition').textContent();
   await dispatchSwipe(page, '#entryTipCarousel', { startX: 290, endX: 70 });
@@ -318,19 +312,22 @@ test('mobile reveals the selected briefing action only after a card tap', async 
   await expect(page.locator('#entryMobileChoiceHint')).toBeVisible();
   await expect(page.locator('#entryMobileChoiceHint')).toHaveText('Tap one to continue');
   await expect(page.locator('#openDemo')).toBeHidden();
+  await expect(page.locator('#openDemoSticky')).toBeHidden();
 
   await page.locator('[data-entry-scenario="family"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-entry-choice-made', 'true');
   await expect(page.locator('#entryMobileChoiceHint')).toHaveText('Family selected');
   await expect(page.locator('#openDemo')).toBeVisible();
   await expect(page.locator('#openDemoLabel')).toHaveText('Open Family Briefing');
+  await expect(page.locator('#openDemoSticky')).toBeVisible();
+  await expect(page.locator('#openDemoStickyLabel')).toHaveText('Open Family Briefing');
 
   await expect.poll(async () => page.locator('[data-entry-scenario="family"]').evaluate(choice => {
-    const action = document.querySelector('#openDemo');
+    const action = document.querySelector('#openDemoSticky');
     return action ? action.getBoundingClientRect().top - choice.getBoundingClientRect().bottom : -1;
   })).toBeGreaterThanOrEqual(10);
 
-  const stickyAction = await page.locator('#openDemo').evaluate(button => {
+  const stickyAction = await page.locator('#openDemoSticky').evaluate(button => {
     const rect = button.getBoundingClientRect();
     const style = getComputedStyle(button);
     return {
@@ -350,7 +347,8 @@ test('mobile reveals the selected briefing action only after a card tap', async 
 
   await page.locator('[data-entry-scenario="accounting"]').click();
   await expect(page.locator('#openDemoLabel')).toHaveText('Open Accountant and client Briefing');
-  await page.locator('#openDemo').click();
+  await expect(page.locator('#openDemoStickyLabel')).toHaveText('Open Accountant and client Briefing');
+  await page.locator('#openDemoSticky').click();
   await expect(page.locator('body')).toHaveAttribute('data-entered', 'true');
   await expect(page.locator('body')).toHaveAttribute('data-scenario', 'accounting');
 });
@@ -648,6 +646,8 @@ test('Personal habits and the Family briefing use the richer workspace modules',
 
   await selectPrimaryView(page, 'workspace');
   await page.locator('[data-workspace-tab="habits"]').click();
+  await expect(page.locator('.habit-overview')).toContainText('13 of 21 check-ins');
+  await expect(page.locator('.habit-week-pattern > div > span')).toHaveCount(7);
   await expect(page.locator('.habit-tracker-row')).toHaveCount(3);
   await expect(page.locator('.habit-tracker-row').first()).toContainText('4 this week');
   await expect(page.locator('.habit-tracker-row').first()).toContainText('16-day record');
@@ -683,7 +683,31 @@ test('Personal habits and the Family briefing use the richer workspace modules',
   await expect(page.locator('#all-workspace .family-calendar-day')).toHaveCount(3);
   await expect(page.locator('#all-workspace .household-column')).toHaveCount(3);
   await expect(page.locator('#all-workspace .shopping-groups li')).toHaveCount(7);
-  await expect(page.locator('#all-workspace .full-workspace-visual')).toHaveCount(3);
+  await expect(page.locator('#all-workspace .full-workspace-visual')).toHaveCount(5);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('generic briefing cards are replaced by decision-shaped visuals', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'chromium-desktop', 'Visual renderer coverage runs once in desktop Chromium.');
+  await openCurrentBrief(page);
+  await enterScenario(page, 'personal');
+  await expect(page.locator('#primaryNav .primary-guide-link')).toHaveAttribute('href', '/doc/');
+
+  const scenarios = {
+    personal: { day: '.decision-timeline', work: '.compact-status-board', money: '.brief-metric-bars', wellness: '.readiness-panel', connections: '.brief-connection-map' },
+    relationship: { together: '.shared-orbit-view', profiles: '.shared-orbit-view', plans: '.handoff-visual', reflection: '.guided-brief-steps', connections: '.brief-connection-map' },
+    trainer: { today: '.decision-timeline', habits: '.brief-metric-bars', progress: '.progress-trend-panel', recovery: '.readiness-panel', connections: '.brief-connection-map' },
+    team: { mywork: '.compact-status-board', handoffs: '.handoff-visual', procedures: '.guided-brief-steps', connections: '.brief-connection-map' }
+  };
+
+  for (const [scenario, sections] of Object.entries(scenarios)) {
+    if (page.locator('#scenarioSelect').inputValue() !== scenario) await page.locator('#scenarioSelect').selectOption(scenario);
+    await selectPrimaryView(page, 'workspace');
+    for (const [tab, selector] of Object.entries(sections)) {
+      await page.locator(`[data-workspace-tab="${tab}"]`).click();
+      await expect(page.locator(`#workspacePanel ${selector}`)).toBeVisible();
+    }
+  }
   await expectNoHorizontalOverflow(page);
 });
 

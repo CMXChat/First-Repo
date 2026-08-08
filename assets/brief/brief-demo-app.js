@@ -140,7 +140,7 @@
     if (!(trigger instanceof HTMLElement) || !window.matchMedia('(max-width: 620px)').matches) return;
     window.requestAnimationFrame(() => {
       const entry = $('#entry');
-      const open = $('#openDemo');
+      const open = $('#openDemoSticky');
       if (!entry || !open) return;
       const choiceRect = trigger.getBoundingClientRect();
       const actionRect = open.getBoundingClientRect();
@@ -158,11 +158,11 @@
     document.body.dataset.entryChoiceMade = 'true';
     setText('#entryMobileChoiceHint', `${selected.label} selected`);
 
-    const open = $('#openDemo');
-    if (!open) return;
-    open.classList.remove('is-selection-ready');
-    void open.offsetWidth;
-    open.classList.add('is-selection-ready');
+    const actions = [$('#openDemo'), $('#openDemoSticky')].filter(Boolean);
+    if (!actions.length) return;
+    actions.forEach(open => open.classList.remove('is-selection-ready'));
+    void actions[0].offsetWidth;
+    actions.forEach(open => open.classList.add('is-selection-ready'));
     keepEntryChoiceVisible(trigger);
     window.setTimeout(() => keepEntryChoiceVisible(trigger), 360);
   }
@@ -172,11 +172,12 @@
     $$('[data-entry-scenario]').forEach(button => {
       button.setAttribute('aria-pressed', String(button.dataset.entryScenario === state.entrySelection));
     });
-    const open = $('#openDemo');
-    if (!open) return;
+    const actions = [$('#openDemo'), $('#openDemoSticky')].filter(Boolean);
+    if (!actions.length) return;
     const selected = data.scenarios[state.entrySelection];
-    open.disabled = !selected;
+    actions.forEach(open => { open.disabled = !selected; });
     setText('#openDemoLabel', selected ? `Open ${selected.label} Briefing` : 'Choose a Briefing');
+    setText('#openDemoStickyLabel', selected ? `Open ${selected.label} Briefing` : 'Choose a Briefing');
     if (selected) renderEntryPreview(selected);
     if (selected && options.userInitiated === true) confirmEntryChoice(selected, options.trigger);
   }
@@ -194,7 +195,7 @@
     `).join('');
     const primary = $('#primaryNav');
     const mobile = $('#mobileNav');
-    if (primary) primary.innerHTML = markup;
+    if (primary) primary.innerHTML = `${markup}<a class="primary-guide-link" href="/doc/"><span>Concept guide</span><i aria-hidden="true">↗</i></a>`;
     if (mobile) mobile.innerHTML = markup;
   }
 
@@ -711,6 +712,16 @@
     }
   }
 
+  function installEntryBottomActionObserver() {
+    const entry = $('#entry');
+    const bottomAction = $('#openDemo');
+    if (!entry || !bottomAction || typeof IntersectionObserver !== 'function') return;
+    const observer = new IntersectionObserver(([record]) => {
+      document.body.dataset.entryBottomActionVisible = String(Boolean(record?.isIntersecting));
+    }, { root: entry, threshold: 0.7 });
+    observer.observe(bottomAction);
+  }
+
   function openDemo() {
     const selected = state.entrySelection;
     if (!validScenarios.has(selected)) return;
@@ -749,6 +760,7 @@
     });
 
     $('#openDemo')?.addEventListener('click', openDemo);
+    $('#openDemoSticky')?.addEventListener('click', openDemo);
     $('#scenarioSelect')?.addEventListener('change', event => startScenario(event.target.value, { push: true, focus: true }));
     $('#homeButton')?.addEventListener('click', () => selectView('today', { push: true }));
     $('#resetDemo')?.addEventListener('click', resetDemo);
@@ -853,6 +865,7 @@
     selectView('today', { push: false, focus: false });
     setEntrySelection(urlState.scenario || data.meta.defaultScenario);
     document.body.dataset.entryChoiceMade = 'false';
+    installEntryBottomActionObserver();
     installEvents();
   }
 

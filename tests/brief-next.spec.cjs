@@ -91,7 +91,7 @@ test('desktop demo keeps weather, stats, navigation and user-started soundtrack 
   await page.locator('#primaryNav [data-primary-view="workspace"]').click();
   await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
   await expect(page.locator('#workspaceTabs button')).toHaveCount(6);
-  await expect(page.locator('#workspacePanel .detail-card')).toHaveCount(3);
+  await expect(page.locator('#workspacePanel .decision-timeline')).toHaveCount(1);
 
   const firstTab = page.locator('#workspaceTabs [data-workspace-tab]').first();
   const secondTab = page.locator('#workspaceTabs [data-workspace-tab]').nth(1);
@@ -231,7 +231,7 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   await page.locator('#scenarioSelect').selectOption('trainer');
   await expect(page.locator('#railContextTitle')).toHaveText('Trainer and student');
   await expect(page.locator('[data-view-panel="today"]')).toBeVisible();
-  await expect(page.locator('#workspacePanel .detail-card')).toHaveCount(3);
+  await expect(page.locator('#workspacePanel .decision-timeline')).toHaveCount(1);
   await expectNoHorizontalOverflow(page);
   await expectNoVisibleEllipses(page);
 });

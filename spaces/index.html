@@ -12,13 +12,13 @@
   <title>Spaces Demo</title>
   <meta name="description" content="A working demo of Spaces, with personal, family, business partner, accountant-client, training, and project briefings built around approved information, memory, permissions, and next steps." />
   <link rel="canonical" href="https://db.cmxchat.com/spaces/" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260807-1" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo.css?v=20260808-1" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-explainers.css?v=20260807-3" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260808-2" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-experience.css?v=20260808-3" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-doc-links.css?v=20260808-1" />
   <link rel="stylesheet" href="/assets/brief/brief-demo-topbar-polish.css?v=20260807-3" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260808-1" />
-  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-11" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-advanced.css?v=20260808-2" />
+  <link rel="stylesheet" href="/assets/brief/brief-demo-conversation.css?v=20260808-13" />
 </head>
 <body data-entered="false" data-entry-choice-made="false" data-view="today" data-scenario="personal">
   <a class="skip-link" href="#demoMain">Skip to briefing</a>
@@ -94,11 +94,7 @@
             </article>
           </div>
         </div>
-        <div class="entry-tip-controls">
-          <button type="button" data-entry-tip-previous aria-label="Show previous Spaces tip">←</button>
-          <span id="entryTipPosition" aria-live="polite">1 / 5</span>
-          <button type="button" data-entry-tip-next aria-label="Show next Spaces tip">→</button>
-        </div>
+        <span class="sr-only" id="entryTipPosition" aria-live="polite">1 / 5</span>
       </section>
 
       <div class="entry-actions">
@@ -106,6 +102,7 @@
         <a class="secondary-button doc-entry-link" href="/doc/">Explore how Spaces works <span aria-hidden="true">↗</span></a>
       </div>
     </div>
+    <button class="primary-button entry-open entry-open-sticky" id="openDemoSticky" type="button" aria-label="Open selected briefing"><span id="openDemoStickyLabel">Open Personal Briefing</span><span aria-hidden="true">→</span></button>
   </section>
 
   <div class="app" id="demoApp" aria-hidden="true">
@@ -413,12 +410,12 @@
   </div>
 
   <noscript>This demo needs JavaScript to switch Spaces and show the selected briefing.</noscript>
-  <script src="/assets/brief/brief-demo-data.js?v=20260808-2" defer></script>
-  <script src="/assets/brief/brief-demo-advanced.js?v=20260808-1" defer></script>
+  <script src="/assets/brief/brief-demo-data.js?v=20260808-3" defer></script>
+  <script src="/assets/brief/brief-demo-advanced.js?v=20260808-2" defer></script>
   <script src="/assets/brief/brief-spaces-runtime.js?v=20260806-1" defer></script>
   <script src="/assets/brief/brief-demo-experience.js?v=20260808-1" defer></script>
   <script src="/assets/brief/brief-demo-media.js?v=20260807-4" defer></script>
-  <script src="/assets/brief/brief-demo-app.js?v=20260808-7" defer></script>
+  <script src="/assets/brief/brief-demo-app.js?v=20260808-8" defer></script>
   <script src="/assets/brief/brief-demo-explainers.js?v=20260807-4" defer></script>
   <script src="/assets/brief/brief-demo-conversation.js?v=20260808-1" defer></script>
 </body>

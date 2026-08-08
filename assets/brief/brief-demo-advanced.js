@@ -19,10 +19,21 @@
 
   function renderHabitTracker(detail) {
     const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    return `<div class="habit-tracker" aria-label="Fictional habit progress">${detail.habits.map(habit => `
+    const completed = detail.habits.reduce((total, habit) => total + habit.days.filter(Boolean).length, 0);
+    const total = detail.habits.length * days.length;
+    const percent = Math.round((completed / total) * 100);
+    const dailyTotals = days.map((day, index) => ({ day, complete: detail.habits.filter(habit => habit.days[index]).length }));
+    return `<div class="habit-tracker" aria-label="Fictional habit progress">
+      <section class="habit-overview">
+        <div class="habit-overview-score"><div class="habit-score-ring" role="img" aria-label="${completed} of ${total} weekly habit check-ins complete" style="--habit-score:${percent * 3.6}deg"><span><strong>${percent}%</strong><small>THIS WEEK</small></span></div><div><small>WEEKLY RHYTHM</small><strong>${completed} of ${total} check-ins</strong><p>Consistency is strongest in the morning. Two open weekend windows can still improve the week without chasing a perfect score.</p></div></div>
+        <div class="habit-week-pattern"><header><span>Daily completion</span><small>Across ${detail.habits.length} private habits</small></header><div>${dailyTotals.map(item => `<span><b>${item.day}</b><i><em style="--daily-fill:${Math.round((item.complete / detail.habits.length) * 100)}%"></em></i><strong>${item.complete}/${detail.habits.length}</strong></span>`).join('')}</div></div>
+      </section>
+      <header class="habit-list-heading"><div><span>HABIT DETAIL</span><strong>What happened each day</strong></div><small>Tap-free demo record · fictional data</small></header>
+      ${detail.habits.map(habit => `
       <article class="habit-tracker-row"><header><div><span>PRIVATE HABIT</span><h3>${escapeHtml(habit.name)}</h3></div><strong>${escapeHtml(habit.current)}</strong></header>
       <div class="habit-week" aria-label="${escapeHtml(habit.name)} weekly completion">${habit.days.map((complete, index) => `<span class="${complete ? 'is-complete' : ''}" aria-label="${days[index]} ${complete ? 'complete' : 'open'}"><b>${days[index]}</b><i aria-hidden="true">${complete ? '✓' : ''}</i></span>`).join('')}</div>
       <footer><span>${escapeHtml(habit.target)} target</span><span>${escapeHtml(habit.best)}</span><strong>${escapeHtml(habit.note)}</strong></footer></article>`).join('')}
+      <section class="habit-insights" aria-label="Habit interpretation"><article><small>STRONGEST PATTERN</small><strong>Morning reset is carrying the week</strong><p>Six completed days make this the most stable routine in the current record.</p></article><article><small>WATCH</small><strong>Evening movement has two open windows</strong><p>Saturday and Sunday remain available, with no need to overload either day.</p></article><article><small>NEXT USEFUL CHECK-IN</small><strong>Review after the weekend</strong><p>Keep, reduce, or reschedule the target using what actually happened.</p></article></section>
       <p class="workspace-boundary-note"><strong>Sharing rule:</strong> a Personal habit remains private unless the user approves a specific result, plan, or time for another Space.</p></div>`;
   }
 
@@ -43,6 +54,50 @@
     return `<div class="shopping-groups" aria-label="Fictional shared family shopping list">${detail.groups.map(group => `
       <section><header><h3>${escapeHtml(group.title)}</h3><span>${group.items.filter(item => item.checked).length}/${group.items.length}</span></header><ul>${group.items.map(item => `
         <li class="${item.checked ? 'is-checked' : ''}"><span class="shopping-check" aria-hidden="true">${item.checked ? '✓' : ''}</span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.owner)}</small></li>`).join('')}</ul></section>`).join('')}</div>`;
+  }
+
+  function renderDecisionTimeline(detail) {
+    return `<div class="decision-timeline" aria-label="Briefing sequence">${detail.cards.map((card, index) => `
+      <article><div class="decision-step"><span>${String(index + 1).padStart(2, '0')}</span><i aria-hidden="true"></i></div><div><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></div></article>`).join('')}</div>`;
+  }
+
+  function renderStatusBoard(detail) {
+    const tones = ['active', 'waiting', 'context'];
+    return `<div class="compact-status-board" aria-label="Current briefing status">${detail.cards.map((card, index) => `
+      <article data-status-tone="${tones[index % tones.length]}"><header><span><i aria-hidden="true"></i>${escapeHtml(card.label)}</span><b>${index === 0 ? 'Now' : index === 1 ? 'Watch' : 'Context'}</b></header><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p><div class="status-board-rail" aria-hidden="true"><i style="--status-fill:${[86, 58, 72][index % 3]}%"></i></div></article>`).join('')}</div>`;
+  }
+
+  function renderMetricBars(detail) {
+    const values = [78, 56, 68];
+    return `<div class="brief-metric-bars" aria-label="Illustrative briefing measures"><header><span>Current pattern</span><small>FICTIONAL DEMO VIEW</small></header><div>${detail.cards.map((card, index) => `
+      <article><div><span>${escapeHtml(card.label)}</span><strong>${escapeHtml(card.title)}</strong></div><b>${values[index % values.length]}<small>/100</small></b><div class="brief-metric-track" role="img" aria-label="${escapeHtml(card.label)} illustrative level ${values[index % values.length]} out of 100"><i style="--metric-fill:${values[index % values.length]}%"></i></div><p>${escapeHtml(card.detail)}</p></article>`).join('')}</div></div>`;
+  }
+
+  function renderReadinessDial(detail) {
+    return `<div class="readiness-panel"><section class="readiness-score"><div class="readiness-dial" role="img" aria-label="Illustrative readiness 72 out of 100"><span><strong>72</strong><small>READY</small></span></div><div><small>ADAPTIVE VIEW</small><strong>Keep the plan useful</strong><p>Readiness changes the size of the next step while the goal stays visible.</p></div></section><div class="readiness-factors">${detail.cards.map((card, index) => `<article><span><i aria-hidden="true" style="--factor-level:${[72, 88, 64][index % 3]}%"></i></span><div><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></div></article>`).join('')}</div></div>`;
+  }
+
+  function renderConnectionMap(detail) {
+    return `<div class="brief-connection-map" aria-label="Scoped connection map"><div class="connection-hub"><span>SPACE</span><strong>Approved context</strong><small>Purpose scoped</small></div><div class="connection-spokes">${detail.cards.map((card, index) => `<article data-connection-index="${index + 1}"><i aria-hidden="true"></i><div><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></div></article>`).join('')}</div><p class="connection-boundary"><i aria-hidden="true"></i>Each connection contributes only the approved records needed for this view.</p></div>`;
+  }
+
+  function renderSharedOrbit(detail) {
+    const first = detail.cards[0];
+    const second = detail.cards[1];
+    const shared = detail.cards[2];
+    return `<div class="shared-orbit-view" aria-label="Private and shared context"><div class="shared-orbit-diagram"><article class="orbit-person orbit-person-a"><small>${escapeHtml(first.label)}</small><strong>${escapeHtml(first.title)}</strong></article><div class="orbit-shared"><span>SHARED</span><strong>${escapeHtml(shared.title)}</strong><small>Approved by both</small></div><article class="orbit-person orbit-person-b"><small>${escapeHtml(second.label)}</small><strong>${escapeHtml(second.title)}</strong></article></div><div class="shared-orbit-notes">${detail.cards.map(card => `<article><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></article>`).join('')}</div></div>`;
+  }
+
+  function renderProgressTrend(detail) {
+    return `<div class="progress-trend-panel"><header><div><span>RECENT EVIDENCE</span><strong>Direction across six check-ins</strong></div><small>FICTIONAL TREND</small></header><div class="trend-chart" role="img" aria-label="Illustrative upward trend across six check-ins"><div class="trend-grid" aria-hidden="true"><i></i><i></i><i></i></div><svg viewBox="0 0 600 180" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="briefTrendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".25"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs><path class="trend-area" d="M0 145 L100 128 L200 105 L300 114 L400 78 L500 53 L600 34 L600 180 L0 180 Z"/><polyline points="0,145 100,128 200,105 300,114 400,78 500,53 600,34"/><g><circle cx="0" cy="145" r="5"/><circle cx="100" cy="128" r="5"/><circle cx="200" cy="105" r="5"/><circle cx="300" cy="114" r="5"/><circle cx="400" cy="78" r="5"/><circle cx="500" cy="53" r="5"/><circle cx="600" cy="34" r="5"/></g></svg><footer><span>Six check-ins ago</span><span>Now</span></footer></div><div class="trend-evidence">${detail.cards.map(card => `<article><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></article>`).join('')}</div></div>`;
+  }
+
+  function renderHandoffFlow(detail) {
+    return `<div class="handoff-visual" aria-label="Decision and ownership flow">${detail.cards.map((card, index) => `<article><div class="handoff-marker"><span>${index + 1}</span>${index < detail.cards.length - 1 ? '<i aria-hidden="true">→</i>' : ''}</div><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p><b>${index === 0 ? 'Prepared' : index === 1 ? 'Review' : 'Confirm'}</b></article>`).join('')}</div>`;
+  }
+
+  function renderGuidedSteps(detail) {
+    return `<ol class="guided-brief-steps">${detail.cards.map((card, index) => `<li><span aria-hidden="true">${index < 1 ? '✓' : String(index + 1).padStart(2, '0')}</span><div><small>${escapeHtml(card.label)}</small><strong>${escapeHtml(card.title)}</strong><p>${escapeHtml(card.detail)}</p></div><i aria-hidden="true">${index < 1 ? 'Complete' : index === 1 ? 'Next' : 'Protected'}</i></li>`).join('')}</ol>`;
   }
 
   function renderPartnerOperations(detail) {
@@ -288,6 +343,15 @@
   }
 
   const renderers = {
+    'decision-timeline': renderDecisionTimeline,
+    'status-board': renderStatusBoard,
+    'metric-bars': renderMetricBars,
+    'readiness-dial': renderReadinessDial,
+    'connection-map': renderConnectionMap,
+    'shared-orbit': renderSharedOrbit,
+    'progress-trend': renderProgressTrend,
+    'handoff-flow': renderHandoffFlow,
+    'guided-steps': renderGuidedSteps,
     habits: renderHabitTracker,
     calendar: renderFamilyCalendar,
     board: renderHouseholdBoard,
