@@ -16,6 +16,7 @@ async function prepareFreshPage(page, route = '/spaces/') {
 }
 
 async function openCurrentBrief(page, route = '/spaces/') {
+  const expectedEntryScenario = new URL(route, 'https://spaces.test').searchParams.get('scenario') || 'personal';
   await prepareFreshPage(page, route);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
@@ -23,6 +24,13 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('[data-entry-scenario]')).toHaveCount(7);
   await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
   await expect(page.locator('[data-entry-tip]')).toHaveCount(5);
+  await expect(page.locator(`[data-entry-scenario="${expectedEntryScenario}"]`)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#openDemo')).toBeEnabled();
+  await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', expectedEntryScenario);
+  if (expectedEntryScenario === 'personal') {
+    await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Space');
+    await expect(page.locator('#entryPreviewTitle')).toContainText('sorted by what matters next');
+  }
 
   const background = await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('--bg').trim());
   expect(background).toBe('#edf3f8');
@@ -143,6 +151,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
     const style = getComputedStyle(entry);
     const card = entry.querySelector('.entry-card').getBoundingClientRect();
     const heading = entry.querySelector('.entry-card h1').getBoundingClientRect();
+    const preview = entry.querySelector('#entrySpacePreview').getBoundingClientRect();
     const tip = entry.querySelector('.entry-tip-carousel').getBoundingClientRect();
     const actions = entry.querySelector('.entry-actions').getBoundingClientRect();
     const activeCopy = entry.querySelector('[data-entry-tip]:not([aria-hidden="true"]) p');
@@ -155,6 +164,7 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       leftMargin: card.left,
       rightMargin: innerWidth - card.right,
       headingHeight: heading.height,
+      previewHeight: preview.height,
       tipHeight: tip.height,
       actionGap: actions.top - tip.bottom,
       wordAnimation: getComputedStyle(activeCopy).animationName
@@ -166,11 +176,19 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(entryFit.gutter).toContain('stable');
   expect(Math.abs(entryFit.leftMargin - entryFit.rightMargin)).toBeLessThanOrEqual(2);
   expect(entryFit.headingHeight).toBeLessThanOrEqual(50);
+  expect(entryFit.previewHeight).toBeLessThanOrEqual(110);
   expect(entryFit.tipHeight).toBeLessThanOrEqual(66);
   expect(entryFit.actionGap).toBeGreaterThanOrEqual(10);
   expect(entryFit.wordAnimation).toContain('entry-tip-copy-in');
   await expect(page.locator('#entryScrollControl')).toBeHidden();
   await expect(page.locator('#openDemo')).toBeInViewport();
+
+  await page.locator('[data-entry-scenario="business"]').click();
+  await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', 'business');
+  await expect(page.locator('#entryPreviewTitle')).toContainText('New York and Sydney');
+  await expect(page.locator('#entryPreviewMetrics')).toContainText('2 decisions');
+  await expect(page.locator('#openDemoLabel')).toHaveText('Open Business partners Space');
+  await page.locator('[data-entry-scenario="personal"]').click();
 
   const firstTipAccent = await page.locator('#entryTipCarousel').evaluate(carousel => {
     const strong = carousel.querySelector('[data-entry-tip]:not([aria-hidden="true"]) strong');
@@ -229,6 +247,11 @@ test('desktop entry fits common screens, stays centered and exposes small-window
     const optionTitle = option.querySelector('strong');
     const optionDetail = option.querySelector('small');
     const openButton = entry.querySelector('#openDemo');
+    const previewTitle = entry.querySelector('#entryPreviewTitle');
+    const previewCopy = entry.querySelector('#entryPreviewCopy');
+    const position = entry.querySelector('#entryTipPosition');
+    const controls = entry.querySelector('.entry-tip-controls').getBoundingClientRect();
+    const carouselRect = carousel.getBoundingClientRect();
     return {
       maxScroll: entry.scrollHeight - entry.clientHeight,
       pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -241,8 +264,13 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       entryCopyFontSize: parseFloat(getComputedStyle(entryCopy).fontSize),
       optionTitleFontSize: parseFloat(getComputedStyle(optionTitle).fontSize),
       optionDetailFontSize: parseFloat(getComputedStyle(optionDetail).fontSize),
+      previewTitleFontSize: parseFloat(getComputedStyle(previewTitle).fontSize),
+      previewCopyFontSize: parseFloat(getComputedStyle(previewCopy).fontSize),
       openButtonFontSize: parseFloat(getComputedStyle(openButton).fontSize),
-      openButtonHeight: openButton.getBoundingClientRect().height
+      openButtonHeight: openButton.getBoundingClientRect().height,
+      positionDisplay: getComputedStyle(position).display,
+      controlsTop: controls.top,
+      carouselBottom: carouselRect.bottom
     };
   });
   expect(phoneFit.maxScroll).toBeGreaterThan(150);
@@ -256,8 +284,18 @@ test('desktop entry fits common screens, stays centered and exposes small-window
   expect(phoneFit.entryCopyFontSize).toBeGreaterThanOrEqual(16);
   expect(phoneFit.optionTitleFontSize).toBeGreaterThanOrEqual(17);
   expect(phoneFit.optionDetailFontSize).toBeGreaterThanOrEqual(14);
+  expect(phoneFit.previewTitleFontSize).toBeGreaterThanOrEqual(20);
+  expect(phoneFit.previewCopyFontSize).toBeGreaterThanOrEqual(14);
   expect(phoneFit.openButtonFontSize).toBeGreaterThanOrEqual(15);
   expect(phoneFit.openButtonHeight).toBeGreaterThanOrEqual(48);
+  expect(phoneFit.positionDisplay).toBe('none');
+  expect(phoneFit.controlsTop).toBeGreaterThanOrEqual(phoneFit.carouselBottom);
+
+  const beforeSwipe = await page.locator('#entryTipPosition').textContent();
+  await dispatchSwipe(page, '#entryTipCarousel', { startX: 290, endX: 70 });
+  const afterSwipe = await page.locator('#entryTipPosition').textContent();
+  expect(afterSwipe).not.toBe(beforeSwipe);
+  await expect.poll(() => page.locator('#entryTipPosition').textContent(), { timeout: 6000 }).not.toBe(afterSwipe);
 
   await page.locator('#entry').evaluate(entry => entry.scrollTo({ top: entry.scrollHeight, behavior: 'auto' }));
   await expect(page.locator('#openDemo')).toBeInViewport();
@@ -815,7 +853,8 @@ test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ 
 
 test('Doc renders the plain-language copy audit', async ({ page }) => {
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('#pageTitle')).toHaveText('Open the part of your life you’re working in');
+  await expect(page.locator('#pageTitle')).toHaveText('One briefing for the part of life you’re in');
+  await expect(page.locator('.hero-lead')).toContainText('Shared details meet in one Brief');
   await expect(page.locator('#statusTitle')).toHaveText('The current demo shows the product direction and the work still required');
   await expect(page.locator('#architectureTitle')).toHaveText('Keep the product architecture understandable and controllable');
   await expect(page.locator('#finalCtaTitle')).toHaveText('Explore the current Spaces Brief demo');

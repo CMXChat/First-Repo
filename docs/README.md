@@ -80,7 +80,8 @@ For the Python-first learning and development environment, start with `docs/deve
 - The active demo contains seven contexts, including Business partners and Accountant and client.
 - Each context can show one compact priority notice and one short correction question.
 - Each context links to three signature modules and can open a conversation from the current section.
-- The entry card rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
+- The entry defines Spaces as briefings built from approved information, starts with Personal selected, and changes a visual briefing and permission preview with each choice.
+- The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
 - Scenario buttons use native button semantics with `aria-pressed`.

@@ -30,7 +30,7 @@
 
   const state = {
     entered: false,
-    entrySelection: '',
+    entrySelection: data.meta.defaultScenario,
     scenarioId: data.meta.defaultScenario,
     view: 'today',
     tab: '',
@@ -102,13 +102,37 @@
   function renderEntry() {
     const host = $('#entryScenarioGrid');
     if (!host) return;
+    const previewControl = $('#entrySpacePreview') ? ' aria-controls="entrySpacePreview"' : '';
     host.innerHTML = Object.values(data.scenarios).map((item, index) => `
-      <button class="entry-option" type="button" data-entry-scenario="${escapeHtml(item.id)}" aria-pressed="${item.id === state.entrySelection}">
-        <span>${String(index + 1).padStart(2, '0')}</span>
+      <button class="entry-option" type="button" data-entry-scenario="${escapeHtml(item.id)}" aria-pressed="${item.id === state.entrySelection}"${previewControl}>
+        <span class="entry-option-topline"><b>${String(index + 1).padStart(2, '0')}</b><em>${escapeHtml(item.entryPreview?.badge || 'Briefing')}</em></span>
         <strong>${escapeHtml(item.label)}</strong>
         <small>${escapeHtml(item.short)}</small>
       </button>
     `).join('');
+  }
+
+  function renderEntryPreview(item) {
+    const host = $('#entrySpacePreview');
+    if (!host || !item) return;
+    const preview = item.entryPreview || {};
+    const metrics = Array.isArray(preview.metrics) && preview.metrics.length
+      ? preview.metrics
+      : item.stats.slice(0, 3).map(metric => ({ label: metric.label, value: metric.value }));
+
+    host.dataset.entryPreview = item.id;
+    setText('#entryPreviewKicker', preview.kicker || `${item.label.toUpperCase()} BRIEF`);
+    setText('#entryPreviewTitle', preview.title || item.headline);
+    setText('#entryPreviewCopy', preview.copy || item.summary);
+    setText('#entryPreviewPrivate', preview.privateLabel || 'Private records keep their current scope');
+    setText('#entryPreviewShared', preview.sharedLabel || 'Approved details can support this Space');
+
+    const metricHost = $('#entryPreviewMetrics');
+    if (metricHost) {
+      metricHost.innerHTML = metrics.map(metric => `
+        <span><small>${escapeHtml(metric.label)}</small><strong>${escapeHtml(metric.value)}</strong></span>
+      `).join('');
+    }
   }
 
   function setEntrySelection(id) {
@@ -120,7 +144,8 @@
     if (!open) return;
     const selected = data.scenarios[state.entrySelection];
     open.disabled = !selected;
-    open.textContent = selected ? `Open ${selected.label} demo` : 'Choose a context first';
+    setText('#openDemoLabel', selected ? `Open ${selected.label} Space` : 'Choose a Space');
+    if (selected) renderEntryPreview(selected);
   }
 
   function renderScenarioSelect() {
@@ -579,7 +604,7 @@
 
   function resetDemo() {
     state.entered = false;
-    state.entrySelection = '';
+    state.entrySelection = data.meta.defaultScenario;
     state.view = 'today';
     state.tab = '';
     document.body.dataset.entered = 'false';
@@ -588,10 +613,10 @@
     closeBriefUpdate();
     selectView('today', { push: false, focus: false });
     renderEntry();
-    setEntrySelection('');
+    setEntrySelection(data.meta.defaultScenario);
     clearBriefUrlState();
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    queueMicrotask(() => $('[data-entry-scenario]')?.focus({ preventScroll: true }));
+    queueMicrotask(() => $(`[data-entry-scenario="${data.meta.defaultScenario}"]`)?.focus({ preventScroll: true }));
   }
 
   function installEvents() {
@@ -688,7 +713,7 @@
     renderNavigation();
     setScenario(state.scenarioId, { push: false });
     selectView('today', { push: false, focus: false });
-    if (urlState.scenario) setEntrySelection(urlState.scenario);
+    setEntrySelection(urlState.scenario || data.meta.defaultScenario);
     installEvents();
   }
 

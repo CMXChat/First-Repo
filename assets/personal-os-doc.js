@@ -52,9 +52,9 @@
   }
 
   function applySpacesContent() {
-    document.title = 'Spaces | Context-Driven Workspace and Daily Brief';
+    document.title = 'Spaces | Shared Briefings and Context-Driven Workspace';
     const description = document.querySelector('meta[name="description"]');
-    description?.setAttribute('content', 'Spaces is a context-driven workspace that organizes memory, documents, tasks, calendars, people, and connected accounts around the parts of life that matter.');
+    description?.setAttribute('content', 'Spaces turns approved information into a current briefing for one person or a group, with shared context, private boundaries, memory, goals, and connected accounts.');
 
     const identity = document.querySelector('.document-identity');
     identity?.setAttribute('aria-label', 'Spaces product overview, return to top');
@@ -68,22 +68,23 @@
       modelLink?.insertAdjacentHTML('afterend', '<a href="#inputs">How a Space learns</a>');
     }
 
-    text('.hero-kicker', 'Context-driven workspace');
-    text('#pageTitle', 'Open the part of your life you’re working in');
-    text('.hero-lead', 'Spaces brings the people, files, conversations, memory, goals, and connected accounts for that part of life into one continuing context.');
+    text('.hero-kicker', 'Briefings with clear permissions');
+    text('#pageTitle', 'One briefing for the part of life you’re in');
+    text('.hero-lead', 'Spaces turns approved information into a current view for you or the people sharing that Space. Shared details meet in one Brief, and private details stay with their owner.');
     text('.hero-disclosure', 'The current demo uses sourced public information and clearly fictional private-looking examples. Real accounts, connected services, durable memory, and server-side permissions belong to the secure platform still being built.');
     text('.hero-system-center span', 'Spaces');
-    text('.hero-system-center strong', 'Your current context');
-    text('.hero-system .node-spaces span', 'Context');
-    text('.hero-system .node-spaces strong', 'Who and what belongs');
+    text('.hero-system-center strong', 'Your current Space');
+    text('.hero-system .node-brief strong', 'What changed and what matters');
+    text('.hero-system .node-spaces span', 'Permissions');
+    text('.hero-system .node-spaces strong', 'Who can see which details');
     document.querySelector('.hero-system')?.setAttribute('aria-label', 'Spaces system overview');
 
     text('#overviewTitle', 'Spaces in one minute');
-    text('#overview .section-intro', 'Spaces helps a person or group open the right context, understand what changed, protect the right boundaries, and move the next useful thing forward.');
+    text('#overview .section-intro', 'A person, family, pair, business partnership, adviser relationship, or team can open one current Brief built from the information that belongs there.');
     html('#overview .overview-statement', `
       <p>Most digital tools understand one slice of your life. A calendar knows time, email holds messages, task managers track assignments, and a new AI chat usually starts with whatever you explain again.</p>
-      <p>Spaces begins with the part of life you are working in. The people, documents, conversations, memory, goals, deadlines, and connected accounts for that Space are already organized, so you can continue from existing context.</p>
-      <p>Chat remains available when it helps, alongside Brief, Documents, Research, Projects, Memory, Tasks, Calendar, Files, and Notes. Every module works from the same approved context.</p>
+      <p>Spaces organizes those slices around the person or group who needs the briefing. A Family Space can bring together approved calendars, chores, shopping, weather, and household decisions while each record keeps a clear owner and permission scope.</p>
+      <p>The Brief shows what changed, what matters now, what needs a decision, and what can wait. Conversation remains available across the whole Space or from a focused section such as a weather card, cash sheet, calendar, or project board.</p>
     `);
     document.querySelector('#overview .overview-grid')?.setAttribute('aria-label', 'Spaces overview');
     text('#overview .core-difference h3', 'The model can change while the Space keeps its history');

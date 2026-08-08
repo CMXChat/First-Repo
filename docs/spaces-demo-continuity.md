@@ -115,7 +115,9 @@ Every scenario also defines three standout modules. They appear after the openin
 
 The recommended next move also links to its exact supporting module. Its label names the destination, such as Calendar, Concerns, Cash plan, Recovery, or Handoffs, and opens that workspace tab directly. This keeps the strongest evidence connected to the recommendation without adding another navigation layer.
 
-The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left every 4.2 seconds, has previous and next controls, pauses during interaction, and respects reduced-motion settings. The thin pill leaves a clear gap above the entry actions and changes through paired pastel accents in violet, pink, teal, yellow, and cyan. The active words slide and fade into place so the movement is visible without making the entry feel busy. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability is described with its account, permission, or backend boundary.
+The entrance defines a Space as one clear briefing built from approved information for a person or the people sharing it. Personal starts selected so the main action is ready. Every choice has a restrained visual identity and updates a compact preview with its priorities, current signals, private boundary, and approved shared scope. A small Demo data disclosure keeps the fictional-data boundary available without ending the entrance on a disclaimer.
+
+The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left every 4.2 seconds, has previous and next controls, pauses during desktop hover or keyboard focus, and respects reduced-motion settings. Phone users can swipe in either direction, the numeric counter stays hidden on small screens, and automatic movement resumes after touch interaction. The compact phone controls sit beneath the words. The thin pill changes through paired pastel accents in violet, pink, teal, yellow, and cyan. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability names its account, permission, or backend boundary.
 
 The entry grid uses constrained tracks so intrinsic card widths cannot push the panel to the right. It fits without vertical movement at 1917×938, 1280×720, and 1024×768 in the current Chromium geometry checks. Smaller desktop windows receive a visible clickable scroll-progress rail. Phones use full-width choices, comfortable reading sizes, and normal vertical touch scrolling. Wide financial tables scroll only inside their own sheet.
 
@@ -134,14 +136,14 @@ The top-right soundtrack and appearance buttons share the same button surface. T
 | File | Responsibility |
 |---|---|
 | `spaces/index.html` | Active shell, entry ideas, priority notice, correction and conversation dialogs, soundtrack choices, asset order, and cache versions |
-| `assets/brief/brief-demo-data.js` | Seven scenario definitions and all fictional records |
-| `assets/brief/brief-demo-app.js` | Entry, navigation, workspace rendering, priority notice, and short correction flow |
+| `assets/brief/brief-demo-data.js` | Seven scenario definitions, entrance previews, and all fictional records |
+| `assets/brief/brief-demo-app.js` | Entrance selection and preview, navigation, workspace rendering, priority notice, and short correction flow |
 | `assets/brief/brief-demo-advanced.js` | Business, Accounting, and Team advanced renderers plus local prepared-action behavior |
 | `assets/brief/brief-demo-advanced.css` | Isolated styles for advanced modules, mobile financial-sheet geometry, seven-card entry, alerts, corrections, and music choices |
 | `assets/brief/brief-demo-experience.js` | Everything view, weather, habits, family boards, and shared-calendar renderers |
 | `assets/brief/brief-demo-media.js` | Spotify readiness, playback fallback, and per-scenario track choices |
-| `assets/brief/brief-demo-conversation.js` | Entry carousel timing, overflow progress control, and the static section-aware conversation handoff |
-| `assets/brief/brief-demo-conversation.css` | Desktop entry fit, readable mobile flow, pill carousel, overflow affordance, discovery links, centered contextual conversation, backend notice, and layered card surfaces |
+| `assets/brief/brief-demo-conversation.js` | Entry carousel timing and touch gestures, overflow progress control, and the static section-aware conversation handoff |
+| `assets/brief/brief-demo-conversation.css` | Entrance hierarchy, live preview, Space identities, desktop fit, readable mobile flow, pill carousel, overflow affordance, discovery links, centered contextual conversation, backend notice, and layered card surfaces |
 | `assets/brief/brief-demo-explainers.js` | Product explanation tabs and scenario jump controls |
 | `assets/brief/brief-demo-topbar-polish.css` | Topbar controls, theme icon treatment, and compact polish |
 | `doc/index.html` | Readable product overview, illustrative interface teases, reviewed product comparison, investment case, and current boundaries without JavaScript |

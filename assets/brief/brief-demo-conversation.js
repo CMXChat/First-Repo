@@ -21,7 +21,11 @@
   const carouselState = {
     index: 0,
     timer: 0,
-    paused: false
+    paused: false,
+    pointerType: 'keyboard',
+    ignoreMouseUntil: 0,
+    touchStartX: 0,
+    touchStartY: 0
   };
 
   const conversationState = {
@@ -279,12 +283,57 @@
     if (!carousel) return;
     $('[data-entry-tip-previous]', carousel)?.addEventListener('click', () => showTip(carouselState.index - 1));
     $('[data-entry-tip-next]', carousel)?.addEventListener('click', () => showTip(carouselState.index + 1));
-    carousel.addEventListener('pointerenter', pauseCarousel);
-    carousel.addEventListener('pointerleave', resumeCarousel);
-    carousel.addEventListener('focusin', pauseCarousel);
+    carousel.addEventListener('pointerdown', event => {
+      carouselState.pointerType = event.pointerType || 'mouse';
+    });
+    carousel.addEventListener('keydown', () => {
+      carouselState.pointerType = 'keyboard';
+    });
+    carousel.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'mouse' && Date.now() >= carouselState.ignoreMouseUntil) pauseCarousel();
+    });
+    carousel.addEventListener('pointerleave', event => {
+      if (event.pointerType === 'mouse') resumeCarousel();
+    });
+    carousel.addEventListener('focusin', () => {
+      if (carouselState.pointerType === 'touch') {
+        carouselState.paused = false;
+        scheduleCarousel();
+      } else {
+        pauseCarousel();
+      }
+    });
     carousel.addEventListener('focusout', event => {
       if (!carousel.contains(event.relatedTarget)) resumeCarousel();
     });
+    carousel.addEventListener('touchstart', event => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      carouselState.pointerType = 'touch';
+      carouselState.ignoreMouseUntil = Date.now() + 5200;
+      carouselState.touchStartX = touch.clientX;
+      carouselState.touchStartY = touch.clientY;
+      clearCarouselTimer();
+    }, { passive: true });
+    carousel.addEventListener('touchend', event => {
+      const touch = event.changedTouches[0];
+      if (!touch) {
+        scheduleCarousel();
+        return;
+      }
+      const distanceX = touch.clientX - carouselState.touchStartX;
+      const distanceY = touch.clientY - carouselState.touchStartY;
+      carouselState.paused = false;
+      if (Math.abs(distanceX) >= 42 && Math.abs(distanceX) > Math.abs(distanceY) * 1.15) {
+        showTip(carouselState.index + (distanceX < 0 ? 1 : -1));
+      } else {
+        scheduleCarousel();
+      }
+    }, { passive: true });
+    carousel.addEventListener('touchcancel', () => {
+      carouselState.paused = false;
+      scheduleCarousel();
+    }, { passive: true });
     document.addEventListener('visibilitychange', scheduleCarousel);
     reduceMotion.addEventListener?.('change', scheduleCarousel);
     showTip(0);
