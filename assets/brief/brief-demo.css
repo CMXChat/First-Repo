@@ -533,6 +533,31 @@ body[data-entered="false"] .app {
   background: currentColor;
 }
 
+.primary-guide-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 10px 12px;
+  color: var(--blue-deep);
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 12px 12px;
+  font-size: .76rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.primary-guide-link:hover,
+.primary-guide-link:focus-visible {
+  background: var(--blue-soft);
+}
+
+.primary-guide-link i {
+  font-style: normal;
+}
+
 .context-card {
   position: relative;
   overflow: hidden;

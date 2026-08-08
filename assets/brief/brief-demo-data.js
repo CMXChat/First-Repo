@@ -92,6 +92,7 @@ window.BRIEF_DEMO_DATA = {
       ],
       details: {
         day: {
+          layout: 'decision-timeline',
           title: 'Your day in one practical view',
           summary: 'Time, conditions and the next useful windows stay in one view.',
           cards: [
@@ -101,6 +102,7 @@ window.BRIEF_DEMO_DATA = {
           ]
         },
         work: {
+          layout: 'status-board',
           title: 'Projects, messages and ownership',
           summary: 'Only the work that changes the next decision appears here.',
           cards: [
@@ -110,6 +112,7 @@ window.BRIEF_DEMO_DATA = {
           ]
         },
         money: {
+          layout: 'metric-bars',
           title: 'Enough financial context to notice what needs attention',
           summary: 'The demonstration uses fictional records until protected financial connections exist.',
           cards: [
@@ -134,6 +137,7 @@ window.BRIEF_DEMO_DATA = {
           ]
         },
         wellness: {
+          layout: 'readiness-dial',
           title: 'Movement, energy and a realistic next step',
           summary: 'The plan can become smaller and still preserve the habit.',
           cards: [
@@ -143,6 +147,7 @@ window.BRIEF_DEMO_DATA = {
           ]
         },
         connections: {
+          layout: 'connection-map',
           title: 'Honest connection status',
           summary: 'Every provider states what is live, fictional, disconnected or planned.',
           cards: [
@@ -209,11 +214,11 @@ window.BRIEF_DEMO_DATA = {
       ],
       tabs: [{ id: 'together', label: 'Together' }, { id: 'profiles', label: 'Profiles' }, { id: 'plans', label: 'Plans' }, { id: 'reflection', label: 'Reflection' }, { id: 'connections', label: 'Connections' }],
       details: {
-        together: { title: 'One shared priority and one small repair', summary: 'Approved information stays separate from private processing.', cards: [{ label: 'Approved plan', title: 'Review travel at 8:15 PM', detail: 'Both people can see and change this item.' }, { label: 'Shared promise', title: 'Pause difficult decisions after 10 PM', detail: 'A clear rule for difficult evenings.' }, { label: 'Needs both', title: 'Move $300 into the trip fund', detail: 'The transfer waits for both approvals.' }] },
-        profiles: { title: 'Two people remain two people', summary: 'Private memories remain in each person’s individual profile.', cards: [{ label: 'Maya private', title: 'Needs reassurance before logistics', detail: 'Visible only inside Maya’s private profile.' }, { label: 'Jordan private', title: 'Wants a clear booking plan', detail: 'Visible only inside Jordan’s private profile.' }, { label: 'Shared', title: 'Dinner can move to 8 PM', detail: 'Approved for the couple Space.' }] },
-        plans: { title: 'Shared decisions with owners and timing', summary: 'Plans stay useful when each decision has an owner and approval state.', cards: [{ label: 'Travel', title: 'Choose the hotel', detail: 'Jordan prepares the options, and both people approve the final choice.' }, { label: 'Budget', title: 'Confirm trip fund', detail: 'Needs both before any transfer.' }, { label: 'Ritual', title: 'Sunday planning call', detail: 'Recurring shared check-in.' }] },
-        reflection: { title: 'Practical reflection', summary: 'The Brief can support repair, appreciation, and clearer communication while each person keeps responsibility for their own interpretation.', cards: [{ label: 'Notice', title: 'Both want the relationship protected', detail: 'Different methods can still serve the shared goal.' }, { label: 'Repair', title: 'Name the hurt clearly', detail: 'Then agree on one practical change.' }, { label: 'Appreciation', title: 'Record what worked', detail: 'Useful patterns deserve memory too.' }] },
-        connections: { title: 'Shared services, scoped permissions', summary: 'Each connection can be limited to the couple Space and a clear purpose.', cards: [{ label: 'Planned', title: 'Shared calendar', detail: 'Only approved events enter the Space.' }, { label: 'Optional', title: 'Music', detail: 'A shared playlist can remain separate from private listening.' }, { label: 'Restricted', title: 'Finance', detail: 'Only agreed trip records belong here.' }] }
+        together: { layout: 'shared-orbit', title: 'One shared priority and one small repair', summary: 'Approved information stays separate from private processing.', cards: [{ label: 'Approved plan', title: 'Review travel at 8:15 PM', detail: 'Both people can see and change this item.' }, { label: 'Shared promise', title: 'Pause difficult decisions after 10 PM', detail: 'A clear rule for difficult evenings.' }, { label: 'Needs both', title: 'Move $300 into the trip fund', detail: 'The transfer waits for both approvals.' }] },
+        profiles: { layout: 'shared-orbit', title: 'Two people remain two people', summary: 'Private memories remain in each person’s individual profile.', cards: [{ label: 'Maya private', title: 'Needs reassurance before logistics', detail: 'Visible only inside Maya’s private profile.' }, { label: 'Jordan private', title: 'Wants a clear booking plan', detail: 'Visible only inside Jordan’s private profile.' }, { label: 'Shared', title: 'Dinner can move to 8 PM', detail: 'Approved for the couple Space.' }] },
+        plans: { layout: 'handoff-flow', title: 'Shared decisions with owners and timing', summary: 'Plans stay useful when each decision has an owner and approval state.', cards: [{ label: 'Travel', title: 'Choose the hotel', detail: 'Jordan prepares the options, and both people approve the final choice.' }, { label: 'Budget', title: 'Confirm trip fund', detail: 'Needs both before any transfer.' }, { label: 'Ritual', title: 'Sunday planning call', detail: 'Recurring shared check-in.' }] },
+        reflection: { layout: 'guided-steps', title: 'Practical reflection', summary: 'The Brief can support repair, appreciation, and clearer communication while each person keeps responsibility for their own interpretation.', cards: [{ label: 'Notice', title: 'Both want the relationship protected', detail: 'Different methods can still serve the shared goal.' }, { label: 'Repair', title: 'Name the hurt clearly', detail: 'Then agree on one practical change.' }, { label: 'Appreciation', title: 'Record what worked', detail: 'Useful patterns deserve memory too.' }] },
+        connections: { layout: 'connection-map', title: 'Shared services, scoped permissions', summary: 'Each connection can be limited to the couple Space and a clear purpose.', cards: [{ label: 'Planned', title: 'Shared calendar', detail: 'Only approved events enter the Space.' }, { label: 'Optional', title: 'Music', detail: 'A shared playlist can remain separate from private listening.' }, { label: 'Restricted', title: 'Finance', detail: 'Only agreed trip records belong here.' }] }
       },
       space: { title: 'Relationship Space', private: ['Maya private context', 'Jordan private context', 'Individual memories and messages'], shared: ['Approved plans', 'Promises and decisions', 'Joint routines and responsibilities'] },
       soundtrack: {
@@ -303,6 +308,7 @@ window.BRIEF_DEMO_DATA = {
       ],
       details: {
         home: {
+          layout: 'status-board',
           title: 'One household view with a clear next move',
           summary: 'The family Brief combines approved plans and responsibilities while each person keeps a separate private profile.',
           cards: [
@@ -379,6 +385,7 @@ window.BRIEF_DEMO_DATA = {
           ]
         },
         access: {
+          layout: 'connection-map',
           title: 'Useful family access with age-appropriate limits',
           summary: 'Adults can coordinate the household, while younger members see the tasks, events, and reminders that belong to them.',
           cards: [
@@ -750,11 +757,11 @@ window.BRIEF_DEMO_DATA = {
       ],
       tabs: [{ id: 'today', label: 'Today' }, { id: 'habits', label: 'Habits' }, { id: 'progress', label: 'Progress' }, { id: 'recovery', label: 'Recovery' }, { id: 'connections', label: 'Connections' }],
       details: {
-        today: { title: 'One workout, one check-in, one adaptive decision', summary: 'The plan can change while the goal stays in view.', cards: [{ label: 'Warm-up', title: 'Check coordination and pain', detail: 'Choose normal or reduced volume after the check.' }, { label: 'Main work', title: 'Upper-body session', detail: 'Keep the progression simple.' }, { label: 'Close', title: 'Log what happened', detail: 'Evidence improves the next recommendation.' }] },
-        habits: { title: 'Patterns support a conversation', summary: 'Each pattern remains reviewable and open to correction.', cards: [{ label: 'Movement', title: '3 completed days', detail: 'Strongest current pattern.' }, { label: 'Sleep', title: 'Below target twice', detail: 'Ask what caused it before changing the plan.' }, { label: 'Nutrition', title: 'Improving', detail: 'One meal still creates the gap.' }] },
-        progress: { title: 'Evidence before confidence', summary: 'Completed work, corrections and repeated outcomes matter more than motivational language.', cards: [{ label: 'Strength', title: 'Two lifts progressed', detail: 'Fictional training evidence.' }, { label: 'Consistency', title: 'Three weeks active', detail: 'One reduced session still counted.' }, { label: 'Next block', title: 'Ready after review', detail: 'Coach approval required.' }] },
-        recovery: { title: 'Sleep, pain and readiness can change the plan', summary: 'Unusual pain requires an appropriate pause and professional guidance when needed.', cards: [{ label: 'Sleep', title: '6.5 hours', detail: 'Watch warm-up quality.' }, { label: 'Pain', title: 'Clear check-in', detail: 'The latest report shows no unusual pain, with another check during movement.' }, { label: 'Recovery', title: 'Moderate', detail: 'Reduced volume remains available.' }] },
-        connections: { title: 'Fitness connections need health boundaries', summary: 'Data supports coaching, while qualified care remains with a professional.', cards: [{ label: 'Planned', title: 'Workout history', detail: 'Sets, reps and completion.' }, { label: 'Optional', title: 'Wearable data', detail: 'Readiness signals with user permission.' }, { label: 'Boundary', title: 'Medical records', detail: 'Separate protected access and professional oversight.' }] }
+        today: { layout: 'decision-timeline', title: 'One workout, one check-in, one adaptive decision', summary: 'The plan can change while the goal stays in view.', cards: [{ label: 'Warm-up', title: 'Check coordination and pain', detail: 'Choose normal or reduced volume after the check.' }, { label: 'Main work', title: 'Upper-body session', detail: 'Keep the progression simple.' }, { label: 'Close', title: 'Log what happened', detail: 'Evidence improves the next recommendation.' }] },
+        habits: { layout: 'metric-bars', title: 'Patterns support a conversation', summary: 'Each pattern remains reviewable and open to correction.', cards: [{ label: 'Movement', title: '3 completed days', detail: 'Strongest current pattern.' }, { label: 'Sleep', title: 'Below target twice', detail: 'Ask what caused it before changing the plan.' }, { label: 'Nutrition', title: 'Improving', detail: 'One meal still creates the gap.' }] },
+        progress: { layout: 'progress-trend', title: 'Evidence before confidence', summary: 'Completed work, corrections and repeated outcomes matter more than motivational language.', cards: [{ label: 'Strength', title: 'Two lifts progressed', detail: 'Fictional training evidence.' }, { label: 'Consistency', title: 'Three weeks active', detail: 'One reduced session still counted.' }, { label: 'Next block', title: 'Ready after review', detail: 'Coach approval required.' }] },
+        recovery: { layout: 'readiness-dial', title: 'Sleep, pain and readiness can change the plan', summary: 'Unusual pain requires an appropriate pause and professional guidance when needed.', cards: [{ label: 'Sleep', title: '6.5 hours', detail: 'Watch warm-up quality.' }, { label: 'Pain', title: 'Clear check-in', detail: 'The latest report shows no unusual pain, with another check during movement.' }, { label: 'Recovery', title: 'Moderate', detail: 'Reduced volume remains available.' }] },
+        connections: { layout: 'connection-map', title: 'Fitness connections need health boundaries', summary: 'Data supports coaching, while qualified care remains with a professional.', cards: [{ label: 'Planned', title: 'Workout history', detail: 'Sets, reps and completion.' }, { label: 'Optional', title: 'Wearable data', detail: 'Readiness signals with user permission.' }, { label: 'Boundary', title: 'Medical records', detail: 'Separate protected access and professional oversight.' }] }
       },
       space: { title: 'Training Space', private: ['Student-private health context', 'Trainer-private coaching preparation', 'Personal notes outside the plan'], shared: ['Approved training plan', 'Check-ins and evidence', 'Coach feedback and next actions'] },
       soundtrack: {
@@ -791,7 +798,7 @@ window.BRIEF_DEMO_DATA = {
       ],
       tabs: [{ id: 'mywork', label: 'My work' }, { id: 'project', label: 'Project' }, { id: 'handoffs', label: 'Handoffs' }, { id: 'procedures', label: 'Procedures' }, { id: 'connections', label: 'Connections' }],
       details: {
-        mywork: { title: 'Your role-specific work', summary: 'A member sees what they own, what blocks it, and the approved context they need.', cards: [{ label: 'Next', title: 'Finish responsive review', detail: 'Sam owns this task, which is due before the readiness review.' }, { label: 'Dependency', title: 'Content approval', detail: 'Waiting on Jordan.' }, { label: 'Context', title: 'Release goal', detail: 'Protect the mobile experience.' }] },
+        mywork: { layout: 'status-board', title: 'Your role-specific work', summary: 'A member sees what they own, what blocks it, and the approved context they need.', cards: [{ label: 'Next', title: 'Finish responsive review', detail: 'Sam owns this task, which is due before the readiness review.' }, { label: 'Dependency', title: 'Content approval', detail: 'Waiting on Jordan.' }, { label: 'Context', title: 'Release goal', detail: 'Protect the mobile experience.' }] },
         project: {
           layout: 'project-dashboard',
           title: 'One shared timeline with visible blockers',
@@ -804,9 +811,9 @@ window.BRIEF_DEMO_DATA = {
             { name: 'Support readiness', team: 'Operations', owner: 'Mika', progress: 76, status: 'On track', next: 'Finish response guide', tone: 'green' }
           ]
         },
-        handoffs: { title: 'Every transfer names sender, receiver and missing evidence', summary: 'Handoffs work for delivery, operations, care coordination and field work.', cards: [{ label: 'Accepted', title: 'Design to development', detail: 'Files and notes complete.' }, { label: 'Waiting', title: 'Development to QA', detail: 'Mobile evidence missing.' }, { label: 'Unowned', title: 'QA to release', detail: 'Receiver must be assigned.' }] },
-        procedures: { title: 'Preparation before a launch or operation', summary: 'Restricted information can support readiness while remaining in lead-access records.', cards: [{ label: 'Ready', title: 'Rollback plan', detail: 'Lead and engineer can access.' }, { label: 'Needed', title: 'Final checklist', detail: 'One approval remains.' }, { label: 'Restricted', title: 'Infrastructure credentials', detail: 'Credentials stay in the protected administration layer.' }] },
-        connections: { title: 'Tools connect by role and purpose', summary: 'A project Space should receive only the records needed for the work.', cards: [{ label: 'Planned', title: 'GitHub', detail: 'Issues, pull requests and release status.' }, { label: 'Planned', title: 'Calendar and chat', detail: 'Meetings and approved decisions.' }, { label: 'Restricted', title: 'Admin systems', detail: 'Least-privilege access only.' }] }
+        handoffs: { layout: 'handoff-flow', title: 'Every transfer names sender, receiver and missing evidence', summary: 'Handoffs work for delivery, operations, care coordination and field work.', cards: [{ label: 'Accepted', title: 'Design to development', detail: 'Files and notes complete.' }, { label: 'Waiting', title: 'Development to QA', detail: 'Mobile evidence missing.' }, { label: 'Unowned', title: 'QA to release', detail: 'Receiver must be assigned.' }] },
+        procedures: { layout: 'guided-steps', title: 'Preparation before a launch or operation', summary: 'Restricted information can support readiness while remaining in lead-access records.', cards: [{ label: 'Ready', title: 'Rollback plan', detail: 'Lead and engineer can access.' }, { label: 'Needed', title: 'Final checklist', detail: 'One approval remains.' }, { label: 'Restricted', title: 'Infrastructure credentials', detail: 'Credentials stay in the protected administration layer.' }] },
+        connections: { layout: 'connection-map', title: 'Tools connect by role and purpose', summary: 'A project Space should receive only the records needed for the work.', cards: [{ label: 'Planned', title: 'GitHub', detail: 'Issues, pull requests and release status.' }, { label: 'Planned', title: 'Calendar and chat', detail: 'Meetings and approved decisions.' }, { label: 'Restricted', title: 'Admin systems', detail: 'Least-privilege access only.' }] }
       },
       space: { title: 'Project Space', private: ['Member-private notes', 'Leadership preparation', 'Restricted credentials and HR context'], shared: ['Project goals and timeline', 'Role assignments and handoffs', 'Approved decisions and release history'] },
       soundtrack: {
