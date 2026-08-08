@@ -22,6 +22,24 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-08-spaces-exact-section-links',
+    timestamp: '2026-08-08T17:05:00-04:00',
+    title: 'Spaces interlinks now land on the exact selected section',
+    status: 'complete',
+    body: [
+      'Fixed the rich purple Explore cards, Today discovery cards, recommendation routes, priority review, category tabs and Continue the thread links so each one opens the selected category at its beginning and clears the previous category’s deep scroll position.',
+      'The landing position now uses the rendered sticky header height on desktop and mobile. The selected category controls and heading remain visible as soon as navigation completes.',
+      'The Everything index now accounts for both the topbar and its own sticky progress rail, so direct jumps keep the requested section heading fully visible.',
+      'Focused phone-width browser coverage now checks discovery, category-index, continuation and Everything jumps, including sticky-header clearance and page overflow.'
+    ],
+    links: [
+      { url: '/spaces/', label: 'Open Spaces Demo' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['spaces', 'navigation', 'mobile', 'ux'],
+    pinned: false
+  },
+  {
     id: '2026-08-08-spaces-final-audit',
     timestamp: '2026-08-08T16:30:00-04:00',
     title: 'Spaces demo completed its final product, mobile and accessibility audit',
