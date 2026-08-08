@@ -311,7 +311,9 @@ test('mobile reveals the selected briefing action only after a card tap', async 
   await expect(page.locator('body')).toHaveAttribute('data-entry-choice-made', 'false');
   await expect(page.locator('#entryMobileChoiceHint')).toBeVisible();
   await expect(page.locator('#entryMobileChoiceHint')).toHaveText('Tap one to continue');
-  await expect(page.locator('#openDemo')).toBeHidden();
+  await expect(page.locator('#openDemo')).toBeVisible();
+  await expect(page.locator('#openDemo')).toBeDisabled();
+  await expect(page.locator('#openDemoLabel')).toHaveText('Choose a Briefing');
   await expect(page.locator('#openDemoSticky')).toBeHidden();
 
   await page.locator('[data-entry-scenario="family"]').click();
