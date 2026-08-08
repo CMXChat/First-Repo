@@ -306,7 +306,7 @@
       const y = height - 4 - ((value - min) / range) * (height - 8);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     }).join(' ');
-    return `<svg class="asset-sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false"><polyline points="${points}" fill="none" vector-effect="non-scaling-stroke"></polyline></svg>`;
+    return `<svg class="asset-sparkline" viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false"><polygon points="0,${height} ${points} ${width},${height}" vector-effect="non-scaling-stroke"></polygon><polyline points="${points}" fill="none" vector-effect="non-scaling-stroke"></polyline><circle cx="${width}" cy="${points.split(' ').at(-1).split(',')[1]}" r="3.5"></circle></svg>`;
   }
 
   function renderPortfolio(detail) {
@@ -320,6 +320,31 @@
           <div class="market-track">${ticker}<span aria-hidden="true" class="market-repeat">${ticker}</span></div>
         </div>
         <p class="market-caption">SAMPLE DELAYED MARKET RAIL · INTERFACE DEMONSTRATION</p>
+        <section class="portfolio-command" aria-label="Fictional portfolio overview">
+          <div class="portfolio-performance">
+            <header><div><span>INVESTED ASSETS</span><strong>$48,620</strong><small><b>+$1,284</b> this quarter · fictional</small></div><div class="portfolio-range"><b>1M</b><b class="is-active">3M</b><b>1Y</b></div></header>
+            <div class="portfolio-chart">
+              <div class="portfolio-axis" aria-hidden="true"><i></i><i></i><i></i></div>
+              <svg viewBox="0 0 620 220" role="img" aria-label="Illustrative three month portfolio performance compared with a benchmark">
+                <defs><linearGradient id="portfolioAreaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#168cff" stop-opacity=".38"/><stop offset="1" stop-color="#168cff" stop-opacity=".02"/></linearGradient></defs>
+                <path class="portfolio-area" d="M15 166 C70 158 92 170 140 143 S220 135 264 109 S348 118 390 84 S470 78 515 53 S572 54 605 30 L605 205 L15 205 Z"/>
+                <path class="portfolio-benchmark" d="M15 172 C92 166 135 151 205 146 S310 122 370 113 S482 90 605 72"/>
+                <path class="portfolio-main-line" d="M15 166 C70 158 92 170 140 143 S220 135 264 109 S348 118 390 84 S470 78 515 53 S572 54 605 30"/>
+                <circle cx="605" cy="30" r="7"/>
+              </svg>
+              <div class="portfolio-chart-labels"><span>MAY</span><span>JUN</span><span>JUL</span><strong>AUG 8</strong></div>
+            </div>
+            <footer><span><i class="portfolio-key-main"></i>Portfolio <strong>+2.7%</strong></span><span><i class="portfolio-key-benchmark"></i>Reference mix <strong>+2.2%</strong></span><small>Delayed example</small></footer>
+          </div>
+          <aside class="portfolio-allocation">
+            <header><span>ALLOCATION</span><strong>Inside plan range</strong></header>
+            <div class="allocation-donut" role="img" aria-label="58% US market, 20% international, 15% bonds, and 7% investment cash"><span><strong>93%</strong><small>INVESTED</small></span></div>
+            <div class="allocation-legend">
+              ${detail.assets.map(asset => `<span data-asset-tone="${safeTone(asset.tone)}"><i></i><b>${escapeHtml(asset.symbol)}</b><small>${escapeHtml(asset.share)}%</small></span>`).join('')}
+            </div>
+            <p><strong>$216 remains</strong> in this month’s contribution plan after the tax reserve is funded.</p>
+          </aside>
+        </section>
         <div class="asset-grid">
           ${detail.assets.map(asset => `
             <article data-asset-tone="${safeTone(asset.tone)}">

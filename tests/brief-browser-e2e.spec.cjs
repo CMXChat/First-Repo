@@ -25,6 +25,9 @@ async function openCurrentBrief(page, route = '/spaces/') {
   await expect(page.locator('#entrySoundtrack')).toHaveCount(0);
   await expect(page.locator('[data-entry-tip]')).toHaveCount(5);
   await expect(page.locator(`[data-entry-scenario="${expectedEntryScenario}"]`)).toHaveAttribute('aria-pressed', 'true');
+  if (await page.locator('#openDemo').isDisabled()) {
+    await page.locator(`[data-entry-scenario="${expectedEntryScenario}"]`).click();
+  }
   await expect(page.locator('#openDemo')).toBeEnabled();
   await expect(page.locator('#entrySpacePreview')).toHaveAttribute('data-entry-preview', expectedEntryScenario);
   if (expectedEntryScenario === 'personal') {
@@ -482,6 +485,10 @@ test('Business partners and Accountant and client use complete advanced workspac
   await expect(page.locator('.financial-sheet')).toContainText('Living + flexible');
 
   await page.locator('[data-workspace-tab="portfolio"]').click();
+  await expect(page.locator('.portfolio-command')).toBeVisible();
+  await expect(page.locator('.portfolio-chart svg')).toBeVisible();
+  await expect(page.locator('.allocation-donut')).toHaveAttribute('aria-label', /58% US market/);
+  await expect(page.locator('.allocation-legend span')).toHaveCount(4);
   await expect(page.locator('.asset-grid article')).toHaveCount(4);
   await expect(page.locator('.market-rail')).toContainText('VTI');
 
