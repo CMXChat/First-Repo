@@ -445,15 +445,15 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
 }
 
 .entry-option {
-  --entry-option-accent: #008dcc;
-  --entry-option-secondary: #33cef4;
+  --entry-option-accent: #0877b2;
+  --entry-option-secondary: #7aa7bd;
   position: relative;
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 96% 0%, color-mix(in srgb, var(--entry-option-secondary) 15%, transparent), transparent 7rem),
-    linear-gradient(145deg, color-mix(in srgb, var(--surface-soft) 94%, var(--entry-option-accent)), var(--surface-soft));
-  box-shadow: inset 0 1px color-mix(in srgb, #ffffff 78%, transparent), 0 7px 18px rgba(8, 61, 101, 0.055);
+    radial-gradient(circle at 98% 0%, rgba(109, 153, 176, 0.1), transparent 7rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 97%, #dce8ef), color-mix(in srgb, var(--surface-soft) 98%, #ffffff));
+  box-shadow: inset 0 1px color-mix(in srgb, #ffffff 80%, transparent), 0 8px 20px rgba(8, 45, 70, 0.065);
   transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background 180ms ease;
 }
 
@@ -465,18 +465,11 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
   height: 3px;
   border-radius: 999px 999px 0 0;
   background: linear-gradient(90deg, var(--entry-option-accent), var(--entry-option-secondary));
-  opacity: 0.25;
+  opacity: 0.12;
   transform: scaleX(0.34);
   transform-origin: left;
   transition: opacity 180ms ease, transform 220ms ease;
 }
-
-.entry-option[data-entry-scenario="relationship"] { --entry-option-accent: #bd3f91; --entry-option-secondary: #8065e7; }
-.entry-option[data-entry-scenario="family"] { --entry-option-accent: #008d70; --entry-option-secondary: #42d1aa; }
-.entry-option[data-entry-scenario="business"] { --entry-option-accent: #cb542f; --entry-option-secondary: #efaa2e; }
-.entry-option[data-entry-scenario="accounting"] { --entry-option-accent: #007f7a; --entry-option-secondary: #20b5cc; }
-.entry-option[data-entry-scenario="trainer"] { --entry-option-accent: #b66f00; --entry-option-secondary: #eac336; }
-.entry-option[data-entry-scenario="team"] { --entry-option-accent: #6548c8; --entry-option-secondary: #ca4fa7; }
 
 .entry-option .entry-option-topline {
   display: flex;
@@ -486,7 +479,7 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
 }
 
 .entry-option .entry-option-topline b {
-  color: var(--entry-option-accent);
+  color: color-mix(in srgb, var(--ink) 78%, #28769e);
   font-size: 0.66rem;
   font-weight: 950;
   letter-spacing: 0.12em;
@@ -494,10 +487,10 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
 
 .entry-option .entry-option-topline em {
   padding: 3px 7px;
-  color: color-mix(in srgb, var(--entry-option-accent) 54%, #102638);
-  border: 1px solid color-mix(in srgb, var(--entry-option-accent) 18%, var(--line));
+  color: color-mix(in srgb, var(--ink) 72%, var(--muted));
+  border: 1px solid color-mix(in srgb, var(--line-strong) 62%, var(--line));
   border-radius: 999px;
-  background: color-mix(in srgb, var(--entry-option-accent) 7%, var(--surface));
+  background: color-mix(in srgb, var(--surface) 94%, #dbe5eb);
   font-size: 0.55rem;
   font-style: normal;
   font-weight: 850;
@@ -508,9 +501,9 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
 .entry-option[aria-pressed="true"] {
   border-color: var(--entry-option-accent);
   background:
-    radial-gradient(circle at 94% 0%, color-mix(in srgb, var(--entry-option-accent) 17%, transparent), transparent 8rem),
-    linear-gradient(145deg, color-mix(in srgb, var(--surface-soft) 92%, var(--entry-option-accent)), var(--surface-soft));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--entry-option-accent) 20%, transparent), 0 12px 26px color-mix(in srgb, var(--entry-option-accent) 12%, transparent);
+    radial-gradient(circle at 94% 0%, rgba(32, 135, 187, 0.09), transparent 8rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 95%, #d9eaf3), var(--surface-soft));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--entry-option-accent) 16%, transparent), 0 12px 26px rgba(8, 64, 98, 0.11);
 }
 
 .entry-option:hover::before,
@@ -661,8 +654,8 @@ html[data-theme="dark"] .entry-tip-carousel[data-tip-index="4"] { --tip-ink: #63
 }
 
 html[data-theme="dark"] .entry-option .entry-option-topline em {
-  color: color-mix(in srgb, var(--entry-option-accent) 76%, #ffffff);
-  background: color-mix(in srgb, var(--entry-option-accent) 10%, var(--surface));
+  color: color-mix(in srgb, var(--ink) 76%, var(--muted));
+  background: color-mix(in srgb, var(--surface) 90%, #243442);
 }
 
 html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline em {
