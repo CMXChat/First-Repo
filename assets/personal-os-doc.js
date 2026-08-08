@@ -278,7 +278,7 @@
 
   installStylesheet('/assets/personal-os-doc-editorial.css?v=20260805-1', 'spacesEditorial');
   installStylesheet('/assets/personal-os-doc-desktop-tuning.css?v=20260805-1', 'spacesDesktopTuning');
-  installStylesheet('/assets/personal-os-doc-mobile-fixes.css?v=20260805-1', 'spacesMobileFixes');
+  installStylesheet('/assets/personal-os-doc-mobile-fixes.css?v=20260808-1', 'spacesMobileFixes');
   applySpacesContent();
   applyTheme(getRequestedTheme());
 

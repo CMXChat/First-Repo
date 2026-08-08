@@ -117,7 +117,7 @@ The recommended next move also links to its exact supporting module. Its label n
 
 The entry card uses five rotating ideas in place of a music checkbox. The carousel advances from right to left every 4.2 seconds, has previous and next controls, pauses during interaction, and respects reduced-motion settings. The thin pill leaves a clear gap above the entry actions and changes through paired pastel accents in violet, pink, teal, yellow, and cyan. The active words slide and fade into place so the movement is visible without making the entry feel busy. Its examples cover a context-aware morning, section conversations, family coordination, prepared calendar changes, and music selected from approved listening preferences. Each future connected capability is described with its account, permission, or backend boundary.
 
-The entry grid uses a constrained track so intrinsic card widths cannot push the panel to the right. It fits without vertical movement at 1917×938, 1280×720, 1024×768, 390×844, and 360×800 in the current Chromium geometry checks. Smaller desktop windows receive a visible clickable scroll-progress rail. Short phones retain normal vertical touch scrolling, while wide financial tables scroll only inside their own sheet.
+The entry grid uses constrained tracks so intrinsic card widths cannot push the panel to the right. It fits without vertical movement at 1917×938, 1280×720, and 1024×768 in the current Chromium geometry checks. Smaller desktop windows receive a visible clickable scroll-progress rail. Phones use full-width choices, comfortable reading sizes, and normal vertical touch scrolling. Wide financial tables scroll only inside their own sheet.
 
 `/doc/` includes two clearly fictional interface previews: a Family calendar with covered private details and an Accountant-client correction. A section-level prompt connects those previews to the conversation model. The investment section compares the reviewed product set through official product links and limits its gap claim to that set. It also separates proven adjacent demand from unproven patentability, names the formal diligence that remains, and gives a concise protection and commercialization sequence based on official USPTO and Copyright Office starting points.
 
@@ -141,7 +141,7 @@ The top-right soundtrack and appearance buttons share the same button surface. T
 | `assets/brief/brief-demo-experience.js` | Everything view, weather, habits, family boards, and shared-calendar renderers |
 | `assets/brief/brief-demo-media.js` | Spotify readiness, playback fallback, and per-scenario track choices |
 | `assets/brief/brief-demo-conversation.js` | Entry carousel timing, overflow progress control, and the static section-aware conversation handoff |
-| `assets/brief/brief-demo-conversation.css` | Responsive entry fit, pill carousel, overflow affordance, discovery links, centered contextual conversation, backend notice, and layered card surfaces |
+| `assets/brief/brief-demo-conversation.css` | Desktop entry fit, readable mobile flow, pill carousel, overflow affordance, discovery links, centered contextual conversation, backend notice, and layered card surfaces |
 | `assets/brief/brief-demo-explainers.js` | Product explanation tabs and scenario jump controls |
 | `assets/brief/brief-demo-topbar-polish.css` | Topbar controls, theme icon treatment, and compact polish |
 | `doc/index.html` | Readable product overview, illustrative interface teases, reviewed product comparison, investment case, and current boundaries without JavaScript |
@@ -179,7 +179,7 @@ Before publishing a Spaces change:
 5. Run desktop and mobile accessibility checks.
 6. Run Spotify lifecycle tests.
 7. Check light and dark themes.
-8. Check the Spaces entry at 360×800 and 390×844, then confirm a 375×667 screen can reach the actions through normal vertical scrolling.
+8. Check the Spaces entry at 360×800 and 390×844, confirm the choices and supporting copy remain readable, then reach the actions through normal vertical scrolling.
 9. Check that the Accounting sheet keeps Category, Planned, and the horizontal cue readable at 360 pixels wide.
 10. Check the spreadsheet’s own horizontal scroll without moving the page.
 11. Open the contextual conversation from a focused card and an advanced workspace section. Confirm the star stays compact, the dialog is centered, the Space and section remain in scope, and a prepared backend action raises the bottom notice.
