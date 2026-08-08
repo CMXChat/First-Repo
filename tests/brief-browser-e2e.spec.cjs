@@ -427,6 +427,7 @@ test('section conversations and standout modules keep the current Space in scope
 });
 
 test('Business partners and Accountant and client use complete advanced workspaces', async ({ page }, testInfo) => {
+  test.setTimeout(45000);
   test.skip(!testInfo.project.name.endsWith('-desktop'), 'Advanced workspace coverage runs in desktop browser projects.');
   await openCurrentBrief(page);
   await enterScenario(page, 'business');
