@@ -493,7 +493,7 @@
     const activeIndex = Math.max(0, tabs.findIndex(item => item.id === state.tab));
     const previous = tabs[activeIndex - 1];
     const next = tabs[activeIndex + 1];
-    const related = tabs.filter(item => item.id !== state.tab);
+    const sectionLinks = tabs;
     host.setAttribute('aria-labelledby', `brief-next-tab-${state.tab}`);
     host.innerHTML = `
       <header class="workspace-panel-heading">
@@ -511,12 +511,13 @@
           ${next ? `<button class="workspace-next-section" type="button" data-workspace-continue="${escapeHtml(next.id)}"><span>Continue to ${escapeHtml(next.label)}</span><i aria-hidden="true">→</i></button>` : '<span class="workspace-section-complete">Final section</span>'}
         </div>
       </nav>
-      ${related.length ? `
+      ${sectionLinks.length ? `
         <nav class="workspace-related-links" aria-label="Explore more briefing sections">
-          <header><span>More inside this briefing</span><small>Open any connected section without losing your place.</small></header>
-          <div>${related.map(item => {
+          <header><span>All sections in this briefing</span><small>Every approved category is available from here.</small></header>
+          <div>${sectionLinks.map(item => {
             const relatedDetail = currentScenario().details[item.id];
-            return `<button type="button" data-workspace-continue="${escapeHtml(item.id)}"><small>Briefing section</small><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(relatedDetail?.summary || 'Open the records and decisions connected to this part of the briefing.')}</span><i aria-hidden="true">→</i></button>`;
+            const isCurrent = item.id === state.tab;
+            return `<button type="button" ${isCurrent ? 'class="is-current" aria-current="page" disabled' : `data-workspace-continue="${escapeHtml(item.id)}"`}><small>${isCurrent ? 'Viewing now' : 'Open section'}</small><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(relatedDetail?.summary || 'Open the records and decisions connected to this part of the briefing.')}</span><i aria-hidden="true">${isCurrent ? '✓' : '→'}</i></button>`;
           }).join('')}</div>
         </nav>
       ` : ''}

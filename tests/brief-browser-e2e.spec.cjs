@@ -515,15 +515,17 @@ test('briefing sections expose named progress controls and working arrows', asyn
   await expect(next).toBeVisible();
   await expect(next).toBeEnabled();
   await expect(page.locator('.workspace-next-section')).toContainText('Continue to Cash plan');
-  await expect(page.locator('.workspace-related-links')).toContainText('More inside this briefing');
-  await expect(page.locator('.workspace-related-links button')).toHaveCount(4);
+  await expect(page.locator('.workspace-related-links')).toContainText('All sections in this briefing');
+  await expect(page.locator('.workspace-related-links button')).toHaveCount(5);
+  await expect(page.locator('.workspace-related-links button[aria-current="page"]')).toContainText('Viewing now');
   await expect.poll(() => page.locator('.workspace-related-links').evaluate(node => {
     const firstContent = node.nextElementSibling;
     return Boolean(firstContent && node.getBoundingClientRect().top < firstContent.getBoundingClientRect().top);
   })).toBe(true);
 
-  const relatedTarget = await page.locator('.workspace-related-links button').first().getAttribute('data-workspace-continue');
-  await page.locator('.workspace-related-links button').first().click();
+  const relatedLink = page.locator('.workspace-related-links button:not(:disabled)').first();
+  const relatedTarget = await relatedLink.getAttribute('data-workspace-continue');
+  await relatedLink.click();
   await expect(page.locator(`[data-workspace-tab="${relatedTarget}"]`)).toHaveAttribute('aria-selected', 'true');
   await page.locator('[data-workspace-tab="overview"]').click();
 

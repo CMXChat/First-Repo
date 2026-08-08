@@ -1091,7 +1091,7 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
 
 .workspace-related-links > div {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 7px;
 }
 
@@ -1103,9 +1103,9 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   gap: 4px;
   padding: 12px 37px 12px 13px;
   color: var(--ink-strong);
-  border: 1px solid color-mix(in srgb, var(--blue) 24%, var(--line));
+  border: 1px solid color-mix(in srgb, var(--blue) 44%, var(--line));
   border-radius: 14px;
-  background: var(--surface);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 58%, var(--surface)), var(--surface));
   cursor: pointer;
   font: inherit;
   text-align: left;
@@ -1153,6 +1153,19 @@ html[data-theme="dark"] .entry-option[aria-pressed="true"] .entry-option-topline
   color: var(--ink-strong);
   border-color: var(--blue);
   transform: translateY(-1px);
+}
+
+.workspace-related-links button.is-current {
+  color: var(--ink-strong);
+  border-color: color-mix(in srgb, var(--ink-strong) 18%, var(--line));
+  background: var(--surface);
+  cursor: default;
+  opacity: 0.78;
+}
+
+.workspace-related-links button.is-current i {
+  color: var(--green);
+  background: color-mix(in srgb, var(--green) 12%, var(--surface));
 }
 
 @keyframes workspace-step-pulse {
