@@ -232,6 +232,6 @@ The current release replaces generic three-card briefing sections with visuals s
 
 The Personal habit view now explains weekly completion, daily rhythm, strongest pattern, the area that needs attention, and the next useful check-in. All displayed records remain fictional demo data.
 
-The entry carousel no longer shows previous and next arrow buttons. It continues to rotate automatically and supports touch swiping. On mobile, choosing a briefing reveals a contextual Open briefing action while the natural Open briefing button remains available at the bottom of the entry. The contextual action yields when the natural action is visible, avoiding duplicate competing controls.
+The entry carousel no longer shows previous and next arrow buttons. It continues to rotate automatically and supports touch swiping. On mobile, the natural bottom action remains visible as a disabled `Choose a Briefing` control before a choice. Choosing a briefing updates it to `Open [type] Briefing` and reveals the contextual Open briefing action. The contextual action yields when the natural action is visible, avoiding duplicate competing controls.
 
 Spaces also keeps a visible path to the concept guide at `/doc/`. Internal guide and demo links stay in the same tab so users can move between the explanation and the product without accumulating duplicate tabs.
