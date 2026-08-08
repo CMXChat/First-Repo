@@ -1,6 +1,8 @@
 # CMX Briefing Default Design Standard
 
-Status: Canonical default for CMX personalized briefings
+Status: Historical pre-Spaces baseline
+
+> For the current `/spaces/` visual and interaction direction, use `spaces-visual-design-system.md`. That document supersedes this file when the two conflict. This file remains available as design history for the earlier briefing experience.
 
 This document preserves the approved visual and interaction direction established by `/brief` on August 3, 2026. New briefing pages should begin from this system unless a project explicitly requires a different identity.
 

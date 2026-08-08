@@ -719,11 +719,21 @@
   function installEntryBottomActionObserver() {
     const entry = $('#entry');
     const bottomAction = $('#openDemo');
-    if (!entry || !bottomAction || typeof IntersectionObserver !== 'function') return;
-    const observer = new IntersectionObserver(([record]) => {
-      document.body.dataset.entryBottomActionVisible = String(Boolean(record?.isIntersecting));
-    }, { root: entry, threshold: 0.7 });
-    observer.observe(bottomAction);
+    if (!entry || !bottomAction) return;
+    const updateVisibility = () => {
+      const entryRect = entry.getBoundingClientRect();
+      const actionRect = bottomAction.getBoundingClientRect();
+      const visibleHeight = Math.max(0, Math.min(entryRect.bottom, actionRect.bottom) - Math.max(entryRect.top, actionRect.top));
+      const visible = actionRect.height > 0 && visibleHeight / actionRect.height >= 0.7;
+      document.body.dataset.entryBottomActionVisible = String(visible);
+    };
+    entry.addEventListener('scroll', updateVisibility, { passive: true });
+    window.addEventListener('resize', updateVisibility);
+    if (typeof IntersectionObserver === 'function') {
+      const observer = new IntersectionObserver(updateVisibility, { root: entry, threshold: [0, 0.7, 1] });
+      observer.observe(bottomAction);
+    }
+    window.requestAnimationFrame(updateVisibility);
   }
 
   function openDemo() {
