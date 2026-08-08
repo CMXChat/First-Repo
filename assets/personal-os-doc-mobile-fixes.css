@@ -17,13 +17,286 @@
 }
 
 @media (max-width: 680px) {
+  html {
+    font-size: 17px;
+  }
+
+  body {
+    line-height: 1.62;
+  }
+
   .final-cta .button {
     width: 100%;
     min-width: 0;
     max-width: 100%;
+    min-height: 48px;
+    font-size: 0.9rem;
   }
 
   .final-cta-note {
     width: 100%;
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .document-identity-copy strong {
+    font-size: 0.94rem;
+  }
+
+  .theme-option {
+    font-size: 0.68rem;
+  }
+
+  :is(
+    .hero-kicker,
+    .status-chip,
+    .card-label,
+    .space-card span,
+    .model-strip span,
+    .loop-step small,
+    .memory-layer span,
+    .record-example span,
+    .goal-metrics span,
+    .difficulty-grid article > span,
+    .ritual-phone-top,
+    .ritual-greeting span,
+    .ritual-brief-card span,
+    .mediation-principles span,
+    .ai-model-card span,
+    .foundation-grid span,
+    .source-labels span,
+    .roadmap-row span,
+    .architecture-layer > span,
+    .scenario-index,
+    .product-preview-heading span,
+    .calendar-preview header span,
+    .input-preview header span,
+    .input-preview-label,
+    .context-prompt-preview > span,
+    .investment-thesis span,
+    .reviewed-gap > span,
+    .infrastructure-opportunity > div:first-child > span,
+    .investment-conclusion > span
+  ) {
+    font-size: 0.7rem;
+  }
+
+  :is(
+    .memory-layer p,
+    .check-list li,
+    .goal-question p,
+    .difficulty-grid p,
+    .ritual-options p,
+    .relationship-card ul,
+    .mediation-principles p,
+    .architecture-principles p,
+    .status-list,
+    .architecture-layer p,
+    .scenario-card p,
+    .product-preview-heading p,
+    .reviewed-gap p,
+    .investment-thesis p,
+    .infrastructure-opportunity > div:first-child > p,
+    .investment-conclusion p
+  ) {
+    font-size: 0.86rem;
+    line-height: 1.58;
+  }
+
+  .product-preview-stage,
+  .investment-thesis,
+  .infrastructure-opportunity,
+  .defensibility-plan {
+    padding: 22px 18px;
+  }
+
+  .calendar-preview,
+  .input-preview {
+    padding: 18px;
+  }
+
+  .calendar-preview header > b,
+  .input-preview header > b {
+    font-size: 0.62rem;
+  }
+
+  .calendar-preview-week small {
+    font-size: 0.62rem;
+  }
+
+  .calendar-preview-week strong {
+    font-size: 0.92rem;
+  }
+
+  .calendar-preview-events time,
+  .calendar-preview-events > div > b {
+    font-size: 0.66rem;
+  }
+
+  .calendar-preview-events strong {
+    font-size: 0.82rem;
+  }
+
+  .calendar-preview-events small {
+    font-size: 0.7rem;
+  }
+
+  .calendar-preview-weather strong {
+    font-size: 0.68rem;
+  }
+
+  .calendar-preview-weather p {
+    font-size: 0.74rem;
+  }
+
+  .input-preview-choices {
+    grid-template-columns: 1fr;
+  }
+
+  .input-preview-choices span {
+    min-height: 44px;
+    font-size: 0.76rem;
+  }
+
+  .input-preview-field span,
+  .context-prompt-preview b {
+    font-size: 0.62rem;
+  }
+
+  .input-preview-field strong {
+    font-size: 0.82rem;
+  }
+
+  .input-preview-result strong {
+    font-size: 0.8rem;
+  }
+
+  .input-preview-result small {
+    font-size: 0.7rem;
+  }
+
+  .context-prompt-preview p {
+    font-size: 0.8rem;
+  }
+
+  .context-prompt-preview > strong,
+  .product-preview-note {
+    font-size: 0.72rem;
+  }
+
+  .market-table {
+    min-width: 920px;
+    font-size: 0.82rem;
+  }
+
+  .market-table caption {
+    font-size: 0.72rem;
+  }
+
+  .market-table thead th {
+    font-size: 0.7rem;
+  }
+
+  .market-table tbody th {
+    font-size: 0.86rem;
+  }
+
+  .defensibility-heading > span,
+  .defensibility-strategy-card > span {
+    font-size: 0.66rem;
+  }
+
+  .defensibility-heading h3 {
+    font-size: 1.45rem;
+  }
+
+  .defensibility-heading p {
+    font-size: 0.86rem;
+    line-height: 1.58;
+  }
+
+  .defensibility-status-grid article {
+    padding: 18px;
+  }
+
+  .defensibility-status {
+    min-height: 28px;
+    font-size: 0.6rem;
+  }
+
+  .defensibility-status-grid strong {
+    font-size: 0.94rem;
+  }
+
+  .defensibility-status-grid p {
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .defensibility-strategy-card {
+    padding: 20px;
+  }
+
+  .defensibility-strategy-card h4 {
+    font-size: 1.08rem;
+  }
+
+  .protection-strategy li > b {
+    font-size: 0.68rem;
+  }
+
+  .protection-strategy li p,
+  .capitalization-strategy li,
+  .capitalization-wedge p {
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .capitalization-wedge small {
+    font-size: 0.62rem;
+  }
+
+  .capitalization-wedge strong {
+    font-size: 1rem;
+  }
+
+  .defensibility-source-note {
+    font-size: 0.76rem;
+    line-height: 1.58;
+  }
+
+  .investment-case-grid article {
+    padding: 22px;
+  }
+
+  .investment-case-grid article > span {
+    font-size: 0.7rem;
+  }
+
+  .investment-case-grid h3 {
+    font-size: 1.04rem;
+  }
+
+  .investment-case-grid p,
+  .distribution-note {
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .infrastructure-layers small {
+    font-size: 0.62rem;
+  }
+
+  .infrastructure-layers strong {
+    font-size: 0.84rem;
+  }
+
+  .document-footer strong {
+    font-size: 0.9rem;
+  }
+
+  .document-footer span,
+  .footer-actions a {
+    font-size: 0.78rem;
   }
 }

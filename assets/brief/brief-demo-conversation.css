@@ -800,15 +800,19 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
 }
 
 @media (max-width: 620px) {
+  html {
+    font-size: 17px;
+  }
+
   .entry-scroll-control {
     display: none !important;
   }
 
   .entry-tip {
     display: flex;
-    min-height: 48px;
+    min-height: 68px;
     align-items: center;
-    padding: 6px 112px 6px 14px;
+    padding: 10px 116px 10px 16px;
   }
 
   .entry-tip > span {
@@ -817,8 +821,8 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
 
   .entry-tip p {
     margin-top: 0;
-    font-size: 0.68rem;
-    line-height: 1.25;
+    font-size: 0.84rem;
+    line-height: 1.32;
   }
 
   .entry-tip-detail {
@@ -827,98 +831,115 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
 
   .entry-tip-controls {
     top: 50%;
-    right: 8px;
+    right: 9px;
     bottom: auto;
     transform: translateY(-50%);
   }
 
+  .entry-tip-controls button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .entry-tip-controls span {
+    min-width: 36px;
+    font-size: 0.7rem;
+  }
+
   .entry {
-    padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
+    padding: max(12px, env(safe-area-inset-top)) 10px max(24px, env(safe-area-inset-bottom));
+    scroll-padding-block: 12px;
+    scrollbar-gutter: auto;
   }
 
   .entry-card {
-    padding: 14px;
-    border-radius: 22px;
+    margin-block: 0 24px;
+    padding: 25px 18px;
+    border-radius: 26px;
   }
 
   .entry-mark {
-    width: 36px;
-    height: 36px;
-    margin-bottom: 8px;
-    border-radius: 11px;
-    font-size: 0.82rem;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 13px;
+    border-radius: 14px;
+    font-size: 1rem;
   }
 
   .entry-card h1 {
-    margin: 4px 0 7px;
-    font-size: clamp(1.48rem, 7vw, 1.78rem);
-    line-height: 1.02;
+    margin: 7px 0 12px;
+    font-size: clamp(2rem, 9.2vw, 2.45rem);
+    line-height: 1.04;
   }
 
   .entry-copy {
-    font-size: 0.74rem;
-    line-height: 1.32;
+    font-size: 0.96rem;
+    line-height: 1.5;
   }
 
   .entry-grid {
-    gap: 6px;
-    margin: 10px 0 8px;
+    gap: 10px;
+    margin: 20px 0 12px;
   }
 
   .entry-option,
   .entry-option:last-child {
-    flex: 1 1 calc(50% - 4px);
-    max-width: calc(50% - 3px);
-    min-height: 64px;
-    padding: 8px;
+    flex: 1 1 100%;
+    max-width: none;
+    min-height: 102px;
+    padding: 14px 15px;
   }
 
   .entry-option span {
-    font-size: 0.54rem;
+    font-size: 0.7rem;
   }
 
   .entry-option strong {
-    margin: 3px 0 2px;
-    font-size: 0.74rem;
-    line-height: 1.14;
+    margin: 5px 0 4px;
+    font-size: 1.04rem;
+    line-height: 1.2;
   }
 
   .entry-option small {
-    display: -webkit-box;
-    overflow: hidden;
-    font-size: 0.62rem;
-    line-height: 1.2;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    display: block;
+    overflow: visible;
+    font-size: 0.84rem;
+    line-height: 1.42;
   }
 
   .entry-tip-carousel {
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
   .entry-actions {
-    grid-template-columns: 1fr 1fr;
-    gap: 7px;
-    margin-top: 9px;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 14px;
   }
 
   .entry-actions .primary-button,
   .entry-actions .secondary-button {
     min-width: 0;
-    min-height: 39px;
-    padding: 8px 10px;
-    font-size: 0.6rem;
+    min-height: 48px;
+    padding: 11px 14px;
+    font-size: 0.9rem;
   }
 
   .entry-note {
-    margin-top: 7px;
-    font-size: 0.61rem;
-    line-height: 1.3;
+    margin-top: 12px;
+    font-size: 0.78rem;
+    line-height: 1.48;
   }
 
   .space-discovery {
-    padding: 20px 16px;
+    padding: 24px 18px;
     border-radius: 22px;
+  }
+
+  .space-highlight {
+    flex-basis: min(84vw, 320px);
+    min-height: 180px;
+    padding: 19px;
   }
 
   .space-discovery > header,
@@ -987,7 +1008,184 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
   }
 
   .spaces-ai-heading h2 {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
+  }
+
+  /* Phones favor readable type and natural vertical flow. Desktop keeps its compact entry geometry. */
+  .identity-copy strong {
+    font-size: 1rem;
+  }
+
+  .topbar-context label {
+    font-size: 0.7rem;
+  }
+
+  .topbar-context select {
+    font-size: 0.88rem;
+  }
+
+  .mobile-nav button {
+    font-size: clamp(0.64rem, 2.7vw, 0.7rem);
+    line-height: 1.15;
+    overflow-wrap: normal;
+    white-space: normal;
+  }
+
+  .next-card,
+  .weather-card,
+  .stats-panel,
+  .recommendation-card,
+  .flow-card,
+  .workspace-panel {
+    padding: 24px 20px;
+  }
+
+  .full-section {
+    padding: 26px 20px;
+  }
+
+  :is(
+    .source-pill,
+    .space-label,
+    .priority-copy span,
+    .recommendation-card > span,
+    .space-highlight > span,
+    .full-overview-grid span,
+    .full-space-grid > article > span,
+    .full-weather-now > span,
+    .full-stat-grid span,
+    .full-workspace-group > header span,
+    .full-workspace-group section span,
+    .component-choice-grid span,
+    .scope-pill,
+    .habit-tracker-row > header span,
+    .family-calendar-day > header span,
+    .rule-list > header span,
+    .project-dashboard-heading,
+    .project-name span,
+    .financial-sheet-toolbar > span,
+    .asset-grid header span
+  ) {
+    font-size: 0.7rem;
+  }
+
+  :is(
+    .card-topline,
+    .hero-meta > span:last-child,
+    .weather-range,
+    .hourly-item span,
+    .hourly-item small,
+    .stat-card span,
+    .stat-card small,
+    .flow-list time,
+    .flow-list span,
+    .everything-jump-nav a,
+    .workspace-tabs button,
+    .explainer-tabs button,
+    .full-hourly span,
+    .full-hourly small,
+    .compact-action,
+    .habit-tracker-row > footer > *,
+    .family-calendar-day time,
+    .family-calendar-day li > span,
+    .household-column article p,
+    .household-column article small,
+    .shopping-groups > section > header span,
+    .priority-copy small,
+    .priority-review,
+    .partner-lane dt,
+    .project-row > p,
+    .deal-stage article small,
+    .deal-stage article > div span,
+    .deal-stage article p,
+    .timezone-pair span,
+    .partner-calendar-day > header span,
+    .partner-calendar-day > header > small,
+    .calendar-weather,
+    .partner-calendar-day time,
+    .partner-calendar-day li > span,
+    .calendar-action-card span,
+    .calendar-action-card p,
+    .module-action-status,
+    .concern-grid small,
+    .shared-decision span,
+    .finance-people span,
+    .money-pulse small,
+    .financial-sheet-caption,
+    .sheet-scroll-note,
+    .market-caption,
+    .asset-allocation,
+    .deadline-ledger li > div:nth-child(2) small,
+    .deadline-amount span,
+    .goal-stack footer,
+    .rule-list li > span,
+    .rule-list li p,
+    .rule-list li > small
+  ) {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  :is(
+    .panel-heading-side > p,
+    .view-heading-tools > p,
+    .space-discovery > header > p,
+    .space-highlight > small,
+    .workspace-boundary-note,
+    .future-boundary,
+    .adaptive-process p,
+    .alarm-flow p,
+    .full-privacy > p
+  ) {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .space-highlight > b {
+    font-size: 0.78rem;
+  }
+
+  .financial-sheet {
+    font-size: 0.82rem;
+  }
+
+  .financial-sheet thead th,
+  .financial-sheet tbody td:last-child span {
+    font-size: 0.72rem;
+  }
+
+  .spaces-ai-context {
+    font-size: 0.74rem;
+  }
+
+  .spaces-ai-intro {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .spaces-ai-connection {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .spaces-ai-prompts button,
+  #spacesAiForm label {
+    font-size: 0.86rem;
+  }
+
+  .spaces-ai-user-message span,
+  .spaces-ai-handoff span {
+    font-size: 0.7rem;
+  }
+
+  .spaces-ai-user-message p,
+  .spaces-ai-handoff p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .spaces-demo-notice {
+    font-size: 0.8rem;
   }
 
 }

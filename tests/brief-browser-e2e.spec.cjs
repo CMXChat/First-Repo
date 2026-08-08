@@ -224,6 +224,11 @@ test('desktop entry fits common screens, stays centered and exposes small-window
     const carousel = entry.querySelector('.entry-tip-carousel');
     const track = entry.querySelector('#entryTipTrack');
     const activeTip = carousel.querySelector('[data-entry-tip]:not([aria-hidden="true"])');
+    const entryCopy = entry.querySelector('.entry-copy');
+    const option = entry.querySelector('.entry-option');
+    const optionTitle = option.querySelector('strong');
+    const optionDetail = option.querySelector('small');
+    const openButton = entry.querySelector('#openDemo');
     return {
       maxScroll: entry.scrollHeight - entry.clientHeight,
       pageOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -231,16 +236,31 @@ test('desktop entry fits common screens, stays centered and exposes small-window
       pillRadius: parseFloat(getComputedStyle(carousel).borderRadius),
       pillHeight: carousel.getBoundingClientRect().height,
       trackTransition: getComputedStyle(track).transitionDuration,
-      wordTransition: getComputedStyle(activeTip).transitionDuration
+      wordTransition: getComputedStyle(activeTip).transitionDuration,
+      rootFontSize: parseFloat(getComputedStyle(document.documentElement).fontSize),
+      entryCopyFontSize: parseFloat(getComputedStyle(entryCopy).fontSize),
+      optionTitleFontSize: parseFloat(getComputedStyle(optionTitle).fontSize),
+      optionDetailFontSize: parseFloat(getComputedStyle(optionDetail).fontSize),
+      openButtonFontSize: parseFloat(getComputedStyle(openButton).fontSize),
+      openButtonHeight: openButton.getBoundingClientRect().height
     };
   });
-  expect(phoneFit.maxScroll).toBeLessThanOrEqual(1);
+  expect(phoneFit.maxScroll).toBeGreaterThan(150);
   expect(phoneFit.pageOverflow).toBeLessThanOrEqual(1);
   expect(phoneFit.optionCount).toBe(7);
   expect(phoneFit.pillRadius).toBeGreaterThan(100);
-  expect(phoneFit.pillHeight).toBeLessThanOrEqual(60);
+  expect(phoneFit.pillHeight).toBeLessThanOrEqual(90);
   expect(phoneFit.trackTransition).not.toBe('0s');
   expect(phoneFit.wordTransition).not.toBe('0s');
+  expect(phoneFit.rootFontSize).toBeGreaterThanOrEqual(17);
+  expect(phoneFit.entryCopyFontSize).toBeGreaterThanOrEqual(16);
+  expect(phoneFit.optionTitleFontSize).toBeGreaterThanOrEqual(17);
+  expect(phoneFit.optionDetailFontSize).toBeGreaterThanOrEqual(14);
+  expect(phoneFit.openButtonFontSize).toBeGreaterThanOrEqual(15);
+  expect(phoneFit.openButtonHeight).toBeGreaterThanOrEqual(48);
+
+  await page.locator('#entry').evaluate(entry => entry.scrollTo({ top: entry.scrollHeight, behavior: 'auto' }));
+  await expect(page.locator('#openDemo')).toBeInViewport();
 });
 
 test('section conversations and standout modules keep the current Space in scope', async ({ page }, testInfo) => {
@@ -776,6 +796,21 @@ test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ 
   expect(containment.buttonRight).toBeLessThanOrEqual(containment.viewport + 1);
   expect(containment.headingOverflow).toBeLessThanOrEqual(1);
   expect(containment.sectionColumns).not.toBe('none');
+
+  const mobileType = await page.evaluate(() => ({
+    root: parseFloat(getComputedStyle(document.documentElement).fontSize),
+    previewCopy: parseFloat(getComputedStyle(document.querySelector('.product-preview-heading p')).fontSize),
+    calendarEvent: parseFloat(getComputedStyle(document.querySelector('.calendar-preview-events strong')).fontSize),
+    investmentCopy: parseFloat(getComputedStyle(document.querySelector('.defensibility-status-grid p')).fontSize),
+    investmentStatus: parseFloat(getComputedStyle(document.querySelector('.defensibility-status')).fontSize),
+    finalNote: parseFloat(getComputedStyle(document.querySelector('.final-cta-note')).fontSize)
+  }));
+  expect(mobileType.root).toBeGreaterThanOrEqual(17);
+  expect(mobileType.previewCopy).toBeGreaterThanOrEqual(14);
+  expect(mobileType.calendarEvent).toBeGreaterThanOrEqual(13);
+  expect(mobileType.investmentCopy).toBeGreaterThanOrEqual(13);
+  expect(mobileType.investmentStatus).toBeGreaterThanOrEqual(10);
+  expect(mobileType.finalNote).toBeGreaterThanOrEqual(13);
 });
 
 test('Doc renders the plain-language copy audit', async ({ page }) => {
