@@ -2046,7 +2046,13 @@ html[data-theme="light"] body[data-entered="true"] :is(.stats-panel, .flow-card,
   }
 
   body[data-entered="false"][data-entry-choice-made="false"] #openDemo {
-    display: none;
+    display: flex;
+    color: color-mix(in srgb, #fff 86%, transparent);
+    border-color: color-mix(in srgb, var(--blue) 30%, var(--line));
+    background: linear-gradient(135deg, color-mix(in srgb, var(--blue) 68%, var(--surface)), color-mix(in srgb, var(--blue-deep) 74%, var(--surface)));
+    box-shadow: none;
+    opacity: 0.72;
+    cursor: default;
   }
 
   body[data-entered="false"][data-entry-choice-made="true"] #openDemoSticky {

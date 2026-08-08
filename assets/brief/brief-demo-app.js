@@ -175,9 +175,13 @@
     const actions = [$('#openDemo'), $('#openDemoSticky')].filter(Boolean);
     if (!actions.length) return;
     const selected = data.scenarios[state.entrySelection];
-    actions.forEach(open => { open.disabled = !selected; });
-    setText('#openDemoLabel', selected ? `Open ${selected.label} Briefing` : 'Choose a Briefing');
-    setText('#openDemoStickyLabel', selected ? `Open ${selected.label} Briefing` : 'Choose a Briefing');
+    const waitsForMobileChoice = window.matchMedia('(max-width: 620px)').matches
+      && !state.entryChoiceMade
+      && options.userInitiated !== true;
+    actions.forEach(open => { open.disabled = !selected || waitsForMobileChoice; });
+    const actionLabel = selected && !waitsForMobileChoice ? `Open ${selected.label} Briefing` : 'Choose a Briefing';
+    setText('#openDemoLabel', actionLabel);
+    setText('#openDemoStickyLabel', actionLabel);
     if (selected) renderEntryPreview(selected);
     if (selected && options.userInitiated === true) confirmEntryChoice(selected, options.trigger);
   }
