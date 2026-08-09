@@ -622,30 +622,26 @@ test('briefing sections expose named progress controls and working arrows', asyn
   const previous = page.locator('[data-workspace-tab-step="previous"]');
   const next = page.locator('[data-workspace-tab-step="next"]');
   const hint = page.locator('#workspaceTabHint');
+  const overviewSections = page.locator('#workspaceExploreOverview [data-workspace-overview-section]');
   await expect(hint).toBeVisible();
-  await expect(hint).toContainText('Section 1 of 5');
+  await expect(hint).toContainText('All 5 categories are open below');
+  await expect(tabs.locator('[role="tab"]')).toHaveCount(5);
+  await expect(overviewSections).toHaveCount(4);
+  await expect(overviewSections.first()).toBeVisible();
+  await expect(overviewSections.last()).toBeVisible();
+  await expect(page.locator('.workspace-related-links')).toBeHidden();
   await expect(next).toBeVisible();
   await expect(next).toBeEnabled();
   await expect(page.locator('.workspace-next-section')).toContainText('Continue to Cash plan');
-  await expect(page.locator('.workspace-related-links')).toContainText('Explore the full picture');
-  await expect(page.locator('.workspace-related-links button')).toHaveCount(5);
-  await expect(page.locator('.workspace-related-links button[aria-current="page"]')).toContainText('Viewing now');
-  await expect.poll(() => page.locator('.workspace-related-links').evaluate(node => {
-    const firstContent = node.nextElementSibling;
-    return Boolean(firstContent && node.getBoundingClientRect().top < firstContent.getBoundingClientRect().top);
-  })).toBe(true);
-
-  const relatedLink = page.locator('.workspace-related-links button:not(:disabled)').first();
-  const relatedTarget = await relatedLink.getAttribute('data-workspace-continue');
-  await relatedLink.click();
-  await expect(page.locator(`[data-workspace-tab="${relatedTarget}"]`)).toHaveAttribute('aria-selected', 'true');
-  await page.locator('[data-workspace-tab="overview"]').click();
+  expect(await overviewSections.evaluateAll(sections => sections.map(section => section.dataset.workspaceOverviewSection))).not.toContain('overview');
 
   await page.locator('.workspace-next-section').click();
   await expect(page.locator('[data-workspace-tab="cash"]')).toHaveAttribute('aria-selected', 'true');
-  await expect(hint).toContainText('Section 2 of 5');
+  await expect(hint).toContainText('All 5 categories are open below');
   await expect(page.locator('.workspace-next-section')).toContainText('Continue to Portfolio');
   await expect(page.locator('.workspace-thread-links button')).toHaveCount(2);
+  await expect(page.locator('[data-workspace-overview-section="overview"]')).toBeVisible();
+  await expect(page.locator('[data-workspace-overview-section="cash"]')).toHaveCount(0);
   await expect(previous).toBeEnabled();
 
   await page.setViewportSize({ width: 520, height: 844 });
@@ -653,7 +649,9 @@ test('briefing sections expose named progress controls and working arrows', asyn
   await expect(next).toBeEnabled();
   await next.click();
   await expect(page.locator('[data-workspace-tab="portfolio"]')).toHaveAttribute('aria-selected', 'true');
-  await expect(hint).toContainText('Section 3 of 5');
+  await expect(hint).toContainText('All 5 categories are open below');
+  await expect(page.locator('[data-workspace-overview-section="cash"]')).toBeVisible();
+  await expect(page.locator('[data-workspace-overview-section="portfolio"]')).toHaveCount(0);
   await expect(previous).toBeEnabled();
   await expectNoHorizontalOverflow(page);
 });
@@ -679,12 +677,9 @@ test('purple interlinks land at the exact selected section on desktop and mobile
     await threadLink.click();
     await expect(page.locator(`[data-workspace-tab="${threadTarget}"]`)).toHaveAttribute('aria-selected', 'true');
     await expectWorkspaceDestinationAligned(page);
-
-    const indexLink = page.locator('.workspace-related-links [data-workspace-continue]').first();
-    const indexTarget = await indexLink.getAttribute('data-workspace-continue');
-    await indexLink.click();
-    await expect(page.locator(`[data-workspace-tab="${indexTarget}"]`)).toHaveAttribute('aria-selected', 'true');
-    await expectWorkspaceDestinationAligned(page);
+    await expect(page.locator(`[data-workspace-overview-section="${highlightTarget}"]`)).toBeVisible();
+    await expect(page.locator(`[data-workspace-overview-section="${threadTarget}"]`)).toHaveCount(0);
+    await expect(page.locator('.workspace-related-links')).toBeHidden();
 
     await selectPrimaryView(page, 'everything');
     await expect(page.locator('#everythingJumpNav [data-everything-jump]')).toHaveCount(9);
