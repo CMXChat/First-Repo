@@ -1,8 +1,8 @@
 # CMX Documentation Index
 
-Last reconciled: **August 8, 2026**
+Last reconciled: **August 9, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `bc9f2051166fa0a57bec8aac1b47b0adc533dc6c`
+Verified code baseline: `5aa5263a3f8b7552a02bb59fd9016ef2f2388981`
 
 ## Read this first
 
@@ -56,7 +56,7 @@ For the Python-first learning and development environment, start with `docs/deve
 - `/spaces/`: canonical public noindex Spaces demo, light in the initial HTML, with manual dark mode.
 - `/brief/`: public noindex compatibility route that redirects old links and bookmarks to `/spaces/` while preserving query strings and hashes.
 - `/brief-next/`: public noindex pre-migration rollback snapshot; it is intentionally separate from the active route.
-- `/doc/`: public noindex Spaces product overview, light by default, without a password gate.
+- `/doc/`: public noindex Spaces product overview, light by default, without a password gate. Desktop keeps the existing document rail. Phones use a small sticky Contents control that opens a left reading drawer built from the same section list, tracks the current section, and closes through section selection, close control, backdrop, Escape, or a left swipe.
 
 ## Development environment contract
 
@@ -91,6 +91,7 @@ For the Python-first learning and development environment, start with `docs/deve
 - The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
+- `/doc/` mobile navigation must reuse the desktop table-of-contents structure, preserve active-section tracking, keep keyboard focus inside the drawer while open, restore focus after dismissal, and avoid horizontal page movement. Desktop document navigation stays unchanged.
 - Scenario buttons use native button semantics with `aria-pressed`.
 - Secondary text remains WCAG AA compliant.
 - Entry remains silent; soundtrack playback begins from a direct action in the top-right music drawer.
