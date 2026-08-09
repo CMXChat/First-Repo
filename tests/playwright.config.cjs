@@ -3,7 +3,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: __dirname,
-  testMatch: ['brief-browser-e2e.spec.cjs', 'brief-topbar-music-e2e.spec.cjs', 'doc-mobile-contents-e2e.spec.cjs', 'spaces-balanced-briefing-e2e.spec.cjs'],
+  testMatch: ['brief-browser-e2e.spec.cjs', 'brief-topbar-music-e2e.spec.cjs', 'doc-mobile-contents-e2e.spec.cjs', 'spaces-balanced-briefing-e2e.spec.cjs', 'spaces-visual-refinement-e2e.spec.cjs'],
   // These four legacy cases assert implementation details that the current product
   // deliberately replaced. Equivalent current behavior is covered in
   // spaces-balanced-briefing-e2e.spec.cjs instead of preserving stale markup.
