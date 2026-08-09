@@ -82,7 +82,12 @@ For the Python-first learning and development environment, start with `docs/deve
 - The active demo contains seven contexts, including Business partners and Accountant and client.
 - Each context can show one compact priority notice, one scenario-aware alert-routing preview, and one short correction question.
 - Each context links to three signature modules and can open a conversation from the current section.
-- The entry defines Spaces as briefings built from approved information and starts with Personal selected. Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
+- The entry defines Spaces as briefings built from approved information. A scenario carried in URL state may remain available as context, but the chooser must not visually present a briefing as selected until the person explicitly chooses one in the current entry session.
+- Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
+- Explore is the complete category view for the selected Space. The currently selected category stays in the normal focused panel at the top and every other category is rendered in full below it, so scrolling reveals the whole Space without requiring category clicks.
+- The category controls in Explore remain real tabs with keyboard and `aria-selected` behavior. Choosing one brings that category to the focused top position while the remaining categories stay open below.
+- The repeated `Explore the full picture` card rail is hidden from the active experience because it duplicated the category controls and forced an extra click before people could see content.
+- `Everything` remains the longer cross-briefing view with its own full-page navigation and is separate from Explore's selected-Space category overview.
 - The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
