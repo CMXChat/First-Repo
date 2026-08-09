@@ -7,7 +7,8 @@ module.exports = defineConfig({
   // These four legacy cases assert implementation details that the current product
   // deliberately replaced. Equivalent current behavior is covered in
   // spaces-balanced-briefing-e2e.spec.cjs instead of preserving stale markup.
-  grepInvert: /^(briefing sections expose named progress controls and working arrows|purple interlinks land at the exact selected section on desktop and mobile|Doc final demo CTA stays contained on a narrow mobile viewport|Doc renders the plain-language copy audit)$/,
+  // Do not anchor this expression: Playwright includes file/suite text in the full title.
+  grepInvert: /(briefing sections expose named progress controls and working arrows|purple interlinks land at the exact selected section on desktop and mobile|Doc final demo CTA stays contained on a narrow mobile viewport|Doc renders the plain-language copy audit)/,
   timeout: 30000,
   expect: { timeout: 7000 },
   fullyParallel: false,
