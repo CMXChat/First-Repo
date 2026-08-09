@@ -252,11 +252,12 @@ assert.match(explainersJs, /PRIVATE FIRST/);
 assert.match(explainersJs, /Accountant \+ client/);
 assert.doesNotMatch(explainersJs, /This is not a social friends list/);
 
-assert.match(docJs, /Spaces \| Shared Briefings and Context-Driven Workspace/);
-assert.match(docJs, /A Space learns from connected accounts, direct input, and corrections/);
-assert.match(docJs, /Planned Memory & Data settings/);
-assert.match(docJs, /Cloudflare could become infrastructure beneath Spaces/);
-assert.match(docJs, /spaces_doc_theme_v1/);
+assert.match(docJs, /const storageKey = 'spaces_doc_theme_v1'/);
+assert.match(docJs, /function installMobileContents\(/);
+assert.match(docJs, /mobileContentsDrawer/);
+assert.match(docJs, /mobile-document-toc/);
+assert.match(docJs, /Swipe left or tap outside to close/);
+assert.match(docJs, /function installSectionTracking\(/);
 assert.doesNotMatch(docJs, /const plainCopy = new Map/);
 
 assert.match(css, /\.weather-card/);
