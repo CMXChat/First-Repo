@@ -45,7 +45,7 @@ test('briefings keep rich visuals while reducing the default vertical stack', as
   await expect(focus.locator('[data-clarity-deck-target="weather"]')).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#weatherTemperature')).toHaveText('82');
   await expect(page.locator('#statsGrid .stat-card')).toHaveCount(4);
-  await expect(page.locator('.hero-scroll-cue')).toBeHidden();
+  await expect(page.locator('.hero-scroll-cue')).toBeVisible();
 
   await focus.locator('[data-clarity-deck-target="numbers"]').click();
   await expect(focus.locator('[data-clarity-deck-target="numbers"]')).toHaveAttribute('aria-selected', 'true');
