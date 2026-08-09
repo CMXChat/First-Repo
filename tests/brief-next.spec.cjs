@@ -6,6 +6,8 @@ const Module = require('node:module');
 
 // These product-interaction checks exercise the canonical /spaces/ route.
 // The dedicated legacy redirect check remains in the broader browser matrix.
+// Navigation waits for the document response, then the existing assertions wait
+// for the actual app state. This keeps provider-frame lifecycle out of the gate.
 const sourcePath = path.join(__dirname, 'brief-next.source.cjs');
 let source = fs.readFileSync(sourcePath, 'utf8');
 
@@ -16,6 +18,12 @@ if (gotoCount !== 2) {
   throw new Error(`Expected 2 active product navigations through /brief/, found ${gotoCount}.`);
 }
 source = source.split(legacyGoto).join(canonicalGoto);
+
+const lifecycleCount = source.split("waitUntil: 'domcontentloaded'").length - 1;
+if (lifecycleCount < 2) {
+  throw new Error('Browser smoke no longer contains the expected navigation lifecycle waits.');
+}
+source = source.split("waitUntil: 'domcontentloaded'").join("waitUntil: 'commit'");
 
 const previousMockStart = "async function installSpotifyMock(page) {\n  await page.addInitScript(";
 const offlineMockStart = "async function installSpotifyMock(page) {\n  await page.route('https://open.spotify.com/**', route => route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>Spotify mock</title>' }));\n  await page.addInitScript(";
