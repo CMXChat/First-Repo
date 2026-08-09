@@ -22,7 +22,7 @@ const appJs = read('assets/brief/brief-demo-app.js');
 const mediaJs = read('assets/brief/brief-demo-media.js');
 const spacesRuntimeJs = read('assets/brief/brief-spaces-runtime.js');
 const docJs = read('assets/personal-os-doc.js');
-const docMobileCss = read('assets/personal-os-doc-mobile-fixes.css');
+const docMobileCss = read('assets/personal-os-doc-mobile-contents.css');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
 assert.match(html, /<html lang="en" data-theme="light">/);
@@ -186,16 +186,18 @@ assert.match(conversationJs, /touchstart/);
 assert.match(conversationJs, /touchend/);
 assert.match(conversationJs, /\}, 4200\)/);
 
-assert.match(docJs, /personal-os-doc-mobile-fixes\.css/);
-assert.match(docJs, /spacesMobileFixes/);
-assert.match(docJs, /Spaces \| Shared Briefings and Context-Driven Workspace/);
-assert.match(docJs, /Planned Memory & Data settings/);
+assert.match(docJs, /const storageKey = 'spaces_doc_theme_v1'/);
+assert.match(docJs, /function installMobileContents\(/);
+assert.match(docJs, /mobileContentsDrawer/);
+assert.match(docJs, /mobile-document-toc/);
+assert.match(docJs, /Swipe left or tap outside to close/);
+assert.match(docJs, /function installSectionTracking\(/);
 assert.doesNotMatch(docJs, /const plainCopy = new Map/);
-assert.match(docMobileCss, /\.final-cta \{[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
-assert.match(docMobileCss, /overflow-wrap: anywhere/);
-assert.match(docMobileCss, /@media \(max-width: 680px\)/);
-assert.match(docMobileCss, /html \{\s*font-size: 17px/);
-assert.match(docJs, /personal-os-doc-mobile-fixes\.css\?v=20260808-1/);
+assert.match(docMobileCss, /\.mobile-contents-trigger/);
+assert.match(docMobileCss, /\.mobile-contents-drawer/);
+assert.match(docMobileCss, /doc-mobile-contents-open/);
+assert.match(docMobileCss, /@media \(max-width: 920px\)/);
+assert.match(docMobileCss, /prefers-reduced-motion/);
 
 const activeRoute = routes.routes.find(item => item.path === '/spaces/');
 assert.ok(activeRoute, '/spaces/ must be registered.');
