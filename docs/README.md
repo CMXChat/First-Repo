@@ -2,7 +2,7 @@
 
 Last reconciled: **August 9, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `9847c8df7ef257ee14a2485c1caa75bf7f8594c2`
+Verified code baseline: `c78567ba04bca12004140ba61b62b4175cffb937`
 
 ## Read this first
 
@@ -82,7 +82,7 @@ For the Python-first learning and development environment, start with `docs/deve
 - The active demo contains seven contexts, including Business partners and Accountant and client.
 - Each context can show one compact priority notice, one scenario-aware alert-routing preview, and one short correction question.
 - Each context links to three signature modules and can open a conversation from the current section.
-- The entry defines Spaces as briefings built from approved information. A scenario carried in URL state may remain available as context, but the chooser must not visually present a briefing as selected until the person explicitly chooses one in the current entry session.
+- The entry chooser always starts neutral. No card is highlighted, no briefing is marked `Start here`, and the open action stays disabled until the person explicitly chooses a briefing in that entry session. A scenario carried in URL state may remain available as context without selecting a card.
 - Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
 - Today follows a focus-first rule. Weather, Numbers, and Flow share one interactive briefing area with tabs and horizontal movement, so the page keeps the real visual modules without stacking every major view vertically. The most useful starting focus can differ by Space.
 - The Today hero exposes `Briefing controls` for local demo settings such as scheduled opening, optional music on open, focused or full-review preference, calendar context, member or invite preview, alert routing, and soundtrack access. These settings are fictional interface behavior and must not imply that an invite, alert, calendar action, or external account change was sent.
