@@ -57,7 +57,7 @@
     });
 
     const personalBadge = grid.querySelector('[data-entry-scenario="personal"] .entry-option-topline em');
-    if (personalBadge) personalBadge.textContent = 'One person';
+    if (personalBadge && personalBadge.textContent !== 'One person') personalBadge.textContent = 'One person';
 
     const preview = document.getElementById('entrySpacePreview');
     if (preview) {
@@ -75,9 +75,9 @@
     const openLabel = document.getElementById('openDemoLabel');
     const stickyLabel = document.getElementById('openDemoStickyLabel');
     const mobileHint = document.getElementById('entryMobileChoiceHint');
-    if (openLabel) openLabel.textContent = 'Choose a Briefing';
-    if (stickyLabel) stickyLabel.textContent = 'Choose a Briefing';
-    if (mobileHint) mobileHint.textContent = 'Tap one to continue';
+    if (openLabel && openLabel.textContent !== 'Choose a Briefing') openLabel.textContent = 'Choose a Briefing';
+    if (stickyLabel && stickyLabel.textContent !== 'Choose a Briefing') stickyLabel.textContent = 'Choose a Briefing';
+    if (mobileHint && mobileHint.textContent !== 'Tap one to continue') mobileHint.textContent = 'Tap one to continue';
     document.body.dataset.entryChoiceMade = 'false';
   }
 
