@@ -30,7 +30,11 @@ body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pr
    -------------------------------------------------------------------------- */
 
 .hero-scroll-cue {
-  display: none !important;
+  display: inline-flex !important;
+}
+
+.hero-actions > #briefControlsButton {
+  display: inline-flex !important;
 }
 
 .space-discovery {
