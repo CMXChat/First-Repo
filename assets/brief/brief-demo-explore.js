@@ -8,6 +8,50 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
+  function applyCopyRefinements() {
+    const business = data.scenarios.business;
+    if (business) {
+      business.short = 'Two time zones, one shared company view';
+      if (business.entryPreview) {
+        business.entryPreview.title = 'New York and Sydney share one company view';
+        business.entryPreview.copy = 'Priorities, teams, deals, concerns, and prepared decisions stay together across both workdays.';
+      }
+      business.summary = 'Two remote partners see the same company picture, the concerns each partner approved for sharing, and the work their teams need to move next.';
+      if (business.next) business.next.title = 'Partner review';
+      if (business.recommendation) business.recommendation.label = 'Shared priority';
+      if (business.priority) business.priority.label = 'Cash buffer';
+      if (business.space?.shared) business.space.shared = business.space.shared.map(item => item.replace('operating history', 'shared history'));
+      if (business.soundtrack) business.soundtrack.note = 'Bright energy for a focused partner review.';
+    }
+
+    const accounting = data.scenarios.accounting;
+    if (accounting?.weather) {
+      accounting.weather = {
+        ...accounting.weather,
+        location: 'New York, New York',
+        temperature: 82,
+        condition: 'Warm and mostly clear',
+        high: 86,
+        low: 72,
+        advice: 'The 3:30 PM review stays clear of weather delays, so the financial plan can stay focused on the records that need approval.',
+        hourly: [
+          { time: 'Now', temp: 82, label: 'Mostly clear' },
+          { time: '3 PM', temp: 84, label: 'Warm' },
+          { time: '5 PM', temp: 83, label: 'Light clouds' },
+          { time: '7 PM', temp: 79, label: 'Clearer' }
+        ]
+      };
+    }
+
+    const team = data.scenarios.team;
+    if (team?.weather) {
+      team.weather.condition = 'Warm with late clouds';
+      team.weather.advice = 'The release review stays inside a dry afternoon window. Keep the handoff owner clear before the later commute.';
+    }
+  }
+
+  applyCopyRefinements();
+
   function escapeHtml(value) {
     const node = document.createElement('div');
     node.textContent = String(value ?? '');
