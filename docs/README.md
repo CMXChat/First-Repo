@@ -2,7 +2,7 @@
 
 Last reconciled: **August 9, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `5aa5263a3f8b7552a02bb59fd9016ef2f2388981`
+Verified code baseline: `9847c8df7ef257ee14a2485c1caa75bf7f8594c2`
 
 ## Read this first
 
@@ -84,17 +84,21 @@ For the Python-first learning and development environment, start with `docs/deve
 - Each context links to three signature modules and can open a conversation from the current section.
 - The entry defines Spaces as briefings built from approved information. A scenario carried in URL state may remain available as context, but the chooser must not visually present a briefing as selected until the person explicitly chooses one in the current entry session.
 - Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
-- Explore is the complete category view for the selected Space. The currently selected category stays in the normal focused panel at the top and every other category is rendered in full below it, so scrolling reveals the whole Space without requiring category clicks.
-- The category controls in Explore remain real tabs with keyboard and `aria-selected` behavior. Choosing one brings that category to the focused top position while the remaining categories stay open below.
-- The repeated `Explore the full picture` card rail is hidden from the active experience because it duplicated the category controls and forced an extra click before people could see content.
-- `Everything` remains the longer cross-briefing view with its own full-page navigation and is separate from Explore's selected-Space category overview.
+- Today follows a focus-first rule. Weather, Numbers, and Flow share one interactive briefing area with tabs and horizontal movement, so the page keeps the real visual modules without stacking every major view vertically. The most useful starting focus can differ by Space.
+- The Today hero exposes `Briefing controls` for local demo settings such as scheduled opening, optional music on open, focused or full-review preference, calendar context, member or invite preview, alert routing, and soundtrack access. These settings are fictional interface behavior and must not imply that an invite, alert, calendar action, or external account change was sent.
+- Explore is the complete category map for the selected Space without repeating every rich renderer at once. The selected category stays fully open at the top. Every other category remains visible below as a compact preview that can be promoted into the full focused position with one action.
+- The category controls in Explore remain real tabs with keyboard and `aria-selected` behavior. Choosing one brings that category to the focused top position while the previous category returns to the compact preview set.
+- The repeated `Explore the full picture` card rail stays hidden because it duplicates the category controls and adds an unnecessary click path.
+- `Everything` remains the longer cross-briefing review, but it uses progressive disclosure. Core Overview, Weather, Numbers, Flow, Spaces, and Privacy visuals stay present. Rich Workspace categories share one horizontal carousel, while deeper Adaptive Brief logic and the full Morning sequence start collapsed behind explicit controls.
+- Rich signature modules remain available after compaction. Shared calendars, household boards, shopping lists, project views, financial visuals, and other scenario-specific renderers must not be replaced with generic cards simply to shorten the page.
+- Light mode should read consistently as a light interface. High-contrast dark cards that function as ordinary information surfaces should adapt to the selected theme. Deliberate device or media concepts can keep a darker treatment when that treatment communicates the object being represented.
 - The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
 - `/doc/` mobile navigation must reuse the desktop table-of-contents structure, preserve active-section tracking, keep keyboard focus inside the drawer while open, restore focus after dismissal, and avoid horizontal page movement. Desktop document navigation stays unchanged.
 - Scenario buttons use native button semantics with `aria-pressed`.
 - Secondary text remains WCAG AA compliant.
-- Entry remains silent; soundtrack playback begins from a direct action in the top-right music drawer.
+- Entry remains silent; soundtrack playback begins from a direct action in the top-right music drawer unless the person explicitly enables the local demo `Music on open` control for a later Brief opening.
 - Spotify preparation never blocks Spaces.
 - Provider limits and direct-tap fallback copy remain honest.
 - Shared calendars expose only approved Space-level coordination data, not unrelated private event details.
