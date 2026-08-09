@@ -143,6 +143,17 @@ body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pr
   white-space: nowrap;
 }
 
+/* The older hero treatment intentionally hides its original navigation buttons.
+   Briefing settings is the one additional control we keep beside the scroll cue. */
+.hero-actions > .briefing-settings-button {
+  display: inline-flex !important;
+  min-height: 38px;
+  padding: 8px 14px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: .73rem;
+}
+
 .briefing-settings-dialog {
   width: min(680px, calc(100vw - 28px));
   max-height: min(820px, calc(100dvh - 32px));
