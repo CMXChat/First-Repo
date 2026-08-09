@@ -17,10 +17,12 @@ const docLinksCss = read('assets/brief/brief-demo-doc-links.css');
 const topbarPolishCss = read('assets/brief/brief-demo-topbar-polish.css');
 const advancedCss = read('assets/brief/brief-demo-advanced.css');
 const conversationCss = read('assets/brief/brief-demo-conversation.css');
+const exploreCss = read('assets/brief/brief-demo-explore.css');
 const docEditorialCss = read('assets/personal-os-doc-editorial.css');
 const dataJs = read('assets/brief/brief-demo-data.js');
 const advancedJs = read('assets/brief/brief-demo-advanced.js');
 const conversationJs = read('assets/brief/brief-demo-conversation.js');
+const exploreJs = read('assets/brief/brief-demo-explore.js');
 const spacesRuntimeJs = read('assets/brief/brief-spaces-runtime.js');
 const experienceJs = read('assets/brief/brief-demo-experience.js');
 const mediaJs = read('assets/brief/brief-demo-media.js');
@@ -74,19 +76,21 @@ assert.match(html, /brief-demo-doc-links\.css\?v=20260808-2/);
 assert.match(html, /brief-demo-topbar-polish\.css\?v=20260808-1/);
 assert.match(html, /brief-demo-advanced\.css\?v=20260808-6/);
 assert.match(html, /brief-demo-conversation\.css\?v=20260808-16/);
+assert.match(html, /brief-demo-explore\.css\?v=20260808-1/);
 assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
 assert.match(html, /brief-demo-data\.js\?v=20260808-5/);
 assert.match(html, /brief-demo-advanced\.js\?v=20260808-4/);
 assert.match(html, /brief-demo-experience\.js\?v=20260808-4/);
 assert.match(html, /brief-demo-media\.js\?v=20260807-4/);
 assert.match(html, /brief-demo-app\.js\?v=20260808-12/);
+assert.match(html, /brief-demo-explore\.js\?v=20260808-1/);
 assert.match(html, /brief-demo-explainers\.js\?v=20260807-4/);
 assert.match(html, /brief-demo-conversation\.js\?v=20260808-1/);
 assert.doesNotMatch(html, /terminal|command line|brief-system/i);
 assert.equal((html.match(/href="\/doc\/"/g) || []).length, 2, 'Documentation should remain available at entry and inside How it works, not in the live header.');
 assert.equal((html.match(/<iframe\b/g) || []).length, 0, 'Spotify should be created by its official controller or the tap-to-play fallback.');
-assert.equal((html.match(/<script src=/g) || []).length, 8, 'Spaces should load data, advanced modules, branding, experience, media, app, explainers and conversation scripts.');
-assert.equal((html.match(/<link rel="stylesheet"/g) || []).length, 7, 'Spaces should load core, explainer, experience, Doc-link, topbar, advanced and conversation stylesheets.');
+assert.equal((html.match(/<script src=/g) || []).length, 9, 'Spaces should load data, advanced modules, branding, experience, media, app, Explore, explainers and conversation scripts.');
+assert.equal((html.match(/<link rel="stylesheet"/g) || []).length, 8, 'Spaces should load core, explainer, experience, Doc-link, topbar, advanced, conversation and Explore stylesheets.');
 assert.ok(html.indexOf('brief-demo-data.js') < html.indexOf('brief-spaces-runtime.js'), 'Spaces branding must load after the data source.');
 assert.ok(html.indexOf('brief-demo-data.js') < html.indexOf('brief-demo-advanced.js'), 'Advanced modules must load after their data source.');
 assert.ok(html.indexOf('brief-spaces-runtime.js') < html.indexOf('brief-demo-experience.js'), 'Spaces branding must update the data before the experience initializes.');
@@ -116,7 +120,7 @@ assert.match(rollbackHtml, /canonical" href="https:\/\/db\.cmxchat\.com\/brief\/
 assert.match(rollbackHtml, /id="entryScenarioGrid"/);
 assert.notEqual(rollbackHtml, html, 'The rollback snapshot is intentionally separate from the active `/spaces/` route.');
 
-for (const source of [dataJs, advancedJs, conversationJs, spacesRuntimeJs, experienceJs, mediaJs, appJs, explainersJs, docJs]) {
+for (const source of [dataJs, advancedJs, conversationJs, exploreJs, spacesRuntimeJs, experienceJs, mediaJs, appJs, explainersJs, docJs]) {
   assert.doesNotThrow(() => new Function(source));
 }
 
@@ -192,6 +196,13 @@ assert.match(appJs, /<button class="entry-option" type="button" data-entry-scena
 assert.doesNotMatch(appJs, /role="listitem"/);
 assert.match(appJs, /<time>\$\{escapeHtml\(hour\.time\)\}<\/time>/);
 assert.doesNotMatch(appJs, /setInterval/);
+
+assert.match(exploreJs, /workspaceExploreOverview/);
+assert.match(exploreJs, /All \$\{count\} categories are open on this page/);
+assert.match(exploreJs, /briefdemo:tabchange/);
+assert.match(exploreCss, /\.workspace-related-links\s*\{[\s\S]*display: none !important/);
+assert.match(exploreCss, /data-entry-choice-made="false"/);
+assert.match(exploreCss, /\.workspace-overview-section/);
 
 assert.match(experienceJs, /data\.navigation\.push\(\{ id: 'everything', label: 'Everything' \}\)/);
 assert.match(experienceJs, /ADAPTIVE BRIEF/);
