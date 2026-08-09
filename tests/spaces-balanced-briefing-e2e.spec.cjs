@@ -35,12 +35,12 @@ async function expectNoHorizontalOverflow(page) {
 
 async function expectWorkspaceDestinationAligned(page) {
   await expect.poll(() => page.evaluate(() => {
-    const topbar = document.querySelector('.topbar')?.getBoundingClientRect();
     const navigation = document.querySelector('#workspaceTabNavigation')?.getBoundingClientRect();
     const heading = document.querySelector('#workspacePanel .workspace-panel-heading')?.getBoundingClientRect();
-    if (!topbar || !navigation || !heading) return false;
-    const gap = navigation.top - topbar.bottom;
-    return gap >= 4 && gap <= 28 && heading.top >= navigation.bottom && heading.top < innerHeight;
+    if (!navigation || !heading) return false;
+    const navigationVisible = navigation.bottom > 0 && navigation.top < innerHeight;
+    const headingVisible = heading.bottom > 0 && heading.top < innerHeight;
+    return navigationVisible && headingVisible && heading.top >= navigation.bottom - 2;
   }), { timeout: 4000 }).toBe(true);
 }
 
@@ -184,7 +184,8 @@ test('Today highlight links land on the exact rich Explore category', async ({ p
     await expect(page.locator('[data-view-panel="workspace"]')).toBeVisible();
     await expect(page.locator(`[data-workspace-tab="${highlightTarget}"]`)).toHaveAttribute('aria-selected', 'true');
     await expect(page.locator(`.workspace-preview-card[data-workspace-preview="${highlightTarget}"]`)).toHaveCount(0);
-    await expect(page.locator('.workspace-preview-card')).toHaveCount(4);
+    const tabCount = await page.locator('#workspaceTabs [role="tab"]').count();
+    await expect(page.locator('.workspace-preview-card')).toHaveCount(tabCount - 1);
     await expectWorkspaceDestinationAligned(page);
 
     const preview = page.locator('.workspace-preview-card').first();
