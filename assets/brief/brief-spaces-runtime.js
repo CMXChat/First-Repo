@@ -4,6 +4,25 @@
   const legacyName = 'Personal OS';
   const productName = 'Spaces';
 
+  function resetReloadedBriefState() {
+    try {
+      const navigation = performance.getEntriesByType?.('navigation')?.[0];
+      const isReload = navigation?.type === 'reload' || performance.navigation?.type === 1;
+      if (!isReload) return;
+
+      const url = new URL(window.location.href);
+      let changed = false;
+      for (const key of ['scenario', 'view', 'tab']) {
+        if (!url.searchParams.has(key)) continue;
+        url.searchParams.delete(key);
+        changed = true;
+      }
+      if (changed) history.replaceState(null, '', url);
+    } catch {}
+  }
+
+  resetReloadedBriefState();
+
   const finalCopy = {
     meta: {
       title: 'Spaces',
@@ -77,10 +96,10 @@
         },
         details: {
           home: { title: 'Today’s household plan', summary: 'See the next move, who owns it, and what still needs a decision.' },
-          calendar: { title: 'Who needs to be where', summary: 'Appointments, rides, and shared availability are visible without exposing private event details.' },
+          calendar: { title: 'A shared calendar that keeps private event details covered', summary: 'Appointments, rides, and shared availability are visible without exposing private event details.' },
           chores: { title: 'Who owns each task', summary: 'Open work, due times, and completed jobs stay easy to scan.' },
           shopping: { title: 'What still needs to be picked up', summary: 'See what is needed, who claimed it, and what is already done.' },
-          access: { title: 'Who can see what', summary: 'Adults, teens, and children get the household information that fits their role.' }
+          access: { title: 'Useful family access with age-appropriate limits', summary: 'Adults, teens, and children get the household information that fits their role.' }
         }
       },
       business: {
@@ -267,6 +286,11 @@
     }
   }
 
+  function removeRedundantWorkspaceLinks(root = document) {
+    if (root instanceof Element && root.matches('.workspace-related-links')) root.remove();
+    root.querySelectorAll?.('.workspace-related-links').forEach(node => node.remove());
+  }
+
   function setText(selector, text) {
     const node = document.querySelector(selector);
     if (node && text) node.textContent = text;
@@ -389,23 +413,25 @@
     applyBrand();
     refreshCurrentBrief();
     applyStaticCopy();
+    removeRedundantWorkspaceLinks();
 
     const target = document.getElementById('demoApp') || document.body;
     const observer = new MutationObserver((mutations) => {
       let needsUpdate = false;
       for (const mutation of mutations) {
-        if (mutation.type === 'characterData' && mutation.target.nodeValue?.includes(legacyName)) {
-          needsUpdate = true;
-          break;
+        for (const node of mutation.addedNodes) {
+          if (!(node instanceof Element)) continue;
+          removeRedundantWorkspaceLinks(node);
+          if (node.textContent?.includes(legacyName)) needsUpdate = true;
         }
-        if ([...mutation.addedNodes].some((node) => node.textContent?.includes(legacyName))) {
-          needsUpdate = true;
-          break;
-        }
+        if (mutation.type === 'characterData' && mutation.target.nodeValue?.includes(legacyName)) needsUpdate = true;
       }
       if (needsUpdate) queueMicrotask(() => applyBrand(target));
     });
 
     observer.observe(target, { childList: true, subtree: true, characterData: true });
+    ['briefdemo:tabchange', 'briefdemo:viewchange', 'briefdemo:scenariochange'].forEach(eventName => {
+      document.addEventListener(eventName, () => queueMicrotask(() => removeRedundantWorkspaceLinks()));
+    });
   }, { once: true });
 })();
