@@ -10,8 +10,8 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'" />
-  <title>Spaces | Context-Driven AI Workspaces for People and Groups</title>
-  <meta name="description" content="Spaces organizes approved information around a person or group, keeps memory and permissions attached to the right context, and turns that context into useful Briefs, conversations, recommendations, and approved actions." />
+  <title>Spaces | Shared Briefings and Context-Driven Workspace</title>
+  <meta name="description" content="Spaces brings approved information together for one person or group, keeps private and shared context within clear boundaries, and turns it into a useful current Brief." />
   <link rel="canonical" href="https://db.cmxchat.com/doc/" />
   <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260807-4" />
   <link rel="stylesheet" href="/assets/personal-os-doc-editorial.css?v=20260805-1" />
@@ -37,7 +37,7 @@
         <nav class="toolbar-links" aria-label="Primary document actions">
           <a href="#overview">Overview</a>
           <a href="#spaces">Spaces</a>
-          <a href="#brief">Brief</a>
+          <a href="#memory">Memory</a>
           <a href="#status">Status</a>
         </nav>
 
@@ -65,19 +65,20 @@
         <div class="rail-panel">
           <p class="rail-eyebrow">Contents</p>
           <nav class="document-toc">
-            <a href="#overview">What Spaces is</a>
+            <a href="#overview">The whole idea</a>
             <a href="#model">How it works</a>
-            <a href="#spaces">Spaces and boundaries</a>
-            <a href="#brief">The Brief</a>
-            <a href="#inputs">Context and connections</a>
+            <a href="#inputs">How a Space learns</a>
+            <a href="#spaces">Spaces</a>
             <a href="#memory">Memory</a>
             <a href="#goals">Goals and direction</a>
+            <a href="#ritual">Daily ritual</a>
             <a href="#relationships">People and coordination</a>
-            <a href="#ai-layer">AI inside a Space</a>
+            <a href="#ai-layer">Your chosen AI</a>
             <a href="#trust">Trust and control</a>
+            <a href="#status">Current reality</a>
+            <a href="#investment">Why invest</a>
             <a href="#architecture">Architecture</a>
-            <a href="#status">Current status</a>
-            <a href="#scenarios">Use cases</a>
+            <a href="#scenarios">Scenarios</a>
             <a href="#faq">Questions</a>
           </nav>
         </div>
@@ -86,7 +87,7 @@
           <span class="status-dot" aria-hidden="true"></span>
           <div>
             <strong>Active development</strong>
-            <p>The public interface is a working product demonstration. Secure accounts, durable memory, connectors, and server-side permissions are still being built.</p>
+            <p>The interface is a working demonstration, while the secure multi-user platform remains under development.</p>
           </div>
         </div>
       </aside>
@@ -99,92 +100,92 @@
 
           <div class="hero-copy">
             <div class="hero-kicker-row">
-              <p class="hero-kicker">Context-driven AI workspaces</p>
+              <p class="hero-kicker">Briefings with clear permissions</p>
               <span class="hero-status">Concept + working demo</span>
             </div>
-            <h1 id="pageTitle">One place for the context behind your life and work</h1>
-            <p class="hero-lead">Spaces organizes approved information around the person or group who needs it. Each Space keeps its own people, sources, permissions, memory, goals, and history, then turns that context into a current Brief with what changed, what matters, and what needs attention.</p>
+            <h1 id="pageTitle">One briefing for the part of life you’re in</h1>
+            <p class="hero-lead">Spaces brings the right information together for you or the people sharing that Space. Each Space keeps its own people, sources, memory, goals, and permissions, then turns that context into a current Brief. Shared details meet there, and private details stay with their owner.</p>
 
             <div class="hero-actions">
               <a class="button button-primary" href="/spaces/">
-                <span>Explore the working demo</span>
+                <span>Explore the shared briefing demo</span>
                 <span aria-hidden="true">↗</span>
               </a>
-              <a class="button button-secondary" href="#overview">Understand the product</a>
+              <a class="button button-secondary" href="#overview">Understand it in one minute</a>
             </div>
 
-            <p class="hero-disclosure">The demo uses sourced public information and clearly fictional private-looking examples. Real private data requires authenticated accounts, protected storage, scoped connections, revocable access, and server-side authorization.</p>
+            <p class="hero-disclosure">The current demo uses sourced public information and clearly fictional private-looking examples. Real accounts, connected services, durable memory, and server-side permissions belong to the secure platform still being built.</p>
           </div>
 
-          <div class="hero-system" aria-label="How a Space turns information into a useful current view">
+          <div class="hero-system" aria-label="Spaces system overview">
             <div class="hero-system-center">
-              <span>One Space</span>
-              <strong>Current context for a person or group</strong>
+              <span>Spaces</span>
+              <strong>Your current Space</strong>
             </div>
-            <div class="hero-system-node node-brief"><span>Connected information</span><strong>Calendar, email, files, finance, projects, public data</strong></div>
-            <div class="hero-system-node node-spaces"><span>Boundaries</span><strong>Who can see, use, or change which details</strong></div>
-            <div class="hero-system-node node-memory"><span>Memory</span><strong>What should stay useful over time</strong></div>
-            <div class="hero-system-node node-goals"><span>Brief</span><strong>What changed, what matters, and what comes next</strong></div>
+            <div class="hero-system-node node-brief"><span>Brief</span><strong>What changed and what matters</strong></div>
+            <div class="hero-system-node node-spaces"><span>Permissions</span><strong>Who can see which details</strong></div>
+            <div class="hero-system-node node-memory"><span>Memory</span><strong>What should persist</strong></div>
+            <div class="hero-system-node node-goals"><span>Goals</span><strong>Where attention should go</strong></div>
           </div>
         </header>
 
         <section id="overview" class="document-section overview-section" aria-labelledby="overviewTitle">
           <div class="section-heading section-heading-wide">
             <div>
-              <p class="section-kicker">What Spaces is</p>
-              <h2 id="overviewTitle">A workspace that carries context forward</h2>
+              <p class="section-kicker">The whole idea</p>
+              <h2 id="overviewTitle">Spaces in one minute</h2>
             </div>
-            <p class="section-intro">Spaces gives an individual or group one continuing place where approved information can stay connected to the people, goals, decisions, and permissions that give it meaning.</p>
+            <p class="section-intro">A person, family, pair, business partnership, adviser relationship, or team can open one current Brief built from the information that belongs there. The Space keeps the context behind that Brief so the next conversation does not start from zero.</p>
           </div>
 
           <div class="overview-statement">
-            <p>Your calendar knows when something happens. Email knows what was said. A project tool knows what was assigned. A finance app knows what moved. An AI conversation knows what you happened to explain in that thread. The useful picture is usually spread across all of them.</p>
-            <p>A Space brings the relevant parts together for one purpose. A Personal Space can hold private goals, routines, money, schedule, and memory. A Family Space can use approved calendars, chores, shopping, weather, and household plans. A Business Space can carry projects, decisions, local time, shared concerns, and the operating context that both partners need.</p>
-            <p>The product uses that continuing context to build a Brief, answer questions from the right starting point, surface conflicts or changes, recommend a useful next step, and prepare actions that remain subject to the permissions of that Space.</p>
+            <p>Most digital tools understand one slice of your life. A calendar knows time, email holds messages, task managers track assignments, and a new AI chat usually starts with whatever you explain again.</p>
+            <p>Spaces organizes those slices around the person or group who needs them. A Family Space can bring together approved calendars, chores, shopping, weather, and household decisions while each record keeps a clear owner and permission scope.</p>
+            <p>The Brief shows what changed, what matters now, what needs a decision, and what can wait. Conversation stays available across the whole Space or from a focused section such as a weather card, cash sheet, calendar, or project board.</p>
           </div>
 
-          <div class="overview-grid" aria-label="The four parts of the Spaces product model">
-            <article class="overview-card overview-card-spaces">
+          <div class="overview-grid" aria-label="Spaces overview">
+            <article class="overview-card overview-card-brief">
               <span class="overview-number">01</span>
               <div>
-                <p class="card-label">Space</p>
-                <h3>Keep one part of life coherent</h3>
-                <p>Each Space has its own people, records, rules, goals, sources, permissions, conversations, and history.</p>
+                <p class="card-label">Brief</p>
+                <h3>See the few things that deserve attention now</h3>
+                <p>A personal morning view, family plan, partner operating brief, accountant review, or project update can come from the same underlying Space.</p>
+              </div>
+            </article>
+            <article class="overview-card overview-card-spaces">
+              <span class="overview-number">02</span>
+              <div>
+                <p class="card-label">Spaces</p>
+                <h3>Give each person or group one briefing with the right boundaries</h3>
+                <p>Personal, relationship, family, business partner, accountant-client, training, and team Spaces can each have their own people, memory, goals, data, rules, and daily view.</p>
               </div>
             </article>
             <article class="overview-card overview-card-memory">
-              <span class="overview-number">02</span>
-              <div>
-                <p class="card-label">Context</p>
-                <h3>Bring in the information that belongs there</h3>
-                <p>Connected accounts, files, direct updates, public information, and user corrections can feed the Space within a defined scope.</p>
-              </div>
-            </article>
-            <article class="overview-card overview-card-brief">
               <span class="overview-number">03</span>
               <div>
-                <p class="card-label">Brief</p>
-                <h3>See the current picture without rebuilding it yourself</h3>
-                <p>The Brief reduces the Space to the changes, decisions, risks, commitments, and next actions that deserve attention now.</p>
+                <p class="card-label">Memory</p>
+                <h3>Keep useful context under clear user control</h3>
+                <p>Facts, self-reports, source records, preferences, decisions, and interpretations remain distinguishable, editable, exportable, and removable.</p>
               </div>
             </article>
             <article class="overview-card overview-card-goals">
               <span class="overview-number">04</span>
               <div>
-                <p class="card-label">Continuity</p>
-                <h3>Let tomorrow start with what today already established</h3>
-                <p>Memory, goals, corrections, outcomes, approvals, and history stay attached to the Space instead of disappearing into a single chat session.</p>
+                <p class="card-label">Goals</p>
+                <h3>Connect information to a clear direction</h3>
+                <p>The Space can identify blockers, ask one useful question, recommend one next action, record the result, and update the next Brief.</p>
               </div>
             </article>
           </div>
 
           <div class="core-difference">
             <div class="core-difference-copy">
-              <p class="section-kicker">The durable layer</p>
-              <h3>The AI can change while the Space keeps its context</h3>
-              <p>Spaces keeps permissions, sources, memory, goals, corrections, tools, approvals, and history outside the model. A default model can power the experience today, another model can handle a different task tomorrow, and the Space still knows what belongs there.</p>
+              <p class="section-kicker">The central difference</p>
+              <h3>The model can change while the Space keeps its history</h3>
+              <p>Spaces keeps permissions, memory, sources, goals, tools, approvals, and history outside the model. A default model can power the experience, while another cloud model or future local model can work from the same controlled foundation.</p>
             </div>
-            <div class="model-strip" aria-label="Examples of replaceable AI model choices">
+            <div class="model-strip" aria-label="Replaceable AI model examples">
               <span>Default model</span>
               <span>Alternative model</span>
               <span>Local model</span>
@@ -197,70 +198,138 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">How it works</p>
-              <h2 id="modelTitle">From scattered information to a useful next step</h2>
+              <h2 id="modelTitle">A simple loop that keeps the Space current</h2>
             </div>
-            <p class="section-intro">The product loop is simple to describe even when the underlying data is complex. Each step stays tied to a Space, a source, and a permission scope.</p>
+            <p class="section-intro">The value comes from keeping the right context current, asking only when something important is missing, and carrying what happened into the next Brief.</p>
           </div>
 
-          <div class="loop-diagram" aria-label="Spaces product loop">
-            <div class="loop-step"><span>1</span><strong>Choose the Space</strong><small>Personal, family, relationship, business, professional, training, or team context</small></div>
+          <div class="loop-diagram" aria-label="Spaces intelligence loop">
+            <div class="loop-step"><span>1</span><strong>Collect authorized information</strong><small>Public sources, user input, connected services, files, and events</small></div>
             <div class="loop-arrow" aria-hidden="true">↓</div>
-            <div class="loop-step"><span>2</span><strong>Bring in approved information</strong><small>Connected services, files, direct input, public sources, and existing records</small></div>
+            <div class="loop-step"><span>2</span><strong>Update the current state</strong><small>People, Spaces, goals, commitments, changes, blockers, and freshness</small></div>
             <div class="loop-arrow" aria-hidden="true">↓</div>
-            <div class="loop-step"><span>3</span><strong>Update the current state</strong><small>People, commitments, goals, changes, deadlines, blockers, and freshness</small></div>
+            <div class="loop-step"><span>3</span><strong>Reduce uncertainty</strong><small>Ask one question when the answer can change the decision</small></div>
             <div class="loop-arrow" aria-hidden="true">↓</div>
-            <div class="loop-step"><span>4</span><strong>Decide what deserves attention</strong><small>Time, impact, risk, user priorities, unresolved decisions, and recent changes</small></div>
+            <div class="loop-step"><span>4</span><strong>Recommend the next useful action</strong><small>Explain the reason, effort, expected result, evidence, and confidence</small></div>
             <div class="loop-arrow" aria-hidden="true">↓</div>
-            <div class="loop-step"><span>5</span><strong>Ask only when the answer matters</strong><small>A short question can resolve uncertainty before a recommendation or action is prepared</small></div>
+            <div class="loop-step"><span>5</span><strong>Record what happened</strong><small>Separate intention, self-report, evidence, verified result, and interpretation</small></div>
             <div class="loop-arrow" aria-hidden="true">↓</div>
-            <div class="loop-step loop-step-final"><span>6</span><strong>Brief, answer, recommend, or prepare action</strong><small>The result starts from the current Space instead of an empty conversation</small></div>
+            <div class="loop-step loop-step-final"><span>6</span><strong>Generate the next Brief</strong><small>Show the smallest useful amount for the person or Space</small></div>
+          </div>
+        </section>
+
+        <section id="inputs" class="document-section" aria-labelledby="inputsTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">How the context builds</p>
+              <h2 id="inputsTitle">A Space stays current through connected accounts, direct input, and corrections</h2>
+            </div>
+            <p class="section-intro">Most of the work should happen after the user chooses what to connect and which Space can use it. Spaces asks a short question only when the answer could change the next step.</p>
+          </div>
+
+          <div class="architecture-principles">
+            <article><h3>Connected accounts</h3><p>Calendar, email, files, project tools, finance, music, and other approved services can supply records within a clear read, write, sync, and Space scope.</p></article>
+            <article><h3>Direct input</h3><p>A note, uploaded document, voice update, form, import, or section-level conversation can add context through a short, focused path.</p></article>
+            <article><h3>Focused questions</h3><p>The AI can ask one clear question when a missing answer would change a recommendation, deadline, permission, or decision.</p></article>
+            <article><h3>Corrections</h3><p>A direct user correction replaces a weaker guess, keeps the earlier record in revision history, and updates the next Brief.</p></article>
+          </div>
+
+          <div class="product-preview-stage" aria-label="Illustrative future Spaces interfaces">
+            <header class="product-preview-heading">
+              <div>
+                <span>PRODUCT PREVIEW</span>
+                <h3>Small interactions can keep a Space current</h3>
+              </div>
+              <p>These previews extend the strongest demo patterns. They show how a shared schedule, one short correction, and a section-level question can use the same visual language.</p>
+            </header>
+
+            <div class="product-preview-grid">
+              <article class="calendar-preview" aria-labelledby="calendarPreviewTitle">
+                <header>
+                  <div><span>FAMILY SPACE · TUESDAY</span><h4 id="calendarPreviewTitle">A beach day with the household still in view</h4></div>
+                  <b>SHARED</b>
+                </header>
+                <div class="calendar-preview-week" role="list" aria-label="Example week">
+                  <span role="listitem"><small>MON</small><strong>10</strong></span>
+                  <span role="listitem" data-active="true"><small>TUE</small><strong>11</strong><i aria-hidden="true"></i></span>
+                  <span role="listitem"><small>WED</small><strong>12</strong><i aria-hidden="true"></i></span>
+                  <span role="listitem"><small>THU</small><strong>13</strong></span>
+                  <span role="listitem"><small>FRI</small><strong>14</strong><i aria-hidden="true"></i></span>
+                </div>
+                <div class="calendar-preview-events">
+                  <div data-owner="family"><time>8:00</time><span><strong>Beach day · Jamie + Ava</strong><small>Travel window and packing list attached</small></span><b>$86</b></div>
+                  <div data-owner="adult"><time>2:15</time><span><strong>Dentist · Morgan</strong><small>Ride owner still needed</small></span><b>ASK</b></div>
+                  <div data-owner="private"><time>4:30</time><span><strong>Busy</strong><small>Private event details stay covered</small></span><b>PRIVATE</b></div>
+                </div>
+                <div class="calendar-preview-weather"><span>78°</span><strong>UV 8</strong><p>Pack water, SPF 50, hats, and a shaded lunch stop.</p></div>
+              </article>
+
+              <article class="input-preview" aria-labelledby="inputPreviewTitle">
+                <header><span>ACCOUNTANT + CLIENT</span><b>QUICK UPDATE</b></header>
+                <p class="input-preview-label">ONE USEFUL QUESTION</p>
+                <h4 id="inputPreviewTitle">Did the $840 startup client payment arrive?</h4>
+                <div class="input-preview-choices" aria-label="Illustrative answer choices">
+                  <span>Yes</span><span data-selected="true">Partial · $420</span><span>Not yet</span>
+                </div>
+                <div class="input-preview-field"><span>SHORT CORRECTION</span><strong>$420 received Friday</strong></div>
+                <div class="input-preview-result"><span aria-hidden="true">✓</span><p><strong>Ready to update the cash plan</strong><small>Priya sees the approved result after confirmation.</small></p></div>
+              </article>
+            </div>
+
+            <div class="context-prompt-preview">
+              <span>ASK FROM THIS SECTION</span>
+              <p>If the beach day moves to Wednesday, which events, costs, and weather details change?</p>
+              <div><b>Family</b><b>Calendar</b><b>Weather</b><b>Approved records</b></div>
+              <strong>Start conversation <span aria-hidden="true">→</span></strong>
+            </div>
+            <p class="product-preview-note">Fictional interface examples. Production records, conversations, and updates require authentication, scoped sources, and user approval.</p>
+          </div>
+
+          <div class="prose-callout">
+            <strong>Every connected account uses a specific Space, purpose, and permission scope.</strong>
+            <p>The user chooses the service, purpose, permission, and Space. The connection stays visible in settings and can be limited, paused, or removed.</p>
           </div>
         </section>
 
         <section id="spaces" class="document-section spaces-section" aria-labelledby="spacesTitle">
           <div class="section-heading section-heading-wide">
             <div>
-              <p class="section-kicker">The organizing idea</p>
-              <h2 id="spacesTitle">Different parts of life can share a product without sharing everything</h2>
+              <p class="section-kicker">The shared architecture</p>
+              <h2 id="spacesTitle">Every meaningful part of life can have its own Space</h2>
             </div>
-            <p class="section-intro">A Space is the continuing context for one person, relationship, household, professional engagement, company, or team. The same account can participate in several Spaces while each one keeps its own boundaries.</p>
+            <p class="section-intro">A Space is the continuing context for one part of life. It can hold people, documents, conversations, memory, tasks, calendars, files, projects, research, decisions, history, goals, and the permissions that keep them in the right place.</p>
           </div>
 
           <div class="spaces-map" aria-label="Examples of Spaces">
             <article class="space-card space-personal">
               <span>Private</span>
               <h3>Personal Space</h3>
-              <p>Goals, schedule, finances, health notes, habits, learning, private reflections, preferences, and long-term memory.</p>
+              <p>Your own goals, schedule, finances, health notes, habits, streak history, private reflections, preferences, and memory.</p>
             </article>
             <article class="space-card space-relationship">
               <span>Shared by approval</span>
               <h3>Relationship Space</h3>
-              <p>Plans, rituals, promises, shared decisions, memories, schedules, and coordination between two people.</p>
+              <p>Plans, rituals, promises, shared decisions, memories, schedules, and careful coordination between two people.</p>
             </article>
             <article class="space-card space-family">
               <span>Household</span>
               <h3>Family Space</h3>
-              <p>Approved calendars, appointments, rides, chores, shopping, meals, reminders, and age-appropriate access.</p>
+              <p>Approved calendars, appointments, school, chores, shopping, meals, care responsibilities, reminders, and age-appropriate access.</p>
             </article>
             <article class="space-card space-business">
               <span>Role controlled</span>
               <h3>Business Partner Space</h3>
-              <p>Time zones, projects, deals, delivery, cash rules, approved concerns, decisions, and a shared operating calendar.</p>
-            </article>
-            <article class="space-card space-accounting">
-              <span>Professional boundary</span>
-              <h3>Accountant and Client Space</h3>
-              <p>Approved income, expenses, bills, tax preparation, assets, goals, questions, and financial records for a defined engagement.</p>
-            </article>
-            <article class="space-card space-team">
-              <span>Coaching boundary</span>
-              <h3>Trainer and Student Space</h3>
-              <p>Training plan, progress, recovery, habits, check-ins, coaching notes, evidence, and the next realistic session.</p>
+              <p>Local time zones, teams, projects, deals, cash rules, approved concerns, decisions, and a shared operating calendar.</p>
             </article>
             <article class="space-card space-team">
               <span>Least privilege</span>
               <h3>Team Space</h3>
-              <p>Member-specific work, handoffs, procedures, blockers, project state, leadership context, and approved metrics.</p>
+              <p>Member-specific work, handoffs, procedures, blockers, project truth, leadership context, and approved metrics.</p>
+            </article>
+            <article class="space-card space-accounting">
+              <span>Professional boundary</span>
+              <h3>Accountant and Client Space</h3>
+              <p>Approved income, expenses, bills, tax preparation, assets, goals, questions, and rules shared for a defined engagement.</p>
             </article>
           </div>
 
@@ -274,7 +343,7 @@
             <div class="boundary-center">
               <span>Shared Space</span>
               <strong>Approved information only</strong>
-              <strong>Shared goals · plans · decisions · records</strong>
+              <strong>Shared goals · agreements · plans · decisions</strong>
             </div>
             <div class="boundary-lines" aria-hidden="true"><span></span><span></span><span></span></div>
             <div class="boundary-person">
@@ -285,116 +354,13 @@
           </div>
 
           <div class="prose-callout">
-            <strong>Shared context does not require shared access to the rest of someone’s life.</strong>
-            <p>A private calendar event can expose availability to a Family Space without exposing its title or notes. A client can share selected financial records with an accountant while unrelated personal records remain outside that professional Space.</p>
-          </div>
-        </section>
-
-        <section id="brief" class="document-section ritual-section" aria-labelledby="briefTitle">
-          <div class="section-heading section-heading-wide">
-            <div>
-              <p class="section-kicker">The daily front door</p>
-              <h2 id="briefTitle">The Brief is the current view of a Space</h2>
-            </div>
-            <p class="section-intro">The Brief is one of the main outputs of Spaces. It gives the reader a useful current picture without pretending that the entire product is a briefing app.</p>
+            <strong>One fact may appear in several places only when the permission allows it.</strong>
+            <p>A calendar event may be relevant to a personal Brief, a family plan, and a project deadline. Spaces can reference the approved parts of that event across those contexts while unrelated private information stays in its original Space.</p>
           </div>
 
-          <div class="overview-grid" aria-label="What a Spaces Brief can do">
-            <article class="overview-card overview-card-brief">
-              <span class="overview-number">01</span>
-              <div>
-                <p class="card-label">Changes</p>
-                <h3>Show what is different since the last useful view</h3>
-                <p>New events, messages, money movement, project changes, weather, progress, deadlines, and other approved updates can surface when they affect the current Space.</p>
-              </div>
-            </article>
-            <article class="overview-card overview-card-spaces">
-              <span class="overview-number">02</span>
-              <div>
-                <p class="card-label">Attention</p>
-                <h3>Separate what matters now from what can wait</h3>
-                <p>The Brief can rank by time, impact, risk, stated priorities, commitments, and unresolved decisions while keeping the source visible.</p>
-              </div>
-            </article>
-            <article class="overview-card overview-card-memory">
-              <span class="overview-number">03</span>
-              <div>
-                <p class="card-label">Conversation</p>
-                <h3>Ask from the part of the Brief you are already looking at</h3>
-                <p>A question from a calendar, finance card, project section, weather view, or goal can begin with that approved context already attached.</p>
-              </div>
-            </article>
-            <article class="overview-card overview-card-goals">
-              <span class="overview-number">04</span>
-              <div>
-                <p class="card-label">Next step</p>
-                <h3>Move from information to a prepared decision or action</h3>
-                <p>Spaces can explain why something deserves attention, ask for missing information, prepare an action, and record the outcome after the user confirms what happened.</p>
-              </div>
-            </article>
-          </div>
-
-          <div class="prose-callout">
-            <strong>Different Spaces can produce different kinds of Briefs from the same product foundation.</strong>
-            <p>A personal morning view, household plan, partner operating Brief, accountant review, training update, or team handoff can each emphasize different information while using the same underlying rules for ownership, permissions, memory, goals, and source history.</p>
-          </div>
-
-          <div class="prose-callout">
-            <strong>The Brief can also sit inside an optional launch routine.</strong>
-            <p>A user-controlled alarm can open the relevant Space with calendar context, weather, selected music, priorities, and leave-by guidance already assembled. Optional voice can read approved sections aloud or capture a short update, with device, person, time, and Space boundaries controlling what can be spoken or recorded.</p>
-          </div>
-        </section>
-
-        <section id="inputs" class="document-section" aria-labelledby="inputsTitle">
-          <div class="section-heading section-heading-wide">
-            <div>
-              <p class="section-kicker">Context and connections</p>
-              <h2 id="inputsTitle">A Space becomes useful by learning from approved sources and direct corrections</h2>
-            </div>
-            <p class="section-intro">The user decides what can enter a Space. Once that boundary is set, the product can do more of the organizing work without repeatedly asking the person to explain the same background.</p>
-          </div>
-
-          <div class="architecture-principles">
-            <article><h3>Connected accounts</h3><p>Calendar, email, files, project tools, finance, music, and other services can supply records within a defined read, write, sync, and Space scope.</p></article>
-            <article><h3>Direct input</h3><p>A note, document, voice update, form, import, or conversation can add information through a clear path that keeps the source attached.</p></article>
-            <article><h3>Focused questions</h3><p>The AI can ask one specific question when a missing answer would materially change a recommendation, deadline, permission, or decision.</p></article>
-            <article><h3>Corrections</h3><p>A user correction can replace a weaker assumption, preserve revision history, and update the next Brief without losing where the earlier interpretation came from.</p></article>
-          </div>
-
-          <div class="product-preview-stage" aria-label="Illustrative ways a Space can stay current">
-            <header class="product-preview-heading">
-              <div>
-                <span>CONTEXT IN PRACTICE</span>
-                <h3>Small updates can change the current picture</h3>
-              </div>
-              <p>The useful interaction is often brief. A confirmed payment, a moved appointment, a corrected deadline, or one answer about a blocker can change what the Space recommends next.</p>
-            </header>
-
-            <div class="product-preview-grid">
-              <article class="input-preview" aria-labelledby="inputPreviewTitle">
-                <header><span>ACCOUNTANT + CLIENT</span><b>QUICK UPDATE</b></header>
-                <p class="input-preview-label">ONE USEFUL QUESTION</p>
-                <h4 id="inputPreviewTitle">Did the expected client payment arrive?</h4>
-                <div class="input-preview-choices" aria-label="Illustrative answer choices">
-                  <span>Yes</span><span data-selected="true">Partial</span><span>Not yet</span>
-                </div>
-                <div class="input-preview-field"><span>SHORT CORRECTION</span><strong>Half received Friday</strong></div>
-                <div class="input-preview-result"><span aria-hidden="true">✓</span><p><strong>Cash plan can update after confirmation</strong><small>The shared Space sees only the approved result.</small></p></div>
-              </article>
-
-              <article class="input-preview" aria-labelledby="familyInputPreviewTitle">
-                <header><span>FAMILY SPACE</span><b>SCHEDULE CHANGE</b></header>
-                <p class="input-preview-label">CONTEXTUAL QUESTION</p>
-                <h4 id="familyInputPreviewTitle">If the outing moves to Wednesday, what else changes?</h4>
-                <div class="input-preview-choices" aria-label="Illustrative context sources">
-                  <span data-selected="true">Calendar</span><span>Weather</span><span>Household</span>
-                </div>
-                <div class="input-preview-field"><span>APPROVED CONTEXT</span><strong>Events, travel window, weather, shared tasks</strong></div>
-                <div class="input-preview-result"><span aria-hidden="true">→</span><p><strong>Prepare a revised household plan</strong><small>Private event details remain covered.</small></p></div>
-              </article>
-            </div>
-
-            <p class="product-preview-note">Illustrative interface examples. Production records, conversations, and updates require authentication, scoped sources, and user-controlled permissions.</p>
+          <div class="prose-callout" data-spaces-document-knowledge>
+            <strong>Documents become connected knowledge inside a Space.</strong>
+            <p>Every document belongs to at least one Space and can relate to people, projects, decisions, meetings, research, memories, tasks, and Briefs. The relationship matters as much as the file itself.</p>
           </div>
         </section>
 
@@ -402,32 +368,36 @@
           <div class="section-heading">
             <div>
               <p class="section-kicker">Continuity with control</p>
-              <h2 id="memoryTitle">Memory should be inspectable, correctable, and attached to the right Space</h2>
+              <h2 id="memoryTitle">Memory belongs to the Space and stays under the user’s control</h2>
             </div>
-            <p class="section-intro">Useful continuity needs more than a long chat transcript. Important records need a source, date, type, Space, visibility, and revision history that the user can understand.</p>
+            <p class="section-intro">Useful continuity needs more than old chat history. Each record needs a source, date, type, Space, permission, and revision history that the user can inspect.</p>
           </div>
 
           <div class="memory-layout">
             <div class="memory-stack" role="list" aria-label="Spaces memory layers">
-              <article class="memory-layer" role="listitem"><span>01</span><div><strong>Current context</strong><p>What matters during the present interaction or Brief.</p></div></article>
-              <article class="memory-layer" role="listitem"><span>02</span><div><strong>Active plans</strong><p>Recent decisions, open commitments, unresolved blockers, and current goals.</p></div></article>
-              <article class="memory-layer" role="listitem"><span>03</span><div><strong>Long-term profile</strong><p>Stable preferences, routines, confirmed relationships, and durable facts.</p></div></article>
-              <article class="memory-layer" role="listitem"><span>04</span><div><strong>Shared memory</strong><p>Information explicitly approved for a relationship, household, professional, or team Space.</p></div></article>
-              <article class="memory-layer" role="listitem"><span>05</span><div><strong>Source and interpretation</strong><p>Original records stay distinguishable from analysis, guesses, and user-confirmed conclusions.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>01</span><div><strong>Session context</strong><p>What matters during the current interaction.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>02</span><div><strong>Daily context</strong><p>Changes and events relevant to the current edition.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>03</span><div><strong>Short-term memory</strong><p>Active plans, recent decisions, current goals, and unresolved blockers.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>04</span><div><strong>Long-term profile</strong><p>Stable preferences, identities, routines, and confirmed relationships.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>05</span><div><strong>Shared memory</strong><p>Information explicitly approved for a relationship, family, business, or team Space.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>06</span><div><strong>Source records</strong><p>The original authorized information behind a claim.</p></div></article>
+              <article class="memory-layer" role="listitem"><span>07</span><div><strong>Derived insight</strong><p>A pattern or interpretation clearly labeled as analysis until the user confirms it.</p></div></article>
             </div>
 
             <div class="memory-controls-card">
               <p class="card-label">Planned Memory &amp; Data settings</p>
-              <h3>Let the user see and change what the Space carries forward</h3>
+              <h3>Review, correct, move, export, or delete what the Space remembers</h3>
               <ul class="check-list">
-                <li>Inspect stored records and their sources</li>
-                <li>See when information was added or updated</li>
-                <li>Correct a mistaken record or interpretation</li>
-                <li>Move or restrict information to one Space</li>
-                <li>Change a connected source’s permissions</li>
-                <li>Disconnect an account from a Space</li>
+                <li>Inspect what is stored</li>
+                <li>See the original source</li>
+                <li>Check when it was updated</li>
+                <li>Correct a mistaken record</li>
+                <li>Move or restrict it to one Space</li>
+                <li>Remove an interpretation</li>
                 <li>Export or delete data</li>
                 <li>Pause future learning</li>
+                <li data-spaces-memory-setting>Change a connected source’s permissions</li>
+                <li data-spaces-memory-setting>Disconnect an account from the Space</li>
               </ul>
               <div class="record-example">
                 <div><span>Source</span><strong>User check-in</strong></div>
@@ -442,10 +412,10 @@
         <section id="goals" class="document-section goals-section" aria-labelledby="goalsTitle">
           <div class="section-heading section-heading-wide">
             <div>
-              <p class="section-kicker">Goals and direction</p>
-              <h2 id="goalsTitle">The current situation matters more when the product knows what the Space is trying to accomplish</h2>
+              <p class="section-kicker">Direction</p>
+              <h2 id="goalsTitle">Goals connect the current situation to the next useful action</h2>
             </div>
-            <p class="section-intro">Goals give the current information a direction. They help Spaces distinguish a useful change from background noise and choose a next action that fits the person’s priorities, time, and current capacity.</p>
+            <p class="section-intro">The system should understand what the person or Space is trying to accomplish, what changed, what remains blocked, and which action has the highest current value.</p>
           </div>
 
           <div class="goal-board">
@@ -477,66 +447,115 @@
             </div>
           </div>
 
-          <div class="difficulty-grid" aria-label="Goal effort modes">
+          <div class="difficulty-grid" aria-label="Goal difficulty modes">
             <article><span>1</span><h3>Recovery</h3><p>Protect continuity with one very small action.</p></article>
             <article><span>2</span><h3>Sustainable</h3><p>Move steadily with a modest daily requirement.</p></article>
             <article class="difficulty-active"><span>3</span><h3>Focused</h3><p>Complete one meaningful action with clear accountability.</p></article>
-            <article><span>4</span><h3>Stretch</h3><p>Use a larger action and make the tradeoffs visible.</p></article>
-            <article><span>5</span><h3>Sprint</h3><p>Run a temporary high-intensity period with a defined end date.</p></article>
+            <article><span>4</span><h3>Stretch</h3><p>Use a larger action and expose the necessary tradeoffs.</p></article>
+            <article><span>5</span><h3>Sprint</h3><p>Run a temporary high-intensity period with an end date.</p></article>
           </div>
         </section>
 
-        <section id="relationships" class="document-section relationships-section" aria-labelledby="relationshipsTitle">
+        <section id="ritual" class="document-section ritual-section" aria-labelledby="ritualTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">The daily experience</p>
+              <h2 id="ritualTitle">A briefing can become part of the morning routine</h2>
+            </div>
+            <p class="section-intro">Spaces can combine an alarm, selected music, voice, and a concise Brief into one user-controlled routine.</p>
+          </div>
+
+          <div class="ritual-stage">
+            <div class="ritual-phone" aria-label="Example Spaces morning briefing">
+              <div class="ritual-phone-top"><span>7:00</span><span>Personal Space</span></div>
+              <div class="ritual-greeting"><span>Good morning</span><strong>Your day is ready.</strong></div>
+              <div class="ritual-now-playing">
+                <div class="album-shape" aria-hidden="true"><span></span></div>
+                <div><span>Opening track</span><strong>Your selected morning song</strong></div>
+                <button type="button" aria-label="Example play control" disabled>▶</button>
+              </div>
+              <div class="ritual-brief-card"><span>Schedule</span><strong>One meeting at 10:00 AM</strong></div>
+              <div class="ritual-brief-card"><span>Priority route</span><strong>Push now · text after 10 minutes</strong></div>
+              <div class="ritual-brief-card"><span>Weather</span><strong>Rain after 3:00 PM</strong></div>
+              <div class="ritual-brief-card ritual-action-card"><span>Recommended first action</span><strong>30 focused minutes before email</strong></div>
+            </div>
+
+            <div class="ritual-options">
+              <article><span class="ritual-icon" aria-hidden="true">◷</span><div><h3>Alarm</h3><p>Choose the time, days, Space, and routine, with different presets for weekdays, travel, or recovery.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">♪</span><div><h3>Music</h3><p>Start with a selected song or playlist after a permitted user action.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">◉</span><div><h3>Voice</h3><p>Read the full Brief or only the sections safe to speak aloud.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">↻</span><div><h3>Response</h3><p>Answer a question, record progress, save a thought, or create a reminder by voice.</p></div></article>
+              <article><span class="ritual-icon" aria-hidden="true">◇</span><div><h3>Priority delivery</h3><p>Route an approved urgent notice to Spaces push, a WhatsApp group, text fallback, or an email digest.</p></div></article>
+            </div>
+          </div>
+        </section>
+
+        <section id="relationships" class="document-section relationship-section" aria-labelledby="relationshipsTitle">
           <div class="section-heading section-heading-wide">
             <div>
-              <p class="section-kicker">People and coordination</p>
-              <h2 id="relationshipsTitle">Shared Spaces can coordinate people while keeping ownership and approval visible</h2>
+              <p class="section-kicker">Complex human coordination</p>
+              <h2 id="relationshipsTitle">Spaces can help people coordinate while keeping private context separate</h2>
             </div>
-            <p class="section-intro">The product becomes more useful when people can share the context required for a decision without collapsing their private profiles into one common pool.</p>
+            <p class="section-intro">The most important shared use cases involve context that belongs to more than one person and still requires careful privacy, consent, and interpretation.</p>
           </div>
 
           <div class="relationship-grid">
+            <article class="relationship-card">
+              <p class="card-label">Couples</p>
+              <h3>Shared plans with separate private context</h3>
+              <p>A Relationship Space can hold plans, rituals, decisions, promises, shared goals, and approved memories while each person retains a separate Personal Space.</p>
+              <ul>
+                <li>Compare schedules before suggesting time together</li>
+                <li>Track an agreement after both people approve it</li>
+                <li>Summarize stated concerns and leave the decision to the people involved</li>
+                <li>Keep private information out of the shared view</li>
+              </ul>
+            </article>
+            <article class="relationship-card">
+              <p class="card-label">Families</p>
+              <h3>A household operating layer</h3>
+              <p>A Family Space can organize approved calendar events, care, school, meals, appointments, travel, shopping, chores, and household decisions with age-appropriate permissions. Each person keeps a private profile, and private events can contribute a busy block while their title and notes stay in the owner’s profile.</p>
+              <ul>
+                <li>Show each person only what they need</li>
+                <li>Coordinate approved events, rides, and availability across several calendars</li>
+                <li>Give chores and shopping items a clear owner and status</li>
+                <li>Preserve family memories and important dates</li>
+                <li>Escalate a missed responsibility to the right adult</li>
+              </ul>
+            </article>
             <article class="relationship-card relationship-card-wide">
-              <p class="card-label">Households and relationships</p>
-              <h3>Coordinate shared life from approved information</h3>
-              <p>A Family or Relationship Space can combine plans, responsibilities, shared calendar availability, reminders, rituals, decisions, and household work while private details stay with their owner.</p>
+              <p class="card-label">Teams and organizations</p>
+              <h3>One shared truth with role-specific access</h3>
+              <p>A Team Space can hold the project state, responsibilities, handoffs, procedures, risks, decisions, and approved financial signals. Leadership may see broader operating context while each member sees relevant work and the information needed to complete it.</p>
               <div class="team-flow">
-                <span>Private profile</span><span aria-hidden="true">→</span><span>Approved details</span><span aria-hidden="true">→</span><span>Shared Space</span><span aria-hidden="true">→</span><span>Household plan</span>
+                <span>Private member profile</span><span aria-hidden="true">→</span><span>Role Space</span><span aria-hidden="true">→</span><span>Project truth</span><span aria-hidden="true">→</span><span>Leadership context</span>
               </div>
             </article>
             <article class="relationship-card relationship-card-wide">
               <p class="card-label">Professional collaboration</p>
-              <h3>Give each role the context needed for the shared decision</h3>
-              <p>Business partners can compare local time, delivery, deals, cash, and approved concerns. An accountant and client can review selected financial records, deadlines, goals, and prepared decisions while unrelated records remain outside the engagement.</p>
+              <h3>Shared working context with clear role boundaries</h3>
+              <p>Remote business partners can compare local time, delivery, deals, cash, and approved concerns. An accountant and client can review approved financial records, deadlines, goals, and prepared decisions while each person keeps unrelated records outside the shared Space.</p>
               <div class="team-flow">
-                <span>Role-specific view</span><span aria-hidden="true">→</span><span>Approved records</span><span aria-hidden="true">→</span><span>Prepared decision</span><span aria-hidden="true">→</span><span>Human approval</span>
-              </div>
-            </article>
-            <article class="relationship-card relationship-card-wide">
-              <p class="card-label">Teams and organizations</p>
-              <h3>Keep one project state while access still follows responsibility</h3>
-              <p>A Team Space can hold responsibilities, handoffs, procedures, blockers, decisions, and approved metrics. Leadership can receive broader operating context while each member sees the information required for the work they own.</p>
-              <div class="team-flow">
-                <span>Member context</span><span aria-hidden="true">→</span><span>Role scope</span><span aria-hidden="true">→</span><span>Project state</span><span aria-hidden="true">→</span><span>Leadership view</span>
+                <span>Role-specific view</span><span aria-hidden="true">→</span><span>Approved shared records</span><span aria-hidden="true">→</span><span>Prepared decision</span><span aria-hidden="true">→</span><span>Human approval</span>
               </div>
             </article>
           </div>
 
           <div class="mediation-principles">
-            <article><span>01</span><h3>Use stated information</h3><p>Interpretation remains labeled as analysis until a person confirms it.</p></article>
-            <article><span>02</span><h3>Expose conflicts clearly</h3><p>Show where schedules, goals, responsibilities, or decisions no longer line up.</p></article>
-            <article><span>03</span><h3>Keep approval visible</h3><p>A shared record changes after the people with authority confirm the decision.</p></article>
-            <article><span>04</span><h3>Support human judgment</h3><p>The product can prepare context and options while the people involved remain responsible for the relationship and the decision.</p></article>
+            <article><span>01</span><h3>Use stated information</h3><p>Every inference stays labeled as analysis until a person confirms it.</p></article>
+            <article><span>02</span><h3>Expose conflicts clearly</h3><p>Show where schedules, goals, responsibilities, or decisions disagree.</p></article>
+            <article><span>03</span><h3>Keep approval visible</h3><p>A shared record changes after the relevant people confirm the decision.</p></article>
+            <article><span>04</span><h3>Support human judgment</h3><p>The system can prepare context and options, but people remain responsible for the relationship and the decision.</p></article>
           </div>
         </section>
 
         <section id="ai-layer" class="document-section ai-section" aria-labelledby="aiTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">AI inside a Space</p>
-              <h2 id="aiTitle">Give the model the context and tools needed for the current task</h2>
+              <p class="section-kicker">Model-independent intelligence</p>
+              <h2 id="aiTitle">Use the AI model you choose inside the current Space</h2>
             </div>
-            <p class="section-intro">The Space keeps the long-term product state. The selected model receives the relevant slice of that state, along with the tools and permissions required for the current request.</p>
+            <p class="section-intro">The model receives only the context, tools, and permissions needed for the current task. The Space keeps its long-term records, settings, and history outside the model.</p>
           </div>
 
           <div class="ai-architecture">
@@ -549,76 +568,47 @@
             <div class="ai-foundation-card">
               <p class="card-label">Stable Spaces foundation</p>
               <div class="foundation-grid">
-                <span>Spaces</span><span>Permissions</span><span>Memory</span><span>Sources</span><span>Goals</span><span>Tools</span><span>Approvals</span><span>History</span>
+                <span>Spaces</span><span>Permissions</span><span>Memory</span><span>Sources</span><span>Goals</span><span>Typed tools</span><span>Approval rules</span><span>Audit history</span>
               </div>
             </div>
           </div>
 
           <div class="ai-roles-grid">
-            <article><h3>Continue from a section</h3><p>Start with the current calendar, finance card, goal, project view, file, or other module and carry its approved Space context into the conversation.</p></article>
-            <article><h3>Research</h3><p>Find and compare current public information while preserving the sources used.</p></article>
-            <article><h3>Organize</h3><p>Turn authorized information into structured state that the user can inspect and correct.</p></article>
-            <article><h3>Reason</h3><p>Identify the change, conflict, missing answer, risk, or next action that matters for the current Space.</p></article>
-            <article><h3>Prepare</h3><p>Draft messages, plans, tasks, reports, schedules, summaries, or proposed changes.</p></article>
-            <article><h3>Act with approval</h3><p>Use defined tools only within the permission and approval scope of the Space.</p></article>
+            <article><h3>Continue from a section</h3><p>Start with the current card, calendar, chart, sheet, or project view and carry its approved Space context into the conversation.</p></article>
+            <article><h3>Research</h3><p>Find and compare current public information with sources.</p></article>
+            <article><h3>Organize</h3><p>Turn authorized data into structured state that the user can inspect.</p></article>
+            <article><h3>Reason</h3><p>Identify the relevant change, blocker, question, or next action.</p></article>
+            <article><h3>Draft</h3><p>Prepare messages, plans, tasks, reports, schedules, or summaries.</p></article>
+            <article><h3>Act with approval</h3><p>Use typed tools within a defined Space and permission scope.</p></article>
           </div>
         </section>
 
         <section id="trust" class="document-section trust-section" aria-labelledby="trustTitle">
           <div class="section-heading section-heading-wide">
             <div>
-              <p class="section-kicker">Trust and control</p>
-              <h2 id="trustTitle">Important information should carry enough context to be questioned</h2>
+              <p class="section-kicker">Trust as product infrastructure</p>
+              <h2 id="trustTitle">Every important item should answer four questions</h2>
             </div>
-            <p class="section-intro">A useful product should make it possible to understand where a record came from, how current it is, who can use it, and what the product is allowed to do with it.</p>
+            <p class="section-intro">Where did this come from? How fresh is it? Who can use it? What can the system do with it?</p>
           </div>
 
           <div class="trust-grid">
-            <article class="trust-card"><span class="trust-icon" aria-hidden="true">⌁</span><h3>Source</h3><p>Public information, connected account, user report, uploaded file, shared record, or system analysis.</p></article>
-            <article class="trust-card"><span class="trust-icon" aria-hidden="true">◷</span><h3>Freshness</h3><p>Last updated, synchronized time, historical date, or a clear indication that confirmation is needed.</p></article>
+            <article class="trust-card"><span class="trust-icon" aria-hidden="true">⌁</span><h3>Source</h3><p>Public source, connected account, user report, uploaded file, shared record, or system analysis.</p></article>
+            <article class="trust-card"><span class="trust-icon" aria-hidden="true">◷</span><h3>Freshness</h3><p>Last updated, last synchronized, historical date, or confirmation required.</p></article>
             <article class="trust-card"><span class="trust-icon" aria-hidden="true">◎</span><h3>Visibility</h3><p>Private, shared, role-based, leadership-only, goal-specific, or excluded from Briefs.</p></article>
-            <article class="trust-card"><span class="trust-icon" aria-hidden="true">✓</span><h3>Action scope</h3><p>Read only, prepare only, ask first, approved write, recurring automation, or disconnected.</p></article>
+            <article class="trust-card"><span class="trust-icon" aria-hidden="true">✓</span><h3>Action scope</h3><p>Read only, draft only, ask first, approved write, recurring automation, or disconnected.</p></article>
           </div>
 
-          <div class="source-labels" aria-label="Example Spaces record labels">
-            <span>PUBLIC</span><span>CONNECTED</span><span>SELF-REPORTED</span><span>REMEMBERED</span><span>DEMO</span><span>ANALYSIS</span><span>SUGGESTED</span><span>REQUIRES APPROVAL</span>
+          <div class="source-labels" aria-label="Example Spaces data labels">
+            <span>LIVE PUBLIC</span><span>CONNECTED</span><span>SELF-REPORTED</span><span>REMEMBERED</span><span>DEMO</span><span>ANALYSIS</span><span>SUGGESTED</span><span>REQUIRES APPROVAL</span>
           </div>
 
           <div class="security-note">
             <div>
-              <p class="card-label">Product boundary</p>
-              <h3>The interface can explain privacy, but real protection has to exist behind it</h3>
+              <p class="card-label">Public overview</p>
+              <h3>The product narrative is open, but private product data still requires real protection</h3>
             </div>
-            <p>The public overview and demo contain product explanation plus fictional examples. A production Spaces account requires authenticated sessions, server-side authorization, protected storage, connector scopes, encryption, audit history, revocable access, and clear controls for each shared Space.</p>
-          </div>
-        </section>
-
-        <section id="architecture" class="document-section architecture-section" aria-labelledby="architectureTitle">
-          <div class="section-heading">
-            <div>
-              <p class="section-kicker">Technical direction</p>
-              <h2 id="architectureTitle">Keep the experience, product state, intelligence, and connections separate enough to control</h2>
-            </div>
-            <p class="section-intro">The architecture should make it possible to replace a model, add a connector, change an interface, or improve a workflow without losing the user’s structured context or weakening the permission model.</p>
-          </div>
-
-          <div class="architecture-stack" aria-label="Planned Spaces architecture">
-            <article class="architecture-layer"><span>Experience</span><strong>Brief · Documents · Projects · Research · Memory · Tasks · Calendar · Files · Settings</strong><p>Different modules can use the same Space context without becoming separate products.</p></article>
-            <div class="architecture-arrow" aria-hidden="true">↓</div>
-            <article class="architecture-layer"><span>Application</span><strong>FastAPI · Typed APIs · Permissions · Approval flows</strong><p>Server-side product logic controls what can be read, prepared, changed, or shared.</p></article>
-            <div class="architecture-arrow" aria-hidden="true">↓</div>
-            <article class="architecture-layer"><span>State</span><strong>PostgreSQL · Files · Search · Revision history · Audit records</strong><p>Durable records hold users, Spaces, goals, memory, sources, permissions, outcomes, and corrections.</p></article>
-            <div class="architecture-arrow" aria-hidden="true">↓</div>
-            <article class="architecture-layer"><span>Intelligence</span><strong>Rules · Retrieval · Chosen AI models · Structured outputs</strong><p>Reasoning receives the minimum useful context for the task and returns inspectable results.</p></article>
-            <div class="architecture-arrow" aria-hidden="true">↓</div>
-            <article class="architecture-layer"><span>Connections</span><strong>Calendar · Email · Files · Projects · Finance · Music · Public data</strong><p>Optional sources stay tied to explicit read, write, sync, and Space scopes.</p></article>
-          </div>
-
-          <div class="architecture-principles">
-            <article><h3>Human approval</h3><p>Meaningful writes, external actions, and sensitive changes remain approval controlled.</p></article>
-            <article><h3>Structured records</h3><p>Critical identities, permissions, dates, tasks, goals, decisions, and sources belong in typed records.</p></article>
-            <article><h3>Replaceable components</h3><p>Models, connectors, and interfaces can change while the user’s operating context remains intact.</p></article>
-            <article><h3>Visible provenance</h3><p>The product can show the information behind a recommendation and preserve the difference between source material and interpretation.</p></article>
+            <p>This public noindex overview contains product explanation and fictional examples. Real Spaces accounts and private records require edge or server enforcement, authenticated sessions, authorization, protected storage, connector scopes, encryption, audit logs, and revocable access.</p>
           </div>
         </section>
 
@@ -626,9 +616,9 @@
           <div class="section-heading section-heading-wide">
             <div>
               <p class="section-kicker">Current reality</p>
-              <h2 id="statusTitle">The demo proves the interface direction while the secure product foundation is still being built</h2>
+              <h2 id="statusTitle">The current demo shows the product direction and the work still required</h2>
             </div>
-            <p class="section-intro">This section separates demonstrated work from planned platform work and keeps the current product status precise. The public demonstration can show how Spaces should feel without claiming that private accounts, live connectors, durable memory, or production actions already exist.</p>
+            <p class="section-intro">This section separates demonstrated work from planned platform work and keeps the current product status precise.</p>
           </div>
 
           <div class="status-columns">
@@ -637,24 +627,30 @@
               <ul class="status-list">
                 <li>Seven briefing contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team</li>
                 <li>Focused and deeper briefing views</li>
-                <li>Scenario-specific priorities, schedules, projects, money, household, training, and team examples</li>
-                <li>Section-aware conversation entry with a clear static-demo handoff</li>
-                <li>Frontend examples for Spaces, permissions, memory, goals, connected information, alerts, and media</li>
+                <li>Private habit tracking plus family calendar, chore, shopping, and access examples</li>
+                <li>Partner time zones, team progress, deal pipeline, shared concerns, and prepared calendar changes</li>
+                <li>Accountant-client cash planning, portfolio context, deadlines, goals, and editable rules</li>
+                <li>Priority notices, scenario-aware delivery-setting previews, short user corrections, and three soundtrack choices in every Brief</li>
+                <li>Section-aware conversation prompts with a clear static-demo handoff</li>
+                <li>Rotating entry ideas plus direct links to three standout modules in every Space</li>
+                <li>Music available from the top-right control, with direct-tap provider limits stated in the interface</li>
                 <li>Dark and light appearance</li>
-                <li>Sourced public information and fictional private-looking records</li>
-                <li>Mobile, browser, navigation, theme, and accessibility validation work</li>
+                <li>Sourced public information and fictional private-looking examples</li>
+                <li>Frontend demonstrations of Spaces, memory, connections, goals, media, and permissions</li>
+                <li>Mobile, browser, theme, navigation, and accessibility validation work</li>
+                <li>A separate `/brief-next/` snapshot retained for rollback reference</li>
               </ul>
             </div>
             <div class="status-column">
               <div class="status-column-heading"><span class="status-chip status-chip-planned">Planned</span><h3>Required for the production platform</h3></div>
               <ul class="status-list">
                 <li>Secure user accounts and server sessions</li>
-                <li>FastAPI application services and typed APIs</li>
+                <li>FastAPI application services</li>
                 <li>PostgreSQL durable product state</li>
-                <li>Private memory, source history, corrections, and revision controls</li>
-                <li>Real connector permission management and revocation</li>
-                <li>Scheduled synchronization, research, and Brief generation</li>
-                <li>Goal Intelligence and deterministic ranking logic</li>
+                <li>Private memory and correction history</li>
+                <li>Real connector and alert-delivery permission management, recipient consent, revocation, and delivery logs</li>
+                <li>Scheduled research, synchronization, and briefing jobs</li>
+                <li>Deterministic Goal Intelligence engine</li>
                 <li>AI reasoning over limited structured context</li>
                 <li>Auditable approval-gated actions</li>
                 <li>Multi-user and multi-Space administration</li>
@@ -664,32 +660,215 @@
 
           <div class="roadmap-row" aria-label="Spaces development sequence">
             <article><span>1</span><strong>Prove the daily experience</strong></article>
-            <article><span>2</span><strong>Stabilize the Space model</strong></article>
-            <article><span>3</span><strong>Add structured storage</strong></article>
-            <article><span>4</span><strong>Build memory and goals</strong></article>
-            <article><span>5</span><strong>Add authorized connectors</strong></article>
-            <article><span>6</span><strong>Add focused AI reasoning</strong></article>
+            <article><span>2</span><strong>Stabilize the product shell</strong></article>
+            <article><span>3</span><strong>Prove the goal loop</strong></article>
+            <article><span>4</span><strong>Add structured storage</strong></article>
+            <article><span>5</span><strong>Add AI reasoning</strong></article>
+            <article><span>6</span><strong>Add authorized connectors</strong></article>
             <article><span>7</span><strong>Enable approved actions</strong></article>
+          </div>
+        </section>
+
+        <section id="investment" class="document-section investment-section" aria-labelledby="investmentTitle">
+          <div class="section-heading section-heading-wide">
+            <div>
+              <p class="section-kicker">The investment case</p>
+              <h2 id="investmentTitle">Why this is a credible product investment</h2>
+            </div>
+            <p class="section-intro">Established products already prove that people want help with projects, schedules, family coordination, finances, and connected tools. The opportunity is to bring those needs into one governed daily product that carries context forward and keeps private and shared records in the right place.</p>
+          </div>
+
+          <div class="investment-thesis">
+            <div>
+              <span>THE PRODUCT THESIS</span>
+              <h3>The valuable layer is the context and trust system</h3>
+            </div>
+            <p>Models, connectors, and agent runtimes will keep improving. Spaces can own the durable product state around them: people, permissions, sources, goals, corrections, routines, approvals, and the history that makes tomorrow’s Brief more useful than today’s.</p>
+          </div>
+
+          <div class="market-table-shell" role="region" aria-label="Adjacent product comparison" tabindex="0">
+            <table class="market-table">
+              <caption>Adjacent products reviewed from official product pages in August 2026</caption>
+              <thead><tr><th scope="col">Current category</th><th scope="col">What existing products prove</th><th scope="col">Where Spaces concentrates</th></tr></thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><a href="https://help.openai.com/en/articles/10169521-projects-in-chatgpt" target="_blank" rel="noopener noreferrer">ChatGPT Projects</a> + <a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt" target="_blank" rel="noopener noreferrer">apps</a></th>
+                  <td>Project-contained memory, connected context, role controls, and app actions are useful parts of an AI workspace.</td>
+                  <td>A recurring Brief and modular operating view across personal and shared Spaces, with source, freshness, and approval visible inside each section.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.notion.com/product/ai" target="_blank" rel="noopener noreferrer">Notion AI</a></th>
+                  <td>Workspace context, connected search, agents, recurring automation, model choice, and governance have clear value for teams.</td>
+                  <td>Role-aware contexts across personal life, households, advisors, partners, and teams, delivered through a daily priority view.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.usemotion.com/" target="_blank" rel="noopener noreferrer">Motion</a></th>
+                  <td>People want AI to prioritize tasks, plan calendars, manage projects, surface risk, and reduce manual coordination.</td>
+                  <td>Scheduling becomes one signal among goals, weather, money, relationships, permissions, commitments, and user corrections.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.cozi.com/" target="_blank" rel="noopener noreferrer">Cozi</a></th>
+                  <td>Families benefit from shared calendars, color-coded ownership, reminders, shopping, and task lists in one place.</td>
+                  <td>Private profiles and a shared Family Space can coordinate approved availability while preserving covered details and role boundaries.</td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.monarch.com/" target="_blank" rel="noopener noreferrer">Monarch</a></th>
+                  <td>Connected accounts, budgets, goals, reports, and collaboration with a partner or professional support better money decisions.</td>
+                  <td>Approved money signals become one governed lens inside the wider life context and an accountant-client decision workflow.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="reviewed-gap">
+            <span>THE REVIEWED-SET GAP</span>
+            <p>Across these official product descriptions, no single product presents the full combination shown here: cross-domain daily Briefs, separately governed personal and shared Spaces, editable memory, section-level AI entry, personalized ranking, and approval-gated action. This conclusion applies to the products reviewed and should be refreshed during formal diligence.</p>
+          </div>
+
+          <div class="defensibility-plan" aria-labelledby="defensibilityTitle">
+            <header class="defensibility-heading">
+              <span>MARKET, IP, AND GROWTH</span>
+              <div>
+                <h3 id="defensibilityTitle">What already exists, what may be protectable, and the shortest path to revenue</h3>
+                <p>The reviewed products prove demand for the individual jobs. They do not establish global uniqueness, patentability, or freedom to operate. Those questions need a formal search built around the actual technical system.</p>
+              </div>
+            </header>
+
+            <div class="defensibility-status-grid" aria-label="Current market and protection status">
+              <article>
+                <span class="defensibility-status is-proven">PROVEN IN PARTS</span>
+                <strong>Yes, adjacent versions are already being built</strong>
+                <p>AI workspaces, scheduling, family coordination, finance views, agents, and shared operating tools are established categories.</p>
+              </article>
+              <article>
+                <span class="defensibility-status is-gap">NO MATCH IN THIS REVIEW</span>
+                <strong>The governed combination remains the opportunity</strong>
+                <p>The reviewed set did not show this complete daily loop across private and shared Spaces, editable memory, ranked Briefs, and approved action.</p>
+              </article>
+              <article>
+                <span class="defensibility-status is-open">POSSIBLE, UNPROVEN</span>
+                <strong>A patent would need narrow technical claims</strong>
+                <p>A claimable invention would need a novel, nonobvious, eligible implementation. The broad idea of an AI workspace is not enough.</p>
+              </article>
+              <article>
+                <span class="defensibility-status is-required">STILL REQUIRED</span>
+                <strong>Formal patent and market diligence</strong>
+                <p>A prior art search, claim review, competitor search, trademark clearance, and freedom to operate opinion have not been completed.</p>
+              </article>
+            </div>
+
+            <div class="defensibility-strategy-grid">
+              <article class="defensibility-strategy-card protection-strategy">
+                <span>PROTECTION SEQUENCE</span>
+                <h4>Protect the implementation before the next technical reveal</h4>
+                <ol>
+                  <li><b>1</b><p><strong>Record the invention now.</strong> Name each inventor, save dated diagrams and prototypes, explain the technical flow, and log every public disclosure.</p></li>
+                  <li><b>2</b><p><strong>Search the actual mechanism.</strong> Ask patent counsel to examine scoped context, provenance, private and shared derivation, revision history, ranking, and approval controls against prior art.</p></li>
+                  <li><b>3</b><p><strong>File only when the detail supports it.</strong> If counsel finds a viable invention, a complete provisional can establish a United States filing date. It is not examined and normally needs a related nonprovisional within 12 months.</p></li>
+                  <li><b>4</b><p><strong>Layer the protection.</strong> Keep internal ranking, evaluation, and connector methods confidential; clear the final brand for trademark; preserve authorship records for code and original visual work.</p></li>
+                </ol>
+              </article>
+
+              <article class="defensibility-strategy-card capitalization-strategy">
+                <span>COMMERCIAL SEQUENCE</span>
+                <h4>Sell one shared decision loop before funding every scenario</h4>
+                <div class="capitalization-wedge">
+                  <small>RECOMMENDED FIRST PAID WEDGE</small>
+                  <strong>Remote business partners and small teams</strong>
+                  <p>They have an identifiable buyer, recurring shared decisions, existing work data, and less regulated risk than beginning with financial advice or money movement.</p>
+                </div>
+                <ul>
+                  <li><strong>Build:</strong> secure identity, a reliable daily Brief, calendar and project connections, direct corrections, permissions, and approved actions.</li>
+                  <li><strong>Prove:</strong> activation, weekly return, Brief to action rate, shared invitations, correction use, permission comprehension, and paid retention.</li>
+                  <li><strong>Charge:</strong> start with a subscription for each shared Space or team, then add household and professional client plans after the trust controls are proven.</li>
+                  <li><strong>Expand:</strong> add integration and platform partnerships after customers rely on the core loop and can explain the outcome they pay for.</li>
+                </ul>
+              </article>
+            </div>
+
+            <p class="defensibility-source-note"><strong>Important:</strong> The public demo makes filing dates worth discussing with counsel now. United States law may provide a limited grace period for some inventor disclosures, while rights elsewhere can be stricter. This is a product strategy, not legal advice. Official starting points: <a href="https://www.uspto.gov/patents/search/patent-public-search" target="_blank" rel="noopener noreferrer">Patent Public Search</a>, <a href="https://www.uspto.gov/patents/laws/examination-policy/subject-matter-eligibility" target="_blank" rel="noopener noreferrer">subject matter eligibility</a>, <a href="https://www.uspto.gov/patents/basics/apply/provisional-application" target="_blank" rel="noopener noreferrer">provisional applications</a>, <a href="https://www.uspto.gov/sites/default/files/documents/tradesecretsiptoolkit.pdf" target="_blank" rel="noopener noreferrer">trade secrets</a>, <a href="https://www.uspto.gov/trademarks/basics" target="_blank" rel="noopener noreferrer">trademarks</a>, and <a href="https://www.copyright.gov/what-is-copyright/" target="_blank" rel="noopener noreferrer">copyright</a>.</p>
+          </div>
+
+          <div class="investment-case-grid">
+            <article><span>01</span><h3>Demand already exists around each ingredient</h3><p>AI workspaces, team operating tools, schedule automation, family coordination, and finance dashboards each support established product categories.</p></article>
+            <article><span>02</span><h3>The accumulated context can become defensible</h3><p>Permission choices, corrections, schemas, routines, interaction signals, and approval history create governed product state that remains useful as models change.</p></article>
+            <article><span>03</span><h3>Capital can fund a narrow daily wedge first</h3><p>A first release can prove the daily Brief, corrections, connectors, and one shared Space before the product expands across every demonstrated scenario.</p></article>
+            <article><span>04</span><h3>The important proof stays measurable</h3><p>Activation, connected-source use, D7 and D30 return, Brief-to-action rate, corrections, shared invitations, and permission comprehension can guide each stage.</p></article>
+          </div>
+
+          <div class="infrastructure-opportunity">
+            <div>
+              <span>WHY NOW</span>
+              <h3>Agent infrastructure can reduce the cost of building the layer beneath Spaces</h3>
+              <p><a href="https://developers.cloudflare.com/agents/" target="_blank" rel="noopener noreferrer">Cloudflare’s Agents SDK</a> provides durable identity, local SQL state, real-time connections, scheduled work, recoverable execution, tools, and human approval patterns. Spaces would still own the experience, schemas, permission model, context graph, and user trust.</p>
+            </div>
+            <div class="infrastructure-layers" aria-label="Product and infrastructure layers">
+              <span><small>USER PRODUCT</small><strong>Spaces experience + trust model</strong></span>
+              <span><small>RUNTIME OPTION</small><strong>Cloudflare Agents infrastructure</strong></span>
+              <span><small>DISTRIBUTION OPTION</small><strong>Web, mobile, or a future ChatGPT app</strong></span>
+            </div>
+            <p class="distribution-note"><a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt" target="_blank" rel="noopener noreferrer">ChatGPT apps and plugins</a> could provide an optional access point later. Cloudflare supplies runtime infrastructure; the app or plugin would provide a distribution surface into the same governed Spaces backend.</p>
+          </div>
+
+          <div class="investment-conclusion">
+            <span>THE RESPONSIBLE INVESTMENT</span>
+            <strong>Fund the context, trust, and daily-use loop in stages.</strong>
+            <p>Spaces is worth funding as a staged product experiment when each release must prove retention and trust. The first serious build should establish secure identity, one reliable Brief, scoped connectors, direct corrections, and one shared Space before broader expansion.</p>
+          </div>
+        </section>
+
+        <section id="architecture" class="document-section architecture-section" aria-labelledby="architectureTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Technical direction</p>
+              <h2 id="architectureTitle">Keep the product architecture understandable and controllable</h2>
+            </div>
+            <p class="section-intro">The technical plan keeps structured product state, AI reasoning, connectors, and user-facing interfaces separate enough to test, replace, and secure.</p>
+          </div>
+
+          <div class="architecture-stack" aria-label="Planned Spaces architecture">
+            <article class="architecture-layer"><span>Experience</span><strong>Brief · Documents · Projects · Research · Memory · Tasks · Calendar · Files · Settings</strong><p>Different modules, one shared Space context.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>Application</span><strong>FastAPI · Typed APIs · Permissions · Approval flows</strong><p>Server-side product logic and controlled tool access.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>State</span><strong>PostgreSQL · Files · Audit history · Search</strong><p>Durable records for users, Spaces, goals, memory, sources, and revisions.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>Intelligence</span><strong>Rules · Retrieval · Chosen AI models · Structured outputs</strong><p>Focused reasoning over the minimum relevant context.</p></article>
+            <div class="architecture-arrow" aria-hidden="true">↓</div>
+            <article class="architecture-layer"><span>Connections</span><strong>Calendar · Email · Files · Projects · Music · Finance · Public data</strong><p>Optional sources with explicit read, write, sync, and Space scopes.</p></article>
+          </div>
+
+          <div class="architecture-principles">
+            <article><h3>Human approval</h3><p>Meaningful writes, external actions, and production changes remain approval controlled.</p></article>
+            <article><h3>Structured records</h3><p>Critical facts, identities, permissions, dates, tasks, and goals belong in typed records.</p></article>
+            <article><h3>Replaceable components</h3><p>Models, connectors, and interfaces can change while the user’s operating context remains intact.</p></article>
+            <article><h3>Visible provenance</h3><p>The product can explain the information and evidence behind a recommendation.</p></article>
+          </div>
+
+          <div class="prose-callout" data-cloudflare-context>
+            <strong>Cloudflare’s Agents SDK could become infrastructure beneath Spaces.</strong>
+            <p>The runtime already provides durable identity, state, real-time connections, scheduling, recovery, model choice, tools, and human approval patterns. Spaces would remain the user-facing product with its own context graph, permissions, schemas, Brief composition, and interaction design.</p>
+            <a class="button button-secondary" href="https://developers.cloudflare.com/agents/" target="_blank" rel="noopener noreferrer">View Cloudflare Agents <span aria-hidden="true">↗</span></a>
           </div>
         </section>
 
         <section id="scenarios" class="document-section scenarios-section" aria-labelledby="scenariosTitle">
           <div class="section-heading section-heading-wide">
             <div>
-              <p class="section-kicker">One foundation, different contexts</p>
-              <h2 id="scenariosTitle">Spaces can serve very different situations because the boundaries and Brief change with the context</h2>
+              <p class="section-kicker">One platform, different contexts</p>
+              <h2 id="scenariosTitle">The same foundation can support very different people and contexts</h2>
             </div>
-            <p class="section-intro">The product model stays consistent while the people, vocabulary, data mix, permissions, goals, and daily output change from one Space to another.</p>
+            <p class="section-intro">Each scenario uses a different Space, permission model, vocabulary, data mix, and daily output while preserving the same core architecture.</p>
           </div>
 
           <div class="scenario-grid">
-            <article class="scenario-card"><span class="scenario-index">01</span><p class="card-label">Personal</p><h3>Start the day with the current picture already assembled</h3><p>Schedule, work, money, wellness, goals, learning, reminders, and one useful next action.</p></article>
-            <article class="scenario-card"><span class="scenario-index">02</span><p class="card-label">Relationship</p><h3>Coordinate shared life while each person keeps a private profile</h3><p>Plans, responsibilities, rituals, memories, decisions, and approved calendar details in one shared Space.</p></article>
-            <article class="scenario-card"><span class="scenario-index">03</span><p class="card-label">Family</p><h3>Give the household one practical current view</h3><p>Approved calendars, appointments, rides, chores, shopping, meals, access roles, and covered private blocks.</p></article>
-            <article class="scenario-card"><span class="scenario-index">04</span><p class="card-label">Business partners</p><h3>Run one company across different local days</h3><p>Time zones, teams, project progress, deals, cash rules, approved concerns, and prepared calendar changes.</p></article>
-            <article class="scenario-card"><span class="scenario-index">05</span><p class="card-label">Accountant and client</p><h3>Review approved financial context inside a professional boundary</h3><p>Income, expenses, bills, tax preparation, assets, goals, rules, questions, and client approvals.</p></article>
+            <article class="scenario-card"><span class="scenario-index">01</span><p class="card-label">Personal</p><h3>Start the day knowing what needs attention</h3><p>Schedule, work, money, wellness, goals, learning, music, reminders, and one useful next action.</p></article>
+            <article class="scenario-card"><span class="scenario-index">02</span><p class="card-label">Relationship</p><h3>Coordinate shared life while each person keeps a private profile</h3><p>Plans, responsibilities, rituals, memories, decisions, and approved calendar details in one couple Space.</p></article>
+            <article class="scenario-card"><span class="scenario-index">03</span><p class="card-label">Family</p><h3>Give the household one practical Brief</h3><p>Approved calendars, appointments, rides, chores, shopping, meals, access roles, and availability-only private blocks.</p></article>
+            <article class="scenario-card"><span class="scenario-index">04</span><p class="card-label">Business partners</p><h3>Run one remote company across two local days</h3><p>New York and Sydney time, teams, project progress, deals, cash rules, approved concerns, and prepared calendar changes.</p></article>
+            <article class="scenario-card"><span class="scenario-index">05</span><p class="card-label">Accountant and client</p><h3>Review the whole money picture with professional boundaries</h3><p>Salary, side-business income, expenses, bills, tax preparation, assets, goals, rules, questions, and client approvals.</p></article>
             <article class="scenario-card"><span class="scenario-index">06</span><p class="card-label">Trainer and student</p><h3>Adjust the plan as the evidence changes</h3><p>Training, recovery, habits, progress, check-ins, coaching boundaries, and the next realistic session.</p></article>
-            <article class="scenario-card scenario-card-wide"><span class="scenario-index">07</span><p class="card-label">Team and project</p><h3>Give each person the context they need to deliver</h3><p>Role-specific work, project progress, handoffs, procedures, blockers, workload, approved metrics, and leadership visibility.</p></article>
+            <article class="scenario-card scenario-card-wide"><span class="scenario-index">07</span><p class="card-label">Team and project</p><h3>Give each person the context they need to deliver</h3><p>Role-specific work, project progress, handoffs, procedures, blockers, workload, approved finance, and leadership visibility.</p></article>
           </div>
         </section>
 
@@ -702,24 +881,25 @@
           </div>
 
           <div class="faq-list">
-            <details><summary>Is Spaces an AI model?</summary><p>Spaces is the product layer that gives an AI model usable context. It keeps the Space, permissions, memory, sources, goals, tools, approvals, and history that allow a selected model to work from a controlled foundation.</p></details>
-            <details><summary>Is the Brief the whole product?</summary><p>No. The Brief is a main way to see the current state of a Space. The wider product also includes the Space itself, connected information, memory, goals, conversations, documents, projects, settings, permissions, corrections, and approved actions.</p></details>
-            <details><summary>Why organize the product around Spaces?</summary><p>Different parts of life need different people, records, goals, and boundaries. A Family Space can coordinate a household, a Business Space can carry company operations, and an Accountant Space can expose approved financial records without pulling unrelated personal context into the engagement.</p></details>
-            <details><summary>How does a Space get information?</summary><p>Information can come from connected accounts, files, notes, voice updates, forms, imports, conversations, public sources, and focused questions. Each source needs a clear purpose, permission, and Space.</p></details>
-            <details><summary>Can users correct what a Space remembers?</summary><p>That is part of the planned Memory and Data controls. Users should be able to inspect sources, correct records, move information between Spaces, remove interpretations, change connector permissions, export data, delete records, and pause future learning.</p></details>
-            <details><summary>How does the Brief decide what appears first?</summary><p>The product can combine stated priorities with time, impact, risk, commitments, unresolved decisions, and recent changes. The ranking logic should remain testable and important information should stay visible even when it is less engaging.</p></details>
-            <details><summary>What happens when I ask AI from a section?</summary><p>The current demo shows the intended context handoff. A production account would attach the selected Space, section, authorized records, source labels, permission scope, and approved tools before the request is sent to a model.</p></details>
-            <details><summary>Can different AI models use the same Space?</summary><p>Yes. The Space is designed to keep its goals, memory, permissions, sources, and history while the user or product chooses a suitable model for the task.</p></details>
-            <details><summary>What data does the current demo use?</summary><p>The public demo uses sourced public information and clearly fictional private-looking records. Real private data requires authenticated accounts, protected storage, server-side permissions, limited connector scopes, revocable access, and audit history.</p></details>
+            <details><summary>Is Spaces an AI model?</summary><p>Spaces is the product around the model. It keeps the contexts, permissions, memory, sources, goals, tools, approvals, and history that let a chosen model work inside clear limits.</p></details>
+            <details><summary>Why is the product organized around Spaces?</summary><p>Each Space keeps one part of life coherent. Remote partners can share company operations, a family can coordinate household plans, and an accountant and client can review approved financial records without pulling unrelated context into those Spaces.</p></details>
+            <details><summary>How does a Space get its information?</summary><p>Information can come from connected accounts, uploaded files, notes, voice updates, forms, imports, conversations, public sources, and short questions from the AI. Every source needs a purpose, permission, and Space.</p></details>
+            <details><summary>Can users correct what a Space remembers?</summary><p>That is part of the planned Memory &amp; Data settings. Users should be able to inspect sources, correct records, move information between Spaces, remove interpretations, change connector permissions, export data, delete records, and pause future learning.</p></details>
+            <details><summary>How does the Brief decide what appears first?</summary><p>The current demo combines a user’s stated priorities with time, impact, risk, commitments, and recent changes. Engagement can help tune presentation over time, but important facts remain visible even when they are less interesting.</p></details>
+            <details><summary>What happens when I ask AI from a section?</summary><p>The current demo prepares a prompt with the selected Space and section, then shows the context handoff. A production account would add authorized records, source labels, permission scope, and approved tools before sending the request to a model.</p></details>
+            <details><summary>Can different AI models use the same Space?</summary><p>Yes. The Space is designed to keep its goals, memory, permissions, and history while the user or system selects a suitable model for the task.</p></details>
+            <details><summary>What data does the current demo use?</summary><p>The public demo uses sourced public information and clearly fictional private-looking records. Real private data requires authentication, protected storage, server-side permissions, limited connector scopes, and revocable access.</p></details>
+            <details><summary>Can Spaces help with family, relationship, or team decisions?</summary><p>Spaces can organize what people stated, expose schedule or responsibility conflicts, track approved agreements, and prepare practical options. People remain responsible for the relationship and the decision.</p></details>
+            <details><summary>What makes the alarm, music, and voice experience useful?</summary><p>The routine can use the same approved context as the Brief, so music, voice, reminders, and spoken check-ins begin from the current Space with the needed context already available.</p></details>
           </div>
         </section>
 
         <section class="final-cta" aria-labelledby="finalCtaTitle">
           <div class="final-cta-glow" aria-hidden="true"></div>
           <div>
-            <p class="section-kicker">See the product direction in motion</p>
-            <h2 id="finalCtaTitle">Explore the current Spaces demo</h2>
-            <p>The demo focuses on the visible experience while secure accounts, connected services, durable memory, settings, and the backend continue toward the full product described here.</p>
+            <p class="section-kicker">See the idea in motion</p>
+            <h2 id="finalCtaTitle">Explore the current Spaces Brief demo</h2>
+            <p>The demo previews the daily experience while secure accounts, connected services, durable memory, settings, and the backend continue moving toward the full product described here.</p>
           </div>
           <a class="button button-primary button-large" href="/spaces/">
             <span>Open the demo</span>
@@ -729,14 +909,14 @@
         </section>
 
         <footer class="document-footer">
-          <div><strong>Spaces</strong><span>Context-driven AI workspaces for people and groups, built around continuity, boundaries, useful attention, and controlled action.</span></div>
+          <div><strong>Spaces</strong><span>A context-driven workspace built around continuity, memory, clear boundaries, and useful action.</span></div>
           <div class="footer-actions"><a href="#top">Back to top</a><a href="/spaces/">Explore demo</a></div>
         </footer>
       </article>
     </div>
   </main>
 
-  <noscript>This overview remains readable without JavaScript. Theme switching, section tracking, mobile navigation, and print controls require JavaScript.</noscript>
+  <noscript>This overview remains readable without JavaScript. Theme switching, section tracking, and print controls require JavaScript.</noscript>
   <script src="/assets/personal-os-doc.js?v=20260809-2" defer></script>
 </body>
 </html>

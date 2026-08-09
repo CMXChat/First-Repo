@@ -14,7 +14,7 @@ Primary route: `/spaces/`
 - `/doc/` explains what Spaces is, how a Space carries context, how the Brief fits into the product, permissions, memory, goals, architecture, current reality, and planned backend work.
 - `/brief-next/` is a pre-migration rollback snapshot and must not be treated as the active product route.
 
-The August 9 product-document revision makes the HTML source authoritative and removes runtime JavaScript copy replacement. It also narrows `/doc/` to one job: explain the product clearly. Investor, patent, market-comparison, and growth material no longer interrupts the primary product narrative. The Brief remains a major product output, while the Space, its boundaries, connected information, memory, goals, conversations, and approved actions define the broader product.
+The August 9 product-document refinement keeps the HTML source authoritative and keeps JavaScript focused on page behavior. It restores the stronger visual pacing and familiar product-story structure from the previous `/doc/` while retaining a few clearer explanations near the top. The Brief stays the easiest way to understand the product quickly, while the surrounding sections make clear that a Space also carries people, sources, permissions, memory, goals, history, conversations, and approved actions. The investment, market, IP, and architecture material remains available later in the document after the core product explanation.
 
 ## Problems found in the prior state
 
@@ -23,7 +23,7 @@ The August 9 product-document revision makes the HTML source authoritative and r
 3. Operational documentation described alarm, voice, and multi-calendar coordination, but shared calendars were not stated as a first-class product capability.
 4. The Spotify status region did not explicitly announce asynchronous state changes, and its labeled generic container did not have an explicit landmark role.
 5. App-authored commits did not consistently trigger fresh GitHub Actions runs, so historical green or red states cannot be treated as proof for the current branch.
-6. `/doc/` had accumulated product explanation, investment analysis, patent discussion, and runtime copy injection in one surface, which made the opening less direct and allowed the source HTML to diverge from the rendered story.
+6. `/doc/` needed a clearer opening without losing the visual examples and practical sections that made the earlier version easy to understand. The refinement therefore changes the first explanation lightly and preserves the broader document instead of replacing it with a new structure.
 
 ## Shared calendars
 
@@ -115,9 +115,9 @@ The product overview should answer the following questions before moving into de
 6. What remains durable when the AI model changes?
 7. Which parts are demonstrated now and which still require the secure platform?
 
-The opening should describe Spaces as context-driven AI workspaces for people and groups. A Brief is the current view of a Space, not the definition of the whole product. The reader should encounter the product model, boundaries, daily output, and continuity before implementation detail.
+The opening should remain easy for a normal reader. The Brief is the most familiar entry point, so it can lead the explanation, but the page should make clear within the opening sections that the Space carries the wider context behind that Brief. The previous visual rhythm, product previews, daily ritual, people and coordination examples, market material, and architecture sections are useful parts of the document and should not be removed just to make the narrative more minimal.
 
-The document should use complete connected prose. Avoid slogan stacks, promotional fragments, vague AI language, inflated uniqueness claims, and technical wording where a normal reader can understand the same point more directly.
+The document should use complete connected prose. Avoid slogan stacks, promotional fragments, vague AI language, inflated uniqueness claims, short choppy copy, and technical wording where a normal reader can understand the same point more directly.
 
 ## Release expectations
 
@@ -136,6 +136,7 @@ A release that changes the active Spaces experience or `/doc/` should verify:
 - horizontally scrollable tab rows do not shift the document viewport;
 - old `/brief/` bookmarks remain functional;
 - product copy remains authoritative in HTML rather than being replaced by JavaScript after load;
+- the stronger visual pacing and practical example sections remain intact when copy is refined;
 - shared-calendar, alarm, voice, permission, and revocation language remains present.
 
 ## Follow-up
