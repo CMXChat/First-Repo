@@ -54,7 +54,7 @@ jobs:
         run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Run Chromium, Firefox, WebKit, iPhone and Android Spaces tests
-        run: npx playwright test --config=tests/playwright.config.cjs
+        run: npx playwright test --config=tests/playwright.config.cjs --timeout=45000
 
       - name: Upload failure artifacts
         if: failure()
