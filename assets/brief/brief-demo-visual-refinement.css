@@ -1,0 +1,495 @@
+/* Final visual refinement for the active Spaces briefing demo.
+   This layer improves hierarchy, depth, feedback, and dialog geometry without adding product features. */
+
+body[data-entered="true"] .view-panel {
+  min-width: 0;
+}
+
+body[data-entered="true"] .view-panel.is-active {
+  animation: spaces-view-in 340ms cubic-bezier(.2,.78,.28,1) both;
+}
+
+@keyframes spaces-view-in {
+  from { opacity: .72; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body[data-entered="true"] .view-heading {
+  position: relative;
+  padding-bottom: 18px;
+}
+
+body[data-entered="true"] .view-heading::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--space-accent, var(--blue)) 58%, transparent),
+    color-mix(in srgb, var(--blue) 22%, var(--line)),
+    transparent 88%);
+}
+
+body[data-entered="true"] .view-heading h1 {
+  text-wrap: balance;
+}
+
+/* Keep every dialog close control truly circular at every font and viewport size. */
+body[data-entered="true"] .priority-routing-heading > .round-button,
+body[data-entered="true"] .brief-update-heading > .round-button,
+body[data-entered="true"] .spaces-ai-heading > .round-button,
+body[data-entered="true"] .briefing-settings-heading > .round-button {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  padding: 0;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  line-height: 1;
+}
+
+body[data-entered="true"] .priority-routing-heading > .round-button {
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--blue) 12%, transparent);
+}
+
+/* Today: richer depth without making the briefing denser. */
+body[data-entered="true"] .hero-copy,
+body[data-entered="true"] .next-card,
+body[data-entered="true"] .weather-card,
+body[data-entered="true"] .stats-panel,
+body[data-entered="true"] .recommendation-card,
+body[data-entered="true"] .flow-card,
+body[data-entered="true"] .space-discovery {
+  position: relative;
+  isolation: isolate;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 16%, var(--line));
+  box-shadow:
+    0 18px 44px color-mix(in srgb, var(--blue) 7%, transparent),
+    inset 0 1px color-mix(in srgb, #fff 70%, transparent);
+}
+
+body[data-entered="true"] .hero-copy {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 94% 4%, color-mix(in srgb, var(--space-accent, var(--blue)) 15%, transparent), transparent 20rem),
+    radial-gradient(circle at 4% 100%, color-mix(in srgb, var(--cyan) 8%, transparent), transparent 18rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .hero-copy::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42%;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--space-accent, var(--blue)), var(--cyan), transparent);
+  pointer-events: none;
+}
+
+body[data-entered="true"] .next-card {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--space-accent, var(--violet)) 12%, transparent), transparent 13rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 95%, var(--blue-soft)), var(--surface));
+}
+
+body[data-entered="true"] .weather-card {
+  background:
+    radial-gradient(circle at 16% 10%, color-mix(in srgb, #f6c85b 12%, transparent), transparent 16rem),
+    radial-gradient(circle at 94% 5%, color-mix(in srgb, var(--cyan) 10%, transparent), transparent 18rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .stats-panel {
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--space-accent, var(--blue)) 10%, transparent), transparent 18rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 96%, var(--blue-soft)), var(--surface));
+}
+
+body[data-entered="true"] .stats-grid .stat-card {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 13%, var(--line));
+  background:
+    linear-gradient(155deg, color-mix(in srgb, var(--surface-soft) 90%, var(--blue-soft)), var(--surface));
+  box-shadow: inset 0 1px color-mix(in srgb, #fff 66%, transparent);
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+}
+
+body[data-entered="true"] .stats-grid .stat-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 0 0 0 48px;
+  background: color-mix(in srgb, var(--space-accent, var(--blue)) 7%, transparent);
+  pointer-events: none;
+}
+
+body[data-entered="true"] .recommendation-card {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--space-accent, var(--blue)) 15%, transparent), transparent 18rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--blue-soft) 42%, var(--surface)), var(--surface));
+}
+
+body[data-entered="true"] .recommendation-card::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--space-accent, var(--blue)), color-mix(in srgb, var(--space-accent, var(--blue)) 18%, transparent));
+}
+
+body[data-entered="true"] .flow-card {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 96%, var(--blue-soft)), var(--surface));
+}
+
+body[data-entered="true"] .flow-list li {
+  position: relative;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 12%, var(--line));
+  transition: transform 170ms ease, border-color 170ms ease, background 170ms ease;
+}
+
+body[data-entered="true"] .flow-list li::before {
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--space-accent, var(--blue)) 9%, transparent);
+}
+
+body[data-entered="true"] .space-discovery {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--space-accent, var(--blue)) 9%, transparent), transparent 20rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .space-highlight {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 14%, var(--line));
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--blue) 5%, transparent);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+body[data-entered="true"] .space-highlight::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  bottom: -28px;
+  width: 72px;
+  height: 72px;
+  border: 1px solid color-mix(in srgb, var(--space-accent, var(--blue)) 13%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 12px color-mix(in srgb, var(--space-accent, var(--blue)) 4%, transparent);
+  pointer-events: none;
+}
+
+/* Explore: one rich category plus calm, useful previews. */
+body[data-entered="true"] .workspace-panel {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 16%, var(--line));
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--space-accent, var(--blue)) 8%, transparent), transparent 22rem),
+    var(--surface);
+  box-shadow: 0 20px 48px color-mix(in srgb, var(--blue) 7%, transparent);
+}
+
+body[data-entered="true"] .workspace-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--space-accent, var(--blue)), transparent);
+  pointer-events: none;
+}
+
+body[data-entered="true"] .workspace-preview-card {
+  position: relative;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 14%, var(--line));
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--space-accent, var(--blue)) 8%, transparent), transparent 10rem),
+    color-mix(in srgb, var(--surface) 96%, var(--blue-soft));
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+body[data-entered="true"] .workspace-preview-number {
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--space-accent, var(--blue)) 11%, transparent);
+}
+
+body[data-entered="true"] .workspace-preview-open {
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+/* Spaces: make the permission boundary read visually before the copy is read. */
+body[data-entered="true"] .space-card {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 15%, var(--line));
+  box-shadow: 0 18px 42px color-mix(in srgb, var(--blue) 6%, transparent);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+body[data-entered="true"] .private-space {
+  background:
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--blue) 10%, transparent), transparent 16rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .shared-space {
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--space-accent, var(--green)) 13%, transparent), transparent 17rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .space-card li {
+  position: relative;
+  padding-left: 18px;
+}
+
+body[data-entered="true"] .space-card li::before {
+  content: "";
+  position: absolute;
+  top: .67em;
+  left: 1px;
+  width: 7px;
+  height: 7px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--space-accent, var(--blue));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--space-accent, var(--blue)) 10%, transparent);
+}
+
+body[data-entered="true"] .space-bridge {
+  color: var(--blue-deep);
+}
+
+body[data-entered="true"] .space-bridge i {
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--blue) 7%, transparent);
+}
+
+body[data-entered="true"] .permission-strip article {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 12%, var(--line));
+  background: linear-gradient(150deg, color-mix(in srgb, var(--surface-soft) 90%, var(--blue-soft)), var(--surface));
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--blue) 4%, transparent);
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+}
+
+body[data-entered="true"] .permission-strip article > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--space-accent, var(--blue)) 22%, var(--line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--space-accent, var(--blue)) 7%, var(--surface));
+}
+
+/* How it works: keep the explanation clear while giving the model more visual rhythm. */
+body[data-entered="true"] .foundation-map {
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 16%, var(--line));
+  background:
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--space-accent, var(--blue)) 8%, transparent), transparent 22rem),
+    linear-gradient(145deg, color-mix(in srgb, var(--surface) 96%, var(--blue-soft)), var(--surface));
+  box-shadow: 0 20px 48px color-mix(in srgb, var(--blue) 6%, transparent);
+}
+
+body[data-entered="true"] .foundation-node,
+body[data-entered="true"] .foundation-center {
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 14%, var(--line));
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+}
+
+body[data-entered="true"] .foundation-center {
+  background:
+    radial-gradient(circle at 50% 0, color-mix(in srgb, var(--space-accent, var(--blue)) 18%, transparent), transparent 12rem),
+    var(--surface);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--space-accent, var(--blue)) 9%, transparent);
+}
+
+body[data-entered="true"] .how-grid > article,
+body[data-entered="true"] .boundary-card {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 13%, var(--line));
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--space-accent, var(--blue)) 7%, transparent), transparent 15rem),
+    var(--surface);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--blue) 5%, transparent);
+}
+
+body[data-entered="true"] .how-grid > article {
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
+}
+
+body[data-entered="true"] .boundary-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--space-accent, var(--blue)), transparent 88%);
+}
+
+/* Full view: keep the long page visually paced without adding more controls. */
+body[data-entered="true"] .full-section {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 12%, var(--line));
+  box-shadow: 0 18px 46px color-mix(in srgb, var(--blue) 5%, transparent);
+}
+
+body[data-entered="true"] .full-section:nth-child(3n + 1) {
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--space-accent, var(--blue)) 8%, transparent), transparent 20rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .full-section:nth-child(3n + 2) {
+  background:
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--cyan) 7%, transparent), transparent 19rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .full-section:nth-child(3n) {
+  background:
+    radial-gradient(circle at 92% 10%, color-mix(in srgb, var(--violet) 7%, transparent), transparent 18rem),
+    var(--surface);
+}
+
+body[data-entered="true"] .full-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: clamp(22px, 4vw, 40px);
+  width: min(150px, 26%);
+  height: 2px;
+  background: linear-gradient(90deg, var(--space-accent, var(--blue)), transparent);
+}
+
+body[data-entered="true"] .everything-jump-nav {
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 13%, var(--line));
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--blue) 6%, transparent);
+}
+
+/* Dialogs keep the same product language but feel more intentional. */
+body[data-entered="true"] .priority-routing-dialog,
+body[data-entered="true"] .brief-update-dialog,
+body[data-entered="true"] .spaces-ai-dialog,
+body[data-entered="true"] .briefing-settings-dialog {
+  border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 22%, var(--line-strong));
+  box-shadow: 0 34px 100px rgba(4, 18, 35, .32), 0 0 0 1px color-mix(in srgb, #fff 45%, transparent);
+}
+
+body[data-entered="true"] .priority-routing-shell,
+body[data-entered="true"] .briefing-settings-shell {
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--space-accent, var(--violet)) 13%, transparent), transparent 20rem),
+    radial-gradient(circle at 0 12%, color-mix(in srgb, var(--cyan) 9%, transparent), transparent 18rem),
+    var(--surface);
+}
+
+/* Interaction feedback is restrained and only applies where hover exists. */
+@media (hover: hover) and (pointer: fine) {
+  body[data-entered="true"] .stats-grid .stat-card:hover,
+  body[data-entered="true"] .space-highlight:hover,
+  body[data-entered="true"] .workspace-preview-card:hover,
+  body[data-entered="true"] .space-card:hover,
+  body[data-entered="true"] .permission-strip article:hover,
+  body[data-entered="true"] .foundation-node:hover,
+  body[data-entered="true"] .how-grid > article:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 34%, var(--line));
+    box-shadow: 0 18px 38px color-mix(in srgb, var(--space-accent, var(--blue)) 9%, transparent);
+  }
+
+  body[data-entered="true"] .flow-list li:hover {
+    transform: translateX(2px);
+    border-color: color-mix(in srgb, var(--space-accent, var(--blue)) 28%, var(--line));
+    background: color-mix(in srgb, var(--blue-soft) 28%, var(--surface));
+  }
+
+  body[data-entered="true"] .workspace-preview-open:hover {
+    transform: translateX(2px);
+  }
+
+  body[data-entered="true"] .priority-routing-heading > .round-button:hover,
+  body[data-entered="true"] .brief-update-heading > .round-button:hover,
+  body[data-entered="true"] .spaces-ai-heading > .round-button:hover,
+  body[data-entered="true"] .briefing-settings-heading > .round-button:hover {
+    transform: rotate(3deg) scale(1.03);
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-entered="true"] .hero-copy,
+  body[data-entered="true"] .next-card,
+  body[data-entered="true"] .weather-card,
+  body[data-entered="true"] .stats-panel,
+  body[data-entered="true"] .recommendation-card,
+  body[data-entered="true"] .flow-card,
+  body[data-entered="true"] .space-discovery,
+  body[data-entered="true"] .workspace-panel,
+  body[data-entered="true"] .space-card,
+  body[data-entered="true"] .boundary-card,
+  body[data-entered="true"] .full-section {
+    box-shadow: 0 12px 30px color-mix(in srgb, var(--blue) 5%, transparent);
+  }
+
+  body[data-entered="true"] .priority-routing-heading > .round-button,
+  body[data-entered="true"] .brief-update-heading > .round-button,
+  body[data-entered="true"] .spaces-ai-heading > .round-button,
+  body[data-entered="true"] .briefing-settings-heading > .round-button {
+    flex-basis: 42px;
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+  }
+
+  body[data-entered="true"] .view-heading {
+    padding-bottom: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-entered="true"] .view-panel.is-active {
+    animation: none;
+  }
+
+  body[data-entered="true"] .stats-grid .stat-card,
+  body[data-entered="true"] .flow-list li,
+  body[data-entered="true"] .space-highlight,
+  body[data-entered="true"] .workspace-preview-card,
+  body[data-entered="true"] .workspace-preview-open,
+  body[data-entered="true"] .space-card,
+  body[data-entered="true"] .permission-strip article,
+  body[data-entered="true"] .foundation-node,
+  body[data-entered="true"] .foundation-center,
+  body[data-entered="true"] .how-grid > article,
+  body[data-entered="true"] .round-button {
+    transition: none;
+  }
+}
