@@ -1,0 +1,122 @@
+.workspace-related-links {
+  display: none !important;
+}
+
+/* The underlying scenario may come from URL history, but the chooser should
+   only look selected after the person actually taps a briefing. */
+body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pressed="true"] {
+  border-color: var(--line);
+  background: var(--surface-soft);
+  box-shadow: none;
+  transform: none;
+}
+
+body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pressed="true"]::after {
+  border-color: color-mix(in srgb, var(--entry-option-secondary) 28%, transparent);
+  transform: none;
+}
+
+.workspace-explore-overview {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  margin-top: 20px;
+}
+
+.workspace-overview-section {
+  min-width: 0;
+  max-width: 100%;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 94%, var(--blue-soft));
+  box-shadow: 0 18px 42px color-mix(in srgb, var(--blue) 7%, transparent);
+  scroll-margin-top: 180px;
+}
+
+.workspace-overview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.workspace-overview-heading > div {
+  min-width: 0;
+}
+
+.workspace-overview-heading .eyebrow {
+  margin: 0;
+}
+
+.workspace-overview-heading h2 {
+  margin: 7px 0 0;
+  color: var(--ink-strong);
+  font-size: clamp(1.25rem, 2.7vw, 1.9rem);
+  line-height: 1.1;
+  letter-spacing: -.035em;
+}
+
+.workspace-overview-heading > div > p:last-child {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.55;
+}
+
+.workspace-overview-body {
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 18px;
+}
+
+.workspace-overview-body,
+.workspace-overview-body > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.workspace-overview-empty {
+  margin: 0;
+  padding: 18px;
+  color: var(--muted);
+  border: 1px dashed var(--line-strong);
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+
+html[data-theme="dark"] .workspace-overview-section {
+  background: color-mix(in srgb, var(--surface) 92%, #132338);
+}
+
+@media (max-width: 760px) {
+  .workspace-explore-overview {
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .workspace-overview-section {
+    padding: 17px 15px;
+    border-radius: 20px;
+    scroll-margin-top: 150px;
+  }
+
+  .workspace-overview-heading {
+    gap: 12px;
+  }
+
+  .workspace-overview-heading h2 {
+    font-size: 1.28rem;
+  }
+
+  .workspace-overview-heading > div > p:last-child {
+    font-size: .74rem;
+  }
+
+  .workspace-overview-body {
+    margin-top: 15px;
+    overflow: hidden;
+  }
+}

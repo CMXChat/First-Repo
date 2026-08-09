@@ -159,8 +159,8 @@ Every major route and long section should lead naturally to its related material
 
 - Entry can open the selected Brief and can reach `/doc/`.
 - Today can open the exact supporting Explore category.
-- Explore shows the complete category index near the beginning of every category.
-- Each Explore category offers connected next contexts after its main content.
+- Explore exposes every category of the selected Space on the page and keeps the category controls available to bring one to the top.
+- Each Explore category can still offer connected next contexts after its main content.
 - Everything exposes every category in one long review and links back to focused views.
 - Everything ends with a clear bridge to `/doc/`.
 - `/doc/` provides visible paths back into the demo.
@@ -169,11 +169,13 @@ Internal `/spaces/` and `/doc/` links normally stay in the same tab. This keeps 
 
 ### Explore
 
-Explore is the focused category experience. Its complete category index is a primary visual module, not minor navigation. The active category is clearly marked. Every other category remains equally available and includes enough preview information to make the destination meaningful.
+Explore is the complete category view for the selected Space. The currently selected category remains in the established focused panel at the top, while every other category is rendered in full underneath it. A person who scrolls can therefore see the complete Space without first opening preview cards or repeating a category-selection step.
 
-Every control that changes an Explore category must also move the page to that category's opening controls and heading. It must never preserve a deep scroll position from the previous category. The landing offset is calculated from the rendered sticky header on desktop and mobile, so the selected category and its first useful context remain visible.
+The category controls remain the primary navigation for Explore. They preserve real tab semantics, keyboard support, active state, and exact-section deep links. Choosing a category brings that category into the focused top panel and rerenders the rest below, so every category appears exactly once.
 
-Mobile uses a swipeable category rail. Active destinations should remain visible and easy to reach without causing page-level horizontal overflow.
+Do not add a second full category index immediately inside each category. The former `Explore the full picture` card rail duplicated the category controls and is intentionally removed from the active visual experience. Discovery richness should come from the real category content, specialized visual modules, and useful connected-next actions.
+
+Mobile keeps the category rail horizontally usable without creating page-level overflow. The full rendered categories below it must remain readable at 320 pixels and wider. Data-heavy tables may scroll inside their own named region; the document itself must not slide horizontally.
 
 ### Everything
 
@@ -263,7 +265,8 @@ Do not flatten different scenarios into the same chart with different labels. Sh
 
 The entry should explain the depth of each Brief before the user commits.
 
-- Choices use rich neutral surfaces with a strong selected state.
+- Choices use rich neutral surfaces with a strong selected state only after an explicit choice in the current entry session.
+- URL or browser-history context may prepare the underlying scenario, but it must not make a card look freshly selected before the person chooses it.
 - The rotating product-idea pill can use brighter paired accents.
 - The selected Brief preview uses a light scenario-specific pastel field. Its three metrics sit on brighter lifted surfaces. Team and Project's lilac and pink balance is the reference for brightness, while Personal, Relationship, Family, Business, Accounting, and Training keep their own blue, rose, mint, peach, aqua, and blush identities.
 - The selected Brief preview remains available where the viewport has enough room to add understanding. Phones hide this large preview because the selected card, confirmation label, and open action already communicate the choice.
@@ -342,10 +345,12 @@ The visual quality of a demo must never make an unbuilt backend sound complete.
 | `assets/brief/brief-demo-conversation.css` | Entry, discovery modules, contextual conversation, navigation richness |
 | `assets/brief/brief-demo-advanced.css` | Specialized scenario visuals and data-heavy modules |
 | `assets/brief/brief-demo-experience.css` | Everything, long-form progress, complete-view visuals, habits, family coordination |
+| `assets/brief/brief-demo-explore.css` | Complete Explore composition, duplicate category-index removal, and neutral pre-choice entry treatment |
 | `assets/brief/brief-demo-topbar-polish.css` | Topbar controls and compact final polish |
 | `assets/brief/brief-demo-data.js` | Fictional records and scenario-specific meaning |
 | `assets/brief/brief-demo-advanced.js` | Specialized renderers that reflect a real information shape |
 | `assets/brief/brief-demo-experience.js` | Everything composition, long-form progress, and complete-view bridges |
+| `assets/brief/brief-demo-explore.js` | Full selected-Space category rendering while preserving the focused category and tab behavior |
 
 Keep a renderer near the data shape it understands. Do not solve a scenario-specific need with global CSS if that would distort unrelated sections.
 
@@ -364,7 +369,8 @@ Before a visual change ships, confirm:
 9. Keyboard, touch, reduced motion, and accessible state remain correct.
 10. The page does not become a collection of equal boxes.
 11. Colors explain state or category instead of acting as decoration alone.
-12. Cache versions, static expectations, browser coverage, and production verification are updated.
+12. Explore renders every category once without restoring the duplicate full-picture card rail.
+13. Cache versions, static expectations, browser coverage, and production verification are updated.
 
 ## Multi-perspective product audit
 
