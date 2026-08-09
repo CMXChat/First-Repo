@@ -17,6 +17,13 @@ if (gotoCount !== 2) {
 }
 source = source.split(legacyGoto).join(canonicalGoto);
 
+const previousMockStart = "async function installSpotifyMock(page) {\n  await page.addInitScript(";
+const offlineMockStart = "async function installSpotifyMock(page) {\n  await page.route('https://open.spotify.com/**', route => route.abort());\n  await page.addInitScript(";
+if (!source.includes(previousMockStart)) {
+  throw new Error('Spotify browser mock no longer matches the expected deterministic setup.');
+}
+source = source.replace(previousMockStart, offlineMockStart);
+
 const previousReset = [
   "  await expect(page.locator('#openDemo')).toBeEnabled();",
   "  await expect(page.locator('#openDemoLabel')).toHaveText('Open Personal Briefing');",
