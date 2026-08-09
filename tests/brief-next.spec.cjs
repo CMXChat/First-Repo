@@ -215,7 +215,7 @@ test('mobile demo keeps every view contained and the How map compact', async ({ 
   await page.locator('#priorityRoutingButton').click();
   await expect(page.locator('#priorityRoutingDialog')).toBeVisible();
   await expect(page.locator('#priorityRoutingDialog')).toContainText('Shared decision routing');
-  await expect(page.locator('#priorityRoutingDialog')).toContainText('No message leaves this demo');
+  await expect(page.locator('#priorityRoutingDialog')).toContainText('Nothing is sent');
   await page.locator('#closePriorityRouting').click();
 
   const heroHeadingSize = await page.locator('#heroTitle').evaluate(node => Number.parseFloat(getComputedStyle(node).fontSize));

@@ -61,7 +61,7 @@ assert.match(html, /brief-demo-data\.js\?v=20260808-5/);
 assert.match(html, /brief-demo-conversation\.css\?v=20260808-16/);
 assert.match(html, /brief-demo-conversation\.js\?v=20260808-1/);
 assert.match(html, /brief-demo-experience\.js\?v=20260808-4/);
-assert.match(html, /brief-spaces-runtime\.js\?v=20260806-1/);
+assert.match(html, /brief-spaces-runtime\.js\?v=20260808-1/);
 assert.match(html, /Open a briefing for the part of life you’re in/);
 assert.match(html, /data-entry-choice-made="false"/);
 assert.match(html, /Tap one to continue/);
