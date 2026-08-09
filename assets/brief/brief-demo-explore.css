@@ -16,107 +16,908 @@ body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pr
   transform: none;
 }
 
+/* --------------------------------------------------------------------------
+   Briefing clarity layer
+   Keep one rich surface in focus. Everything else becomes a compact choice,
+   carousel, or progressive detail instead of another long vertical stack.
+   -------------------------------------------------------------------------- */
+
+.hero-scroll-cue {
+  display: none !important;
+}
+
+.space-discovery {
+  padding-block: clamp(18px, 3vw, 26px);
+}
+
+.space-discovery > header {
+  gap: 14px;
+}
+
+.space-discovery > header > p {
+  max-width: 460px;
+  font-size: .76rem;
+  line-height: 1.45;
+}
+
+.space-discovery-track {
+  gap: 10px;
+}
+
+.space-highlight {
+  min-height: 112px;
+  padding: 16px;
+}
+
 .workspace-explore-overview {
   display: grid;
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
   min-width: 0;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .workspace-overview-section {
   min-width: 0;
   max-width: 100%;
-  padding: 22px;
+  padding: 0;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 24px;
-  background: color-mix(in srgb, var(--surface) 94%, var(--blue-soft));
-  box-shadow: 0 18px 42px color-mix(in srgb, var(--blue) 7%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--surface) 95%, var(--blue-soft));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--blue) 5%, transparent);
   scroll-margin-top: 180px;
 }
 
-.workspace-overview-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
+.workspace-overview-open {
+  display: grid;
+  width: 100%;
+  min-height: 126px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 17px;
+  color: inherit;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
 }
 
-.workspace-overview-heading > div {
+.workspace-overview-open:hover,
+.workspace-overview-open:focus-visible {
+  background: color-mix(in srgb, var(--blue-soft) 54%, transparent);
+}
+
+.workspace-overview-open:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -3px;
+}
+
+.workspace-overview-number {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: var(--blue-deep);
+  border: 1px solid color-mix(in srgb, var(--blue) 24%, var(--line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--blue-soft) 60%, var(--surface));
+  font-size: .67rem;
+  font-weight: 900;
+}
+
+.workspace-overview-copy {
   min-width: 0;
 }
 
-.workspace-overview-heading .eyebrow {
-  margin: 0;
+.workspace-overview-copy small,
+.workspace-overview-copy strong,
+.workspace-overview-copy span {
+  display: block;
 }
 
-.workspace-overview-heading h2 {
-  margin: 7px 0 0;
+.workspace-overview-copy small {
+  color: var(--blue-deep);
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.workspace-overview-copy strong {
+  margin-top: 4px;
+  overflow: hidden;
   color: var(--ink-strong);
-  font-size: clamp(1.25rem, 2.7vw, 1.9rem);
-  line-height: 1.1;
-  letter-spacing: -.035em;
+  font-size: .98rem;
+  line-height: 1.18;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.workspace-overview-heading > div > p:last-child {
-  max-width: 760px;
-  margin: 8px 0 0;
+.workspace-overview-copy span {
+  display: -webkit-box;
+  margin-top: 6px;
+  overflow: hidden;
   color: var(--muted);
-  font-size: .78rem;
-  line-height: 1.55;
+  font-size: .72rem;
+  line-height: 1.42;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
-.workspace-overview-body {
-  min-width: 0;
-  max-width: 100%;
-  margin-top: 18px;
-}
-
-.workspace-overview-body,
-.workspace-overview-body > * {
-  min-width: 0;
-  max-width: 100%;
-}
-
-.workspace-overview-empty {
-  margin: 0;
-  padding: 18px;
-  color: var(--muted);
-  border: 1px dashed var(--line-strong);
-  border-radius: 16px;
-  background: var(--surface-soft);
+.workspace-overview-open > i {
+  color: var(--blue-deep);
+  font-size: 1rem;
+  font-style: normal;
 }
 
 html[data-theme="dark"] .workspace-overview-section {
   background: color-mix(in srgb, var(--surface) 92%, #132338);
 }
 
-@media (max-width: 760px) {
+.workspace-thread-links {
+  margin-top: 14px;
+  padding: 13px;
+}
+
+.workspace-thread-links > header {
+  margin-bottom: 9px;
+}
+
+.workspace-thread-links > header small {
+  display: none;
+}
+
+.workspace-thread-links button {
+  min-height: 86px;
+  padding: 13px 14px;
+}
+
+/* Today: weather, numbers, and flow share one interactive focus area. */
+.today-focus-shell {
+  min-width: 0;
+  margin: 16px 0;
+  padding: clamp(15px, 2.4vw, 22px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--surface) 96%, var(--blue-soft));
+  box-shadow: var(--shadow-soft);
+}
+
+.clarity-deck-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.clarity-deck-heading h2 {
+  margin: 5px 0 0;
+  color: var(--ink-strong);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+}
+
+.clarity-deck-status {
+  max-width: 340px;
+  margin: 0;
+  color: var(--muted);
+  font-size: .7rem;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.clarity-deck-tabs,
+.clarity-workspace-carousel-tabs {
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.clarity-deck-tabs::-webkit-scrollbar,
+.clarity-workspace-carousel-tabs::-webkit-scrollbar,
+.today-focus-viewport::-webkit-scrollbar,
+.clarity-workspace-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.clarity-deck-tabs button,
+.clarity-workspace-carousel-tabs button {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  font: inherit;
+  font-size: .73rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.clarity-deck-tabs button[aria-selected="true"],
+.clarity-workspace-carousel-tabs button[aria-selected="true"] {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #1487dd, #7457df);
+  box-shadow: 0 7px 18px rgba(46, 116, 216, .2);
+}
+
+.clarity-deck-tabs button:focus-visible,
+.clarity-workspace-carousel-tabs button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.today-focus-viewport {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.today-focus-viewport > [data-clarity-panel] {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  box-shadow: none;
+}
+
+.today-focus-shell + .today-grid {
+  display: none !important;
+}
+
+.today-lower {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* Everything: preserve rich visual language without stacking every category. */
+.clarity-workspace-carousel-tabs {
+  margin-top: 20px;
+  padding-bottom: 2px;
+}
+
+.clarity-workspace-carousel {
+  display: flex !important;
+  gap: 12px !important;
+  margin-top: 10px !important;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.clarity-workspace-carousel > .full-workspace-group {
+  flex: 0 0 100%;
+  min-width: 0;
+  margin: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.clarity-detail-toggle {
+  margin-top: 20px;
+  padding: 9px 13px;
+  color: var(--blue-deep);
+  border: 1px solid color-mix(in srgb, var(--blue) 24%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--blue-soft) 48%, var(--surface));
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.clarity-detail-toggle:hover,
+.clarity-detail-toggle:focus-visible {
+  border-color: color-mix(in srgb, var(--blue) 55%, var(--line));
+  background: color-mix(in srgb, var(--blue-soft) 78%, var(--surface));
+}
+
+.clarity-detail-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+#all-adaptive[data-clarity-expanded="false"] .adaptive-process,
+#all-adaptive[data-clarity-expanded="false"] .component-choice-grid,
+#all-adaptive[data-clarity-expanded="false"] .adaptive-note,
+#all-alarm[data-clarity-expanded="false"] .alarm-flow,
+#all-alarm[data-clarity-expanded="false"] .future-boundary {
+  display: none !important;
+}
+
+/* Light mode should stay light. Dark mode restores the richer night surface. */
+html:not([data-theme="dark"]) .signal-reading-card {
+  border-color: color-mix(in srgb, var(--violet) 18%, var(--line));
+  background:
+    radial-gradient(circle at 88% 8%, color-mix(in srgb, var(--violet) 12%, transparent), transparent 15rem),
+    linear-gradient(150deg, color-mix(in srgb, var(--violet-soft) 36%, var(--surface)), var(--surface) 68%);
+}
+
+html:not([data-theme="dark"]) .signal-reading-card > strong {
+  color: var(--ink-strong);
+}
+
+html:not([data-theme="dark"]) .signal-reading-card p {
+  color: var(--muted);
+}
+
+html:not([data-theme="dark"]) .signal-grid-line {
+  stroke: color-mix(in srgb, var(--line-strong) 55%, transparent);
+}
+
+html:not([data-theme="dark"]) .signal-pulse-area {
+  fill: color-mix(in srgb, var(--violet) 11%, transparent);
+}
+
+html[data-theme="dark"] .signal-reading-card {
+  background: radial-gradient(circle at 88% 8%, rgba(152, 113, 255, .28), transparent 15rem), linear-gradient(150deg, #191331, #0d1119 68%);
+}
+
+html[data-theme="dark"] .signal-reading-card > strong {
+  color: #fff;
+}
+
+html[data-theme="dark"] .signal-reading-card p {
+  color: #b8b2cc;
+}
+
+/* Real-product control surfaces. Everything remains a local demo preview. */
+.brief-controls-dialog {
+  width: min(880px, calc(100vw - 28px));
+  max-width: none;
+  max-height: min(820px, calc(100vh - 28px));
+  padding: 0;
+  overflow: hidden;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: 0 32px 100px rgba(8, 18, 30, .28);
+}
+
+.brief-controls-dialog::backdrop {
+  background: rgba(6, 14, 24, .48);
+  backdrop-filter: blur(7px);
+}
+
+.brief-controls-sheet {
+  max-height: inherit;
+  overflow-y: auto;
+}
+
+.brief-controls-heading {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.brief-controls-heading h2 {
+  margin: 5px 0 0;
+  color: var(--ink-strong);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  letter-spacing: -.04em;
+}
+
+.brief-controls-heading > div > p:last-child {
+  max-width: 560px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+.brief-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px 20px;
+}
+
+.brief-control-group {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface-soft);
+}
+
+.brief-control-group > header {
+  margin-bottom: 10px;
+}
+
+.brief-control-group > header span,
+.brief-control-group > header strong {
+  display: block;
+}
+
+.brief-control-group > header span {
+  color: var(--blue-deep);
+  font-size: .59rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.brief-control-group > header strong {
+  margin-top: 4px;
+  color: var(--ink-strong);
+  font-size: .96rem;
+}
+
+.brief-control-switch,
+.brief-control-action {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  color: inherit;
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.brief-control-switch > span > strong,
+.brief-control-switch > span > small,
+.brief-control-action > span > strong,
+.brief-control-action > span > small {
+  display: block;
+}
+
+.brief-control-switch > span > strong,
+.brief-control-action > span > strong {
+  color: var(--ink-strong);
+  font-size: .82rem;
+}
+
+.brief-control-switch > span > small,
+.brief-control-action > span > small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .68rem;
+  line-height: 1.35;
+}
+
+.brief-control-switch > i {
+  position: relative;
+  width: 39px;
+  height: 23px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.brief-control-switch > i > b {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.brief-control-switch[aria-checked="true"] > i {
+  border-color: color-mix(in srgb, var(--blue) 55%, var(--line));
+  background: color-mix(in srgb, var(--blue-soft) 70%, var(--surface));
+}
+
+.brief-control-switch[aria-checked="true"] > i > b {
+  background: var(--blue);
+  transform: translateX(16px);
+}
+
+.brief-style-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.brief-style-options button {
+  min-width: 0;
+  padding: 13px;
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+}
+
+.brief-style-options button strong,
+.brief-style-options button small {
+  display: block;
+}
+
+.brief-style-options button strong {
+  color: var(--ink-strong);
+  font-size: .78rem;
+}
+
+.brief-style-options button small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .64rem;
+  line-height: 1.35;
+}
+
+.brief-style-options button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--blue) 46%, var(--line));
+  background: color-mix(in srgb, var(--blue-soft) 68%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue) 13%, transparent);
+}
+
+.brief-member-row {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.brief-member-row::-webkit-scrollbar {
+  display: none;
+}
+
+.brief-member-row > span {
+  display: inline-grid;
+  flex: 0 0 auto;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px 6px 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.brief-member-row i {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  color: #fff;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1688dc, #7457df);
+  font-size: .67rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.brief-member-row b {
+  color: var(--ink-strong);
+  font-size: .7rem;
+}
+
+.brief-member-row small {
+  grid-column: 2;
+  margin-top: -5px;
+  color: var(--muted);
+  font-size: .57rem;
+}
+
+.brief-member-row .is-pending {
+  border-style: dashed;
+}
+
+.brief-add-person {
+  width: 100%;
+  min-height: 38px;
+  margin-bottom: 4px;
+}
+
+.brief-control-action > i {
+  color: var(--blue-deep);
+  font-size: 1rem;
+  font-style: normal;
+}
+
+.brief-controls-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 20px max(14px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.brief-controls-footer > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.brief-control-status-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #34b98a;
+  box-shadow: 0 0 0 4px color-mix(in srgb, #34b98a 12%, transparent);
+}
+
+.brief-controls-footer p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .66rem;
+  line-height: 1.4;
+}
+
+.space-quick-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.space-quick-controls button {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 9px;
+  align-items: center;
+  padding: 12px 13px;
+  color: inherit;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-soft);
+  text-align: left;
+  cursor: pointer;
+}
+
+.space-quick-controls span,
+.space-quick-controls small {
+  display: block;
+}
+
+.space-quick-controls span {
+  color: var(--ink-strong);
+  font-size: .73rem;
+  font-weight: 850;
+}
+
+.space-quick-controls small {
+  grid-column: 1;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: .61rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.space-quick-controls i {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  color: var(--blue-deep);
+  font-style: normal;
+}
+
+.workspace-overview-open,
+.brief-control-switch,
+.brief-control-action,
+.brief-style-options button,
+.space-quick-controls button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 900px) {
   .workspace-explore-overview {
-    gap: 16px;
-    margin-top: 16px;
+    display: flex;
+    gap: 9px;
+    margin-right: -15px;
+    overflow-x: auto;
+    padding-right: 15px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .workspace-explore-overview::-webkit-scrollbar {
+    display: none;
   }
 
   .workspace-overview-section {
-    padding: 17px 15px;
+    flex: 0 0 min(82vw, 340px);
+    scroll-snap-align: start;
+  }
+
+  .space-quick-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .space-discovery > header > p,
+  .clarity-deck-status {
+    display: none;
+  }
+
+  .space-discovery-track {
+    display: flex;
+    margin-right: -15px;
+    overflow-x: auto;
+    padding-right: 15px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .space-discovery-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .space-highlight {
+    flex: 0 0 min(76vw, 285px);
+    scroll-snap-align: start;
+  }
+
+  .workspace-overview-open {
+    min-height: 112px;
+    padding: 14px;
+  }
+
+  .workspace-overview-copy strong {
+    font-size: .9rem;
+  }
+
+  .workspace-overview-copy span {
+    font-size: .68rem;
+  }
+
+  .workspace-thread-links > div {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .workspace-thread-links > div::-webkit-scrollbar {
+    display: none;
+  }
+
+  .workspace-thread-links button {
+    flex: 0 0 min(76vw, 300px);
+    scroll-snap-align: start;
+  }
+
+  .today-focus-shell {
+    margin: 12px 0;
+    padding: 14px 12px 12px;
+    border-radius: 22px;
+  }
+
+  .clarity-deck-heading {
+    align-items: flex-start;
+  }
+
+  .clarity-deck-heading h2 {
+    font-size: 1.2rem;
+  }
+
+  .clarity-deck-tabs {
+    position: sticky;
+    left: 0;
+  }
+
+  .today-focus-viewport {
+    gap: 10px;
+  }
+
+  .today-focus-viewport > [data-clarity-panel] {
     border-radius: 20px;
-    scroll-margin-top: 150px;
   }
 
-  .workspace-overview-heading {
-    gap: 12px;
+  .brief-controls-dialog {
+    width: 100vw;
+    max-height: min(88vh, 760px);
+    margin: auto 0 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 26px 26px 0 0;
   }
 
-  .workspace-overview-heading h2 {
-    font-size: 1.28rem;
+  .brief-controls-grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 14px 14px 18px;
   }
 
-  .workspace-overview-heading > div > p:last-child {
-    font-size: .74rem;
+  .brief-controls-heading {
+    padding: 18px 16px 14px;
   }
 
-  .workspace-overview-body {
+  .brief-controls-heading > div > p:last-child {
+    font-size: .72rem;
+  }
+
+  .brief-controls-footer {
+    padding-inline: 14px;
+  }
+
+  .brief-controls-footer p {
+    max-width: 220px;
+  }
+
+  .full-section {
+    padding: 20px 16px;
+  }
+
+  .clarity-workspace-carousel-tabs {
     margin-top: 15px;
-    overflow: hidden;
+  }
+
+  .clarity-workspace-carousel > .full-workspace-group {
+    padding: 16px 14px;
+  }
+}
+
+@media (max-width: 430px) {
+  .space-quick-controls {
+    display: flex;
+    margin-right: -2px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .space-quick-controls::-webkit-scrollbar {
+    display: none;
+  }
+
+  .space-quick-controls button {
+    flex: 0 0 190px;
+    scroll-snap-align: start;
+  }
+
+  .brief-style-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .brief-controls-footer {
+    align-items: flex-end;
+  }
+
+  .brief-controls-footer .primary-button {
+    min-width: 82px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .today-focus-viewport,
+  .clarity-workspace-carousel {
+    scroll-behavior: auto;
+  }
+
+  .brief-control-switch > i > b {
+    transition: none;
   }
 }
