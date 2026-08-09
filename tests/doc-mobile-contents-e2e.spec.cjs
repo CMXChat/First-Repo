@@ -76,10 +76,12 @@ test('mobile doc Contents drawer tracks reading position and closes cleanly', as
   await page.locator('#architecture').scrollIntoViewIfNeeded();
   await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Architecture');
   await trigger.click();
-  await expect(drawer.locator('a[href="#architecture"]')).toHaveAttribute('aria-current', 'location');
+  const architectureLink = drawer.locator('a[href="#architecture"]');
+  await expect(architectureLink).toHaveAttribute('aria-current', 'location');
   await expect(drawer.locator('#mobileContentsCurrent')).toHaveText('Architecture');
+  await expect(architectureLink).toBeFocused();
 
-  await page.keyboard.press('Escape');
+  await architectureLink.press('Escape');
   await expect(page.locator('html')).not.toHaveClass(/doc-mobile-contents-open/);
   await expect(trigger).toBeFocused();
 
