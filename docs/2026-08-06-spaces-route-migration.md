@@ -1,6 +1,6 @@
 # Spaces Route Migration and Coordination Model
 
-Date: 2026-08-06  
+Date: 2026-08-09  
 Status: implementation review  
 Primary route: `/spaces/`
 
@@ -11,8 +11,10 @@ Primary route: `/spaces/`
 `/doc/` remains the detailed product overview. The active experience and the overview are two views of the same product:
 
 - `/spaces/` demonstrates the daily and scenario-specific experience.
-- `/doc/` explains the product model, permissions, memory, goals, architecture, current reality, and planned backend.
+- `/doc/` explains what Spaces is, how a Space carries context, how the Brief fits into the product, permissions, memory, goals, architecture, current reality, and planned backend work.
 - `/brief-next/` is a pre-migration rollback snapshot and must not be treated as the active product route.
+
+The August 9 product-document revision makes the HTML source authoritative and removes runtime JavaScript copy replacement. It also narrows `/doc/` to one job: explain the product clearly. Investor, patent, market-comparison, and growth material no longer interrupts the primary product narrative. The Brief remains a major product output, while the Space, its boundaries, connected information, memory, goals, conversations, and approved actions define the broader product.
 
 ## Problems found in the prior state
 
@@ -21,6 +23,7 @@ Primary route: `/spaces/`
 3. Operational documentation described alarm, voice, and multi-calendar coordination, but shared calendars were not stated as a first-class product capability.
 4. The Spotify status region did not explicitly announce asynchronous state changes, and its labeled generic container did not have an explicit landmark role.
 5. App-authored commits did not consistently trigger fresh GitHub Actions runs, so historical green or red states cannot be treated as proof for the current branch.
+6. `/doc/` had accumulated product explanation, investment analysis, patent discussion, and runtime copy injection in one surface, which made the opening less direct and allowed the source HTML to diverge from the rendered story.
 
 ## Shared calendars
 
@@ -39,7 +42,7 @@ Private event titles, notes, attendees, locations, and unrelated commitments rem
 
 ## Current Family and Personal demonstrations
 
-The active `/spaces/` demo now includes seven contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team.
+The active `/spaces/` demo includes seven contexts: Personal, Relationship, Family, Business partners, Accountant and client, Trainer, and Team.
 
 The Family briefing demonstrates:
 
@@ -100,13 +103,30 @@ The planned voice layer should support:
 
 Sensitive material must default to silent display. A household or shared device cannot read private Personal Space information aloud merely because the account is signed in.
 
+## `/doc/` product-story contract
+
+The product overview should answer the following questions before moving into deep architecture:
+
+1. What is Spaces?
+2. What problem does it solve?
+3. What is a Space?
+4. What is the Brief?
+5. How can personal and shared context coexist without exposing everything?
+6. What remains durable when the AI model changes?
+7. Which parts are demonstrated now and which still require the secure platform?
+
+The opening should describe Spaces as context-driven AI workspaces for people and groups. A Brief is the current view of a Space, not the definition of the whole product. The reader should encounter the product model, boundaries, daily output, and continuity before implementation detail.
+
+The document should use complete connected prose. Avoid slogan stacks, promotional fragments, vague AI language, inflated uniqueness claims, and technical wording where a normal reader can understand the same point more directly.
+
 ## Release expectations
 
-A release that changes the active Spaces experience should verify:
+A release that changes the active Spaces experience or `/doc/` should verify:
 
 - `/spaces/` loads the working demo and stays noindex;
 - `/brief/` redirects to `/spaces/` and remains noindex;
 - `/doc/` still explains the current-versus-planned boundary;
+- `/doc/` keeps shared-calendar, alarm, and voice concepts in the product story without allowing them to dominate the opening;
 - `/spaces/` links to `/doc/`;
 - the route registry marks `/spaces/` Active and `/brief/` Legacy;
 - all active JS and CSS assets exist and have cache versions;
@@ -115,6 +135,7 @@ A release that changes the active Spaces experience should verify:
 - selected controls keep readable contrast in both themes;
 - horizontally scrollable tab rows do not shift the document viewport;
 - old `/brief/` bookmarks remain functional;
+- product copy remains authoritative in HTML rather than being replaced by JavaScript after load;
 - shared-calendar, alarm, voice, permission, and revocation language remains present.
 
 ## Follow-up
