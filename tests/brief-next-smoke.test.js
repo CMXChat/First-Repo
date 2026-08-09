@@ -198,11 +198,18 @@ assert.match(appJs, /<time>\$\{escapeHtml\(hour\.time\)\}<\/time>/);
 assert.doesNotMatch(appJs, /setInterval/);
 
 assert.match(exploreJs, /workspaceExploreOverview/);
-assert.match(exploreJs, /All \$\{count\} categories are open on this page/);
+assert.match(exploreJs, /All \$\{count\} categories are open below as compact previews/);
+assert.match(exploreJs, /CONTROL_STORAGE_KEY = 'spaces_demo_controls_v1'/);
+assert.match(exploreJs, /function createTodayFocusDeck\(/);
+assert.match(exploreJs, /function installWorkspaceCarousel\(/);
+assert.match(exploreJs, /function createControlsDialog\(/);
 assert.match(exploreJs, /briefdemo:tabchange/);
 assert.match(exploreCss, /\.workspace-related-links\s*\{[\s\S]*display: none !important/);
 assert.match(exploreCss, /data-entry-choice-made="false"/);
 assert.match(exploreCss, /\.workspace-overview-section/);
+assert.match(exploreCss, /\.today-focus-shell/);
+assert.match(exploreCss, /\.brief-controls-dialog/);
+assert.match(exploreCss, /html:not\(\[data-theme="dark"\]\) \.signal-reading-card/);
 
 assert.match(experienceJs, /data\.navigation\.push\(\{ id: 'everything', label: 'Everything' \}\)/);
 assert.match(experienceJs, /ADAPTIVE BRIEF/);
