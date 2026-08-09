@@ -26,6 +26,7 @@ test('desktop keeps the rich Today view and exposes one briefing settings contro
   test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop composition is checked in Chromium.');
   await openDemo(page);
 
+  await expect(page.locator('body')).not.toHaveAttribute('aria-pressed', /.+/);
   await expect(page.locator('#todayFocusNav')).toBeHidden();
   await expect(page.locator('.today-grid .weather-card')).toBeVisible();
   await expect(page.locator('.today-grid .stats-panel')).toBeVisible();
@@ -48,16 +49,21 @@ test('phone focus keeps dense Today modules readable and Full review restores th
   test.skip(!['chromium-android', 'webkit-iphone'].includes(testInfo.project.name), 'Phone composition is checked on phone projects.');
   await openDemo(page);
 
+  await expect(page.locator('body')).not.toHaveAttribute('aria-pressed', /.+/);
   await expect(page.locator('#todayFocusNav')).toBeVisible();
   await expect(page.locator('.today-grid .weather-card')).toBeVisible();
   await expect(page.locator('.today-grid .stats-panel')).toBeHidden();
   await expect(page.locator('.today-lower .flow-card')).toBeHidden();
 
   await page.locator('[data-today-focus="numbers"]').click();
+  await expect(page.locator('body')).not.toHaveAttribute('aria-pressed', /.+/);
+  await expect(page.locator('[data-today-focus="numbers"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.today-grid .weather-card')).toBeHidden();
   await expect(page.locator('.today-grid .stats-panel')).toBeVisible();
 
   await page.locator('[data-today-focus="flow"]').click();
+  await expect(page.locator('body')).not.toHaveAttribute('aria-pressed', /.+/);
+  await expect(page.locator('[data-today-focus="flow"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.today-grid')).toBeHidden();
   await expect(page.locator('.today-lower .flow-card')).toBeVisible();
 
