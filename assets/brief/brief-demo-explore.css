@@ -879,6 +879,23 @@ html[data-theme="dark"] .signal-reading-card p {
   .clarity-workspace-carousel > .full-workspace-group {
     padding: 16px 14px;
   }
+
+  /* Portfolio SVG strokes intentionally paint beyond the SVG box on desktop.
+     At 320px that adds a few pixels to body scroll width, so contain the
+     artwork inside its own chart on phones without changing the chart data. */
+  .portfolio-chart {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .portfolio-chart svg {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .financial-sheet-scroll {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 430px) {
