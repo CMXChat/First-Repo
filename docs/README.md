@@ -2,7 +2,7 @@
 
 Last reconciled: **August 9, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `5aa5263a3f8b7552a02bb59fd9016ef2f2388981`
+Verified code baseline: `e7a73bba4804cc485a848de2d5cfa348c40a93e9`
 
 ## Read this first
 
@@ -13,14 +13,15 @@ Use this order when starting Spaces work:
 1. `docs/spaces-demo-continuity.md`
 2. `docs/spaces-visual-design-system.md`
 3. `docs/2026-08-06-spaces-route-migration.md`
-4. `docs/spaces-product-direction-2026-08-06.md`
-5. `docs/2026-08-05-repository-reconciliation.md`
-6. `docs/personal-os-release-safeguards.md`
-7. `docs/brief-recovery-handoff.md`
-8. `docs/cmx-brief-master-context.md`
-9. `docs/brief-interface-validation.md`
-10. `docs/brief-interface-failures.md`
-11. Current source, tests, workflows, and `assets/cmx-routes.json`
+4. `docs/2026-08-09-spaces-balanced-briefing.md`
+5. `docs/spaces-product-direction-2026-08-06.md`
+6. `docs/2026-08-05-repository-reconciliation.md`
+7. `docs/personal-os-release-safeguards.md`
+8. `docs/brief-recovery-handoff.md`
+9. `docs/cmx-brief-master-context.md`
+10. `docs/brief-interface-validation.md`
+11. `docs/brief-interface-failures.md`
+12. Current source, tests, workflows, and `assets/cmx-routes.json`
 
 For the Python-first learning and development environment, start with `docs/development-environment-requirements.md` and `/environment/`.
 
@@ -32,6 +33,7 @@ For the Python-first learning and development environment, start with `docs/deve
 | `spaces-demo-continuity.md` | Current seven-scenario product, responsive entry, product-document investment comparison, design, data, validation, publishing, and rollback contract. |
 | `spaces-visual-design-system.md` | Current Spaces visual language, color direction, realistic visualization rules, interlinking, Everything progress, mobile behavior, accessibility, and review standard. |
 | `2026-08-06-spaces-route-migration.md` | Canonical route decision plus shared-calendar, alarm, voice, compatibility, and release contracts. |
+| `2026-08-09-spaces-balanced-briefing.md` | Current briefing composition: rich desktop Today, focused phone sections, compact Explore previews, one briefing-settings surface, and full Everything view. |
 | `spaces-product-direction-2026-08-06.md` | Current product name, category, doctrine, input model, memory settings, and Cloudflare relationship. |
 | `2026-08-05-repository-reconciliation.md` | Comparison between the August 4 notes and the August 5 repository. |
 | `personal-os-release-safeguards.md` | Release gate, production smoke, accessibility, cache, inventory, and documentation-freshness safeguards. The filename is retained for continuity. |
@@ -84,10 +86,14 @@ For the Python-first learning and development environment, start with `docs/deve
 - Each context links to three signature modules and can open a conversation from the current section.
 - The entry defines Spaces as briefings built from approved information. A scenario carried in URL state may remain available as context, but the chooser must not visually present a briefing as selected until the person explicitly chooses one in the current entry session.
 - Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
-- Explore is the complete category view for the selected Space. The currently selected category stays in the normal focused panel at the top and every other category is rendered in full below it, so scrolling reveals the whole Space without requiring category clicks.
-- The category controls in Explore remain real tabs with keyboard and `aria-selected` behavior. Choosing one brings that category to the focused top position while the remaining categories stay open below.
+- Desktop Today keeps Weather, Useful numbers, the recommendation, and Flow visible together so the wider layout still communicates the range of the briefing.
+- Phone Today uses a compact Weather, Numbers, and Flow focus control in the default Focused style. A local Full review preference restores all main Today sections when a user wants the longer view.
+- Explore keeps the selected category in the full scenario-specific renderer and shows the other categories as compact previews with a direct Open action. Rich calendars, financial sheets, boards, charts, lists, and other category-specific interfaces remain available when selected.
+- The category controls in Explore remain real tabs with keyboard and `aria-selected` behavior. Choosing a preview or tab moves that category into the full focused panel while the other categories return to compact previews.
 - The repeated `Explore the full picture` card rail is hidden from the active experience because it duplicated the category controls and forced an extra click before people could see content.
-- `Everything` remains the longer cross-briefing view with its own full-page navigation and is separate from Explore's selected-Space category overview.
+- `Everything` remains the complete nine-section cross-briefing view with its own jump navigation. It stays intentionally full because Today and Explore already provide the shorter paths.
+- Today exposes one Briefing settings control for local demo preferences including scheduled opening, Focused or Full review style, calendar context, music on open, priority routing, sharing review, and soundtrack access. It reuses the existing routing, Spaces, and music interfaces instead of adding duplicate controls around the app.
+- Briefing settings remain local demo state. They do not send messages, invitations, calendar changes, or private records. A connected version requires authenticated accounts, permission checks, recipient consent where relevant, delivery history, and clear controls for changing or stopping access.
 - The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
 - Every context offers one primary soundtrack and two alternate choices.
 - Product documentation remains available from entry and How it works.
@@ -106,6 +112,7 @@ For the Python-first learning and development environment, start with `docs/deve
 - Write plain, direct, connected sentences.
 - Keep labels, controls, metrics, and navigation concise.
 - Avoid stacked slogan fragments and generated-sounding symmetry.
+- Avoid ellipses, em dashes, repeated choppy sentence stacks, and abstract product-deck language when a normal phrase is clearer.
 - Keep demonstrated, fictional, and planned capabilities clearly separated.
 - Prefer final product wording in source files. A small compatibility adapter is acceptable when it protects a staged rename across dynamic legacy modules.
 
