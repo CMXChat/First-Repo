@@ -119,6 +119,8 @@ The opening should remain easy for a normal reader. The Brief is the most famili
 
 The document should use complete connected prose. Avoid slogan stacks, promotional fragments, vague AI language, inflated uniqueness claims, short choppy copy, and technical wording where a normal reader can understand the same point more directly.
 
+Editorial refinements should preserve the design and product meaning while removing unnecessary pitch-deck language. Visible prose should avoid ellipses, em dashes, repeated short sentence stacks, and abstract terms such as `governed`, `operating`, or `signal` when simpler wording carries the same meaning. Compact labels, diagrams, and technical terms may stay concise when their format genuinely calls for it.
+
 ## Release expectations
 
 A release that changes the active Spaces experience or `/doc/` should verify:
@@ -135,7 +137,7 @@ A release that changes the active Spaces experience or `/doc/` should verify:
 - selected controls keep readable contrast in both themes;
 - horizontally scrollable tab rows do not shift the document viewport;
 - old `/brief/` bookmarks remain functional;
-- product copy remains authoritative in HTML rather than being replaced by JavaScript after load;
+- product copy remains authoritative in HTML instead of being replaced by JavaScript after load;
 - the stronger visual pacing and practical example sections remain intact when copy is refined;
 - shared-calendar, alarm, voice, permission, and revocation language remains present.
 
