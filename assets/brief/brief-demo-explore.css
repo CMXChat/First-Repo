@@ -16,6 +16,13 @@ body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pr
   transform: none;
 }
 
+/* Keep section-change motion inside the briefing canvas. The view animation
+   intentionally translates the active panel, and without this boundary a
+   phone can briefly gain a few pixels of page-level horizontal scroll. */
+#demoMain {
+  overflow-x: clip;
+}
+
 /* --------------------------------------------------------------------------
    Briefing clarity layer
    Keep one rich surface in focus. Everything else becomes a compact choice,
@@ -878,23 +885,6 @@ html[data-theme="dark"] .signal-reading-card p {
 
   .clarity-workspace-carousel > .full-workspace-group {
     padding: 16px 14px;
-  }
-
-  /* Portfolio SVG strokes intentionally paint beyond the SVG box on desktop.
-     At 320px that adds a few pixels to body scroll width, so contain the
-     artwork inside its own chart on phones without changing the chart data. */
-  .portfolio-chart {
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .portfolio-chart svg {
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .financial-sheet-scroll {
-    max-width: 100%;
   }
 }
 
