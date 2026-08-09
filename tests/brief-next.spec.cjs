@@ -45,6 +45,19 @@ if (!source.includes(previousReset)) {
 }
 source = source.replace(previousReset, neutralReset);
 
+const previousWorkspaceJump = "  await page.locator('[data-full-workspace-tab=\"plans\"]').click();";
+const carouselWorkspaceJump = [
+  "  const plansButton = page.locator('[data-full-workspace-tab=\"plans\"]');",
+  "  const plansPanelIndex = await plansButton.evaluate(button => button.closest('[data-clarity-workspace-panel]')?.dataset.clarityWorkspacePanel || '0');",
+  "  await page.locator(`[data-clarity-workspace-target=\"${plansPanelIndex}\"]`).click();",
+  "  await expect(page.locator(`[data-clarity-workspace-panel=\"${plansPanelIndex}\"]`)).toHaveAttribute('aria-hidden', 'false');",
+  "  await plansButton.click();"
+].join('\n');
+if (!source.includes(previousWorkspaceJump)) {
+  throw new Error('Full-view workspace jump no longer matches the expected pre-carousel smoke path.');
+}
+source = source.replace(previousWorkspaceJump, carouselWorkspaceJump);
+
 const suite = new Module(sourcePath, module);
 suite.filename = sourcePath;
 suite.paths = Module._nodeModulePaths(__dirname);
