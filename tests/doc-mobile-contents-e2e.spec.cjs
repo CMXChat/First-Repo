@@ -49,7 +49,7 @@ test('mobile doc Contents drawer tracks reading position and closes cleanly', as
   const sourceLinks = page.locator('.document-rail .document-toc a');
   const mobileLinks = drawer.locator('.mobile-document-toc a');
 
-  await expect(page.locator('link[data-spaces-mobile-contents="true"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
   await expect(sourceLinks).toHaveCount(15);

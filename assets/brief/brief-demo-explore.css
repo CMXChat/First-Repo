@@ -16,66 +16,117 @@ body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pr
   transform: none;
 }
 
+/* Explore keeps the selected category rich and turns the rest into useful previews. */
 .workspace-explore-overview {
   display: grid;
-  gap: 20px;
+  gap: 16px;
   min-width: 0;
   margin-top: 20px;
 }
 
-.workspace-overview-section {
-  min-width: 0;
-  max-width: 100%;
-  padding: 22px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: color-mix(in srgb, var(--surface) 94%, var(--blue-soft));
-  box-shadow: 0 18px 42px color-mix(in srgb, var(--blue) 7%, transparent);
-  scroll-margin-top: 180px;
-}
-
-.workspace-overview-heading {
+.workspace-preview-intro {
   display: flex;
-  align-items: flex-start;
+  align-items: end;
   justify-content: space-between;
-  gap: 18px;
+  gap: 26px;
+  padding: 2px 2px 0;
 }
 
-.workspace-overview-heading > div {
+.workspace-preview-intro > div,
+.workspace-preview-copy {
   min-width: 0;
 }
 
-.workspace-overview-heading .eyebrow {
+.workspace-preview-intro .eyebrow,
+.workspace-preview-copy .eyebrow {
   margin: 0;
 }
 
-.workspace-overview-heading h2 {
+.workspace-preview-intro h2 {
   margin: 7px 0 0;
   color: var(--ink-strong);
-  font-size: clamp(1.25rem, 2.7vw, 1.9rem);
-  line-height: 1.1;
+  font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+  line-height: 1.08;
   letter-spacing: -.035em;
 }
 
-.workspace-overview-heading > div > p:last-child {
-  max-width: 760px;
-  margin: 8px 0 0;
+.workspace-preview-intro > p {
+  max-width: 540px;
+  margin: 0;
   color: var(--muted);
   font-size: .78rem;
   line-height: 1.55;
 }
 
-.workspace-overview-body {
+.workspace-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   min-width: 0;
-  max-width: 100%;
-  margin-top: 18px;
 }
 
-.workspace-overview-body,
-.workspace-overview-body > * {
+.workspace-preview-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px 16px;
+  align-items: start;
   min-width: 0;
-  max-width: 100%;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--surface) 95%, var(--blue-soft));
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--blue) 5%, transparent);
+}
+
+.workspace-preview-number {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--blue);
+  border: 1px solid color-mix(in srgb, var(--blue) 22%, var(--line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--blue-soft) 72%, var(--surface));
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.workspace-preview-copy h3 {
+  margin: 6px 0 0;
+  color: var(--ink-strong);
+  font-size: 1rem;
+  line-height: 1.22;
+  letter-spacing: -.02em;
+}
+
+.workspace-preview-copy > p:last-child {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: .74rem;
+  line-height: 1.5;
+}
+
+.workspace-preview-open {
+  grid-column: 2;
+  justify-self: start;
+  min-height: 36px;
+  padding: 0 13px;
+  color: var(--ink-strong);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.workspace-preview-open:hover,
+.workspace-preview-open:focus-visible {
+  border-color: color-mix(in srgb, var(--blue) 42%, var(--line));
+  background: color-mix(in srgb, var(--blue-soft) 44%, var(--surface));
 }
 
 .workspace-overview-empty {
@@ -87,36 +138,359 @@ body[data-entered="false"][data-entry-choice-made="false"] .entry-option[aria-pr
   background: var(--surface-soft);
 }
 
-html[data-theme="dark"] .workspace-overview-section {
+/* One small control owns briefing preferences. */
+.briefing-settings-button {
+  white-space: nowrap;
+}
+
+/* The older hero treatment intentionally hides its original navigation buttons.
+   Briefing settings is the one additional control we keep beside the scroll cue. */
+.hero-actions > .briefing-settings-button {
+  display: inline-flex !important;
+  min-height: 38px;
+  padding: 8px 14px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: .73rem;
+}
+
+.briefing-settings-dialog {
+  width: min(680px, calc(100vw - 28px));
+  max-height: min(820px, calc(100dvh - 32px));
+  padding: 0;
+  overflow: hidden;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: 0 32px 90px rgba(4, 20, 38, .28);
+}
+
+.briefing-settings-dialog::backdrop {
+  background: rgba(4, 12, 24, .52);
+  backdrop-filter: blur(12px);
+}
+
+.briefing-settings-shell {
+  max-height: min(820px, calc(100dvh - 32px));
+  padding: 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.briefing-settings-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.briefing-settings-heading .eyebrow {
+  margin: 0;
+}
+
+.briefing-settings-heading h2 {
+  margin: 7px 0 0;
+  color: var(--ink-strong);
+  font-size: clamp(1.45rem, 3.5vw, 2rem);
+  line-height: 1.06;
+  letter-spacing: -.04em;
+}
+
+.briefing-settings-intro {
+  max-width: 590px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: .82rem;
+  line-height: 1.6;
+}
+
+.briefing-settings-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.brief-setting-row,
+.brief-setting-action-row,
+.brief-setting-select,
+.brief-setting-time {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+  padding: 15px 16px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: color-mix(in srgb, var(--surface-soft) 88%, var(--blue-soft));
+}
+
+.brief-setting-row > div,
+.brief-setting-action-row > div,
+.brief-setting-select > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.brief-setting-row strong,
+.brief-setting-action-row strong,
+.brief-setting-select strong,
+.brief-setting-time span {
+  color: var(--ink-strong);
+  font-size: .82rem;
+}
+
+.brief-setting-row small,
+.brief-setting-action-row small,
+.brief-setting-select small {
+  color: var(--muted);
+  font-size: .7rem;
+  line-height: 1.45;
+}
+
+.brief-setting-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.brief-setting-switch span {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform .18s ease, background .18s ease;
+}
+
+.brief-setting-switch[aria-checked="true"] {
+  border-color: color-mix(in srgb, var(--blue) 48%, var(--line));
+  background: color-mix(in srgb, var(--blue-soft) 72%, var(--surface));
+}
+
+.brief-setting-switch[aria-checked="true"] span {
+  transform: translateX(18px);
+  background: var(--blue);
+}
+
+.brief-setting-select select,
+.brief-setting-time input {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 11px;
+  color: var(--ink-strong);
+  border: 1px solid var(--line-strong);
+  border-radius: 11px;
+  background: var(--surface);
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.brief-setting-time input:disabled {
+  opacity: .45;
+}
+
+.brief-setting-action-row .secondary-button {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding-inline: 14px;
+}
+
+.briefing-settings-note {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-soft);
+  font-size: .7rem;
+  line-height: 1.5;
+}
+
+.briefing-settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* Desktop keeps the rich Today view. Phones can focus one dense module at a time. */
+.today-focus-nav {
+  display: none;
+}
+
+/* Keep ordinary light-theme number interpretation panels in the light visual system. */
+html[data-theme="light"] .brief-demo .signal-reading {
+  color: #07111c;
+  border-color: #c9d6e3;
+  background: #e7eef6;
+}
+
+html[data-theme="dark"] .workspace-preview-card,
+html[data-theme="dark"] .brief-setting-row,
+html[data-theme="dark"] .brief-setting-action-row,
+html[data-theme="dark"] .brief-setting-select,
+html[data-theme="dark"] .brief-setting-time {
   background: color-mix(in srgb, var(--surface) 92%, #132338);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brief-setting-switch span {
+    transition: none;
+  }
 }
 
 @media (max-width: 760px) {
   .workspace-explore-overview {
-    gap: 16px;
+    gap: 14px;
     margin-top: 16px;
   }
 
-  .workspace-overview-section {
-    padding: 17px 15px;
-    border-radius: 20px;
-    scroll-margin-top: 150px;
+  .workspace-preview-intro {
+    display: grid;
+    gap: 8px;
   }
 
-  .workspace-overview-heading {
+  .workspace-preview-intro > p {
+    max-width: none;
+    font-size: .75rem;
+  }
+
+  .workspace-preview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .workspace-preview-card {
     gap: 12px;
+    padding: 15px;
+    border-radius: 18px;
   }
 
-  .workspace-overview-heading h2 {
-    font-size: 1.28rem;
+  .workspace-preview-copy h3 {
+    font-size: 1.02rem;
   }
 
-  .workspace-overview-heading > div > p:last-child {
-    font-size: .74rem;
+  .workspace-preview-copy > p:last-child {
+    font-size: .76rem;
   }
 
-  .workspace-overview-body {
-    margin-top: 15px;
-    overflow: hidden;
+  body[data-brief-style="focused"] .today-focus-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    position: sticky;
+    top: calc(var(--topbar-height, 74px) + 8px);
+    z-index: 8;
+    margin: 14px 0 12px;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    box-shadow: 0 12px 30px rgba(4, 20, 38, .08);
+    backdrop-filter: blur(16px);
+  }
+
+  .today-focus-nav button {
+    min-width: 0;
+    min-height: 38px;
+    padding: 0 10px;
+    color: var(--muted);
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    font: inherit;
+    font-size: .72rem;
+    font-weight: 800;
+  }
+
+  .today-focus-nav button[aria-pressed="true"] {
+    color: var(--ink-strong);
+    background: color-mix(in srgb, var(--blue-soft) 72%, var(--surface));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue) 20%, var(--line));
+  }
+
+  body[data-brief-style="focused"][data-today-focus="weather"] .today-grid .stats-panel,
+  body[data-brief-style="focused"][data-today-focus="weather"] .today-lower .flow-card,
+  body[data-brief-style="focused"][data-today-focus="numbers"] .today-grid .weather-card,
+  body[data-brief-style="focused"][data-today-focus="numbers"] .today-lower .flow-card {
+    display: none;
+  }
+
+  body[data-brief-style="focused"][data-today-focus="numbers"] .today-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body[data-brief-style="focused"][data-today-focus="flow"] .today-grid {
+    display: none;
+  }
+
+  body[data-brief-style="focused"][data-today-focus="flow"] .today-lower {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .briefing-settings-dialog {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 22px;
+  }
+
+  .briefing-settings-shell {
+    max-height: calc(100dvh - 16px);
+    padding: 18px 14px;
+  }
+
+  .brief-setting-row,
+  .brief-setting-action-row,
+  .brief-setting-select,
+  .brief-setting-time {
+    gap: 12px;
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .brief-setting-select,
+  .brief-setting-time {
+    align-items: flex-start;
+  }
+
+  .brief-setting-select select,
+  .brief-setting-time input {
+    max-width: 118px;
+  }
+}
+
+@media (max-width: 440px) {
+  .brief-setting-row,
+  .brief-setting-action-row,
+  .brief-setting-select,
+  .brief-setting-time {
+    align-items: stretch;
+  }
+
+  .brief-setting-action-row,
+  .brief-setting-select,
+  .brief-setting-time {
+    flex-direction: column;
+  }
+
+  .brief-setting-action-row .secondary-button,
+  .brief-setting-select select,
+  .brief-setting-time input {
+    width: 100%;
+    max-width: none;
+  }
+
+  .brief-setting-switch {
+    align-self: center;
   }
 }
