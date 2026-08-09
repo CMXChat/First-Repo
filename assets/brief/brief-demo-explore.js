@@ -346,7 +346,7 @@
   function setTodayFocus(id) {
     const next = ['weather', 'numbers', 'flow'].includes(id) ? id : 'weather';
     document.body.dataset.todayFocus = next;
-    $$('[data-today-focus]').forEach(button => {
+    $$('button[data-today-focus]').forEach(button => {
       const active = button.dataset.todayFocus === next;
       button.setAttribute('aria-pressed', String(active));
     });
