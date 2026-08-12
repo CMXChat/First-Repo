@@ -9,15 +9,16 @@
     '/study/environment/handbook/':{world:'Handbook Registry',map:'/study/#missions',prev:'/study/environment/#boss',next:'/study/#missions',chapters:['#principles','#anatomy','#learning','#registry','#decisions','#acceptance']}
   };
   const cfg=configs[path]; if(!cfg)return;
-  if(!document.querySelector('link[href^="/assets/study-course-nav.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-course-nav.css?v=20260812-1';document.head.appendChild(l)}
-  if(!document.querySelector('link[href^="/assets/study-enhancements.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-enhancements.css?v=20260812-2';document.head.appendChild(l)}
-  if(!document.querySelector('link[href^="/assets/study-layout-fixes.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-layout-fixes.css?v=20260812-1';document.head.appendChild(l)}
+  const themeKeys={'/study/':'study-v3-theme','/study/python/':'study-python-theme','/study/environment/':'study-env-theme','/study/environment/handbook/':'study-handbook-theme'};
+  try{const k=themeKeys[path];if(k&&!localStorage.getItem(k)){localStorage.setItem(k,'light');document.documentElement.dataset.theme='light'}}catch{}
+  const ensureCss=(href)=>{if(!document.querySelector(`link[href^="${href}"]`)){const l=document.createElement('link');l.rel='stylesheet';l.href=`${href}?v=20260812-3`;document.head.appendChild(l)}};
+  ensureCss('/assets/study-course-nav.css');ensureCss('/assets/study-enhancements.css');ensureCss('/assets/study-layout-fixes.css');ensureCss('/assets/study-universe.css');
   const chapters=cfg.chapters.map(sel=>document.querySelector(sel)).filter(Boolean);
   const titleFor=el=>el?.querySelector('h2,h3')?.textContent?.trim()||el?.id||cfg.world;
   let previousLocation='';try{previousLocation=localStorage.getItem('study-course-last')||''}catch{}
   let index=chapters.findIndex(el=>location.hash&&`#${el.id}`===location.hash);if(index<0)index=0;
   const dock=document.createElement('nav');dock.className='course-dock';dock.setAttribute('aria-label','Ordered course navigation');
-  dock.innerHTML='<button class="course-back" type="button" aria-label="Previous chapter">← <span>Previous</span></button><div class="course-center"><button class="course-map-button" type="button" aria-label="Open course map">◎</button><div class="course-current"><small></small><strong></strong><div class="course-progress-track"><i></i></div></div><span class="course-count"></span></div><button class="course-next" type="button" aria-label="Next chapter"><span>Next</span> →</button>';
+  dock.innerHTML='<button class="course-back" type="button" aria-label="Previous chapter">← <span>Previous</span></button><div class="course-center"><button class="course-map-button" type="button" aria-label="Open all Study worlds">◎</button><div class="course-current"><small></small><strong></strong><div class="course-progress-track"><i></i></div></div><span class="course-count"></span></div><button class="course-next" type="button" aria-label="Next chapter"><span>Next</span> →</button>';
   document.body.appendChild(dock);
   const back=dock.querySelector('.course-back'),next=dock.querySelector('.course-next'),map=dock.querySelector('.course-map-button'),world=dock.querySelector('.course-current small'),current=dock.querySelector('.course-current strong'),bar=dock.querySelector('.course-progress-track i'),count=dock.querySelector('.course-count');
   world.textContent=cfg.world;
@@ -32,9 +33,10 @@
     if(host&&!document.querySelector('.course-world-gate')){
       const safeResume=previousLocation.startsWith('/study/')?previousLocation:'/study/#react';
       const gate=document.createElement('div');gate.className='course-world-gate';
-      gate.innerHTML=`<div><strong>The full course now has four connected worlds</strong><p>Core App Flow stays the main quest. Python Lab teaches backend code. Environment World connects the full setup. Handbook Registry preserves the detailed environment questions and acceptance requirements.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume where I left off →</a><a href="/study/python/">Python Lab</a><a href="/study/environment/">Environment World</a><a href="/study/environment/handbook/">Handbook Registry</a></div>`;
+      gate.innerHTML=`<div><strong>Four worlds, one course 🧠</strong><p>Core is the main quest. Python teaches backend code. Environment shows the real setup. Handbook keeps the deep reference stuff. You can jump between all four from the new Study Universe bar anywhere.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume →</a><a href="/study/python/">🐍 Python</a><a href="/study/environment/">🛰️ Environment</a><a href="/study/environment/handbook/">📘 Handbook</a></div>`;
       host.insertAdjacentElement('afterend',gate)
     }
   }
-  if(!document.querySelector('script[src^="/assets/study-enhancements.js"]')){const s=document.createElement('script');s.src='/assets/study-enhancements.js?v=20260812-2';s.defer=true;document.head.appendChild(s)}
+  const ensureScript=(src)=>{if(!document.querySelector(`script[src^="${src}"]`)){const s=document.createElement('script');s.src=`${src}?v=20260812-3`;s.defer=true;document.head.appendChild(s)}};
+  ensureScript('/assets/study-enhancements.js');ensureScript('/assets/study-universe.js');
 })();
