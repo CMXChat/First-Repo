@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#eef4f9" />
+  <meta name="color-scheme" content="light" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
+  <title>Ultimate Index | Study Lab</title>
+  <meta name="description" content="Searchable Study Lab index for frontend, backend, APIs, networking, Python, databases, authentication, AI and the development environment." />
+  <link rel="canonical" href="https://db.cmxchat.com/study/index/" />
+  <link rel="stylesheet" href="/assets/study-index.css?v=20260812-1" />
+</head>
+<body>
+  <main class="index-shell">
+    <nav class="index-top" aria-label="Study navigation">
+      <a class="index-brand" href="/study/"><i>ST</i><span>Ultimate Index</span></a>
+      <div class="index-worlds"><a href="/study/">🧭 Core</a><a href="/study/python/">🐍 Python</a><a href="/study/environment/">🛰️ Environment</a><a href="/study/environment/handbook/">📘 Handbook</a></div>
+      <a class="index-home" href="/study/">Back to Study Lab</a>
+    </nav>
+
+    <section class="index-hero">
+      <div><span class="index-eyebrow">find the thing · skip the scavenger hunt</span><h1>What the hell does that word mean?</h1><p>This is the everything-index for the course. Search a word, pick what you are trying to build, or jump straight to the exact lesson. Start dumb-simple. Flip deeper when your brain actually wants more.</p></div>
+      <div class="index-search-wrap"><label for="indexSearch">Search the developer soup</label><input class="index-search" id="indexSearch" type="search" placeholder="Try Docker, API, props, DNS, FastAPI, RAG…" autocomplete="off" /><span class="index-count" id="indexCount">Loading terms…</span></div>
+    </section>
+
+    <section class="index-section" id="goals">
+      <div class="index-heading"><div><span class="index-eyebrow">start with the job, not the jargon</span><h2>What are you trying to understand?</h2></div><p>Because “teach me web development” is how you end up 45 tabs deep watching a guy explain binary at 2:14 AM.</p></div>
+      <div class="goal-grid">
+        <button class="goal-card" type="button" data-goal="fullstack"><span>🔌</span><strong>Connect frontend → backend</strong><small>Requests, endpoints, FastAPI, generated client.</small></button>
+        <button class="goal-card" type="button" data-goal="spaces"><span>🧠</span><strong>Understand Spaces as a real app</strong><small>React UI + backend + data + auth + AI.</small></button>
+        <button class="goal-card" type="button" data-goal="osint"><span>🕵️</span><strong>Build a real OSINT tool</strong><small>Private Python work, sources, storage, results.</small></button>
+        <button class="goal-card" type="button" data-goal="api"><span>✉️</span><strong>Understand APIs + networking</strong><small>HTTP, DNS, HTTPS, ports, requests.</small></button>
+        <button class="goal-card" type="button" data-goal="docker"><span>📦</span><strong>Finally understand Docker</strong><small>Runtime box, services, Compose, ports.</small></button>
+        <button class="goal-card" type="button" data-goal="ai"><span>✨</span><strong>Understand where AI belongs</strong><small>Models, context, tools, RAG, validation.</small></button>
+        <button class="goal-card" type="button" data-goal="auth"><span>🔐</span><strong>Understand login + permissions</strong><small>Authentication, authorization, sessions.</small></button>
+        <button class="goal-card" type="button" data-goal="files"><span>🗂️</span><strong>Understand the real project files</strong><small>routes, CRUD, models, deps, client.</small></button>
+      </div>
+      <div class="goal-result" id="goalResult"></div>
+    </section>
+
+    <section class="index-section" id="terms">
+      <div class="index-heading"><div><span class="index-eyebrow">developer soup translator · the expanded universe</span><h2>Definitions you can actually use</h2></div><p>Tap a card for the easier version, a real example, and the lesson where the word stops being theoretical.</p></div>
+      <div class="filter-row"><button class="active" type="button" data-index-filter="all">All</button><button type="button" data-index-filter="frontend">Frontend</button><button type="button" data-index-filter="api">API</button><button type="button" data-index-filter="network">Networking</button><button type="button" data-index-filter="backend">Backend</button><button type="button" data-index-filter="data">Data</button><button type="button" data-index-filter="auth">Auth</button><button type="button" data-index-filter="devops">Dev / deploy</button><button type="button" data-index-filter="ai">AI</button></div>
+      <div class="term-grid" id="termGrid"></div><div class="index-empty" id="indexEmpty">Nothing matched that. Either the term is missing or the developer who named it deserves prison 😭.</div>
+    </section>
+
+    <section class="index-section" id="projects">
+      <div class="index-heading"><div><span class="index-eyebrow">put the concepts into things you actually care about</span><h2>Two full-stack pictures worth keeping in your head</h2></div><p>The exact feature can change. The architecture pattern stays useful.</p></div>
+      <div class="project-map">
+        <article class="project-card"><h3>Spaces</h3><p>You tap something in the briefing UI. React sends a request. FastAPI routes it to Python. Backend logic checks identity/permission, reads or changes data, may call an AI/tool workflow, then returns data so React updates the screen.</p><div class="project-flow"><span>React</span><i>→</i><span>HTTP/API</span><i>→</i><span>FastAPI</span><i>→</i><span>Python</span><i>→</i><span>Postgres / tools / AI</span><i>→</i><span>React</span></div></article>
+        <article class="project-card"><h3>OSINT tool</h3><p>You submit a search or case action. The browser sends it to a protected backend endpoint. Python can query approved sources/tools, process evidence, optionally use AI to summarize/classify, store case/report data, and return structured results.</p><div class="project-flow"><span>Search UI</span><i>→</i><span>POST /search</span><i>→</i><span>Python research logic</span><i>→</i><span>sources / AI</span><i>→</i><span>case DB</span><i>→</i><span>results UI</span></div></article>
+      </div>
+    </section>
+
+    <footer class="index-footer">Lost? Good news: this page exists specifically because being lost in folders is stupid. <a href="/study/">Return to the main quest →</a></footer>
+  </main>
+  <script src="/assets/study-index.js?v=20260812-1" defer></script>
+</body>
+</html>
