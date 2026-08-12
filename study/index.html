@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#060a12" />
+  <meta name="theme-color" content="#050913" />
   <meta name="color-scheme" content="dark light" />
   <meta name="referrer" content="no-referrer" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
@@ -11,9 +11,9 @@
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
   <title>Study Lab | Learn the CMX Build Environment</title>
-  <meta name="description" content="An interactive beginner-friendly lesson for understanding the CMX build environment: browser, React and TypeScript, HTTP, API calls, FastAPI, authentication, PostgreSQL, Docker, migrations, and generated API clients." />
+  <meta name="description" content="A guided interactive course for understanding the CMX build environment one concept at a time, using Spaces examples and hands-on visual labs." />
   <link rel="canonical" href="https://db.cmxchat.com/study/" />
-  <link rel="stylesheet" href="/assets/study.css?v=20260812-1" />
+  <link rel="stylesheet" href="/assets/study-v2.css?v=20260812-1" />
 </head>
 <body>
   <a class="skip-link" href="#studyContent">Skip to lesson</a>
@@ -25,16 +25,16 @@
         <span class="study-mark" aria-hidden="true">ST</span>
         <span class="study-identity-copy">
           <strong>Study Lab</strong>
-          <span>CR-guided build lesson</span>
+          <span>CR-guided learning environment</span>
         </span>
       </a>
 
       <nav class="toolbar-links" aria-label="Study shortcuts">
-        <a href="#journey">Request journey</a>
-        <a href="#frontend">Frontend</a>
-        <a href="#backend">Backend</a>
-        <a href="#auth">Auth</a>
-        <a href="#quiz">Quiz</a>
+        <a href="#checkpoint">Where you are</a>
+        <a href="#react">React Lab</a>
+        <a href="#request">Request journey</a>
+        <a href="#database">Database</a>
+        <a href="#roadmap">Roadmap</a>
       </nav>
 
       <div class="toolbar-actions">
@@ -52,472 +52,407 @@
 
   <div class="study-shell" id="top">
     <aside class="study-rail" aria-label="Lesson navigation">
-      <div class="rail-panel">
-        <p class="rail-eyebrow">Lesson map</p>
+      <div class="rail-card">
+        <p class="rail-kicker">Lesson map</p>
         <nav class="lesson-nav">
-          <a class="is-current" href="#map"><span>00</span><span>Start here</span></a>
-          <a href="#journey"><span>01</span><span>One click</span></a>
-          <a href="#frontend"><span>02</span><span>Frontend</span></a>
-          <a href="#http"><span>03</span><span>HTTP + API</span></a>
-          <a href="#backend"><span>04</span><span>FastAPI</span></a>
-          <a href="#auth"><span>05</span><span>Authentication</span></a>
-          <a href="#database"><span>06</span><span>PostgreSQL</span></a>
-          <a href="#tools"><span>07</span><span>Other pieces</span></a>
-          <a href="#quiz"><span>08</span><span>Prove it</span></a>
-          <a href="#glossary"><span>09</span><span>Glossary</span></a>
+          <a class="is-current" href="#checkpoint">Your checkpoint</a>
+          <a href="#stack">The whole stack</a>
+          <a href="#react">React + components</a>
+          <a href="#request">Follow one action</a>
+          <a href="#backend">API + backend</a>
+          <a href="#database">PostgreSQL</a>
+          <a href="#auth">Login + auth</a>
+          <a href="#roadmap">What comes later</a>
+          <a href="#quiz">Quick check</a>
+          <a href="#glossary">Glossary</a>
         </nav>
       </div>
 
-      <div class="rail-panel rail-progress">
-        <div class="rail-progress-head">
-          <strong>Your exploration</strong>
-          <span data-progress-text>0 / 8</span>
-        </div>
-        <div class="progress-track" aria-hidden="true"><span data-progress-bar></span></div>
-        <p class="rail-note">This is not a score. The bar only remembers which interactive parts you have explored on this browser.</p>
-        <button class="reset-progress" id="resetProgress" type="button">Reset progress</button>
+      <div class="rail-card rail-progress">
+        <p class="rail-kicker">Hands-on progress</p>
+        <strong data-progress-percent>0%</strong>
+        <p>Only interactions count. Scrolling past something does not.</p>
+        <div class="progress-track" aria-hidden="true"><i data-progress-bar></i></div>
+        <button class="rail-reset" id="resetProgress" type="button">Reset explored progress</button>
+      </div>
+
+      <div class="rail-card rail-now">
+        <p class="rail-kicker">Learning now</p>
+        <strong>HTML/CSS/JS → React → components</strong>
+        <p>The rest of the environment stays visible, but this is the concept we actually want to make click next.</p>
       </div>
     </aside>
 
-    <main class="study-paper" id="studyContent">
-      <section class="hero" aria-labelledby="pageTitle">
+    <article class="study-paper" id="studyContent">
+      <header class="hero" aria-labelledby="pageTitle">
         <div class="hero-grid" aria-hidden="true"></div>
         <div class="hero-orbit one" aria-hidden="true"></div>
         <div class="hero-orbit two" aria-hidden="true"></div>
 
         <div class="hero-copy">
           <div class="hero-kicker-row">
-            <p class="eyebrow">YOUR BUILD ENVIRONMENT, FROM ZERO</p>
-            <span class="hero-status">Interactive lesson</span>
+            <p class="section-kicker">Your real build environment, taught one layer at a time</p>
+            <span class="status-chip">Current checkpoint · React</span>
           </div>
-          <h1 id="pageTitle">Follow one click through the whole app</h1>
-          <p class="hero-lead">You do not need to memorize React, APIs, FastAPI, databases, tokens, Docker, or any of the other words first. We are going to watch one normal action move through the stack, then pull the pieces apart until the architecture actually makes sense.</p>
+          <h1 id="pageTitle">Learn the stack by watching it work</h1>
+          <p class="hero-lead">This is not a documentation dump. You already understand pieces of the architecture, so the lesson starts where you actually are, uses Spaces as the running example, and lets you touch the ideas before asking you to remember the words.</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#journey">Run the first request <span aria-hidden="true">↓</span></a>
-            <a class="button button-secondary" href="#map">See the learning map</a>
+            <button class="button button-primary" id="startCurrentLesson" type="button">Continue with React <span aria-hidden="true">→</span></button>
+            <a class="button button-secondary" href="#stack">See the whole environment</a>
           </div>
-          <p class="hero-note">This lesson follows the environment you are learning: React + TypeScript in the browser, a generated API client, FastAPI + Python on the backend, authentication, and PostgreSQL for durable data.</p>
+          <div class="section-note"><span aria-hidden="true">✦</span><span><strong>Rule for this page:</strong> if a word does not make sense, that word becomes the lesson. There is no prize for speedrunning the roadmap.</span></div>
         </div>
 
-        <div class="stack-orbit" aria-label="Application stack overview">
-          <div class="stack-center"><span>The app</span><strong>One action moving through layers</strong></div>
-          <div class="orbit-node orbit-browser"><span>Browser</span><strong>React + TypeScript</strong></div>
-          <div class="orbit-node orbit-fastapi"><span>Backend</span><strong>FastAPI + Python</strong></div>
-          <div class="orbit-node orbit-db"><span>Data</span><strong>PostgreSQL</strong></div>
-          <div class="orbit-node orbit-auth"><span>Proof</span><strong>Authentication</strong></div>
+        <div class="hero-map" aria-label="Main application layers">
+          <div class="hero-map-center"><span>Your app</span><strong>one connected flow</strong></div>
+          <button class="hero-map-node browser" type="button" data-hero-node="browser"><span>Runs here</span><strong>Browser</strong></button>
+          <button class="hero-map-node react" type="button" data-hero-node="react"><span>Frontend</span><strong>React + TypeScript</strong></button>
+          <button class="hero-map-node fastapi" type="button" data-hero-node="fastapi"><span>Backend</span><strong>FastAPI + Python</strong></button>
+          <button class="hero-map-node postgres" type="button" data-hero-node="postgres"><span>Storage</span><strong>PostgreSQL</strong></button>
+        </div>
+      </header>
+
+      <section id="checkpoint" class="lesson-section" data-nav-section data-tutor-context="checkpoint" aria-labelledby="checkpointTitle">
+        <div class="section-heading reveal">
+          <div><p class="section-kicker">Your actual checkpoint</p><h2 id="checkpointTitle">We are not starting from zero</h2></div>
+          <p class="section-intro">You already have the big frontend → backend → database idea. React is only beginning to click, HTTP/API concepts are early, and the deeper tooling can wait. The course keeps those levels separate so you always know what is foundation, what is current, and what is future.</p>
+        </div>
+
+        <div class="checkpoint-grid reveal">
+          <article class="checkpoint-card">
+            <span class="mini-icon" aria-hidden="true">✓</span>
+            <p class="card-kicker">Foundation forming</p>
+            <h3>You already have a useful base</h3>
+            <p>You can reason about the application in broad layers without needing the full vocabulary yet.</p>
+            <ul><li>Frontend is what the user sees and uses</li><li>Backend owns private logic and processing</li><li>Database stores durable information</li><li>Python is the backend language</li></ul>
+          </article>
+          <article class="checkpoint-card now">
+            <span class="mini-icon" aria-hidden="true">→</span>
+            <p class="card-kicker">Learning now</p>
+            <h3>Connect React to what you already know</h3>
+            <p>The next win is understanding why React exists when HTML, CSS, and JavaScript already exist.</p>
+            <ul><li>React is still frontend</li><li>Components are reusable UI pieces</li><li>TypeScript belongs to the JavaScript world</li><li>Spaces can assemble known components dynamically</li></ul>
+          </article>
+          <article class="checkpoint-card later">
+            <span class="mini-icon" aria-hidden="true">⌁</span>
+            <p class="card-kicker">Visible, but later</p>
+            <h3>The advanced words are parked on purpose</h3>
+            <p>You will learn them inside the real project after the request flow feels natural.</p>
+            <ul><li>TanStack Router + Query</li><li>Generated OpenAPI client</li><li>Models, CRUD, migrations</li><li>Docker, deployment, deeper auth</li></ul>
+          </article>
         </div>
       </section>
 
-      <section id="map" class="lesson-section" data-nav-section aria-labelledby="mapTitle">
+      <section id="stack" class="lesson-section" data-nav-section data-tutor-context="stack" aria-labelledby="stackTitle">
         <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Before the code</p>
-            <h2 id="mapTitle">The mental model comes first</h2>
-          </div>
-          <p class="section-intro">The mistake beginners usually make is trying to learn every tool as a separate definition. Here, each concept stays attached to the same simple question: when you click something in the app, which layer is doing what, and why does that layer exist?</p>
+          <div><p class="section-kicker">Your anchor</p><h2 id="stackTitle">Four pieces. One app.</h2></div>
+          <p class="section-intro">Every new concept should attach to a place you already recognize. Click each layer and keep the explanation simple until the overall picture feels boringly obvious.</p>
         </div>
 
-        <div class="start-here reveal">
-          <div>
-            <p class="card-label">How this lesson works</p>
-            <h3>You are allowed to not know the words yet</h3>
-            <p>Open the cards in order, press the buttons, make the fake requests, and inspect the examples only when the picture is clear enough. The code is there to connect the idea to reality, not to make you stare at syntax before you know what it is for.</p>
+        <div class="stack-board reveal">
+          <div class="stack-line" aria-label="Browser to database architecture">
+            <button class="stack-node is-active" type="button" data-stack-node="browser"><span>01 · experience</span><strong>Browser</strong><small>Where the frontend runs and where you click, type, and see the result.</small></button>
+            <button class="stack-node" type="button" data-stack-node="react"><span>02 · frontend</span><strong>React + TypeScript</strong><small>Organizes the interface and calls the backend when server data or actions are needed.</small></button>
+            <button class="stack-node" type="button" data-stack-node="fastapi"><span>03 · backend</span><strong>FastAPI + Python</strong><small>Receives requests, enforces rules, processes information, and talks to storage.</small></button>
+            <button class="stack-node" type="button" data-stack-node="postgres"><span>04 · database</span><strong>PostgreSQL</strong><small>Stores structured records that need to survive after the current page or session ends.</small></button>
           </div>
-          <div class="start-rules" aria-label="Study rules">
-            <span><i>1</i>Idea before syntax</span>
-            <span><i>2</i>One request stays with us</span>
-            <span><i>3</i>You can retry everything</span>
-            <span><i>4</i>Real stack, simplified examples</span>
-          </div>
-        </div>
-
-        <div class="path-grid reveal" aria-label="Interactive learning path">
-          <button class="path-card" type="button" data-progress-card="journey" data-target="#journey">
-            <span class="path-number">01</span><span class="path-state">Open</span>
-            <h3>Watch one click travel</h3><p>See Browser → React → HTTP → FastAPI → PostgreSQL → response as one continuous event.</p>
-          </button>
-          <button class="path-card" type="button" data-progress-card="frontend" data-target="#frontend">
-            <span class="path-number">02</span><span class="path-state">Open</span>
-            <h3>Understand the frontend</h3><p>Separate HTML, CSS, JavaScript, React, and TypeScript without treating them like five unrelated mysteries.</p>
-          </button>
-          <button class="path-card" type="button" data-progress-card="http" data-target="#http">
-            <span class="path-number">03</span><span class="path-state">Open</span>
-            <h3>Build an HTTP request</h3><p>Choose a method and endpoint, send a simulated request, and inspect the response that comes back.</p>
-          </button>
-          <button class="path-card" type="button" data-progress-card="backend" data-target="#backend">
-            <span class="path-number">04</span><span class="path-state">Open</span>
-            <h3>Open a FastAPI endpoint</h3><p>Click the Python lines and learn what route decorators, parameters, dependencies, database calls, and returns mean.</p>
-          </button>
-          <button class="path-card" type="button" data-progress-card="auth" data-target="#auth">
-            <span class="path-number">05</span><span class="path-state">Open</span>
-            <h3>See how login proof works</h3><p>Compare the basic token and session mental models so “authentication” stops sounding like magic.</p>
-          </button>
-          <button class="path-card" type="button" data-progress-card="database" data-target="#database">
-            <span class="path-number">06</span><span class="path-state">Open</span>
-            <h3>Touch the database</h3><p>Insert and read fake rows so PostgreSQL feels like structured durable storage, not a mysterious black box.</p>
-          </button>
+          <aside class="explain-card" aria-live="polite">
+            <span class="explain-tag" id="stackExplainRole">Where the app is experienced</span>
+            <h3 id="stackExplainTitle">Browser</h3>
+            <p id="stackExplainText">The browser runs the frontend, shows the interface, notices clicks, and sends network requests when the frontend needs the backend.</p>
+            <div class="analogy" id="stackExplainAnalogy">Think: the place where you actually touch the app.</div>
+          </aside>
         </div>
       </section>
 
-      <section id="journey" class="lesson-section" data-nav-section aria-labelledby="journeyTitle">
+      <section id="react" class="lesson-section" data-nav-section data-tutor-context="react" aria-labelledby="reactTitle">
         <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 01 · The whole loop</p>
-            <h2 id="journeyTitle">What actually happens after a click?</h2>
-          </div>
-          <p class="section-intro">Start here because the stack is easier when you can see the complete trip. The same six-layer picture will keep reappearing throughout the lesson, so every new term has somewhere to attach.</p>
+          <div><p class="section-kicker">Current lesson · start here</p><h2 id="reactTitle">Why React if HTML, CSS and JavaScript already work?</h2></div>
+          <p class="section-intro">React is not a mysterious fourth web language. It is a JavaScript library for organizing interactive frontend interfaces into reusable pieces. The browser still ends up displaying normal interface elements styled with CSS and controlled with JavaScript behavior.</p>
         </div>
 
-        <article class="tutor-card reveal" aria-live="polite">
-          <div class="tutor-avatar" aria-hidden="true">CR</div>
-          <div>
-            <h3 id="tutorTitle">CR Guide · simplest version</h3>
-            <p id="tutorText">Think of the app as a restaurant. The browser is where you sit, React builds what you see, the HTTP request is your order, FastAPI is the kitchen receiving it, and PostgreSQL is the organized storage room where saved information lives.</p>
-            <div class="tutor-actions" role="group" aria-label="Choose explanation depth">
-              <button class="mini-button is-active" type="button" data-tutor-mode="simple">Simplest</button>
-              <button class="mini-button" type="button" data-tutor-mode="technical">One level deeper</button>
-              <button class="mini-button" type="button" data-tutor-mode="why">Why split it?</button>
-            </div>
-          </div>
-        </article>
+        <div class="react-intro reveal">
+          <article class="concept-card circle-card">
+            <p class="card-kicker">The useful mental model</p>
+            <h3>React helps you build and control the frontend using reusable pieces.</h3>
+            <p>Those reusable pieces are called <strong>components</strong>. A component can represent something small like a button or something richer like a complete Weather card.</p>
+            <div class="big-equation" aria-label="React mental model"><span>HTML structure</span><b>+</b><span>CSS appearance</span><b>+</b><span>JS behavior</span><b>→</b><span>React components</span></div>
+          </article>
 
-        <div class="flow-lab reveal">
-          <div class="flow-controls">
-            <div class="flow-scenario" role="group" aria-label="Choose request scenario">
-              <button class="is-active" type="button" data-flow-scenario="create">Create item</button>
-              <button type="button" data-flow-scenario="login">Log in</button>
-              <button type="button" data-flow-scenario="load">Load page data</button>
+          <article class="compare-card">
+            <p class="card-kicker">Compare the idea</p>
+            <div class="compare-tabs" role="group" aria-label="React comparison modes">
+              <button class="is-active" type="button" data-compare="repeated">Repeated markup</button>
+              <button type="button" data-compare="component">Reusable component</button>
+              <button type="button" data-compare="dynamic">Spaces data</button>
             </div>
-            <button class="button button-primary" id="runFlow" type="button">Play the request</button>
+            <div class="compare-output">
+              <h4 id="compareTitle">Plain markup can repeat the same shape again and again</h4>
+              <p id="compareText">That is totally valid for simple pages. The pain shows up when a large app has many similar interactive pieces that need the same behavior and structure.</p>
+              <pre class="mini-code" id="compareCode">&lt;div class="weather-card"&gt;New York · 78°&lt;/div&gt;
+&lt;div class="weather-card"&gt;London · 64°&lt;/div&gt;
+&lt;div class="weather-card"&gt;Auckland · 59°&lt;/div&gt;</pre>
+            </div>
+          </article>
+        </div>
+
+        <section class="component-lab reveal" aria-labelledby="componentLabTitle">
+          <header class="lab-heading">
+            <div><p class="card-kicker">Spaces Component Lab</p><h3 id="componentLabTitle">Build a briefing out of reusable pieces</h3></div>
+            <p>Add cards to the phone. You are not generating a brand-new frontend from nothing. You are assembling frontend components the app already knows how to render.</p>
+          </header>
+
+          <div class="component-workspace">
+            <div class="component-palette" aria-label="Available briefing components">
+              <button type="button" data-add-component="weather"><strong>WeatherCard</strong><small>conditions + timing</small></button>
+              <button type="button" data-add-component="alert"><strong>AlertCard</strong><small>priority notice</small></button>
+              <button type="button" data-add-component="chart"><strong>ChartCard</strong><small>trend or metric</small></button>
+              <button type="button" data-add-component="calendar"><strong>CalendarCard</strong><small>schedule context</small></button>
+              <button type="button" data-add-component="text"><strong>TextCard</strong><small>short written context</small></button>
+            </div>
+
+            <div class="phone-shell" aria-label="Example Spaces briefing preview">
+              <div class="phone-screen">
+                <div class="phone-top"><span>PERSONAL SPACE</span><span>8:03 AM</span></div>
+                <div class="brief-stack" id="briefStack"></div>
+              </div>
+            </div>
+
+            <aside class="component-code">
+              <h4>Conceptual React structure</h4>
+              <p>This is intentionally simplified. Right now, notice the reusable component names instead of worrying about syntax.</p>
+              <pre id="componentCode">// Add a component to see the conceptual structure here.</pre>
+              <div class="lab-actions"><button id="buildSample" type="button">Build sample</button><button id="clearComponents" type="button">Clear</button></div>
+            </aside>
+          </div>
+        </section>
+
+        <div class="section-note reveal"><span aria-hidden="true">💡</span><span><strong>The Spaces idea:</strong> the frontend owns components like WeatherCard and AlertCard. A backend or AI process can return structure + data telling the frontend which known pieces belong in a briefing. That is very different from an AI rewriting the whole frontend every morning.</span></div>
+      </section>
+
+      <section id="request" class="lesson-section" data-nav-section data-tutor-context="request" aria-labelledby="requestTitle">
+        <div class="section-heading reveal">
+          <div><p class="section-kicker">Follow one real action</p><h2 id="requestTitle">Click → request → endpoint → Python → database → response → screen</h2></div>
+          <p class="section-intro">This is the backbone you should eventually be able to trace without help. Change the Spaces scenario, run the flow, then tap individual steps until you can predict what comes next.</p>
+        </div>
+
+        <div class="flow-shell reveal">
+          <div class="flow-toolbar">
+            <div class="segmented" role="group" aria-label="Request journey scenario">
+              <button class="is-active" type="button" data-flow-scenario="create">Create briefing</button>
+              <button type="button" data-flow-scenario="load">Load Personal Space</button>
+              <button type="button" data-flow-scenario="setting">Change setting</button>
+            </div>
+            <button class="button button-primary" id="runFlow" type="button">Run the whole flow</button>
           </div>
 
-          <div class="flow-map" aria-label="Request journey steps">
-            <button class="flow-node" type="button" data-flow-node><span>01</span><strong>Browser</strong><small>You do something in the page.</small></button>
-            <button class="flow-node" type="button" data-flow-node><span>02</span><strong>React</strong><small>The frontend decides what happens next.</small></button>
-            <button class="flow-node" type="button" data-flow-node><span>03</span><strong>HTTP</strong><small>A structured message travels.</small></button>
-            <button class="flow-node" type="button" data-flow-node><span>04</span><strong>FastAPI</strong><small>Python backend code receives it.</small></button>
-            <button class="flow-node" type="button" data-flow-node><span>05</span><strong>PostgreSQL</strong><small>Data is read or changed if needed.</small></button>
-            <button class="flow-node" type="button" data-flow-node><span>06</span><strong>Response</strong><small>The result returns to the frontend.</small></button>
+          <div class="flow-track" aria-label="Application request flow">
+            <button class="flow-node is-active" type="button" data-flow-node><span class="flow-num">1</span><strong>Click</strong><small>browser interaction</small></button>
+            <button class="flow-node" type="button" data-flow-node><span class="flow-num">2</span><strong>React</strong><small>frontend reacts</small></button>
+            <button class="flow-node" type="button" data-flow-node><span class="flow-num">3</span><strong>HTTP</strong><small>message travels</small></button>
+            <button class="flow-node" type="button" data-flow-node><span class="flow-num">4</span><strong>Endpoint</strong><small>backend door</small></button>
+            <button class="flow-node" type="button" data-flow-node><span class="flow-num">5</span><strong>Python</strong><small>logic decides</small></button>
+            <button class="flow-node" type="button" data-flow-node><span class="flow-num">6</span><strong>PostgreSQL</strong><small>read or save</small></button>
+            <button class="flow-node" type="button" data-flow-node><span class="flow-num">7</span><strong>Response</strong><small>backend answers</small></button>
+            <button class="flow-node" type="button" data-flow-node><span class="flow-num">8</span><strong>Screen</strong><small>frontend updates</small></button>
           </div>
 
           <div class="flow-explainer" aria-live="polite">
-            <div><span class="flow-explainer-label" id="flowStepLabel">Step 1 of 6</span><h3 id="flowTitle">You click “Create item”</h3></div>
-            <p id="flowText">The browser notices your click. Nothing has reached Python or the database yet. React is handling the interface event first.</p>
+            <span class="flow-step-badge" id="flowBadge">01</span>
+            <div><h3 id="flowTitle">Click</h3><p id="flowText">You click Create Briefing in the browser. React catches that interface event first.</p></div>
           </div>
-        </div>
-
-        <div class="checkpoint reveal" data-checkpoint data-correct="Exactly. React is the frontend layer handling the click first. It may later decide to call FastAPI, but the click begins in the browser." data-wrong="Think about which code is already running inside the browser before a network request starts.">
-          <div class="checkpoint-head"><div><p class="card-label">30-second checkpoint</p><h3>Where does the action begin?</h3></div></div>
-          <p class="checkpoint-question">You click “Create item.” Before Python does anything, which layer sees the click?</p>
-          <div class="answer-grid"><button type="button" data-answer="correct">React in the browser</button><button type="button" data-answer="wrong">PostgreSQL</button><button type="button" data-answer="wrong">Docker</button><button type="button" data-answer="wrong">The migration system</button></div>
-          <p class="checkpoint-feedback" aria-live="polite"></p>
         </div>
       </section>
 
-      <section id="frontend" class="lesson-section" data-nav-section aria-labelledby="frontendTitle">
+      <section id="backend" class="lesson-section" data-nav-section data-tutor-context="backend" aria-labelledby="backendSectionTitle">
         <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 02 · What runs in the browser</p>
-            <h2 id="frontendTitle">HTML, CSS, JavaScript, React, TypeScript</h2>
-          </div>
-          <p class="section-intro">These names overlap because they live in the same frontend world, but they do different jobs. The easiest way to understand React and TypeScript is to place them on top of the HTML, CSS, and JavaScript foundation you have already heard about.</p>
+          <div><p class="section-kicker">Backend basics</p><h2 id="backendSectionTitle">Four words that should stop blurring together</h2></div>
+          <p class="section-intro">API, endpoint, Python, and FastAPI are related, but they are not four names for the same thing. Click each one and keep the distinction tied to a Spaces action.</p>
         </div>
 
-        <div class="layer-grid reveal">
-          <div class="browser-demo" aria-label="Simplified browser interface">
-            <div class="browser-chrome"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-address">http://localhost:5173</span></div>
-            <div class="browser-screen">
-              <div class="fake-ui" aria-hidden="true">
-                <div class="fake-title"></div>
-                <div class="fake-line"></div>
-                <div class="fake-line short"></div>
-                <div class="fake-cards"><div class="fake-card"></div><div class="fake-card"></div></div>
-              </div>
-            </div>
+        <div class="backend-grid reveal">
+          <div class="concept-tabs" role="group" aria-label="Backend concepts">
+            <button class="is-active" type="button" data-backend="api"><strong>API</strong><small>controlled software communication</small></button>
+            <button type="button" data-backend="endpoint"><strong>Endpoint</strong><small>one specific backend door</small></button>
+            <button type="button" data-backend="python"><strong>Python</strong><small>backend programming language</small></button>
+            <button type="button" data-backend="fastapi"><strong>FastAPI</strong><small>Python web/API framework</small></button>
           </div>
-
-          <div class="concept-panel">
-            <div class="layer-tabs" role="group" aria-label="Frontend layer concepts">
-              <button class="is-active" type="button" data-layer="html">HTML</button>
-              <button type="button" data-layer="css">CSS</button>
-              <button type="button" data-layer="js">JavaScript</button>
-              <button type="button" data-layer="react">React</button>
-              <button type="button" data-layer="ts">TypeScript</button>
-            </div>
-            <p class="card-label" id="layerRole">The structure</p>
-            <h3 id="layerName">HTML</h3>
-            <p id="layerText">HTML gives the page its pieces: headings, buttons, forms, links, sections, tables, and other content. Think of it as the labeled frame of the interface.</p>
-            <div class="concept-analogy" id="layerAnalogy">A house analogy: HTML is the rooms, doors, walls, and labels that say what each part is.</div>
-            <details class="code-peek"><summary>Show me one tiny code example</summary><pre class="code-block"><code id="layerCode">&lt;button&gt;Create item&lt;/button&gt;</code></pre></details>
-          </div>
+          <article class="backend-stage" aria-live="polite">
+            <p class="card-kicker" id="backendLabel">The controlled way software asks the backend for data or actions.</p>
+            <h3 id="backendTitle">API</h3>
+            <p id="backendText">For your current mental model: the backend exposes an API, and the frontend calls it.</p>
+            <div class="backend-example" id="backendExample">Spaces example: the frontend wants your briefing, so it calls the backend API instead of touching PostgreSQL directly.</div>
+          </article>
         </div>
 
-        <div class="checkpoint reveal" data-checkpoint data-correct="Yes. React is frontend code. It helps build and update the interface running in the browser." data-wrong="FastAPI is the Python backend. React belongs to the frontend running in the browser.">
-          <div class="checkpoint-head"><div><p class="card-label">Important distinction</p><h3>Which side is React on?</h3></div></div>
-          <p class="checkpoint-question">In this environment, React belongs to which side of the application?</p>
-          <div class="answer-grid"><button type="button" data-answer="correct">Frontend</button><button type="button" data-answer="wrong">Backend</button></div>
-          <p class="checkpoint-feedback" aria-live="polite"></p>
-        </div>
-      </section>
-
-      <section id="http" class="lesson-section" data-nav-section aria-labelledby="httpTitle">
-        <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 03 · How the sides talk</p>
-            <h2 id="httpTitle">An HTTP request is just a structured message</h2>
-          </div>
-          <p class="section-intro">The frontend does not need its own secret backend API. It calls the API exposed by FastAPI. HTTP is the agreed way the message travels, and an endpoint is one specific backend address that knows how to handle a type of request.</p>
-        </div>
-
-        <div class="http-grid reveal">
-          <div class="request-builder">
-            <p class="card-label">Request builder</p>
-            <h3>Build the message</h3>
+        <div class="http-lab reveal">
+          <section class="request-panel" aria-labelledby="requestBuilderTitle">
+            <p class="card-kicker">HTTP playground</p><h3 id="requestBuilderTitle">Build a fake frontend → backend message</h3>
             <div class="field-grid">
-              <label for="requestMethod">Method<select id="requestMethod"><option>GET</option><option>POST</option></select></label>
-              <label for="requestEndpoint">Endpoint<select id="requestEndpoint"><option>/api/items</option><option>/api/users/me</option><option>/api/items/42</option></select></label>
-              <label for="requestBody">JSON body<input id="requestBody" value='{"title":"Study HTTP"}' /></label>
+              <div class="field"><label for="requestMethod">Method</label><select id="requestMethod"><option>GET</option><option>POST</option><option>PATCH</option><option>DELETE</option></select></div>
+              <div class="field"><label for="requestPath">Endpoint path</label><input id="requestPath" value="/briefings" /></div>
             </div>
-            <div style="margin-top:16px"><button class="button button-primary" id="sendRequest" type="button">Send simulated request</button></div>
-          </div>
-
-          <div class="response-panel" aria-live="polite">
-            <p class="card-label">What is traveling</p>
-            <h3>The envelope</h3>
-            <div class="request-envelope">
-              <div class="envelope-line"><span>Method</span><strong id="requestPreviewMethod">GET</strong></div>
-              <div class="envelope-line"><span>Path</span><code id="requestPreviewPath">/api/items</code></div>
-              <div class="envelope-line"><span>Body</span><code id="requestPreviewBody">{"title":"Study HTTP"}</code></div>
-            </div>
-            <div style="margin-top:18px"><span class="response-status" id="responseCode">Ready to send</span><pre class="code-block response-body"><code id="responseJson">The backend response will appear here.</code></pre></div>
-          </div>
-        </div>
-
-        <div class="start-here reveal" style="margin-top:20px">
-          <div><p class="card-label">Four words to keep straight</p><h3>Method, path, body, response</h3><p>A method says what kind of action is being requested. The path identifies the backend endpoint. A request body can carry data to the backend. The response is what the backend sends back.</p></div>
-          <div class="start-rules"><span><i>G</i>GET usually asks for data</span><span><i>P</i>POST usually sends new data</span><span><i>/</i>Path chooses the endpoint</span><span><i>{}</i>JSON is a common data format</span></div>
+            <div class="field"><label for="requestBody">JSON body</label><textarea id="requestBody" spellcheck="false">{ "title": "Morning Brief" }</textarea></div>
+            <div class="request-preview"><b id="previewMethod">GET</b> <span id="previewPath">/briefings</span><br><span id="previewBody">{ "title": "Morning Brief" }</span></div>
+            <div class="hero-actions"><button class="button button-primary" id="sendRequest" type="button">Send fake request</button></div>
+          </section>
+          <section class="response-panel" aria-labelledby="responseTitle">
+            <p class="card-kicker">Backend answer</p><h3 id="responseTitle">HTTP response</h3>
+            <span class="response-status" id="responseStatus">waiting</span>
+            <pre id="responseBody">The backend response will appear here.</pre>
+          </section>
         </div>
       </section>
 
-      <section id="backend" class="lesson-section" data-nav-section aria-labelledby="backendTitle">
+      <section id="database" class="lesson-section" data-nav-section data-tutor-context="database" aria-labelledby="databaseTitle">
         <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 04 · Python receives the request</p>
-            <h2 id="backendTitle">Open up a FastAPI endpoint</h2>
-          </div>
-          <p class="section-intro">FastAPI is the Python web framework on the backend. It connects an HTTP method and path to Python code, gives that code validated request information, lets the backend apply rules and work with data, then turns the returned result into an HTTP response.</p>
+          <div><p class="section-kicker">Database basics</p><h2 id="databaseTitle">What does PostgreSQL actually look like?</h2></div>
+          <p class="section-intro">At your current level, picture organized tables with rows and columns. IDs let records connect to each other. The database can store those relationships, while Python decides when and why they should be read or changed.</p>
         </div>
 
-        <div class="endpoint-anatomy reveal">
-          <div class="code-anatomy" aria-label="Clickable FastAPI code example">
-            <button class="code-line is-active" type="button" data-anatomy="decorator"><span>1</span><code>@router.get("/items/{item_id}")</code></button>
-            <button class="code-line" type="button" data-anatomy="function"><span>2</span><code>async def get_item(</code></button>
-            <button class="code-line" type="button" data-anatomy="parameter"><span>3</span><code>    item_id: int,</code></button>
-            <button class="code-line" type="button" data-anatomy="dependency"><span>4</span><code>    current_user = Depends(get_current_user),</code></button>
-            <button class="code-line" type="button" data-anatomy="function"><span>5</span><code>):</code></button>
-            <button class="code-line" type="button" data-anatomy="database"><span>6</span><code>    item = await items.get(item_id)</code></button>
-            <button class="code-line" type="button" data-anatomy="return"><span>7</span><code>    return item</code></button>
-          </div>
-          <div class="anatomy-explain" aria-live="polite">
-            <p class="card-label">Click a code line</p>
-            <h3 id="anatomyTitle">The route decorator</h3>
-            <p id="anatomyText">@router.get("/items/{item_id}") tells FastAPI which HTTP method and URL path should cause this Python function to run.</p>
-            <details class="code-peek"><summary>What should I remember right now?</summary><p style="color:var(--muted-strong);font-size:.82rem">An endpoint is simply backend code attached to an HTTP method and path. You do not need to memorize every FastAPI feature before that sentence feels obvious.</p></details>
-          </div>
+        <div class="db-lab reveal">
+          <article class="db-table-card">
+            <h3>users</h3><p>One row per example user.</p>
+            <table class="data-table"><thead><tr><th>id</th><th>name</th><th>email</th></tr></thead><tbody><tr data-user-row="1"><td class="key">1</td><td>Jay</td><td>jay@example.com</td></tr><tr><td>2</td><td>Ava</td><td>ava@example.com</td></tr></tbody></table>
+          </article>
+          <article class="db-table-card">
+            <h3>briefings</h3><p>The user_id column connects each briefing to a user.</p>
+            <table class="data-table"><thead><tr><th>id</th><th>user_id</th><th>title</th></tr></thead><tbody id="briefingsBody"><tr data-briefing-user="1"><td>42</td><td class="key">1</td><td>Morning Brief</td></tr><tr><td>51</td><td class="key">2</td><td>Family Plan</td></tr></tbody></table>
+          </article>
+          <article class="relationship-card">
+            <div class="relationship-side"><span>users table</span><strong>Jay · id 1</strong></div>
+            <div class="relationship-arrow" aria-hidden="true">↔</div>
+            <div class="relationship-side"><span>briefings table</span><strong>Morning Brief · user_id 1</strong></div>
+            <p id="relationshipResult">Click the relationship button and watch the matching IDs light up. This is the beginning of how relational databases connect records.</p>
+            <div class="db-actions"><button class="button button-primary" id="showRelationship" type="button">Show the relationship</button><button class="button button-secondary" id="addBriefingRow" type="button">Save another example briefing</button></div>
+          </article>
         </div>
 
-        <div class="checkpoint reveal" data-checkpoint data-correct="Correct. The endpoint belongs to the Python backend. React calls it through HTTP." data-wrong="Remember the direction: React calls the endpoint. FastAPI owns the endpoint.">
-          <div class="checkpoint-head"><div><p class="card-label">Lock it in</p><h3>Who owns the API endpoint?</h3></div></div>
-          <p class="checkpoint-question">Where does a FastAPI endpoint actually live?</p>
-          <div class="answer-grid"><button type="button" data-answer="correct">Python backend</button><button type="button" data-answer="wrong">React frontend</button><button type="button" data-answer="wrong">CSS</button><button type="button" data-answer="wrong">The database table itself</button></div>
-          <p class="checkpoint-feedback" aria-live="polite"></p>
+        <div class="section-note reveal"><span aria-hidden="true">↳</span><span><strong>Keep this distinction:</strong> PostgreSQL does not “create the morning briefing” by itself. Backend logic can gather/process/create the briefing, then PostgreSQL can store the resulting records.</span></div>
+      </section>
+
+      <section id="auth" class="lesson-section" data-nav-section data-tutor-context="auth" aria-labelledby="authSectionTitle">
+        <div class="section-heading reveal">
+          <div><p class="section-kicker">Authentication basics</p><h2 id="authSectionTitle">Log in once, then carry proof forward</h2></div>
+          <p class="section-intro">Do not worry about JWTs, refresh tokens, CSRF, OAuth, or the deeper security vocabulary yet. First make the basic flow solid: prove who you are, then let later protected requests carry safe proof that you already logged in.</p>
+        </div>
+
+        <div class="auth-lab reveal">
+          <div class="auth-flow" aria-label="Basic login flow">
+            <button class="auth-step is-active" type="button" data-auth-step><span>01 · frontend</span><strong>Email + password</strong><small>You enter credentials into the login form.</small></button>
+            <button class="auth-step" type="button" data-auth-step><span>02 · request</span><strong>Send to backend</strong><small>The frontend sends a login request.</small></button>
+            <button class="auth-step" type="button" data-auth-step><span>03 · database</span><strong>Find user + hash</strong><small>The database holds the account and password hash.</small></button>
+            <button class="auth-step" type="button" data-auth-step><span>04 · Python</span><strong>Authenticate</strong><small>The backend checks whether the credentials prove identity.</small></button>
+            <button class="auth-step" type="button" data-auth-step><span>05 · later</span><strong>Carry proof</strong><small>A session or token can support future protected requests.</small></button>
+          </div>
+          <div class="auth-explain" aria-live="polite"><h3 id="authTitle">Login form</h3><p id="authText">You type email + password into the frontend.</p></div>
+
+          <div class="ticket-demo">
+            <article class="ticket-card"><h4>Token mental model</h4><p>A little piece of authentication proof that later requests can present. The exact security design can wait.</p><div class="ticket-visual">“Jay already logged in ✅” proof</div></article>
+            <article class="ticket-card"><h4>Session mental model</h4><p>A continuing logged-in session the server can recognize, often through a temporary session identifier.</p><div class="ticket-visual" id="authProof">No login proof yet</div></article>
+          </div>
+
+          <div class="protected-demo">
+            <p><strong>Protected example:</strong> ask the backend for Jay's private briefing before and after simulating login.</p>
+            <div class="db-actions"><button class="button button-secondary" id="simulateLogin" type="button">Simulate login</button><button class="button button-primary" id="callProtected" type="button">GET private briefing</button></div>
+            <span class="protected-result" id="protectedResult">Not tried yet.</span>
+          </div>
         </div>
       </section>
 
-      <section id="auth" class="lesson-section" data-nav-section aria-labelledby="authSectionTitle">
+      <section id="roadmap" class="lesson-section" data-nav-section data-tutor-context="roadmap" aria-labelledby="roadmapTitle">
         <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 05 · Proving who is making the request</p>
-            <h2 id="authSectionTitle">Why you do not log in again on every click</h2>
-          </div>
-          <p class="section-intro">After the backend verifies your credentials, later protected requests need a safer form of proof that says the request belongs to an authenticated user. Tokens and sessions are two common mental models for that continuing proof.</p>
+          <div><p class="section-kicker">The course behind the course</p><h2 id="roadmapTitle">Everything has a place. It does not all have to be learned today.</h2></div>
+          <p class="section-intro">The real environment is bigger than the basic request flow. This map keeps the future concepts nearby while protecting the current lesson from becoming a wall of names.</p>
         </div>
 
-        <div class="auth-stage reveal">
-          <div class="auth-switch" role="group" aria-label="Authentication model">
-            <button class="is-active" type="button" data-auth-mode="token">Token</button>
-            <button type="button" data-auth-mode="session">Session</button>
-          </div>
-          <h3 id="authTitle">Token model</h3>
-          <div class="auth-flow" id="authFlow">
-            <div class="auth-step"><span>1 · Login</span><strong>You submit credentials</strong><p>The frontend sends the login request over HTTPS.</p></div>
-            <div class="auth-step"><span>2 · Verify</span><strong>Backend checks them</strong><p>FastAPI verifies the account using protected backend logic.</p></div>
-            <div class="auth-step"><span>3 · Issue proof</span><strong>A token is created</strong><p>The app receives proof that represents the authenticated session or identity.</p></div>
-            <div class="auth-step"><span>4 · Use proof</span><strong>Protected calls include it</strong><p>Later API requests can be accepted only after the backend verifies the proof.</p></div>
-          </div>
-          <div class="auth-summary" id="authSummary">A token is a piece of proof the client can present with later requests. The server verifies that proof before allowing protected actions. The exact storage and security design matters, so treat “token” as the concept first, not permission to put secrets anywhere in frontend code.</div>
+        <div class="roadmap reveal">
+          <article class="roadmap-column"><p class="card-kicker">Foundation</p><h3>Make the mental model automatic</h3><div class="topic-list"><div class="topic done"><i>✓</i>Browser / frontend / backend / database</div><div class="topic done"><i>✓</i>Python's basic backend role</div><div class="topic done"><i>✓</i>API + endpoint early model</div><div class="topic done"><i>✓</i>Request + response early model</div></div></article>
+          <article class="roadmap-column current"><p class="card-kicker">Current phase</p><h3>Frontend basics</h3><div class="topic-list"><div class="topic now"><i>→</i>React</div><div class="topic now"><i>→</i>Components</div><div class="topic"><i>○</i>TypeScript</div><div class="topic"><i>○</i>Props + state</div><div class="topic"><i>○</i>Dynamic rendering</div></div></article>
+          <article class="roadmap-column"><p class="card-kicker">After that</p><h3>Backend + data depth</h3><div class="topic-list"><div class="topic later"><i>⌁</i>HTTP methods + JSON</div><div class="topic later"><i>⌁</i>Database IDs + relationships</div><div class="topic later"><i>⌁</i>Password hashing + authorization</div><div class="topic later"><i>⌁</i>Real project folders</div></div></article>
         </div>
 
-        <div class="checkpoint reveal" data-checkpoint data-correct="Right. Authentication gives later requests a way to prove who the user is without resending the password on every normal API call." data-wrong="The point is ongoing proof of identity after login, not styling or database layout.">
-          <div class="checkpoint-head"><div><p class="card-label">Why auth exists</p><h3>What problem is it solving?</h3></div></div>
-          <p class="checkpoint-question">After login, why does the app keep authentication proof?</p>
-          <div class="answer-grid"><button type="button" data-answer="correct">So later protected requests can be tied to the signed-in user</button><button type="button" data-answer="wrong">So CSS knows which color to use</button><button type="button" data-answer="wrong">So PostgreSQL turns into React</button><button type="button" data-answer="wrong">So the password can be sent on every click</button></div>
-          <p class="checkpoint-feedback" aria-live="polite"></p>
-        </div>
+        <details class="future-locker reveal">
+          <summary>Open the “yeah I know these words exist” locker</summary>
+          <p>These are part of the real environment or later development knowledge. You do not need to understand them before the foundation is comfortable.</p>
+          <div class="future-tags"><span>TanStack Router</span><span>TanStack Query</span><span>Tailwind</span><span>shadcn/ui</span><span>OpenAPI</span><span>generated API client</span><span>frontend/src/client/</span><span>models.py</span><span>crud.py</span><span>api/routes/</span><span>deps.py</span><span>SQL</span><span>ORM</span><span>migrations</span><span>Docker</span><span>environment variables</span><span>localhost ports</span><span>deployment</span></div>
+        </details>
       </section>
 
-      <section id="database" class="lesson-section" data-nav-section aria-labelledby="databaseTitle">
+      <section id="quiz" class="lesson-section" data-nav-section data-tutor-context="quiz" aria-labelledby="quizSectionTitle">
         <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 06 · Durable data</p>
-            <h2 id="databaseTitle">PostgreSQL is the organized memory of the app</h2>
-          </div>
-          <p class="section-intro">A browser variable can disappear when the page reloads. A database exists so structured records can persist. PostgreSQL stores tables and rows that backend code can create, read, update, and delete under the application’s rules.</p>
+          <div><p class="section-kicker">Tiny retrieval check</p><h2 id="quizSectionTitle">Can you rebuild the picture without staring at it?</h2></div>
+          <p class="section-intro">No points, streaks, or fake school pressure. The point is to notice which idea still feels fuzzy, then go back to that exact section.</p>
         </div>
-
-        <div class="database-stage reveal">
-          <p class="card-label">Database simulation</p>
-          <h3>Watch rows change</h3>
-          <div class="db-layout">
-            <div class="db-controls">
-              <div class="db-control-card"><strong>Create</strong><p>Add a fake item row, similar to what a backend INSERT operation ultimately accomplishes.</p><div style="margin-top:10px"><button class="mini-button" id="dbInsert" type="button">Insert row</button></div></div>
-              <div class="db-control-card"><strong>Read</strong><p>Ask for the current rows, similar to a SELECT-style database read.</p><div style="margin-top:10px"><button class="mini-button" id="dbRead" type="button">Read rows</button></div></div>
-              <div class="db-control-card"><strong>Status</strong><p id="dbStatus" aria-live="polite">No database action simulated yet.</p></div>
-            </div>
-            <div class="db-table-wrap">
-              <table class="db-table">
-                <thead><tr><th>id</th><th>title</th><th>status</th><th>created</th></tr></thead>
-                <tbody id="dbBody"><tr><td>1</td><td>Understand frontend</td><td>done</td><td>2026-08-10</td></tr><tr><td>2</td><td>Learn HTTP</td><td>open</td><td>2026-08-11</td></tr><tr><td>3</td><td>Open FastAPI</td><td>open</td><td>2026-08-12</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="start-here reveal" style="margin-top:20px">
-          <div><p class="card-label">Database model</p><h3>Python code needs a shape for the data too</h3><p>A database model describes application data in code, such as what fields an Item has and how those fields relate to the stored database structure. The exact model library can vary, but the mental job stays the same: give backend code a structured way to work with records.</p></div>
-          <div class="start-rules"><span><i>ID</i>Rows usually have identifiers</span><span><i>Ab</i>Columns have names and types</span><span><i>↔</i>Backend code reads and changes rows</span><span><i>∞</i>Data survives a page reload</span></div>
-        </div>
-      </section>
-
-      <section id="tools" class="lesson-section" data-nav-section aria-labelledby="toolsTitle">
-        <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 07 · The pieces around the request</p>
-            <h2 id="toolsTitle">The other words in your environment</h2>
-          </div>
-          <p class="section-intro">Once the request flow makes sense, the supporting tools stop looking random. Each one helps the same application stay organized, repeatable, safer to change, or easier for the frontend and backend to coordinate.</p>
-        </div>
-
-        <div class="tool-grid reveal">
-          <article class="tool-card"><span class="tool-icon">API</span><h3>Generated API client</h3><p>Frontend helpers generated from the backend API description so React code can call endpoints with the expected paths and data shapes.</p><details><summary>Why frontend/src/client matters</summary><p>Instead of hand-writing every request shape, the generated client gives TypeScript code a cleaner, typed bridge to the FastAPI API. The endpoints still live in the backend.</p></details></article>
-          <article class="tool-card"><span class="tool-icon">↗</span><h3>TanStack Router</h3><p>Frontend routing decides which React view should appear for a browser URL without turning every page change into a traditional full reload.</p><details><summary>Simple version</summary><p>It is the frontend map between URLs and screens. It is different from a FastAPI route, which maps an HTTP request to backend Python code.</p></details></article>
-          <article class="tool-card"><span class="tool-icon">Q</span><h3>TanStack Query</h3><p>Helps the frontend manage server data: loading it, caching it, refreshing it, and keeping UI state connected to API results.</p><details><summary>Simple version</summary><p>React displays the interface. Query helps with the part where that interface depends on data coming from the backend.</p></details></article>
-          <article class="tool-card"><span class="tool-icon">DB+</span><h3>Migrations</h3><p>Controlled, repeatable changes to the database structure as the app evolves.</p><details><summary>Example</summary><p>If an Item table needs a new priority column, a migration records the schema change so environments can apply the same change deliberately.</p></details></article>
-          <article class="tool-card"><span class="tool-icon">BOX</span><h3>Docker</h3><p>Packages the application and its runtime setup into containers so the same services can run more consistently across machines and environments.</p><details><summary>Simple version</summary><p>Docker is not your backend language. Python is still Python. Docker helps package and run the pieces with a defined environment around them.</p></details></article>
-          <article class="tool-card"><span class="tool-icon">PKG</span><h3>Dependencies</h3><p>Libraries your project relies on, such as FastAPI on the backend or React-related packages on the frontend.</p><details><summary>Why manage them carefully?</summary><p>Adding a dependency means adding code your project now relies on. The environment should know why it exists, which version is used, and whether it belongs in the project.</p></details></article>
-        </div>
-
-        <div class="start-here reveal" style="margin-top:20px">
-          <div><p class="card-label">Two local addresses</p><h3>localhost just means your own machine</h3><p>During development, the frontend can run at an address such as <code>http://localhost:5173</code> while the FastAPI backend runs on another local port. They are two local services talking over HTTP, even though both are on the same computer.</p></div>
-          <div class="start-rules"><span><i>FE</i>Frontend dev server renders React</span><span><i>BE</i>Backend server runs FastAPI</span><span><i>↔</i>HTTP connects them</span><span><i>DB</i>PostgreSQL stores durable data</span></div>
-        </div>
-      </section>
-
-      <section id="quiz" class="lesson-section" data-nav-section aria-labelledby="quizSectionTitle">
-        <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Lesson 08 · Retrieval practice</p>
-            <h2 id="quizSectionTitle">Can you rebuild the picture from memory?</h2>
-          </div>
-          <p class="section-intro">The goal is not to catch you out. Answering from memory forces the architecture to become something you can retrieve and explain, which is more useful than recognizing the right words while they are sitting in front of you.</p>
-        </div>
-
         <div class="quiz-shell reveal">
-          <div class="quiz-map" aria-label="Quiz questions">
-            <button class="is-active" type="button" data-quiz-index="0"><span>1</span>Where clicks begin</button>
-            <button type="button" data-quiz-index="1"><span>2</span>What HTTP is</button>
-            <button type="button" data-quiz-index="2"><span>3</span>Where FastAPI lives</button>
-            <button type="button" data-quiz-index="3"><span>4</span>Why PostgreSQL exists</button>
-            <button type="button" data-quiz-index="4"><span>5</span>Generated API client</button>
-            <button type="button" data-quiz-index="5"><span>6</span>Migrations</button>
-          </div>
-          <div class="quiz-card">
-            <p class="card-label" id="quizTitle">Question 1 of 6</p>
-            <h3 id="quizQuestion">You click a button and the screen changes before any server request happens. Which layer handled that first?</h3>
-            <div class="quiz-options" id="quizOptions"></div>
-            <div class="quiz-result" id="quizResult" aria-live="polite">Choose the answer that makes the most sense. You can retry without penalty.</div>
-          </div>
+          <div class="quiz-map" aria-label="Quiz questions"><button class="is-active" type="button" data-quiz-index="0"><span>1</span>React</button><button type="button" data-quiz-index="1"><span>2</span>Flow</button><button type="button" data-quiz-index="2"><span>3</span>Endpoint</button><button type="button" data-quiz-index="3"><span>4</span>FastAPI</button><button type="button" data-quiz-index="4"><span>5</span>Database</button><button type="button" data-quiz-index="5"><span>6</span>Auth</button></div>
+          <div class="quiz-card"><p class="card-kicker" id="quizTitle">Question 1 of 6</p><h3 id="quizQuestion"></h3><div class="quiz-options" id="quizOptions"></div><div class="quiz-result" id="quizResult" aria-live="polite"></div></div>
         </div>
       </section>
 
-      <section id="glossary" class="lesson-section" data-nav-section aria-labelledby="glossaryTitle">
+      <section id="glossary" class="lesson-section" data-nav-section data-tutor-context="glossary" aria-labelledby="glossaryTitle">
         <div class="section-heading reveal">
-          <div>
-            <p class="section-kicker">Keep nearby while you learn</p>
-            <h2 id="glossaryTitle">Search the words that keep coming up</h2>
-          </div>
-          <p class="section-intro">You should not have to leave the lesson every time a technical word appears. Search the glossary and use the explanation that is useful at your current level.</p>
+          <div><p class="section-kicker">Developer-soup translator</p><h2 id="glossaryTitle">Search the word that broke the explanation</h2></div>
+          <p class="section-intro">Technical conversations get way easier when you stop letting one unexplained noun poison the next five sentences.</p>
         </div>
-
         <div class="glossary-panel reveal">
-          <label for="glossarySearch" class="card-label">Search glossary</label>
-          <input class="glossary-search" id="glossarySearch" type="search" placeholder="Try: endpoint, JSON, migration, component..." autocomplete="off" />
+          <label class="card-kicker" for="glossarySearch">Search glossary</label>
+          <input class="glossary-search" id="glossarySearch" type="search" autocomplete="off" placeholder="Try: component, endpoint, JSON, session..." />
           <div class="glossary-grid">
-            <article class="glossary-item"><strong>API</strong><p>A defined way for software to ask another piece of software for data or actions. In this app, the frontend calls the backend API.</p></article>
-            <article class="glossary-item"><strong>Endpoint</strong><p>One specific backend method + path that handles a type of HTTP request, such as GET /api/items.</p></article>
-            <article class="glossary-item"><strong>HTTP request</strong><p>A structured message sent to a web server. It can include a method, path, headers, and body.</p></article>
-            <article class="glossary-item"><strong>HTTP response</strong><p>The structured answer the backend sends back, including a status code and usually data.</p></article>
-            <article class="glossary-item"><strong>JSON</strong><p>A common text format for structured data, such as {"title":"Study"}.</p></article>
-            <article class="glossary-item"><strong>Frontend</strong><p>The part running in the browser that the user sees and interacts with. Here it uses React and TypeScript.</p></article>
-            <article class="glossary-item"><strong>Backend</strong><p>Server-side code that owns application rules, protected logic, API endpoints, and database access. Here it uses FastAPI and Python.</p></article>
-            <article class="glossary-item"><strong>React</strong><p>A JavaScript library for building interactive user interfaces from reusable components and state.</p></article>
-            <article class="glossary-item"><strong>TypeScript</strong><p>JavaScript with a type system that helps catch many mistakes earlier and describes expected data shapes.</p></article>
-            <article class="glossary-item"><strong>Component</strong><p>A reusable piece of React UI, such as a button, card, form, or entire page section.</p></article>
-            <article class="glossary-item"><strong>State</strong><p>Information the frontend is currently keeping track of, such as which tab is selected or what data has loaded.</p></article>
-            <article class="glossary-item"><strong>FastAPI</strong><p>A Python web framework used here to expose backend endpoints, validate data, run backend logic, and return responses.</p></article>
-            <article class="glossary-item"><strong>Route</strong><p>A mapping. In frontend routing it maps a URL to a screen. In FastAPI it maps an HTTP method + path to backend Python code.</p></article>
-            <article class="glossary-item"><strong>PostgreSQL</strong><p>A relational database used for durable structured application data.</p></article>
-            <article class="glossary-item"><strong>Table</strong><p>A structured database collection with columns and rows, similar to a highly controlled data sheet.</p></article>
-            <article class="glossary-item"><strong>Database model</strong><p>A code-level representation of application data and its structure so backend code can work with records consistently.</p></article>
-            <article class="glossary-item"><strong>Migration</strong><p>A recorded database schema change, such as adding a column or creating a new table.</p></article>
-            <article class="glossary-item"><strong>Authentication</strong><p>The process of proving who a user is and carrying safe proof into later protected requests.</p></article>
-            <article class="glossary-item"><strong>Authorization</strong><p>The decision about what an authenticated user is allowed to see or do.</p></article>
-            <article class="glossary-item"><strong>Token</strong><p>A form of authentication proof that can be verified on later requests. The security details depend on the implementation.</p></article>
-            <article class="glossary-item"><strong>Session</strong><p>A way to maintain signed-in state across requests so the user does not resend credentials every time.</p></article>
-            <article class="glossary-item"><strong>Generated API client</strong><p>Frontend code generated from the API definition so TypeScript can call backend endpoints with known request and response shapes.</p></article>
-            <article class="glossary-item"><strong>OpenAPI</strong><p>A machine-readable description of an API. FastAPI can generate this description, which can then help generate a frontend client.</p></article>
-            <article class="glossary-item"><strong>TanStack Router</strong><p>A frontend routing library that helps map browser URLs to React views.</p></article>
-            <article class="glossary-item"><strong>TanStack Query</strong><p>A frontend library for managing server data, loading states, caching, and refresh behavior.</p></article>
-            <article class="glossary-item"><strong>Tailwind</strong><p>A CSS utility framework that provides small classes for styling interface elements and layouts.</p></article>
-            <article class="glossary-item"><strong>shadcn/ui</strong><p>A collection of reusable UI component patterns commonly used with React and Tailwind.</p></article>
-            <article class="glossary-item"><strong>Docker</strong><p>A container system used to package and run application services with a defined environment.</p></article>
-            <article class="glossary-item"><strong>Dependency</strong><p>An external library or package the project relies on.</p></article>
-            <article class="glossary-item"><strong>localhost</strong><p>A hostname that points back to your own computer. Development servers often run on localhost with different ports.</p></article>
-            <article class="glossary-item"><strong>Port</strong><p>A numbered network doorway on a machine. Different local services can listen on different ports.</p></article>
-            <article class="glossary-item"><strong>Environment variable</strong><p>A configuration value supplied outside normal source code, often used for environment-specific settings and secrets.</p></article>
+            <article class="glossary-item"><strong>Frontend</strong><p>The part of the application running in the browser that the user sees and interacts with.</p></article>
+            <article class="glossary-item"><strong>Backend</strong><p>Private server-side code that owns application logic, rules, protected processing, API endpoints, and database access.</p></article>
+            <article class="glossary-item"><strong>React</strong><p>A JavaScript library used to build interactive frontend interfaces from reusable pieces.</p></article>
+            <article class="glossary-item"><strong>Component</strong><p>A reusable piece of frontend UI, such as a WeatherCard, button, form, or briefing section.</p></article>
+            <article class="glossary-item"><strong>TypeScript</strong><p>JavaScript with added type information that helps tools catch mistakes and describe expected data shapes.</p></article>
+            <article class="glossary-item"><strong>API</strong><p>A defined way for software to ask another piece of software for data or actions.</p></article>
+            <article class="glossary-item"><strong>Endpoint</strong><p>One specific API method + path that handles a kind of backend request, such as GET /briefings.</p></article>
+            <article class="glossary-item"><strong>HTTP request</strong><p>The structured message traveling from frontend to backend.</p></article>
+            <article class="glossary-item"><strong>HTTP response</strong><p>The structured answer traveling from backend back to frontend.</p></article>
+            <article class="glossary-item"><strong>JSON</strong><p>A common text format for structured data sent between software layers.</p></article>
+            <article class="glossary-item"><strong>Python</strong><p>The programming language used to write the backend logic in this environment.</p></article>
+            <article class="glossary-item"><strong>FastAPI</strong><p>A Python web framework that makes it easier to define backend API endpoints, validate data, and return responses.</p></article>
+            <article class="glossary-item"><strong>PostgreSQL</strong><p>A relational database used to store durable structured application data.</p></article>
+            <article class="glossary-item"><strong>Table</strong><p>An organized database structure made of columns and rows.</p></article>
+            <article class="glossary-item"><strong>Row</strong><p>One record in a database table, such as one user or one briefing.</p></article>
+            <article class="glossary-item"><strong>ID</strong><p>A value used to uniquely identify a record and help connect related records.</p></article>
+            <article class="glossary-item"><strong>Authentication</strong><p>Proving who a user is.</p></article>
+            <article class="glossary-item"><strong>Authorization</strong><p>Deciding what an authenticated user is allowed to see or do.</p></article>
+            <article class="glossary-item"><strong>Password hash</strong><p>A one-way representation used to verify a password without storing the readable password itself.</p></article>
+            <article class="glossary-item"><strong>Token</strong><p>A form of authentication proof that can be checked on later requests.</p></article>
+            <article class="glossary-item"><strong>Session</strong><p>A continuing logged-in state that lets a server recognize a browser across requests.</p></article>
+            <article class="glossary-item"><strong>State</strong><p>Information the frontend is currently keeping track of, such as selected Space or loaded data.</p></article>
+            <article class="glossary-item"><strong>Props</strong><p>Data passed into a React component so the same component can display different information.</p></article>
+            <article class="glossary-item"><strong>Route</strong><p>A mapping between a location/request and the code that should handle it. The word is used in both frontend and backend contexts.</p></article>
+            <article class="glossary-item"><strong>OpenAPI</strong><p>A machine-readable description of an API. Later, this can help generate frontend client code from the backend API.</p></article>
+            <article class="glossary-item"><strong>Generated API client</strong><p>Frontend code produced from the API description so the React app can call known backend endpoints with known data shapes.</p></article>
+            <article class="glossary-item"><strong>Migration</strong><p>A recorded change to the database structure, such as adding a new column or table.</p></article>
+            <article class="glossary-item"><strong>Docker</strong><p>A container system used to package and run application services in a defined environment.</p></article>
+            <article class="glossary-item"><strong>localhost</strong><p>A hostname that points back to your own computer during local development.</p></article>
+            <article class="glossary-item"><strong>Port</strong><p>A numbered network doorway used by a running service, such as a local frontend or backend server.</p></article>
           </div>
-          <p class="glossary-empty" id="glossaryEmpty">No glossary term matched that search.</p>
+          <p class="glossary-empty" id="glossaryEmpty">No matching term. That might mean the glossary needs another word added.</p>
         </div>
       </section>
 
-      <section id="mastery" class="lesson-section" data-nav-section aria-labelledby="masteryTitle">
+      <section class="lesson-section" aria-labelledby="finalTitle">
         <div class="final-card reveal">
-          <p class="section-kicker">The bird's-eye view</p>
-          <h2 id="masteryTitle">If you can explain this paragraph, the stack is starting to belong to you</h2>
-          <p>You open a React + TypeScript frontend in the browser. When the interface needs backend data or an action, frontend code calls a generated API client, which sends an HTTP request to a FastAPI endpoint. The Python backend validates the request, checks authentication and permissions where needed, applies application logic, talks to PostgreSQL for durable data, and sends an HTTP response back. React then uses that result to update what you see.</p>
-          <div class="mastery-list" aria-label="Things you should now be able to explain">
-            <div class="mastery-item"><i>✓</i><span>Why React is frontend code and FastAPI is backend code</span></div>
-            <div class="mastery-item"><i>✓</i><span>What an HTTP request and response are doing between them</span></div>
-            <div class="mastery-item"><i>✓</i><span>Why a backend API endpoint exists</span></div>
-            <div class="mastery-item"><i>✓</i><span>Why PostgreSQL is different from temporary browser state</span></div>
-            <div class="mastery-item"><i>✓</i><span>Why login needs continuing authentication proof</span></div>
-            <div class="mastery-item"><i>✓</i><span>Why migrations, Docker, and dependencies surround the main request flow</span></div>
-          </div>
+          <p class="section-kicker">The sentence we are building toward</p>
+          <h2 id="finalTitle">You should be able to explain the app in your own words, not recite mine</h2>
+          <p>The target is not “I recognize React, FastAPI and PostgreSQL.” The target is that when somebody changes an endpoint, adds a database field, or builds a new Spaces component, you can roughly place that change in the architecture and ask what happens next.</p>
+          <div class="say-it"><strong>Try saying this without looking back:</strong><p>“I click something in the React frontend. If it needs the backend, the frontend sends an HTTP request to an API endpoint. FastAPI routes that request to Python logic. Python can read or change PostgreSQL. Then the backend responds and React updates what I see.”</p></div>
+          <div class="mastery-list"><div class="mastery-item"><i>✓</i><span>React stays connected to HTML/CSS/JS instead of feeling like a separate universe</span></div><div class="mastery-item"><i>✓</i><span>Components explain how Spaces can reuse interface pieces dynamically</span></div><div class="mastery-item"><i>✓</i><span>HTTP request/response explains the frontend ↔ backend conversation</span></div><div class="mastery-item"><i>✓</i><span>Python/FastAPI and PostgreSQL have distinct jobs</span></div></div>
         </div>
       </section>
-    </main>
+    </article>
   </div>
 
-  <script src="/assets/study.js?v=20260812-1" defer></script>
+  <button class="tutor-launcher" id="tutorLauncher" type="button" aria-controls="tutorPanel" aria-label="Open CR Guide"><i aria-hidden="true">✦</i><span>Ask CR Guide</span></button>
+  <aside class="tutor-panel" id="tutorPanel" aria-live="polite">
+    <div class="tutor-head"><div><span class="tutor-avatar" aria-hidden="true">CR</span><strong>CR Guide · current section</strong></div><button class="tutor-close" id="tutorClose" type="button" aria-label="Close CR Guide">×</button></div>
+    <p class="tutor-copy" id="tutorText">You already have the rough frontend → backend → database picture. Right now we’re tightening the frontend part so React stops sounding like wizard shit 😭.</p>
+    <div class="tutor-actions"><button type="button" data-tutor-mode="simple">Say it simpler</button><button type="button" data-tutor-mode="why">Why do I care?</button><button type="button" data-tutor-mode="example">Give me a Spaces example</button></div>
+  </aside>
+
+  <script src="/assets/study-v2.js?v=20260812-1" defer></script>
 </body>
 </html>
