@@ -11,8 +11,8 @@
   const cfg=configs[path]; if(!cfg)return;
   const themeKeys={'/study/':'study-v3-theme','/study/python/':'study-python-theme','/study/environment/':'study-env-theme','/study/environment/handbook/':'study-handbook-theme'};
   try{const k=themeKeys[path];if(k&&!localStorage.getItem(k)){localStorage.setItem(k,'light');document.documentElement.dataset.theme='light'}}catch{}
-  const ensureCss=(href)=>{if(!document.querySelector(`link[href^="${href}"]`)){const l=document.createElement('link');l.rel='stylesheet';l.href=`${href}?v=20260812-3`;document.head.appendChild(l)}};
-  ensureCss('/assets/study-course-nav.css');ensureCss('/assets/study-enhancements.css');ensureCss('/assets/study-layout-fixes.css');ensureCss('/assets/study-universe.css');
+  const ensureCss=(href)=>{if(!document.querySelector(`link[href^="${href}"]`)){const l=document.createElement('link');l.rel='stylesheet';l.href=`${href}?v=20260812-4`;document.head.appendChild(l)}};
+  ensureCss('/assets/study-course-nav.css');ensureCss('/assets/study-enhancements.css');ensureCss('/assets/study-layout-fixes.css');ensureCss('/assets/study-universe.css');ensureCss('/assets/study-tutor-v2.css');
   const chapters=cfg.chapters.map(sel=>document.querySelector(sel)).filter(Boolean);
   const titleFor=el=>el?.querySelector('h2,h3')?.textContent?.trim()||el?.id||cfg.world;
   let previousLocation='';try{previousLocation=localStorage.getItem('study-course-last')||''}catch{}
@@ -33,10 +33,10 @@
     if(host&&!document.querySelector('.course-world-gate')){
       const safeResume=previousLocation.startsWith('/study/')?previousLocation:'/study/#react';
       const gate=document.createElement('div');gate.className='course-world-gate';
-      gate.innerHTML=`<div><strong>Four worlds, one course 🧠</strong><p>Core is the main quest. Python teaches backend code. Environment shows the real setup. Handbook keeps the deep reference stuff. You can jump between all four from the new Study Universe bar anywhere.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume →</a><a href="/study/python/">🐍 Python</a><a href="/study/environment/">🛰️ Environment</a><a href="/study/environment/handbook/">📘 Handbook</a></div>`;
+      gate.innerHTML=`<div><strong>Four worlds, one course 🧠</strong><p>Core is the main quest. Python teaches backend code. Environment shows the real setup. Handbook keeps the deep reference stuff. You can jump between all four from the Study Universe bar anywhere.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume →</a><a href="/study/python/">🐍 Python</a><a href="/study/environment/">🛰️ Environment</a><a href="/study/environment/handbook/">📘 Handbook</a></div>`;
       host.insertAdjacentElement('afterend',gate)
     }
   }
-  const ensureScript=(src)=>{if(!document.querySelector(`script[src^="${src}"]`)){const s=document.createElement('script');s.src=`${src}?v=20260812-3`;s.defer=true;document.head.appendChild(s)}};
-  ensureScript('/assets/study-enhancements.js');ensureScript('/assets/study-universe.js');
+  const ensureScript=(src)=>{if(!document.querySelector(`script[src^="${src}"]`)){const s=document.createElement('script');s.src=`${src}?v=20260812-4`;s.async=false;document.head.appendChild(s)}};
+  ensureScript('/assets/study-enhancements.js');ensureScript('/assets/study-universe.js');ensureScript('/assets/study-tutor-v2.js');
 })();
