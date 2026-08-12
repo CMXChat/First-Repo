@@ -11,8 +11,8 @@
   const cfg=configs[path]; if(!cfg)return;
   const themeKeys={'/study/':'study-v3-theme','/study/python/':'study-python-theme','/study/environment/':'study-env-theme','/study/environment/handbook/':'study-handbook-theme'};
   try{const k=themeKeys[path];if(k&&!localStorage.getItem(k)){localStorage.setItem(k,'light');document.documentElement.dataset.theme='light'}}catch{}
-  const ensureCss=(href)=>{if(!document.querySelector(`link[href^="${href}"]`)){const l=document.createElement('link');l.rel='stylesheet';l.href=`${href}?v=20260812-7`;document.head.appendChild(l)}};
-  ensureCss('/assets/study-course-nav.css');ensureCss('/assets/study-enhancements.css');ensureCss('/assets/study-layout-fixes.css');ensureCss('/assets/study-universe.css');ensureCss('/assets/study-tutor-v2.css');ensureCss('/assets/study-navigation-fixes.css');ensureCss('/assets/study-concept-machines.css');ensureCss('/assets/study-focus-nav.css');ensureCss('/assets/study-deep-labs.css');
+  const ensureCss=(href)=>{if(!document.querySelector(`link[href^="${href}"]`)){const l=document.createElement('link');l.rel='stylesheet';l.href=`${href}?v=20260812-8`;document.head.appendChild(l)}};
+  ensureCss('/assets/study-course-nav.css');ensureCss('/assets/study-enhancements.css');ensureCss('/assets/study-layout-fixes.css');ensureCss('/assets/study-universe.css');ensureCss('/assets/study-tutor-v2.css');ensureCss('/assets/study-navigation-fixes.css');ensureCss('/assets/study-concept-machines.css');ensureCss('/assets/study-focus-nav.css');ensureCss('/assets/study-deep-labs.css');ensureCss('/assets/study-docker-v2.css');ensureCss('/assets/study-self-check.css');
   const chapters=cfg.chapters.map(sel=>document.querySelector(sel)).filter(Boolean);
   const titleFor=el=>el?.querySelector('h2,h3')?.textContent?.trim()||el?.id||cfg.world;
   let previousLocation='';try{previousLocation=localStorage.getItem('study-course-last')||''}catch{}
@@ -37,6 +37,6 @@
       host.insertAdjacentElement('afterend',gate)
     }
   }
-  const ensureScript=(src)=>{if(!document.querySelector(`script[src^="${src}"]`)){const s=document.createElement('script');s.src=`${src}?v=20260812-7`;s.async=false;document.head.appendChild(s)}};
-  ensureScript('/assets/study-enhancements.js');ensureScript('/assets/study-universe.js');ensureScript('/assets/study-tutor-v2.js');ensureScript('/assets/study-nav-final.js');ensureScript('/assets/study-concept-machines.js');ensureScript('/assets/study-focus-nav.js');ensureScript('/assets/study-deep-labs.js');
+  const ensureScript=(src)=>{if(!document.querySelector(`script[src^="${src}"]`)){const s=document.createElement('script');s.src=`${src}?v=20260812-8`;s.async=false;document.head.appendChild(s)}};
+  ensureScript('/assets/study-enhancements.js');ensureScript('/assets/study-universe.js');ensureScript('/assets/study-tutor-v2.js');ensureScript('/assets/study-nav-final.js');ensureScript('/assets/study-concept-machines.js');ensureScript('/assets/study-focus-nav.js');ensureScript('/assets/study-deep-labs.js');ensureScript('/assets/study-docker-v2.js');ensureScript('/assets/study-self-check.js');
 })();
