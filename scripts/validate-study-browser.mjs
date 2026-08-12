@@ -6,13 +6,13 @@ const chrome = findChrome();
 console.log(`Using Chrome: ${chrome}`);
 
 const server = spawn('python3',['-m','http.server','8787','--bind','127.0.0.1'],{stdio:'ignore'});
-const browser = spawn(chrome,['--headless=new','--no-sandbox','--disable-gpu','--remote-debugging-port=9222','--remote-debugging-address=127.0.0.1','--user-data-dir=/tmp/study-lab-chrome','about:blank'],{stdio:'ignore'});
+const browser = spawn(chrome,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--remote-debugging-port=9222','--remote-debugging-address=127.0.0.1','--user-data-dir=/tmp/study-lab-chrome','about:blank'],{stdio:'ignore'});
 
 const cleanup=()=>{try{server.kill('SIGTERM')}catch{}try{browser.kill('SIGTERM')}catch{}};
 process.on('exit',cleanup);process.on('SIGINT',()=>{cleanup();process.exit(130)});
 
-async function waitOk(url,tries=40){for(let i=0;i<tries;i++){try{const r=await fetch(url);if(r.ok)return true}catch{}await sleep(200)}throw new Error(`Timed out waiting for ${url}`)}
-async function waitJson(url,tries=40){for(let i=0;i<tries;i++){try{const r=await fetch(url);if(r.ok)return await r.json()}catch{}await sleep(200)}throw new Error(`Timed out waiting for ${url}`)}
+async function waitOk(url,tries=100){for(let i=0;i<tries;i++){try{const r=await fetch(url);if(r.ok)return true}catch{}await sleep(200)}throw new Error(`Timed out waiting for ${url}`)}
+async function waitJson(url,tries=100){for(let i=0;i<tries;i++){try{const r=await fetch(url);if(r.ok)return await r.json()}catch{}await sleep(200)}throw new Error(`Timed out waiting for ${url}`)}
 await waitOk('http://127.0.0.1:8787/study/');
 const targets=await waitJson('http://127.0.0.1:9222/json/list');
 const target=targets.find(x=>x.type==='page');if(!target)throw new Error('No Chrome page target found');
@@ -25,7 +25,7 @@ await cdp('Page.enable');await cdp('Runtime.enable');await cdp('Log.enable');
 const routes=[
   {path:'/study/',required:['.study-universe-bar','.course-dock','.react-playground','.request-mail-stage','.backend-mission','.db-query-grid','.fullstack-code-bridge','.study-teacher-card']},
   {path:'/study/python/',required:['.study-universe-bar','.course-dock','.code-conveyor','.study-teacher-card']},
-  {path:'/study/environment/',required:['.study-universe-bar','.course-dock','[data-hb-reality]','.network-map','.debug-shell','.docker-v2','[data-config-vault]','.study-teacher-card']},
+  {path:'/study/environment/',required:['.study-universe-bar','.course-dock','[data-hb-reality]','.network-map','.debug-shell','.docker-v2','[data-config-vault]','.study-teacher-card','.advanced-peek']},
   {path:'/study/environment/handbook/',required:['.study-universe-bar','.course-dock','.hb-current','.study-teacher-card']},
   {path:'/study/index/',required:['#indexSearch','#termGrid .index-term','.index-term-long','.project-playground']},
 ];
