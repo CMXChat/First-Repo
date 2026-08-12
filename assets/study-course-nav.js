@@ -11,6 +11,7 @@
   const cfg=configs[path]; if(!cfg)return;
   if(!document.querySelector('link[href^="/assets/study-course-nav.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-course-nav.css?v=20260812-1';document.head.appendChild(l)}
   if(!document.querySelector('link[href^="/assets/study-enhancements.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-enhancements.css?v=20260812-2';document.head.appendChild(l)}
+  if(!document.querySelector('link[href^="/assets/study-layout-fixes.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-layout-fixes.css?v=20260812-1';document.head.appendChild(l)}
   const chapters=cfg.chapters.map(sel=>document.querySelector(sel)).filter(Boolean);
   const titleFor=el=>el?.querySelector('h2,h3')?.textContent?.trim()||el?.id||cfg.world;
   let previousLocation='';try{previousLocation=localStorage.getItem('study-course-last')||''}catch{}
