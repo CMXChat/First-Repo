@@ -1,3 +1,3 @@
 /* Anchor + sticky navigation fixes */
-html{scroll-padding-top:158px!important}.section[id],section[id]{scroll-margin-top:158px}.study-universe-bar{top:72px!important}.study-breadcrumb{position:relative;z-index:20}
-@media(max-width:720px){html{scroll-padding-top:150px!important}.section[id],section[id]{scroll-margin-top:150px}.study-universe-bar{top:72px!important}}
+html{scroll-padding-top:158px!important}.section[id],section[id]{scroll-margin-top:158px}.study-universe-bar{top:72px!important}.study-breadcrumb{position:relative;z-index:20}.study-copy-link{margin-left:auto;min-height:28px;padding:5px 9px;border:1px solid var(--line2,var(--line));border-radius:999px;background:var(--raised,var(--paper));color:var(--strong);cursor:pointer;font-size:.6rem;font-weight:850;white-space:nowrap}.study-copy-link:hover,.study-copy-link:focus-visible{border-color:var(--blue);outline:none}
+@media(max-width:720px){html{scroll-padding-top:150px!important}.section[id],section[id]{scroll-margin-top:150px}.study-universe-bar{top:72px!important}.study-copy-link{font-size:0;width:30px;padding:0}.study-copy-link:before{content:'🔗';font-size:.72rem}}
