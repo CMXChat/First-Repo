@@ -7,12 +7,14 @@ on:
       - 'study/**'
       - 'assets/study-*'
       - 'scripts/validate-study.mjs'
+      - 'scripts/validate-study-browser.mjs'
       - '.github/workflows/study-qa.yml'
   pull_request:
     paths:
       - 'study/**'
       - 'assets/study-*'
       - 'scripts/validate-study.mjs'
+      - 'scripts/validate-study-browser.mjs'
       - '.github/workflows/study-qa.yml'
 
 permissions:
@@ -34,3 +36,5 @@ jobs:
           done
       - name: Validate Study structure
         run: node scripts/validate-study.mjs
+      - name: Validate Study in headless Chrome
+        run: node scripts/validate-study-browser.mjs
