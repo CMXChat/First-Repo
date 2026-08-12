@@ -10,7 +10,6 @@
     try { localStorage.setItem(key, value); } catch {}
   };
 
-  // Theme
   const themeButton = qs('#themeToggle');
   const savedTheme = safeGet('cmx-study-theme');
   if (savedTheme === 'light' || savedTheme === 'dark') root.dataset.theme = savedTheme;
@@ -27,7 +26,6 @@
     syncTheme();
   });
 
-  // Reading progress
   const readingBar = qs('.reading-progress span');
   const updateReading = () => {
     if (!readingBar) return;
@@ -39,7 +37,6 @@
   window.addEventListener('scroll', updateReading, { passive: true });
   window.addEventListener('resize', updateReading);
 
-  // Reveal on view
   const revealObserver = 'IntersectionObserver' in window
     ? new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -52,7 +49,6 @@
     : null;
   qsa('.reveal').forEach((el) => revealObserver ? revealObserver.observe(el) : el.classList.add('is-visible'));
 
-  // Active rail section
   const navLinks = qsa('.lesson-nav a');
   const navMap = new Map(navLinks.map((a) => [a.getAttribute('href')?.slice(1), a]));
   if ('IntersectionObserver' in window) {
@@ -65,7 +61,6 @@
     qsa('[data-nav-section]').forEach((section) => sectionObserver.observe(section));
   }
 
-  // Lesson completion
   const completionKey = 'cmx-study-progress-v2';
   let completed = new Set();
   try {
@@ -104,7 +99,6 @@
     if (target) qs(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
 
-  // Scripted CR guide
   const tutorText = qs('#tutorText');
   const tutorTitle = qs('#tutorTitle');
   const tutorModes = {
@@ -131,7 +125,6 @@
     }
   }));
 
-  // Request journey simulator
   const flowNodes = qsa('[data-flow-node]');
   const flowTitle = qs('#flowTitle');
   const flowText = qs('#flowText');
@@ -202,7 +195,6 @@
   }));
   showFlowStep(0);
 
-  // Frontend layers
   const layerData = {
     html: ['HTML', 'The structure', 'HTML gives the page its pieces: headings, buttons, forms, links, sections, tables, and other content. Think of it as the labeled frame of the interface.', 'A house analogy: HTML is the rooms, doors, walls, and labels that say what each part is.', '<button>Create item</button>'],
     css: ['CSS', 'The appearance', 'CSS controls how those pieces look and adapt: spacing, colors, layout, typography, mobile behavior, hover states, cards, circles, and the visual polish you see on this page.', 'A house analogy: CSS is the paint, lighting, furniture placement, sizing, and visual style.', '.button { border-radius: 999px; }'],
@@ -228,7 +220,6 @@
     complete('frontend');
   }));
 
-  // HTTP request builder
   const requestMethod = qs('#requestMethod');
   const requestEndpoint = qs('#requestEndpoint');
   const requestBody = qs('#requestBody');
@@ -259,7 +250,6 @@
     complete('http');
   });
 
-  // Endpoint anatomy
   const anatomyData = {
     decorator: ['The route decorator', '@router.get("/items/{item_id}") tells FastAPI which HTTP method and URL path should cause this Python function to run.'],
     function: ['The endpoint function', 'This async Python function is the backend code FastAPI calls after the matching request reaches the server.'],
@@ -281,7 +271,6 @@
     complete('backend');
   }));
 
-  // Authentication switch
   const authData = {
     token: {
       title: 'Token model',
@@ -321,7 +310,6 @@
     renderAuth(button.dataset.authMode);
   }));
 
-  // Database demo
   const dbBody = qs('#dbBody');
   const dbStatus = qs('#dbStatus');
   let dbNext = 4;
@@ -340,12 +328,10 @@
     complete('database');
   });
 
-  // Tools module completion
   qsa('.tool-card details').forEach((details) => details.addEventListener('toggle', () => {
     if (details.open) complete('tools');
   }));
 
-  // Inline checkpoints
   qsa('[data-checkpoint]').forEach((checkpoint) => {
     const feedback = qs('.checkpoint-feedback', checkpoint);
     qsa('[data-answer]', checkpoint).forEach((button) => button.addEventListener('click', () => {
@@ -358,7 +344,6 @@
     }));
   });
 
-  // Final quiz
   const quizQuestions = [
     {
       q: 'You click a button and the screen changes before any server request happens. Which layer handled that first?',
@@ -439,7 +424,6 @@
   }));
   renderQuiz();
 
-  // Glossary search
   const glossarySearch = qs('#glossarySearch');
   const glossaryItems = qsa('.glossary-item');
   const glossaryEmpty = qs('#glossaryEmpty');
@@ -451,20 +435,6 @@
       item.hidden = !visible;
       if (visible) shown += 1;
     });
-    if (glossaryEmpty) glossaryEmpty.style.display = shown ? 'none' : 'block';
+    if (glossaryEmpty) glossaryEmpty.hidden = shown !== 0;
   });
-
-  // Mark final overview when the final card enters view after enough exploration.
-  if ('IntersectionObserver' in window) {
-    const final = qs('#mastery');
-    if (final) {
-      const observer = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting) && completed.size >= 5) {
-          complete('tools');
-          observer.disconnect();
-        }
-      }, { threshold: .2 });
-      observer.observe(final);
-    }
-  }
 })();
