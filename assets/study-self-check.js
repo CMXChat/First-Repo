@@ -1,0 +1,14 @@
+(()=>{
+  if(window.__studySelfCheckLoaded)return;window.__studySelfCheckLoaded=true;
+  const q=(s,c=document)=>c.querySelector(s),qa=(s,c=document)=>[...c.querySelectorAll(s)];
+  if(!q('link[href^="/assets/study-self-check.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-self-check.css?v=20260812-1';document.head.appendChild(l)}
+  const issues=[];
+  const rgb=s=>{const m=String(s).match(/rgba?\((\d+)[, ]+(\d+)[, ]+(\d+)/);return m?[+m[1],+m[2],+m[3]]:null};
+  const lum=c=>c?(.2126*c[0]+.7152*c[1]+.0722*c[2]):255;
+  const auditTheme=()=>{if(document.documentElement.dataset.theme!=='light')return;const selectors=['.term','.guide-panel','.study-definition-drawer','.study-process-lab','.study-handbook-coverage','.study-concept-machine','.study-deep-lab','.study-related','.study-easy-pop','.study-world-modal','.course-dock'];qa(selectors.join(',')).forEach(el=>{if(el.closest('.debug-terminal,.file-tree,.db-query-code,pre'))return;const c=rgb(getComputedStyle(el).backgroundColor);if(c&&lum(c)<105){el.classList.add('study-light-surface-fix');issues.push(`Light-theme safety fix applied to ${el.className||el.tagName}`)}})};
+  const auditIds=()=>{const seen=new Set();qa('[id]').forEach(el=>{if(seen.has(el.id))issues.push(`Duplicate id: #${el.id}`);else seen.add(el.id)})};
+  const auditAnchors=()=>{qa('a[href^="#"]').forEach(a=>{const h=a.getAttribute('href');if(h==='#'||!h)return;try{if(!q(h))issues.push(`Broken same-page link: ${h}`)}catch{issues.push(`Invalid same-page link: ${h}`)}})};
+  const addOneThing=()=>qa('section[id]').forEach(section=>{if(q('.study-one-thing',section))return;const easy=q('.study-easy-pop p',section);if(!easy)return;const text=(easy.textContent||'').split(/(?<=[.!?])\s/)[0];const box=document.createElement('div');box.className='study-one-thing';box.innerHTML=`<b>🎯 One thing:</b><span>${text}</span>`;const heading=q('.section-heading,.lab-head,.study-deep-head',section);if(heading)heading.insertAdjacentElement('afterend',box);else section.prepend(box)});
+  const run=()=>{issues.length=0;auditIds();auditAnchors();auditTheme();addOneThing();if(new URLSearchParams(location.search).get('studyDebug')==='1'){q('.study-qa-panel')?.remove();const p=document.createElement('aside');p.className='study-qa-panel';p.innerHTML=`<h3>Study Lab QA</h3>${issues.length?`<ul>${issues.map(x=>`<li class="bad">${x}</li>`).join('')}</ul>`:'<div class="good">✓ No duplicate IDs or broken same-page anchors detected on this page. Theme surfaces inspected.</div>'}<p style="margin:8px 0 0;color:var(--muted)">This is a runtime sanity check, not a replacement for real browser/device testing.</p>`;document.body.appendChild(p)}};
+  addEventListener('load',()=>setTimeout(run,220));setTimeout(run,650);
+})();
