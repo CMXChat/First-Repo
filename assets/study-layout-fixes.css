@@ -1,0 +1,25 @@
+/* Cross-device judgment fixes for Study Lab */
+@media (min-width:1101px){
+  body:has(.function-machine) .machine-grid{grid-template-columns:minmax(0,1.22fr) minmax(350px,.78fr)}
+  body:has(.function-machine) .machine{overflow:visible}
+  body:has(.function-machine) .function-machine{grid-template-columns:minmax(100px,.58fr) 34px minmax(170px,1fr) 34px minmax(100px,.58fr);gap:8px;min-width:0}
+  body:has(.function-machine) .machine-port,body:has(.function-machine) .machine-core{min-width:0;padding:16px 12px}
+  body:has(.function-machine) .machine-port strong,body:has(.function-machine) .machine-core strong{overflow-wrap:anywhere}
+}
+@media (min-width:1101px) and (max-width:1260px){
+  body:has(.function-machine) .machine-grid{grid-template-columns:1fr}
+  body:has(.function-machine) .machine{overflow:hidden}
+}
+@media (max-width:1100px){body:has(.function-machine) .machine{overflow:hidden}}
+@media (max-width:760px){
+  body:has(.function-machine) .function-machine{display:grid;grid-template-columns:1fr!important;gap:10px!important}
+  body:has(.function-machine) .machine-port,body:has(.function-machine) .machine-core{width:100%;min-width:0;padding:15px}
+  body:has(.function-machine) .arrow{transform:rotate(90deg);min-height:24px;display:grid;place-items:center}
+  .study-definition-drawer{max-height:min(62vh,520px);overflow:auto}
+  .course-dock{max-width:calc(100vw - 18px)}
+}
+@media (max-width:420px){
+  .study-handbook-coverage,.study-process-lab{margin-left:-2px;margin-right:-2px}
+  .study-coverage-card,.study-process-step{overflow-wrap:anywhere}
+  .study-definition-drawer{width:calc(100vw - 20px);right:10px}
+}
