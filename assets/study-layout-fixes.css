@@ -1,4 +1,5 @@
 /* Cross-device judgment fixes for Study Lab */
+.guide-launch{bottom:calc(var(--course-dock-h,74px) + 34px)!important}.guide-panel{bottom:calc(var(--course-dock-h,74px) + 92px)!important}
 @media (min-width:1101px){
   body:has(.function-machine) .machine-grid{grid-template-columns:minmax(0,1.22fr) minmax(350px,.78fr)}
   body:has(.function-machine) .machine{overflow:visible}
@@ -12,6 +13,8 @@
 }
 @media (max-width:1100px){body:has(.function-machine) .machine{overflow:hidden}}
 @media (max-width:760px){
+  .guide-launch{right:12px!important;bottom:calc(var(--course-dock-h,68px) + 20px)!important}
+  .guide-panel{right:12px!important;bottom:calc(var(--course-dock-h,68px) + 76px)!important;max-height:min(58vh,520px);overflow:auto}
   body:has(.function-machine) .function-machine{display:grid;grid-template-columns:1fr!important;gap:10px!important}
   body:has(.function-machine) .machine-port,body:has(.function-machine) .machine-core{width:100%;min-width:0;padding:15px}
   body:has(.function-machine) .arrow{transform:rotate(90deg);min-height:24px;display:grid;place-items:center}
