@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050913" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
+  <title>Python Lab | Study Lab</title>
+  <meta name="description" content="A visual beginner Python learning world built around backend concepts, Spaces examples, interactive variables, decisions, functions, collections, and FastAPI." />
+  <link rel="canonical" href="https://db.cmxchat.com/study/python/" />
+  <link rel="stylesheet" href="/assets/study-python.css?v=20260812-1" />
+</head>
+<body>
+  <a class="skip-link" href="#lesson">Skip to Python lesson</a>
+  <div class="reading-progress" aria-hidden="true"><span></span></div>
+  <header class="toolbar">
+    <div class="toolbar-inner">
+      <a class="identity" href="/study/" aria-label="Back to Study Lab">
+        <span class="mark" aria-hidden="true">PY</span>
+        <span class="identity-copy"><strong>Python Lab</strong><span>Study Lab · backend world</span></span>
+      </a>
+      <nav class="toolbar-links" aria-label="Python lesson shortcuts">
+        <a href="#variables">Variables</a><a href="#decisions">Decisions</a><a href="#functions">Functions</a><a href="#fastapi">FastAPI</a><a href="#boss">Boss</a>
+      </nav>
+      <div class="toolbar-actions">
+        <span class="mastery-chip"><i aria-hidden="true"></i><span>Python map <b data-total-mastery>0%</b></span></span>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-track" aria-hidden="true"><span class="dark">Dark</span><span class="light">Light</span><span class="theme-thumb"></span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell" id="top">
+    <article class="paper" id="lesson">
+      <section class="hero" data-guide="variables" aria-labelledby="pageTitle">
+        <div class="hero-grid" aria-hidden="true"></div><div class="orbit o1" aria-hidden="true"></div><div class="orbit o2" aria-hidden="true"></div><div class="orbit o3" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="eyebrow">Backend world · start before syntax</p>
+          <h1 id="pageTitle">Make Python behave before you memorize Python.</h1>
+          <p class="hero-lead">You are going to treat Python like a set of visible ideas first: named values, decisions, reusable machines, groups of data, and backend functions. The real code is always nearby, but it stays translated until you actually want the syntax.</p>
+          <div class="hero-actions"><button class="button primary" id="continueMission" type="button">Start with variables <span aria-hidden="true">→</span></button><button class="button" id="backToMap" type="button">Back to Study Lab</button></div>
+        </div>
+        <aside class="hero-side" aria-label="Python learning orbit">
+          <div class="python-orbit">
+            <div class="orbit-center"><strong data-total-mastery>0%</strong><small>Python mental model</small></div>
+            <div class="orbit-node n1"><span>Store</span><strong>Variables + values</strong></div>
+            <div class="orbit-node n2"><span>Decide</span><strong>if / else</strong></div>
+            <div class="orbit-node n3"><span>Reuse</span><strong>Functions</strong></div>
+            <div class="orbit-node n4"><span>Connect</span><strong>FastAPI endpoint</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section" id="missions" aria-labelledby="missionTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Python mission map</p><h2 id="missionTitle">Six ideas before “write code from scratch”</h2></div><p class="section-intro">Each mission starts with a visual model, lets you change something, then quietly reveals the real Python underneath. You can click ahead, but none of these require you to type code from memory.</p></div>
+        <div class="mission-map reveal" aria-label="Python mission map">
+          <button class="mission current" type="button" data-mission="variables" data-target="#variables"><span class="dot">01</span><strong>Memory Boxes</strong><small>variables + values</small></button>
+          <button class="mission" type="button" data-mission="decisions" data-target="#decisions"><span class="dot">02</span><strong>Decision Fork</strong><small>if / else</small></button>
+          <button class="mission" type="button" data-mission="functions" data-target="#functions"><span class="dot">03</span><strong>Function Machine</strong><small>input → output</small></button>
+          <button class="mission" type="button" data-mission="collections" data-target="#collections"><span class="dot">04</span><strong>Data Shelf</strong><small>lists + dictionaries</small></button>
+          <button class="mission" type="button" data-mission="fastapi" data-target="#fastapi"><span class="dot">05</span><strong>Endpoint Gate</strong><small>Python + FastAPI</small></button>
+          <button class="mission" type="button" data-mission="boss" data-target="#boss"><span class="dot">★</span><strong>Python Boss</strong><small>arrange real code</small></button>
+        </div>
+      </section>
+
+      <section class="section alt" id="variables" data-guide="variables" aria-labelledby="variablesTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Mission 01 · Memory Boxes</p><h2 id="variablesTitle">A variable is a useful name attached to a value</h2></div><p class="section-intro">Forget syntax for a minute. If the backend needs to remember a briefing title, priority number, user ID, or whether something is private while it works, Python can give that value a name and use the name later.</p></div>
+        <div class="lab reveal">
+          <div class="lab-head"><div><p class="card-kicker">Build Python memory</p><h3>Name a box, put a value inside</h3></div><p>Create two or three values and watch them appear as memory slots. Presets use Spaces-style examples so the idea stays connected to something real.</p></div>
+          <div class="variable-lab">
+            <div class="control-stack">
+              <div class="field"><label for="variableName">Name of the value</label><input id="variableName" value="briefing_title" autocomplete="off" /></div>
+              <div class="field"><label for="variableType">Kind of value</label><select id="variableType"><option value="text">Text</option><option value="number">Number</option><option value="boolean">True / false</option></select></div>
+              <div class="field"><label for="variableValue">Value to remember</label><input id="variableValue" value="Morning Brief" autocomplete="off" /></div>
+              <div class="actions"><button class="button primary" id="setVariable" type="button">Store this value</button></div>
+              <div class="actions"><button class="button" type="button" data-variable-preset="brief">Brief title</button><button class="button" type="button" data-variable-preset="priority">Priority</button><button class="button" type="button" data-variable-preset="private">Private?</button></div>
+              <p class="feedback" id="variableFeedback">Try storing a couple of values.</p>
+            </div>
+            <div class="memory-board"><h4>Python memory · simplified visual</h4><div class="memory-slots" id="memorySlots"></div></div>
+          </div>
+          <div class="code-card" style="margin-top:18px"><p class="card-kicker">Real syntax · optional</p><h3>What Python would look like</h3><pre id="variableCode">No Python code yet.</pre><div class="translation" id="variableTranslation"><strong>Plain English:</strong> a variable is just a useful name attached to a value so your program can use it again.</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="decisions" data-guide="decisions" aria-labelledby="decisionsTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Mission 02 · Decision Fork</p><h2 id="decisionsTitle">Python can ask a question and follow one branch</h2></div><p class="section-intro">This is the basic idea behind an <strong>if</strong> statement. The backend checks a condition. If it is true, one set of instructions runs. Otherwise, another path can run.</p></div>
+        <div class="lab reveal">
+          <div class="decision-lab">
+            <div class="decision-control">
+              <p class="card-kicker">Spaces scenario</p><h3>How urgent is this item?</h3><p>Move the value and watch the backend decision change.</p>
+              <div class="range-row"><label for="urgency">Urgency score</label><input id="urgency" type="range" min="0" max="10" value="8" /><strong class="range-value" id="urgencyValue">8</strong></div>
+              <div class="prediction-options" style="display:grid;gap:8px;margin-top:16px"><button class="button" type="button" data-decision-answer="priority">It goes to priority</button><button class="button" type="button" data-decision-answer="normal">It stays normal</button></div><p class="feedback" id="decisionFeedback">Predict the branch after moving the score.</p>
+            </div>
+            <div class="decision-tree">
+              <div class="tree-node active" data-tree-node="question"><strong id="decisionQuestion">Is urgency (8) at least 7?</strong><small>Python evaluates a true / false condition</small></div>
+              <div class="tree-node" data-tree-node="high"><strong>YES branch</strong><small>show a priority alert</small></div>
+              <div class="tree-node" data-tree-node="normal"><strong>NO branch</strong><small>keep it in the normal briefing</small></div>
+              <div class="translation"><strong>Current result:</strong> <span id="decisionResult">YES → show a priority alert</span></div>
+            </div>
+          </div>
+          <div class="code-card" style="margin-top:18px"><p class="card-kicker">Under the hood</p><h3>The same decision in Python</h3><pre id="ifCode"></pre><div class="translation" id="ifTranslation"></div></div>
+        </div>
+      </section>
+
+      <section class="section alt" id="functions" data-guide="functions" aria-labelledby="functionsTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Mission 03 · Function Machine</p><h2 id="functionsTitle">A function is a reusable little machine</h2></div><p class="section-intro">Give a function some input, let its instructions run, and it can give a result back. Backend code uses functions constantly so the same useful logic does not need to be rewritten everywhere.</p></div>
+        <div class="machine-grid reveal">
+          <article class="machine">
+            <p class="card-kicker">Run the machine</p><h3>make_greeting</h3>
+            <div class="field"><label for="functionName">Name to send in</label><input id="functionName" value="Jay" autocomplete="off" /></div>
+            <div class="function-machine"><div class="machine-port"><span>INPUT</span><strong id="functionInput">Jay</strong><small>a value enters</small></div><div class="arrow">→</div><div class="machine-core"><span>FUNCTION</span><strong>make_greeting</strong><small>reusable instructions run</small></div><div class="arrow">→</div><div class="machine-port"><span>OUTPUT</span><strong id="functionOutput">waiting</strong><small>a result comes back</small></div></div>
+            <div class="actions"><button class="button primary" id="runFunction" type="button">Run function</button></div><p class="feedback" id="functionFeedback">Try Jay, then change the name and run the same machine again.</p>
+          </article>
+          <article class="code-card">
+            <p class="card-kicker">Code decoder</p><h3>Tap a Python idea, get normal English</h3><pre>def make_greeting(name):
+    message = "Morning, " + name
+    return message</pre>
+            <div class="line-explain"><button class="active" type="button" data-function-line="0"><b>1</b><span><strong>def make_greeting(...)</strong><br />define reusable instructions</span></button><button type="button" data-function-line="1"><b>2</b><span><strong>name</strong><br />the input slot</span></button><button type="button" data-function-line="2"><b>3</b><span><strong>return</strong><br />send the result back</span></button></div>
+            <div class="translation"><strong id="functionLineTitle">def</strong><p id="functionLineText">This says: “I am defining a reusable set of instructions called make_greeting.”</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="collections" data-guide="collections" aria-labelledby="collectionsTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Mission 04 · Data Shelf</p><h2 id="collectionsTitle">Programs usually need groups of values, not one lonely box</h2></div><p class="section-intro">A Python <strong>list</strong> is useful for an ordered group. A <strong>dictionary</strong> is useful when each value has a meaningful label. Both show up everywhere once backend data becomes real.</p></div>
+        <div class="collection-grid reveal">
+          <article class="shelf"><p class="card-kicker">List</p><h3>Briefing card names</h3><p>Order matters. Add another card name.</p><div class="chips" id="listItems"></div><div class="field" style="margin-top:16px"><label for="listInput">New list item</label><input id="listInput" placeholder="priority" autocomplete="off" /></div><div class="actions"><button class="button primary" id="addListItem" type="button">Add to list</button></div><div class="code-card" style="margin-top:14px"><pre id="listCode"></pre><div class="translation"><strong>Plain English:</strong> square brackets are one way Python writes a list. Focus on the ordered group first.</div></div></article>
+          <article class="shelf"><p class="card-kicker">Dictionary</p><h3>Space details</h3><p>Each value has a label called a key.</p><div class="dict-list" id="dictItems"></div><div class="field" style="margin-top:16px"><label for="dictKey">Label / key</label><input id="dictKey" placeholder="visibility" autocomplete="off" /></div><div class="field"><label for="dictValue">Value</label><input id="dictValue" placeholder="private" autocomplete="off" /></div><div class="actions"><button class="button primary" id="setDictItem" type="button">Add key → value</button></div><div class="code-card" style="margin-top:14px"><pre id="dictCode"></pre><div class="translation"><strong>Plain English:</strong> curly braces here hold labeled key → value pairs.</div></div></article>
+        </div><p class="feedback" id="collectionFeedback">Change both collections and watch the visual and code representation stay in sync.</p>
+      </section>
+
+      <section class="section alt" id="fastapi" data-guide="fastapi" aria-labelledby="fastapiTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Mission 05 · Endpoint Gate</p><h2 id="fastapiTitle">Now connect ordinary Python to a backend API door</h2></div><p class="section-intro">FastAPI does not replace Python. It helps connect HTTP methods and paths to Python functions. When a matching request arrives, FastAPI can call the Python function and turn its returned data into a response.</p></div>
+        <div class="lab reveal">
+          <div class="lab-head"><div><p class="card-kicker">Endpoint simulator</p><h3>Run a GET or POST through the backend</h3></div><div><div class="scenario-tabs"><button class="button active" type="button" data-api-mode="get">GET briefing</button><button class="button" type="button" data-api-mode="post">POST briefing</button></div><div class="actions"><button class="button primary" id="runEndpoint" type="button">Run endpoint</button></div></div></div>
+          <div class="fastapi-flow"><article class="api-node active" data-api-node><span>1 · client</span><strong>HTTP request</strong></article><article class="api-node" data-api-node><span>2 · framework</span><strong>FastAPI route</strong></article><article class="api-node" data-api-node><span>3 · language</span><strong>Python function</strong></article><article class="api-node" data-api-node><span>4 · app work</span><strong>Read / process</strong></article><article class="api-node" data-api-node><span>5 · client</span><strong>HTTP response</strong></article></div>
+          <div class="translation" style="margin-top:18px"><strong id="apiStepTitle">Browser asks for briefing 42</strong><p id="apiStepText">A web request starts the chain.</p></div>
+          <div class="machine-grid" style="margin-top:18px">
+            <article class="code-card"><p class="card-kicker">Real FastAPI + Python</p><h3>Read it as jobs, not symbols</h3><pre id="fastapiCode"></pre><div class="line-explain"><button class="active" type="button" data-fastapi-line="0"><b>1</b><span>method + path connection</span></button><button type="button" data-fastapi-line="1"><b>2</b><span>Python function</span></button><button type="button" data-fastapi-line="2"><b>3</b><span>input / type</span></button><button type="button" data-fastapi-line="3"><b>4</b><span>return value</span></button></div><div class="translation"><strong id="fastapiLineTitle">@app.get(...)</strong><p id="fastapiLineText">This is the FastAPI connection. It says which method + path should trigger the function below.</p></div></article>
+            <article class="code-card"><p class="card-kicker">Response window</p><h3>What comes back to the frontend</h3><pre id="apiResponse">Response waiting…</pre><div class="translation"><strong>Plain English:</strong> the response can contain a status and structured data. The frontend can then use that result to update the screen.</div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="boss" data-guide="boss" aria-labelledby="bossTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Python Boss · Parsons puzzle</p><h2 id="bossTitle">Arrange real Python without having to type it from memory</h2></div><p class="section-intro">The syntax is real, but the task is about structure and reasoning. Tap the blocks in the order that creates a function, builds a briefing value inside it, then returns the result.</p></div>
+        <div class="parsons reveal">
+          <article class="block-bank"><p class="card-kicker">Available blocks</p><h3>Tap to add</h3><div class="block-list" id="parsonsBank"><button class="code-block" type="button" data-parsons-block='    return briefing'>    return briefing</button><button class="code-block" type="button" data-parsons-block='def make_briefing(title):'>def make_briefing(title):</button><button class="code-block" type="button" data-parsons-block='    briefing = {"title": title}'>    briefing = {"title": title}</button></div></article>
+          <article class="build-zone"><p class="card-kicker">Your function</p><h3>Build the order</h3><div class="block-list" id="parsonsBuild"></div><div class="actions"><button class="button primary" id="checkParsons" type="button">Check order</button><button class="button" id="resetParsons" type="button">Reset</button></div><p class="feedback" id="parsonsFeedback">Tap the blocks in the order you think Python needs them.</p></article>
+        </div>
+        <div class="translation reveal" style="margin-top:18px"><strong>What you're really proving:</strong> you understand that a function is defined first, its indented instructions happen inside it, and <code>return</code> sends a result back. Typing punctuation can wait.</div>
+      </section>
+
+      <section class="section alt" id="mastery" aria-labelledby="masteryTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Python mastery view</p><h2 id="masteryTitle">Track the ideas you've actually manipulated</h2></div><p class="section-intro">These are not grades. They show which models you interacted with so the next version of the course can fade help gradually instead of assuming you mastered something because you scrolled past it.</p></div>
+        <div class="lab reveal"><div class="mastery-bars">
+          <div class="mastery-row"><span>Variables</span><div class="bar"><i data-skill-bar="variables"></i></div><b data-skill-num="variables">0%</b></div><div class="mastery-row"><span>Decisions</span><div class="bar"><i data-skill-bar="decisions"></i></div><b data-skill-num="decisions">0%</b></div><div class="mastery-row"><span>Functions</span><div class="bar"><i data-skill-bar="functions"></i></div><b data-skill-num="functions">0%</b></div><div class="mastery-row"><span>Collections</span><div class="bar"><i data-skill-bar="collections"></i></div><b data-skill-num="collections">0%</b></div><div class="mastery-row"><span>FastAPI</span><div class="bar"><i data-skill-bar="fastapi"></i></div><b data-skill-num="fastapi">0%</b></div><div class="mastery-row"><span>Python Boss</span><div class="bar"><i data-skill-bar="boss"></i></div><b data-skill-num="boss">0%</b></div>
+        </div><div class="actions"><button class="button" id="resetProgress" type="button">Reset Python progress</button></div></div>
+        <div class="achievement-grid reveal" style="margin-top:18px"><article class="achievement" data-achievement="memory"><i>▣</i><strong>Memory Keeper</strong><small>stored named values</small></article><article class="achievement" data-achievement="branch"><i>⑂</i><strong>Branch Reader</strong><small>followed an if decision</small></article><article class="achievement" data-achievement="machine"><i>⚙</i><strong>Function Runner</strong><small>reused a function</small></article><article class="achievement" data-achievement="collector"><i>▦</i><strong>Data Collector</strong><small>changed collections</small></article><article class="achievement" data-achievement="endpoint"><i>↗</i><strong>Endpoint Runner</strong><small>ran FastAPI flow</small></article><article class="achievement" data-achievement="python"><i>PY</i><strong>Python Builder</strong><small>assembled real code</small></article></div>
+      </section>
+
+      <section class="section" aria-labelledby="nextTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">What comes after this</p><h2 id="nextTitle">The next Python world can get more real without getting mean</h2></div><p class="section-intro">Once these ideas are comfortable, the course can add loops, richer dictionaries, errors, imports, classes only when useful, database functions, real FastAPI request bodies, and eventually small exercises based on the actual backend folders in your environment.</p></div>
+        <div class="explain-grid reveal"><article class="concept"><span class="symbol">↻</span><h3>Loops</h3><p>Repeat an action for every item in a group, such as every briefing card or event.</p></article><article class="concept"><span class="symbol">!</span><h3>Errors</h3><p>Learn what Python is telling you when something fails instead of seeing an error as random red text.</p></article><article class="concept"><span class="symbol">API</span><h3>Real backend shapes</h3><p>Connect Python functions to request bodies, validation, database operations, and the real project structure later.</p></article></div>
+        <div class="source-note reveal" style="margin-top:18px">Lesson structure is informed by the official <a href="https://docs.python.org/3/tutorial/">Python Tutorial</a> and <a href="https://fastapi.tiangolo.com/tutorial/first-steps/">FastAPI first steps</a>. The examples here are simplified teaching simulations, not a copy of the production backend.</div>
+      </section>
+    </article>
+  </main>
+
+  <button class="guide-launch" id="guideLaunch" type="button" aria-controls="guidePanel"><span aria-hidden="true">✦</span><span>Ask Study Guide</span></button>
+  <aside class="guide-panel" id="guidePanel" aria-live="polite"><div class="guide-head"><strong>Study Guide · Python</strong><button id="guideClose" type="button" aria-label="Close guide">×</button></div><p id="guideText">A variable is just a named box. Put “Morning Brief” in a box called briefing_title, then Python can use that value later.</p><div class="guide-actions"><button type="button" data-guide-mode="simple">Say it simpler</button><button type="button" data-guide-mode="why">Why do I care?</button><button type="button" data-guide-mode="example">Spaces example</button></div></aside>
+  <script src="/assets/study-python.js?v=20260812-1" defer></script>
+</body>
+</html>
