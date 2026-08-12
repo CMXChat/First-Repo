@@ -1,0 +1,36 @@
+name: Study Lab QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'study/**'
+      - 'assets/study-*'
+      - 'scripts/validate-study.mjs'
+      - '.github/workflows/study-qa.yml'
+  pull_request:
+    paths:
+      - 'study/**'
+      - 'assets/study-*'
+      - 'scripts/validate-study.mjs'
+      - '.github/workflows/study-qa.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-study:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check Study JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in assets/study-*.js; do
+            echo "node --check $file"
+            node --check "$file"
+          done
+      - name: Validate Study structure
+        run: node scripts/validate-study.mjs
