@@ -1,17 +1,18 @@
 (()=>{
-  const path=location.pathname.replace(/\/+$/,'/')||'/';
+  const rawPath=location.pathname.replace(/\/+$/,'');
+  const path=(rawPath||'/')==='/'?'/':`${rawPath}/`;
   const configs={
     '/study/':{world:'Core app flow',map:'#missions',prev:null,next:'/study/python/',chapters:['#foundation','#react','#request','#backend','#database','#auth','#boss','#mastery','#roadmap','#glossary']},
     '/study/python/':{world:'Python Lab',map:'/study/#missions',prev:'/study/#boss',next:'/study/environment/',chapters:['#variables','#decisions','#functions','#collections','#fastapi','#boss','#mastery']},
-    '/study/environment/':{world:'Environment World',map:'/study/#missions',prev:'/study/python/#boss',next:null,chapters:['#overview','#frontend','#backend','#data','#auth','#project','#client','#local','#workflow','#guardrails','#tools','#recovery','#boss']}
+    '/study/environment/':{world:'Environment World',map:'/study/#missions',prev:'/study/python/#boss',next:'/study/environment/handbook/',chapters:['#overview','#frontend','#backend','#data','#auth','#project','#client','#local','#workflow','#guardrails','#tools','#recovery','#boss']},
+    '/study/environment/handbook/':{world:'Handbook Registry',map:'/study/#missions',prev:'/study/environment/#boss',next:'/study/#missions',chapters:['#principles','#anatomy','#learning','#registry','#decisions','#acceptance']}
   };
   const cfg=configs[path]; if(!cfg)return;
   if(!document.querySelector('link[href^="/assets/study-course-nav.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-course-nav.css?v=20260812-1';document.head.appendChild(l)}
   const chapters=cfg.chapters.map(sel=>document.querySelector(sel)).filter(Boolean);
   const titleFor=el=>el?.querySelector('h2,h3')?.textContent?.trim()||el?.id||cfg.world;
   let previousLocation='';try{previousLocation=localStorage.getItem('study-course-last')||''}catch{}
-  let index=Math.max(0,chapters.findIndex(el=>location.hash&&`#${el.id}`===location.hash));
-  if(index<0)index=0;
+  let index=chapters.findIndex(el=>location.hash&&`#${el.id}`===location.hash);if(index<0)index=0;
   const dock=document.createElement('nav');dock.className='course-dock';dock.setAttribute('aria-label','Ordered course navigation');
   dock.innerHTML='<button class="course-back" type="button" aria-label="Previous chapter">← <span>Previous</span></button><div class="course-center"><button class="course-map-button" type="button" aria-label="Open course map">◎</button><div class="course-current"><small></small><strong></strong><div class="course-progress-track"><i></i></div></div><span class="course-count"></span></div><button class="course-next" type="button" aria-label="Next chapter"><span>Next</span> →</button>';
   document.body.appendChild(dock);
@@ -28,7 +29,7 @@
     if(host&&!document.querySelector('.course-world-gate')){
       const safeResume=previousLocation.startsWith('/study/')?previousLocation:'/study/#react';
       const gate=document.createElement('div');gate.className='course-world-gate';
-      gate.innerHTML=`<div><strong>The full course now has worlds</strong><p>Core App Flow stays the main quest. Python Lab deepens backend logic. Environment World contains the complete setup, tools, project anatomy, workflow, guardrails and later concepts.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume where I left off →</a><a href="/study/python/">Python Lab</a><a href="/study/environment/">Environment World</a></div>`;
+      gate.innerHTML=`<div><strong>The full course now has four connected worlds</strong><p>Core App Flow stays the main quest. Python Lab teaches backend code. Environment World connects the full setup. Handbook Registry preserves every detailed environment question and acceptance requirement.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume where I left off →</a><a href="/study/python/">Python Lab</a><a href="/study/environment/">Environment World</a><a href="/study/environment/handbook/">Handbook Registry</a></div>`;
       host.insertAdjacentElement('afterend',gate)
     }
   }
