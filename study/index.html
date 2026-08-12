@@ -11,448 +11,266 @@
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
   <title>Study Lab | Learn the CMX Build Environment</title>
-  <meta name="description" content="A guided interactive course for understanding the CMX build environment one concept at a time, using Spaces examples and hands-on visual labs." />
+  <meta name="description" content="A visual, interactive learning experience for understanding the CMX build environment one concept at a time through Spaces examples, simulations, missions, and plain-English explanations." />
   <link rel="canonical" href="https://db.cmxchat.com/study/" />
-  <link rel="stylesheet" href="/assets/study-v2.css?v=20260812-1" />
+  <link rel="stylesheet" href="/assets/study-v3.css?v=20260812-1" />
 </head>
 <body>
   <a class="skip-link" href="#studyContent">Skip to lesson</a>
   <div class="reading-progress" aria-hidden="true"><span></span></div>
 
-  <header class="study-toolbar">
-    <div class="study-toolbar-inner">
-      <a class="study-identity" href="#top" aria-label="Study Lab, return to top">
-        <span class="study-mark" aria-hidden="true">ST</span>
-        <span class="study-identity-copy">
-          <strong>Study Lab</strong>
-          <span>CR-guided learning environment</span>
-        </span>
+  <header class="toolbar">
+    <div class="toolbar-inner">
+      <a class="identity" href="#top" aria-label="Study Lab, return to top">
+        <span class="mark" aria-hidden="true">ST</span>
+        <span class="identity-copy"><strong>Study Lab</strong><span>Interactive build course</span></span>
       </a>
-
       <nav class="toolbar-links" aria-label="Study shortcuts">
-        <a href="#checkpoint">Where you are</a>
-        <a href="#react">React Lab</a>
-        <a href="#request">Request journey</a>
-        <a href="#database">Database</a>
-        <a href="#roadmap">Roadmap</a>
+        <a href="#missions">Missions</a><a href="#react">React Lab</a><a href="#request">Request Quest</a><a href="#database">Database</a><a href="#boss">Boss Check</a>
       </nav>
-
       <div class="toolbar-actions">
-        <span class="progress-chip"><i aria-hidden="true"></i><span>Explored <b data-progress-text>0 / 8</b></span></span>
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
-          <span class="theme-toggle-track" aria-hidden="true">
-            <span class="theme-option theme-option-dark">Dark</span>
-            <span class="theme-option theme-option-light">Light</span>
-            <span class="theme-toggle-thumb"></span>
-          </span>
+        <span class="mastery-chip"><i aria-hidden="true"></i><span>Mastery <b data-total-mastery>0%</b></span></span>
+        <button class="button" id="xrayToggle" type="button">Turn on X-ray labels</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
+          <span class="theme-track" aria-hidden="true"><span class="dark">Dark</span><span class="light">Light</span><span class="theme-thumb"></span></span>
         </button>
       </div>
     </div>
   </header>
 
-  <div class="study-shell" id="top">
-    <aside class="study-rail" aria-label="Lesson navigation">
-      <div class="rail-card">
-        <p class="rail-kicker">Lesson map</p>
-        <nav class="lesson-nav">
-          <a class="is-current" href="#checkpoint">Your checkpoint</a>
-          <a href="#stack">The whole stack</a>
-          <a href="#react">React + components</a>
-          <a href="#request">Follow one action</a>
-          <a href="#backend">API + backend</a>
-          <a href="#database">PostgreSQL</a>
-          <a href="#auth">Login + auth</a>
-          <a href="#roadmap">What comes later</a>
-          <a href="#quiz">Quick check</a>
-          <a href="#glossary">Glossary</a>
-        </nav>
-      </div>
-
-      <div class="rail-card rail-progress">
-        <p class="rail-kicker">Hands-on progress</p>
-        <strong data-progress-percent>0%</strong>
-        <p>Only interactions count. Scrolling past something does not.</p>
-        <div class="progress-track" aria-hidden="true"><i data-progress-bar></i></div>
-        <button class="rail-reset" id="resetProgress" type="button">Reset explored progress</button>
-      </div>
-
-      <div class="rail-card rail-now">
-        <p class="rail-kicker">Learning now</p>
-        <strong>HTML/CSS/JS → React → components</strong>
-        <p>The rest of the environment stays visible, but this is the concept we actually want to make click next.</p>
-      </div>
-    </aside>
-
-    <article class="study-paper" id="studyContent">
-      <header class="hero" aria-labelledby="pageTitle">
-        <div class="hero-grid" aria-hidden="true"></div>
-        <div class="hero-orbit one" aria-hidden="true"></div>
-        <div class="hero-orbit two" aria-hidden="true"></div>
-
+  <main class="shell" id="top">
+    <article class="paper" id="studyContent">
+      <section class="hero" data-guide="hero" aria-labelledby="pageTitle">
+        <div class="hero-grid" aria-hidden="true"></div><div class="orbit o1" aria-hidden="true"></div><div class="orbit o2" aria-hidden="true"></div><div class="orbit o3" aria-hidden="true"></div>
         <div class="hero-copy">
-          <div class="hero-kicker-row">
-            <p class="section-kicker">Your real build environment, taught one layer at a time</p>
-            <span class="status-chip">Current checkpoint · React</span>
-          </div>
-          <h1 id="pageTitle">Learn the stack by watching it work</h1>
-          <p class="hero-lead">This is not a documentation dump. You already understand pieces of the architecture, so the lesson starts where you actually are, uses Spaces as the running example, and lets you touch the ideas before asking you to remember the words.</p>
-          <div class="hero-actions">
-            <button class="button button-primary" id="startCurrentLesson" type="button">Continue with React <span aria-hidden="true">→</span></button>
-            <a class="button button-secondary" href="#stack">See the whole environment</a>
-          </div>
-          <div class="section-note"><span aria-hidden="true">✦</span><span><strong>Rule for this page:</strong> if a word does not make sense, that word becomes the lesson. There is no prize for speedrunning the roadmap.</span></div>
+          <p class="eyebrow">Your development environment · explained by using it</p>
+          <h1 id="pageTitle">Stop memorizing the words. Watch the app happen.</h1>
+          <p class="hero-lead">This course turns your real environment into something you can poke, predict, assemble, break apart, and rebuild. You do not need to know code first. Every technical label gets attached to something visible before syntax ever matters.</p>
+          <div class="hero-actions"><button class="button primary" id="continueMission" type="button">Continue current mission <span aria-hidden="true">→</span></button><button class="button" id="exploreMap" type="button">See the whole learning map</button></div>
+          <div class="xray-note"><strong>X-ray mode:</strong> extra architecture labels are now visible. Use this when you want to see which technical layer owns each visible action.</div>
         </div>
+        <aside class="hero-side" aria-label="Current learning map">
+          <div class="mastery-orbit">
+            <div class="orbit-center"><strong data-total-mastery>0%</strong><small>current understanding map</small></div>
+            <div class="orbit-node n1"><span>Current</span><strong>React + components</strong></div>
+            <div class="orbit-node n2"><span>Next</span><strong>Request + response</strong></div>
+            <div class="orbit-node n3"><span>Later</span><strong>Real project files</strong></div>
+            <div class="orbit-node n4"><span>Anchor</span><strong>Frontend → backend → data</strong></div>
+          </div>
+        </aside>
+      </section>
 
-        <div class="hero-map" aria-label="Main application layers">
-          <div class="hero-map-center"><span>Your app</span><strong>one connected flow</strong></div>
-          <button class="hero-map-node browser" type="button" data-hero-node="browser"><span>Runs here</span><strong>Browser</strong></button>
-          <button class="hero-map-node react" type="button" data-hero-node="react"><span>Frontend</span><strong>React + TypeScript</strong></button>
-          <button class="hero-map-node fastapi" type="button" data-hero-node="fastapi"><span>Backend</span><strong>FastAPI + Python</strong></button>
-          <button class="hero-map-node postgres" type="button" data-hero-node="postgres"><span>Storage</span><strong>PostgreSQL</strong></button>
-        </div>
-      </header>
-
-      <section id="checkpoint" class="lesson-section" data-nav-section data-tutor-context="checkpoint" aria-labelledby="checkpointTitle">
+      <section class="section" id="missions" aria-labelledby="missionsTitle">
         <div class="section-heading reveal">
-          <div><p class="section-kicker">Your actual checkpoint</p><h2 id="checkpointTitle">We are not starting from zero</h2></div>
-          <p class="section-intro">You already have the big frontend → backend → database idea. React is only beginning to click, HTTP/API concepts are early, and the deeper tooling can wait. The course keeps those levels separate so you always know what is foundation, what is current, and what is future.</p>
+          <div><p class="section-kicker">Mission map</p><h2 id="missionsTitle">One path through the app, not fifty disconnected definitions</h2></div>
+          <p class="section-intro">Each mission gives you one mental model, something interactive to do, and a tiny check that proves the idea actually clicked. You can explore ahead, but the page keeps showing what deserves attention now.</p>
         </div>
-
-        <div class="checkpoint-grid reveal">
-          <article class="checkpoint-card">
-            <span class="mini-icon" aria-hidden="true">✓</span>
-            <p class="card-kicker">Foundation forming</p>
-            <h3>You already have a useful base</h3>
-            <p>You can reason about the application in broad layers without needing the full vocabulary yet.</p>
-            <ul><li>Frontend is what the user sees and uses</li><li>Backend owns private logic and processing</li><li>Database stores durable information</li><li>Python is the backend language</li></ul>
-          </article>
-          <article class="checkpoint-card now">
-            <span class="mini-icon" aria-hidden="true">→</span>
-            <p class="card-kicker">Learning now</p>
-            <h3>Connect React to what you already know</h3>
-            <p>The next win is understanding why React exists when HTML, CSS, and JavaScript already exist.</p>
-            <ul><li>React is still frontend</li><li>Components are reusable UI pieces</li><li>TypeScript belongs to the JavaScript world</li><li>Spaces can assemble known components dynamically</li></ul>
-          </article>
-          <article class="checkpoint-card later">
-            <span class="mini-icon" aria-hidden="true">⌁</span>
-            <p class="card-kicker">Visible, but later</p>
-            <h3>The advanced words are parked on purpose</h3>
-            <p>You will learn them inside the real project after the request flow feels natural.</p>
-            <ul><li>TanStack Router + Query</li><li>Generated OpenAPI client</li><li>Models, CRUD, migrations</li><li>Docker, deployment, deeper auth</li></ul>
-          </article>
+        <div class="mission-map reveal" aria-label="Course mission map">
+          <button class="mission done" type="button" data-mission="foundation" data-target="#foundation"><span class="dot">✓</span><strong>Foundation</strong><small>the four big layers</small></button>
+          <button class="mission current" type="button" data-mission="react" data-target="#react"><span class="dot">02</span><strong>Components</strong><small>why React exists</small></button>
+          <button class="mission" type="button" data-mission="request" data-target="#request"><span class="dot">03</span><strong>Request Quest</strong><small>follow one action</small></button>
+          <button class="mission" type="button" data-mission="backend" data-target="#backend"><span class="dot">04</span><strong>Backend Jobs</strong><small>Python vs FastAPI</small></button>
+          <button class="mission" type="button" data-mission="database" data-target="#database"><span class="dot">05</span><strong>Data Links</strong><small>tables + IDs</small></button>
+          <button class="mission" type="button" data-mission="auth" data-target="#auth"><span class="dot">06</span><strong>Login Gate</strong><small>proof + permission</small></button>
+          <button class="mission" type="button" data-mission="boss" data-target="#boss"><span class="dot">★</span><strong>Boss Check</strong><small>rebuild it yourself</small></button>
+        </div>
+        <div class="mission-status reveal">
+          <article class="status-card circle-card"><p class="card-kicker">Already forming</p><h3>You know the broad shape</h3><p>The frontend is what you interact with, backend logic decides what happens, and the database stores durable information.</p></article>
+          <article class="status-card circle-card"><p class="card-kicker">Learning now</p><h3>Make React feel normal</h3><p>You are learning why a large frontend uses reusable pieces called components and how Spaces can assemble them dynamically.</p></article>
+          <article class="status-card circle-card"><p class="card-kicker">Protected from overload</p><h3>The advanced words can wait</h3><p>TanStack, OpenAPI, CRUD, migrations, Docker, deployment and deeper authentication stay on the roadmap until the foundation feels easy.</p></article>
         </div>
       </section>
 
-      <section id="stack" class="lesson-section" data-nav-section data-tutor-context="stack" aria-labelledby="stackTitle">
+      <section class="section alt" id="foundation" data-guide="hero" aria-labelledby="foundationTitle">
         <div class="section-heading reveal">
-          <div><p class="section-kicker">Your anchor</p><h2 id="stackTitle">Four pieces. One app.</h2></div>
-          <p class="section-intro">Every new concept should attach to a place you already recognize. Click each layer and keep the explanation simple until the overall picture feels boringly obvious.</p>
+          <div><p class="section-kicker">Start lower than code</p><h2 id="foundationTitle">A web app needs structure, appearance, and behavior</h2></div>
+          <p class="section-intro">You do not need to write HTML, CSS, or JavaScript to understand this. First connect the names to jobs you can see. The code can come much later.</p>
+        </div>
+        <div class="foundation-grid reveal">
+          <article class="foundation-card"><span class="symbol">▦</span><h3>Structure <small>· HTML</small></h3><p>What exists on the page: headings, forms, buttons, cards, sections and other interface pieces.</p><div class="xray-note">Technical label: HTML describes the structure and meaning of page content.</div></article>
+          <article class="foundation-card"><span class="symbol">◐</span><h3>Appearance <small>· CSS</small></h3><p>How those pieces look: layout, spacing, light/dark mode, circles, typography, mobile behavior and visual polish.</p><div class="xray-note">Technical label: CSS controls presentation and layout.</div></article>
+          <article class="foundation-card"><span class="symbol">⚡</span><h3>Behavior <small>· JavaScript</small></h3><p>What reacts: opening a menu, changing a card, running an animation, or starting a request after a click.</p><div class="xray-note">Technical label: JavaScript can listen for actions and change what the page does.</div></article>
         </div>
 
-        <div class="stack-board reveal">
-          <div class="stack-line" aria-label="Browser to database architecture">
-            <button class="stack-node is-active" type="button" data-stack-node="browser"><span>01 · experience</span><strong>Browser</strong><small>Where the frontend runs and where you click, type, and see the result.</small></button>
-            <button class="stack-node" type="button" data-stack-node="react"><span>02 · frontend</span><strong>React + TypeScript</strong><small>Organizes the interface and calls the backend when server data or actions are needed.</small></button>
-            <button class="stack-node" type="button" data-stack-node="fastapi"><span>03 · backend</span><strong>FastAPI + Python</strong><small>Receives requests, enforces rules, processes information, and talks to storage.</small></button>
-            <button class="stack-node" type="button" data-stack-node="postgres"><span>04 · database</span><strong>PostgreSQL</strong><small>Stores structured records that need to survive after the current page or session ends.</small></button>
+        <div class="lab reveal" style="margin-top:18px">
+          <div class="lab-head"><div><p class="card-kicker">The four-layer anchor</p><h3>Click each layer until the jobs feel obvious</h3></div><p>Every new term in this course should attach to one of these places instead of floating around by itself.</p></div>
+          <div class="scenario-tabs" aria-label="Architecture layers">
+            <button class="active" type="button" data-stack="browser">Browser</button><button type="button" data-stack="frontend">Frontend</button><button type="button" data-stack="backend">Backend</button><button type="button" data-stack="database">Database</button>
           </div>
-          <aside class="explain-card" aria-live="polite">
-            <span class="explain-tag" id="stackExplainRole">Where the app is experienced</span>
-            <h3 id="stackExplainTitle">Browser</h3>
-            <p id="stackExplainText">The browser runs the frontend, shows the interface, notices clicks, and sends network requests when the frontend needs the backend.</p>
-            <div class="analogy" id="stackExplainAnalogy">Think: the place where you actually touch the app.</div>
+          <div class="flow-explain" style="margin-top:18px"><span class="step">◎</span><div><p class="card-kicker" id="stackRole">Where you touch the app</p><h3 id="stackTitle">Browser</h3><p id="stackText">This is the place where the visible frontend runs. It notices your clicks and shows the result.</p><div class="message-card" id="stackAnalogy">Think: the screen and controls you are actually using.</div></div></div>
+        </div>
+      </section>
+
+      <section class="section" id="react" data-guide="react" aria-labelledby="reactTitle">
+        <div class="section-heading reveal">
+          <div><p class="section-kicker">Current mission</p><h2 id="reactTitle">Why React exists without making you learn React code yet</h2></div>
+          <p class="section-intro">React is a tool used to organize interactive frontend interfaces. The most useful idea for you right now is simple: large apps can be built from reusable interface pieces called <strong>components</strong>.</p>
+        </div>
+
+        <div class="predict-grid reveal">
+          <article class="panel prediction-stage circle-card">
+            <p class="card-kicker">Same visual idea · three ways</p><h3 id="compareTitle">Without reusable components</h3><p id="compareText">Imagine building the same kind of weather card three separate times. It works, but every change may need to be repeated in several places.</p>
+            <div class="scenario-tabs" style="margin-top:16px"><button class="active" type="button" data-compare="repeat">Repeated pieces</button><button type="button" data-compare="component">Reusable component</button><button type="button" data-compare="dynamic">Spaces data</button></div>
+            <div class="message-card" id="compareVisual">Three separate weather cards, each built independently.</div>
+          </article>
+          <article class="panel prediction-stage">
+            <p class="card-kicker">Predict before reveal</p><h3>AI prepares tomorrow's briefing. What should it normally do?</h3>
+            <div class="prediction-options"><button type="button" data-predict-react="newfrontend">Write a completely new frontend from scratch every morning</button><button type="button" data-predict-react="components">Return structure + data so the frontend assembles known components</button><button type="button" data-predict-react="database">Ask PostgreSQL to design the screen</button></div>
+            <p class="feedback" id="reactFeedback">Pick the answer that feels most likely, then the page will explain why.</p>
+          </article>
+        </div>
+
+        <section class="lab reveal" style="margin-top:18px" aria-labelledby="componentLabTitle">
+          <div class="lab-head"><div><p class="card-kicker">Spaces Component Lab</p><h3 id="componentLabTitle">Build a morning briefing like LEGO</h3></div><p>Tap reusable pieces on the left. The phone changes instantly. The right side explains the structure in normal English before you ever have to care about code.</p></div>
+          <div class="component-workspace">
+            <div class="palette" aria-label="Available briefing pieces">
+              <button type="button" data-add-component="weather"><strong>Weather card</strong><small>conditions + timing</small></button>
+              <button type="button" data-add-component="alert"><strong>Priority alert</strong><small>something needs attention</small></button>
+              <button type="button" data-add-component="chart"><strong>Trend chart</strong><small>change or pattern</small></button>
+              <button type="button" data-add-component="calendar"><strong>Calendar card</strong><small>schedule context</small></button>
+              <button type="button" data-add-component="text"><strong>Context card</strong><small>short written explanation</small></button>
+              <div class="actions"><button class="button primary" id="buildSample" type="button">Build sample</button><button class="button" id="clearComponents" type="button">Clear</button></div>
+            </div>
+            <div class="phone" aria-label="Example Spaces briefing preview"><div class="screen"><div class="phone-top"><span>PERSONAL SPACE</span><span>8:03 AM</span></div><div class="brief-stack" id="briefStack"></div></div></div>
+            <aside class="component-explain">
+              <div><p class="card-kicker">What the frontend knows</p><div class="visual-structure" id="visualStructure"></div></div>
+              <details class="code-peek"><summary>Peek under the hood only if you're curious</summary><pre id="componentCode">Nothing to show yet.</pre><div class="code-translation" id="componentTranslation"><strong>Plain English:</strong> the code is optional. Every code example here gets translated before you are expected to understand any syntax.</div></details>
+            </aside>
+          </div>
+        </section>
+      </section>
+
+      <section class="section alt" id="request" data-guide="request" aria-labelledby="requestTitle">
+        <div class="section-heading reveal">
+          <div><p class="section-kicker">Mission 03 · Request Quest</p><h2 id="requestTitle">Watch one click travel through the whole app</h2></div>
+          <p class="section-intro">This is the backbone you eventually want to say without help: click → React → HTTP request → endpoint → Python → PostgreSQL → response → screen.</p>
+        </div>
+        <div class="lab flow-shell reveal">
+          <div class="lab-head"><div><p class="card-kicker">Choose a Spaces scenario</p><h3>Then run the packet</h3></div><div><div class="scenario-tabs"><button class="active" type="button" data-flow-scenario="create">Create briefing</button><button type="button" data-flow-scenario="load">Load Personal Space</button><button type="button" data-flow-scenario="setting">Change setting</button></div><div class="actions"><button class="button primary" id="runFlow" type="button">Animate full journey</button></div></div></div>
+          <div class="flow-track" aria-label="Request and response journey">
+            <button class="flow-node active" type="button" data-flow-node><b>1</b><strong>Click</strong></button><button class="flow-node" type="button" data-flow-node><b>2</b><strong>React</strong></button><button class="flow-node" type="button" data-flow-node><b>3</b><strong>HTTP</strong></button><button class="flow-node" type="button" data-flow-node><b>4</b><strong>Endpoint</strong></button><button class="flow-node" type="button" data-flow-node><b>5</b><strong>Python</strong></button><button class="flow-node" type="button" data-flow-node><b>6</b><strong>PostgreSQL</strong></button><button class="flow-node" type="button" data-flow-node><b>7</b><strong>Response</strong></button><button class="flow-node" type="button" data-flow-node><b>8</b><strong>Screen</strong></button>
+          </div>
+          <div class="packet-lane" aria-hidden="true"><span class="packet" id="packet">↗</span></div>
+          <div class="flow-explain"><span class="step" id="flowStepNum">1</span><div><h3 id="flowTitle">Click</h3><p id="flowText">You press Create Briefing. This starts in the browser.</p><div class="message-card"><strong>What is moving?</strong><p id="flowMessage">Watch which job belongs to this layer.</p></div></div></div>
+          <div class="xray-note"><strong>Network X-ray:</strong> HTTP is the communication method between frontend and backend here. PostgreSQL interaction is a separate backend-to-database step.</div>
+        </div>
+
+        <div class="challenge panel prediction-stage reveal" style="margin-top:18px">
+          <p class="card-kicker">Prediction chain</p><h3 id="predictFlowPrompt">After you click Create Briefing, what handles the interface event next?</h3><p><strong id="predictFlowProgress">1 / 7</strong> · rebuild the path from memory</p>
+          <div class="prediction-options" style="grid-template-columns:repeat(4,1fr);display:grid"><button type="button" data-predict-flow>React</button><button type="button" data-predict-flow>HTTP</button><button type="button" data-predict-flow>Endpoint</button><button type="button" data-predict-flow>Python</button><button type="button" data-predict-flow>PostgreSQL</button><button type="button" data-predict-flow>Response</button><button type="button" data-predict-flow>Screen</button></div>
+          <p class="feedback" id="predictFlowFeedback">Pick the next step.</p>
+        </div>
+      </section>
+
+      <section class="section" id="backend" data-guide="backend" aria-labelledby="backendTitle">
+        <div class="section-heading reveal">
+          <div><p class="section-kicker">Mission 04 · Backend jobs</p><h2 id="backendTitle">Python, FastAPI, and PostgreSQL do different jobs</h2></div>
+          <p class="section-intro">Keep the model simple: <strong>Python</strong> is the language used for backend logic. <strong>FastAPI</strong> is a framework that makes the web/API plumbing easier. <strong>PostgreSQL</strong> stores and retrieves durable structured records.</p>
+        </div>
+        <div class="lab reveal">
+          <div class="lab-head"><div><p class="card-kicker">Sort the job</p><h3 id="roleTask">Loading task…</h3></div><p><strong id="roleCounter">1 / 6</strong><br />Pick which part owns the job. You can be wrong without losing anything.</p></div>
+          <div class="role-board" style="grid-template-columns:repeat(3,1fr);display:grid;gap:12px">
+            <button class="role-target" type="button" data-role-target="python"><h4>Python logic</h4><p>App decisions, processing, rules and what should happen.</p></button>
+            <button class="role-target" type="button" data-role-target="fastapi"><h4>FastAPI framework</h4><p>Endpoints, request/response handling, validation and web plumbing.</p></button>
+            <button class="role-target" type="button" data-role-target="postgres"><h4>PostgreSQL</h4><p>Durable tables, rows, relationships and stored records.</p></button>
+          </div>
+          <p class="feedback" id="roleFeedback">Choose the owner of the current job.</p>
+          <div class="xray-note"><strong>Framework:</strong> a framework is reusable code and conventions that handle common plumbing so you do not build every low-level web-server detail yourself.</div>
+        </div>
+      </section>
+
+      <section class="section alt" id="database" data-guide="database" aria-labelledby="databaseTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Mission 05 · Data links</p><h2 id="databaseTitle">Make the database relationship visible</h2></div><p class="section-intro">PostgreSQL can feel abstract until you can see rows connect. The simplest useful example is a user row with ID 1 and briefing rows that point back to that user with user_id 1.</p></div>
+        <div class="db-grid reveal">
+          <article class="table-card"><h3>users</h3><p>Each row is one user record.</p><table class="data-table"><thead><tr><th>id</th><th>name</th><th>email</th></tr></thead><tbody><tr><td class="key-cell" data-key="1">1</td><td>Jay</td><td>jay@example.com</td></tr><tr><td>2</td><td>Ava</td><td>ava@example.com</td></tr></tbody></table></article>
+          <article class="table-card"><h3>briefings</h3><p>user_id tells us which user owns the briefing.</p><table class="data-table"><thead><tr><th>id</th><th>user_id</th><th>title</th></tr></thead><tbody id="briefingsBody"><tr><td>42</td><td class="key-cell" data-key="1">1</td><td>Morning Brief</td></tr><tr><td>51</td><td>2</td><td>Family Plan</td></tr></tbody></table></article>
+          <article class="relationship"><p class="card-kicker">Relationship visualizer</p><h3>Which briefing belongs to Jay?</h3><p id="relationshipText">Highlight the matching IDs. The same value creates the link you need to understand first.</p><div class="actions"><button class="button primary" id="showRelationship" type="button">Show relationship</button><button class="button" id="addBriefing" type="button">Save another briefing</button></div></article>
+        </div>
+        <div class="message-card reveal" style="margin-top:18px"><strong>Burn this one in:</strong><p>The database stores information. The backend/Python decides what to do with information. PostgreSQL is not secretly designing the briefing or deciding permissions by itself.</p></div>
+      </section>
+
+      <section class="section" id="auth" data-guide="auth" aria-labelledby="authTitleSection">
+        <div class="section-heading reveal"><div><p class="section-kicker">Mission 06 · Login gate</p><h2 id="authTitleSection">Prove who you are, then carry safe proof forward</h2></div><p class="section-intro">You do not need JWTs, OAuth, CSRF, cookies, refresh tokens, or deeper security details yet. First understand the basic story: login proves identity; later protected requests need continuing proof.</p></div>
+        <div class="auth-grid reveal">
+          <div class="lab">
+            <p class="card-kicker">Walk through login</p><div class="auth-flow" style="margin-top:14px">
+              <button class="auth-step active" type="button" data-auth-step><i>1</i><strong>Credentials</strong><small>email + password in frontend</small></button>
+              <button class="auth-step" type="button" data-auth-step><i>2</i><strong>Login request</strong><small>send to backend</small></button>
+              <button class="auth-step" type="button" data-auth-step><i>3</i><strong>Find account</strong><small>user record + password hash</small></button>
+              <button class="auth-step" type="button" data-auth-step><i>4</i><strong>Authenticate</strong><small>backend checks identity</small></button>
+              <button class="auth-step" type="button" data-auth-step><i>5</i><strong>Carry proof</strong><small>session or token mental model</small></button>
+            </div>
+            <div class="message-card"><strong id="authTitle">Credentials</strong><p id="authText">You type your email and password into the frontend login form.</p></div>
+          </div>
+          <aside class="vault" id="vault">
+            <p class="card-kicker">Protected briefing simulator</p><div class="vault-door"><div><span class="lock-icon">⌾</span><h3>Private Personal Brief</h3><p>Backend permission required</p></div></div>
+            <div class="ticket" id="authTicket">No login proof in this simulation yet.</div>
+            <div class="actions"><button class="button" id="tryPrivate" type="button">GET private briefing</button><button class="button primary" id="simulateLogin" type="button">Simulate login</button></div>
+            <p class="feedback" id="vaultResult">Try the protected request before logging in.</p>
           </aside>
         </div>
       </section>
 
-      <section id="react" class="lesson-section" data-nav-section data-tutor-context="react" aria-labelledby="reactTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">Current lesson · start here</p><h2 id="reactTitle">Why React if HTML, CSS and JavaScript already work?</h2></div>
-          <p class="section-intro">React is not a mysterious fourth web language. It is a JavaScript library for organizing interactive frontend interfaces into reusable pieces. The browser still ends up displaying normal interface elements styled with CSS and controlled with JavaScript behavior.</p>
+      <section class="section alt" id="boss" data-guide="request" aria-labelledby="bossTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Boss check</p><h2 id="bossTitle">Rebuild the app path without the diagram helping you</h2></div><p class="section-intro">This is where the help fades a little. Start after a frontend click and put the remaining pieces in the order that makes the app work.</p></div>
+        <div class="boss reveal">
+          <div class="boss-top"><div><p class="card-kicker">Build the path</p><h3>Frontend action → ? → updated screen</h3></div><p>Tap choices to add them. Tap a placed choice to remove it.</p></div>
+          <div class="build-path" id="bossPath"></div>
+          <div class="choice-bank"><button type="button" data-boss-choice>PostgreSQL</button><button type="button" data-boss-choice>React</button><button type="button" data-boss-choice>Response</button><button type="button" data-boss-choice>Python</button><button type="button" data-boss-choice>Screen</button><button type="button" data-boss-choice>Endpoint</button><button type="button" data-boss-choice>HTTP</button></div>
+          <div class="actions"><button class="button primary" id="checkBoss" type="button">Check my path</button><button class="button" id="resetBoss" type="button">Reset</button></div>
+          <p class="feedback" id="bossFeedback">Build the path from the frontend action to the updated screen.</p>
         </div>
 
-        <div class="react-intro reveal">
-          <article class="concept-card circle-card">
-            <p class="card-kicker">The useful mental model</p>
-            <h3>React helps you build and control the frontend using reusable pieces.</h3>
-            <p>Those reusable pieces are called <strong>components</strong>. A component can represent something small like a button or something richer like a complete Weather card.</p>
-            <div class="big-equation" aria-label="React mental model"><span>HTML structure</span><b>+</b><span>CSS appearance</span><b>+</b><span>JS behavior</span><b>→</b><span>React components</span></div>
-          </article>
-
-          <article class="compare-card">
-            <p class="card-kicker">Compare the idea</p>
-            <div class="compare-tabs" role="group" aria-label="React comparison modes">
-              <button class="is-active" type="button" data-compare="repeated">Repeated markup</button>
-              <button type="button" data-compare="component">Reusable component</button>
-              <button type="button" data-compare="dynamic">Spaces data</button>
-            </div>
-            <div class="compare-output">
-              <h4 id="compareTitle">Plain markup can repeat the same shape again and again</h4>
-              <p id="compareText">That is totally valid for simple pages. The pain shows up when a large app has many similar interactive pieces that need the same behavior and structure.</p>
-              <pre class="mini-code" id="compareCode">&lt;div class="weather-card"&gt;New York · 78°&lt;/div&gt;
-&lt;div class="weather-card"&gt;London · 64°&lt;/div&gt;
-&lt;div class="weather-card"&gt;Auckland · 59°&lt;/div&gt;</pre>
-            </div>
-          </article>
-        </div>
-
-        <section class="component-lab reveal" aria-labelledby="componentLabTitle">
-          <header class="lab-heading">
-            <div><p class="card-kicker">Spaces Component Lab</p><h3 id="componentLabTitle">Build a briefing out of reusable pieces</h3></div>
-            <p>Add cards to the phone. You are not generating a brand-new frontend from nothing. You are assembling frontend components the app already knows how to render.</p>
-          </header>
-
-          <div class="component-workspace">
-            <div class="component-palette" aria-label="Available briefing components">
-              <button type="button" data-add-component="weather"><strong>WeatherCard</strong><small>conditions + timing</small></button>
-              <button type="button" data-add-component="alert"><strong>AlertCard</strong><small>priority notice</small></button>
-              <button type="button" data-add-component="chart"><strong>ChartCard</strong><small>trend or metric</small></button>
-              <button type="button" data-add-component="calendar"><strong>CalendarCard</strong><small>schedule context</small></button>
-              <button type="button" data-add-component="text"><strong>TextCard</strong><small>short written context</small></button>
-            </div>
-
-            <div class="phone-shell" aria-label="Example Spaces briefing preview">
-              <div class="phone-screen">
-                <div class="phone-top"><span>PERSONAL SPACE</span><span>8:03 AM</span></div>
-                <div class="brief-stack" id="briefStack"></div>
-              </div>
-            </div>
-
-            <aside class="component-code">
-              <h4>Conceptual React structure</h4>
-              <p>This is intentionally simplified. Right now, notice the reusable component names instead of worrying about syntax.</p>
-              <pre id="componentCode">// Add a component to see the conceptual structure here.</pre>
-              <div class="lab-actions"><button id="buildSample" type="button">Build sample</button><button id="clearComponents" type="button">Clear</button></div>
-            </aside>
-          </div>
-        </section>
-
-        <div class="section-note reveal"><span aria-hidden="true">💡</span><span><strong>The Spaces idea:</strong> the frontend owns components like WeatherCard and AlertCard. A backend or AI process can return structure + data telling the frontend which known pieces belong in a briefing. That is very different from an AI rewriting the whole frontend every morning.</span></div>
-      </section>
-
-      <section id="request" class="lesson-section" data-nav-section data-tutor-context="request" aria-labelledby="requestTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">Follow one real action</p><h2 id="requestTitle">Click → request → endpoint → Python → database → response → screen</h2></div>
-          <p class="section-intro">This is the backbone you should eventually be able to trace without help. Change the Spaces scenario, run the flow, then tap individual steps until you can predict what comes next.</p>
-        </div>
-
-        <div class="flow-shell reveal">
-          <div class="flow-toolbar">
-            <div class="segmented" role="group" aria-label="Request journey scenario">
-              <button class="is-active" type="button" data-flow-scenario="create">Create briefing</button>
-              <button type="button" data-flow-scenario="load">Load Personal Space</button>
-              <button type="button" data-flow-scenario="setting">Change setting</button>
-            </div>
-            <button class="button button-primary" id="runFlow" type="button">Run the whole flow</button>
-          </div>
-
-          <div class="flow-track" aria-label="Application request flow">
-            <button class="flow-node is-active" type="button" data-flow-node><span class="flow-num">1</span><strong>Click</strong><small>browser interaction</small></button>
-            <button class="flow-node" type="button" data-flow-node><span class="flow-num">2</span><strong>React</strong><small>frontend reacts</small></button>
-            <button class="flow-node" type="button" data-flow-node><span class="flow-num">3</span><strong>HTTP</strong><small>message travels</small></button>
-            <button class="flow-node" type="button" data-flow-node><span class="flow-num">4</span><strong>Endpoint</strong><small>backend door</small></button>
-            <button class="flow-node" type="button" data-flow-node><span class="flow-num">5</span><strong>Python</strong><small>logic decides</small></button>
-            <button class="flow-node" type="button" data-flow-node><span class="flow-num">6</span><strong>PostgreSQL</strong><small>read or save</small></button>
-            <button class="flow-node" type="button" data-flow-node><span class="flow-num">7</span><strong>Response</strong><small>backend answers</small></button>
-            <button class="flow-node" type="button" data-flow-node><span class="flow-num">8</span><strong>Screen</strong><small>frontend updates</small></button>
-          </div>
-
-          <div class="flow-explainer" aria-live="polite">
-            <span class="flow-step-badge" id="flowBadge">01</span>
-            <div><h3 id="flowTitle">Click</h3><p id="flowText">You click Create Briefing in the browser. React catches that interface event first.</p></div>
-          </div>
+        <div class="achievement-grid reveal" aria-label="Learning achievements">
+          <article class="badge-card" data-badge="architect"><span class="badge-icon">◎</span><strong>Architecture Eye</strong><small>placed the four major layers</small></article>
+          <article class="badge-card" data-badge="component"><span class="badge-icon">▦</span><strong>Component Brain</strong><small>assembled reusable UI pieces</small></article>
+          <article class="badge-card" data-badge="packet"><span class="badge-icon">↗</span><strong>Packet Tracer</strong><small>followed request + response</small></article>
+          <article class="badge-card" data-badge="linker"><span class="badge-icon">∞</span><strong>Data Linker</strong><small>connected related records</small></article>
+          <article class="badge-card" data-badge="gatekeeper"><span class="badge-icon">⌾</span><strong>Gatekeeper</strong><small>opened a protected request</small></article>
         </div>
       </section>
 
-      <section id="backend" class="lesson-section" data-nav-section data-tutor-context="backend" aria-labelledby="backendSectionTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">Backend basics</p><h2 id="backendSectionTitle">Four words that should stop blurring together</h2></div>
-          <p class="section-intro">API, endpoint, Python, and FastAPI are related, but they are not four names for the same thing. Click each one and keep the distinction tied to a Spaces action.</p>
-        </div>
-
-        <div class="backend-grid reveal">
-          <div class="concept-tabs" role="group" aria-label="Backend concepts">
-            <button class="is-active" type="button" data-backend="api"><strong>API</strong><small>controlled software communication</small></button>
-            <button type="button" data-backend="endpoint"><strong>Endpoint</strong><small>one specific backend door</small></button>
-            <button type="button" data-backend="python"><strong>Python</strong><small>backend programming language</small></button>
-            <button type="button" data-backend="fastapi"><strong>FastAPI</strong><small>Python web/API framework</small></button>
-          </div>
-          <article class="backend-stage" aria-live="polite">
-            <p class="card-kicker" id="backendLabel">The controlled way software asks the backend for data or actions.</p>
-            <h3 id="backendTitle">API</h3>
-            <p id="backendText">For your current mental model: the backend exposes an API, and the frontend calls it.</p>
-            <div class="backend-example" id="backendExample">Spaces example: the frontend wants your briefing, so it calls the backend API instead of touching PostgreSQL directly.</div>
-          </article>
-        </div>
-
-        <div class="http-lab reveal">
-          <section class="request-panel" aria-labelledby="requestBuilderTitle">
-            <p class="card-kicker">HTTP playground</p><h3 id="requestBuilderTitle">Build a fake frontend → backend message</h3>
-            <div class="field-grid">
-              <div class="field"><label for="requestMethod">Method</label><select id="requestMethod"><option>GET</option><option>POST</option><option>PATCH</option><option>DELETE</option></select></div>
-              <div class="field"><label for="requestPath">Endpoint path</label><input id="requestPath" value="/briefings" /></div>
-            </div>
-            <div class="field"><label for="requestBody">JSON body</label><textarea id="requestBody" spellcheck="false">{ "title": "Morning Brief" }</textarea></div>
-            <div class="request-preview"><b id="previewMethod">GET</b> <span id="previewPath">/briefings</span><br><span id="previewBody">{ "title": "Morning Brief" }</span></div>
-            <div class="hero-actions"><button class="button button-primary" id="sendRequest" type="button">Send fake request</button></div>
-          </section>
-          <section class="response-panel" aria-labelledby="responseTitle">
-            <p class="card-kicker">Backend answer</p><h3 id="responseTitle">HTTP response</h3>
-            <span class="response-status" id="responseStatus">waiting</span>
-            <pre id="responseBody">The backend response will appear here.</pre>
-          </section>
-        </div>
+      <section class="section" id="mastery" aria-labelledby="masteryTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Live mastery view</p><h2 id="masteryTitle">A chart of what is becoming familiar</h2></div><p class="section-intro">These bars are intentionally approximate. They react to the labs you actually complete, so the page shows which mental model you have interacted with instead of pretending scroll depth equals learning.</p></div>
+        <div class="panel lab reveal"><div class="mastery-bars">
+          <div class="mastery-row"><span>Foundation</span><div class="bar"><i data-skill-bar="foundation"></i></div><b data-skill-num="foundation">0%</b></div>
+          <div class="mastery-row"><span>React pieces</span><div class="bar"><i data-skill-bar="react"></i></div><b data-skill-num="react">0%</b></div>
+          <div class="mastery-row"><span>Request flow</span><div class="bar"><i data-skill-bar="request"></i></div><b data-skill-num="request">0%</b></div>
+          <div class="mastery-row"><span>Backend jobs</span><div class="bar"><i data-skill-bar="backend"></i></div><b data-skill-num="backend">0%</b></div>
+          <div class="mastery-row"><span>Database links</span><div class="bar"><i data-skill-bar="database"></i></div><b data-skill-num="database">0%</b></div>
+          <div class="mastery-row"><span>Authentication</span><div class="bar"><i data-skill-bar="auth"></i></div><b data-skill-num="auth">0%</b></div>
+        </div><div class="actions"><button class="button" id="resetProgress" type="button">Reset learning progress</button></div></div>
       </section>
 
-      <section id="database" class="lesson-section" data-nav-section data-tutor-context="database" aria-labelledby="databaseTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">Database basics</p><h2 id="databaseTitle">What does PostgreSQL actually look like?</h2></div>
-          <p class="section-intro">At your current level, picture organized tables with rows and columns. IDs let records connect to each other. The database can store those relationships, while Python decides when and why they should be read or changed.</p>
-        </div>
-
-        <div class="db-lab reveal">
-          <article class="db-table-card">
-            <h3>users</h3><p>One row per example user.</p>
-            <table class="data-table"><thead><tr><th>id</th><th>name</th><th>email</th></tr></thead><tbody><tr data-user-row="1"><td class="key">1</td><td>Jay</td><td>jay@example.com</td></tr><tr><td>2</td><td>Ava</td><td>ava@example.com</td></tr></tbody></table>
-          </article>
-          <article class="db-table-card">
-            <h3>briefings</h3><p>The user_id column connects each briefing to a user.</p>
-            <table class="data-table"><thead><tr><th>id</th><th>user_id</th><th>title</th></tr></thead><tbody id="briefingsBody"><tr data-briefing-user="1"><td>42</td><td class="key">1</td><td>Morning Brief</td></tr><tr><td>51</td><td class="key">2</td><td>Family Plan</td></tr></tbody></table>
-          </article>
-          <article class="relationship-card">
-            <div class="relationship-side"><span>users table</span><strong>Jay · id 1</strong></div>
-            <div class="relationship-arrow" aria-hidden="true">↔</div>
-            <div class="relationship-side"><span>briefings table</span><strong>Morning Brief · user_id 1</strong></div>
-            <p id="relationshipResult">Click the relationship button and watch the matching IDs light up. This is the beginning of how relational databases connect records.</p>
-            <div class="db-actions"><button class="button button-primary" id="showRelationship" type="button">Show the relationship</button><button class="button button-secondary" id="addBriefingRow" type="button">Save another example briefing</button></div>
-          </article>
-        </div>
-
-        <div class="section-note reveal"><span aria-hidden="true">↳</span><span><strong>Keep this distinction:</strong> PostgreSQL does not “create the morning briefing” by itself. Backend logic can gather/process/create the briefing, then PostgreSQL can store the resulting records.</span></div>
-      </section>
-
-      <section id="auth" class="lesson-section" data-nav-section data-tutor-context="auth" aria-labelledby="authSectionTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">Authentication basics</p><h2 id="authSectionTitle">Log in once, then carry proof forward</h2></div>
-          <p class="section-intro">Do not worry about JWTs, refresh tokens, CSRF, OAuth, or the deeper security vocabulary yet. First make the basic flow solid: prove who you are, then let later protected requests carry safe proof that you already logged in.</p>
-        </div>
-
-        <div class="auth-lab reveal">
-          <div class="auth-flow" aria-label="Basic login flow">
-            <button class="auth-step is-active" type="button" data-auth-step><span>01 · frontend</span><strong>Email + password</strong><small>You enter credentials into the login form.</small></button>
-            <button class="auth-step" type="button" data-auth-step><span>02 · request</span><strong>Send to backend</strong><small>The frontend sends a login request.</small></button>
-            <button class="auth-step" type="button" data-auth-step><span>03 · database</span><strong>Find user + hash</strong><small>The database holds the account and password hash.</small></button>
-            <button class="auth-step" type="button" data-auth-step><span>04 · Python</span><strong>Authenticate</strong><small>The backend checks whether the credentials prove identity.</small></button>
-            <button class="auth-step" type="button" data-auth-step><span>05 · later</span><strong>Carry proof</strong><small>A session or token can support future protected requests.</small></button>
-          </div>
-          <div class="auth-explain" aria-live="polite"><h3 id="authTitle">Login form</h3><p id="authText">You type email + password into the frontend.</p></div>
-
-          <div class="ticket-demo">
-            <article class="ticket-card"><h4>Token mental model</h4><p>A little piece of authentication proof that later requests can present. The exact security design can wait.</p><div class="ticket-visual">“Jay already logged in ✅” proof</div></article>
-            <article class="ticket-card"><h4>Session mental model</h4><p>A continuing logged-in session the server can recognize, often through a temporary session identifier.</p><div class="ticket-visual" id="authProof">No login proof yet</div></article>
-          </div>
-
-          <div class="protected-demo">
-            <p><strong>Protected example:</strong> ask the backend for Jay's private briefing before and after simulating login.</p>
-            <div class="db-actions"><button class="button button-secondary" id="simulateLogin" type="button">Simulate login</button><button class="button button-primary" id="callProtected" type="button">GET private briefing</button></div>
-            <span class="protected-result" id="protectedResult">Not tried yet.</span>
-          </div>
-        </div>
-      </section>
-
-      <section id="roadmap" class="lesson-section" data-nav-section data-tutor-context="roadmap" aria-labelledby="roadmapTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">The course behind the course</p><h2 id="roadmapTitle">Everything has a place. It does not all have to be learned today.</h2></div>
-          <p class="section-intro">The real environment is bigger than the basic request flow. This map keeps the future concepts nearby while protecting the current lesson from becoming a wall of names.</p>
-        </div>
-
+      <section class="section alt" id="roadmap" aria-labelledby="roadmapTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">The road ahead</p><h2 id="roadmapTitle">The entire environment has a place. It does not all belong in today's lesson.</h2></div><p class="section-intro">The course will eventually connect the concepts to the real project folders and tools, but each new term should arrive only after the simpler thing underneath it makes sense.</p></div>
         <div class="roadmap reveal">
-          <article class="roadmap-column"><p class="card-kicker">Foundation</p><h3>Make the mental model automatic</h3><div class="topic-list"><div class="topic done"><i>✓</i>Browser / frontend / backend / database</div><div class="topic done"><i>✓</i>Python's basic backend role</div><div class="topic done"><i>✓</i>API + endpoint early model</div><div class="topic done"><i>✓</i>Request + response early model</div></div></article>
-          <article class="roadmap-column current"><p class="card-kicker">Current phase</p><h3>Frontend basics</h3><div class="topic-list"><div class="topic now"><i>→</i>React</div><div class="topic now"><i>→</i>Components</div><div class="topic"><i>○</i>TypeScript</div><div class="topic"><i>○</i>Props + state</div><div class="topic"><i>○</i>Dynamic rendering</div></div></article>
-          <article class="roadmap-column"><p class="card-kicker">After that</p><h3>Backend + data depth</h3><div class="topic-list"><div class="topic later"><i>⌁</i>HTTP methods + JSON</div><div class="topic later"><i>⌁</i>Database IDs + relationships</div><div class="topic later"><i>⌁</i>Password hashing + authorization</div><div class="topic later"><i>⌁</i>Real project folders</div></div></article>
+          <article class="road-col"><p class="card-kicker">Phase 1</p><h3>Foundation</h3><div class="topic"><i>✓</i>browser / frontend / backend / database</div><div class="topic"><i>✓</i>request + response</div><div class="topic"><i>✓</i>API + endpoint early model</div></article>
+          <article class="road-col current"><p class="card-kicker">Phase 2 · current</p><h3>Frontend</h3><div class="topic"><i>→</i>React + components</div><div class="topic"><i>○</i>TypeScript</div><div class="topic"><i>○</i>props + state</div><div class="topic"><i>○</i>dynamic rendering</div></article>
+          <article class="road-col"><p class="card-kicker">Phase 3–4</p><h3>Backend + database</h3><div class="topic"><i>⌁</i>HTTP methods + JSON</div><div class="topic"><i>⌁</i>Python syntax</div><div class="topic"><i>⌁</i>tables, keys + queries</div><div class="topic"><i>⌁</i>models + migrations</div></article>
+          <article class="road-col"><p class="card-kicker">Phase 5–6</p><h3>Auth + real repo</h3><div class="topic"><i>⌁</i>hashing + authorization</div><div class="topic"><i>⌁</i>frontend/src/ + client/</div><div class="topic"><i>⌁</i>backend routes + CRUD</div><div class="topic"><i>⌁</i>Docker + development tools</div></article>
         </div>
-
-        <details class="future-locker reveal">
-          <summary>Open the “yeah I know these words exist” locker</summary>
-          <p>These are part of the real environment or later development knowledge. You do not need to understand them before the foundation is comfortable.</p>
-          <div class="future-tags"><span>TanStack Router</span><span>TanStack Query</span><span>Tailwind</span><span>shadcn/ui</span><span>OpenAPI</span><span>generated API client</span><span>frontend/src/client/</span><span>models.py</span><span>crud.py</span><span>api/routes/</span><span>deps.py</span><span>SQL</span><span>ORM</span><span>migrations</span><span>Docker</span><span>environment variables</span><span>localhost ports</span><span>deployment</span></div>
-        </details>
+        <details class="future-locker reveal"><summary>Open the “I know these words exist” locker</summary><div class="future-tags"><span>TypeScript</span><span>props</span><span>state</span><span>TanStack Router</span><span>TanStack Query</span><span>Tailwind</span><span>shadcn/ui</span><span>OpenAPI</span><span>generated API client</span><span>frontend/src/client/</span><span>models.py</span><span>crud.py</span><span>api/routes/</span><span>deps.py</span><span>SQL</span><span>ORM</span><span>migrations</span><span>Docker</span><span>localhost ports</span><span>deployment</span></div></details>
       </section>
 
-      <section id="quiz" class="lesson-section" data-nav-section data-tutor-context="quiz" aria-labelledby="quizSectionTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">Tiny retrieval check</p><h2 id="quizSectionTitle">Can you rebuild the picture without staring at it?</h2></div>
-          <p class="section-intro">No points, streaks, or fake school pressure. The point is to notice which idea still feels fuzzy, then go back to that exact section.</p>
-        </div>
-        <div class="quiz-shell reveal">
-          <div class="quiz-map" aria-label="Quiz questions"><button class="is-active" type="button" data-quiz-index="0"><span>1</span>React</button><button type="button" data-quiz-index="1"><span>2</span>Flow</button><button type="button" data-quiz-index="2"><span>3</span>Endpoint</button><button type="button" data-quiz-index="3"><span>4</span>FastAPI</button><button type="button" data-quiz-index="4"><span>5</span>Database</button><button type="button" data-quiz-index="5"><span>6</span>Auth</button></div>
-          <div class="quiz-card"><p class="card-kicker" id="quizTitle">Question 1 of 6</p><h3 id="quizQuestion"></h3><div class="quiz-options" id="quizOptions"></div><div class="quiz-result" id="quizResult" aria-live="polite"></div></div>
-        </div>
-      </section>
-
-      <section id="glossary" class="lesson-section" data-nav-section data-tutor-context="glossary" aria-labelledby="glossaryTitle">
-        <div class="section-heading reveal">
-          <div><p class="section-kicker">Developer-soup translator</p><h2 id="glossaryTitle">Search the word that broke the explanation</h2></div>
-          <p class="section-intro">Technical conversations get way easier when you stop letting one unexplained noun poison the next five sentences.</p>
-        </div>
-        <div class="glossary-panel reveal">
-          <label class="card-kicker" for="glossarySearch">Search glossary</label>
-          <input class="glossary-search" id="glossarySearch" type="search" autocomplete="off" placeholder="Try: component, endpoint, JSON, session..." />
+      <section class="section" id="glossary" aria-labelledby="glossaryTitle">
+        <div class="section-heading reveal"><div><p class="section-kicker">Developer-soup translator</p><h2 id="glossaryTitle">Search the exact word that broke the sentence</h2></div><p class="section-intro">If one word is fuzzy, stop there. You should never have to understand five new words just to define the first one.</p></div>
+        <div class="glossary panel reveal"><input id="glossarySearch" type="search" autocomplete="off" placeholder="Try: endpoint, component, session, database…" aria-label="Search glossary" />
           <div class="glossary-grid">
-            <article class="glossary-item"><strong>Frontend</strong><p>The part of the application running in the browser that the user sees and interacts with.</p></article>
-            <article class="glossary-item"><strong>Backend</strong><p>Private server-side code that owns application logic, rules, protected processing, API endpoints, and database access.</p></article>
-            <article class="glossary-item"><strong>React</strong><p>A JavaScript library used to build interactive frontend interfaces from reusable pieces.</p></article>
-            <article class="glossary-item"><strong>Component</strong><p>A reusable piece of frontend UI, such as a WeatherCard, button, form, or briefing section.</p></article>
-            <article class="glossary-item"><strong>TypeScript</strong><p>JavaScript with added type information that helps tools catch mistakes and describe expected data shapes.</p></article>
-            <article class="glossary-item"><strong>API</strong><p>A defined way for software to ask another piece of software for data or actions.</p></article>
-            <article class="glossary-item"><strong>Endpoint</strong><p>One specific API method + path that handles a kind of backend request, such as GET /briefings.</p></article>
-            <article class="glossary-item"><strong>HTTP request</strong><p>The structured message traveling from frontend to backend.</p></article>
-            <article class="glossary-item"><strong>HTTP response</strong><p>The structured answer traveling from backend back to frontend.</p></article>
-            <article class="glossary-item"><strong>JSON</strong><p>A common text format for structured data sent between software layers.</p></article>
-            <article class="glossary-item"><strong>Python</strong><p>The programming language used to write the backend logic in this environment.</p></article>
-            <article class="glossary-item"><strong>FastAPI</strong><p>A Python web framework that makes it easier to define backend API endpoints, validate data, and return responses.</p></article>
-            <article class="glossary-item"><strong>PostgreSQL</strong><p>A relational database used to store durable structured application data.</p></article>
-            <article class="glossary-item"><strong>Table</strong><p>An organized database structure made of columns and rows.</p></article>
-            <article class="glossary-item"><strong>Row</strong><p>One record in a database table, such as one user or one briefing.</p></article>
-            <article class="glossary-item"><strong>ID</strong><p>A value used to uniquely identify a record and help connect related records.</p></article>
-            <article class="glossary-item"><strong>Authentication</strong><p>Proving who a user is.</p></article>
-            <article class="glossary-item"><strong>Authorization</strong><p>Deciding what an authenticated user is allowed to see or do.</p></article>
-            <article class="glossary-item"><strong>Password hash</strong><p>A one-way representation used to verify a password without storing the readable password itself.</p></article>
-            <article class="glossary-item"><strong>Token</strong><p>A form of authentication proof that can be checked on later requests.</p></article>
-            <article class="glossary-item"><strong>Session</strong><p>A continuing logged-in state that lets a server recognize a browser across requests.</p></article>
-            <article class="glossary-item"><strong>State</strong><p>Information the frontend is currently keeping track of, such as selected Space or loaded data.</p></article>
-            <article class="glossary-item"><strong>Props</strong><p>Data passed into a React component so the same component can display different information.</p></article>
-            <article class="glossary-item"><strong>Route</strong><p>A mapping between a location/request and the code that should handle it. The word is used in both frontend and backend contexts.</p></article>
-            <article class="glossary-item"><strong>OpenAPI</strong><p>A machine-readable description of an API. Later, this can help generate frontend client code from the backend API.</p></article>
-            <article class="glossary-item"><strong>Generated API client</strong><p>Frontend code produced from the API description so the React app can call known backend endpoints with known data shapes.</p></article>
-            <article class="glossary-item"><strong>Migration</strong><p>A recorded change to the database structure, such as adding a new column or table.</p></article>
-            <article class="glossary-item"><strong>Docker</strong><p>A container system used to package and run application services in a defined environment.</p></article>
-            <article class="glossary-item"><strong>localhost</strong><p>A hostname that points back to your own computer during local development.</p></article>
-            <article class="glossary-item"><strong>Port</strong><p>A numbered network doorway used by a running service, such as a local frontend or backend server.</p></article>
-          </div>
-          <p class="glossary-empty" id="glossaryEmpty">No matching term. That might mean the glossary needs another word added.</p>
-        </div>
-      </section>
-
-      <section class="lesson-section" aria-labelledby="finalTitle">
-        <div class="final-card reveal">
-          <p class="section-kicker">The sentence we are building toward</p>
-          <h2 id="finalTitle">You should be able to explain the app in your own words, not recite mine</h2>
-          <p>The target is not “I recognize React, FastAPI and PostgreSQL.” The target is that when somebody changes an endpoint, adds a database field, or builds a new Spaces component, you can roughly place that change in the architecture and ask what happens next.</p>
-          <div class="say-it"><strong>Try saying this without looking back:</strong><p>“I click something in the React frontend. If it needs the backend, the frontend sends an HTTP request to an API endpoint. FastAPI routes that request to Python logic. Python can read or change PostgreSQL. Then the backend responds and React updates what I see.”</p></div>
-          <div class="mastery-list"><div class="mastery-item"><i>✓</i><span>React stays connected to HTML/CSS/JS instead of feeling like a separate universe</span></div><div class="mastery-item"><i>✓</i><span>Components explain how Spaces can reuse interface pieces dynamically</span></div><div class="mastery-item"><i>✓</i><span>HTTP request/response explains the frontend ↔ backend conversation</span></div><div class="mastery-item"><i>✓</i><span>Python/FastAPI and PostgreSQL have distinct jobs</span></div></div>
+            <article class="term"><strong>Frontend</strong><p>The visible part of the app running in the browser.</p></article><article class="term"><strong>Backend</strong><p>Private server-side code that handles app rules, processing and protected data access.</p></article><article class="term"><strong>React</strong><p>A JavaScript library used to organize interactive frontend interfaces.</p></article><article class="term"><strong>Component</strong><p>A reusable piece of frontend interface, such as a Weather card or button.</p></article><article class="term"><strong>API</strong><p>A defined way for one piece of software to ask another for data or an action.</p></article><article class="term"><strong>Endpoint</strong><p>One specific backend API door for a type of request.</p></article><article class="term"><strong>HTTP request</strong><p>A structured message sent from the frontend to the backend.</p></article><article class="term"><strong>HTTP response</strong><p>The backend's structured answer to a request.</p></article><article class="term"><strong>Python</strong><p>The programming language used for backend logic in this environment.</p></article><article class="term"><strong>FastAPI</strong><p>A Python framework that helps build API endpoints and handle web requests.</p></article><article class="term"><strong>Framework</strong><p>Reusable code and conventions that handle common plumbing so developers can focus on app-specific work.</p></article><article class="term"><strong>PostgreSQL</strong><p>A relational database used to store durable structured records.</p></article><article class="term"><strong>Table</strong><p>An organized database structure made of rows and columns.</p></article><article class="term"><strong>ID</strong><p>A value that uniquely identifies a record and can help connect related records.</p></article><article class="term"><strong>Authentication</strong><p>Proving who a user is.</p></article><article class="term"><strong>Authorization</strong><p>Checking what an authenticated user is allowed to see or do.</p></article><article class="term"><strong>Password hash</strong><p>A one-way representation used to verify a password without storing the readable password itself.</p></article><article class="term"><strong>Token</strong><p>One possible form of proof that later requests can use after login.</p></article><article class="term"><strong>Session</strong><p>A continuing logged-in state that helps a server recognize a browser across requests.</p></article><article class="term"><strong>JSON</strong><p>A common text format for structured data passed between software.</p></article>
+          </div><p class="feedback" id="glossaryEmpty" hidden>No matching term yet. The glossary may need that word added.</p>
         </div>
       </section>
     </article>
-  </div>
+  </main>
 
-  <button class="tutor-launcher" id="tutorLauncher" type="button" aria-controls="tutorPanel" aria-label="Open CR Guide"><i aria-hidden="true">✦</i><span>Ask CR Guide</span></button>
-  <aside class="tutor-panel" id="tutorPanel" aria-live="polite">
-    <div class="tutor-head"><div><span class="tutor-avatar" aria-hidden="true">CR</span><strong>CR Guide · current section</strong></div><button class="tutor-close" id="tutorClose" type="button" aria-label="Close CR Guide">×</button></div>
-    <p class="tutor-copy" id="tutorText">You already have the rough frontend → backend → database picture. Right now we’re tightening the frontend part so React stops sounding like wizard shit 😭.</p>
-    <div class="tutor-actions"><button type="button" data-tutor-mode="simple">Say it simpler</button><button type="button" data-tutor-mode="why">Why do I care?</button><button type="button" data-tutor-mode="example">Give me a Spaces example</button></div>
+  <button class="guide-launch" id="guideLaunch" type="button" aria-controls="guidePanel"><span aria-hidden="true">✦</span><span>Ask Study Guide</span></button>
+  <aside class="guide-panel" id="guidePanel" aria-live="polite">
+    <div class="guide-head"><div style="display:flex;align-items:center;gap:10px"><span class="guide-avatar" aria-hidden="true">ST</span><strong>Study Guide</strong></div><button id="guideClose" type="button" aria-label="Close guide">×</button></div>
+    <p id="guideText">okayyy 😭 the only picture you need first is: you touch the frontend, it can ask the backend for something, the backend can read or save database stuff, then it answers the frontend.</p>
+    <div class="guide-actions"><button type="button" data-guide-mode="simple">Say it simpler</button><button type="button" data-guide-mode="why">Why do I care?</button><button type="button" data-guide-mode="example">Give me a Spaces example</button></div>
   </aside>
 
-  <script src="/assets/study-v2.js?v=20260812-1" defer></script>
+  <script src="/assets/study-v3.js?v=20260812-1" defer></script>
 </body>
 </html>
