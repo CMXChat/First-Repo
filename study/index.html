@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <title>Study | CMX Build Environment</title>
+  <meta name="description" content="A beginner-friendly interactive guide to the CMX build environment, from browser to frontend, API, FastAPI, authentication, and PostgreSQL." />
+  <link rel="canonical" href="https://db.cmxchat.com/study/" />
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #0c1728;
+      --panel-2: #101d31;
+      --text: #edf5ff;
+      --muted: #9fb0c6;
+      --line: rgba(151, 183, 224, .18);
+      --accent: #5ba7ff;
+      --accent-2: #a9d5ff;
+      --ok: #7ee2b8;
+      --shadow: 0 24px 70px rgba(0,0,0,.24);
+    }
+
+    html[data-theme="light"] {
+      --bg: #eef3f8;
+      --panel: #ffffff;
+      --panel-2: #f5f8fc;
+      --text: #112033;
+      --muted: #607086;
+      --line: rgba(28, 61, 99, .14);
+      --accent: #176fd1;
+      --accent-2: #0d4f97;
+      --ok: #147a58;
+      --shadow: 0 22px 60px rgba(36, 58, 86, .10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(61, 139, 230, .16), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, a { font: inherit; }
+    button { color: inherit; }
+    a { color: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--accent-2);
+      background: var(--panel);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    .brand strong { display: block; font-size: 14px; }
+    .brand span { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+
+    .theme-button {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    main { width: min(1160px, calc(100% - 32px)); margin: 0 auto; padding: 72px 0 96px; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 44px;
+      align-items: center;
+      padding: 34px 0 62px;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 { margin: 0; max-width: 760px; font-size: clamp(40px, 7vw, 76px); line-height: .98; letter-spacing: -.055em; }
+    .lead { max-width: 720px; margin: 24px 0 0; color: var(--muted); font-size: clamp(17px, 2vw, 21px); line-height: 1.7; }
+
+    .hero-note {
+      margin-top: 24px;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .hero-note b { color: var(--ok); }
+
+    .mini-stack {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      background: linear-gradient(150deg, var(--panel), var(--panel-2));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .mini-stack::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0 49.5%, color-mix(in srgb, var(--accent) 15%, transparent) 50%, transparent 50.5% 100%);
+      pointer-events: none;
+    }
+    .stack-row { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 15px; background: color-mix(in srgb, var(--panel) 92%, transparent); }
+    .stack-row + .stack-row { margin-top: 10px; }
+    .stack-row small { display: block; color: var(--muted); margin-bottom: 4px; }
+    .stack-row strong { font-size: 15px; }
+    .stack-row span { color: var(--accent-2); font-size: 20px; }
+
+    .section { padding: 56px 0; border-top: 1px solid var(--line); }
+    .section-head { display: grid; grid-template-columns: .8fr 1.2fr; gap: 30px; align-items: end; margin-bottom: 28px; }
+    h2 { margin: 0; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.04em; }
+    .section-head p { margin: 0; color: var(--muted); line-height: 1.65; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .flow button {
+      min-height: 116px;
+      padding: 15px;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      cursor: pointer;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .flow button:hover { transform: translateY(-2px); }
+    .flow button.active { border-color: color-mix(in srgb, var(--accent) 70%, var(--line)); background: color-mix(in srgb, var(--panel) 82%, var(--accent) 18%); }
+    .flow button small { display: block; color: var(--muted); margin-bottom: 8px; }
+    .flow button strong { display: block; line-height: 1.3; }
+
+    .explain {
+      margin-top: 14px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel-2);
+    }
+    .explain p { margin: 0; color: var(--muted); line-height: 1.65; }
+    .explain strong { color: var(--text); }
+
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .card { padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel); }
+    .card span { display: inline-block; margin-bottom: 12px; color: var(--accent-2); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .card h3 { margin: 0 0 10px; font-size: 19px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .quiz { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
+    .quiz-box, .result-box { padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel); }
+    .quiz-box p, .result-box p { color: var(--muted); line-height: 1.65; }
+    .answers { display: grid; gap: 9px; margin-top: 16px; }
+    .answer {
+      text-align: left;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--panel-2);
+      cursor: pointer;
+    }
+    .answer:hover { border-color: var(--accent); }
+    .result-box { display: flex; flex-direction: column; justify-content: center; }
+    .result-label { color: var(--accent-2); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+
+    .footer-note { padding-top: 46px; color: var(--muted); font-size: 13px; text-align: center; }
+
+    @media (max-width: 860px) {
+      main { padding-top: 44px; }
+      .hero, .section-head, .quiz { grid-template-columns: 1fr; }
+      .hero { gap: 28px; }
+      .flow { grid-template-columns: 1fr; }
+      .flow button { min-height: auto; }
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px) {
+      .topbar-inner, main { width: min(100% - 22px, 1160px); }
+      .brand span { display: none; }
+      .hero { padding-top: 22px; }
+      h1 { font-size: clamp(38px, 14vw, 58px); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/study/" aria-label="Study home">
+        <span class="mark">ST</span>
+        <span><strong>Study</strong><span>CMX build environment</span></span>
+      </a>
+      <button class="theme-button" id="themeButton" type="button" aria-label="Toggle page theme">Light mode</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Learn the stack without pretending you already know it</p>
+        <h1>See what your app is actually doing.</h1>
+        <p class="lead">This page will teach the CMX build environment from the browser all the way to Python and PostgreSQL. Click through the flow, make small decisions, and open the code only when you are ready for it.</p>
+        <div class="hero-note"><b>●</b> Beginner mode: explanations before vocabulary.</div>
+      </div>
+
+      <div class="mini-stack" aria-label="CMX application stack overview">
+        <div class="stack-row"><div><small>What you touch</small><strong>Browser + React frontend</strong></div><span>01</span></div>
+        <div class="stack-row"><div><small>What carries the request</small><strong>HTTP + API endpoint</strong></div><span>02</span></div>
+        <div class="stack-row"><div><small>What decides what happens</small><strong>FastAPI + Python</strong></div><span>03</span></div>
+        <div class="stack-row"><div><small>What remembers the data</small><strong>PostgreSQL</strong></div><span>04</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="flow">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Interactive flow</p>
+          <h2>Follow one request</h2>
+        </div>
+        <p>Imagine you press a button that says <strong>Open my profile</strong>. The request moves through these pieces. Tap each one to see its job.</p>
+      </div>
+
+      <div class="flow" id="flowButtons">
+        <button type="button" class="active" data-step="0"><small>Step 1</small><strong>Browser</strong></button>
+        <button type="button" data-step="1"><small>Step 2</small><strong>React frontend</strong></button>
+        <button type="button" data-step="2"><small>Step 3</small><strong>API request</strong></button>
+        <button type="button" data-step="3"><small>Step 4</small><strong>FastAPI / Python</strong></button>
+        <button type="button" data-step="4"><small>Step 5</small><strong>PostgreSQL</strong></button>
+      </div>
+
+      <div class="explain" id="flowExplanation" aria-live="polite">
+        <p><strong>Browser:</strong> this is where the person sees and uses the app. The browser itself does not know your database. It displays the frontend and lets JavaScript send requests when you click something.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">The first mental model</p>
+          <h2>Three jobs to remember</h2>
+        </div>
+        <p>You do not need to memorize framework names first. Start with the jobs. The names become much easier once you know why each piece exists.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card"><span>Frontend</span><h3>Shows things and listens to you</h3><p>Pages, buttons, forms, menus, loading states, and the JavaScript that asks the backend for something.</p></article>
+        <article class="card"><span>Backend</span><h3>Checks and decides</h3><p>Python receives the request, checks what is allowed, runs the app logic, talks to the database, and prepares a response.</p></article>
+        <article class="card"><span>Database</span><h3>Stores what must survive</h3><p>Accounts, records, settings, and other durable information live here so they still exist after the request is finished.</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Tiny checkpoint</p>
+          <h2>What happens next?</h2>
+        </div>
+        <p>No score, no school nonsense. Pick an answer and the page explains the reasoning.</p>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-box">
+          <strong>You click “Log in” after entering your email and password.</strong>
+          <p>Which part should actually decide whether those credentials are valid?</p>
+          <div class="answers" id="answers">
+            <button class="answer" type="button" data-answer="frontend">The React frontend</button>
+            <button class="answer" type="button" data-answer="backend">The FastAPI backend</button>
+            <button class="answer" type="button" data-answer="database">The browser itself</button>
+          </div>
+        </div>
+        <div class="result-box" id="quizResult" aria-live="polite">
+          <span class="result-label">Your explanation appears here</span>
+          <p>Choose one. Getting it wrong is useful because the explanation is the lesson.</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">Study is an early learning surface for the current CMX development environment. More lessons, code reveals, auth flows, database diagrams, and real project examples can be layered in next.</p>
+  </main>
+
+  <script>
+    const explanations = [
+      '<strong>Browser:</strong> this is where the person sees and uses the app. The browser itself does not know your database. It displays the frontend and lets JavaScript send requests when you click something.',
+      '<strong>React frontend:</strong> React controls the interface. When you press “Open my profile,” frontend code decides which backend endpoint to call and what information to send with that request.',
+      '<strong>API request:</strong> this is the message traveling from the frontend to the backend. It might say something like <code>GET /users/me</code>. Think of the endpoint as the specific backend address for that job.',
+      '<strong>FastAPI / Python:</strong> Python receives the request. The backend can check your login proof, decide whether you are allowed to do this, run the needed logic, and ask PostgreSQL for the stored information.',
+      '<strong>PostgreSQL:</strong> the database stores durable records. The backend asks it for the matching data, PostgreSQL returns that data to Python, and Python sends a safe response back toward the frontend.'
+    ];
+
+    const flowButtons = document.querySelectorAll('#flowButtons button');
+    const flowExplanation = document.getElementById('flowExplanation');
+
+    flowButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        flowButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        flowExplanation.innerHTML = '<p>' + explanations[Number(button.dataset.step)] + '</p>';
+      });
+    });
+
+    const quizResult = document.getElementById('quizResult');
+    document.querySelectorAll('.answer').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.answer === 'backend') {
+          quizResult.innerHTML = '<span class="result-label">Yep</span><p><strong>The backend decides.</strong> The frontend collects what you typed, but it cannot safely be trusted to approve its own login. FastAPI checks the credentials against the account data and then returns the result.</p>';
+        } else if (button.dataset.answer === 'frontend') {
+          quizResult.innerHTML = '<span class="result-label">Close</span><p>The frontend <strong>collects</strong> the email and password, but it should not be the final authority. Someone can alter browser-side code. The backend needs to make the trusted decision.</p>';
+        } else {
+          quizResult.innerHTML = '<span class="result-label">Different job</span><p>The browser runs the frontend, but it is not your trusted login authority. The backend handles that decision and uses stored account data when needed.</p>';
+        }
+      });
+    });
+
+    const root = document.documentElement;
+    const themeButton = document.getElementById('themeButton');
+    themeButton.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      themeButton.textContent = next === 'dark' ? 'Light mode' : 'Dark mode';
+    });
+  </script>
+</body>
+</html>
