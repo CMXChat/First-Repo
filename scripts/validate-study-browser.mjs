@@ -23,11 +23,11 @@ const cdp=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;pend
 await cdp('Page.enable');await cdp('Runtime.enable');await cdp('Log.enable');
 
 const routes=[
-  {path:'/study/',required:['.study-universe-bar','.course-dock','.react-playground','.request-mail-stage','.backend-mission','.db-query-grid']},
-  {path:'/study/python/',required:['.study-universe-bar','.course-dock','.code-conveyor']},
-  {path:'/study/environment/',required:['.study-universe-bar','.course-dock','[data-hb-reality]','.network-map','.debug-shell','.docker-v2','[data-config-vault]']},
-  {path:'/study/environment/handbook/',required:['.study-universe-bar','.course-dock','.hb-current']},
-  {path:'/study/index/',required:['#indexSearch','#termGrid .index-term']},
+  {path:'/study/',required:['.study-universe-bar','.course-dock','.react-playground','.request-mail-stage','.backend-mission','.db-query-grid','.fullstack-code-bridge','.study-teacher-card']},
+  {path:'/study/python/',required:['.study-universe-bar','.course-dock','.code-conveyor','.study-teacher-card']},
+  {path:'/study/environment/',required:['.study-universe-bar','.course-dock','[data-hb-reality]','.network-map','.debug-shell','.docker-v2','[data-config-vault]','.study-teacher-card']},
+  {path:'/study/environment/handbook/',required:['.study-universe-bar','.course-dock','.hb-current','.study-teacher-card']},
+  {path:'/study/index/',required:['#indexSearch','#termGrid .index-term','.index-term-long','.project-playground']},
 ];
 const viewports=[['desktop',1440,1000],['phone',390,844]];
 const failures=[];
@@ -38,19 +38,24 @@ for(const [vp,width,height] of viewports){
   for(const route of routes){
     routeLabel=`${vp} ${route.path}`;
     const url=`http://127.0.0.1:8787${route.path}`;
-    await cdp('Page.navigate',{url});await sleep(1600);
-    const check=await evalExpr(`(()=>({
+    await cdp('Page.navigate',{url});await sleep(1800);
+    const check=await evalExpr(`(()=>{const toolbar=document.querySelector('.toolbar');const universe=document.querySelector('.study-universe-bar');return {
       theme:document.documentElement.dataset.theme||'',
       width:document.documentElement.scrollWidth,
       viewport:innerWidth,
       missing:${JSON.stringify(route.required)}.filter(s=>!document.querySelector(s)),
-      title:document.title
-    }))()`);
+      title:document.title,
+      toolbarH:toolbar?toolbar.getBoundingClientRect().height:0,
+      universeH:universe?universe.getBoundingClientRect().height:0,
+      easyText:document.querySelector('.study-easy-button')?.textContent||''
+    }})()`);
     if(!check)failures.push(`${routeLabel}: no browser result`);
     else{
       if(check.theme!=='light')failures.push(`${routeLabel}: expected default light theme, got ${check.theme||'unset'}`);
       if(check.width>check.viewport+2)failures.push(`${routeLabel}: document horizontally overflows (${check.width}px > ${check.viewport}px)`);
       if(check.missing.length)failures.push(`${routeLabel}: missing runtime UI ${check.missing.join(', ')}`);
+      if(route.path!=='/study/index/'&&check.universeH>(vp==='phone'?46:50))failures.push(`${routeLabel}: Study Universe bar is too tall (${check.universeH}px)`);
+      if(route.path!=='/study/index/'&&check.easyText&&check.easyText!=='🧠')failures.push(`${routeLabel}: simple-explanation button should be 🧠, got ${check.easyText}`);
     }
     if(route.path!=='/study/index/'){
       const term=await evalExpr(`(()=>{const t=document.querySelector('.term.study-definition-ready,.term');if(!t)return null;t.click();const c=getComputedStyle(t).backgroundColor;const m=c.match(/rgba?\\((\\d+)[, ]+(\\d+)[, ]+(\\d+)/);return {bg:c,lum:m?(.2126*+m[1]+.7152*+m[2]+.0722*+m[3]):255,expanded:t.getAttribute('aria-expanded')}})()`);
@@ -58,6 +63,9 @@ for(const [vp,width,height] of viewports){
       const guide=await evalExpr(`(()=>{const b=document.querySelector('.guide-launch');const p=document.querySelector('.guide-panel');const d=document.querySelector('.course-dock');if(!b||!p||!d)return null;b.click();const a=p.getBoundingClientRect(),z=d.getBoundingClientRect();const overlap=!(a.right<z.left||a.left>z.right||a.bottom<z.top||a.top>z.bottom);return {open:p.classList.contains('open'),overlap,right:a.right,left:a.left,top:a.top,bottom:a.bottom,vw:innerWidth,vh:innerHeight}})()`);
       if(guide?.open&&guide.overlap)failures.push(`${routeLabel}: Study Guide overlaps course dock`);
       if(guide?.open&&(guide.right>guide.vw+2||guide.left<-2||guide.bottom>guide.vh+2||guide.top<-2))failures.push(`${routeLabel}: Study Guide escapes viewport`);
+      const dock=await evalExpr(`(async()=>{const d=document.querySelector('.course-dock');const x=document.querySelector('.course-dismiss');const p=document.querySelector('.course-dock-peek');if(!d||!x||!p)return null;x.click();await new Promise(r=>setTimeout(r,260));const hidden=d.hidden&&p.classList.contains('show');p.click();await new Promise(r=>setTimeout(r,30));return {hiddenWorked:hidden,restored:!d.hidden&&!p.classList.contains('show')}})()`);
+      if(dock&&!dock.hiddenWorked)failures.push(`${routeLabel}: course tracker did not hide cleanly`);
+      if(dock&&!dock.restored)failures.push(`${routeLabel}: course tracker did not restore cleanly`);
     }
     console.log(`✓ checked ${routeLabel}`);
   }
