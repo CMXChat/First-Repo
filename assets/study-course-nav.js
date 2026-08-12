@@ -1,4 +1,5 @@
 (()=>{
+  if(window.__studyCourseNavLoaded)return;window.__studyCourseNavLoaded=true;
   const rawPath=location.pathname.replace(/\/+$/,'');
   const path=(rawPath||'/')==='/'?'/':`${rawPath}/`;
   const configs={
@@ -9,6 +10,7 @@
   };
   const cfg=configs[path]; if(!cfg)return;
   if(!document.querySelector('link[href^="/assets/study-course-nav.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-course-nav.css?v=20260812-1';document.head.appendChild(l)}
+  if(!document.querySelector('link[href^="/assets/study-enhancements.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/study-enhancements.css?v=20260812-2';document.head.appendChild(l)}
   const chapters=cfg.chapters.map(sel=>document.querySelector(sel)).filter(Boolean);
   const titleFor=el=>el?.querySelector('h2,h3')?.textContent?.trim()||el?.id||cfg.world;
   let previousLocation='';try{previousLocation=localStorage.getItem('study-course-last')||''}catch{}
@@ -29,8 +31,9 @@
     if(host&&!document.querySelector('.course-world-gate')){
       const safeResume=previousLocation.startsWith('/study/')?previousLocation:'/study/#react';
       const gate=document.createElement('div');gate.className='course-world-gate';
-      gate.innerHTML=`<div><strong>The full course now has four connected worlds</strong><p>Core App Flow stays the main quest. Python Lab teaches backend code. Environment World connects the full setup. Handbook Registry preserves every detailed environment question and acceptance requirement.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume where I left off →</a><a href="/study/python/">Python Lab</a><a href="/study/environment/">Environment World</a><a href="/study/environment/handbook/">Handbook Registry</a></div>`;
+      gate.innerHTML=`<div><strong>The full course now has four connected worlds</strong><p>Core App Flow stays the main quest. Python Lab teaches backend code. Environment World connects the full setup. Handbook Registry preserves the detailed environment questions and acceptance requirements.</p></div><div class="course-world-actions"><a class="primary" href="${safeResume}">Resume where I left off →</a><a href="/study/python/">Python Lab</a><a href="/study/environment/">Environment World</a><a href="/study/environment/handbook/">Handbook Registry</a></div>`;
       host.insertAdjacentElement('afterend',gate)
     }
   }
+  if(!document.querySelector('script[src^="/assets/study-enhancements.js"]')){const s=document.createElement('script');s.src='/assets/study-enhancements.js?v=20260812-2';s.defer=true;document.head.appendChild(s)}
 })();
