@@ -19,10 +19,11 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://db.cmxchat.com/vault/" />
 
-  <link rel="stylesheet" href="/assets/vault/vault.css?v=20260813-1" />
-  <link rel="stylesheet" href="/assets/vault/vault-layout.css?v=20260813-1" />
-  <link rel="stylesheet" href="/assets/vault/vault-theme.css?v=20260813-1" />
-  <link rel="stylesheet" href="/assets/vault/vault-portal-ui.css?v=20260813-1" />
+  <!-- Vault assets are split by responsibility. See /vault/README.md before editing. -->
+  <link rel="stylesheet" href="/assets/vault/vault.css?v=20260813-2" />
+  <link rel="stylesheet" href="/assets/vault/vault-layout.css?v=20260813-2" />
+  <link rel="stylesheet" href="/assets/vault/vault-theme.css?v=20260813-2" />
+  <link rel="stylesheet" href="/assets/vault/vault-portal-ui.css?v=20260813-2" />
 </head>
 <body>
   <section id="boot" aria-live="polite" aria-label="Vault loading">
@@ -105,10 +106,10 @@
         <p class="side-label">Explore Vault</p>
         <nav class="vault-nav">
           <button class="nav-item active" type="button" data-module="control"><span class="nav-code">01</span><span>Home</span><span class="nav-state">live</span></button>
-          <button class="nav-item" type="button" data-module="people"><span class="nav-code">02</span><span>Members</span><span class="nav-state">soon</span></button>
+          <button class="nav-item" type="button" data-module="people" data-scroll-target="memberDirectory"><span class="nav-code">02</span><span>Members</span><span class="nav-state">live</span></button>
           <button class="nav-item" type="button" data-module="contacts"><span class="nav-code">03</span><span>Contacts</span><span class="nav-state">soon</span></button>
           <button class="nav-item" type="button" data-module="network"><span class="nav-code">04</span><span>Connections</span><span class="nav-state">soon</span></button>
-          <button class="nav-item" type="button" data-module="briefings"><span class="nav-code">05</span><span>Recaps</span><span class="nav-state">soon</span></button>
+          <button class="nav-item" type="button" data-module="briefings" data-scroll-target="dailyBriefings"><span class="nav-code">05</span><span>Daily briefs</span><span class="nav-state">demo</span></button>
           <button class="nav-item" type="button" data-module="news"><span class="nav-code">06</span><span>Server news</span><span class="nav-state">soon</span></button>
           <button class="nav-item" type="button" data-module="timezones"><span class="nav-code">07</span><span>Timezones</span><span class="nav-state">live</span></button>
         </nav>
@@ -140,8 +141,8 @@
               <p>New device, lost the invite, or sending somebody in? The server link lives here too.</p>
             </div>
             <div>
-              <a id="joinDiscord" class="join-discord" href="#" data-invite-url="" target="_blank" rel="noopener">Join Vault 3.0</a>
-              <small id="inviteNote" class="invite-note">Send me the invite URL and this becomes the permanent join button.</small>
+              <a id="joinDiscord" class="join-discord" href="https://discord.gg/48xdhWJ9RD" data-invite-url="https://discord.gg/48xdhWJ9RD" target="_blank" rel="noopener noreferrer">Join Vault 3.0</a>
+              <small id="inviteNote" class="invite-note">Permanent Vault 3.0 invite · opens Discord</small>
             </div>
           </aside>
         </section>
@@ -153,6 +154,66 @@
             <p>Member profiles, important contacts, links, recaps, relationships, server history, news and whatever information the group actually wants to keep.</p>
           </div>
           <span class="database-status">building now</span>
+        </section>
+
+        <!-- Daily briefing demo: content is intentionally labeled as preview data until a backend exists. -->
+        <section id="dailyBriefings" class="portal-section briefing-hub" aria-labelledby="briefingHubTitle">
+          <div class="section-intro briefing-intro">
+            <div>
+              <p class="section-kicker">Every morning · member local time</p>
+              <h2 id="briefingHubTitle">Wake up caught up.</h2>
+            </div>
+            <p>Each member will get a personal briefing around 7:00 AM in their own timezone, with the server recap, drama context, local weather and anything they actually care about.</p>
+          </div>
+          <div class="briefing-demo-grid">
+            <article class="morning-brief-card primary-brief">
+              <div class="brief-card-top"><span class="live-dot"></span><span>Daily briefing demo</span><span class="demo-chip">preview</span></div>
+              <p class="brief-date" id="briefingDate">Thursday · August 13</p>
+              <h3>Your server, decoded before breakfast.</h3>
+              <div class="brief-signal-grid">
+                <div><span>DRAMA DESK</span><strong>Context without 900 messages</strong><small>What happened, why people care, and what is still unresolved.</small></div>
+                <div><span>LOCAL WEATHER</span><strong>Ready for your location</strong><small>Conditions, temperature and anything worth planning around.</small></div>
+                <div><span>SERVER PULSE</span><strong>The useful overnight recap</strong><small>Announcements, jokes, decisions, links and conversations worth opening.</small></div>
+                <div><span>YOUR PEOPLE</span><strong>Catch-ups that matter</strong><small>Birthdays, time-sensitive messages and people you may want to check in with.</small></div>
+              </div>
+              <p class="demo-disclaimer">This is a UI demonstration. Live Discord, weather and personal data are not connected yet.</p>
+            </article>
+            <aside class="briefing-schedule-card">
+              <span class="schedule-label">Delivery rule</span>
+              <strong>07:00</strong>
+              <p>Approximately 7:00 AM for each member, using their own confirmed timezone.</p>
+              <div class="schedule-example"><span>Biggz · London</span><b data-next-brief="Europe/London">calculating…</b></div>
+              <div class="schedule-example"><span>Mel · South Africa</span><b data-next-brief="Africa/Johannesburg">calculating…</b></div>
+              <div class="schedule-example pending"><span>Anymuz</span><b>location needed</b></div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- Directory entries come from assets/vault/vault-directory.js. Do not duplicate member data here. -->
+        <section id="memberDirectory" class="portal-section member-directory" aria-labelledby="memberDirectoryTitle">
+          <div class="directory-head">
+            <div>
+              <p class="section-kicker">Vault people directory</p>
+              <h2 id="memberDirectoryTitle">Everyone gets a place here.</h2>
+              <p>Profiles will hold approved member context, local time, interests and a personal daily brief. Three demo profiles are open now; the rest are visibly queued.</p>
+            </div>
+            <label class="member-search" for="memberSearch">
+              <span class="sr-only">Search Vault members</span>
+              <span aria-hidden="true">⌕</span>
+              <input id="memberSearch" type="search" autocomplete="off" placeholder="Search members" />
+            </label>
+          </div>
+          <div class="directory-stats" aria-label="Directory status">
+            <span><b id="memberCount">0</b> members mapped</span>
+            <span><b id="profileCount">0</b> profiles open</span>
+            <span><b>7:00 AM</b> local brief target</span>
+          </div>
+          <div id="featuredMembers" class="featured-members" aria-label="Open demo profiles"></div>
+          <details class="full-directory">
+            <summary><span>View the full Vault directory</span><small id="queuedCount">Profiles queued</small></summary>
+            <div id="memberGrid" class="member-grid"></div>
+          </details>
+          <p id="directoryEmpty" class="directory-empty hidden">No member matches that search yet.</p>
         </section>
 
         <section id="whatYouCanDo" class="portal-section" aria-labelledby="useTitle">
@@ -171,8 +232,8 @@
         </section>
 
         <section class="intel-strip" aria-label="Vault features">
-          <div class="intel-cell"><span>Member profiles</span><strong>COMING</strong></div>
-          <div class="intel-cell"><span>Server recaps</span><strong>COMING</strong></div>
+          <div class="intel-cell"><span>Member profiles</span><strong>DEMO LIVE</strong></div>
+          <div class="intel-cell"><span>Daily briefs</span><strong>PREVIEW</strong></div>
           <div class="intel-cell"><span>Shared contacts</span><strong>COMING</strong></div>
           <div class="intel-cell"><span>Server news</span><strong>COMING</strong></div>
           <div class="intel-cell"><span>Live clocks</span><strong>WORKING</strong></div>
@@ -208,10 +269,10 @@
             <section class="panel module-panel" aria-labelledby="moduleHeading">
               <div class="panel-head"><strong id="moduleHeading">Open a section</strong><span class="head-right">MORE COMING</span></div>
               <div class="module-list">
-                <button class="module-row" type="button" data-module="people"><span class="module-icon">PPL</span><span class="module-copy"><strong>Members</strong><span>profiles, handles, roles, timezones</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="people" data-scroll-target="memberDirectory"><span class="module-icon">PPL</span><span class="module-copy"><strong>Members</strong><span>profiles, handles, roles, timezones</span></span><span class="module-state">open</span></button>
                 <button class="module-row" type="button" data-module="contacts"><span class="module-icon">CNT</span><span class="module-copy"><strong>Contacts</strong><span>people and resources shared by the server</span></span><span class="module-state">open</span></button>
                 <button class="module-row" type="button" data-module="network"><span class="module-icon">NET</span><span class="module-copy"><strong>Connections</strong><span>who knows who and useful intros</span></span><span class="module-state">open</span></button>
-                <button class="module-row" type="button" data-module="briefings"><span class="module-icon">TLDR</span><span class="module-copy"><strong>Recaps</strong><span>catch up without reading everything</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="briefings" data-scroll-target="dailyBriefings"><span class="module-icon">TLDR</span><span class="module-copy"><strong>Daily briefs</strong><span>drama, weather and overnight context</span></span><span class="module-state">open</span></button>
                 <button class="module-row" type="button" data-module="news"><span class="module-icon">NWS</span><span class="module-copy"><strong>Server news</strong><span>updates and stuff people care about</span></span><span class="module-state">open</span></button>
                 <button class="module-row" type="button" data-module="timezones"><span class="module-icon">TZ</span><span class="module-copy"><strong>Timezones</strong><span>local time for members around the world</span></span><span class="module-state">open</span></button>
               </div>
@@ -234,8 +295,8 @@
             <div class="panel-head"><strong id="dispatchHeading">What's being built</strong><span class="head-right">VAULT 3.0</span></div>
             <div class="dispatch-list">
               <article class="dispatch"><span class="dispatch-time">LIVE</span><span class="dispatch-copy"><strong>The portal exists</strong><p>Private login, homepage, navigation, console and timezone tools are online.</p></span><span class="dispatch-tag">done</span></article>
-              <article class="dispatch"><span class="dispatch-time">NEXT</span><span class="dispatch-copy"><strong>Real member profiles</strong><p>We'll start filling this with the actual people in the server as you send the info.</p></span><span class="dispatch-tag">next</span></article>
-              <article class="dispatch"><span class="dispatch-time">AFTER</span><span class="dispatch-copy"><strong>Recaps, links, news and server lore</strong><p>This becomes the place to catch up and find things without Discord archaeology.</p></span><span class="dispatch-tag">queued</span></article>
+              <article class="dispatch"><span class="dispatch-time">DEMO</span><span class="dispatch-copy"><strong>Member profiles and morning briefs</strong><p>Biggz, Mel and Anymuz now demonstrate how a personal Vault page can work.</p></span><span class="dispatch-tag">live</span></article>
+              <article class="dispatch"><span class="dispatch-time">NEXT</span><span class="dispatch-copy"><strong>Connect approved data</strong><p>Discord recaps, weather, links and server lore can become live after the secure backend exists.</p></span><span class="dispatch-tag">queued</span></article>
             </div>
           </section>
         </section>
@@ -249,14 +310,15 @@
 
     <nav class="mobile-vault-nav" aria-label="Quick navigation">
       <button type="button" data-mobile-target="portalHome">Home</button>
-      <button type="button" data-mobile-target="whatYouCanDo">What is this?</button>
-      <button type="button" data-mobile-target="terminalZone">Console</button>
+      <button type="button" data-mobile-target="memberDirectory">Members</button>
+      <button type="button" data-mobile-target="dailyBriefings">Brief</button>
       <button type="button" data-mobile-target="clockSection">Time</button>
     </nav>
   </main>
 
   <noscript>This portal needs JavaScript enabled to open and run.</noscript>
-  <script src="/assets/vault/vault.js?v=20260813-1" defer></script>
-  <script src="/assets/vault/vault-portal.js?v=20260813-1" defer></script>
+  <script src="/assets/vault/vault.js?v=20260813-2" defer></script>
+  <script src="/assets/vault/vault-directory.js?v=20260813-2" defer></script>
+  <script src="/assets/vault/vault-portal.js?v=20260813-2" defer></script>
 </body>
 </html>
