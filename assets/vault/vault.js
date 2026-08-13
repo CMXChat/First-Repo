@@ -66,12 +66,12 @@
 
   const bootLines = [
     '[vault-loader] mounting /vault',
-    '[crypto] local gate verifier ........ ready',
-    '[interface] terminal renderer ........ ready',
-    '[network] relationship layer ......... standby',
-    '[briefings] intelligence queue ....... standby',
-    '[timezones] clock matrix ............. synchronized',
-    '[vault] access boundary .............. armed',
+    '[crypto] local gate verifier :: ready',
+    '[interface] terminal renderer :: ready',
+    '[network] relationship layer :: standby',
+    '[briefings] intelligence queue :: standby',
+    '[timezones] clock matrix :: synchronized',
+    '[vault] access boundary :: armed',
     '',
     'VAULT 3.0 // RESTRICTED COMMUNITY NODE'
   ];
@@ -338,12 +338,12 @@
     }
 
     if (command === 'status') {
-      printLine('vault interface ........ ONLINE', 'ok');
-      printLine('password gate .......... ARMED', 'ok');
-      printLine('member database ........ DEMO DATA', 'warn');
-      printLine('briefing pipeline ...... DEMO PREVIEW', 'warn');
-      printLine('news ingestion ......... MANUAL UPDATES', 'warn');
-      printLine('timezone matrix ........ LOCAL DEMO', 'blue');
+      printLine('vault interface :: ONLINE', 'ok');
+      printLine('password gate :: ARMED', 'ok');
+      printLine('member database :: DEMO DATA', 'warn');
+      printLine('briefing pipeline :: DEMO PREVIEW', 'warn');
+      printLine('news ingestion :: MANUAL UPDATES', 'warn');
+      printLine('timezone matrix :: LOCAL DEMO', 'blue');
       return;
     }
 

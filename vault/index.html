@@ -138,8 +138,13 @@
         <section id="portalHome" class="portal-welcome" aria-labelledby="portalTitle">
           <div class="welcome-main">
             <p class="portal-eyebrow">Vault 3.0 HQ</p>
-            <h1 id="portalTitle">The server has a home now.</h1>
-            <p>Open a name. See who's around. Catch up on the server, check local time, find the links, and keep the lore somewhere useful.</p>
+            <h1 id="portalTitle">The group chat has lore now.</h1>
+            <p>Open a name, catch up on the tea, see who's awake, play something loud, and find the link chat ate three weeks ago.</p>
+            <div class="welcome-actions" aria-label="Start here">
+              <button type="button" data-scroll-target="dailyBriefings"><span>01</span><strong>Catch me up</strong><small>briefing + tea</small></button>
+              <button type="button" data-scroll-target="memberDirectory"><span>02</span><strong>Find someone</strong><small>member rooms</small></button>
+              <button type="button" data-scroll-target="vaultRadio"><span>03</span><strong>Play something</strong><small>Vault Radio</small></button>
+            </div>
             <div class="owner-line">
               <span>Server owners</span>
               <span class="owner-pill">anymuz</span>
@@ -150,8 +155,8 @@
           <aside class="join-card" aria-labelledby="joinTitle">
             <div class="discord-mark" aria-hidden="true">DC</div>
             <div class="discord-copy">
-              <h2 id="joinTitle">Jump into the Discord</h2>
-              <p>New device, lost the invite, or sending somebody in? The server link lives here too.</p>
+              <h2 id="joinTitle">Get back in the server</h2>
+              <p>Lost the invite again? Fair. The permanent one lives right here.</p>
             </div>
             <div>
               <a id="joinDiscord" class="join-discord" href="https://discord.gg/48xdhWJ9RD" data-invite-url="https://discord.gg/48xdhWJ9RD" target="_blank" rel="noopener noreferrer">Join Vault 3.0</a>
@@ -163,8 +168,8 @@
         <section class="database-banner" aria-labelledby="databaseTitle">
           <div class="db-mark" aria-hidden="true">DB</div>
           <div>
-            <h2 id="databaseTitle">The stuff the server wants to remember</h2>
-            <p>Member pages, useful contacts, links, recaps, server history, news, and the running jokes that deserve a permanent home.</p>
+            <h2 id="databaseTitle">The server memory, because chat forgets everything</h2>
+            <p>People, links, recaps, lore, receipts, and the jokes that somehow became canon.</p>
           </div>
           <span class="database-status">building now</span>
         </section>
@@ -246,8 +251,8 @@
             </div>
             <div class="radio-copy">
               <p class="section-kicker">Vault Radio · member controlled</p>
-              <h2 id="vaultRadioTitle">Give the server a soundtrack.</h2>
-              <p>Pick the track, vote on the rotation, send a suggestion, or open it in Spotify. Playback starts from the real Spotify player after you press play.</p>
+              <h2 id="vaultRadioTitle">Put the server on aux.</h2>
+              <p>Pick the track, vote on the rotation, or sneak your song into the queue. Press play in the Spotify player when you're ready.</p>
               <div class="radio-now"><span>ON AIR</span><strong id="radioTrackTitle">Midnight City</strong><small id="radioTrackArtist">M83</small></div>
             </div>
             <div class="radio-player-shell">
@@ -262,7 +267,7 @@
             </div>
             <aside class="radio-queue">
               <span>SHARED QUEUE DEMO</span>
-              <h3>Drop a song</h3>
+              <h3>Fight for the aux</h3>
               <form id="radioQueueForm"><label class="sr-only" for="radioQueueInput">Song suggestion</label><input id="radioQueueInput" type="text" maxlength="80" placeholder="Song · artist" /><button type="submit">Add</button></form>
               <ul id="radioQueueList"></ul>
             </aside>
@@ -274,8 +279,8 @@
           <div class="directory-head">
             <div>
               <p class="section-kicker">Vault people directory</p>
-              <h2 id="memberDirectoryTitle">Everyone gets a place here.</h2>
-              <p>Tap a name to enter their room. Open profiles show local time, approved notes, and the shape of their morning catch-up. Everyone else already has a spot waiting.</p>
+              <h2 id="memberDirectoryTitle">Pick your person.</h2>
+              <p>Tap a name for their room, local time, current lore, and morning catch-up. More rooms unlock as people claim them.</p>
             </div>
             <label class="member-search" for="memberSearch">
               <span class="sr-only">Search Vault members</span>
@@ -294,8 +299,8 @@
               <span class="vault-ring ring-two" aria-hidden="true"></span>
               <span class="vault-ring ring-three" aria-hidden="true"></span>
               <span class="vault-core-center" aria-hidden="true">V3</span>
-              <strong>Tap to scan the roster</strong>
-              <small>Every member gets a room.</small>
+              <strong>Who's in this thing?</strong>
+              <small>Tap to pull up the whole roster.</small>
             </button>
             <div id="featuredMembers" class="featured-members" aria-label="Open member rooms"></div>
           </div>
@@ -321,14 +326,14 @@
           </section>
 
           <section id="vaultLore" class="world-panel lore-panel" aria-labelledby="loreTitle">
-            <div class="world-head"><div><span>SERVER LORE</span><h2 id="loreTitle">Keep the canon straight</h2></div><b>3 ENTRIES</b></div>
+            <div class="world-head"><div><span>SERVER LORE</span><h2 id="loreTitle">The canon, with receipts</h2></div><b>3 ENTRIES</b></div>
             <div id="vaultLoreList" class="vault-lore-list"></div>
           </section>
         </section>
 
         <section class="vault-history-grid">
           <section id="briefArchive" class="world-panel archive-panel" aria-labelledby="archiveTitle">
-            <div class="world-head"><div><span>BRIEFING ARCHIVE</span><h2 id="archiveTitle">Previously in Vault 3.0</h2></div><b>THE TIMELINE</b></div>
+            <div class="world-head"><div><span>BRIEFING ARCHIVE</span><h2 id="archiveTitle">Previously on Vault 3.0</h2></div><b>THE TIMELINE</b></div>
             <div id="briefArchiveList" class="brief-archive-list"></div>
           </section>
           <section class="world-panel poll-panel" aria-labelledby="pollTitle">
@@ -341,23 +346,23 @@
 
         <section class="world-panel owner-desk" aria-labelledby="ownerDeskTitle">
           <div class="world-head"><div><span>OWNER DESK · DEMO</span><h2 id="ownerDeskTitle">Pin a server note</h2></div><b>THIS DEVICE</b></div>
-          <p>Try the editing flow now. The note stays in this browser until the shared backend is connected.</p>
+          <p>Pin the thing everyone needs to see. This demo saves it on your device.</p>
           <form id="ownerNoteForm"><label class="sr-only" for="ownerNoteInput">Server note</label><input id="ownerNoteInput" maxlength="140" placeholder="Add the thing everyone should see" /><button type="submit">Pin note</button></form>
           <div id="ownerNotePreview" class="owner-note-preview">No local note pinned.</div>
         </section>
 
         <section id="whatYouCanDo" class="portal-section" aria-labelledby="useTitle">
           <div class="section-intro">
-            <h2 id="useTitle">What can we actually do with this?</h2>
-            <p>Tap what you want. Everything here is made for regular server members.</p>
+            <h2 id="useTitle">Okay wait, what does it do?</h2>
+            <p>The useful bits, minus the tech lecture.</p>
           </div>
           <div class="use-grid">
-            <article class="use-card"><span class="use-icon">WHO</span><h3>Who's who</h3><p>Tap a member and see their handles, timezone, role, what they're into and the context people usually have to ask for again.</p></article>
-            <article class="use-card"><span class="use-icon">TL;DR</span><h3>Missed 900 messages?</h3><p>Open a recap and catch up on what happened, what changed, the funny parts, the drama and what still matters.</p></article>
-            <article class="use-card"><span class="use-icon">LINK</span><h3>Stop losing useful stuff</h3><p>Keep server links, files, invites, resources, projects and important posts somewhere people can actually find them.</p></article>
-            <article class="use-card"><span class="use-icon">NET</span><h3>Make the network useful</h3><p>See who knows who, who can help with what, shared interests and where an intro between two people might make sense.</p></article>
-            <article class="use-card"><span class="use-icon">NOW</span><h3>Know what's going on</h3><p>Server announcements, plans, events, ongoing stories, updates and outside news the group is currently talking about.</p></article>
-            <article class="use-card"><span class="use-icon">TZ</span><h3>Know who's awake</h3><p>Member-local times and overlap windows so nobody has to keep asking what time it is in New York, London or Australia.</p></article>
+            <article class="use-card"><span class="use-icon">WHO</span><h3>Who's that again?</h3><p>Names, handles, timezones, roles, and enough context to save you asking in chat.</p></article>
+            <article class="use-card"><span class="use-icon">TL;DR</span><h3>Missed 900 messages?</h3><p>Get the plot, the jokes, the drama, and the parts that still matter.</p></article>
+            <article class="use-card"><span class="use-icon">LINK</span><h3>Chat ate the link</h3><p>Invites, files, projects, and important posts stay somewhere you can find them.</p></article>
+            <article class="use-card"><span class="use-icon">NET</span><h3>Who knows who?</h3><p>See the connections, shared interests, and who might actually be able to help.</p></article>
+            <article class="use-card"><span class="use-icon">NOW</span><h3>What's the move?</h3><p>Plans, events, announcements, ongoing stories, and whatever the server is locked in on.</p></article>
+            <article class="use-card"><span class="use-icon">TZ</span><h3>Are they awake?</h3><p>Local clocks and overlap windows before you accidentally ping London at 4 AM.</p></article>
           </div>
         </section>
 
