@@ -2,6 +2,7 @@
 
 (() => {
   const root = document.documentElement;
+  const body = document.body;
   const themeButton = document.getElementById('vaultThemeToggle');
   const themeMeta = document.getElementById('vaultThemeMeta');
   const joinButton = document.getElementById('joinDiscord');
@@ -16,6 +17,13 @@
   const vaultToast = document.getElementById('vaultToast');
   const rosterScan = document.getElementById('rosterScan');
   const THEME_KEY = 'vault_theme_v1';
+  const viewCopy = {
+    portalHome: ['Home', 'Your quick dashboard'],
+    memberDirectory: ['Members', 'Find a person or open their room'],
+    vaultRadio: ['Radio', 'The server soundtrack'],
+    dailyBriefings: ['Daily brief', 'The fast way to catch up'],
+    everything: ['Everything', 'The complete scrollable Vault']
+  };
   let toastTimer;
 
   function showToast(message) {
@@ -147,15 +155,26 @@
     joinButton.href = invite;
   });
 
-  mobileNav.forEach((button) => {
-    button.addEventListener('click', () => {
-      const view = button.dataset.mobileTarget || 'portalHome';
-      document.body.dataset.mobileView = view;
-      mobileNav.forEach((item) => item.classList.toggle('active', item === button));
-      if (view === 'everything') window.scrollTo({ top: 0, behavior: 'smooth' });
-      else document.getElementById(view)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  function setMobileView(view, scroll = true) {
+    const next = viewCopy[view] ? view : 'portalHome';
+    body.dataset.mobileView = next;
+    mobileNav.forEach((item) => {
+      const active = item.dataset.mobileTarget === next;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-current', active ? 'page' : 'false');
     });
-  });
+    const copy = viewCopy[next];
+    const title = document.getElementById('mobileViewTitle');
+    const description = document.getElementById('mobileViewDescription');
+    if (title) title.textContent = copy[0];
+    if (description) description.textContent = copy[1];
+    if (!scroll) return;
+    if (next === 'everything' || next === 'portalHome') window.scrollTo({ top: 0, behavior: 'smooth' });
+    else document.getElementById(next)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  mobileNav.forEach((button) => button.addEventListener('click', () => setMobileView(button.dataset.mobileTarget)));
+  document.querySelectorAll('[data-open-mobile-view]').forEach((button) => button.addEventListener('click', () => setMobileView(button.dataset.openMobileView)));
 
   memberSearch?.addEventListener('input', () => renderDirectory(memberSearch.value));
 
@@ -184,12 +203,17 @@
 
   document.querySelectorAll('[data-scroll-target]').forEach((button) => {
     button.addEventListener('click', () => {
-      const target = document.getElementById(button.dataset.scrollTarget || '');
+      const targetId = button.dataset.scrollTarget || '';
+      if (window.matchMedia('(max-width: 700px)').matches && viewCopy[targetId]) {
+        setMobileView(targetId);
+        return;
+      }
+      const target = document.getElementById(targetId);
       window.setTimeout(() => target?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
     });
   });
 
   renderDirectory();
   updateBriefSchedule();
-  if (window.matchMedia('(max-width: 700px)').matches) body.dataset.mobileView = 'portalHome';
+  if (window.matchMedia('(max-width: 700px)').matches) setMobileView('portalHome', false);
 })();

@@ -65,6 +65,10 @@
     const miniArtist = $('#miniTrackArtist');
     if (miniTitle) miniTitle.textContent = track.title;
     if (miniArtist) miniArtist.textContent = track.artist;
+    const homeTitle = $('#homeTrackTitle');
+    const homeArtist = $('#homeTrackArtist');
+    if (homeTitle) homeTitle.textContent = track.title;
+    if (homeArtist) homeArtist.textContent = `${track.artist} · current rotation`;
     const open = $('#miniSpotifyLink');
     if (open) open.href = spotifyLink(track.id);
     document.documentElement.style.setProperty('--radio-accent', track.accent);
