@@ -4,30 +4,30 @@
 window.VaultProfiles = Object.freeze({
   biggz: {
     name: 'Biggz', initials: 'BG', role: 'Vault owner', location: 'London', zone: 'Europe/London', accent: 'violet',
-    intro: 'Biggz can open this room, check London time, see the server catch-up, and get on with his day.',
+    intro: 'Morning, boss. London time, the server catch-up, your people, and the important stuff are all right here.',
     facts: ['Owner of Vault 3.0', 'Based in London'],
     status: 'Owner room live', connections: ['Anymuz · co-owner', 'Mel · South Africa'],
-    currentTitle: 'Keep it simple and useful', current: 'The owner view puts the morning catch-up, London time, people, and music up front.'
+    currentTitle: 'Straight to the point', current: 'Catch up, check London time, find someone, play a song. Done.'
   },
   mel: {
     name: 'Mel', initials: 'ME', role: 'Vault member', location: 'South Africa', zone: 'Africa/Johannesburg', accent: 'pink',
-    intro: 'Mel can open this room for local time, the server catch-up, saved links, and whatever matters that morning.',
+    intro: 'Hey Mel. Your local time, the overnight tea, saved stuff, and today’s useful bits live here.',
     facts: ['Based in South Africa', 'City still to be confirmed'],
     status: 'Member room live', connections: ['Biggz · London', 'Vault 3.0 · home base'],
-    currentTitle: 'South Africa briefing slot', current: 'Local time is active. City-level weather waits for Mel to confirm her city.'
+    currentTitle: 'South Africa check-in', current: 'Local time is live. Tell us the city whenever you want the weather to get specific.'
   },
   anymuz: {
     name: 'Anymuz', initials: 'AN', role: 'Vault owner · developer', location: 'Location pending', zone: null, accent: 'red',
-    intro: 'Anymuz gets the builder view: server updates, projects, useful links, and the morning catch-up in one room.',
+    intro: 'Builder mode. Server updates, projects, weird language arcs, useful links, and the morning tea are all loaded in.',
     facts: ['Owner of Vault 3.0', 'Codes and builds things', 'Learning Hebrew and Aramaic', 'Location pending'],
     status: 'Builder room live', connections: ['Biggz · co-owner', 'Kazy · developer'],
-    currentTitle: 'Language arc active', current: 'Hebrew and Aramaic are on the current briefing. Builder notes and server projects can live here next.'
+    currentTitle: 'Language arc unlocked', current: 'Hebrew and Aramaic made the briefing. Builder notes and current projects are next up.'
   },
   kazy: {
     name: 'Kazy', initials: 'KZ', role: 'Developer · server booster', location: 'Location pending', zone: null, accent: 'magenta',
-    intro: 'Kazy gets a builder room for projects, server updates, useful links, and the morning catch-up.',
+    intro: 'Dev room online. Projects, server updates, useful links, boost lore, and whatever broke overnight go here.',
     facts: ['Developer', 'Boosted Vault 3.0 twice', 'Helped the server reach Level 1', 'Location pending'],
     status: 'Builder room live', connections: ['Anymuz · developer', 'Vault 3.0 · Level 1'],
-    currentTitle: 'Two boosts landed', current: 'Kazy boosted twice and pushed Vault 3.0 to Level 1. That stays in the server history.'
+    currentTitle: 'Double boost behavior', current: 'Kazy dropped two boosts and pushed Vault 3.0 to Level 1. Extremely valid.'
   }
 });
