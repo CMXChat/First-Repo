@@ -60,7 +60,7 @@
     timezones: {
       label: 'Timezones',
       code: 'TZ',
-      description: 'Member-local clocks and overlap windows so the server can coordinate without manually converting time.'
+      description: 'Member-local clocks and overlap windows with automatic time conversion.'
     }
   };
 
@@ -195,7 +195,7 @@
     terminalOutput.textContent = '';
     printLine('VAULT 3.0 // COMMUNITY INTELLIGENCE TERMINAL', 'blue');
     printLine('Session authenticated. Interface layer online.', 'ok');
-    printLine('Backend member data is not connected yet. No private records are being stored by this page.', 'warn');
+    printLine('Static demo data loaded. Private records begin with the secure server phase.', 'warn');
     printDivider();
     printLine('Type help to inspect available commands. Press / anywhere to focus the terminal.', 'dim');
   }
@@ -207,7 +207,7 @@
     printDivider();
     printLine(`[${module.code}] ${module.label.toUpperCase()}`, 'blue');
     printLine(module.description);
-    printLine('state: interface staged // backend source pending', 'dim');
+    printLine('state: demo ready // live source queued', 'dim');
   }
 
   function openSidebar() {
@@ -271,7 +271,7 @@
 
     unlockButton.disabled = true;
     passwordInput.disabled = true;
-    setGateMessage('Verifying credential…', 'info');
+    setGateMessage('Checking password', 'info');
 
     try {
       const candidate = await deriveVerifier(password);
@@ -293,7 +293,7 @@
         at: Date.now(),
         id: createSessionId()
       });
-      setGateMessage('Access granted. Opening Vault 3.0…', 'ok');
+      setGateMessage('Access granted. Opening Vault 3.0', 'ok');
       setTimeout(launchVault, 260);
     } catch {
       setGateMessage('Authentication failed.', 'bad');
@@ -340,9 +340,9 @@
     if (command === 'status') {
       printLine('vault interface ........ ONLINE', 'ok');
       printLine('password gate .......... ARMED', 'ok');
-      printLine('member database ........ NOT CONNECTED', 'warn');
-      printLine('briefing pipeline ...... NOT CONNECTED', 'warn');
-      printLine('news ingestion ......... NOT CONNECTED', 'warn');
+      printLine('member database ........ DEMO DATA', 'warn');
+      printLine('briefing pipeline ...... DEMO PREVIEW', 'warn');
+      printLine('news ingestion ......... MANUAL UPDATES', 'warn');
       printLine('timezone matrix ........ LOCAL DEMO', 'blue');
       return;
     }
@@ -363,7 +363,7 @@
     }
 
     if (command === 'lock' || command === 'exit') {
-      printLine('Closing authenticated session…', 'warn');
+      printLine('Closing authenticated session', 'warn');
       setTimeout(lockVault, 220);
       return;
     }

@@ -18,12 +18,23 @@
   <meta property="og:description" content="Private home base for the Vault 3.0 Discord community." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://db.cmxchat.com/vault/" />
+  <meta property="og:image" content="https://db.cmxchat.com/assets/vault/vault-restricted-node-social.png" />
+  <meta property="og:image:secure_url" content="https://db.cmxchat.com/assets/vault/vault-restricted-node-social.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Vault 3.0 Restricted Node, the private home for the server" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Vault 3.0 Restricted Node" />
+  <meta name="twitter:description" content="The private home for the Vault 3.0 server." />
+  <meta name="twitter:image" content="https://db.cmxchat.com/assets/vault/vault-restricted-node-social.png" />
+  <meta name="twitter:image:alt" content="Vault 3.0 Restricted Node, the private home for the server" />
 
   <!-- Vault assets are split by responsibility. See /vault/README.md before editing. -->
-  <link rel="stylesheet" href="/assets/vault/vault.css?v=20260813-2" />
-  <link rel="stylesheet" href="/assets/vault/vault-layout.css?v=20260813-2" />
-  <link rel="stylesheet" href="/assets/vault/vault-theme.css?v=20260813-2" />
-  <link rel="stylesheet" href="/assets/vault/vault-portal-ui.css?v=20260813-2" />
+  <link rel="stylesheet" href="/assets/vault/vault.css?v=20260813-3" />
+  <link rel="stylesheet" href="/assets/vault/vault-layout.css?v=20260813-3" />
+  <link rel="stylesheet" href="/assets/vault/vault-theme.css?v=20260813-3" />
+  <link rel="stylesheet" href="/assets/vault/vault-portal-ui.css?v=20260813-3" />
 </head>
 <body>
   <section id="boot" aria-live="polite" aria-label="Vault loading">
@@ -54,7 +65,7 @@
         </div>
 
         <h1 class="gate-title" id="gateTitle">Welcome to the Vault.</h1>
-        <p class="gate-copy">One place for the people, links, recaps, server lore, news, timezones and useful stuff we keep losing in Discord. Enter the server password to continue.</p>
+        <p class="gate-copy">You made it. Drop the server password and come in. Everyone, every update, and all the useful stuff buried in chat lives past this screen.</p>
 
         <div class="gate-field">
           <label for="vaultPassword"><span>Server password</span><span>members only</span></label>
@@ -116,7 +127,7 @@
 
         <div class="sidebar-bottom">
           <strong>WHAT IS THIS?</strong>
-          <p>Basically the server's website and memory. If something matters, we can organize it here instead of digging through 900 Discord messages later.</p>
+          <p>The server's website and memory. Open a name, catch up, check local time, and find the stuff chat buried.</p>
         </div>
       </aside>
       <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
@@ -126,7 +137,7 @@
           <div class="welcome-main">
             <p class="portal-eyebrow">Vault 3.0 HQ</p>
             <h1 id="portalTitle">The server has a home now.</h1>
-            <p>This is the Vault outside of Discord: the important info, who's who, useful links, server recaps, contacts, timezones, random lore, ongoing stuff and eventually whatever else we decide would be sick to have.</p>
+            <p>Open a name. See who's around. Catch up on the server, check local time, find the links, and keep the lore somewhere useful.</p>
             <div class="owner-line">
               <span>Server owners</span>
               <span class="owner-pill">anymuz</span>
@@ -150,8 +161,8 @@
         <section class="database-banner" aria-labelledby="databaseTitle">
           <div class="db-mark" aria-hidden="true">DB</div>
           <div>
-            <h2 id="databaseTitle">The Vault database = the organized memory of the server</h2>
-            <p>Member profiles, important contacts, links, recaps, relationships, server history, news and whatever information the group actually wants to keep.</p>
+            <h2 id="databaseTitle">The stuff the server wants to remember</h2>
+            <p>Member pages, useful contacts, links, recaps, server history, news, and the running jokes that deserve a permanent home.</p>
           </div>
           <span class="database-status">building now</span>
         </section>
@@ -171,22 +182,57 @@
               <p class="brief-date" id="briefingDate">Thursday · August 13</p>
               <h3>Your server, decoded before breakfast.</h3>
               <div class="brief-signal-grid">
-                <div><span>DRAMA DESK</span><strong>Context without 900 messages</strong><small>What happened, why people care, and what is still unresolved.</small></div>
+                <div><span>DRAMA DESK</span><strong>Turn 900 messages into the actual story</strong><small>What happened, why people care, and what is still unresolved.</small></div>
                 <div><span>LOCAL WEATHER</span><strong>Ready for your location</strong><small>Conditions, temperature and anything worth planning around.</small></div>
                 <div><span>SERVER PULSE</span><strong>The useful overnight recap</strong><small>Announcements, jokes, decisions, links and conversations worth opening.</small></div>
                 <div><span>YOUR PEOPLE</span><strong>Catch-ups that matter</strong><small>Birthdays, time-sensitive messages and people you may want to check in with.</small></div>
               </div>
-              <p class="demo-disclaimer">This is a UI demonstration. Live Discord, weather and personal data are not connected yet.</p>
+              <p class="demo-disclaimer">Demo feed for now. Live Discord and weather arrive with the secure server connection.</p>
             </article>
             <aside class="briefing-schedule-card">
               <span class="schedule-label">Delivery rule</span>
               <strong>07:00</strong>
               <p>Approximately 7:00 AM for each member, using their own confirmed timezone.</p>
-              <div class="schedule-example"><span>Biggz · London</span><b data-next-brief="Europe/London">calculating…</b></div>
-              <div class="schedule-example"><span>Mel · South Africa</span><b data-next-brief="Africa/Johannesburg">calculating…</b></div>
+              <div class="schedule-example"><span>Biggz · London</span><b data-next-brief="Europe/London">checking time</b></div>
+              <div class="schedule-example"><span>Mel · South Africa</span><b data-next-brief="Africa/Johannesburg">checking time</b></div>
               <div class="schedule-example pending"><span>Anymuz</span><b>location needed</b></div>
             </aside>
           </div>
+        </section>
+
+        <section id="serverWire" class="portal-section server-wire" aria-labelledby="serverWireTitle">
+          <div class="wire-heading">
+            <div>
+              <p class="section-kicker">Today in Vault 3.0</p>
+              <h2 id="serverWireTitle">Okay, here's the server tea.</h2>
+            </div>
+            <span class="level-chip"><i aria-hidden="true">◆</i> Server Level 1</span>
+          </div>
+          <div class="wire-grid">
+            <article class="wire-post boost-post">
+              <div class="wire-avatar kazy-avatar" aria-hidden="true">KZ</div>
+              <div class="wire-copy">
+                <div class="wire-author"><strong>Kazy</strong><span>developer · today</span></div>
+                <p>Kazy dropped two boosts on the server and pushed Vault 3.0 to Level 1. Casual carry.</p>
+                <div class="wire-reactions" aria-label="React to Kazy's update">
+                  <button type="button" data-reaction="boost">💎 <span>2</span></button>
+                  <button type="button" data-reaction="w">W <span>1</span></button>
+                </div>
+              </div>
+            </article>
+            <article class="wire-post language-post">
+              <div class="wire-avatar anymuz-avatar" aria-hidden="true">AN</div>
+              <div class="wire-copy">
+                <div class="wire-author"><strong>Anymuz</strong><span>owner · developer</span></div>
+                <p>Anymuz is learning Hebrew and Aramaic. The language arc is officially on the briefing now.</p>
+                <div class="wire-reactions" aria-label="React to Anymuz's update">
+                  <button type="button" data-reaction="brain">🧠 <span>1</span></button>
+                  <button type="button" data-reaction="fire">🔥 <span>1</span></button>
+                </div>
+              </div>
+            </article>
+          </div>
+          <p class="wire-note">These two updates came from the server owners. Daily briefings can keep this section fresh once the server feed is connected.</p>
         </section>
 
         <!-- Directory entries come from assets/vault/vault-directory.js. Do not duplicate member data here. -->
@@ -195,7 +241,7 @@
             <div>
               <p class="section-kicker">Vault people directory</p>
               <h2 id="memberDirectoryTitle">Everyone gets a place here.</h2>
-              <p>Profiles will hold approved member context, local time, interests and a personal daily brief. Three demo profiles are open now; the rest are visibly queued.</p>
+              <p>Tap a name to enter their room. Open profiles show local time, approved notes, and the shape of their morning catch-up. Everyone else already has a spot waiting.</p>
             </div>
             <label class="member-search" for="memberSearch">
               <span class="sr-only">Search Vault members</span>
@@ -205,10 +251,20 @@
           </div>
           <div class="directory-stats" aria-label="Directory status">
             <span><b id="memberCount">0</b> members mapped</span>
-            <span><b id="profileCount">0</b> profiles open</span>
+            <span><b id="profileCount">0</b> rooms open</span>
             <span><b>7:00 AM</b> local brief target</span>
           </div>
-          <div id="featuredMembers" class="featured-members" aria-label="Open demo profiles"></div>
+          <div class="directory-feature-grid">
+            <button id="rosterScan" class="vault-core" type="button" aria-label="Scan the Vault member roster">
+              <span class="vault-ring ring-one" aria-hidden="true"></span>
+              <span class="vault-ring ring-two" aria-hidden="true"></span>
+              <span class="vault-ring ring-three" aria-hidden="true"></span>
+              <span class="vault-core-center" aria-hidden="true">V3</span>
+              <strong>Tap to scan the roster</strong>
+              <small>Every member gets a room.</small>
+            </button>
+            <div id="featuredMembers" class="featured-members" aria-label="Open member rooms"></div>
+          </div>
           <details class="full-directory">
             <summary><span>View the full Vault directory</span><small id="queuedCount">Profiles queued</small></summary>
             <div id="memberGrid" class="member-grid"></div>
@@ -219,7 +275,7 @@
         <section id="whatYouCanDo" class="portal-section" aria-labelledby="useTitle">
           <div class="section-intro">
             <h2 id="useTitle">What can we actually do with this?</h2>
-            <p>No tech knowledge needed. Think of it as a better organized extension of the Discord.</p>
+            <p>Tap what you want. Everything here is made for regular server members.</p>
           </div>
           <div class="use-grid">
             <article class="use-card"><span class="use-icon">WHO</span><h3>Who's who</h3><p>Tap a member and see their handles, timezone, role, what they're into and the context people usually have to ask for again.</p></article>
@@ -246,7 +302,7 @@
               <strong id="terminalHeading">Vault console</strong>
               <span class="head-right">OPTIONAL / FOR FUN</span>
             </div>
-            <div class="power-note"><strong>You don't need this to use Vault.</strong> It's just the nerdy command-line version of the portal. Type <b>help</b> if you want to play with it.</div>
+            <div class="power-note"><strong>This is the nerd corner.</strong> Anymuz, Kazy, and anyone curious can type <b>help</b> and mess with it.</div>
             <div id="terminalOutput" role="log" aria-live="polite"></div>
             <form id="terminalForm" class="terminal-form" autocomplete="off">
               <label class="sr-only" for="commandInput">Vault command</label>
@@ -295,7 +351,7 @@
             <div class="panel-head"><strong id="dispatchHeading">What's being built</strong><span class="head-right">VAULT 3.0</span></div>
             <div class="dispatch-list">
               <article class="dispatch"><span class="dispatch-time">LIVE</span><span class="dispatch-copy"><strong>The portal exists</strong><p>Private login, homepage, navigation, console and timezone tools are online.</p></span><span class="dispatch-tag">done</span></article>
-              <article class="dispatch"><span class="dispatch-time">DEMO</span><span class="dispatch-copy"><strong>Member profiles and morning briefs</strong><p>Biggz, Mel and Anymuz now demonstrate how a personal Vault page can work.</p></span><span class="dispatch-tag">live</span></article>
+              <article class="dispatch"><span class="dispatch-time">DEMO</span><span class="dispatch-copy"><strong>Member rooms and morning briefs</strong><p>Biggz, Mel, Anymuz, and Kazy have working rooms now.</p></span><span class="dispatch-tag">live</span></article>
               <article class="dispatch"><span class="dispatch-time">NEXT</span><span class="dispatch-copy"><strong>Connect approved data</strong><p>Discord recaps, weather, links and server lore can become live after the secure backend exists.</p></span><span class="dispatch-tag">queued</span></article>
             </div>
           </section>
@@ -316,9 +372,15 @@
     </nav>
   </main>
 
+  <div id="profileTransition" class="profile-transition" aria-hidden="true">
+    <div class="transition-lock" aria-hidden="true"><span></span><i></i></div>
+    <p>Opening <strong id="transitionName">member</strong>'s room</p>
+  </div>
+  <div id="vaultToast" class="vault-toast" role="status" aria-live="polite"></div>
+
   <noscript>This portal needs JavaScript enabled to open and run.</noscript>
-  <script src="/assets/vault/vault.js?v=20260813-2" defer></script>
-  <script src="/assets/vault/vault-directory.js?v=20260813-2" defer></script>
-  <script src="/assets/vault/vault-portal.js?v=20260813-2" defer></script>
+  <script src="/assets/vault/vault.js?v=20260813-3" defer></script>
+  <script src="/assets/vault/vault-directory.js?v=20260813-3" defer></script>
+  <script src="/assets/vault/vault-portal.js?v=20260813-3" defer></script>
 </body>
 </html>
