@@ -48,6 +48,10 @@ requireText('vault/index.html', 'data-theme="light"', 'light default theme');
 requireText('assets/vault/vault-portal.js', "=== 'dark' ? 'dark' : 'light'", 'saved theme with light fallback');
 requireText('assets/vault/vault-portal.js', "const THEME_KEY = 'vault_theme_v1'", 'shared theme key');
 requireText('assets/vault/vault-profile.js', "const SESSION_KEY = 'cmx_vault_session_v1'", 'profile session boundary');
+requireText('vault/anymuz/index.html', 'id="transmissionTitle"', 'Anymuz transmission section');
+requireText('vault/anymuz/index.html', 'data-hebrew-word', 'Anymuz Hebrew lesson');
+requireText('vault/anymuz/index.html', 'data-aramaic-word', 'Anymuz Aramaic lesson');
+requireText('assets/vault/vault-world-data.js', '4zh13oEiKl6W8qn9zsdQrp', 'Infected Mushroom Spotify track');
 requireText('vault/README.md', '7:00 AM in that member\'s confirmed local timezone', 'local briefing schedule rule');
 
 profileIds.forEach((id) => {

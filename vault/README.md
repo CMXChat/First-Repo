@@ -78,6 +78,7 @@ When the approved backend exists, replace the static arrays with authenticated A
 ## Current manual briefing facts
 
 - Anymuz is learning Hebrew and Aramaic.
+- Anymuz likes Israeli psychedelic trance and has an approved playful briefing theme around Elohim, YHWH, DMT, consciousness, and ancient languages. His room includes rotating Hebrew and Aramaic vocabulary with translations. Keep Aramaic dialect variation clearly labeled.
 - Kazy boosted the server twice.
 - Vault 3.0 reached Server Level 1 after Kazy's boosts.
 

@@ -75,6 +75,16 @@
     });
     document.querySelector('[data-profile-current-title]').textContent = profile.currentTitle;
     document.querySelector('[data-profile-current-copy]').textContent = profile.current;
+    if (profile.lessons?.length) {
+      const dayIndex = Math.floor(Date.now() / 86400000) % profile.lessons.length;
+      const lesson = profile.lessons[dayIndex];
+      document.querySelector('[data-hebrew-word]').textContent = lesson.hebrew;
+      document.querySelector('[data-hebrew-roman]').textContent = lesson.hebrewRoman;
+      document.querySelector('[data-hebrew-meaning]').textContent = lesson.hebrewMeaning;
+      document.querySelector('[data-aramaic-word]').textContent = lesson.aramaic;
+      document.querySelector('[data-aramaic-roman]').textContent = lesson.aramaicRoman;
+      document.querySelector('[data-aramaic-meaning]').textContent = lesson.aramaicMeaning;
+    }
     document.querySelector('[data-next-brief]').textContent = nextBrief(profile.zone);
     const facts = document.querySelector('[data-profile-facts]');
     profile.facts.forEach((fact) => {
