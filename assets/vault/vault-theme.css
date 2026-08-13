@@ -37,6 +37,7 @@ html[data-theme="light"] .net-node{background:#fff}
 html[data-theme="light"] .net-node::after{color:#627f91}
 html[data-theme="light"] .clock-card span,html[data-theme="light"] .clock-card small{color:#647e8f}
 html[data-theme="light"] .clock-card strong{color:#244960}
+html[data-theme="light"] .timezone-note{background:linear-gradient(120deg,rgba(0,120,212,.07),rgba(93,79,224,.035));box-shadow:0 10px 28px rgba(55,88,112,.05)}
 html[data-theme="light"] .dispatch-time,html[data-theme="light"] .dispatch-copy p{color:#667f90}
 html[data-theme="light"] .dispatch-copy strong{color:#31566e}
 html[data-theme="light"] .vault-footer{color:#687f8f}

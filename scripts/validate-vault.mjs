@@ -41,6 +41,9 @@ requireText('vault/index.html', 'data-open-mobile-view="everything"', 'Home to E
 requireText('vault/index.html', 'id="vaultRadio"', 'Vault Radio section');
 requireText('vault/index.html', 'id="vaultSearchDialog"', 'global Vault search');
 requireText('vault/index.html', 'id="ownerNoteForm"', 'owner note demo');
+requireText('vault/index.html', 'data-zone="America/Los_Angeles"', 'USA West Coast clock');
+requireText('vault/index.html', 'data-zone="Africa/Johannesburg"', 'South Africa clock');
+requireText('vault/index.html', "Everyone's timezone still needs to be added", 'member timezone coverage notice');
 requireText('vault/index.html', 'data-theme="light"', 'light default theme');
 requireText('assets/vault/vault-portal.js', "=== 'dark' ? 'dark' : 'light'", 'saved theme with light fallback');
 requireText('assets/vault/vault-portal.js', "const THEME_KEY = 'vault_theme_v1'", 'shared theme key');
