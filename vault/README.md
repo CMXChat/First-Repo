@@ -42,6 +42,10 @@ The permanent Discord invitation is:
 ## Mobile views
 
 The bottom bar opens focused Home, Members, Radio, and Brief views. Everything restores the complete scrollable Vault. Keep `data-mobile-target` values aligned with the matching section IDs.
+
+## Voice and theme
+
+Keep the voice direct, warm, and lightly Discord-native. Use playful wording sparingly in social sections such as briefings and radio. Navigation, schedules, privacy notes, and instructions stay plain. Light mode is the first-visit default; an explicit saved theme choice always wins.
 - `assets/vault/vault-profile.css`: shared member profile layout and responsive styling.
 - `vault/{member}/index.html`: intentionally thin profile shell with `data-member-id`.
 

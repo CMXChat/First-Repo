@@ -39,6 +39,8 @@ requireText('vault/index.html', 'data-mobile-target="everything"', 'mobile Every
 requireText('vault/index.html', 'id="vaultRadio"', 'Vault Radio section');
 requireText('vault/index.html', 'id="vaultSearchDialog"', 'global Vault search');
 requireText('vault/index.html', 'id="ownerNoteForm"', 'owner note demo');
+requireText('vault/index.html', 'data-theme="light"', 'light default theme');
+requireText('assets/vault/vault-portal.js', "=== 'dark' ? 'dark' : 'light'", 'saved theme with light fallback');
 requireText('assets/vault/vault-portal.js', "const THEME_KEY = 'vault_theme_v1'", 'shared theme key');
 requireText('assets/vault/vault-profile.js', "const SESSION_KEY = 'cmx_vault_session_v1'", 'profile session boundary');
 requireText('vault/README.md', '7:00 AM in that member\'s confirmed local timezone', 'local briefing schedule rule');
@@ -50,6 +52,7 @@ profileIds.forEach((id) => {
   requireText(path, 'vault-world-data.js', 'shared Spotify data');
   requireText(path, 'data-profile-spotify', 'member Spotify player');
   requireText(path, 'frame-src https://open.spotify.com', 'Spotify content policy');
+  requireText(path, 'data-theme="light"', 'profile light default theme');
   requireText(path, 'https://discord.gg/48xdhWJ9RD', 'Discord invite');
   requireText(path, 'vault-restricted-node-social-v2.png', 'Vault social image metadata');
 });
