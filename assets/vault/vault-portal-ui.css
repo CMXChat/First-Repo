@@ -16,6 +16,30 @@
   text-transform: uppercase;
 }
 
+/* Mobile section tabs: focused views avoid the endless-scroll version. */
+@media(max-width:700px){
+  .mobile-vault-nav{grid-template-columns:repeat(5,1fr)}
+  .mobile-vault-nav button.active{background:rgba(42,167,255,.12);color:var(--blue)}
+  body[data-mobile-view]:not([data-mobile-view="everything"]) .vault-main>*,
+  body[data-mobile-view]:not([data-mobile-view="everything"]) .vault-footer{display:none!important}
+  body[data-mobile-view="portalHome"] #portalHome,
+  body[data-mobile-view="portalHome"] .database-banner,
+  body[data-mobile-view="memberDirectory"] #memberDirectory,
+  body[data-mobile-view="vaultRadio"] #vaultRadio,
+  body[data-mobile-view="dailyBriefings"] #dailyBriefings{display:grid!important}
+  body[data-mobile-view="portalHome"] .database-banner{display:grid!important}
+  body[data-mobile-view="memberDirectory"] #memberDirectory,
+  body[data-mobile-view="dailyBriefings"] #dailyBriefings{display:block!important}
+  body[data-mobile-view]:not([data-mobile-view="everything"]) .vault-main{min-height:calc(100svh - 150px)}
+}
+
+@media(max-width:700px){
+  .mobile-vault-nav{grid-template-columns:repeat(5,1fr)}
+  .mobile-vault-nav button:first-child{background:transparent;color:var(--muted)}
+  .mobile-vault-nav button.active{background:rgba(42,167,255,.13);color:var(--blue);box-shadow:inset 0 0 0 1px rgba(42,167,255,.16)}
+  body[data-mobile-view="vaultRadio"] #vaultRadio{display:block!important}
+}
+
 .briefing-hub,
 .member-directory {
   scroll-margin-top: 82px;

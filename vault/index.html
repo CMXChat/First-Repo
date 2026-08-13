@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#02070d" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://i.scdn.co; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src https://open.spotify.com; worker-src 'none'; upgrade-insecure-requests" />
 
   <title>Vault 3.0 · Server Portal</title>
   <meta name="description" content="The private Vault 3.0 server portal for members, recaps, people, shared information, links, news, timezones and community tools." />
@@ -35,6 +35,7 @@
   <link rel="stylesheet" href="/assets/vault/vault-layout.css?v=20260813-3" />
   <link rel="stylesheet" href="/assets/vault/vault-theme.css?v=20260813-3" />
   <link rel="stylesheet" href="/assets/vault/vault-portal-ui.css?v=20260813-3" />
+  <link rel="stylesheet" href="/assets/vault/vault-world.css?v=20260813-1" />
 </head>
 <body>
   <section id="boot" aria-live="polite" aria-label="Vault loading">
@@ -100,6 +101,7 @@
       </div>
 
       <div class="topbar-spacer"></div>
+      <button id="openVaultSearch" class="vault-search-button" type="button" aria-label="Search Vault"><span aria-hidden="true">⌕</span><b>Search</b><small>Ctrl K</small></button>
       <span class="online-badge"><i class="status-pulse"></i>ONLINE</span>
       <span class="session-badge">SESSION <b id="sessionId">--------</b></span>
       <button id="vaultThemeToggle" class="vault-theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
@@ -235,6 +237,38 @@
           <p class="wire-note">These two updates came from the server owners. Daily briefings can keep this section fresh once the server feed is connected.</p>
         </section>
 
+        <section id="vaultRadio" class="portal-section vault-radio" aria-labelledby="vaultRadioTitle">
+          <div class="radio-stage">
+            <div class="radio-visual" aria-hidden="true">
+              <span class="radio-orbit orbit-a"></span><span class="radio-orbit orbit-b"></span><span class="radio-orbit orbit-c"></span>
+              <div class="radio-disc"><i></i><b>V3</b></div>
+              <div class="radio-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="radio-copy">
+              <p class="section-kicker">Vault Radio · member controlled</p>
+              <h2 id="vaultRadioTitle">Give the server a soundtrack.</h2>
+              <p>Pick the track, vote on the rotation, send a suggestion, or open it in Spotify. Playback starts from the real Spotify player after you press play.</p>
+              <div class="radio-now"><span>ON AIR</span><strong id="radioTrackTitle">Midnight City</strong><small id="radioTrackArtist">M83</small></div>
+            </div>
+            <div class="radio-player-shell">
+              <iframe id="vaultSpotifyFrame" title="Vault Radio Spotify player" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" src="https://open.spotify.com/embed/track/1eyzqe2QqGZUmfcPZtrIyt?utm_source=generator&amp;theme=0"></iframe>
+              <p>Spotify controls the audio. Vault controls the room around it.</p>
+            </div>
+          </div>
+          <div class="radio-library">
+            <div>
+              <div class="radio-subhead"><div><span>SERVER ROTATION</span><h3>Pick what plays next</h3></div><small>Votes save on this device for the demo.</small></div>
+              <div id="vaultTrackList" class="vault-track-list"></div>
+            </div>
+            <aside class="radio-queue">
+              <span>SHARED QUEUE DEMO</span>
+              <h3>Drop a song</h3>
+              <form id="radioQueueForm"><label class="sr-only" for="radioQueueInput">Song suggestion</label><input id="radioQueueInput" type="text" maxlength="80" placeholder="Song · artist" /><button type="submit">Add</button></form>
+              <ul id="radioQueueList"></ul>
+            </aside>
+          </div>
+        </section>
+
         <!-- Directory entries come from assets/vault/vault-directory.js. Do not duplicate member data here. -->
         <section id="memberDirectory" class="portal-section member-directory" aria-labelledby="memberDirectoryTitle">
           <div class="directory-head">
@@ -270,6 +304,46 @@
             <div id="memberGrid" class="member-grid"></div>
           </details>
           <p id="directoryEmpty" class="directory-empty hidden">No member matches that search yet.</p>
+        </section>
+
+        <section class="vault-world-grid" aria-label="Vault server world">
+          <section id="vaultNetwork" class="world-panel relationship-panel" aria-labelledby="relationshipTitle">
+            <div class="world-head"><div><span>CONNECTIONS</span><h2 id="relationshipTitle">The server map</h2></div><b>LIVE DEMO</b></div>
+            <div class="relationship-stage" aria-label="Known Vault member relationships">
+              <svg viewBox="0 0 600 360" aria-hidden="true"><path d="M300 180L115 92M300 180L490 84M300 180L480 278M300 180L126 275M115 92L490 84M490 84L480 278"></path></svg>
+              <a class="relationship-node node-vault" href="#portalHome"><span>V3</span><strong>Vault</strong></a>
+              <a class="relationship-node node-anymuz" href="/vault/anymuz/"><span>AN</span><strong>Anymuz</strong><small>owner · dev</small></a>
+              <a class="relationship-node node-biggz" href="/vault/biggz/"><span>BG</span><strong>Biggz</strong><small>owner · London</small></a>
+              <a class="relationship-node node-kazy" href="/vault/kazy/"><span>KZ</span><strong>Kazy</strong><small>dev · booster</small></a>
+              <a class="relationship-node node-mel" href="/vault/mel/"><span>ME</span><strong>Mel</strong><small>South Africa</small></a>
+            </div>
+            <div class="overlap-strip"><span><b>London + South Africa</b><small>2-hour difference today</small></span><span><b>Developers</b><small>Anymuz + Kazy</small></span><span><b>Owners</b><small>Anymuz + Biggz</small></span></div>
+          </section>
+
+          <section id="vaultLore" class="world-panel lore-panel" aria-labelledby="loreTitle">
+            <div class="world-head"><div><span>SERVER LORE</span><h2 id="loreTitle">Keep the canon straight</h2></div><b>3 ENTRIES</b></div>
+            <div id="vaultLoreList" class="vault-lore-list"></div>
+          </section>
+        </section>
+
+        <section class="vault-history-grid">
+          <section id="briefArchive" class="world-panel archive-panel" aria-labelledby="archiveTitle">
+            <div class="world-head"><div><span>BRIEFING ARCHIVE</span><h2 id="archiveTitle">Previously in Vault 3.0</h2></div><b>THE TIMELINE</b></div>
+            <div id="briefArchiveList" class="brief-archive-list"></div>
+          </section>
+          <section class="world-panel poll-panel" aria-labelledby="pollTitle">
+            <div class="world-head"><div><span>SERVER POLL</span><h2 id="pollTitle">What gets built next?</h2></div><b>VOTE</b></div>
+            <div class="poll-options"><button type="button" data-poll-choice="Lore">More lore</button><button type="button" data-poll-choice="Profiles">More rooms</button><button type="button" data-poll-choice="Radio">More music</button><button type="button" data-poll-choice="Drama">Drama archive</button></div>
+            <p id="pollResult">Pick one. Your demo vote stays on this device.</p>
+            <div class="achievement-row"><span>◆ LEVEL 1</span><span>💎 TWO BOOSTS</span><span>4 ROOMS OPEN</span><span>5 TRACKS LIVE</span></div>
+          </section>
+        </section>
+
+        <section class="world-panel owner-desk" aria-labelledby="ownerDeskTitle">
+          <div class="world-head"><div><span>OWNER DESK · DEMO</span><h2 id="ownerDeskTitle">Pin a server note</h2></div><b>THIS DEVICE</b></div>
+          <p>Try the editing flow now. The note stays in this browser until the shared backend is connected.</p>
+          <form id="ownerNoteForm"><label class="sr-only" for="ownerNoteInput">Server note</label><input id="ownerNoteInput" maxlength="140" placeholder="Add the thing everyone should see" /><button type="submit">Pin note</button></form>
+          <div id="ownerNotePreview" class="owner-note-preview">No local note pinned.</div>
         </section>
 
         <section id="whatYouCanDo" class="portal-section" aria-labelledby="useTitle">
@@ -365,10 +439,11 @@
     </div>
 
     <nav class="mobile-vault-nav" aria-label="Quick navigation">
-      <button type="button" data-mobile-target="portalHome">Home</button>
+      <button class="active" type="button" data-mobile-target="portalHome">Home</button>
       <button type="button" data-mobile-target="memberDirectory">Members</button>
+      <button type="button" data-mobile-target="vaultRadio">Radio</button>
       <button type="button" data-mobile-target="dailyBriefings">Brief</button>
-      <button type="button" data-mobile-target="clockSection">Time</button>
+      <button type="button" data-mobile-target="everything">Everything</button>
     </nav>
   </main>
 
@@ -378,9 +453,28 @@
   </div>
   <div id="vaultToast" class="vault-toast" role="status" aria-live="polite"></div>
 
+  <aside id="returnBrief" class="return-brief" aria-labelledby="returnBriefTitle">
+    <button id="returnBriefClose" type="button" aria-label="Close update summary">×</button><span>WELCOME BACK</span><h2 id="returnBriefTitle">Here’s what changed.</h2><ul id="returnChangeList"></ul>
+  </aside>
+
+  <dialog id="vaultSearchDialog" class="vault-search-dialog">
+    <div class="search-dialog-head"><div><span>VAULT SEARCH</span><strong>Find anything</strong></div><button id="closeVaultSearch" type="button" aria-label="Close search">×</button></div>
+    <label class="global-search-field" for="vaultGlobalSearch"><span aria-hidden="true">⌕</span><input id="vaultGlobalSearch" type="search" autocomplete="off" placeholder="Member, song, lore, briefing" /></label>
+    <div id="vaultSearchResults" class="vault-search-results"></div>
+  </dialog>
+
+  <aside class="vault-mini-player" aria-label="Vault Radio mini player">
+    <button id="radioExpand" class="mini-visual" type="button" aria-label="Expand or collapse Vault Radio"><i></i><span>V3</span></button>
+    <div class="mini-copy"><span>VAULT RADIO</span><strong id="miniTrackTitle">Midnight City</strong><small id="miniTrackArtist">M83</small></div>
+    <div class="mini-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <a id="miniSpotifyLink" href="https://open.spotify.com/track/1eyzqe2QqGZUmfcPZtrIyt" target="_blank" rel="noopener noreferrer">Spotify ↗</a>
+  </aside>
+
   <noscript>This portal needs JavaScript enabled to open and run.</noscript>
   <script src="/assets/vault/vault.js?v=20260813-3" defer></script>
   <script src="/assets/vault/vault-directory.js?v=20260813-3" defer></script>
   <script src="/assets/vault/vault-portal.js?v=20260813-3" defer></script>
+  <script src="/assets/vault/vault-world-data.js?v=20260813-1" defer></script>
+  <script src="/assets/vault/vault-world.js?v=20260813-1" defer></script>
 </body>
 </html>

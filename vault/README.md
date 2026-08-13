@@ -12,7 +12,7 @@ The current implementation is a static GitHub Pages demonstration. It does not c
 
 - `/vault/` contains the password gate, main portal, morning briefing preview, searchable member directory, timezone clocks, feature explanations, and optional terminal.
 - `/vault/biggz/` is the working Biggz profile demo. Confirmed location: London. Timezone: `Europe/London`.
-- `/vault/mel/` is the working Mel profile demo. Confirmed country: South Africa. City is not confirmed. The country uses `Africa/Johannesburg` time.
+- `/vault/mel/` is the working Mel profile demo. Confirmed country: South Africa. City confirmation is pending. The country uses `Africa/Johannesburg` time.
 - `/vault/anymuz/` is the working Anymuz profile demo. Confirmed role: owner and developer. Location and timezone are not confirmed.
 - `/vault/kazy/` is the working Kazy profile demo. Confirmed role: developer. Kazy boosted the server twice and helped Vault 3.0 reach Server Level 1. Location and timezone are not confirmed.
 
@@ -35,6 +35,13 @@ The permanent Discord invitation is:
 - `assets/vault/vault-restricted-node-social-v2.png`: 1200×630 PNG converted from the owner-supplied WebP. This fresh URL is the Open Graph and Twitter image used by the Vault portal and every profile room.
 - `assets/vault/vault-profile-data.js`: centralized approved demo facts for open profiles.
 - `assets/vault/vault-profile.js`: shared profile rendering, session check, theme, local time, and next-brief calculation.
+- `assets/vault/vault-world-data.js`: shared Vault Radio, lore, briefing archive, relationship, and return-visit data.
+- `assets/vault/vault-world.js`: radio controls, Spotify track switching, votes, queue, global search, poll, return brief, and local owner-note demo.
+- `assets/vault/vault-world.css`: rich visual surfaces, radio presentation, world panels, global search, mini player, and mobile focused tabs.
+
+## Mobile views
+
+The bottom bar opens focused Home, Members, Radio, and Brief views. Everything restores the complete scrollable Vault. Keep `data-mobile-target` values aligned with the matching section IDs.
 - `assets/vault/vault-profile.css`: shared member profile layout and responsive styling.
 - `vault/{member}/index.html`: intentionally thin profile shell with `data-member-id`.
 
