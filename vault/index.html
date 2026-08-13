@@ -3,35 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#02070d" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; upgrade-insecure-requests" />
 
-  <!-- CMX SITE STANDARD: START -->
-  <title>Vault 3.0 · Restricted Community Node</title>
-  <meta name="description" content="Private interface prototype for the Vault 3.0 community network, member directory, shared contacts, relationship mapping, briefings, news, and timezone coordination." />
+  <title>Vault 3.0 · Server Portal</title>
+  <meta name="description" content="The private Vault 3.0 server portal for members, recaps, people, shared information, links, news, timezones and community tools." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <link rel="canonical" href="https://db.cmxchat.com/vault/" />
   <meta property="og:title" content="Vault 3.0" />
-  <meta property="og:description" content="Restricted community intelligence interface prototype." />
+  <meta property="og:description" content="Private home base for the Vault 3.0 Discord community." />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CMX Restricted Node" />
   <meta property="og:url" content="https://db.cmxchat.com/vault/" />
-  <!-- CMX SITE STANDARD: END -->
 
   <link rel="stylesheet" href="/assets/vault/vault.css?v=20260813-1" />
   <link rel="stylesheet" href="/assets/vault/vault-layout.css?v=20260813-1" />
+  <link rel="stylesheet" href="/assets/vault/vault-theme.css?v=20260813-1" />
+  <link rel="stylesheet" href="/assets/vault/vault-portal-ui.css?v=20260813-1" />
 </head>
 <body>
-  <section id="boot" aria-live="polite" aria-label="Vault initialization">
+  <section id="boot" aria-live="polite" aria-label="Vault loading">
     <div class="boot-window">
       <div class="window-bar">
         <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
-        <span class="window-title">vault-init · community intelligence node</span>
-        <span class="window-status"><i class="status-pulse"></i>BOOT</span>
+        <span class="window-title">vault-3.0 · opening server portal</span>
+        <span class="window-status"><i class="status-pulse"></i>LOADING</span>
       </div>
       <div id="bootBody" class="boot-body"></div>
     </div>
@@ -41,36 +40,36 @@
     <section class="gate-shell">
       <div class="window-bar">
         <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
-        <span class="window-title">vault-3.0 · restricted authentication</span>
-        <span class="window-status"><i class="status-pulse"></i>ARMED</span>
+        <span class="window-title">vault 3.0 · members only</span>
+        <span class="window-status"><i class="status-pulse"></i>PRIVATE</span>
       </div>
       <div class="gate-body">
         <div class="gate-brand">
           <div class="gate-mark" aria-hidden="true">V3</div>
           <div>
-            <small>Restricted community node</small>
-            <strong>Vault 3.0 // authorization boundary</strong>
+            <small>Vault 3.0</small>
+            <strong>The private portal for the server</strong>
           </div>
         </div>
 
-        <h1 class="gate-title" id="gateTitle">Enter the vault.</h1>
-        <p class="gate-copy">Authenticate to open the Vault 3.0 command layer. This first build stages the interface for members, contacts, networks, briefings, news, and member-local time.</p>
+        <h1 class="gate-title" id="gateTitle">Welcome to the Vault.</h1>
+        <p class="gate-copy">One place for the people, links, recaps, server lore, news, timezones and useful stuff we keep losing in Discord. Enter the server password to continue.</p>
 
         <div class="gate-field">
-          <label for="vaultPassword"><span>Access credential</span><span>PBKDF2 / SHA-256</span></label>
+          <label for="vaultPassword"><span>Server password</span><span>members only</span></label>
           <div class="password-shell">
-            <span class="password-prefix">KEY</span>
+            <span class="password-prefix">V3</span>
             <input id="vaultPassword" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" placeholder="password" />
             <span class="password-state" aria-hidden="true"></span>
           </div>
         </div>
 
-        <button id="unlockVault" class="gate-button" type="button">Authenticate // Open Vault 3.0</button>
+        <button id="unlockVault" class="gate-button" type="button">Enter Vault 3.0</button>
         <div id="gateOutput" class="gate-output" role="status" aria-live="polite"></div>
 
         <div class="gate-foot">
-          <span>class: vault-community / restricted</span>
-          <span>interface gate: active · server auth: pending</span>
+          <span>private server portal</span>
+          <span>owners: anymuz + biggz</span>
         </div>
       </div>
     </section>
@@ -78,118 +77,151 @@
 
   <main id="app" class="hidden" aria-hidden="true">
     <header class="vault-topbar">
-      <button id="menuButton" class="menu-button" type="button" aria-label="Open Vault navigation" aria-controls="vaultSidebar" aria-expanded="false">☰</button>
+      <button id="menuButton" class="menu-button" type="button" aria-label="Open Vault menu" aria-controls="vaultSidebar" aria-expanded="false">☰</button>
 
       <div class="vault-brand">
         <div class="vault-brand-mark" aria-hidden="true">V3</div>
         <div class="vault-brand-copy">
           <strong>VAULT 3.0</strong>
-          <span>community intelligence grid</span>
+          <span>server portal</span>
         </div>
       </div>
 
       <div class="topbar-spacer"></div>
-      <span class="online-badge"><i class="status-pulse"></i>INTERFACE ONLINE</span>
+      <span class="online-badge"><i class="status-pulse"></i>ONLINE</span>
       <span class="session-badge">SESSION <b id="sessionId">--------</b></span>
+      <button id="vaultThemeToggle" class="vault-theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
+        <span class="theme-toggle-track" aria-hidden="true">
+          <span class="theme-option theme-option-dark">Dark</span>
+          <span class="theme-option theme-option-light">Light</span>
+          <span class="theme-toggle-thumb"></span>
+        </span>
+      </button>
       <button id="lockVault" class="top-lock" type="button">Lock</button>
     </header>
 
     <div class="vault-layout">
-      <aside id="vaultSidebar" class="vault-sidebar" aria-label="Vault sectors">
-        <p class="side-label">Vault sectors</p>
+      <aside id="vaultSidebar" class="vault-sidebar" aria-label="Vault sections">
+        <p class="side-label">Explore Vault</p>
         <nav class="vault-nav">
-          <button class="nav-item active" type="button" data-module="control"><span class="nav-code">01</span><span>Control deck</span><span class="nav-state">live</span></button>
-          <button class="nav-item" type="button" data-module="people"><span class="nav-code">02</span><span>People</span><span class="nav-state">staged</span></button>
-          <button class="nav-item" type="button" data-module="contacts"><span class="nav-code">03</span><span>Contacts</span><span class="nav-state">staged</span></button>
-          <button class="nav-item" type="button" data-module="network"><span class="nav-code">04</span><span>Network map</span><span class="nav-state">staged</span></button>
-          <button class="nav-item" type="button" data-module="briefings"><span class="nav-code">05</span><span>Briefings</span><span class="nav-state">staged</span></button>
-          <button class="nav-item" type="button" data-module="news"><span class="nav-code">06</span><span>News wire</span><span class="nav-state">staged</span></button>
-          <button class="nav-item" type="button" data-module="timezones"><span class="nav-code">07</span><span>Timezones</span><span class="nav-state">local</span></button>
+          <button class="nav-item active" type="button" data-module="control"><span class="nav-code">01</span><span>Home</span><span class="nav-state">live</span></button>
+          <button class="nav-item" type="button" data-module="people"><span class="nav-code">02</span><span>Members</span><span class="nav-state">soon</span></button>
+          <button class="nav-item" type="button" data-module="contacts"><span class="nav-code">03</span><span>Contacts</span><span class="nav-state">soon</span></button>
+          <button class="nav-item" type="button" data-module="network"><span class="nav-code">04</span><span>Connections</span><span class="nav-state">soon</span></button>
+          <button class="nav-item" type="button" data-module="briefings"><span class="nav-code">05</span><span>Recaps</span><span class="nav-state">soon</span></button>
+          <button class="nav-item" type="button" data-module="news"><span class="nav-code">06</span><span>Server news</span><span class="nav-state">soon</span></button>
+          <button class="nav-item" type="button" data-module="timezones"><span class="nav-code">07</span><span>Timezones</span><span class="nav-state">live</span></button>
         </nav>
 
         <div class="sidebar-bottom">
-          <strong>VAULT PROTOCOL</strong>
-          <p>The shell is real. The member database and private data layer are intentionally not connected in this first interface build.</p>
+          <strong>WHAT IS THIS?</strong>
+          <p>Basically the server's website and memory. If something matters, we can organize it here instead of digging through 900 Discord messages later.</p>
         </div>
       </aside>
       <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
 
       <section class="vault-main">
-        <section class="command-hero" aria-labelledby="vaultTitle">
-          <div class="hero-copy">
-            <div class="hero-kicker">Vault 3.0 / server intelligence grid</div>
-            <h1 id="vaultTitle">Know the room.</h1>
-            <p class="hero-summary">A shared command layer for the people inside Vault 3.0. Members, useful contacts, who knows who, what happened, what matters now, and when everyone is actually awake.</p>
+        <section id="portalHome" class="portal-welcome" aria-labelledby="portalTitle">
+          <div class="welcome-main">
+            <p class="portal-eyebrow">Vault 3.0 HQ</p>
+            <h1 id="portalTitle">The server has a home now.</h1>
+            <p>This is the Vault outside of Discord: the important info, who's who, useful links, server recaps, contacts, timezones, random lore, ongoing stuff and eventually whatever else we decide would be sick to have.</p>
+            <div class="owner-line">
+              <span>Server owners</span>
+              <span class="owner-pill">anymuz</span>
+              <span class="owner-pill">biggz</span>
+            </div>
           </div>
 
-          <div class="hero-meta" aria-label="Vault status">
-            <div class="meta-cell"><span>Node</span><strong>DB.CMXCHAT.COM</strong></div>
-            <div class="meta-cell"><span>Mode</span><strong>DARK / LOCKED UI</strong></div>
-            <div class="meta-cell"><span>Release</span><strong>VAULT 3.0 / ALPHA</strong></div>
-            <div class="meta-cell"><span>Data</span><strong>BACKEND PENDING</strong></div>
+          <aside class="join-card" aria-labelledby="joinTitle">
+            <div class="discord-mark" aria-hidden="true">DC</div>
+            <div class="discord-copy">
+              <h2 id="joinTitle">Jump into the Discord</h2>
+              <p>New device, lost the invite, or sending somebody in? The server link lives here too.</p>
+            </div>
+            <div>
+              <a id="joinDiscord" class="join-discord" href="#" data-invite-url="" target="_blank" rel="noopener">Join Vault 3.0</a>
+              <small id="inviteNote" class="invite-note">Send me the invite URL and this becomes the permanent join button.</small>
+            </div>
+          </aside>
+        </section>
+
+        <section class="database-banner" aria-labelledby="databaseTitle">
+          <div class="db-mark" aria-hidden="true">DB</div>
+          <div>
+            <h2 id="databaseTitle">The Vault database = the organized memory of the server</h2>
+            <p>Member profiles, important contacts, links, recaps, relationships, server history, news and whatever information the group actually wants to keep.</p>
+          </div>
+          <span class="database-status">building now</span>
+        </section>
+
+        <section id="whatYouCanDo" class="portal-section" aria-labelledby="useTitle">
+          <div class="section-intro">
+            <h2 id="useTitle">What can we actually do with this?</h2>
+            <p>No tech knowledge needed. Think of it as a better organized extension of the Discord.</p>
+          </div>
+          <div class="use-grid">
+            <article class="use-card"><span class="use-icon">WHO</span><h3>Who's who</h3><p>Tap a member and see their handles, timezone, role, what they're into and the context people usually have to ask for again.</p></article>
+            <article class="use-card"><span class="use-icon">TL;DR</span><h3>Missed 900 messages?</h3><p>Open a recap and catch up on what happened, what changed, the funny parts, the drama and what still matters.</p></article>
+            <article class="use-card"><span class="use-icon">LINK</span><h3>Stop losing useful stuff</h3><p>Keep server links, files, invites, resources, projects and important posts somewhere people can actually find them.</p></article>
+            <article class="use-card"><span class="use-icon">NET</span><h3>Make the network useful</h3><p>See who knows who, who can help with what, shared interests and where an intro between two people might make sense.</p></article>
+            <article class="use-card"><span class="use-icon">NOW</span><h3>Know what's going on</h3><p>Server announcements, plans, events, ongoing stories, updates and outside news the group is currently talking about.</p></article>
+            <article class="use-card"><span class="use-icon">TZ</span><h3>Know who's awake</h3><p>Member-local times and overlap windows so nobody has to keep asking what time it is in New York, London or Australia.</p></article>
           </div>
         </section>
 
-        <section class="intel-strip" aria-label="Vault capabilities">
-          <div class="intel-cell"><span>Member index</span><strong>STAGED</strong></div>
-          <div class="intel-cell"><span>Contact layer</span><strong>STAGED</strong></div>
-          <div class="intel-cell"><span>Network graph</span><strong>STAGED</strong></div>
-          <div class="intel-cell"><span>Briefing engine</span><strong>STAGED</strong></div>
-          <div class="intel-cell"><span>Clock matrix</span><strong>LOCAL</strong></div>
+        <section class="intel-strip" aria-label="Vault features">
+          <div class="intel-cell"><span>Member profiles</span><strong>COMING</strong></div>
+          <div class="intel-cell"><span>Server recaps</span><strong>COMING</strong></div>
+          <div class="intel-cell"><span>Shared contacts</span><strong>COMING</strong></div>
+          <div class="intel-cell"><span>Server news</span><strong>COMING</strong></div>
+          <div class="intel-cell"><span>Live clocks</span><strong>WORKING</strong></div>
         </section>
 
         <section class="dashboard-grid">
-          <section class="panel terminal-panel" aria-labelledby="terminalHeading">
+          <section id="terminalZone" class="panel terminal-panel" aria-labelledby="terminalHeading">
             <div class="panel-head">
               <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
-              <strong id="terminalHeading">vault@node:~ · intelligence-shell</strong>
-              <span class="head-right">TYPE HELP</span>
+              <strong id="terminalHeading">Vault console</strong>
+              <span class="head-right">OPTIONAL / FOR FUN</span>
             </div>
+            <div class="power-note"><strong>You don't need this to use Vault.</strong> It's just the nerdy command-line version of the portal. Type <b>help</b> if you want to play with it.</div>
             <div id="terminalOutput" role="log" aria-live="polite"></div>
             <form id="terminalForm" class="terminal-form" autocomplete="off">
-              <label class="sr-only" for="commandInput">Vault terminal command</label>
-              <span class="term-prompt">vault@node:~$</span>
+              <label class="sr-only" for="commandInput">Vault command</label>
+              <span class="term-prompt">vault@v3:~$</span>
               <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="help" />
             </form>
           </section>
 
           <div class="side-stack">
             <section class="panel network-panel" aria-labelledby="networkHeading">
-              <div class="panel-head"><strong id="networkHeading">Network pulse</strong><span class="head-right">TOPOLOGY PREVIEW</span></div>
-              <div class="network-stage" aria-label="Abstract Vault network preview">
+              <div class="panel-head"><strong id="networkHeading">The Vault network</strong><span class="head-right">PREVIEW</span></div>
+              <div class="network-stage" aria-label="Vault member network preview">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                  <line x1="50" y1="47" x2="20" y2="25"></line>
-                  <line x1="50" y1="47" x2="78" y2="20"></line>
-                  <line x1="50" y1="47" x2="82" y2="72"></line>
-                  <line x1="50" y1="47" x2="24" y2="76"></line>
-                  <line x1="20" y1="25" x2="78" y2="20"></line>
-                  <line x1="24" y1="76" x2="82" y2="72"></line>
+                  <line x1="50" y1="47" x2="20" y2="25"></line><line x1="50" y1="47" x2="78" y2="20"></line><line x1="50" y1="47" x2="82" y2="72"></line><line x1="50" y1="47" x2="24" y2="76"></line><line x1="20" y1="25" x2="78" y2="20"></line><line x1="24" y1="76" x2="82" y2="72"></line>
                 </svg>
-                <i class="net-node core net-core" data-label="VAULT"></i>
-                <i class="net-node net-members" data-label="MEMBERS"></i>
-                <i class="net-node net-contacts" data-label="CONTACTS"></i>
-                <i class="net-node net-briefings" data-label="BRIEFINGS"></i>
-                <i class="net-node net-news" data-label="NEWS"></i>
+                <i class="net-node core net-core" data-label="VAULT"></i><i class="net-node net-members" data-label="MEMBERS"></i><i class="net-node net-contacts" data-label="CONTACTS"></i><i class="net-node net-briefings" data-label="RECAPS"></i><i class="net-node net-news" data-label="NEWS"></i>
               </div>
             </section>
 
             <section class="panel module-panel" aria-labelledby="moduleHeading">
-              <div class="panel-head"><strong id="moduleHeading">Sector launchpad</strong><span class="head-right">6 STAGED</span></div>
+              <div class="panel-head"><strong id="moduleHeading">Open a section</strong><span class="head-right">MORE COMING</span></div>
               <div class="module-list">
-                <button class="module-row" type="button" data-module="people"><span class="module-icon">PPL</span><span class="module-copy"><strong>People</strong><span>members, roles, handles, context</span></span><span class="module-state">open</span></button>
-                <button class="module-row" type="button" data-module="contacts"><span class="module-icon">CNT</span><span class="module-copy"><strong>Contacts</strong><span>shared people and organizations</span></span><span class="module-state">open</span></button>
-                <button class="module-row" type="button" data-module="network"><span class="module-icon">NET</span><span class="module-copy"><strong>Network</strong><span>relationships and introductions</span></span><span class="module-state">open</span></button>
-                <button class="module-row" type="button" data-module="briefings"><span class="module-icon">BRF</span><span class="module-copy"><strong>Briefings</strong><span>drama, context, receipts, decisions</span></span><span class="module-state">open</span></button>
-                <button class="module-row" type="button" data-module="news"><span class="module-icon">NWS</span><span class="module-copy"><strong>News wire</strong><span>stories the server actually cares about</span></span><span class="module-state">open</span></button>
-                <button class="module-row" type="button" data-module="timezones"><span class="module-icon">TZ</span><span class="module-copy"><strong>Timezones</strong><span>who is awake and overlap windows</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="people"><span class="module-icon">PPL</span><span class="module-copy"><strong>Members</strong><span>profiles, handles, roles, timezones</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="contacts"><span class="module-icon">CNT</span><span class="module-copy"><strong>Contacts</strong><span>people and resources shared by the server</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="network"><span class="module-icon">NET</span><span class="module-copy"><strong>Connections</strong><span>who knows who and useful intros</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="briefings"><span class="module-icon">TLDR</span><span class="module-copy"><strong>Recaps</strong><span>catch up without reading everything</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="news"><span class="module-icon">NWS</span><span class="module-copy"><strong>Server news</strong><span>updates and stuff people care about</span></span><span class="module-state">open</span></button>
+                <button class="module-row" type="button" data-module="timezones"><span class="module-icon">TZ</span><span class="module-copy"><strong>Timezones</strong><span>local time for members around the world</span></span><span class="module-state">open</span></button>
               </div>
             </section>
           </div>
         </section>
 
         <section class="lower-grid">
-          <section class="panel" aria-labelledby="timezoneHeading">
-            <div class="panel-head"><strong id="timezoneHeading">Timezone matrix</strong><span class="head-right">LIVE LOCAL CLOCKS</span></div>
+          <section id="clockSection" class="panel" aria-labelledby="timezoneHeading">
+            <div class="panel-head"><strong id="timezoneHeading">Who's awake?</strong><span class="head-right">LIVE CLOCKS</span></div>
             <div class="timezone-grid">
               <article class="clock-card" data-zone="America/New_York"><span>New York</span><strong>--:--</strong><small>syncing</small></article>
               <article class="clock-card" data-zone="Europe/London"><span>London</span><strong>--:--</strong><small>syncing</small></article>
@@ -199,24 +231,32 @@
           </section>
 
           <section class="panel" aria-labelledby="dispatchHeading">
-            <div class="panel-head"><strong id="dispatchHeading">Dispatch queue</strong><span class="head-right">ALPHA NOTES</span></div>
+            <div class="panel-head"><strong id="dispatchHeading">What's being built</strong><span class="head-right">VAULT 3.0</span></div>
             <div class="dispatch-list">
-              <article class="dispatch"><span class="dispatch-time">BUILD / 01</span><span class="dispatch-copy"><strong>Command deck established</strong><p>The first Vault 3.0 shell, gate, navigation, network preview and terminal runtime are online.</p></span><span class="dispatch-tag">live</span></article>
-              <article class="dispatch"><span class="dispatch-time">NEXT / PPL</span><span class="dispatch-copy"><strong>Member directory</strong><p>Profiles, Discord identity, roles, timezone, aliases, notes and relationship context.</p></span><span class="dispatch-tag">queued</span></article>
-              <article class="dispatch"><span class="dispatch-time">NEXT / BRF</span><span class="dispatch-copy"><strong>Server briefings</strong><p>Structured context for drama, ongoing stories, news, receipts, status changes and unresolved threads.</p></span><span class="dispatch-tag">queued</span></article>
+              <article class="dispatch"><span class="dispatch-time">LIVE</span><span class="dispatch-copy"><strong>The portal exists</strong><p>Private login, homepage, navigation, console and timezone tools are online.</p></span><span class="dispatch-tag">done</span></article>
+              <article class="dispatch"><span class="dispatch-time">NEXT</span><span class="dispatch-copy"><strong>Real member profiles</strong><p>We'll start filling this with the actual people in the server as you send the info.</p></span><span class="dispatch-tag">next</span></article>
+              <article class="dispatch"><span class="dispatch-time">AFTER</span><span class="dispatch-copy"><strong>Recaps, links, news and server lore</strong><p>This becomes the place to catch up and find things without Discord archaeology.</p></span><span class="dispatch-tag">queued</span></article>
             </div>
           </section>
         </section>
 
         <footer class="vault-footer">
-          <span>VAULT 3.0 // COMMUNITY INTELLIGENCE NODE</span>
-          <span>Prototype interface · real private data requires server-side authentication and protected storage</span>
+          <span>VAULT 3.0 // SERVER PORTAL</span>
+          <span>Owned by anymuz + biggz · more gets added as the server grows</span>
         </footer>
       </section>
     </div>
+
+    <nav class="mobile-vault-nav" aria-label="Quick navigation">
+      <button type="button" data-mobile-target="portalHome">Home</button>
+      <button type="button" data-mobile-target="whatYouCanDo">What is this?</button>
+      <button type="button" data-mobile-target="terminalZone">Console</button>
+      <button type="button" data-mobile-target="clockSection">Time</button>
+    </nav>
   </main>
 
-  <noscript>This interface requires JavaScript to authenticate and run the Vault terminal.</noscript>
+  <noscript>This portal needs JavaScript enabled to open and run.</noscript>
   <script src="/assets/vault/vault.js?v=20260813-1" defer></script>
+  <script src="/assets/vault/vault-portal.js?v=20260813-1" defer></script>
 </body>
 </html>
