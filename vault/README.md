@@ -32,7 +32,7 @@ The permanent Discord invitation is:
 - `assets/vault/vault.js`: gate, session, terminal, clocks, sidebar, and base portal behavior.
 - `assets/vault/vault-directory.js`: display-only member directory source. Keep uncertain details empty.
 - `assets/vault/vault-portal.js`: theme, Discord invite, directory rendering, search, reactions, room-opening transitions, roster scan, local briefing schedule, and smooth navigation.
-- `assets/vault/vault-restricted-node-social.png`: 1200×630 Open Graph and Twitter sharing image used by the Vault portal and profile rooms.
+- `assets/vault/vault-restricted-node-social-v2.png`: 1200×630 PNG converted from the owner-supplied WebP. This fresh URL is the Open Graph and Twitter image used by the Vault portal and every profile room.
 - `assets/vault/vault-profile-data.js`: centralized approved demo facts for open profiles.
 - `assets/vault/vault-profile.js`: shared profile rendering, session check, theme, local time, and next-brief calculation.
 - `assets/vault/vault-profile.css`: shared member profile layout and responsive styling.
