@@ -10,11 +10,12 @@ window.VaultWorld = Object.freeze({
     { id: '2gZUPNdnz5Y45eiGxpHGSc', title: 'POWER', artist: 'Kanye West', mood: 'Main-character admin energy', accent: '#f1c36d', votes: 6 },
     { id: '4i0ioe6BC6qvV6FOm6nf7K', title: 'The Recipe', artist: 'Kendrick Lamar feat. Dr. Dre', mood: 'Chill voice-chat rotation', accent: '#75e7c0', votes: 5 },
     { id: '5Z01UMMf7V1o0MzF86s6WJ', title: 'Lose Yourself', artist: 'Eminem', mood: 'Locked-in builder mode', accent: '#ff778b', votes: 7 },
-    { id: '1IFSa6KKHLeSwRe8mDlz6k', title: 'Dreams', artist: 'The Cranberries', mood: 'The server finally calmed down', accent: '#c27cff', votes: 4 }
+    { id: '1IFSa6KKHLeSwRe8mDlz6k', title: 'Dreams', artist: 'The Cranberries', mood: 'The server finally calmed down', accent: '#c27cff', votes: 4 },
+    { id: '4zh13oEiKl6W8qn9zsdQrp', title: 'Becoming Insane', artist: 'Infected Mushroom', mood: 'Israeli psytrance rabbit hole', accent: '#e76cff', votes: 9 }
   ],
   memberTracks: {
     biggz: '2gZUPNdnz5Y45eiGxpHGSc',
-    anymuz: '5Z01UMMf7V1o0MzF86s6WJ',
+    anymuz: '4zh13oEiKl6W8qn9zsdQrp',
     kazy: '1eyzqe2QqGZUmfcPZtrIyt',
     mel: '1IFSa6KKHLeSwRe8mDlz6k'
   },

@@ -21,7 +21,12 @@ window.VaultProfiles = Object.freeze({
     intro: 'Server updates, projects, useful links, the language arc, and the morning catch-up are all in one room.',
     facts: ['Owner of Vault 3.0', 'Codes and builds things', 'Learning Hebrew and Aramaic', 'Location pending'],
     status: 'Builder room live', connections: ['Biggz · co-owner', 'Kazy · developer'],
-    currentTitle: 'Language arc active', current: 'Hebrew and Aramaic are in the current briefing. Builder notes and active projects can come next.'
+    currentTitle: 'Current transmission', current: 'Elohim, YHWH, DMT, consciousness, ancient languages, and whatever connection appears halfway through an Israeli psytrance track.',
+    lessons: [
+      { hebrew: 'שלום', hebrewRoman: 'shalom', hebrewMeaning: 'peace · hello', aramaic: 'שְׁלָם', aramaicRoman: 'shelam', aramaicMeaning: 'peace · well-being' },
+      { hebrew: 'תודה', hebrewRoman: 'todah', hebrewMeaning: 'thank you', aramaic: 'אֱלָהּ', aramaicRoman: 'elah', aramaicMeaning: 'God' },
+      { hebrew: 'בוקר טוב', hebrewRoman: 'boker tov', hebrewMeaning: 'good morning', aramaic: 'מַלְכָּא', aramaicRoman: 'malka', aramaicMeaning: 'the king' }
+    ]
   },
   kazy: {
     name: 'Kazy', initials: 'KZ', role: 'Developer · server booster', location: 'Location pending', zone: null, accent: 'magenta',
