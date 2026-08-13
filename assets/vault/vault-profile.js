@@ -61,6 +61,20 @@
     document.querySelector('[data-profile-location]').textContent = profile.location;
     document.querySelector('[data-profile-intro]').textContent = profile.intro;
     document.querySelector('[data-profile-status]').textContent = profile.status;
+    const trackId = window.VaultWorld?.memberTracks?.[memberId];
+    const track = window.VaultWorld?.tracks?.find((item) => item.id === trackId);
+    if (track) {
+      document.querySelector('[data-profile-track-title]').textContent = track.title;
+      document.querySelector('[data-profile-track-copy]').textContent = `${track.artist} · ${track.mood}`;
+      document.querySelector('[data-profile-spotify]').src = `https://open.spotify.com/embed/track/${track.id}?utm_source=generator&theme=0`;
+      document.querySelector('[data-profile-spotify-link]').href = `https://open.spotify.com/track/${track.id}`;
+    }
+    const connections = document.querySelector('[data-profile-connections]');
+    (profile.connections || []).forEach((connection) => {
+      const span = document.createElement('span'); span.textContent = connection; connections?.appendChild(span);
+    });
+    document.querySelector('[data-profile-current-title]').textContent = profile.currentTitle;
+    document.querySelector('[data-profile-current-copy]').textContent = profile.current;
     document.querySelector('[data-next-brief]').textContent = nextBrief(profile.zone);
     const facts = document.querySelector('[data-profile-facts]');
     profile.facts.forEach((fact) => {

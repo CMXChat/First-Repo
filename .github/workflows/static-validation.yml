@@ -31,6 +31,8 @@ jobs:
           node --check assets/vault/vault-directory.js
           node --check assets/vault/vault-profile-data.js
           node --check assets/vault/vault-profile.js
+          node --check assets/vault/vault-world-data.js
+          node --check assets/vault/vault-world.js
           node scripts/validate-vault.mjs
 
       - name: Validate JSON and registered routes

@@ -18,6 +18,9 @@ const sharedFiles = [
   'assets/vault/vault-profile-data.js',
   'assets/vault/vault-profile.js',
   'assets/vault/vault-profile.css',
+  'assets/vault/vault-world-data.js',
+  'assets/vault/vault-world.js',
+  'assets/vault/vault-world.css',
   'assets/vault/vault-restricted-node-social-v2.png'
 ];
 
@@ -32,6 +35,10 @@ requireText('vault/index.html', 'Kazy dropped two boosts', 'Kazy boost update');
 requireText('vault/index.html', 'learning Hebrew and Aramaic', 'Anymuz language update');
 requireText('vault/index.html', 'vault-directory.js', 'directory data asset');
 requireText('vault/index.html', 'vault-restricted-node-social-v2.png', 'Vault social image metadata');
+requireText('vault/index.html', 'data-mobile-target="everything"', 'mobile Everything tab');
+requireText('vault/index.html', 'id="vaultRadio"', 'Vault Radio section');
+requireText('vault/index.html', 'id="vaultSearchDialog"', 'global Vault search');
+requireText('vault/index.html', 'id="ownerNoteForm"', 'owner note demo');
 requireText('assets/vault/vault-portal.js', "const THEME_KEY = 'vault_theme_v1'", 'shared theme key');
 requireText('assets/vault/vault-profile.js', "const SESSION_KEY = 'cmx_vault_session_v1'", 'profile session boundary');
 requireText('vault/README.md', '7:00 AM in that member\'s confirmed local timezone', 'local briefing schedule rule');
@@ -40,6 +47,9 @@ profileIds.forEach((id) => {
   const path = `vault/${id}/index.html`;
   requireText(path, `data-member-id="${id}"`, `profile id ${id}`);
   requireText(path, 'vault-profile.js', 'shared profile renderer');
+  requireText(path, 'vault-world-data.js', 'shared Spotify data');
+  requireText(path, 'data-profile-spotify', 'member Spotify player');
+  requireText(path, 'frame-src https://open.spotify.com', 'Spotify content policy');
   requireText(path, 'https://discord.gg/48xdhWJ9RD', 'Discord invite');
   requireText(path, 'vault-restricted-node-social-v2.png', 'Vault social image metadata');
 });

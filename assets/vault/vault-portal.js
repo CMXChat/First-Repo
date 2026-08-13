@@ -26,6 +26,8 @@
     toastTimer = window.setTimeout(() => vaultToast.classList.remove('show'), 3200);
   }
 
+  window.addEventListener('vault:toast', (event) => showToast(event.detail));
+
   function openMemberRoom(event, member) {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
@@ -147,8 +149,11 @@
 
   mobileNav.forEach((button) => {
     button.addEventListener('click', () => {
-      const target = document.getElementById(button.dataset.mobileTarget || '');
-      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const view = button.dataset.mobileTarget || 'portalHome';
+      document.body.dataset.mobileView = view;
+      mobileNav.forEach((item) => item.classList.toggle('active', item === button));
+      if (view === 'everything') window.scrollTo({ top: 0, behavior: 'smooth' });
+      else document.getElementById(view)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
@@ -186,4 +191,5 @@
 
   renderDirectory();
   updateBriefSchedule();
+  if (window.matchMedia('(max-width: 700px)').matches) body.dataset.mobileView = 'portalHome';
 })();
