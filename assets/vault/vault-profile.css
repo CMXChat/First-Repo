@@ -102,6 +102,7 @@ html[data-theme="light"] .profile-theme-toggle i::after { transform: translateX(
 body[data-accent="violet"] .profile-avatar { background: linear-gradient(145deg, #5559d9, #8a6cff); }
 body[data-accent="pink"] .profile-avatar { background: linear-gradient(145deg, #9f477f, #ec76bc); }
 body[data-accent="red"] .profile-avatar { background: linear-gradient(145deg, #8d2639, #da4159); }
+body[data-accent="magenta"] .profile-avatar { background: linear-gradient(145deg, #7b2787, #ee62d8); }
 
 .profile-title > p {
   margin: 0 0 5px;
@@ -202,7 +203,7 @@ body[data-accent="red"] .profile-avatar { background: linear-gradient(145deg, #8
 
 .brief-delivery span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .12em; }
 .brief-delivery strong { color: var(--text); font-size: 16px; }
-.brief-delivery small { color: var(--muted); font-size: 11px; }
+.brief-delivery small { color: var(--muted); font-size: 12px; }
 
 .profile-local-card {
   display: flex;
@@ -216,7 +217,7 @@ body[data-accent="red"] .profile-avatar { background: linear-gradient(145deg, #8
 .profile-local-card > p { margin: 8px 0; color: var(--muted); font-size: 13px; }
 .weather-placeholder { margin-top: auto; padding: 16px; border: 1px dashed var(--line-strong); border-radius: 13px; background: var(--panel-soft); }
 .weather-placeholder b { display: block; color: var(--text); font-size: 13px; }
-.weather-placeholder span { display: block; margin-top: 7px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.weather-placeholder span { display: block; margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.5; }
 
 .profile-dashboard {
   display: grid;
@@ -243,7 +244,7 @@ body[data-accent="red"] .profile-avatar { background: linear-gradient(145deg, #8
 
 .empty-signal > span { color: var(--blue); font-weight: 900; }
 .empty-signal strong { display: block; color: var(--text); font-size: 12px; }
-.empty-signal small { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.empty-signal small { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .fact-policy { margin-top: 18px !important; padding-top: 13px; border-top: 1px solid var(--line); font-size: 11px !important; }
 
 .profile-roadmap {

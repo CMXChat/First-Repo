@@ -14,6 +14,7 @@ The current implementation is a static GitHub Pages demonstration. It does not c
 - `/vault/biggz/` is the working Biggz profile demo. Confirmed location: London. Timezone: `Europe/London`.
 - `/vault/mel/` is the working Mel profile demo. Confirmed country: South Africa. City is not confirmed. The country uses `Africa/Johannesburg` time.
 - `/vault/anymuz/` is the working Anymuz profile demo. Confirmed role: owner and developer. Location and timezone are not confirmed.
+- `/vault/kazy/` is the working Kazy profile demo. Confirmed role: developer. Kazy boosted the server twice and helped Vault 3.0 reach Server Level 1. Location and timezone are not confirmed.
 
 Each member briefing targets approximately **7:00 AM in that member's confirmed local timezone**. Do not describe the schedule as 7:00 AM Eastern for everyone.
 
@@ -30,7 +31,8 @@ The permanent Discord invitation is:
 - `assets/vault/vault-portal-ui.css`: friendly portal, briefing, directory, typography, and mobile presentation.
 - `assets/vault/vault.js`: gate, session, terminal, clocks, sidebar, and base portal behavior.
 - `assets/vault/vault-directory.js`: display-only member directory source. Keep uncertain details empty.
-- `assets/vault/vault-portal.js`: theme, Discord invite, directory rendering, search, local briefing schedule, and smooth navigation.
+- `assets/vault/vault-portal.js`: theme, Discord invite, directory rendering, search, reactions, room-opening transitions, roster scan, local briefing schedule, and smooth navigation.
+- `assets/vault/vault-restricted-node-social.png`: 1200×630 Open Graph and Twitter sharing image used by the Vault portal and profile rooms.
 - `assets/vault/vault-profile-data.js`: centralized approved demo facts for open profiles.
 - `assets/vault/vault-profile.js`: shared profile rendering, session check, theme, local time, and next-brief calculation.
 - `assets/vault/vault-profile.css`: shared member profile layout and responsive styling.
@@ -57,6 +59,14 @@ The permanent Discord invitation is:
 ## Next backend phase
 
 When the approved backend exists, replace the static arrays with authenticated API responses. Suggested bounded resources are member profiles, briefing summaries, weather snapshots, links, and member preferences. Discord ingestion should be explicitly approved, minimized, logged, and separated from the presentation layer. Keep a clear generated timestamp and source state on every briefing.
+
+## Current manual briefing facts
+
+- Anymuz is learning Hebrew and Aramaic.
+- Kazy boosted the server twice.
+- Vault 3.0 reached Server Level 1 after Kazy's boosts.
+
+These facts were supplied directly by the server owner on 2026-08-13. Keep them in the manual briefing until they age out or a newer server update replaces them.
 
 ## Visual rules
 

@@ -11,16 +11,48 @@
   const featuredMembers = document.getElementById('featuredMembers');
   const memberGrid = document.getElementById('memberGrid');
   const directoryEmpty = document.getElementById('directoryEmpty');
+  const profileTransition = document.getElementById('profileTransition');
+  const transitionName = document.getElementById('transitionName');
+  const vaultToast = document.getElementById('vaultToast');
+  const rosterScan = document.getElementById('rosterScan');
   const THEME_KEY = 'vault_theme_v1';
+  let toastTimer;
+
+  function showToast(message) {
+    if (!vaultToast) return;
+    window.clearTimeout(toastTimer);
+    vaultToast.textContent = message;
+    vaultToast.classList.add('show');
+    toastTimer = window.setTimeout(() => vaultToast.classList.remove('show'), 3200);
+  }
+
+  function openMemberRoom(event, member) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (!profileTransition || !member.route) {
+      window.location.href = member.route;
+      return;
+    }
+    transitionName.textContent = member.name;
+    profileTransition.classList.add('open');
+    profileTransition.setAttribute('aria-hidden', 'false');
+    window.setTimeout(() => { window.location.href = member.route; }, 620);
+  }
 
   function initials(name) {
     return name.split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase();
   }
 
   function memberCard(member, featured = false) {
-    const card = document.createElement(member.route ? 'a' : 'article');
+    const card = document.createElement(member.route ? 'a' : 'button');
     card.className = featured ? `featured-member accent-${member.accent || 'blue'}` : 'member-card';
-    if (member.route) card.href = member.route;
+    if (member.route) {
+      card.href = member.route;
+      card.addEventListener('click', (event) => openMemberRoom(event, member));
+    } else {
+      card.type = 'button';
+      card.addEventListener('click', () => showToast(`${member.name}'s room is reserved. Add their details when they're ready.`));
+    }
     card.dataset.memberSearch = `${member.name} ${member.display || ''} ${member.role || ''} ${member.location || ''}`.toLowerCase();
 
     const avatar = document.createElement('span');
@@ -121,6 +153,29 @@
   });
 
   memberSearch?.addEventListener('input', () => renderDirectory(memberSearch.value));
+
+  rosterScan?.addEventListener('click', () => {
+    rosterScan.classList.remove('scanning');
+    void rosterScan.offsetWidth;
+    rosterScan.classList.add('scanning');
+    const directory = document.querySelector('.full-directory');
+    if (directory) directory.open = true;
+    showToast(`${window.VaultDirectory?.length || 0} members found. Pick a name.`);
+    window.setTimeout(() => directory?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 420);
+  });
+
+  document.querySelectorAll('[data-reaction]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const count = button.querySelector('span');
+      const active = button.classList.toggle('reacted');
+      const base = Number(button.dataset.baseCount || count?.textContent || 0);
+      button.dataset.baseCount = String(base);
+      if (count) count.textContent = String(base + (active ? 1 : 0));
+      button.classList.remove('reaction-pop');
+      void button.offsetWidth;
+      button.classList.add('reaction-pop');
+    });
+  });
 
   document.querySelectorAll('[data-scroll-target]').forEach((button) => {
     button.addEventListener('click', () => {
