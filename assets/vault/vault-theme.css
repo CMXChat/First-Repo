@@ -1,8 +1,42 @@
-html[data-theme="light"]{color-scheme:light;--bg:#eef5fb;--panel:#ffffff;--panel-strong:#ffffff;--panel-soft:#f4f8fc;--line:rgba(25,74,110,.14);--line-strong:rgba(0,120,212,.32);--text:#122b3d;--soft:#3f5f73;--muted:#667f90;--dim:#8295a3;--blue:#087bd1;--cyan:#08749b;--ice:#17364b;--shadow:0 24px 70px rgba(55,88,112,.14)}
-html[data-theme="light"] body{background:linear-gradient(180deg,#f9fcff,#edf5fb 52%,#e8f0f6)}
-html[data-theme="light"] .vault-topbar{background:rgba(249,252,255,.92)}
+html[data-theme="light"]{color-scheme:light;--bg:#eef5fb;--panel:#ffffff;--panel-strong:#ffffff;--panel-soft:#f4f8fc;--line:rgba(25,74,110,.16);--line-strong:rgba(0,120,212,.34);--text:#122b3d;--soft:#3f5f73;--muted:#667f90;--dim:#7c909e;--blue:#087bd1;--cyan:#08749b;--ice:#17364b;--ok:#177d65;--amber:#91640b;--red:#bd334c;--shadow:0 24px 70px rgba(55,88,112,.14)}
+html[data-theme="light"] body{background:radial-gradient(circle at 10% 0,rgba(0,120,212,.1),transparent 28rem),linear-gradient(180deg,#f9fcff,#edf5fb 52%,#e8f0f6)}
+html[data-theme="light"] body::before{opacity:.018;mix-blend-mode:multiply}
+html[data-theme="light"] #gate{--bg:#02070d;--panel:rgba(5,17,29,.88);--panel-strong:rgba(5,20,35,.96);--panel-soft:rgba(9,29,48,.72);--line:rgba(66,168,255,.18);--line-strong:rgba(83,187,255,.48);--text:#e8f4fb;--soft:#aec9da;--muted:#69879b;--dim:#3f5a6d;--blue:#2aa7ff;--cyan:#73e5ff;--ok:#75e7c0;--amber:#f1c36d;--red:#ff778b}
+html[data-theme="light"] .vault-topbar{background:rgba(249,252,255,.92);box-shadow:0 8px 28px rgba(46,82,108,.06)}
 html[data-theme="light"] .vault-sidebar{background:rgba(241,247,252,.96)}
-html[data-theme="light"] .command-hero,html[data-theme="light"] .panel,html[data-theme="light"] .intel-cell,html[data-theme="light"] .clock-card,html[data-theme="light"] .sidebar-bottom{background:rgba(255,255,255,.86)}
+html[data-theme="light"] .command-hero,html[data-theme="light"] .panel,html[data-theme="light"] .intel-cell,html[data-theme="light"] .clock-card,html[data-theme="light"] .sidebar-bottom{background:rgba(255,255,255,.88);box-shadow:0 10px 32px rgba(55,88,112,.05)}
 html[data-theme="light"] .command-hero h1,html[data-theme="light"] .vault-brand-copy strong{color:#10283a}
+html[data-theme="light"] .menu-button,html[data-theme="light"] .top-lock{background:#fff;color:#31566e}
+html[data-theme="light"] .online-badge,html[data-theme="light"] .session-badge{background:#fff;color:#4d6c80}
+html[data-theme="light"] .side-label,html[data-theme="light"] .nav-state{color:#6f8493}
+html[data-theme="light"] .nav-item{color:#4e6c80}
+html[data-theme="light"] .nav-item:hover,html[data-theme="light"] .nav-item.active{color:#17354a;background:linear-gradient(90deg,rgba(0,120,212,.1),rgba(0,120,212,.025))}
+html[data-theme="light"] .sidebar-bottom strong{color:#31566e}
+html[data-theme="light"] .sidebar-bottom p{color:#637c8d}
+html[data-theme="light"] .panel-head{background:#eef5fa;color:#587589}
+html[data-theme="light"] .panel-head strong{color:#31566e}
+html[data-theme="light"] .panel-head .head-right{color:#6e8797}
+html[data-theme="light"] #terminalOutput{background:#fff}
 html[data-theme="light"] .terminal-form{background:#f8fbfe}
 html[data-theme="light"] #commandInput{color:#10283a}
+html[data-theme="light"] #commandInput::placeholder{color:#8093a1}
+html[data-theme="light"] .term-line{color:#49687d}
+html[data-theme="light"] .term-line.command{color:#132d40}
+html[data-theme="light"] .term-line.blue{color:#006cae}
+html[data-theme="light"] .term-line.dim{color:#738a99}
+html[data-theme="light"] .meta-cell{background:#f7fbfe;color:#637d8e}
+html[data-theme="light"] .meta-cell strong{color:#31566e}
+html[data-theme="light"] .intel-cell span{color:#617b8c}
+html[data-theme="light"] .intel-cell strong{color:#274d67}
+html[data-theme="light"] .module-row{color:#4e6d80}
+html[data-theme="light"] .module-row:hover{background:rgba(0,120,212,.05)}
+html[data-theme="light"] .module-copy strong{color:#31566e}
+html[data-theme="light"] .module-copy span,html[data-theme="light"] .module-state{color:#6c8392}
+html[data-theme="light"] .network-stage{background:radial-gradient(circle at center,rgba(0,120,212,.07),transparent 48%),linear-gradient(rgba(0,120,212,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,120,212,.04) 1px,transparent 1px);background-size:auto,24px 24px,24px 24px}
+html[data-theme="light"] .net-node{background:#fff}
+html[data-theme="light"] .net-node::after{color:#627f91}
+html[data-theme="light"] .clock-card span,html[data-theme="light"] .clock-card small{color:#647e8f}
+html[data-theme="light"] .clock-card strong{color:#244960}
+html[data-theme="light"] .dispatch-time,html[data-theme="light"] .dispatch-copy p{color:#667f90}
+html[data-theme="light"] .dispatch-copy strong{color:#31566e}
+html[data-theme="light"] .vault-footer{color:#687f8f}
