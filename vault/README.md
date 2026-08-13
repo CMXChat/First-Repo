@@ -41,7 +41,7 @@ The permanent Discord invitation is:
 
 ## Mobile views
 
-The bottom bar opens focused Home, Members, Radio, and Brief views. Everything restores the complete scrollable Vault. Keep `data-mobile-target` values aligned with the matching section IDs.
+The bottom bar opens focused Home, Members, Radio, and Brief views. Home is a compact dashboard with briefing, member, radio, and full-Vault launch cards. Everything restores the complete scrollable Vault. Keep `data-mobile-target` and `data-open-mobile-view` values aligned with the matching section IDs.
 
 ## Voice and theme
 

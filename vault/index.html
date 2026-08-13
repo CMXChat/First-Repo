@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="/assets/vault/vault-portal-ui.css?v=20260813-3" />
   <link rel="stylesheet" href="/assets/vault/vault-world.css?v=20260813-1" />
 </head>
-<body>
+<body data-mobile-view="portalHome">
   <section id="boot" aria-live="polite" aria-label="Vault loading">
     <div class="boot-window">
       <div class="window-bar">
@@ -135,6 +135,7 @@
       <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
 
       <section class="vault-main">
+        <div id="mobileViewHeader" class="mobile-view-header" aria-live="polite"><span>VAULT VIEW</span><strong id="mobileViewTitle">Home</strong><small id="mobileViewDescription">Your quick dashboard</small></div>
         <section id="portalHome" class="portal-welcome" aria-labelledby="portalTitle">
           <div class="welcome-main">
             <p class="portal-eyebrow">Vault 3.0 HQ</p>
@@ -163,6 +164,21 @@
               <small id="inviteNote" class="invite-note">Permanent Vault 3.0 invite · opens Discord</small>
             </div>
           </aside>
+        </section>
+
+        <section id="homeDashboard" class="home-dashboard" aria-label="Vault home dashboard">
+          <button class="home-dash-card home-brief-card" type="button" data-open-mobile-view="dailyBriefings">
+            <span>DAILY BRIEF</span><strong>Catch up in two minutes</strong><small>Server updates, drama context, weather, and what matters today.</small><b>Open briefing →</b>
+          </button>
+          <button class="home-dash-card home-member-card" type="button" data-open-mobile-view="memberDirectory">
+            <span>MEMBERS</span><strong>4 rooms are open</strong><small>Biggz, Mel, Anymuz, and Kazy have live member rooms.</small><b>Find someone →</b>
+          </button>
+          <button class="home-dash-card home-radio-card" type="button" data-open-mobile-view="vaultRadio">
+            <span>VAULT RADIO</span><strong id="homeTrackTitle">Midnight City</strong><small id="homeTrackArtist">M83 · current rotation</small><b>Open the player →</b>
+          </button>
+          <button class="home-dash-card home-everything-card" type="button" data-open-mobile-view="everything">
+            <span>FULL VAULT</span><strong>Browse everything</strong><small>Lore, archive, connections, polls, tools, clocks, and every section.</small><b>Open full page ↓</b>
+          </button>
         </section>
 
         <section class="database-banner" aria-labelledby="databaseTitle">
@@ -444,11 +460,11 @@
     </div>
 
     <nav class="mobile-vault-nav" aria-label="Quick navigation">
-      <button class="active" type="button" data-mobile-target="portalHome">Home</button>
-      <button type="button" data-mobile-target="memberDirectory">Members</button>
-      <button type="button" data-mobile-target="vaultRadio">Radio</button>
-      <button type="button" data-mobile-target="dailyBriefings">Brief</button>
-      <button type="button" data-mobile-target="everything">Everything</button>
+      <button class="active" type="button" data-mobile-target="portalHome"><i aria-hidden="true">⌂</i><span>Home</span></button>
+      <button type="button" data-mobile-target="memberDirectory"><i aria-hidden="true">◎</i><span>Members</span></button>
+      <button type="button" data-mobile-target="vaultRadio"><i aria-hidden="true">♫</i><span>Radio</span></button>
+      <button type="button" data-mobile-target="dailyBriefings"><i aria-hidden="true">☀</i><span>Brief</span></button>
+      <button type="button" data-mobile-target="everything"><i aria-hidden="true">▦</i><span>Everything</span></button>
     </nav>
   </main>
 

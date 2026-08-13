@@ -36,6 +36,8 @@ requireText('vault/index.html', 'learning Hebrew and Aramaic', 'Anymuz language 
 requireText('vault/index.html', 'vault-directory.js', 'directory data asset');
 requireText('vault/index.html', 'vault-restricted-node-social-v2.png', 'Vault social image metadata');
 requireText('vault/index.html', 'data-mobile-target="everything"', 'mobile Everything tab');
+requireText('vault/index.html', 'id="homeDashboard"', 'distinct mobile Home dashboard');
+requireText('vault/index.html', 'data-open-mobile-view="everything"', 'Home to Everything launcher');
 requireText('vault/index.html', 'id="vaultRadio"', 'Vault Radio section');
 requireText('vault/index.html', 'id="vaultSearchDialog"', 'global Vault search');
 requireText('vault/index.html', 'id="ownerNoteForm"', 'owner note demo');
