@@ -1,0 +1,8 @@
+html[data-theme="light"]{color-scheme:light;--bg:#eef5fb;--panel:#ffffff;--panel-strong:#ffffff;--panel-soft:#f4f8fc;--line:rgba(25,74,110,.14);--line-strong:rgba(0,120,212,.32);--text:#122b3d;--soft:#3f5f73;--muted:#667f90;--dim:#8295a3;--blue:#087bd1;--cyan:#08749b;--ice:#17364b;--shadow:0 24px 70px rgba(55,88,112,.14)}
+html[data-theme="light"] body{background:linear-gradient(180deg,#f9fcff,#edf5fb 52%,#e8f0f6)}
+html[data-theme="light"] .vault-topbar{background:rgba(249,252,255,.92)}
+html[data-theme="light"] .vault-sidebar{background:rgba(241,247,252,.96)}
+html[data-theme="light"] .command-hero,html[data-theme="light"] .panel,html[data-theme="light"] .intel-cell,html[data-theme="light"] .clock-card,html[data-theme="light"] .sidebar-bottom{background:rgba(255,255,255,.86)}
+html[data-theme="light"] .command-hero h1,html[data-theme="light"] .vault-brand-copy strong{color:#10283a}
+html[data-theme="light"] .terminal-form{background:#f8fbfe}
+html[data-theme="light"] #commandInput{color:#10283a}
