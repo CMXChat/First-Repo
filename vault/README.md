@@ -46,6 +46,10 @@ The bottom bar opens focused Home, Members, Radio, and Brief views. Home is a co
 ## Voice and theme
 
 Keep the voice direct, warm, and lightly Discord-native. Use playful wording sparingly in social sections such as briefings and radio. Navigation, schedules, privacy notes, and instructions stay plain. Light mode is the first-visit default; an explicit saved theme choice always wins.
+
+## Timezone coverage
+
+The public clock panel includes USA East Coast, USA West Coast, South Africa, London, Sydney, and Auckland references. Member-specific timezone data must remain pending until each person confirms it. Biggz and Mel are currently mapped; do not infer the remaining members' locations.
 - `assets/vault/vault-profile.css`: shared member profile layout and responsive styling.
 - `vault/{member}/index.html`: intentionally thin profile shell with `data-member-id`.
 

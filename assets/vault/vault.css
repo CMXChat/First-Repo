@@ -966,10 +966,28 @@ button {
 
 .timezone-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
+  grid-template-columns: repeat(3, minmax(0,1fr));
   gap: 8px;
   padding: 10px;
 }
+
+.timezone-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  margin: 0 10px 10px;
+  padding: 14px;
+  border: 1px solid rgba(66,168,255,.18);
+  border-radius: 11px;
+  background: linear-gradient(120deg, rgba(42,167,255,.08), rgba(102,82,240,.04));
+}
+
+.timezone-note > span,
+.timezone-note > b { color: var(--blue); font-size: 10px; font-weight: 900; letter-spacing: .08em; }
+.timezone-note strong { display: block; color: var(--text); font: 800 14px ui-sans-serif, system-ui, sans-serif; }
+.timezone-note p { margin: 4px 0 0; color: var(--muted); font: 12px/1.5 ui-sans-serif, system-ui, sans-serif; }
+.timezone-note > b { padding: 6px 8px; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
 
 .clock-card {
   padding: 13px 11px;
@@ -1110,6 +1128,9 @@ button {
   .terminal-panel { min-height: 400px; }
   #terminalOutput { max-height: 330px; }
   .timezone-grid { grid-template-columns: 1fr 1fr; }
+  .timezone-note { grid-template-columns: 1fr auto; }
+  .timezone-note > span { grid-column: 1; }
+  .timezone-note > div { grid-column: 1 / -1; }
   .dispatch { grid-template-columns: 60px minmax(0,1fr); }
   .dispatch-tag { grid-column: 2; }
   .gate-foot { flex-direction: column; gap: 5px; }
