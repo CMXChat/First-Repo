@@ -16,8 +16,8 @@
   }
 
   function getTheme() {
-    try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; }
-    catch { return 'dark'; }
+    try { return localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light'; }
+    catch { return 'light'; }
   }
 
   function setTheme(theme, save = false) {

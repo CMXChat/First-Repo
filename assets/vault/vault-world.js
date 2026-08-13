@@ -89,7 +89,7 @@
   function renderQueue() {
     const list = $('#radioQueueList');
     if (!list) return;
-    list.innerHTML = state.queue.length ? state.queue.map((item, index) => `<li><span>${escapeHtml(item)}</span><button type="button" data-remove-queue="${index}" aria-label="Remove ${escapeHtml(item)}">×</button></li>`).join('') : '<li class="queue-empty">The aux is empty. Be brave and add something.</li>';
+    list.innerHTML = state.queue.length ? state.queue.map((item, index) => `<li><span>${escapeHtml(item)}</span><button type="button" data-remove-queue="${index}" aria-label="Remove ${escapeHtml(item)}">×</button></li>`).join('') : '<li class="queue-empty">Add a song name here. Suggestions stay on this device for the demo.</li>';
   }
 
   function openSearch() {
@@ -111,7 +111,7 @@
     });
     const host = $('#vaultSearchResults');
     if (!host) return;
-    host.innerHTML = q ? (results.length ? results.slice(0, 12).map((item) => `<button type="button" data-search-href="${item.href || ''}" data-search-track="${item.track || ''}"><span>${item.type}</span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}</small></button>`).join('') : '<p>Nothing. Chat may have eaten it. Try a name, song, or lore word.</p>') : '<p>Search people, songs, lore, and old briefings.</p>';
+    host.innerHTML = q ? (results.length ? results.slice(0, 12).map((item) => `<button type="button" data-search-href="${item.href || ''}" data-search-track="${item.track || ''}"><span>${item.type}</span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}</small></button>`).join('') : '<p>No match yet. Try a member, song, lore item, or briefing.</p>') : '<p>Search people, songs, lore, and old briefings.</p>';
   }
 
   function showReturnBrief() {
