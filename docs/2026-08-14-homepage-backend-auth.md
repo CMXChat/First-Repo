@@ -72,3 +72,44 @@ This work intentionally changed only the root homepage. Other browser-only gates
 The homepage currently calls the Codespaces port-8000 address. The Codespace must be running and the port must be public for login to work. This is suitable for learning and development, not permanent production hosting.
 
 The next production step is to deploy jay-app at a stable address such as `https://api.cmxchat.com`, update the homepage API constant and Content Security Policy, and add server or edge rate limiting for repeated login failures.
+
+
+## Visual login sequence
+
+The secure backend migration originally reduced the gate feedback to one plain verification message. The terminal-style experience was restored on 2026-08-14 without moving authentication back into the browser.
+
+The current gate displays animated lines for channel preparation, HTTPS connection, the request to Python, password-hash verification, administrator-role verification, token issuance, denial, and backend outages. These lines describe actual stages and do not decide access. Only a successful backend response and signed administrator token can launch the interface.
+
+The animation uses DOM text nodes rather than inserting server responses as HTML. This prevents authentication error text from becoming executable page content.
+
+## What is and is not hidden after login
+
+The root interface is still hosted by GitHub Pages. Its HTML, CSS, JavaScript, labels, terminal commands, and links can be downloaded without logging in, even when the visual gate hides them. The gate must not be described as encryption for static source.
+
+The following can be genuinely protected:
+
+- passwords stored only as backend password hashes;
+- database records that never appear in the static repository;
+- API responses returned only after Python validates the token, user, role, ownership, and requested operation;
+- provider credentials stored only as deployment environment secrets.
+
+Therefore, future private user information must be stored in PostgreSQL or another private backend service and requested after login. It must never be committed into a static page and merely hidden with CSS or JavaScript.
+
+## Password rotation
+
+The homepage administrator password was rotated again on 2026-08-14. The replacement password is intentionally omitted from GitHub and this document. PostgreSQL contains only its Argon2 hash, and live checks confirmed that the replacement works while the previous password is rejected.
+
+## Planned Zoho email connection
+
+The intended sending mailbox is `team@cmxchat.com` on Zoho Mail. Email sending is not connected yet.
+
+When enabled, jay-app can use its existing SMTP settings and email helper. The safe setup is:
+
+- use Zoho's SMTP host and TLS port;
+- use `team@cmxchat.com` as the SMTP username and sender;
+- create a Zoho app-specific password instead of sharing or storing the normal mailbox password;
+- save the app password only in the backend deployment's encrypted environment secrets;
+- never put the app password in GitHub, HTML, JavaScript, documentation, chat-visible examples, or PostgreSQL application records;
+- begin with a test email, then add narrowly defined event rules, recipient controls, audit records, retry limits, and an emergency disable switch.
+
+Automated email should remain disabled until the stable backend deployment exists and the app-specific credential is configured.
