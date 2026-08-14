@@ -10,286 +10,169 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'none'; upgrade-insecure-requests" />
-
   <title>Check In · Dead Man Switch</title>
-  <meta name="description" content="A private check-in interface for a future Dead Man Switch system." />
+  <meta name="description" content="Private check-in control panel for a future Dead Man Switch system." />
   <link rel="canonical" href="https://db.cmxchat.com/checkin/" />
-  <link rel="stylesheet" href="/assets/checkin/checkin.css?v=20260814-1" />
+  <link rel="stylesheet" href="/assets/checkin/checkin.css?v=20260814-2" />
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to check-in controls</a>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Check In navigation">
+      <a class="brand" href="/checkin/" aria-label="Check In home">
+        <span class="brand-mark" aria-hidden="true"><i></i></span>
+        <span><strong>CHECK IN</strong><small>Dead Man Switch</small></span>
+      </a>
 
-  <header class="topbar">
-    <a class="brand" href="/checkin/" aria-label="Check In home">
-      <span class="brand-mark" aria-hidden="true"><i></i></span>
-      <span class="brand-copy"><strong>CHECK IN</strong><small>Dead Man Switch</small></span>
-    </a>
+      <nav class="side-nav" aria-label="Primary">
+        <button class="nav-item is-active" type="button" data-view="overview"><span class="nav-icon">◉</span><span>Overview</span></button>
+        <button class="nav-item" type="button" data-view="timeline"><span class="nav-icon">⌁</span><span>Timeline</span></button>
+        <button class="nav-item" type="button" data-view="contacts"><span class="nav-icon">◎</span><span>Contacts</span><em>0</em></button>
+        <button class="nav-item" type="button" data-view="vault"><span class="nav-icon">◇</span><span>Vault</span><em>0</em></button>
+        <button class="nav-item" type="button" data-view="activity"><span class="nav-icon">≡</span><span>Activity</span></button>
+      </nav>
 
-    <nav class="desktop-nav" aria-label="Page sections">
-      <a href="#status">Status</a>
-      <a href="#timeline">Timeline</a>
-      <a href="#setup">Setup</a>
-      <a href="#activity">Activity</a>
-    </nav>
+      <div class="sidebar-foot">
+        <div class="local-state"><i></i><span><strong>LOCAL MODE</strong><small>This device only</small></span></div>
+        <button class="settings-nav" id="openSettings" type="button">⚙ <span>Settings</span></button>
+      </div>
+    </aside>
 
-    <div class="top-actions">
-      <span class="mode-badge"><i></i>LOCAL MODE</span>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
-        <span>Dark</span><i aria-hidden="true"></i><span>Light</span>
-      </button>
-      <button class="icon-button" id="settingsButton" type="button" aria-label="Open check-in settings" aria-haspopup="dialog" aria-controls="settingsDialog">
-        <span aria-hidden="true">⚙</span>
-      </button>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="mobile-brand">
+          <span class="brand-mark" aria-hidden="true"><i></i></span>
+          <span><strong>CHECK IN</strong><small>Dead Man Switch</small></span>
+        </div>
+        <div class="top-status" id="topStatus" data-state="safe"><i></i><span>SAFE</span></div>
+        <div class="top-actions">
+          <button class="compact-action" id="simulateButton" type="button">Simulate</button>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme"><span aria-hidden="true">◐</span></button>
+          <button class="icon-action" id="mobileSettings" type="button" aria-label="Open settings">⚙</button>
+        </div>
+      </header>
+
+      <main class="main" id="main">
+        <section class="view is-active" data-view-panel="overview" aria-labelledby="overviewTitle">
+          <div class="view-heading compact-heading">
+            <div><p class="eyebrow">CONTROL PANEL</p><h1 id="overviewTitle">Overview</h1></div>
+            <div class="heading-meta"><span id="todayDate"></span><small>Browser time</small></div>
+          </div>
+
+          <div class="mode-strip">
+            <span><i></i><strong>Frontend prototype</strong></span>
+            <p>Your timer and history work on this device. No server is monitoring you while the page is closed.</p>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="status-console" id="statusConsole" data-state="safe" aria-labelledby="statusTitle">
+              <div class="console-head">
+                <div><span class="mini-label">CURRENT STATE</span><strong id="statusTitle">Safe</strong></div>
+                <span class="state-pill" id="statePill"><i></i>SAFE</span>
+              </div>
+
+              <div class="status-core">
+                <div class="countdown-ring" aria-hidden="true">
+                  <svg viewBox="0 0 180 180"><circle class="ring-track" cx="90" cy="90" r="76"></circle><circle class="ring-progress" id="ringProgress" cx="90" cy="90" r="76"></circle></svg>
+                  <div class="ring-center"><span>TIME LEFT</span><strong id="countdown">72:00:00</strong><small id="countdownUnit">until check-in is due</small></div>
+                </div>
+
+                <div class="checkin-control">
+                  <p id="statusCopy">You're checked in. Nothing happens while this timer is active.</p>
+                  <button class="checkin-button" id="checkinButton" type="button"><span class="button-pulse" aria-hidden="true"></span><strong>CHECK IN NOW</strong><small>Reset timer</small></button>
+                  <div class="checkin-meta">
+                    <div><span>Last check-in</span><strong id="lastCheckin">Just now</strong></div>
+                    <div><span>Next due</span><strong id="nextDue">—</strong></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <aside class="quick-panel">
+              <div class="panel-title"><span>QUICK STATUS</span><button type="button" id="quickSettings">Edit</button></div>
+              <div class="quick-row"><span>Check-in interval</span><strong id="intervalValue">72 hours</strong></div>
+              <div class="quick-row"><span>Grace period</span><strong id="graceValue">24 hours</strong></div>
+              <div class="quick-row"><span>Trusted contacts</span><strong>0 configured</strong></div>
+              <div class="quick-row"><span>Vault items</span><strong>0 configured</strong></div>
+              <div class="quick-row"><span>External actions</span><strong class="muted-state">OFFLINE</strong></div>
+            </aside>
+          </div>
+
+          <div class="metric-grid" aria-label="Switch metrics">
+            <button class="metric-card" type="button" data-jump="timeline"><span>01</span><small>Stage</small><strong id="stageMetric">Monitoring</strong><em>View timeline →</em></button>
+            <button class="metric-card" type="button" data-jump="contacts"><span>02</span><small>People</small><strong>None yet</strong><em>Configure →</em></button>
+            <button class="metric-card" type="button" data-jump="vault"><span>03</span><small>Payload</small><strong>Empty</strong><em>Open vault →</em></button>
+            <button class="metric-card" type="button" data-jump="activity"><span>04</span><small>Last event</small><strong id="lastEventMetric">Check-in</strong><em>View log →</em></button>
+          </div>
+
+          <section class="recent-panel">
+            <div class="panel-title"><span>RECENT ACTIVITY</span><button type="button" data-jump="activity">View all</button></div>
+            <div class="activity-list compact" id="recentActivity"></div>
+          </section>
+        </section>
+
+        <section class="view" data-view-panel="timeline" aria-labelledby="timelineTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">TRIGGER LOGIC</p><h1 id="timelineTitle">Timeline</h1></div><p>What the switch would do as your check-in expires.</p></div>
+          <div class="sequence-panel">
+            <div class="sequence-line" aria-hidden="true"></div>
+            <article class="sequence-step is-current" data-stage="safe"><span>01</span><div><small>NOW</small><h2>Monitoring</h2><p>Your latest check-in is valid. The timer is counting down.</p></div><b>ACTIVE</b></article>
+            <article class="sequence-step" data-stage="soon"><span>02</span><div><small>DUE SOON</small><h2>Reminder window</h2><p>The interface changes state as the deadline gets close.</p></div><b>WAITING</b></article>
+            <article class="sequence-step" data-stage="grace"><span>03</span><div><small>MISSED DEADLINE</small><h2>Grace period</h2><p>The check-in is overdue. No payload is released during this window.</p></div><b>WAITING</b></article>
+            <article class="sequence-step" data-stage="triggered"><span>04</span><div><small>GRACE EXPIRED</small><h2>Trigger state</h2><p>The frontend can show this state, but external actions require a backend.</p></div><b>OFFLINE</b></article>
+          </div>
+          <button class="wide-action" id="timelineSimulate" type="button">Run safe simulation</button>
+        </section>
+
+        <section class="view" data-view-panel="contacts" aria-labelledby="contactsTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">PEOPLE</p><h1 id="contactsTitle">Trusted contacts</h1></div><button class="primary-small" type="button" disabled>Add contact</button></div>
+          <div class="empty-state"><div class="empty-icon">◎</div><h2>No trusted contacts yet</h2><p>This is where people who may receive alerts or access would appear once the backend exists.</p><span>Backend required</span></div>
+        </section>
+
+        <section class="view" data-view-panel="vault" aria-labelledby="vaultTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">SEALED CONTENT</p><h1 id="vaultTitle">Vault</h1></div><button class="primary-small" type="button" disabled>Add item</button></div>
+          <div class="vault-grid">
+            <article class="vault-status-card"><span class="vault-mark">◇</span><div><small>SEALED ARCHIVE</small><strong>Empty</strong><p>No documents, messages, instructions, or credentials are stored.</p></div></article>
+            <div class="vault-types"><div><span>Documents</span><strong>0</strong></div><div><span>Messages</span><strong>0</strong></div><div><span>Instructions</span><strong>0</strong></div><div><span>Credentials</span><strong>0</strong></div></div>
+          </div>
+          <div class="backend-card"><strong>Backend required</strong><p>A static GitHub page should not hold sensitive payloads or credentials. These controls stay disabled until secure storage and authentication exist.</p></div>
+        </section>
+
+        <section class="view" data-view-panel="activity" aria-labelledby="activityTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">LOCAL AUDIT LOG</p><h1 id="activityTitle">Activity</h1></div><button class="secondary-small" id="clearActivity" type="button">Clear log</button></div>
+          <div class="activity-table-head"><span>EVENT</span><span>DETAIL</span><span>TIME</span></div>
+          <div class="activity-list full" id="activityList"></div>
+        </section>
+      </main>
     </div>
-  </header>
+  </div>
 
-  <main id="main">
-    <section class="hero" id="status" aria-labelledby="heroTitle">
-      <div class="hero-noise" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <div class="eyebrow-row">
-          <span class="eyebrow">MANUAL CHECK-IN</span>
-          <span class="status-chip" id="statusChip"><i></i><b>SAFE</b></span>
-        </div>
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <button class="is-active" type="button" data-view="overview"><span>◉</span><small>Home</small></button>
+    <button type="button" data-view="timeline"><span>⌁</span><small>Timeline</small></button>
+    <button type="button" data-view="contacts"><span>◎</span><small>People</small></button>
+    <button type="button" data-view="vault"><span>◇</span><small>Vault</small></button>
+    <button type="button" data-view="activity"><span>≡</span><small>Activity</small></button>
+  </nav>
 
-        <h1 id="heroTitle">You’re checked in.</h1>
-        <p class="hero-summary" id="heroSummary">Nothing happens while your check-ins stay current.</p>
-
-        <div class="hero-meta">
-          <div>
-            <span>Last check-in</span>
-            <strong id="lastCheckInText">Just now</strong>
-          </div>
-          <div>
-            <span>Next required</span>
-            <strong id="nextCheckInText">Calculating</strong>
-          </div>
-        </div>
-
-        <div class="reality-note">
-          <span aria-hidden="true">i</span>
-          <p><strong>Frontend prototype.</strong> This browser remembers your check-ins. No contacts, files, or release actions run without a secure backend.</p>
-        </div>
-      </div>
-
-      <div class="checkin-console" aria-label="Check-in countdown">
-        <div class="console-topline">
-          <span>CHECK-IN WINDOW</span>
-          <span id="intervalLabel">72 HOURS</span>
-        </div>
-
-        <div class="countdown-wrap">
-          <svg class="countdown-ring" viewBox="0 0 260 260" role="img" aria-labelledby="ringTitle ringDesc">
-            <title id="ringTitle">Time remaining until next check-in</title>
-            <desc id="ringDesc">A circular progress ring showing the remaining check-in window.</desc>
-            <circle class="ring-track" cx="130" cy="130" r="108"></circle>
-            <circle class="ring-progress" id="ringProgress" cx="130" cy="130" r="108"></circle>
-          </svg>
-          <div class="countdown-center">
-            <span id="countdownLabel">TIME REMAINING</span>
-            <strong id="countdownValue">--:--:--</strong>
-            <small id="countdownSub">until check-in is due</small>
-          </div>
-        </div>
-
-        <button class="checkin-button" id="checkInButton" type="button">
-          <span class="checkin-progress" id="checkInProgress" aria-hidden="true"></span>
-          <span class="button-main"><i aria-hidden="true">✓</i><strong id="checkInButtonText">CHECK IN NOW</strong></span>
-          <small>Confirms you’re okay and resets the timer</small>
-        </button>
-
-        <p class="console-foot" id="consoleFoot">Manual confirmation only · saved on this device</p>
-      </div>
-    </section>
-
-    <section class="timeline-section" id="timeline" aria-labelledby="timelineTitle">
-      <header class="section-heading">
-        <div>
-          <span class="section-kicker">TRIGGER SEQUENCE</span>
-          <h2 id="timelineTitle">What happens if you stop checking in</h2>
-        </div>
-        <button class="secondary-button" id="simulateButton" type="button" aria-haspopup="dialog" aria-controls="simulationDialog">Preview sequence</button>
-      </header>
-
-      <div class="timeline" id="timelineTrack">
-        <article class="timeline-step" data-stage="safe">
-          <div class="timeline-node"><span>01</span></div>
-          <div class="timeline-copy"><small>CURRENT</small><strong>Checked in</strong><p>The timer is running. Nothing is released.</p></div>
-        </article>
-        <article class="timeline-step" data-stage="due">
-          <div class="timeline-node"><span>02</span></div>
-          <div class="timeline-copy"><small>DUE</small><strong>Check-in missed</strong><p>Your scheduled check-in passes without confirmation.</p></div>
-        </article>
-        <article class="timeline-step" data-stage="grace">
-          <div class="timeline-node"><span>03</span></div>
-          <div class="timeline-copy"><small>GRACE</small><strong>Final window</strong><p>A final delay gives you time to confirm before any future actions run.</p></div>
-        </article>
-        <article class="timeline-step" data-stage="triggered">
-          <div class="timeline-node"><span>04</span></div>
-          <div class="timeline-copy"><small>TRIGGER</small><strong>Actions become eligible</strong><p>Future backend actions could run here. This prototype does not send or release anything.</p></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="setup-section" id="setup" aria-labelledby="setupTitle">
-      <header class="section-heading">
-        <div>
-          <span class="section-kicker">IF I DON’T CHECK IN</span>
-          <h2 id="setupTitle">What the switch could eventually do</h2>
-        </div>
-        <p class="section-description">These modules are intentionally unarmed until a backend, authentication, encryption, and verification flow exist.</p>
-      </header>
-
-      <div class="module-grid">
-        <article class="module-card">
-          <div class="module-icon" aria-hidden="true">01</div>
-          <div class="module-head"><span>TRUSTED CONTACTS</span><b class="not-configured">NOT CONFIGURED</b></div>
-          <h3>Notify the right people</h3>
-          <p>Choose who gets contacted, when they get contacted, and what each person is allowed to receive.</p>
-          <div class="module-stat"><strong>0</strong><span>verified contacts</span></div>
-          <button class="module-button" type="button" data-unavailable="Trusted contacts">Plan contacts <span>→</span></button>
-        </article>
-
-        <article class="module-card vault-card">
-          <div class="module-icon" aria-hidden="true">02</div>
-          <div class="module-head"><span>SEALED ARCHIVE</span><b class="not-configured">NOT CONFIGURED</b></div>
-          <h3>Keep private material sealed</h3>
-          <p>Future encrypted storage for documents, instructions, credentials, messages, or other selected material.</p>
-          <div class="vault-visual" aria-hidden="true"><span></span><i></i><b>SEALED</b></div>
-          <button class="module-button" type="button" data-unavailable="Sealed archive">View concept <span>→</span></button>
-        </article>
-
-        <article class="module-card">
-          <div class="module-icon" aria-hidden="true">03</div>
-          <div class="module-head"><span>FINAL INSTRUCTIONS</span><b class="not-configured">NOT CONFIGURED</b></div>
-          <h3>Prepare messages ahead of time</h3>
-          <p>Write specific instructions or messages and decide exactly who receives each one after verification.</p>
-          <div class="module-stat"><strong>0</strong><span>prepared messages</span></div>
-          <button class="module-button" type="button" data-unavailable="Final instructions">Plan messages <span>→</span></button>
-        </article>
-
-        <article class="module-card">
-          <div class="module-icon" aria-hidden="true">04</div>
-          <div class="module-head"><span>AUTOMATED ACTIONS</span><b class="not-configured">NOT CONFIGURED</b></div>
-          <h3>Run only verified actions</h3>
-          <p>Future integrations could perform carefully scoped actions after multiple safeguards confirm the switch should proceed.</p>
-          <div class="module-stat"><strong>0</strong><span>armed actions</span></div>
-          <button class="module-button" type="button" data-unavailable="Automated actions">View safeguards <span>→</span></button>
-        </article>
-      </div>
-    </section>
-
-    <section class="integrity-section" aria-labelledby="integrityTitle">
-      <div class="integrity-card">
-        <div class="integrity-status" aria-hidden="true"><span></span><i>✓</i></div>
-        <div class="integrity-copy">
-          <span class="section-kicker">CURRENT CAPABILITY</span>
-          <h2 id="integrityTitle">The check-in logic works here. The real switch comes later.</h2>
-          <p>Right now this page can track your manual check-ins, calculate due and grace periods, remember settings on this browser, and show the trigger sequence. A real Dead Man Switch needs an always-on backend so it can keep working when this page is closed.</p>
-        </div>
-        <dl class="integrity-list">
-          <div><dt>Manual check-in</dt><dd class="ready">READY</dd></div>
-          <div><dt>Local countdown</dt><dd class="ready">READY</dd></div>
-          <div><dt>Browser history</dt><dd class="ready">READY</dd></div>
-          <div><dt>Server monitoring</dt><dd>FUTURE</dd></div>
-          <div><dt>Contact delivery</dt><dd>FUTURE</dd></div>
-          <div><dt>Encrypted release</dt><dd>FUTURE</dd></div>
-        </dl>
-      </div>
-    </section>
-
-    <section class="activity-section" id="activity" aria-labelledby="activityTitle">
-      <header class="section-heading">
-        <div>
-          <span class="section-kicker">LOCAL HISTORY</span>
-          <h2 id="activityTitle">Recent activity</h2>
-        </div>
-        <span class="device-only">THIS DEVICE ONLY</span>
-      </header>
-
-      <div class="activity-card">
-        <div class="activity-head"><span>TIME</span><span>EVENT</span><span>STATE</span></div>
-        <div class="activity-list" id="activityList" aria-live="polite"></div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>CHECK IN · FRONTEND PROTOTYPE</span>
-    <span>db.cmxchat.com/checkin</span>
-  </footer>
-
-  <dialog class="dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+  <dialog class="app-dialog" id="settingsDialog">
     <form method="dialog" class="dialog-shell" id="settingsForm">
-      <div class="dialog-topbar">
-        <div><span>CHECK-IN SETTINGS</span><h2 id="settingsTitle">Set the local timer</h2></div>
-        <button class="dialog-close" value="cancel" type="submit" aria-label="Close settings">×</button>
-      </div>
-
-      <p class="dialog-intro">These settings only affect the prototype in this browser. They are not server-side monitoring.</p>
-
-      <label class="field">
-        <span>Required check-in interval</span>
-        <select id="intervalSelect">
-          <option value="24">Every 24 hours</option>
-          <option value="48">Every 48 hours</option>
-          <option value="72">Every 72 hours</option>
-          <option value="168">Every 7 days</option>
-        </select>
-      </label>
-
-      <label class="field">
-        <span>Grace period after a missed check-in</span>
-        <select id="graceSelect">
-          <option value="6">6 hours</option>
-          <option value="12">12 hours</option>
-          <option value="24">24 hours</option>
-          <option value="48">48 hours</option>
-        </select>
-      </label>
-
-      <div class="settings-summary">
-        <span>Current rule</span>
-        <strong id="settingsSummary">Check in every 72 hours · 24-hour grace period</strong>
-      </div>
-
-      <div class="dialog-actions">
-        <button class="secondary-button danger-button" id="resetLocalButton" type="button">Reset local data</button>
-        <button class="primary-button" id="saveSettingsButton" value="default" type="submit">Save settings</button>
-      </div>
+      <div class="dialog-head"><div><small>CHECK IN</small><h2>Settings</h2></div><button value="cancel" class="dialog-close" aria-label="Close">×</button></div>
+      <div class="field-group"><label for="intervalSelect">Check-in interval</label><select id="intervalSelect"><option value="24">Every 24 hours</option><option value="48">Every 48 hours</option><option value="72">Every 72 hours</option><option value="168">Every 7 days</option></select></div>
+      <div class="field-group"><label for="graceSelect">Grace period</label><select id="graceSelect"><option value="6">6 hours</option><option value="12">12 hours</option><option value="24">24 hours</option><option value="48">48 hours</option></select></div>
+      <div class="setting-note"><strong>Local prototype</strong><p>Changing these values updates the browser timer only. It does not create a server-side monitor.</p></div>
+      <menu><button value="cancel" class="secondary-small">Cancel</button><button value="default" class="primary-small" id="saveSettings">Save changes</button></menu>
     </form>
   </dialog>
 
-  <dialog class="dialog simulation-dialog" id="simulationDialog" aria-labelledby="simulationTitle">
-    <div class="dialog-shell">
-      <div class="dialog-topbar">
-        <div><span>SAFE PREVIEW</span><h2 id="simulationTitle">Trigger sequence simulation</h2></div>
-        <button class="dialog-close" id="simulationClose" type="button" aria-label="Close simulation">×</button>
-      </div>
-
-      <p class="dialog-intro">This is only a visual walkthrough. It cannot notify anyone, unlock files, or trigger external actions.</p>
-
-      <div class="simulation-screen">
-        <div class="sim-clock"><span>SIMULATION TIME</span><strong id="simTime">T+00:00</strong></div>
-        <div class="sim-event" id="simEvent">
-          <span class="sim-code">01</span>
-          <div><small>START</small><strong>Last valid check-in loaded</strong><p>The switch begins from a known safe state.</p></div>
-        </div>
-        <div class="sim-progress"><i id="simProgress"></i></div>
-      </div>
-
-      <div class="sim-controls">
-        <button class="secondary-button" id="simRestart" type="button">Restart</button>
-        <button class="primary-button" id="simNext" type="button">Next stage <span>→</span></button>
-      </div>
+  <dialog class="app-dialog" id="simulationDialog">
+    <div class="dialog-shell simulation-shell">
+      <div class="dialog-head"><div><small>SAFE PREVIEW</small><h2>Trigger simulation</h2></div><button class="dialog-close" id="closeSimulation" type="button" aria-label="Close">×</button></div>
+      <div class="simulation-status"><span id="simulationCode">T+00:00</span><strong id="simulationTitle">Starting simulation</strong><p id="simulationCopy">No real settings, contacts, or files will be changed.</p></div>
+      <div class="simulation-progress"><i id="simulationProgress"></i></div>
+      <div class="simulation-actions"><button class="secondary-small" id="stopSimulation" type="button">Stop</button><button class="primary-small" id="nextSimulation" type="button">Next stage</button></div>
     </div>
   </dialog>
 
-  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
-    <span class="toast-icon" aria-hidden="true">✓</span>
-    <div><strong id="toastTitle">Check-in recorded</strong><small id="toastText">Timer reset on this device.</small></div>
-  </div>
-
-  <script src="/assets/checkin/checkin.js?v=20260814-1" defer></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/assets/checkin/checkin.js?v=20260814-2"></script>
 </body>
 </html>
