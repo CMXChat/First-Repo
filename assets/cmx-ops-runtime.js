@@ -201,7 +201,11 @@ async function boot() {
   $('#boot').classList.add('done');
 
   const session = readJson(sessionStorage, KEY.session, null);
-  if (session?.username === ADMIN_USERNAME && authData()) launch();
+  if (
+    session?.username === ADMIN_USERNAME
+    && session?.token
+    && await validateBackendSession(session.token)
+  ) launch();
   else showGate();
 }
 
@@ -269,5 +273,5 @@ document.addEventListener('click', (event) => {
   if (!$('#app').classList.contains('hidden') && !event.target.closest('button,a,input,textarea')) $('#commandInput').focus();
 });
 
-window.addEventListener('pagehide', () => sessionStorage.removeItem(KEY.session));
+// sessionStorage automatically clears the access token when the tab closes.
 boot();
