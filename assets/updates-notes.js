@@ -31,7 +31,9 @@ window.CMX_DAILY_NOTES = [
       'The cinematic authentication feedback has been restored with animated terminal lines for the encrypted connection, Python request, hash verification, administrator check, token issuance, denial and backend-offline states. The animation reports real stages but never decides access.',
       'The database password was rotated without writing it into GitHub or documentation. Live checks confirmed the replacement works and the previous password is rejected. Backend CORS now permits db.cmxchat.com specifically instead of every website.',
       'The root interface remains static GitHub Pages source and is therefore inspectable before login. Truly private user information must move into PostgreSQL or protected backend services and be returned only after Python validates the user token and permissions.',
-      'Zoho email automation for team@cmxchat.com is planned but not connected. It should use an app-specific password stored only as a backend environment secret, followed by test delivery, event rules, recipient controls, audit records and a disable switch.'
+      'Zoho email automation for team@cmxchat.com is planned but not connected. It should use an app-specific password stored only as a backend environment secret, followed by test delivery, event rules, recipient controls, audit records and a disable switch.',
+      'A new learning roadmap documents frontend versus backend, requests and JSON, HTTPS and CORS, Argon2 password hashing, PostgreSQL users, authentication versus authorization, JWT sessions, static-source limits, environment secrets, deployment, safe test databases and Zoho SMTP automation.',
+      'The hands-on order starts with changing the Python test response, observing login requests, creating a non-admin test user and one protected database note, then moves to staging deployment, a Zoho test email and gradual migration of additional gates.'
     ],
     links: [
       { url: '/', label: 'Open Restricted Node' },
