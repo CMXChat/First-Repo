@@ -3,20 +3,57 @@
 /**
  * Root homepage authentication policy.
  *
- * Password verification happens only in the jay-app backend. This public file
- * intentionally contains no password, salt, verifier, hash, or database value.
+ * Security boundary:
+ * - Password verification happens only in the jay-app Python backend.
+ * - This public file contains no password, salt, verifier, hash, or database value.
+ * - The trace below is presentation only; access is granted exclusively from
+ *   successful backend responses and a server-validated administrator token.
+ * - Private data must be returned by authenticated backend endpoints. Static
+ *   GitHub Pages source remains public even when this gate hides the interface.
  */
 const HOME_AUTH_API = 'https://sturdy-space-tribble-qwgq456pq6gfxvjr-8000.app.github.dev/api/v1';
 const HOME_LOGIN_URL = `${HOME_AUTH_API}/login/homepage-access`;
 const HOME_SESSION_URL = `${HOME_AUTH_API}/login/homepage-session`;
+const HOME_TRACE_DELAY_MS = 150;
 
 authData = function backendCredentialAvailable() {
-  return { version: 3, username: ADMIN_USERNAME, provider: 'jay-app' };
+  return { version: 4, username: ADMIN_USERNAME, provider: 'jay-app' };
 };
 
 createVault = async function backendCredentialSetupDisabled() {
   gateMessage('Credential provisioning is managed by the backend.', 'bad');
 };
+
+function waitForGateTrace(delay = HOME_TRACE_DELAY_MS) {
+  return new Promise((resolve) => setTimeout(resolve, delay));
+}
+
+function resetGateTrace() {
+  const output = $('#gateOutput');
+  output.textContent = '';
+  output.className = 'gate-output gate-trace';
+  return output;
+}
+
+async function addGateTrace(tag, text, type = 'muted', delay = HOME_TRACE_DELAY_MS) {
+  const output = $('#gateOutput');
+  if (!output.classList.contains('gate-trace')) resetGateTrace();
+
+  const row = document.createElement('div');
+  row.className = `gate-trace-line ${type}`;
+
+  const marker = document.createElement('span');
+  marker.className = 'gate-trace-marker';
+  marker.textContent = tag;
+
+  const copy = document.createElement('span');
+  copy.textContent = text;
+
+  row.append(marker, copy);
+  output.appendChild(row);
+  output.scrollTop = output.scrollHeight;
+  await waitForGateTrace(delay);
+}
 
 async function validateBackendSession(token) {
   if (!token) return false;
@@ -40,13 +77,19 @@ async function validateBackendSession(token) {
 
 unlock = async function unlockWithBackend() {
   const passwordInput = $('#loginPassword');
-  const password = passwordInput.value;
+  let password = passwordInput.value;
   if (!password) return gateMessage('Enter the admin password.', 'bad');
 
-  gateMessage('Verifying with secure backend...', 'info');
-  $('#unlockBtn').disabled = true;
+  const unlockButton = $('#unlockBtn');
+  unlockButton.disabled = true;
+  passwordInput.disabled = true;
+  resetGateTrace();
 
   try {
+    await addGateTrace('[ INIT ]', 'Preparing restricted authentication channel.', 'info');
+    await addGateTrace('[ TLS  ]', 'Opening encrypted connection to jay-app.', 'info');
+    await addGateTrace('[ API  ]', 'Sending credential directly to Python.', 'info');
+
     const response = await fetch(HOME_LOGIN_URL, {
       method: 'POST',
       mode: 'cors',
@@ -59,18 +102,26 @@ unlock = async function unlockWithBackend() {
       body: JSON.stringify({ password })
     });
     passwordInput.value = '';
+    password = '';
 
     if (!response.ok) {
-      gateMessage(
-        response.status === 401 ? 'Access denied.' : 'Authentication service unavailable.',
-        'bad'
+      await addGateTrace(
+        response.status === 401 ? '[ DENY ]' : '[ FAIL ]',
+        response.status === 401
+          ? 'Backend rejected the credential.'
+          : 'Authentication service returned an error.',
+        'bad',
+        0
       );
       return;
     }
 
+    await addGateTrace('[  OK  ]', 'Python verified the stored password hash.', 'ok');
+    await addGateTrace('[  OK  ]', 'Active administrator role confirmed.', 'ok');
+
     const result = await response.json();
     if (typeof result.access_token !== 'string' || !result.access_token) {
-      gateMessage('Authentication service returned an invalid response.', 'bad');
+      await addGateTrace('[ FAIL ]', 'Backend response did not contain session proof.', 'bad', 0);
       return;
     }
 
@@ -79,12 +130,22 @@ unlock = async function unlockWithBackend() {
       token: result.access_token,
       at: Date.now()
     });
-    gateMessage('Access granted.', 'ok');
-    setTimeout(() => launch(), 180);
+
+    await addGateTrace('[  OK  ]', 'Signed 30-minute tab session received.', 'ok');
+    await addGateTrace('[ OPEN ]', 'Access granted. Launching restricted node.', 'success', 260);
+    launch();
   } catch {
     passwordInput.value = '';
-    gateMessage('Authentication service unavailable. Confirm the backend is running.', 'bad');
+    password = '';
+    await addGateTrace(
+      '[ OFFLINE ]',
+      'Python backend is unavailable. Confirm the Codespace and port 8000 are running.',
+      'bad',
+      0
+    );
   } finally {
-    $('#unlockBtn').disabled = false;
+    unlockButton.disabled = false;
+    passwordInput.disabled = false;
+    passwordInput.focus();
   }
 };
