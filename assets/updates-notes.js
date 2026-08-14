@@ -22,6 +22,26 @@
 
 window.CMX_DAILY_NOTES = [
   {
+    id: '2026-08-14-homepage-python-auth',
+    timestamp: '2026-08-14T15:30:00-04:00',
+    title: 'Homepage gate now authenticates through Python with its terminal sequence restored',
+    status: 'in-progress',
+    body: [
+      'The root homepage no longer ships its fixed password salt and verifier. Password verification now happens in jay-app against the administrator Argon2 hash stored in PostgreSQL, and successful login returns a signed 30-minute token kept in the current browser tab.',
+      'The cinematic authentication feedback has been restored with animated terminal lines for the encrypted connection, Python request, hash verification, administrator check, token issuance, denial and backend-offline states. The animation reports real stages but never decides access.',
+      'The database password was rotated without writing it into GitHub or documentation. Live checks confirmed the replacement works and the previous password is rejected. Backend CORS now permits db.cmxchat.com specifically instead of every website.',
+      'The root interface remains static GitHub Pages source and is therefore inspectable before login. Truly private user information must move into PostgreSQL or protected backend services and be returned only after Python validates the user token and permissions.',
+      'Zoho email automation for team@cmxchat.com is planned but not connected. It should use an app-specific password stored only as a backend environment secret, followed by test delivery, event rules, recipient controls, audit records and a disable switch.'
+    ],
+    links: [
+      { url: '/', label: 'Open Restricted Node' },
+      { url: '/pythontest/', label: 'Open Python Connection Test' },
+      { url: '/updates/', label: 'Open Platform Notes' }
+    ],
+    tags: ['authentication', 'python', 'postgresql', 'security', 'email'],
+    pinned: true
+  },
+  {
     id: '2026-08-08-spaces-exact-section-links',
     timestamp: '2026-08-08T17:05:00-04:00',
     title: 'Spaces interlinks now land on the exact selected section',
