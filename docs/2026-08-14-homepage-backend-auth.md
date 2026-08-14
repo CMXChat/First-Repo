@@ -113,3 +113,117 @@ When enabled, jay-app can use its existing SMTP settings and email helper. The s
 - begin with a test email, then add narrowly defined event rules, recipient controls, audit records, retry limits, and an emergency disable switch.
 
 Automated email should remain disabled until the stable backend deployment exists and the app-specific credential is configured.
+
+
+## What to learn next
+
+You do not need to learn everything at once. Learn these ideas in this order by changing the system you now have.
+
+### 1. Frontend and backend
+
+The frontend is the HTML, CSS, and JavaScript running in the visitor's browser. It controls appearance and sends requests, but its downloaded source cannot hold secrets.
+
+The backend is the Python application running on a server. It can safely use database connections and provider credentials because those values are not sent to the browser.
+
+**Practice:** Change the message returned by the Python test endpoint and watch the pythontest page display the new response.
+
+### 2. Requests, routes, JSON, and status codes
+
+A browser request has a method and path, such as POST /api/v1/login/homepage-access. Python matches that route, validates the supplied data, performs work, and sends a response.
+
+JSON is the common data format used between JavaScript and Python. Status 200 means success, 401 means login failed, 403 means the logged-in user lacks permission, and 500 means the server encountered an error.
+
+**Practice:** Open the browser Network panel during login and identify the request path, status code, request JSON, and response JSON. Never copy an access token into notes or screenshots.
+
+### 3. HTTPS and CORS
+
+HTTPS encrypts the password while it travels between the browser and backend. CORS is a browser rule controlling which website origins may call the API.
+
+The backend currently allows the exact https://db.cmxchat.com origin. CORS is not authentication: every private endpoint must still validate the token and permission.
+
+### 4. Password hashing
+
+A password must not be stored as readable text. Argon2 turns it into a slow, salted hash. At login, Python verifies the entered password against that stored hash.
+
+Hashing is one-way verification, not encryption. Password strength still matters because attackers can guess common passwords.
+
+**Practice:** Review backend/app/core/security.py and backend/app/crud.py without printing hashes or passwords.
+
+### 5. Users and PostgreSQL
+
+A user is a database record containing identity and permission fields plus the password hash. PostgreSQL provides durable private storage; the browser should never connect to it directly.
+
+Database migrations describe controlled schema changes. Application code should use SQLModel sessions and typed models instead of placing SQL credentials or queries in a webpage.
+
+**Practice:** Create a development-only user and inspect only safe fields such as email, active state, and role.
+
+### 6. Authentication and authorization
+
+Authentication answers, “Who are you?” Authorization answers, “What may this user do?” A correct password should not automatically permit every operation.
+
+The homepage requires the configured account to be active and an administrator. Future private records also need ownership or role checks on every backend route.
+
+**Practice:** Create a normal non-administrator test user and verify that administrator-only routes reject that account.
+
+### 7. Tokens and sessions
+
+After login, Python signs a JWT containing identity and expiration information. The homepage keeps it in sessionStorage, sends it as a Bearer token, and asks Python to validate it again.
+
+A token is temporary proof, not a password. It should be short-lived, sent only over HTTPS, removed during logout or locking, and never logged or committed.
+
+**Practice:** Log in, refresh, lock the terminal, and observe session behavior. Then confirm expiration requires another login.
+
+### 8. Static files versus protected information
+
+A GitHub Pages file is public even if CSS or JavaScript hides it until login. Developer tools, raw GitHub files, or direct asset URLs can reveal static content.
+
+Private information is protected from unauthenticated visitors only when it never enters the static repository and Python returns it only after verifying the user and permission.
+
+**Practice:** Build one harmless private note in PostgreSQL, return it through an authenticated endpoint, and confirm its text cannot be found in First-Repo.
+
+### 9. Environment variables and secrets
+
+SMTP app passwords, database credentials, and JWT signing keys belong in encrypted hosting or Codespaces secrets. A committed .env file, frontend variable, screenshot, chat transcript, or document is not a secret store.
+
+Frontend build variables can be bundled into public JavaScript. Provider secrets must stay backend-only.
+
+### 10. Deployment and uptime
+
+The Codespaces backend is temporary. If it stops or port 8000 becomes private, homepage login stops working.
+
+Production needs a stable HTTPS hostname, continuous runtime, deployment secrets, database access, logs, monitoring, backups, and rollback.
+
+**Practice:** Deploy staging first and verify login, CORS, database access, token expiration, logs, and rollback before changing the live domain.
+
+### 11. Testing safely
+
+Tests need a separate test database. The current repository fixture deletes users at teardown, which is useful for isolated tests but dangerous against real data.
+
+Unit tests check small behaviors, integration tests check API and database behavior together, and browser tests check the complete user flow.
+
+**Practice:** Create a dedicated test database before running the full backend suite again.
+
+### 12. Email with Zoho
+
+SMTP lets Python send email through Zoho. Use a Zoho app-specific password, never the normal mailbox password. Store it only as a backend environment secret.
+
+Email automation also needs a defined event, approved recipients, templates, deduplication, retries, rate limits, audit records, failure alerts, and an emergency disable switch.
+
+**Practice:** Configure a staging sender, send one test message to yourself, record the result without recording the credential, and only then build one narrow event such as a welcome email.
+
+### Recommended learning sequence
+
+1. Change the Python test message.
+2. Watch login in the Network panel.
+3. Read the authentication route and password-hashing functions.
+4. Create a non-admin development user.
+5. Build one authenticated private-note endpoint.
+6. Move one test value out of static HTML and into PostgreSQL.
+7. Set up a separate test database.
+8. Deploy jay-app to stable staging.
+9. Configure a Zoho app password in staging secrets.
+10. Send one audited test email.
+11. Add one simple event-driven email rule.
+12. Migrate additional gates and private content one page at a time.
+
+The most important rule is simple: **design can live in public frontend files; secrets and private user data must stay behind authenticated backend authorization.**
