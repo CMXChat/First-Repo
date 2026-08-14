@@ -29,6 +29,7 @@ The current homepage no longer contains the fixed salt, verifier, password hash,
 - `backend/app/api/routes/login.py`: added the homepage login and session-validation endpoints.
 - `backend/app/models.py`: added the password-only homepage login request model.
 - `backend/app/core/config.py`: added a 30-minute homepage token lifetime.
+- `backend/app/main.py`: restored the configured CORS allowlist instead of allowing every website.
 - `backend/tests/api/routes/test_login.py`: added success, wrong-password, and session-validation tests.
 - `specs/002-homepage-backend-auth/`: records requirements and acceptance criteria.
 
@@ -54,13 +55,17 @@ The backend login test suite verifies:
 - an administrator token can validate the homepage session;
 - the existing login and password-reset tests continue to pass.
 
-The changed Python files also pass Ruff lint and formatting checks. The live site and API are checked after publishing to confirm that CORS allows `https://db.cmxchat.com` and that the current source no longer serves the retired verifier.
+The changed Python files also pass Ruff lint and formatting checks. The live site and API were checked after publishing: valid login returned a token, the token validated, an incorrect password was denied, and CORS allowed `https://db.cmxchat.com` specifically rather than every website.
+
+The repository's existing test fixture deletes users when its test session finishes. In this environment the tests were connected to the configured database, so the administrator account was restored immediately afterward and its login was verified. Do not point this test suite at production data; use a separate test database before running it in a production environment.
 
 ## Important limitation
 
 GitHub Pages is static hosting. Its HTML, CSS, JavaScript, and interface content are public files even when JavaScript displays a password gate. This migration protects the password and makes backend authorization real, but it cannot make static homepage content secret.
 
 Any truly private information must live behind authenticated jay-app endpoints and be returned only after Python authorizes the token.
+
+This work intentionally changed only the root homepage. Other browser-only gates were not migrated. In particular, the separate vault gate still contains its existing client-side verifier and needs its own future backend migration before it should be treated as secure.
 
 ## Current temporary backend address
 
