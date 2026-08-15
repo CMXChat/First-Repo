@@ -200,7 +200,7 @@
     event.preventDefault(); els.authSubmit.disabled = true; els.authError.textContent = '';
     const body = new URLSearchParams(new FormData(els.authForm));
     try {
-      await api('/login/checkin-session', { method: 'POST', body, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+      await api('/login/checkin-session', { method: 'POST', body, headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CMX-Client': 'checkin' } });
       await syncStatus({ promptOnAuth: false });
       els.authForm.reset();
       showToast('Secure check-in session started.');
