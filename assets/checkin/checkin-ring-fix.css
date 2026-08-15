@@ -1,55 +1,70 @@
-/* Circular ring aura for Android/Chrome: avoids rectangular blur compositing bounds. */
+/* Ring glow: circular-only paint path to avoid Android/Chrome compositing boxes. */
 html[data-theme="dark"] .countdown-ring{
   --ring-glow-rgb:101,213,177;
+  position:relative;
   overflow:visible;
-  isolation:isolate;
+  isolation:auto!important;
   background:transparent!important;
+  filter:none!important;
 }
+
 html[data-theme="dark"] .status-console[data-state="soon"] .countdown-ring{--ring-glow-rgb:239,189,92}
 html[data-theme="dark"] .status-console[data-state="grace"] .countdown-ring,
 html[data-theme="dark"] .status-console[data-state="triggered"] .countdown-ring{--ring-glow-rgb:255,119,128}
 
+/* No large gradient/blur layer. This is a transparent circle whose shadows create the aura. */
 html[data-theme="dark"] .countdown-ring::before{
   content:"";
   position:absolute;
-  inset:-34%;
-  z-index:-1;
-  border-radius:50%;
-  pointer-events:none;
-  background:radial-gradient(circle at center,rgba(var(--ring-glow-rgb),.17) 0%,rgba(var(--ring-glow-rgb),.105) 22%,rgba(var(--ring-glow-rgb),.055) 38%,rgba(var(--ring-glow-rgb),.02) 52%,rgba(var(--ring-glow-rgb),0) 68%)!important;
-  filter:none!important;
-  opacity:1!important;
-  transform:none!important;
-  box-shadow:none!important;
-}
-
-html[data-theme="dark"] .countdown-ring::after{
-  content:"";
-  position:absolute;
-  inset:-5%;
+  inset:10%;
   z-index:0;
-  border:0!important;
   border-radius:50%;
   pointer-events:none;
   background:transparent!important;
+  border:0!important;
   filter:none!important;
-  box-shadow:0 0 26px rgba(var(--ring-glow-rgb),.15),0 0 54px rgba(var(--ring-glow-rgb),.085),inset 0 0 24px rgba(var(--ring-glow-rgb),.035)!important;
+  opacity:1!important;
+  transform:none!important;
+  box-shadow:
+    0 0 10px 3px rgba(var(--ring-glow-rgb),.24),
+    0 0 24px 7px rgba(var(--ring-glow-rgb),.13),
+    0 0 46px 11px rgba(var(--ring-glow-rgb),.065),
+    inset 0 0 18px rgba(var(--ring-glow-rgb),.045)!important;
+}
+
+/* Kill the older secondary aura layer completely. */
+html[data-theme="dark"] .countdown-ring::after{
+  content:none!important;
+  display:none!important;
 }
 
 html[data-theme="dark"] .countdown-ring svg,
-html[data-theme="dark"] .countdown-ring .ring-center{background:transparent!important}
+html[data-theme="dark"] .countdown-ring .ring-center{
+  background:transparent!important;
+  filter:none!important;
+}
 html[data-theme="dark"] .countdown-ring svg{z-index:1}
 html[data-theme="dark"] .countdown-ring .ring-center{z-index:2}
 
+/* Avoid SVG filter rasterization. The circular pseudo-element supplies the glow. */
 html[data-theme="dark"] .ring-progress{
-  filter:drop-shadow(0 0 4px rgba(var(--ring-glow-rgb),.82)) drop-shadow(0 0 10px rgba(var(--ring-glow-rgb),.42)) drop-shadow(0 0 18px rgba(var(--ring-glow-rgb),.20))!important;
+  filter:none!important;
 }
 
 html[data-theme="dark"] .status-core,
 html[data-theme="dark"] .checkin-control,
-html[data-theme="dark"] .ring-center{box-shadow:none}
+html[data-theme="dark"] .ring-center{
+  box-shadow:none!important;
+  filter:none!important;
+}
 
 @media(max-width:700px){
-  html[data-theme="dark"] .countdown-ring::before{inset:-30%}
-  html[data-theme="dark"] .countdown-ring::after{inset:-4%}
+  html[data-theme="dark"] .countdown-ring::before{
+    inset:10%;
+    box-shadow:
+      0 0 9px 3px rgba(var(--ring-glow-rgb),.25),
+      0 0 21px 6px rgba(var(--ring-glow-rgb),.13),
+      0 0 38px 9px rgba(var(--ring-glow-rgb),.065),
+      inset 0 0 16px rgba(var(--ring-glow-rgb),.04)!important;
+  }
 }
