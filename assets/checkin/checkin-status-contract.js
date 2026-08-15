@@ -110,6 +110,7 @@ if (typeof document !== "undefined") {
         acceptNode(node) {
           const parent = node.parentElement;
           if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+          if (parent.closest('[contenteditable="true"], .record-card, .revision-card, .action-row, .activity-row')) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         },
       });
@@ -322,5 +323,120 @@ if (typeof document !== "undefined") {
 
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
     else boot();
+  })();
+}
+
+/* Public draft notebook and final access polish. Saving remains protected by checkin.js. */
+if (typeof document !== "undefined") {
+  (() => {
+    "use strict";
+
+    const style = document.createElement("style");
+    style.id = "checkin-public-draft-polish";
+    style.textContent = `
+      body:not(.operator-unlocked) [data-view-panel="updates"] .editor-heading-actions.operator-only{display:flex!important}
+      body:not(.operator-unlocked) [data-view-panel="updates"] .notebook.operator-only{display:grid!important}
+      body:not(.operator-unlocked) [data-view-panel="updates"] .access-gateway[data-gateway="updates"]{display:none!important}
+      body:not(.operator-unlocked) [data-view-panel="updates"] .revision-panel{display:block!important;opacity:.92}
+      body:not(.operator-unlocked) [data-view-panel="updates"] .revision-panel .panel-title button{display:none}
+      body:not(.operator-unlocked) [data-view-panel="updates"] .editor-pane{position:relative}
+      .public-draft-note{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 15px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 7%,var(--panel2)),color-mix(in srgb,var(--panel2) 92%,transparent));color:var(--muted);font-size:9px;line-height:1.45}
+      .public-draft-note strong{color:var(--accent);font-size:8px;font-weight:900;letter-spacing:.12em;white-space:nowrap}
+      .public-draft-note span{min-width:0}
+      .operator-unlocked .public-draft-note{border-color:color-mix(in srgb,var(--safe) 22%,var(--line));background:linear-gradient(90deg,color-mix(in srgb,var(--safe) 7%,var(--panel2)),color-mix(in srgb,var(--panel2) 92%,transparent))}
+      .operator-unlocked .public-draft-note strong{color:var(--safe)}
+      body:not(.operator-unlocked) #saveUpdate{border-color:color-mix(in srgb,var(--accent) 36%,var(--line));background:color-mix(in srgb,var(--accent) 8%,var(--panel));color:var(--text)}
+      body:not(.operator-unlocked) #saveUpdate::before{content:"⌁";margin-right:6px;color:var(--accent)}
+      .operator-session-strip{z-index:60!important;overflow:hidden;isolation:isolate;box-shadow:0 7px 0 var(--bg),0 22px 44px rgba(0,0,0,.16)!important}
+      .operator-session-strip + .main{position:relative;z-index:1}
+      html[data-theme="dark"] .status-console{background:radial-gradient(circle 185px at 29% 42%,rgba(var(--ring-glow-rgb),.035) 0%,rgba(var(--ring-glow-rgb),.045) 35%,rgba(var(--ring-glow-rgb),.115) 52%,rgba(var(--ring-glow-rgb),.075) 63%,rgba(var(--ring-glow-rgb),.032) 76%,rgba(var(--ring-glow-rgb),0) 100%),linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 38%,transparent 67%),rgba(12,16,21,.72)!important}
+      .countdown-ring{transform:translateY(-6px)}
+      @media(max-width:900px){html[data-theme="dark"] .status-console{background:radial-gradient(circle 170px at 50% 34%,rgba(var(--ring-glow-rgb),.035) 0%,rgba(var(--ring-glow-rgb),.045) 34%,rgba(var(--ring-glow-rgb),.12) 52%,rgba(var(--ring-glow-rgb),.075) 64%,rgba(var(--ring-glow-rgb),.03) 78%,rgba(var(--ring-glow-rgb),0) 100%),linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 38%,transparent 67%),rgba(12,16,21,.72)!important}.countdown-ring{transform:translateY(-4px)}}
+      @media(max-width:700px){.public-draft-note{align-items:flex-start;flex-direction:column;gap:4px;padding:9px 10px}.public-draft-note strong{white-space:normal}.operator-session-strip{box-shadow:0 5px 0 var(--bg),0 18px 34px rgba(0,0,0,.14)!important}html[data-theme="dark"] .status-console{background:radial-gradient(circle 158px at 50% 32%,rgba(var(--ring-glow-rgb),.03) 0%,rgba(var(--ring-glow-rgb),.04) 33%,rgba(var(--ring-glow-rgb),.12) 51%,rgba(var(--ring-glow-rgb),.072) 64%,rgba(var(--ring-glow-rgb),.026) 79%,rgba(var(--ring-glow-rgb),0) 100%),linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 38%,transparent 67%),rgba(12,16,21,.72)!important}}
+    `;
+    document.head.append(style);
+
+    let lockedDraftHtml = "";
+    let wasUnlocked = document.body.classList.contains("operator-unlocked");
+    let restoreQueued = false;
+
+    function isUnlocked() {
+      return document.body.classList.contains("operator-unlocked");
+    }
+
+    function ensureDraftNote() {
+      const pane = document.querySelector('[data-view-panel="updates"] .editor-pane');
+      const statusbar = pane?.querySelector(".editor-statusbar");
+      if (!pane || !statusbar) return null;
+      let note = pane.querySelector(".public-draft-note");
+      if (!note) {
+        note = document.createElement("div");
+        note.className = "public-draft-note";
+        note.setAttribute("role", "status");
+        statusbar.before(note);
+      }
+      const unlocked = isUnlocked();
+      const mode = unlocked ? "private" : "draft";
+      if (note.dataset.mode !== mode) {
+        note.dataset.mode = mode;
+        note.innerHTML = unlocked
+          ? '<strong>PRIVATE ACCESS ACTIVE</strong><span>You can save this page as a private revision. Saved history remains protected.</span>'
+          : '<strong>LOCAL DRAFT</strong><span>Write freely here. This draft stays in this browser tab until you unlock access and save a private revision.</span>';
+      }
+      return note;
+    }
+
+    function updateSaveButton() {
+      const save = document.querySelector("#saveUpdate");
+      if (!save) return;
+      const label = isUnlocked() ? "Save revision" : "Unlock to save";
+      const title = isUnlocked() ? "Save this private revision" : "Authorization is required before this draft can be saved";
+      if (save.textContent !== label) save.textContent = label;
+      if (save.title !== title) save.title = title;
+    }
+
+    function preserveLockedDraft() {
+      if (isUnlocked()) return;
+      const editor = document.querySelector("#richEditor");
+      if (!editor) return;
+      lockedDraftHtml = editor.innerHTML;
+    }
+
+    function restoreLockedDraftIfNeeded() {
+      if (restoreQueued || isUnlocked() || !lockedDraftHtml) return;
+      const editor = document.querySelector("#richEditor");
+      if (!editor || editor.innerHTML.trim()) return;
+      restoreQueued = true;
+      queueMicrotask(() => {
+        restoreQueued = false;
+        if (isUnlocked() || !lockedDraftHtml || editor.innerHTML.trim()) return;
+        editor.innerHTML = lockedDraftHtml;
+        editor.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    }
+
+    function syncPublicNotebook() {
+      const unlocked = isUnlocked();
+      ensureDraftNote();
+      updateSaveButton();
+      if (unlocked && !wasUnlocked) lockedDraftHtml = "";
+      if (!unlocked) restoreLockedDraftIfNeeded();
+      wasUnlocked = unlocked;
+    }
+
+    function bootPublicNotebook() {
+      const editor = document.querySelector("#richEditor");
+      if (!editor) return;
+      editor.addEventListener("input", preserveLockedDraft);
+      document.querySelector("#saveUpdate")?.addEventListener("click", () => {
+        if (!isUnlocked()) preserveLockedDraft();
+      }, true);
+      const observer = new MutationObserver(syncPublicNotebook);
+      observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "hidden"] });
+      syncPublicNotebook();
+    }
+
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootPublicNotebook, { once: true });
+    else bootPublicNotebook();
   })();
 }
