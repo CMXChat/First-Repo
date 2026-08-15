@@ -23,3 +23,221 @@ html[data-theme="dark"] .app-dialog::backdrop{background:rgba(0,0,0,.76)}
 @media(max-width:700px){body{padding-bottom:66px}.sidebar{display:none}.workspace{margin-left:0}.topbar{height:58px;padding:0 15px}.mobile-brand{display:flex;align-items:center;gap:8px}.mobile-brand .brand-mark{width:28px;height:28px}.top-status{margin-left:auto}.top-status span{display:none}.top-actions{margin-left:8px}.compact-action{display:none}.main{width:calc(100% - 24px);padding:20px 0 30px}.view-heading{align-items:flex-start;margin-bottom:16px}.view-heading h1{font-size:25px}.view-heading>p,.heading-meta{display:none}.mode-strip{align-items:flex-start;padding:9px 10px}.mode-strip p{line-height:1.35}.dashboard-grid{display:block}.status-console{padding:14px}.status-core{grid-template-columns:1fr;gap:12px;padding:12px 0 0}.countdown-ring{width:185px;height:185px;margin:0 auto}.ring-center strong{font-size:23px}.checkin-control>p{text-align:center}.checkin-button{min-height:65px}.quick-panel{display:none}.metric-grid{grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.metric-card{min-height:96px;padding:12px}.recent-panel{margin-top:8px}.activity-list.compact .activity-row time{min-width:auto}.mobile-nav{position:fixed;z-index:30;right:0;bottom:0;left:0;display:grid;grid-template-columns:repeat(5,1fr);height:64px;padding-bottom:env(safe-area-inset-bottom);border-top:1px solid var(--line);background:color-mix(in srgb,var(--sidebar) 94%,transparent);backdrop-filter:blur(18px)}.mobile-nav button{display:grid;place-content:center;gap:3px;border:0;background:transparent;color:var(--muted)}.mobile-nav button span{font-size:14px}.mobile-nav button small{font-size:8px;font-weight:700}.mobile-nav button.is-active{color:var(--accent)}.sequence-panel{padding:5px 14px}.sequence-line{left:37px}.sequence-step{grid-template-columns:42px 1fr;padding:17px 0}.sequence-step>b{grid-column:2}.vault-status-card{align-items:flex-start;min-height:0;padding:18px}.vault-mark{width:58px;height:58px;font-size:22px}.vault-types{min-height:170px}.activity-table-head{display:none}.activity-list.full{padding:0 11px}.activity-row{grid-template-columns:1fr auto;gap:8px}.activity-row p{grid-column:1/-1}.activity-row time{text-align:right}.toast{right:12px;bottom:76px;left:12px;max-width:none}.app-dialog{border-radius:16px}}
 @media(max-width:430px){.metric-grid{grid-template-columns:1fr 1fr}.metric-card strong{font-size:12px}.mode-strip p{font-size:9px}.vault-status-card{display:grid}.checkin-meta{gap:7px}.topbar .icon-action{display:none}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Dark-mode glass + glow polish */
+html[data-theme="dark"]{
+  --glass:rgba(14,18,24,.62);
+  --glass-strong:rgba(16,21,28,.74);
+  --glass-soft:rgba(255,255,255,.035);
+  --glass-line:rgba(211,226,242,.14);
+  --glass-line-strong:rgba(219,233,248,.22);
+}
+html[data-theme="dark"] body{
+  background:
+    radial-gradient(circle at 50% 28%,rgba(101,213,177,.035),transparent 24rem),
+    radial-gradient(circle at 77% -16%,rgba(47,130,246,.095),transparent 35rem),
+    radial-gradient(circle at 6% 102%,rgba(99,166,255,.05),transparent 29rem),
+    linear-gradient(180deg,#030406 0%,#06080b 55%,#030406 100%);
+}
+html[data-theme="dark"] .sidebar{
+  background:linear-gradient(180deg,rgba(8,10,13,.94),rgba(5,7,9,.97));
+  backdrop-filter:blur(24px) saturate(125%);
+  -webkit-backdrop-filter:blur(24px) saturate(125%);
+  border-right-color:rgba(220,232,245,.09);
+  box-shadow:12px 0 42px rgba(0,0,0,.24);
+}
+html[data-theme="dark"] .topbar{
+  background:rgba(5,7,10,.68);
+  backdrop-filter:blur(24px) saturate(140%);
+  -webkit-backdrop-filter:blur(24px) saturate(140%);
+  border-bottom-color:rgba(220,232,245,.10);
+  box-shadow:0 1px 0 rgba(255,255,255,.025),0 12px 40px rgba(0,0,0,.18);
+}
+html[data-theme="dark"] .status-console,
+html[data-theme="dark"] .quick-panel,
+html[data-theme="dark"] .recent-panel,
+html[data-theme="dark"] .sequence-panel,
+html[data-theme="dark"] .vault-status-card,
+html[data-theme="dark"] .vault-types,
+html[data-theme="dark"] .backend-card,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .activity-list.full,
+html[data-theme="dark"] .app-dialog{
+  border-color:var(--glass-line);
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.045),rgba(255,255,255,.012) 36%,transparent 62%),
+    linear-gradient(145deg,var(--glass-strong),rgba(7,9,12,.70));
+  backdrop-filter:blur(22px) saturate(135%);
+  -webkit-backdrop-filter:blur(22px) saturate(135%);
+  box-shadow:
+    0 22px 60px rgba(0,0,0,.38),
+    0 2px 12px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 -1px 0 rgba(255,255,255,.018);
+}
+html[data-theme="dark"] .status-console{
+  position:relative;
+  overflow:hidden;
+  border-color:rgba(197,222,237,.16);
+  background:
+    radial-gradient(circle at 33% 48%,rgba(101,213,177,.055),transparent 28%),
+    linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 38%,transparent 67%),
+    rgba(12,16,21,.72);
+  box-shadow:
+    0 26px 78px rgba(0,0,0,.44),
+    0 0 0 1px rgba(255,255,255,.018),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 -30px 70px rgba(0,0,0,.10);
+}
+html[data-theme="dark"] .status-console::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  pointer-events:none;
+  border-radius:inherit;
+  background:linear-gradient(115deg,rgba(255,255,255,.055),transparent 24%,transparent 70%,rgba(99,166,255,.025));
+  opacity:.8;
+}
+html[data-theme="dark"] .status-console>*{position:relative;z-index:1}
+html[data-theme="dark"] .mode-strip,
+html[data-theme="dark"] .metric-card,
+html[data-theme="dark"] .checkin-meta div,
+html[data-theme="dark"] .local-state,
+html[data-theme="dark"] .compact-action,
+html[data-theme="dark"] .icon-action,
+html[data-theme="dark"] .theme-toggle,
+html[data-theme="dark"] .wide-action,
+html[data-theme="dark"] .secondary-small,
+html[data-theme="dark"] .sequence-step>span,
+html[data-theme="dark"] .vault-mark,
+html[data-theme="dark"] .field-group select,
+html[data-theme="dark"] .setting-note,
+html[data-theme="dark"] .dialog-close{
+  border-color:rgba(215,229,244,.12);
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012)),
+    rgba(14,18,24,.48);
+  backdrop-filter:blur(16px) saturate(128%);
+  -webkit-backdrop-filter:blur(16px) saturate(128%);
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.16),
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 -1px 0 rgba(255,255,255,.012);
+}
+html[data-theme="dark"] .metric-card:hover,
+html[data-theme="dark"] .wide-action:hover,
+html[data-theme="dark"] .compact-action:hover,
+html[data-theme="dark"] .icon-action:hover,
+html[data-theme="dark"] .theme-toggle:hover{
+  border-color:rgba(133,183,246,.24);
+  background:
+    linear-gradient(145deg,rgba(99,166,255,.075),rgba(255,255,255,.018)),
+    rgba(15,19,26,.60);
+  box-shadow:0 12px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.065);
+}
+html[data-theme="dark"] .countdown-ring::before,
+html[data-theme="dark"] .countdown-ring::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+}
+html[data-theme="dark"] .countdown-ring::before{
+  inset:12%;
+  background:radial-gradient(circle,rgba(101,213,177,.10),rgba(101,213,177,.035) 48%,transparent 72%);
+  filter:blur(20px);
+  opacity:.95;
+}
+html[data-theme="dark"] .countdown-ring::after{
+  inset:3%;
+  border:1px solid rgba(101,213,177,.07);
+  box-shadow:0 0 34px rgba(101,213,177,.08),inset 0 0 28px rgba(101,213,177,.035);
+}
+html[data-theme="dark"] .ring-progress{
+  filter:
+    drop-shadow(0 0 4px rgba(101,213,177,.90))
+    drop-shadow(0 0 10px rgba(101,213,177,.55))
+    drop-shadow(0 0 22px rgba(101,213,177,.30));
+}
+html[data-theme="dark"] .status-console[data-state="soon"] .countdown-ring::before{background:radial-gradient(circle,rgba(239,189,92,.10),rgba(239,189,92,.03) 48%,transparent 72%)}
+html[data-theme="dark"] .status-console[data-state="soon"] .countdown-ring::after{border-color:rgba(239,189,92,.08);box-shadow:0 0 34px rgba(239,189,92,.08),inset 0 0 28px rgba(239,189,92,.03)}
+html[data-theme="dark"] .status-console[data-state="soon"] .ring-progress{filter:drop-shadow(0 0 4px rgba(239,189,92,.9)) drop-shadow(0 0 10px rgba(239,189,92,.5)) drop-shadow(0 0 20px rgba(239,189,92,.28))}
+html[data-theme="dark"] .status-console[data-state="grace"] .countdown-ring::before,
+html[data-theme="dark"] .status-console[data-state="triggered"] .countdown-ring::before{background:radial-gradient(circle,rgba(255,119,128,.11),rgba(255,119,128,.035) 48%,transparent 72%)}
+html[data-theme="dark"] .status-console[data-state="grace"] .countdown-ring::after,
+html[data-theme="dark"] .status-console[data-state="triggered"] .countdown-ring::after{border-color:rgba(255,119,128,.09);box-shadow:0 0 34px rgba(255,119,128,.09),inset 0 0 28px rgba(255,119,128,.035)}
+html[data-theme="dark"] .status-console[data-state="grace"] .ring-progress,
+html[data-theme="dark"] .status-console[data-state="triggered"] .ring-progress{filter:drop-shadow(0 0 4px rgba(255,119,128,.9)) drop-shadow(0 0 10px rgba(255,119,128,.52)) drop-shadow(0 0 22px rgba(255,119,128,.30))}
+html[data-theme="dark"] .state-pill{
+  border-color:rgba(101,213,177,.32);
+  background:linear-gradient(180deg,rgba(101,213,177,.105),rgba(101,213,177,.045));
+  box-shadow:0 0 20px rgba(101,213,177,.07),inset 0 1px 0 rgba(255,255,255,.05);
+}
+html[data-theme="dark"] .state-pill i,
+html[data-theme="dark"] .top-status i,
+html[data-theme="dark"] .button-pulse{
+  box-shadow:0 0 6px currentColor,0 0 16px currentColor,0 0 28px color-mix(in srgb,currentColor 38%,transparent);
+}
+html[data-theme="dark"] .checkin-button{
+  border-color:rgba(101,213,177,.36);
+  background:
+    linear-gradient(180deg,rgba(101,213,177,.105),rgba(101,213,177,.035)),
+    rgba(13,20,22,.56);
+  backdrop-filter:blur(18px) saturate(135%);
+  -webkit-backdrop-filter:blur(18px) saturate(135%);
+  box-shadow:
+    0 12px 34px rgba(0,0,0,.26),
+    0 0 30px rgba(101,213,177,.055),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -1px 0 rgba(101,213,177,.05);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+html[data-theme="dark"] .checkin-button::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(105deg,rgba(255,255,255,.055),transparent 30%,transparent 70%,rgba(101,213,177,.025));
+}
+html[data-theme="dark"] .checkin-button:hover{
+  border-color:rgba(101,213,177,.60);
+  background:
+    linear-gradient(180deg,rgba(101,213,177,.145),rgba(101,213,177,.045)),
+    rgba(13,20,22,.62);
+  box-shadow:
+    0 16px 42px rgba(0,0,0,.30),
+    0 0 38px rgba(101,213,177,.09),
+    inset 0 1px 0 rgba(255,255,255,.10);
+}
+html[data-theme="dark"] .checkin-meta div{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.01)),
+    rgba(11,15,20,.44);
+}
+html[data-theme="dark"] .nav-item.is-active{
+  border-color:rgba(99,166,255,.15);
+  background:linear-gradient(90deg,rgba(47,130,246,.13),rgba(255,255,255,.025) 64%,rgba(255,255,255,.01));
+  box-shadow:inset 3px 0 0 var(--accent),inset 0 1px 0 rgba(255,255,255,.045),0 8px 24px rgba(0,0,0,.12);
+}
+html[data-theme="dark"] .mobile-nav{
+  background:rgba(6,9,13,.74);
+  border-top-color:rgba(220,232,245,.11);
+  backdrop-filter:blur(24px) saturate(140%);
+  -webkit-backdrop-filter:blur(24px) saturate(140%);
+  box-shadow:0 -12px 40px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.035);
+}
+html[data-theme="dark"] .mobile-nav button.is-active{
+  color:#78b4ff;
+  text-shadow:0 0 14px rgba(99,166,255,.30);
+}
+html[data-theme="dark"] .brand-mark{
+  border-color:rgba(146,190,239,.19);
+  background:linear-gradient(145deg,rgba(99,166,255,.075),rgba(255,255,255,.018)),rgba(11,15,20,.55);
+  box-shadow:0 8px 22px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.065),0 0 20px rgba(99,166,255,.045);
+}
+html[data-theme="dark"] .mode-strip i,
+html[data-theme="dark"] .local-state>i{
+  box-shadow:0 0 6px var(--accent),0 0 16px rgba(99,166,255,.38);
+}
+html[data-theme="dark"] .app-dialog::backdrop{background:rgba(0,0,0,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+@media(prefers-reduced-motion:reduce){html[data-theme="dark"] .checkin-button{transition:none!important}}
