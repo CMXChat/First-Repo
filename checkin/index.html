@@ -11,7 +11,7 @@
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.cmxchat.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'none'; upgrade-insecure-requests" />
   <title>Check In · Dead Man Switch</title>
-  <meta name="description" content="Private check-in control panel for a future Dead Man Switch system." />
+  <meta name="description" content="Public operational status for the CMX weekly check-in switch." />
   <link rel="canonical" href="https://db.cmxchat.com/checkin/" />
   <link rel="stylesheet" href="/assets/checkin/checkin.css?v=20260814-3" />
   <link rel="stylesheet" href="/assets/checkin/checkin-ring-fix.css?v=20260814-2" />
@@ -27,8 +27,9 @@
       <nav class="side-nav" aria-label="Primary">
         <button class="nav-item is-active" type="button" data-view="overview"><span class="nav-icon">◉</span><span>Overview</span></button>
         <button class="nav-item" type="button" data-view="timeline"><span class="nav-icon">⌁</span><span>Timeline</span></button>
-        <button class="nav-item" type="button" data-view="contacts"><span class="nav-icon">◎</span><span>Contacts</span><em>0</em></button>
-        <button class="nav-item" type="button" data-view="vault"><span class="nav-icon">◇</span><span>Vault</span><em>0</em></button>
+        <button class="nav-item" type="button" data-view="records"><span class="nav-icon">◇</span><span>Records</span><em id="recordNavCount">—</em></button>
+        <button class="nav-item" type="button" data-view="updates"><span class="nav-icon">✎</span><span>Updates</span></button>
+        <button class="nav-item" type="button" data-view="actions"><span class="nav-icon">⇢</span><span>Actions</span><em id="actionNavCount">0</em></button>
         <button class="nav-item" type="button" data-view="activity"><span class="nav-icon">≡</span><span>Activity</span></button>
       </nav>
 
@@ -46,6 +47,7 @@
         </div>
         <div class="top-status" id="topStatus" data-state="safe"><i></i><span>SAFE</span></div>
         <div class="top-actions">
+          <button class="compact-action" id="operatorButton" type="button">Operator unlock</button>
           <button class="compact-action" id="simulateButton" type="button">Simulate</button>
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme"><span aria-hidden="true">◐</span></button>
           <button class="icon-action" id="mobileSettings" type="button" aria-label="Open settings">⚙</button>
@@ -60,8 +62,8 @@
           </div>
 
           <div class="mode-strip">
-            <span><i></i><strong>Server-backed milestone</strong></span>
-            <p>Your deadline is stored by the API using server time. Automatic background monitoring is not active yet.</p>
+            <span><i></i><strong>Primary weekly switch</strong></span>
+            <p>Server time is authoritative. Deadline: every Saturday at 12:00 PM America/New_York.</p>
           </div>
 
           <div class="dashboard-grid">
@@ -79,7 +81,7 @@
 
                 <div class="checkin-control">
                   <p id="statusCopy">You're checked in. Nothing happens while this timer is active.</p>
-                  <button class="checkin-button" id="checkinButton" type="button"><span class="button-pulse" aria-hidden="true"></span><strong>CHECK IN NOW</strong><small>Reset timer</small></button>
+                  <button class="checkin-button" id="checkinButton" type="button"><span class="button-pulse" aria-hidden="true"></span><strong>CHECK IN NOW</strong><small id="checkinButtonHint">Operator unlock required</small></button>
                   <div class="checkin-meta">
                     <div><span>Last check-in</span><strong id="lastCheckin">Just now</strong></div>
                     <div><span>Next due</span><strong id="nextDue">—</strong></div>
@@ -90,18 +92,18 @@
 
             <aside class="quick-panel">
               <div class="panel-title"><span>QUICK STATUS</span><button type="button" id="quickSettings">Edit</button></div>
-              <div class="quick-row"><span>Check-in interval</span><strong id="intervalValue">72 hours</strong></div>
+              <div class="quick-row"><span>Schedule</span><strong id="intervalValue">Saturday · 12 PM ET</strong></div>
               <div class="quick-row"><span>Grace period</span><strong id="graceValue">24 hours</strong></div>
-              <div class="quick-row"><span>Trusted contacts</span><strong>0 configured</strong></div>
-              <div class="quick-row"><span>Vault items</span><strong>0 configured</strong></div>
-              <div class="quick-row"><span>External actions</span><strong class="muted-state">OFFLINE</strong></div>
+              <div class="quick-row"><span>Operator session</span><strong id="operatorState">LOCKED</strong></div>
+              <div class="quick-row"><span>Records</span><strong id="recordCount">Unlock to view</strong></div>
+              <div class="quick-row"><span>Trigger actions</span><strong id="actionCount">0 configured</strong></div>
             </aside>
           </div>
 
           <div class="metric-grid" aria-label="Switch metrics">
             <button class="metric-card" type="button" data-jump="timeline"><span>01</span><small>Stage</small><strong id="stageMetric">Monitoring</strong><em>View timeline →</em></button>
-            <button class="metric-card" type="button" data-jump="contacts"><span>02</span><small>People</small><strong>None yet</strong><em>Configure →</em></button>
-            <button class="metric-card" type="button" data-jump="vault"><span>03</span><small>Payload</small><strong>Empty</strong><em>Open vault →</em></button>
+            <button class="metric-card" type="button" data-jump="records"><span>02</span><small>Records</small><strong>Protected</strong><em>Open records →</em></button>
+            <button class="metric-card" type="button" data-jump="updates"><span>03</span><small>Notebook</small><strong>Private</strong><em>Open updates →</em></button>
             <button class="metric-card" type="button" data-jump="activity"><span>04</span><small>Last event</small><strong id="lastEventMetric">Check-in</strong><em>View log →</em></button>
           </div>
 
@@ -118,27 +120,29 @@
             <article class="sequence-step is-current" data-stage="safe"><span>01</span><div><small>NOW</small><h2>Monitoring</h2><p>Your latest check-in is valid. The timer is counting down.</p></div><b>ACTIVE</b></article>
             <article class="sequence-step" data-stage="soon"><span>02</span><div><small>DUE SOON</small><h2>Reminder window</h2><p>The interface changes state as the deadline gets close.</p></div><b>WAITING</b></article>
             <article class="sequence-step" data-stage="grace"><span>03</span><div><small>MISSED DEADLINE</small><h2>Grace period</h2><p>The check-in is overdue. No payload is released during this window.</p></div><b>WAITING</b></article>
-            <article class="sequence-step" data-stage="triggered"><span>04</span><div><small>GRACE EXPIRED</small><h2>Trigger state</h2><p>The frontend can show this state, but external actions require a backend.</p></div><b>OFFLINE</b></article>
+            <article class="sequence-step" data-stage="triggered"><span>04</span><div><small>GRACE EXPIRED</small><h2>Trigger state</h2><p>Configured actions become eligible in their saved order.</p></div><b>READY</b></article>
           </div>
           <button class="wide-action" id="timelineSimulate" type="button">Run safe simulation</button>
         </section>
 
-        <section class="view" data-view-panel="contacts" aria-labelledby="contactsTitle" hidden>
-          <div class="view-heading"><div><p class="eyebrow">PEOPLE</p><h1 id="contactsTitle">Trusted contacts</h1></div><button class="primary-small" type="button" disabled>Add contact</button></div>
-          <div class="empty-state"><div class="empty-icon">◎</div><h2>No trusted contacts yet</h2><p>This is where people who may receive alerts or access would appear once the backend exists.</p><span>Backend required</span></div>
+        <section class="view" data-view-panel="records" aria-labelledby="recordsTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">PROTECTED RECORDS</p><h1 id="recordsTitle">Records</h1></div></div>
+          <div class="record-columns"><section class="recent-panel"><div class="panel-title"><span>DOCUMENTS</span></div><form id="documentForm" class="inline-form"><input name="title" placeholder="Document title" /><input name="file" type="file" required /><button class="primary-small" type="submit">Upload</button></form><div id="documentsList" class="record-list"></div></section><section class="recent-panel"><div class="panel-title"><span>CONTACTS</span></div><form class="inline-form recordForm" data-kind="contact"><input name="title" placeholder="Name" required /><textarea name="body" placeholder="Contact details"></textarea><button class="primary-small" type="submit">Add</button></form><div id="contactsList" class="record-list"></div></section><section class="recent-panel"><div class="panel-title"><span>ORGANIZATIONS</span></div><form class="inline-form recordForm" data-kind="organization"><input name="title" placeholder="Organization" required /><textarea name="body" placeholder="Notes"></textarea><button class="primary-small" type="submit">Add</button></form><div id="organizationsList" class="record-list"></div></section></div>
         </section>
 
-        <section class="view" data-view-panel="vault" aria-labelledby="vaultTitle" hidden>
-          <div class="view-heading"><div><p class="eyebrow">SEALED CONTENT</p><h1 id="vaultTitle">Vault</h1></div><button class="primary-small" type="button" disabled>Add item</button></div>
-          <div class="vault-grid">
-            <article class="vault-status-card"><span class="vault-mark">◇</span><div><small>SEALED ARCHIVE</small><strong>Empty</strong><p>No documents, messages, instructions, or credentials are stored.</p></div></article>
-            <div class="vault-types"><div><span>Documents</span><strong>0</strong></div><div><span>Messages</span><strong>0</strong></div><div><span>Instructions</span><strong>0</strong></div><div><span>Credentials</span><strong>0</strong></div></div>
-          </div>
-          <div class="backend-card"><strong>Backend required</strong><p>A static GitHub page should not hold sensitive payloads or credentials. These controls stay disabled until secure storage and authentication exist.</p></div>
+        <section class="view" data-view-panel="updates" aria-labelledby="updatesTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">PRIVATE MARKDOWN NOTEBOOK</p><h1 id="updatesTitle">Updates</h1></div><button class="primary-small" id="saveUpdate" type="button">Save revision</button></div>
+          <div class="notebook"><div class="editor-pane"><div class="markdown-toolbar" aria-label="Markdown toolbar"><button type="button" data-md="**|**">Bold</button><button type="button" data-md="_|_">Italic</button><button type="button" data-md="## |">Heading</button><button type="button" data-md="- |">List</button><button type="button" id="insertUpdate">Insert Update</button></div><textarea id="updateMarkdown" aria-label="Markdown update" placeholder="# Operational update"></textarea></div><div class="preview-pane"><div class="panel-title"><span>PREVIEW</span></div><div id="updatePreview" class="markdown-preview"></div></div></div>
+          <section class="recent-panel"><div class="panel-title"><span>REVISION HISTORY</span></div><div id="revisionList" class="record-list"></div></section>
+        </section>
+
+        <section class="view" data-view-panel="actions" aria-labelledby="actionsTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">ORDERED TRIGGER PLAN</p><h1 id="actionsTitle">Trigger actions</h1></div></div>
+          <form id="actionForm" class="inline-form action-form"><input name="name" placeholder="Action name" required /><select name="action_type"><option value="notification">Notification</option><option value="release">Release</option><option value="webhook">Webhook</option></select><button class="primary-small" type="submit">Add action</button></form><div id="actionsList" class="action-list"></div>
         </section>
 
         <section class="view" data-view-panel="activity" aria-labelledby="activityTitle" hidden>
-          <div class="view-heading"><div><p class="eyebrow">LOCAL AUDIT LOG</p><h1 id="activityTitle">Activity</h1></div><button class="secondary-small" id="clearActivity" type="button">Clear log</button></div>
+          <div class="view-heading"><div><p class="eyebrow">DATABASE AUDIT LOG</p><h1 id="activityTitle">Activity</h1></div><button class="secondary-small" id="refreshActivity" type="button">Refresh</button></div>
           <div class="activity-table-head"><span>EVENT</span><span>DETAIL</span><span>TIME</span></div>
           <div class="activity-list full" id="activityList"></div>
         </section>
@@ -148,18 +152,18 @@
 
   <nav class="mobile-nav" aria-label="Mobile navigation">
     <button class="is-active" type="button" data-view="overview"><span>◉</span><small>Home</small></button>
-    <button type="button" data-view="timeline"><span>⌁</span><small>Timeline</small></button>
-    <button type="button" data-view="contacts"><span>◎</span><small>People</small></button>
-    <button type="button" data-view="vault"><span>◇</span><small>Vault</small></button>
+    <button type="button" data-view="records"><span>◇</span><small>Records</small></button>
+    <button type="button" data-view="updates"><span>✎</span><small>Updates</small></button>
+    <button type="button" data-view="actions"><span>⇢</span><small>Actions</small></button>
     <button type="button" data-view="activity"><span>≡</span><small>Activity</small></button>
   </nav>
 
   <dialog class="app-dialog" id="settingsDialog">
     <form method="dialog" class="dialog-shell" id="settingsForm">
       <div class="dialog-head"><div><small>CHECK IN</small><h2>Settings</h2></div><button value="cancel" class="dialog-close" aria-label="Close">×</button></div>
-      <div class="field-group"><label for="intervalSelect">Check-in interval</label><select id="intervalSelect"><option value="24">Every 24 hours</option><option value="48">Every 48 hours</option><option value="72">Every 72 hours</option><option value="168">Every 7 days</option></select></div>
+      <div class="field-group"><label for="intervalSelect">Check-in schedule</label><select id="intervalSelect"><option value="168">Every Saturday at noon ET</option></select></div>
       <div class="field-group"><label for="graceSelect">Grace period</label><select id="graceSelect"><option value="6">6 hours</option><option value="12">12 hours</option><option value="24">24 hours</option><option value="48">48 hours</option></select></div>
-      <div class="setting-note"><strong>Read-only this milestone</strong><p>The server owns these values. Settings persistence will be added in a later milestone.</p></div>
+      <div class="setting-note"><strong>Calendar anchored</strong><p>Early check-ins never move the next Saturday noon deadline.</p></div>
       <menu><button value="cancel" class="secondary-small">Cancel</button><button value="default" class="primary-small" id="saveSettings">Save changes</button></menu>
     </form>
   </dialog>
@@ -175,16 +179,15 @@
 
   <dialog class="app-dialog" id="authDialog">
     <form class="dialog-shell" id="authForm">
-      <div class="dialog-head"><div><small>SECURE SESSION</small><h2>Sign in to Check In</h2></div></div>
-      <div class="field-group"><label for="authEmail">Email</label><input id="authEmail" name="username" type="email" autocomplete="username" required /></div>
-      <div class="field-group"><label for="authPassword">Password</label><input id="authPassword" name="password" type="password" autocomplete="current-password" required /></div>
-      <div class="setting-note"><strong>Existing jay-app account</strong><p>Your short session is kept in a secure HttpOnly API cookie. This page cannot read the token.</p></div>
+      <div class="dialog-head"><div><small>OPERATOR SESSION</small><h2>Unlock protected controls</h2></div><button class="dialog-close" id="closeAuth" type="button" aria-label="Close">×</button></div>
+      <div class="field-group"><label for="operatorKey">Operator key</label><input id="operatorKey" name="operator_key" type="password" autocomplete="off" required /></div>
+      <div class="setting-note"><strong>15-minute secure session</strong><p>The key is verified by the API and is never stored in this page or localStorage.</p></div>
       <p id="authError" role="alert" aria-live="polite"></p>
-      <menu><button class="primary-small" id="authSubmit" type="submit">Sign in</button></menu>
+      <menu><button class="secondary-small" id="lockOperator" type="button">Lock now</button><button class="primary-small" id="authSubmit" type="submit">Unlock</button></menu>
     </form>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/assets/checkin/checkin.js?v=20260815-1"></script>
+  <script src="/assets/checkin/checkin.js?v=20260815-2"></script>
 </body>
 </html>

@@ -1,261 +1,88 @@
 (() => {
-  'use strict';
+  "use strict";
 
-  const API_BASE = location.hostname === 'db.cmxchat.com'
-    ? 'https://api.cmxchat.com/api/v1'
-    : 'http://localhost:8000/api/v1';
-  const THEME_KEY = 'cmx-checkin-theme';
+  const API_BASE = location.hostname === "db.cmxchat.com" ? "https://api.cmxchat.com/api/v1" : "http://localhost:8000/api/v1";
+  const THEME_KEY = "cmx-checkin-theme";
   const CIRCUMFERENCE = 477.52;
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-
   const els = {
-    statusConsole: $('#statusConsole'), topStatus: $('#topStatus'), statePill: $('#statePill'),
-    statusTitle: $('#statusTitle'), statusCopy: $('#statusCopy'), countdown: $('#countdown'),
-    countdownUnit: $('#countdownUnit'), ringProgress: $('#ringProgress'), lastCheckin: $('#lastCheckin'),
-    nextDue: $('#nextDue'), intervalValue: $('#intervalValue'), graceValue: $('#graceValue'),
-    stageMetric: $('#stageMetric'), lastEventMetric: $('#lastEventMetric'),
-    recentActivity: $('#recentActivity'), activityList: $('#activityList'), todayDate: $('#todayDate'),
-    checkinButton: $('#checkinButton'), settingsDialog: $('#settingsDialog'),
-    intervalSelect: $('#intervalSelect'), graceSelect: $('#graceSelect'), saveSettings: $('#saveSettings'),
-    simulationDialog: $('#simulationDialog'), simulationCode: $('#simulationCode'),
-    simulationTitle: $('#simulationTitle'), simulationCopy: $('#simulationCopy'),
-    simulationProgress: $('#simulationProgress'), nextSimulation: $('#nextSimulation'),
-    closeSimulation: $('#closeSimulation'), stopSimulation: $('#stopSimulation'),
-    themeToggle: $('#themeToggle'), toast: $('#toast'), authDialog: $('#authDialog'),
-    authForm: $('#authForm'), authError: $('#authError'), authSubmit: $('#authSubmit')
+    statusConsole: $("#statusConsole"), topStatus: $("#topStatus"), statePill: $("#statePill"), statusTitle: $("#statusTitle"), statusCopy: $("#statusCopy"), countdown: $("#countdown"), countdownUnit: $("#countdownUnit"), ringProgress: $("#ringProgress"), lastCheckin: $("#lastCheckin"), nextDue: $("#nextDue"), intervalValue: $("#intervalValue"), graceValue: $("#graceValue"), stageMetric: $("#stageMetric"), lastEventMetric: $("#lastEventMetric"), recentActivity: $("#recentActivity"), activityList: $("#activityList"), todayDate: $("#todayDate"), checkinButton: $("#checkinButton"), checkinButtonHint: $("#checkinButtonHint"), settingsDialog: $("#settingsDialog"), intervalSelect: $("#intervalSelect"), graceSelect: $("#graceSelect"), saveSettings: $("#saveSettings"), simulationDialog: $("#simulationDialog"), simulationCode: $("#simulationCode"), simulationTitle: $("#simulationTitle"), simulationCopy: $("#simulationCopy"), simulationProgress: $("#simulationProgress"), nextSimulation: $("#nextSimulation"), themeToggle: $("#themeToggle"), toast: $("#toast"), authDialog: $("#authDialog"), authForm: $("#authForm"), authError: $("#authError"), authSubmit: $("#authSubmit"), operatorButton: $("#operatorButton"), operatorState: $("#operatorState"), recordCount: $("#recordCount"), actionCount: $("#actionCount"), recordNavCount: $("#recordNavCount"), actionNavCount: $("#actionNavCount"), documentsList: $("#documentsList"), contactsList: $("#contactsList"), organizationsList: $("#organizationsList"), updateMarkdown: $("#updateMarkdown"), updatePreview: $("#updatePreview"), revisionList: $("#revisionList"), actionsList: $("#actionsList")
   };
-
-  let state = {
-    switchId: null, enabled: false, serverOffsetMs: 0, lastCheckin: null, dueAt: null,
-    triggerAt: null, intervalHours: 72, graceHours: 24, activity: []
-  };
-  let authenticated = false;
+  const state = { enabled: false, serverOffsetMs: 0, lastCheckin: null, dueAt: null, triggerAt: null, intervalHours: 168, graceHours: 24, actionCount: 0, activity: [], records: [], actions: [], revisions: [] };
+  let operatorUnlocked = false;
+  let csrfToken = null;
   let simulationIndex = 0;
   let toastTimer;
 
-  const serverNow = () => Date.now() + state.serverOffsetMs;
-
   async function api(path, options = {}) {
-    const response = await fetch(`${API_BASE}${path}`, {
-      credentials: 'include',
-      ...options,
-      headers: { Accept: 'application/json', ...(options.headers || {}) }
-    });
-    if (!response.ok) {
-      const error = new Error('API request failed');
-      error.status = response.status;
-      throw error;
-    }
+    const headers = { Accept: "application/json", ...(options.headers || {}) };
+    if (options.mutation && csrfToken) headers["X-CSRF-Token"] = csrfToken;
+    const response = await fetch(`${API_BASE}${path}`, { credentials: "include", ...options, headers });
+    if (!response.ok) { const error = new Error("API request failed"); error.status = response.status; try { error.detail = (await response.json()).detail; } catch {} throw error; }
     return response.status === 204 ? null : response.json();
   }
 
+  const serverNow = () => Date.now() + state.serverOffsetMs;
+  const formatDateTime = timestamp => timestamp ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(new Date(timestamp)) : "—";
+  const formatFullDate = timestamp => new Intl.DateTimeFormat(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" }).format(new Date(timestamp));
+  function formatRelative(timestamp) { if (!timestamp) return "Never"; const diff = Math.max(0, serverNow() - timestamp); const mins = Math.floor(diff / 60000); if (mins < 1) return "Just now"; if (mins < 60) return `${mins}m ago`; const hours = Math.floor(diff / 3600000); return hours < 24 ? `${hours}h ago` : `${Math.floor(diff / 86400000)}d ago`; }
+  function hms(ms) { const total = Math.max(0, Math.floor(ms / 1000)); return `${String(Math.floor(total / 3600)).padStart(2, "0")}:${String(Math.floor((total % 3600) / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`; }
+  function showToast(message) { clearTimeout(toastTimer); els.toast.textContent = message; els.toast.classList.add("is-visible"); toastTimer = setTimeout(() => els.toast.classList.remove("is-visible"), 3400); }
+
   function acceptStatus(data) {
-    const receivedAt = Date.now();
-    state.switchId = data.switch_id;
-    state.enabled = data.enabled;
-    state.serverOffsetMs = Date.parse(data.server_time) - receivedAt;
-    state.lastCheckin = data.last_checkin_at ? Date.parse(data.last_checkin_at) : null;
-    state.dueAt = data.next_due_at ? Date.parse(data.next_due_at) : null;
-    state.triggerAt = data.grace_expires_at ? Date.parse(data.grace_expires_at) : null;
-    state.intervalHours = data.interval_hours;
-    state.graceHours = data.grace_hours;
-    authenticated = true;
-    els.intervalSelect.value = String(state.intervalHours);
-    els.graceSelect.value = String(state.graceHours);
-    renderStatus();
+    state.enabled = data.enabled; state.serverOffsetMs = Date.parse(data.server_time) - Date.now(); state.lastCheckin = data.last_checkin_at ? Date.parse(data.last_checkin_at) : null; state.dueAt = data.next_due_at ? Date.parse(data.next_due_at) : null; state.triggerAt = data.grace_expires_at ? Date.parse(data.grace_expires_at) : null; state.intervalHours = data.interval_hours; state.graceHours = data.grace_hours; state.actionCount = data.trigger_action_count;
+    els.actionCount.textContent = `${state.actionCount} configured`; els.actionNavCount.textContent = String(state.actionCount); renderStatus();
   }
-
-  async function syncStatus({ promptOnAuth = true } = {}) {
-    try {
-      acceptStatus(await api('/checkin/status'));
-      if (els.authDialog.open) els.authDialog.close();
-    } catch (error) {
-      if (error.status === 401) {
-        authenticated = false;
-        renderStatus();
-        if (promptOnAuth && !els.authDialog.open) els.authDialog.showModal();
-      } else {
-        showToast('Could not reach the check-in API. No local deadline was changed.');
-      }
-    }
-  }
-
-  function getStatus(now = serverNow()) {
-    if (!authenticated) return { key: 'disabled', label: 'SIGN IN', title: 'Sign in required', remaining: 0 };
-    if (!state.enabled || !state.dueAt) return { key: 'disabled', label: 'DISABLED', title: 'Not started', remaining: 0 };
-    const intervalMs = state.intervalHours * 3600000;
-    const soonWindow = Math.min(12 * 3600000, intervalMs * 0.2);
-    if (now >= state.triggerAt) return { key: 'triggered', label: 'TRIGGERED', title: 'Trigger state', remaining: now - state.triggerAt, intervalMs };
-    if (now >= state.dueAt) return { key: 'grace', label: 'GRACE', title: 'Grace period', remaining: state.triggerAt - now, intervalMs };
-    if (state.dueAt - now <= soonWindow) return { key: 'soon', label: 'DUE SOON', title: 'Check in soon', remaining: state.dueAt - now, intervalMs };
-    return { key: 'safe', label: 'SAFE', title: 'Safe', remaining: state.dueAt - now, intervalMs };
-  }
-
-  function hms(ms) {
-    const total = Math.max(0, Math.floor(ms / 1000));
-    return `${String(Math.floor(total / 3600)).padStart(2, '0')}:${String(Math.floor((total % 3600) / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
-  }
-
-  function formatRelative(timestamp) {
-    if (!timestamp) return 'Never';
-    const diff = serverNow() - timestamp;
-    const mins = Math.floor(Math.abs(diff) / 60000);
-    if (mins < 1) return 'Just now';
-    if (mins < 60) return `${mins}m ago`;
-    const hours = Math.floor(Math.abs(diff) / 3600000);
-    if (hours < 24) return `${hours}h ago`;
-    return `${Math.floor(Math.abs(diff) / 86400000)}d ago`;
-  }
-
-  const formatDateTime = timestamp => timestamp
-    ? new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(timestamp))
-    : '—';
-  const formatFullDate = timestamp => new Intl.DateTimeFormat(undefined, {
-    weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
-  }).format(new Date(timestamp));
-
-  function statusCopy(status) {
-    if (!authenticated) return 'Sign in with your existing account to read or record a server-backed check-in.';
-    if (status.key === 'disabled') return 'No switch exists yet. Check in to create your server-backed deadline.';
-    if (status.key === 'soon') return 'Your deadline is getting close. Check in to reset the server timer.';
-    if (status.key === 'grace') return 'Your check-in is overdue. You can still check in during this grace period.';
-    if (status.key === 'triggered') return 'The server deadline reached trigger state. No external action was sent.';
-    return "You're checked in. The API is the source of truth for this deadline.";
-  }
-
+  async function syncStatus() { try { acceptStatus(await api("/checkin/public/status")); } catch { showToast("Public status is temporarily unavailable. No deadline was changed."); } }
+  function getStatus(now = serverNow()) { if (!state.enabled || !state.dueAt) return { key: "disabled", label: "DISABLED", title: "Not active", remaining: 0 }; const intervalMs = state.intervalHours * 3600000; if (now >= state.triggerAt) return { key: "triggered", label: "TRIGGERED", title: "Trigger state", remaining: now - state.triggerAt, intervalMs }; if (now >= state.dueAt) return { key: "grace", label: "GRACE", title: "Grace period", remaining: state.triggerAt - now, intervalMs }; if (state.dueAt - now <= 12 * 3600000) return { key: "soon", label: "DUE SOON", title: "Check in soon", remaining: state.dueAt - now, intervalMs }; return { key: "safe", label: "SAFE", title: "Safe", remaining: state.dueAt - now, intervalMs }; }
   function renderStatus() {
-    const status = getStatus();
-    const elapsed = state.lastCheckin ? Math.max(0, serverNow() - state.lastCheckin) : 0;
-    const progress = status.intervalMs ? Math.min(1, elapsed / status.intervalMs) : 0;
-    els.statusConsole.dataset.state = status.key === 'disabled' ? 'safe' : status.key;
-    els.topStatus.dataset.state = status.key === 'disabled' ? 'safe' : status.key;
-    els.statePill.innerHTML = `<i></i>${status.label}`;
-    els.topStatus.innerHTML = `<i></i><span>${status.label}</span>`;
-    els.statusTitle.textContent = status.title;
-    els.statusCopy.textContent = statusCopy(status);
-    els.countdown.textContent = status.key === 'disabled' ? '--:--:--' : hms(status.remaining);
-    els.countdownUnit.textContent = status.key === 'grace' ? 'grace time remaining' : status.key === 'triggered' ? 'past trigger state' : 'until check-in is due';
-    els.ringProgress.style.strokeDashoffset = String(CIRCUMFERENCE * progress);
-    els.lastCheckin.textContent = formatRelative(state.lastCheckin);
-    els.nextDue.textContent = formatDateTime(state.dueAt);
-    els.intervalValue.textContent = `${state.intervalHours} hours`;
-    els.graceValue.textContent = `${state.graceHours} hours`;
-    els.stageMetric.textContent = status.key === 'safe' ? 'Monitoring' : status.title;
-    els.checkinButton.disabled = !authenticated;
-    $$('.sequence-step').forEach(step => step.classList.toggle('is-current', step.dataset.stage === status.key));
+    const status = getStatus(); const remainingRatio = status.intervalMs ? Math.min(1, Math.max(0, status.remaining / status.intervalMs)) : 0;
+    els.statusConsole.dataset.state = status.key === "disabled" ? "safe" : status.key; els.topStatus.dataset.state = status.key === "disabled" ? "safe" : status.key; els.statePill.innerHTML = `<i></i>${status.label}`; els.topStatus.innerHTML = `<i></i><span>${status.label}</span>`; els.statusTitle.textContent = status.title;
+    const copy = { disabled: "The primary weekly switch is not active.", soon: "Saturday noon is close. An unlocked operator can check in.", grace: "The Saturday deadline passed and the grace period is active.", triggered: "The grace period expired. Configured actions are eligible in their saved order.", safe: "The weekly switch is safe. Early check-ins do not move Saturday noon." };
+    els.statusCopy.textContent = copy[status.key]; els.countdown.textContent = status.key === "disabled" ? "--:--:--" : hms(status.remaining); els.countdownUnit.textContent = status.key === "grace" ? "grace time remaining" : status.key === "triggered" ? "past trigger state" : "until Saturday noon"; els.ringProgress.style.strokeDashoffset = String(CIRCUMFERENCE * (1 - remainingRatio)); els.lastCheckin.textContent = formatRelative(state.lastCheckin); els.nextDue.textContent = formatDateTime(state.dueAt); els.intervalValue.textContent = "Saturday · 12 PM ET"; els.graceValue.textContent = `${state.graceHours} hours`; els.stageMetric.textContent = status.key === "safe" ? "Monitoring" : status.title; els.checkinButton.disabled = false; els.checkinButtonHint.textContent = operatorUnlocked ? "Record without moving deadline" : "Operator unlock required"; $$(".sequence-step").forEach(step => step.classList.toggle("is-current", step.dataset.stage === status.key));
   }
 
-  function activityRow(item) {
-    const row = document.createElement('div');
-    row.className = 'activity-row';
-    const type = document.createElement('strong'); type.textContent = item.type;
-    const detail = document.createElement('p'); detail.textContent = item.detail;
-    const time = document.createElement('time'); time.dateTime = new Date(item.time).toISOString(); time.textContent = formatDateTime(item.time);
-    row.append(type, detail, time);
-    return row;
-  }
+  function setOperator(unlocked, token = null) { operatorUnlocked = unlocked; csrfToken = token; els.operatorState.textContent = unlocked ? "UNLOCKED" : "LOCKED"; els.operatorButton.textContent = unlocked ? "Operator unlocked" : "Operator unlock"; els.checkinButtonHint.textContent = unlocked ? "Record without moving deadline" : "Operator unlock required"; document.body.classList.toggle("operator-unlocked", unlocked); }
+  async function detectOperator() { try { const session = await api("/checkin/operator/session"); setOperator(true, session.csrf_token); await loadProtected(); } catch (error) { if (error.status === 401) setOperator(false); } }
+  async function unlock(event) { event.preventDefault(); els.authSubmit.disabled = true; els.authError.textContent = ""; try { const operatorKey = $("#operatorKey").value; const session = await api("/checkin/operator/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ operator_key: operatorKey }) }); setOperator(true, session.csrf_token); els.authForm.reset(); els.authDialog.close(); await loadProtected(); showToast("Protected controls unlocked for 15 minutes."); } catch (error) { els.authError.textContent = error.detail || "Operator key was not accepted."; } finally { els.authSubmit.disabled = false; } }
+  async function lockOperator() { if (!operatorUnlocked) { if (els.authDialog.open) els.authDialog.close(); return; } try { await api("/checkin/operator/session", { method: "DELETE", mutation: true }); } catch {} setOperator(false); state.records = []; state.revisions = []; state.actions = []; renderRecords(); renderRevisions(); renderActions(); if (els.authDialog.open) els.authDialog.close(); showToast("Operator session locked."); }
+  function requireOperator() { if (operatorUnlocked) return true; els.authError.textContent = ""; els.authDialog.showModal(); return false; }
+  async function doCheckin() { if (!requireOperator()) return; els.checkinButton.disabled = true; try { acceptStatus(await api("/checkin", { method: "POST", mutation: true })); await loadActivity(); showToast("Check-in recorded. The next deadline remains Saturday at noon."); } catch (error) { if (error.status === 401) setOperator(false); showToast("Check-in failed. The server deadline was not changed."); } finally { els.checkinButton.disabled = false; } }
 
-  function renderActivity() {
-    els.activityList.replaceChildren(); els.recentActivity.replaceChildren();
-    if (!state.activity.length) {
-      const empty = document.createElement('div'); empty.className = 'activity-row';
-      empty.innerHTML = '<strong>No session events</strong><p>Server activity retrieval comes in a later milestone.</p><time>—</time>';
-      els.activityList.append(empty.cloneNode(true)); els.recentActivity.append(empty);
-      els.lastEventMetric.textContent = 'None'; return;
-    }
-    state.activity.forEach(item => els.activityList.append(activityRow(item)));
-    state.activity.slice(0, 3).forEach(item => els.recentActivity.append(activityRow(item)));
-    els.lastEventMetric.textContent = state.activity[0].type;
-  }
+  function recordCard(item) { const card = document.createElement("article"); card.className = "record-card"; const content = document.createElement("div"); const title = document.createElement("strong"); title.textContent = item.title; const body = document.createElement("p"); body.textContent = item.body || item.metadata_json?.filename || "Protected record"; content.append(title, body); const remove = document.createElement("button"); remove.type = "button"; remove.textContent = "Remove"; remove.addEventListener("click", () => deleteRecord(item.id)); card.append(content, remove); return card; }
+  function renderRecords() { [els.documentsList, els.contactsList, els.organizationsList].forEach(list => list.replaceChildren()); const targets = { document: els.documentsList, contact: els.contactsList, organization: els.organizationsList }; state.records.forEach(item => targets[item.kind].append(recordCard(item))); els.recordCount.textContent = operatorUnlocked ? `${state.records.length} protected` : "Unlock to view"; els.recordNavCount.textContent = operatorUnlocked ? String(state.records.length) : "—"; }
+  async function loadRecords() { state.records = await api("/checkin/operator/records"); renderRecords(); }
+  async function createRecord(event) { event.preventDefault(); if (!requireOperator()) return; const form = event.currentTarget; const data = new FormData(form); await api("/checkin/operator/records", { method: "POST", mutation: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: form.dataset.kind, title: data.get("title"), body: data.get("body"), metadata_json: {} }) }); form.reset(); await Promise.all([loadRecords(), loadActivity()]); showToast("Protected record saved."); }
+  async function uploadDocument(event) { event.preventDefault(); if (!requireOperator()) return; const form = event.currentTarget; await api("/checkin/operator/documents", { method: "POST", mutation: true, body: new FormData(form) }); form.reset(); await Promise.all([loadRecords(), loadActivity()]); showToast("Document stored through the protected storage service."); }
+  async function deleteRecord(id) { if (!requireOperator()) return; await api(`/checkin/operator/records/${id}`, { method: "DELETE", mutation: true }); await Promise.all([loadRecords(), loadActivity()]); }
 
-  function addActivity(type, detail) {
-    state.activity.unshift({ type, detail, time: Date.now() });
-    state.activity = state.activity.slice(0, 60);
-    renderActivity();
-  }
+  function markdownPreview(markdown) { const escaped = markdown.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;"); return escaped.split("\n").map(line => line.startsWith("## ") ? `<h3>${line.slice(3)}</h3>` : line.startsWith("# ") ? `<h2>${line.slice(2)}</h2>` : line.startsWith("- ") ? `<p>• ${line.slice(2)}</p>` : `<p>${line || "&nbsp;"}</p>`).join("").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/_([^_]+)_/g, "<em>$1</em>"); }
+  function renderPreview() { els.updatePreview.innerHTML = markdownPreview(els.updateMarkdown.value); }
+  function renderRevisions() { els.revisionList.replaceChildren(); state.revisions.forEach(item => { const card = document.createElement("button"); card.type = "button"; card.className = "revision-card"; const time = document.createElement("strong"); time.textContent = formatDateTime(Date.parse(item.created_at)); const excerpt = document.createElement("span"); excerpt.textContent = item.markdown.slice(0, 100) || "Empty update"; card.append(time, excerpt); card.addEventListener("click", () => { els.updateMarkdown.value = item.markdown; renderPreview(); }); els.revisionList.append(card); }); }
+  async function loadRevisions() { state.revisions = await api("/checkin/operator/updates"); renderRevisions(); if (!els.updateMarkdown.value && state.revisions[0]) { els.updateMarkdown.value = state.revisions[0].markdown; renderPreview(); } }
+  async function saveUpdate() { if (!requireOperator()) return; await api("/checkin/operator/updates", { method: "POST", mutation: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ markdown: els.updateMarkdown.value }) }); await Promise.all([loadRevisions(), loadActivity()]); showToast("Markdown revision saved."); }
+  function insertMarkdown(before, after) { const input = els.updateMarkdown; const start = input.selectionStart; const end = input.selectionEnd; input.setRangeText(`${before}${input.value.slice(start, end)}${after}`, start, end, "end"); input.focus(); renderPreview(); }
 
-  function showToast(message) {
-    clearTimeout(toastTimer); els.toast.textContent = message; els.toast.classList.add('is-visible');
-    toastTimer = setTimeout(() => els.toast.classList.remove('is-visible'), 3200);
-  }
+  function renderActions() { els.actionsList.replaceChildren(); state.actions.forEach((item, index) => { const row = document.createElement("article"); row.className = "action-row"; const number = document.createElement("span"); number.textContent = String(index + 1).padStart(2, "0"); const info = document.createElement("div"); const name = document.createElement("strong"); name.textContent = item.name; const type = document.createElement("small"); type.textContent = item.action_type; info.append(name, type); const controls = document.createElement("div"); ["↑", "↓"].forEach((label, direction) => { const button = document.createElement("button"); button.type = "button"; button.textContent = label; button.disabled = direction === 0 ? index === 0 : index === state.actions.length - 1; button.addEventListener("click", () => moveAction(index, direction === 0 ? -1 : 1)); controls.append(button); }); row.append(number, info, controls); els.actionsList.append(row); }); }
+  async function loadActions() { state.actions = await api("/checkin/operator/actions"); renderActions(); }
+  async function createAction(event) { event.preventDefault(); if (!requireOperator()) return; const form = event.currentTarget; const data = new FormData(form); await api("/checkin/operator/actions", { method: "POST", mutation: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: data.get("name"), action_type: data.get("action_type"), position: state.actions.length, config_json: {}, enabled: true }) }); form.reset(); await Promise.all([loadActions(), syncStatus(), loadActivity()]); }
+  async function moveAction(index, delta) { const reordered = [...state.actions]; [reordered[index], reordered[index + delta]] = [reordered[index + delta], reordered[index]]; state.actions = await api("/checkin/operator/actions/order", { method: "PUT", mutation: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action_ids: reordered.map(item => item.id) }) }); renderActions(); await loadActivity(); }
 
-  async function doCheckin() {
-    if (!authenticated) { els.authDialog.showModal(); return; }
-    els.checkinButton.disabled = true;
-    try {
-      acceptStatus(await api('/checkin', { method: 'POST', headers: { 'X-CMX-Client': 'checkin' } }));
-      addActivity('Check-in', 'Server accepted the check-in and reset the deadline.');
-      showToast('Server check-in recorded. Timer reset.');
-      els.checkinButton.animate([{ transform: 'scale(1)' }, { transform: 'scale(.985)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'ease-out' });
-    } catch (error) {
-      if (error.status === 401) { authenticated = false; renderStatus(); els.authDialog.showModal(); }
-      showToast('Check-in failed. The server deadline was not changed.');
-    } finally {
-      els.checkinButton.disabled = !authenticated;
-    }
-  }
+  function activityRow(item) { const row = document.createElement("div"); row.className = "activity-row"; const type = document.createElement("strong"); type.textContent = item.event_type.replaceAll("_", " "); const detail = document.createElement("p"); detail.textContent = item.detail; const time = document.createElement("time"); time.dateTime = item.created_at; time.textContent = formatDateTime(Date.parse(item.created_at)); row.append(type, detail, time); return row; }
+  function renderActivity() { els.activityList.replaceChildren(); els.recentActivity.replaceChildren(); if (!operatorUnlocked) { const empty = document.createElement("div"); empty.className = "activity-row"; empty.innerHTML = "<strong>Protected audit</strong><p>Unlock to view database-backed activity.</p><time>—</time>"; els.activityList.append(empty.cloneNode(true)); els.recentActivity.append(empty); els.lastEventMetric.textContent = "Protected"; return; } state.activity.forEach(item => els.activityList.append(activityRow(item))); state.activity.slice(0, 3).forEach(item => els.recentActivity.append(activityRow(item))); els.lastEventMetric.textContent = state.activity[0]?.event_type.replaceAll("_", " ") || "None"; }
+  async function loadActivity() { state.activity = await api("/checkin/operator/activity"); renderActivity(); }
+  async function loadProtected() { try { await Promise.all([loadRecords(), loadRevisions(), loadActions(), loadActivity()]); } catch (error) { if (error.status === 401) setOperator(false); } }
 
-  async function signIn(event) {
-    event.preventDefault(); els.authSubmit.disabled = true; els.authError.textContent = '';
-    const body = new URLSearchParams(new FormData(els.authForm));
-    try {
-      await api('/login/checkin-session', { method: 'POST', body, headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CMX-Client': 'checkin' } });
-      await syncStatus({ promptOnAuth: false });
-      els.authForm.reset();
-      showToast('Secure check-in session started.');
-    } catch {
-      els.authError.textContent = 'Sign-in failed. Check your email and password, then try again.';
-    } finally {
-      els.authSubmit.disabled = false;
-    }
-  }
-
-  function setView(name) {
-    $$('.view').forEach(panel => { const active = panel.dataset.viewPanel === name; panel.classList.toggle('is-active', active); panel.hidden = !active; });
-    $$('[data-view]').forEach(button => button.classList.toggle('is-active', button.dataset.view === name));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function openSettings() {
-    els.intervalSelect.value = String(state.intervalHours); els.graceSelect.value = String(state.graceHours);
-    els.intervalSelect.disabled = true; els.graceSelect.disabled = true;
-    els.settingsDialog.showModal();
-  }
-
-  const simulationStages = [
-    { code: 'T+00:00', title: 'Check-in missed', copy: 'The deadline passes and the grace period starts.', progress: 25 },
-    { code: 'T+06:00', title: 'Grace period active', copy: 'The system would continue waiting for a valid check-in.', progress: 50 },
-    { code: 'T+18:00', title: 'Final verification window', copy: 'A future monitor could verify state here.', progress: 75 },
-    { code: 'T+24:00', title: 'Trigger state reached', copy: 'Preview stops here. No server state or action is changed.', progress: 100 }
-  ];
-  function renderSimulation() { const stage = simulationStages[simulationIndex]; els.simulationCode.textContent = stage.code; els.simulationTitle.textContent = stage.title; els.simulationCopy.textContent = stage.copy; els.simulationProgress.style.width = `${stage.progress}%`; els.nextSimulation.textContent = simulationIndex === 3 ? 'Restart' : 'Next stage'; }
+  function setView(name) { $$(".view").forEach(panel => { const active = panel.dataset.viewPanel === name; panel.classList.toggle("is-active", active); panel.hidden = !active; }); $$([data-view]).forEach(button => button.classList.toggle("is-active", button.dataset.view === name)); if (["records", "updates", "actions", "activity"].includes(name) && !operatorUnlocked) requireOperator(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  const simulationStages = [{ code: "T+00:00", title: "Deadline missed", copy: "The Saturday noon deadline passes and grace begins.", progress: 25 }, { code: "T+06:00", title: "Grace active", copy: "The live switch is not touched by this preview.", progress: 50 }, { code: "T+18:00", title: "Final window", copy: "Configured action order is previewed only.", progress: 75 }, { code: "T+24:00", title: "Trigger state", copy: "Simulation stops. No record, note, action, or deadline changed.", progress: 100 }];
+  function renderSimulation() { const stage = simulationStages[simulationIndex]; els.simulationCode.textContent = stage.code; els.simulationTitle.textContent = stage.title; els.simulationCopy.textContent = stage.copy; els.simulationProgress.style.width = `${stage.progress}%`; els.nextSimulation.textContent = simulationIndex === 3 ? "Restart" : "Next stage"; }
   function openSimulation() { simulationIndex = 0; renderSimulation(); els.simulationDialog.showModal(); }
-  function nextSimulation() { simulationIndex = simulationIndex === 3 ? 0 : simulationIndex + 1; renderSimulation(); }
-  function closeSimulation() { els.simulationDialog.close(); }
-
-  function setTheme(theme) { document.documentElement.dataset.theme = theme; try { localStorage.setItem(THEME_KEY, theme); } catch {} const meta = $('meta[name="theme-color"]'); if (meta) meta.content = theme === 'light' ? '#eef4fa' : '#07111f'; }
-  function initTheme() { let theme = 'dark'; try { theme = localStorage.getItem(THEME_KEY) || 'dark'; } catch {} setTheme(theme === 'light' ? 'light' : 'dark'); }
+  function setTheme(theme) { document.documentElement.dataset.theme = theme; try { localStorage.setItem(THEME_KEY, theme); } catch {} const meta = $(meta[name=theme-color]); if (meta) meta.content = theme === "light" ? "#eef4fa" : "#07111f"; }
 
   function initEvents() {
-    $$('[data-view]').forEach(button => button.addEventListener('click', () => setView(button.dataset.view)));
-    $$('[data-jump]').forEach(button => button.addEventListener('click', () => setView(button.dataset.jump)));
-    els.checkinButton.addEventListener('click', doCheckin);
-    ['#openSettings', '#mobileSettings', '#quickSettings'].forEach(selector => $(selector).addEventListener('click', openSettings));
-    els.saveSettings.addEventListener('click', event => { event.preventDefault(); els.settingsDialog.close(); showToast('Server settings are read-only in this milestone.'); });
-    $('#simulateButton').addEventListener('click', openSimulation); $('#timelineSimulate').addEventListener('click', openSimulation);
-    els.nextSimulation.addEventListener('click', nextSimulation); els.closeSimulation.addEventListener('click', closeSimulation); els.stopSimulation.addEventListener('click', closeSimulation);
-    els.themeToggle.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
-    $('#clearActivity').addEventListener('click', () => { state.activity = []; renderActivity(); showToast('Session activity cleared.'); });
-    els.authForm.addEventListener('submit', signIn);
+    $$([data-view]).forEach(button => button.addEventListener("click", () => setView(button.dataset.view))); $$([data-jump]).forEach(button => button.addEventListener("click", () => setView(button.dataset.jump))); els.checkinButton.addEventListener("click", doCheckin); ["#openSettings", "#mobileSettings", "#quickSettings"].forEach(selector => $(selector).addEventListener("click", () => els.settingsDialog.showModal())); els.saveSettings.addEventListener("click", event => { event.preventDefault(); els.settingsDialog.close(); }); els.operatorButton.addEventListener("click", () => operatorUnlocked ? setView("activity") : requireOperator()); els.authForm.addEventListener("submit", unlock); $("#closeAuth").addEventListener("click", () => els.authDialog.close()); $("#lockOperator").addEventListener("click", lockOperator); $("#simulateButton").addEventListener("click", openSimulation); $("#timelineSimulate").addEventListener("click", openSimulation); els.nextSimulation.addEventListener("click", () => { simulationIndex = simulationIndex === 3 ? 0 : simulationIndex + 1; renderSimulation(); }); ["#closeSimulation", "#stopSimulation"].forEach(selector => $(selector).addEventListener("click", () => els.simulationDialog.close())); els.themeToggle.addEventListener("click", () => setTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light")); $$(".recordForm").forEach(form => form.addEventListener("submit", createRecord)); $("#documentForm").addEventListener("submit", uploadDocument); els.updateMarkdown.addEventListener("input", renderPreview); $("#saveUpdate").addEventListener("click", saveUpdate); $("#insertUpdate").addEventListener("click", () => insertMarkdown(`\n## Update — ${new Date().toLocaleDateString()}\n\n`, "")); $$("[data-md]").forEach(button => button.addEventListener("click", () => { const [before, after] = button.dataset.md.split("|"); insertMarkdown(before, after); })); $("#actionForm").addEventListener("submit", createAction); $("#refreshActivity").addEventListener("click", () => operatorUnlocked ? loadActivity() : requireOperator());
   }
-
-  function init() {
-    initTheme(); els.todayDate.textContent = formatFullDate(Date.now()); renderActivity(); renderStatus(); initEvents();
-    syncStatus();
-    setInterval(renderStatus, 1000);
-    setInterval(() => { if (authenticated) syncStatus({ promptOnAuth: false }); }, 60000);
-  }
-
+  function init() { let theme = "dark"; try { theme = localStorage.getItem(THEME_KEY) || "dark"; } catch {} setTheme(theme === "light" ? "light" : "dark"); els.todayDate.textContent = formatFullDate(Date.now()); renderActivity(); renderRecords(); renderRevisions(); renderActions(); renderPreview(); initEvents(); syncStatus(); detectOperator(); setInterval(renderStatus, 1000); setInterval(syncStatus, 60000); }
   init();
 })();
