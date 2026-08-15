@@ -1,0 +1,55 @@
+/* Circular ring aura for Android/Chrome: avoids rectangular blur compositing bounds. */
+html[data-theme="dark"] .countdown-ring{
+  --ring-glow-rgb:101,213,177;
+  overflow:visible;
+  isolation:isolate;
+  background:transparent!important;
+}
+html[data-theme="dark"] .status-console[data-state="soon"] .countdown-ring{--ring-glow-rgb:239,189,92}
+html[data-theme="dark"] .status-console[data-state="grace"] .countdown-ring,
+html[data-theme="dark"] .status-console[data-state="triggered"] .countdown-ring{--ring-glow-rgb:255,119,128}
+
+html[data-theme="dark"] .countdown-ring::before{
+  content:"";
+  position:absolute;
+  inset:-34%;
+  z-index:-1;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle at center,rgba(var(--ring-glow-rgb),.17) 0%,rgba(var(--ring-glow-rgb),.105) 22%,rgba(var(--ring-glow-rgb),.055) 38%,rgba(var(--ring-glow-rgb),.02) 52%,rgba(var(--ring-glow-rgb),0) 68%)!important;
+  filter:none!important;
+  opacity:1!important;
+  transform:none!important;
+  box-shadow:none!important;
+}
+
+html[data-theme="dark"] .countdown-ring::after{
+  content:"";
+  position:absolute;
+  inset:-5%;
+  z-index:0;
+  border:0!important;
+  border-radius:50%;
+  pointer-events:none;
+  background:transparent!important;
+  filter:none!important;
+  box-shadow:0 0 26px rgba(var(--ring-glow-rgb),.15),0 0 54px rgba(var(--ring-glow-rgb),.085),inset 0 0 24px rgba(var(--ring-glow-rgb),.035)!important;
+}
+
+html[data-theme="dark"] .countdown-ring svg,
+html[data-theme="dark"] .countdown-ring .ring-center{background:transparent!important}
+html[data-theme="dark"] .countdown-ring svg{z-index:1}
+html[data-theme="dark"] .countdown-ring .ring-center{z-index:2}
+
+html[data-theme="dark"] .ring-progress{
+  filter:drop-shadow(0 0 4px rgba(var(--ring-glow-rgb),.82)) drop-shadow(0 0 10px rgba(var(--ring-glow-rgb),.42)) drop-shadow(0 0 18px rgba(var(--ring-glow-rgb),.20))!important;
+}
+
+html[data-theme="dark"] .status-core,
+html[data-theme="dark"] .checkin-control,
+html[data-theme="dark"] .ring-center{box-shadow:none}
+
+@media(max-width:700px){
+  html[data-theme="dark"] .countdown-ring::before{inset:-30%}
+  html[data-theme="dark"] .countdown-ring::after{inset:-4%}
+}
