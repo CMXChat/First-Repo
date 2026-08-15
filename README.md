@@ -129,3 +129,7 @@ This project is also intended to provide practical experience with:
 - AI tools, MCP connectors, and safe automation
 
 <!-- GitHub Pages deployment trigger: 2026-08-06T15:04:00-04:00 -->
+
+## Check In production release
+
+The live `/checkin/` interface is published from `main` at commit `795eb2d` and uses the production API at `https://api.cmxchat.com`. The authoritative implementation and operational handoff are maintained in `CMXChat/jay-app` at `specs/003-server-checkin/HANDOFF.md`. The active product is a rolling 72 hour control with a 24 hour grace period; public views expose sanitized status and aggregate counts only.
