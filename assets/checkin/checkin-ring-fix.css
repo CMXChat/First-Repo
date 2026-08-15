@@ -1,54 +1,64 @@
-/* Ring glow: circular-only paint path to avoid Android/Chrome compositing boxes. */
-html[data-theme="dark"] .countdown-ring{
+/*
+ * Ring glow for Android/Chrome.
+ * Keep the SVG itself filter-free and paint the aura into the large status card.
+ * This avoids a smaller composited glow layer whose rectangular bounds can become visible.
+ */
+html[data-theme="dark"] .status-console{
   --ring-glow-rgb:101,213,177;
-  position:relative;
+}
+html[data-theme="dark"] .status-console[data-state="soon"]{--ring-glow-rgb:239,189,92}
+html[data-theme="dark"] .status-console[data-state="grace"],
+html[data-theme="dark"] .status-console[data-state="triggered"]{--ring-glow-rgb:255,119,128}
+
+/* Remove every ring-local aura/compositing layer. */
+html[data-theme="dark"] .countdown-ring{
   overflow:visible;
   isolation:auto!important;
   background:transparent!important;
+  box-shadow:none!important;
   filter:none!important;
 }
-
-html[data-theme="dark"] .status-console[data-state="soon"] .countdown-ring{--ring-glow-rgb:239,189,92}
-html[data-theme="dark"] .status-console[data-state="grace"] .countdown-ring,
-html[data-theme="dark"] .status-console[data-state="triggered"] .countdown-ring{--ring-glow-rgb:255,119,128}
-
-/* No large gradient/blur layer. This is a transparent circle whose shadows create the aura. */
-html[data-theme="dark"] .countdown-ring::before{
-  content:"";
-  position:absolute;
-  inset:10%;
-  z-index:0;
-  border-radius:50%;
-  pointer-events:none;
-  background:transparent!important;
-  border:0!important;
-  filter:none!important;
-  opacity:1!important;
-  transform:none!important;
-  box-shadow:
-    0 0 10px 3px rgba(var(--ring-glow-rgb),.24),
-    0 0 24px 7px rgba(var(--ring-glow-rgb),.13),
-    0 0 46px 11px rgba(var(--ring-glow-rgb),.065),
-    inset 0 0 18px rgba(var(--ring-glow-rgb),.045)!important;
-}
-
-/* Kill the older secondary aura layer completely. */
+html[data-theme="dark"] .countdown-ring::before,
 html[data-theme="dark"] .countdown-ring::after{
   content:none!important;
   display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+  filter:none!important;
 }
-
 html[data-theme="dark"] .countdown-ring svg,
-html[data-theme="dark"] .countdown-ring .ring-center{
+html[data-theme="dark"] .countdown-ring .ring-center,
+html[data-theme="dark"] .ring-progress,
+html[data-theme="dark"] .ring-track{
   background:transparent!important;
+  box-shadow:none!important;
   filter:none!important;
 }
-html[data-theme="dark"] .countdown-ring svg{z-index:1}
-html[data-theme="dark"] .countdown-ring .ring-center{z-index:2}
 
-/* Avoid SVG filter rasterization. The circular pseudo-element supplies the glow. */
+/*
+ * The visual glow is part of the entire glass card background now.
+ * The outer fade finishes well before the card edge, so there is no local box to reveal.
+ */
+html[data-theme="dark"] .status-console{
+  background:
+    radial-gradient(circle 185px at 29% 49%,
+      rgba(var(--ring-glow-rgb),.035) 0%,
+      rgba(var(--ring-glow-rgb),.045) 35%,
+      rgba(var(--ring-glow-rgb),.115) 52%,
+      rgba(var(--ring-glow-rgb),.075) 63%,
+      rgba(var(--ring-glow-rgb),.032) 76%,
+      rgba(var(--ring-glow-rgb),0) 100%),
+    linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 38%,transparent 67%),
+    rgba(12,16,21,.72)!important;
+}
+
+/* Keep the actual ring crisp and bright without triggering an SVG filter layer. */
 html[data-theme="dark"] .ring-progress{
-  filter:none!important;
+  stroke:rgb(var(--ring-glow-rgb))!important;
+  stroke-width:8;
+}
+html[data-theme="dark"] .ring-track{
+  stroke:rgba(216,230,242,.10)!important;
 }
 
 html[data-theme="dark"] .status-core,
@@ -58,13 +68,32 @@ html[data-theme="dark"] .ring-center{
   filter:none!important;
 }
 
+@media(max-width:900px){
+  html[data-theme="dark"] .status-console{
+    background:
+      radial-gradient(circle 170px at 50% 39%,
+        rgba(var(--ring-glow-rgb),.035) 0%,
+        rgba(var(--ring-glow-rgb),.045) 34%,
+        rgba(var(--ring-glow-rgb),.12) 52%,
+        rgba(var(--ring-glow-rgb),.075) 64%,
+        rgba(var(--ring-glow-rgb),.03) 78%,
+        rgba(var(--ring-glow-rgb),0) 100%),
+      linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 38%,transparent 67%),
+      rgba(12,16,21,.72)!important;
+  }
+}
+
 @media(max-width:700px){
-  html[data-theme="dark"] .countdown-ring::before{
-    inset:10%;
-    box-shadow:
-      0 0 9px 3px rgba(var(--ring-glow-rgb),.25),
-      0 0 21px 6px rgba(var(--ring-glow-rgb),.13),
-      0 0 38px 9px rgba(var(--ring-glow-rgb),.065),
-      inset 0 0 16px rgba(var(--ring-glow-rgb),.04)!important;
+  html[data-theme="dark"] .status-console{
+    background:
+      radial-gradient(circle 158px at 50% 37%,
+        rgba(var(--ring-glow-rgb),.03) 0%,
+        rgba(var(--ring-glow-rgb),.04) 33%,
+        rgba(var(--ring-glow-rgb),.12) 51%,
+        rgba(var(--ring-glow-rgb),.072) 64%,
+        rgba(var(--ring-glow-rgb),.026) 79%,
+        rgba(var(--ring-glow-rgb),0) 100%),
+      linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.012) 38%,transparent 67%),
+      rgba(12,16,21,.72)!important;
   }
 }
