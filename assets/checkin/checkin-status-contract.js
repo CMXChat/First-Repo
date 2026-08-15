@@ -110,6 +110,7 @@ if (typeof document !== "undefined") {
         acceptNode(node) {
           const parent = node.parentElement;
           if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+          if (parent.closest('[contenteditable="true"], .record-card, .revision-card, .action-row, .activity-row')) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         },
       });
@@ -375,17 +376,23 @@ if (typeof document !== "undefined") {
         statusbar.before(note);
       }
       const unlocked = isUnlocked();
-      note.innerHTML = unlocked
-        ? '<strong>PRIVATE ACCESS ACTIVE</strong><span>You can save this page as a private revision. Saved history remains protected.</span>'
-        : '<strong>LOCAL DRAFT</strong><span>Write freely here. This draft stays in this browser tab until you unlock access and save a private revision.</span>';
+      const mode = unlocked ? "private" : "draft";
+      if (note.dataset.mode !== mode) {
+        note.dataset.mode = mode;
+        note.innerHTML = unlocked
+          ? '<strong>PRIVATE ACCESS ACTIVE</strong><span>You can save this page as a private revision. Saved history remains protected.</span>'
+          : '<strong>LOCAL DRAFT</strong><span>Write freely here. This draft stays in this browser tab until you unlock access and save a private revision.</span>';
+      }
       return note;
     }
 
     function updateSaveButton() {
       const save = document.querySelector("#saveUpdate");
       if (!save) return;
-      save.textContent = isUnlocked() ? "Save revision" : "Unlock to save";
-      save.title = isUnlocked() ? "Save this private revision" : "Authorization is required before this draft can be saved";
+      const label = isUnlocked() ? "Save revision" : "Unlock to save";
+      const title = isUnlocked() ? "Save this private revision" : "Authorization is required before this draft can be saved";
+      if (save.textContent !== label) save.textContent = label;
+      if (save.title !== title) save.title = title;
     }
 
     function preserveLockedDraft() {
