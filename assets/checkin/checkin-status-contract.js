@@ -149,6 +149,7 @@ if (typeof document !== "undefined") {
 
       card.dataset.experienceReady = "true";
       card.dataset.category = meta.key;
+      if (configured && document.querySelector("#publicActionSequence")) card.hidden = true;
       card.tabIndex = 0;
       card.setAttribute("role", "button");
       card.setAttribute("aria-label", `${meta.kicker}. ${count} ${meta.countLabel}. Authorization required.`);
@@ -213,7 +214,7 @@ if (typeof document !== "undefined") {
           <p>The public view shows structure and totals only. Names, content, notes and instructions stay sealed.</p>
           <div class="package-signals">
             <span><i></i>72 hour control active</span>
-            <span><i></i>Server synchronized</span>
+            <span id="packageServerSignal"><i></i>Server status pending</span>
             <span id="packageAccessSignal"><i></i>Access locked</span>
           </div>
         </div>
@@ -242,6 +243,10 @@ if (typeof document !== "undefined") {
       const access = overview.querySelector("#packageAccessSignal");
       const accessText = document.body.classList.contains("operator-unlocked") ? " Private access active" : " Access locked";
       if (access?.lastChild?.nodeValue !== accessText) access.lastChild.nodeValue = accessText;
+      const server = overview.querySelector("#packageServerSignal");
+      const syncText = document.querySelector("#syncState")?.textContent || "";
+      const serverText = syncText.includes("SYNCHRONIZED") ? " Server synchronized" : syncText.includes("UNAVAILABLE") ? " Server link unavailable" : " Server status pending";
+      if (server?.lastChild?.nodeValue !== serverText) server.lastChild.nodeValue = serverText;
     }
 
     function gatewayMarkup(type, count) {
