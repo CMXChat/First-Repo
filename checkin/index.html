@@ -9,7 +9,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'none'; upgrade-insecure-requests" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.cmxchat.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'none'; upgrade-insecure-requests" />
   <title>Check In · Dead Man Switch</title>
   <meta name="description" content="Private check-in control panel for a future Dead Man Switch system." />
   <link rel="canonical" href="https://db.cmxchat.com/checkin/" />
@@ -33,7 +33,7 @@
       </nav>
 
       <div class="sidebar-foot">
-        <div class="local-state"><i></i><span><strong>LOCAL MODE</strong><small>This device only</small></span></div>
+        <div class="local-state"><i></i><span><strong>SERVER TIME</strong><small>API-backed check-ins</small></span></div>
         <button class="settings-nav" id="openSettings" type="button">⚙ <span>Settings</span></button>
       </div>
     </aside>
@@ -60,8 +60,8 @@
           </div>
 
           <div class="mode-strip">
-            <span><i></i><strong>Frontend prototype</strong></span>
-            <p>Your timer and history work on this device. No server is monitoring you while the page is closed.</p>
+            <span><i></i><strong>Server-backed milestone</strong></span>
+            <p>Your deadline is stored by the API using server time. Automatic background monitoring is not active yet.</p>
           </div>
 
           <div class="dashboard-grid">
@@ -159,7 +159,7 @@
       <div class="dialog-head"><div><small>CHECK IN</small><h2>Settings</h2></div><button value="cancel" class="dialog-close" aria-label="Close">×</button></div>
       <div class="field-group"><label for="intervalSelect">Check-in interval</label><select id="intervalSelect"><option value="24">Every 24 hours</option><option value="48">Every 48 hours</option><option value="72">Every 72 hours</option><option value="168">Every 7 days</option></select></div>
       <div class="field-group"><label for="graceSelect">Grace period</label><select id="graceSelect"><option value="6">6 hours</option><option value="12">12 hours</option><option value="24">24 hours</option><option value="48">48 hours</option></select></div>
-      <div class="setting-note"><strong>Local prototype</strong><p>Changing these values updates the browser timer only. It does not create a server-side monitor.</p></div>
+      <div class="setting-note"><strong>Read-only this milestone</strong><p>The server owns these values. Settings persistence will be added in a later milestone.</p></div>
       <menu><button value="cancel" class="secondary-small">Cancel</button><button value="default" class="primary-small" id="saveSettings">Save changes</button></menu>
     </form>
   </dialog>
@@ -173,7 +173,18 @@
     </div>
   </dialog>
 
+  <dialog class="app-dialog" id="authDialog">
+    <form class="dialog-shell" id="authForm">
+      <div class="dialog-head"><div><small>SECURE SESSION</small><h2>Sign in to Check In</h2></div></div>
+      <div class="field-group"><label for="authEmail">Email</label><input id="authEmail" name="username" type="email" autocomplete="username" required /></div>
+      <div class="field-group"><label for="authPassword">Password</label><input id="authPassword" name="password" type="password" autocomplete="current-password" required /></div>
+      <div class="setting-note"><strong>Existing jay-app account</strong><p>Your short session is kept in a secure HttpOnly API cookie. This page cannot read the token.</p></div>
+      <p id="authError" role="alert" aria-live="polite"></p>
+      <menu><button class="primary-small" id="authSubmit" type="submit">Sign in</button></menu>
+    </form>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/assets/checkin/checkin.js?v=20260814-2"></script>
+  <script src="/assets/checkin/checkin.js?v=20260815-1"></script>
 </body>
 </html>
