@@ -31,13 +31,15 @@ jobs:
           node --check assets/lab/lab-inventory.js
           node --check assets/lab/lab-actions.js
           node --check assets/lab/lab-timeline-live.js
+          node --check assets/lab/lab-decisions.js
+          node --check assets/lab/lab-decisions-events.js
           node --check assets/lab/checkin-status-contract.js
           node --check assets/lab/checkin.js
           node --check assets/lab/checkin-refine.js
           node --check assets/lab/checkin-vault-panels.js
           node --check assets/lab/checkin-actions-official.js
 
-      - name: Validate Lab isolation, records, actions, sequence, and handoffs
+      - name: Validate Lab isolation, records, actions, sequence, decisions, and handoffs
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -56,9 +58,14 @@ jobs:
               Path('assets/lab/lab-actions.css'),
               Path('assets/lab/lab-actions.js'),
               Path('assets/lab/lab-timeline.css'),
+              Path('assets/lab/lab-timeline-responsive.css'),
               Path('assets/lab/lab-timeline-live.js'),
+              Path('assets/lab/lab-decisions.css'),
+              Path('assets/lab/lab-decisions.js'),
+              Path('assets/lab/lab-decisions-events.js'),
               Path('assets/lab/BACKEND-HANDOFF.md'),
               Path('assets/lab/ACTIONS-BACKEND-HANDOFF.md'),
+              Path('assets/lab/DECISIONS-BACKEND-HANDOFF.md'),
               Path('assets/lab/LAB-HANDOFF.md'),
           ]
 
@@ -83,7 +90,11 @@ jobs:
               '/assets/lab/lab-actions.css',
               '/assets/lab/lab-actions.js',
               '/assets/lab/lab-timeline.css',
+              '/assets/lab/lab-timeline-responsive.css',
               '/assets/lab/lab-timeline-live.js',
+              '/assets/lab/lab-decisions.css',
+              '/assets/lab/lab-decisions.js',
+              '/assets/lab/lab-decisions-events.js',
               'data-lab-mode="true"',
           ):
               if term not in text:
@@ -146,6 +157,32 @@ jobs:
               if term not in sequence:
                   failures.append(f'Lab sequence engine boundary/model missing: {term}')
 
+          decisions = Path('assets/lab/lab-decisions.js').read_text(encoding='utf-8')
+          for term in (
+              'BACKEND HANDOFF',
+              'DECISION_KEY',
+              'RUNTIME_KEY',
+              'switch_overdue',
+              'grace_expired',
+              'action_state',
+              'asset_status',
+              'AWAITING ACKNOWLEDGEMENT',
+              'NO ACKNOWLEDGEMENT',
+              'APPROVAL DENIED',
+              'cycleCheck',
+              'routeSignals',
+              'Delivery and acknowledgement are separate states',
+              'server-authoritative workers',
+              'DECISIONS-BACKEND-HANDOFF.md',
+          ):
+              if term not in decisions:
+                  failures.append(f'Lab decision engine boundary/model missing: {term}')
+
+          event_boundary = Path('assets/lab/lab-decisions-events.js').read_text(encoding='utf-8')
+          for term in ('UI EVENT BOUNDARY', 'data-decision-node', 'stopPropagation'):
+              if term not in event_boundary:
+                  failures.append(f'Lab decision event boundary missing: {term}')
+
           handoff = Path('assets/lab/BACKEND-HANDOFF.md').read_text(encoding='utf-8')
           for term in ('checkin_documents', 'checkin_digital_assets', 'checkin_record_links', 'object storage', 'secret_ref', 'Action Builder integration'):
               if term not in handoff:
@@ -166,15 +203,36 @@ jobs:
               if term not in action_handoff:
                   failures.append(f'Action backend handoff missing required note: {term}')
 
+          decision_handoff = Path('assets/lab/DECISIONS-BACKEND-HANDOFF.md').read_text(encoding='utf-8')
+          for term in (
+              'checkin_action_conditions',
+              'checkin_action_routes',
+              'checkin_action_dependencies',
+              'checkin_acknowledgements',
+              'checkin_action_approvals',
+              'checkin_incident_actions',
+              'checkin_condition_evaluations',
+              'Cycle detection',
+              'Delivery and acknowledgement are separate states',
+              'idempotency',
+          ):
+              if term not in decision_handoff:
+                  failures.append(f'Decision backend handoff missing required note: {term}')
+
           lab_handoff = Path('assets/lab/LAB-HANDOFF.md').read_text(encoding='utf-8')
           for term in (
               'Read this file first',
               'Phase 5',
+              'Phase 6',
               'cmx-lab-switch-policy-v1',
+              'cmx-lab-decisions-v1',
+              'cmx-lab-decision-runtime-v1',
               'rolling repeat',
               'one-shot',
               'lab-timeline-live.js',
-              'Phase 6',
+              'lab-decisions.js',
+              'Decision Inspector',
+              'Phase 7',
               'Update this file at the end of every major Lab round',
           ):
               if term not in lab_handoff:
@@ -184,5 +242,5 @@ jobs:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print('Check In Lab syntax, isolation, records, actions, sequence engine, and persistent handoff validated.')
+          print('Check In Lab syntax, isolation, records, actions, sequence, decision engine, and persistent handoff validated.')
           PY
