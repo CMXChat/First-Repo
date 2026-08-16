@@ -26,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260816-acceptance3";
+  const BUILD = "20260816-mobile1";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -39,7 +39,9 @@
     ["lab-decisions.css", "20260816-decisions1"],
     ["lab-audit.css", "20260816-audit2"],
     ["lab-command.css", "20260816-phase8-1"],
-    ["lab-acceptance.css", "20260816-acceptance1"]
+    ["lab-test-center.css", "20260816-test1"],
+    ["lab-acceptance.css", "20260816-acceptance1"],
+    ["lab-product-polish.css", "20260816-mobile1"]
   ]);
 
   const LAB_SCRIPTS = Object.freeze([
@@ -52,6 +54,8 @@
     ["lab-audit-bootstrap.js", "20260816-audit2"],
     ["lab-audit.js", "20260816-audit2"],
     ["lab-command.js", "20260816-phase8-1"],
+    ["lab-test-center.js", "20260816-test1"],
+    ["lab-product-polish.js", "20260816-mobile1"],
     ["lab-acceptance.js", "20260816-acceptance1"]
   ]);
 
@@ -130,6 +134,8 @@
     if (!html.includes('data-lab-mode="true"')) throw new Error("Lab mode marker was not applied.");
     if (!html.includes("/assets/lab/lab-mock-api.js")) throw new Error("Lab mock API was not inserted.");
     if (!html.includes("/assets/lab/lab-command.js")) throw new Error("Phase 8 integration layer was not inserted.");
+    if (!html.includes("/assets/lab/lab-test-center.js")) throw new Error("Lab Test Center was not inserted.");
+    if (!html.includes("/assets/lab/lab-product-polish.js")) throw new Error("Lab product polish layer was not inserted.");
     if (!html.includes("/assets/lab/lab-acceptance.js")) throw new Error("Acceptance hardening layer was not inserted.");
 
     return html;
