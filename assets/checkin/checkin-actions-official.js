@@ -68,7 +68,7 @@
           <span class="official-directive-summary">
             <small>TRIGGER ACTION ${number} · ACT-${ref}</small>
             <strong>${family}</strong>
-            <em>RESTRICTED CONTINGENCY DIRECTIVE</em>
+            <em>ACTION DETAILS SEALED</em>
           </span>
           <span class="official-directive-status"><i></i>CONFIGURED</span>
           <span class="official-expand-cue" aria-hidden="true">⌄</span>
@@ -152,14 +152,14 @@
           const number = String(index + 1).padStart(2, "0");
           return directiveCard(index, mode, expandedDirectives.has(number));
         }).join("")
-      : `<div class="official-action-pending"><div><i></i><strong>${mode === "live" ? "NO PUBLIC DIRECTIVE SUMMARY" : "READING CONFIGURATION"}</strong><small>${mode === "live" ? "Protected action configuration remains sealed behind private access." : "Waiting for the server status before presenting configuration state."}</small></div></div>`;
+      : `<div class="official-action-pending"><div><i></i><strong>${mode === "live" ? "NO PUBLIC ACTION SUMMARY" : "READING CONFIGURATION"}</strong><small>${mode === "live" ? "Protected action configuration remains sealed behind private access." : "Waiting for the server status before presenting configuration state."}</small></div></div>`;
 
     section.innerHTML = `
       <div class="official-sequence-head">
         <div class="official-sequence-title">
-          <small>CONTINGENCY CONTROL</small>
+          <small>ACTION CONTROL</small>
           <h2>Trigger actions</h2>
-          <p>Configured contingency directives. Tap an action to inspect its sealed execution fields.</p>
+          <p>Configured actions. Details stay sealed until unlocked.</p>
         </div>
         <div class="official-sequence-status">
           <span class="official-sequence-count"><b>!</b>${count ? countLabel : "SEQUENCE SEALED"}</span>
@@ -177,7 +177,7 @@
 
       <div class="official-package-footer">
         <span><i></i><strong>EXECUTION PACKAGE SEALED</strong><small>Recipients, destinations, instructions, schedules, and protected content require private access.</small></span>
-        <button type="button" id="officialActionsUnlock">Unlock directives</button>
+        <button type="button" id="officialActionsUnlock">Unlock actions</button>
       </div>`;
 
     bindInteractions(section);
