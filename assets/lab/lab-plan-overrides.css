@@ -1,0 +1,18 @@
+/* Final Plan-view layout corrections. Loaded after the main Plan stylesheet. */
+@media(min-width:701px){
+  .lab-plan-action{max-width:none!important}
+  .lab-plan-lane-track:has(.lab-plan-action:nth-child(2)){min-height:152px}
+  .lab-plan-lane-track:has(.lab-plan-action:nth-child(3)){min-height:220px}
+  .lab-plan-lane-track:has(.lab-plan-action:nth-child(4)){min-height:288px}
+  .lab-plan-lane-track:has(.lab-plan-action:nth-child(5)){min-height:356px}
+  .lab-plan-lane-track:has(.lab-plan-action:nth-child(6)){min-height:424px}
+  .lab-plan-lane-track:has(.lab-plan-action:nth-child(7)){min-height:492px}
+  .lab-plan-lane-track:has(.lab-plan-action:nth-child(8)){min-height:560px}
+  .lab-plan-action:nth-child(2){top:79px}
+  .lab-plan-action:nth-child(3){top:147px}
+  .lab-plan-action:nth-child(4){top:215px}
+  .lab-plan-action:nth-child(5){top:283px}
+  .lab-plan-action:nth-child(6){top:351px}
+  .lab-plan-action:nth-child(7){top:419px}
+  .lab-plan-action:nth-child(8){top:487px}
+}
