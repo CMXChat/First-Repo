@@ -12,11 +12,11 @@ This file exists for one future job: move the useful product work from `/lab` in
 
 The destination repository/application is intentionally **TBD** until the user identifies the official Check In project. Do not guess the destination repo.
 
-Update this file after every major Lab phase that introduces something we may eventually port.
+Update this file after every major Lab phase that introduces behavior we may eventually port.
 
 ## Migration principle
 
-Treat `/lab` as a product prototype and behavior specification, not as production source code to copy wholesale.
+Treat `/lab` as a product prototype and behavior specification, not production source code to copy wholesale.
 
 Port these things:
 
@@ -30,10 +30,11 @@ Port these things:
 - decision rules
 - relationship models
 - audit/version semantics
+- search/navigation behavior
 - accessibility/mobile behavior
 - backend contracts documented in the handoff files
 
-Do **not** blindly port these things:
+Do not blindly port these things:
 
 - `lab/index.html` snapshot loader
 - HTML string rewriting
@@ -42,11 +43,15 @@ Do **not** blindly port these things:
 - localStorage as authoritative persistence
 - browser-side eligibility/execution authority
 - browser-side audit authority
+- browser-side assurance authority
+- browser-local universal search as an authorization model
+- hash routing as the official router
+- DOM-click quick-create/navigation adapters
 - synthetic delivery claims
-- Lab sample people, organizations, documents, assets, or actions
-- any code whose only job is adapting the old static `/checkin` page into Lab
+- Lab sample people, organizations, documents, assets, actions, incidents, or audit entries
+- code whose only job is adapting the old static `/checkin` page into Lab
 
-The official project should reproduce the approved behavior using its native frontend, FastAPI/backend, PostgreSQL, worker, authentication, and deployment architecture.
+The official project should reproduce approved behavior using its native frontend, API client, FastAPI/backend, PostgreSQL, scheduler/workers, authentication/authorization, object storage, secrets layer, and deployment architecture.
 
 ## Current Lab source layers
 
@@ -59,25 +64,27 @@ The current Lab prototype is composed of:
 - `lab-decisions.js` / `lab-decisions-events.js` / decision CSS
 - `lab-audit-bootstrap.js`
 - `lab-audit.js` / `lab-audit.css`
+- `lab-command.js` / `lab-command.css`
 - Lab safety/mock layers
 
-These files are useful references for product behavior, but the official application should split them into proper frontend components, API services, backend domain services, database models, and workers.
+These files are useful references for behavior and product intent. The official application should split them into proper frontend components, API services, backend domain services, database models, schedulers, workers, and provider adapters.
 
-## Product areas approved/prototyped so far
+## Product areas prototyped so far
 
-### 1. Lab isolation model
+### 1. Safe simulation / Lab isolation
 
-Useful concept to preserve:
+Useful behavior to preserve:
 
 - safe simulation environment separated from real execution
 - unmistakable environment indicator
 - no production side effects during testing
 
-Official-project version:
+Official-project target:
 
-- dedicated backend environment or server-side simulation mode
+- dedicated backend environment or explicit server-side simulation mode
 - separate credentials/provider adapters
 - environment-level safety enforcement
+- deterministic fake providers for simulation
 - never depend only on browser blocking
 
 ### 2. People + Organizations
@@ -87,14 +94,14 @@ Prototype behavior:
 - clean CRM-style directory
 - People and Organization profiles
 - search/filter/sort
-- People ↔ Organization relationships
+- People to Organization relationships
 - notes/activity
 - contextual relationship pane
 - mobile drill-in
 
 Official-project target:
 
-- frontend route/components for records
+- frontend routes/components
 - generated API client calls
 - FastAPI CRUD/services
 - PostgreSQL people/organizations/relationship tables
@@ -157,7 +164,7 @@ Prototype behavior:
 
 - proof-of-life interval configurable from 1 hour to 30 days
 - hours/days input
-- grace window 0–24 hours
+- grace window 0 to 24 hours
 - rolling repeat or one-shot
 - deadline and final-trigger calculation
 - visual Sequence timeline
@@ -226,6 +233,43 @@ Official-project target:
 
 Read `AUDIT-BACKEND-HANDOFF.md`.
 
+### 8. Universal search, command palette, deep navigation, Status assurance
+
+Prototype behavior:
+
+- universal local Lab search across People, Organizations, Documents, Digital Assets, Actions, Incidents, Versions, and Audit events
+- `Cmd/Ctrl+K` command palette
+- `/` search shortcut outside editors
+- grouped search results
+- recently viewed records
+- commands mixed into search results
+- quick-create commands
+- top-bar `Search` and `New` controls
+- deep jump to exact People, Organizations, Documents, Assets, Actions, Incidents, Versions, and Audit events
+- browser back/forward support through a Lab hash adapter
+- saved views for Critical actions, Documents needing review, Untested action paths, and Changed since simulation
+- Status `Contingency assurance` block
+- surfaced `PLAN CURRENT`, `TEST REQUIRED`, `RETEST REQUIRED`, and `COVERAGE INCOMPLETE` states
+- dark/light treatment
+- mobile command/create sheets
+- keyboard focus and reduced-motion support
+
+Official-project target:
+
+- native application router routes every object with stable URL state
+- server/API-backed search with authorization-aware filtering
+- generated API client for search and mutations
+- no DOM-click navigation adapters
+- quick create calls native components/services
+- recent navigation may be client-local but stores IDs/labels only, never protected payloads
+- saved views become typed query/filter definitions
+- Status health comes from backend-calculated version/simulation/audit state
+- search must not reveal unauthorized objects through labels, snippets, counts, existence, or timing differences
+
+Important Phase 8 migration rule:
+
+`lab-command.js` is a behavior prototype, not production infrastructure. Reproduce its UX with official components and routing. Do not copy its localStorage indexing, DOM querying, or hash adapter into the official application.
+
 ## Recommended official-project architecture mapping
 
 The exact destination architecture must be confirmed before migration. If the official project follows the existing CMX learning stack, the conceptual mapping is:
@@ -244,19 +288,77 @@ scheduler / decision engine / execution workers
 provider adapters (SMS, email, AI, social, webhooks, etc.)
 ```
 
-Frontend must not directly own execution truth, incident truth, audit truth, credentials, or database access.
+Frontend must not directly own execution truth, incident truth, audit truth, credentials, database access, or security-sensitive search authorization.
+
+## Suggested official frontend route model
+
+Exact paths are TBD, but preserve stable object addressing conceptually:
+
+```text
+/checkin/status
+/checkin/records/people/:personId
+/checkin/records/organizations/:organizationId
+/checkin/records/documents/:documentId
+/checkin/records/assets/:assetId
+/checkin/actions/:actionId
+/checkin/sequence
+/checkin/incidents/:incidentId
+/checkin/activity/audit/:eventId
+/checkin/activity/versions/:objectType/:objectId
+/checkin/activity/health
+```
+
+The official router should own browser history and deep linking. The Lab `#lab=...` adapter must not survive migration.
+
+## Suggested search contract
+
+A future authenticated endpoint could conceptually expose:
+
+```text
+GET /checkin/search?q=...
+```
+
+Response items should return only authorized objects and minimal result metadata:
+
+- stable object type
+- stable ID
+- display label
+- safe subtitle/snippet
+- destination route descriptor
+- optional ranking metadata
+
+Search permission checks must happen before results are returned.
+
+For larger datasets, use server-side ranking/filtering and pagination. Do not download every protected record into the browser to build the index.
+
+## Suggested plan-health read model
+
+The official Status page should not calculate assurance by independently reimplementing audit logic in the browser.
+
+A backend read model should return values such as:
+
+- active policy/version
+- enabled action count
+- latest valid simulation snapshot
+- changed definition count since that simulation
+- action coverage summaries
+- review-due document count
+- blocking configuration warnings
+
+Then Status and Activity Health render the same authoritative read model.
 
 ## Best migration order when the official project is ready
 
-### Stage A — Freeze and inventory the Lab
+### Stage A: Freeze and inventory the Lab
 
 1. Pick the approved Lab commit/tag.
-2. Stop feature work temporarily.
-3. Capture screenshots/mobile states and behavior notes.
+2. Stop Lab feature work temporarily.
+3. Capture desktop/mobile screenshots and behavior notes.
 4. Build a feature matrix from this file and `LAB-HANDOFF.md`.
-5. Identify which Lab interactions are approved, rejected, or still experimental.
+5. Mark each behavior approved, rejected, or still experimental.
+6. Capture the expected Cmd/Ctrl+K, deep-link, mobile and Status-assurance flows.
 
-### Stage B — Define official backend contracts
+### Stage B: Define official backend contracts
 
 Before porting polished UI, define:
 
@@ -270,10 +372,12 @@ Before porting polished UI, define:
 8. audit/version/snapshot tables
 9. scheduler/worker responsibilities
 10. object-storage and secrets boundaries
+11. search authorization and result contract
+12. plan-health read model
 
-Use the four backend handoff files as the starting specification.
+Use the backend handoff files as the starting specification.
 
-### Stage C — Implement backend vertical slices
+### Stage C: Implement backend vertical slices
 
 Do not build every database table first and every UI screen last.
 
@@ -286,24 +390,26 @@ Port in working slices:
 5. Sequence read model
 6. decision evaluation
 7. audit/version history
-8. simulation mode
-9. real provider adapters only after simulation is reliable
+8. server-side simulation mode
+9. universal search + authorized deep-link results
+10. plan-health read model
+11. real provider adapters only after simulation is reliable
 
 Each slice should include model → service → API → generated client → frontend → tests.
 
-### Stage D — Rebuild the Lab UX natively
+### Stage D: Rebuild the Lab UX natively
 
 Use `/lab` as visual/behavior reference, then rebuild with official components and routing.
 
 Do not preserve awkward static-page compatibility code just because it exists in Lab.
 
-### Stage E — Simulation before execution
+### Stage E: Simulation before execution
 
 The official project should have a genuine server-side simulation mode before real providers are enabled.
 
-Simulation should use the same rule engine and timing calculations as production but swap side-effect adapters for deterministic fake providers.
+Simulation should use the same timing and decision engine as production but swap side-effect adapters for deterministic fake providers.
 
-### Stage F — Provider rollout
+### Stage F: Provider rollout
 
 Enable providers one at a time:
 
@@ -323,49 +429,92 @@ Before calling a Lab feature migrated, confirm:
 - UI behavior reproduced
 - mobile behavior reproduced
 - accessibility checked
+- stable official route exists where applicable
 - official API contract exists
-- persistent database model exists
+- persistent database model exists where applicable
 - authorization enforced server-side
 - timestamps server-authoritative
-- audit event emitted
+- audit event emitted where required
 - revisions/snapshots handled where required
 - errors and empty states handled
 - simulation test exists
 - production side effects are not browser-owned
-- Lab sample data was not copied as real user data
+- Lab sample data was not copied
+- localStorage is not being treated as authoritative backend state
+- security-sensitive search/filtering is authorization-aware
+- Status assurance uses the authoritative backend read model
 
-## Files to read before migration
+## Files that are product references vs Lab scaffolding
 
-Read all of these together:
+### Product behavior references
 
-- `assets/lab/LAB-HANDOFF.md`
-- `assets/lab/CHECKINLABCLONE.md`
-- `assets/lab/BACKEND-HANDOFF.md`
-- `assets/lab/ACTIONS-BACKEND-HANDOFF.md`
-- `assets/lab/DECISIONS-BACKEND-HANDOFF.md`
-- `assets/lab/AUDIT-BACKEND-HANDOFF.md`
+Use these to understand approved UX/semantics:
 
-## Current destination status
+- `lab-crm.js` / `lab-crm.css`
+- `lab-inventory.js` / `lab-inventory.css`
+- `lab-actions.js` / `lab-actions.css`
+- `lab-timeline-live.js` / timeline CSS
+- `lab-decisions.js` / decision CSS
+- `lab-audit.js` / `lab-audit.css`
+- `lab-command.js` / `lab-command.css`
+- `LAB-HANDOFF.md`
+- backend handoff Markdown files
 
-Official Check In destination repo/application: **TBD**.
+### Lab scaffolding to retire during migration
 
-When the user identifies it, update this section with:
+Do not preserve these as architecture:
 
-- repository
-- relevant frontend path
-- backend path
-- database/migration path
-- API-client generation path
-- deployment environment
-- authentication model
-- current production Check In schema/endpoints
+- static snapshot-loader approach
+- HTML asset-string rewrites
+- CSP rewrite hack
+- mock production API interception
+- browser localStorage domain persistence
+- audit monkey-patching of localStorage
+- provenance bootstrap for pre-audit browser state
+- hash deep-link adapter
+- DOM selector clicking for navigation and quick-create
+- local universal index over all protected objects
 
-Then convert the migration stages above into concrete issues/PR slices for that project.
+Their behaviors may inspire official features, but the implementations are prototype scaffolding.
 
-## Ongoing rule
+## Migration acceptance target
 
-At the end of every major `/lab` round:
+When the official implementation is ready, a user should be able to perform the same approved flows without knowing the Lab existed:
 
-1. update `LAB-HANDOFF.md` with how to continue the prototype;
-2. update `CHECKINLABCLONE.md` if the round adds or changes something we eventually want in the official project;
-3. keep Lab-only implementation details clearly separated from the production target architecture.
+1. configure their check-in window and repeat behavior
+2. build People/Organizations and protected records
+3. create Actions and decision logic
+4. simulate the full contingency sequence safely
+5. inspect why actions did or did not run
+6. review incidents, versions, and audit history
+7. see whether definitions changed since the last meaningful test
+8. search globally with Cmd/Ctrl+K
+9. deep-link directly to exact records/actions/incidents
+10. use quick create and saved views
+11. use the app comfortably on mobile and keyboard
+12. eventually enable real providers through backend-controlled execution
+
+## Before beginning the official migration
+
+Do not migrate just because `/lab` looks polished.
+
+First:
+
+1. finish the Lab acceptance/bug pass
+2. identify the official destination repo and architecture
+3. freeze an approved Lab commit/tag
+4. capture screenshots and core flows
+5. review all backend handoff documents
+6. decide which prototype behaviors are truly desired
+7. create the official implementation plan by vertical slice
+
+At that point this file becomes the migration checklist.
+
+## Maintenance rule
+
+After every major Lab round:
+
+1. update `LAB-HANDOFF.md` with the current prototype architecture
+2. update this file if the round introduced behavior worth porting
+3. keep Lab-only hacks clearly separated from official-project recommendations
+4. never let this document imply that local browser simulation equals production security or execution
