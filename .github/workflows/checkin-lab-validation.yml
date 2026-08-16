@@ -39,6 +39,7 @@ jobs:
             assets/lab/lab-audit-bootstrap.js \
             assets/lab/lab-audit.js \
             assets/lab/lab-command.js \
+            assets/lab/lab-acceptance.js \
             assets/lab/checkin-status-contract.js \
             assets/lab/checkin.js \
             assets/lab/checkin-refine.js \
@@ -47,6 +48,32 @@ jobs:
           do
             node --check "$file"
           done
+
+      - name: Validate configurable status contract
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const assert = require('assert');
+          const contract = require('./assets/lab/checkin-status-contract.js');
+          const counts = {
+            document_count: 6,
+            contact_count: 8,
+            organization_count: 3,
+            update_revision_count: 5,
+            trigger_action_count: 4
+          };
+
+          for (const interval of [1, 6, 24, 72, 168, 720]) {
+            const normalized = contract.normalize({ interval_hours: interval, grace_hours: 12, repeat_enabled: true, ...counts });
+            assert.equal(normalized.schemaCompatible, true, `interval ${interval}h should be valid in Lab`);
+            assert.equal(normalized.intervalHours, interval);
+            assert.equal(normalized.graceHours, 12);
+          }
+
+          assert.equal(contract.normalize({ interval_hours: 721, grace_hours: 12, ...counts }).schemaCompatible, false);
+          assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
+          assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 0, repeat_enabled: false, ...counts }).repeatEnabled, false);
+          NODE
 
       - name: Validate bootstrap and generated Lab snapshot
         run: |
@@ -67,6 +94,7 @@ jobs:
 
           const required = [
             "connect-src 'self';",
+            "style-src 'self' 'unsafe-inline';",
             'data-lab-mode="true"',
             '/assets/lab/lab-mock-api.js',
             '/assets/lab/lab-safety.css',
@@ -87,6 +115,8 @@ jobs:
             '/assets/lab/lab-audit.js',
             '/assets/lab/lab-command.css',
             '/assets/lab/lab-command.js',
+            '/assets/lab/lab-acceptance.css',
+            '/assets/lab/lab-acceptance.js',
             'Check In Lab · Dead Man Switch'
           ];
           required.forEach(term => assert(rendered.includes(term), `Generated Lab snapshot missing: ${term}`));
@@ -94,10 +124,11 @@ jobs:
           assert(!rendered.includes('/assets/checkin/'), 'Generated Lab snapshot still references production assets');
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"), 'Generated Lab snapshot still permits production API');
           assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'), 'Mock API must load before status/client scripts');
+          assert(rendered.indexOf('/assets/lab/lab-command.js') < rendered.indexOf('/assets/lab/lab-acceptance.js'), 'Acceptance hardening must load after Phase 8 integration');
           assert((rendered.match(/data-lab-mode="true"/g) || []).length === 1, 'Lab mode marker must be unique');
 
-          // Build an ephemeral local-browser fixture. Local HTTP cannot use the snapshot's
-          // upgrade-insecure-requests directive, so remove only that directive in the fixture.
+          // Local HTTP smoke fixture: remove only upgrade-insecure-requests so Chromium
+          // does not rewrite localhost HTTP asset requests to HTTPS.
           fs.writeFileSync('lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
           NODE
 
@@ -130,6 +161,8 @@ jobs:
               'assets/lab/lab-audit.js',
               'assets/lab/lab-command.css',
               'assets/lab/lab-command.js',
+              'assets/lab/lab-acceptance.css',
+              'assets/lab/lab-acceptance.js',
               'assets/lab/BACKEND-HANDOFF.md',
               'assets/lab/ACTIONS-BACKEND-HANDOFF.md',
               'assets/lab/DECISIONS-BACKEND-HANDOFF.md',
@@ -147,7 +180,11 @@ jobs:
           checks = {
               'assets/lab/lab-loader.js': [
                   'CHECK IN LAB BOOTSTRAP', 'transformSnapshot', 'production API connectivity is removed',
-                  'CHECKINLABCLONE.md', 'Do not move this code back into an inline'
+                  'style-src', 'CHECKINLABCLONE.md', 'Do not move this code back into an inline'
+              ],
+              'assets/lab/checkin-status-contract.js': [
+                  'LAB STATUS CONTRACT', 'MIN_INTERVAL_HOURS', 'MAX_INTERVAL_HOURS',
+                  'repeatEnabled', 'dataset.labMode === "true"'
               ],
               'assets/lab/lab-mock-api.js': [
                   'productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY',
@@ -195,6 +232,14 @@ jobs:
               'assets/lab/lab-command.css': [
                   'lab-command-overlay', 'lab-plan-assurance', 'prefers-reduced-motion',
                   'data-health', '@media (max-width:700px)'
+              ],
+              'assets/lab/lab-acceptance.js': [
+                  'ACCEPTANCE / STABILIZATION LAYER', 'syncPolicyLimits', 'trapPaletteFocus',
+                  'preventDeadEndNote', 'validateDeepRoute', 'labAcceptance', 'CHECKINLABCLONE.md'
+              ],
+              'assets/lab/lab-acceptance.css': [
+                  'body.lab-command-open', 'labGlobalCreate', 'labPolicyDialog',
+                  '@media (max-width:700px)', 'prefers-reduced-motion'
               ],
               'assets/lab/BACKEND-HANDOFF.md': [
                   'checkin_documents', 'checkin_digital_assets', 'checkin_record_links',
@@ -246,10 +291,10 @@ jobs:
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
-          print('Lab safety, product contracts, migration notes, and production isolation validated.')
+          print('Lab safety, product contracts, acceptance layer, migration notes, and production isolation validated.')
           PY
 
-      - name: Headless browser boot smoke test
+      - name: Headless browser desktop boot and deep-link smoke tests
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
@@ -268,13 +313,14 @@ jobs:
             --no-sandbox \
             --disable-gpu \
             --disable-dev-shm-usage \
-            --virtual-time-budget=5000 \
+            --virtual-time-budget=6000 \
             --dump-dom \
             http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/checkin-lab-dom.html
 
           ! grep -q 'LAB SNAPSHOT UNAVAILABLE' /tmp/checkin-lab-dom.html
           ! grep -q 'Lab snapshot unavailable' /tmp/checkin-lab-dom.html
           grep -q 'data-lab-mode="true"' /tmp/checkin-lab-dom.html
+          grep -q 'data-lab-acceptance="ready"' /tmp/checkin-lab-dom.html
           grep -q 'Protected directory' /tmp/checkin-lab-dom.html
           grep -q 'Contingency control' /tmp/checkin-lab-dom.html
           grep -q 'Sequence simulator' /tmp/checkin-lab-dom.html
@@ -282,4 +328,42 @@ jobs:
           grep -q 'Contingency assurance' /tmp/checkin-lab-dom.html
           grep -q 'labCommandPalette' /tmp/checkin-lab-dom.html
 
-          echo 'Check In Lab browser boot smoke test passed.'
+          "$BROWSER" \
+            --headless \
+            --no-sandbox \
+            --disable-gpu \
+            --disable-dev-shm-usage \
+            --virtual-time-budget=6000 \
+            --dump-dom \
+            'http://127.0.0.1:8000/lab-browser-smoke.html#lab=action%3Aact-ai-brief' > /tmp/checkin-lab-deeplink.html
+
+          grep -q 'data-lab-acceptance="ready"' /tmp/checkin-lab-deeplink.html
+          grep -q 'data-action-id="act-ai-brief" aria-current="true"' /tmp/checkin-lab-deeplink.html
+          echo 'Desktop boot and exact Action deep-link smoke tests passed.'
+
+      - name: Headless browser mobile boot smoke test
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          python3 -m http.server 8001 --bind 127.0.0.1 >/tmp/checkin-lab-mobile-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab-browser-smoke.html' EXIT
+          sleep 1
+
+          "$BROWSER" \
+            --headless \
+            --no-sandbox \
+            --disable-gpu \
+            --disable-dev-shm-usage \
+            --window-size=390,844 \
+            --virtual-time-budget=6000 \
+            --dump-dom \
+            http://127.0.0.1:8001/lab-browser-smoke.html > /tmp/checkin-lab-mobile.html
+
+          ! grep -q 'LAB SNAPSHOT UNAVAILABLE' /tmp/checkin-lab-mobile.html
+          ! grep -q 'Lab snapshot unavailable' /tmp/checkin-lab-mobile.html
+          grep -q 'data-lab-acceptance="ready"' /tmp/checkin-lab-mobile.html
+          grep -q 'mobile-nav' /tmp/checkin-lab-mobile.html
+          grep -q 'labGlobalSearch' /tmp/checkin-lab-mobile.html
+          grep -q 'labGlobalCreate' /tmp/checkin-lab-mobile.html
+          echo '390x844 mobile Lab boot smoke test passed.'
