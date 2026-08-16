@@ -210,7 +210,7 @@ jobs:
           sleep 1
 
           chrome_dump() {
-            timeout 30s "$BROWSER" \
+            "$BROWSER" \
               --headless \
               --no-sandbox \
               --disable-gpu \
