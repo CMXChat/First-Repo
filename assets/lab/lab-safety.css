@@ -1,0 +1,34 @@
+/* /lab only: visible reminder that this page is using synthetic data. */
+body[data-lab-mode="true"]::after{
+  content:"LAB · MOCK DATA · PROD API BLOCKED";
+  position:fixed;
+  z-index:99999;
+  right:14px;
+  bottom:14px;
+  padding:7px 10px;
+  border:1px solid rgba(97,185,255,.34);
+  border-radius:999px;
+  background:rgba(5,8,12,.92);
+  box-shadow:0 10px 30px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.05);
+  color:#9bd5ff;
+  font:800 7px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.11em;
+  pointer-events:none;
+  backdrop-filter:blur(12px);
+}
+
+html[data-theme="light"] body[data-lab-mode="true"]::after{
+  border-color:rgba(53,117,177,.26);
+  background:rgba(248,251,254,.94);
+  color:#285f91;
+  box-shadow:0 10px 30px rgba(43,76,108,.14),inset 0 1px 0 #fff;
+}
+
+@media(max-width:700px){
+  body[data-lab-mode="true"]::after{
+    right:10px;
+    bottom:calc(72px + env(safe-area-inset-bottom));
+    padding:6px 8px;
+    font-size:6px;
+  }
+}
