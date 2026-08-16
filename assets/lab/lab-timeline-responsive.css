@@ -1,0 +1,18 @@
+/* Cross-browser sequence positioning.
+ * Keep percentage positioning simple so Chrome/Android/Safari do not depend on
+ * CSS multiplication inside calc(). The JS supplies --deadline/--clock/--marker.
+ */
+.lab-sequence-boundary.start{left:0!important;right:auto!important;transform:translateX(0)!important}
+.lab-sequence-boundary.deadline{left:var(--deadline)!important;right:auto!important}
+.lab-sequence-boundary.final{left:100%!important;right:auto!important;transform:translateX(-100%)!important}
+.lab-sequence-clock{left:var(--clock)!important}
+
+@media (max-width:700px){
+  .lab-sequence-rail{padding-left:64px}
+  .lab-sequence-track{top:0!important;bottom:0!important;left:30px!important;right:auto!important;height:auto!important}
+  .lab-sequence-boundary.start{top:0!important;left:30px!important;transform:translate(-50%,-50%)!important}
+  .lab-sequence-boundary.deadline{top:var(--deadline)!important;left:30px!important;transform:translate(-50%,-50%)!important}
+  .lab-sequence-boundary.final{top:100%!important;left:30px!important;right:auto!important;transform:translate(-50%,-50%)!important}
+  .lab-sequence-clock{top:var(--clock)!important;left:34px!important;transform:translate(-50%,-50%)!important}
+  .lab-sequence-marker{top:var(--marker)!important;left:64px!important;right:auto!important;transform:translateY(-50%)!important}
+}
