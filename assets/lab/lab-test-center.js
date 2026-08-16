@@ -29,7 +29,9 @@
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   let root = null;
   let running = false;
+  let runningLabel = "Running test…";
   let queued = false;
+  let lastResultLabel = "Ready";
 
   function load(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) || fallback; }
@@ -44,25 +46,13 @@
     };
   }
 
-  function actions() {
-    return load(ACTION_KEY, { actions:[] }).actions || [];
-  }
-
-  function currentSimulation() {
-    return load(SIM_KEY, { current:null }).current;
-  }
+  function actions() { return load(ACTION_KEY, { actions:[] }).actions || []; }
+  function currentSimulation() { return load(SIM_KEY, { current:null }).current; }
 
   function currentRuntime() {
     const sim = currentSimulation();
     const store = load(RUNTIME_KEY, { bySimulation:{} });
     return sim?.id ? store.bySimulation?.[sim.id] || null : null;
-  }
-
-  function click(selector, scope = document) {
-    const node = $(selector, scope);
-    if (!node) return false;
-    node.click();
-    return true;
   }
 
   async function waitFor(selector, { scope=document, attempts=30, delay=60 } = {}) {
@@ -75,8 +65,7 @@
   }
 
   async function openSequence() {
-    const active = $('[data-view-panel="timeline"].is-active');
-    if (!active) {
+    if (!$('[data-view-panel="timeline"].is-active')) {
       const nav = $$('[data-view="timeline"]').find(button => !button.hidden) || $('[data-view="timeline"]');
       nav?.click();
       await sleep(100);
@@ -86,9 +75,8 @@
 
   async function newSimulation() {
     await openSequence();
-    const reset = await waitFor('[data-sequence-command="reset"]');
-    reset?.click();
-    await sleep(180);
+    (await waitFor('[data-sequence-command="reset"]'))?.click();
+    await sleep(200);
   }
 
   async function jumpTo(hour) {
@@ -96,54 +84,46 @@
     const exact = await waitFor(`[data-sequence-jump="${hour}"]`);
     if (exact) exact.click();
     else {
-      const sim = currentSimulation();
-      const current = Number(sim?.hour || 0);
+      const current = Number(currentSimulation()?.hour || 0);
       const delta = Math.max(0, Number(hour) - current);
-      const plusSix = $('[data-sequence-add="6"]');
-      const plusOne = $('[data-sequence-add="1"]');
       let sixes = Math.floor(delta / 6);
       let ones = Math.round(delta % 6);
-      while (sixes-- > 0) { plusSix?.click(); await sleep(25); }
-      while (ones-- > 0) { plusOne?.click(); await sleep(25); }
+      while (sixes-- > 0) { $('[data-sequence-add="6"]')?.click(); await sleep(25); }
+      while (ones-- > 0) { $('[data-sequence-add="1"]')?.click(); await sleep(25); }
     }
-    await sleep(180);
+    await sleep(200);
   }
 
   async function runEligible() {
-    const button = await waitFor('[data-sequence-command="run-eligible"]');
-    button?.click();
-    await sleep(180);
+    (await waitFor('[data-sequence-command="run-eligible"]'))?.click();
+    await sleep(200);
   }
 
   async function failNextEligible() {
-    await sleep(100);
-    const button = $('[data-decision-run][data-decision-outcome="failure"]') || $('[data-sim-outcome="failure"]');
-    button?.click();
-    await sleep(180);
+    await sleep(110);
+    ($('[data-decision-run][data-decision-outcome="failure"]') || $('[data-sim-outcome="failure"]'))?.click();
+    await sleep(200);
   }
 
   async function markNoResponse(preferredId = "act-continuity-email") {
-    await sleep(100);
+    await sleep(110);
     const preferred = $(`[data-decision-ack="${CSS.escape(preferredId)}"][data-decision-ack-value="no"]`);
-    const fallback = $('[data-decision-ack][data-decision-ack-value="no"]');
-    (preferred || fallback)?.click();
-    await sleep(180);
+    (preferred || $('[data-decision-ack][data-decision-ack-value="no"]'))?.click();
+    await sleep(200);
   }
 
   async function acknowledgeNext(preferredId = "act-legal-sms") {
-    await sleep(100);
+    await sleep(110);
     const preferred = $(`[data-decision-ack="${CSS.escape(preferredId)}"][data-decision-ack-value="yes"]`);
-    const fallback = $('[data-decision-ack][data-decision-ack-value="yes"]');
-    (preferred || fallback)?.click();
-    await sleep(180);
+    (preferred || $('[data-decision-ack][data-decision-ack-value="yes"]'))?.click();
+    await sleep(200);
   }
 
   async function approveFinal(preferredId = "act-account-handoff") {
-    await sleep(100);
+    await sleep(110);
     const preferred = $(`[data-decision-run="${CSS.escape(preferredId)}"][data-decision-outcome="success"]`);
-    const fallback = $('[data-decision-run][data-decision-outcome="success"]');
-    (preferred || fallback)?.click();
-    await sleep(180);
+    (preferred || $('[data-decision-run][data-decision-outcome="success"]'))?.click();
+    await sleep(200);
   }
 
   function stateSummary() {
@@ -157,21 +137,35 @@
     return { enabled:enabled.length, terminal, waiting, failed, hour:Number(sim?.hour || 0), values };
   }
 
-  function renderResult(label = "Ready") {
-    if (!root) return;
+  function liveRoot() {
+    const current = $("#labTestCenter");
+    if (current) root = current;
+    return root?.isConnected ? root : current;
+  }
+
+  function renderResult(label = lastResultLabel) {
+    lastResultLabel = label;
+    const current = liveRoot();
+    if (!current) return;
     const summary = stateSummary();
-    const result = $("#labTestResult", root);
+    const result = $("#labTestResult", current);
     if (!result) return;
     result.innerHTML = `<span><small>LAST TEST STEP</small><strong>${label}</strong></span><div><b>${summary.terminal}</b><small>RESOLVED</small></div><div><b>${summary.waiting}</b><small>OPEN</small></div><div class="${summary.failed ? "warn" : ""}"><b>${summary.failed}</b><small>FAILED</small></div><em>T+${summary.hour}h</em>`;
   }
 
+  function syncBusyUi() {
+    const current = liveRoot();
+    if (!current) return;
+    current.classList.toggle("is-running", running);
+    $$("[data-test-scenario]", current).forEach(button => button.disabled = running);
+    const state = $(".lab-test-state", current);
+    if (state) state.textContent = running ? runningLabel : "SIMULATION ONLY";
+  }
+
   function setBusy(isBusy, label = "Running test…") {
     running = isBusy;
-    if (!root) return;
-    root.classList.toggle("is-running", isBusy);
-    $$("[data-test-scenario]", root).forEach(button => button.disabled = isBusy);
-    const state = $(".lab-test-state", root);
-    if (state) state.textContent = isBusy ? label : "SIMULATION ONLY";
+    runningLabel = label;
+    syncBusyUi();
   }
 
   async function scenario(name) {
@@ -184,21 +178,18 @@
         await jumpTo(p.intervalHours);
         window.CMX_LAB_DECISIONS?.reconcile?.();
         renderResult("Deadline reached");
-      }
-      if (name === "final") {
+      } else if (name === "final") {
         await newSimulation();
         await jumpTo(p.intervalHours + p.graceHours);
         window.CMX_LAB_DECISIONS?.reconcile?.();
         renderResult("Final boundary reached");
-      }
-      if (name === "failure") {
+      } else if (name === "failure") {
         await newSimulation();
         await jumpTo(p.intervalHours);
         window.CMX_LAB_DECISIONS?.reconcile?.();
         await failNextEligible();
         renderResult("Failure path exercised");
-      }
-      if (name === "no-reply") {
+      } else if (name === "no-reply") {
         await newSimulation();
         await jumpTo(p.intervalHours);
         await runEligible();
@@ -206,8 +197,7 @@
         await markNoResponse();
         window.CMX_LAB_DECISIONS?.reconcile?.();
         renderResult("No-response branch exercised");
-      }
-      if (name === "full") {
+      } else if (name === "full") {
         await newSimulation();
         await jumpTo(p.intervalHours);
         await runEligible();
@@ -223,6 +213,7 @@
       document.dispatchEvent(new CustomEvent("cmx:lab-test-center-completed", { detail:{ scenario:name, simulationId:currentSimulation()?.id || "" } }));
     } finally {
       setBusy(false);
+      renderResult();
     }
   }
 
@@ -254,8 +245,9 @@
         const name = event.target.closest("[data-test-scenario]")?.dataset.testScenario;
         if (name) scenario(name);
       });
-      renderResult("Ready");
     }
+    syncBusyUi();
+    renderResult();
     document.body.dataset.labTestCenter = "ready";
   }
 
@@ -268,8 +260,8 @@
   async function openCenter() {
     await openSequence();
     queueEnsure();
-    await sleep(80);
-    root?.scrollIntoView({ behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start" });
+    await sleep(100);
+    liveRoot()?.scrollIntoView({ behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start" });
   }
 
   document.addEventListener("click", event => {
@@ -280,9 +272,8 @@
     openCenter();
   }, true);
 
-  const watcher = new MutationObserver(queueEnsure);
   const sequencePanel = $('[data-view-panel="timeline"]');
-  if (sequencePanel) watcher.observe(sequencePanel, { childList:true, subtree:true });
+  if (sequencePanel) new MutationObserver(queueEnsure).observe(sequencePanel, { childList:true, subtree:true });
 
   window.CMX_LAB_TEST_CENTER = Object.freeze({
     open: openCenter,
