@@ -33,6 +33,7 @@ jobs:
           node --check assets/lab/lab-timeline-live.js
           node --check assets/lab/lab-decisions.js
           node --check assets/lab/lab-decisions-events.js
+          node --check assets/lab/lab-audit-bootstrap.js
           node --check assets/lab/lab-audit.js
           node --check assets/lab/checkin-status-contract.js
           node --check assets/lab/checkin.js
@@ -64,6 +65,7 @@ jobs:
               Path('assets/lab/lab-decisions.css'),
               Path('assets/lab/lab-decisions.js'),
               Path('assets/lab/lab-decisions-events.js'),
+              Path('assets/lab/lab-audit-bootstrap.js'),
               Path('assets/lab/lab-audit.css'),
               Path('assets/lab/lab-audit.js'),
               Path('assets/lab/BACKEND-HANDOFF.md'),
@@ -99,6 +101,7 @@ jobs:
               '/assets/lab/lab-decisions.css',
               '/assets/lab/lab-decisions.js',
               '/assets/lab/lab-decisions-events.js',
+              '/assets/lab/lab-audit-bootstrap.js',
               '/assets/lab/lab-audit.css',
               '/assets/lab/lab-audit.js',
               'data-lab-mode="true"',
@@ -112,14 +115,9 @@ jobs:
 
           mock = Path('assets/lab/lab-mock-api.js').read_text(encoding='utf-8')
           for term in (
-              'productionApiBlocked: true',
-              'PROD_API_ORIGIN',
-              'INVENTORY_STORAGE_KEY',
-              'ACTION_STORAGE_KEY',
-              'SWITCH_POLICY_KEY',
-              'interval_hours: policy.intervalHours',
-              'grace_hours: policy.graceHours',
-              'repeat_enabled: policy.repeat',
+              'productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY',
+              'ACTION_STORAGE_KEY', 'SWITCH_POLICY_KEY', 'interval_hours: policy.intervalHours',
+              'grace_hours: policy.graceHours', 'repeat_enabled: policy.repeat',
           ):
               if term not in mock:
                   failures.append(f'Lab mock API safety/policy guard missing: {term}')
@@ -130,33 +128,17 @@ jobs:
                   failures.append(f'Lab inventory backend boundary missing: {term}')
 
           actions = Path('assets/lab/lab-actions.js').read_text(encoding='utf-8')
-          for term in (
-              'BACKEND HANDOFF', 'ACTION_STORAGE_KEY', 'PostgreSQL', 'FastAPI',
-              'server-side scheduler/worker', 'stable IDs', 'Destructive',
-              'grace_expiry', 'grace_offset', 'SIMULATION ONLY',
-          ):
+          for term in ('BACKEND HANDOFF', 'ACTION_STORAGE_KEY', 'PostgreSQL', 'FastAPI', 'server-side scheduler/worker', 'stable IDs', 'Destructive', 'grace_expiry', 'grace_offset', 'SIMULATION ONLY'):
               if term not in actions:
                   failures.append(f'Lab action builder boundary/model missing: {term}')
 
           sequence = Path('assets/lab/lab-timeline-live.js').read_text(encoding='utf-8')
-          for term in (
-              'BACKEND HANDOFF', 'POLICY_KEY', 'SIM_KEY', 'intervalHours',
-              'graceHours', 'repeat', 'policySnapshot', 'ACTION_ELIGIBLE',
-              'AWAITING APPROVAL', 'SIMULATED_SUCCESS', 'SIMULATED_FAILURE',
-              'server-authoritative',
-          ):
+          for term in ('BACKEND HANDOFF', 'POLICY_KEY', 'SIM_KEY', 'intervalHours', 'graceHours', 'repeat', 'policySnapshot', 'ACTION_ELIGIBLE', 'AWAITING APPROVAL', 'SIMULATED_SUCCESS', 'SIMULATED_FAILURE', 'server-authoritative'):
               if term not in sequence:
                   failures.append(f'Lab sequence engine boundary/model missing: {term}')
 
           decisions = Path('assets/lab/lab-decisions.js').read_text(encoding='utf-8')
-          for term in (
-              'BACKEND HANDOFF', 'DECISION_KEY', 'RUNTIME_KEY', 'switch_overdue',
-              'grace_expired', 'action_state', 'asset_status',
-              'AWAITING ACKNOWLEDGEMENT', 'NO ACKNOWLEDGEMENT',
-              'APPROVAL DENIED', 'cycleCheck', 'routeSignals',
-              'Delivery and acknowledgement are separate states',
-              'Server-authoritative workers', 'DECISIONS-BACKEND-HANDOFF.md',
-          ):
+          for term in ('BACKEND HANDOFF', 'DECISION_KEY', 'RUNTIME_KEY', 'switch_overdue', 'grace_expired', 'action_state', 'asset_status', 'AWAITING ACKNOWLEDGEMENT', 'NO ACKNOWLEDGEMENT', 'APPROVAL DENIED', 'cycleCheck', 'routeSignals', 'Delivery and acknowledgement are separate states', 'Server-authoritative workers', 'DECISIONS-BACKEND-HANDOFF.md'):
               if term not in decisions:
                   failures.append(f'Lab decision engine boundary/model missing: {term}')
 
@@ -165,22 +147,13 @@ jobs:
               if term not in event_boundary:
                   failures.append(f'Lab decision event boundary missing: {term}')
 
+          bootstrap = Path('assets/lab/lab-audit-bootstrap.js').read_text(encoding='utf-8')
+          for term in ('PHASE 7 PROVENANCE BOOTSTRAP', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'legacy-no-definition-snapshot', 'cannot truthfully reconstruct'):
+              if term not in bootstrap:
+                  failures.append(f'Lab audit provenance bootstrap missing: {term}')
+
           audit = Path('assets/lab/lab-audit.js').read_text(encoding='utf-8')
-          for term in (
-              'AUDIT / VERSION / INCIDENT SNAPSHOTS',
-              'cmx-lab-audit-v1',
-              'cmx-lab-versions-v1',
-              'cmx-lab-incidents-v1',
-              'recordVersion',
-              'buildIncidentSnapshot',
-              'versionRefs',
-              'Restore as new version',
-              'changedSinceIncident',
-              'actionCoverage',
-              'Read-only incident replay',
-              'append-only',
-              'AUDIT-BACKEND-HANDOFF.md',
-          ):
+          for term in ('AUDIT / VERSION / INCIDENT SNAPSHOTS', 'cmx-lab-audit-v1', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'recordVersion', 'buildIncidentSnapshot', 'versionRefs', 'Restore as new version', 'changedSinceIncident', 'actionCoverage', 'Read-only incident replay', 'append-only', 'AUDIT-BACKEND-HANDOFF.md'):
               if term not in audit:
                   failures.append(f'Lab audit/version boundary/model missing: {term}')
 
@@ -200,27 +173,12 @@ jobs:
                   failures.append(f'Decision backend handoff missing required note: {term}')
 
           audit_handoff = Path('assets/lab/AUDIT-BACKEND-HANDOFF.md').read_text(encoding='utf-8')
-          for term in (
-              'checkin_definition_versions', 'checkin_audit_events', 'checkin_incidents',
-              'checkin_incident_definition_snapshots', 'checkin_incident_events',
-              'checkin_execution_attempts', 'checkin_change_sets', 'append-only',
-              'Restoring an older definition creates another new revision',
-              'changed since that test', 'Incident replay', 'SHA-256',
-          ):
+          for term in ('checkin_definition_versions', 'checkin_audit_events', 'checkin_incidents', 'checkin_incident_definition_snapshots', 'checkin_incident_events', 'checkin_execution_attempts', 'checkin_change_sets', 'append-only', 'Restoring an older definition creates another new revision', 'changed since that test', 'Incident replay', 'SHA-256'):
               if term not in audit_handoff:
                   failures.append(f'Audit backend handoff missing required note: {term}')
 
           lab_handoff = Path('assets/lab/LAB-HANDOFF.md').read_text(encoding='utf-8')
-          for term in (
-              'Read this file first', 'Phase 5', 'Phase 6', 'Phase 7',
-              'cmx-lab-switch-policy-v1', 'cmx-lab-decisions-v1',
-              'cmx-lab-decision-runtime-v1', 'cmx-lab-audit-v1',
-              'cmx-lab-versions-v1', 'cmx-lab-incidents-v1',
-              'rolling repeat', 'one-shot', 'lab-timeline-live.js',
-              'lab-decisions.js', 'lab-audit.js', 'Decision Inspector',
-              'changed since', 'incident snapshot', 'Phase 8',
-              'Update this file at the end of every major Lab round',
-          ):
+          for term in ('Read this file first', 'Phase 5', 'Phase 6', 'Phase 7', 'cmx-lab-switch-policy-v1', 'cmx-lab-decisions-v1', 'cmx-lab-decision-runtime-v1', 'cmx-lab-audit-v1', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'rolling repeat', 'one-shot', 'lab-timeline-live.js', 'lab-decisions.js', 'lab-audit.js', 'Decision Inspector', 'changed since', 'incident snapshot', 'legacy', 'Phase 8', 'Update this file at the end of every major Lab round'):
               if term not in lab_handoff:
                   failures.append(f'Persistent Lab handoff missing required note: {term}')
 
@@ -228,5 +186,5 @@ jobs:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print('Check In Lab syntax, isolation, records, actions, sequence, decisions, audit/version engine, and persistent handoff validated.')
+          print('Check In Lab syntax, isolation, records, actions, sequence, decisions, audit/version engine, provenance boundary, and persistent handoff validated.')
           PY
