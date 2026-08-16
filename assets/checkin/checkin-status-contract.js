@@ -41,10 +41,6 @@ if (typeof document !== "undefined") {
     const VIEWS = new Set(["overview", "timeline", "records", "updates", "actions", "activity"]);
     let restoringHistory = false;
 
-    const statusCopyStyle = document.createElement("style");
-    statusCopyStyle.textContent = '.status-console[data-state="safe"] #statusCopy{display:none!important}';
-    document.head.append(statusCopyStyle);
-
     function activeView() {
       return document.querySelector(".view.is-active")?.dataset.viewPanel || "overview";
     }
