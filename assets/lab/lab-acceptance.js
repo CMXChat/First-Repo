@@ -24,7 +24,6 @@
 
   const $ = (selector, root = document) => root?.querySelector(selector) || null;
   const $$ = (selector, root = document) => root ? [...root.querySelectorAll(selector)] : [];
-  const NAV_KEY = "cmx-lab-navigation-v1";
   let lastPolicyUnit = "";
   let routeWarningKey = "";
 
@@ -84,13 +83,15 @@
     const unit = $("#labIntervalUnit", dialog);
     if (!input || !unit) return;
     const days = unit.value === "days";
-    input.min = "1";
-    input.max = days ? "30" : "720";
-    input.step = "1";
-    const value = Math.max(1, Math.min(Number(input.max), Number(input.value || 1)));
+    const max = days ? "30" : "720";
+    if (input.min !== "1") input.min = "1";
+    if (input.max !== max) input.max = max;
+    if (input.step !== "1") input.step = "1";
+    const value = Math.max(1, Math.min(Number(max), Number(input.value || 1)));
     if (Number(input.value) !== value) input.value = String(value);
     const help = input.closest("label")?.querySelector(":scope > small");
-    if (help) help.textContent = days ? "1 to 30 days." : "1 to 720 hours (30 days).";
+    const helperText = days ? "1 to 30 days." : "1 to 720 hours (30 days).";
+    if (help && help.textContent !== helperText) help.textContent = helperText;
     lastPolicyUnit = days ? "days" : "hours";
   }
 
@@ -122,8 +123,7 @@
     setTimeout(() => {
       const menu = $("#labCreateMenu");
       if (!menu || menu.hidden) return;
-      const first = $("[data-create-kind]", menu);
-      first?.focus({ preventScroll: true });
+      $("[data-create-kind]", menu)?.focus({ preventScroll: true });
     }, 0);
   }
 
@@ -252,8 +252,10 @@
     handleCreateMenuKeydown(event);
   }, true);
 
-  const observer = new MutationObserver(() => patchSurfaces());
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["open", "hidden"] });
+  // Only child-list changes are observed. Watching attributes here would create
+  // unnecessary feedback while this layer adjusts form constraints/accessibility.
+  const observer = new MutationObserver(patchSurfaces);
+  observer.observe(document.body, { childList: true, subtree: true });
 
   window.addEventListener("popstate", () => setTimeout(validateDeepRoute, 220));
   window.addEventListener("hashchange", () => setTimeout(validateDeepRoute, 220));
