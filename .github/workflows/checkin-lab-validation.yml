@@ -1,0 +1,87 @@
+name: Check In Lab Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/**'
+      - 'assets/lab/**'
+      - '.github/workflows/checkin-lab-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/**'
+      - 'assets/lab/**'
+      - '.github/workflows/checkin-lab-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-lab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Lab JavaScript syntax
+        run: |
+          node --check assets/lab/lab-mock-api.js
+          node --check assets/lab/lab-crm.js
+          node --check assets/lab/checkin-status-contract.js
+          node --check assets/lab/checkin.js
+          node --check assets/lab/checkin-refine.js
+          node --check assets/lab/checkin-vault-panels.js
+          node --check assets/lab/checkin-actions-official.js
+
+      - name: Validate Lab isolation and assets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          failures = []
+          loader = Path('lab/index.html')
+          required = [
+              Path('assets/lab/checkin-index-snapshot.html'),
+              Path('assets/lab/lab-safety.css'),
+              Path('assets/lab/lab-mock-api.js'),
+              Path('assets/lab/lab-crm.css'),
+              Path('assets/lab/lab-crm.js'),
+          ]
+
+          if not loader.exists():
+              failures.append('lab/index.html is missing')
+              text = ''
+          else:
+              text = loader.read_text(encoding='utf-8')
+
+          for path in required:
+              if not path.exists():
+                  failures.append(f'missing Lab asset: {path}')
+
+          for term in (
+              "connect-src 'self';",
+              '/assets/lab/lab-mock-api.js',
+              '/assets/lab/lab-safety.css',
+              '/assets/lab/lab-crm.css',
+              '/assets/lab/lab-crm.js',
+              'data-lab-mode="true"',
+          ):
+              if term not in text:
+                  failures.append(f'Lab loader missing safety/CRM wiring: {term}')
+
+          production = Path('checkin/index.html').read_text(encoding='utf-8')
+          if '/assets/lab/' in production or 'data-lab-mode="true"' in production:
+              failures.append('production /checkin references Lab assets or Lab mode')
+
+          mock = Path('assets/lab/lab-mock-api.js').read_text(encoding='utf-8')
+          if 'productionApiBlocked: true' not in mock or 'PROD_API_ORIGIN' not in mock:
+              failures.append('Lab mock API safety guard is incomplete')
+
+          if failures:
+              print('\n'.join(f' - {failure}' for failure in failures))
+              sys.exit(1)
+
+          print('Check In Lab syntax, isolation, and CRM wiring validated.')
+          PY
