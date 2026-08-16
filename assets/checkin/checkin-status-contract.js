@@ -102,9 +102,12 @@ if (typeof document !== "undefined") {
       setTimeout(() => { restoringHistory = false; }, 0);
     }, 0);
 
-    const presentation = document.createElement("script");
-    presentation.src = "/assets/checkin/checkin-presentation.js?v=20260815-1";
-    presentation.async = true;
-    document.head.append(presentation);
+    /*
+     * The legacy checkin-presentation.js enhancer intentionally is not loaded here.
+     * It watched the full document tree and repeatedly rescanned visible text while
+     * the countdown changed. On mobile browsers that could create observer churn
+     * and an unresponsive-page warning. checkin-refine.js now owns the small set of
+     * presentation-only enhancements with targeted observers instead.
+     */
   })();
 }
