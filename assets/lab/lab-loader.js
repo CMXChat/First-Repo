@@ -26,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260816-mobile1";
+  const BUILD = "20260816-product2";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -41,7 +41,9 @@
     ["lab-command.css", "20260816-phase8-1"],
     ["lab-test-center.css", "20260816-test1"],
     ["lab-acceptance.css", "20260816-acceptance1"],
-    ["lab-product-polish.css", "20260816-mobile1"]
+    ["lab-product-polish.css", "20260816-mobile1"],
+    ["lab-experience.css", "20260816-product2"],
+    ["lab-plan.css", "20260816-plan1"]
   ]);
 
   const LAB_SCRIPTS = Object.freeze([
@@ -56,6 +58,8 @@
     ["lab-command.js", "20260816-phase8-1"],
     ["lab-test-center.js", "20260816-test1"],
     ["lab-product-polish.js", "20260816-mobile1"],
+    ["lab-plan.js", "20260816-plan1"],
+    ["lab-experience.js", "20260816-product2"],
     ["lab-acceptance.js", "20260816-acceptance1"]
   ]);
 
@@ -136,6 +140,8 @@
     if (!html.includes("/assets/lab/lab-command.js")) throw new Error("Phase 8 integration layer was not inserted.");
     if (!html.includes("/assets/lab/lab-test-center.js")) throw new Error("Lab Test Center was not inserted.");
     if (!html.includes("/assets/lab/lab-product-polish.js")) throw new Error("Lab product polish layer was not inserted.");
+    if (!html.includes("/assets/lab/lab-plan.js")) throw new Error("Long-horizon Plan layer was not inserted.");
+    if (!html.includes("/assets/lab/lab-experience.js")) throw new Error("User experience layer was not inserted.");
     if (!html.includes("/assets/lab/lab-acceptance.js")) throw new Error("Acceptance hardening layer was not inserted.");
 
     return html;
