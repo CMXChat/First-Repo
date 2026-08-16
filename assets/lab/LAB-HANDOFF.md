@@ -6,7 +6,7 @@ Read this file first when resuming work on `/lab`.
 
 ## Purpose
 
-`/lab` is the isolated frontend sandbox for the Check In dead-man-switch project. It exists so interface, data-model, action-builder, timing, and simulation work can be tested without modifying the production `/checkin` experience.
+`/lab` is the isolated frontend sandbox for the Check In dead-man-switch project. It exists so interface, data-model, action-builder, timing, simulation, and decision-routing work can be tested without modifying the production `/checkin` experience.
 
 Production `/checkin` should remain untouched unless the user explicitly asks to port an approved Lab change back.
 
@@ -21,7 +21,8 @@ Current safeguards:
 - Only the synthetic public status request is answered locally.
 - Other production API requests return a Lab-safe 403 response.
 - The page visibly identifies itself as Lab/mock mode.
-- Lab records/actions/simulations are browser-local mock data.
+- Lab records/actions/simulations/decision state are browser-local mock data.
+- Phase 6 decision logic cannot execute arbitrary code or external actions.
 
 Do not weaken this boundary to make a feature easier to demo.
 
@@ -31,12 +32,14 @@ Do not weaken this boundary to make a feature easier to demo.
 
 The loader fetches the frozen Check In HTML snapshot, rewrites production asset URLs to `/assets/lab/`, blocks production API connectivity, and adds Lab-only layers.
 
-Current Lab-only layers loaded after the cloned Check In scripts:
+Current Lab-only JavaScript layers loaded after the cloned Check In scripts:
 
 1. `lab-crm.js`
 2. `lab-inventory.js`
 3. `lab-actions.js`
 4. `lab-timeline-live.js`
+5. `lab-decisions.js`
+6. `lab-decisions-events.js`
 
 Current Lab-only CSS layers:
 
@@ -45,6 +48,10 @@ Current Lab-only CSS layers:
 3. `lab-inventory.css`
 4. `lab-actions.css`
 5. `lab-timeline.css`
+6. `lab-timeline-responsive.css`
+7. `lab-decisions.css`
+
+`lab-decisions-events.js` is a small UI event-boundary helper. `lab-decisions.js` uses document-level delegation so Logic controls survive Action-workspace re-renders, while the graph also uses local delegation. The helper stops already-handled graph clicks before they bubble into the document delegate a second time.
 
 ## Local mock storage keys
 
@@ -55,6 +62,8 @@ These are not production persistence contracts. They are temporary browser adapt
 - `cmx-lab-actions-v1`
 - `cmx-lab-switch-policy-v1`
 - `cmx-lab-simulations-v1`
+- `cmx-lab-decisions-v1`
+- `cmx-lab-decision-runtime-v1`
 
 A later FastAPI/PostgreSQL implementation should replace these adapters without forcing a visual rewrite.
 
@@ -155,9 +164,9 @@ Primary files:
 
 ### Phase 5 — Configurable switch policy + sequence simulator
 
-Completed in the current round.
+Completed.
 
-The primary proof-of-life window is no longer treated as permanently fixed to 72 hours inside Lab presentation.
+The primary proof-of-life window is not permanently fixed to 72 hours inside Lab presentation.
 
 Switch policy supports:
 
@@ -205,7 +214,125 @@ Primary files:
 
 - `lab-timeline-live.js`
 - `lab-timeline.css`
+- `lab-timeline-responsive.css`
 - `lab-mock-api.js`
+
+### Phase 6 — Conditions, dependencies, fallbacks, acknowledgements
+
+Completed in the Lab frontend.
+
+Phase 6 adds a typed decision layer over the existing Phase 5 incident clock. It does not introduce arbitrary executable rules.
+
+Current condition types:
+
+- `switch_overdue`
+- `grace_expired`
+- `action_state`
+- `asset_status`
+
+Conditions can be combined with `AND` or `OR`.
+
+Current outcome routes:
+
+- success
+- final failure
+- acknowledged
+- no acknowledgement
+- approval denied
+
+Decision policies can also mark sibling branches as exclusive so unresolved alternative branches are cancelled when one route is selected.
+
+Acknowledgement behavior:
+
+- delivery/execution success and human acknowledgement are separate states
+- an action may require acknowledgement after synthetic delivery
+- acknowledgement policy has a timeout in minutes
+- the simulator supports Acknowledge and No response controls
+- advancing the simulated incident clock beyond an acknowledgement deadline triggers the no-acknowledgement branch
+
+Retry behavior:
+
+- retry attempts are incident runtime state
+- configured retries are consumed by simulated attempts
+- the failure route fires only after attempts are exhausted
+
+New runtime states used by the decision layer:
+
+- `BLOCKED`
+- `ELIGIBLE`
+- `AWAITING APPROVAL`
+- `EXECUTING`
+- `RETRY QUEUED`
+- `AWAITING ACKNOWLEDGEMENT`
+- `ACKNOWLEDGED`
+- `NO ACKNOWLEDGEMENT`
+- `SUCCEEDED`
+- `FAILED`
+- `APPROVAL DENIED`
+- `CANCELLED`
+
+Decision graph:
+
+- Sequence now includes a visual Logic & Routing Map
+- enabled actions render as nodes
+- outcome routes render as directional connections
+- action-state dependencies render as dependency connections
+- route types have distinct visual treatment
+- mobile collapses to a vertical node chronology
+
+Decision Inspector:
+
+- select an action node to inspect it
+- shows whether the time boundary passed
+- shows whether the route gate passed
+- evaluates each typed condition
+- explains the current blocking reason
+- shows acknowledgement policy
+- shows attempt count
+- shows outcome routes
+- maintains a separate decision trace
+
+Action workspace integration:
+
+- selected actions receive a `Logic` control
+- selected actions receive a compact Decision Policy card
+- Configure Logic opens the Phase 6 policy editor
+
+Decision policy editor supports:
+
+- AND/OR logic
+- add/remove typed conditions
+- selected upstream action + required state
+- selected Digital Asset + required status
+- acknowledgement required toggle
+- acknowledgement timeout
+- route targets for each supported outcome
+- exclusive sibling-branch behavior
+- dependency-cycle validation before save
+
+Cycle detection builds a directed graph from outcome routes plus action-state dependencies and rejects circular definitions in Lab. Production must repeat this validation server-side.
+
+Current seeded demonstration chain:
+
+```text
+AI contingency briefing
+  ↓ success
+Business continuity email
+  ↓ delivered
+Acknowledgement gate
+  ├─ acknowledged → stop escalation
+  └─ final failure / no acknowledgement → SMS legal escalation
+
+Primary domain handoff
+  → independently waits for final trigger + operator approval
+```
+
+Primary files:
+
+- `lab-decisions.js`
+- `lab-decisions-events.js`
+- `lab-decisions.css`
+- `DECISIONS-BACKEND-HANDOFF.md`
 
 ## Switch-policy source of truth in Lab
 
@@ -233,6 +360,40 @@ Production recommendation:
 - server workers determine eligibility and execution
 - browser only renders state and requests authorized mutations
 
+## Decision-policy source of truth in Lab
+
+`cmx-lab-decisions-v1` stores reusable action decision definitions.
+
+Conceptual shape:
+
+```json
+{
+  "version": 1,
+  "policies": {
+    "action-id": {
+      "logic": "AND",
+      "conditions": [],
+      "acknowledgement": {
+        "required": false,
+        "timeoutMinutes": 30
+      },
+      "routes": {
+        "success": "",
+        "failure": "",
+        "acknowledged": "",
+        "no_ack": "",
+        "approval_denied": ""
+      },
+      "branchExclusive": true
+    }
+  }
+}
+```
+
+`cmx-lab-decision-runtime-v1` is incident/simulation-specific runtime state and stores state overrides, attempts, acknowledgement deadlines, approvals, route signals, and decision trace events.
+
+Production must split reusable definitions from incident runtime state in PostgreSQL.
+
 ## Timing model
 
 For an incident opened at `last_checkin_at`:
@@ -252,13 +413,29 @@ Action timing modes currently include:
 
 The Phase 5 compatibility layer updates the Lab Action Builder presentation from the old fixed 72/24 labels to the currently selected switch policy.
 
+## Decision evaluation order
+
+Current Lab intent mirrors the recommended future backend order:
+
+1. action is enabled for the incident
+2. action timing boundary has been reached
+3. inbound route gate has been activated when applicable
+4. typed conditions evaluate
+5. operator approval is satisfied if required
+6. action becomes eligible
+7. synthetic execution attempt occurs
+8. retries are accounted for
+9. successful delivery either completes or waits for acknowledgement
+10. terminal outcome emits a route signal
+11. affected downstream actions are re-evaluated
+
 ## Production execution rule
 
 Never execute contingency actions from browser JavaScript.
 
 Production should use:
 
-Browser → FastAPI → PostgreSQL → eligibility scheduler / execution workers → provider adapters
+Browser → FastAPI → PostgreSQL → eligibility/decision scheduler → execution workers → provider adapters
 
 Provider adapters can later cover SMS, email, AI, social, webhooks, account operations, etc., but every side effect needs server-side authorization, idempotency, audit records, and failure handling.
 
@@ -268,8 +445,9 @@ Read these alongside this file:
 
 - `assets/lab/BACKEND-HANDOFF.md`
 - `assets/lab/ACTIONS-BACKEND-HANDOFF.md`
+- `assets/lab/DECISIONS-BACKEND-HANDOFF.md`
 
-They contain more detailed proposed tables, relationship rules, document storage boundaries, action execution models, snapshots, and API direction.
+They contain the proposed record tables, relationship rules, document storage boundaries, action execution models, decision tables, acknowledgements, approvals, snapshots, and API direction.
 
 ## CI / validation
 
@@ -285,6 +463,9 @@ It should continue checking:
 - `/checkin` contains no Lab references
 - backend handoff notes remain present
 - switch-policy and sequence files remain wired
+- decision-engine files remain wired
+- decision backend handoff remains present
+- persistent Lab handoff includes the current phase
 
 When adding a new major Lab layer, add it to this validator.
 
@@ -295,6 +476,7 @@ Keep the app visually cohesive with the existing Check In interface:
 - black / charcoal primary surfaces
 - electric / icy blue structural accents
 - restrained red for contingency danger
+- amber for waiting/decision boundaries where appropriate
 - dense operational layout
 - strong mobile usability
 - serious secure-control feel
@@ -306,46 +488,34 @@ People/Organizations should remain clean and CRM-like. Trigger actions and final
 
 ## Known Lab limitations
 
-- All People/Organization/Document/Asset/Action data is mock browser-local storage.
+- All People/Organization/Document/Asset/Action/Decision data is mock browser-local storage.
 - Document bytes are not actually stored.
 - No real SMS/email/social/AI/webhook/account operation executes.
 - Simulation outcomes are synthetic.
 - Repeat/one-shot behavior is modeled but not backed by a real incident/rearm API yet.
+- Decision evaluation is browser-only simulation. Production must move all eligibility/routing/acknowledgement authority server-side.
+- Asset-status conditions currently read the mock Digital Asset status directly from local storage.
+- Phase 6 initial condition catalog is intentionally typed and limited. Do not replace it with arbitrary executable expressions.
 - Existing Action Builder internals were originally authored around a 72h + 24h default. Phase 5 dynamically adapts visible timing labels/positions to current Lab policy. When action timing moves to FastAPI, remove that compatibility layer and make action trigger responses policy-aware directly.
 - Calendar scheduled actions are shown as calendar-controlled and are not currently projected onto the incident-relative timeline.
+- Phase 6 route graph currently visualizes enabled actions. A future backend graph can include disabled/draft nodes with explicit filters.
 
 ## Next phase
 
-### Phase 6 — Conditions, dependencies, fallbacks, acknowledgements
+### Phase 7 — Audit history + definition versioning
 
 Recommended build order:
 
-1. condition rules
-2. action-to-action dependencies
-3. success/failure branches
-4. fallback channels
-5. acknowledgement requirements
-6. retry accounting per execution attempt
-7. stop/continue sequence policy
-8. dependency graph visualization
-9. simulator support for conditional branches
-10. backend handoff updates
+1. unified incident timeline across switch, action, decision, acknowledgement, and approval events
+2. immutable-looking Lab revision history for action/decision definitions
+3. compare two action-definition revisions
+4. show who/what changed a definition in mock audit data
+5. simulation/incident summary pages
+6. execution snapshot viewer
+7. exportable human-readable incident report mock
+8. backend handoff for append-only audit records and version tables
 
-Examples:
-
-```text
-Email counsel
-  ↓ if acknowledged
-AI briefing
-  ↓ success
-Publish approved package
-
-Email counsel
-  ↓ if failed / unacknowledged
-SMS fallback
-```
-
-Do not build a generic arbitrary-code rule engine in the browser. Use explicit typed conditions that a future backend can validate safely.
+After Phase 7, continue with the earlier roadmap for global search, command palette, dashboards, and final mobile polish.
 
 ## Resume checklist for another context
 
@@ -355,4 +525,7 @@ Do not build a generic arbitrary-code rule engine in the browser. Use explicit t
 4. Confirm `lab/index.html` still blocks production API connectivity.
 5. Inspect the latest Lab validation workflow result.
 6. Work only inside Lab unless the user explicitly requests a production port.
-7. Update this file at the end of every major Lab round with what changed, files touched, new storage/API assumptions, known limitations, and next work.
+7. Read `DECISIONS-BACKEND-HANDOFF.md` before changing Phase 6 semantics.
+8. Preserve delivery vs acknowledgement as separate states.
+9. Preserve typed conditions and server-authoritative production intent.
+10. Update this file at the end of every major Lab round with what changed, files touched, new storage/API assumptions, known limitations, and next work.
