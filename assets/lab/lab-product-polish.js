@@ -14,7 +14,7 @@
    * - preserve the live-switch hero as the primary Status surface
    * - move Plan Health below the core switch metrics
    * - shorten secondary copy on overview surfaces
-   * - expose the Test Center without duplicating simulation logic
+   * - connect Status and Actions to the Test Center without duplicating simulation
    * - provide stable readiness markers for browser CI
    *
    * OFFICIAL PROJECT HANDOFF:
@@ -105,6 +105,20 @@
     }
   }
 
+  function polishActions() {
+    const actions = $(".lab-actions");
+    if (!actions) return;
+    const profileActions = $(".lab-action-profile-actions", actions);
+    if (profileActions && !$(".lab-action-test-plan", profileActions)) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "lab-action-button lab-action-test-plan";
+      button.dataset.testCenterOpen = "true";
+      button.textContent = "Test plan";
+      profileActions.prepend(button);
+    }
+  }
+
   function labelMajorViews() {
     const mapping = { records:"Records", actions:"Actions", activity:"Activity", timeline:"Sequence" };
     Object.entries(mapping).forEach(([view, label]) => {
@@ -117,6 +131,7 @@
     queued = false;
     polishStatusHero();
     polishAssurance();
+    polishActions();
     labelMajorViews();
     document.body.dataset.labProductPolish = "ready";
   }
@@ -131,6 +146,8 @@
 
   const overview = $('[data-view-panel="overview"]');
   if (overview) new MutationObserver(queue).observe(overview, { childList:true, subtree:true });
+  const actionPanel = $('[data-view-panel="actions"]');
+  if (actionPanel) new MutationObserver(queue).observe(actionPanel, { childList:true, subtree:true });
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", queue, { once:true });
   else queue();
