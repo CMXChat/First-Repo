@@ -15,6 +15,7 @@
   const MOCK_SWITCH_ID = "lab-sandbox";
   const CRM_STORAGE_KEY = "cmx-lab-crm-v1";
   const INVENTORY_STORAGE_KEY = "cmx-lab-inventory-v1";
+  const ACTION_STORAGE_KEY = "cmx-lab-actions-v1";
 
   window.CMX_LAB_MODE = Object.freeze({
     isolated: true,
@@ -49,6 +50,19 @@
     return { documents: 6, assets: 5 };
   }
 
+  function actionCounts() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(ACTION_STORAGE_KEY));
+      if (Array.isArray(stored?.actions)) {
+        return {
+          total: stored.actions.length,
+          configured: stored.actions.filter(action => action?.status !== "Draft").length
+        };
+      }
+    } catch {}
+    return { total: 4, configured: 4 };
+  }
+
   function mockStatus() {
     const now = Date.now();
     const lastCheckIn = now - (4 * 60 * 60 * 1000);
@@ -56,6 +70,7 @@
     const graceExpires = due + (24 * 60 * 60 * 1000);
     const directory = crmCounts();
     const inventory = inventoryCounts();
+    const actions = actionCounts();
 
     return {
       switch_id: MOCK_SWITCH_ID,
@@ -70,10 +85,11 @@
       contact_count: directory.contacts,
       organization_count: directory.organizations,
       update_revision_count: 5,
-      trigger_action_count: 4,
+      trigger_action_count: actions.configured,
       document_uploads_enabled: false,
       lab_mock: true,
-      lab_asset_count: inventory.assets
+      lab_asset_count: inventory.assets,
+      lab_action_total: actions.total
     };
   }
 
