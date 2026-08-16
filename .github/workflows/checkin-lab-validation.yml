@@ -26,221 +26,260 @@ jobs:
 
       - name: Validate Lab JavaScript syntax
         run: |
-          node --check assets/lab/lab-mock-api.js
-          node --check assets/lab/lab-crm.js
-          node --check assets/lab/lab-inventory.js
-          node --check assets/lab/lab-actions.js
-          node --check assets/lab/lab-timeline-live.js
-          node --check assets/lab/lab-decisions.js
-          node --check assets/lab/lab-decisions-events.js
-          node --check assets/lab/lab-audit-bootstrap.js
-          node --check assets/lab/lab-audit.js
-          node --check assets/lab/lab-command.js
-          node --check assets/lab/checkin-status-contract.js
-          node --check assets/lab/checkin.js
-          node --check assets/lab/checkin-refine.js
-          node --check assets/lab/checkin-vault-panels.js
-          node --check assets/lab/checkin-actions-official.js
+          set -euo pipefail
+          for file in \
+            assets/lab/lab-loader.js \
+            assets/lab/lab-mock-api.js \
+            assets/lab/lab-crm.js \
+            assets/lab/lab-inventory.js \
+            assets/lab/lab-actions.js \
+            assets/lab/lab-timeline-live.js \
+            assets/lab/lab-decisions.js \
+            assets/lab/lab-decisions-events.js \
+            assets/lab/lab-audit-bootstrap.js \
+            assets/lab/lab-audit.js \
+            assets/lab/lab-command.js \
+            assets/lab/checkin-status-contract.js \
+            assets/lab/checkin.js \
+            assets/lab/checkin-refine.js \
+            assets/lab/checkin-vault-panels.js \
+            assets/lab/checkin-actions-official.js
+          do
+            node --check "$file"
+          done
 
-      - name: Validate Lab isolation, records, actions, sequence, decisions, audit, integration, and handoffs
+      - name: Validate bootstrap and generated Lab snapshot
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const assert = require('assert');
+          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+
+          const shell = fs.readFileSync('lab/index.html', 'utf8');
+          const snapshot = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
+          const rendered = transformSnapshot(snapshot);
+
+          assert(shell.includes('/assets/lab/lab-loader.js'), 'Lab shell must load external lab-loader.js');
+          assert(!shell.includes('document.write(html)'), 'Lab shell must not contain the old inline document.write loader');
+          assert(!shell.includes(".replace('</body>'"), 'Lab shell contains the old parser-fragile inline transform');
+          assert(!shell.includes('/assets/lab/lab-command.js'), 'Product modules belong in the external loader, not inline shell code');
+
+          const required = [
+            "connect-src 'self';",
+            'data-lab-mode="true"',
+            '/assets/lab/lab-mock-api.js',
+            '/assets/lab/lab-safety.css',
+            '/assets/lab/lab-crm.css',
+            '/assets/lab/lab-crm.js',
+            '/assets/lab/lab-inventory.css',
+            '/assets/lab/lab-inventory.js',
+            '/assets/lab/lab-actions.css',
+            '/assets/lab/lab-actions.js',
+            '/assets/lab/lab-timeline.css',
+            '/assets/lab/lab-timeline-responsive.css',
+            '/assets/lab/lab-timeline-live.js',
+            '/assets/lab/lab-decisions.css',
+            '/assets/lab/lab-decisions.js',
+            '/assets/lab/lab-decisions-events.js',
+            '/assets/lab/lab-audit-bootstrap.js',
+            '/assets/lab/lab-audit.css',
+            '/assets/lab/lab-audit.js',
+            '/assets/lab/lab-command.css',
+            '/assets/lab/lab-command.js',
+            'Check In Lab · Dead Man Switch'
+          ];
+          required.forEach(term => assert(rendered.includes(term), `Generated Lab snapshot missing: ${term}`));
+
+          assert(!rendered.includes('/assets/checkin/'), 'Generated Lab snapshot still references production assets');
+          assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"), 'Generated Lab snapshot still permits production API');
+          assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'), 'Mock API must load before status/client scripts');
+          assert((rendered.match(/data-lab-mode="true"/g) || []).length === 1, 'Lab mode marker must be unique');
+
+          // Build an ephemeral local-browser fixture. Local HTTP cannot use the snapshot's
+          // upgrade-insecure-requests directive, so remove only that directive in the fixture.
+          fs.writeFileSync('lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
+          NODE
+
+      - name: Validate safety, product contracts, and handoffs
         run: |
           python - <<'PY'
           from pathlib import Path
           import sys
 
           failures = []
-          loader = Path('lab/index.html')
-          required = [
-              Path('assets/lab/checkin-index-snapshot.html'),
-              Path('assets/lab/lab-safety.css'),
-              Path('assets/lab/lab-mock-api.js'),
-              Path('assets/lab/lab-crm.css'),
-              Path('assets/lab/lab-crm.js'),
-              Path('assets/lab/lab-inventory.css'),
-              Path('assets/lab/lab-inventory.js'),
-              Path('assets/lab/lab-actions.css'),
-              Path('assets/lab/lab-actions.js'),
-              Path('assets/lab/lab-timeline.css'),
-              Path('assets/lab/lab-timeline-responsive.css'),
-              Path('assets/lab/lab-timeline-live.js'),
-              Path('assets/lab/lab-decisions.css'),
-              Path('assets/lab/lab-decisions.js'),
-              Path('assets/lab/lab-decisions-events.js'),
-              Path('assets/lab/lab-audit-bootstrap.js'),
-              Path('assets/lab/lab-audit.css'),
-              Path('assets/lab/lab-audit.js'),
-              Path('assets/lab/lab-command.css'),
-              Path('assets/lab/lab-command.js'),
-              Path('assets/lab/BACKEND-HANDOFF.md'),
-              Path('assets/lab/ACTIONS-BACKEND-HANDOFF.md'),
-              Path('assets/lab/DECISIONS-BACKEND-HANDOFF.md'),
-              Path('assets/lab/AUDIT-BACKEND-HANDOFF.md'),
-              Path('assets/lab/LAB-HANDOFF.md'),
-              Path('assets/lab/CHECKINLABCLONE.md'),
+          required_files = [
+              'assets/lab/checkin-index-snapshot.html',
+              'assets/lab/lab-loader.js',
+              'assets/lab/lab-safety.css',
+              'assets/lab/lab-mock-api.js',
+              'assets/lab/lab-crm.css',
+              'assets/lab/lab-crm.js',
+              'assets/lab/lab-inventory.css',
+              'assets/lab/lab-inventory.js',
+              'assets/lab/lab-actions.css',
+              'assets/lab/lab-actions.js',
+              'assets/lab/lab-timeline.css',
+              'assets/lab/lab-timeline-responsive.css',
+              'assets/lab/lab-timeline-live.js',
+              'assets/lab/lab-decisions.css',
+              'assets/lab/lab-decisions.js',
+              'assets/lab/lab-decisions-events.js',
+              'assets/lab/lab-audit-bootstrap.js',
+              'assets/lab/lab-audit.css',
+              'assets/lab/lab-audit.js',
+              'assets/lab/lab-command.css',
+              'assets/lab/lab-command.js',
+              'assets/lab/BACKEND-HANDOFF.md',
+              'assets/lab/ACTIONS-BACKEND-HANDOFF.md',
+              'assets/lab/DECISIONS-BACKEND-HANDOFF.md',
+              'assets/lab/AUDIT-BACKEND-HANDOFF.md',
+              'assets/lab/LAB-HANDOFF.md',
+              'assets/lab/CHECKINLABCLONE.md',
           ]
-
-          if not loader.exists():
-              failures.append('lab/index.html is missing')
-              text = ''
-          else:
-              text = loader.read_text(encoding='utf-8')
-
-          for path in required:
-              if not path.exists():
-                  failures.append(f'missing Lab asset: {path}')
-
-          for term in (
-              "connect-src 'self';",
-              '/assets/lab/lab-mock-api.js',
-              '/assets/lab/lab-safety.css',
-              '/assets/lab/lab-crm.css',
-              '/assets/lab/lab-crm.js',
-              '/assets/lab/lab-inventory.css',
-              '/assets/lab/lab-inventory.js',
-              '/assets/lab/lab-actions.css',
-              '/assets/lab/lab-actions.js',
-              '/assets/lab/lab-timeline.css',
-              '/assets/lab/lab-timeline-responsive.css',
-              '/assets/lab/lab-timeline-live.js',
-              '/assets/lab/lab-decisions.css',
-              '/assets/lab/lab-decisions.js',
-              '/assets/lab/lab-decisions-events.js',
-              '/assets/lab/lab-audit-bootstrap.js',
-              '/assets/lab/lab-audit.css',
-              '/assets/lab/lab-audit.js',
-              '/assets/lab/lab-command.css',
-              '/assets/lab/lab-command.js',
-              'data-lab-mode="true"',
-          ):
-              if term not in text:
-                  failures.append(f'Lab loader missing safety/app wiring: {term}')
+          for value in required_files:
+              if not Path(value).exists(): failures.append(f'missing Lab asset: {value}')
 
           production = Path('checkin/index.html').read_text(encoding='utf-8')
           if '/assets/lab/' in production or 'data-lab-mode="true"' in production:
               failures.append('production /checkin references Lab assets or Lab mode')
 
-          mock = Path('assets/lab/lab-mock-api.js').read_text(encoding='utf-8')
-          for term in (
-              'productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY',
-              'ACTION_STORAGE_KEY', 'SWITCH_POLICY_KEY', 'interval_hours: policy.intervalHours',
-              'grace_hours: policy.graceHours', 'repeat_enabled: policy.repeat',
-          ):
-              if term not in mock:
-                  failures.append(f'Lab mock API safety/policy guard missing: {term}')
+          checks = {
+              'assets/lab/lab-loader.js': [
+                  'CHECK IN LAB BOOTSTRAP', 'transformSnapshot', 'production API connectivity is removed',
+                  'CHECKINLABCLONE.md', 'Do not move this code back into an inline'
+              ],
+              'assets/lab/lab-mock-api.js': [
+                  'productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY',
+                  'ACTION_STORAGE_KEY', 'SWITCH_POLICY_KEY', 'interval_hours: policy.intervalHours',
+                  'grace_hours: policy.graceHours', 'repeat_enabled: policy.repeat'
+              ],
+              'assets/lab/lab-inventory.js': [
+                  'BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL', 'FastAPI', 'INVENTORY_STORAGE_KEY'
+              ],
+              'assets/lab/lab-actions.js': [
+                  'BACKEND HANDOFF', 'ACTION_STORAGE_KEY', 'PostgreSQL', 'FastAPI',
+                  'server-side scheduler/worker', 'stable IDs', 'Destructive', 'grace_expiry',
+                  'grace_offset', 'SIMULATION ONLY'
+              ],
+              'assets/lab/lab-timeline-live.js': [
+                  'BACKEND HANDOFF', 'POLICY_KEY', 'SIM_KEY', 'intervalHours', 'graceHours',
+                  'repeat', 'policySnapshot', 'ACTION_ELIGIBLE', 'AWAITING APPROVAL',
+                  'SIMULATED_SUCCESS', 'SIMULATED_FAILURE', 'server-authoritative'
+              ],
+              'assets/lab/lab-decisions.js': [
+                  'BACKEND HANDOFF', 'DECISION_KEY', 'RUNTIME_KEY', 'switch_overdue',
+                  'grace_expired', 'action_state', 'asset_status', 'AWAITING ACKNOWLEDGEMENT',
+                  'NO ACKNOWLEDGEMENT', 'APPROVAL DENIED', 'cycleCheck', 'routeSignals',
+                  'Delivery and acknowledgement are separate states', 'Server-authoritative workers',
+                  'DECISIONS-BACKEND-HANDOFF.md'
+              ],
+              'assets/lab/lab-decisions-events.js': ['UI EVENT BOUNDARY', 'data-decision-node', 'stopPropagation'],
+              'assets/lab/lab-audit-bootstrap.js': [
+                  'PHASE 7 PROVENANCE BOOTSTRAP', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1',
+                  'legacy-no-definition-snapshot', 'cannot truthfully reconstruct'
+              ],
+              'assets/lab/lab-audit.js': [
+                  'AUDIT / VERSION / INCIDENT SNAPSHOTS', 'cmx-lab-audit-v1', 'cmx-lab-versions-v1',
+                  'cmx-lab-incidents-v1', 'recordVersion', 'buildIncidentSnapshot', 'versionRefs',
+                  'Restore as new version', 'changedSinceIncident', 'actionCoverage',
+                  'Read-only incident replay', 'append-only', 'AUDIT-BACKEND-HANDOFF.md'
+              ],
+              'assets/lab/lab-command.js': [
+                  'GLOBAL SEARCH / COMMAND / NAVIGATION INTEGRATION', 'cmx-lab-navigation-v1',
+                  'buildSearchIndex', 'shortcutLabel', 'server/API search results',
+                  'Search authorization must be enforced server-side', 'writeRoute', 'recent',
+                  'saved-view', 'Contingency assurance', 'RETEST REQUIRED', 'COVERAGE INCOMPLETE',
+                  'CHECKINLABCLONE.md'
+              ],
+              'assets/lab/lab-command.css': [
+                  'lab-command-overlay', 'lab-plan-assurance', 'prefers-reduced-motion',
+                  'data-health', '@media (max-width:700px)'
+              ],
+              'assets/lab/BACKEND-HANDOFF.md': [
+                  'checkin_documents', 'checkin_digital_assets', 'checkin_record_links',
+                  'object storage', 'secret_ref', 'Action Builder integration'
+              ],
+              'assets/lab/ACTIONS-BACKEND-HANDOFF.md': [
+                  'checkin_action_definitions', 'checkin_action_targets', 'checkin_action_executions',
+                  'eligibility scheduler', 'idempotency', 'Execution snapshots', 'AI actions',
+                  'Digital account actions', 'Phase 5 integration'
+              ],
+              'assets/lab/DECISIONS-BACKEND-HANDOFF.md': [
+                  'checkin_action_conditions', 'checkin_action_routes', 'checkin_action_dependencies',
+                  'checkin_acknowledgements', 'checkin_action_approvals', 'checkin_incident_actions',
+                  'checkin_condition_evaluations', 'Cycle detection',
+                  'Delivery and acknowledgement are separate states', 'idempotency'
+              ],
+              'assets/lab/AUDIT-BACKEND-HANDOFF.md': [
+                  'checkin_definition_versions', 'checkin_audit_events', 'checkin_incidents',
+                  'checkin_incident_definition_snapshots', 'checkin_incident_events',
+                  'checkin_execution_attempts', 'checkin_change_sets', 'append-only',
+                  'Restoring an older definition creates another new revision',
+                  'changed since that test', 'Incident replay', 'SHA-256'
+              ],
+              'assets/lab/LAB-HANDOFF.md': [
+                  'Read this file first', 'Phase 5', 'Phase 6', 'Phase 7', 'Phase 8',
+                  'cmx-lab-switch-policy-v1', 'cmx-lab-decisions-v1', 'cmx-lab-decision-runtime-v1',
+                  'cmx-lab-audit-v1', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1',
+                  'cmx-lab-navigation-v1', 'rolling repeat', 'one-shot', 'lab-timeline-live.js',
+                  'lab-decisions.js', 'lab-audit.js', 'lab-command.js', 'Decision Inspector',
+                  'changed since', 'incident snapshot', 'legacy', 'Universal search',
+                  'Status assurance', 'CHECKINLABCLONE.md',
+                  'Update this file at the end of every major Lab round'
+              ],
+              'assets/lab/CHECKINLABCLONE.md': [
+                  'Official Project Migration Blueprint',
+                  'destination repository/application is intentionally **TBD**',
+                  'Universal search, command palette, deep navigation, Status assurance',
+                  'lab-command.js', 'authorization-aware', 'generated API client',
+                  'native application router', 'plan-health read model', 'Do not blindly port',
+                  'Simulation before execution', 'Maintenance rule'
+              ],
+          }
 
-          inventory = Path('assets/lab/lab-inventory.js').read_text(encoding='utf-8')
-          for term in ('BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL', 'FastAPI', 'INVENTORY_STORAGE_KEY'):
-              if term not in inventory:
-                  failures.append(f'Lab inventory backend boundary missing: {term}')
-
-          actions = Path('assets/lab/lab-actions.js').read_text(encoding='utf-8')
-          for term in ('BACKEND HANDOFF', 'ACTION_STORAGE_KEY', 'PostgreSQL', 'FastAPI', 'server-side scheduler/worker', 'stable IDs', 'Destructive', 'grace_expiry', 'grace_offset', 'SIMULATION ONLY'):
-              if term not in actions:
-                  failures.append(f'Lab action builder boundary/model missing: {term}')
-
-          sequence = Path('assets/lab/lab-timeline-live.js').read_text(encoding='utf-8')
-          for term in ('BACKEND HANDOFF', 'POLICY_KEY', 'SIM_KEY', 'intervalHours', 'graceHours', 'repeat', 'policySnapshot', 'ACTION_ELIGIBLE', 'AWAITING APPROVAL', 'SIMULATED_SUCCESS', 'SIMULATED_FAILURE', 'server-authoritative'):
-              if term not in sequence:
-                  failures.append(f'Lab sequence engine boundary/model missing: {term}')
-
-          decisions = Path('assets/lab/lab-decisions.js').read_text(encoding='utf-8')
-          for term in ('BACKEND HANDOFF', 'DECISION_KEY', 'RUNTIME_KEY', 'switch_overdue', 'grace_expired', 'action_state', 'asset_status', 'AWAITING ACKNOWLEDGEMENT', 'NO ACKNOWLEDGEMENT', 'APPROVAL DENIED', 'cycleCheck', 'routeSignals', 'Delivery and acknowledgement are separate states', 'Server-authoritative workers', 'DECISIONS-BACKEND-HANDOFF.md'):
-              if term not in decisions:
-                  failures.append(f'Lab decision engine boundary/model missing: {term}')
-
-          event_boundary = Path('assets/lab/lab-decisions-events.js').read_text(encoding='utf-8')
-          for term in ('UI EVENT BOUNDARY', 'data-decision-node', 'stopPropagation'):
-              if term not in event_boundary:
-                  failures.append(f'Lab decision event boundary missing: {term}')
-
-          bootstrap = Path('assets/lab/lab-audit-bootstrap.js').read_text(encoding='utf-8')
-          for term in ('PHASE 7 PROVENANCE BOOTSTRAP', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'legacy-no-definition-snapshot', 'cannot truthfully reconstruct'):
-              if term not in bootstrap:
-                  failures.append(f'Lab audit provenance bootstrap missing: {term}')
-
-          audit = Path('assets/lab/lab-audit.js').read_text(encoding='utf-8')
-          for term in ('AUDIT / VERSION / INCIDENT SNAPSHOTS', 'cmx-lab-audit-v1', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'recordVersion', 'buildIncidentSnapshot', 'versionRefs', 'Restore as new version', 'changedSinceIncident', 'actionCoverage', 'Read-only incident replay', 'append-only', 'AUDIT-BACKEND-HANDOFF.md'):
-              if term not in audit:
-                  failures.append(f'Lab audit/version boundary/model missing: {term}')
-
-          command = Path('assets/lab/lab-command.js').read_text(encoding='utf-8')
-          for term in (
-              'GLOBAL SEARCH / COMMAND / NAVIGATION INTEGRATION',
-              'cmx-lab-navigation-v1',
-              'buildSearchIndex',
-              'shortcutLabel',
-              'server/API search results',
-              'Search authorization must be enforced server-side',
-              'writeRoute',
-              'recent',
-              'saved-view',
-              'Contingency assurance',
-              'RETEST REQUIRED',
-              'COVERAGE INCOMPLETE',
-              'CHECKINLABCLONE.md',
-          ):
-              if term not in command:
-                  failures.append(f'Phase 8 command/search boundary missing: {term}')
-
-          command_css = Path('assets/lab/lab-command.css').read_text(encoding='utf-8')
-          for term in ('lab-command-overlay', 'lab-plan-assurance', 'prefers-reduced-motion', 'data-health', '@media (max-width:700px)'):
-              if term not in command_css:
-                  failures.append(f'Phase 8 command/search presentation missing: {term}')
-
-          handoff = Path('assets/lab/BACKEND-HANDOFF.md').read_text(encoding='utf-8')
-          for term in ('checkin_documents', 'checkin_digital_assets', 'checkin_record_links', 'object storage', 'secret_ref', 'Action Builder integration'):
-              if term not in handoff:
-                  failures.append(f'Backend handoff missing required note: {term}')
-
-          action_handoff = Path('assets/lab/ACTIONS-BACKEND-HANDOFF.md').read_text(encoding='utf-8')
-          for term in ('checkin_action_definitions', 'checkin_action_targets', 'checkin_action_executions', 'eligibility scheduler', 'idempotency', 'Execution snapshots', 'AI actions', 'Digital account actions', 'Phase 5 integration'):
-              if term not in action_handoff:
-                  failures.append(f'Action backend handoff missing required note: {term}')
-
-          decision_handoff = Path('assets/lab/DECISIONS-BACKEND-HANDOFF.md').read_text(encoding='utf-8')
-          for term in ('checkin_action_conditions', 'checkin_action_routes', 'checkin_action_dependencies', 'checkin_acknowledgements', 'checkin_action_approvals', 'checkin_incident_actions', 'checkin_condition_evaluations', 'Cycle detection', 'Delivery and acknowledgement are separate states', 'idempotency'):
-              if term not in decision_handoff:
-                  failures.append(f'Decision backend handoff missing required note: {term}')
-
-          audit_handoff = Path('assets/lab/AUDIT-BACKEND-HANDOFF.md').read_text(encoding='utf-8')
-          for term in ('checkin_definition_versions', 'checkin_audit_events', 'checkin_incidents', 'checkin_incident_definition_snapshots', 'checkin_incident_events', 'checkin_execution_attempts', 'checkin_change_sets', 'append-only', 'Restoring an older definition creates another new revision', 'changed since that test', 'Incident replay', 'SHA-256'):
-              if term not in audit_handoff:
-                  failures.append(f'Audit backend handoff missing required note: {term}')
-
-          lab_handoff = Path('assets/lab/LAB-HANDOFF.md').read_text(encoding='utf-8')
-          for term in (
-              'Read this file first', 'Phase 5', 'Phase 6', 'Phase 7', 'Phase 8',
-              'cmx-lab-switch-policy-v1', 'cmx-lab-decisions-v1',
-              'cmx-lab-decision-runtime-v1', 'cmx-lab-audit-v1',
-              'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'cmx-lab-navigation-v1',
-              'rolling repeat', 'one-shot', 'lab-timeline-live.js', 'lab-decisions.js',
-              'lab-audit.js', 'lab-command.js', 'Decision Inspector', 'changed since',
-              'incident snapshot', 'legacy', 'Universal search', 'Status assurance',
-              'CHECKINLABCLONE.md', 'Update this file at the end of every major Lab round',
-          ):
-              if term not in lab_handoff:
-                  failures.append(f'Persistent Lab handoff missing required note: {term}')
-
-          clone_handoff = Path('assets/lab/CHECKINLABCLONE.md').read_text(encoding='utf-8')
-          for term in (
-              'Official Project Migration Blueprint',
-              'destination repository/application is intentionally **TBD**',
-              'Universal search, command palette, deep navigation, Status assurance',
-              'lab-command.js',
-              'authorization-aware',
-              'generated API client',
-              'native application router',
-              'plan-health read model',
-              'Do not blindly port',
-              'Simulation before execution',
-              'Maintenance rule',
-          ):
-              if term not in clone_handoff:
-                  failures.append(f'Check In Lab clone migration handoff missing required note: {term}')
+          for filename, terms in checks.items():
+              text = Path(filename).read_text(encoding='utf-8') if Path(filename).exists() else ''
+              for term in terms:
+                  if term not in text: failures.append(f'{filename} missing required contract text: {term}')
 
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
-
-          print('Check In Lab syntax, isolation, records, actions, sequence, decisions, audit/version, Phase 8 search/navigation, migration blueprint, and persistent handoff validated.')
+          print('Lab safety, product contracts, migration notes, and production isolation validated.')
           PY
+
+      - name: Headless browser boot smoke test
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available on runner.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/checkin-lab-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab-browser-smoke.html' EXIT
+          sleep 1
+
+          "$BROWSER" \
+            --headless \
+            --no-sandbox \
+            --disable-gpu \
+            --disable-dev-shm-usage \
+            --virtual-time-budget=5000 \
+            --dump-dom \
+            http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/checkin-lab-dom.html
+
+          ! grep -q 'LAB SNAPSHOT UNAVAILABLE' /tmp/checkin-lab-dom.html
+          ! grep -q 'Lab snapshot unavailable' /tmp/checkin-lab-dom.html
+          grep -q 'data-lab-mode="true"' /tmp/checkin-lab-dom.html
+          grep -q 'Protected directory' /tmp/checkin-lab-dom.html
+          grep -q 'Contingency control' /tmp/checkin-lab-dom.html
+          grep -q 'Sequence simulator' /tmp/checkin-lab-dom.html
+          grep -q 'Audit &amp; assurance\|Audit & assurance' /tmp/checkin-lab-dom.html
+          grep -q 'Contingency assurance' /tmp/checkin-lab-dom.html
+          grep -q 'labCommandPalette' /tmp/checkin-lab-dom.html
+
+          echo 'Check In Lab browser boot smoke test passed.'
