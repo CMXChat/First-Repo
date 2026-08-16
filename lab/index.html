@@ -10,7 +10,7 @@
   <script>
     (async () => {
       try {
-        const response = await fetch('/assets/lab/checkin-index-snapshot.html?v=20260816-lab2', { cache: 'no-store' });
+        const response = await fetch('/assets/lab/checkin-index-snapshot.html?v=20260816-lab3', { cache: 'no-store' });
         if (!response.ok) throw new Error(`Snapshot load failed: ${response.status}`);
         let html = await response.text();
         html = html
@@ -19,12 +19,13 @@
           .replaceAll('href="/checkin/"', 'href="/lab/"')
           .replace("connect-src 'self' https://api.cmxchat.com;", "connect-src 'self';")
           .replace('<title>Check In · Dead Man Switch</title>', '<title>Check In Lab · Dead Man Switch</title>')
-          .replace('</head>', '  <link rel="stylesheet" href="/assets/lab/lab-safety.css?v=20260816-lab-safe1" />\n</head>')
+          .replace('</head>', '  <link rel="stylesheet" href="/assets/lab/lab-safety.css?v=20260816-lab-safe1" />\n  <link rel="stylesheet" href="/assets/lab/lab-crm.css?v=20260816-crm1" />\n</head>')
           .replace('<body>', '<body data-lab-mode="true">')
           .replace(
             '<script src="/assets/lab/checkin-status-contract.js?v=20260816-2"></script>',
-            '<script src="/assets/lab/lab-mock-api.js?v=20260816-lab-safe1"></script>\n  <script src="/assets/lab/checkin-status-contract.js?v=20260816-2"></script>'
-          );
+            '<script src="/assets/lab/lab-mock-api.js?v=20260816-lab-safe2"></script>\n  <script src="/assets/lab/checkin-status-contract.js?v=20260816-2"></script>'
+          )
+          .replace('</body>', '  <script src="/assets/lab/lab-crm.js?v=20260816-crm1"></script>\n</body>');
         document.open();
         document.write(html);
         document.close();

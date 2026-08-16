@@ -10,6 +10,7 @@
   const nativeFetch = window.fetch.bind(window);
   const PROD_API_ORIGIN = "https://api.cmxchat.com";
   const MOCK_SWITCH_ID = "lab-sandbox";
+  const CRM_STORAGE_KEY = "cmx-lab-crm-v1";
 
   window.CMX_LAB_MODE = Object.freeze({
     isolated: true,
@@ -24,11 +25,22 @@
     });
   }
 
+  function crmCounts() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(CRM_STORAGE_KEY));
+      if (Array.isArray(stored?.people) && Array.isArray(stored?.organizations)) {
+        return { contacts: stored.people.length, organizations: stored.organizations.length };
+      }
+    } catch {}
+    return { contacts: 8, organizations: 3 };
+  }
+
   function mockStatus() {
     const now = Date.now();
     const lastCheckIn = now - (4 * 60 * 60 * 1000);
     const due = lastCheckIn + (72 * 60 * 60 * 1000);
     const graceExpires = due + (24 * 60 * 60 * 1000);
+    const directory = crmCounts();
 
     return {
       switch_id: MOCK_SWITCH_ID,
@@ -40,8 +52,8 @@
       interval_hours: 72,
       grace_hours: 24,
       document_count: 6,
-      contact_count: 8,
-      organization_count: 3,
+      contact_count: directory.contacts,
+      organization_count: directory.organizations,
       update_revision_count: 5,
       trigger_action_count: 4,
       document_uploads_enabled: false,
