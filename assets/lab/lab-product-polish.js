@@ -12,6 +12,7 @@
    *
    * The purpose of this layer is to keep the growing prototype usable on phones:
    * - preserve the live-switch hero as the primary Status surface
+   * - keep the glowing live switch at the very top of Status
    * - move Plan Health below the core switch metrics
    * - shorten secondary copy on overview surfaces
    * - connect Status and Actions to the Test Center without duplicating simulation
@@ -81,9 +82,19 @@
   }
 
   function polishStatusHero() {
-    const consoleNode = $("#statusConsole");
-    if (!consoleNode) return;
+    const overview = $('[data-view-panel="overview"]');
+    const consoleNode = $("#statusConsole", overview);
+    const dashboard = $(".dashboard-grid", overview);
+    const heading = $(".view-heading", overview);
+    if (!overview || !consoleNode || !dashboard) return;
+
+    // Status opens with the glowing live-switch console. Keep the dashboard intact
+    // so its original desktop/mobile layout remains stable, but move the whole
+    // console group ahead of headings, inventory summaries, Plan Health, and logs.
+    if (overview.firstElementChild !== dashboard) overview.prepend(dashboard);
+    dashboard.classList.add("lab-status-first");
     consoleNode.classList.add("lab-live-status-hero");
+    if (heading) heading.classList.add("lab-status-heading-secondary");
 
     const head = $(".console-head > div", consoleNode);
     if (head && !$(".lab-live-kicker", head)) {
