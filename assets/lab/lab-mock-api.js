@@ -8,6 +8,10 @@
    *
    * BACKEND NOTE: when /lab gets a dedicated test API, point the Lab adapter at
    * that origin. Do not weaken this production-origin block as a shortcut.
+   *
+   * SWITCH POLICY NOTE: Lab policy is read from localStorage so the cloned
+   * status UI, sequence simulator, and action timing all share one synthetic
+   * source of truth. Production policy must live server-side and be versioned.
    */
 
   const nativeFetch = window.fetch.bind(window);
@@ -16,6 +20,7 @@
   const CRM_STORAGE_KEY = "cmx-lab-crm-v1";
   const INVENTORY_STORAGE_KEY = "cmx-lab-inventory-v1";
   const ACTION_STORAGE_KEY = "cmx-lab-actions-v1";
+  const SWITCH_POLICY_KEY = "cmx-lab-switch-policy-v1";
 
   window.CMX_LAB_MODE = Object.freeze({
     isolated: true,
@@ -28,6 +33,20 @@
       status,
       headers: { "Content-Type": "application/json" }
     });
+  }
+
+  function switchPolicy() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(SWITCH_POLICY_KEY));
+      if (stored?.version === 1) {
+        return {
+          intervalHours: Math.max(1, Math.min(720, Number(stored.intervalHours || 72))),
+          graceHours: Math.max(0, Math.min(24, Number(stored.graceHours ?? 24))),
+          repeat: stored.repeat !== false
+        };
+      }
+    } catch {}
+    return { intervalHours: 72, graceHours: 24, repeat: true };
   }
 
   function crmCounts() {
@@ -65,9 +84,11 @@
 
   function mockStatus() {
     const now = Date.now();
-    const lastCheckIn = now - (4 * 60 * 60 * 1000);
-    const due = lastCheckIn + (72 * 60 * 60 * 1000);
-    const graceExpires = due + (24 * 60 * 60 * 1000);
+    const policy = switchPolicy();
+    const elapsedHours = Math.max(0.25, Math.min(4, policy.intervalHours * 0.08));
+    const lastCheckIn = now - (elapsedHours * 60 * 60 * 1000);
+    const due = lastCheckIn + (policy.intervalHours * 60 * 60 * 1000);
+    const graceExpires = due + (policy.graceHours * 60 * 60 * 1000);
     const directory = crmCounts();
     const inventory = inventoryCounts();
     const actions = actionCounts();
@@ -79,8 +100,9 @@
       last_checkin_at: new Date(lastCheckIn).toISOString(),
       next_due_at: new Date(due).toISOString(),
       grace_expires_at: new Date(graceExpires).toISOString(),
-      interval_hours: 72,
-      grace_hours: 24,
+      interval_hours: policy.intervalHours,
+      grace_hours: policy.graceHours,
+      repeat_enabled: policy.repeat,
       document_count: inventory.documents,
       contact_count: directory.contacts,
       organization_count: directory.organizations,
