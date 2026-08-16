@@ -172,7 +172,7 @@ jobs:
               'cycleCheck',
               'routeSignals',
               'Delivery and acknowledgement are separate states',
-              'server-authoritative workers',
+              'Server-authoritative workers',
               'DECISIONS-BACKEND-HANDOFF.md',
           ):
               if term not in decisions:
