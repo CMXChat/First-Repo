@@ -26,6 +26,10 @@
   const $$ = (selector, root = document) => root ? [...root.querySelectorAll(selector)] : [];
   let queued = false;
 
+  function setText(node, value) {
+    if (node && node.textContent !== value) node.textContent = value;
+  }
+
   function shortHealthCopy(state) {
     if (state === "untested") return "Run a test to establish a current baseline.";
     if (state === "retest") return "The plan changed after its latest test.";
@@ -38,9 +42,9 @@
     if (!strong) return;
     const text = strong.textContent.trim();
     let match = text.match(/^(\d+) action(?:s)? below 4\/4 path coverage/i);
-    if (match) strong.textContent = `${match[1]} action${match[1] === "1" ? "" : "s"} need coverage`;
+    if (match) setText(strong, `${match[1]} action${match[1] === "1" ? "" : "s"} need coverage`);
     match = text.match(/^(\d+) definition(?:s)? changed/i);
-    if (match) strong.textContent = `${match[1]} definition${match[1] === "1" ? "" : "s"} changed`;
+    if (match) setText(strong, `${match[1]} definition${match[1] === "1" ? "" : "s"} changed`);
   }
 
   function polishAssurance() {
@@ -52,17 +56,13 @@
     if (metrics.nextElementSibling !== block) metrics.after(block);
     block.classList.add("lab-assurance-polished");
 
-    const kicker = $(".lab-plan-title small", block);
-    const title = $(".lab-plan-title strong", block);
-    const detail = $(".lab-plan-title p", block);
-    if (kicker) kicker.textContent = "CURRENT PLAN · LAB";
-    if (title) title.textContent = "Plan health";
-    if (detail) detail.textContent = shortHealthCopy(block.dataset.health);
+    setText($(".lab-plan-title small", block), "CURRENT PLAN · LAB");
+    setText($(".lab-plan-title strong", block), "Plan health");
+    setText($(".lab-plan-title p", block), shortHealthCopy(block.dataset.health));
 
     const labels = ["WINDOW", "GRACE", "ACTIONS", "LAST TEST"];
     $$(".lab-plan-metrics > div", block).forEach((metric, index) => {
-      const label = $("small", metric);
-      if (label && labels[index]) label.textContent = labels[index];
+      if (labels[index]) setText($("small", metric), labels[index]);
     });
 
     $$(".lab-plan-warnings button", block).forEach(shortenWarning);
@@ -71,10 +71,10 @@
     const health = footerButtons.find(button => button.dataset.phase8Action === "health");
     const search = footerButtons.find(button => button.dataset.phase8Action === "search");
     const simulate = footerButtons.find(button => button.dataset.phase8Action === "simulate");
-    if (health) health.textContent = "Plan health";
-    if (search) search.textContent = "Search";
+    setText(health, "Plan health");
+    setText(search, "Search");
     if (simulate) {
-      simulate.textContent = "Run test";
+      setText(simulate, "Run test");
       delete simulate.dataset.phase8Action;
       simulate.dataset.testCenterOpen = "true";
     }
@@ -106,15 +106,10 @@
   }
 
   function labelMajorViews() {
-    const mapping = {
-      records: "Records",
-      actions: "Actions",
-      activity: "Activity",
-      timeline: "Sequence"
-    };
+    const mapping = { records:"Records", actions:"Actions", activity:"Activity", timeline:"Sequence" };
     Object.entries(mapping).forEach(([view, label]) => {
       const panel = $(`[data-view-panel="${view}"]`);
-      if (panel) panel.dataset.mobileViewLabel = label;
+      if (panel && panel.dataset.mobileViewLabel !== label) panel.dataset.mobileViewLabel = label;
     });
   }
 
@@ -132,12 +127,7 @@
     requestAnimationFrame(apply);
   }
 
-  document.addEventListener("cmx:lab-crm-updated", queue);
-  document.addEventListener("cmx:lab-inventory-updated", queue);
-  document.addEventListener("cmx:lab-actions-updated", queue);
-  document.addEventListener("cmx:lab-switch-policy-updated", queue);
-  document.addEventListener("cmx:lab-decisions-updated", queue);
-  document.addEventListener("cmx:lab-simulation-updated", queue);
+  ["cmx:lab-crm-updated","cmx:lab-inventory-updated","cmx:lab-actions-updated","cmx:lab-switch-policy-updated","cmx:lab-decisions-updated","cmx:lab-simulation-updated"].forEach(name => document.addEventListener(name, queue));
 
   const overview = $('[data-view-panel="overview"]');
   if (overview) new MutationObserver(queue).observe(overview, { childList:true, subtree:true });
