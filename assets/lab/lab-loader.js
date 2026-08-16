@@ -14,6 +14,10 @@
    * - production asset paths are rewritten to /assets/lab/
    * - production API connectivity is removed from the snapshot CSP
    * - lab-mock-api.js is loaded before the copied Check In status/client scripts
+   * - script execution remains restricted to same-origin assets
+   * - Lab permits inline STYLE declarations because the inherited Check In UI and
+   *   Sequence/Action visualizations calculate positions through element.style.
+   *   Do not copy this compatibility exception into the official app by default.
    * - all additional product layers remain Lab-only
    *
    * OFFICIAL PROJECT MIGRATION:
@@ -22,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260816-acceptance1";
+  const BUILD = "20260816-acceptance2";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -80,6 +84,12 @@
     );
     html = replaceRequired(
       html,
+      "style-src 'self';",
+      "style-src 'self' 'unsafe-inline';",
+      "Lab dynamic-style CSP compatibility"
+    );
+    html = replaceRequired(
+      html,
       "<title>Check In · Dead Man Switch</title>",
       "<title>Check In Lab · Dead Man Switch</title>",
       "document title"
@@ -97,11 +107,12 @@
       "body element"
     );
 
-    const statusContract = '<script src="/assets/lab/checkin-status-contract.js?v=20260816-2"></script>';
+    const snapshotStatusContract = '<script src="/assets/lab/checkin-status-contract.js?v=20260816-2"></script>';
+    const labStatusContract = '<script src="/assets/lab/checkin-status-contract.js?v=20260816-acceptance2"></script>';
     html = replaceRequired(
       html,
-      statusContract,
-      `<script src="/assets/lab/lab-mock-api.js?v=20260816-lab-safe5"></script>\n  ${statusContract}`,
+      snapshotStatusContract,
+      `<script src="/assets/lab/lab-mock-api.js?v=20260816-lab-safe5"></script>\n  ${labStatusContract}`,
       "status contract script"
     );
     html = replaceRequired(
@@ -113,6 +124,7 @@
 
     if (html.includes("/assets/checkin/")) throw new Error("Lab snapshot still references production asset paths.");
     if (html.includes("connect-src 'self' https://api.cmxchat.com;")) throw new Error("Lab snapshot still permits the production API in CSP.");
+    if (!html.includes("style-src 'self' 'unsafe-inline';")) throw new Error("Lab dynamic visualization styles are not permitted by CSP.");
     if (!html.includes('data-lab-mode="true"')) throw new Error("Lab mode marker was not applied.");
     if (!html.includes("/assets/lab/lab-mock-api.js")) throw new Error("Lab mock API was not inserted.");
     if (!html.includes("/assets/lab/lab-command.js")) throw new Error("Phase 8 integration layer was not inserted.");
