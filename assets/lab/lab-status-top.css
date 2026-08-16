@@ -1,0 +1,23 @@
+/* Check In Lab — keep the live switch as the first Status surface without DOM reordering. */
+
+[data-view-panel="overview"].lab-status-overview.is-active{
+  display:flex!important;
+  flex-direction:column;
+}
+
+[data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{order:-100}
+[data-view-panel="overview"].lab-status-overview>.view-heading{order:-90}
+[data-view-panel="overview"].lab-status-overview>.mode-strip{order:-80}
+[data-view-panel="overview"].lab-status-overview>.inventory-strip{order:-70}
+[data-view-panel="overview"].lab-status-overview>.metric-grid{order:-60}
+[data-view-panel="overview"].lab-status-overview>#labPlanAssurance{order:-50}
+[data-view-panel="overview"].lab-status-overview>.recent-panel{order:-40}
+
+/* The hero itself should visually announce the page before the secondary Status heading. */
+[data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{margin-top:0}
+[data-view-panel="overview"].lab-status-overview>.lab-status-heading-secondary{margin-top:14px}
+
+@media(max-width:700px){
+  [data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{margin-bottom:4px!important}
+  [data-view-panel="overview"].lab-status-overview>.lab-status-heading-secondary{margin-top:8px!important;margin-bottom:8px!important}
+}
