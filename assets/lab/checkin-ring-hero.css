@@ -1,0 +1,225 @@
+/*
+ * /checkin timer hero balance
+ *
+ * Restores the centered glowing countdown as the visual signature of Status
+ * without bringing back the old overview clutter. This is presentation only.
+ * The countdown values and state still come from checkin.js and the backend.
+ * Keep the SVG filter free for Android/Chrome compositing stability.
+ */
+
+/* Spaces-style Light / Dark segmented switch.
+ * The existing #themeToggle click handler remains untouched; this is visual only.
+ */
+#themeToggle.theme-toggle{
+  position:relative;
+  width:108px!important;
+  min-width:108px!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:3px!important;
+  overflow:hidden;
+  border:1px solid rgba(121,165,220,.28)!important;
+  border-radius:999px!important;
+  background:rgba(10,15,22,.92)!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  cursor:pointer;
+}
+
+#themeToggle.theme-toggle>span{
+  position:relative;
+  z-index:2;
+  display:block;
+  width:100%;
+  height:34px;
+  color:transparent!important;
+  font-size:0!important;
+  line-height:34px;
+}
+
+#themeToggle.theme-toggle>span::before,
+#themeToggle.theme-toggle>span::after{
+  position:absolute;
+  top:0;
+  z-index:3;
+  width:50%;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:850;
+  line-height:34px;
+  text-align:center;
+  transition:color 180ms ease;
+}
+
+#themeToggle.theme-toggle>span::before{content:"Dark";left:0}
+#themeToggle.theme-toggle>span::after{content:"Light";right:0}
+
+#themeToggle.theme-toggle::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  top:3px;
+  left:3px;
+  width:calc(50% - 3px);
+  height:34px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#17304f,#294f7c);
+  box-shadow:0 4px 14px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.08);
+  transform:translateX(0);
+  transition:transform 200ms ease,background 200ms ease,box-shadow 200ms ease;
+}
+
+html[data-theme="dark"] #themeToggle.theme-toggle>span::before{color:#fff}
+html[data-theme="dark"] #themeToggle.theme-toggle>span::after{color:#77889d}
+
+html[data-theme="light"] #themeToggle.theme-toggle{
+  border-color:rgba(52,94,140,.22)!important;
+  background:rgba(244,249,253,.96)!important;
+  box-shadow:0 7px 20px rgba(45,80,117,.12),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+
+html[data-theme="light"] #themeToggle.theme-toggle::before{
+  background:linear-gradient(135deg,#ffffff,#dbe9f5);
+  box-shadow:0 4px 14px rgba(41,71,99,.18),inset 0 1px 0 rgba(255,255,255,.95);
+  transform:translateX(100%);
+}
+
+html[data-theme="light"] #themeToggle.theme-toggle>span::before{color:#738398}
+html[data-theme="light"] #themeToggle.theme-toggle>span::after{color:#16283c}
+
+#themeToggle.theme-toggle:hover,
+#themeToggle.theme-toggle:focus-visible{
+  border-color:rgba(99,166,255,.62)!important;
+  box-shadow:0 0 0 3px rgba(99,166,255,.10),0 8px 22px rgba(0,0,0,.20)!important;
+  outline:none;
+}
+
+@media(max-width:700px){
+  #themeToggle.theme-toggle{
+    width:92px!important;
+    min-width:92px!important;
+  }
+
+  #themeToggle.theme-toggle>span::before,
+  #themeToggle.theme-toggle>span::after{
+    font-size:9px;
+  }
+
+  .status-console{
+    padding:14px 14px 16px;
+  }
+
+  html[data-theme="dark"] .status-console{
+    background:
+      radial-gradient(circle 205px at 50% 42%,
+        rgba(109,224,185,.025) 0%,
+        rgba(109,224,185,.055) 34%,
+        rgba(109,224,185,.105) 52%,
+        rgba(109,224,185,.060) 66%,
+        rgba(109,224,185,0) 100%),
+      radial-gradient(circle 275px at 50% 40%,
+        rgba(116,229,246,.025) 0%,
+        rgba(121,184,255,.018) 48%,
+        rgba(121,184,255,0) 76%),
+      linear-gradient(145deg,#090e13,#070a0f)!important;
+  }
+
+  html[data-theme="light"] .status-console{
+    background:
+      radial-gradient(circle 205px at 50% 42%,rgba(34,154,118,.07),transparent 68%),
+      radial-gradient(circle 275px at 50% 40%,rgba(79,151,225,.035),transparent 76%),
+      linear-gradient(145deg,#fff,#f6fafc)!important;
+  }
+
+  .status-core{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+    padding:12px 0 2px!important;
+  }
+
+  .countdown-ring{
+    width:min(64vw,232px)!important;
+    height:min(64vw,232px)!important;
+    margin:2px auto 5px!important;
+  }
+
+  .ring-center strong{
+    font-size:27px!important;
+    letter-spacing:-.045em;
+  }
+
+  .ring-center span{
+    font-size:8px!important;
+    letter-spacing:.13em;
+  }
+
+  .ring-center small{
+    font-size:9px!important;
+  }
+
+  .checkin-control{
+    width:100%;
+    max-width:520px;
+    margin:0 auto;
+    align-content:start!important;
+  }
+
+  .checkin-button{
+    min-height:62px!important;
+  }
+
+  .checkin-meta{
+    grid-template-columns:1fr 1fr!important;
+    gap:7px!important;
+    margin-top:8px!important;
+  }
+
+  .checkin-meta div{
+    padding:8px 9px!important;
+  }
+
+  .checkin-meta span{
+    font-size:7px!important;
+  }
+
+  .checkin-meta strong{
+    font-size:9px!important;
+  }
+
+  .live-strip{
+    margin-top:8px!important;
+  }
+}
+
+@media(max-width:430px){
+  .countdown-ring{
+    width:min(66vw,230px)!important;
+    height:min(66vw,230px)!important;
+  }
+}
+
+@media(max-width:380px){
+  #themeToggle.theme-toggle{
+    width:84px!important;
+    min-width:84px!important;
+  }
+
+  #themeToggle.theme-toggle>span::before,
+  #themeToggle.theme-toggle>span::after{
+    font-size:8px;
+  }
+}
+
+@media(max-width:350px){
+  .countdown-ring{
+    width:210px!important;
+    height:210px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #themeToggle.theme-toggle::before,
+  #themeToggle.theme-toggle>span::before,
+  #themeToggle.theme-toggle>span::after{
+    transition:none!important;
+  }
+}

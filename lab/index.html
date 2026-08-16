@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <title>Check In Lab · Loading</title>
+</head>
+<body>
+  <script>
+    (async () => {
+      try {
+        const response = await fetch('/assets/lab/checkin-index-snapshot.html?v=20260816-lab1', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`Snapshot load failed: ${response.status}`);
+        let html = await response.text();
+        html = html
+          .replaceAll('/assets/checkin/', '/assets/lab/')
+          .replaceAll('https://db.cmxchat.com/checkin/', 'https://db.cmxchat.com/lab/')
+          .replaceAll('href="/checkin/"', 'href="/lab/"')
+          .replace('<title>Check In · Dead Man Switch</title>', '<title>Check In Lab · Dead Man Switch</title>');
+        document.open();
+        document.write(html);
+        document.close();
+      } catch (error) {
+        document.body.innerHTML = '<main style="font-family:system-ui;background:#050608;color:#fff;min-height:100vh;display:grid;place-items:center;padding:24px"><div><strong>LAB SNAPSHOT UNAVAILABLE</strong><p style="color:#8da2b7">The isolated Check In lab could not be loaded.</p></div></main>';
+        console.error(error);
+      }
+    })();
+  </script>
+</body>
+</html>

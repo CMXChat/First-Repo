@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#050608" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.cmxchat.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'none'; upgrade-insecure-requests" />
+  <title>Check In · Dead Man Switch</title>
+  <meta name="description" content="Secure dead man switch for protected records and actions." />
+  <link rel="canonical" href="https://db.cmxchat.com/checkin/" />
+  <link rel="stylesheet" href="/assets/checkin/checkin.css?v=20260815-5" />
+  <link rel="stylesheet" href="/assets/checkin/checkin-ring-fix.css?v=20260814-2" />
+  <link rel="stylesheet" href="/assets/checkin/checkin-refine.css?v=20260816-4" />
+  <link rel="stylesheet" href="/assets/checkin/checkin-ring-hero.css?v=20260816-1" />
+  <link rel="stylesheet" href="/assets/checkin/checkin-vault-panels.css?v=20260816-1" />
+  <link rel="stylesheet" href="/assets/checkin/checkin-actions-official.css?v=20260816-1" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Check In navigation">
+      <a class="brand" href="/checkin/" aria-label="Check In home">
+        <span class="brand-mark" aria-hidden="true"><i></i></span>
+        <span><strong>CHECK IN</strong><small>Dead Man Switch</small></span>
+      </a>
+
+      <nav class="side-nav" aria-label="Primary">
+        <button class="nav-item is-active" type="button" data-view="overview"><span class="nav-icon">◉</span><span>Status</span></button>
+        <button class="nav-item" type="button" data-view="records"><span class="nav-icon">◇</span><span>Records</span><em id="recordNavCount" class="public-count-hidden" aria-hidden="true">0</em></button>
+        <button class="nav-item" type="button" data-view="actions"><span class="nav-icon">⇢</span><span>Actions</span><em id="actionNavCount" class="public-count-hidden" aria-hidden="true">0</em></button>
+        <button class="nav-item" type="button" data-view="activity"><span class="nav-icon">≡</span><span>Activity</span></button>
+        <button class="nav-item legacy-nav-target" type="button" data-view="timeline" hidden><span class="nav-icon">⌁</span><span>Timeline</span></button>
+        <button class="nav-item legacy-nav-target" type="button" data-view="updates" hidden><span class="nav-icon">✎</span><span>Updates</span></button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="local-state"><i></i><span><strong>SERVER LINK</strong><small>Verified check in service</small></span></div>
+        <button class="settings-nav" id="openSettings" type="button">⚙ <span>Settings</span></button>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="mobile-brand">
+          <span class="brand-mark" aria-hidden="true"><i></i></span>
+          <span><strong>CHECK IN</strong><small>Dead Man Switch</small></span>
+        </div>
+        <div class="top-status" id="topStatus" data-state="safe"><i></i><span>SAFE</span></div>
+        <div class="top-actions">
+          <button class="compact-action" id="operatorButton" type="button">Access</button>
+          <button class="compact-action lock-now-action" id="lockNowButton" type="button" hidden>Lock Now</button>
+          <button class="compact-action" id="simulateButton" type="button">Simulate</button>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme"><span aria-hidden="true">◐</span></button>
+          <button class="icon-action" id="mobileSettings" type="button" aria-label="Open settings">⚙</button>
+        </div>
+      </header>
+      <section class="operator-session-strip" id="operatorSessionStrip" hidden aria-live="polite">
+        <span><i></i><strong>PRIVATE ACCESS ACTIVE</strong></span>
+        <time id="sessionStripCountdown">Pending</time>
+        <button id="sessionStripLock" type="button">LOCK NOW</button>
+      </section>
+
+      <main class="main" id="main">
+        <section class="view is-active" data-view-panel="overview" aria-labelledby="overviewTitle">
+          <div class="view-heading compact-heading">
+            <div><h1 id="overviewTitle">System status</h1></div>
+            <div class="heading-meta"><span id="todayDate"></span><small>Current date</small></div>
+          </div>
+
+          <div class="mode-strip">
+            <span><i></i><strong>Primary 72 hour switch</strong></span>
+            <p>Verified proof of life opens a 72 hour operating window. A 24 hour grace period follows the deadline.</p>
+          </div>
+
+          <section class="inventory-strip" aria-label="Protected inventory counts">
+            <button type="button" data-jump="records"><span>Documents</span><strong id="documentPublicCount">0</strong><em>LOCKED</em></button>
+            <button type="button" data-jump="records"><span>Contacts</span><strong id="contactPublicCount">0</strong><em>LOCKED</em></button>
+            <button type="button" data-jump="records"><span>Organizations</span><strong id="organizationPublicCount">0</strong><em>LOCKED</em></button>
+            <button type="button" data-jump="updates"><span>Updates</span><strong id="updatePublicCount">0</strong><em>LOCKED</em></button>
+            <button type="button" data-jump="actions"><span>Trigger actions</span><strong id="actionPublicCount">0</strong><em>CONFIGURED · LOCKED</em></button>
+          </section>
+
+          <div class="dashboard-grid">
+            <section class="status-console" id="statusConsole" data-state="safe" aria-labelledby="statusTitle">
+              <div class="console-head">
+                <div><span class="mini-label">CURRENT STATE</span><strong id="statusTitle">Safe</strong></div>
+                <span class="state-pill" id="statePill"><i></i>SAFE</span>
+              </div>
+
+              <div class="status-core">
+                <div class="countdown-ring" aria-hidden="true">
+                  <svg viewBox="0 0 180 180"><circle class="ring-track" cx="90" cy="90" r="76"></circle><circle class="ring-progress" id="ringProgress" cx="90" cy="90" r="76"></circle></svg>
+                  <div class="ring-center"><span>TIME LEFT</span><strong id="countdown">72:00:00</strong><small id="countdownUnit">until check in is due</small></div>
+                </div>
+
+                <div class="checkin-control">
+                  <p id="statusCopy">Sealed and synchronized.</p>
+                  <button class="checkin-button" id="checkinButton" type="button"><span class="button-pulse" aria-hidden="true"></span><strong>CHECK IN NOW</strong><small id="checkinButtonHint">Private access required</small></button>
+                  <div class="checkin-meta">
+                    <div><span>Last check in</span><strong id="lastCheckin">Just now</strong></div>
+                    <div><span>Next due</span><strong id="nextDue">Pending</strong></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <aside class="quick-panel">
+              <div class="panel-title"><span>SYSTEM INTEGRITY</span><button type="button" id="quickSettings">Edit</button></div>
+              <div class="quick-row"><span>Schedule</span><strong id="intervalValue">72 hours rolling</strong></div>
+              <div class="quick-row"><span>Grace period</span><strong id="graceValue">24 hours</strong></div>
+              <div class="quick-row"><span>Grace deadline</span><strong id="graceDeadline">Pending</strong></div>
+              <div class="quick-row"><span>System link</span><strong id="syncState">CONNECTING</strong></div>
+              <div class="quick-row"><span>Clock source</span><strong>SERVER AUTHORITATIVE</strong></div>
+              <div class="quick-row"><span>Private session</span><strong id="operatorState">LOCKED</strong></div>
+              <div class="quick-row"><span>Session expiry</span><strong id="sessionExpiry">Pending</strong></div>
+              <div class="quick-row"><span>Records</span><strong id="recordCount">Unlock to view</strong></div>
+              <div class="quick-row"><span>Trigger actions</span><strong id="actionCount">0 configured</strong></div>
+            </aside>
+          </div>
+
+          <div class="metric-grid" aria-label="Switch metrics">
+            <button class="metric-card" type="button" data-jump="timeline"><span>01</span><small>Stage</small><strong id="stageMetric">Monitoring</strong><em>View timeline →</em></button>
+            <button class="metric-card" type="button" data-jump="records"><span>02</span><small>Records</small><strong>Protected</strong><em>Open records →</em></button>
+            <button class="metric-card" type="button" data-jump="updates"><span>03</span><small>Notebook</small><strong>Private</strong><em>Open updates →</em></button>
+            <button class="metric-card" type="button" data-jump="activity"><span>04</span><small>Last event</small><strong id="lastEventMetric">Check in</strong><em>View log →</em></button>
+          </div>
+
+          <section class="recent-panel">
+            <div class="panel-title"><span>RECENT ACTIVITY</span><button type="button" data-jump="activity">View all</button></div>
+            <div class="activity-list compact" id="recentActivity"></div>
+          </section>
+        </section>
+
+        <section class="view" data-view-panel="timeline" aria-labelledby="timelineTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">CONTINGENCY STATES</p><h1 id="timelineTitle">Deadline sequence</h1></div><p>The switch advances through four states as the deadline and grace period pass.</p></div>
+          <div class="sequence-panel">
+            <div class="sequence-line" aria-hidden="true"></div>
+            <article class="sequence-step is-current" data-stage="safe"><span>01</span><div><small>CURRENT WINDOW</small><h2>Safe</h2><p>The latest check in has been accepted and the countdown is active.</p></div><b>ACTIVE</b></article>
+            <article class="sequence-step" data-stage="soon"><span>02</span><div><small>DEADLINE APPROACHING</small><h2>Due soon</h2><p>The current window is closing and a new check in is required.</p></div><b>WAITING</b></article>
+            <article class="sequence-step" data-stage="grace"><span>03</span><div><small>DEADLINE MISSED</small><h2>Grace period</h2><p>The required check in has been missed. The grace countdown becomes the controlling boundary.</p></div><b>WAITING</b></article>
+            <article class="sequence-step" data-stage="triggered"><span>04</span><div><small>GRACE EXPIRED</small><h2>Trigger state</h2><p>The grace period has expired and the switch has entered trigger state.</p></div><b>ATTENTION</b></article>
+          </div>
+          <button class="wide-action" id="timelineSimulate" type="button">Review state sequence</button>
+        </section>
+
+        <section class="view" data-view-panel="records" aria-labelledby="recordsTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">PROTECTED RECORDS</p><h1 id="recordsTitle">Records</h1></div></div>
+          <div class="record-columns"><section class="recent-panel storage-panel"><div class="panel-title"><span>DOCUMENT STORAGE</span></div><p id="documentUploadState" class="capability-note"><strong>Protected uploads unavailable</strong><span>Durable storage has not been enabled for this environment.</span></p><form id="documentForm" class="inline-form operator-only"><input name="title" placeholder="Document title" /><input id="documentFile" name="file" type="file" required disabled /><button id="documentUploadButton" class="primary-small" type="submit" disabled>Upload unavailable</button></form><div id="documentsList" class="record-list"></div></section><section class="recent-panel"><div class="panel-title"><span>CONTACTS</span></div><form class="inline-form recordForm operator-only" data-kind="contact"><input name="title" placeholder="Name" required /><textarea name="body" placeholder="Contact details"></textarea><button class="primary-small" type="submit">Add contact</button></form><div id="contactsList" class="record-list"></div></section><section class="recent-panel"><div class="panel-title"><span>ORGANIZATIONS</span></div><form class="inline-form recordForm operator-only" data-kind="organization"><input name="title" placeholder="Organization" required /><textarea name="body" placeholder="Notes"></textarea><button class="primary-small" type="submit">Add organization</button></form><div id="organizationsList" class="record-list"></div></section></div>
+        </section>
+
+        <section class="view" data-view-panel="updates" aria-labelledby="updatesTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">PRIVATE FIELD NOTEBOOK</p><h1 id="updatesTitle">Updates</h1></div><div class="editor-heading-actions operator-only"><button class="secondary-small" id="focusMode" type="button">Focus writing</button><button class="primary-small" id="saveUpdate" type="button">Save revision</button></div></div>
+          <div class="notebook operator-only" id="notebook">
+            <section class="editor-pane">
+              <div class="editor-statusbar"><span id="saveState" data-state="saved">SAVED</span><span id="revisionNumber">Revision 0</span><span id="lastSaved">Not saved in this session</span></div>
+              <div class="markdown-toolbar" aria-label="Formatting toolbar">
+                <button type="button" data-command="undo" aria-label="Undo" title="Undo">↶</button><button type="button" data-command="redo" aria-label="Redo" title="Redo">↷</button>
+                <span></span>
+                <button type="button" data-command="bold" aria-label="Bold" title="Bold"><b>B</b></button><button type="button" data-command="italic" aria-label="Italic" title="Italic"><i>I</i></button><button type="button" data-command="underline" aria-label="Underline" title="Underline"><u>U</u></button><button type="button" data-command="strikeThrough" aria-label="Strikethrough" title="Strikethrough"><s>S</s></button>
+                <span></span>
+                <button type="button" data-block="h1" aria-label="Heading 1" title="Heading 1">H1</button><button type="button" data-block="h2" aria-label="Heading 2" title="Heading 2">H2</button><button type="button" data-block="h3" aria-label="Heading 3" title="Heading 3">H3</button><button type="button" data-block="p" aria-label="Paragraph" title="Paragraph">¶</button>
+                <span></span>
+                <button type="button" data-command="insertUnorderedList" aria-label="Bulleted list" title="Bulleted list">• List</button><button type="button" data-command="insertOrderedList" aria-label="Numbered list" title="Numbered list">1. List</button><button type="button" data-insert="checklist" aria-label="Checklist" title="Checklist">☐</button><button type="button" data-block="blockquote" aria-label="Blockquote" title="Blockquote">❯</button>
+                <button type="button" data-insert="code" aria-label="Inline code" title="Inline code">&lt;/&gt;</button><button type="button" data-block="pre" aria-label="Code block" title="Code block">Code</button><button type="button" data-insert="link" aria-label="Link" title="Link">Link</button><button type="button" data-insert="divider" aria-label="Horizontal divider" title="Horizontal divider">―</button><button type="button" data-command="removeFormat" aria-label="Clear formatting" title="Clear formatting">Clear</button>
+                <button type="button" id="insertUpdate">Insert update</button>
+              </div>
+              <div class="writing-canvas" id="richEditor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Private update editor" data-placeholder="Begin a private operational update"></div>
+              <textarea id="updateMarkdown" hidden aria-hidden="true"></textarea>
+              <footer class="editor-footer"><span id="wordCount">0 words</span><span id="characterCount">0 characters</span><span>Immutable revision history</span></footer>
+            </section>
+            <aside class="revision-panel" id="revisionPanel"><div class="panel-title"><span>REVISION HISTORY</span><button id="closeHistory" type="button">Close</button></div><div id="revisionList" class="record-list"></div></aside>
+          </div>
+        </section>
+
+        <section class="view" data-view-panel="actions" aria-labelledby="actionsTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">PROTECTED CONTINGENCY PLAN</p><h1 id="actionsTitle">Contingency actions</h1></div></div>
+          <section class="public-action-sequence" id="publicActionSequence" aria-live="polite"></section>
+          <form id="actionForm" class="inline-form action-form operator-only"><input name="name" placeholder="Action name" required /><select name="action_type"><option value="notification">Notification plan</option><option value="release">Record reference</option><option value="webhook">Webhook plan</option></select><button class="primary-small" type="submit">Add action</button></form><div id="actionsList" class="action-list"></div>
+        </section>
+
+        <section class="view" data-view-panel="activity" aria-labelledby="activityTitle" hidden>
+          <div class="view-heading"><div><p class="eyebrow">PROTECTED AUDIT LOG</p><h1 id="activityTitle">Activity</h1></div><button class="secondary-small" id="refreshActivity" type="button">Refresh</button></div>
+          <div class="activity-table-head"><span>EVENT</span><span>DETAIL</span><span>TIME</span></div>
+          <div class="activity-list full" id="activityList"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <button class="is-active" type="button" data-view="overview"><span>◉</span><small>Status</small></button>
+    <button type="button" data-view="records"><span>◇</span><small>Records</small></button>
+    <button type="button" data-view="actions"><span>⇢</span><small>Actions</small></button>
+    <button type="button" data-view="activity"><span>≡</span><small>Activity</small></button>
+    <button class="legacy-mobile-target" type="button" data-view="timeline" hidden><span>⌁</span><small>Timeline</small></button>
+    <button class="legacy-mobile-target" type="button" data-view="updates" hidden><span>✎</span><small>Updates</small></button>
+    <button class="legacy-mobile-target" type="button" id="mobileNavSettings" hidden><span>⚙</span><small>Settings</small></button>
+  </nav>
+
+  <dialog class="app-dialog" id="settingsDialog">
+    <form method="dialog" class="dialog-shell" id="settingsForm">
+      <div class="dialog-head"><div><small>CHECK IN</small><h2>Settings</h2></div><button value="cancel" class="dialog-close" aria-label="Close">×</button></div>
+      <div class="setting-note"><strong>72 hour rolling schedule</strong><p>Each successful check in starts a new 72 hour window. Server time controls the deadline.</p></div>
+      <div class="setting-note"><strong>24 hour grace period</strong><p>The grace period begins at the deadline. These values are fixed by the control system.</p></div>
+      <menu><button value="default" class="primary-small">Done</button></menu>
+    </form>
+  </dialog>
+
+  <dialog class="app-dialog receipt-dialog" id="receiptDialog">
+    <div class="dialog-shell">
+      <div class="receipt-mark" aria-hidden="true">✓</div>
+      <p class="eyebrow">SERVER VERIFIED</p><h2>Proof of life recorded</h2>
+      <dl><div><dt>Recorded</dt><dd id="receiptRecorded">Pending</dd></div><div><dt>Next required check in</dt><dd id="receiptDue">Pending</dd></div><div><dt>Grace expires</dt><dd id="receiptGrace">Pending</dd></div></dl>
+      <button class="primary-small" id="closeReceipt" type="button">Return to overview</button>
+    </div>
+  </dialog>
+
+  <dialog class="app-dialog" id="simulationDialog">
+    <div class="dialog-shell simulation-shell">
+      <div class="dialog-head"><div><small>STATE REVIEW</small><h2>Contingency timeline</h2></div><button class="dialog-close" id="closeSimulation" type="button" aria-label="Close">×</button></div>
+      <div class="simulation-status"><span id="simulationCode">T+00:00</span><strong id="simulationTitle">Deadline sequence</strong><p id="simulationCopy">This review is isolated from the active switch.</p></div>
+      <div class="simulation-progress"><i id="simulationProgress"></i></div>
+      <div class="simulation-actions"><button class="secondary-small" id="stopSimulation" type="button">Stop</button><button class="primary-small" id="nextSimulation" type="button">Next stage</button></div>
+    </div>
+  </dialog>
+
+  <dialog class="app-dialog" id="authDialog">
+    <form class="dialog-shell" id="authForm">
+      <div class="dialog-head"><div><small>PRIVATE SESSION</small><h2>Unlock protected controls</h2></div><button class="dialog-close" id="closeAuth" type="button" aria-label="Close">×</button></div>
+      <div class="field-group"><label for="operatorKey">Access key</label><input id="operatorKey" name="operator_key" type="password" autocomplete="off" required /></div>
+      <div class="setting-note"><strong>Protected access</strong><p>Authorization opens a 15 minute private session.</p></div>
+      <p id="authError" role="alert" aria-live="polite"></p>
+      <menu><button class="secondary-small" id="lockOperator" type="button">Lock now</button><button class="primary-small" id="authSubmit" type="submit">Unlock</button></menu>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/assets/checkin/checkin-status-contract.js?v=20260816-2"></script>
+  <script src="/assets/checkin/checkin.js?v=20260815-8"></script>
+  <script src="/assets/checkin/checkin-refine.js?v=20260816-4"></script>
+  <script src="/assets/checkin/checkin-vault-panels.js?v=20260816-1"></script>
+  <script src="/assets/checkin/checkin-actions-official.js?v=20260816-1"></script>
+</body>
+</html>
