@@ -30,13 +30,14 @@ jobs:
           node --check assets/lab/lab-crm.js
           node --check assets/lab/lab-inventory.js
           node --check assets/lab/lab-actions.js
+          node --check assets/lab/lab-timeline-live.js
           node --check assets/lab/checkin-status-contract.js
           node --check assets/lab/checkin.js
           node --check assets/lab/checkin-refine.js
           node --check assets/lab/checkin-vault-panels.js
           node --check assets/lab/checkin-actions-official.js
 
-      - name: Validate Lab isolation, records, actions, and backend notes
+      - name: Validate Lab isolation, records, actions, sequence, and handoffs
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -54,8 +55,11 @@ jobs:
               Path('assets/lab/lab-inventory.js'),
               Path('assets/lab/lab-actions.css'),
               Path('assets/lab/lab-actions.js'),
+              Path('assets/lab/lab-timeline.css'),
+              Path('assets/lab/lab-timeline-live.js'),
               Path('assets/lab/BACKEND-HANDOFF.md'),
               Path('assets/lab/ACTIONS-BACKEND-HANDOFF.md'),
+              Path('assets/lab/LAB-HANDOFF.md'),
           ]
 
           if not loader.exists():
@@ -78,6 +82,8 @@ jobs:
               '/assets/lab/lab-inventory.js',
               '/assets/lab/lab-actions.css',
               '/assets/lab/lab-actions.js',
+              '/assets/lab/lab-timeline.css',
+              '/assets/lab/lab-timeline-live.js',
               'data-lab-mode="true"',
           ):
               if term not in text:
@@ -88,9 +94,18 @@ jobs:
               failures.append('production /checkin references Lab assets or Lab mode')
 
           mock = Path('assets/lab/lab-mock-api.js').read_text(encoding='utf-8')
-          for term in ('productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY', 'ACTION_STORAGE_KEY', 'actionCounts'):
+          for term in (
+              'productionApiBlocked: true',
+              'PROD_API_ORIGIN',
+              'INVENTORY_STORAGE_KEY',
+              'ACTION_STORAGE_KEY',
+              'SWITCH_POLICY_KEY',
+              'interval_hours: policy.intervalHours',
+              'grace_hours: policy.graceHours',
+              'repeat_enabled: policy.repeat',
+          ):
               if term not in mock:
-                  failures.append(f'Lab mock API safety/count guard missing: {term}')
+                  failures.append(f'Lab mock API safety/policy guard missing: {term}')
 
           inventory = Path('assets/lab/lab-inventory.js').read_text(encoding='utf-8')
           for term in ('BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL', 'FastAPI', 'INVENTORY_STORAGE_KEY'):
@@ -113,6 +128,24 @@ jobs:
               if term not in actions:
                   failures.append(f'Lab action builder boundary/model missing: {term}')
 
+          sequence = Path('assets/lab/lab-timeline-live.js').read_text(encoding='utf-8')
+          for term in (
+              'BACKEND HANDOFF',
+              'POLICY_KEY',
+              'SIM_KEY',
+              'intervalHours',
+              'graceHours',
+              'repeat',
+              'policySnapshot',
+              'ACTION_ELIGIBLE',
+              'AWAITING APPROVAL',
+              'SIMULATED_SUCCESS',
+              'SIMULATED_FAILURE',
+              'server-authoritative',
+          ):
+              if term not in sequence:
+                  failures.append(f'Lab sequence engine boundary/model missing: {term}')
+
           handoff = Path('assets/lab/BACKEND-HANDOFF.md').read_text(encoding='utf-8')
           for term in ('checkin_documents', 'checkin_digital_assets', 'checkin_record_links', 'object storage', 'secret_ref', 'Action Builder integration'):
               if term not in handoff:
@@ -133,9 +166,23 @@ jobs:
               if term not in action_handoff:
                   failures.append(f'Action backend handoff missing required note: {term}')
 
+          lab_handoff = Path('assets/lab/LAB-HANDOFF.md').read_text(encoding='utf-8')
+          for term in (
+              'Read this file first',
+              'Phase 5',
+              'cmx-lab-switch-policy-v1',
+              'rolling repeat',
+              'one-shot',
+              'lab-timeline-live.js',
+              'Phase 6',
+              'Update this file at the end of every major Lab round',
+          ):
+              if term not in lab_handoff:
+                  failures.append(f'Persistent Lab handoff missing required note: {term}')
+
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print('Check In Lab syntax, isolation, records, action builder, and backend handoff validated.')
+          print('Check In Lab syntax, isolation, records, actions, sequence engine, and persistent handoff validated.')
           PY
