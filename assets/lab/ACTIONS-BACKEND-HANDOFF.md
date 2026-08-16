@@ -1,54 +1,49 @@
 # Check In Lab Action Builder Backend Handoff
 
-This file documents the intended backend contract for the Lab Action Builder while the current implementation is a browser-only simulation.
+Last updated: 2026-08-16
+
+This document describes the production direction behind the Lab Action Builder. The Lab is browser-only simulation and must never become the authoritative scheduler or executor.
+
+For long-running and recurring behavior, also read `SCHEDULING-BACKEND-HANDOFF.md`.
 
 ## Non-negotiable boundary
 
-The browser may create, edit, sort, preview, and simulate action definitions. It must never be the authoritative scheduler or executor.
-
-The production path should be:
+The browser may create, edit, preview, and simulate Action definitions. Production side effects belong to authenticated server services and durable workers.
 
 ```text
-Browser UI
-   ↓ authenticated HTTPS
+React UI
+  → generated authenticated API client
 FastAPI operator API
-   ↓
-PostgreSQL action definitions + revisions
-   ↓
-Server-side eligibility scheduler
-   ↓
-Execution queue / worker
-   ↓
-Approved executor adapter
-   ↓
-SMS / email / AI / API / publishing / account provider
+  → application/domain services
+PostgreSQL Action definitions + revisions
+  → scheduler / Decision engine
+execution queue / workers
+  → approved provider adapters
 ```
 
-No production action should be executed because a browser timer expired.
+No production Action should execute because a browser countdown, browser interval, or open page reached a timestamp.
 
-## Core tables
+## Core persistence
 
-A practical first schema:
+A practical schema can include:
 
 - `checkin_action_definitions`
 - `checkin_action_targets`
 - `checkin_action_trigger_rules`
 - `checkin_action_guardrails`
+- `checkin_action_schedules`
 - `checkin_action_revisions`
+- `checkin_incident_actions`
+- `checkin_action_occurrences`
 - `checkin_action_executions`
 - `checkin_action_execution_targets`
 - `checkin_action_execution_events`
 
-Future phases can add:
-
-- `checkin_action_conditions`
-- `checkin_action_dependencies`
-- `checkin_action_acknowledgements`
-- `checkin_action_fallbacks`
+Decision-specific tables are covered by `DECISIONS-BACKEND-HANDOFF.md`.
 
 ## Action definition
 
-Suggested fields:
+Suggested reusable fields:
 
 - `id`
 - `switch_id`
@@ -63,133 +58,166 @@ Suggested fields:
 - `updated_by`
 - `revision_number`
 
-Suggested lifecycle values for definitions:
+Definition lifecycle:
 
 - `draft`
 - `enabled`
 - `suspended`
 - `archived`
 
-Runtime execution states belong on execution rows, not on the reusable definition.
+Runtime states belong to incident/execution rows, not the reusable definition.
 
 ## Stable targets
 
-`checkin_action_targets` should reference stable entity IDs instead of copying mutable metadata into the action definition.
-
-Useful columns:
-
-- `action_id`
-- `target_kind`
-- `target_id`
-- `purpose`
-- `created_at`
+Action definitions should reference stable records instead of copying mutable contact/account/document metadata.
 
 Initial target kinds:
 
-- `person`
-- `organization`
-- `document`
-- `digital_asset`
+- Person
+- Organization
+- Document
+- Digital Asset
 
-A person may resolve to an email address or phone number when the executor prepares a run. A document may resolve to a specific version. A digital asset may resolve to a provider connection or secret reference.
+A Person may resolve to a phone/email during execution preparation. A Document resolves to an exact document version. A Digital Asset can resolve to a provider connection / safe secret reference.
 
-Before execution, snapshot the exact resolved values into `checkin_action_execution_targets`. That preserves what actually happened even if the source record changes later.
+Before side effects, snapshot exact resolved values into execution-target rows. Later record edits must not rewrite what an incident used.
 
-## Trigger rules
+## Configurable switch timing
 
-The switch server owns the timeline.
+The current product model is configurable. Do not hardcode 72 hours or 24 hours in production logic.
 
-For the current switch contract:
+Conceptually:
 
 ```text
-deadline_at = last_checkin_at + 72 hours
-grace_expires_at = deadline_at + 24 hours
+deadline_at = last_checkin_at + policy.interval
+final_trigger_at = deadline_at + policy.grace
 ```
 
-Supported Lab trigger modes map cleanly to backend rules:
+`72h + 24h` is only the historical/default example.
 
-- `deadline`: eligible at `deadline_at`
-- `grace_offset`: eligible at `deadline_at + offset`, with offset constrained to the grace window
-- `grace_expiry`: eligible at `grace_expires_at`
-- `scheduled`: eligible at an explicit absolute timestamp
-- `manual`: never automatically eligible
+Current trigger families:
 
-Store timestamps in UTC. Store a display timezone only for presentation and recurring scheduling rules.
+- `deadline` → eligible at `deadline_at`
+- `grace_offset` → eligible at `deadline_at + configured offset`, constrained by the snapshotted grace policy
+- `grace_expiry` → eligible at `final_trigger_at`
+- `scheduled` → eligible at an explicit calendar time
+- `manual` → never automatically eligible from time alone
 
-The scheduler should calculate eligibility from authoritative server timestamps and persisted switch state. Never trust a client-submitted `is_due`, countdown value, or browser clock.
+Store authoritative timestamps in UTC. Retain IANA timezone information for wall-clock recurring schedules where necessary.
+
+The scheduler calculates eligibility from the incident's snapshotted policy and authoritative server state. Never trust client countdown values or client-submitted `is_due` flags.
 
 ## Eligibility is separate from execution
 
-An action can become eligible without executing immediately.
+An Action can become eligible without executing immediately.
 
 Examples:
 
-- eligible at 72-hour deadline, then wait for operator approval
-- eligible 3 hours into grace, but cancel if a new check-in arrives
-- eligible at grace expiration, then wait for a dependency
-- eligible at a calendar time, but only if the switch is still overdue
+- eligible at deadline, then wait for approval
+- eligible in grace, but cancel because a valid check-in returned the incident to Safe
+- eligible at final trigger, then wait for an upstream dependency
+- eligible at a calendar time, then wait until a condition becomes true
+- eligible, then intentionally delay two more days before the Action starts
 
-The backend should persist eligibility transitions so the audit log can answer why an action did or did not execute.
+Persist these transitions so Activity can explain why something did or did not run.
+
+## Long-running and recurring Action definitions
+
+The Lab now prototypes schedule metadata in addition to the trigger boundary.
+
+Production scheduling policy should be normalized into fields such as:
+
+- `start_delay_seconds`
+- `duration_seconds`
+- `repeat_interval_seconds`
+- `repeat_limit`
+- `timezone` / recurrence metadata when required
+- `schedule_revision`
+
+A long-running Action can therefore be modeled as:
+
+```text
+eligible
+→ start delay
+→ running
+→ recurring occurrences while active
+→ terminal outcome
+→ Decision route activates downstream Action
+```
+
+Example:
+
+```text
+Final trigger
+→ wait 2 days
+→ monitor once per day for 45 days
+→ success → release Action B
+→ terminal failure → notify Action C
+```
+
+Do not keep a worker, browser tab, or HTTP request alive for the whole duration. Persist `starts_at`, `ends_at`, `next_run_at`, occurrence count, and runtime state, then let the scheduler wake due work.
+
+Each recurrence should have a durable occurrence row and an idempotency key. Occurrence retries and recurrence cadence are separate concepts.
+
+Read `SCHEDULING-BACKEND-HANDOFF.md` for the full model.
 
 ## Guardrails
 
-Initial guardrails in the Lab UI:
+Initial reusable guardrails include:
 
-- `one_time`
-- `require_overdue`
-- `require_approval`
-- `retry_count`
-- `retry_interval_seconds`
+- execute once per incident where appropriate
+- require switch/incident to remain overdue
+- require approval
+- retry count
+- retry interval/backoff
 
-Backend policy is authoritative. For example, destructive-risk actions should require approval regardless of a malformed client payload.
+Backend policy is authoritative. Destructive risk should require strong approval regardless of malformed client payloads.
 
-Future condition/dependency rules should be normalized enough to validate safely. Avoid arbitrary client-supplied executable code.
+Useful stronger protections for high-risk operations:
+
+- mandatory approval
+- optional second approver
+- cooling-off delay
+- immutable execution snapshot
+- idempotency key
+- preview/dry-run when provider supports it
+- explicit recovery/rollback metadata
 
 ## Risk classes
 
 Initial classes:
 
-- `informational`
-- `important`
-- `critical`
-- `destructive`
+- informational
+- important
+- critical
+- destructive
 
-Risk affects required review, approvals, delays, logging, and executor policy. It must not merely change UI color.
-
-Recommended destructive-action policy:
-
-- mandatory operator approval
-- optional second approver for especially sensitive actions
-- minimum cooling-off delay where practical
-- immutable execution snapshot
-- idempotency key
-- dry-run or preview if the provider supports it
-- explicit rollback/recovery metadata where possible
+Risk must influence server policy. It must not merely change UI color.
 
 ## Executor registry
 
-Do not encode provider-specific execution logic into the generic action table.
+Provider-specific behavior should live behind an approved server registry rather than arbitrary Action code.
 
-Use an approved server-side executor registry such as:
+Conceptually:
 
 ```text
-sms -> SmsExecutor
-email -> EmailExecutor
-social -> SocialPublisherExecutor
-ai -> AiTaskExecutor
-organization_notice -> NoticeExecutor
-publish -> PublicationExecutor
-webhook -> WebhookExecutor
-digital_account -> DigitalAccountExecutor
-custom -> explicitly registered custom handler
-scheduled -> task executor selected by configuration
+sms → SmsExecutor
+email → EmailExecutor
+social → SocialPublisherExecutor
+ai → AiTaskExecutor
+organization_notice → NoticeExecutor
+publish → PublicationExecutor
+webhook → WebhookExecutor
+digital_account → DigitalAccountExecutor
+custom → explicitly registered handler only
+scheduled → approved task executor
 ```
 
-The registry should reject unknown action types or unregistered custom handlers.
+Reject unknown executor types/handlers server-side.
 
-## Secrets and provider connections
+## Secrets and connections
 
-Action definitions must never store:
+Never store these in ordinary Action definitions:
 
 - passwords
 - API tokens
@@ -199,39 +227,33 @@ Action definitions must never store:
 - recovery codes
 - session cookies
 
-Store a `connection_ref` or `secret_ref` that the executor resolves server-side through the future secret-management layer.
-
-The browser should receive only the minimum safe connection metadata needed to render the configuration UI.
+Use `connection_ref` / `secret_ref` records resolved server-side by the provider adapter.
 
 ## SMS / email
 
-The executor should resolve the selected Person or Organization records at execution preparation time.
+At execution preparation, resolve the selected Person/Organization records and snapshot:
 
-The execution snapshot should capture:
-
-- resolved recipient address/number
-- normalized delivery channel
+- exact recipient address/number
+- normalized channel
 - message/template revision
 - attachment document versions
 - provider adapter
 - provider message ID after submission
-- delivery state when available
+- delivery state when callbacks are available
 
-Provider delivery state must come from the provider/webhook path, not the browser.
+Delivery state comes from provider/server callbacks, never from browser assumptions.
 
 ## Social / publication
 
-Publishing actions should resolve a Digital Asset record for the destination account or site.
+Resolve the destination through a Digital Asset / approved provider connection.
 
-Store the intended audience/privacy mode explicitly. Do not silently default a private draft to public publication.
+Audience/privacy must be explicit. High-risk publication should support preview + approval before provider submission.
 
-High-risk publication should support a preview artifact and approval step before provider submission.
+## AI Actions
 
-## AI actions
+Default AI capability should remain output-only.
 
-The default AI action permission should be output-only.
-
-Suggested policy fields:
+Useful policy fields:
 
 - objective
 - approved context record IDs
@@ -239,124 +261,125 @@ Suggested policy fields:
 - forbidden tools
 - output destination
 - maximum runtime
-- token/cost budget where appropriate
+- cost/token budget where appropriate
 - approval requirement
 
-The AI executor should not inherit broad application permissions automatically. Tool access must be explicit per action or policy.
+Persist model/provider ID, instruction revision, resolved context snapshot references, tool calls, output artifact, errors, and timestamps.
 
-Persist:
-
-- model/provider identifier
-- prompt/instruction revision
-- resolved context snapshot references
-- tool calls
-- output artifact
-- errors
-- timestamps
+AI tools should not inherit broad application permissions automatically.
 
 ## Webhooks / APIs
 
-Outbound API actions should use an allowlisted connection/endpoint configuration controlled by the server.
+Outbound API Actions should resolve an allowlisted server-owned integration/connection.
 
-Do not allow an arbitrary browser-entered URL to become an unrestricted production request target. Validate scheme, destination policy, connection ownership, and authentication configuration server-side.
+Do not convert an arbitrary browser-entered URL into unrestricted production network access. Validate destination policy, scheme, ownership, authentication reference, timeout, and expected response server-side.
 
-## Digital account actions
+## Digital account Actions
 
 These are high-risk by default.
 
-A Digital Asset record identifies the account/resource. The executor resolves its provider adapter and secret reference.
+The Digital Asset identifies the target resource. A provider-specific adapter validates the requested operation and resolves safe connection references.
 
-Operations such as access transfer, disablement, archival, or credential rotation should have provider-specific validation and stronger approval policy. Avoid one generic endpoint that accepts an arbitrary operation string and performs it blindly.
+Access transfer, disablement, archival, credential rotation, or similar operations require stronger approval and explicit provider policy.
 
-## Scheduler and worker behavior
+## Scheduler / worker behavior
 
-Recommended mechanics:
+Recommended pattern:
 
-- scheduler periodically evaluates enabled actions against authoritative switch state
-- eligibility changes happen in a database transaction
-- enqueue with an idempotency key
-- worker takes a lease/lock before execution
-- retries use persisted attempt counts and backoff
-- worker writes append-only execution events
-- final state is persisted before downstream dependents are released
+1. scheduler evaluates authoritative switch/incident state and due schedules
+2. eligibility/runtime transition is persisted transactionally
+3. due occurrence is created or claimed with a lease/lock
+4. work is queued with an idempotency key
+5. worker performs one bounded attempt
+6. append-only execution event is written
+7. next retry/recurrence is persisted if needed
+8. terminal state is persisted before downstream routes are released
 
-Do not depend on one long-running web request to carry an action through execution.
+Server restarts must not lose work scheduled days or months into the future.
 
 ## Idempotency
 
-Every execution should have an incident-aware idempotency key such as:
+A reusable incident execution key can begin with:
 
 ```text
-switch_id + incident_id + action_id + trigger_revision
+switch_id + incident_id + action_id + action_revision
 ```
 
-This prevents duplicate side effects when workers retry or restart.
+Recurring occurrences should add occurrence sequence/time identity, and individual retries should have distinct attempt IDs.
 
 ## Execution snapshots
 
-At execution preparation time, freeze:
+Before external work, freeze at minimum:
 
-- action definition revision
-- trigger rule revision
+- Action definition revision
+- trigger revision
+- schedule revision
+- Decision Policy revision
 - guardrails
-- resolved recipients
-- document version IDs
-- digital asset IDs and safe connection references
-- AI context references
-- exact message/payload/template
+- resolved targets
+- document versions
+- Digital Asset IDs / connection references
+- exact message/payload/instructions
 - eligibility reason
+- relevant typed-condition evaluation inputs
 
-Later record edits must not rewrite history.
+Later edits must not rewrite incident history.
 
-## Audit events
+## Outcome routing
 
-At minimum record:
+Execution and scheduling end in a typed terminal outcome. The Decision engine activates the matching downstream route.
 
-- definition created/updated/enabled/suspended
+Examples:
+
+- success
+- final failure
+- acknowledged
+- no acknowledgement
+- approval denied
+- timeout/cancel when supported by the typed policy model
+
+Do not invent a separate scheduling dependency graph that competes with Decision Policy routing.
+
+## Audit minimum
+
+Record:
+
+- definition created/updated/enabled/suspended/archived
+- trigger/schedule version changed
 - became eligible
-- eligibility cancelled because switch returned safe
-- awaiting approval
-- approved/rejected
-- queued
-- execution started
-- provider submission
-- retry scheduled
-- succeeded/failed
-- acknowledged when supported
+- eligibility cancelled
+- start delay entered/satisfied
+- awaiting/receiving/denying approval
+- occurrence scheduled/started/completed/failed
+- retry scheduled/exhausted
+- recurrence scheduled
+- delivery callback
+- acknowledgement callback/timeout
+- terminal Action outcome
+- downstream route activated
 
-Each event should include actor/service identity, timestamp, correlation ID, action ID, execution ID, and safe structured metadata.
+All production timestamps are server-authoritative.
 
-## Suggested API shape
+## Simulation requirement
 
-```text
-GET    /api/v1/checkin/operator/actions
-POST   /api/v1/checkin/operator/actions
-GET    /api/v1/checkin/operator/actions/{action_id}
-PATCH  /api/v1/checkin/operator/actions/{action_id}
-POST   /api/v1/checkin/operator/actions/{action_id}/enable
-POST   /api/v1/checkin/operator/actions/{action_id}/suspend
-POST   /api/v1/checkin/operator/actions/{action_id}/duplicate
-DELETE /api/v1/checkin/operator/actions/{action_id}
+The official Test Center should use the same domain scheduling/Decision code with:
 
-GET    /api/v1/checkin/operator/actions/{action_id}/revisions
-GET    /api/v1/checkin/operator/actions/{action_id}/executions
-GET    /api/v1/checkin/operator/actions/{action_id}/activity
+- controlled fake clock
+- deterministic fake providers
+- accelerated time
+- scenario-selected outcomes
+- durable simulated incidents/audit events
 
-POST   /api/v1/checkin/operator/actions/{action_id}/simulate
-POST   /api/v1/checkin/operator/executions/{execution_id}/approve
-POST   /api/v1/checkin/operator/executions/{execution_id}/reject
-```
+A month-long plan should be testable in seconds while preserving the same calculated ordering/timestamps that production scheduling would use.
 
-Simulation should execute against dedicated mock adapters or dry-run implementations, never production provider credentials.
+## Browser role
 
-## Phase 5 integration
+The browser may:
 
-The next timeline phase should visualize action definitions from this model on the 72h + 24h boundary.
+- request definition mutations
+- show Plan/Run projections returned by the server
+- request a simulation scenario
+- request an authorized approval/acknowledgement
+- render server state
 
-Dependencies and conditions should extend the same action IDs and execution model instead of introducing a parallel automation system.
-
-## Lab migration rule
-
-Do not automatically migrate localStorage action definitions into production. They contain synthetic records and may have been intentionally broken during testing.
-
-When the backend exists, replace the local storage adapter with the authenticated API while preserving the presentation and builder concepts that survived Lab testing.
+The browser must not decide that a real Action is due or execute it.
