@@ -93,13 +93,46 @@
     }
   }
 
+  function polishActionBuilder() {
+    const builder = $(".lab-action-builder");
+    if (!builder) return;
+
+    const titleMap = {
+      "What should happen?": ["ACTION", "Choose what happens"],
+      "Define the action": ["DETAILS", "What happens"],
+      "Choose targets & context": ["PEOPLE & RECORDS", "Who or what is involved"],
+      "When can this action run?": ["TIMING", "When it can start"],
+      "Set guardrails": ["SAFETY", "Safety"],
+      "Review the directive": ["REVIEW", "Review"]
+    };
+
+    $$(".lab-builder-title", builder).forEach(block => {
+      const heading = $("h3", block);
+      const current = heading?.textContent.trim();
+      const mapped = titleMap[current];
+      if (mapped) {
+        setText($("small", block), mapped[0]);
+        setText(heading, mapped[1]);
+      }
+      const paragraph = $("p", block);
+      if (paragraph) paragraph.hidden = true;
+    });
+
+    $$(".lab-builder-readonly small,.lab-type-config small,.lab-trigger-field small,.lab-review-warning small", builder).forEach(node => {
+      if (/backend|server-side|lab never|secret|stable id|production/i.test(node.textContent)) node.hidden = true;
+    });
+
+    const library = $(".lab-action-library", builder);
+    if (library) library.setAttribute("aria-label", "Action type");
+  }
+
   function polishSequence() {
     const panel = $('[data-view-panel="timeline"]');
     if (!panel) return;
     setText($(".view-heading .eyebrow", panel), "TIMELINE");
     setText($(".view-heading h1", panel), "Sequence");
     const headingCopy = $(".view-heading>p", panel);
-    if (headingCopy) setText(headingCopy, "See when actions happen and test how the plan unfolds.");
+    if (headingCopy) setText(headingCopy, "See when Actions happen and test how the plan unfolds.");
 
     const root = $(".lab-sequence-root", panel);
     if (!root) return;
@@ -115,6 +148,16 @@
     setText($(".lab-sequence-panel.next .lab-sequence-panel-head strong", root), "Up next");
     setText($(".lab-sequence-panel.trace .lab-sequence-panel-head strong", root), "Test history");
     setText($(".lab-sequence-panel.history .lab-sequence-panel-head strong", root), "Recent tests");
+  }
+
+  function polishPolicyDialog() {
+    const dialog = $(".lab-policy-dialog");
+    if (!dialog?.open) return;
+    setText($("header small", dialog), "CHECK-IN SCHEDULE");
+    const heading = $("header h2", dialog);
+    if (heading && /policy|settings/i.test(heading.textContent)) setText(heading, "Switch timing");
+    const paragraph = $("header p", dialog);
+    if (paragraph) paragraph.hidden = true;
   }
 
   function polishDecision() {
@@ -136,12 +179,13 @@
     const inspector = $(".lab-decision-inspector", root);
     if (inspector) {
       const state = $("header em", inspector)?.textContent.trim() || "";
+      const resolved = ["SUCCEEDED","ACKNOWLEDGED","FAILED","NO ACKNOWLEDGEMENT","CANCELLED"].includes(state);
       const label = $("header small", inspector);
-      if (label) setText(label, ["SUCCEEDED","ACKNOWLEDGED","FAILED","NO ACKNOWLEDGEMENT","CANCELLED"].includes(state) ? "WHY IT ENDED" : "WHY IT IS WAITING");
+      if (label) setText(label, resolved ? "WHY IT ENDED" : "WHY IT IS WAITING");
       const edit = $("header [data-decision-edit]", inspector);
       if (edit) setText(edit, "Edit");
       const why = $(".lab-decision-why .lab-decision-section-title strong", inspector);
-      if (why) setText(why, ["SUCCEEDED","ACKNOWLEDGED","FAILED","NO ACKNOWLEDGEMENT","CANCELLED"].includes(state) ? "What happened" : "Waiting on");
+      if (why) setText(why, resolved ? "What happened" : "Waiting on");
     }
   }
 
@@ -149,14 +193,14 @@
     const dialog = $(".lab-decision-modal");
     if (!dialog?.open) return;
     setText($("header small", dialog), "ACTION LOGIC");
-    const h2 = $("header h2", dialog);
-    if (h2 && !h2.dataset.originalName) h2.dataset.originalName = h2.textContent.trim();
-    const titles = $$(".lab-decision-modal-title strong", dialog);
-    titles.forEach(node => {
+    const headerCopy = $("header p", dialog);
+    if (headerCopy) headerCopy.hidden = true;
+    $$(".lab-decision-modal-title strong", dialog).forEach(node => {
       const text = node.textContent.trim();
       if (text === "Conditions") setText(node, "Rules");
       if (text === "Acknowledgement") setText(node, "Confirmation");
       if (text === "Outcome routing") setText(node, "Then");
+      if (text === "Safety preview") setText(node, "Safety");
     });
   }
 
@@ -192,7 +236,6 @@
       const text = node.textContent.trim();
       if (text === "LAST TEST STEP") setText(node, "RESULT");
       if (text === "RESOLVED") setText(node, "DONE");
-      if (text === "OPEN") setText(node, "OPEN");
       if (text === "FAILED") setText(node, "ATTENTION");
     });
   }
@@ -216,7 +259,9 @@
   function apply() {
     queued = false;
     polishActions();
+    polishActionBuilder();
     polishSequence();
+    polishPolicyDialog();
     polishDecision();
     polishDecisionDialog();
     polishActivity();
