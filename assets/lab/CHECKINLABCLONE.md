@@ -4,340 +4,268 @@ Last updated: 2026-08-16
 
 ## Purpose
 
-This file exists for one future job: move the useful product work from `/lab` into the official Check In project without copying Lab-only shortcuts, mock persistence, static-clone compatibility code, or browser-side authority into production.
+This is the migration blueprint for eventually rebuilding approved `/lab` work inside the official Check In project.
 
-`LAB-HANDOFF.md` explains how to continue building `/lab`.
+`LAB-HANDOFF.md` explains how to continue the prototype.
 
-`CHECKINLABCLONE.md` explains how to eventually extract and rebuild the approved Lab work inside the official project.
+`CHECKINLABCLONE.md` explains what product behavior should survive migration, what Lab scaffolding must be discarded, and the safest order to rebuild it.
 
-The destination repository/application is intentionally **TBD** until the user identifies the official Check In project. Do not guess the destination repo.
-
-Update this file after every major Lab phase or acceptance round that introduces behavior or migration lessons we may eventually port.
+The destination repository/application is intentionally **TBD** until the user identifies the official Check In project. Do not guess it.
 
 ## Migration principle
 
-Treat `/lab` as a product prototype and behavior specification, not production source code to copy wholesale.
+Treat `/lab` as a product/behavior specification, not production code to copy wholesale.
 
-Port these things:
+Carry forward:
 
 - information architecture
-- interaction patterns
-- visual language
-- field definitions
-- workflow semantics
-- state machines
-- timing rules
-- decision rules
-- relationship models
-- audit/version semantics
-- search/navigation behavior
-- accessibility/mobile behavior
-- acceptance-test expectations
-- backend contracts documented in the handoff files
+- visual hierarchy and mobile behavior
+- People/Organization/Document/Digital Asset models
+- Action Builder semantics
+- configurable switch policy
+- timing/incident state model
+- typed decisions/dependencies/routes
+- delivery vs acknowledgement separation
+- audit/version/incident snapshot semantics
+- search/command/deep-navigation behavior
+- plan-health assurance concepts
+- guided testing/simulation UX
+- accessibility and acceptance-test expectations
+- backend contracts from the handoff Markdown files
 
-Do not blindly port these things:
+Do not blindly port:
 
-- `lab/index.html` boot/snapshot shell
+- `lab/index.html` snapshot shell
 - `lab-loader.js`
-- `lab-acceptance.js`
-- HTML string rewriting
-- Lab CSP rewriting
-- the Lab `style-src 'unsafe-inline'` compatibility exception
 - `lab-mock-api.js`
+- `lab-acceptance.js`
+- `lab-product-polish.js`
+- DOM-click orchestration from `lab-test-center.js`
+- HTML string rewriting
+- CSP rewrite hacks
+- the Lab `style-src 'unsafe-inline'` compatibility exception
 - localStorage as authoritative persistence
-- browser-side eligibility/execution authority
-- browser-side audit authority
-- browser-side assurance authority
-- browser-local universal search as an authorization model
-- hash routing as the official router
-- DOM-click quick-create/navigation adapters
-- synthetic delivery claims
-- Lab sample people, organizations, documents, assets, actions, incidents, or audit entries
-- code whose only job is adapting the old static `/checkin` page into Lab
+- browser-side action/decision/audit/assurance authority
+- the local universal-search index as a security model
+- `#lab=` hash routing as the official router
+- DOM selector navigation/quick-create adapters
+- synthetic sample records or delivery claims
 
-The official project should reproduce approved behavior using its native frontend, API client, FastAPI/backend, PostgreSQL, scheduler/workers, authentication/authorization, object storage, secrets layer, and deployment architecture.
+The official project should reproduce approved behavior with native frontend components/routing, generated API clients, FastAPI/application services, PostgreSQL, object storage, secrets references, scheduler/workers, authentication/authorization, and provider adapters.
 
-## Current Lab source layers
+## Current Lab product references
 
-The current Lab prototype is composed of:
+Behavior references:
 
-- `lab-loader.js` plus the minimal `lab/index.html` boot shell
 - `lab-crm.js` / `lab-crm.css`
 - `lab-inventory.js` / `lab-inventory.css`
 - `lab-actions.js` / `lab-actions.css`
 - `lab-timeline-live.js` / timeline CSS
-- `lab-decisions.js` / `lab-decisions-events.js` / decision CSS
-- `lab-audit-bootstrap.js`
+- `lab-decisions.js` / decision CSS
 - `lab-audit.js` / `lab-audit.css`
 - `lab-command.js` / `lab-command.css`
-- `lab-acceptance.js` / `lab-acceptance.css`
-- Lab safety/mock layers
+- `lab-test-center.js` / `lab-test-center.css`
+- `lab-product-polish.js` / `lab-product-polish.css`
+- backend handoff Markdown files
+- `LAB-HANDOFF.md`
 
-These files are useful references for behavior and product intent. The official application should split approved behavior into proper frontend components, API services, backend domain services, database models, schedulers, workers, and provider adapters.
+Static-clone scaffolding to retire:
 
-`lab-loader.js` and `lab-acceptance.js` are explicitly compatibility/stabilization scaffolding. They are not architectural templates for the official project.
+- `lab-loader.js`
+- `lab-mock-api.js`
+- `lab-audit-bootstrap.js`
+- `lab-acceptance.js`
+- localStorage monkey-patching/adapters
+- local hash/DOM routing adapters
+- DOM-click test orchestration
 
-## Product areas prototyped so far
+## Product areas to rebuild
 
-### 1. Safe simulation / Lab isolation
+### 1. Safe simulation environment
 
-Useful behavior to preserve:
+Preserve the clear distinction between real execution and test mode.
 
-- safe simulation environment separated from real execution
-- unmistakable environment indicator
-- no production side effects during testing
+Official target:
 
-Official-project target:
-
-- dedicated backend environment or explicit server-side simulation mode
-- separate credentials/provider adapters
-- environment-level safety enforcement
-- deterministic fake providers for simulation
-- never depend only on browser blocking
+- explicit server-side simulation mode or dedicated environment
+- deterministic fake providers
+- separate provider credentials/config
+- environment-level execution guards
+- no dependence on a browser blocker for safety
 
 ### 2. People + Organizations
 
-Prototype behavior:
+Preserve the CRM-style directory, relationship navigation, notes/activity, and mobile drill-in.
 
-- clean CRM-style directory
-- People and Organization profiles
-- search/filter/sort
-- People to Organization relationships
-- notes/activity
-- contextual relationship pane
-- mobile drill-in
+Official target:
 
-Official-project target:
-
-- frontend routes/components
-- generated API client calls
+- stable routes/IDs
 - FastAPI CRUD/services
-- PostgreSQL people/organizations/relationship tables
+- PostgreSQL relationships
+- generated client
 - authenticated audit trail
 
 ### 3. Documents + Digital Assets
 
-Prototype behavior:
+Preserve metadata/status/sensitivity/review dates, relationships, version intent, and the `secret_ref` boundary.
 
-- document metadata and categories
-- sensitivity/status/review dates
-- Digital Assets such as domains, sites, hosting, cloud, repositories, social accounts, devices, service accounts
-- relationships to People/Organizations/Actions
-- `secret_ref` boundary
-
-Official-project target:
+Official target:
 
 - PostgreSQL metadata
-- object storage for file bytes
-- proper document versions/checksums
-- secret-management reference only
-- never store passwords/tokens/keys in ordinary records
+- private object storage for file bytes
+- checksums/version rows
+- access control
+- secret manager references only
 
 Read `BACKEND-HANDOFF.md`.
 
 ### 4. Action Builder
 
-Prototype behavior:
+Preserve SMS, Email, Social, AI, Organization Notice, Publish/Release, Webhook/API, Digital Account, Custom, and Scheduled Task definitions, stable target IDs, risk classes, guardrails, and approval requirements.
 
-- SMS
-- Email
-- Social post
-- AI task
-- Organization notice
-- Publish/release
-- Webhook/API
-- Digital account action
-- Custom action
-- Scheduled task
-- guided multi-step builder
-- stable target IDs
-- risk classes
-- guardrails
-- approval requirements
-- configurable trigger boundaries
+Official target:
 
-Official-project target:
-
-- action definitions stored in PostgreSQL
-- validated FastAPI mutation endpoints
-- provider/worker execution server-side
-- secrets resolved through connection refs
-- action execution never performed by browser JavaScript
+- PostgreSQL definitions/versions/targets
+- server validation
+- provider workers
+- idempotent execution
+- secrets resolved server-side
 
 Read `ACTIONS-BACKEND-HANDOFF.md`.
 
 ### 5. Configurable switch policy + Sequence
 
-Prototype behavior:
+Preserve:
 
-- proof-of-life interval configurable from 1 hour to 30 days / 720 hours
+- 1 to 720 hours / 30 days
 - hours/days input
-- grace window 0 to 24 hours
-- rolling repeat or one-shot
-- deadline and final-trigger calculation
-- visual Sequence timeline
-- synthetic incident clock
-- simulated eligibility/execution
+- 0 to 24 hours grace
+- rolling repeat / one-shot
+- deadline and final-trigger calculations
+- visual Sequence and incident clock
 
-Acceptance lesson:
+Acceptance lesson: configurable timing must be configurable end to end. The Lab once allowed custom timing in UI while the copied status contract still required 72 hours. The official project should have one shared/versioned timing contract across API, scheduler, generated client, Status, Sequence, and tests.
 
-The configurable timing contract must be configurable end to end. A UI that accepts six hours while a downstream schema still assumes exactly 72 hours is broken even if the page looks correct. The Lab acceptance pass found and fixed exactly that mismatch in the cloned status contract.
+Do not reintroduce a hardcoded 72-hour assumption.
 
-Official-project target:
+### 6. Typed decision engine
 
-- one versioned switch-policy schema shared by API, scheduler, generated client, Status, Sequence, and tests
-- server-authoritative clock
-- real incident/cycle model
-- server scheduler calculates eligibility
-- policy snapshot frozen into each opened incident
-- unit conversion validated at the API/domain boundary
+Preserve conditions, AND/OR, dependencies, retries, acknowledgement timeout, exclusive branches, outcome routes, cycle validation, and Decision Inspector explainability.
 
-Do not reintroduce a hardcoded 72-hour assumption. `72h + 24h` is only the historical/default example.
-
-### 6. Decision engine
-
-Prototype behavior:
-
-- typed conditions
-- AND/OR logic
-- dependencies
-- success/failure/ack/no-ack/approval-denied routes
-- retries
-- acknowledgement timeout
-- exclusive branches
-- dependency cycle detection
-- Decision Inspector
-- visual routing map
-
-Official-project target:
+Official target:
 
 - typed database-backed rules
-- server-side validation and evaluation
-- no arbitrary browser expressions
-- immutable condition evaluation records
-- server-side cycle validation
-- delivery and acknowledgement remain separate states
+- server evaluation
+- immutable condition-evaluation records
+- cycle rejection server-side
+- delivery and acknowledgement as distinct states
 
 Read `DECISIONS-BACKEND-HANDOFF.md`.
 
-### 7. Audit, versions, incidents, assurance
+### 7. Audit / versions / incidents / plan health
 
-Prototype behavior:
+Preserve:
 
-- structured Audit workspace
-- definition versions
-- before/after comparison
-- restore old payload as a new version
-- incident snapshots
-- read-only replay
-- `changed since last simulation`
-- per-action simulation-path coverage
-- legacy incident provenance warning
-
-Official-project target:
-
-- append-only audit rows
+- append-only audit concept
 - immutable definition revisions
+- restore-old-version → create-new-revision behavior
 - immutable incident snapshots
-- server actor/time/version authority
-- cryptographic canonical hashes
+- read-only replay
+- changed-since-last-test signal
+- per-action path coverage
+
+Official target:
+
+- server actor/time authority
 - durable execution attempts/events
-- server-calculated configuration health
+- canonical hashes
+- server-calculated plan-health read model
 
 Read `AUDIT-BACKEND-HANDOFF.md`.
 
-### 8. Universal search, command palette, deep navigation, Status assurance
+### 8. Search / commands / deep navigation
 
-Prototype behavior:
+Preserve the user experience of universal search, Cmd/Ctrl+K, recent items, saved views, quick create, and exact object navigation.
 
-- universal local Lab search across People, Organizations, Documents, Digital Assets, Actions, Incidents, Versions, and Audit events
-- `Cmd/Ctrl+K` command palette
-- `/` search shortcut outside editors
-- grouped search results
-- recently viewed records
-- commands mixed into search results
-- quick-create commands
-- top-bar `Search` and `New` controls
-- deep jump to exact People, Organizations, Documents, Assets, Actions, Incidents, Versions, and Audit events
-- browser back/forward support through a Lab hash adapter
-- saved views for Critical actions, Documents needing review, Untested action paths, and Changed since simulation
-- Status `Contingency assurance` block
-- surfaced `PLAN CURRENT`, `TEST REQUIRED`, `RETEST REQUIRED`, and `COVERAGE INCOMPLETE` states
-- dark/light treatment
-- mobile command/create sheets
-- keyboard focus and reduced-motion support
+Official target:
 
-Acceptance hardening added:
+- native application router
+- authorization-aware API search
+- generated client
+- no unauthorized existence/count/snippet/timing leakage
+- stable URLs for People, Organizations, Documents, Assets, Actions, Incidents, Audit events, Versions, and Health
 
-- focus containment inside the open command palette
-- keyboard/ARIA semantics for quick create
-- safe behavior when `Note current record` has no valid current record
-- stale-deep-link fallback
-- removal of the copied legacy hash router from Lab mode so it cannot fight `#lab=` exact routes
-- additional small-screen top-bar/touch treatment
+`lab-command.js` is behavior reference only.
 
-Official-project target:
+### 9. Mobile-first product hierarchy
 
-- native application router routes every object with stable URL state
-- server/API-backed search with authorization-aware filtering
-- generated API client for search and mutations
-- no DOM-click navigation adapters
-- quick create calls native components/services
-- recent navigation may be client-local but stores IDs/labels only, never protected payloads
-- saved views become typed query/filter definitions
-- Status health comes from backend-calculated version/simulation/audit state
-- search must not reveal unauthorized objects through labels, snippets, counts, existence, or timing differences
+The current Lab acceptance/polish pass established an important product rule: mobile cannot be a shrunken desktop operations console.
 
-Important Phase 8 migration rule:
+Approved direction:
 
-`lab-command.js` is a behavior prototype, not production infrastructure. Reproduce its UX with official components and routing. Do not copy its localStorage indexing, DOM querying, or hash adapter into the official application.
+- Live Switch / countdown is the Status hero
+- Plan Health is secondary and compact
+- overview metrics use short labels
+- mobile warnings show the actionable statement first
+- long helper text moves behind inspection/detail surfaces
+- normal mobile operational copy should not rely on 5–8px typography
+- major forms keep tap targets around 42–44px or larger
+- desktop can remain dense, but mobile gets simpler hierarchy and fewer simultaneous words
+- Decision graphs become a readable vertical chronology/inspector experience on phones
+- Activity/Audit uses readable event cards instead of tiny table-console type
 
-### 9. Acceptance / stabilization lessons
+`lab-product-polish.js` and `lab-product-polish.css` are prototype adapters. Rebuild the approved hierarchy natively in the official component system.
 
-The Android acceptance pass exposed a parser bug where `/lab` rendered JavaScript source and `LAB SNAPSHOT UNAVAILABLE`.
+### 10. Test Center / simulation UX
 
-Root cause:
+The Lab now has guided scenarios:
 
-- the old static Lab loader was inline JavaScript
-- that JavaScript constructed HTML strings containing raw `</script>` tags
-- the HTML parser terminated the outer script at the raw end tag even though it appeared inside a JavaScript string
+- Deadline
+- No reply
+- Failure
+- Final trigger
+- Full guided chain
 
-Lab fix:
+The UX idea should survive migration. The implementation should not.
 
-- move the transform into external `lab-loader.js`
-- keep `lab/index.html` as a minimal boot/retry shell
-- generate and validate the transformed snapshot in CI
-- boot the complete result in headless Chromium
-
-Official-project lesson:
-
-Do not carry the snapshot-loader architecture forward at all. A native application should render its own components and routes. The useful migration artifact is the product behavior plus the browser acceptance tests.
-
-The Lab also currently grants `style-src 'unsafe-inline'` because older prototype visualizations use inline position styles. This is another reason to rebuild those visuals natively instead of copying the static clone. Tighten the official CSP and make the components work within it.
-
-## Recommended official-project architecture mapping
-
-The exact destination architecture must be confirmed before migration. If the official project follows the existing CMX learning stack, the conceptual mapping is:
+Official target:
 
 ```text
-Browser / React UI
-        ↓ generated API client
-FastAPI routes
-        ↓
-domain/application services
-        ↓
-PostgreSQL + object storage + secrets layer
-        ↓
-scheduler / decision engine / execution workers
-        ↓
-provider adapters (SMS, email, AI, social, webhooks, etc.)
+Browser requests test scenario
+  → FastAPI creates simulation incident
+  → same timing + decision engine used by production
+  → deterministic fake provider adapters return controlled outcomes
+  → incident/audit/version evidence is written server-side
+  → frontend streams/renders results
 ```
 
-Frontend must not directly own execution truth, incident truth, audit truth, credentials, database access, or security-sensitive search authorization.
+The official Test Center should support scenario templates, chosen outcomes, repeatable test runs, pass/fail assertions, and a concise post-test report.
 
-## Suggested official frontend route model
+Do not port the Lab’s DOM-click orchestration.
 
-Exact paths are TBD, but preserve stable object addressing conceptually:
+## Recommended official architecture
+
+Conceptually:
+
+```text
+React frontend
+  ↓ generated API client
+FastAPI routes
+  ↓
+application/domain services
+  ↓
+PostgreSQL + object storage + secrets references
+  ↓
+scheduler / decision engine / simulation engine / execution workers
+  ↓
+real provider adapters OR deterministic fake providers
+```
+
+Frontend must not own execution truth, incident truth, audit truth, credentials, or security-sensitive search authorization.
+
+## Suggested official route model
+
+Exact paths are TBD, but stable object routes should conceptually cover:
 
 ```text
 /checkin/status
@@ -347,249 +275,153 @@ Exact paths are TBD, but preserve stable object addressing conceptually:
 /checkin/records/assets/:assetId
 /checkin/actions/:actionId
 /checkin/sequence
+/checkin/tests
+/checkin/tests/:testRunId
 /checkin/incidents/:incidentId
 /checkin/activity/audit/:eventId
 /checkin/activity/versions/:objectType/:objectId
 /checkin/activity/health
 ```
 
-The official router should own browser history and deep linking. The Lab `#lab=...` adapter must not survive migration.
+## Suggested backend read models
 
-## Suggested search contract
+### Search
 
-A future authenticated endpoint could conceptually expose:
+An authenticated search endpoint should return only authorized result metadata:
 
-```text
-GET /checkin/search?q=...
-```
-
-Response items should return only authorized objects and minimal result metadata:
-
-- stable object type
+- object type
 - stable ID
-- display label
-- safe subtitle/snippet
-- destination route descriptor
-- optional ranking metadata
+- safe label/snippet
+- route descriptor
+- ranking/pagination metadata
 
-Search permission checks must happen before results are returned.
+### Plan health
 
-For larger datasets, use server-side ranking/filtering and pagination. Do not download every protected record into the browser to build the index.
-
-## Suggested plan-health read model
-
-The official Status page should not calculate assurance by independently reimplementing audit logic in the browser.
-
-A backend read model should return values such as:
+Status and Activity Health should use one backend read model containing:
 
 - active policy/version
 - enabled action count
 - latest valid simulation snapshot
-- changed definition count since that simulation
-- action coverage summaries
-- review-due document count
+- changed definitions since that snapshot
+- per-action path coverage
+- review-due records
 - blocking configuration warnings
 
-Then Status and Activity Health render the same authoritative read model.
+Do not reimplement this separately in browser components.
 
-## Official-project acceptance-test baseline
+### Test summary
 
-Do not rely only on unit tests or source checks. The Lab parser failure proved that valid JavaScript can still produce a broken page at the HTML/browser layer.
+A simulation/test read model should return:
 
-At minimum, the official implementation should automate:
+- scenario/run ID
+- policy + definition snapshot IDs
+- start/end time
+- action states
+- routes taken
+- approvals/acknowledgements
+- retries
+- assertions/pass-fail results
+- unresolved warnings
+- coverage gained by the run
 
-- application boot in a real browser engine
-- authenticated/authorized route loading
-- a non-default switch interval such as 6 hours
-- maximum interval and grace boundaries
-- exact deep link to a specific Action
-- browser back/forward navigation
-- mobile viewport boot around 390×844
-- command palette keyboard navigation/focus behavior
-- quick-create entry points
-- dark/light critical flows
-- simulation with success and failure branches
-- changed-since-test assurance state
-- no production provider side effects in simulation mode
+## Best migration order
 
-Security-sensitive search and execution paths also require backend integration tests.
+### Stage A — Freeze the approved Lab candidate
 
-## Best migration order when the official project is ready
+1. choose an approved Lab commit/tag
+2. capture desktop/mobile screenshots and flows
+3. mark each prototype behavior approved/rejected/experimental
+4. preserve handoff docs and acceptance expectations
 
-### Stage A: Freeze and inventory the Lab
+### Stage B — Define authoritative backend contracts
 
-1. Pick the approved Lab commit/tag.
-2. Stop Lab feature work temporarily.
-3. Capture desktop/mobile screenshots and behavior notes.
-4. Build a feature matrix from this file and `LAB-HANDOFF.md`.
-5. Mark each behavior approved, rejected, or still experimental.
-6. Capture the expected Cmd/Ctrl+K, deep-link, mobile and Status-assurance flows.
-7. Record the final Lab browser acceptance-test cases as migration requirements.
+1. auth/authorization
+2. People/Organizations
+3. Documents/Assets
+4. policy/incidents
+5. Actions/targets
+6. decisions/routes/ack/approvals
+7. audit/versions/snapshots
+8. search
+9. plan-health read model
+10. simulation/test-run contract
+11. scheduler/workers/providers
 
-### Stage B: Define official backend contracts
+### Stage C — Vertical slices
 
-Before porting polished UI, define:
+Build model → service → API → generated client → UI → tests for each slice:
 
-1. authentication/authorization model
-2. People + Organizations models
-3. Documents + Digital Assets models
-4. switch policy + incident model
-5. Action definitions/targets
-6. decision rules/routes
-7. approvals/acknowledgements
-8. audit/version/snapshot tables
-9. scheduler/worker responsibilities
-10. object-storage and secrets boundaries
-11. search authorization and result contract
-12. plan-health read model
-
-Use the backend handoff files as the starting specification.
-
-### Stage C: Implement backend vertical slices
-
-Do not build every database table first and every UI screen last.
-
-Port in working slices:
-
-1. People/Organizations end to end
-2. Documents/Assets end to end
-3. switch policy + incident status
-4. Action Builder persistence
-5. Sequence read model
-6. decision evaluation
+1. People/Organizations
+2. Documents/Assets
+3. policy/status/incident
+4. Actions
+5. Sequence
+6. decisions
 7. audit/version history
-8. server-side simulation mode
-9. universal search + authorized deep-link results
-10. plan-health read model
-11. real provider adapters only after simulation is reliable
+8. server-side simulation/Test Center
+9. search/deep navigation
+10. plan health
+11. real providers last
 
-Each slice should include model → service → API → generated client → frontend → tests.
+### Stage D — Rebuild approved UX natively
 
-### Stage D: Rebuild the Lab UX natively
+Use `/lab` as visual/behavior reference, not a source tree to transplant.
 
-Use `/lab` as visual/behavior reference, then rebuild with official components and routing.
+### Stage E — Simulation before execution
 
-Do not preserve awkward static-page compatibility code just because it exists in Lab.
+The official project must have trustworthy server-side simulation before any real provider is enabled.
 
-### Stage E: Simulation before execution
+### Stage F — Provider rollout
 
-The official project should have a genuine server-side simulation mode before real providers are enabled.
+Recommended order:
 
-Simulation should use the same timing and decision engine as production but swap side-effect adapters for deterministic fake providers.
-
-### Stage F: Provider rollout
-
-Enable providers one at a time:
-
-1. Email/SMS style low-complexity notifications
-2. acknowledgements/delivery callbacks
+1. Email/SMS notifications
+2. delivery/ack callbacks
 3. webhooks/integrations
 4. AI actions with strict permissions
 5. publishing/social
 6. destructive account actions last
 
-Each provider requires authorization, idempotency, retries, audit, secret management, and failure tests.
+Every provider needs authorization, idempotency, retries, secret management, audit, and failure tests.
 
-## Porting checklist per feature
+## Official-project acceptance-test baseline
 
-Before calling a Lab feature migrated, confirm:
+Before calling a migrated slice complete, verify:
 
-- UI behavior reproduced
-- mobile behavior reproduced
-- accessibility checked
-- stable official route exists where applicable
-- official API contract exists
-- persistent database model exists where applicable
+- approved desktop behavior reproduced
+- approved mobile hierarchy reproduced
+- no tiny unreadable operational text on phone-sized viewports
+- keyboard/accessibility behavior works
+- stable native route exists
+- API contract exists
+- persistent model exists where needed
 - authorization enforced server-side
-- timestamps server-authoritative
-- audit event emitted where required
-- revisions/snapshots handled where required
-- errors and empty states handled
+- timestamps/server state authoritative
+- audit/version/snapshot rules preserved
 - simulation test exists
-- production side effects are not browser-owned
-- Lab sample data was not copied
-- localStorage is not being treated as authoritative backend state
-- security-sensitive search/filtering is authorization-aware
-- Status assurance uses the authoritative backend read model
-- non-default switch intervals pass end-to-end tests
-- browser-level acceptance tests pass on desktop and mobile viewports
+- browser does not own production side effects
+- localStorage is not authoritative domain state
+- search is authorization-aware
+- Plan Health uses the authoritative backend read model
+- test scenarios use the server simulation engine, not UI DOM automation
 
-## Files that are product references vs Lab scaffolding
+The Lab’s current CI baseline also demonstrates the value of real browser checks: source syntax alone once passed a page that mobile Chrome could not parse.
 
-### Product behavior references
+## Before migration begins
 
-Use these to understand approved UX/semantics:
-
-- `lab-crm.js` / `lab-crm.css`
-- `lab-inventory.js` / `lab-inventory.css`
-- `lab-actions.js` / `lab-actions.css`
-- `lab-timeline-live.js` / timeline CSS
-- `lab-decisions.js` / decision CSS
-- `lab-audit.js` / `lab-audit.css`
-- `lab-command.js` / `lab-command.css`
-- relevant user-visible behavior in `lab-acceptance.js` / `lab-acceptance.css`
-- `LAB-HANDOFF.md`
-- backend handoff Markdown files
-
-### Lab scaffolding to retire during migration
-
-Do not preserve these as architecture:
-
-- `lab-loader.js`
-- static snapshot-loader approach
-- HTML asset-string rewrites
-- CSP rewrite hack / inline-style compatibility exception
-- mock production API interception
-- browser localStorage domain persistence
-- audit monkey-patching of localStorage
-- provenance bootstrap for pre-audit browser state
-- hash deep-link adapter
-- DOM selector clicking for navigation and quick-create
-- local universal index over all protected objects
-- `lab-acceptance.js` DOM patching/readiness marker
-
-Their behaviors and test cases may inspire official features, but the implementations are prototype scaffolding.
-
-## Migration acceptance target
-
-When the official implementation is ready, a user should be able to perform the same approved flows without knowing the Lab existed:
-
-1. configure their check-in window from the supported range and choose repeat/one-shot behavior
-2. build People/Organizations and protected records
-3. create Actions and decision logic
-4. simulate the full contingency sequence safely
-5. inspect why actions did or did not run
-6. review incidents, versions, and audit history
-7. see whether definitions changed since the last meaningful test
-8. search globally with Cmd/Ctrl+K
-9. deep-link directly to exact records/actions/incidents
-10. use quick create and saved views
-11. use the app comfortably on mobile and keyboard
-12. eventually enable real providers through backend-controlled execution
-
-## Before beginning the official migration
-
-Do not migrate just because `/lab` looks polished.
-
-First:
-
-1. finish the Lab acceptance/bug pass
-2. have the user verify the repaired Lab on their real phone/browser
-3. identify the official destination repo and architecture
-4. freeze an approved Lab commit/tag
-5. capture screenshots and core flows
-6. review all backend handoff documents
-7. decide which prototype behaviors are truly desired
-8. create the official implementation plan by vertical slice
-
-At that point this file becomes the migration checklist.
+1. finish live-device Lab review
+2. identify the official destination repo/architecture
+3. freeze an approved Lab commit/tag
+4. capture screenshots and core flows
+5. review all backend handoffs
+6. choose which experimental behaviors survive
+7. create the official vertical-slice plan
 
 ## Maintenance rule
 
 After every major Lab round:
 
-1. update `LAB-HANDOFF.md` with the current prototype architecture
-2. update this file if the round introduced behavior or migration lessons worth porting
-3. keep Lab-only hacks clearly separated from official-project recommendations
-4. carry forward useful browser acceptance cases, not static-clone implementation hacks
-5. never let this document imply that local browser simulation equals production security or execution
+1. update `LAB-HANDOFF.md`
+2. update this file when product behavior or migration lessons change
+3. keep prototype scaffolding clearly separated from official architecture
+4. never imply browser simulation equals production security/execution
