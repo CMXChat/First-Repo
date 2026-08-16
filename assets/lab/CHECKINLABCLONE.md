@@ -4,7 +4,7 @@ Last updated: 2026-08-16
 
 ## Purpose
 
-This file exists for one future job: move the useful product work from `/lab` into the official Check In project without copying Lab-only shortcuts, mock persistence, or browser-side authority into production.
+This file exists for one future job: move the useful product work from `/lab` into the official Check In project without copying Lab-only shortcuts, mock persistence, static-clone compatibility code, or browser-side authority into production.
 
 `LAB-HANDOFF.md` explains how to continue building `/lab`.
 
@@ -12,7 +12,7 @@ This file exists for one future job: move the useful product work from `/lab` in
 
 The destination repository/application is intentionally **TBD** until the user identifies the official Check In project. Do not guess the destination repo.
 
-Update this file after every major Lab phase that introduces behavior we may eventually port.
+Update this file after every major Lab phase or acceptance round that introduces behavior or migration lessons we may eventually port.
 
 ## Migration principle
 
@@ -32,13 +32,17 @@ Port these things:
 - audit/version semantics
 - search/navigation behavior
 - accessibility/mobile behavior
+- acceptance-test expectations
 - backend contracts documented in the handoff files
 
 Do not blindly port these things:
 
-- `lab/index.html` snapshot loader
+- `lab/index.html` boot/snapshot shell
+- `lab-loader.js`
+- `lab-acceptance.js`
 - HTML string rewriting
 - Lab CSP rewriting
+- the Lab `style-src 'unsafe-inline'` compatibility exception
 - `lab-mock-api.js`
 - localStorage as authoritative persistence
 - browser-side eligibility/execution authority
@@ -57,6 +61,7 @@ The official project should reproduce approved behavior using its native fronten
 
 The current Lab prototype is composed of:
 
+- `lab-loader.js` plus the minimal `lab/index.html` boot shell
 - `lab-crm.js` / `lab-crm.css`
 - `lab-inventory.js` / `lab-inventory.css`
 - `lab-actions.js` / `lab-actions.css`
@@ -65,9 +70,12 @@ The current Lab prototype is composed of:
 - `lab-audit-bootstrap.js`
 - `lab-audit.js` / `lab-audit.css`
 - `lab-command.js` / `lab-command.css`
+- `lab-acceptance.js` / `lab-acceptance.css`
 - Lab safety/mock layers
 
-These files are useful references for behavior and product intent. The official application should split them into proper frontend components, API services, backend domain services, database models, schedulers, workers, and provider adapters.
+These files are useful references for behavior and product intent. The official application should split approved behavior into proper frontend components, API services, backend domain services, database models, schedulers, workers, and provider adapters.
+
+`lab-loader.js` and `lab-acceptance.js` are explicitly compatibility/stabilization scaffolding. They are not architectural templates for the official project.
 
 ## Product areas prototyped so far
 
@@ -162,7 +170,7 @@ Read `ACTIONS-BACKEND-HANDOFF.md`.
 
 Prototype behavior:
 
-- proof-of-life interval configurable from 1 hour to 30 days
+- proof-of-life interval configurable from 1 hour to 30 days / 720 hours
 - hours/days input
 - grace window 0 to 24 hours
 - rolling repeat or one-shot
@@ -171,13 +179,18 @@ Prototype behavior:
 - synthetic incident clock
 - simulated eligibility/execution
 
+Acceptance lesson:
+
+The configurable timing contract must be configurable end to end. A UI that accepts six hours while a downstream schema still assumes exactly 72 hours is broken even if the page looks correct. The Lab acceptance pass found and fixed exactly that mismatch in the cloned status contract.
+
 Official-project target:
 
-- versioned switch policy
+- one versioned switch-policy schema shared by API, scheduler, generated client, Status, Sequence, and tests
 - server-authoritative clock
 - real incident/cycle model
 - server scheduler calculates eligibility
 - policy snapshot frozen into each opened incident
+- unit conversion validated at the API/domain boundary
 
 Do not reintroduce a hardcoded 72-hour assumption. `72h + 24h` is only the historical/default example.
 
@@ -254,6 +267,15 @@ Prototype behavior:
 - mobile command/create sheets
 - keyboard focus and reduced-motion support
 
+Acceptance hardening added:
+
+- focus containment inside the open command palette
+- keyboard/ARIA semantics for quick create
+- safe behavior when `Note current record` has no valid current record
+- stale-deep-link fallback
+- removal of the copied legacy hash router from Lab mode so it cannot fight `#lab=` exact routes
+- additional small-screen top-bar/touch treatment
+
 Official-project target:
 
 - native application router routes every object with stable URL state
@@ -269,6 +291,29 @@ Official-project target:
 Important Phase 8 migration rule:
 
 `lab-command.js` is a behavior prototype, not production infrastructure. Reproduce its UX with official components and routing. Do not copy its localStorage indexing, DOM querying, or hash adapter into the official application.
+
+### 9. Acceptance / stabilization lessons
+
+The Android acceptance pass exposed a parser bug where `/lab` rendered JavaScript source and `LAB SNAPSHOT UNAVAILABLE`.
+
+Root cause:
+
+- the old static Lab loader was inline JavaScript
+- that JavaScript constructed HTML strings containing raw `</script>` tags
+- the HTML parser terminated the outer script at the raw end tag even though it appeared inside a JavaScript string
+
+Lab fix:
+
+- move the transform into external `lab-loader.js`
+- keep `lab/index.html` as a minimal boot/retry shell
+- generate and validate the transformed snapshot in CI
+- boot the complete result in headless Chromium
+
+Official-project lesson:
+
+Do not carry the snapshot-loader architecture forward at all. A native application should render its own components and routes. The useful migration artifact is the product behavior plus the browser acceptance tests.
+
+The Lab also currently grants `style-src 'unsafe-inline'` because older prototype visualizations use inline position styles. This is another reason to rebuild those visuals natively instead of copying the static clone. Tighten the official CSP and make the components work within it.
 
 ## Recommended official-project architecture mapping
 
@@ -347,6 +392,28 @@ A backend read model should return values such as:
 
 Then Status and Activity Health render the same authoritative read model.
 
+## Official-project acceptance-test baseline
+
+Do not rely only on unit tests or source checks. The Lab parser failure proved that valid JavaScript can still produce a broken page at the HTML/browser layer.
+
+At minimum, the official implementation should automate:
+
+- application boot in a real browser engine
+- authenticated/authorized route loading
+- a non-default switch interval such as 6 hours
+- maximum interval and grace boundaries
+- exact deep link to a specific Action
+- browser back/forward navigation
+- mobile viewport boot around 390×844
+- command palette keyboard navigation/focus behavior
+- quick-create entry points
+- dark/light critical flows
+- simulation with success and failure branches
+- changed-since-test assurance state
+- no production provider side effects in simulation mode
+
+Security-sensitive search and execution paths also require backend integration tests.
+
 ## Best migration order when the official project is ready
 
 ### Stage A: Freeze and inventory the Lab
@@ -357,6 +424,7 @@ Then Status and Activity Health render the same authoritative read model.
 4. Build a feature matrix from this file and `LAB-HANDOFF.md`.
 5. Mark each behavior approved, rejected, or still experimental.
 6. Capture the expected Cmd/Ctrl+K, deep-link, mobile and Status-assurance flows.
+7. Record the final Lab browser acceptance-test cases as migration requirements.
 
 ### Stage B: Define official backend contracts
 
@@ -443,6 +511,8 @@ Before calling a Lab feature migrated, confirm:
 - localStorage is not being treated as authoritative backend state
 - security-sensitive search/filtering is authorization-aware
 - Status assurance uses the authoritative backend read model
+- non-default switch intervals pass end-to-end tests
+- browser-level acceptance tests pass on desktop and mobile viewports
 
 ## Files that are product references vs Lab scaffolding
 
@@ -457,6 +527,7 @@ Use these to understand approved UX/semantics:
 - `lab-decisions.js` / decision CSS
 - `lab-audit.js` / `lab-audit.css`
 - `lab-command.js` / `lab-command.css`
+- relevant user-visible behavior in `lab-acceptance.js` / `lab-acceptance.css`
 - `LAB-HANDOFF.md`
 - backend handoff Markdown files
 
@@ -464,9 +535,10 @@ Use these to understand approved UX/semantics:
 
 Do not preserve these as architecture:
 
+- `lab-loader.js`
 - static snapshot-loader approach
 - HTML asset-string rewrites
-- CSP rewrite hack
+- CSP rewrite hack / inline-style compatibility exception
 - mock production API interception
 - browser localStorage domain persistence
 - audit monkey-patching of localStorage
@@ -474,14 +546,15 @@ Do not preserve these as architecture:
 - hash deep-link adapter
 - DOM selector clicking for navigation and quick-create
 - local universal index over all protected objects
+- `lab-acceptance.js` DOM patching/readiness marker
 
-Their behaviors may inspire official features, but the implementations are prototype scaffolding.
+Their behaviors and test cases may inspire official features, but the implementations are prototype scaffolding.
 
 ## Migration acceptance target
 
 When the official implementation is ready, a user should be able to perform the same approved flows without knowing the Lab existed:
 
-1. configure their check-in window and repeat behavior
+1. configure their check-in window from the supported range and choose repeat/one-shot behavior
 2. build People/Organizations and protected records
 3. create Actions and decision logic
 4. simulate the full contingency sequence safely
@@ -501,12 +574,13 @@ Do not migrate just because `/lab` looks polished.
 First:
 
 1. finish the Lab acceptance/bug pass
-2. identify the official destination repo and architecture
-3. freeze an approved Lab commit/tag
-4. capture screenshots and core flows
-5. review all backend handoff documents
-6. decide which prototype behaviors are truly desired
-7. create the official implementation plan by vertical slice
+2. have the user verify the repaired Lab on their real phone/browser
+3. identify the official destination repo and architecture
+4. freeze an approved Lab commit/tag
+5. capture screenshots and core flows
+6. review all backend handoff documents
+7. decide which prototype behaviors are truly desired
+8. create the official implementation plan by vertical slice
 
 At that point this file becomes the migration checklist.
 
@@ -515,6 +589,7 @@ At that point this file becomes the migration checklist.
 After every major Lab round:
 
 1. update `LAB-HANDOFF.md` with the current prototype architecture
-2. update this file if the round introduced behavior worth porting
+2. update this file if the round introduced behavior or migration lessons worth porting
 3. keep Lab-only hacks clearly separated from official-project recommendations
-4. never let this document imply that local browser simulation equals production security or execution
+4. carry forward useful browser acceptance cases, not static-clone implementation hacks
+5. never let this document imply that local browser simulation equals production security or execution
