@@ -39,6 +39,8 @@ jobs:
             assets/lab/lab-audit-bootstrap.js \
             assets/lab/lab-audit.js \
             assets/lab/lab-command.js \
+            assets/lab/lab-test-center.js \
+            assets/lab/lab-product-polish.js \
             assets/lab/lab-acceptance.js \
             assets/lab/checkin-status-contract.js \
             assets/lab/checkin.js \
@@ -94,6 +96,10 @@ jobs:
             '/assets/lab/lab-decisions.js',
             '/assets/lab/lab-audit.js',
             '/assets/lab/lab-command.js',
+            '/assets/lab/lab-test-center.js',
+            '/assets/lab/lab-test-center.css',
+            '/assets/lab/lab-product-polish.js',
+            '/assets/lab/lab-product-polish.css',
             '/assets/lab/lab-acceptance.js',
             '/assets/lab/lab-acceptance.css',
             'Check In Lab · Dead Man Switch'
@@ -102,7 +108,8 @@ jobs:
           assert(!rendered.includes('/assets/checkin/'));
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
           assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'));
-          assert(rendered.indexOf('/assets/lab/lab-command.js') < rendered.indexOf('/assets/lab/lab-acceptance.js'));
+          assert(rendered.indexOf('/assets/lab/lab-command.js') < rendered.indexOf('/assets/lab/lab-test-center.js'));
+          assert(rendered.indexOf('/assets/lab/lab-test-center.js') < rendered.indexOf('/assets/lab/lab-acceptance.js'));
 
           // Local HTTP fixture only: localhost cannot use upgrade-insecure-requests.
           fs.writeFileSync('lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
@@ -126,6 +133,10 @@ jobs:
               'assets/lab/lab-decisions.js',
               'assets/lab/lab-audit.js',
               'assets/lab/lab-command.js',
+              'assets/lab/lab-test-center.js',
+              'assets/lab/lab-test-center.css',
+              'assets/lab/lab-product-polish.js',
+              'assets/lab/lab-product-polish.css',
               'assets/lab/lab-acceptance.js',
               'assets/lab/lab-acceptance.css',
               'assets/lab/BACKEND-HANDOFF.md',
@@ -143,13 +154,15 @@ jobs:
               failures.append('production /checkin references Lab code')
 
           terms = {
-              'assets/lab/lab-loader.js': ['CHECK IN LAB BOOTSTRAP', 'transformSnapshot', 'CHECKINLABCLONE.md'],
+              'assets/lab/lab-loader.js': ['CHECK IN LAB BOOTSTRAP', 'lab-test-center.js', 'lab-product-polish.js', 'CHECKINLABCLONE.md'],
               'assets/lab/lab-mock-api.js': ['productionApiBlocked: true', 'PROD_API_ORIGIN', 'interval_hours: policy.intervalHours'],
               'assets/lab/lab-inventory.js': ['BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL'],
               'assets/lab/lab-actions.js': ['BACKEND HANDOFF', 'server-side scheduler/worker', 'stable IDs', 'SIMULATION ONLY'],
               'assets/lab/lab-decisions.js': ['BACKEND HANDOFF', 'Delivery and acknowledgement are separate states', 'cycleCheck'],
               'assets/lab/lab-audit.js': ['AUDIT / VERSION / INCIDENT SNAPSHOTS', 'buildIncidentSnapshot', 'Restore as new version'],
               'assets/lab/lab-command.js': ['GLOBAL SEARCH / COMMAND / NAVIGATION INTEGRATION', 'buildSearchIndex', 'Search authorization must be enforced server-side'],
+              'assets/lab/lab-test-center.js': ['TEST CENTER', 'NEVER executes a real side effect', 'DOM-click orchestration', 'CMX_LAB_TEST_CENTER'],
+              'assets/lab/lab-product-polish.js': ['PRODUCT POLISH / MOBILE HIERARCHY', 'must never own records', 'labProductPolish', 'CHECKINLABCLONE.md'],
               'assets/lab/lab-acceptance.js': ['ACCEPTANCE / STABILIZATION LAYER', 'syncPolicyLimits', 'trapPaletteFocus', 'validateDeepRoute'],
               'assets/lab/LAB-HANDOFF.md': ['Read this file first', 'lab-loader.js', 'lab-acceptance.js', 'data-lab-acceptance="ready"', 'CHECKINLABCLONE.md'],
               'assets/lab/CHECKINLABCLONE.md': ['Official Project Migration Blueprint', 'lab-loader.js', "style-src 'unsafe-inline'", 'Official-project acceptance-test baseline'],
@@ -162,7 +175,7 @@ jobs:
           if failures:
               print('\n'.join(f' - {item}' for item in failures))
               sys.exit(1)
-          print('Lab safety, backend boundaries, handoffs, and production isolation validated.')
+          print('Lab safety, mobile polish, Test Center, handoffs, and production isolation validated.')
           PY
 
       - name: Browser acceptance smoke tests
@@ -185,7 +198,7 @@ jobs:
               --no-sandbox \
               --disable-gpu \
               --disable-dev-shm-usage \
-              --virtual-time-budget=6000 \
+              --virtual-time-budget=7000 \
               "$@" \
               --dump-dom
           }
@@ -193,10 +206,14 @@ jobs:
           chrome_dump http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-desktop.html
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-desktop.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-desktop.html
-          grep -q 'Protected directory' /tmp/lab-desktop.html
-          grep -q 'Contingency control' /tmp/lab-desktop.html
-          grep -q 'Sequence simulator' /tmp/lab-desktop.html
-          grep -q 'Contingency assurance' /tmp/lab-desktop.html
+          grep -q 'data-lab-product-polish="ready"' /tmp/lab-desktop.html
+          grep -q 'data-lab-test-center="ready"' /tmp/lab-desktop.html
+          grep -q 'lab-live-status-hero' /tmp/lab-desktop.html
+          grep -q 'lab-status-test' /tmp/lab-desktop.html
+          grep -q 'lab-assurance-polished' /tmp/lab-desktop.html
+          grep -q 'Plan health' /tmp/lab-desktop.html
+          grep -q 'labTestCenter' /tmp/lab-desktop.html
+          grep -q 'Run a contingency test' /tmp/lab-desktop.html
           grep -q 'labCommandPalette' /tmp/lab-desktop.html
 
           chrome_dump 'http://127.0.0.1:8000/lab-browser-smoke.html#lab=action%3Aact-ai-brief' > /tmp/lab-deeplink.html
@@ -206,8 +223,13 @@ jobs:
           chrome_dump --window-size=390,844 http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-mobile.html
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-mobile.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
+          grep -q 'data-lab-product-polish="ready"' /tmp/lab-mobile.html
+          grep -q 'data-lab-test-center="ready"' /tmp/lab-mobile.html
           grep -q 'mobile-nav' /tmp/lab-mobile.html
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
+          grep -q 'lab-live-status-hero' /tmp/lab-mobile.html
+          grep -q 'lab-assurance-polished' /tmp/lab-mobile.html
+          grep -q 'labTestCenter' /tmp/lab-mobile.html
 
-          echo 'Desktop, exact deep-link, and 390x844 mobile browser acceptance tests passed.'
+          echo 'Desktop, exact deep-link, Test Center, product-polish, and 390x844 mobile browser tests passed.'
