@@ -35,13 +35,14 @@ jobs:
           node --check assets/lab/lab-decisions-events.js
           node --check assets/lab/lab-audit-bootstrap.js
           node --check assets/lab/lab-audit.js
+          node --check assets/lab/lab-command.js
           node --check assets/lab/checkin-status-contract.js
           node --check assets/lab/checkin.js
           node --check assets/lab/checkin-refine.js
           node --check assets/lab/checkin-vault-panels.js
           node --check assets/lab/checkin-actions-official.js
 
-      - name: Validate Lab isolation, records, actions, sequence, decisions, audit, and handoffs
+      - name: Validate Lab isolation, records, actions, sequence, decisions, audit, integration, and handoffs
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -68,11 +69,14 @@ jobs:
               Path('assets/lab/lab-audit-bootstrap.js'),
               Path('assets/lab/lab-audit.css'),
               Path('assets/lab/lab-audit.js'),
+              Path('assets/lab/lab-command.css'),
+              Path('assets/lab/lab-command.js'),
               Path('assets/lab/BACKEND-HANDOFF.md'),
               Path('assets/lab/ACTIONS-BACKEND-HANDOFF.md'),
               Path('assets/lab/DECISIONS-BACKEND-HANDOFF.md'),
               Path('assets/lab/AUDIT-BACKEND-HANDOFF.md'),
               Path('assets/lab/LAB-HANDOFF.md'),
+              Path('assets/lab/CHECKINLABCLONE.md'),
           ]
 
           if not loader.exists():
@@ -104,6 +108,8 @@ jobs:
               '/assets/lab/lab-audit-bootstrap.js',
               '/assets/lab/lab-audit.css',
               '/assets/lab/lab-audit.js',
+              '/assets/lab/lab-command.css',
+              '/assets/lab/lab-command.js',
               'data-lab-mode="true"',
           ):
               if term not in text:
@@ -157,6 +163,30 @@ jobs:
               if term not in audit:
                   failures.append(f'Lab audit/version boundary/model missing: {term}')
 
+          command = Path('assets/lab/lab-command.js').read_text(encoding='utf-8')
+          for term in (
+              'GLOBAL SEARCH / COMMAND / NAVIGATION INTEGRATION',
+              'cmx-lab-navigation-v1',
+              'buildSearchIndex',
+              'Cmd+K',
+              'server/API search results',
+              'authorization-aware',
+              'writeRoute',
+              'recent',
+              'saved-view',
+              'Contingency assurance',
+              'RETEST REQUIRED',
+              'COVERAGE INCOMPLETE',
+              'CHECKINLABCLONE.md',
+          ):
+              if term not in command:
+                  failures.append(f'Phase 8 command/search boundary missing: {term}')
+
+          command_css = Path('assets/lab/lab-command.css').read_text(encoding='utf-8')
+          for term in ('lab-command-overlay', 'lab-plan-assurance', 'prefers-reduced-motion', 'data-health', '@media (max-width:700px)'):
+              if term not in command_css:
+                  failures.append(f'Phase 8 command/search presentation missing: {term}')
+
           handoff = Path('assets/lab/BACKEND-HANDOFF.md').read_text(encoding='utf-8')
           for term in ('checkin_documents', 'checkin_digital_assets', 'checkin_record_links', 'object storage', 'secret_ref', 'Action Builder integration'):
               if term not in handoff:
@@ -178,13 +208,39 @@ jobs:
                   failures.append(f'Audit backend handoff missing required note: {term}')
 
           lab_handoff = Path('assets/lab/LAB-HANDOFF.md').read_text(encoding='utf-8')
-          for term in ('Read this file first', 'Phase 5', 'Phase 6', 'Phase 7', 'cmx-lab-switch-policy-v1', 'cmx-lab-decisions-v1', 'cmx-lab-decision-runtime-v1', 'cmx-lab-audit-v1', 'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'rolling repeat', 'one-shot', 'lab-timeline-live.js', 'lab-decisions.js', 'lab-audit.js', 'Decision Inspector', 'changed since', 'incident snapshot', 'legacy', 'Phase 8', 'Update this file at the end of every major Lab round'):
+          for term in (
+              'Read this file first', 'Phase 5', 'Phase 6', 'Phase 7', 'Phase 8',
+              'cmx-lab-switch-policy-v1', 'cmx-lab-decisions-v1',
+              'cmx-lab-decision-runtime-v1', 'cmx-lab-audit-v1',
+              'cmx-lab-versions-v1', 'cmx-lab-incidents-v1', 'cmx-lab-navigation-v1',
+              'rolling repeat', 'one-shot', 'lab-timeline-live.js', 'lab-decisions.js',
+              'lab-audit.js', 'lab-command.js', 'Decision Inspector', 'changed since',
+              'incident snapshot', 'legacy', 'Universal search', 'Status assurance',
+              'CHECKINLABCLONE.md', 'Update this file at the end of every major Lab round',
+          ):
               if term not in lab_handoff:
                   failures.append(f'Persistent Lab handoff missing required note: {term}')
+
+          clone_handoff = Path('assets/lab/CHECKINLABCLONE.md').read_text(encoding='utf-8')
+          for term in (
+              'Official Project Migration Blueprint',
+              'destination repository/application is intentionally **TBD**',
+              'Universal search, command palette, deep navigation, Status assurance',
+              'lab-command.js',
+              'authorization-aware',
+              'generated API client',
+              'native application router',
+              'plan-health read model',
+              'Do not blindly port',
+              'Simulation before execution',
+              'Maintenance rule',
+          ):
+              if term not in clone_handoff:
+                  failures.append(f'Check In Lab clone migration handoff missing required note: {term}')
 
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print('Check In Lab syntax, isolation, records, actions, sequence, decisions, audit/version engine, provenance boundary, and persistent handoff validated.')
+          print('Check In Lab syntax, isolation, records, actions, sequence, decisions, audit/version, Phase 8 search/navigation, migration blueprint, and persistent handoff validated.')
           PY
