@@ -81,7 +81,7 @@ jobs:
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
           assert(shell.includes('/assets/lab/lab-loader.js'));
-          assert(shell.includes('20260816-product2'));
+          assert(shell.includes('20260816-hero1'));
           assert(!shell.includes('document.write(html)'));
           assert(!shell.includes(".replace('</body>'"));
 
@@ -226,6 +226,7 @@ jobs:
           grep -q 'data-lab-plan="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-experience="ready"' /tmp/lab-desktop.html
           grep -q 'lab-live-status-hero' /tmp/lab-desktop.html
+          grep -q 'lab-status-first' /tmp/lab-desktop.html
           grep -q 'lab-assurance-polished' /tmp/lab-desktop.html
           grep -q 'Plan health' /tmp/lab-desktop.html
           grep -q 'labTestCenter' /tmp/lab-desktop.html
@@ -251,7 +252,8 @@ jobs:
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
           grep -q 'lab-live-status-hero' /tmp/lab-mobile.html
+          grep -q 'lab-status-first' /tmp/lab-mobile.html
           grep -q 'labTestCenter' /tmp/lab-mobile.html
           grep -q 'Long-range timeline' /tmp/lab-mobile.html
 
-          echo 'Desktop, exact deep-link, user-friendly UX, long-range Sequence, and 390x844 mobile browser tests passed.'
+          echo 'Desktop, top Status hero, exact deep-link, user-friendly UX, long-range Sequence, and 390x844 mobile browser tests passed.'
