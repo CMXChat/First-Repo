@@ -88,10 +88,9 @@
     const heading = $(".view-heading", overview);
     if (!overview || !consoleNode || !dashboard) return;
 
-    // Status opens with the glowing live-switch console. Keep the dashboard intact
-    // so its original desktop/mobile layout remains stable, but move the whole
-    // console group ahead of headings, inventory summaries, Plan Health, and logs.
-    if (overview.firstElementChild !== dashboard) overview.prepend(dashboard);
+    // CSS owns the visual order. Do not physically move Status children here;
+    // several Lab modules observe the same subtree and should not compete over DOM order.
+    overview.classList.add("lab-status-overview");
     dashboard.classList.add("lab-status-first");
     consoleNode.classList.add("lab-live-status-hero");
     if (heading) heading.classList.add("lab-status-heading-secondary");
