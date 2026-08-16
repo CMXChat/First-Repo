@@ -29,13 +29,14 @@ jobs:
           node --check assets/lab/lab-mock-api.js
           node --check assets/lab/lab-crm.js
           node --check assets/lab/lab-inventory.js
+          node --check assets/lab/lab-actions.js
           node --check assets/lab/checkin-status-contract.js
           node --check assets/lab/checkin.js
           node --check assets/lab/checkin-refine.js
           node --check assets/lab/checkin-vault-panels.js
           node --check assets/lab/checkin-actions-official.js
 
-      - name: Validate Lab isolation, inventory, and backend notes
+      - name: Validate Lab isolation, records, actions, and backend notes
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -51,7 +52,10 @@ jobs:
               Path('assets/lab/lab-crm.js'),
               Path('assets/lab/lab-inventory.css'),
               Path('assets/lab/lab-inventory.js'),
+              Path('assets/lab/lab-actions.css'),
+              Path('assets/lab/lab-actions.js'),
               Path('assets/lab/BACKEND-HANDOFF.md'),
+              Path('assets/lab/ACTIONS-BACKEND-HANDOFF.md'),
           ]
 
           if not loader.exists():
@@ -72,17 +76,19 @@ jobs:
               '/assets/lab/lab-crm.js',
               '/assets/lab/lab-inventory.css',
               '/assets/lab/lab-inventory.js',
+              '/assets/lab/lab-actions.css',
+              '/assets/lab/lab-actions.js',
               'data-lab-mode="true"',
           ):
               if term not in text:
-                  failures.append(f'Lab loader missing safety/records wiring: {term}')
+                  failures.append(f'Lab loader missing safety/app wiring: {term}')
 
           production = Path('checkin/index.html').read_text(encoding='utf-8')
           if '/assets/lab/' in production or 'data-lab-mode="true"' in production:
               failures.append('production /checkin references Lab assets or Lab mode')
 
           mock = Path('assets/lab/lab-mock-api.js').read_text(encoding='utf-8')
-          for term in ('productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY'):
+          for term in ('productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY', 'ACTION_STORAGE_KEY', 'actionCounts'):
               if term not in mock:
                   failures.append(f'Lab mock API safety/count guard missing: {term}')
 
@@ -91,14 +97,45 @@ jobs:
               if term not in inventory:
                   failures.append(f'Lab inventory backend boundary missing: {term}')
 
+          actions = Path('assets/lab/lab-actions.js').read_text(encoding='utf-8')
+          for term in (
+              'BACKEND HANDOFF',
+              'ACTION_STORAGE_KEY',
+              'PostgreSQL',
+              'FastAPI',
+              'server-side scheduler/worker',
+              'stable IDs',
+              'Destructive',
+              'grace_expiry',
+              'grace_offset',
+              'SIMULATION ONLY',
+          ):
+              if term not in actions:
+                  failures.append(f'Lab action builder boundary/model missing: {term}')
+
           handoff = Path('assets/lab/BACKEND-HANDOFF.md').read_text(encoding='utf-8')
           for term in ('checkin_documents', 'checkin_digital_assets', 'checkin_record_links', 'object storage', 'secret_ref', 'Action Builder integration'):
               if term not in handoff:
                   failures.append(f'Backend handoff missing required note: {term}')
 
+          action_handoff = Path('assets/lab/ACTIONS-BACKEND-HANDOFF.md').read_text(encoding='utf-8')
+          for term in (
+              'checkin_action_definitions',
+              'checkin_action_targets',
+              'checkin_action_executions',
+              'server-side eligibility scheduler',
+              'idempotency',
+              'Execution snapshots',
+              'AI actions',
+              'Digital account actions',
+              'Phase 5 integration',
+          ):
+              if term not in action_handoff:
+                  failures.append(f'Action backend handoff missing required note: {term}')
+
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print('Check In Lab syntax, isolation, records inventory, and backend handoff validated.')
+          print('Check In Lab syntax, isolation, records, action builder, and backend handoff validated.')
           PY
