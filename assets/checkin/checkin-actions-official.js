@@ -2,7 +2,7 @@
   "use strict";
 
   /*
-   * Serious public presentation for configured contingency actions.
+   * Compact public presentation for configured contingency trigger actions.
    *
    * Truth boundary:
    * - Uses only the real public configured action count and server-link state.
@@ -55,82 +55,122 @@
     $("#operatorButton")?.click();
   }
 
-  function directiveCard(index, mode) {
+  function directiveCard(index, mode, expanded = false) {
     const number = String(index + 1).padStart(2, "0");
     const ref = String(index + 1).padStart(3, "0");
     const family = safePublicFamily(index);
+    const detailsId = `officialDirectiveDetails${number}`;
+
     return `
-      <article class="official-directive-card" data-directive="${number}">
-        <div class="official-directive-top">
-          <div class="official-directive-id">
-            <small>CONTINGENCY DIRECTIVE ${number}</small>
-            <strong>ACT-${ref}</strong>
-          </div>
-          <em class="official-directive-status"><i></i>CONFIGURED</em>
-        </div>
-
-        <div class="official-directive-class">
-          <span class="official-restricted-mark">RESTRICTED</span>
-          <div>
-            <small>ACTION CLASS</small>
+      <article class="official-directive-card${expanded ? " is-expanded" : ""}" data-directive="${number}">
+        <button class="official-directive-toggle" type="button" aria-expanded="${expanded ? "true" : "false"}" aria-controls="${detailsId}">
+          <span class="official-alert-mark" aria-hidden="true">!</span>
+          <span class="official-directive-summary">
+            <small>TRIGGER ACTION ${number} · ACT-${ref}</small>
             <strong>${family}</strong>
+            <em>RESTRICTED CONTINGENCY DIRECTIVE</em>
+          </span>
+          <span class="official-directive-status"><i></i>CONFIGURED</span>
+          <span class="official-expand-cue" aria-hidden="true">⌄</span>
+        </button>
+
+        <div class="official-directive-details" id="${detailsId}" ${expanded ? "" : "hidden"}>
+          <div class="official-danger-line">
+            <span><b>!</b><strong>TRIGGER-CONTROLLED ACTION</strong></span>
+            <small>Protected execution details withheld</small>
           </div>
-        </div>
 
-        <div class="official-execution-field">
-          <div>
-            <small>EXECUTION OFFSET</small>
-            <b class="official-redaction long" aria-label="Execution timing sealed"></b>
+          <div class="official-execution-field">
+            <div>
+              <small>EXECUTION OFFSET</small>
+              <b class="official-redaction long" aria-label="Execution timing sealed"></b>
+            </div>
+            <span>SEALED</span>
           </div>
-          <span>SEALED</span>
-        </div>
 
-        <div class="official-directive-fields">
-          <span><small>TARGET</small><b class="official-redaction medium" aria-label="Target sealed"></b></span>
-          <span><small>CONDITION</small><b class="official-redaction short" aria-label="Condition sealed"></b></span>
-          <span><small>PAYLOAD</small><b class="official-redaction long" aria-label="Payload sealed"></b></span>
-          <span><small>TIMING / SCHEDULE</small><b class="official-redaction medium" aria-label="Schedule sealed"></b></span>
-        </div>
+          <div class="official-directive-fields">
+            <span><small>TARGET</small><b class="official-redaction medium" aria-label="Target sealed"></b></span>
+            <span><small>CONDITION</small><b class="official-redaction short" aria-label="Condition sealed"></b></span>
+            <span><small>PAYLOAD</small><b class="official-redaction long" aria-label="Payload sealed"></b></span>
+            <span><small>TIMING / SCHEDULE</small><b class="official-redaction medium" aria-label="Schedule sealed"></b></span>
+          </div>
 
-        <div class="official-directive-foot">
-          <span>DETAILS WITHHELD · PRIVATE ACCESS REQUIRED</span>
-          <b>${linkLabel(mode)}</b>
+          <div class="official-directive-foot">
+            <span>DETAILS WITHHELD · PRIVATE ACCESS REQUIRED</span>
+            <b>${linkLabel(mode)}</b>
+          </div>
         </div>
       </article>`;
+  }
+
+  function bindInteractions(section) {
+    section.onclick = event => {
+      const unlock = event.target.closest("#officialActionsUnlock");
+      if (unlock) {
+        requestAccess();
+        return;
+      }
+
+      const toggle = event.target.closest(".official-directive-toggle");
+      if (!toggle) return;
+
+      const card = toggle.closest(".official-directive-card");
+      const details = card?.querySelector(".official-directive-details");
+      if (!card || !details) return;
+
+      const opening = toggle.getAttribute("aria-expanded") !== "true";
+      $$(".official-directive-card.is-expanded", section).forEach(other => {
+        if (other === card) return;
+        other.classList.remove("is-expanded");
+        const otherToggle = other.querySelector(".official-directive-toggle");
+        const otherDetails = other.querySelector(".official-directive-details");
+        otherToggle?.setAttribute("aria-expanded", "false");
+        if (otherDetails) otherDetails.hidden = true;
+      });
+
+      card.classList.toggle("is-expanded", opening);
+      toggle.setAttribute("aria-expanded", String(opening));
+      details.hidden = !opening;
+    };
   }
 
   function renderOfficialActions() {
     const section = $("#secretActionSequence");
     if (!section) return false;
 
+    const expandedDirectives = new Set(
+      $$(".official-directive-card.is-expanded", section).map(card => card.dataset.directive)
+    );
     const count = publicCount();
     const mode = linkMode();
     section.classList.add("official-actions-shell");
     section.dataset.link = mode;
 
-    const countLabel = count === 1 ? "01 DIRECTIVE CONFIGURED" : `${String(count).padStart(2, "0")} DIRECTIVES CONFIGURED`;
+    const countLabel = count === 1 ? "01 TRIGGER ACTION" : `${String(count).padStart(2, "0")} TRIGGER ACTIONS`;
     const cards = count
-      ? Array.from({ length: count }, (_, index) => directiveCard(index, mode)).join("")
+      ? Array.from({ length: count }, (_, index) => {
+          const number = String(index + 1).padStart(2, "0");
+          return directiveCard(index, mode, expandedDirectives.has(number));
+        }).join("")
       : `<div class="official-action-pending"><div><i></i><strong>${mode === "live" ? "NO PUBLIC DIRECTIVE SUMMARY" : "READING CONFIGURATION"}</strong><small>${mode === "live" ? "Protected action configuration remains sealed behind private access." : "Waiting for the server status before presenting configuration state."}</small></div></div>`;
 
     section.innerHTML = `
       <div class="official-sequence-head">
         <div class="official-sequence-title">
           <small>CONTINGENCY CONTROL</small>
-          <h2>Contingency sequence</h2>
-          <p>Configured directives are protected. Action class, targets, conditions, timing, schedules, and payload details remain withheld from the public view.</p>
+          <h2>Trigger actions</h2>
+          <p>Configured contingency directives. Tap an action to inspect its sealed execution fields.</p>
         </div>
         <div class="official-sequence-status">
-          <span class="official-sequence-count">${count ? countLabel : "SEQUENCE SEALED"}</span>
+          <span class="official-sequence-count"><b>!</b>${count ? countLabel : "SEQUENCE SEALED"}</span>
           <span class="official-integrity" data-link="${mode}"><i></i>${linkLabel(mode)}</span>
         </div>
       </div>
 
-      <div class="official-control-strip" aria-label="Contingency package state">
-        <span class="control-accent"><small>DIRECTIVES</small><strong>${count ? String(count).padStart(2, "0") : "SEALED"}</strong></span>
-        <span><small>EXECUTION</small><strong>LOCKED</strong></span>
-        <span><small>TIMING / SCHEDULE</small><strong>SEALED</strong></span>
-        <span><small>ACCESS</small><strong>PRIVATE</strong></span>
+      <div class="official-alert-strip" aria-label="Trigger action warning">
+        <span class="official-alert-symbol">!</span>
+        <span><strong>CONTINGENCY ACTIONS STAGED</strong><small>Execution remains locked behind trigger conditions and protected configuration.</small></span>
+        <b>${count ? String(count).padStart(2, "0") : "—"}</b>
       </div>
 
       <div class="official-directive-grid">${cards}</div>
@@ -140,7 +180,7 @@
         <button type="button" id="officialActionsUnlock">Unlock directives</button>
       </div>`;
 
-    $("#officialActionsUnlock")?.addEventListener("click", requestAccess);
+    bindInteractions(section);
     return true;
   }
 
