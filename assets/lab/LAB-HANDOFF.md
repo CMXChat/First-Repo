@@ -6,7 +6,7 @@ Read this file first when resuming work on `/lab`.
 
 ## Purpose
 
-`/lab` is the isolated product sandbox for the Check In dead-man-switch project. It is where the UI, records model, action builder, switch timing, simulation, decisions, audit/version history, search/navigation, mobile behavior, and testing UX are designed before anything is considered for the official Check In project.
+`/lab` is the isolated product sandbox for the Check In dead-man-switch project. It is where the UI, records model, Action Builder, switch timing, simulation, decisions, audit/version history, search/navigation, mobile behavior, light/dark themes, long-range planning, and testing UX are designed before anything is considered for the official Check In project.
 
 Production `/checkin` stays frozen unless the user explicitly asks to port approved Lab work.
 
@@ -26,6 +26,7 @@ Current safety rules:
 - the Lab uses synthetic browser-local data.
 - SMS, email, social, AI, webhook, publishing, account, and destructive operations do not execute externally.
 - the Test Center drives existing simulation controls only.
+- long-range Plan playback is a presentation clock, not a production scheduler.
 - audit fingerprints are illustrative Lab fingerprints, not cryptographic assurance.
 
 Do not weaken this boundary for convenience.
@@ -68,20 +69,24 @@ Do not move the snapshot transform back into inline JavaScript. An older inline 
 9. `lab-command.js`
 10. `lab-test-center.js`
 11. `lab-product-polish.js`
-12. `lab-acceptance.js`
+12. `lab-plan.js`
+13. `lab-experience.js`
+14. `lab-acceptance.js`
 
 Ownership rules:
 
 - `lab-crm.js` owns People/Organizations mock state.
 - `lab-inventory.js` owns Documents/Digital Assets mock state.
-- `lab-actions.js` owns Action definitions.
-- `lab-timeline-live.js` owns switch policy presentation and simulation clock/state.
+- `lab-actions.js` owns reusable Action definitions.
+- `lab-timeline-live.js` owns switch policy presentation and the short-horizon synthetic incident clock/state.
 - `lab-decisions.js` owns typed decision simulation state.
 - `lab-audit.js` owns Lab audit/version/incident adapters.
 - `lab-command.js` owns search/navigation integration only.
 - `lab-test-center.js` orchestrates existing Sequence/Decision controls. It is not another simulator.
-- `lab-product-polish.js` changes hierarchy/copy/presentation only. It owns no domain state.
-- `lab-acceptance.js` is the final compatibility/stabilization layer.
+- `lab-product-polish.js` restores Status hierarchy and broad mobile presentation only.
+- `lab-plan.js` adds long-horizon scheduling metadata and Plan projection. It does not execute providers and is not production scheduling authority.
+- `lab-experience.js` owns product-language/progressive-disclosure presentation only. It does not own domain truth.
+- `lab-acceptance.js` remains the final compatibility/stabilization layer.
 
 ### Current CSS layers
 
@@ -97,8 +102,11 @@ Ownership rules:
 10. `lab-test-center.css`
 11. `lab-acceptance.css`
 12. `lab-product-polish.css`
+13. `lab-experience.css`
+14. `lab-plan.css`
+15. `lab-plan-overrides.css`
 
-`lab-product-polish.css` intentionally loads last so mobile readability/hierarchy overrides earlier high-density prototype CSS.
+The later experience/Plan layers correct older prototype density without changing the original domain stores.
 
 ## Local mock storage keys
 
@@ -115,8 +123,11 @@ These are browser adapters only, not production persistence contracts:
 - `cmx-lab-versions-v1`
 - `cmx-lab-incidents-v1`
 - `cmx-lab-navigation-v1`
+- `cmx-lab-plan-ui-v1`
 
-No new authoritative storage key was added for the Test Center or product-polish layer.
+`cmx-lab-plan-ui-v1` is presentation preference/state only: Plan/Run mode, zoom, preview clock, and preview speed. It must never become execution authority.
+
+No separate execution store was added for Test Center or the user-experience layer.
 
 ## Completed product phases
 
@@ -211,9 +222,9 @@ Complete.
 
 The official app must replace the local index/hash/DOM-click adapters with authorized API search and its native router.
 
-## Acceptance / browser hardening
+## Browser acceptance / hardening
 
-Complete after a real Android device exposed the inline-loader parser bug.
+Completed after a real Android device exposed the inline-loader parser bug.
 
 Current checks include:
 
@@ -228,86 +239,209 @@ Current checks include:
 
 Do not regress CI to source-string checks only.
 
-## Current mobile-first polish round
+## Productization round — user-friendly UX, themes, long-range Plan
 
-Completed in code; validate exact final SHA before claiming live.
+Current round. Do not claim live until the exact final SHA passes Lab validation and Pages deployment.
 
-Primary files:
+Primary new files:
 
-- `lab-product-polish.js`
-- `lab-product-polish.css`
-- `lab-test-center.js`
-- `lab-test-center.css`
+- `lab-experience.js`
+- `lab-experience.css`
+- `lab-plan.js`
+- `lab-plan.css`
+- `lab-plan-overrides.css`
+- `SCHEDULING-BACKEND-HANDOFF.md`
 
-### Status hierarchy
+### Product-language rule
 
-The live switch is again the primary visual surface:
+The user should not need implementation instructions to understand the interface.
 
-1. current switch state
-2. countdown / check in
-3. last + next due
-4. Test Plan shortcut
-5. compact switch metrics
-6. compact Plan Health
-7. warnings / recent activity
+`lab-experience.js` progressively simplifies presentation:
 
-The old large `Contingency assurance` report is still backed by the same Phase 7 evidence, but presentation is shortened to `Plan health` and moved below the core switch metrics.
+- `Trigger actions` becomes `Actions`
+- `Contingency sequence` becomes `Sequence`
+- decision terminology becomes `Logic`, `Waiting on`, `Then`, and `What happened`
+- Activity uses human-facing Activity / Tests language before deeper provenance terminology
+- Test Center becomes `Test the plan`
+- Plan Health copy is shortened
+- `PHASE N` prototype badges are hidden from normal product presentation
+- repeated safety/developer paragraphs are reduced because the environment badge already establishes Lab context
 
-Mobile Plan Health uses a 2×2 metric grid and hides low-value helper copy. Warnings keep the actionable title while long explanatory text is hidden on phones.
+Technical detail remains available in selected/detail views where it is useful.
 
-### Mobile typography rule
+### Progressive disclosure
 
-Several Phase 4–7 styles originally used 5–8px text to create a dense desktop control-console look. That is no longer acceptable on mobile.
+Mobile no longer attempts to show every Action definition field simultaneously.
 
-`lab-product-polish.css` increases mobile type and reduces simultaneous detail across:
+For selected Actions:
 
-- Status
-- Records
-- Actions
-- Sequence
-- Decision Inspector / routing map
-- Activity / Audit / Incidents / Versions / Health
-- dialogs/forms
+- core identity, state, timing, Logic, linked records, and safety remain visible
+- Summary and History are secondary on phone
+- `More details` reveals secondary cards
+- Decision graph becomes a vertical node list on phone
+- Activity is event-first; provenance is shown after opening an event
 
-Mobile should show fewer words at once and expose detail after selection/inspection instead of shrinking every explanation.
+### Theme tokens
 
-### Test Center
+`lab-experience.css` introduces shared Lab `--lx-*` theme tokens instead of allowing every new phase to invent its own hardcoded black/white surface colors.
 
-`lab-test-center.js` adds guided synthetic scenarios on top of the existing Sequence + Decision engine:
+Dark and Light define separate values for:
 
-- Deadline
-- No reply
-- Failure
-- Final trigger
-- Full guided chain
+- background
+- primary/raised/soft surfaces
+- normal/strong borders
+- primary/muted text
+- blue/cyan structure
+- safe/warning/danger states
+- violet accent
+- shadows
+- luminous top edges
 
-The Full guided chain exercises the seeded demonstration path approximately as:
+Light mode is treated as a first-class theme. Newer Actions, Sequence, Decision, Audit, forms, Test Center, and Plan surfaces receive explicit light-mode contrast and visible borders instead of inheriting accidental dark-mode panels.
 
-```text
-Deadline
-→ AI success
-→ continuity email delivery
-→ no acknowledgement
-→ SMS fallback
-→ acknowledgement
-→ final trigger
-→ approval-gated final action
+### Mobile readability rule
+
+Phones get larger type and fewer words, not a desktop console scaled down.
+
+The experience layer raises important mobile operational text into readable ranges and hides low-value explanatory copy at overview/list level.
+
+Important UI should not depend on 5–8px text on phone-sized viewports.
+
+### Sequence Plan / Run distinction
+
+Sequence now has two user concepts in one main section:
+
+- **Plan** — what is configured to happen over time
+- **Run / Test** — what happens in one synthetic simulation/incident
+
+No new bottom-navigation destination was added.
+
+`Run / Test` continues to use the existing Phase 5/6 simulator and Test Center.
+
+`Plan` uses `lab-plan.js` to project the configured plan over a much longer horizon.
+
+### Long-running Action schedule metadata
+
+`lab-plan.js` extends a Lab Action with optional `action.schedule` metadata:
+
+```json
+{
+  "mode": "instant | running",
+  "delayHours": 0,
+  "durationHours": 0,
+  "repeatEveryHours": 0,
+  "repeatLimit": 0,
+  "lane": "notifications | ai | digital | tasks"
+}
 ```
 
-Important: Test Center has no separate runtime store and no execution engine. It drives existing `data-sequence-*`, `data-decision-*`, acknowledgement, and approval controls. Audit/version/incident evidence therefore comes from the same existing Lab state machines.
+Meanings:
 
-Status `Run contingency test` and Plan Health `Run test` open the Sequence Test Center.
+- `delayHours`: wait after the Action first becomes eligible
+- `durationHours`: how long a running Action remains active
+- `repeatEveryHours`: cadence while the Action is active
+- `repeatLimit`: optional maximum number of occurrences; zero means duration controls the preview
+- `lane`: presentation grouping only
 
-Browser readiness markers:
+The Lab planner allows a visual horizon up to roughly two years so month-long or longer concepts can be modeled. This is not a production limit or execution promise.
+
+### Outcome-driven handoffs
+
+Long-running timing does not replace Phase 6 routing.
+
+Existing Decision Policy routes remain the graph. Plan projects positive success/acknowledgement dependencies and shows failure destinations in the Action timing card.
+
+Conceptually:
+
+```text
+eligible
+→ optional delay
+→ starts
+→ optional recurring occurrences while running
+→ ends successfully OR reaches a terminal failure
+→ existing Decision route activates the next Action
+```
+
+The official server must own actual completion conditions and terminal outcomes.
+
+### Multi-scale Plan
+
+Plan supports:
+
+- Auto
+- Hours
+- Days
+- Weeks
+- Months
+
+Desktop uses horizontal time lanes. Actions in the same category stack vertically so overlapping long-running windows remain readable.
+
+Mobile turns those lanes into readable vertical cards instead of forcing a huge horizontal graph into the phone viewport.
+
+Plan includes:
+
+- Messages / AI / Digital / Tasks lanes
+- start and end span for running Actions
+- repeating pattern for recurring Actions
+- success/failure branch cues
+- `Up next` list
+- `Next event`
+- Play / Pause preview
+- Slow / Normal / Fast preview speed
+
+The Plan preview clock is UI-only. It does not mutate the real/mock incident runtime.
+
+### Action Timing editor
+
+Selected Actions now receive a Timing card with:
+
+- Start
+- Runs for
+- Repeat
+- Ends
+- failure route
+- Edit timing
+
+The timing editor supports:
+
+- delay after eligibility
+- instant vs running
+- duration in hours/days/weeks/months
+- recurring cadence in hours/days/weeks/months
+- optional maximum run count
+- presentation lane
+- current success/failure route preview
+
+Read `SCHEDULING-BACKEND-HANDOFF.md` before changing these semantics.
+
+### Test Center relationship
+
+The existing Test Center remains the incident-level test experience.
+
+Plan adds long-range preview controls and a `Preview long plan` shortcut. The official project should eventually unify both through one server scheduling engine with an accelerated fake clock and deterministic fake providers.
+
+Read `SCHEDULING-BACKEND-HANDOFF.md`.
+
+### Readiness markers
+
+This round adds:
+
+```text
+data-lab-plan="ready"
+data-lab-experience="ready"
+```
+
+Existing markers remain:
 
 ```text
 data-lab-test-center="ready"
 data-lab-product-polish="ready"
+data-lab-acceptance="ready"
 ```
 
 ## Production direction
 
-Never execute contingency actions from browser JavaScript.
+Never execute contingency Actions from browser JavaScript.
 
 Target architecture remains:
 
@@ -321,7 +455,30 @@ PostgreSQL + object storage + secrets references
 provider adapters
 ```
 
-The official product should eventually have a server-backed simulation mode using the same timing/decision engine as production but deterministic fake providers.
+For long-running / recurring Actions:
+
+```text
+reusable Action schedule
+  → incident schedule snapshot
+  → persisted next_run_at / ends_at
+  → durable occurrence rows
+  → idempotent queued workers
+  → terminal outcome
+  → typed Decision route
+```
+
+Do not keep a worker or browser timer sleeping for weeks/months.
+
+The official product should have a server-backed simulation mode using the same timing/decision/scheduling engine as production but deterministic fake providers and an accelerated clock.
+
+## Backend / migration handoffs
+
+- `BACKEND-HANDOFF.md`
+- `ACTIONS-BACKEND-HANDOFF.md`
+- `DECISIONS-BACKEND-HANDOFF.md`
+- `AUDIT-BACKEND-HANDOFF.md`
+- `SCHEDULING-BACKEND-HANDOFF.md`
+- `CHECKINLABCLONE.md`
 
 ## CI / validation
 
@@ -337,43 +494,46 @@ It must continue validating:
 - timing contract supports custom intervals
 - loader generates all expected Lab assets
 - mock API loads before copied client
-- Test Center and mobile-polish layers are present
+- Test Center, product-polish, Plan, experience, and acceptance layers remain ordered correctly
 - backend/migration handoffs remain present
 - headless desktop boot
 - exact Action deep link
+- selected Action receives Timing card
+- Sequence receives Plan / Run controls and long-range board
 - 390×844 mobile boot
-- acceptance/product-polish/Test-Center readiness markers
+- acceptance/product-polish/Test-Center/Plan/Experience readiness markers
 
 ## Known Lab limitations
 
 - all domain data remains browser-local mock state
 - document bytes are not stored
-- no external action executes
+- no external Action executes
 - simulation outcomes are synthetic
 - repeat/rearm has no real incident API
 - decision evaluation is browser-only simulation
-- calendar-scheduled actions are not fully projected into incident-relative Sequence timing
 - old simulations can lack exact version provenance and are marked legacy
 - Lab fingerprints are not cryptographic
 - local hard delete is still possible for some prototype records; official product should prefer archive/soft-delete
 - search authorization is not a production model
 - `#lab=` routing is not official-app architecture
 - Test Center uses DOM-control orchestration and must be replaced with a server-backed test API in the official project
-- `lab-product-polish.js` is a compatibility/presentation adapter and must not be ported as architecture
+- `lab-product-polish.js` and `lab-experience.js` are presentation adapters and must not be ported as architecture
+- `lab-plan.js` is a long-horizon definition projection, not the authoritative existing Run/Test incident engine
+- long-running completion conditions are represented through duration + existing terminal outcome routes; the Lab does not yet run a real month-long incident scheduler
+- calendar scheduling still depends on Lab-local timestamps
 - inline-style CSP is a prototype exception
 
-## Next work
+## Next work after this round
 
-After this mobile/Test Center round:
+1. validate the exact final SHA in CI and Pages
+2. inspect Dark and Light on the user’s actual Android phone
+3. inspect Records, Actions, Activity, Sequence Plan, and Sequence Run/Test for remaining dense wording
+4. configure at least one Action to run for weeks/months and verify Plan zoom/stacking
+5. run Test Center scenarios and verify Activity/Health evidence remains consistent
+6. tighten any device-specific visual problems found from screenshots
+7. after product approval, consider freezing a migration candidate before backend work
 
-1. inspect the exact live build on the user’s Android phone
-2. verify Status top hierarchy and scroll position
-3. manually inspect Records, Actions, Activity, and Sequence for any remaining tiny or overly verbose UI
-4. run each Test Center scenario and confirm the expected Incident/Audit/Health changes
-5. fix device-specific layout issues found from screenshots
-6. only after user approval, consider freezing a Lab migration candidate
-
-Do not begin production backend migration just because the Lab looks polished.
+Do not begin production backend migration merely because the prototype looks polished.
 
 ## Resume checklist
 
@@ -385,12 +545,14 @@ Do not begin production backend migration just because the Lab looks polished.
 6. Confirm Lab CSP/API isolation.
 7. Check latest `Check In Lab Validation` and Pages run for the exact final SHA.
 8. Preserve delivery vs acknowledgement separation.
-9. Preserve typed decision rules and cycle rejection.
+9. Preserve typed Decision rules and dependency-cycle rejection.
 10. Preserve immutable incident snapshot/version semantics.
 11. Preserve restore-old-version → create-new-revision semantics.
 12. Never claim Lab fingerprints are cryptographic.
-13. Never let `lab-command.js`, `lab-test-center.js`, `lab-product-polish.js`, or `lab-acceptance.js` become authoritative domain stores.
-14. Preserve Phase 8 ownership of `#lab=` routes.
-15. Do not move the snapshot transform back into inline JavaScript.
-16. Update this file after every major Lab round.
-17. Update `CHECKINLABCLONE.md` whenever behavior/lessons should be carried into the official project.
+13. Never let `lab-command.js`, `lab-test-center.js`, `lab-product-polish.js`, `lab-plan.js`, `lab-experience.js`, or `lab-acceptance.js` become real external execution authority.
+14. Keep `cmx-lab-plan-ui-v1` as UI preference/preview state only.
+15. Preserve Phase 8 ownership of `#lab=` routes.
+16. Do not move the snapshot transform back into inline JavaScript.
+17. Read `SCHEDULING-BACKEND-HANDOFF.md` before changing long-running/recurring semantics.
+18. Update this file after every major Lab round.
+19. Update `CHECKINLABCLONE.md` whenever behavior/lessons should be carried into the official project.
