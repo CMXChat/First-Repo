@@ -78,14 +78,14 @@
     section.className = "protected-package";
     section.innerHTML = `
       <div class="protected-package-head">
-        <div><small>PROTECTED PACKAGE</small><h2>Contingency archive</h2><p>Protected records and configured actions remain inaccessible while the switch is secured.</p></div>
+        <div><small>PROTECTED PACKAGE</small><h2>Contingency archive</h2><p>Protected records and contingency controls remain inaccessible while the switch is secured.</p></div>
         <span class="package-seal" id="packageSeal"><i></i>SEALED</span>
       </div>
       <div class="package-grid">
         <button type="button" class="package-card" data-package-view="records"><span class="package-icon" aria-hidden="true">▱</span><strong>Documents</strong><small>SEALED</small></button>
         <button type="button" class="package-card" data-package-view="records"><span class="package-icon" aria-hidden="true">◎</span><strong>Contacts</strong><small>SEALED</small></button>
         <button type="button" class="package-card" data-package-view="records"><span class="package-icon" aria-hidden="true">▦</span><strong>Organizations</strong><small>SEALED</small></button>
-        <button type="button" class="package-card package-card-action" data-package-view="actions"><span class="package-icon" aria-hidden="true">↯</span><strong>Contingency actions</strong><small>CONFIGURED</small></button>
+        <button type="button" class="package-card package-card-action" data-package-view="actions"><span class="package-icon" aria-hidden="true">↯</span><strong>Contingency actions</strong><small>PROTECTED</small></button>
       </div>`;
     section.querySelectorAll("[data-package-view]").forEach(button => button.addEventListener("click", () => clickView(button.dataset.packageView)));
     const dashboard = overview.querySelector(".dashboard-grid");
@@ -132,7 +132,7 @@
     }
     const actions = $('[data-view-panel="actions"]');
     if (actions && !actions.querySelector('[data-gateway="actions"]')) {
-      actions.querySelector(".view-heading")?.insertAdjacentElement("afterend", gatewayMarkup("actions", "Contingency actions", "Configured contingency actions are protected. Sequence details remain sealed until authorization."));
+      actions.querySelector(".view-heading")?.insertAdjacentElement("afterend", gatewayMarkup("actions", "Contingency actions", "Contingency action details are protected. Sequence contents remain sealed until authorization."));
     }
     const activity = $('[data-view-panel="activity"]');
     if (activity && !activity.querySelector('.protected-access-gateway[data-gateway="activity"]')) {
@@ -149,6 +149,13 @@
     });
     const title = $(".quick-panel .panel-title > span");
     if (title) title.textContent = "SYSTEM INTEGRITY";
+  }
+
+  function suppressLegacyPresentation() {
+    const oldActivityGateway = $('[data-view-panel="activity"] .access-gateway[data-gateway="activity"]');
+    if (oldActivityGateway) oldActivityGateway.hidden = true;
+    const simulate = $("#simulateButton");
+    if (simulate) simulate.hidden = true;
   }
 
   function updateStatePresentation() {
@@ -185,9 +192,11 @@
   function updateAuthorizationPresentation() {
     const unlocked = document.body.classList.contains("operator-unlocked");
     document.body.classList.toggle("private-access-active", unlocked);
+    const actionCount = Number($("#actionPublicCount")?.textContent || 0);
     $$(".package-card small").forEach(label => {
       if (unlocked) label.textContent = "AUTHORIZED";
-      else label.textContent = label.closest(".package-card")?.classList.contains("package-card-action") ? "CONFIGURED" : "SEALED";
+      else if (label.closest(".package-card")?.classList.contains("package-card-action")) label.textContent = actionCount > 0 ? "CONFIGURED" : "PROTECTED";
+      else label.textContent = "SEALED";
     });
     const lockButton = $("#operatorButton");
     if (lockButton) lockButton.textContent = unlocked ? "Private access active" : "Private access";
@@ -211,6 +220,7 @@
     ensureGateways();
     trimQuickPanel();
     hidePublicCounts();
+    suppressLegacyPresentation();
     normalizeVisibleCopy();
     updateAuthorizationPresentation();
 
@@ -221,6 +231,7 @@
         if (mutation.target === $("#statusConsole") && mutation.attributeName === "data-state") stateChanged = true;
         if (mutation.target === document.body && mutation.attributeName === "class") authChanged = true;
       });
+      suppressLegacyPresentation();
       normalizeVisibleCopy();
       trimQuickPanel();
       if (authChanged) updateAuthorizationPresentation();
