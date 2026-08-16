@@ -123,7 +123,7 @@ jobs:
               'checkin_action_definitions',
               'checkin_action_targets',
               'checkin_action_executions',
-              'server-side eligibility scheduler',
+              'eligibility scheduler',
               'idempotency',
               'Execution snapshots',
               'AI actions',
