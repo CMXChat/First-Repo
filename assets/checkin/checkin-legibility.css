@@ -1,0 +1,269 @@
+/*
+ * /checkin legibility pass
+ *
+ * Typography and contrast only. No API, timer, auth, navigation, or protected
+ * data behavior lives here. Keep this file loaded last so microcopy stays
+ * readable across the layered Status, Records, Actions, Activity and dialog UI.
+ */
+
+:root{
+  --checkin-readable-muted:#97a5b5;
+  --checkin-readable-muted-strong:#aab7c5;
+}
+html[data-theme="light"]{
+  --checkin-readable-muted:#5d6f82;
+  --checkin-readable-muted-strong:#475c71;
+}
+
+/* Shared micro labels. */
+.eyebrow,
+.mini-label,
+.panel-title>span,
+.refine-head small,
+.vault-panel-head small,
+.official-sequence-title>small{
+  font-size:9px!important;
+  line-height:1.25;
+}
+
+.heading-meta small,
+.ring-center span,
+.ring-center small,
+.checkin-meta span,
+.package-card small,
+.deadline-track small,
+.protected-gateway small,
+.archive-category small,
+.trace-event small,
+.trace-event time,
+.secret-action-fields small,
+.secret-action-fields strong,
+.secret-sequence-foot,
+.live-strip strong,
+.live-strip small{
+  font-size:8px!important;
+}
+
+/* Secondary copy should remain clearly secondary without disappearing. */
+.action-type small,
+.package-card small,
+.protected-gateway p,
+.trace-event time,
+.official-sequence-title p,
+.official-alert-strip small,
+.official-action-pending small,
+.action-integrity-note,
+.capability-note span,
+.setting-note p,
+.view-heading>p{
+  color:var(--checkin-readable-muted)!important;
+}
+
+/* Status and overview. */
+.state-pill,
+.top-status,
+.seal-chip,
+.package-seal,
+.vault-seal,
+.sequence-chip,
+.trace-link{
+  font-size:8px!important;
+}
+.checkin-button strong{font-size:11px!important}
+.checkin-button small{font-size:9px!important;color:var(--checkin-readable-muted)!important}
+.checkin-meta strong{font-size:9.5px!important}
+.quick-row span{font-size:9px!important;color:var(--checkin-readable-muted)!important}
+.quick-row strong{font-size:9px!important}
+.package-card strong{font-size:10.5px!important}
+.deadline-track strong{font-size:9px!important}
+.state-pressure-banner small{font-size:8px!important}
+.state-pressure-banner p{font-size:9.5px!important;color:var(--checkin-readable-muted)!important;line-height:1.45}
+
+/* Action status row and builder. */
+.action-status-row b,
+.action-status-row strong{
+  font-size:8px!important;
+}
+.action-type strong{
+  font-size:10px!important;
+  line-height:1.2;
+}
+.action-type small{
+  font-size:8.5px!important;
+  line-height:1.35;
+}
+.action-compose-row small{
+  font-size:7.5px!important;
+  color:var(--checkin-readable-muted)!important;
+}
+.action-compose-row strong{
+  font-size:9px!important;
+  line-height:1.3;
+}
+.configured-sequence-head small{font-size:8.5px!important}
+.configured-sequence-head strong{font-size:11.5px!important}
+
+/* Sealed Records and public Activity. */
+.archive-category strong{font-size:11px!important}
+.archive-category small{font-size:8px!important}
+.archive-foot>span,
+.trace-foot>span{
+  font-size:8px!important;
+  color:var(--checkin-readable-muted)!important;
+}
+.trace-event strong{font-size:11px!important;line-height:1.3}
+.trace-event small{font-size:8px!important}
+.trace-event time{font-size:8.5px!important}
+.archive-foot button,
+.trace-foot button{
+  font-size:9px!important;
+}
+
+/* Secret configured-action cards. */
+.secret-action-top>strong{font-size:9.5px!important}
+.secret-action-top>em{font-size:7px!important}
+.secret-action-clock small{font-size:7px!important}
+.secret-action-fields small{font-size:7px!important;color:var(--checkin-readable-muted)!important}
+.secret-action-fields strong{font-size:8px!important}
+.secret-sequence-foot span,
+.secret-sequence-foot strong{font-size:7.5px!important}
+.secret-action-pending strong{font-size:9px!important}
+.secret-action-pending small{font-size:8.5px!important;color:var(--checkin-readable-muted)!important}
+
+/* Official protected action presentation has the densest microcopy. */
+.official-sequence-title>small{font-size:8.5px!important}
+.official-sequence-title p{font-size:9.5px!important;line-height:1.5!important}
+.official-sequence-count,
+.official-integrity{
+  font-size:7.5px!important;
+}
+.official-alert-strip strong{font-size:8.5px!important}
+.official-alert-strip small{font-size:8px!important;line-height:1.4!important}
+.official-directive-summary small{font-size:7.5px!important;color:var(--checkin-readable-muted)!important}
+.official-directive-summary strong{font-size:10.5px!important}
+.official-directive-summary em{font-size:7.5px!important}
+.official-directive-status{font-size:7.5px!important}
+.official-danger-line strong,
+.official-danger-line small,
+.official-execution-field small,
+.official-execution-field>span{
+  font-size:7.5px!important;
+}
+.official-directive-fields small,
+.official-directive-foot>span,
+.official-directive-foot>b{
+  font-size:7px!important;
+}
+.official-action-pending strong{font-size:9px!important}
+.official-action-pending small{font-size:8.5px!important}
+
+/* Forms, unlocked records and audit should be comfortably tappable/readable too. */
+.inline-form input,
+.inline-form textarea,
+.inline-form select,
+.field-group input{
+  font-size:14px!important;
+}
+.primary-small,
+.secondary-small,
+.wide-action,
+.protected-gateway>button,
+.action-builder .refine-head button{
+  font-size:9px!important;
+}
+.activity-table-head span{font-size:8px!important}
+.record-list small,
+.activity-list small,
+.editor-statusbar,
+.editor-footer{
+  font-size:9px!important;
+}
+
+/* Dialogs can be opened under stress, so avoid tiny explanatory text. */
+.dialog-head small{font-size:9px!important}
+.setting-note strong{font-size:11px!important}
+.setting-note p{font-size:10px!important;line-height:1.5!important}
+.field-group label{font-size:9px!important}
+
+@media(max-width:700px){
+  /* Keep hierarchy, but raise the mobile floor for everything the user must scan. */
+  .view-heading h1{font-size:27px!important;line-height:1.04}
+  .eyebrow{font-size:9.5px!important}
+
+  .ring-center span{font-size:8.5px!important}
+  .ring-center small{font-size:9.5px!important}
+  .checkin-button strong{font-size:11.5px!important}
+  .checkin-button small{font-size:9.5px!important}
+  .checkin-meta span{font-size:8px!important}
+  .checkin-meta strong{font-size:9.5px!important}
+  .live-strip strong,.live-strip small{font-size:8px!important}
+
+  .package-card strong{font-size:10.5px!important}
+  .package-card small{font-size:8px!important}
+  .deadline-track strong{font-size:9px!important}
+  .deadline-track small{font-size:8px!important}
+
+  .action-status-row b{font-size:7.5px!important}
+  .action-status-row strong{font-size:8px!important}
+  .action-type strong{font-size:10.5px!important}
+  .action-type small{font-size:9px!important;color:var(--checkin-readable-muted)!important}
+  .action-compose-row small{font-size:8px!important}
+  .action-compose-row strong{font-size:9.5px!important}
+
+  .archive-category strong{font-size:11px!important}
+  .archive-category small{font-size:8.5px!important}
+  .trace-event small{font-size:8.5px!important}
+  .trace-event strong{font-size:11px!important}
+  .trace-event time{font-size:9px!important}
+
+  /* The title already explains the section; remove the weakest duplicate sentence on phones. */
+  .official-sequence-title p{display:none!important}
+  .official-sequence-title>small{font-size:9px!important}
+  .official-sequence-count,.official-integrity{font-size:8px!important}
+  .official-directive-summary small{font-size:8px!important}
+  .official-directive-summary strong{font-size:11px!important}
+  .official-directive-summary em{font-size:8px!important}
+  .official-directive-status{font-size:8px!important}
+  .official-alert-strip strong{font-size:9px!important}
+  .official-alert-strip small{font-size:8.5px!important}
+  .official-danger-line strong,
+  .official-danger-line small,
+  .official-execution-field small,
+  .official-execution-field>span{font-size:8px!important}
+  .official-directive-fields small,
+  .official-directive-foot>span,
+  .official-directive-foot>b{font-size:7.5px!important}
+
+  .mobile-nav button small{
+    font-size:11px!important;
+    line-height:1.1!important;
+  }
+
+  .archive-foot button,
+  .trace-foot button,
+  .protected-gateway>button,
+  .action-builder .refine-head button,
+  .primary-small,
+  .secondary-small{
+    min-height:42px;
+    font-size:9.5px!important;
+  }
+}
+
+@media(max-width:430px){
+  /* Preserve two-column action choices while giving the text more room. */
+  .action-type{
+    grid-template-columns:34px minmax(0,1fr)!important;
+    min-height:66px!important;
+    padding:9px!important;
+  }
+  .action-type i{width:32px!important;height:32px!important}
+  .action-type strong{font-size:10px!important}
+  .action-type small{font-size:8.5px!important}
+
+  .action-compose-row>span{padding:7px 6px!important}
+  .action-compose-row small{font-size:7.5px!important}
+  .action-compose-row strong{font-size:9px!important}
+
+  .mobile-nav button small{font-size:10.5px!important}
+}
