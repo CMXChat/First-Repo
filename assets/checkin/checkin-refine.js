@@ -8,6 +8,9 @@
     [/\bOperator authorized\b/gi, "Private access active"],
     [/\bOperator unlock\b/gi, "Private access"],
     [/\bOperator authorization required\b/gi, "Private access required"],
+    [/An authorized operator can record proof of life\./gi, "Authorization is required to record proof of life."],
+    [/Operator session expired/gi, "Private session expired"],
+    [/Operator key was not accepted/gi, "Access key was not accepted"],
     [/\bOperator session\b/gi, "Private session"],
     [/\bOperator key\b/gi, "Access key"],
     [/\bProtected operator access\b/gi, "Protected access"],
@@ -19,6 +22,9 @@
     [/24-hour/gi, "24 hour"],
     [/proof-of-life/gi, "proof of life"],
     [/check-in/gi, "check in"],
+    [/Sealed and synchronized\. The current proof of life window is valid\./gi, "Sealed and synchronized."],
+    [/The current proof of life window is valid\./gi, ""],
+    [/\boperator\b/gi, "private access"],
   ];
 
   function isUserContent(node) {
@@ -129,7 +135,7 @@
       actions.querySelector(".view-heading")?.insertAdjacentElement("afterend", gatewayMarkup("actions", "Contingency actions", "Configured contingency actions are protected. Sequence details remain sealed until authorization."));
     }
     const activity = $('[data-view-panel="activity"]');
-    if (activity && !activity.querySelector('[data-gateway="activity"]')) {
+    if (activity && !activity.querySelector('.protected-access-gateway[data-gateway="activity"]')) {
       activity.querySelector(".view-heading")?.insertAdjacentElement("afterend", gatewayMarkup("activity", "Private activity log", "Audit history is restricted. Authorization is required to review protected events and timestamps."));
     }
   }
@@ -137,8 +143,9 @@
   function trimQuickPanel() {
     $$(".quick-panel .quick-row").forEach(row => {
       const label = row.querySelector("span")?.textContent.trim().toLowerCase();
-      const hide = ["schedule", "grace period", "records", "trigger actions"].includes(label);
-      row.classList.toggle("refine-hidden-row", hide);
+      const alwaysHide = ["schedule", "grace period", "records", "trigger actions"].includes(label);
+      const sessionExpiryHidden = label === "session expiry" && !document.body.classList.contains("operator-unlocked");
+      row.classList.toggle("refine-hidden-row", alwaysHide || sessionExpiryHidden);
     });
     const title = $(".quick-panel .panel-title > span");
     if (title) title.textContent = "SYSTEM INTEGRITY";
@@ -150,6 +157,7 @@
     const state = console.dataset.state || "safe";
     document.body.dataset.switchState = state;
 
+    if (state === "safe" && $("#statusCopy")) $("#statusCopy").textContent = "Sealed and synchronized.";
     $$("[data-track-stage]").forEach(item => item.classList.toggle("is-current", item.dataset.trackStage === state));
 
     const banner = $("#statePressureBanner");
@@ -185,6 +193,7 @@
     if (lockButton) lockButton.textContent = unlocked ? "Private access active" : "Private access";
     const operatorState = $("#operatorState");
     if (operatorState) operatorState.textContent = unlocked ? "AUTHORIZED" : "LOCKED";
+    trimQuickPanel();
     updateStatePresentation();
   }
 
