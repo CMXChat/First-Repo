@@ -7,7 +7,103 @@
  * Keep the SVG filter free for Android/Chrome compositing stability.
  */
 
+/* Spaces-style Light / Dark segmented switch.
+ * The existing #themeToggle click handler remains untouched; this is visual only.
+ */
+#themeToggle.theme-toggle{
+  position:relative;
+  width:108px!important;
+  min-width:108px!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:3px!important;
+  overflow:hidden;
+  border:1px solid rgba(121,165,220,.28)!important;
+  border-radius:999px!important;
+  background:rgba(10,15,22,.92)!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  cursor:pointer;
+}
+
+#themeToggle.theme-toggle>span{
+  position:relative;
+  z-index:2;
+  display:block;
+  width:100%;
+  height:34px;
+  color:transparent!important;
+  font-size:0!important;
+  line-height:34px;
+}
+
+#themeToggle.theme-toggle>span::before,
+#themeToggle.theme-toggle>span::after{
+  position:absolute;
+  top:0;
+  z-index:3;
+  width:50%;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:850;
+  line-height:34px;
+  text-align:center;
+  transition:color 180ms ease;
+}
+
+#themeToggle.theme-toggle>span::before{content:"Dark";left:0}
+#themeToggle.theme-toggle>span::after{content:"Light";right:0}
+
+#themeToggle.theme-toggle::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  top:3px;
+  left:3px;
+  width:calc(50% - 3px);
+  height:34px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#17304f,#294f7c);
+  box-shadow:0 4px 14px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.08);
+  transform:translateX(0);
+  transition:transform 200ms ease,background 200ms ease,box-shadow 200ms ease;
+}
+
+html[data-theme="dark"] #themeToggle.theme-toggle>span::before{color:#fff}
+html[data-theme="dark"] #themeToggle.theme-toggle>span::after{color:#77889d}
+
+html[data-theme="light"] #themeToggle.theme-toggle{
+  border-color:rgba(52,94,140,.22)!important;
+  background:rgba(244,249,253,.96)!important;
+  box-shadow:0 7px 20px rgba(45,80,117,.12),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+
+html[data-theme="light"] #themeToggle.theme-toggle::before{
+  background:linear-gradient(135deg,#ffffff,#dbe9f5);
+  box-shadow:0 4px 14px rgba(41,71,99,.18),inset 0 1px 0 rgba(255,255,255,.95);
+  transform:translateX(100%);
+}
+
+html[data-theme="light"] #themeToggle.theme-toggle>span::before{color:#738398}
+html[data-theme="light"] #themeToggle.theme-toggle>span::after{color:#16283c}
+
+#themeToggle.theme-toggle:hover,
+#themeToggle.theme-toggle:focus-visible{
+  border-color:rgba(99,166,255,.62)!important;
+  box-shadow:0 0 0 3px rgba(99,166,255,.10),0 8px 22px rgba(0,0,0,.20)!important;
+  outline:none;
+}
+
 @media(max-width:700px){
+  #themeToggle.theme-toggle{
+    width:92px!important;
+    min-width:92px!important;
+  }
+
+  #themeToggle.theme-toggle>span::before,
+  #themeToggle.theme-toggle>span::after{
+    font-size:9px;
+  }
+
   .status-console{
     padding:14px 14px 16px;
   }
@@ -101,9 +197,29 @@
   }
 }
 
+@media(max-width:380px){
+  #themeToggle.theme-toggle{
+    width:84px!important;
+    min-width:84px!important;
+  }
+
+  #themeToggle.theme-toggle>span::before,
+  #themeToggle.theme-toggle>span::after{
+    font-size:8px;
+  }
+}
+
 @media(max-width:350px){
   .countdown-ring{
     width:210px!important;
     height:210px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #themeToggle.theme-toggle::before,
+  #themeToggle.theme-toggle>span::before,
+  #themeToggle.theme-toggle>span::after{
+    transition:none!important;
   }
 }
