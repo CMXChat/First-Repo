@@ -1,6 +1,20 @@
 (() => {
   "use strict";
 
+  /*
+   * FRONTEND / BACKEND HANDOFF
+   * --------------------------
+   * This file is presentation only. It must not calculate an authoritative
+   * trigger, execute an action, release a record, or imply delivery succeeded.
+   * The prepared post-trigger lifecycle below is intentionally display-only.
+   * Backend work needed before those controls can become active is documented in:
+   *   CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md
+   *
+   * Keep public quantities and private contents sealed. The existing FastAPI
+   * service remains authoritative for state, timestamps, authentication, CSRF,
+   * Origin checks, records, action configuration and audit data.
+   */
+
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -32,22 +46,28 @@
     return Boolean(element?.closest("#richEditor, #updateMarkdown, input, textarea, [contenteditable='true']"));
   }
 
-  function normalizeVisibleCopy(root = document.body) {
+  function cleanText(value = "") {
+    return COPY_REPLACEMENTS.reduce((text, [pattern, replacement]) => text.replace(pattern, replacement), value);
+  }
+
+  function normalizeTextNode(node) {
+    if (!node || node.nodeType !== Node.TEXT_NODE || isUserContent(node)) return;
+    const next = cleanText(node.nodeValue || "");
+    if (next !== node.nodeValue) node.nodeValue = next;
+  }
+
+  function normalizeVisibleCopy(root) {
     if (!root) return;
+    if (root.nodeType === Node.TEXT_NODE) {
+      normalizeTextNode(root);
+      return;
+    }
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-    const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach(node => {
-      if (isUserContent(node)) return;
-      let next = node.nodeValue;
-      COPY_REPLACEMENTS.forEach(([pattern, replacement]) => { next = next.replace(pattern, replacement); });
-      if (next !== node.nodeValue) node.nodeValue = next;
-    });
+    while (walker.nextNode()) normalizeTextNode(walker.currentNode);
   }
 
   function clickView(view) {
-    const target = document.querySelector(`[data-view="${view}"]`);
-    if (target) target.click();
+    document.querySelector(`[data-view="${view}"]`)?.click();
   }
 
   function makeButton(label, view, className = "") {
@@ -57,6 +77,12 @@
     button.textContent = label;
     button.addEventListener("click", () => clickView(view));
     return button;
+  }
+
+  function cleanOverviewHeading() {
+    const heading = $('[data-view-panel="overview"] > .compact-heading');
+    const eyebrow = heading?.querySelector(".eyebrow");
+    if (eyebrow) eyebrow.remove();
   }
 
   function ensurePressureBanner() {
@@ -88,8 +114,7 @@
         <button type="button" class="package-card package-card-action" data-package-view="actions"><span class="package-icon" aria-hidden="true">↯</span><strong>Contingency actions</strong><small>PROTECTED</small></button>
       </div>`;
     section.querySelectorAll("[data-package-view]").forEach(button => button.addEventListener("click", () => clickView(button.dataset.packageView)));
-    const dashboard = overview.querySelector(".dashboard-grid");
-    dashboard?.insertAdjacentElement("afterend", section);
+    overview.querySelector(".dashboard-grid")?.insertAdjacentElement("afterend", section);
   }
 
   function ensureDeadlineOverview() {
@@ -106,7 +131,7 @@
         <span data-track-stage="grace"><i></i><strong>Grace</strong><small>Deadline missed</small></span>
         <span data-track-stage="triggered"><i></i><strong>Trigger state</strong><small>Grace expired</small></span>
       </div>`;
-    section.querySelector(".deadline-overview-head").append(makeButton("View deadline sequence", "timeline", "deadline-link"));
+    section.querySelector(".deadline-overview-head")?.append(makeButton("Open timeline", "timeline", "deadline-link"));
     $("#protectedPackage")?.insertAdjacentElement("afterend", section);
   }
 
@@ -121,7 +146,7 @@
       <p>${copy}</p>
       <button type="button" class="gateway-unlock">Unlock protected controls</button>
       <small>Authorization is required to view protected contents.</small>`;
-    section.querySelector(".gateway-unlock").addEventListener("click", () => $("#operatorButton")?.click());
+    section.querySelector(".gateway-unlock")?.addEventListener("click", () => $("#operatorButton")?.click());
     return section;
   }
 
@@ -135,9 +160,44 @@
       actions.querySelector(".view-heading")?.insertAdjacentElement("afterend", gatewayMarkup("actions", "Contingency actions", "Contingency action details are protected. Sequence contents remain sealed until authorization."));
     }
     const activity = $('[data-view-panel="activity"]');
-    if (activity && !activity.querySelector('.protected-access-gateway[data-gateway="activity"]')) {
+    if (activity && !activity.querySelector('[data-gateway="activity"]')) {
       activity.querySelector(".view-heading")?.insertAdjacentElement("afterend", gatewayMarkup("activity", "Private activity log", "Audit history is restricted. Authorization is required to review protected events and timestamps."));
     }
+  }
+
+  function ensureTriggerLifecycle() {
+    const actions = $('[data-view-panel="actions"]');
+    if (!actions || $("#triggerLifecycle")) return;
+
+    /*
+     * BACKEND TODO: this is a prepared shell only. Before enabling any control,
+     * FastAPI needs an authoritative execution run model, action-attempt states,
+     * atomic claiming/idempotency, retry policy, delivery receipts, cancellation /
+     * recovery semantics and audit events. The browser must never advance these
+     * stages by itself.
+     */
+    const section = document.createElement("section");
+    section.id = "triggerLifecycle";
+    section.className = "trigger-lifecycle operator-only";
+    section.dataset.backendRequired = "true";
+    section.innerHTML = `
+      <div class="trigger-lifecycle-head">
+        <div><small>TRIGGER RESPONSE</small><h2>Post trigger lifecycle</h2><p>The interface is prepared for the execution service. External actions are not connected yet.</p></div>
+        <span>BACKEND REQUIRED</span>
+      </div>
+      <div class="trigger-lifecycle-track" aria-label="Planned post trigger lifecycle">
+        <article><b>01</b><strong>Trigger confirmed</strong><small>Server state</small></article>
+        <article><b>02</b><strong>Preflight</strong><small>Validate protected inputs</small></article>
+        <article><b>03</b><strong>Action queue</strong><small>Claim ordered work</small></article>
+        <article><b>04</b><strong>Delivery</strong><small>Attempt configured actions</small></article>
+        <article><b>05</b><strong>Audit</strong><small>Record final outcomes</small></article>
+      </div>
+      <div class="trigger-lifecycle-controls" aria-label="Planned emergency controls">
+        <button type="button" disabled>Pause sequence</button>
+        <button type="button" disabled>Cancel pending</button>
+        <button type="button" disabled>Recover switch</button>
+      </div>`;
+    actions.querySelector(".view-heading")?.insertAdjacentElement("afterend", section);
   }
 
   function trimQuickPanel() {
@@ -151,17 +211,19 @@
     if (title) title.textContent = "SYSTEM INTEGRITY";
   }
 
-  function suppressLegacyPresentation() {
-    const oldActivityGateway = $('[data-view-panel="activity"] .access-gateway[data-gateway="activity"]');
-    if (oldActivityGateway) oldActivityGateway.hidden = true;
+  function suppressLegacyControls() {
     const simulate = $("#simulateButton");
     if (simulate) simulate.hidden = true;
+  }
+
+  function displayState(rawState) {
+    return rawState === "due_soon" ? "soon" : rawState || "safe";
   }
 
   function updateStatePresentation() {
     const console = $("#statusConsole");
     if (!console) return;
-    const state = console.dataset.state || "safe";
+    const state = displayState(console.dataset.state);
     document.body.dataset.switchState = state;
 
     if (state === "safe" && $("#statusCopy")) $("#statusCopy").textContent = "Sealed and synchronized.";
@@ -193,15 +255,17 @@
     const unlocked = document.body.classList.contains("operator-unlocked");
     document.body.classList.toggle("private-access-active", unlocked);
     const actionCount = Number($("#actionPublicCount")?.textContent || 0);
+
     $$(".package-card small").forEach(label => {
       if (unlocked) label.textContent = "AUTHORIZED";
       else if (label.closest(".package-card")?.classList.contains("package-card-action")) label.textContent = actionCount > 0 ? "CONFIGURED" : "PROTECTED";
       else label.textContent = "SEALED";
     });
-    const lockButton = $("#operatorButton");
-    if (lockButton) lockButton.textContent = unlocked ? "Private access active" : "Private access";
-    const operatorState = $("#operatorState");
-    if (operatorState) operatorState.textContent = unlocked ? "AUTHORIZED" : "LOCKED";
+
+    const accessButton = $("#operatorButton");
+    if (accessButton) accessButton.textContent = unlocked ? "Access active" : "Access";
+    const accessState = $("#operatorState");
+    if (accessState) accessState.textContent = unlocked ? "AUTHORIZED" : "LOCKED";
     trimQuickPanel();
     updateStatePresentation();
   }
@@ -213,31 +277,60 @@
     });
   }
 
+  function watchSmallDynamicCopy() {
+    const targets = ["#statusCopy", "#checkinButtonHint", "#authError", "#toast", "#operatorSessionStrip"]
+      .map(selector => $(selector))
+      .filter(Boolean);
+    if (!targets.length) return;
+
+    const observer = new MutationObserver(mutations => {
+      const roots = new Set();
+      mutations.forEach(mutation => {
+        const root = mutation.target.nodeType === Node.TEXT_NODE ? mutation.target.parentElement : mutation.target;
+        if (root) roots.add(root);
+      });
+      roots.forEach(normalizeVisibleCopy);
+      if ($("#statusConsole")?.dataset.state === "safe" && $("#statusCopy")) $("#statusCopy").textContent = "Sealed and synchronized.";
+    });
+    targets.forEach(target => observer.observe(target, { subtree: true, childList: true, characterData: true }));
+  }
+
+  function watchStateAndAccess() {
+    const console = $("#statusConsole");
+    if (console) {
+      new MutationObserver(updateStatePresentation).observe(console, { attributes: true, attributeFilter: ["data-state"] });
+    }
+
+    let lastAccess = document.body.classList.contains("operator-unlocked");
+    new MutationObserver(() => {
+      const nextAccess = document.body.classList.contains("operator-unlocked");
+      if (nextAccess === lastAccess) return;
+      lastAccess = nextAccess;
+      updateAuthorizationPresentation();
+    }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+    const actionCount = $("#actionPublicCount");
+    if (actionCount) {
+      new MutationObserver(updateAuthorizationPresentation).observe(actionCount, { subtree: true, childList: true, characterData: true });
+    }
+  }
+
   function init() {
+    cleanOverviewHeading();
     ensurePressureBanner();
     ensureProtectedPackage();
     ensureDeadlineOverview();
     ensureGateways();
+    ensureTriggerLifecycle();
     trimQuickPanel();
     hidePublicCounts();
-    suppressLegacyPresentation();
-    normalizeVisibleCopy();
-    updateAuthorizationPresentation();
+    suppressLegacyControls();
 
-    const observer = new MutationObserver(mutations => {
-      let stateChanged = false;
-      let authChanged = false;
-      mutations.forEach(mutation => {
-        if (mutation.target === $("#statusConsole") && mutation.attributeName === "data-state") stateChanged = true;
-        if (mutation.target === document.body && mutation.attributeName === "class") authChanged = true;
-      });
-      suppressLegacyPresentation();
-      normalizeVisibleCopy();
-      trimQuickPanel();
-      if (authChanged) updateAuthorizationPresentation();
-      if (stateChanged) updateStatePresentation();
-    });
-    observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class", "data-state"] });
+    /* One initial copy pass is cheap. After boot we observe only small dynamic nodes. */
+    normalizeVisibleCopy(document.body);
+    updateAuthorizationPresentation();
+    watchSmallDynamicCopy();
+    watchStateAndAccess();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
