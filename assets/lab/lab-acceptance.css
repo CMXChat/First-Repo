@@ -1,0 +1,41 @@
+/* Phase 8 acceptance hardening. Narrow cross-module UX fixes only. */
+
+body.lab-command-open { overflow:hidden; }
+
+#labGlobalSearch,
+#labGlobalCreate { touch-action:manipulation; }
+
+#labCreateMenu[role="menu"] [role="menuitem"]:focus-visible {
+  outline:2px solid #69c6ff;
+  outline-offset:2px;
+  border-color:rgba(105,198,255,.34);
+  background:rgba(28,99,153,.14);
+}
+
+#labPolicyDialog #labIntervalValue:invalid {
+  border-color:rgba(255,162,94,.52);
+  box-shadow:0 0 0 2px rgba(255,162,94,.07);
+}
+
+@media (max-width:700px) {
+  .topbar { padding-inline:12px; }
+  .top-actions { gap:6px; }
+  #labGlobalSearch,
+  #labGlobalCreate,
+  .topbar .theme-toggle { min-width:38px;width:38px;height:38px;border-radius:11px; }
+  #labCreateMenu { max-height:min(78dvh,620px);overflow:auto;overscroll-behavior:contain; }
+}
+
+@media (max-width:380px) {
+  .mobile-brand small { display:none; }
+  .mobile-brand strong { font-size:10px; }
+  .topbar { padding-inline:9px; }
+  .top-actions { gap:4px;margin-left:5px; }
+  #labGlobalSearch,
+  #labGlobalCreate,
+  .topbar .theme-toggle { min-width:36px;width:36px;height:36px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  #labCreateMenu *, #labPolicyDialog * { transition:none!important;animation:none!important; }
+}
