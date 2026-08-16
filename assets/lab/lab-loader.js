@@ -43,7 +43,8 @@
     ["lab-acceptance.css", "20260816-acceptance1"],
     ["lab-product-polish.css", "20260816-mobile1"],
     ["lab-experience.css", "20260816-product2"],
-    ["lab-plan.css", "20260816-plan1"]
+    ["lab-plan.css", "20260816-plan1"],
+    ["lab-plan-overrides.css", "20260816-plan1"]
   ]);
 
   const LAB_SCRIPTS = Object.freeze([
