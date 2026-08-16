@@ -6,9 +6,11 @@ Read this file first when resuming work on `/lab`.
 
 ## Purpose
 
-`/lab` is the isolated frontend sandbox for the Check In dead-man-switch project. It exists so interface, record-model, action-builder, timing, simulation, decision-routing, audit, versioning, and incident-snapshot work can be tested without modifying production `/checkin`.
+`/lab` is the isolated frontend sandbox for the Check In dead-man-switch project. It exists so interface, record-model, action-builder, timing, simulation, decision-routing, audit, versioning, incident-snapshot, search, and navigation work can be tested without modifying production `/checkin`.
 
 Production `/checkin` must remain untouched unless the user explicitly asks to port an approved Lab change back.
+
+For eventual migration into the official Check In project, also read `CHECKINLABCLONE.md`.
 
 ## Safety boundary
 
@@ -21,9 +23,10 @@ Current safeguards:
 - The synthetic public status request is answered locally.
 - Other production Check In API requests return a Lab-safe 403.
 - The page visibly identifies itself as Lab/mock mode.
-- People, Organizations, Documents, Digital Assets, Actions, switch policy, simulations, decision state, audit state, versions, and incident snapshots are browser-local mock data.
+- People, Organizations, Documents, Digital Assets, Actions, switch policy, simulations, decision state, audit state, versions, incident snapshots, and recent navigation are browser-local mock state.
 - Phase 6 decision logic cannot execute arbitrary code or external actions.
 - Phase 7 fingerprints are visual Lab fingerprints only and are not cryptographic assurance.
+- Phase 8 search reads only local Lab stores and does not call production.
 
 Do not weaken this boundary to make a demo easier.
 
@@ -31,7 +34,7 @@ Do not weaken this boundary to make a demo easier.
 
 `lab/index.html`
 
-The loader fetches the frozen Check In HTML snapshot, rewrites production asset URLs to `/assets/lab/`, removes production API connectivity, and loads the Lab layers.
+The loader fetches the frozen Check In HTML snapshot, rewrites production asset URLs to `/assets/lab/`, removes production API connectivity, and loads the Lab-only layers.
 
 ### Lab JavaScript boot order
 
@@ -41,9 +44,15 @@ The loader fetches the frozen Check In HTML snapshot, rewrites production asset 
 4. `lab-timeline-live.js`
 5. `lab-decisions.js`
 6. `lab-decisions-events.js`
-7. `lab-audit.js`
+7. `lab-audit-bootstrap.js`
+8. `lab-audit.js`
+9. `lab-command.js`
 
-`lab-audit.js` intentionally loads last so it can observe future local mock mutations from the other Lab modules and version/audit them.
+`lab-audit-bootstrap.js` protects Phase 7 provenance when an older simulation existed before the audit layer.
+
+`lab-audit.js` owns the Lab audit/version/incident adapter.
+
+`lab-command.js` intentionally loads last. It may read the other Lab stores and drive their existing UI controls, but it must not become a second persistence or execution source of truth.
 
 ### Lab CSS layers
 
@@ -55,6 +64,7 @@ The loader fetches the frozen Check In HTML snapshot, rewrites production asset 
 6. `lab-timeline-responsive.css`
 7. `lab-decisions.css`
 8. `lab-audit.css`
+9. `lab-command.css`
 
 ## Local mock storage keys
 
@@ -70,12 +80,13 @@ These are temporary browser adapters, not production persistence contracts.
 - `cmx-lab-audit-v1`
 - `cmx-lab-versions-v1`
 - `cmx-lab-incidents-v1`
+- `cmx-lab-navigation-v1`
 
-A future FastAPI/PostgreSQL implementation should replace these adapters without forcing a visual rewrite.
+A future FastAPI/PostgreSQL implementation should replace the domain-data adapters without forcing a visual rewrite. Recent-navigation preferences may remain client-side in the official application, but must not cache protected payloads.
 
 ## Completed phases
 
-### Phase 1 — Lab isolation
+### Phase 1: Lab isolation
 
 Completed.
 
@@ -84,7 +95,7 @@ Completed.
 - explicit Lab presentation
 - `/checkin` separate from Lab
 
-### Phase 2 — People + Organizations CRM
+### Phase 2: People + Organizations CRM
 
 Completed.
 
@@ -93,7 +104,7 @@ Completed.
 - search/filter/sort
 - profile/detail/context panes
 - notes/activity
-- People ↔ Organization linking
+- People and Organization linking
 - add/edit flows
 - mobile drill-in
 - local mock persistence
@@ -103,15 +114,15 @@ Primary files:
 - `lab-crm.js`
 - `lab-crm.css`
 
-### Phase 3 — Documents + Digital Assets
+### Phase 3: Documents + Digital Assets
 
 Completed.
 
-Documents include metadata, status, sensitivity, review dates, notes, tags, activity, and links to People/Organizations/Assets.
+Documents include metadata, status, sensitivity, review dates, notes, tags, activity, and links to People, Organizations, and Digital Assets.
 
 Digital Assets include domains, websites, cloud accounts, hosting, repositories, social accounts, devices, service accounts, owners, organizations, notes, tags, and `secret_ref` placeholders.
 
-Important rule: passwords, tokens, private keys, recovery codes, MFA secrets, cookies, or other credentials do not belong in the record model.
+Important rule: passwords, tokens, private keys, recovery codes, MFA secrets, cookies, and other credentials do not belong in ordinary record storage.
 
 Primary files:
 
@@ -119,7 +130,7 @@ Primary files:
 - `lab-inventory.css`
 - `BACKEND-HANDOFF.md`
 
-### Phase 4 — Action Builder
+### Phase 4: Action Builder
 
 Completed.
 
@@ -147,7 +158,7 @@ Builder sequence:
 
 Actions reference People, Organizations, Documents, and Digital Assets by stable IDs.
 
-Current definition states:
+Definition states:
 
 - Draft
 - Enabled
@@ -168,7 +179,7 @@ Primary files:
 - `lab-actions.css`
 - `ACTIONS-BACKEND-HANDOFF.md`
 
-### Phase 5 — Configurable switch policy + Sequence simulator
+### Phase 5: Configurable switch policy + Sequence simulator
 
 Completed.
 
@@ -191,7 +202,7 @@ Semantics:
 
 Sequence includes:
 
-- Safe → Deadline → Grace → Final Trigger visualization
+- Safe to Deadline to Grace to Final Trigger visualization
 - action markers from the selected policy
 - simulated incident clock
 - Reset clock
@@ -209,8 +220,6 @@ Sequence includes:
 - horizontal desktop timeline
 - vertical mobile chronology
 
-The old Timeline navigation target is exposed as `Sequence` in Lab.
-
 Primary files:
 
 - `lab-timeline-live.js`
@@ -218,7 +227,7 @@ Primary files:
 - `lab-timeline-responsive.css`
 - `lab-mock-api.js`
 
-### Phase 6 — Conditions, dependencies, fallbacks, acknowledgements
+### Phase 6: Conditions, dependencies, fallbacks, acknowledgements
 
 Completed.
 
@@ -265,22 +274,7 @@ Decision states include:
 - `APPROVAL DENIED`
 - `CANCELLED`
 
-Sequence includes a Logic & Routing Map and Decision Inspector. The Action workspace gets a compact Logic control/card instead of a giant extra form.
-
-Current seeded demonstration chain:
-
-```text
-AI contingency briefing
-  ↓ success
-Business continuity email
-  ↓ delivered
-Acknowledgement gate
-  ├─ acknowledged → stop escalation
-  └─ final failure / no acknowledgement → SMS legal escalation
-
-Primary domain handoff
-  → independently waits for final trigger + operator approval
-```
+Sequence includes a Logic & Routing Map and Decision Inspector. The Action workspace gets a compact Logic control/card instead of a large extra form.
 
 Primary files:
 
@@ -289,39 +283,15 @@ Primary files:
 - `lab-decisions.css`
 - `DECISIONS-BACKEND-HANDOFF.md`
 
-### Phase 7 — Audit history + definition versioning + incident snapshots
+### Phase 7: Audit history + definition versioning + incident snapshots
 
-Completed in the Lab frontend.
+Completed.
 
-Phase 7 replaces the old Activity presentation with an `Activity & assurance` workspace.
+Activity now contains `Audit`, `Incidents`, `Versions`, and `Health` tabs.
 
-Tabs:
+The Lab records structured definition/audit events for switch policy, Actions, Decision Policies, Documents, Digital Assets, Organizations, People changes, removals/tombstones, incident creation, and historical restore operations.
 
-- Audit
-- Incidents
-- Versions
-- Health
-
-#### Audit
-
-The Lab now records structured global definition/audit events including:
-
-- switch-policy revisions
-- action revisions
-- decision-policy revisions
-- document metadata revisions
-- digital-asset revisions
-- organization revisions
-- person create/update audit events
-- definition removal/tombstone events
-- incident snapshot creation
-- historical-version restore events
-
-Each audit event includes Lab actor/source, timestamp, category, severity, object reference, optional incident, optional revision, and metadata.
-
-#### Definition versions
-
-Current versioned objects:
+Versioned objects currently include:
 
 - switch policy
 - Actions
@@ -330,122 +300,175 @@ Current versioned objects:
 - Digital Assets
 - Organizations
 
-Initial browser state is captured as baseline v1 without flooding the audit stream.
+Each revision stores version number, object type/id, label, timestamp, Lab actor/source, reason, payload snapshot, and Lab fingerprint.
 
-Every later changed payload creates another immutable-looking Lab revision with:
+Restoring an older definition creates another new revision. History is never rewound.
 
-- version number
-- object type/id
-- label
-- timestamp
-- Lab actor/source
-- reason
-- payload snapshot
-- Lab fingerprint
-
-The Versions UI supports:
-
-- object directory
-- revision history
-- two-version comparison
-- field-level before/after diff
-- historical fingerprint display
-- actor/reason/source metadata
-- `Restore as new version`
-
-Restoring never rewinds history. The old payload is copied into a new current revision.
-
-#### Incident snapshots
-
-When a new Lab simulation/incident is seen after Phase 7 is active, `lab-audit.js` snapshots the current plan.
-
-Snapshot includes:
+When a new Lab simulation is seen after Phase 7 is active, the audit layer snapshots:
 
 - current switch policy
-- version references for the current plan
-- every enabled Action payload and revision
-- Decision Policy payload/revision for enabled Actions
-- stable target references used by enabled Actions
+- current definition-version references
+- every enabled Action definition
+- Decision Policies for enabled Actions
+- stable target references
 - snapshot fingerprint
 
-Later definition edits do not rewrite this snapshot.
+Later edits do not rewrite an incident snapshot.
 
-Simulation runs that existed before Phase 7 can appear as `legacy` incidents. They keep their historical trace, but the UI must clearly state that exact definition-version provenance was unavailable at the time they were created.
+Simulation runs created before Phase 7 may be marked `legacy`. Exact definition provenance must not be invented for those runs.
 
-#### Incident event ledger / replay
+Health tracks:
 
-Sequence traces and Decision traces are normalized into incident event history.
-
-Incident detail includes:
-
-- policy snapshot
-- version count
-- action snapshot provenance
-- current-plan changed-since count
-- Lab fingerprint
-- ordered incident events
-- read-only incident replay slider
-
-Replay is presentation only. It never mutates the archived incident.
-
-#### Changed since latest simulation
-
-This is a primary assurance signal.
-
-Lab compares current version references with the latest non-legacy incident snapshot and reports definitions changed since that snapshot.
-
-If definitions changed, Health shows `RETEST` and lists which current revision differs from the incident baseline.
-
-This is the current implementation of the earlier `changed since last simulation` idea.
-
-#### Action test coverage
-
-Health derives Lab testing coverage from captured incident events for each Action:
-
-- success path
-- failure path
-- acknowledgement path
-- fallback/routed path
+- changed since latest non-legacy simulation snapshot
+- action success-path coverage
+- failure-path coverage
+- acknowledgement-path coverage
+- fallback/routed-path coverage
 
 Current display is `x/4` per action.
 
-This is intentionally evidence-based from captured Lab events. It should not claim provider delivery or real production testing.
-
-#### Phase 7 storage
-
-- `cmx-lab-audit-v1`: structured global audit events
-- `cmx-lab-versions-v1`: immutable-looking local definition revisions
-- `cmx-lab-incidents-v1`: incident snapshots and normalized incident events
-
-#### Phase 7 backend direction
-
-Read `AUDIT-BACKEND-HANDOFF.md` before changing Phase 7 semantics.
-
-Production intent:
-
-- append-only server audit
-- immutable definition revisions
-- immutable incident snapshots
-- server-authoritative actor/time/version numbers
-- cryptographic payload hashes
-- execution attempts as durable rows
-- typed condition evaluation history
-- restore creates new revision
-- archived/tombstone operational deletes
-- read-only replay
-- server-calculated configuration health
-
 Primary files:
 
+- `lab-audit-bootstrap.js`
 - `lab-audit.js`
 - `lab-audit.css`
 - `AUDIT-BACKEND-HANDOFF.md`
+
+### Phase 8: Universal search + command palette + app integration
+
+Completed in the Lab frontend.
+
+Primary files:
+
+- `lab-command.js`
+- `lab-command.css`
+
+Phase 8 is intentionally an integration layer. It does not replace the earlier modules.
+
+#### Universal search
+
+The command index can currently search local Lab representations of:
+
+- People
+- Organizations
+- Documents
+- Digital Assets
+- Actions
+- Incidents
+- versioned definitions
+- Audit events
+- navigation commands
+- saved views
+- quick-create commands
+
+The index is rebuilt from current local stores when the palette renders. Search never calls production.
+
+Official-project search must be authorization-aware and server/API-backed so restricted entities cannot leak through search results, snippets, counts, or timing behavior.
+
+#### Command palette
+
+Open with:
+
+- `Cmd+K` on Apple platforms
+- `Ctrl+K` elsewhere
+- `/` when the user is not typing in an editor
+- the Search control in the top bar
+
+Keyboard controls:
+
+- Up / Down moves between results
+- Enter opens the selected result
+- Escape closes the palette
+
+The palette shows recent items before the user types and groups matching results by object type.
+
+#### Deep navigation
+
+Current Lab deep-link adapter uses hashes such as:
+
+```text
+#lab=person%3Ap-maya
+#lab=action%3Aact-ai-brief
+#lab=incident%3Asim-...
+```
+
+The adapter drives the existing Lab module controls so opening a search result lands on the exact record/action/incident/version instead of only switching to a broad section.
+
+Browser back/forward responds to these Lab routes.
+
+Official migration must replace this hash adapter with the official application router. Do not copy DOM-click routing into React/TanStack Router.
+
+#### Global quick create
+
+The top bar now exposes a Lab `New` menu for:
+
+- Person
+- Organization
+- Document
+- Digital Asset
+- Action
+- Note current record when supported
+
+The integration layer opens the existing editor for each object. It does not implement duplicate creation logic.
+
+#### Saved views
+
+Current built-in views include:
+
+- Critical actions
+- Documents needing review
+- Untested action paths
+- Changed since simulation
+
+These use existing filters or the Activity Health view.
+
+#### Recently viewed
+
+`cmx-lab-navigation-v1` stores only lightweight local navigation metadata for recent objects. Do not add protected record payloads to this store.
+
+#### Status assurance
+
+Status now gets a `Current configuration / Contingency assurance` block derived from the same Lab stores used by Phase 7.
+
+It surfaces:
+
+- configured proof-of-life interval
+- grace window
+- rolling repeat / one-shot mode
+- enabled Action count
+- latest non-legacy test snapshot
+- definitions changed since that snapshot
+- enabled Actions below 4/4 simulated path coverage
+- Documents needing review
+
+Possible presentation states:
+
+- `PLAN CURRENT`
+- `TEST REQUIRED`
+- `RETEST REQUIRED`
+- `COVERAGE INCOMPLETE`
+
+These are Lab assurance states only. They do not claim real provider delivery or production readiness.
+
+#### Mobile and accessibility integration
+
+Phase 8 includes:
+
+- full-width mobile command sheet
+- mobile quick-create sheet
+- larger touch targets
+- explicit focus-visible styling
+- keyboard-first command navigation
+- `aria-modal` command surface
+- `aria-keyshortcuts`
+- reduced-motion treatment
+- dark/light theme support for the new integration layer
 
 ## Switch-policy source of truth in Lab
 
 `cmx-lab-switch-policy-v1`
 
-Shape:
+Conceptual shape:
 
 ```json
 {
@@ -499,7 +522,7 @@ Current intent:
 10. terminal outcome emits route signal
 11. downstream Actions re-evaluate
 
-## Phase 7 version/snapshot rule
+## Version / incident snapshot rule
 
 A definition version is reusable configuration history.
 
@@ -507,7 +530,7 @@ An incident snapshot is the exact version set used by one incident.
 
 They must stay separate.
 
-Production example:
+Example:
 
 ```text
 Action current definition: v9
@@ -533,7 +556,7 @@ Browser
 
 Every real side effect needs authorization, idempotency, audit events, version provenance, failure handling, and execution snapshots.
 
-## Backend handoff documents
+## Backend and migration handoffs
 
 Read as needed:
 
@@ -541,6 +564,9 @@ Read as needed:
 - `ACTIONS-BACKEND-HANDOFF.md`
 - `DECISIONS-BACKEND-HANDOFF.md`
 - `AUDIT-BACKEND-HANDOFF.md`
+- `CHECKINLABCLONE.md`
+
+`CHECKINLABCLONE.md` is the official-project migration blueprint. Update it whenever a major Lab phase adds approved behavior that should eventually be recreated in the official application.
 
 ## CI / validation
 
@@ -558,7 +584,9 @@ It should continue checking:
 - switch-policy/Sequence files remain wired
 - Decision files remain wired
 - Audit/version files remain wired
+- Phase 8 command/search files remain wired
 - append-only/version/snapshot handoff language remains present
+- `CHECKINLABCLONE.md` remains present
 - persistent handoff includes the current phase
 
 When adding a major Lab layer, add it to this validator.
@@ -582,7 +610,7 @@ Keep one cohesive app:
 
 ## Known Lab limitations
 
-- Everything is browser-local mock state.
+- Everything remains browser-local mock state.
 - Document bytes are not stored.
 - No real SMS/email/social/AI/webhook/account operation executes.
 - Simulation outcomes are synthetic.
@@ -593,45 +621,48 @@ Keep one cohesive app:
 - Action Builder internals originated from a 72h + 24h default; Phase 5 adapts visible timing presentation to the current Lab policy.
 - Calendar-scheduled actions are not projected onto the incident-relative timeline.
 - Exact version provenance is unavailable for simulations created before Phase 7; those are labeled legacy.
-- Phase 7 observes future localStorage writes after `lab-audit.js` loads. It seeds current definitions as a baseline when first enabled.
 - Phase 7 Lab fingerprints are non-cryptographic and must never be presented as real tamper-proof validation.
-- Existing modules can still physically remove local mock definitions. Phase 7 preserves the historical revisions/audit tombstone, but production should prefer archive/soft-delete behavior.
+- Existing modules can physically remove local mock definitions. Phase 7 preserves historical revisions/audit tombstones, but production should prefer archive/soft-delete behavior.
+- Phase 8 universal search is a local prototype. It does not represent a production authorization/search architecture.
+- Phase 8 deep routing depends on stable DOM/data attributes from the Lab modules. The official application must use its native router and component APIs.
+- Recently viewed entries are browser-local convenience metadata.
 
-## Next phase
+## Next work after Phase 8
 
-### Phase 8 — Global search, command palette, dashboard assurance, and final UX integration
+Do not start production backend wiring just because Phase 8 is complete. The user is still validating the product and data model in `/lab`.
 
-Recommended order:
+Recommended next round:
 
-1. global entity/action/document/audit search
-2. Cmd/Ctrl+K command palette
-3. deep-link/jump actions between Records, Actions, Sequence, Activity
-4. dashboard `Current plan` assurance block
-5. surfaced changed-since-test / untested warnings on Status
-6. quick create menu for Person / Organization / Document / Asset / Action
-7. saved filters / recently viewed
-8. keyboard navigation
-9. mobile navigation polish
-10. accessibility / contrast / focus-state pass
-11. empty-state cleanup
-12. final consistency pass across dark/light themes
+1. visually inspect every primary desktop view
+2. visually inspect every primary mobile flow
+3. fix any integration/layout regressions
+4. test command palette navigation across every object type
+5. test quick-create entry points
+6. test back/forward deep navigation
+7. test assurance warnings after changing definitions and starting new simulations
+8. test dark/light contrast and keyboard focus behavior
+9. remove duplicated or obsolete UI left by earlier phases
+10. only after user approval, freeze/tag an approved Lab migration candidate
 
-Do not start production backend wiring just because Phase 8 finishes. The user is still using `/lab` to validate the product/data model first.
+The official-project migration should then use `CHECKINLABCLONE.md`, not a blind copy of `/lab` source code.
 
 ## Resume checklist for another context
 
 1. Read this file first.
-2. Inspect latest `main` before editing because another context may have touched the repo.
-3. Confirm `/checkin` contains no `/assets/lab/` references.
-4. Confirm `lab/index.html` still strips production API connectivity.
-5. Inspect latest Lab validation workflow result.
-6. Work only inside Lab unless explicitly asked to port to production.
-7. Read the relevant backend handoff before changing data semantics.
-8. Preserve delivery vs acknowledgement as separate states.
-9. Preserve typed conditions and server-authoritative production intent.
-10. Preserve immutable incident-snapshot semantics.
-11. Preserve `restore old version → create new revision` semantics.
-12. Do not claim Lab fingerprints are cryptographic assurance.
-13. Update this file at the end of every major Lab round with changed files, new storage/API assumptions, known limitations, and next work.
+2. Read `CHECKINLABCLONE.md` if migration/official-project work is involved.
+3. Inspect latest `main` before editing because another context may have touched the repo.
+4. Confirm `/checkin` contains no `/assets/lab/` references.
+5. Confirm `lab/index.html` still strips production API connectivity.
+6. Inspect latest Lab validation workflow result.
+7. Work only inside Lab unless explicitly asked to port to production.
+8. Read the relevant backend handoff before changing data semantics.
+9. Preserve delivery vs acknowledgement as separate states.
+10. Preserve typed conditions and server-authoritative production intent.
+11. Preserve immutable incident-snapshot semantics.
+12. Preserve `restore old version → create new revision` semantics.
+13. Do not claim Lab fingerprints are cryptographic assurance.
+14. Do not let `lab-command.js` become an authoritative data store.
+15. Update this file at the end of every major Lab round with changed files, new storage/API assumptions, known limitations, and next work.
+16. Update `CHECKINLABCLONE.md` when the round adds behavior intended for the official project.
 
 Update this file at the end of every major Lab round.
