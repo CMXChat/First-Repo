@@ -28,13 +28,14 @@ jobs:
         run: |
           node --check assets/lab/lab-mock-api.js
           node --check assets/lab/lab-crm.js
+          node --check assets/lab/lab-inventory.js
           node --check assets/lab/checkin-status-contract.js
           node --check assets/lab/checkin.js
           node --check assets/lab/checkin-refine.js
           node --check assets/lab/checkin-vault-panels.js
           node --check assets/lab/checkin-actions-official.js
 
-      - name: Validate Lab isolation and assets
+      - name: Validate Lab isolation, inventory, and backend notes
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -48,6 +49,9 @@ jobs:
               Path('assets/lab/lab-mock-api.js'),
               Path('assets/lab/lab-crm.css'),
               Path('assets/lab/lab-crm.js'),
+              Path('assets/lab/lab-inventory.css'),
+              Path('assets/lab/lab-inventory.js'),
+              Path('assets/lab/BACKEND-HANDOFF.md'),
           ]
 
           if not loader.exists():
@@ -66,22 +70,35 @@ jobs:
               '/assets/lab/lab-safety.css',
               '/assets/lab/lab-crm.css',
               '/assets/lab/lab-crm.js',
+              '/assets/lab/lab-inventory.css',
+              '/assets/lab/lab-inventory.js',
               'data-lab-mode="true"',
           ):
               if term not in text:
-                  failures.append(f'Lab loader missing safety/CRM wiring: {term}')
+                  failures.append(f'Lab loader missing safety/records wiring: {term}')
 
           production = Path('checkin/index.html').read_text(encoding='utf-8')
           if '/assets/lab/' in production or 'data-lab-mode="true"' in production:
               failures.append('production /checkin references Lab assets or Lab mode')
 
           mock = Path('assets/lab/lab-mock-api.js').read_text(encoding='utf-8')
-          if 'productionApiBlocked: true' not in mock or 'PROD_API_ORIGIN' not in mock:
-              failures.append('Lab mock API safety guard is incomplete')
+          for term in ('productionApiBlocked: true', 'PROD_API_ORIGIN', 'INVENTORY_STORAGE_KEY'):
+              if term not in mock:
+                  failures.append(f'Lab mock API safety/count guard missing: {term}')
+
+          inventory = Path('assets/lab/lab-inventory.js').read_text(encoding='utf-8')
+          for term in ('BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL', 'FastAPI', 'INVENTORY_STORAGE_KEY'):
+              if term not in inventory:
+                  failures.append(f'Lab inventory backend boundary missing: {term}')
+
+          handoff = Path('assets/lab/BACKEND-HANDOFF.md').read_text(encoding='utf-8')
+          for term in ('checkin_documents', 'checkin_digital_assets', 'checkin_record_links', 'object storage', 'secret_ref', 'Action Builder integration'):
+              if term not in handoff:
+                  failures.append(f'Backend handoff missing required note: {term}')
 
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print('Check In Lab syntax, isolation, and CRM wiring validated.')
+          print('Check In Lab syntax, isolation, records inventory, and backend handoff validated.')
           PY

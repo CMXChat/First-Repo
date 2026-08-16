@@ -5,12 +5,16 @@
    * /lab safety boundary.
    * No request from the cloned Check In frontend is allowed to reach the
    * production api.cmxchat.com Check In service. Public state is synthetic.
+   *
+   * BACKEND NOTE: when /lab gets a dedicated test API, point the Lab adapter at
+   * that origin. Do not weaken this production-origin block as a shortcut.
    */
 
   const nativeFetch = window.fetch.bind(window);
   const PROD_API_ORIGIN = "https://api.cmxchat.com";
   const MOCK_SWITCH_ID = "lab-sandbox";
   const CRM_STORAGE_KEY = "cmx-lab-crm-v1";
+  const INVENTORY_STORAGE_KEY = "cmx-lab-inventory-v1";
 
   window.CMX_LAB_MODE = Object.freeze({
     isolated: true,
@@ -35,12 +39,23 @@
     return { contacts: 8, organizations: 3 };
   }
 
+  function inventoryCounts() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(INVENTORY_STORAGE_KEY));
+      if (Array.isArray(stored?.documents) && Array.isArray(stored?.assets)) {
+        return { documents: stored.documents.length, assets: stored.assets.length };
+      }
+    } catch {}
+    return { documents: 6, assets: 5 };
+  }
+
   function mockStatus() {
     const now = Date.now();
     const lastCheckIn = now - (4 * 60 * 60 * 1000);
     const due = lastCheckIn + (72 * 60 * 60 * 1000);
     const graceExpires = due + (24 * 60 * 60 * 1000);
     const directory = crmCounts();
+    const inventory = inventoryCounts();
 
     return {
       switch_id: MOCK_SWITCH_ID,
@@ -51,13 +66,14 @@
       grace_expires_at: new Date(graceExpires).toISOString(),
       interval_hours: 72,
       grace_hours: 24,
-      document_count: 6,
+      document_count: inventory.documents,
       contact_count: directory.contacts,
       organization_count: directory.organizations,
       update_revision_count: 5,
       trigger_action_count: 4,
       document_uploads_enabled: false,
-      lab_mock: true
+      lab_mock: true,
+      lab_asset_count: inventory.assets
     };
   }
 
