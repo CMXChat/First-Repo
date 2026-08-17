@@ -27,7 +27,9 @@
     const intervalValid = isHourValue(interval, 1, 8784);
     const graceValid = isHourValue(grace, 0, 720);
     return {
-      schemaCompatible: intervalValid && graceValid && COUNT_FIELDS.every(field => isCount(data[field])),
+      // Aggregate inventory counts are presentation metadata. Missing or stale count
+      // fields must not suppress an otherwise valid server-authoritative timer.
+      schemaCompatible: intervalValid && graceValid,
       intervalHours: intervalValid ? interval : 72,
       graceHours: graceValid ? grace : 24,
       documentCount: count(data.document_count),
