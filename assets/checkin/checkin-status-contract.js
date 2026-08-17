@@ -16,13 +16,19 @@
     return isCount(value) ? Number(value) : 0;
   }
 
+  function isHourValue(value, minimum = 0) {
+    const number = Number(value);
+    return Number.isFinite(number) && Number.isInteger(number) && number >= minimum;
+  }
+
   function normalize(data = {}) {
     const interval = Number(data.interval_hours);
     const grace = Number(data.grace_hours);
+    const timingCompatible = isHourValue(interval, 1) && isHourValue(grace, 0);
     return {
-      schemaCompatible: interval === 72 && COUNT_FIELDS.every(field => isCount(data[field])),
-      intervalHours: 72,
-      graceHours: Number.isFinite(grace) && grace >= 0 ? grace : 24,
+      schemaCompatible: timingCompatible && COUNT_FIELDS.every(field => isCount(data[field])),
+      intervalHours: isHourValue(interval, 1) ? interval : 72,
+      graceHours: isHourValue(grace, 0) ? grace : 24,
       documentCount: count(data.document_count),
       contactCount: count(data.contact_count),
       organizationCount: count(data.organization_count),
