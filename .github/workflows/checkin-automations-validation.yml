@@ -64,7 +64,7 @@ jobs:
               '/assets/lab/lab-automations-friendly.css?v=20260817-1',
               '/assets/lab/lab-automations-app-v2.js?v=20260817-5',
               '/assets/lab/lab-automations-dropdown-runtime.js',
-              '/assets/lab/lab-automations-friendly-runtime.js?v=20260817-2',
+              '/assets/lab/lab-automations-friendly-runtime.js?v=20260817-3',
               'noindex,nofollow',
           ]
           required_js = [
@@ -99,10 +99,12 @@ jobs:
               'What is the grace period?',
               'When should the actions begin?',
               'An exact date/time never bypasses the trigger',
+              'START NOT BEFORE',
               'What should happen when the actions are done?',
               'Finish here',
               'START TIME',
               'history.scrollRestoration = "manual"',
+              '[data-open], [data-new]',
           ]
           required_dropdown = ['stopImmediatePropagation', '.smart-select.is-open', 'data-dropdown-trigger']
           required_css = ['.automation-app','.editor-footer','.step-rail','.do-card','html[data-theme="light"]','@media(max-width:760px)']
