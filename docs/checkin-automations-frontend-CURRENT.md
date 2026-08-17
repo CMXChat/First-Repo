@@ -26,6 +26,7 @@ Active focused route:
 - `lab/automations/index.html`
 - `assets/lab/lab-automations-app.css` — base focused styling
 - `assets/lab/lab-automations-app-v2.css` — current dropdown/timing styling
+- `assets/lab/lab-automations-calendar.css` — calendar recurrence guidance/timezone styling
 - `assets/lab/lab-automations-app-v2.js` — current focused Automation app
 - `assets/lab/lab-automations-dropdown-runtime.js` — in-page dropdown interaction stabilization
 
@@ -78,6 +79,9 @@ Important current behaviors:
 - Delay supports day/hour/minute values plus preset shortcuts;
 - Exact date/time supports minute precision and an IANA timezone selector;
 - Repeat remains separate from Wait and supports none/daily/weekly/custom cadence/until acknowledged as UX concepts;
+- Custom cadence supports minutes, hours, days, weeks, months, and years;
+- selecting months or years exposes an explicit Calendar timezone control;
+- monthly/yearly copy explains that these are calendar units, not 30-day/365-day approximations;
 - Review shows timing separately from recurrence;
 - Publish is intentionally disabled;
 - dark/light themes are supported;
@@ -99,7 +103,35 @@ or:
 Wait until Aug 22, 2026 at 3:17 PM America/New_York
 ```
 
+and recurrence such as:
+
+```text
+Every 2 months in America/New_York
+```
+
+or:
+
+```text
+Every 1 year in Europe/London
+```
+
 The browser is never scheduling authority. The backend contract must validate and later resolve these values server-side.
+
+Elapsed recurrence units:
+
+- minutes;
+- hours;
+- days;
+- weeks.
+
+Calendar recurrence units:
+
+- months;
+- years.
+
+Do not translate month/year recurrence to fixed durations. `1 month` is not `30 days`; `1 year` is not `365 days`.
+
+For monthly/yearly recurrence, preserve the recurrence anchor and IANA timezone so later runtime can handle DST, end-of-month, and leap-year behavior deterministically.
 
 Keep separate forever:
 
@@ -122,6 +154,9 @@ That file now explicitly covers:
 - precise relative waits;
 - exact local date/time + IANA timezone;
 - DST/ambiguous-time validation;
+- custom recurrence units through months/years;
+- explicit timezone for calendar recurrence;
+- deterministic end-of-month and leap-day policy requirements;
 - recurrence remaining separate from retry;
 - immutable publish/version behavior later.
 
@@ -178,7 +213,8 @@ On Samsung/Chrome and desktop, check:
 9. searchable in-page Target dropdown;
 10. custom delay day/hour/minute UX;
 11. exact date/time + timezone UX;
-12. custom recurrence UX;
-13. human-readable Review;
-14. dark/light;
-15. no accidental claim that Publish/execution is live.
+12. custom recurrence through minutes/hours/days/weeks/months/years;
+13. monthly/yearly Calendar timezone selector;
+14. human-readable Review;
+15. dark/light;
+16. no accidental claim that Publish/execution is live.
