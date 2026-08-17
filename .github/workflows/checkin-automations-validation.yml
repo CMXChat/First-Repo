@@ -11,6 +11,8 @@ on:
       - 'assets/lab/lab-automations-app-v2.css'
       - 'assets/lab/lab-automations-calendar.css'
       - 'assets/lab/lab-automations-dropdown-runtime.js'
+      - 'assets/lab/lab-automations-friendly-runtime.js'
+      - 'assets/lab/lab-automations-friendly.css'
       - 'docs/checkin-automations-frontend-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
   pull_request:
@@ -21,6 +23,8 @@ on:
       - 'assets/lab/lab-automations-app-v2.css'
       - 'assets/lab/lab-automations-calendar.css'
       - 'assets/lab/lab-automations-dropdown-runtime.js'
+      - 'assets/lab/lab-automations-friendly-runtime.js'
+      - 'assets/lab/lab-automations-friendly.css'
       - '.github/workflows/checkin-automations-validation.yml'
 
 permissions:
@@ -38,6 +42,7 @@ jobs:
           set -euo pipefail
           node --check assets/lab/lab-automations-app-v2.js
           node --check assets/lab/lab-automations-dropdown-runtime.js
+          node --check assets/lab/lab-automations-friendly-runtime.js
           python - <<'PY'
           from pathlib import Path
           import sys
@@ -45,17 +50,21 @@ jobs:
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
           js = Path('assets/lab/lab-automations-app-v2.js').read_text(encoding='utf-8')
           dropdown_js = Path('assets/lab/lab-automations-dropdown-runtime.js').read_text(encoding='utf-8')
+          friendly_js = Path('assets/lab/lab-automations-friendly-runtime.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
           css_v2 = Path('assets/lab/lab-automations-app-v2.css').read_text(encoding='utf-8')
           calendar_css = Path('assets/lab/lab-automations-calendar.css').read_text(encoding='utf-8')
+          friendly_css = Path('assets/lab/lab-automations-friendly.css').read_text(encoding='utf-8')
 
           required_html = [
               "connect-src 'self'",
               '/assets/lab/lab-automations-app.css',
               '/assets/lab/lab-automations-app-v2.css',
               '/assets/lab/lab-automations-calendar.css',
+              '/assets/lab/lab-automations-friendly.css?v=20260817-1',
               '/assets/lab/lab-automations-app-v2.js?v=20260817-5',
               '/assets/lab/lab-automations-dropdown-runtime.js',
+              '/assets/lab/lab-automations-friendly-runtime.js?v=20260817-1',
               'noindex,nofollow',
           ]
           required_js = [
@@ -86,14 +95,26 @@ jobs:
               'Repeat daily ·',
               'Repeat weekly ·',
           ]
+          required_friendly = [
+              'What is the grace period?',
+              'When should the actions begin?',
+              'An exact date/time never bypasses the trigger',
+              'What should happen when the actions are done?',
+              'Finish here',
+              'START TIME',
+              'history.scrollRestoration = "manual"',
+          ]
           required_dropdown = ['stopImmediatePropagation', '.smart-select.is-open', 'data-dropdown-trigger']
           required_css = ['.automation-app','.editor-footer','.step-rail','.do-card','html[data-theme="light"]','@media(max-width:760px)']
           required_v2_css = ['.smart-select','.smart-menu','.timing-mode-grid','.precision-card','.duration-inputs','.exact-grid','.repeat-pills','@media(max-width:700px)']
           required_calendar_css = ['.repeat-zone','.calendar-cadence-note']
+          required_friendly_css = ['.concept-card','.grace-timeline','.trigger-vs-start','.finish-advanced','@media(max-width:700px)']
           for term in required_html:
               if term not in html: sys.exit(f'missing HTML contract: {term}')
           for term in required_js:
               if term not in js: sys.exit(f'missing JS contract: {term}')
+          for term in required_friendly:
+              if term not in friendly_js: sys.exit(f'missing friendly UX contract: {term}')
           for term in required_dropdown:
               if term not in dropdown_js: sys.exit(f'missing dropdown runtime contract: {term}')
           for term in required_css:
@@ -102,10 +123,13 @@ jobs:
               if term not in css_v2: sys.exit(f'missing v2 CSS contract: {term}')
           for term in required_calendar_css:
               if term not in calendar_css: sys.exit(f'missing calendar CSS contract: {term}')
+          for term in required_friendly_css:
+              if term not in friendly_css: sys.exit(f'missing friendly CSS contract: {term}')
           if '<select' in js: sys.exit('native select reintroduced into focused Automations v2')
+          if 'MutationObserver' in friendly_js: sys.exit('broad observer-style UX patch must not be introduced')
           for term in ['api.cmxchat.com','eval(','new Function(','localStorage.setItem("operator']:
-              if term in html + js + dropdown_js: sys.exit(f'forbidden focused-Lab contract: {term}')
-          print('Focused Automation v2 safety, dropdown, precision timing, and calendar recurrence contract passed.')
+              if term in html + js + dropdown_js + friendly_js: sys.exit(f'forbidden focused-Lab contract: {term}')
+          print('Focused Automation safety, human UX, timing, dropdown, and calendar recurrence contract passed.')
           PY
 
       - name: Browser smoke desktop and mobile
@@ -130,4 +154,4 @@ jobs:
           grep -q '>Automations<' /tmp/auto-mobile.html
           grep -q 'New automation' /tmp/auto-mobile.html
           ! grep -qi 'Loading Automations' /tmp/auto-mobile.html
-          echo 'Focused Automations v2 desktop and 390x844 mobile smoke passed.'
+          echo 'Focused Automations desktop and 390x844 mobile smoke passed.'
