@@ -8,14 +8,27 @@ const root = process.cwd();
 const html = fs.readFileSync(path.join(root, "checkin/index.html"), "utf8");
 const js = fs.readFileSync(path.join(root, "assets/checkin/checkin.js"), "utf8");
 const css = fs.readFileSync(path.join(root, "assets/checkin/checkin.css"), "utf8");
+const phase1Css = fs.readFileSync(path.join(root, "assets/checkin/checkin-phase1-controls.css"), "utf8");
+const refineJs = fs.readFileSync(path.join(root, "assets/checkin/checkin-refine.js"), "utf8");
 const contractJs = fs.readFileSync(path.join(root, "assets/checkin/checkin-status-contract.js"), "utf8");
 const { normalize } = require(path.join(root, "assets/checkin/checkin-status-contract.js"));
 
 const validStatus = normalize({ interval_hours: 72, grace_hours: 24, document_count: 0, contact_count: 0, organization_count: 0, update_revision_count: 0, trigger_action_count: 1 });
 assert.deepEqual(validStatus, { schemaCompatible: true, intervalHours: 72, graceHours: 24, documentCount: 0, contactCount: 0, organizationCount: 0, updateRevisionCount: 0, actionCount: 1 });
-const oldStatus = normalize({ interval_hours: 168, grace_hours: 24, trigger_action_count: 1 });
-assert.deepEqual(oldStatus, { schemaCompatible: false, intervalHours: 72, graceHours: 24, documentCount: 0, contactCount: 0, organizationCount: 0, updateRevisionCount: 0, actionCount: 1 });
-assert.doesNotMatch(Object.values(oldStatus).join(" "), /undefined|null|NaN/);
+
+const configurableStatus = normalize({ interval_hours: 24, grace_hours: 6 });
+assert.deepEqual(configurableStatus, { schemaCompatible: true, intervalHours: 24, graceHours: 6, documentCount: 0, contactCount: 0, organizationCount: 0, updateRevisionCount: 0, actionCount: 0 });
+
+const missingCountsStatus = normalize({ interval_hours: 72, grace_hours: 24, document_count: "stale" });
+assert.equal(missingCountsStatus.schemaCompatible, true, "valid timing must not be suppressed by missing/stale aggregate counts");
+assert.equal(missingCountsStatus.documentCount, 0);
+assert.equal(missingCountsStatus.actionCount, 0);
+
+const invalidTiming = normalize({ interval_hours: 0, grace_hours: 721, trigger_action_count: 1 });
+assert.equal(invalidTiming.schemaCompatible, false);
+assert.equal(invalidTiming.intervalHours, 72);
+assert.equal(invalidTiming.graceHours, 24);
+assert.doesNotMatch(Object.values(invalidTiming).join(" "), /undefined|null|NaN/);
 
 assert.match(html, /Primary 72 hour switch/);
 assert.match(html, /new 72 hour window/);
@@ -60,6 +73,7 @@ assert.match(html, /id="saveState"/);
 assert.match(html, /id="wordCount"/);
 assert.match(html, /id="revisionPanel"/);
 assert.match(html, /id="focusMode"/);
+assert.match(html, /id="mobileSettings"/);
 assert.match(html, /id="mobileNavSettings"/);
 assert.match(html, /data-view="timeline"/);
 assert.doesNotMatch(html, /id="intervalSelect"|id="graceSelect"|Save changes/);
@@ -75,6 +89,7 @@ assert.match(contractJs, /contact_count/);
 assert.match(contractJs, /organization_count/);
 assert.match(contractJs, /update_revision_count/);
 assert.match(contractJs, /trigger_action_count/);
+assert.match(contractJs, /schemaCompatible: intervalValid && graceValid/);
 assert.match(js, /renderLockedInventory/);
 assert.match(js, /session\.expires_at/);
 assert.match(js, /clearPrivateState/);
@@ -123,5 +138,13 @@ assert.match(css, /\.receipt-dialog/);
 assert.match(css, /@media\(max-width:700px\)/);
 assert.match(css, /@media\(max-width:680px\)/);
 assert.match(css, /html\[data-theme="dark"\]/);
+
+// Real-device regression guards from the 2026-08-17 Samsung/Chrome acceptance pass.
+assert.match(phase1Css, /@media\(max-width:700px\)[\s\S]*#mobileSettings\{display:grid!important/);
+assert.match(phase1Css, /#lockNowButton\{display:none!important\}/);
+assert.match(phase1Css, /:has\(#phase1OverrideMeta\):not\(:has\(#phase1DeadlineOverride\)\)/);
+assert.match(phase1Css, /content:"NOT ACTIVE"/);
+assert.doesNotMatch(contractJs, /observe\(document\.body,\s*\{[\s\S]{0,120}subtree:\s*true/);
+assert.doesNotMatch(refineJs, /observe\(document\.body,\s*\{[\s\S]{0,120}subtree:\s*true/);
 
 console.log("Check-in operations smoke test passed.");
