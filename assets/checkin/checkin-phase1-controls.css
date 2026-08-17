@@ -9,3 +9,22 @@
 html[data-theme="light"] .phase1-section{background:#f7fbff}html[data-theme="light"] .phase1-current{background:linear-gradient(145deg,#f3f8ff,#fff)}
 @media(max-width:700px){#settingsDialog .phase1-settings-form{width:min(100%,calc(100vw - 18px));max-height:92vh;padding:15px}.phase1-current{align-items:flex-start;padding:12px}.phase1-current>b{margin-top:1px}.phase1-grid{grid-template-columns:1fr}.phase1-section{padding:13px}.phase1-section-head{gap:10px}.phase1-actions{display:grid;grid-template-columns:1fr}.phase1-actions button,#phase1Pause,#phase1Resume,#phase1Unlock{width:100%;min-height:44px}#settingsDialog .field-group input,#settingsDialog .field-group select{min-height:46px;font-size:14px}}
 @media(max-width:430px){#mobileSettings{display:grid!important;place-items:center;flex:0 0 39px}}
+
+/* Real-device acceptance polish. Keep the existing Settings destination visible across mobile browser viewport differences. */
+@media(max-width:700px){
+  #mobileSettings{display:grid!important;place-items:center;flex:0 0 39px}
+  #lockNowButton{display:none!important}
+  .mobile-brand{flex:0 0 auto;min-width:74px}
+  .mobile-brand>span:last-child{min-width:0}
+  .mobile-brand strong{white-space:nowrap}
+  #operatorButton{min-width:68px!important;max-width:76px;padding-inline:8px!important;font-size:0!important;white-space:nowrap;overflow:hidden}
+  #operatorButton::after{content:"Access";font-size:10px;font-weight:850}
+}
+
+/* If a stale cached Phase 1 script left a header-only duplicate override card, suppress only that empty duplicate. */
+#phase1PrivateControls .phase1-section:has(#phase1OverrideMeta):not(:has(#phase1DeadlineOverride)){display:none!important}
+
+/* Phase 1 has configuration only. Do not imply that a delivery runtime is waiting to execute. */
+.action-status-row .is-pending{opacity:.72}
+.action-status-row .is-pending strong{font-size:0!important;color:var(--muted)!important}
+.action-status-row .is-pending strong::after{content:"NOT ACTIVE";font-size:7px;font-weight:850;letter-spacing:.08em}
