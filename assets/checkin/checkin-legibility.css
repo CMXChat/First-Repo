@@ -185,28 +185,46 @@ html[data-theme="light"]{
 .setting-note p{font-size:10px!important;line-height:1.5!important}
 .field-group label{font-size:9px!important}
 
-/* Desktop-only package layout guard. The tablet/mobile breakpoints stay untouched. */
+/* Desktop-only Status package guard. Keep tablet/mobile and the Records package untouched. */
 @media(min-width:1051px){
-  .protected-package{
-    grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr)!important;
+  [data-view-panel="overview"] #protectedPackage{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    grid-template-columns:minmax(220px,260px) minmax(0,1fr)!important;
     gap:18px!important;
+    align-items:center!important;
   }
-  .protected-package .package-grid{
-    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  [data-view-panel="overview"] #protectedPackage>.refine-head{
     min-width:0;
   }
-  .protected-package .package-card{
+  [data-view-panel="overview"] #protectedPackage>.package-grid{
+    width:100%;
+    min-width:0;
+    margin-top:0!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  [data-view-panel="overview"] #protectedPackage .package-card{
+    width:100%;
     min-width:0;
     grid-template-columns:32px minmax(0,1fr);
     gap:8px;
     padding:10px;
+    overflow:hidden;
   }
-  .protected-package .package-icon{
+  [data-view-panel="overview"] #protectedPackage .package-icon{
     width:32px;
     height:32px;
   }
-  .protected-package .package-card>span:last-child{
+  [data-view-panel="overview"] #protectedPackage .package-card>span:last-child{
     min-width:0;
+  }
+  [data-view-panel="overview"] #protectedPackage .package-card strong,
+  [data-view-panel="overview"] #protectedPackage .package-card small{
+    min-width:0;
+    overflow-wrap:anywhere;
   }
 }
 
