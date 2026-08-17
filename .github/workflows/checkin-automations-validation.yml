@@ -9,6 +9,7 @@ on:
       - 'assets/lab/lab-automations-app.css'
       - 'assets/lab/lab-automations-app-v2.js'
       - 'assets/lab/lab-automations-app-v2.css'
+      - 'assets/lab/lab-automations-dropdown-runtime.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
   pull_request:
@@ -17,6 +18,7 @@ on:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-app-v2.js'
       - 'assets/lab/lab-automations-app-v2.css'
+      - 'assets/lab/lab-automations-dropdown-runtime.js'
       - '.github/workflows/checkin-automations-validation.yml'
 
 permissions:
@@ -33,12 +35,14 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-app-v2.js
+          node --check assets/lab/lab-automations-dropdown-runtime.js
           python - <<'PY'
           from pathlib import Path
           import sys
 
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
           js = Path('assets/lab/lab-automations-app-v2.js').read_text(encoding='utf-8')
+          dropdown_js = Path('assets/lab/lab-automations-dropdown-runtime.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
           css_v2 = Path('assets/lab/lab-automations-app-v2.css').read_text(encoding='utf-8')
 
@@ -47,6 +51,7 @@ jobs:
               '/assets/lab/lab-automations-app.css',
               '/assets/lab/lab-automations-app-v2.css',
               '/assets/lab/lab-automations-app-v2.js',
+              '/assets/lab/lab-automations-dropdown-runtime.js',
               'noindex,nofollow',
           ]
           required_js = [
@@ -67,46 +72,22 @@ jobs:
               'IANA timezone',
               'An earlier action failed',
           ]
-          required_css = [
-              '.automation-app',
-              '.editor-footer',
-              '.step-rail',
-              '.do-card',
-              'html[data-theme="light"]',
-              '@media(max-width:760px)',
-          ]
-          required_v2_css = [
-              '.smart-select',
-              '.smart-menu',
-              '.timing-mode-grid',
-              '.precision-card',
-              '.duration-inputs',
-              '.exact-grid',
-              '.repeat-pills',
-              '@media(max-width:700px)',
-          ]
+          required_dropdown = ['stopImmediatePropagation', '.smart-select.is-open', 'data-dropdown-trigger']
+          required_css = ['.automation-app','.editor-footer','.step-rail','.do-card','html[data-theme="light"]','@media(max-width:760px)']
+          required_v2_css = ['.smart-select','.smart-menu','.timing-mode-grid','.precision-card','.duration-inputs','.exact-grid','.repeat-pills','@media(max-width:700px)']
           for term in required_html:
               if term not in html: sys.exit(f'missing HTML contract: {term}')
           for term in required_js:
               if term not in js: sys.exit(f'missing JS contract: {term}')
+          for term in required_dropdown:
+              if term not in dropdown_js: sys.exit(f'missing dropdown runtime contract: {term}')
           for term in required_css:
               if term not in css: sys.exit(f'missing CSS contract: {term}')
           for term in required_v2_css:
               if term not in css_v2: sys.exit(f'missing v2 CSS contract: {term}')
-
-          if '<select' in js:
-              sys.exit('native select reintroduced into focused Automations v2')
-
-          forbidden = [
-              'api.cmxchat.com',
-              'eval(',
-              'new Function(',
-              'localStorage.setItem("operator',
-          ]
-          combined = html + js
-          for term in forbidden:
-              if term in combined: sys.exit(f'forbidden focused-Lab contract: {term}')
-
+          if '<select' in js: sys.exit('native select reintroduced into focused Automations v2')
+          for term in ['api.cmxchat.com','eval(','new Function(','localStorage.setItem("operator']:
+              if term in html + js + dropdown_js: sys.exit(f'forbidden focused-Lab contract: {term}')
           print('Focused Automation v2 safety, dropdown, and precision timing contract passed.')
           PY
 
@@ -122,20 +103,14 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
-
-          dump() {
-            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=4000 "$@" --dump-dom
-          }
-
+          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=4000 "$@" --dump-dom; }
           dump http://127.0.0.1:8000/lab/automations/ > /tmp/auto-desktop.html
           grep -q '>Automations<' /tmp/auto-desktop.html
           grep -q 'New automation' /tmp/auto-desktop.html
           grep -q 'EXECUTION' /tmp/auto-desktop.html
           ! grep -qi 'Loading Automations' /tmp/auto-desktop.html
-
           dump --window-size=390,844 http://127.0.0.1:8000/lab/automations/ > /tmp/auto-mobile.html
           grep -q '>Automations<' /tmp/auto-mobile.html
           grep -q 'New automation' /tmp/auto-mobile.html
           ! grep -qi 'Loading Automations' /tmp/auto-mobile.html
-
           echo 'Focused Automations v2 desktop and 390x844 mobile smoke passed.'
