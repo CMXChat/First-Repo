@@ -1,271 +1,308 @@
 # Check In Lab Scheduling Backend Handoff
 
-Last updated: 2026-08-16
+Last updated: 2026-08-17
+Status: Supporting Lab note. The canonical backend contract is `CMXChat/jay-app/specs/003-server-checkin/AUTOMATION-FRONTEND-CONTRACT.md`.
 
-This document covers the long-running and recurring Action model prototyped by `lab-plan.js` inside Sequence.
+This file explains timing concepts demonstrated in Check In Lab. It must not override the current `CHECKIN-MASTER-PLAN.md`, `tasks.md`, or the canonical Automation frontend/backend contract in `jay-app`.
 
 ## Boundary
 
-The Lab planner is a product prototype. It may describe and preview timing, but the browser must never be the authoritative scheduler for a real Action.
+Lab may design and preview timing. The browser is never authoritative scheduling infrastructure.
 
-Production direction:
+Current product direction:
 
 ```text
-React UI
+Frontend
   → FastAPI
-  → PostgreSQL definitions + incident runtime
-  → server scheduler
-  → durable queue / workers
+  → PostgreSQL Automation definitions
+  → durable Run / RunAction / Occurrence / ExecutionAttempt state
+  → server scheduler / worker
   → provider adapters
 ```
 
-A month-long Action must not be implemented as a browser timer, one sleeping HTTP request, or one worker process left alive for a month.
+Do not implement a long wait as:
 
-## Separate reusable definition from runtime
+- a browser timer;
+- a sleeping HTTP request;
+- a worker process held open for hours, months, or years.
 
-The reusable Action definition owns scheduling policy.
+Phase 2A may store and validate timing definitions. Real scheduler authority begins in the durable runtime phase.
 
-Suggested schedule fields:
+## Keep these concepts separate
 
-- `action_id`
-- `start_delay_seconds`
-- `duration_seconds` nullable / zero for an instant Action
-- `repeat_interval_seconds` nullable
-- `repeat_limit` nullable
-- `timezone` when a calendar recurrence needs local-time semantics
-- `schedule_revision`
+```text
+WAIT / delay
+RECURRENCE
+RETRY
+```
 
-A presentation lane such as Messages / AI / Digital / Tasks is UI metadata and should not control execution behavior.
+They are different behaviors.
 
-Incident runtime owns what actually happened:
+- **Wait/delay** controls when workflow progress becomes due.
+- **Recurrence** creates later planned occurrences according to an approved cadence.
+- **Retry** reacts to a failed provider/execution attempt.
 
-- `incident_action_id`
-- `eligible_at`
-- `starts_at`
-- `ends_at`
-- `next_run_at`
-- `occurrence_count`
-- `runtime_state`
-- `completed_at`
-- `terminal_outcome`
-- `definition_revision_id`
-- `schedule_revision_id`
+Never represent retry as ordinary recurrence.
 
-Useful runtime states can include:
+## Wait modes
 
-- `waiting`
-- `eligible`
-- `waiting_for_dependency`
-- `waiting_for_approval`
-- `scheduled`
-- `running`
-- `waiting_for_next_occurrence`
-- `completed`
-- `failed`
-- `timed_out`
-- `cancelled`
+The focused Automation frontend currently supports:
 
-## Eligibility, start, duration, recurrence
+```text
+NONE
+DELAY
+EXACT DATE/TIME
+```
 
-These are separate concepts.
+### Relative delay
+
+The user may express a precise elapsed delay using days, hours, and minutes.
 
 Example:
 
 ```text
-Action becomes eligible at final trigger
-→ start 2 days later
-→ remain active for 45 days
-→ run every 24 hours while active
-→ success releases Action B
-→ terminal failure releases Action C
+2 days + 3 hours + 17 minutes
 ```
 
-The authoritative server should calculate:
+The backend may normalize that to a canonical duration such as seconds for definition validation/runtime calculation.
+
+### Exact date/time
+
+Exact scheduling preserves local human intent:
 
 ```text
-eligible_at = trigger/dependency/condition result
-starts_at = eligible_at + start_delay
-ends_at = starts_at + duration
-next_run_at = starts_at or prior_occurrence + repeat_interval
+2026-08-22
+15:17
+America/New_York
 ```
 
-For calendar schedules, store UTC timestamps for execution while retaining the intended IANA timezone and recurrence rule when wall-clock behavior matters.
+Use IANA timezone identifiers.
 
-## Recurring occurrences
+The backend must validate:
 
-Each recurrence should be a durable occurrence/attempt record, not an in-memory loop.
+- date/time ranges;
+- timezone validity;
+- DST gaps/nonexistent local times;
+- DST repeated/ambiguous local times.
 
-A practical table is `checkin_action_occurrences` with fields such as:
+Validation/Review should show the resolved interpretation before Publish when possible.
 
-- `id`
-- `incident_action_id`
-- `sequence_number`
-- `scheduled_for`
-- `started_at`
-- `finished_at`
-- `state`
-- `idempotency_key`
-- `provider_result_ref`
-- `error_code`
-- `retry_of_occurrence_id`
+## Recurrence units
 
-A recurring Action may have both occurrence retries and a recurrence cadence. Keep those concepts separate.
+The focused frontend supports custom recurrence units:
+
+```text
+minutes
+hours
+days
+weeks
+months
+years
+```
+
+Do not model all six as `repeat_interval_seconds`.
+
+There are two semantic classes.
+
+### Elapsed cadence
+
+- minutes
+- hours
+- days
+- weeks
+
+These can be represented as bounded elapsed durations where product semantics permit.
+
+### Calendar cadence
+
+- months
+- years
+
+Calendar cadence must preserve:
+
+- interval count;
+- unit;
+- recurrence anchor;
+- intended local wall-clock time when applicable;
+- IANA timezone.
+
+Examples:
+
+```text
+Every 2 months · America/New_York
+Every 1 year · Europe/London
+```
+
+`1 month` is **not** `30 days`.
+
+`1 year` is **not** `365 days`.
+
+Do not normalize monthly/yearly recurrence to fixed seconds.
+
+## Monthly recurrence policy
+
+The backend needs one deterministic product rule for day-of-month values that do not exist in every month.
+
+Recommended first implementation:
+
+- preserve the original requested day-of-month as the anchor;
+- when that day does not exist in a target month, clamp that occurrence to the final valid day of that month;
+- keep the original anchor for later months.
 
 Example:
 
 ```text
-Daily recurrence #7
-  → delivery attempt 1 failed
-  → delivery retry 1 succeeded
-
-Daily recurrence #8
-  → a new occurrence the next day
+Anchor: January 31
+February occurrence: February 28 or 29
+March occurrence: March 31
+April occurrence: April 30
+May occurrence: May 31
 ```
 
-## Ending a long-running Action
+Do not permanently change the anchor from 31 to 28/29 after February.
 
-An Action can terminate through a typed outcome such as:
+## Yearly recurrence and leap day
 
-- completed successfully
-- failure after configured retry policy
-- acknowledgement received
-- acknowledgement timeout
-- approval denied
-- duration / timeout reached
-- operator cancellation
-- condition becomes satisfied
+Recommended first implementation for a February 29 anchor:
 
-Do not use arbitrary client-supplied executable expressions for completion rules. Completion conditions should use the same typed-rule approach as the Decision engine.
+- preserve February 29 as the permanent anchor;
+- in non-leap years, schedule February 28;
+- in leap years, return to February 29.
 
-A fixed duration can be the maximum runtime even when the Action may complete earlier because a condition is satisfied.
+If product policy changes later, change it explicitly and version/test the behavior. Never let a date library silently decide policy.
 
-## Outcome routing
+## DST and timezone behavior
 
-The existing Decision Policy concept remains the downstream graph.
+For calendar recurrence, preserve local wall-clock intent in the selected IANA timezone.
 
-When the long-running Action reaches a terminal outcome, the backend emits one durable incident event and activates the matching route:
+The scheduler must define and test what happens when a recurrence lands on:
 
-- success → downstream success target
-- final failure → failure target
-- acknowledged → acknowledgement target
-- no acknowledgement → no-ack target
-- approval denied → denial target
+- a nonexistent local time during spring-forward;
+- an ambiguous/repeated local time during fall-back.
 
-Downstream Actions must resolve against the source Action's immutable incident execution snapshot, not the source's current editable definition.
+Do not silently reinterpret ambiguous times.
 
-## Scheduler behavior
+A definition/preview endpoint should be able to return the next resolved UTC occurrence so the UI can show exactly what will happen before Publish.
 
-The scheduler should query for due work such as:
+## Definition shape
+
+Exact API/Pydantic schema belongs to Phase 2A implementation, but a conceptually useful distinction is:
 
 ```text
-next_run_at <= now
-AND runtime_state in schedulable states
+wait:
+  type: none | delay | at
+
+repeat:
+  type: none | preset | interval | until_acknowledged
+  every: 2
+  unit: months
+  timezone: America/New_York
 ```
 
-Then:
+For elapsed units, `timezone` may be unnecessary.
 
-1. acquire a lease / database lock
-2. validate the incident is still eligible
-3. create or claim an occurrence
-4. enqueue an idempotent worker job
-5. persist the next due time before releasing the lease
-6. append audit events
+For calendar units (`months`, `years`), timezone is required.
 
-The scheduler should be restart-safe. Server restarts must not lose a future run that is weeks away.
+## Durable runtime
 
-## Idempotency
+When runtime becomes real, due work belongs in PostgreSQL/server state.
 
-An occurrence needs a stable key, for example:
+Core runtime concepts remain:
+
+- `Run`
+- `RunAction`
+- `Occurrence`
+- `ExecutionAttempt`
+- persisted due timestamps
+- claims/leases
+- idempotency
+- restart recovery
+
+A scheduler should claim due work transactionally and record the next planned occurrence before releasing its claim.
+
+Server restart must not lose work scheduled weeks or years in the future.
+
+## Occurrence vs execution attempt
+
+A recurring occurrence and a retry attempt are different records.
+
+Example:
 
 ```text
-incident_id + action_id + action_revision + occurrence_number
+Monthly occurrence #7
+  → provider attempt 1 failed
+  → provider retry 1 succeeded
+
+Monthly occurrence #8
+  → a new recurrence next month
 ```
 
-A provider retry gets its own attempt key while retaining the occurrence relationship.
+Each side effect needs stable idempotency protection.
 
-## Cancellation / plan changes
+## Definition edits and history
 
-Editing the reusable Action must not mutate an already-open incident snapshot.
+Editing a reusable Automation must not rewrite historical Runs or Occurrences.
 
-For an open incident, define explicit behavior for:
+Published Automation versions remain immutable.
 
-- cancel remaining future occurrences
-- suspend future occurrences
-- allow existing incident to continue on its snapshotted revision
-- start a new incident only after the next check-in cycle
-
-Do not silently apply a newly edited cadence to historical or already-running incident state.
+A Run freezes the definition inputs needed to explain what actually happened.
 
 ## Long horizons
 
-The Lab planner allows horizons up to roughly two years for visualization. That is not automatically a production limit.
+Months/years in the UI do not imply that the application should pre-enqueue thousands of future jobs.
 
-Production should apply policy-specific safety limits for:
+Persist the definition and next meaningful due occurrence. Materialize future work as required by the scheduler/runtime design.
 
-- maximum runtime
-- minimum recurrence interval
-- maximum occurrence count
-- maximum queued future work
-- retention of execution history
-- provider-specific rate limits
+Apply policy limits for:
 
-## Sequence read model
-
-The official Sequence page should not reconstruct the plan independently from raw tables.
-
-A backend plan read model should provide:
-
-- switch boundaries
-- Action definition/version
-- projected or scheduled start
-- projected/scheduled end
-- recurrence summary
-- lane/category
-- dependencies
-- success/failure route destinations
-- current incident runtime state when viewing Run mode
-- next meaningful events
-
-The frontend can then render Hours / Days / Weeks / Months zoom levels from one authoritative model.
-
-## Plan vs Run
-
-The Lab now separates two user concepts inside Sequence:
-
-- **Plan**: what is configured to happen over time
-- **Run / Test**: what is happening or what happened in one simulation/incident
-
-The official project should preserve this distinction.
-
-Plan is definition-oriented. Run is incident-oriented.
+- minimum recurrence interval;
+- maximum occurrence count where appropriate;
+- maximum runtime/horizon where appropriate;
+- provider rate limits;
+- retained execution history.
 
 ## Simulation
 
-The official Test Center should use the same scheduling engine with:
+Later Test/Simulation should use the same timing semantics with:
 
-- a controlled fake clock
-- deterministic fake providers
-- accelerated time
-- `jump to next event`
-- scenario-selected outcomes
+- controlled fake clock;
+- deterministic fake providers;
+- accelerated time;
+- jump-to-next-event behavior.
 
-A 90-day plan should be testable in seconds without altering the timestamps or ordering that the production scheduler would calculate.
+A multi-year calendar plan should be testable quickly without changing the ordering or calendar interpretation that production would use.
 
 ## Audit requirements
 
-Record at minimum:
+When these concepts become real, Audit should record enough to explain:
 
-- schedule definition created/changed
-- incident schedule snapshotted
-- Action became eligible
-- start delay satisfied
-- Action entered running state
-- occurrence scheduled
-- occurrence started
-- occurrence succeeded/failed
-- retry scheduled
-- next recurrence scheduled
-- Action completed/timed out/cancelled
-- downstream route activated
+- timing/recurrence definition created or changed;
+- published version identity;
+- resolved next occurrence;
+- occurrence claimed;
+- occurrence started/finished;
+- provider attempt/retry;
+- next recurrence scheduled;
+- cancellation/completion/timeout;
+- downstream route activation.
 
-All production timestamps are server-authoritative.
+All production execution timestamps are server-authoritative.
+
+## Current frontend reference
+
+Focused UX reference:
+
+`https://db.cmxchat.com/lab/automations/`
+
+Current frontend behavior for custom recurrence:
+
+- minutes;
+- hours;
+- days;
+- weeks;
+- months;
+- years;
+- explicit Calendar timezone appears for months/years;
+- UI warns that month/year cadence uses calendar semantics.
+
+This remains UX-only until the typed backend definition APIs and later durable runtime exist.
