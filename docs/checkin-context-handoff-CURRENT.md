@@ -1,0 +1,117 @@
+# Check In Context Handoff — CURRENT
+
+Date: 2026-08-17
+
+This file is the **current correction layer** for the longer `docs/checkin-context-handoff-2026-08-17.md` handoff. A new context should read this file **first**, then read the longer handoff for full backend, deployment, architecture, security, and frontend history.
+
+This file supersedes the **Immediate next agenda** in the older handoff where the two disagree.
+
+## Current observed state
+
+The first Phase 1 backend release is still the previously verified production release documented in the long handoff. No production switch mutation was intentionally performed by the frontend integration work.
+
+The first Phase 1 frontend integration was added to `CMXChat/First-Repo/main`, including the configurable timing contract and the new private Settings control layer.
+
+However, the first real Samsung/Android screenshot taken after that integration revealed two important live frontend issues that must be investigated before continuing the planned Settings verification.
+
+### 1. Settings is not currently visible on the real mobile page
+
+On the Samsung/Android Chrome screenshot at approximately 2:53 PM EDT on 2026-08-17, the visible top bar contained:
+
+- Check In branding;
+- Access;
+- Dark / Light theme control.
+
+There was **no visible Settings gear/button**.
+
+The bottom mobile navigation contained exactly:
+
+- Status;
+- Records;
+- Actions;
+- Activity.
+
+There was no Settings item there either.
+
+This means the previous instruction to simply "open Settings while locked" is not currently possible from the observed mobile UI.
+
+Important source fact: current `checkin/index.html` does contain a top-bar button with id `mobileSettings` and a sidebar button with id `openSettings`. Current `checkin-refine.css` also deliberately hides the separate `#mobileNavSettings` item on narrow screens. Therefore do **not** assume the Settings implementation was never added. Investigate why the intended top-bar `#mobileSettings` affordance is not visible in the actual mobile render before changing anything.
+
+Do not blindly add a second Settings control until the existing CSS/layout/JS layers are understood.
+
+### 2. Public status is currently degraded in the real mobile screenshot
+
+The same live screenshot showed:
+
+- `Status unavailable`;
+- `SYNC REQUIRED`;
+- `CONNECTING`;
+- countdown `--:--:--`;
+- `status data partially available`;
+- Last Check In `Never`;
+- Next Due `Unavailable`.
+
+This is **not** the expected live state. The backend had already passed approved-origin browser smoke verification before this frontend integration, including HTTP 200 health and public status.
+
+Do not conclude from the screenshot alone that the backend is down. The failure could be in the current browser request, frontend status contract, deployment/cache state, CORS/Cloudflare path, JavaScript, or another presentation/data integration layer. Diagnose it from evidence.
+
+## Correct immediate priority
+
+The immediate task is now **frontend production verification and repair**, not Phase 2 and not a production switch mutation.
+
+Work in this order:
+
+1. Inspect the current deployed/source frontend before editing.
+2. Determine why the live Samsung/Android page is showing `SYNC REQUIRED` / `Status unavailable` even though the backend previously passed browser smoke.
+3. Determine why the existing `#mobileSettings` top-bar affordance is not visible in the real mobile layout.
+4. Fix only the proven frontend issue(s), preserving the current mobile design, public/private boundary, auth, CSRF, exact Origin behavior, and targeted-observer performance protections.
+5. Recheck the public live status on Samsung/Android.
+6. Once status is healthy and Settings is reachable, perform the **locked Settings visual audit**.
+7. Only after that, unlock the existing private session and perform the first **read-only** protected policy verification.
+8. Do not publish policy timing, pause, resume, override a deadline, reconcile, or record a check in merely to test the UI.
+
+## Files to review before changing code
+
+Read the longer cross-repository handoff first after this file:
+
+- `docs/checkin-context-handoff-2026-08-17.md`
+
+Then inspect current First-Repo source, especially:
+
+- `checkin/index.html`
+- `assets/checkin/checkin.js`
+- `assets/checkin/checkin-status-contract.js`
+- `assets/checkin/checkin-phase1-controls.js`
+- `assets/checkin/checkin-phase1-controls.css`
+- `assets/checkin/checkin-refine.css`
+- `assets/checkin/checkin-legibility.css`
+- `assets/checkin/checkin.css`
+
+Inspect other `assets/checkin/*` layers only as needed. Do not broadly rewrite the page.
+
+For backend contract/current production truth, review:
+
+- `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md`
+- `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md`
+- `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md`
+- `CMXChat/jay-app/specs/003-server-checkin/ACTION-BUILDER-NEXT.md`
+
+## Important guardrails
+
+- Do not start Phase 2 yet.
+- Do not describe the live switch as weekly.
+- Do not casually change the production 72 hour + 24 hour policy.
+- Do not mutate production just to verify the frontend.
+- Do not claim configured Actions execute today.
+- Do not expose private record/action/activity/policy details publicly.
+- Do not weaken Secure HttpOnly session, CSRF, exact Origin, CORS, or session clearing behavior.
+- Do not put operator key, JWT, CSRF token, private content, or private policy state into localStorage/sessionStorage.
+- Do not add broad document-wide MutationObservers or countdown-triggered full-page text scans. A Samsung/Android freeze was already caused by observer churn in an earlier frontend version.
+- Do not ask the user to paste production secrets into chat.
+- Do not reproduce the SMTP credential that was exposed in an earlier diagnostic screenshot. Remind the user to rotate it before final project closeout if that has not already happened.
+
+## What success looks like before moving on
+
+Before Phase 1 frontend integration can be considered verified, the real page should again show valid server-backed public status, the intended Settings entry point should be clearly reachable on mobile and desktop, the locked Settings surface should expose no private values, and an unlocked session should be able to perform a protected **GET-only** policy read showing the authoritative policy/window correctly.
+
+Only then should the project proceed to the remaining Phase 1 frontend cleanup and later Action Builder / automation-control-plane work.
