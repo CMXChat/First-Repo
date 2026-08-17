@@ -16,19 +16,20 @@
     return isCount(value) ? Number(value) : 0;
   }
 
-  function isHourValue(value, minimum = 0) {
+  function isHourValue(value, minimum, maximum) {
     const number = Number(value);
-    return Number.isFinite(number) && Number.isInteger(number) && number >= minimum;
+    return Number.isFinite(number) && Number.isInteger(number) && number >= minimum && number <= maximum;
   }
 
   function normalize(data = {}) {
     const interval = Number(data.interval_hours);
     const grace = Number(data.grace_hours);
-    const timingCompatible = isHourValue(interval, 1) && isHourValue(grace, 0);
+    const intervalValid = isHourValue(interval, 1, 8784);
+    const graceValid = isHourValue(grace, 0, 720);
     return {
-      schemaCompatible: timingCompatible && COUNT_FIELDS.every(field => isCount(data[field])),
-      intervalHours: isHourValue(interval, 1) ? interval : 72,
-      graceHours: isHourValue(grace, 0) ? grace : 24,
+      schemaCompatible: intervalValid && graceValid && COUNT_FIELDS.every(field => isCount(data[field])),
+      intervalHours: intervalValid ? interval : 72,
+      graceHours: graceValid ? grace : 24,
       documentCount: count(data.document_count),
       contactCount: count(data.contact_count),
       organizationCount: count(data.organization_count),
