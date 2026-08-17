@@ -1,27 +1,29 @@
 # Check In Context Handoff — CURRENT
 
 Date: 2026-08-17
-Status: Current cross-repository correction and continuation guide
+Status: Current cross-repository continuation guide
 
-This file is the **current correction layer** for the longer `docs/checkin-context-handoff-2026-08-17.md` handoff. A new ChatGPT/Codex context should read this file **first**, then read the longer handoff for full backend, deployment, security, frontend, and architecture history.
+This is the first file a new ChatGPT/Codex context should read for Check In.
 
-This file supersedes older **current-state / immediate-next-step** language where it conflicts. It does not replace the durable architecture in `CHECKIN-MASTER-PLAN.md`.
+It records the **current active work** and the **approved post-Phase-1 direction**. It complements the longer historical handoff at `docs/checkin-context-handoff-2026-08-17.md`.
 
-## Source-of-truth order
+Do not restart the project from the roadmap if another context is already working on the current frontend gate. Continue the active task first.
 
-Use the documents for different jobs instead of treating every file as equally current:
+## 1. Source-of-truth order
 
-1. **This file** — newest cross-repository observed state and immediate continuation.
-2. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — canonical backend release/continuity journal and verified production release facts.
-3. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md` — current frontend/backend integration state.
-4. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — **active executable checklist and phase gates** for what we build next.
+Use these documents for different jobs:
+
+1. **This file** — newest cross-repository state and immediate continuation.
+2. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md` — current frontend/backend integration state.
+3. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — active executable checklist and phase gates.
+4. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md` — updated durable architecture and realistic automation roadmap.
 5. `CMXChat/jay-app/specs/003-server-checkin/ACTION-BUILDER-NEXT.md` — approved Automation/Actions UX and domain mapping.
-6. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md` — durable architecture, invariants, domain model, scheduler/runtime/provider/AI direction.
-7. `docs/checkin-context-handoff-2026-08-17.md` — extensive historical/cross-repository context for this work period.
+6. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — canonical backend release/deployment continuity journal.
+7. `docs/checkin-context-handoff-2026-08-17.md` — extensive history for this work period.
 
-Important master-plan reading rule: the architecture remains approved, but some of its **status wording** was written before Phase 1 was actually implemented and deployed. In particular, do not use old `Current production truth`, `Future private controls`, Phase 1 start instructions, or `Tomorrow: Start Here` language to conclude that policy versions, Incidents, pause/resume, or frontend Settings still need to be invented from scratch. Use this file + `HANDOFF.md` + `FRONTEND-BACKEND-NEXT.md` + `tasks.md` for what exists now and what comes next.
+The master plan was refreshed on 2026-08-17 after the Phase 1 production release. Its current-production and roadmap sections now reflect the live Phase 1 backend and the approved automation-engine direction.
 
-## Current production/backend truth
+## 2. Current production backend truth
 
 Phase 1 backend is fully live and production verified.
 
@@ -40,31 +42,29 @@ Recorded Aiven recovery checkpoint before migration:
 Production verification already passed for:
 
 - exactly one expected primary switch;
-- valid current/window policy pointers belonging to that switch;
+- valid current/current-window policy pointers;
 - policy version 1;
 - UTC authoritative timing;
 - interval `259200` seconds = 72 hours;
 - grace `86400` seconds = 24 hours;
 - compatibility fields 72/24;
-- last check in preserved during release;
 - zero orphan policy pointers;
-- zero Incidents at release verification;
-- zero active Incidents;
+- zero Incidents and zero active Incidents at release verification;
 - active-Incident uniqueness protection;
 - published-policy immutability protection;
 - approved-origin browser health HTTP 200 body `true`;
 - public status HTTP 200;
 - unauthenticated protected policy read HTTP 401 with `Operator unlock required`.
 
-The temporary release mutation freeze was released after those checks passed. No production policy change, pause, resume, deadline override, reconcile, Action execution, or test check in was performed during release verification.
+The temporary release mutation freeze was released after verification. No production policy change, pause, resume, deadline override, reconcile, Action execution, or test check in was performed during release verification.
 
 Do not confuse later `jay-app/main` documentation commits with the exact reviewed application SHA running on Render unless a later deployment is explicitly verified.
 
-## Current switch semantics
+## 3. Current switch semantics
 
-The live switch is **not weekly**.
+The live switch is not weekly.
 
-Current operating behavior remains:
+Current behavior:
 
 ```text
 successful protected check in
@@ -75,32 +75,32 @@ successful protected check in
 → triggered state
 ```
 
-A successful check in resets the next deadline to exactly 72 elapsed hours after the server-authoritative check in timestamp. PostgreSQL/server UTC is authoritative.
+A successful check in resets the next deadline exactly 72 elapsed hours after the server-authoritative timestamp. PostgreSQL/server UTC is authoritative.
 
-Old 168-hour/weekly compatibility history exists in older migration/git history. Do not resurrect it as current behavior.
+Old 168-hour/weekly compatibility history exists in older git/migration history. Do not resurrect it as current behavior.
 
-## Phase 1 backend capabilities that are already real
+## 4. Phase 1 backend capabilities already real
 
-Phase 1 now has real backend support for:
+The backend now supports:
 
 - immutable versioned switch policies;
-- configurable interval and grace values;
+- configurable interval/grace values;
 - current published policy pointer;
 - current-window policy pointer;
 - apply policy starting next successful check in;
-- recalculate the current window;
-- publish policy with an explicit current deadline;
+- recalculate current window;
+- explicit-current-deadline publication;
 - pause;
-- resume fresh window;
+- fresh resume;
 - authoritative remaining-time resume where valid;
 - explicit-deadline resume;
 - one-time deadline override;
-- explicit reconciliation endpoint;
+- reconciliation;
 - immutable Incident snapshots/lifecycle state;
-- atomic audits;
-- PostgreSQL constraints/triggers protecting policy and Incident invariants.
+- atomic Audit behavior;
+- PostgreSQL constraints/triggers protecting policy/Incident invariants.
 
-Protected Phase 1 control routes under `/api/v1` include:
+Important protected routes under `/api/v1` include:
 
 - `GET /checkin/operator/switch/policy`
 - `PUT /checkin/operator/switch/policy`
@@ -109,59 +109,46 @@ Protected Phase 1 control routes under `/api/v1` include:
 - `PUT /checkin/operator/switch/deadline-override`
 - `POST /checkin/operator/switch/reconcile`
 
-Phase 1 still has **no real external Action execution**. Triggered switch state is authoritative switch state only.
+Phase 1 still has **no external Action execution**.
 
-## Current frontend state
+A `triggered` switch means authoritative switch state only. It does not mean configured email/SMS/Discord/webhook/document/AI Actions were sent or executed.
 
-The first Phase 1 frontend integration was added to `CMXChat/First-Repo/main` and deployed through GitHub Pages.
+## 5. Current frontend integration
 
-The integration includes:
+The first Phase 1 frontend integration is in `CMXChat/First-Repo/main` and deployed through GitHub Pages.
 
-- policy-driven public interval/grace validation instead of requiring exactly 72 hours;
-- dedicated `checkin-phase1-controls.js` and `.css` layers;
-- protected Settings UI wiring for policy read/update, pause, resume, and one-time deadline override;
-- existing cookie-session + CSRF security reuse;
+It added:
+
+- policy-driven timing validation instead of requiring exactly 72 hours;
+- `assets/checkin/checkin-phase1-controls.js`;
+- `assets/checkin/checkin-phase1-controls.css`;
+- protected Settings wiring for policy read/update, pause, resume, and deadline override;
+- reuse of the existing protected cookie session + CSRF model;
 - paused-state presentation;
 - responsive/mobile work;
 - no intentional production switch mutation.
 
-Last functional Phase 1 frontend-control commit before continuity documentation:
+Relevant functional frontend commits before continuity-only updates:
 
-`102e7c07aba77daf811eb8f1c48bde2e69055fe6` — `Harden Check In settings text wrapping`
+- `5c6a95eb2e50b899c72ed76a9611d7d70f53702f` — policy-driven timing contract;
+- `844e1728a148ae1adefcbfb8aab4d1e33831445c` — Phase 1 controls;
+- `c8abf72fc76149ed91053af1cf57a6f20f771489` — controls wired into Check In;
+- `f3ebea04070a1c40690f1e5b39d8e844b7aeb2ac` — controls hardened;
+- `8f1ee107c77aa8df50bc6e95dfb6dd2e8f756550` — timing bounds aligned;
+- `7f22bcbbfade5e075eb5ffc7c64ebe5101b31c6a` — paused/mobile polish;
+- `102e7c07aba77daf811eb8f1c48bde2e69055fe6` — settings text wrapping.
 
-Detailed handoff commit:
+Earlier desktop package fix that must remain intact:
 
-`61730d7bb39c718eae5c62f10429042c0c9fa6b0`
+- `36d95a0142bcbb9230046cc4b942570bb78ae7f6`.
 
-The first CURRENT correction was then added after the real Samsung screenshot. This file may move `main` again through later documentation-only commits; do not confuse those with functional frontend changes.
+## 6. ACTIVE WORK RIGHT NOW — finish this before the automation engine
 
-## Current observed frontend problems
+The first real Samsung/Android screenshot after Phase 1 frontend integration revealed two frontend problems.
 
-The first real Samsung/Android Chrome screenshot after Phase 1 frontend integration revealed two important issues. These are the **active work being handled now**.
+### Problem A: degraded public status
 
-### 1. Settings is not visible on the observed mobile page
-
-The screenshot showed:
-
-- Check In branding;
-- Access;
-- Dark / Light theme control;
-- bottom nav: Status / Records / Actions / Activity.
-
-There was no visible Settings gear/button.
-
-Current source **does** contain:
-
-- top-bar `#mobileSettings`;
-- sidebar `#openSettings`.
-
-Current narrow-screen CSS also deliberately hides the separate `#mobileNavSettings` item.
-
-Therefore do not assume Settings was never implemented and do not blindly add a duplicate Settings control. Diagnose why the intended existing affordance is absent in the real mobile render.
-
-### 2. Public status is degraded on the observed mobile page
-
-The same screenshot showed:
+The observed page showed:
 
 - `Status unavailable`;
 - `SYNC REQUIRED`;
@@ -171,32 +158,51 @@ The same screenshot showed:
 - Last Check In `Never`;
 - Next Due `Unavailable`.
 
-That is not the expected production state. The backend previously passed approved-origin browser health/public-status checks.
+This is not the expected production state.
 
-Do not assume the backend is down from the screenshot alone. Diagnose from evidence. Relevant areas include public fetch behavior, status-contract normalization/validation, JavaScript errors, cache/deployment state, CORS/Cloudflare behavior, and layered presentation logic.
+The backend had already passed real approved-origin browser health/public-status smoke checks. Therefore do not assume the backend is down from this screenshot alone.
 
-## Active completion gate — do this before the automation engine
+Investigate the actual frontend/browser path: public fetch, response normalization/contract, JavaScript errors, cache/deployment, CORS/Cloudflare, or layered presentation behavior.
 
-The other context window is already working on the frontend issue. **Do not redirect it into roadmap/backend work. Do not start over.**
+### Problem B: intended mobile Settings entry point is not visible
 
-The current active gate is `tasks.md` T034-T040:
+The Samsung screenshot showed:
 
-1. Diagnose and repair real Samsung `SYNC REQUIRED` / `Status unavailable` behavior.
-2. Determine why the existing `#mobileSettings` affordance is not visible and fix the proven cause.
-3. Reverify truthful public status/countdown on the real mobile browser.
-4. Perform locked Settings visual/privacy audit on mobile and desktop.
-5. Unlock only when ready and perform the first protected **GET-only** policy read.
-6. Verify the UI truthfully represents current 72+24 policy/window.
-7. Verify manual lock/session expiry removes private control state.
-8. Add targeted regression coverage if the diagnosed failure mode warrants it.
+- Check In branding;
+- Access;
+- Dark/Light control;
+- bottom nav Status / Records / Actions / Activity;
+- no visible Settings gear.
 
-Do **not** publish policy timing, pause, resume, override a deadline, reconcile, or record a check in merely to satisfy this gate.
+Current source already contains:
 
-If another context is already actively implementing these repairs, let that context finish the gate. The roadmap alignment below is for **after** the gate passes.
+- top-bar `#mobileSettings`;
+- sidebar `#openSettings`.
 
-# Approved product direction after the frontend gate
+Narrow-screen CSS intentionally hides the separate `#mobileNavSettings` item.
 
-The long-term product is a private automation/delegation control plane.
+Do not blindly add a duplicate Settings button. Diagnose why the intended existing top-bar control is not appearing.
+
+### Active checklist
+
+This is `tasks.md` T034-T040:
+
+1. diagnose/fix Samsung `SYNC REQUIRED / Status unavailable`;
+2. diagnose/fix missing existing `#mobileSettings` affordance;
+3. reverify truthful public status/countdown on real mobile;
+4. perform locked Settings visual/privacy audit on mobile and desktop;
+5. unlock only when ready and perform protected **GET-only** policy read;
+6. verify UI represents current 72+24 policy/window correctly;
+7. verify manual lock/session expiry removes private controls/state;
+8. add targeted regression coverage if the diagnosed failure warrants it.
+
+Do **not** publish policy timing, pause, resume, override a deadline, reconcile, or record a check in merely to complete this gate.
+
+If another context is already working on this frontend gate, let it continue. Do not redirect it into backend roadmap work and do not restart the diagnosis from scratch.
+
+## 7. Approved product direction after the frontend gate
+
+Check In is intentionally evolving into a private automation/delegation control plane.
 
 Human mental model:
 
@@ -208,63 +214,78 @@ WAIT / REPEAT when configured
 THEN react to outcomes
 ```
 
-The realistic target is **IFTTT-class workflow/orchestration power for the providers and use cases we deliberately connect**, while going deeper in the areas Check In owns:
+The realistic target is **IFTTT-class trigger/action and workflow usefulness for the providers we deliberately connect**, with deeper private orchestration than simple one-trigger/one-action recipes.
 
-- private Records/People/Organizations/Documents/Digital Assets;
-- switch and contingency Incident state;
-- immutable versions and historical explanation;
-- server-owned schedules;
-- multi-step routing;
+Check In should own:
+
+- durable Automation definitions;
+- immutable versions;
+- Switch/Incident state;
+- schedules;
+- conditions;
+- targets and protected records;
+- Runs;
+- Occurrences;
+- Execution Attempts;
 - retries/timeouts;
+- routing;
 - acknowledgements;
 - approvals;
-- durable execution receipts;
-- bounded AI Tasks and later bounded AI Agents.
+- audit history;
+- provider references;
+- bounded AI permissions.
 
-We are **not** trying to recreate the full IFTTT/Zapier/Make/n8n integration catalog ourselves.
+External providers supply capabilities such as email, SMS, Discord, AI, object storage, and approved APIs/webhooks.
 
-Core rule:
+Core principle:
 
 > **Build the control plane. Rent the capabilities.**
 
-External providers supply email, SMS, Discord, AI, webhooks/APIs, storage, and future capabilities. Check In owns definitions, permissions, durable timing/state, history, orchestration, approvals, and what happens next.
+We are not trying to reproduce the entire IFTTT/Zapier/Make/n8n integration marketplace ourselves.
 
-## Why this direction is realistically buildable by us
+## 8. Why the roadmap is realistically doable by us
 
-Do not build a platform-sized abstraction in one shot. Every phase below has a narrow exit gate and can be learned, tested, deployed, and recovered independently.
+The implementation is intentionally split into narrow vertical slices using the existing FastAPI + PostgreSQL foundation.
 
-Use the existing FastAPI + PostgreSQL foundation. Do not migrate the whole frontend to React or add a complex worker framework merely because larger products use one.
+Do not:
 
-Prefer the simplest safe infrastructure that proves the next behavior. For the first runtime, prefer PostgreSQL-backed due-work claiming/leases unless real scale or operational evidence justifies Redis or another queue later.
+- build a platform-sized abstraction all at once;
+- rewrite the whole frontend into React merely because the backend gets more capable;
+- add Redis/Celery/Dramatiq/RQ simply because large systems use them;
+- add many providers before one fake and one real vertical slice work;
+- start AI Agent work early;
+- build a giant drag-and-drop workflow editor first.
 
-Provider integrations are added **one at a time**, after fake execution works. AI Agent work is deliberately late.
+Prefer PostgreSQL-backed durable claims/jobs first if they satisfy the reliability requirements. Add a separate queue only when real evidence justifies it.
 
-## Approved executable roadmap
+A small reliable engine with a few excellent provider adapters is more valuable than a fragile engine claiming dozens of integrations.
 
-`jay-app/specs/003-server-checkin/tasks.md` is the active checklist. The stages are:
+## 9. Approved executable roadmap after T034-T040
+
+`CMXChat/jay-app/specs/003-server-checkin/tasks.md` is the concrete checklist.
 
 ### Engine Phase 2A — typed Automation definitions
 
 First backend milestone after the frontend gate.
 
-Build only enough to store, validate, version, preview, and publish useful Automation definitions:
+Build:
 
 - `Automation`;
 - immutable `AutomationVersion`;
 - small typed Trigger registry;
 - small typed Action registry;
 - stable protected targets/references;
-- only the Conditions and Routes needed by the first slice;
-- graph/reference validation;
+- only Conditions/Routes needed by the first slice;
+- graph/reference/cycle validation;
 - `DRAFT → REVIEW → PUBLISHED → ARCHIVED` lifecycle;
 - protected CRUD/publish APIs;
-- authorization, cross-switch, schema, and graph tests.
+- schema/authorization/cross-switch tests.
 
-**No external side effects. No scheduler yet.**
+No external side effects. No scheduler yet.
 
 ### Engine Phase 2B — private human builder
 
-Build the private `/checkin` Automation builder around:
+Evolve the private `Actions` area around:
 
 ```text
 WHEN / IF / DO / WAIT / THEN
@@ -276,43 +297,34 @@ The older compact flow:
 ACTION / TARGET / WHEN / CONTENT / REVIEW
 ```
 
-remains useful as the editor for **one action step inside the Automation**. It is not the architecture of the entire workflow.
+is the editor for **one DO step**, not the architecture of the entire Automation.
 
-The frontend edits backend drafts, shows a human-readable review, and publishes only through backend validation.
+Start with a structured linear/card builder. Do not build a freeform drag-and-drop canvas first.
 
-### Engine Phase 3 — durable runtime with fake execution
+### Engine Phase 3 — durable runtime with fake provider
 
-Add only what is needed to prove reliable execution semantics:
+Add:
 
 - `Run`;
 - `RunAction`;
 - `Occurrence`;
 - `ExecutionAttempt`;
 - immutable runtime snapshots;
-- persisted `next_run_at` / eligibility state;
-- PostgreSQL locking/lease claim model;
+- persisted due times;
+- PostgreSQL lock/lease claim model;
 - stable idempotency identities;
 - restart/stale-claim recovery;
 - deterministic fake provider;
-- append-only runtime audit;
+- append-only runtime Audit;
 - protected runtime status/receipt APIs.
 
-Exit condition: a manual/scheduled fake workflow runs exactly once logically, retries/recovery are explainable, and nothing depends on a browser tab staying open.
+Exit condition: fake workflows run reliably without the browser staying open and survive duplicate claims/restarts correctly.
 
-### Engine Phase 4 — one real low-risk provider vertical slice
+### Engine Phase 4 — one real low-risk provider
 
-Choose **one** provider at implementation time based on the simplest secure and operationally reliable setup. Likely candidates are Discord or email.
+Choose one provider at implementation time based on the simplest secure/operational setup. Preferred candidate is an approved Discord webhook Connection; transactional email is an acceptable alternative if clearly simpler at that time.
 
-Add:
-
-- server-side Connection/secret-reference boundary;
-- one typed provider adapter;
-- preflight/readiness;
-- bounded timeout;
-- normalized/redacted result;
-- monitoring appropriate to the first real worker/scheduler.
-
-Prove one complete chain:
+Prove:
 
 ```text
 trigger
@@ -325,15 +337,15 @@ trigger
 → Audit
 ```
 
-Only after this works should we add more providers.
+Only then add more providers.
 
 ### Engine Phase 5 — deeper workflow power
 
 Add as real workflows require them:
 
-- success/final-failure/timeout routing;
+- success/final-failure/timeout routes;
 - typed dependencies;
-- bounded retries;
+- retries;
 - persisted WAIT/repeat behavior;
 - branch cancellation;
 - acknowledgements;
@@ -341,20 +353,20 @@ Add as real workflows require them:
 - calendar recurrence/timezone/DST hardening;
 - additional providers one at a time, including SMS when justified.
 
-This is where Check In grows beyond basic one-trigger/one-action IFTTT behavior.
+This is where the engine becomes deeper than basic IFTTT recipes.
 
-### Engine Phase 6 — bounded AI Task and natural-language Planner
+### Engine Phase 6 — AI Task + natural-language Planner
 
-AI Task comes first as a normal typed Action with:
+AI Task first:
 
 - approved context IDs;
-- explicit output destination;
-- provider/model policy;
+- explicit output;
+- model/provider policy;
 - runtime/token/cost limits;
-- audited results;
-- approval requirements where needed.
+- audited result;
+- approval where needed.
 
-Then add the Planner only after typed schemas are stable:
+Then Planner:
 
 ```text
 plain language
@@ -366,88 +378,62 @@ plain language
 → user review/publish
 ```
 
-The Planner creates **drafts**, not authority.
+Planner creates drafts. It does not create authority.
 
 ### Engine Phase 7 — bounded AI Agent later
 
-Only after normal runtime, provider execution, approvals, audit, typed tools, limits, and simulation are trustworthy.
+Only after normal runtime, providers, approvals, audit, typed tools, limits, and simulation are trustworthy.
 
-Server-enforced grants must define allowed Records, People, Organizations, Connections, tools, communications, cost, steps, runtime, approvals, outputs, and stop conditions. Prompt text can never expand those grants.
+Server-enforced grants define allowed records, people, organizations, Connections, tools, communication rights, budget, steps, runtime, approvals, outputs, and stop conditions.
 
-## First practical vertical slice
+Prompt text can never expand those permissions.
 
-Do not begin by implementing birthdays + Discord + email + SMS + AI all together.
+## 10. Acceptance rule: drawings are not capabilities
 
-The first post-frontend slice should be intentionally small enough for us to understand end to end:
+A frontend card does not make a capability real.
 
-1. one Automation draft/version;
-2. one simple trigger such as `manual` or one existing switch event;
-3. a tiny typed action chain with no real external side effect;
-4. publish/preview validation;
-5. then fake durable execution;
-6. then replace exactly one fake capability with one real low-risk provider.
+- A definition is real when the backend validates, versions, and persists it.
+- Runtime is real when due work survives restarts/duplicate claims safely.
+- Provider Action is real when the server executes it idempotently with safe credential boundaries and stores a truthful result.
+- WAIT is real when persisted server-side, not when JavaScript sleeps.
+- A route is real when runtime outcomes activate it deterministically.
+- AI delegation is real only when context, tools, permissions, limits, audit, and approvals are enforced server-side.
 
-This sequence proves the architecture without making the next task an unfinishable platform rewrite.
+Until these gates exist, do not claim Actions are armed, sent, delivered, released, executed, or completed.
 
-## Acceptance rule: frontend drawings are not capabilities
+## 11. Security/public-private guardrails
 
-A feature is real only when the backend proves the corresponding behavior.
+Preserve:
 
-- Definition is real when backend can validate/version/persist it.
-- Runtime is real when due work survives restarts and duplicate claims safely.
-- Provider Action is real when server executes it with safe credentials/idempotency and persists a truthful result.
-- Route is real when runtime outcomes activate it deterministically.
-- WAIT is real when it is persisted/scheduled server-side, not when JavaScript sleeps.
-- AI delegation is real only when permissions, context, limits, tools, audit, and approvals are enforced server-side.
-
-Until those gates exist, the frontend must not claim an Action is armed, sent, executed, delivered, released, or completed.
-
-## Public/private and security guardrails
-
-Preserve all current boundaries:
-
-- public status stays sanitized and read only;
-- private records/action definitions/policy/activity stay behind private access;
+- sanitized read-only public status;
+- private records/action definitions/policy/activity behind private access;
 - Secure HttpOnly operator session cookie;
 - double-submit CSRF;
-- exact production mutation Origin `https://db.cmxchat.com`;
-- no operator key/JWT/CSRF/private content/private policy in localStorage/sessionStorage;
+- exact mutation Origin `https://db.cmxchat.com`;
+- no operator key/JWT/CSRF/private policy/private content in localStorage/sessionStorage;
 - no owner ID/switch UUID/database credentials in public frontend;
-- no arbitrary Python/JavaScript/shell/SQL/`eval` Action or Condition;
+- no raw provider credentials in Action JSON, Records, Audit, prompts, or frontend;
+- no arbitrary Python/JavaScript/shell/SQL/`eval` Actions or Conditions;
 - no unrestricted arbitrary webhook destinations;
-- raw provider credentials stay server-side behind Connection/secret references;
-- external side effects require idempotency and durable server history;
-- high-risk/destructive operations require stronger policy and later approvals.
+- idempotency and durable history for external side effects;
+- stronger policy/approvals before destructive operations.
 
-## Samsung/mobile performance guardrail
+## 12. Samsung/mobile performance guardrail
 
-A real Samsung/Android browser previously became unresponsive because broad MutationObserver behavior interacted with frequently changing countdown text.
+A real Samsung/Android browser previously became unresponsive because broad DOM observation interacted with the frequently changing countdown.
 
 Do not add:
 
-- full-document MutationObservers;
+- full-document `MutationObserver`;
 - full-page `characterData` observation;
-- whole-page rescans every second;
-- observer callbacks that rewrite the same observed target without guards;
-- browser-owned scheduling for real Actions.
+- whole-page rescans every countdown tick;
+- observer callbacks that repeatedly mutate their own observed target.
 
-The mobile frontend must remain a renderer/controller, never the automation scheduler.
+Use targeted state/events.
 
-## Master-plan audit result
+## 13. Files to inspect before frontend changes
 
-The durable architecture in `CHECKIN-MASTER-PLAN.md` already supports the approved IFTTT-class direction: Automation, Trigger, Condition, Action, Run, Incident, RunAction, Occurrence, ExecutionAttempt, scheduler, provider adapters, approvals, acknowledgements, AI Task, Planner, Agent, and Test Center are all part of that design.
-
-We therefore **do not need to replace the master architecture or create another competing master document**.
-
-Some pre-Phase-1 status language inside the master plan is historical now. Current contexts should not restart Phase 1 from those passages. `tasks.md` is the executable roadmap; this CURRENT handoff records the live cross-repository state; the master plan remains the architecture/invariant reference.
-
-## Files to inspect before frontend changes
-
-After this file, read the longer handoff:
-
-- `docs/checkin-context-handoff-2026-08-17.md`
-
-Then inspect current source as needed:
+Read current source before editing:
 
 - `checkin/index.html`
 - `assets/checkin/checkin.js`
@@ -456,58 +442,33 @@ Then inspect current source as needed:
 - `assets/checkin/checkin-phase1-controls.css`
 - `assets/checkin/checkin-refine.css`
 - `assets/checkin/checkin-legibility.css`
-- `assets/checkin/checkin.css`
+- other `assets/checkin/*` files only as needed.
 
-Do not broadly rewrite the page or assume an old screenshot represents current source.
+Do not broadly rewrite `/checkin` from screenshots or memory.
 
-## Files to read before post-frontend backend work
+## 14. Files to inspect before backend automation work
 
-In `CMXChat/jay-app`:
+After the active frontend gate passes, read:
 
-1. `specs/003-server-checkin/HANDOFF.md`
-2. `specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md`
-3. `specs/003-server-checkin/tasks.md`
-4. `specs/003-server-checkin/ACTION-BUILDER-NEXT.md`
-5. `specs/003-server-checkin/CHECKIN-MASTER-PLAN.md`
-6. current backend models/services/routes/migrations relevant to the active task.
+- `specs/003-server-checkin/tasks.md`;
+- `specs/003-server-checkin/CHECKIN-MASTER-PLAN.md`;
+- `specs/003-server-checkin/ACTION-BUILDER-NEXT.md`;
+- current backend models/services/routes/migrations/tests.
 
-Read actual implementation before assuming target architecture already exists.
+Then implement only the active checklist slice.
 
-## Do-not list
+## 15. Learning/working style
 
-- Do not interrupt the other context's current frontend repair to start Phase 2.
-- Do not describe the live switch as weekly.
-- Do not casually change production 72+24 timing.
-- Do not mutate production merely to verify controls.
-- Do not claim configured Actions execute today.
-- Do not add scheduler/providers/AI during the frontend completion gate.
-- Do not expose private data publicly.
-- Do not weaken cookie/CSRF/Origin/CORS boundaries.
-- Do not add broad DOM observers.
-- Do not make a browser tab responsible for consequential execution.
-- Do not add a giant provider catalog before one vertical slice works.
-- Do not add a giant drag-and-drop workflow editor before typed definitions/runtime exist.
-- Do not migrate frontend frameworks solely because the engine is becoming more capable.
-- Do not add autonomous AI before typed runtime, audit, permissions, approvals, and simulation.
-- Do not ask the user to paste production secrets into chat.
-- Do not reproduce the SMTP credential exposed in earlier diagnostic output. Before final project closeout, remind the user to rotate the active SMTP credential if that has not already happened.
+The user is learning backend development while building this.
 
-## Exact current next move
+When explaining concepts, use short beginner-friendly explanations tied to this project.
 
-Continue the frontend diagnosis already underway in the other context window.
+For implementation, prefer one clear next action at a time unless a full plan is explicitly requested.
 
-The next successful milestone is **not** Phase 2. It is:
+Codex/Codespaces credits are limited. If ChatGPT can safely inspect/change First-Repo through GitHub directly, do not burn Codex unnecessarily.
 
-```text
-healthy truthful public status on real Samsung
-+
-reachable intended Settings entry point
-+
-locked Settings privacy/visual audit
-+
-protected GET-only policy verification
-+
-manual lock/session-expiry verification
-```
+## 16. Security cleanup still owed
 
-After that gate passes, begin only Engine Phase 2A from `tasks.md`: typed/versioned Automation definitions with no external side effects.
+An SMTP credential was exposed earlier in diagnostic output. Never reproduce it in chat, docs, commits, prompts, or logs.
+
+Before final overall project closeout, remind the user to rotate the active SMTP credential if that has not already been done.
