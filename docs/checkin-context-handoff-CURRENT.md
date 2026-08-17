@@ -68,7 +68,41 @@ Work in this order:
 5. Recheck the public live status on Samsung/Android.
 6. Once status is healthy and Settings is reachable, perform the **locked Settings visual audit**.
 7. Only after that, unlock the existing private session and perform the first **read-only** protected policy verification.
-8. Do not publish policy timing, pause, resume, override a deadline, reconcile, or record a check in merely to test the UI.
+8. Verify manual lock/session expiry clears private control state correctly.
+9. Do not publish policy timing, pause, resume, override a deadline, reconcile, or record a check in merely to test the UI.
+
+If another context is already actively working on these frontend repairs, **do not restart or redirect that work just because the roadmap documents below were updated**. The roadmap alignment is for the work that follows this frontend completion gate.
+
+## Automation roadmap alignment made after this screenshot
+
+The durable master architecture already pointed toward a private automation/delegation engine. The implementation documents in `CMXChat/jay-app` have now been tightened so future contexts do not accidentally build a shallow Actions form, jump straight into provider integrations, or attempt an unfinishable platform rewrite.
+
+The approved long-term mental model remains:
+
+`WHEN something happens → IF rules are true → DO actions → WAIT/REPEAT → THEN react to outcomes`
+
+The realistic goal is IFTTT-class workflow/orchestration power for the providers and use cases we deliberately connect, with deeper Check In features around private Records, switch/Incident state, durable history, approvals, acknowledgements, retries, routing, and bounded AI.
+
+We are **not** trying to reproduce the entire IFTTT/Zapier/Make provider catalog ourselves.
+
+Principle:
+
+**Build the control plane; rent capabilities.**
+
+The post-frontend sequence is now explicitly documented in `jay-app/specs/003-server-checkin/tasks.md` and aligned with `ACTION-BUILDER-NEXT.md`:
+
+1. typed Automation definitions/versioning only;
+2. private human builder using `WHEN / IF / DO / WAIT / THEN`;
+3. durable Run/Occurrence/Attempt runtime with a deterministic fake provider;
+4. one real low-risk provider vertical slice, likely Discord or email depending on implementation-time security/operational simplicity;
+5. routing, retries, timeouts, persisted waits/repeats, acknowledgements, approvals, calendar hardening, and additional providers only as needed;
+6. bounded AI Task;
+7. natural-language Planner that creates a validated **draft** for review/publish;
+8. bounded AI Agent much later after normal runtime, approvals, audit, tool permissions, limits, and simulation are trustworthy.
+
+Do not combine those into one implementation. Each stage has an exit gate so it can be learned, tested, deployed, and recovered independently.
+
+Important: the old compact Action editing idea `ACTION → TARGET → WHEN → CONTENT → REVIEW` has **not** been thrown away. It is now explicitly treated as the step editor for one Action inside the larger Automation builder. It is not the architecture of the whole workflow.
 
 ## Files to review before changing code
 
@@ -89,16 +123,19 @@ Then inspect current First-Repo source, especially:
 
 Inspect other `assets/checkin/*` layers only as needed. Do not broadly rewrite the page.
 
-For backend contract/current production truth, review:
+For backend contract/current production truth and future implementation direction, review in this order:
 
-- `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md`
-- `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md`
-- `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md`
-- `CMXChat/jay-app/specs/003-server-checkin/ACTION-BUILDER-NEXT.md`
+1. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md`
+2. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md`
+3. `CMXChat/jay-app/specs/003-server-checkin/tasks.md`
+4. `CMXChat/jay-app/specs/003-server-checkin/ACTION-BUILDER-NEXT.md`
+5. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md`
+
+`CHECKIN-MASTER-PLAN.md` remains the durable architecture source of truth. Its older Section 38, `Tomorrow: Start Here`, describes the pre-Phase-1 work plan and is historical now that Phase 1 is live. For the current executable sequence, use `FRONTEND-BACKEND-NEXT.md` + `tasks.md` + `ACTION-BUILDER-NEXT.md` while preserving the master plan's architecture/invariants.
 
 ## Important guardrails
 
-- Do not start Phase 2 yet.
+- Do not start Phase 2 until the current frontend completion gate is passed.
 - Do not describe the live switch as weekly.
 - Do not casually change the production 72 hour + 24 hour policy.
 - Do not mutate production just to verify the frontend.
@@ -109,9 +146,15 @@ For backend contract/current production truth, review:
 - Do not add broad document-wide MutationObservers or countdown-triggered full-page text scans. A Samsung/Android freeze was already caused by observer churn in an earlier frontend version.
 - Do not ask the user to paste production secrets into chat.
 - Do not reproduce the SMTP credential that was exposed in an earlier diagnostic screenshot. Remind the user to rotate it before final project closeout if that has not already happened.
+- Do not make the browser the scheduler. Real execution must survive a closed page and server restarts.
+- Do not add arbitrary executable Python/JavaScript/shell/SQL Actions or Conditions.
+- Do not add a giant provider catalog before one real vertical slice works.
+- Do not start autonomous AI before typed runtime, permissions, approvals, audit, and simulation exist.
 
 ## What success looks like before moving on
 
 Before Phase 1 frontend integration can be considered verified, the real page should again show valid server-backed public status, the intended Settings entry point should be clearly reachable on mobile and desktop, the locked Settings surface should expose no private values, and an unlocked session should be able to perform a protected **GET-only** policy read showing the authoritative policy/window correctly.
 
-Only then should the project proceed to the remaining Phase 1 frontend cleanup and later Action Builder / automation-control-plane work.
+Only then should the project proceed to the Automation-definition milestone in `tasks.md`.
+
+The next backend milestone is deliberately small: store, validate, version, preview, and publish typed Automation definitions **without external side effects**. That keeps the IFTTT-like direction real while keeping the next implementation achievable by us.
