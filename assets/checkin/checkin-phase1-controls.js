@@ -10,6 +10,7 @@
   let publicStatus = null;
   let policy = null;
   let busy = false;
+  let reopenSettingsAfterUnlock = false;
 
   const isUnlocked = () => document.body.classList.contains("operator-unlocked");
   const hourLabel = value => `${value} hour${Number(value) === 1 ? "" : "s"}`;
@@ -40,8 +41,10 @@
   }
 
   async function request(path, options = {}) {
-    const headers = { Accept: "application/json", ...(options.headers || {}) };
-    if (options.mutation) {
+    const { mutation = false, headers: optionHeaders = {}, ...fetchOptions } = options;
+    const headers = { Accept: "application/json", ...optionHeaders };
+
+    if (mutation) {
       const sessionResponse = await fetch(`${API_BASE}/checkin/operator/session`, {
         credentials: "include",
         cache: "no-store",
@@ -60,7 +63,7 @@
     const response = await fetch(`${API_BASE}${path}`, {
       credentials: "include",
       cache: "no-store",
-      ...options,
+      ...fetchOptions,
       headers,
     });
     if (!response.ok) {
@@ -79,10 +82,10 @@
         <button value="cancel" class="dialog-close" aria-label="Close">×</button>
       </div>
 
-      <section class="phase1-current" aria-label="Current switch policy">
+      <section class="phase1-current" aria-label="Current switch window">
         <div>
-          <small>LIVE POLICY</small>
-          <strong id="phase1CurrentSchedule">Reading server policy…</strong>
+          <small>CURRENT WINDOW</small>
+          <strong id="phase1CurrentSchedule">Reading server timing…</strong>
           <span id="phase1CurrentDeadline">Next deadline pending</span>
         </div>
         <b id="phase1PolicyState" data-state="locked">LOCKED</b>
@@ -99,7 +102,7 @@
       <div class="phase1-private" id="phase1PrivateControls" hidden>
         <section class="phase1-section">
           <div class="phase1-section-head">
-            <div><small>TIMING POLICY</small><strong>Check in window</strong></div>
+            <div><small>PUBLISHED POLICY</small><strong>Check in timing</strong></div>
             <span id="phase1PolicyVersion">Version —</span>
           </div>
           <div class="phase1-grid">
@@ -136,7 +139,7 @@
 
         <section class="phase1-section">
           <div class="phase1-section-head">
-            <div><small>SWITCH CONTROL</small><strong id="phase1PauseTitle">Pause or resume</strong></div>
+            <div><small>SWITCH CONTROL</small><strong>Pause or resume</strong></div>
             <span id="phase1PauseMeta">Reading state</span>
           </div>
           <div id="phase1PauseControls">
@@ -192,6 +195,7 @@
     form.innerHTML = settingsMarkup();
 
     $("#phase1Unlock")?.addEventListener("click", () => {
+      reopenSettingsAfterUnlock = true;
       $("#settingsDialog")?.close();
       $("#operatorButton")?.click();
     });
@@ -214,6 +218,13 @@
     $$("#phase1PrivateControls button, #phase1PrivateControls input, #phase1PrivateControls select").forEach(control => {
       control.disabled = next;
     });
+  }
+
+  function expirePrivateAccess() {
+    policy = null;
+    setError("Private access expired. Unlock again to use switch controls.");
+    const lockButton = $("#lockNowButton");
+    if (lockButton && !lockButton.hidden) lockButton.click();
   }
 
   function updatePolicyBehavior() {
@@ -244,7 +255,7 @@
     if (!publicStatus) return;
     const interval = Number(publicStatus.interval_hours);
     const grace = Number(publicStatus.grace_hours);
-    if (!Number.isFinite(interval) || !Number.isFinite(grace)) return;
+    if (!Number.isInteger(interval) || interval < 1 || !Number.isInteger(grace) || grace < 0) return;
 
     const current = $("#phase1CurrentSchedule");
     const deadline = $("#phase1CurrentDeadline");
@@ -261,15 +272,41 @@
     if (safeTrack) safeTrack.textContent = `${hourLabel(interval)} window`;
     if (graceTrack) graceTrack.textContent = `${hourLabel(grace)} grace`;
 
-    const statusCopy = $("#statusCopy");
-    if (statusCopy?.textContent.includes("primary 72 hour switch")) {
-      statusCopy.textContent = `The primary ${hourLabel(interval)} switch is not active.`;
-    }
-
     const pressure = $("#pressureCopy");
     const state = $("#statusConsole")?.dataset.state;
     if (pressure && state === "soon") pressure.textContent = `A verified check in resets the ${hourLabel(interval)} window.`;
     if (pressure && state === "grace") pressure.textContent = `The ${hourLabel(grace)} grace window is active.`;
+  }
+
+  function renderAuthoritativePublicState() {
+    if (!publicStatus || publicStatus.state !== "disabled") return;
+    const interval = Number(publicStatus.interval_hours) || 72;
+    const paused = Boolean(publicStatus.enabled);
+    const consoleNode = $("#statusConsole");
+    const top = $("#topStatus");
+    const pill = $("#statePill");
+    const title = $("#statusTitle");
+    const copy = $("#statusCopy");
+    const countdown = $("#countdown");
+    const unit = $("#countdownUnit");
+    const hint = $("#checkinButtonHint");
+    const ring = $("#ringProgress");
+
+    if (paused) {
+      if (consoleNode) consoleNode.dataset.state = "paused";
+      if (top) { top.dataset.state = "paused"; top.innerHTML = "<i></i><span>PAUSED</span>"; }
+      if (pill) pill.innerHTML = "<i></i>PAUSED";
+      if (title) title.textContent = "Paused";
+      if (copy) copy.textContent = "Switch progression is frozen. Private access is required to resume it or record a new check in.";
+      if (countdown) countdown.textContent = "PAUSED";
+      if (unit) unit.textContent = "countdown progression frozen";
+      if (hint && isUnlocked()) hint.textContent = "Check in starts a fresh window";
+      if (ring) ring.style.strokeDashoffset = "0";
+      return;
+    }
+
+    if (title) title.textContent = "Not active";
+    if (copy) copy.textContent = `The primary ${hourLabel(interval)} switch is not active.`;
   }
 
   function renderAccessState() {
@@ -283,7 +320,7 @@
       stateBadge.dataset.state = "locked";
       stateBadge.textContent = "LOCKED";
     }
-    if (unlocked) loadPolicy();
+    if (!unlocked) policy = null;
   }
 
   function renderPolicy() {
@@ -294,7 +331,7 @@
 
     $("#phase1Interval").value = String(intervalHours);
     $("#phase1Grace").value = String(graceHours);
-    $("#phase1PolicyVersion").textContent = `Version ${policy.version_number}`;
+    $("#phase1PolicyVersion").textContent = `Version ${policy.version_number} · UTC`;
     $("#phase1PauseMeta").textContent = paused ? `Paused ${formatDateTime(policy.paused_at)}` : "Countdown active";
     $("#phase1OverrideMeta").textContent = policy.deadline_override_at ? `Override ${formatDateTime(policy.deadline_override_at)}` : "No override";
     $("#phase1PauseControls").hidden = paused;
@@ -305,10 +342,12 @@
       badge.dataset.state = paused ? "paused" : "active";
       badge.textContent = paused ? "PAUSED" : "ACTIVE";
     }
-    const current = $("#phase1CurrentSchedule");
-    const deadline = $("#phase1CurrentDeadline");
-    if (current) current.textContent = `${hourLabel(intervalHours)} rolling · ${hourLabel(graceHours)} grace · UTC`;
-    if (deadline) deadline.textContent = `Next deadline ${formatDateTime(policy.next_due_at)}`;
+    if (!publicStatus) {
+      const current = $("#phase1CurrentSchedule");
+      const deadline = $("#phase1CurrentDeadline");
+      if (current) current.textContent = `${hourLabel(intervalHours)} rolling · ${hourLabel(graceHours)} grace`;
+      if (deadline) deadline.textContent = `Next deadline ${formatDateTime(policy.next_due_at)}`;
+    }
     updatePolicyBehavior();
     updateResumeBehavior();
   }
@@ -317,6 +356,7 @@
     try {
       publicStatus = await request("/checkin/public/status");
       renderPublicTiming();
+      renderAuthoritativePublicState();
     } catch {
       // Core checkin.js owns the primary public-link error state.
     }
@@ -329,7 +369,7 @@
       policy = await request("/checkin/operator/switch/policy");
       renderPolicy();
     } catch (error) {
-      if (error.status === 401) renderAccessState();
+      if (error.status === 401) expirePrivateAccess();
       else setError(error.message || "Policy could not be loaded.");
     }
   }
@@ -350,7 +390,8 @@
       showMessage(successMessage);
       window.setTimeout(() => location.reload(), 650);
     } catch (error) {
-      setError(error.message || "The server rejected this change.");
+      if (error.status === 401) expirePrivateAccess();
+      else setError(error.message || "The server rejected this change.");
       showMessage("No switch change was applied.");
     } finally {
       setBusy(false);
@@ -388,7 +429,7 @@
 
   async function pauseSwitch() {
     const reason = $("#phase1PauseReason")?.value.trim() || null;
-    if (!confirm("Pause switch progression now? The current countdown and Incident progression will freeze until you resume it.")) return;
+    if (!confirm("Pause switch progression now? The countdown and Incident progression will freeze until you resume it.")) return;
     await mutate("/checkin/operator/switch/pause", "POST", { reason }, "Switch paused.");
   }
 
@@ -415,23 +456,25 @@
     await mutate("/checkin/operator/switch/deadline-override", "PUT", { deadline_at: deadline }, "One time deadline set.");
   }
 
-  function observeCoreState() {
-    const intervalNode = $("#intervalValue");
-    const graceNode = $("#graceValue");
-    const statusNode = $("#statusConsole");
-    [intervalNode, graceNode].filter(Boolean).forEach(node => {
-      new MutationObserver(() => loadPublicStatus()).observe(node, { childList: true, characterData: true, subtree: true });
-    });
-    if (statusNode) {
-      new MutationObserver(() => renderPublicTiming()).observe(statusNode, { attributes: true, attributeFilter: ["data-state"] });
-    }
-
+  function observeAccessState() {
     let lastUnlocked = isUnlocked();
     new MutationObserver(() => {
       const next = isUnlocked();
       if (next === lastUnlocked) return;
       lastUnlocked = next;
       renderAccessState();
+      if (next) {
+        loadPolicy();
+        if (reopenSettingsAfterUnlock) {
+          reopenSettingsAfterUnlock = false;
+          window.setTimeout(() => {
+            const dialog = $("#settingsDialog");
+            if (dialog && !dialog.open) dialog.showModal();
+          }, 80);
+        }
+      } else {
+        reopenSettingsAfterUnlock = false;
+      }
     }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
   }
 
@@ -439,13 +482,15 @@
     installSettings();
     loadPublicStatus();
     renderAccessState();
-    observeCoreState();
+    observeAccessState();
     ["#openSettings", "#quickSettings", "#mobileSettings", "#mobileNavSettings"].forEach(selector => {
       $(selector)?.addEventListener("click", () => {
         loadPublicStatus();
         if (isUnlocked()) loadPolicy();
       });
     });
+    window.setInterval(renderAuthoritativePublicState, 1000);
+    window.setInterval(loadPublicStatus, 60000);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
