@@ -52,8 +52,8 @@ test('mobile doc Contents drawer tracks reading position and closes cleanly', as
   await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
-  await expect(sourceLinks).toHaveCount(15);
-  await expect(mobileLinks).toHaveCount(15);
+  await expect(sourceLinks).toHaveCount(8);
+  await expect(mobileLinks).toHaveCount(8);
   await expect(trigger.locator('#mobileContentsTriggerCurrent')).toContainText('The whole idea');
   await expect(drawer).toHaveAttribute('aria-hidden', 'true');
   await expect(drawer).toHaveAttribute('inert', '');
@@ -71,7 +71,7 @@ test('mobile doc Contents drawer tracks reading position and closes cleanly', as
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
   await expect(page).toHaveURL(/#memory$/);
   await expect.poll(() => page.evaluate(() => document.getElementById('memory')?.getBoundingClientRect().top ?? 9999)).toBeLessThan(180);
-  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Memory');
+  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Memory, AI and control');
 
   await page.locator('#architecture').scrollIntoViewIfNeeded();
   await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Architecture');
@@ -104,7 +104,7 @@ test('desktop doc keeps the existing rail and hides the mobile reading control',
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('.document-rail .rail-panel').first()).toBeVisible();
-  await expect(page.locator('.document-rail .document-toc a')).toHaveCount(15);
+  await expect(page.locator('.document-rail .document-toc a')).toHaveCount(8);
   await expect(page.locator('[data-mobile-contents-trigger="true"]')).toBeHidden();
   await expect(page.locator('[data-mobile-contents-drawer="true"]')).toBeHidden();
   await expectNoHorizontalOverflow(page);

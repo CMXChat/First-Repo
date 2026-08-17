@@ -1155,7 +1155,7 @@ test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ 
   await page.goto('/doc/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#edf3f8');
-  await expect(page.locator('link[data-spaces-mobile-fixes="true"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/personal-os-doc-mobile-fixes.css?v=20260808-1"]')).toHaveCount(1);
 
   const cta = page.locator('.final-cta');
   await cta.scrollIntoViewIfNeeded();
@@ -1206,7 +1206,7 @@ test('Doc final demo CTA stays contained on a narrow mobile viewport', async ({ 
 test('Doc renders the plain-language copy audit', async ({ page }) => {
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#pageTitle')).toHaveText('One briefing for the part of life you’re in');
-  await expect(page.locator('.hero-lead')).toContainText('Shared details meet in one Brief');
+  await expect(page.locator('.hero-lead')).toContainText('shared details can meet there while private details stay with their owner');
   await expect(page.locator('#statusTitle')).toHaveText('The current demo shows the product direction and the work still required');
   await expect(page.locator('#architectureTitle')).toHaveText('Keep the product architecture understandable and controllable');
   await expect(page.locator('#finalCtaTitle')).toHaveText('Explore the current Spaces Brief demo');
