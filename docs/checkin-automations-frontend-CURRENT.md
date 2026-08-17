@@ -80,9 +80,11 @@ Important current behaviors:
 - Exact date/time supports minute precision and an IANA timezone selector;
 - Repeat remains separate from Wait and supports none/daily/weekly/custom cadence/until acknowledged as UX concepts;
 - Custom cadence supports minutes, hours, days, weeks, months, and years;
-- selecting months or years exposes an explicit Calendar timezone control;
-- monthly/yearly copy explains that these are calendar units, not 30-day/365-day approximations;
-- Review shows timing separately from recurrence;
+- recurring minutes/hours use elapsed cadence semantics;
+- Daily, Weekly, and custom days/weeks/months/years use calendar cadence semantics;
+- calendar recurrence exposes an explicit Calendar timezone control;
+- calendar recurrence copy explains that local wall-clock intent is preserved across calendar boundaries/DST according to backend policy;
+- Review shows timing separately from recurrence and includes the timezone for calendar recurrence;
 - Publish is intentionally disabled;
 - dark/light themes are supported;
 - mobile is a first-class layout target.
@@ -91,47 +93,66 @@ Important current behaviors:
 
 Presets are shortcuts, not the data model.
 
-The product should eventually allow a user to express examples such as:
+The product must distinguish **WAIT duration** from **REPEAT cadence**.
+
+A WAIT delay is an elapsed duration. Examples:
 
 ```text
 Wait 2 days, 3 hours, 17 minutes
 ```
 
-or:
+means exactly that elapsed amount. In particular:
+
+```text
+Wait 2 days = wait 48 elapsed hours
+```
+
+An exact wait preserves local date/time intent plus timezone:
 
 ```text
 Wait until Aug 22, 2026 at 3:17 PM America/New_York
 ```
 
-and recurrence such as:
+Recurrence has two semantic classes.
 
-```text
-Every 2 months in America/New_York
-```
-
-or:
-
-```text
-Every 1 year in Europe/London
-```
-
-The browser is never scheduling authority. The backend contract must validate and later resolve these values server-side.
-
-Elapsed recurrence units:
+Elapsed recurrence:
 
 - minutes;
-- hours;
+- hours.
+
+Examples:
+
+```text
+Every 45 minutes
+Every 6 hours
+```
+
+Calendar recurrence:
+
 - days;
-- weeks.
-
-Calendar recurrence units:
-
+- weeks;
 - months;
 - years.
 
-Do not translate month/year recurrence to fixed durations. `1 month` is not `30 days`; `1 year` is not `365 days`.
+Examples:
 
-For monthly/yearly recurrence, preserve the recurrence anchor and IANA timezone so later runtime can handle DST, end-of-month, and leap-year behavior deterministically.
+```text
+Every 2 days in America/New_York
+Every 1 week in Europe/London
+Every 2 months in America/New_York
+Every 1 year in Europe/London
+```
+
+Calendar recurrence preserves a local wall-clock anchor and IANA timezone. This means `every 1 day at 9:00 AM America/New_York` should remain a 9:00 AM local recurrence when DST changes. It must not be implemented as repeated additions of `86,400` seconds.
+
+Likewise:
+
+- `1 month` is not `30 days`;
+- `1 year` is not `365 days`.
+
+Monthly/yearly recurrence additionally needs deterministic end-of-month and leap-year policy.
+
+The browser is never scheduling authority. The backend contract must validate and later resolve these values server-side.
 
 Keep separate forever:
 
@@ -151,12 +172,14 @@ That file now explicitly covers:
 - typed Trigger/Condition/Action/Outcome registries;
 - stable protected target IDs;
 - ordered multiple DO steps;
-- precise relative waits;
+- precise elapsed relative waits;
 - exact local date/time + IANA timezone;
 - DST/ambiguous-time validation;
-- custom recurrence units through months/years;
-- explicit timezone for calendar recurrence;
-- deterministic end-of-month and leap-day policy requirements;
+- custom recurrence through minutes/hours/days/weeks/months/years;
+- elapsed recurrence for minutes/hours;
+- calendar recurrence for days/weeks/months/years;
+- explicit timezone for all calendar recurrence;
+- deterministic end-of-month and leap-day policy requirements for month/year recurrence;
 - recurrence remaining separate from retry;
 - immutable publish/version behavior later.
 
@@ -211,10 +234,10 @@ On Samsung/Chrome and desktop, check:
 7. multiple DO steps;
 8. in-page Action dropdown;
 9. searchable in-page Target dropdown;
-10. custom delay day/hour/minute UX;
+10. custom WAIT delay day/hour/minute UX;
 11. exact date/time + timezone UX;
 12. custom recurrence through minutes/hours/days/weeks/months/years;
-13. monthly/yearly Calendar timezone selector;
-14. human-readable Review;
+13. Calendar timezone appears for Daily, Weekly, and custom days/weeks/months/years;
+14. Review includes the timezone for calendar recurrence;
 15. dark/light;
 16. no accidental claim that Publish/execution is live.
