@@ -56,7 +56,7 @@ EXACT DATE/TIME
 
 ### Relative delay
 
-The user may express a precise elapsed delay using days, hours, and minutes.
+The user may express a precise **elapsed** delay using days, hours, and minutes.
 
 Example:
 
@@ -65,6 +65,8 @@ Example:
 ```
 
 The backend may normalize that to a canonical duration such as seconds for definition validation/runtime calculation.
+
+For WAIT semantics, `2 days` means `48 elapsed hours`. WAIT days are not the same concept as calendar-day recurrence.
 
 ### Exact date/time
 
@@ -108,36 +110,62 @@ There are two semantic classes.
 
 - minutes
 - hours
-- days
-- weeks
 
-These can be represented as bounded elapsed durations where product semantics permit.
+These may use bounded elapsed duration semantics.
+
+Examples:
+
+```text
+Every 45 minutes
+Every 6 hours
+```
 
 ### Calendar cadence
 
+- days
+- weeks
 - months
 - years
+
+Daily and Weekly presets are calendar cadence as well.
 
 Calendar cadence must preserve:
 
 - interval count;
 - unit;
 - recurrence anchor;
-- intended local wall-clock time when applicable;
+- intended local wall-clock time;
 - IANA timezone.
 
 Examples:
 
 ```text
+Every 2 days · America/New_York
+Every 1 week · Europe/London
 Every 2 months · America/New_York
 Every 1 year · Europe/London
 ```
 
-`1 month` is **not** `30 days`.
+A daily recurrence at `09:00 America/New_York` should remain at 09:00 local time across DST. Repeatedly adding `86,400` seconds can shift the local wall-clock time and is therefore the wrong model for calendar-day recurrence.
 
-`1 year` is **not** `365 days`.
+Likewise:
 
-Do not normalize monthly/yearly recurrence to fixed seconds.
+- calendar `1 week` is not modeled by blindly adding `604,800` seconds forever;
+- `1 month` is not `30 days`;
+- `1 year` is not `365 days`.
+
+## Daily and weekly recurrence policy
+
+Calendar day/week recurrence should preserve local wall-clock intent in its IANA timezone.
+
+For Daily recurrence, preserve the local time anchor.
+
+For Weekly recurrence, preserve both:
+
+- intended local weekday;
+- intended local time.
+
+Across DST changes, resolve the next local calendar occurrence in the selected timezone, then derive the authoritative UTC instant. Do not derive all future local occurrences by adding one fixed number of seconds to the prior UTC instant.
 
 ## Monthly recurrence policy
 
@@ -173,7 +201,7 @@ If product policy changes later, change it explicitly and version/test the behav
 
 ## DST and timezone behavior
 
-For calendar recurrence, preserve local wall-clock intent in the selected IANA timezone.
+For every calendar recurrence unit, preserve local wall-clock intent in the selected IANA timezone.
 
 The scheduler must define and test what happens when a recurrence lands on:
 
@@ -191,17 +219,33 @@ Exact API/Pydantic schema belongs to Phase 2A implementation, but a conceptually
 ```text
 wait:
   type: none | delay | at
-
-repeat:
-  type: none | preset | interval | until_acknowledged
-  every: 2
-  unit: months
-  timezone: America/New_York
 ```
 
-For elapsed units, `timezone` may be unnecessary.
+Elapsed recurrence example:
 
-For calendar units (`months`, `years`), timezone is required.
+```text
+repeat:
+  type: interval
+  every: 6
+  unit: hours
+```
+
+Calendar recurrence example:
+
+```text
+repeat:
+  type: calendar_interval
+  every: 2
+  unit: days
+  timezone: America/New_York
+  anchor_local_time: 09:00
+```
+
+For elapsed recurrence (`minutes`, `hours`), timezone is unnecessary for cadence calculation.
+
+For calendar recurrence (`days`, `weeks`, `months`, `years`), timezone is required.
+
+`until acknowledged` remains a future recurrence/stop-condition composition, not an elapsed interval shortcut.
 
 ## Durable runtime
 
@@ -229,12 +273,12 @@ A recurring occurrence and a retry attempt are different records.
 Example:
 
 ```text
-Monthly occurrence #7
+Calendar occurrence #7
   → provider attempt 1 failed
   → provider retry 1 succeeded
 
-Monthly occurrence #8
-  → a new recurrence next month
+Calendar occurrence #8
+  → a new recurrence later
 ```
 
 Each side effect needs stable idempotency protection.
@@ -249,7 +293,7 @@ A Run freezes the definition inputs needed to explain what actually happened.
 
 ## Long horizons
 
-Months/years in the UI do not imply that the application should pre-enqueue thousands of future jobs.
+Days/weeks/months/years in the UI do not imply that the application should pre-enqueue thousands of future jobs.
 
 Persist the definition and next meaningful due occurrence. Materialize future work as required by the scheduler/runtime design.
 
@@ -294,15 +338,13 @@ Focused UX reference:
 
 `https://db.cmxchat.com/lab/automations/`
 
-Current frontend behavior for custom recurrence:
+Current frontend behavior for recurrence:
 
-- minutes;
-- hours;
-- days;
-- weeks;
-- months;
-- years;
-- explicit Calendar timezone appears for months/years;
-- UI warns that month/year cadence uses calendar semantics.
+- minutes/hours are elapsed cadence;
+- Daily/Weekly are calendar cadence;
+- custom days/weeks/months/years are calendar cadence;
+- Calendar timezone appears for calendar recurrence;
+- UI distinguishes WAIT elapsed days from REPEAT calendar days;
+- UI warns that calendar recurrence preserves local wall-clock semantics.
 
 This remains UX-only until the typed backend definition APIs and later durable runtime exist.
