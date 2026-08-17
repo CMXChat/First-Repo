@@ -126,6 +126,17 @@
     setTimingModeCopy(section, "delay", "After a delay", "Start a precise amount of time after the trigger.");
     setTimingModeCopy(section, "exact", "At a date & time", "Do not start before a specific local date and minute.");
 
+    const delaySelected = section.querySelector('[data-timing-mode="delay"]')?.classList.contains("is-selected");
+    const exactSelected = section.querySelector('[data-timing-mode="exact"]')?.classList.contains("is-selected");
+    const precisionTitle = section.querySelector(".precision-card .timing-title h3");
+    const precisionCopy = section.querySelector(".precision-card .timing-title small");
+    if (delaySelected && precisionTitle) precisionTitle.textContent = "Start after";
+    if (delaySelected && precisionCopy) precisionCopy.textContent = "Elapsed time counted from the trigger becoming eligible.";
+    if (exactSelected && precisionTitle) precisionTitle.textContent = "Start at a date & time";
+    if (exactSelected && precisionCopy) precisionCopy.textContent = "A not-before time. The trigger still has to happen first.";
+    const exactPreviewLabel = section.querySelector(".time-preview small");
+    if (exactPreviewLabel) exactPreviewLabel.textContent = "START NOT BEFORE";
+
     const repeatTitle = section.querySelector(".repeat-block .timing-title h3");
     const repeatCopy = section.querySelector(".repeat-block .timing-title small");
     if (repeatTitle) repeatTitle.textContent = "Should it repeat?";
@@ -202,7 +213,10 @@
       const small = node.querySelector("small");
       const strong = node.querySelector("strong");
       if (small) small.textContent = "START";
-      if (strong?.textContent.trim() === "No wait") strong.textContent = "Immediately";
+      if (!strong) return;
+      const text = strong.textContent.trim();
+      if (text === "No wait") strong.textContent = "Immediately";
+      else if (text.startsWith("Wait ")) strong.textContent = `${text.slice(5)} after trigger`;
     });
   }
 
@@ -225,7 +239,7 @@
     });
   }
 
-  history.scrollRestoration = "manual";
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   document.addEventListener("click", event => {
     resetEditorScroll(event.target);
     requestAnimationFrame(() => requestAnimationFrame(enhance));
