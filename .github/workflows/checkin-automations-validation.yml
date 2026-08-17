@@ -1,0 +1,114 @@
+name: Check In Automations Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-app.js'
+      - 'assets/lab/lab-automations-app.css'
+      - 'docs/checkin-automations-frontend-CURRENT.md'
+      - '.github/workflows/checkin-automations-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-app.js'
+      - 'assets/lab/lab-automations-app.css'
+      - '.github/workflows/checkin-automations-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate JavaScript and safety contract
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-app.js
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          js = Path('assets/lab/lab-automations-app.js').read_text(encoding='utf-8')
+          css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
+
+          required_html = [
+              "connect-src 'self'",
+              '/assets/lab/lab-automations-app.css',
+              '/assets/lab/lab-automations-app.js',
+              'noindex,nofollow',
+          ]
+          required_js = [
+              'cmx-lab-automations-v1',
+              'cmx-lab-crm-v1',
+              'cmx-lab-inventory-v1',
+              'Save draft',
+              'WAIT / REPEAT',
+              'Publish unavailable',
+              'data-add-action',
+              'scheduleAutosave',
+          ]
+          required_css = [
+              '.automation-app',
+              '.editor-footer',
+              '.step-rail',
+              '.do-card',
+              'html[data-theme="light"]',
+              '@media(max-width:760px)',
+          ]
+          for term in required_html:
+              if term not in html: sys.exit(f'missing HTML contract: {term}')
+          for term in required_js:
+              if term not in js: sys.exit(f'missing JS contract: {term}')
+          for term in required_css:
+              if term not in css: sys.exit(f'missing CSS contract: {term}')
+
+          forbidden = [
+              'api.cmxchat.com',
+              'eval(',
+              'new Function(',
+              'localStorage.setItem("operator',
+          ]
+          combined = html + js
+          for term in forbidden:
+              if term in combined: sys.exit(f'forbidden focused-Lab contract: {term}')
+
+          print('Focused Automation static safety contract passed.')
+          PY
+
+      - name: Browser smoke desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/checkin-auto-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          dump() {
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=4000 "$@" --dump-dom
+          }
+
+          dump http://127.0.0.1:8000/lab/automations/ > /tmp/auto-desktop.html
+          grep -q '>Automations<' /tmp/auto-desktop.html
+          grep -q 'New automation' /tmp/auto-desktop.html
+          grep -q 'EXECUTION' /tmp/auto-desktop.html
+          ! grep -qi 'Loading Automations' /tmp/auto-desktop.html
+
+          dump --window-size=390,844 http://127.0.0.1:8000/lab/automations/ > /tmp/auto-mobile.html
+          grep -q '>Automations<' /tmp/auto-mobile.html
+          grep -q 'New automation' /tmp/auto-mobile.html
+          ! grep -qi 'Loading Automations' /tmp/auto-mobile.html
+
+          echo 'Focused Automations desktop and 390x844 mobile smoke passed.'
