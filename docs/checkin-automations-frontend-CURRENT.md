@@ -21,9 +21,15 @@ It must not execute providers, schedule real work, publish production Automation
 
 ## Current frontend files
 
+Active focused route:
+
 - `lab/automations/index.html`
-- `assets/lab/lab-automations-app.css`
-- `assets/lab/lab-automations-app.js`
+- `assets/lab/lab-automations-app.css` — base focused styling
+- `assets/lab/lab-automations-app-v2.css` — current dropdown/timing styling
+- `assets/lab/lab-automations-app-v2.js` — current focused Automation app
+- `assets/lab/lab-automations-dropdown-runtime.js` — in-page dropdown interaction stabilization
+
+The older `assets/lab/lab-automations-app.js` remains as prior prototype history/fallback and is not the currently loaded app script.
 
 Shared prototype storage:
 
@@ -63,11 +69,43 @@ Important current behaviors:
 - closing the editor preserves a dirty Draft;
 - editor resumes from its last saved step;
 - DO supports multiple ordered steps;
-- each DO step can use a stable-shaped Lab target reference from People, Organizations, Documents, or Digital Assets;
-- the first DO step is mirrored into the older single-action fields for compatibility with the original Lab prototype;
+- Action type and Target use in-page dropdown panels instead of native Android `<select>` sheets;
+- target dropdown can search existing Lab People/Organizations/Documents/Digital Assets;
+- each DO step keeps a stable-shaped Lab target reference where available;
+- the first DO step is mirrored into older single-action fields for compatibility with the original Lab prototype;
+- IF copy now explains an earlier action failure in plain language;
+- WAIT supports No wait, precise Delay, or Exact date/time;
+- Delay supports day/hour/minute values plus preset shortcuts;
+- Exact date/time supports minute precision and an IANA timezone selector;
+- Repeat remains separate from Wait and supports none/daily/weekly/custom cadence/until acknowledged as UX concepts;
+- Review shows timing separately from recurrence;
 - Publish is intentionally disabled;
 - dark/light themes are supported;
 - mobile is a first-class layout target.
+
+## Timing product rule
+
+Presets are shortcuts, not the data model.
+
+The product should eventually allow a user to express examples such as:
+
+```text
+Wait 2 days, 3 hours, 17 minutes
+```
+
+or:
+
+```text
+Wait until Aug 22, 2026 at 3:17 PM America/New_York
+```
+
+The browser is never scheduling authority. The backend contract must validate and later resolve these values server-side.
+
+Keep separate forever:
+
+- wait/delay;
+- recurrence;
+- retry.
 
 ## Backend handoff
 
@@ -75,7 +113,17 @@ Canonical backend contract:
 
 `CMXChat/jay-app/specs/003-server-checkin/AUTOMATION-FRONTEND-CONTRACT.md`
 
-That file maps frontend behavior to the future Phase 2A Automation/AutomationVersion domain and protected API responsibilities.
+That file now explicitly covers:
+
+- server Draft/autosave responsibility;
+- typed Trigger/Condition/Action/Outcome registries;
+- stable protected target IDs;
+- ordered multiple DO steps;
+- precise relative waits;
+- exact local date/time + IANA timezone;
+- DST/ambiguous-time validation;
+- recurrence remaining separate from retry;
+- immutable publish/version behavior later.
 
 Do not invent a second backend architecture from this frontend.
 
@@ -124,10 +172,13 @@ On Samsung/Chrome and desktop, check:
 3. Save Draft always visible;
 4. autosave/resume behavior;
 5. compact step navigation;
-6. WHEN/IF choices;
+6. WHEN/IF wording;
 7. multiple DO steps;
-8. target picker using existing Lab records;
-9. WAIT/REPEAT density;
-10. human-readable Review;
-11. dark/light;
-12. no accidental claim that Publish/execution is live.
+8. in-page Action dropdown;
+9. searchable in-page Target dropdown;
+10. custom delay day/hour/minute UX;
+11. exact date/time + timezone UX;
+12. custom recurrence UX;
+13. human-readable Review;
+14. dark/light;
+15. no accidental claim that Publish/execution is live.
