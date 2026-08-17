@@ -1,385 +1,349 @@
 # Check In Lab Action Builder Backend Handoff
 
-Last updated: 2026-08-16
+Last updated: 2026-08-17
+Status: Supporting Lab note. Canonical backend direction lives in `CMXChat/jay-app/specs/003-server-checkin/`.
 
-This document describes the production direction behind the Lab Action Builder. The Lab is browser-only simulation and must never become the authoritative scheduler or executor.
+Read first:
 
-For long-running and recurring behavior, also read `SCHEDULING-BACKEND-HANDOFF.md`.
+- `CHECKIN-MASTER-PLAN.md`
+- `tasks.md`
+- `ACTION-BUILDER-NEXT.md`
+- `AUTOMATION-FRONTEND-CONTRACT.md`
 
-## Non-negotiable boundary
+For timing details, also read this repository's `SCHEDULING-BACKEND-HANDOFF.md`.
 
-The browser may create, edit, preview, and simulate Action definitions. Production side effects belong to authenticated server services and durable workers.
+## Boundary
+
+The Lab Action Builder is a frontend prototype. It can create, edit, preview, and simulate definitions, but it is never execution authority.
+
+Current architecture direction:
 
 ```text
-React UI
-  → generated authenticated API client
-FastAPI operator API
-  → application/domain services
-PostgreSQL Action definitions + revisions
-  → scheduler / Decision engine
-execution queue / workers
+Frontend
+  → FastAPI protected Automation API
+  → PostgreSQL Automation + immutable AutomationVersion
+  → durable Run / RunAction / Occurrence / ExecutionAttempt runtime
+  → scheduler / worker
   → approved provider adapters
 ```
 
-No production Action should execute because a browser countdown, browser interval, or open page reached a timestamp.
+Do not revive the older assumption that a reusable Action row by itself is the whole workflow architecture.
 
-## Core persistence
+The approved human workflow model is:
 
-A practical schema can include:
+```text
+WHEN
+IF
+DO
+WAIT / REPEAT
+THEN
+```
 
-- `checkin_action_definitions`
-- `checkin_action_targets`
-- `checkin_action_trigger_rules`
-- `checkin_action_guardrails`
-- `checkin_action_schedules`
-- `checkin_action_revisions`
-- `checkin_incident_actions`
-- `checkin_action_occurrences`
-- `checkin_action_executions`
-- `checkin_action_execution_targets`
-- `checkin_action_execution_events`
+The Action Builder edits an individual typed `DO` step inside an Automation.
 
-Decision-specific tables are covered by `DECISIONS-BACKEND-HANDOFF.md`.
+## Definitions vs runtime
 
-## Action definition
+Definition concepts:
 
-Suggested reusable fields:
+- `Automation`
+- immutable published `AutomationVersion`
+- typed Trigger
+- typed Conditions
+- ordered typed DO steps
+- stable protected targets
+- typed Wait / recurrence metadata
+- typed outcomes/routes
+- approval/risk metadata where required
 
-- `id`
-- `switch_id`
-- `name`
-- `action_type`
-- `risk_class`
-- `status`
-- `config_json`
-- `created_at`
-- `updated_at`
-- `created_by`
-- `updated_by`
-- `revision_number`
+Runtime concepts arrive later:
 
-Definition lifecycle:
+- `Run`
+- `RunAction`
+- `Occurrence`
+- `ExecutionAttempt`
+- immutable execution snapshot
+- persisted due timestamps
+- idempotency
+- claims/leases
+- restart recovery
 
-- `draft`
-- `enabled`
-- `suspended`
-- `archived`
-
-Runtime states belong to incident/execution rows, not the reusable definition.
+Do not put runtime delivery state into reusable definitions.
 
 ## Stable targets
 
-Action definitions should reference stable records instead of copying mutable contact/account/document metadata.
+Definitions should reference stable protected records rather than copying mutable recipient/resource details.
 
-Initial target kinds:
+Useful target kinds include:
 
-- Person
+- Person / Contact
 - Organization
-- Document
+- Document / Record
 - Digital Asset
+- later approved Connection references where appropriate
 
-A Person may resolve to a phone/email during execution preparation. A Document resolves to an exact document version. A Digital Asset can resolve to a provider connection / safe secret reference.
+Before a real side effect, runtime resolves and snapshots the exact execution inputs. Later edits to a Person, Organization, Document, or Connection must not rewrite historical Run truth.
 
-Before side effects, snapshot exact resolved values into execution-target rows. Later record edits must not rewrite what an incident used.
+## Action / DO step shape
 
-## Configurable switch timing
+A typed DO step needs at least:
 
-The current product model is configurable. Do not hardcode 72 hours or 24 hours in production logic.
+- stable step ID within the draft/version;
+- registered Action type;
+- typed configuration for that Action;
+- stable target references where applicable;
+- content/template/instruction fields where applicable;
+- approval/risk metadata where required.
 
-Conceptually:
+Raw provider credentials never belong in Action JSON.
+
+Unknown Action types are rejected server-side.
+
+Do not permit arbitrary Python, JavaScript, shell, SQL, or `eval` as workflow Actions.
+
+## Switch-derived triggers
+
+Current production switch policy is configurable. Do not hardcode 72 hours or 24 hours into Automation logic.
+
+Switch-derived Trigger definitions should resolve against authoritative server state and the applicable policy/window snapshot.
+
+Useful trigger families may include:
+
+- switch enters grace;
+- grace expires;
+- manual start;
+- later typed calendar schedule;
+- later typed Action outcome / acknowledgement events.
+
+The browser never submits an authoritative `is_due` flag.
+
+## WAIT / recurrence
+
+Timing is part of the Automation definition, separate from the DO step's provider configuration.
+
+Current focused UX supports:
+
+- no wait;
+- exact elapsed delay in days/hours/minutes;
+- exact local date/time + IANA timezone;
+- recurrence presets;
+- custom recurrence in minutes/hours/days/weeks/months/years.
+
+Do **not** normalize all recurrence into `repeat_interval_seconds`.
+
+Elapsed recurrence units:
+
+- minutes;
+- hours;
+- days;
+- weeks.
+
+Calendar recurrence units:
+
+- months;
+- years.
+
+Monthly/yearly recurrence keeps an anchor + IANA timezone and follows explicit calendar rules. See `SCHEDULING-BACKEND-HANDOFF.md` and the canonical `AUTOMATION-FRONTEND-CONTRACT.md` for end-of-month, leap-day, and DST requirements.
+
+Keep these concepts separate:
 
 ```text
-deadline_at = last_checkin_at + policy.interval
-final_trigger_at = deadline_at + policy.grace
+wait/delay
+recurrence
+retry
 ```
 
-`72h + 24h` is only the historical/default example.
+Retry belongs to provider/runtime failure handling.
 
-Current trigger families:
+## Provider registry
 
-- `deadline` → eligible at `deadline_at`
-- `grace_offset` → eligible at `deadline_at + configured offset`, constrained by the snapshotted grace policy
-- `grace_expiry` → eligible at `final_trigger_at`
-- `scheduled` → eligible at an explicit calendar time
-- `manual` → never automatically eligible from time alone
+Provider behavior later belongs behind approved server adapters/registries.
 
-Store authoritative timestamps in UTC. Retain IANA timezone information for wall-clock recurring schedules where necessary.
+Examples may eventually include:
 
-The scheduler calculates eligibility from the incident's snapshotted policy and authoritative server state. Never trust client countdown values or client-submitted `is_due` flags.
+- Discord notification;
+- transactional email;
+- SMS;
+- publication;
+- bounded AI Task;
+- approved webhook/API Connection;
+- provider-specific Digital Asset operation.
 
-## Eligibility is separate from execution
+The first real provider should be one low-risk vertical slice, not a catalog explosion.
 
-An Action can become eligible without executing immediately.
+Reject unknown provider/executor types server-side.
 
-Examples:
+## Secrets and Connections
 
-- eligible at deadline, then wait for approval
-- eligible in grace, but cancel because a valid check-in returned the incident to Safe
-- eligible at final trigger, then wait for an upstream dependency
-- eligible at a calendar time, then wait until a condition becomes true
-- eligible, then intentionally delay two more days before the Action starts
+Never store these in ordinary Automation/Action definitions:
 
-Persist these transitions so Activity can explain why something did or did not run.
+- passwords;
+- API tokens;
+- OAuth refresh tokens;
+- private keys;
+- MFA seeds;
+- recovery codes;
+- session cookies.
 
-## Long-running and recurring Action definitions
+Use server-owned `Connection` / `secret_ref` style references later. Provider adapters resolve secrets only at execution time.
 
-The Lab now prototypes schedule metadata in addition to the trigger boundary.
+Do not expose raw provider credentials to:
 
-Production scheduling policy should be normalized into fields such as:
+- browser storage;
+- workflow JSON;
+- Records;
+- Audit metadata;
+- AI prompts.
 
-- `start_delay_seconds`
-- `duration_seconds`
-- `repeat_interval_seconds`
-- `repeat_limit`
-- `timezone` / recurrence metadata when required
-- `schedule_revision`
+## Guardrails and approvals
 
-A long-running Action can therefore be modeled as:
+Risk must affect backend policy, not only UI color.
 
-```text
-eligible
-→ start delay
-→ running
-→ recurring occurrences while active
-→ terminal outcome
-→ Decision route activates downstream Action
-```
+Useful protections later include:
+
+- require approval;
+- second approver for higher-risk operations where justified;
+- cooling-off delay;
+- immutable execution snapshot;
+- idempotency;
+- preview/dry-run when supported;
+- explicit timeout;
+- bounded retry policy;
+- rollback/recovery metadata where provider behavior supports it.
+
+The typed backend decides whether an Action is permitted even if a malformed client tries to bypass UI restrictions.
+
+## AI Actions
+
+AI Task should arrive before any general AI Agent.
+
+A bounded AI Task definition can include:
+
+- objective;
+- approved context Record IDs;
+- approved output destination;
+- provider/model policy;
+- token/cost limit;
+- runtime limit;
+- approval requirement.
+
+Prompt text never grants permissions.
+
+A later AI Agent receives explicit server-enforced grants for records, tools, people, organizations, connections, cost, steps, runtime, approvals, and output destinations.
+
+## Webhooks / APIs
+
+Do not turn arbitrary browser-entered URLs into unrestricted backend network access.
+
+Outbound network Actions later resolve an approved server-owned Connection with:
+
+- destination allowlisting/policy;
+- SSRF protections;
+- timeout;
+- authentication reference;
+- expected response policy;
+- redacted errors.
+
+## Durable execution pattern
+
+When runtime becomes real:
+
+1. trigger creates/activates a durable Run;
+2. definition inputs are snapshotted;
+3. due RunAction/Occurrence state is persisted;
+4. scheduler claims due work with a lease/lock;
+5. worker performs one bounded attempt;
+6. ExecutionAttempt result is persisted;
+7. retry or next recurrence is calculated and persisted if needed;
+8. terminal outcome activates the matching typed route;
+9. append-only Audit records the transition.
+
+Server restarts must not lose future work.
+
+## Occurrence vs retry
+
+A recurring occurrence is not a retry.
 
 Example:
 
 ```text
-Final trigger
-→ wait 2 days
-→ monitor once per day for 45 days
-→ success → release Action B
-→ terminal failure → notify Action C
+Monthly occurrence #7
+  → provider attempt 1 failed
+  → retry attempt succeeded
+
+Monthly occurrence #8
+  → new planned recurrence next month
 ```
 
-Do not keep a worker, browser tab, or HTTP request alive for the whole duration. Persist `starts_at`, `ends_at`, `next_run_at`, occurrence count, and runtime state, then let the scheduler wake due work.
+Each external side effect needs stable idempotency protection.
 
-Each recurrence should have a durable occurrence row and an idempotency key. Occurrence retries and recurrence cadence are separate concepts.
+## Definition edits and immutable history
 
-Read `SCHEDULING-BACKEND-HANDOFF.md` for the full model.
+Editing a published Automation creates/updates a new Draft/revision.
 
-## Guardrails
+It does not rewrite:
 
-Initial reusable guardrails include:
+- the immutable published AutomationVersion;
+- existing Runs;
+- prior Occurrences;
+- prior ExecutionAttempts;
+- Audit history.
 
-- execute once per incident where appropriate
-- require switch/incident to remain overdue
-- require approval
-- retry count
-- retry interval/backoff
-
-Backend policy is authoritative. Destructive risk should require strong approval regardless of malformed client payloads.
-
-Useful stronger protections for high-risk operations:
-
-- mandatory approval
-- optional second approver
-- cooling-off delay
-- immutable execution snapshot
-- idempotency key
-- preview/dry-run when provider supports it
-- explicit recovery/rollback metadata
-
-## Risk classes
-
-Initial classes:
-
-- informational
-- important
-- critical
-- destructive
-
-Risk must influence server policy. It must not merely change UI color.
-
-## Executor registry
-
-Provider-specific behavior should live behind an approved server registry rather than arbitrary Action code.
-
-Conceptually:
-
-```text
-sms → SmsExecutor
-email → EmailExecutor
-social → SocialPublisherExecutor
-ai → AiTaskExecutor
-organization_notice → NoticeExecutor
-publish → PublicationExecutor
-webhook → WebhookExecutor
-digital_account → DigitalAccountExecutor
-custom → explicitly registered handler only
-scheduled → approved task executor
-```
-
-Reject unknown executor types/handlers server-side.
-
-## Secrets and connections
-
-Never store these in ordinary Action definitions:
-
-- passwords
-- API tokens
-- OAuth refresh tokens
-- private keys
-- MFA seeds
-- recovery codes
-- session cookies
-
-Use `connection_ref` / `secret_ref` records resolved server-side by the provider adapter.
-
-## SMS / email
-
-At execution preparation, resolve the selected Person/Organization records and snapshot:
-
-- exact recipient address/number
-- normalized channel
-- message/template revision
-- attachment document versions
-- provider adapter
-- provider message ID after submission
-- delivery state when callbacks are available
-
-Delivery state comes from provider/server callbacks, never from browser assumptions.
-
-## Social / publication
-
-Resolve the destination through a Digital Asset / approved provider connection.
-
-Audience/privacy must be explicit. High-risk publication should support preview + approval before provider submission.
-
-## AI Actions
-
-Default AI capability should remain output-only.
-
-Useful policy fields:
-
-- objective
-- approved context record IDs
-- approved tools
-- forbidden tools
-- output destination
-- maximum runtime
-- cost/token budget where appropriate
-- approval requirement
-
-Persist model/provider ID, instruction revision, resolved context snapshot references, tool calls, output artifact, errors, and timestamps.
-
-AI tools should not inherit broad application permissions automatically.
-
-## Webhooks / APIs
-
-Outbound API Actions should resolve an allowlisted server-owned integration/connection.
-
-Do not convert an arbitrary browser-entered URL into unrestricted production network access. Validate destination policy, scheme, ownership, authentication reference, timeout, and expected response server-side.
-
-## Digital account Actions
-
-These are high-risk by default.
-
-The Digital Asset identifies the target resource. A provider-specific adapter validates the requested operation and resolves safe connection references.
-
-Access transfer, disablement, archival, credential rotation, or similar operations require stronger approval and explicit provider policy.
-
-## Scheduler / worker behavior
-
-Recommended pattern:
-
-1. scheduler evaluates authoritative switch/incident state and due schedules
-2. eligibility/runtime transition is persisted transactionally
-3. due occurrence is created or claimed with a lease/lock
-4. work is queued with an idempotency key
-5. worker performs one bounded attempt
-6. append-only execution event is written
-7. next retry/recurrence is persisted if needed
-8. terminal state is persisted before downstream routes are released
-
-Server restarts must not lose work scheduled days or months into the future.
-
-## Idempotency
-
-A reusable incident execution key can begin with:
-
-```text
-switch_id + incident_id + action_id + action_revision
-```
-
-Recurring occurrences should add occurrence sequence/time identity, and individual retries should have distinct attempt IDs.
-
-## Execution snapshots
-
-Before external work, freeze at minimum:
-
-- Action definition revision
-- trigger revision
-- schedule revision
-- Decision Policy revision
-- guardrails
-- resolved targets
-- document versions
-- Digital Asset IDs / connection references
-- exact message/payload/instructions
-- eligibility reason
-- relevant typed-condition evaluation inputs
-
-Later edits must not rewrite incident history.
+Runtime truth must remain explainable after later definition edits.
 
 ## Outcome routing
 
-Execution and scheduling end in a typed terminal outcome. The Decision engine activates the matching downstream route.
+Typed terminal outcomes can later include concepts such as:
 
-Examples:
+- success;
+- final failure;
+- acknowledged;
+- no acknowledgement;
+- approval denied;
+- timeout;
+- cancelled.
 
-- success
-- final failure
-- acknowledged
-- no acknowledgement
-- approval denied
-- timeout/cancel when supported by the typed policy model
-
-Do not invent a separate scheduling dependency graph that competes with Decision Policy routing.
+Do not build a second competing dependency graph inside provider code. Routing belongs to the Automation definition/runtime model.
 
 ## Audit minimum
 
-Record:
+When runtime is implemented, record enough to explain:
 
-- definition created/updated/enabled/suspended/archived
-- trigger/schedule version changed
-- became eligible
-- eligibility cancelled
-- start delay entered/satisfied
-- awaiting/receiving/denying approval
-- occurrence scheduled/started/completed/failed
-- retry scheduled/exhausted
-- recurrence scheduled
-- delivery callback
-- acknowledgement callback/timeout
-- terminal Action outcome
-- downstream route activated
+- Draft created/updated;
+- published version identity;
+- Trigger/Condition evaluation;
+- due timing resolution;
+- target resolution snapshot;
+- approval state;
+- Occurrence created/claimed;
+- ExecutionAttempt started/completed/failed;
+- retry scheduled/exhausted;
+- next recurrence scheduled;
+- provider callback/acknowledgement when supported;
+- terminal outcome;
+- downstream route activation.
 
-All production timestamps are server-authoritative.
+All production execution timestamps are server-authoritative.
 
-## Simulation requirement
+## Simulation
 
-The official Test Center should use the same domain scheduling/Decision code with:
+Later simulation should use the same domain timing/routing semantics with:
 
-- controlled fake clock
-- deterministic fake providers
-- accelerated time
-- scenario-selected outcomes
-- durable simulated incidents/audit events
+- controlled fake clock;
+- deterministic fake provider;
+- accelerated time;
+- scenario-selected outcomes;
+- jump to next event.
 
-A month-long plan should be testable in seconds while preserving the same calculated ordering/timestamps that production scheduling would use.
+A workflow spanning months or years should be testable in seconds without changing the calendar interpretation production would use.
 
 ## Browser role
 
 The browser may:
 
-- request definition mutations
-- show Plan/Run projections returned by the server
-- request a simulation scenario
-- request an authorized approval/acknowledgement
-- render server state
+- create/edit Draft definitions through protected APIs;
+- render validation/readiness;
+- render Plan/Run state returned by the server;
+- request authorized approval/acknowledgement;
+- request a simulation scenario.
 
-The browser must not decide that a real Action is due or execute it.
+The browser must not decide that production work is due or execute it.
