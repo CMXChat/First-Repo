@@ -43,6 +43,7 @@ jobs:
             assets/lab/lab-product-polish.js \
             assets/lab/lab-plan.js \
             assets/lab/lab-experience.js \
+            assets/lab/lab-automation-builder.js \
             assets/lab/lab-acceptance.js \
             assets/lab/checkin-status-contract.js \
             assets/lab/checkin.js \
@@ -81,7 +82,7 @@ jobs:
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
           assert(shell.includes('/assets/lab/lab-loader.js'));
-          assert(shell.includes('20260816-hero2'));
+          assert(shell.includes('20260817-auto1'));
           assert(!shell.includes('document.write(html)'));
           assert(!shell.includes(".replace('</body>'"));
 
@@ -108,6 +109,8 @@ jobs:
             '/assets/lab/lab-plan.css',
             '/assets/lab/lab-experience.js',
             '/assets/lab/lab-experience.css',
+            '/assets/lab/lab-automation-builder.js',
+            '/assets/lab/lab-automation-builder.css',
             '/assets/lab/lab-acceptance.js',
             '/assets/lab/lab-acceptance.css',
             'Check In Lab · Dead Man Switch'
@@ -119,7 +122,8 @@ jobs:
           assert(rendered.indexOf('/assets/lab/lab-command.js') < rendered.indexOf('/assets/lab/lab-test-center.js'));
           assert(rendered.indexOf('/assets/lab/lab-product-polish.js') < rendered.indexOf('/assets/lab/lab-plan.js'));
           assert(rendered.indexOf('/assets/lab/lab-plan.js') < rendered.indexOf('/assets/lab/lab-experience.js'));
-          assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-acceptance.js'));
+          assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
+          assert(rendered.indexOf('/assets/lab/lab-automation-builder.js') < rendered.indexOf('/assets/lab/lab-acceptance.js'));
 
           fs.writeFileSync('lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
           NODE
@@ -151,6 +155,8 @@ jobs:
               'assets/lab/lab-plan.css',
               'assets/lab/lab-experience.js',
               'assets/lab/lab-experience.css',
+              'assets/lab/lab-automation-builder.js',
+              'assets/lab/lab-automation-builder.css',
               'assets/lab/lab-acceptance.js',
               'assets/lab/lab-acceptance.css',
               'assets/lab/BACKEND-HANDOFF.md',
@@ -168,7 +174,7 @@ jobs:
               failures.append('production /checkin references Lab code')
 
           terms = {
-              'assets/lab/lab-loader.js': ['CHECK IN LAB BOOTSTRAP', 'lab-plan.js', 'lab-experience.js', 'CHECKINLABCLONE.md'],
+              'assets/lab/lab-loader.js': ['CHECK IN LAB BOOTSTRAP', 'lab-plan.js', 'lab-experience.js', 'lab-automation-builder.js', 'CHECKINLABCLONE.md'],
               'assets/lab/lab-mock-api.js': ['productionApiBlocked: true', 'PROD_API_ORIGIN', 'interval_hours: policy.intervalHours'],
               'assets/lab/lab-inventory.js': ['BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL'],
               'assets/lab/lab-actions.js': ['BACKEND HANDOFF', 'server-side scheduler/worker', 'stable IDs', 'SIMULATION ONLY'],
@@ -180,6 +186,8 @@ jobs:
               'assets/lab/lab-plan.js': ['LONG-HORIZON PLAN VIEW', 'delayHours', 'durationHours', 'repeatEveryHours', 'success/failure routes', 'CMX_LAB_PLAN'],
               'assets/lab/lab-experience.js': ['USER EXPERIENCE LAYER', 'Presentation only', 'progressive disclosure', 'labExperience'],
               'assets/lab/lab-experience.css': ['--lx-surface', 'html[data-theme="light"]', 'phones get readable type'],
+              'assets/lab/lab-automation-builder.js': ['AUTOMATION BUILDER PROTOTYPE', 'WHEN -> IF -> DO -> WAIT / REPEAT -> THEN', 'does not call providers', 'cmx-lab-automations-v1'],
+              'assets/lab/lab-automation-builder.css': ['Automation Builder prototype', '.lab-automation-workspace', '.lab-automation-dialog', 'html[data-theme="light"]'],
               'assets/lab/lab-acceptance.js': ['ACCEPTANCE / STABILIZATION LAYER', 'syncPolicyLimits', 'trapPaletteFocus', 'validateDeepRoute'],
               'assets/lab/LAB-HANDOFF.md': ['Read this file first', 'lab-loader.js', 'lab-plan.js', 'lab-experience.js', 'CHECKINLABCLONE.md'],
               'assets/lab/CHECKINLABCLONE.md': ['Official Project Migration Blueprint', 'long-running', 'recurring', 'theme tokens', 'Official-project acceptance-test baseline'],
@@ -192,7 +200,7 @@ jobs:
           if failures:
               print('\n'.join(f' - {item}' for item in failures))
               sys.exit(1)
-          print('Lab safety, product UX, light/dark theming, long-range planning, handoffs, and production isolation validated.')
+          print('Lab safety, product UX, automation builder, light/dark theming, long-range planning, handoffs, and production isolation validated.')
           PY
 
       - name: Browser acceptance smoke tests
@@ -227,6 +235,9 @@ jobs:
           grep -q 'data-lab-test-center="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-plan="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-experience="ready"' /tmp/lab-desktop.html
+          grep -q 'data-lab-automation-builder="ready"' /tmp/lab-desktop.html
+          grep -q 'id="labAutomationWorkspace"' /tmp/lab-desktop.html
+          grep -q 'Build a workflow' /tmp/lab-desktop.html
           grep -q 'lab-live-status-hero' /tmp/lab-desktop.html
           grep -q 'lab-status-first' /tmp/lab-desktop.html
           grep -q 'lab-assurance-polished' /tmp/lab-desktop.html
@@ -250,6 +261,8 @@ jobs:
           grep -q 'data-lab-test-center="ready"' /tmp/lab-mobile.html
           grep -q 'data-lab-plan="ready"' /tmp/lab-mobile.html
           grep -q 'data-lab-experience="ready"' /tmp/lab-mobile.html
+          grep -q 'data-lab-automation-builder="ready"' /tmp/lab-mobile.html
+          grep -q 'id="labAutomationWorkspace"' /tmp/lab-mobile.html
           grep -q 'mobile-nav' /tmp/lab-mobile.html
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
@@ -258,4 +271,4 @@ jobs:
           grep -q 'labTestCenter' /tmp/lab-mobile.html
           grep -q 'Long-range timeline' /tmp/lab-mobile.html
 
-          echo 'Desktop, top Status hero, exact deep-link, user-friendly UX, long-range Sequence, and 390x844 mobile browser tests passed.'
+          echo 'Desktop, Automation Builder, top Status hero, exact deep-link, user-friendly UX, long-range Sequence, and 390x844 mobile browser tests passed.'
