@@ -1,0 +1,42 @@
+name: Check In Production Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'checkin/**'
+      - 'assets/checkin/**'
+      - 'tests/checkin-operations-smoke.test.js'
+      - '.github/workflows/checkin-production-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'checkin/**'
+      - 'assets/checkin/**'
+      - 'tests/checkin-operations-smoke.test.js'
+      - '.github/workflows/checkin-production-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-checkin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Check In JavaScript syntax
+        run: |
+          set -euo pipefail
+          node --check assets/checkin/checkin-status-contract.js
+          node --check assets/checkin/checkin.js
+          node --check assets/checkin/checkin-refine.js
+          node --check assets/checkin/checkin-phase1-controls.js
+          node --check assets/checkin/checkin-vault-panels.js
+          node --check assets/checkin/checkin-actions-official.js
+
+      - name: Run production Check In regression smoke test
+        run: |
+          set -euo pipefail
+          node tests/checkin-operations-smoke.test.js
