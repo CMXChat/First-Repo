@@ -185,6 +185,31 @@ html[data-theme="light"]{
 .setting-note p{font-size:10px!important;line-height:1.5!important}
 .field-group label{font-size:9px!important}
 
+/* Desktop-only package layout guard. The tablet/mobile breakpoints stay untouched. */
+@media(min-width:1051px){
+  .protected-package{
+    grid-template-columns:minmax(180px,.45fr) minmax(0,1.55fr)!important;
+    gap:18px!important;
+  }
+  .protected-package .package-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    min-width:0;
+  }
+  .protected-package .package-card{
+    min-width:0;
+    grid-template-columns:32px minmax(0,1fr);
+    gap:8px;
+    padding:10px;
+  }
+  .protected-package .package-icon{
+    width:32px;
+    height:32px;
+  }
+  .protected-package .package-card>span:last-child{
+    min-width:0;
+  }
+}
+
 @media(max-width:700px){
   /* Keep hierarchy, but raise the mobile floor for everything the user must scan. */
   .view-heading h1{font-size:27px!important;line-height:1.04}
