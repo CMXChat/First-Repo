@@ -26,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260816-hero2";
+  const BUILD = "20260817-auto1";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -45,7 +45,8 @@
     ["lab-experience.css", "20260816-product2"],
     ["lab-plan.css", "20260816-plan1"],
     ["lab-plan-overrides.css", "20260816-plan1"],
-    ["lab-status-top.css", "20260816-hero2"]
+    ["lab-status-top.css", "20260816-hero2"],
+    ["lab-automation-builder.css", "20260817-auto1"]
   ]);
 
   const LAB_SCRIPTS = Object.freeze([
@@ -62,6 +63,7 @@
     ["lab-product-polish.js", "20260816-mobile3"],
     ["lab-plan.js", "20260816-plan1"],
     ["lab-experience.js", "20260816-product2"],
+    ["lab-automation-builder.js", "20260817-auto1"],
     ["lab-acceptance.js", "20260816-acceptance1"]
   ]);
 
@@ -144,6 +146,7 @@
     if (!html.includes("/assets/lab/lab-product-polish.js")) throw new Error("Lab product polish layer was not inserted.");
     if (!html.includes("/assets/lab/lab-plan.js")) throw new Error("Long-horizon Plan layer was not inserted.");
     if (!html.includes("/assets/lab/lab-experience.js")) throw new Error("User experience layer was not inserted.");
+    if (!html.includes("/assets/lab/lab-automation-builder.js")) throw new Error("Automation Builder prototype was not inserted.");
     if (!html.includes("/assets/lab/lab-acceptance.js")) throw new Error("Acceptance hardening layer was not inserted.");
 
     return html;
