@@ -218,7 +218,7 @@
   }
 
   function resetEditorScroll(target) {
-    if (!target?.closest?.("[data-step], [data-back], [data-continue]")) return;
+    if (!target?.closest?.("[data-step], [data-back], [data-continue], [data-open], [data-new]")) return;
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       requestAnimationFrame(enhance);
