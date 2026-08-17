@@ -7,11 +7,9 @@ This is the first file a new ChatGPT/Codex context should read for Check In.
 
 It records the **current active work** and the **approved post-Phase-1 direction**. It complements the longer historical handoff at `docs/checkin-context-handoff-2026-08-17.md`.
 
-Do not restart the project from the roadmap if another context is already working on the current frontend gate. Continue the active task first.
+If another context is already working on the current frontend gate, continue that work. Do not restart the project from the roadmap.
 
 ## 1. Source-of-truth order
-
-Use these documents for different jobs:
 
 1. **This file** — newest cross-repository state and immediate continuation.
 2. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md` — current frontend/backend integration state.
@@ -21,7 +19,7 @@ Use these documents for different jobs:
 6. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — canonical backend release/deployment continuity journal.
 7. `docs/checkin-context-handoff-2026-08-17.md` — extensive history for this work period.
 
-The master plan was refreshed on 2026-08-17 after the Phase 1 production release. Its current-production and roadmap sections now reflect the live Phase 1 backend and the approved automation-engine direction.
+The master plan was refreshed after the Phase 1 production release. Its current-production and roadmap sections now reflect the live Phase 1 backend and the approved automation-engine direction.
 
 ## 2. Current production backend truth
 
@@ -58,13 +56,11 @@ Production verification already passed for:
 
 The temporary release mutation freeze was released after verification. No production policy change, pause, resume, deadline override, reconcile, Action execution, or test check in was performed during release verification.
 
-Do not confuse later `jay-app/main` documentation commits with the exact reviewed application SHA running on Render unless a later deployment is explicitly verified.
+Do not confuse later documentation commits on `jay-app/main` with the exact reviewed application SHA running on Render unless a later deploy is explicitly verified.
 
 ## 3. Current switch semantics
 
 The live switch is not weekly.
-
-Current behavior:
 
 ```text
 successful protected check in
@@ -128,7 +124,7 @@ It added:
 - responsive/mobile work;
 - no intentional production switch mutation.
 
-Relevant functional frontend commits before continuity-only updates:
+Relevant earlier functional frontend commits include:
 
 - `5c6a95eb2e50b899c72ed76a9611d7d70f53702f` — policy-driven timing contract;
 - `844e1728a148ae1adefcbfb8aab4d1e33831445c` — Phase 1 controls;
@@ -142,63 +138,57 @@ Earlier desktop package fix that must remain intact:
 
 - `36d95a0142bcbb9230046cc4b942570bb78ae7f6`.
 
-## 6. ACTIVE WORK RIGHT NOW — finish this before the automation engine
+## 6. Samsung issues found, fixes already committed, live acceptance still pending
 
-The first real Samsung/Android screenshot after Phase 1 frontend integration revealed two frontend problems.
+The first real Samsung/Android screenshot after Phase 1 frontend integration showed two issues:
 
-### Problem A: degraded public status
+- `SYNC REQUIRED / Status unavailable / CONNECTING` even though backend browser smoke had previously passed;
+- no visible mobile Settings gear despite `#mobileSettings` existing in source.
 
-The observed page showed:
+Two narrow frontend fixes were then committed:
 
-- `Status unavailable`;
-- `SYNC REQUIRED`;
-- `CONNECTING`;
-- countdown `--:--:--`;
-- `status data partially available`;
-- Last Check In `Never`;
-- Next Due `Unavailable`.
+### Status/timer fix
 
-This is not the expected production state.
+Commit:
 
-The backend had already passed real approved-origin browser health/public-status smoke checks. Therefore do not assume the backend is down from this screenshot alone.
+`2faa3d3f715b93667fe5ed913f91b0a62d34f989` — `Decouple Check In timer status from aggregate counts`
 
-Investigate the actual frontend/browser path: public fetch, response normalization/contract, JavaScript errors, cache/deployment, CORS/Cloudflare, or layered presentation behavior.
+What it changed:
 
-### Problem B: intended mobile Settings entry point is not visible
+`checkin-status-contract.js` no longer treats aggregate inventory-count fields as required for the server-authoritative timer to be schema-compatible. Interval/grace validity controls the timer contract; missing/stale aggregate counts fall back to presentation defaults instead of forcing `SYNC REQUIRED`.
 
-The Samsung screenshot showed:
+This is intentionally narrow. It does not change backend timing or production switch state.
 
-- Check In branding;
-- Access;
-- Dark/Light control;
-- bottom nav Status / Records / Actions / Activity;
-- no visible Settings gear.
+### Mobile Settings-entry fix
 
-Current source already contains:
+Commit:
 
-- top-bar `#mobileSettings`;
-- sidebar `#openSettings`.
+`ac091472dc67edb299d1826a9d89c5377adfc718` — `Restore mobile Check In settings entry point`
 
-Narrow-screen CSS intentionally hides the separate `#mobileNavSettings` item.
+What it changed:
 
-Do not blindly add a duplicate Settings button. Diagnose why the intended existing top-bar control is not appearing.
+On screens up to 430px, `#mobileSettings` is explicitly displayed as the intended top-bar Settings control. It does not add a duplicate bottom-nav Settings destination.
 
-### Active checklist
+### Current acceptance state
 
-This is `tasks.md` T034-T040:
+The code fixes exist, but **real-device verification remains the active gate**.
 
-1. diagnose/fix Samsung `SYNC REQUIRED / Status unavailable`;
-2. diagnose/fix missing existing `#mobileSettings` affordance;
-3. reverify truthful public status/countdown on real mobile;
+Do not treat the commits alone as proof that the live Samsung page is now correct. Continue with `tasks.md` T036-T040 and only close T034/T035 once the working context is satisfied the diagnosed causes/fixes are correct.
+
+The next real actions are:
+
+1. hard refresh/reload the live Samsung page after the new frontend deploy reaches it;
+2. verify public status/countdown are truthful again;
+3. verify the top-bar Settings gear is visible/reachable;
 4. perform locked Settings visual/privacy audit on mobile and desktop;
-5. unlock only when ready and perform protected **GET-only** policy read;
-6. verify UI represents current 72+24 policy/window correctly;
+5. unlock only when ready and perform the first protected **GET-only** policy read;
+6. verify the UI represents the authoritative current 72+24 policy/window correctly;
 7. verify manual lock/session expiry removes private controls/state;
 8. add targeted regression coverage if the diagnosed failure warrants it.
 
 Do **not** publish policy timing, pause, resume, override a deadline, reconcile, or record a check in merely to complete this gate.
 
-If another context is already working on this frontend gate, let it continue. Do not redirect it into backend roadmap work and do not restart the diagnosis from scratch.
+If another context is already running these checks, let it finish. Do not redirect it into backend roadmap work.
 
 ## 7. Approved product direction after the frontend gate
 
@@ -256,11 +246,11 @@ Do not:
 - start AI Agent work early;
 - build a giant drag-and-drop workflow editor first.
 
-Prefer PostgreSQL-backed durable claims/jobs first if they satisfy the reliability requirements. Add a separate queue only when real evidence justifies it.
+Prefer PostgreSQL-backed durable claims/jobs first if they satisfy reliability requirements. Add a separate queue only when real evidence justifies it.
 
 A small reliable engine with a few excellent provider adapters is more valuable than a fragile engine claiming dozens of integrations.
 
-## 9. Approved executable roadmap after T034-T040
+## 9. Approved executable roadmap after the frontend gate
 
 `CMXChat/jay-app/specs/003-server-checkin/tasks.md` is the concrete checklist.
 
@@ -291,7 +281,7 @@ Evolve the private `Actions` area around:
 WHEN / IF / DO / WAIT / THEN
 ```
 
-The older compact flow:
+The compact step-editing flow:
 
 ```text
 ACTION / TARGET / WHEN / CONTENT / REVIEW
@@ -322,7 +312,11 @@ Exit condition: fake workflows run reliably without the browser staying open and
 
 ### Engine Phase 4 — one real low-risk provider
 
-Choose one provider at implementation time based on the simplest secure/operational setup. Preferred candidate is an approved Discord webhook Connection; transactional email is an acceptable alternative if clearly simpler at that time.
+Choose one provider based on the simplest secure/operational setup.
+
+Preferred candidate: approved Discord webhook Connection.
+
+Transactional email is an acceptable alternative if clearly simpler at implementation time.
 
 Prove:
 
@@ -352,8 +346,6 @@ Add as real workflows require them:
 - approvals;
 - calendar recurrence/timezone/DST hardening;
 - additional providers one at a time, including SMS when justified.
-
-This is where the engine becomes deeper than basic IFTTT recipes.
 
 ### Engine Phase 6 — AI Task + natural-language Planner
 
