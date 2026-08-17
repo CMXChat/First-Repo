@@ -54,7 +54,7 @@ jobs:
               '/assets/lab/lab-automations-app.css',
               '/assets/lab/lab-automations-app-v2.css',
               '/assets/lab/lab-automations-calendar.css',
-              '/assets/lab/lab-automations-app-v2.js',
+              '/assets/lab/lab-automations-app-v2.js?v=20260817-5',
               '/assets/lab/lab-automations-dropdown-runtime.js',
               'noindex,nofollow',
           ]
@@ -77,9 +77,14 @@ jobs:
               'An earlier action failed',
               '"months"',
               '"years"',
+              'CALENDAR_REPEAT_UNITS',
               'repeat-timezone',
               'Calendar timezone',
-              '30-day or 365-day',
+              'Days, weeks, months and years follow calendar boundaries',
+              'Minutes and hours are elapsed cadence units',
+              'WAIT delays are elapsed durations',
+              'Repeat daily ·',
+              'Repeat weekly ·',
           ]
           required_dropdown = ['stopImmediatePropagation', '.smart-select.is-open', 'data-dropdown-trigger']
           required_css = ['.automation-app','.editor-footer','.step-rail','.do-card','html[data-theme="light"]','@media(max-width:760px)']
