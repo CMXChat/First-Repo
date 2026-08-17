@@ -123,26 +123,39 @@ Timing is part of the Automation definition, separate from the DO step's provide
 Current focused UX supports:
 
 - no wait;
-- exact elapsed delay in days/hours/minutes;
+- exact elapsed WAIT delay in days/hours/minutes;
 - exact local date/time + IANA timezone;
 - recurrence presets;
 - custom recurrence in minutes/hours/days/weeks/months/years.
 
 Do **not** normalize all recurrence into `repeat_interval_seconds`.
 
+WAIT delay and REPEAT cadence deliberately use different semantics where needed.
+
+WAIT delay:
+
+- day/hour/minute inputs describe an elapsed duration;
+- `Wait 2 days` means 48 elapsed hours.
+
 Elapsed recurrence units:
 
 - minutes;
-- hours;
-- days;
-- weeks.
+- hours.
 
 Calendar recurrence units:
 
+- days;
+- weeks;
 - months;
 - years.
 
-Monthly/yearly recurrence keeps an anchor + IANA timezone and follows explicit calendar rules. See `SCHEDULING-BACKEND-HANDOFF.md` and the canonical `AUTOMATION-FRONTEND-CONTRACT.md` for end-of-month, leap-day, and DST requirements.
+Daily and Weekly presets are calendar recurrence.
+
+Calendar recurrence keeps an anchor + IANA timezone and follows explicit calendar rules. A daily `09:00 America/New_York` recurrence must stay at 09:00 local time across DST instead of drifting because the server repeatedly added 86,400 seconds.
+
+Weekly recurrence preserves local weekday/time. Monthly/yearly recurrence additionally needs deterministic end-of-month and leap-day behavior.
+
+See `SCHEDULING-BACKEND-HANDOFF.md` and the canonical `AUTOMATION-FRONTEND-CONTRACT.md` for the full rules.
 
 Keep these concepts separate:
 
@@ -266,12 +279,12 @@ A recurring occurrence is not a retry.
 Example:
 
 ```text
-Monthly occurrence #7
+Calendar occurrence #7
   → provider attempt 1 failed
   → retry attempt succeeded
 
-Monthly occurrence #8
-  → new planned recurrence next month
+Calendar occurrence #8
+  → new planned recurrence later
 ```
 
 Each external side effect needs stable idempotency protection.
