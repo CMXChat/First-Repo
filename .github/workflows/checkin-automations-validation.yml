@@ -9,6 +9,7 @@ on:
       - 'assets/lab/lab-automations-app.css'
       - 'assets/lab/lab-automations-app-v2.js'
       - 'assets/lab/lab-automations-app-v2.css'
+      - 'assets/lab/lab-automations-calendar.css'
       - 'assets/lab/lab-automations-dropdown-runtime.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
@@ -18,6 +19,7 @@ on:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-app-v2.js'
       - 'assets/lab/lab-automations-app-v2.css'
+      - 'assets/lab/lab-automations-calendar.css'
       - 'assets/lab/lab-automations-dropdown-runtime.js'
       - '.github/workflows/checkin-automations-validation.yml'
 
@@ -45,11 +47,13 @@ jobs:
           dropdown_js = Path('assets/lab/lab-automations-dropdown-runtime.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
           css_v2 = Path('assets/lab/lab-automations-app-v2.css').read_text(encoding='utf-8')
+          calendar_css = Path('assets/lab/lab-automations-calendar.css').read_text(encoding='utf-8')
 
           required_html = [
               "connect-src 'self'",
               '/assets/lab/lab-automations-app.css',
               '/assets/lab/lab-automations-app-v2.css',
+              '/assets/lab/lab-automations-calendar.css',
               '/assets/lab/lab-automations-app-v2.js',
               '/assets/lab/lab-automations-dropdown-runtime.js',
               'noindex,nofollow',
@@ -71,10 +75,16 @@ jobs:
               'data-exact-time',
               'IANA timezone',
               'An earlier action failed',
+              '"months"',
+              '"years"',
+              'repeat-timezone',
+              'Calendar timezone',
+              '30-day or 365-day',
           ]
           required_dropdown = ['stopImmediatePropagation', '.smart-select.is-open', 'data-dropdown-trigger']
           required_css = ['.automation-app','.editor-footer','.step-rail','.do-card','html[data-theme="light"]','@media(max-width:760px)']
           required_v2_css = ['.smart-select','.smart-menu','.timing-mode-grid','.precision-card','.duration-inputs','.exact-grid','.repeat-pills','@media(max-width:700px)']
+          required_calendar_css = ['.repeat-zone','.calendar-cadence-note']
           for term in required_html:
               if term not in html: sys.exit(f'missing HTML contract: {term}')
           for term in required_js:
@@ -85,10 +95,12 @@ jobs:
               if term not in css: sys.exit(f'missing CSS contract: {term}')
           for term in required_v2_css:
               if term not in css_v2: sys.exit(f'missing v2 CSS contract: {term}')
+          for term in required_calendar_css:
+              if term not in calendar_css: sys.exit(f'missing calendar CSS contract: {term}')
           if '<select' in js: sys.exit('native select reintroduced into focused Automations v2')
           for term in ['api.cmxchat.com','eval(','new Function(','localStorage.setItem("operator']:
               if term in html + js + dropdown_js: sys.exit(f'forbidden focused-Lab contract: {term}')
-          print('Focused Automation v2 safety, dropdown, and precision timing contract passed.')
+          print('Focused Automation v2 safety, dropdown, precision timing, and calendar recurrence contract passed.')
           PY
 
       - name: Browser smoke desktop and mobile
