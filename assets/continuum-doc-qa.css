@@ -177,7 +177,49 @@ html[data-theme="light"] .status-later{color:#93530d;background:#fff2e2}
 /* Cards should read as groups, not giant empty bordered boxes. */
 :is(.process-step,.journey-step,.workflow-node,.build-item,.slice-item,.roadmap-rich .roadmap-card){align-content:start}
 
+/* Fresh last-loaded copy of the mobile header control geometry. */
+@media(max-width:920px){
+  .document-actions .mobile-contents-trigger{
+    position:relative;
+    inset:auto;
+    order:4;
+    flex:0 0 46px;
+    width:46px;
+    min-width:46px;
+    max-width:46px;
+    height:46px;
+    min-height:46px;
+    margin:0;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:1fr;
+    place-items:center;
+    align-self:center;
+    box-sizing:border-box;
+    overflow:hidden;
+    border-radius:15px;
+    line-height:1;
+    box-shadow:none;
+  }
+  .document-actions .mobile-contents-trigger::before{
+    content:"☰";
+    grid-area:1/1;
+    place-self:center;
+    margin:0;
+    color:var(--ink-strong);
+    font-size:1.02rem;
+    font-weight:900;
+    line-height:1;
+    text-align:center;
+  }
+  .document-actions .mobile-contents-trigger-mark,
+  .document-actions .mobile-contents-trigger-copy,
+  .document-actions .mobile-contents-trigger-arrow{display:none}
+}
+
 @media(max-width:680px){
+  .document-actions .mobile-contents-trigger{order:3}
   .afterlife-step{
     grid-template-columns:1fr;
     grid-template-areas:
