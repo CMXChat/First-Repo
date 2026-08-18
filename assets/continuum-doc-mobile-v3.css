@@ -1,0 +1,697 @@
+/* Continuum /doc mobile visual system v3.
+   Keeps the existing document shell and replaces phone-sized desktop layouts
+   with purpose-built maps, timelines, charts and readable cards. */
+
+.afterlife-visual-head {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:22px;
+  align-items:center;
+  margin:22px 0 8px;
+}
+
+.afterlife-policy-chart {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 16px;
+  border:1px solid rgba(120,180,235,.2);
+  border-radius:18px;
+  background:rgba(255,255,255,.045);
+}
+
+.afterlife-policy-ring {
+  width:92px;
+  height:92px;
+  flex:0 0 92px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:conic-gradient(#3c8dff 0 75%,#8d6df0 75% 100%);
+  box-shadow:0 16px 38px rgba(39,105,211,.2);
+}
+
+.afterlife-policy-ring::before {
+  content:"";
+  grid-area:1/1;
+  width:68px;
+  height:68px;
+  border-radius:50%;
+  background:#0a1422;
+}
+
+.afterlife-policy-ring span {
+  position:relative;
+  grid-area:1/1;
+  color:#fff;
+  text-align:center;
+  font-size:1rem;
+  font-weight:900;
+  line-height:1;
+}
+
+.afterlife-policy-ring small {
+  display:block;
+  margin-top:4px;
+  color:#9fb8ce;
+  font-size:.56rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.afterlife-policy-legend {
+  display:grid;
+  gap:7px;
+}
+
+.afterlife-policy-legend span {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#b9cfe1;
+  font-size:.68rem;
+  font-weight:780;
+}
+
+.afterlife-policy-legend i {
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#3c8dff;
+  box-shadow:0 0 0 4px rgba(60,141,255,.11);
+}
+
+.afterlife-policy-legend span:last-child i {
+  background:#8d6df0;
+  box-shadow:0 0 0 4px rgba(141,109,240,.11);
+}
+
+.afterlife-state {
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  margin-top:11px;
+  padding:6px 9px;
+  border:1px solid rgba(112,191,255,.24);
+  border-radius:999px;
+  color:#8fd0ff;
+  background:rgba(73,153,233,.08);
+  font-size:.56rem;
+  font-style:normal;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.afterlife-state.is-live {
+  color:#7ce1bb;
+  border-color:rgba(92,214,170,.28);
+  background:rgba(68,196,151,.08);
+}
+
+.afterlife-state.is-trigger {
+  color:#ffc08a;
+  border-color:rgba(255,163,91,.3);
+  background:rgba(255,138,52,.08);
+}
+
+.afterlife-meter {
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:7px 12px;
+  margin-top:14px;
+  padding:11px 12px;
+  border:1px solid rgba(128,178,224,.15);
+  border-radius:13px;
+  background:rgba(255,255,255,.025);
+}
+
+.afterlife-meter strong {
+  margin:0;
+  font-size:.72rem;
+}
+
+.afterlife-meter small {
+  margin:0;
+  text-align:right;
+  font-size:.6rem;
+}
+
+.afterlife-meter-bar {
+  grid-column:1/-1;
+  height:8px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+}
+
+.afterlife-meter-bar i {
+  display:block;
+  width:100%;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#2f83ed,#58b7ff);
+}
+
+.afterlife-meter.is-grace .afterlife-meter-bar i {
+  background:linear-gradient(90deg,#7a6aed,#a076ef);
+}
+
+.afterlife-outcome-title {
+  margin:22px 0 10px;
+  color:#dceeff;
+  font-size:.76rem;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.afterlife-actions span {
+  position:relative;
+  gap:8px;
+}
+
+.afterlife-actions span::before {
+  content:"";
+  width:30px;
+  height:30px;
+  display:block;
+  border-radius:10px;
+  background:linear-gradient(145deg,rgba(62,142,255,.22),rgba(142,106,239,.2));
+  box-shadow:inset 0 0 0 1px rgba(137,190,239,.13);
+}
+
+@media (max-width: 680px) {
+  /* Contents becomes a compact utility instead of covering the document. */
+  .mobile-contents-trigger {
+    top:calc(var(--mobile-contents-top) + 8px);
+    right:max(12px,env(safe-area-inset-right));
+    left:auto;
+    width:50px;
+    min-width:50px;
+    max-width:50px;
+    min-height:50px;
+    height:50px;
+    display:grid;
+    place-items:center;
+    padding:0;
+    border-radius:16px;
+    background:color-mix(in srgb,var(--paper) 94%,transparent);
+    box-shadow:0 10px 28px rgba(6,17,31,.13);
+  }
+
+  .mobile-contents-trigger::before {
+    content:"☰";
+    color:var(--ink-strong);
+    font-size:1.1rem;
+    font-weight:900;
+    line-height:1;
+  }
+
+  .mobile-contents-trigger-mark,
+  .mobile-contents-trigger-copy,
+  .mobile-contents-trigger-arrow {
+    display:none;
+  }
+
+  .continuum-hero .hero-copy {
+    padding-top:42px;
+    padding-right:24px;
+  }
+
+  .continuum-hero h1 {
+    max-width:calc(100% - 52px);
+    font-size:clamp(3.45rem,18vw,5rem);
+  }
+
+  .hero-product-line {
+    gap:6px;
+  }
+
+  .hero-product-line span {
+    padding:7px 9px;
+    font-size:.64rem;
+  }
+
+  /* Mobile hub map. Every node participates in normal layout. */
+  .continuum-map.compact-map {
+    min-height:0;
+    width:calc(100% - 28px);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    align-items:stretch;
+    margin:10px 14px 34px;
+    padding:20px 14px 16px;
+    overflow:hidden;
+    border-radius:26px;
+    background:
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px),
+      radial-gradient(circle at 50% 16%,color-mix(in srgb,var(--blue) 15%,transparent),transparent 15rem),
+      color-mix(in srgb,var(--paper-raised) 94%,transparent);
+    background-size:34px 34px,34px 34px,auto,auto;
+  }
+
+  .continuum-map.compact-map::before,
+  .continuum-map.compact-map::after,
+  .continuum-map.compact-map .map-pulse {
+    display:none;
+  }
+
+  .compact-map .continuum-core {
+    position:relative;
+    left:auto;
+    top:auto;
+    grid-column:1/-1;
+    justify-self:center;
+    width:128px;
+    height:128px;
+    margin:0 0 10px;
+    padding:18px;
+    transform:none;
+    box-shadow:0 18px 48px rgba(26,96,196,.24),0 0 0 12px color-mix(in srgb,var(--blue) 7%,transparent);
+  }
+
+  .compact-map .continuum-core::after {
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-30px;
+    width:2px;
+    height:30px;
+    transform:translateX(-50%);
+    background:linear-gradient(var(--blue),color-mix(in srgb,var(--violet) 60%,transparent));
+  }
+
+  .compact-map .continuum-node,
+  .compact-map .node-spaces,
+  .compact-map .node-directory,
+  .compact-map .node-library,
+  .compact-map .node-ai,
+  .compact-map .node-connections,
+  .compact-map .node-automations,
+  .compact-map .node-runtime {
+    position:relative;
+    inset:auto;
+    width:auto;
+    min-width:0;
+    min-height:102px;
+    display:grid;
+    align-content:center;
+    padding:14px;
+    transform:none;
+    border-radius:17px;
+    background:color-mix(in srgb,var(--paper) 96%,transparent);
+    box-shadow:0 10px 26px rgba(12,34,60,.08);
+  }
+
+  .compact-map .continuum-node::before {
+    content:"";
+    position:absolute;
+    left:14px;
+    top:0;
+    width:42px;
+    height:3px;
+    border-radius:0 0 999px 999px;
+    background:linear-gradient(90deg,var(--ct-blue),var(--ct-indigo));
+  }
+
+  .compact-map .node-library::before { background:linear-gradient(90deg,#25b78c,#59d8b4); }
+  .compact-map .node-ai::before { background:linear-gradient(90deg,#8b68eb,#a98af7); }
+  .compact-map .node-connections::before { background:linear-gradient(90deg,#17a5c3,#5cd4e8); }
+  .compact-map .node-automations::before { background:linear-gradient(90deg,#e08f38,#f3b65d); }
+  .compact-map .node-runtime::before { background:linear-gradient(90deg,#4f65db,#8799f5); }
+
+  .compact-map .continuum-node span {
+    font-size:.58rem;
+  }
+
+  .compact-map .continuum-node strong {
+    margin-top:7px;
+    font-size:.82rem;
+    line-height:1.32;
+  }
+
+  .compact-map .node-runtime {
+    display:grid;
+    grid-column:1/-1;
+    min-height:84px;
+  }
+
+  /* The overview reads as a connected process map. */
+  #overview .tour-grid {
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    padding-left:48px;
+  }
+
+  #overview .tour-grid::before {
+    content:"";
+    position:absolute;
+    left:17px;
+    top:24px;
+    bottom:24px;
+    width:2px;
+    border-radius:999px;
+    background:linear-gradient(#2f86ef,#726ce9,#35bba1);
+  }
+
+  #overview .tour-card {
+    position:relative;
+    min-height:0;
+    gap:5px;
+    padding:15px 16px;
+    border-radius:17px;
+  }
+
+  #overview .tour-card b {
+    position:absolute;
+    left:-48px;
+    top:14px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    box-shadow:0 0 0 5px var(--paper),0 8px 20px rgba(38,104,201,.18);
+  }
+
+  #overview .tour-card strong {
+    font-size:1rem;
+  }
+
+  #overview .tour-card p {
+    font-size:.78rem;
+    line-height:1.45;
+  }
+
+  .loop-strip {
+    display:grid;
+    grid-auto-flow:column;
+    grid-template-columns:none;
+    grid-auto-columns:minmax(118px,36vw);
+    gap:7px;
+    overflow-x:auto;
+    margin-top:16px;
+    padding:2px 2px 8px;
+    border:0;
+    border-radius:0;
+    background:transparent;
+    scroll-snap-type:x proximity;
+    scrollbar-width:none;
+  }
+
+  .loop-strip::-webkit-scrollbar { display:none; }
+
+  .loop-strip span {
+    min-height:54px;
+    place-items:center;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--paper-raised);
+    scroll-snap-align:start;
+  }
+
+  .loop-strip span + span::before {
+    content:"→";
+    left:-10px;
+    top:50%;
+    right:auto;
+    transform:translateY(-50%);
+  }
+
+  /* Spaces uses a swipeable card lane beside the real briefing preview. */
+  .space-mini-grid {
+    display:grid;
+    grid-auto-flow:column;
+    grid-template-columns:none;
+    grid-auto-columns:minmax(228px,76vw);
+    gap:10px;
+    overflow-x:auto;
+    padding:2px 2px 10px;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;
+  }
+
+  .space-mini-grid::-webkit-scrollbar { display:none; }
+  .space-mini { min-height:116px; scroll-snap-align:start; }
+
+  /* Afterlife becomes a light-mode process infographic with real timing visuals. */
+  html[data-theme="light"] .afterlife-section {
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 86% 5%,rgba(119,92,226,.13),transparent 18rem),
+      radial-gradient(circle at 9% 86%,rgba(57,179,224,.11),transparent 18rem),
+      linear-gradient(180deg,#f7fbff,#ffffff 48%,#f6faff);
+  }
+
+  html[data-theme="light"] .afterlife-section .section-kicker { color:#287ecd; }
+  html[data-theme="light"] .afterlife-section .section-heading h2 { color:#0b1830; }
+  html[data-theme="light"] .afterlife-section .section-intro { color:#52677e; }
+  html[data-theme="light"] .afterlife-title-row small { color:#6f8195; }
+
+  .afterlife-visual-head {
+    grid-template-columns:1fr;
+    gap:12px;
+    margin:12px 0 6px;
+  }
+
+  .afterlife-policy-chart {
+    justify-content:flex-start;
+    width:100%;
+    box-sizing:border-box;
+    padding:15px;
+    border-radius:20px;
+  }
+
+  html[data-theme="light"] .afterlife-policy-chart {
+    border-color:#d8e4f0;
+    background:rgba(255,255,255,.88);
+    box-shadow:0 14px 34px rgba(31,72,119,.08);
+  }
+
+  .afterlife-policy-ring {
+    width:84px;
+    height:84px;
+    flex-basis:84px;
+  }
+
+  .afterlife-policy-ring::before {
+    width:62px;
+    height:62px;
+  }
+
+  html[data-theme="light"] .afterlife-policy-ring::before { background:#fff; }
+  html[data-theme="light"] .afterlife-policy-ring span { color:#122039; }
+  html[data-theme="light"] .afterlife-policy-ring small { color:#71839a; }
+  html[data-theme="light"] .afterlife-policy-legend span { color:#536b83; }
+
+  .afterlife-track {
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+    margin-top:22px;
+    padding-left:46px;
+    counter-reset:afterlife-step;
+  }
+
+  .afterlife-track::before {
+    content:"";
+    position:absolute;
+    left:17px;
+    top:24px;
+    bottom:24px;
+    width:3px;
+    border-radius:999px;
+    background:linear-gradient(#3189f3,#6d72ec 52%,#9068eb);
+  }
+
+  .afterlife-track article {
+    position:relative;
+    min-height:0;
+    padding:17px 16px;
+    border-radius:19px;
+    counter-increment:afterlife-step;
+  }
+
+  .afterlife-track article::before {
+    content:counter(afterlife-step,decimal-leading-zero);
+    position:absolute;
+    left:-46px;
+    top:16px;
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    color:#fff;
+    background:linear-gradient(145deg,#2b89f1,#725fe9);
+    box-shadow:0 0 0 5px #f8fbff,0 9px 20px rgba(54,104,196,.2);
+    font-size:.65rem;
+    font-weight:900;
+  }
+
+  html[data-theme="light"] .afterlife-track article {
+    border-color:#d7e3ee;
+    background:rgba(255,255,255,.92);
+    box-shadow:0 12px 30px rgba(30,66,105,.07);
+  }
+
+  html[data-theme="light"] .afterlife-track span { color:#287ecd; }
+  html[data-theme="light"] .afterlife-track strong { color:#13213a; font-size:1rem; }
+  html[data-theme="light"] .afterlife-track small { color:#667c92; font-size:.75rem; }
+  html[data-theme="light"] .afterlife-track article::before { box-shadow:0 0 0 5px #f8fbff,0 9px 20px rgba(54,104,196,.2); }
+
+  .afterlife-state {
+    margin-top:10px;
+  }
+
+  html[data-theme="light"] .afterlife-state {
+    color:#286fae;
+    border-color:#c9def0;
+    background:#f1f8fd;
+  }
+
+  html[data-theme="light"] .afterlife-state.is-live {
+    color:#167b58;
+    border-color:#bfe5d6;
+    background:#eefaf5;
+  }
+
+  html[data-theme="light"] .afterlife-state.is-trigger {
+    color:#b85b1e;
+    border-color:#f0d1bb;
+    background:#fff5ec;
+  }
+
+  html[data-theme="light"] .afterlife-meter {
+    border-color:#dde8f1;
+    background:#f8fbfe;
+  }
+
+  html[data-theme="light"] .afterlife-meter-bar {
+    background:#e8eff6;
+  }
+
+  .afterlife-outcome-title {
+    margin-top:24px;
+    color:#1d3551;
+    font-size:.72rem;
+  }
+
+  html[data-theme="dark"] .afterlife-outcome-title { color:#dceeff; }
+
+  .afterlife-actions {
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .afterlife-actions span {
+    min-height:110px;
+    align-content:center;
+    place-items:start;
+    padding:15px;
+    text-align:left;
+    font-size:.78rem;
+    line-height:1.35;
+  }
+
+  html[data-theme="light"] .afterlife-actions span {
+    color:#17304b;
+    border-color:#dbe7f0;
+    background:rgba(255,255,255,.9);
+    box-shadow:0 10px 26px rgba(25,64,102,.06);
+  }
+
+  .afterlife-now {
+    margin-top:12px;
+    padding:16px;
+    font-size:.78rem;
+    line-height:1.55;
+  }
+
+  html[data-theme="light"] .afterlife-now {
+    color:#425f58;
+    border-color:#bfe4d6;
+    background:#eff9f5;
+  }
+
+  html[data-theme="light"] .afterlife-now b { color:#1b9a72; }
+
+  /* The engineering stack reads as one connected pipeline on a phone. */
+  .stack-flow {
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:0;
+    padding-left:24px;
+    background:transparent;
+  }
+
+  .stack-flow::before {
+    content:"";
+    position:absolute;
+    left:19px;
+    top:26px;
+    bottom:26px;
+    width:2px;
+    background:linear-gradient(var(--ct-blue),var(--ct-violet));
+    opacity:.35;
+  }
+
+  .stack-flow article,
+  .stack-flow article:last-child {
+    position:relative;
+    grid-column:auto;
+    min-height:0;
+    padding:16px 16px 16px 26px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .stack-flow article:last-child { border-bottom:0; }
+
+  .stack-flow article::before {
+    content:"";
+    position:absolute;
+    left:-11px;
+    top:22px;
+    width:12px;
+    height:12px;
+    border:3px solid var(--paper-raised);
+    border-radius:50%;
+    background:var(--ct-blue);
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--ct-blue) 28%,transparent);
+  }
+
+  .stack-support {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .compact-map .continuum-node,
+  .compact-map .node-runtime {
+    min-height:96px;
+    padding:13px;
+  }
+
+  .compact-map .continuum-node strong { font-size:.78rem; }
+  .afterlife-actions { grid-template-columns:1fr 1fr; }
+  .stack-support { grid-template-columns:1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loop-strip,
+  .space-mini-grid { scroll-behavior:auto; }
+}
+
+@media print {
+  .afterlife-policy-chart { color:#111; background:#fff; border-color:#bbb; }
+  .afterlife-policy-ring::before { background:#fff; }
+  .afterlife-policy-ring span { color:#111; }
+}
