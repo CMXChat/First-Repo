@@ -13,7 +13,10 @@ on:
       - 'assets/lab/lab-automations-dropdown-runtime.js'
       - 'assets/lab/lab-automations-friendly-runtime.js'
       - 'assets/lab/lab-automations-friendly.css'
+      - 'assets/lab/lab-automations-content-runtime.js'
+      - 'assets/lab/lab-automations-content.css'
       - 'docs/checkin-automations-frontend-CURRENT.md'
+      - 'docs/checkin-content-editor-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
   pull_request:
     branches: [main]
@@ -25,6 +28,9 @@ on:
       - 'assets/lab/lab-automations-dropdown-runtime.js'
       - 'assets/lab/lab-automations-friendly-runtime.js'
       - 'assets/lab/lab-automations-friendly.css'
+      - 'assets/lab/lab-automations-content-runtime.js'
+      - 'assets/lab/lab-automations-content.css'
+      - 'docs/checkin-content-editor-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
 
 permissions:
@@ -43,6 +49,7 @@ jobs:
           node --check assets/lab/lab-automations-app-v2.js
           node --check assets/lab/lab-automations-dropdown-runtime.js
           node --check assets/lab/lab-automations-friendly-runtime.js
+          node --check assets/lab/lab-automations-content-runtime.js
           python - <<'PY'
           from pathlib import Path
           import sys
@@ -51,10 +58,12 @@ jobs:
           js = Path('assets/lab/lab-automations-app-v2.js').read_text(encoding='utf-8')
           dropdown_js = Path('assets/lab/lab-automations-dropdown-runtime.js').read_text(encoding='utf-8')
           friendly_js = Path('assets/lab/lab-automations-friendly-runtime.js').read_text(encoding='utf-8')
+          content_js = Path('assets/lab/lab-automations-content-runtime.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
           css_v2 = Path('assets/lab/lab-automations-app-v2.css').read_text(encoding='utf-8')
           calendar_css = Path('assets/lab/lab-automations-calendar.css').read_text(encoding='utf-8')
           friendly_css = Path('assets/lab/lab-automations-friendly.css').read_text(encoding='utf-8')
+          content_css = Path('assets/lab/lab-automations-content.css').read_text(encoding='utf-8')
 
           required_html = [
               "connect-src 'self'",
@@ -62,9 +71,11 @@ jobs:
               '/assets/lab/lab-automations-app-v2.css',
               '/assets/lab/lab-automations-calendar.css',
               '/assets/lab/lab-automations-friendly.css?v=20260817-1',
+              '/assets/lab/lab-automations-content.css?v=20260817-1',
               '/assets/lab/lab-automations-app-v2.js?v=20260817-5',
               '/assets/lab/lab-automations-dropdown-runtime.js',
               '/assets/lab/lab-automations-friendly-runtime.js?v=20260817-3',
+              '/assets/lab/lab-automations-content-runtime.js?v=20260817-1',
               'noindex,nofollow',
           ]
           required_js = [
@@ -106,17 +117,42 @@ jobs:
               'history.scrollRestoration = "manual"',
               '[data-open], [data-new]',
           ]
+          required_content = [
+              'cmx-lab-content-assets-v1',
+              'PRIVATE CONTENT',
+              'Private content editor',
+              'contenteditable="true"',
+              'Email subject',
+              'Write',
+              'Preview',
+              'data-rich-command="bold"',
+              'data-rich-command="italic"',
+              'data-rich-command="underline"',
+              'data-rich-command="strikeThrough"',
+              'data-rich-link',
+              'insertUnorderedList',
+              'insertOrderedList',
+              'BLOCKQUOTE',
+              'insertHorizontalRule',
+              'PROTECTED ATTACHMENTS',
+              'sanitizeHtml',
+              'safeHref',
+              'script',
+          ]
           required_dropdown = ['stopImmediatePropagation', '.smart-select.is-open', 'data-dropdown-trigger']
           required_css = ['.automation-app','.editor-footer','.step-rail','.do-card','html[data-theme="light"]','@media(max-width:760px)']
           required_v2_css = ['.smart-select','.smart-menu','.timing-mode-grid','.precision-card','.duration-inputs','.exact-grid','.repeat-pills','@media(max-width:700px)']
           required_calendar_css = ['.repeat-zone','.calendar-cadence-note']
           required_friendly_css = ['.concept-card','.grace-timeline','.trigger-vs-start','.finish-advanced','@media(max-width:700px)']
+          required_content_css = ['.content-asset-card','.content-editor-overlay','.content-toolbar','.content-paper','.content-rich-body','.content-attachments-card','@media(max-width:760px)']
           for term in required_html:
               if term not in html: sys.exit(f'missing HTML contract: {term}')
           for term in required_js:
               if term not in js: sys.exit(f'missing JS contract: {term}')
           for term in required_friendly:
               if term not in friendly_js: sys.exit(f'missing friendly UX contract: {term}')
+          for term in required_content:
+              if term not in content_js: sys.exit(f'missing content editor contract: {term}')
           for term in required_dropdown:
               if term not in dropdown_js: sys.exit(f'missing dropdown runtime contract: {term}')
           for term in required_css:
@@ -127,11 +163,13 @@ jobs:
               if term not in calendar_css: sys.exit(f'missing calendar CSS contract: {term}')
           for term in required_friendly_css:
               if term not in friendly_css: sys.exit(f'missing friendly CSS contract: {term}')
+          for term in required_content_css:
+              if term not in content_css: sys.exit(f'missing content CSS contract: {term}')
           if '<select' in js: sys.exit('native select reintroduced into focused Automations v2')
-          if 'MutationObserver' in friendly_js: sys.exit('broad observer-style UX patch must not be introduced')
+          if 'MutationObserver' in friendly_js + content_js: sys.exit('broad observer-style UX patch must not be introduced')
           for term in ['api.cmxchat.com','eval(','new Function(','localStorage.setItem("operator']:
-              if term in html + js + dropdown_js + friendly_js: sys.exit(f'forbidden focused-Lab contract: {term}')
-          print('Focused Automation safety, human UX, timing, dropdown, and calendar recurrence contract passed.')
+              if term in html + js + dropdown_js + friendly_js + content_js: sys.exit(f'forbidden focused-Lab contract: {term}')
+          print('Focused Automation safety, human UX, timing, content authoring, dropdown, and calendar recurrence contract passed.')
           PY
 
       - name: Browser smoke desktop and mobile
