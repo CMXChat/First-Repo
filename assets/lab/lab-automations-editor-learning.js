@@ -6,12 +6,16 @@
     insertUnorderedList:"Bulleted list",insertOrderedList:"Numbered list",justifyLeft:"Align left",justifyCenter:"Align center",justifyRight:"Align right",
     insertHorizontalRule:"Divider",removeFormat:"Clear formatting"
   };
+  const MARKDOWN_LABELS = {
+    heading:"Heading",bold:"Bold",italic:"Italic",strike:"Strikethrough",list:"Bulleted list",quote:"Quote",link:"Insert link",code:"Inline code"
+  };
 
   function labelFor(button) {
     if (!button) return "";
-    if (button.matches("[data-rich-link],[data-doc-link]")) return "Insert link";
-    const command = button.dataset.richCommand || button.dataset.docCommand;
-    const value = button.dataset.richValue || button.dataset.docValue;
+    if (button.matches("[data-rich-link],[data-doc-link],[data-pro-rich-link]")) return "Insert link";
+    if (button.matches("[data-md-insert]")) return MARKDOWN_LABELS[button.dataset.mdInsert] || button.getAttribute("title") || "Markdown formatting";
+    const command = button.dataset.richCommand || button.dataset.docCommand || button.dataset.proCommand;
+    const value = button.dataset.richValue || button.dataset.docValue || button.dataset.proValue;
     if (command === "formatBlock") {
       if (value === "P") return "Paragraph";
       if (value === "H1") return "Heading 1";
@@ -47,7 +51,7 @@
   }
 
   document.addEventListener("click", event => {
-    const button = event.target.closest("[data-rich-command],[data-rich-link],[data-doc-command],[data-doc-link]");
+    const button = event.target.closest("[data-rich-command],[data-rich-link],[data-doc-command],[data-doc-link],[data-pro-command],[data-pro-rich-link],[data-md-insert]");
     if (button) teach(button);
   }, true);
 })();
