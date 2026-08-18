@@ -11,6 +11,8 @@ on:
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-experience-v3.js'
       - 'assets/lab/lab-automations-experience-v3.css'
+      - 'assets/lab/lab-automations-system-surface.js'
+      - 'assets/lab/lab-automations-system-surface.css'
       - 'assets/lab/lab-actions.js'
       - '.github/workflows/checkin-lab-automations-integration.yml'
   pull_request:
@@ -23,6 +25,8 @@ on:
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-experience-v3.js'
       - 'assets/lab/lab-automations-experience-v3.css'
+      - 'assets/lab/lab-automations-system-surface.js'
+      - 'assets/lab/lab-automations-system-surface.css'
       - 'assets/lab/lab-actions.js'
       - '.github/workflows/checkin-lab-automations-integration.yml'
 
@@ -42,6 +46,7 @@ jobs:
           node --check assets/lab/lab-automations-main-bridge.js
           node --check assets/lab/lab-automations-route-integration.js
           node --check assets/lab/lab-automations-experience-v3.js
+          node --check assets/lab/lab-automations-system-surface.js
 
       - name: Validate shared Lab contract
         run: |
@@ -53,6 +58,7 @@ jobs:
           loader = Path('assets/lab/lab-loader.js').read_text(encoding='utf-8')
           old_builder = Path('assets/lab/lab-automation-builder.js').read_text(encoding='utf-8')
           focused = Path('assets/lab/lab-automations-experience-v3.js').read_text(encoding='utf-8')
+          system_surface = Path('assets/lab/lab-automations-system-surface.js').read_text(encoding='utf-8')
           bridge = Path('assets/lab/lab-automations-main-bridge.js').read_text(encoding='utf-8')
           route = Path('assets/lab/lab-automations-route-integration.js').read_text(encoding='utf-8')
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
@@ -87,6 +93,13 @@ jobs:
                   '{ id: "timing", label: "Timing", short: "WAIT" }',
                   '{ id: "review", label: "Review", short: "TEST" }',
               ]),
+              'system surface': (system_surface, [
+                  'CONTINUUM · AUTOMATIONS',
+                  'v3-system-deck',
+                  'CONNECTED RECORDS',
+                  'REUSABLE ACTIONS',
+                  'labAutomationsSystemSurface',
+              ]),
               'action library': (action_library, [
                   'cmx-lab-actions-v1',
                   'sms:',
@@ -101,9 +114,12 @@ jobs:
                   'labAutomationsRouteIntegration',
               ]),
               'focused html': (html, [
+                  '<title>Continuum · Automations</title>',
                   '/assets/lab/lab-automations-experience-v3.css?v=20260818-1',
+                  '/assets/lab/lab-automations-system-surface.css?v=20260818-1',
                   '/assets/lab/lab-automations-experience-v3.js?v=20260818-1',
                   '/assets/lab/lab-automations-route-integration.js?v=20260818-1',
+                  '/assets/lab/lab-automations-system-surface.js?v=20260818-1',
               ]),
           }
 
@@ -114,6 +130,8 @@ jobs:
 
           if 'lab-automations-app-v2.js' in html:
               sys.exit('focused route still loads the superseded v2 builder')
+          if 'MutationObserver' in system_surface:
+              sys.exit('system surface must use targeted events rather than a broad DOM observer')
 
           storage = 'cmx-lab-automations-v1'
           if storage not in old_builder or storage not in focused or storage not in bridge:
@@ -124,7 +142,7 @@ jobs:
           if loader.index('lab-automations-main-bridge.js') > loader.index('lab-acceptance.js'):
               sys.exit('focused bridge must load before final Lab acceptance hardening')
 
-          print('Lab hub and Automations v3 share drafts, records, Action references, one focused editor and bidirectional navigation.')
+          print('Lab hub and Automations v3 system surface share drafts, records, Action references, one focused editor and bidirectional navigation.')
           PY
 
       - name: Browser integration smoke
@@ -163,13 +181,18 @@ jobs:
 
           dump http://127.0.0.1:8000/lab/automations/ > /tmp/focused-dashboard.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/focused-dashboard.html
-          grep -q 'Start with a template' /tmp/focused-dashboard.html
+          grep -q 'data-lab-automations-system-surface="ready"' /tmp/focused-dashboard.html
+          grep -q 'CONTINUUM · AUTOMATIONS' /tmp/focused-dashboard.html
+          grep -q '>WORKFLOWS<' /tmp/focused-dashboard.html
+          grep -q '>Templates<' /tmp/focused-dashboard.html
           grep -q 'New automation' /tmp/focused-dashboard.html
           grep -q 'Missed check-in escalation' /tmp/focused-dashboard.html
+          ! grep -q 'Build the flow' /tmp/focused-dashboard.html
 
           dump 'http://127.0.0.1:8000/lab/automations/?automation=auto-grace-escalation&from=lab' > /tmp/focused-deeplink.html
           grep -q 'data-lab-automations-route-integration="ready"' /tmp/focused-deeplink.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/focused-deeplink.html
+          grep -q 'data-lab-automations-system-surface="ready"' /tmp/focused-deeplink.html
           grep -q 'class="v3-editor-page"' /tmp/focused-deeplink.html
           grep -q 'Grace escalation' /tmp/focused-deeplink.html
           grep -q 'href="/lab/#lab=view%3Aactions"' /tmp/focused-deeplink.html
@@ -178,6 +201,7 @@ jobs:
           dump 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/focused-new.html
           grep -q 'data-lab-automations-route-integration="ready"' /tmp/focused-new.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/focused-new.html
+          grep -q 'data-lab-automations-system-surface="ready"' /tmp/focused-new.html
           grep -q 'class="v3-editor-page"' /tmp/focused-new.html
           grep -q 'What should start this' /tmp/focused-new.html
           if grep -q 'Name the automation' /tmp/focused-new.html; then
@@ -185,4 +209,4 @@ jobs:
             exit 1
           fi
 
-          echo 'Lab hub ↔ Automations v3 integration passed on headless Chromium.'
+          echo 'Lab hub ↔ Automations v3 system surface integration passed on headless Chromium.'
