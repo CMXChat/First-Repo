@@ -18,6 +18,8 @@ This document is the current companion handoff for the premium Library/product-q
 
 Real Samsung screenshots showed that the underlying Library concepts were useful, but the presentation was beginning to feel like an administration screen. The product-quality pass keeps the domain model and improves the human experience without pretending server persistence or binary storage already exists.
 
+A later Samsung acceptance pass also proved two specific mobile problems: folder exit was discoverable only through a small breadcrumb, and several controls had been over-compressed to desktop-density typography. The current usability layer treats those as product defects, not user error.
+
 ## Locked Library mental model
 
 ```text
@@ -80,6 +82,57 @@ These are presentation/user preferences. They are not Automation definition stat
 
 Production may keep some preferences client-side or persist protected per-user Library preferences later.
 
+## Mobile folder navigation rule
+
+Folder navigation must be obvious without requiring the user to infer that a breadcrumb is interactive.
+
+Current Lab behavior:
+
+```text
+At Library root
+→ top-left back leaves Library
+
+Inside a folder
+→ top-left back goes up exactly one folder
+→ a visible "Back to <parent>" control is also shown
+→ breadcrumb remains available for direct ancestor navigation
+```
+
+For deep nesting, both the top-left control and explicit parent control resolve the immediate `parent_folder_id`; they do not jump blindly to root.
+
+Production folder reads must return enough authorized parent/path metadata for the frontend to render this behavior without reconstructing ancestry from unrelated client state.
+
+## Mobile sizing rule
+
+The mobile Library is not meant to look like a shrunk desktop admin screen.
+
+Current target direction:
+
+- primary taps around 44–52px;
+- Library card titles around normal mobile body/title size instead of 7–9px prototype text;
+- search field around normal mobile input size;
+- root statistics use a readable 2×2 layout on narrow phones;
+- folder/item cards have larger icons, snippets, timestamps, Favorite and `•••` targets;
+- empty-state and privacy copy remain readable without zooming.
+
+Do not reintroduce sub-10px text for primary interactive Library controls on phones merely to fit more controls on one row.
+
+## Mobile filtering simplification
+
+The premium `All / Recent / Favorites` navigation remains directly visible.
+
+On narrow phones, the secondary type row is collapsed behind one clear **Filter** control that opens an in-page sheet for:
+
+- All types;
+- Documents;
+- Files;
+- Templates;
+- Archived.
+
+This keeps controls large without stacking two dense tab bars.
+
+Desktop/tablet may continue showing the wider category navigation where space supports it.
+
 ## Favorites
 
 Favorites are a user convenience over stable Library references.
@@ -125,7 +178,7 @@ Binary Replace remains backend pending because Lab has no authoritative object s
 
 ## Rich editor learning UX
 
-Rich editor controls are intentionally larger on mobile, targeting roughly 44px finger-friendly controls.
+Rich editor controls are intentionally larger on mobile, now targeting roughly 48px finger-friendly controls in the focused usability pass.
 
 When a formatting control is pressed:
 
@@ -196,6 +249,7 @@ The production Library query/projection must:
 - hide action-scoped content unless it was explicitly promoted/reused;
 - preserve scope/owner checks across Content, Files, Folders and dependency projections;
 - return enough metadata for type, version/readiness, updated time, folder placement and snippets;
+- return enough folder parent/path metadata for obvious up-one-level navigation;
 - avoid leaking private content into public/sanitized Check In surfaces.
 
 ## Folder quality rules
@@ -206,6 +260,8 @@ Add/retain:
 
 - case-insensitive sibling-name collision protection;
 - create/rename/move/archive;
+- stable `parent_folder_id` semantics;
+- authorized parent/path projection for breadcrumbs and Back/Up controls;
 - nested breadcrumbs;
 - cycle prevention;
 - no silent orphaning of children;
@@ -273,6 +329,7 @@ Create continuity.md
 → Save Version creates immutable ContentVersion v1
 → Library search finds it
 → move it into a real LibraryFolder
+→ backend returns parent/path metadata for obvious folder navigation
 → Details shows exact version ID
 → an Automation Draft can reference it
 → no provider execution yet
@@ -302,6 +359,8 @@ Do not call any of those server-backed until the jay-app API/models exist.
 - `assets/lab/lab-automations-library-premium.css`
 - `assets/lab/lab-automations-library-mobile-fix.js`
 - `assets/lab/lab-automations-library-mobile-fix.css`
+- `assets/lab/lab-automations-library-usability.js`
+- `assets/lab/lab-automations-library-usability.css`
 - `assets/lab/lab-automations-editor-learning.js`
 - `assets/lab/lab-automations-editor-learning.css`
 
