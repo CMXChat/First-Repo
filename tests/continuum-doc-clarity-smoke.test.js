@@ -125,7 +125,7 @@ assert.match(humanCss, /clarity-automation-copy/);
 assert.match(humanCss, /clarity-product-map-section \.hero-network/);
 
 // The CURRENT contract stays authoritative for future /doc edits.
-assert.match(contract, /human-copy rebuild/);
+assert.match(contract, /human-copy, prose-balance and origin-insight rebuild/);
 assert.match(contract, /Concepts before product names/i);
 assert.match(contract, /Dead Man Switch/);
 assert.match(contract, /origin insight/i);
