@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-cmx-title="CMX Restricted Node" data-cmx-category="User" data-cmx-status="Active" data-cmx-version="1.0" data-cmx-standard="off">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050b14" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://sturdy-space-tribble-qwgq456pq6gfxvjr-8000.app.github.dev; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests" />
+  <link rel="stylesheet" href="/assets/cmx-terminal.css?v=20260814-2" />
+
+  <!-- CMX SITE STANDARD: START -->
+  <title>CMX Restricted Node</title>
+  <meta name="description" content="Private private access to CMX research and operational tools." />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+  <link rel="canonical" href="https://db.cmxchat.com/terminal/" />
+  <meta property="og:title" content="CMX Restricted Node" />
+  <meta property="og:description" content="Private private access to CMX research and operational tools." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CMX Restricted Node" />
+  <meta property="og:url" content="https://db.cmxchat.com/terminal/" />
+  <meta property="og:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta property="og:image:secure_url" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CMX Restricted Node private CMX interface" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CMX Restricted Node" />
+  <meta name="twitter:description" content="Private private access to CMX research and operational tools." />
+  <meta name="twitter:image" content="https://db.cmxchat.com/assets/cmx-restricted-node-social.png" />
+  <meta name="twitter:image:alt" content="CMX Restricted Node private CMX interface" />
+  <!-- CMX SITE STANDARD: END -->
+</head>
+<body>
+  <div id="boot" aria-live="polite">
+    <section class="boot-window" aria-label="Node startup sequence">
+      <div class="window-bar">
+        <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
+        <span class="window-title">node-init · restricted bootstrap</span>
+      </div>
+      <div id="bootBody" class="boot-body"></div>
+    </section>
+  </div>
+
+  <main id="gate" class="hidden">
+    <section class="gate-shell" aria-labelledby="gateTitle">
+      <div class="window-bar">
+        <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
+        <span class="window-title">restricted node · authentication</span>
+      </div>
+      <div class="gate-body">
+        <header class="gate-brand">
+          <div class="gate-emblem" aria-hidden="true">CMX</div>
+          <div class="gate-brand-copy">
+            <div class="gate-kicker">Restricted user node</div>
+            <div class="gate-host">authorization required</div>
+          </div>
+        </header>
+
+        <h1 id="gateTitle" class="gate-title">Authentication required</h1>
+        <p id="gateCopy" class="gate-copy">Authenticate to continue.</p>
+
+        <div id="setupFields" class="hidden" hidden aria-hidden="true">
+          <input id="setupUser" value="admin" readonly tabindex="-1" />
+          <input id="setupPassword" type="password" tabindex="-1" />
+          <input id="setupConfirm" type="password" tabindex="-1" />
+          <button id="createVaultBtn" type="button" tabindex="-1">Unavailable</button>
+        </div>
+
+        <div id="loginFields" class="hidden">
+          <div class="field">
+            <label for="loginUser">User</label>
+            <div class="input-shell"><span class="input-prefix">login</span><input id="loginUser" value="admin" readonly aria-readonly="true" /></div>
+          </div>
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <div class="input-shell"><span class="input-prefix">key</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="password" /></div>
+          </div>
+          <div class="gate-actions single">
+            <button id="unlockBtn" class="btn primary" type="button">Authenticate</button>
+          </div>
+        </div>
+
+        <div id="gateOutput" class="gate-output" role="status"></div>
+      </div>
+    </section>
+  </main>
+
+  <main id="app" class="hidden">
+    <section class="app-shell">
+      <div class="main-grid">
+        <section class="terminal-pane" aria-label="Restricted user console">
+          <div class="pane-head">
+            <span class="dot red"></span><span class="dot amber"></span><span class="dot blue"></span>
+            <span id="terminalTitle">admin@node:~ · restricted-shell</span>
+            <div class="right">
+              <button class="mini-action" id="helpBtn" type="button">HELP</button>
+              <button class="mini-action" id="clearBtn" type="button">CLEAR</button>
+            </div>
+          </div>
+          <div id="terminalOutput" role="log" aria-live="polite"></div>
+          <form id="terminalForm" class="terminal-input-row" autocomplete="off">
+            <label class="sr-only" for="commandInput">Terminal command</label>
+            <span class="prompt"><span class="prompt-mobile">$</span><span class="prompt-full"><span class="u" id="promptUser">admin</span>@<span class="h">node</span>:<span class="p">~</span>$</span></span>
+            <input id="commandInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="help" />
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/assets/cmx-ops-core.js?v=20260731-2" defer></script>
+  <script src="/assets/cmx-auth-policy.js?v=20260814-2" defer></script>
+  <script src="/assets/cmx-ops-site.js?v=20260731-2" defer></script>
+  <script src="/assets/cmx-ops-intel.js?v=20260731-2" defer></script>
+  <script src="/assets/cmx-ops-runtime.js?v=20260731-2" defer></script>
+</body>
+</html>
