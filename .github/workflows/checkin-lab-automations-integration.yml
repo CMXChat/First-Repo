@@ -9,7 +9,9 @@ on:
       - 'assets/lab/lab-automation-builder.js'
       - 'assets/lab/lab-automations-main-bridge.js'
       - 'assets/lab/lab-automations-route-integration.js'
-      - 'assets/lab/lab-automations-app-v2.js'
+      - 'assets/lab/lab-automations-experience-v3.js'
+      - 'assets/lab/lab-automations-experience-v3.css'
+      - 'assets/lab/lab-actions.js'
       - '.github/workflows/checkin-lab-automations-integration.yml'
   pull_request:
     branches: [main]
@@ -19,7 +21,9 @@ on:
       - 'assets/lab/lab-automation-builder.js'
       - 'assets/lab/lab-automations-main-bridge.js'
       - 'assets/lab/lab-automations-route-integration.js'
-      - 'assets/lab/lab-automations-app-v2.js'
+      - 'assets/lab/lab-automations-experience-v3.js'
+      - 'assets/lab/lab-automations-experience-v3.css'
+      - 'assets/lab/lab-actions.js'
       - '.github/workflows/checkin-lab-automations-integration.yml'
 
 permissions:
@@ -37,7 +41,7 @@ jobs:
           set -euo pipefail
           node --check assets/lab/lab-automations-main-bridge.js
           node --check assets/lab/lab-automations-route-integration.js
-          node --check assets/lab/lab-automations-app-v2.js
+          node --check assets/lab/lab-automations-experience-v3.js
 
       - name: Validate shared Lab contract
         run: |
@@ -48,10 +52,11 @@ jobs:
 
           loader = Path('assets/lab/lab-loader.js').read_text(encoding='utf-8')
           old_builder = Path('assets/lab/lab-automation-builder.js').read_text(encoding='utf-8')
-          focused = Path('assets/lab/lab-automations-app-v2.js').read_text(encoding='utf-8')
+          focused = Path('assets/lab/lab-automations-experience-v3.js').read_text(encoding='utf-8')
           bridge = Path('assets/lab/lab-automations-main-bridge.js').read_text(encoding='utf-8')
           route = Path('assets/lab/lab-automations-route-integration.js').read_text(encoding='utf-8')
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          action_library = Path('assets/lab/lab-actions.js').read_text(encoding='utf-8')
 
           required = {
               'loader': (loader, [
@@ -65,6 +70,29 @@ jobs:
                   'One Automation editor',
                   'data-focused-automation',
                   'labAutomationsIntegrated',
+                  'reusable Action library',
+              ]),
+              'focused v3': (focused, [
+                  'cmx-lab-automations-v1',
+                  'cmx-lab-crm-v1',
+                  'cmx-lab-inventory-v1',
+                  'cmx-lab-actions-v1',
+                  'type: "action_ref"',
+                  'Start with a template',
+                  'Run simulation',
+                  'labAutomationsExperience',
+                  '{ id: "trigger", label: "Trigger", short: "WHEN" }',
+                  '{ id: "rules", label: "Rules", short: "IF" }',
+                  '{ id: "actions", label: "Actions", short: "DO" }',
+                  '{ id: "timing", label: "Timing", short: "WAIT" }',
+                  '{ id: "review", label: "Review", short: "TEST" }',
+              ]),
+              'action library': (action_library, [
+                  'cmx-lab-actions-v1',
+                  'sms:',
+                  'email:',
+                  'webhook:',
+                  'digital_account:',
               ]),
               'route': (route, [
                   '/lab/#lab=view%3Aactions',
@@ -73,6 +101,8 @@ jobs:
                   'labAutomationsRouteIntegration',
               ]),
               'focused html': (html, [
+                  '/assets/lab/lab-automations-experience-v3.css?v=20260818-1',
+                  '/assets/lab/lab-automations-experience-v3.js?v=20260818-1',
                   '/assets/lab/lab-automations-route-integration.js?v=20260818-1',
               ]),
           }
@@ -81,6 +111,9 @@ jobs:
               for term in terms:
                   if term not in text:
                       sys.exit(f'{label} missing integration contract: {term}')
+
+          if 'lab-automations-app-v2.js' in html:
+              sys.exit('focused route still loads the superseded v2 builder')
 
           storage = 'cmx-lab-automations-v1'
           if storage not in old_builder or storage not in focused or storage not in bridge:
@@ -91,7 +124,7 @@ jobs:
           if loader.index('lab-automations-main-bridge.js') > loader.index('lab-acceptance.js'):
               sys.exit('focused bridge must load before final Lab acceptance hardening')
 
-          print('Lab hub and focused Automations share one draft store, one editor route, and bidirectional navigation.')
+          print('Lab hub and Automations v3 share drafts, records, Action references, one focused editor and bidirectional navigation.')
           PY
 
       - name: Browser integration smoke
@@ -116,7 +149,7 @@ jobs:
           sleep 1
 
           dump() {
-            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=8000 "$@" --dump-dom
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=10000 "$@" --dump-dom
           }
 
           dump http://127.0.0.1:8000/lab-integration-smoke.html > /tmp/lab-hub.html
@@ -126,16 +159,30 @@ jobs:
           grep -q 'Open Automations' /tmp/lab-hub.html
           grep -q 'WORKSPACE' /tmp/lab-hub.html
           grep -q 'CONNECTED' /tmp/lab-hub.html
+          grep -q 'reusable Action library' /tmp/lab-hub.html
+
+          dump http://127.0.0.1:8000/lab/automations/ > /tmp/focused-dashboard.html
+          grep -q 'data-lab-automations-experience="v3"' /tmp/focused-dashboard.html
+          grep -q 'Start with a template' /tmp/focused-dashboard.html
+          grep -q 'New automation' /tmp/focused-dashboard.html
+          grep -q 'Missed check-in escalation' /tmp/focused-dashboard.html
 
           dump 'http://127.0.0.1:8000/lab/automations/?automation=auto-grace-escalation&from=lab' > /tmp/focused-deeplink.html
           grep -q 'data-lab-automations-route-integration="ready"' /tmp/focused-deeplink.html
-          grep -q 'class="editor-page"' /tmp/focused-deeplink.html
+          grep -q 'data-lab-automations-experience="v3"' /tmp/focused-deeplink.html
+          grep -q 'class="v3-editor-page"' /tmp/focused-deeplink.html
           grep -q 'Grace escalation' /tmp/focused-deeplink.html
           grep -q 'href="/lab/#lab=view%3Aactions"' /tmp/focused-deeplink.html
+          grep -q 'Build the action stack' /tmp/focused-deeplink.html || grep -q 'What should start this' /tmp/focused-deeplink.html
 
           dump 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/focused-new.html
           grep -q 'data-lab-automations-route-integration="ready"' /tmp/focused-new.html
-          grep -q 'class="editor-page"' /tmp/focused-new.html
-          grep -q 'Name the automation' /tmp/focused-new.html
+          grep -q 'data-lab-automations-experience="v3"' /tmp/focused-new.html
+          grep -q 'class="v3-editor-page"' /tmp/focused-new.html
+          grep -q 'What should start this' /tmp/focused-new.html
+          if grep -q 'Name the automation' /tmp/focused-new.html; then
+            echo 'The superseded seven-step name-first wizard is still visible.' >&2
+            exit 1
+          fi
 
-          echo 'Lab hub ↔ focused Automations integration passed on headless Chromium.'
+          echo 'Lab hub ↔ Automations v3 integration passed on headless Chromium.'
