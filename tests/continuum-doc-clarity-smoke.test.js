@@ -66,7 +66,7 @@ for (const label of [
   '05 · Afterlife', '06 · Architecture', '07 · Build', '08 · Roadmap'
 ]) assert.match(js, new RegExp(label.replace('·', '·')));
 
-// Copy should stay free of the recurring artificial-writing patterns.
+// Copy stays free of the recurring artificial-writing patterns.
 for (const source of [html, js]) {
   assert.doesNotMatch(source, /\.\.\.|…|—/);
   assert.doesNotMatch(source, /Why not just use AI by itself/i);
@@ -100,12 +100,14 @@ assert.match(humanCss, /font-size:clamp\(1\.9rem,3\.15vw,2\.8rem\)/);
 assert.match(humanCss, /font-size:clamp\(2\.75rem,14vw,3\.55rem\)/);
 
 // The CURRENT contract stays authoritative for future /doc edits.
-assert.match(contract, /Clarity freeze after the teaching-order rebuild/);
-assert.match(contract, /concepts before product names/i);
+assert.match(contract, /Clarity freeze after the teaching-order and human-copy rebuild/);
+assert.match(contract, /Concepts before product names/i);
 assert.match(contract, /Automation = the plan/);
 assert.match(contract, /Runtime = the execution layer/);
-assert.match(contract, /Check In-specific timer values do not belong inside this generic loop/);
+assert.match(contract, /Check In-specific timer values belong in the Afterlife section/);
 assert.match(contract, /optional depth in the normal reading path/);
+assert.match(contract, /AI authority is set by server-side permissions/);
+assert.match(contract, /assets\/continuum-doc-human\.css/);
 
 // The clarity transform is deterministic at initialization. Avoid broad mutation loops.
 assert.doesNotMatch(js, /MutationObserver/);
