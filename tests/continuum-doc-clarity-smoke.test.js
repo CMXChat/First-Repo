@@ -16,6 +16,9 @@ const contract = fs.readFileSync(path.join(root, 'docs/continuum-product-CURRENT
 // The visible reading path starts with the fuller plain-language introduction and then the mental model.
 assert.match(js, /dataset\.continuumClarity = 'ready'/);
 assert.match(js, /Continuum keeps useful context in one private place/);
+assert.match(originJs, /Continuum brings your information, people, files, messages, services, Automations and AI/);
+assert.match(originJs, /Your context, priorities and instructions stay in one place/);
+assert.match(originJs, /Afterlife, the Dead Man Switch, uses the same setup if you stop responding/);
 assert.match(js, /Information, people, rules and AI in one place/);
 assert.match(js, /Keeps useful history/);
 assert.match(js, /Links people \+ information/);
@@ -38,6 +41,8 @@ assert.doesNotMatch(js, /clarity-story-flow/);
 assert.match(js, /clarity-product-map-section/);
 assert.match(js, /The parts of Continuum/);
 assert.match(js, /How the pieces fit together/);
+assert.match(originJs, /Connections are the bridges to outside services/);
+assert.match(originJs, /A Space is a focused brief built from approved information/);
 for (const concept of [
   'PEOPLE',
   'SAVED INFORMATION',
@@ -53,10 +58,10 @@ assert.match(html, /continuum-doc-origin\.css\?v=20260818-1/);
 assert.match(html, /continuum-doc-origin\.js\?v=20260818-1/);
 assert.match(originJs, /The idea started with the Dead Man Switch/);
 assert.match(originJs, /Afterlife began with a practical problem/);
-assert.match(originJs, /The same foundation matters before an emergency/);
-assert.match(originJs, /Spaces and AI help while you are here/);
-assert.match(originJs, /Automations define work that can continue/);
-assert.match(originJs, /Afterlife uses the same foundation when you cannot respond/);
+assert.match(originJs, /The same setup is useful before an emergency/);
+assert.match(originJs, /Spaces turn current information into focused briefs while you are here/);
+assert.match(originJs, /Automations define work that should happen/);
+assert.match(originJs, /Afterlife uses the same pieces when you cannot respond/);
 assert.match(originJs, /presence\.before\(origin\)/);
 assert.match(originJs, /dataset\.continuumOrigin = 'ready'/);
 assert.match(originCss, /\.continuum-origin-note/);
@@ -67,12 +72,14 @@ assert.match(js, /What works today/);
 assert.match(js, /processMap\.after\(makeStatusSnapshot\(\)\)/);
 assert.doesNotMatch(js, /makeStatusSnapshot\(statusKey\)/);
 assert.match(js, /afterlifeCallout\.before\(glance\)/);
+assert.match(originJs, /Check In \(the live Dead Man Switch trigger\) is LIVE/);
 
 // Automations are explained in words first, with one compact builder sequence.
 assert.match(js, /clarity-automation-primer clarity-automation-explainer/);
 assert.match(js, /clarity-automation-copy/);
 assert.match(js, /Automations define what should happen/);
 assert.match(js, /Automations define the steps\. Runtime runs them\./);
+assert.match(originJs, /Automations define the trigger, rules, approved actions and timing/);
 assert.match(js, /WHEN/);
 assert.match(js, /REVIEW/);
 assert.doesNotMatch(js, /<strong>The plan<\/strong>/);
@@ -90,7 +97,7 @@ for (const label of [
   '05 · Afterlife', '06 · Architecture', '07 · Build', '08 · Roadmap'
 ]) assert.match(js, new RegExp(label.replace('·', '·')));
 
-// Copy stays free of the recurring artificial-writing patterns.
+// Copy stays free of recurring artificial-writing patterns.
 for (const source of [html, js, originJs]) {
   assert.doesNotMatch(source, /\.\.\.|…|—/);
   assert.doesNotMatch(source, /Why not just use AI by itself/i);
@@ -99,8 +106,15 @@ for (const source of [html, js, originJs]) {
   assert.doesNotMatch(source, /\bnot\b[^<.!?]{0,90}\bbut\b/i);
   assert.doesNotMatch(source, /\brather than\b/i);
 }
+for (const phrase of [
+  'The deeper idea is',
+  'That led to a broader idea',
+  'That is the line running through the product'
+]) assert.doesNotMatch(originJs, new RegExp(phrase, 'i'));
 assert.match(js, /What Continuum adds to AI/);
 assert.match(js, /AI authority is set by server-side permissions/);
+assert.match(originJs, /What gets built next/);
+assert.match(originJs, /How a Lab idea becomes a real feature/);
 
 // Existing QA safeguards stay loaded; the final human layer owns the calmer prose presentation.
 for (const selector of [
