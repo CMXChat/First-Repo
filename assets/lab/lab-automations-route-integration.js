@@ -47,11 +47,26 @@
     return opened;
   }
 
+  function refreshIntegration() {
+    requestAnimationFrame(configureReturnNavigation);
+  }
+
   function boot() {
     configureReturnNavigation();
     openRequestedTarget();
+    refreshIntegration();
     document.documentElement.dataset.labAutomationsRouteIntegration = "ready";
   }
+
+  document.addEventListener("click", event => {
+    const brand = event.target.closest?.("a.brand");
+    if (brand) {
+      event.preventDefault();
+      location.assign(RETURN_TO_LAB);
+      return;
+    }
+    refreshIntegration();
+  }, true);
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => requestAnimationFrame(boot), { once: true });
   else requestAnimationFrame(boot);
