@@ -59,7 +59,7 @@ jobs:
           required_html = [
               '/assets/lab/lab-automations-communications-ai.css?v=',
               '/assets/lab/lab-automations-communications-ai-runtime.js?v=',
-              '/assets/lab/lab-automations-communications-ai-fix.js?v=',
+              '/assets/lab/lab-automations-communications-ai-fix.js?v=20260817-3',
               "connect-src 'self'",
           ]
           required_js = [
@@ -73,6 +73,9 @@ jobs:
           required_fix = [
               'data-ai-context', 'data-ai-tool', 'dataset.aiContext', 'dataset.aiTool',
               'openEmailComposerWhenReady', 'requestAnimationFrame',
+              'stopImmediatePropagation', 'hydrateAiCapabilityValues();',
+              'one user tap maps to one deterministic content-editor launch',
+              'with no frame/timer race before Save',
           ]
           required_css = [
               'email-envelope-card', 'email-recipient-grid', 'ai-task-overlay',
