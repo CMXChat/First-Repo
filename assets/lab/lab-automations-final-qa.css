@@ -84,6 +84,65 @@
 }
 .v3-progress-hint strong{color:var(--v3-text)}
 
+/* Icon-only Action controls explain themselves without adding permanent labels. */
+.v3-action-card{overflow:visible!important}
+.v3-action-body,.v3-action-body>header,.v3-action-controls{overflow:visible}
+.v3-action-controls button[data-action-control-tooltip]{position:relative}
+.v3-action-controls button[data-action-control-tooltip]::before{
+  content:"";
+  position:absolute;
+  z-index:239;
+  left:50%;
+  bottom:calc(100% + 5px);
+  width:8px;
+  height:8px;
+  transform:translate(-50%,50%) rotate(45deg);
+  border-right:1px solid var(--v3-line-strong);
+  border-bottom:1px solid var(--v3-line-strong);
+  background:var(--v3-panel-3);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .12s ease;
+}
+.v3-action-controls button[data-action-control-tooltip]::after{
+  content:attr(data-action-control-tooltip);
+  position:absolute;
+  z-index:240;
+  left:50%;
+  bottom:calc(100% + 9px);
+  transform:translateX(-50%);
+  width:max-content;
+  max-width:180px;
+  padding:7px 9px;
+  border:1px solid var(--v3-line-strong);
+  border-radius:8px;
+  background:var(--v3-panel-3);
+  color:var(--v3-text);
+  box-shadow:0 10px 28px rgba(0,0,0,.26);
+  font-size:11px;
+  font-weight:780;
+  line-height:1.2;
+  letter-spacing:0;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .12s ease,transform .12s ease;
+}
+.v3-action-controls button[data-action-control-tooltip]:hover::before,
+.v3-action-controls button[data-action-control-tooltip]:hover::after,
+.v3-action-controls button[data-action-control-tooltip]:focus-visible::before,
+.v3-action-controls button[data-action-control-tooltip]:focus-visible::after{
+  opacity:1;
+}
+.v3-action-controls button[data-action-control-tooltip]:hover::after,
+.v3-action-controls button[data-action-control-tooltip]:focus-visible::after{
+  transform:translateX(-50%) translateY(-2px);
+}
+.v3-action-controls button[data-action-control-tooltip]:focus-visible{
+  outline:2px solid color-mix(in srgb,var(--v3-blue) 72%,transparent);
+  outline-offset:2px;
+}
+
 /* Light mode needs stronger boundaries in the builder, especially in the preview. */
 html[data-theme="light"] .v3-live-panel,
 html[data-theme="light"] .v3-choice,
@@ -113,8 +172,12 @@ html[data-theme="light"] .v3-flow-node.is-pending small{color:#7a8ea0!important}
   .v3-progress-empty>b{width:36px;height:36px}
   .v3-flow-node.is-pending{grid-template-columns:48px minmax(0,1fr)!important}
   .v3-flow-node.is-pending::after{grid-column:2;justify-self:start;margin-top:3px}
+  .v3-action-controls button[data-action-control-tooltip]::before,
+  .v3-action-controls button[data-action-control-tooltip]::after{display:none}
 }
 
 @media (prefers-reduced-motion:reduce){
   .v3-flow-node,.v3-choice,.v3-stage-rail button{transition:none!important}
+  .v3-action-controls button[data-action-control-tooltip]::before,
+  .v3-action-controls button[data-action-control-tooltip]::after{transition:none!important}
 }
