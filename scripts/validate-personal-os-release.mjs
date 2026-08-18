@@ -68,8 +68,10 @@ const spaces = read('spaces/index.html');
 const legacyBrief = read('brief/index.html');
 const briefNext = read('brief-next/index.html');
 const doc = read('doc/index.html');
-const continuumDocCss = read('assets/continuum-doc.css');
-const continuumDocV2Css = read('assets/continuum-doc-v2.css');
+const continuumFinalCss = read('assets/continuum-doc-final.css');
+const continuumPromiseCss = read('assets/continuum-doc-promise.css');
+const continuumQaCss = read('assets/continuum-doc-qa.css');
+const continuumHumanCss = read('assets/continuum-doc-human.css');
 const routesRaw = read('assets/cmx-routes.json');
 const migrationDoc = read('docs/2026-08-06-spaces-route-migration.md');
 
@@ -108,19 +110,25 @@ assert(/http-equiv=["']refresh["'][^>]*\/spaces\//i.test(legacyBrief), '`/brief/
 assert(/spaces-legacy-redirect\.js/i.test(legacyBrief), '`/brief/` must preserve query strings and hashes through the external redirect helper.');
 assert(/window\.location\.replace/i.test(read('assets/spaces-legacy-redirect.js')), 'Legacy redirect helper must replace browser history instead of adding a redirect hop.');
 
-assert(/<title>Continuum \| Product, Architecture and Build Overview<\/title>/i.test(doc), '`/doc/` must identify Continuum as the master product and architecture overview.');
-assert(/id=["']status["']/i.test(doc) && /Production Check In/i.test(doc) && /Product proving ground/i.test(doc) && /Durable private information/i.test(doc) && /Runtime \+ connected capability/i.test(doc), '`/doc/` must preserve a clear current-versus-future build boundary.');
+assert(/<title>Continuum \| Product Overview<\/title>/i.test(doc), '`/doc/` must identify Continuum as the product overview.');
+assert(/>LIVE<|>LAB<|>NEXT<|>LATER</i.test(doc), '`/doc/` must retain visible capability status labels.');
+assert(/Protected Check In/i.test(doc) && /Real private information/i.test(doc) && /Keep workflows running/i.test(doc) && /More connected capability/i.test(doc), '`/doc/` must preserve the current build order.');
 assert(/Afterlife/i.test(doc) && /The Dead Man Switch/i.test(doc), '`/doc/` must explain Afterlife as the Dead Man Switch continuity surface.');
 assert(/Spaces/i.test(doc) && /Automations/i.test(doc) && /Connections/i.test(doc) && /Runtime/i.test(doc), '`/doc/` must explain the major Continuum product areas.');
 assert(/FastAPI/i.test(doc) && /PostgreSQL/i.test(doc) && /Codespaces/i.test(doc) && /Alembic/i.test(doc), '`/doc/` must retain the real engineering environment overview.');
-assert(/MCP/i.test(doc) && /server-enforced authority/i.test(doc) && /typed tools/i.test(doc), '`/doc/` must retain AI, MCP and authority direction.');
+assert(/MCP/i.test(doc) && /AI authority is set by server-side permissions/i.test(doc) && /approved tools/i.test(doc), '`/doc/` must retain AI, MCP and authority direction.');
 assert(/href=["']\/(?:spaces|brief)\/["']/i.test(doc), '`/doc/` must retain a working Spaces demo link.');
 assert(/href=["']\/lab\/automations\/["']/i.test(doc), '`/doc/` must link to the active Automation Lab.');
 assert(!/cmx-gate-black-prompt|data-cmx-gate|type=["']password["']/i.test(doc), '`/doc/` contains password-gate markup or assets.');
-assert(docAssets.has('/assets/continuum-doc.css'), '`/doc/` must load the Continuum foundation visual layer.');
-assert(docAssets.has('/assets/continuum-doc-v2.css'), '`/doc/` must load the visual-first Continuum refinement layer.');
-assert(/@media \(prefers-reduced-motion: reduce\)/i.test(continuumDocCss), 'Continuum document foundation visuals must respect reduced-motion preferences.');
-assert(/@media \(prefers-reduced-motion: reduce\)/i.test(continuumDocV2Css), 'Continuum visual-first layer must respect reduced-motion preferences.');
+assert(docAssets.has('/assets/continuum-doc-final.css'), '`/doc/` must load the final Continuum visual layer.');
+assert(docAssets.has('/assets/continuum-doc-promise.css'), '`/doc/` must load the Continuum promise layer.');
+assert(docAssets.has('/assets/continuum-doc-qa.css'), '`/doc/` must load the Continuum QA layer.');
+assert(docAssets.has('/assets/continuum-doc-human.css'), '`/doc/` must load the human-scale typography layer.');
+assert(/@media\(prefers-reduced-motion:reduce\)/i.test(continuumFinalCss), 'Continuum final visuals must respect reduced-motion preferences.');
+assert(/@media print/i.test(continuumPromiseCss), 'Continuum promise layer must retain print rules.');
+assert(/\.clarity-hero/i.test(continuumQaCss), 'Continuum QA layer must retain the clarity layout.');
+assert(/font-size:clamp\(3rem,5\.4vw,4\.4rem\)/i.test(continuumHumanCss), 'Continuum human layer must retain the restrained hero scale.');
+assert(!/Why not just use AI by itself|An ordinary day, not an emergency|\.\.\.|…|—/i.test(doc), '`/doc/` must retain the direct human-copy rules.');
 
 assert(/Shared calendars/i.test(migrationDoc), 'Migration documentation must define shared calendars explicitly.');
 assert(/Alarm and launch routine/i.test(migrationDoc), 'Migration documentation must define the alarm and launch routine.');
