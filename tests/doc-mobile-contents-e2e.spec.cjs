@@ -26,7 +26,7 @@ async function swipeLeft(page, selector) {
   });
 }
 
-test('mobile Continuum doc keeps navigation in header and visuals readable', async ({ page }, testInfo) => {
+test('mobile Continuum doc keeps navigation in header and final visuals readable', async ({ page }, testInfo) => {
   test.skip(!['chromium-android', 'webkit-iphone'].includes(testInfo.project.name), 'Mobile document navigation runs in touch browser projects.');
   test.setTimeout(45000);
 
@@ -41,7 +41,7 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
 
   await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
   await expect(page.locator('link[href="/assets/continuum-doc-final.css?v=20260818-3"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/assets/continuum-doc-promise.css?v=20260818-1"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/continuum-doc-promise.css?v=20260818-2"]')).toHaveCount(1);
   await expect(page.locator('link[href*="continuum-doc-v2"], link[href*="continuum-doc-mobile-v3"]')).toHaveCount(0);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -60,6 +60,8 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
     const presenceTrack = document.querySelector('.presence-track');
     const firstPresenceStage = document.querySelector('.presence-stage');
     const firstJourney = document.querySelector('.journey-step');
+    const controlRows = document.querySelector('.control-rows');
+    const everydayFlow = document.querySelector('.everyday-flow');
     const afterlife = document.querySelector('.afterlife-section');
     const afterlifeCard = document.querySelector('.afterlife-step');
     return {
@@ -73,6 +75,8 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
       presenceStageWidth: Math.round(firstPresenceStage.getBoundingClientRect().width),
       journeyWidth: Math.round(firstJourney.getBoundingClientRect().width),
       journeyDisplay: getComputedStyle(firstJourney).display,
+      controlColumns: getComputedStyle(controlRows).gridTemplateColumns,
+      everydayColumns: getComputedStyle(everydayFlow).gridTemplateColumns,
       afterlifeBackground: getComputedStyle(afterlife).backgroundImage,
       afterlifeCardBackground: getComputedStyle(afterlifeCard).backgroundColor
     };
@@ -88,21 +92,28 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
   expect(mobileVisualState.presenceStageWidth).toBeGreaterThan(250);
   expect(mobileVisualState.journeyWidth).toBeGreaterThan(230);
   expect(mobileVisualState.journeyDisplay).toBe('block');
+  expect(mobileVisualState.controlColumns.split(' ').length).toBe(1);
+  expect(mobileVisualState.everydayColumns.split(' ').length).toBe(1);
   expect(mobileVisualState.afterlifeBackground).toContain('linear-gradient');
   expect(mobileVisualState.afterlifeCardBackground).not.toBe('rgba(255, 255, 255, 0.035)');
 
-  await expect(page.locator('.hero-lead-full')).toContainText('your context, priorities and instructions have somewhere durable to live');
+  await expect(page.locator('.hero-lead-first')).toBeVisible();
+  await expect(page.locator('.hero-lead-core')).toContainText('somewhere durable to live');
   await expect(page.locator('.continuum-presence')).toBeVisible();
   await expect(page.locator('.presence-stage')).toHaveCount(4);
   await expect(page.locator('.presence-stage').nth(3)).toContainText('IF YOU CANNOT RESPOND');
+  await expect(page.locator('.status-key .status-key-item')).toHaveCount(4);
   await expect(page.locator('.process-map')).toBeVisible();
+  await expect(page.locator('.ai-answer')).toContainText('Why not just use AI by itself?');
   await expect(page.locator('.ai-compare')).toBeVisible();
+  await expect(page.locator('.control-panel .control-row')).toHaveCount(5);
   await expect(page.locator('.people-map')).toBeVisible();
   await expect(page.locator('.library-tree')).toBeVisible();
+  await expect(page.locator('.everyday-workflow')).toContainText('A client payment arrives');
   await expect(page.locator('.possibility-board')).toBeVisible();
   await expect(page.locator('.policy-ring')).toBeVisible();
   await expect(page.locator('.policy-config')).toHaveCount(4);
-  await expect(page.locator('.afterlife-step.is-trigger')).toBeVisible();
+  await expect(page.locator('.afterlife-step.is-trigger')).toContainText('Incident, a saved record');
   await expect(page.locator('.stack-pipeline')).toBeVisible();
   await expect(page.locator('.roadmap-rich .roadmap-card')).toHaveCount(4);
   await expectNoHorizontalOverflow(page);
@@ -137,7 +148,7 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
   await expectNoHorizontalOverflow(page);
 });
 
-test('desktop Continuum doc keeps rail, connected diagrams and rich roadmap', async ({ page }, testInfo) => {
+test('desktop Continuum doc keeps rail, connected diagrams and final status system', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop document isolation runs once in Chromium.');
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
@@ -148,8 +159,12 @@ test('desktop Continuum doc keeps rail, connected diagrams and rich roadmap', as
   await expect(page.locator('.network-lines')).toBeVisible();
   await expect(page.locator('.continuum-presence')).toBeVisible();
   await expect(page.locator('.presence-stage')).toHaveCount(4);
+  await expect(page.locator('.status-key .status-key-item')).toHaveCount(4);
+  await expect(page.locator('.ai-answer')).toBeVisible();
+  await expect(page.locator('.control-panel')).toBeVisible();
   await expect(page.locator('.people-map')).toBeVisible();
   await expect(page.locator('.library-tree')).toBeVisible();
+  await expect(page.locator('.everyday-workflow')).toBeVisible();
   await expect(page.locator('.afterlife-policy')).toBeVisible();
   await expect(page.locator('.roadmap-rich')).toBeVisible();
   await expectNoHorizontalOverflow(page);
