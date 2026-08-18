@@ -114,8 +114,8 @@
     frame.setAttribute('aria-labelledby', 'clarityStatusTitle');
     frame.innerHTML = `
       <div class="clarity-mini-heading">
-        <div><span>WHERE IT STANDS TODAY</span><strong id="clarityStatusTitle">Current product truth</strong></div>
-        <p>The labels stay simple so you can separate working backend capability from Lab design and later Runtime work.</p>
+        <div><span>WHERE IT STANDS TODAY</span><strong id="clarityStatusTitle">Current status</strong></div>
+        <p>LIVE works with protected backend state now. LAB is interactive prototype work. NEXT is the next backend milestone. LATER comes after that foundation.</p>
       </div>`;
     frame.append(statusKey);
     return frame;
@@ -127,23 +127,23 @@
     section.setAttribute('aria-labelledby', 'clarityStoryTitle');
     section.innerHTML = `
       <div class="section-heading clarity-section-heading">
-        <div><p class="section-kicker">One example, end to end</p><h2 id="clarityStoryTitle">Follow one update through Continuum</h2></div>
-        <p class="section-intro">A client says a payment was sent. One piece of information can move through the same people, memory, rules, views and future execution layer.</p>
+        <div><p class="section-kicker">One example</p><h2 id="clarityStoryTitle">Follow one update through Continuum</h2></div>
+        <p class="section-intro">A client says a payment was sent. Continuum can tie that update to the client, keep the useful details, show the change in a Business brief and use it in an Automation.</p>
       </div>
       <div class="clarity-story-flow" aria-label="Example Continuum information flow">
         <article><b>01</b><div><span>INPUT</span><strong>The message arrives</strong><small>An approved email or message source provides the update.</small></div></article>
         <i aria-hidden="true">→</i>
-        <article><b>02</b><div><span>DIRECTORY</span><strong>Continuum knows who sent it</strong><small>The person and company resolve to stable identities.</small></div></article>
+        <article><b>02</b><div><span>DIRECTORY</span><strong>Match it to the client</strong><small>Directory links the message to the right person and company.</small></div></article>
         <i aria-hidden="true">→</i>
-        <article><b>03</b><div><span>LIBRARY</span><strong>The useful fact can be kept</strong><small>Important information can have source, history and allowed use.</small></div></article>
+        <article><b>03</b><div><span>LIBRARY</span><strong>Keep the useful details</strong><small>Saved information can include its source, history and allowed use.</small></div></article>
         <i aria-hidden="true">→</i>
-        <article><b>04</b><div><span>SPACE</span><strong>Your Business view can reflect it</strong><small>The next briefing can show what changed and why it matters.</small></div></article>
+        <article><b>04</b><div><span>SPACE</span><strong>Show the change in Business</strong><small>The next briefing can include the payment update and related context.</small></div></article>
         <i aria-hidden="true">→</i>
-        <article><b>05</b><div><span>AUTOMATION</span><strong>Your rules decide what follows</strong><small>A defined workflow can prepare the next approved step.</small></div></article>
+        <article><b>05</b><div><span>AUTOMATION</span><strong>Apply the rules you set</strong><small>The Automation defines the next approved step.</small></div></article>
         <i aria-hidden="true">→</i>
-        <article><b>06</b><div><span>RUNTIME · LATER</span><strong>The server can keep it moving</strong><small>Future Runtime can wait, retry, receive replies and record the result.</small></div></article>
+        <article><b>06</b><div><span>RUNTIME · LATER</span><strong>Keep the workflow running</strong><small>Future Runtime can wait, retry, receive replies and record the result.</small></div></article>
       </div>
-      <p class="clarity-story-note"><strong>The point:</strong> the same update can stay connected to the person, the saved context, the briefing, the rule that uses it and the result that comes later.</p>`;
+      <p class="clarity-story-note">The update stays tied to the client, saved information, briefing, Automation and eventual result.</p>`;
     return section;
   }
 
@@ -153,8 +153,8 @@
     section.setAttribute('aria-labelledby', 'clarityMapTitle');
     section.innerHTML = `
       <div class="section-heading clarity-section-heading">
-        <div><p class="section-kicker">What those pieces are called</p><h2 id="clarityMapTitle">The product names follow the simple idea</h2></div>
-        <p class="section-intro">People become Directory. Saved knowledge belongs in Library. Focused views are Spaces. Automations define the plan. Connections reach outside services. Runtime later carries long-running work. AI can reason across the parts it is allowed to use.</p>
+        <div><p class="section-kicker">The parts of Continuum</p><h2 id="clarityMapTitle">How the pieces fit together</h2></div>
+        <p class="section-intro">Directory keeps people and organizations. Library keeps saved information. Spaces show focused views. Automations define rules and steps. Connections reach outside services. Runtime later runs longer workflows. AI can use the parts allowed for a task.</p>
       </div>`;
     addConceptLabels(network);
     section.append(network, presence);
@@ -176,7 +176,7 @@
       <div class="clarity-automation-split">
         <article><span>AUTOMATION</span><strong>The plan</strong><p>Defines the trigger, rules, actions, timing and finish behavior.</p></article>
         <i aria-hidden="true">→</i>
-        <article><span>RUNTIME</span><strong>The execution</strong><p>Later keeps a published workflow moving on the server and records what actually happened.</p></article>
+        <article><span>RUNTIME</span><strong>The execution</strong><p>Later runs a published workflow on the server and records what happened.</p></article>
       </div>`;
     const heading = qs('.section-heading', actionSection);
     heading?.after(primer);
@@ -189,7 +189,7 @@
     const details = document.createElement('details');
     details.className = 'clarity-possibilities';
     const summary = document.createElement('summary');
-    summary.innerHTML = '<span><b>Longer-term possibilities</b><small>See what the same foundation could unlock as more services connect.</small></span><strong>Open</strong>';
+    summary.innerHTML = '<span><b>Possible later uses</b><small>Examples that become possible as more services and provider capabilities are added.</small></span><strong>Open</strong>';
     details.append(summary, heading, board);
     actionSection.append(details);
   }
@@ -199,7 +199,7 @@
     if (!section || qs('.clarity-deep-dive', section)) return;
     const heading = qs('.section-heading', section);
     const kicker = qs('.section-kicker', heading);
-    if (kicker) kicker.textContent = sectionId === 'engineering' ? 'Optional architecture' : 'Optional build process';
+    if (kicker) kicker.textContent = sectionId === 'engineering' ? 'Architecture' : 'Build process';
     const details = document.createElement('details');
     details.className = 'clarity-deep-dive';
     const summary = document.createElement('summary');
@@ -209,18 +209,65 @@
     section.append(details);
   }
 
+  function cleanStaticCopy() {
+    const difference = document.getElementById('difference');
+    const differenceKicker = qs('.section-kicker', difference);
+    const differenceTitle = qs('h2', difference);
+    const differenceIntro = qs('.section-intro', difference);
+    const aiAnswerTitle = qs('.ai-answer strong', difference);
+    const aiAnswerCopy = qs('.ai-answer p', difference);
+    const aiModelTitle = qs('.model-swap-note > div:first-child span', difference);
+    const aiModelCopy = qs('.model-swap-note > div:first-child strong', difference);
+    const ruleTitle = qs('.rule-callout strong', difference);
+    const ruleCopy = qs('.rule-callout span', difference);
+
+    if (differenceKicker) differenceKicker.textContent = 'AI inside Continuum';
+    if (differenceTitle) differenceTitle.textContent = 'AI can use saved context, rules and approved tools';
+    if (differenceIntro) differenceIntro.textContent = 'An AI conversation uses the information available to that conversation. Continuum can provide saved people, files, history, timers and approved tools for a specific task.';
+    if (aiAnswerTitle) aiAnswerTitle.textContent = 'What Continuum adds to AI';
+    if (aiAnswerCopy) aiAnswerCopy.textContent = 'AI can reason with the information it receives. Continuum keeps the people, records, rules, timing, tools and history around that work.';
+    if (aiModelTitle) aiModelTitle.textContent = 'MODEL CHOICE CAN CHANGE';
+    if (aiModelCopy) aiModelCopy.textContent = 'Continuum keeps the approved data, rules and history around the model.';
+    if (ruleTitle) ruleTitle.textContent = 'AI authority is set by server-side permissions.';
+    if (ruleCopy) ruleCopy.textContent = 'Permission changes require an authorized server-side update.';
+
+    const everydayTitle = qs('.everyday-workflow-copy strong');
+    const everydayCopy = qs('.everyday-workflow-copy small');
+    if (everydayTitle) everydayTitle.textContent = 'Everyday workflow';
+    if (everydayCopy) everydayCopy.textContent = 'A payment update can feed the next approved step.';
+
+    const possibilityHeading = qs('.possibility-heading span');
+    const possibilityCopy = qs('.possibility-heading strong');
+    const aiPossibilityTitle = qs('.possibility-ai strong');
+    const aiPossibilityCopy = qs('.possibility-ai small');
+    if (possibilityHeading) possibilityHeading.textContent = 'POSSIBLE LATER USES';
+    if (possibilityCopy) possibilityCopy.textContent = 'More connected services add more things Continuum can read, track or do under your rules.';
+    if (aiPossibilityTitle) aiPossibilityTitle.textContent = 'New AI models';
+    if (aiPossibilityCopy) aiPossibilityCopy.textContent = 'New models can use the same approved information and tools already connected to Continuum.';
+
+    const techDetailCopy = qs('.tech-detail p');
+    if (techDetailCopy) techDetailCopy.textContent = 'Database access goes through the backend. The backend owns business rules, permissions and PostgreSQL access.';
+
+    const statusIntro = qs('#status .section-intro');
+    const laterRoadmapCopy = qs('.roadmap-later p');
+    const closingNote = qs('.closing-note');
+    if (statusIntro) statusIntro.textContent = 'New apps, communication channels, data sources and AI models can use the same information, rules and permission model as each stage is built.';
+    if (laterRoadmapCopy) laterRoadmapCopy.textContent = 'Continuum can work with more outside services through approved tools and supported AI models.';
+    if (closingNote) closingNote.innerHTML = 'Continuum keeps people, saved information, rules, tools, timing, conversations and results connected. New AI models can use the same approved context and tools.';
+  }
+
   function installClarityPass() {
     if (root.dataset.continuumClarity === 'ready') return;
 
     const identitySub = qs('.document-identity-copy span');
-    if (identitySub) identitySub.textContent = 'Product overview';
+    if (identitySub) identitySub.textContent = 'Overview';
 
     const toolbarLinks = qs('.toolbar-links');
     if (toolbarLinks) toolbarLinks.innerHTML = '<a href="#overview">Overview</a><a href="#difference">AI</a><a href="#action">Automations</a><a href="#afterlife">Afterlife</a>';
 
     syncTocCopy();
     const railStatus = qs('.rail-status');
-    if (railStatus) railStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span><div><strong>Where it stands</strong><p>Check In is LIVE. Spaces and Automations are LAB. Real private information and Automation definitions are NEXT. Runtime and provider execution are LATER.</p></div>';
+    if (railStatus) railStatus.innerHTML = '<span class="status-dot" aria-hidden="true"></span><div><strong>Where it stands</strong><p>Check In is LIVE. Spaces and Automations are LAB. Private information and Automation definitions are NEXT. Runtime and provider execution are LATER.</p></div>';
 
     const hero = qs('.continuum-hero');
     const heroKicker = qs('.hero-kicker', hero);
@@ -228,16 +275,16 @@
     const heroTruth = qs('.hero-truth-row', hero);
     const heroDisclosure = qs('.hero-disclosure', hero);
     if (hero) hero.classList.add('clarity-hero');
-    if (heroKicker) heroKicker.textContent = 'Your information, people, rules and AI, connected over time';
-    if (heroLead) heroLead.innerHTML = '<span class="hero-lead-first">Continuum keeps useful context in one private place so your information, people, rules and AI can work from the same picture over time.</span> It can brief you while you are here, follow approved Automations when work needs to continue, and support a continuity plan if you cannot respond.';
-    if (heroTruth) heroTruth.innerHTML = '<span><i></i>Remembers context</span><span><i></i>Connects the pieces</span><span><i></i>Follows your rules</span>';
-    if (heroDisclosure) heroDisclosure.textContent = 'Start with the five-step loop below. Product names and architecture come after the idea.';
+    if (heroKicker) heroKicker.textContent = 'Information, people, rules and AI in one place';
+    if (heroLead) heroLead.innerHTML = '<span class="hero-lead-first">Continuum keeps useful information, people and rules together so the same context is available when you need it.</span> It can build briefings, use approved Automations and support your continuity plan if you cannot respond.';
+    if (heroTruth) heroTruth.innerHTML = '<span><i></i>Keeps useful history</span><span><i></i>Links people + information</span><span><i></i>Runs approved rules</span>';
+    heroDisclosure?.remove();
 
     const overview = document.getElementById('overview');
     const overviewKicker = qs('.section-kicker', overview);
     const overviewIntro = qs('.section-intro', overview);
     if (overviewKicker) overviewKicker.textContent = 'Start here';
-    if (overviewIntro) overviewIntro.textContent = 'The simple loop is the foundation: see what changed, remember the useful part, check your rules, do approved work and keep the result for next time.';
+    if (overviewIntro) overviewIntro.textContent = 'The basic loop is simple: see what changed, save the useful part, check your rules, do approved work and keep the result for next time.';
 
     const network = qs('.hero-network', hero);
     const presence = qs('.continuum-presence', hero);
@@ -259,38 +306,39 @@
     const presenceHeading = qs('.presence-heading');
     const presenceEyebrow = qs('.presence-heading span');
     const presenceCopy = qs('.presence-heading p');
-    if (presenceEyebrow) presenceEyebrow.textContent = 'USEFUL ACROSS TIME';
-    if (presenceHeading && qs('strong', presenceHeading)) qs('strong', presenceHeading).textContent = 'Your intent has somewhere durable to live.';
-    if (presenceCopy) presenceCopy.textContent = 'Continuum can help while you are actively using it, carry defined work forward through Automations, and support continuity when you are unavailable.';
+    if (presenceEyebrow) presenceEyebrow.textContent = 'ACROSS TIME';
+    if (presenceHeading && qs('strong', presenceHeading)) qs('strong', presenceHeading).textContent = 'Keep the information and rules you choose.';
+    if (presenceCopy) presenceCopy.textContent = 'Continuum can help while you are using it, keep Automation definitions ready for later execution and support the Check In trigger when you cannot respond.';
 
     const spaces = document.getElementById('spaces');
     const spacesKicker = qs('.section-kicker', spaces);
     const spacesTitle = qs('h2', spaces);
-    if (spacesKicker) spacesKicker.textContent = 'How Continuum organizes what it knows';
-    if (spacesTitle) spacesTitle.textContent = 'People, saved information and focused views stay connected';
+    if (spacesKicker) spacesKicker.textContent = 'People, information and briefs';
+    if (spacesTitle) spacesTitle.textContent = 'Keep people, saved information and focused views connected';
 
     const action = document.getElementById('action');
     const actionKicker = qs('.section-kicker', action);
     const actionTitle = qs('h2', action);
     const actionIntro = qs('.section-intro', action);
-    if (actionKicker) actionKicker.textContent = 'When information needs to become work';
-    if (actionTitle) actionTitle.textContent = 'Automations define the plan. Runtime carries it through.';
-    if (actionIntro) actionIntro.textContent = 'The builder turns a workflow into a readable sequence. Connections provide approved ways to reach outside services, and future Runtime keeps published work moving after you leave the page.';
+    if (actionKicker) actionKicker.textContent = 'Automations and Runtime';
+    if (actionTitle) actionTitle.textContent = 'Automations define the steps. Runtime runs them.';
+    if (actionIntro) actionIntro.textContent = 'The builder defines the trigger, rules, actions and timing. Connections reach approved outside services. Future Runtime runs published workflows on the server and records the result.';
     makeAutomationPrimer(action);
     collapsePossibilities(action);
 
     const afterlifeIntro = qs('.section-intro', afterlife);
-    if (afterlifeIntro) afterlifeIntro.textContent = 'Afterlife is Continuum applied to continuity. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can carry the approved steps that follow.';
+    if (afterlifeIntro) afterlifeIntro.textContent = 'Afterlife uses Continuum for continuity. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can run the approved steps that follow.';
 
-    makeOptionalSection('engineering', 'Open the architecture walkthrough', 'See what happens between the browser, FastAPI and PostgreSQL, plus the tools used to build it.');
-    makeOptionalSection('build', 'Open the build workflow', 'See how a Lab idea becomes a protected server-backed feature and why continuity.md is the first real private-data slice.');
+    makeOptionalSection('engineering', 'Open the architecture walkthrough', 'See the browser, FastAPI, PostgreSQL and the supporting development tools.');
+    makeOptionalSection('build', 'Open the build workflow', 'See how a Lab idea becomes a protected server-backed feature and how continuity.md proves the first private-data slice.');
 
     const status = document.getElementById('status');
     const statusKicker = qs('.section-kicker', status);
     const statusTitle = qs('h2', status);
     if (statusKicker) statusKicker.textContent = 'Roadmap';
-    if (statusTitle) statusTitle.textContent = 'Build the durable foundation, then add capability';
+    if (statusTitle) statusTitle.textContent = 'Build the foundation, then add capability';
 
+    cleanStaticCopy();
     syncTocCopy();
     root.dataset.continuumClarity = 'ready';
   }
