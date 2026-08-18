@@ -1,0 +1,122 @@
+name: Check In Communications and AI Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/index.html'
+      - 'assets/lab/lab-automations-communications-ai-runtime.js'
+      - 'assets/lab/lab-automations-communications-ai-fix.js'
+      - 'assets/lab/lab-automations-communications-ai.css'
+      - 'docs/checkin-communications-ai-CURRENT.md'
+      - 'docs/checkin-ai-product-design-CURRENT.md'
+      - 'docs/checkin-content-editor-CURRENT.md'
+      - 'docs/checkin-context-handoff-CURRENT.md'
+      - '.github/workflows/checkin-communications-ai-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/index.html'
+      - 'assets/lab/lab-automations-communications-ai-runtime.js'
+      - 'assets/lab/lab-automations-communications-ai-fix.js'
+      - 'assets/lab/lab-automations-communications-ai.css'
+      - 'docs/checkin-communications-ai-CURRENT.md'
+      - 'docs/checkin-ai-product-design-CURRENT.md'
+      - 'docs/checkin-content-editor-CURRENT.md'
+      - 'docs/checkin-context-handoff-CURRENT.md'
+      - '.github/workflows/checkin-communications-ai-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax check communications JavaScript
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-communications-ai-runtime.js
+          node --check assets/lab/lab-automations-communications-ai-fix.js
+
+      - name: Validate communications and AI product contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          js = Path('assets/lab/lab-automations-communications-ai-runtime.js').read_text(encoding='utf-8')
+          fix = Path('assets/lab/lab-automations-communications-ai-fix.js').read_text(encoding='utf-8')
+          css = Path('assets/lab/lab-automations-communications-ai.css').read_text(encoding='utf-8')
+          handoff = Path('docs/checkin-communications-ai-CURRENT.md').read_text(encoding='utf-8')
+          ai_design = Path('docs/checkin-ai-product-design-CURRENT.md').read_text(encoding='utf-8')
+          content_design = Path('docs/checkin-content-editor-CURRENT.md').read_text(encoding='utf-8')
+
+          required_html = [
+              '/assets/lab/lab-automations-communications-ai.css?v=',
+              '/assets/lab/lab-automations-communications-ai-runtime.js?v=',
+              '/assets/lab/lab-automations-communications-ai-fix.js?v=',
+              "connect-src 'self'",
+          ]
+          required_js = [
+              'cmx-lab-email-actions-v1', 'cmx-lab-ai-task-actions-v1',
+              'DELIVERY ENVELOPE', 'Verified sender connection',
+              'TO', 'CC', 'BCC', 'Reply-To', 'data-email-compose',
+              'AI TASK', 'Objective', 'CONTEXT', 'TOOLS', 'AUTONOMY', 'LIMITS',
+              'Pre-authorized contingency', 'AuthorityGrant',
+              'NO AI EXECUTION IN LAB',
+          ]
+          required_fix = [
+              'data-ai-context', 'data-ai-tool', 'dataset.aiContext', 'dataset.aiTool',
+              'openEmailComposerWhenReady', 'requestAnimationFrame',
+          ]
+          required_css = [
+              'email-envelope-card', 'email-recipient-grid', 'ai-task-overlay',
+              'ai-autonomy-grid', 'ai-limit-grid', '@media (max-width: 760px)', 'min-height:48px',
+          ]
+          required_handoff = [
+              '/lab/automations/', 'From', 'To / CC / BCC', 'Reply-To',
+              'AI Task is a typed Action definition', 'Pre-authorized contingency',
+              'standing delegated authority', 'Deterministic continuity before AI',
+          ]
+          required_ai_design = [
+              'Pre-authorized contingency', 'standing authority', 'Deterministic continuity before AI',
+              'AI cannot publish/activate/widen/renew its own grant',
+          ]
+          required_content = [
+              'Email composer specialization', 'Connection', 'SenderIdentity',
+              'To / CC / BCC', 'plain-text multipart alternative', 'exact private FileVersions',
+          ]
+
+          for term in required_html:
+              if term not in html: sys.exit(f'missing route wiring: {term}')
+          for term in required_js:
+              if term not in js: sys.exit(f'missing communications/AI behavior: {term}')
+          for term in required_fix:
+              if term not in fix: sys.exit(f'missing interaction hardening: {term}')
+          for term in required_css:
+              if term not in css: sys.exit(f'missing communications/AI CSS: {term}')
+          for term in required_handoff:
+              if term not in handoff: sys.exit(f'missing frontend handoff contract: {term}')
+          for term in required_ai_design:
+              if term not in ai_design: sys.exit(f'missing AI product contract: {term}')
+          for term in required_content:
+              if term not in content_design: sys.exit(f'missing content/email contract: {term}')
+
+          combined = js + fix
+          for forbidden in ['api.cmxchat.com', 'fetch(', 'XMLHttpRequest', 'MutationObserver', 'eval(', 'new Function(']:
+              if forbidden in combined: sys.exit(f'forbidden Lab execution/network behavior: {forbidden}')
+
+          if 'data-audience-open' not in js:
+              sys.exit('Email roles must reuse the existing Audience manager')
+          if 'content-editor-overlay' not in js:
+              sys.exit('Email must reuse the existing private Content editor')
+          if 'senderConnectionId' not in js:
+              sys.exit('Email sender must retain Connection/SenderIdentity direction')
+
+          print('Communications + AI Task definition contract passed.')
+          PY
