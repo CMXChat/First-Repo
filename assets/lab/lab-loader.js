@@ -64,6 +64,7 @@
     ["lab-plan.js", "20260816-plan1"],
     ["lab-experience.js", "20260816-product2"],
     ["lab-automation-builder.js", "20260817-auto1"],
+    ["lab-automations-main-bridge.js", "20260818-integration1"],
     ["lab-acceptance.js", "20260816-acceptance1"]
   ]);
 
@@ -147,6 +148,7 @@
     if (!html.includes("/assets/lab/lab-plan.js")) throw new Error("Long-horizon Plan layer was not inserted.");
     if (!html.includes("/assets/lab/lab-experience.js")) throw new Error("User experience layer was not inserted.");
     if (!html.includes("/assets/lab/lab-automation-builder.js")) throw new Error("Automation Builder prototype was not inserted.");
+    if (!html.includes("/assets/lab/lab-automations-main-bridge.js")) throw new Error("Focused Automations bridge was not inserted.");
     if (!html.includes("/assets/lab/lab-acceptance.js")) throw new Error("Acceptance hardening layer was not inserted.");
 
     return html;
