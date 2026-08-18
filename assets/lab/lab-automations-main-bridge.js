@@ -19,14 +19,15 @@
   }
 
   function actionCount(item) {
-    return Array.isArray(item?.actions) && item.actions.length ? item.actions.length : 1;
+    if (!Array.isArray(item?.actions) || !item.actions.length) return 1;
+    return item.actions.filter(action => action?.enabled !== false).length;
   }
 
   function timingSummary(item) {
-    if (item?.timing?.mode === "exact") return "Scheduled start";
-    if (item?.timing?.mode === "delay") return "Delayed start";
-    if (item?.wait && item.wait !== "none") return "Delayed start";
-    return "Immediate start";
+    if (item?.timing?.mode === "exact") return "Exact timing";
+    if (item?.timing?.mode === "delay") return "Includes delay";
+    if (item?.wait && item.wait !== "none") return "Includes delay";
+    return "Immediate actions";
   }
 
   function draftCard(item) {
@@ -39,7 +40,7 @@
       <p>${esc(item.description || "Open this draft in the focused Automation workspace.")}</p>
       <div class="lab-auto-intro" style="margin:0">
         <span class="lab-auto-intro-mark" aria-hidden="true">⌁</span>
-        <div><strong>${count} action${count === 1 ? "" : "s"} · ${esc(timingSummary(item))}</strong><p>The full builder owns actions, timing, audiences, content, files, email and AI configuration.</p></div>
+        <div><strong>${count} enabled action${count === 1 ? "" : "s"} · ${esc(timingSummary(item))}</strong><p>The focused builder owns trigger rules, action order, timing, reusable Action references and safe simulation.</p></div>
       </div>
       <span class="lab-auto-card-foot"><b>SHARED LAB DRAFT</b><small>Open in Automations →</small></span>
     </button>`;
@@ -71,7 +72,7 @@
 
       <div class="lab-auto-intro">
         <span class="lab-auto-intro-mark" aria-hidden="true">↔</span>
-        <div><strong>One Automation editor</strong><p><b>/lab</b> is the overall workspace. <b>/lab/automations</b> is its dedicated Automation editor. Both use the same Lab records and draft store.</p></div>
+        <div><strong>One Automation editor</strong><p><b>/lab</b> is the overall workspace. <b>/lab/automations</b> is its dedicated Automation editor. Both use the same Lab records, draft store and reusable Action library.</p></div>
       </div>
 
       <div class="lab-auto-list-head"><strong>Automation drafts</strong><small>Shared with /lab/automations</small></div>
@@ -80,7 +81,7 @@
       </div>
 
       <footer class="lab-auto-library-link">
-        <div><small>REUSABLE ACTION DEFINITIONS</small><strong>Action library</strong><p>The detailed Action library remains in the main Lab below. Automation drafts already share Lab people and records; reusable Action-definition linking is still a separate future integration.</p></div>
+        <div><small>REUSABLE ACTION DEFINITIONS</small><strong>Action library</strong><p>Saved Lab Actions can now be selected inside Automations as explicit reusable references. Their original Action type, risk and status stay intact instead of being silently remapped.</p></div>
         <button type="button" data-main-action-library>Open action library ↓</button>
       </footer>`;
 
