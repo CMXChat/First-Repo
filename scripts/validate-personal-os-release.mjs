@@ -68,10 +68,12 @@ const spaces = read('spaces/index.html');
 const legacyBrief = read('brief/index.html');
 const briefNext = read('brief-next/index.html');
 const doc = read('doc/index.html');
+const continuumDocCss = read('assets/continuum-doc.css');
 const routesRaw = read('assets/cmx-routes.json');
 const migrationDoc = read('docs/2026-08-06-spaces-route-migration.md');
 
 const spacesAssets = extractAssets(spaces);
+const docAssets = extractAssets(doc);
 
 for (const [assetUrl, metadata] of spacesAssets) {
   if (!assetUrl.startsWith('/assets/brief/')) continue;
@@ -105,15 +107,17 @@ assert(/http-equiv=["']refresh["'][^>]*\/spaces\//i.test(legacyBrief), '`/brief/
 assert(/spaces-legacy-redirect\.js/i.test(legacyBrief), '`/brief/` must preserve query strings and hashes through the external redirect helper.');
 assert(/window\.location\.replace/i.test(read('assets/spaces-legacy-redirect.js')), 'Legacy redirect helper must replace browser history instead of adding a redirect hop.');
 
-assert(
-  /id=["']status["']/i.test(doc) &&
-  /Current reality/i.test(doc) &&
-  /separates demonstrated work from planned platform work/i.test(doc),
-  '`/doc/` must preserve the current-versus-planned product boundary.'
-);
-assert(/href=["']\/(?:spaces|brief)\/["']/i.test(doc), '`/doc/` must retain a working demo link during the compatibility migration.');
+assert(/<title>Continuum \| Product, Architecture and Build Overview<\/title>/i.test(doc), '`/doc/` must identify Continuum as the master product and architecture overview.');
+assert(/id=["']status["']/i.test(doc) && /Working now/i.test(doc) && /Next/i.test(doc) && /Later/i.test(doc), '`/doc/` must preserve a clear current-versus-future build boundary.');
+assert(/Afterlife/i.test(doc) && /The Dead Man Switch/i.test(doc), '`/doc/` must explain Afterlife as the Dead Man Switch continuity surface.');
+assert(/Spaces/i.test(doc) && /Automations/i.test(doc) && /Connections/i.test(doc) && /Runtime/i.test(doc), '`/doc/` must explain the major Continuum product areas.');
+assert(/FastAPI/i.test(doc) && /PostgreSQL/i.test(doc) && /Codespaces/i.test(doc) && /Alembic/i.test(doc), '`/doc/` must retain the real engineering environment overview.');
+assert(/MCP/i.test(doc) && /AI Gateway/i.test(doc) && /AuthorityGrant/i.test(doc), '`/doc/` must retain AI, MCP and authority direction.');
+assert(/href=["']\/(?:spaces|brief)\/["']/i.test(doc), '`/doc/` must retain a working Spaces demo link.');
+assert(/href=["']\/lab\/automations\/["']/i.test(doc), '`/doc/` must link to the active Automation Lab.');
 assert(!/cmx-gate-black-prompt|data-cmx-gate|type=["']password["']/i.test(doc), '`/doc/` contains password-gate markup or assets.');
-assert(/alarm/i.test(doc) && /voice/i.test(doc) && /calendar/i.test(doc), '`/doc/` must retain calendar, alarm, and voice concepts.');
+assert(docAssets.has('/assets/continuum-doc.css'), '`/doc/` must load the Continuum visual layer.');
+assert(/@media \(prefers-reduced-motion: reduce\)/i.test(continuumDocCss), 'Continuum document visuals must respect reduced-motion preferences.');
 
 assert(/Shared calendars/i.test(migrationDoc), 'Migration documentation must define shared calendars explicitly.');
 assert(/Alarm and launch routine/i.test(migrationDoc), 'Migration documentation must define the alarm and launch routine.');
@@ -144,6 +148,10 @@ if (routes?.routes) {
 
   const spacesRoute = routes.routes.find(item => item.path === '/spaces/');
   assert(/shared-calendar|shared calendar/i.test(spacesRoute?.description || ''), 'The `/spaces/` route description must mention shared-calendar coordination.');
+
+  const docRoute = routes.routes.find(item => item.path === '/doc/');
+  assert(/Continuum/i.test(docRoute?.name || ''), 'The `/doc/` route name must identify Continuum.');
+  assert(/Afterlife/i.test(docRoute?.description || ''), 'The `/doc/` route description must include the Afterlife continuity surface.');
 }
 
 const baseSha = process.env.BASE_SHA || process.argv.find(argument => argument.startsWith('--base='))?.slice(7) || '';
@@ -173,14 +181,14 @@ if (baseSha && !/^0+$/.test(baseSha)) {
 note('`/brief-next/` is intentionally a pre-migration rollback snapshot and is no longer required to match the active route byte-for-byte.');
 
 if (notes.length) {
-  console.log('Spaces release notes:');
+  console.log('Spaces + Continuum release notes:');
   for (const message of notes) console.log(`- ${message}`);
 }
 
 if (failures.length) {
-  console.error('\nSpaces release validation failed:');
+  console.error('\nSpaces + Continuum release validation failed:');
   for (const message of failures) console.error(`- ${message}`);
   process.exit(1);
 }
 
-console.log(`Spaces release validation passed with ${spacesAssets.size} versioned local active assets.`);
+console.log(`Spaces + Continuum release validation passed with ${spacesAssets.size} versioned local active Spaces assets.`);
