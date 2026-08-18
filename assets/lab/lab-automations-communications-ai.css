@@ -1,0 +1,186 @@
+/* Email + AI Task definition layer for the isolated Automations Lab. */
+
+.action-family-guide,
+.email-action-panel,
+.ai-task-panel,
+.email-envelope-card,
+.ai-definition-card,
+.ai-authority-summary {
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, Canvas 92%, transparent);
+}
+
+.action-family-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  padding: 18px;
+  margin: 0 0 18px;
+}
+.action-family-guide > div:first-child { display:grid; gap:6px; }
+.action-family-guide small,
+.email-action-panel small,
+.ai-task-panel small,
+.email-envelope-card small,
+.ai-definition-card > small,
+.ai-authority-summary small {
+  font-size: 11px;
+  letter-spacing: .12em;
+  font-weight: 800;
+  opacity: .62;
+}
+.action-family-guide strong { font-size: 16px; }
+.action-family-guide span { font-size: 13px; line-height: 1.55; opacity: .72; max-width: 720px; }
+.action-family-chips { display:flex; flex-wrap:wrap; gap:8px; align-content:start; justify-content:flex-end; max-width:340px; }
+.action-family-chips > * { margin:0; padding:7px 9px; border-radius:999px; border:1px solid color-mix(in srgb,currentColor 12%,transparent); font-size:10px; letter-spacing:.06em; white-space:nowrap; }
+.action-family-chips b { background:color-mix(in srgb,#2f7df4 13%,Canvas); }
+.action-family-chips span { font-size:10px; max-width:none; opacity:.58; }
+
+.email-action-panel,
+.ai-task-panel { padding:16px; margin-top:14px; display:grid; gap:14px; }
+.email-action-panel header,
+.ai-task-panel header { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.email-action-panel header > span,
+.ai-task-panel header > span { display:grid; gap:3px; }
+.email-action-panel header strong,
+.ai-task-panel header strong { font-size:16px; }
+.email-action-panel header button,
+.ai-task-panel header button,
+.email-recipient-card,
+.ai-task-topbar button { min-height:42px; border:1px solid color-mix(in srgb,currentColor 14%,transparent); border-radius:12px; background:color-mix(in srgb,Canvas 88%,currentColor 3%); color:inherit; font:inherit; font-weight:750; padding:0 14px; cursor:pointer; }
+.email-action-panel header button,
+.ai-task-panel header button { background:color-mix(in srgb,#2f7df4 18%,Canvas); }
+.email-action-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.email-action-grid > div { min-width:0; padding:12px; border-radius:13px; background:color-mix(in srgb,currentColor 4%,transparent); display:grid; gap:3px; }
+.email-action-grid strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
+.email-action-grid span { font-size:11px; opacity:.6; }
+.email-action-grid .email-subject-summary { grid-column:1/-1; }
+.email-action-panel footer,
+.ai-task-panel footer { display:flex; justify-content:space-between; gap:12px; align-items:center; font-size:11px; line-height:1.45; opacity:.7; }
+.email-action-panel footer b { font-size:10px; letter-spacing:.08em; }
+.ai-task-panel > p { margin:0; font-size:14px; line-height:1.55; }
+.ai-task-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.ai-task-summary > span { padding:11px; border-radius:12px; background:color-mix(in srgb,currentColor 4%,transparent); display:grid; gap:3px; }
+.ai-task-summary strong { font-size:12px; line-height:1.35; }
+
+.email-composer-overlay .content-editor-main { max-width:1180px; }
+.email-envelope-card { padding:18px; display:grid; gap:16px; }
+.email-envelope-head { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; }
+.email-envelope-head > span { display:grid; gap:4px; }
+.email-envelope-head strong { font-size:17px; }
+.email-envelope-head em { font-style:normal; font-size:10px; letter-spacing:.08em; font-weight:800; padding:7px 9px; border-radius:999px; background:color-mix(in srgb,#d99a19 13%,Canvas); }
+.email-sender-row { display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:12px; }
+.email-sender-identity,
+.email-sender-row label,
+.email-subject-field { padding:13px; border-radius:13px; border:1px solid color-mix(in srgb,currentColor 10%,transparent); background:color-mix(in srgb,currentColor 3%,transparent); }
+.email-sender-identity { display:grid; gap:4px; }
+.email-sender-identity strong { font-size:13px; }
+.email-sender-identity span { font-size:11px; line-height:1.45; opacity:.62; }
+.email-sender-row label,
+.email-subject-field { display:grid; gap:7px; }
+.email-sender-row label > span,
+.email-subject-field > span { font-size:11px; font-weight:750; opacity:.72; }
+.email-sender-row input,
+.email-subject-field input { min-height:44px; width:100%; box-sizing:border-box; border:1px solid color-mix(in srgb,currentColor 13%,transparent); border-radius:10px; background:Canvas; color:inherit; padding:0 12px; font:inherit; }
+.email-recipient-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.email-recipient-card { min-height:86px; height:auto; display:grid; text-align:left; align-content:center; gap:3px; padding:12px 13px; }
+.email-recipient-card strong { font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.email-recipient-card span { font-size:11px; opacity:.62; }
+.email-subject-slot { display:grid; }
+.email-subject-slot:empty { display:none; }
+.email-envelope-note { display:flex; gap:12px; justify-content:space-between; align-items:flex-start; padding:12px 13px; border-radius:12px; background:color-mix(in srgb,#2f7df4 9%,Canvas); }
+.email-envelope-note strong { font-size:12px; white-space:nowrap; }
+.email-envelope-note span { font-size:11px; line-height:1.5; opacity:.7; }
+.email-preview-envelope { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid color-mix(in srgb,currentColor 10%,transparent); }
+.email-preview-envelope > div { min-width:0; display:grid; gap:2px; }
+.email-preview-envelope strong { font-size:12px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+
+.ai-task-overlay { position:fixed; inset:0; z-index:10050; background:Canvas; color:CanvasText; overflow:auto; }
+.ai-task-app { min-height:100%; }
+.ai-task-topbar { position:sticky; top:0; z-index:4; display:flex; justify-content:space-between; gap:16px; align-items:center; padding:14px max(16px,env(safe-area-inset-right)) 14px max(16px,env(safe-area-inset-left)); border-bottom:1px solid color-mix(in srgb,currentColor 10%,transparent); background:color-mix(in srgb,Canvas 94%,transparent); backdrop-filter:blur(18px); }
+.ai-task-topbar > div { display:flex; align-items:center; gap:12px; }
+.ai-task-topbar > div:first-child > span { display:grid; gap:2px; }
+.ai-task-topbar strong { font-size:17px; }
+.ai-task-topbar em { font-size:11px; font-style:normal; opacity:.62; }
+.ai-task-topbar button:first-child { width:44px; padding:0; font-size:20px; }
+.ai-task-topbar .primary { background:color-mix(in srgb,#2f7df4 22%,Canvas); }
+.ai-task-main { width:min(980px,calc(100% - 32px)); margin:0 auto; padding:28px 0 70px; display:grid; gap:18px; }
+.ai-definition-card { padding:20px; display:grid; gap:14px; }
+.ai-definition-card h2 { margin:0; font-size:20px; }
+.ai-definition-card > p { margin:0; font-size:12px; line-height:1.55; opacity:.68; }
+.ai-definition-card > label { display:grid; gap:7px; }
+.ai-definition-card > label > span,
+.ai-limit-grid label > span { font-size:11px; font-weight:800; opacity:.72; }
+.ai-definition-card textarea { width:100%; box-sizing:border-box; resize:vertical; min-height:96px; border:1px solid color-mix(in srgb,currentColor 13%,transparent); border-radius:12px; background:Canvas; color:inherit; padding:12px 13px; font:inherit; line-height:1.55; }
+.ai-definition-card textarea[data-ai-instructions] { min-height:150px; }
+.ai-capability-list { display:grid; gap:8px; }
+.ai-capability-row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:11px; align-items:center; padding:12px; border-radius:12px; border:1px solid color-mix(in srgb,currentColor 10%,transparent); background:color-mix(in srgb,currentColor 2%,transparent); cursor:pointer; }
+.ai-capability-row input { width:20px; height:20px; accent-color:#2f7df4; }
+.ai-capability-row > span { display:grid; gap:2px; }
+.ai-capability-row strong { font-size:13px; }
+.ai-capability-row small { font-size:11px; line-height:1.4; letter-spacing:0; font-weight:500; opacity:.6; }
+.ai-capability-row em { font-style:normal; font-size:9px; font-weight:850; letter-spacing:.08em; padding:5px 7px; border-radius:999px; background:color-mix(in srgb,currentColor 5%,transparent); }
+.ai-autonomy-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.ai-autonomy-card { position:relative; min-height:126px; padding:14px; border:1px solid color-mix(in srgb,currentColor 11%,transparent); border-radius:14px; display:grid; align-content:start; gap:7px; cursor:pointer; }
+.ai-autonomy-card input { position:absolute; top:12px; right:12px; width:18px; height:18px; accent-color:#2f7df4; }
+.ai-autonomy-card strong { padding-right:24px; font-size:13px; }
+.ai-autonomy-card span { font-size:11px; line-height:1.5; opacity:.65; }
+.ai-autonomy-card.is-selected { border-color:color-mix(in srgb,#2f7df4 55%,transparent); background:color-mix(in srgb,#2f7df4 8%,Canvas); }
+.ai-contingency-note { display:none; padding:13px; border-radius:12px; background:color-mix(in srgb,#d99a19 10%,Canvas); gap:6px; }
+.ai-contingency-note.is-active { display:grid; }
+.ai-contingency-note strong { font-size:12px; }
+.ai-contingency-note span { font-size:11px; line-height:1.55; opacity:.72; }
+.ai-limit-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.ai-limit-grid label { display:grid; gap:7px; }
+.ai-limit-grid input { width:100%; box-sizing:border-box; min-height:44px; border:1px solid color-mix(in srgb,currentColor 13%,transparent); border-radius:10px; background:Canvas; color:inherit; padding:0 11px; font:inherit; }
+.ai-authority-summary { padding:18px; display:flex; justify-content:space-between; align-items:center; gap:18px; background:color-mix(in srgb,#2f7df4 8%,Canvas); }
+.ai-authority-summary > div { display:grid; gap:4px; }
+.ai-authority-summary strong { font-size:15px; }
+.ai-authority-summary span { font-size:11px; line-height:1.5; opacity:.7; }
+.ai-authority-summary b { font-size:10px; letter-spacing:.08em; white-space:nowrap; }
+body.ai-task-open { overflow:hidden; }
+
+@media (max-width: 760px) {
+  .action-family-guide { grid-template-columns:1fr; padding:15px; }
+  .action-family-chips { justify-content:flex-start; max-width:none; }
+  .email-action-panel,
+  .ai-task-panel { padding:14px; }
+  .email-action-panel header,
+  .ai-task-panel header { align-items:stretch; flex-direction:column; }
+  .email-action-panel header button,
+  .ai-task-panel header button { min-height:48px; width:100%; }
+  .email-action-grid { grid-template-columns:1fr 1fr; }
+  .email-action-grid .email-subject-summary { grid-column:1/-1; }
+  .email-action-panel footer,
+  .ai-task-panel footer { align-items:flex-start; flex-direction:column; }
+  .ai-task-summary { grid-template-columns:1fr; }
+  .email-envelope-card { padding:14px; }
+  .email-envelope-head { flex-direction:column; }
+  .email-sender-row { grid-template-columns:1fr; }
+  .email-recipient-grid { grid-template-columns:1fr; }
+  .email-recipient-card { min-height:76px; }
+  .email-envelope-note { flex-direction:column; }
+  .email-envelope-note strong { white-space:normal; }
+  .email-preview-envelope { grid-template-columns:1fr 1fr; }
+  .ai-task-topbar { align-items:flex-start; }
+  .ai-task-topbar > div:last-child { display:grid; grid-template-columns:1fr 1fr; width:100%; }
+  .ai-task-topbar { flex-direction:column; }
+  .ai-task-topbar > div:first-child { width:100%; }
+  .ai-task-topbar > div:first-child > span { min-width:0; }
+  .ai-task-topbar em { white-space:normal; }
+  .ai-task-topbar button { min-height:46px; }
+  .ai-task-main { width:min(100% - 24px,980px); padding-top:16px; }
+  .ai-definition-card { padding:16px; }
+  .ai-autonomy-grid { grid-template-columns:1fr; }
+  .ai-autonomy-card { min-height:106px; }
+  .ai-limit-grid { grid-template-columns:1fr 1fr; }
+  .ai-authority-summary { align-items:flex-start; flex-direction:column; }
+}
+
+@media (max-width: 430px) {
+  .email-action-grid { grid-template-columns:1fr; }
+  .email-preview-envelope { grid-template-columns:1fr; }
+  .ai-limit-grid { grid-template-columns:1fr; }
+  .ai-task-topbar { padding-top:max(12px,env(safe-area-inset-top)); }
+}
