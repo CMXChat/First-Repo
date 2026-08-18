@@ -11,6 +11,8 @@ on:
       - 'assets/lab/lab-automations-system-surface.js'
       - 'assets/lab/lab-automations-system-surface.css'
       - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-progressive-preview.js'
+      - 'assets/lab/lab-automations-final-qa.css'
       - 'assets/lab/lab-actions.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
@@ -24,6 +26,8 @@ on:
       - 'assets/lab/lab-automations-system-surface.js'
       - 'assets/lab/lab-automations-system-surface.css'
       - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-progressive-preview.js'
+      - 'assets/lab/lab-automations-final-qa.css'
       - 'assets/lab/lab-actions.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
@@ -44,6 +48,7 @@ jobs:
           node --check assets/lab/lab-automations-experience-v3.js
           node --check assets/lab/lab-automations-route-integration.js
           node --check assets/lab/lab-automations-system-surface.js
+          node --check assets/lab/lab-automations-progressive-preview.js
           python - <<'PY'
           from pathlib import Path
           import sys
@@ -53,6 +58,8 @@ jobs:
           css = Path('assets/lab/lab-automations-experience-v3.css').read_text(encoding='utf-8')
           system_js = Path('assets/lab/lab-automations-system-surface.js').read_text(encoding='utf-8')
           system_css = Path('assets/lab/lab-automations-system-surface.css').read_text(encoding='utf-8')
+          progressive = Path('assets/lab/lab-automations-progressive-preview.js').read_text(encoding='utf-8')
+          final_css = Path('assets/lab/lab-automations-final-qa.css').read_text(encoding='utf-8')
           base_css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
           route = Path('assets/lab/lab-automations-route-integration.js').read_text(encoding='utf-8')
           actions = Path('assets/lab/lab-actions.js').read_text(encoding='utf-8')
@@ -64,9 +71,11 @@ jobs:
               '/assets/lab/lab-automations-app.css?v=20260817-1',
               '/assets/lab/lab-automations-experience-v3.css?v=20260818-1',
               '/assets/lab/lab-automations-system-surface.css?v=20260818-1',
+              '/assets/lab/lab-automations-final-qa.css?v=20260818-final1',
               '/assets/lab/lab-automations-experience-v3.js?v=20260818-1',
               '/assets/lab/lab-automations-route-integration.js?v=20260818-1',
               '/assets/lab/lab-automations-system-surface.js?v=20260818-1',
+              '/assets/lab/lab-automations-progressive-preview.js?v=20260818-final1',
           ]
           required_js = [
               'cmx-lab-automations-v1',
@@ -127,6 +136,27 @@ jobs:
               '@media (min-width:980px)',
               '@media (max-width:760px)',
           ]
+          required_progressive = [
+              'cmx-lab-automation-progress-v1',
+              'FLOW PREVIEW',
+              'Builds as you choose',
+              'Choose a trigger',
+              'Choose an action',
+              'Not set yet',
+              'maxAllowedStage',
+              'data-progressive-preview',
+              'Finish this step first',
+          ]
+          required_final_css = [
+              '.v3-flow-node.is-pending',
+              '.v3-action-stack.is-progress-placeholder',
+              '.v3-progress-empty',
+              '.v3-stage-rail button:disabled',
+              'max-height:none',
+              'overflow:visible',
+              'html[data-theme="light"]',
+              '@media (max-width:979px)',
+          ]
           required_route = [
               '/lab/#lab=view%3Aactions',
               '[data-new]',
@@ -152,6 +182,10 @@ jobs:
               if term not in system_js: sys.exit(f'missing system-surface behavior: {term}')
           for term in required_system_css:
               if term not in system_css: sys.exit(f'missing system-surface styling: {term}')
+          for term in required_progressive:
+              if term not in progressive: sys.exit(f'missing progressive preview behavior: {term}')
+          for term in required_final_css:
+              if term not in final_css: sys.exit(f'missing final Automations QA styling: {term}')
           for term in required_route:
               if term not in route: sys.exit(f'missing route integration contract: {term}')
           for term in required_action_library:
@@ -159,14 +193,15 @@ jobs:
 
           if 'lab-automations-app-v2.js' in html:
               sys.exit('superseded v2 builder must not be loaded by the focused route')
-          if 'api.cmxchat.com' in html + js + system_js:
+          if 'api.cmxchat.com' in html + js + system_js + progressive:
               sys.exit('focused Lab must not call the production Check In API')
-          for term in ['eval(', 'new Function(', 'MutationObserver']:
-              if term in system_js: sys.exit(f'forbidden system-surface code pattern: {term}')
+          for source_name, source in [('system surface', system_js), ('progressive preview', progressive)]:
+              for term in ['eval(', 'new Function(', 'MutationObserver']:
+                  if term in source: sys.exit(f'forbidden {source_name} code pattern: {term}')
           if '.automation-app' not in base_css:
               sys.exit('base focused styling contract missing')
 
-          print('Focused Automations v3 system-surface, safety, Action-reference, timing and mobile contracts passed.')
+          print('Focused Automations progressive-preview, v3 system-surface, safety, Action-reference, timing and mobile contracts passed.')
           PY
 
       - name: Browser smoke desktop and mobile
@@ -200,10 +235,14 @@ jobs:
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-system-surface="ready"' /tmp/auto-mobile.html
           grep -q 'class="v3-editor-page"' /tmp/auto-mobile.html
+          grep -q 'data-progressive-preview="true"' /tmp/auto-mobile.html
           grep -q 'What should start this' /tmp/auto-mobile.html
-          grep -q 'LIVE FLOW' /tmp/auto-mobile.html
+          grep -q 'FLOW PREVIEW' /tmp/auto-mobile.html
+          grep -q 'Choose a trigger' /tmp/auto-mobile.html
+          grep -q 'Not set yet' /tmp/auto-mobile.html
           grep -q 'Step 1 of 5' /tmp/auto-mobile.html
+          ! grep -q 'LIVE FLOW' /tmp/auto-mobile.html
           ! grep -qi 'Loading Automations' /tmp/auto-mobile.html
           ! grep -q 'Name the automation' /tmp/auto-mobile.html
 
-          echo 'Focused Automations v3 system surface passed desktop and 390x844 mobile smoke.'
+          echo 'Focused Automations progressive preview passed desktop and 390x844 mobile smoke.'
