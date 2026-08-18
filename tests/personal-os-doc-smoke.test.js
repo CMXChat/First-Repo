@@ -11,10 +11,11 @@ const editorialCssPath = path.join(root, 'assets/personal-os-doc-editorial.css')
 const finalCssPath = path.join(root, 'assets/continuum-doc-final.css');
 const promiseCssPath = path.join(root, 'assets/continuum-doc-promise.css');
 const qaCssPath = path.join(root, 'assets/continuum-doc-qa.css');
+const humanCssPath = path.join(root, 'assets/continuum-doc-human.css');
 const jsPath = path.join(root, 'assets/personal-os-doc.js');
 const routesPath = path.join(root, 'assets/cmx-routes.json');
 
-for (const filePath of [htmlPath, cssPath, editorialCssPath, finalCssPath, promiseCssPath, qaCssPath, jsPath, routesPath]) {
+for (const filePath of [htmlPath, cssPath, editorialCssPath, finalCssPath, promiseCssPath, qaCssPath, humanCssPath, jsPath, routesPath]) {
   assert.ok(fs.existsSync(filePath), `Missing required Continuum document file: ${filePath}`);
 }
 
@@ -25,34 +26,37 @@ const editorialCss = fs.readFileSync(editorialCssPath, 'utf8');
 const finalCss = fs.readFileSync(finalCssPath, 'utf8');
 const promiseCss = fs.readFileSync(promiseCssPath, 'utf8');
 const qaCss = fs.readFileSync(qaCssPath, 'utf8');
+const humanCss = fs.readFileSync(humanCssPath, 'utf8');
 const js = fs.readFileSync(jsPath, 'utf8');
 const routes = JSON.parse(fs.readFileSync(routesPath, 'utf8'));
 
 assert.doesNotMatch(html, /data-cmx-gate=|data-cmx-gated-content|cmx-black-prompt-locked/);
 assert.match(html, /<html lang="en" data-theme="light">/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
-assert.match(html, /<title>Continuum \| Product, Architecture and Build Overview<\/title>/);
-assert.match(html, /personal-os-doc\.js\?v=20260818-3/);
+assert.match(html, /<title>Continuum \| Product Overview<\/title>/);
+assert.match(html, /personal-os-doc\.js\?v=20260818-4/);
 assert.match(html, /continuum-doc-final\.css\?v=20260818-3/);
 assert.match(html, /continuum-doc-promise\.css\?v=20260818-2/);
 assert.match(html, /continuum-doc-qa\.css\?v=20260818-1/);
+assert.match(html, /continuum-doc-human\.css\?v=20260818-1/);
 assert.doesNotMatch(html, /continuum-doc(?:-v2|-mobile-v3)?\.css/);
 assert.doesNotMatch(html, /style=/i, 'Strict /doc CSP should not depend on inline style attributes.');
 assert.match(html, /<h1 id="pageTitle">Continuum<\/h1>/);
 
-// The static document remains a complete no-JS fallback. The visible reading path is clarified at initialization.
-assert.match(html, /hero continuum-hero/);
-assert.match(html, /How information moves through Continuum/);
+// Static copy and runtime copy must use the same plain, direct opening.
+assert.match(html, /Information, people, rules and AI in one place/);
+assert.match(html, /Continuum keeps useful information, people and rules together/);
+assert.match(html, /Keeps useful history/);
+assert.match(html, /Links people \+ information/);
+assert.match(html, /Runs approved rules/);
 assert.match(js, /dataset\.continuumClarity = 'ready'/);
-assert.match(js, /Continuum keeps useful context in one private place/);
-assert.match(js, /Your information, people, rules and AI, connected over time/);
-assert.match(js, /Start with the five-step loop below/);
+assert.match(js, /Continuum keeps useful information, people and rules together/);
 assert.match(js, /Follow one update through Continuum/);
-assert.match(js, /The product names follow the simple idea/);
+assert.match(js, /How the pieces fit together/);
 
-// Extension-of-you visual and capability truth remain available after the basic mental model.
-assert.match(html, /BEYOND THE CURRENT SESSION/);
-assert.match(html, /Your intent has somewhere durable to live/);
+// Useful-across-time visual and capability truth remain available after the basic mental model.
+assert.match(html, /ACROSS TIME/);
+assert.match(html, /Keep the information and rules you choose/);
 assert.match(html, /WITH YOU/);
 assert.match(html, /FOR YOU/);
 assert.match(html, /WHEN YOU ARE AWAY/);
@@ -64,40 +68,45 @@ assert.match(html, /Begin your continuity plan/);
 assert.match(html, /The Check In trigger core works today/);
 assert.match(html, /status-key/);
 for (const label of ['LIVE','LAB','NEXT','LATER']) assert.match(html, new RegExp(`>${label}<`));
-assert.match(js, /Current product truth/);
+assert.match(js, /Current status/);
 assert.match(js, /processMap\.after\(makeStatusSnapshot\(statusKey\)\)/);
 
 // Plain-English product story.
 assert.match(html, /How information moves through Continuum/);
-assert.match(html, /information comes in, gets stored, passes through your rules/);
+assert.match(html, /The basic loop is simple/);
 assert.match(html, /See what is happening/);
 assert.match(html, /Remember it/);
 assert.match(html, /Check your rules/);
 assert.match(html, /Do approved work/);
 assert.match(html, /Remember the result/);
-assert.match(js, /One example, end to end/);
+assert.match(js, /One example/);
 assert.match(js, /The message arrives/);
-assert.match(js, /Continuum knows who sent it/);
-assert.match(js, /Your Business view can reflect it/);
-assert.match(js, /The server can keep it moving/);
-assert.match(html, /What Continuum adds around AI/);
-assert.match(html, /AI gets memory, tools, timing and rules/);
-assert.match(html, /Why not just use AI by itself/);
-assert.match(html, /AI can reason about what you give it/);
-assert.match(html, /persistent people, records, rules, timing, tools and history/);
+assert.match(js, /Match it to the client/);
+assert.match(js, /Show the change in Business/);
+assert.match(js, /Keep the workflow running/);
+
+// AI section must be direct and avoid rhetorical contrast copy.
+assert.match(html, /AI inside Continuum/);
+assert.match(html, /AI can use saved context, rules and approved tools/);
+assert.match(html, /What Continuum adds to AI/);
+assert.match(html, /AI can reason with the information it receives/);
+assert.match(html, /AI authority is set by server-side permissions/);
+assert.doesNotMatch(html, /Why not just use AI by itself/);
+assert.doesNotMatch(html, /An ordinary day, not an emergency/);
+assert.doesNotMatch(js, /Why not just use AI by itself/);
+assert.doesNotMatch(js, /An ordinary day, not an emergency/);
 assert.match(html, /YOU SET THE RULES/);
 assert.match(html, /The server enforces them/);
-assert.match(html, /The AI cannot expand its own authority/);
 assert.match(html, /API[\s\S]*A doorway apps use to talk to each other/);
 assert.match(html, /MCP[\s\S]*approved tools or information/);
 assert.match(html, /Runtime[\s\S]*keeps a workflow moving after it starts/);
-assert.match(html, /WHAT THIS FOUNDATION COULD UNLOCK/);
+assert.match(html, /POSSIBLE LATER USES/);
 assert.match(html, /Wake-up brief/);
 assert.match(html, /Coordinate people/);
 assert.match(html, /Understand money/);
 assert.match(html, /Communicate anywhere/);
 assert.match(html, /Use more tools/);
-assert.match(html, /Smarter AI over time/);
+assert.match(html, /New AI models/);
 
 // Directory, Library and an everyday Automation must remain visual.
 assert.match(html, /people-map/);
@@ -106,6 +115,7 @@ assert.match(html, /library-tree/);
 assert.match(html, /continuity\.md/);
 assert.match(html, /Draft[\s\S]*Version 1[\s\S]*Automation/);
 assert.match(html, /everyday-workflow/);
+assert.match(html, /Everyday workflow/);
 assert.match(html, /A client payment arrives/);
 assert.match(html, /Update the Money Space/);
 assert.match(html, /Include it in tomorrow's brief/);
@@ -121,7 +131,8 @@ assert.doesNotMatch(html, />MODELED<|>PLANNED<|>FUTURE<|>EXTENSIBLE<|>POLICY</);
 
 // Automation definition and Runtime execution are separate concepts in the visible lesson.
 assert.match(js, /clarity-automation-primer/);
-assert.match(js, /Automations define the plan\. Runtime carries it through\./);
+assert.match(html, /Automations define the steps\. Runtime runs them\./);
+assert.match(js, /Automations define the steps\. Runtime runs them\./);
 assert.match(js, /<strong>The plan<\/strong>/);
 assert.match(js, /<strong>The execution<\/strong>/);
 assert.match(js, /<b>WHEN<\/b>/);
@@ -145,7 +156,7 @@ assert.match(html, /Incident, a saved record/);
 assert.match(html, /<b>LIVE:<\/b>/);
 assert.match(html, /<b>LATER:<\/b>/);
 assert.match(js, /afterlifeCallout\.before\(glance\)/);
-assert.match(js, /Afterlife is Continuum applied to continuity/);
+assert.match(js, /Afterlife uses Continuum for continuity/);
 
 // Build and long-term capability direction remain present, with technical depth optional by default.
 assert.match(html, /\/lab\/automations\//);
@@ -159,9 +170,8 @@ assert.match(html, /APIs \+ MCP/);
 assert.match(html, /WhatsApp Business/);
 assert.match(html, /SMS \+ voice/);
 assert.match(html, /Money analysis \+ supported actions/);
+assert.match(html, /Database access goes through the backend/);
 assert.match(js, /clarity-deep-dive/);
-assert.match(js, /Optional architecture/);
-assert.match(js, /Optional build process/);
 assert.match(js, /Open the architecture walkthrough/);
 assert.match(js, /Open the build workflow/);
 
@@ -169,8 +179,8 @@ assert.match(js, /Open the build workflow/);
 assert.match(html, /reliably know whether the owner checked in/);
 assert.match(html, /safely remember real private information/);
 assert.match(html, /keep a workflow alive on the server after you leave the page/);
-assert.match(html, /coordinate more of the outside world through approved tools/);
-assert.match(js, /Build the durable foundation, then add capability/);
+assert.match(html, /work with more outside services through approved tools/);
+assert.match(js, /Build the foundation, then add capability/);
 
 // Core visual teaching components remain in the fallback document.
 for (const className of [
@@ -198,13 +208,15 @@ for (const className of [
   assert.match(html, new RegExp(className), `Missing required visual: ${className}`);
 }
 
-// Editorial contract for public static /doc copy.
-assert.doesNotMatch(bodySource, /\.\.\.|…|—/);
-assert.doesNotMatch(bodySource, /\bit(?:'|’)s not\b/i);
-assert.doesNotMatch(bodySource, /\bnot\b[^<.!?]{0,90}\bbut\b/i);
-assert.doesNotMatch(bodySource, /\bit(?:'|’)s\b[^<.!?]{0,90},\s*not\b/i);
-assert.doesNotMatch(bodySource, /\brather than\b/i);
-assert.doesNotMatch(bodySource, /\bdoes not need\b/i);
+// Editorial contract for public /doc copy and runtime-generated copy.
+for (const source of [bodySource, js]) {
+  assert.doesNotMatch(source, /\.\.\.|…|—/);
+  assert.doesNotMatch(source, /\bit(?:'|’)s not\b/i);
+  assert.doesNotMatch(source, /\bnot\b[^<.!?]{0,90}\bbut\b/i);
+  assert.doesNotMatch(source, /\bit(?:'|’)s\b[^<.!?]{0,90},\s*not\b/i);
+  assert.doesNotMatch(source, /\brather than\b/i);
+  assert.doesNotMatch(source, /\bdoes not need\b/i);
+}
 
 for (const id of ['overview','difference','spaces','action','afterlife','engineering','build','status']) {
   assert.match(html, new RegExp(`id="${id}"`), `Missing required section: ${id}`);
@@ -269,12 +281,15 @@ assert.match(promiseCss, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
 assert.match(promiseCss, /@media\(max-width:680px\)/);
 assert.match(promiseCss, /@media print/);
 
-// Final QA layer owns the clarity hierarchy without removing prior light/dark safeguards.
+// QA owns clarity layout; the human layer owns final heading scale.
 assert.match(qaCss, /\.clarity-hero/);
 assert.match(qaCss, /\.clarity-story-section/);
 assert.match(qaCss, /\.clarity-product-map-section/);
 assert.match(qaCss, /\.clarity-automation-primer/);
 assert.match(qaCss, /\.clarity-deep-dive/);
 assert.match(qaCss, /font-size:max\(\.86rem,14px\)/);
+assert.match(humanCss, /font-size:clamp\(3rem,5\.4vw,4\.4rem\)/);
+assert.match(humanCss, /font-size:clamp\(1\.9rem,3\.15vw,2\.8rem\)/);
+assert.match(humanCss, /@media\(max-width:680px\)/);
 
-console.log('Continuum document and clarity smoke test passed.');
+console.log('Continuum document, human copy and clarity smoke test passed.');
