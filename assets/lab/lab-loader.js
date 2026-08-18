@@ -45,7 +45,7 @@
     ["lab-experience.css", "20260816-product2"],
     ["lab-plan.css", "20260816-plan1"],
     ["lab-plan-overrides.css", "20260816-plan1"],
-    ["lab-status-top.css", "20260816-hero2"],
+    ["lab-status-top.css", "20260818-status1"],
     ["lab-automation-builder.css", "20260817-auto1"]
   ]);
 
