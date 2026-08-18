@@ -80,7 +80,7 @@ jobs:
               'resolutionMode:"live"', 'Duplicate people are automatically counted once',
               'data-person-org', 'data-person-label', 'data-group-member',
           ]
-          required_audience_review = ['AUDIENCE','unique ${people.size','cmx-lab-audience-last-steps-v1']
+          required_audience_review = ['AUDIENCE','${people.size} unique','cmx-lab-audience-last-steps-v1']
           required_library = [
               'Documents & files', 'New document', 'Native Check In Document', 'Save version',
               'Save as', 'PDF', 'Word DOCX', 'Markdown', 'HTML', 'Plain text',
