@@ -1,0 +1,146 @@
+(() => {
+  "use strict";
+
+  const AUTOMATIONS_KEY = "cmx-lab-automations-v1";
+  const ACTIONS_KEY = "cmx-lab-actions-v1";
+  const CRM_KEY = "cmx-lab-crm-v1";
+  const INVENTORY_KEY = "cmx-lab-inventory-v1";
+
+  let queued = false;
+
+  function readStore(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "null");
+    } catch {
+      return null;
+    }
+  }
+
+  function countConnectedRecords() {
+    const crm = readStore(CRM_KEY) || {};
+    const inventory = readStore(INVENTORY_KEY) || {};
+    return (crm.people?.length || 0)
+      + (crm.organizations?.length || 0)
+      + (inventory.documents?.length || 0)
+      + (inventory.assets?.length || 0);
+  }
+
+  function countDrafts() {
+    const store = readStore(AUTOMATIONS_KEY);
+    return Array.isArray(store?.automations)
+      ? store.automations.filter(item => (item.status || "Draft") === "Draft").length
+      : 0;
+  }
+
+  function countSavedActions() {
+    const store = readStore(ACTIONS_KEY);
+    return Array.isArray(store?.actions) ? store.actions.length : 0;
+  }
+
+  function stat(label, value, note, tone = "") {
+    return `<div class="v3-system-stat ${tone ? `is-${tone}` : ""}">
+      <span>${label}</span>
+      <strong>${value}</strong>
+      <small>${note}</small>
+    </div>`;
+  }
+
+  function patchDashboard() {
+    const dashboard = document.querySelector(".v3-dashboard");
+    if (!dashboard) return false;
+
+    const hero = dashboard.querySelector(".v3-hero");
+    const templateSection = dashboard.querySelector(".v3-template-section");
+    const dashboardBar = dashboard.querySelector(".v3-dashboard-bar");
+    const drafts = dashboard.querySelector(".v3-drafts");
+    if (!hero || !templateSection || !dashboardBar || !drafts) return false;
+
+    const eyebrow = hero.querySelector(".v3-eyebrow");
+    const title = hero.querySelector("h1");
+    const copy = hero.querySelector("p");
+    if (eyebrow) eyebrow.textContent = "CONTINUUM · AUTOMATIONS";
+    if (title) title.textContent = "Automations";
+    if (copy) copy.textContent = "Build, test and manage private workflows. Drafts stay local to Lab and external execution remains off.";
+
+    let deck = dashboard.querySelector(".v3-system-deck");
+    if (!deck) {
+      deck = document.createElement("section");
+      deck.className = "v3-system-deck";
+      deck.setAttribute("aria-label", "Automation workspace status");
+    }
+    deck.innerHTML = [
+      stat("DRAFTS", String(countDrafts()), "Shared Lab workflows"),
+      stat("REUSABLE ACTIONS", String(countSavedActions()), "Available from Action library"),
+      stat("CONNECTED RECORDS", String(countConnectedRecords()), "People, orgs, docs and assets"),
+      stat("EXECUTION", "OFF", "Simulation only", "safe")
+    ].join("");
+
+    let workHeading = dashboard.querySelector(".v3-system-section-head");
+    if (!workHeading) {
+      workHeading = document.createElement("div");
+      workHeading.className = "v3-system-section-head";
+    }
+    const activeTab = dashboardBar.querySelector(".v3-tabs .is-active")?.textContent?.replace(/\s+\d+\s*$/, "")?.trim() || "Drafts";
+    workHeading.innerHTML = `<div><span>WORKFLOWS</span><h2>${activeTab}</h2></div><small>Open one to continue building or testing it.</small>`;
+
+    hero.after(deck);
+    deck.after(workHeading);
+    workHeading.after(dashboardBar);
+    dashboardBar.after(drafts);
+    drafts.after(templateSection);
+
+    const templateEyebrow = templateSection.querySelector(".v3-section-title span");
+    const templateTitle = templateSection.querySelector(".v3-section-title h2");
+    const templateHint = templateSection.querySelector(".v3-section-title > small");
+    if (templateEyebrow) templateEyebrow.textContent = "QUICK START";
+    if (templateTitle) templateTitle.textContent = "Templates";
+    if (templateHint) templateHint.textContent = "Create a draft from a starting pattern";
+
+    dashboard.dataset.systemSurface = "ready";
+    return true;
+  }
+
+  function patchEditor() {
+    const page = document.querySelector(".v3-editor-page");
+    if (!page) return false;
+
+    const draftLabel = page.querySelector(".v3-title-button > span");
+    if (draftLabel) draftLabel.textContent = "DRAFT";
+
+    const liveHint = page.querySelector(".v3-live-head small");
+    if (liveHint) liveHint.textContent = "Live preview";
+
+    const context = page.querySelector(".v3-step-context");
+    if (context) context.setAttribute("aria-label", context.querySelector("small")?.textContent || "Builder step");
+
+    page.dataset.systemSurface = "ready";
+    return true;
+  }
+
+  function patch() {
+    queued = false;
+    const changed = patchDashboard() || patchEditor();
+    if (changed) document.documentElement.dataset.labAutomationsSystemSurface = "ready";
+  }
+
+  function schedulePatch() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => requestAnimationFrame(patch));
+  }
+
+  document.addEventListener("click", schedulePatch, false);
+  document.addEventListener("input", schedulePatch, false);
+  document.addEventListener("change", schedulePatch, false);
+  window.addEventListener("pageshow", schedulePatch);
+  window.addEventListener("storage", event => {
+    if ([AUTOMATIONS_KEY, ACTIONS_KEY, CRM_KEY, INVENTORY_KEY].includes(event.key)) schedulePatch();
+  });
+  window.addEventListener("cmx:lab-automations-updated", schedulePatch);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", schedulePatch, { once: true });
+  } else {
+    schedulePatch();
+  }
+})();
