@@ -21,21 +21,42 @@ Use these names consistently:
 
 `https://db.cmxchat.com/doc/` is the master public noindex visual explanation of Continuum.
 
-It should explain, in one coherent document:
+The current document is intentionally **visual-first and shorter than the earlier architecture-heavy version**. It uses eight main reading sections:
 
-1. the whole Continuum information-to-action loop;
-2. the practical difference between a standalone AI session and AI operating inside durable Continuum state;
-3. Spaces;
-4. information ingestion, provenance, freshness and task-specific context;
-5. Automations and Runtime;
-6. Connections, typed tools, APIs and MCP;
-7. replaceable AI/model providers and server-side authority;
-8. Afterlife: The Dead Man Switch;
-9. the real engineering environment and programming stack;
-10. the Lab → contract → backend → protected-product build method;
-11. current production truth, immediate build focus and long-term capability direction.
+1. Continuum in one minute;
+2. why AI has more leverage inside durable Continuum state;
+3. Spaces and incoming context;
+4. Automations, Connections, tools and authority;
+5. Afterlife: The Dead Man Switch;
+6. the real programming and engineering environment;
+7. the Lab → contract → backend → protected-product build path;
+8. current production truth and the ordered direction from here.
+
+The page still carries the deeper architecture through diagrams, product-style previews and concrete examples. It should feel understandable to a normal reader before it feels comprehensive to an engineer.
 
 The page is a product/architecture document, not a generic marketing landing page.
+
+# Reading hierarchy
+
+Preserve three levels of depth:
+
+```text
+FIRST SCREEN
+what Continuum is + the main product map
+
+FAST TOUR
+receive → remember → reason → act → update
+why durable state gives AI more leverage
+Spaces / Automations / Connections / Afterlife
+
+DEEPER READER
+programming stack
+backend boundaries
+Lab → production method
+current vs next vs later
+```
+
+A reader should understand the basic idea without reading every paragraph.
 
 # Writing rules for `/doc/`
 
@@ -46,13 +67,15 @@ Preserve these editorial rules:
 - one H1;
 - connected paragraphs;
 - visuals do much of the teaching;
+- short section introductions;
 - no ellipses;
 - no em dashes;
 - avoid formulaic contrast copy such as `it's not X, it's Y` or `not X but Y`;
 - avoid generic AI/SaaS slogans;
 - avoid a forced tagline for every product area;
 - explain real mechanisms and examples instead of making broad claims;
-- label current production, active prototype and planned architecture truthfully.
+- label current production, active prototype and planned architecture truthfully;
+- avoid restoring long architecture prose when a diagram already teaches the same thing.
 
 # Visual rules
 
@@ -66,13 +89,31 @@ Keep the high-quality document visual system inherited from the original Spaces 
 - print support;
 - CMX/Intel-like blue and restrained violet accents;
 - technical grids, architecture maps and real product-style UI previews;
+- varied section rhythm so every section does not look like the same card grid;
 - subtle motion only;
 - reduced-motion support;
 - no broad document-wide MutationObserver;
 - no heavy canvas/WebGL presentation layer;
 - mobile layout must remain usable on Samsung/Chrome-class devices.
 
-`assets/continuum-doc.css` is the Continuum-specific visual layer loaded after the existing `/doc/` styles.
+Visual layers:
+
+- `assets/continuum-doc.css` = Continuum foundation visuals;
+- `assets/continuum-doc-v2.css` = current visual-first, shorter-document refinement.
+
+The current page intentionally includes these teaching visuals:
+
+- Continuum system orbit;
+- one-minute operating loop;
+- AI-session vs Continuum-environment comparison;
+- provenance/freshness example;
+- Personal Brief preview;
+- Automation workflow + Connection catalog;
+- authority examples;
+- Afterlife timeline;
+- browser/API/database programming stack;
+- Lab-to-product build path;
+- compact current / Lab / next / later roadmap.
 
 # Core product explanation
 
@@ -115,13 +156,13 @@ AI models are replaceable reasoning providers over that environment. A stronger 
 
 # Ingestion/context direction
 
-The public document now includes the receive → normalize → context side of the architecture because input quality is as important as output capability.
+The public document includes the receive → normalize → context side of the architecture because input quality is as important as output capability.
 
 Canonical backend semantics belong in:
 
 `CMXChat/jay-app/specs/003-server-checkin/CONTEXT-INGESTION-PROVENANCE-BACKEND-CONTRACT.md`
 
-That contract should govern APIs, MCP resources, webhooks, sync, provenance, freshness, observations/events/messages, context building and feedback from Runtime results.
+That contract governs APIs, MCP resources, webhooks, sync, provenance, freshness, observations/events/messages, context building and feedback from Runtime results.
 
 # Current routes and build method
 
