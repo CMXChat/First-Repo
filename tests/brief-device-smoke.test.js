@@ -25,6 +25,7 @@ const spacesRuntimeJs = read('assets/brief/brief-spaces-runtime.js');
 const docJs = read('assets/personal-os-doc.js');
 const docMobileCss = read('assets/personal-os-doc-mobile-fixes.css');
 const continuumDocCss = read('assets/continuum-doc.css');
+const continuumHumanCss = read('assets/continuum-doc-human.css');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
 assert.match(html, /<html lang="en" data-theme="light">/);
@@ -190,13 +191,17 @@ assert.match(conversationJs, /touchstart/);
 assert.match(conversationJs, /touchend/);
 assert.match(conversationJs, /\}, 4200\)/);
 
-assert.match(docHtml, /<title>Continuum \| Product, Architecture and Build Overview<\/title>/);
-assert.match(docHtml, /continuum-doc\.css\?v=20260818-1/);
+// The Spaces compatibility smoke only checks stable /doc integration points.
+assert.match(docHtml, /<title>Continuum \| Product Overview<\/title>/);
+assert.match(docHtml, /continuum-doc-human\.css\?v=20260818-1/);
+assert.match(docHtml, /personal-os-doc\.js\?v=20260818-4/);
 assert.match(docHtml, /Afterlife/);
 assert.match(docHtml, /The Dead Man Switch/);
 assert.match(docHtml, /Python \+ FastAPI/);
 assert.match(docHtml, /PostgreSQL/);
+assert.doesNotMatch(docHtml, /Why not just use AI by itself|An ordinary day, not an emergency|\.\.\.|…|—/);
 assert.doesNotMatch(docJs, /const plainCopy = new Map/);
+assert.match(continuumHumanCss, /font-size:clamp\(3rem,5\.4vw,4\.4rem\)/);
 assert.match(docMobileCss, /\.final-cta \{[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
 assert.match(docMobileCss, /overflow-wrap: anywhere/);
 assert.match(docMobileCss, /@media \(max-width: 680px\)/);
