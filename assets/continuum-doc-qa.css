@@ -1,0 +1,207 @@
+/* Continuum /doc screenshot QA hardening. Loaded last. */
+
+/* Keep light mode comfortably readable across every section. */
+html[data-theme="light"] .document-paper{
+  --muted:#4b6278;
+  --muted-strong:#263f56;
+  --line:rgba(45,77,108,.15);
+  --line-strong:rgba(45,77,108,.24);
+}
+
+html[data-theme="light"] :is(
+  .section-intro,.presence-heading p,.presence-stage p,.presence-truth,.status-key-item,
+  .plain-note,.ai-answer p,.control-row small,.brief-row small,.source-proof small,
+  .people-map-card>p,.library-flow-card>p,.term-guide span,.workflow-node small,
+  .connection-row small,.execution-mode small,.possibility-card small,.support-tools small,
+  .tech-detail p,.roadmap-rich .roadmap-card p,.closing-note
+){color:#4b6278}
+
+html[data-theme="light"] :is(
+  .visual-label-row b,.brief-preview-final header b,.source-proof b,.model-chip,
+  .everyday-workflow-copy small,.request-hop span,.roadmap-points b
+){color:#2d4962}
+
+/* Trim large empty cards without making the page cramped. */
+@media(min-width:981px){
+  .process-step{min-height:232px;padding-top:20px;padding-bottom:20px}
+  .presence-stage{min-height:168px}
+  .possibility-card{min-height:166px}
+  .stack-node{min-height:172px}
+  .roadmap-rich .roadmap-card{min-height:264px}
+  .glance-card{min-height:94px}
+}
+
+/* AFTERLIFE: light mode has a complete desktop and mobile color system. */
+html[data-theme="light"] .afterlife-section{
+  color:#26364a;
+  background:
+    radial-gradient(circle at 88% 7%,rgba(117,91,224,.11),transparent 25rem),
+    radial-gradient(circle at 8% 90%,rgba(31,177,189,.08),transparent 25rem),
+    linear-gradient(180deg,#f7fbff 0%,#ffffff 45%,#f5f9fd 100%);
+}
+
+html[data-theme="light"] .afterlife-section::before{
+  background-image:
+    linear-gradient(rgba(58,91,123,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(58,91,123,.055) 1px,transparent 1px);
+}
+
+html[data-theme="light"] .afterlife-section .section-kicker{color:#0068b5}
+html[data-theme="light"] .afterlife-section .section-heading h2{color:#0d1b2d}
+html[data-theme="light"] .afterlife-section .section-intro{color:#4b6278}
+html[data-theme="light"] .afterlife-title-row small{color:#5d7388}
+
+html[data-theme="light"] :is(
+  .afterlife-simple-callout,.afterlife-emblem,.afterlife-policy,.afterlife-step,
+  .afterlife-branch,.afterlife-truth div
+){
+  border-color:#d7e3ee;
+  background:rgba(255,255,255,.94);
+  box-shadow:0 10px 28px rgba(35,72,108,.07);
+}
+
+html[data-theme="light"] .afterlife-simple-callout{
+  border-color:#cbdff0;
+  background:linear-gradient(135deg,#f1f8ff,#ffffff);
+}
+html[data-theme="light"] .afterlife-simple-callout strong{color:#102038}
+html[data-theme="light"] .afterlife-simple-callout span{color:#4b6278}
+
+html[data-theme="light"] .afterlife-emblem{
+  background:radial-gradient(circle at 50% 50%,rgba(91,104,232,.12),transparent 58%),#fbfdff;
+}
+
+html[data-theme="light"] .policy-title-row span{color:#0068b5}
+html[data-theme="light"] .policy-title-row strong{color:#102038}
+html[data-theme="light"] .policy-title-row em{
+  color:#116d4c;
+  border-color:#b9dfcf;
+  background:#eefaf5;
+}
+html[data-theme="light"] .policy-ring::before{background:#fff}
+html[data-theme="light"] .policy-ring span{color:#102038}
+html[data-theme="light"] .policy-ring small{color:#5d7388}
+html[data-theme="light"] .policy-bar strong{color:#18344f}
+html[data-theme="light"] .policy-bar strong span{color:#536b81}
+html[data-theme="light"] .bar-track{background:#e8eef4}
+html[data-theme="light"] .policy-config{
+  border-color:#dce6ef;
+  background:#f7fafc;
+}
+html[data-theme="light"] .policy-config span{color:#58728a}
+html[data-theme="light"] .policy-config strong{color:#17304a}
+html[data-theme="light"] .policy-config small{color:#536b81}
+
+/* Group timeline content together. Status stays on the right on desktop. */
+.afterlife-timeline{gap:12px}
+.afterlife-step{
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:
+    "label status"
+    "title status"
+    "copy status";
+  column-gap:18px;
+  row-gap:4px;
+  align-items:start;
+  padding:17px 20px;
+}
+.afterlife-step>b{grid-area:label}
+.afterlife-step>strong{grid-area:title;margin-top:0;font-size:.98rem;line-height:1.28}
+.afterlife-step>small{grid-area:copy;margin-top:1px;max-width:820px;line-height:1.48}
+.afterlife-step>em{
+  position:static;
+  grid-area:status;
+  align-self:start;
+  justify-self:end;
+  margin:0;
+  white-space:nowrap;
+}
+
+html[data-theme="light"] .afterlife-timeline::before{
+  background:linear-gradient(#2f83ef 0 58%,#8064df 58% 78%,#ec9138 78% 88%,#2caf83 88%);
+  opacity:.88;
+}
+html[data-theme="light"] .afterlife-step::before{
+  box-shadow:0 0 0 6px #fff,0 8px 20px rgba(37,76,116,.16);
+}
+html[data-theme="light"] .afterlife-step>b{color:#1474bd}
+html[data-theme="light"] .afterlife-step>strong{color:#102038}
+html[data-theme="light"] .afterlife-step>small{color:#4f667c}
+html[data-theme="light"] .afterlife-step>em{
+  color:#075f9d;
+  border-color:#c7e0f4;
+  background:#edf7ff;
+}
+html[data-theme="light"] .afterlife-step.is-grace>b{color:#6748c5}
+html[data-theme="light"] .afterlife-step.is-trigger{
+  border-color:#efb36d;
+  background:linear-gradient(100deg,#fff3e5 0%,#fffaf3 52%,#faf7ff 100%);
+  box-shadow:0 12px 30px rgba(214,125,31,.09);
+}
+html[data-theme="light"] .afterlife-step.is-trigger>b{color:#ad5f0b}
+html[data-theme="light"] .afterlife-step.is-trigger>strong{color:#6b3905}
+html[data-theme="light"] .afterlife-step.is-trigger>small{color:#4f667c}
+html[data-theme="light"] .afterlife-step.is-trigger>em{
+  color:#98520a;
+  border-color:#efc28f;
+  background:#fff2e4;
+}
+html[data-theme="light"] .afterlife-step.is-trigger::before{
+  box-shadow:0 0 0 6px #fff,0 0 0 1px #eeb879,0 10px 24px rgba(219,128,32,.22);
+}
+html[data-theme="light"] .afterlife-step.is-ready>b{color:#157551}
+html[data-theme="light"] .afterlife-step.is-ready>em{
+  color:#546b80;
+  border-color:#d8e2ea;
+  background:#f4f7fa;
+}
+
+html[data-theme="light"] .afterlife-branch i{
+  color:#0068b5;
+  background:#eaf5ff;
+}
+html[data-theme="light"] .afterlife-branch strong{color:#17304a}
+html[data-theme="light"] .afterlife-branch small{color:#536b81}
+html[data-theme="light"] .afterlife-truth div{color:#4f667c}
+html[data-theme="light"] .afterlife-truth b{color:#116d4c}
+html[data-theme="light"] .afterlife-truth div:last-child b{color:#075f9d}
+
+/* Give normal light-mode status chips enough contrast. */
+html[data-theme="light"] .status-live{color:#116d4c;background:#eaf8f2}
+html[data-theme="light"] .status-lab{color:#075f9d;background:#eaf5ff}
+html[data-theme="light"] .status-next{color:#5e42b9;background:#f1edff}
+html[data-theme="light"] .status-later{color:#93530d;background:#fff2e2}
+
+/* Cards should read as groups, not giant empty bordered boxes. */
+:is(.process-step,.journey-step,.workflow-node,.build-item,.slice-item,.roadmap-rich .roadmap-card){align-content:start}
+
+@media(max-width:680px){
+  .afterlife-step{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "label"
+      "title"
+      "copy"
+      "status";
+    padding:15px 16px;
+  }
+  .afterlife-step>em{justify-self:start;margin-top:6px}
+  .afterlife-step>strong{font-size:.96rem}
+  .afterlife-step>small{font-size:max(.78rem,13px)}
+  .afterlife-timeline{gap:10px;padding-left:52px}
+  .afterlife-policy{padding:16px}
+  .policy-config-grid{gap:7px}
+}
+
+@media(max-width:430px){
+  .afterlife-step{padding:14px 14px}
+  .afterlife-simple-callout{padding:14px}
+  .afterlife-truth div{padding:13px 14px}
+}
+
+@media print{
+  html[data-theme="light"] .afterlife-section{background:#fff!important}
+  .afterlife-step{break-inside:avoid}
+}
