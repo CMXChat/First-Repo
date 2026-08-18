@@ -1,6 +1,13 @@
 'use strict';
 
 (() => {
+  function restoreFullHeroIntroduction() {
+    const heroLead = document.querySelector('.continuum-hero .hero-lead');
+    if (!heroLead) return;
+
+    heroLead.innerHTML = `<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, Automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time.</span> As more services connect through APIs, MCP and other providers, it can grow into something that helps coordinate people, follow up on projects, watch important changes, analyze financial information, communicate through email, messaging and future voice, and work with whichever AI models are most useful over time. The deeper idea is that your context, priorities and instructions have somewhere durable to live, so Continuum can remain useful while you are busy, offline or unavailable. Afterlife carries that idea further: if you stop checking in for the period you chose, Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and continuing bounded work you authorized beforehand.`;
+  }
+
   function neutralizeExampleNames() {
     const firstJourneyCopy = document.querySelector('#difference .journey-step small');
     if (firstJourneyCopy && /Directory knows who/i.test(firstJourneyCopy.textContent || '')) {
@@ -22,6 +29,7 @@
     }
   }
 
+  restoreFullHeroIntroduction();
   neutralizeExampleNames();
 
   const mapSection = document.querySelector('.clarity-product-map-section');
