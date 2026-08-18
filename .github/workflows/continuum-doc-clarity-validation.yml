@@ -8,6 +8,7 @@ on:
       - 'assets/personal-os-doc.js'
       - 'assets/personal-os-doc*.css'
       - 'assets/continuum-doc-*.css'
+      - 'assets/continuum-doc-*.js'
       - 'docs/continuum-product-CURRENT.md'
       - 'tests/personal-os-doc-smoke.test.js'
       - 'tests/doc-visual-qa-smoke.test.js'
@@ -20,6 +21,7 @@ on:
       - 'assets/personal-os-doc.js'
       - 'assets/personal-os-doc*.css'
       - 'assets/continuum-doc-*.css'
+      - 'assets/continuum-doc-*.js'
       - 'docs/continuum-product-CURRENT.md'
       - 'tests/personal-os-doc-smoke.test.js'
       - 'tests/doc-visual-qa-smoke.test.js'
@@ -40,6 +42,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/personal-os-doc.js
+          node --check assets/continuum-doc-origin.js
           node tests/personal-os-doc-smoke.test.js
           node tests/doc-visual-qa-smoke.test.js
           node tests/continuum-doc-clarity-smoke.test.js
@@ -71,12 +74,15 @@ jobs:
 
           dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-origin="ready"' /tmp/continuum-doc-desktop.html
           grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-desktop.html
           grep -q 'Continuum in one minute' /tmp/continuum-doc-desktop.html
           grep -q 'What happens when something changes' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-story-copy"' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-story-path"' /tmp/continuum-doc-desktop.html
           grep -q 'How the pieces fit together' /tmp/continuum-doc-desktop.html
+          grep -q 'The idea started with the Dead Man Switch' /tmp/continuum-doc-desktop.html
+          grep -q 'The same foundation matters before an emergency' /tmp/continuum-doc-desktop.html
           grep -q 'What works today' /tmp/continuum-doc-desktop.html
           grep -q 'Automations define the steps. Runtime runs them.' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-automation-copy"' /tmp/continuum-doc-desktop.html
@@ -103,33 +109,35 @@ jobs:
           overview = html.index('id="overview"')
           story = html.index('clarity-story-section')
           product_map = html.index('clarity-product-map-section')
+          origin = html.index('continuum-origin-note', product_map)
+          presence = html.index('continuum-presence', origin)
           ai = html.index('id="difference"')
-          assert overview < story < product_map < ai, 'Teaching order regressed before the AI section.'
+          assert overview < story < product_map < origin < presence < ai, 'Teaching order or Continuum origin placement regressed before the AI section.'
           story_start = html.index('clarity-story-section')
           story_end = html.index('</section>', story_start)
           story_html = html[story_start:story_end]
           assert 'clarity-story-flow' not in story_html, 'Ordinary example must stay prose-led instead of returning to a six-card diagram.'
           assert 'clarity-story-copy' in story_html, 'Ordinary example prose is missing.'
-          product_start = html.index('clarity-product-map-section')
-          product_end = html.index('</section>', product_start)
-          product_html = html[product_start:product_end]
-          assert 'hero-network' in product_html, 'Parts of Continuum rich product map is missing.'
+          assert html.index('hero-network', product_map) < origin, 'Parts of Continuum map must appear before the origin explanation.'
+          assert 'The idea started with the Dead Man Switch' in html[origin:presence], 'Origin explanation must sit directly before the Across Time visual.'
           afterlife = html.index('id="afterlife"')
           glance = html.index('class="glance-grid"', afterlife)
           assert glance > afterlife, 'Check In glance cards must live with Afterlife.'
-          print('Desktop DOM teaching order and prose balance passed.')
+          print('Desktop DOM teaching order, origin insight and prose balance passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
           grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-mobile.html
+          grep -q 'data-continuum-origin="ready"' /tmp/continuum-doc-mobile.html
           grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-mobile.html
           grep -q 'Continuum in one minute' /tmp/continuum-doc-mobile.html
           grep -q 'What happens when something changes' /tmp/continuum-doc-mobile.html
           grep -q 'How the pieces fit together' /tmp/continuum-doc-mobile.html
+          grep -q 'The idea started with the Dead Man Switch' /tmp/continuum-doc-mobile.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-mobile.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-mobile.html
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           ! grep -q 'Start here' /tmp/continuum-doc-mobile.html
           ! grep -q 'Why not just use AI by itself' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc prose balance, desktop teaching order and 390x844 mobile smoke passed.'
+          echo 'Continuum /doc origin insight, prose balance, desktop teaching order and 390x844 mobile smoke passed.'
