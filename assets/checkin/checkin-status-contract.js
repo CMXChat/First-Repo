@@ -21,6 +21,12 @@
     return Number.isFinite(number) && Number.isInteger(number) && number >= minimum && number <= maximum;
   }
 
+  function dueSoonWindowMs(intervalHours) {
+    const hours = Number(intervalHours);
+    if (!Number.isFinite(hours) || hours <= 0) return 0;
+    return Math.min(12, hours * 0.2) * 60 * 60 * 1000;
+  }
+
   function normalize(data = {}) {
     const interval = Number(data.interval_hours);
     const grace = Number(data.grace_hours);
@@ -40,7 +46,7 @@
     };
   }
 
-  return { normalize };
+  return { normalize, dueSoonWindowMs };
 });
 
 if (typeof document !== "undefined") {
