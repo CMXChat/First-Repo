@@ -38,7 +38,7 @@ The page uses eight reading sections:
 
 1. Continuum in one minute;
 2. what Continuum adds around AI;
-3. Spaces and incoming information;
+3. Spaces, people and saved information;
 4. Automations and possibilities;
 5. Afterlife: The Dead Man Switch;
 6. how the code works;
@@ -148,7 +148,7 @@ The AI model can change over time. Continuum keeps the protected data, rules and
 
 Only server-side policy changes authority.
 
-# Spaces and incoming information
+# Spaces, Directory and Library
 
 Continuum is intended to receive approved information through sources such as:
 
@@ -168,6 +168,17 @@ The backend should preserve where important information came from, when it was o
 
 Spaces can turn that state into focused Personal, Family, Business or continuity briefings.
 
+Directory should be explained visually as a relationship map so a reader can see how people, organizations and saved groups fit together.
+
+Library should be explained visually as saved content with version history and a direct Automation reference, for example:
+
+```text
+continuity.md
+-> Draft
+-> Version 1
+-> Automation
+```
+
 Canonical backend semantics belong in:
 
 `CMXChat/jay-app/specs/003-server-checkin/CONTEXT-INGESTION-PROVENANCE-BACKEND-CONTRACT.md`
@@ -178,7 +189,7 @@ Automations define when work becomes eligible and what approved actions should f
 
 Connections expose capabilities such as communication, calendars, APIs, MCP tools, storage, business systems and future supported financial or device actions.
 
-The public document should make the long-term possibilities understandable without presenting planned work as live.
+The public document should make the long-term possibilities understandable while labeling planned work clearly.
 
 Representative directions include:
 
@@ -216,7 +227,7 @@ protected check in
 -> triggered Incident
 ```
 
-**72h + 24h is the current production configuration. It is not a permanent product limit.**
+**72h + 24h is the current production configuration. The timing remains policy-controlled.**
 
 Phase 1 already supports:
 
@@ -234,7 +245,7 @@ Phase 1 already supports:
 On `/doc/`, explain this in ordinary language first:
 
 ```text
-You choose the timer.
+You choose the timing.
 Current live setup: 72 hours + 24 hours extra grace.
 Both values can be changed.
 Every policy change keeps a history.
@@ -282,6 +293,8 @@ user taps something
 -> FastAPI returns JSON
 -> frontend updates the screen
 ```
+
+Technical detail can live in a small expandable block so the first reading stays simple.
 
 # Lab to product method
 
@@ -338,7 +351,6 @@ Preserve:
 - light first paint;
 - strong dark mode;
 - sticky desktop contents rail;
-- compact mobile Contents control;
 - reading progress;
 - print support;
 - technical grid background and blue/violet visual language;
@@ -352,28 +364,66 @@ Preserve:
 - reduced-motion support;
 - no broad document-wide MutationObserver.
 
+## Mobile navigation rule
+
+The Contents button belongs inside the real top toolbar controls on mobile.
+
+It must never float over the reading area, diagrams or cards.
+
+The drawer can remain a dialog with the current section, eight section links, keyboard focus handling and swipe-to-close support.
+
+## Mobile card rule
+
+Phone cards should use the available content width.
+
+Avoid narrow internal grids that turn normal sentences into one-word-per-line columns.
+
+The AI journey is the reference example: one numbered marker outside the card, with the title and explanation using the rest of the card width.
+
+## Semantic color rule
+
+Use color to teach meaning consistently:
+
+- blue = information and Continuum;
+- violet = AI and authority;
+- mint/green = approved action, safe state and Library knowledge;
+- orange = timing, waiting and trigger attention;
+- cyan = Connections and request flow;
+- indigo = build/runtime depth.
+
+Major sections may use subtle matching background washes. Cards should use color through icons, borders, connector lines and status chips while keeping text contrast strong.
+
+## Visual teaching rule
+
+Every major section should make sense from its visual before the reader studies the paragraph.
+
 The current page intentionally includes:
 
 - connected Continuum product map;
 - five-step plain-English operating loop;
-- AI conversation vs AI-with-Continuum example;
+- AI conversation vs AI-with-Continuum comparison;
+- full-width AI journey cards on mobile;
 - replaceable model strip;
 - authority examples;
 - Spaces ingestion map;
-- API/MCP/Webhook/Runtime plain-English guide;
 - Personal Brief preview;
-- Automation workflow;
-- Connection catalog;
+- source/freshness strip;
+- Directory relationship map;
+- Library Draft -> Version -> Automation flow;
+- API/MCP/Webhook/Runtime plain-English guide;
+- color-coded Automation workflow;
+- Connection catalog with channel-specific accents;
 - capability control modes;
-- future possibilities board;
+- six-card future possibilities board;
 - configurable Afterlife timing chart;
 - emphasized trigger timeline;
 - continuity outcome cards;
 - real programming stack;
 - one-request walkthrough;
+- optional technical stack detail;
 - Lab-to-product build path;
 - `continuity.md` vertical slice;
-- NOW -> NEXT -> THEN -> LATER roadmap.
+- color-coded NOW -> NEXT -> THEN -> LATER roadmap.
 
 # Current routes
 
