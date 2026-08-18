@@ -23,7 +23,7 @@
     }
     return panel;
   }
-  function safeHref(value){const href=String(value||"").trim();if(!href)return"";try{const url=new URL(href);return["https:","http:","mailto:"].includes(url.protocol)?url.href:"";}catch{return"";}}
+  function safeHref(value){const href=String(value||"").trim();if(!href)return"";if(href.startsWith("#"))return href;if(href.startsWith("/")&&!href.startsWith("//"))return href;try{const url=new URL(href);return["https:","mailto:"].includes(url.protocol)?url.href:"";}catch{return"";}}
   function openLinkPanel(){
     const body=document.querySelector("[data-pro-rich-body]");if(!body)return;
     const selection=window.getSelection();
@@ -32,8 +32,8 @@
   }
   function closeLinkPanel(){const panel=document.querySelector("[data-pro-link-panel]");if(panel)panel.hidden=true;savedRange=null;}
   function applyLink(){
-    const panel=document.querySelector("[data-pro-link-panel]");const input=panel?.querySelector("[data-pro-link-url]");const href=safeHref(input?.value);const body=document.querySelector("[data-pro-rich-body]");if(!href||!body)return;
-    body.focus();if(savedRange){const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);}document.execCommand("createLink",false,href);body.dispatchEvent(new Event("input",{bubbles:true}));closeLinkPanel();
+    const panel=document.querySelector("[data-pro-link-panel]");const input=panel?.querySelector("[data-pro-link-url]");const href=safeHref(input?.value);const body=document.querySelector("[data-pro-rich-body]");if(!href||!body){if(input){input.setCustomValidity("Use an HTTPS, mailto, internal /path, or #anchor link.");input.reportValidity();}return;}
+    if(input)input.setCustomValidity("");body.focus();if(savedRange){const sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);}document.execCommand("createLink",false,href);body.dispatchEvent(new Event("input",{bubbles:true}));closeLinkPanel();
   }
 
   function folderHasChildren(id){
@@ -83,6 +83,7 @@
     if(event.target.closest("[data-pro-filter],[data-pro-archive],[data-pro-move-target],[data-pro-rename-save],[data-pro-duplicate]"))scheduleEnhance();
   },true);
 
+  document.addEventListener("input",event=>{if(event.target.matches?.("[data-pro-link-url]"))event.target.setCustomValidity("");},true);
   document.addEventListener("keydown",event=>{if(event.key==="Escape"&&document.querySelector("[data-pro-link-panel]:not([hidden])")){event.preventDefault();event.stopImmediatePropagation();closeLinkPanel();}},true);
   window.addEventListener("pageshow",scheduleEnhance);
 })();
