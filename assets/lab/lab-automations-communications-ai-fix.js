@@ -33,12 +33,11 @@
     openEmailComposerWhenReady(compose.dataset.emailCompose);
   }, true);
 
-  // AI overlay is created by the main communications layer first; hydrate actual
-  // capability IDs immediately afterward so checked values never persist as "on".
+  // The main communications runtime is loaded first and creates the AI overlay
+  // synchronously in its click listener. This later listener can therefore assign
+  // the real capability IDs immediately, with no frame/timer race before Save.
   document.addEventListener("click", event => {
-    if (event.target.closest("[data-ai-open]")) {
-      requestAnimationFrame(() => requestAnimationFrame(hydrateAiCapabilityValues));
-    }
+    if (event.target.closest("[data-ai-open]")) hydrateAiCapabilityValues();
   });
 
   window.addEventListener("pageshow", hydrateAiCapabilityValues);
