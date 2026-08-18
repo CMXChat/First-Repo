@@ -7,11 +7,14 @@ const path = require('node:path');
 const root = process.cwd();
 const html = fs.readFileSync(path.join(root, 'doc/index.html'), 'utf8');
 const qaCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-qa.css'), 'utf8');
+const humanCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-human.css'), 'utf8');
 
 const promiseIndex = html.indexOf('/assets/continuum-doc-promise.css?v=20260818-2');
 const qaIndex = html.indexOf('/assets/continuum-doc-qa.css?v=20260818-1');
+const humanIndex = html.indexOf('/assets/continuum-doc-human.css?v=20260818-1');
 assert.ok(promiseIndex >= 0, 'Promise stylesheet must remain loaded.');
-assert.ok(qaIndex > promiseIndex, 'Visual QA stylesheet must load after all main Continuum styles.');
+assert.ok(qaIndex > promiseIndex, 'Visual QA stylesheet must load after the main Continuum styles.');
+assert.ok(humanIndex > qaIndex, 'Human-scale heading stylesheet must load last.');
 
 // Light mode must own a complete Afterlife palette at every viewport.
 assert.match(qaCss, /html\[data-theme="light"\] \.afterlife-section\{/);
@@ -27,7 +30,7 @@ assert.match(qaCss, /\.afterlife-step\{[\s\S]*min-height:0;[\s\S]*display:grid;/
 assert.match(qaCss, /grid-template-areas:[\s\S]*"label status"[\s\S]*"title status"[\s\S]*"copy status"/);
 assert.match(qaCss, /\.afterlife-step>em\{[\s\S]*position:static;/);
 
-// The final pass trims oversized desktop components and keeps mobile readable.
+// The final pass trims oversized components and keeps mobile readable.
 assert.match(qaCss, /@media\(min-width:981px\)/);
 assert.match(qaCss, /\.process-step\{min-height:232px/);
 assert.match(qaCss, /\.roadmap-rich \.roadmap-card\{min-height:264px/);
@@ -35,10 +38,15 @@ assert.match(qaCss, /@media\(max-width:680px\)/);
 assert.match(qaCss, /grid-template-areas:[\s\S]*"label"[\s\S]*"title"[\s\S]*"copy"[\s\S]*"status"/);
 assert.match(qaCss, /font-size:max\(\.78rem,13px\)/);
 
+// Final heading scale should stay strong without becoming billboard-sized.
+assert.match(humanCss, /font-size:clamp\(3rem,5\.4vw,4\.4rem\)/);
+assert.match(humanCss, /font-size:clamp\(1\.9rem,3\.15vw,2\.8rem\)/);
+assert.match(humanCss, /font-size:clamp\(2\.75rem,14vw,3\.55rem\)/);
+
 // Light-mode supporting text should not regress to washed-out inherited colors.
 assert.match(qaCss, /--muted:#4b6278/);
 assert.match(qaCss, /--muted-strong:#263f56/);
 assert.match(qaCss, /html\[data-theme="light"\] \.status-live/);
 assert.match(qaCss, /html\[data-theme="light"\] \.status-later/);
 
-console.log('Continuum visual QA smoke test passed.');
+console.log('Continuum visual QA and heading-scale smoke test passed.');
