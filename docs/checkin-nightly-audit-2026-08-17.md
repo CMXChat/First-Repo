@@ -67,6 +67,25 @@ Commit:
 
 `05204efdafb09101f4a75db138f4a66fc05935c4`
 
+### Matched runtime cache bust
+
+The final audit noticed that `checkin/index.html` still referenced old query-version strings for the two production scripts changed together tonight.
+
+That creates a mixed-cache risk where a browser could briefly combine a new `checkin.js` with an older `checkin-status-contract.js`.
+
+Fixed by cache-busting the pair together:
+
+```text
+checkin-status-contract.js?v=20260817-2
+checkin.js?v=20260817-9
+```
+
+Commit:
+
+`649a0250a963f1cf3a0591cf5b171183fba454c9`
+
+A direct commit comparison confirmed this HTML commit changed exactly those two asset-version lines and nothing else.
+
 ## Focused Lab repairs
 
 ### Active File count
@@ -135,6 +154,14 @@ The focused Lab has accumulated many incremental runtime/CSS layers because it s
 Do not keep growing compatibility shims indefinitely.
 
 Once the remaining Phase 1 gate is closed, prioritize the real PostgreSQL `continuity.md` / ContentAsset / ContentDraft / ContentVersion / LibraryFolder slice and progressively replace Lab persistence with protected backend APIs.
+
+## Validation visibility
+
+The relevant GitHub validation workflows are present and were tightened tonight.
+
+The connector's combined-status result for the final First-Repo commit returned no status entries, and its commit-workflow helper returned no runs because that helper does not reliably expose these push-triggered workflow runs in this context.
+
+Therefore this audit does **not** claim a final GitHub Actions green result without direct run evidence.
 
 ## Production safety tonight
 
