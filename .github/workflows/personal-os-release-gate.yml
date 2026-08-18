@@ -9,6 +9,7 @@ on:
       - 'doc/**'
       - 'assets/brief/**'
       - 'assets/personal-os-doc*'
+      - 'assets/continuum-doc-*'
       - 'assets/spaces-legacy-redirect.js'
       - 'assets/cmx-routes.json'
       - 'scripts/validate-personal-os-release.mjs'
