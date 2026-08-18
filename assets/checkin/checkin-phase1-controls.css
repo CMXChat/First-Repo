@@ -28,3 +28,17 @@ html[data-theme="light"] .phase1-section{background:#f7fbff}html[data-theme="lig
 .action-status-row .is-pending{opacity:.72}
 .action-status-row .is-pending strong{font-size:0!important;color:var(--muted)!important}
 .action-status-row .is-pending strong::after{content:"NOT ACTIVE";font-size:7px;font-weight:850;letter-spacing:.08em}
+
+/* Desktop Settings must own its width. The generic app dialog is intentionally only 440px. */
+#settingsDialog{width:min(680px,calc(100vw - 48px));max-width:680px;max-height:90dvh;overflow:hidden}
+#settingsDialog .phase1-settings-form{width:100%;max-width:100%;min-width:0;max-height:86dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+#settingsDialog .dialog-head,#settingsDialog .phase1-current,#settingsDialog .phase1-locked,#settingsDialog .phase1-private,#settingsDialog .phase1-section,#settingsDialog .phase1-grid,#settingsDialog .field-group,#settingsDialog .setting-note{min-width:0;max-width:100%}
+#settingsDialog .setting-note p,#settingsDialog .phase1-section-copy,#settingsDialog .phase1-help{max-width:100%;overflow-wrap:anywhere}
+#settingsDialog .phase1-input-unit{min-width:0;max-width:100%}
+#settingsDialog .phase1-input-unit input{min-width:0}
+
+@media(max-width:700px){
+  #settingsDialog{width:calc(100vw - 16px);max-width:calc(100vw - 16px);max-height:94dvh}
+  #settingsDialog .phase1-settings-form{width:100%;max-width:100%;max-height:92dvh;overflow-x:hidden;padding:15px}
+  .phase1-current{flex-wrap:wrap}
+}
