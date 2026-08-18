@@ -18,6 +18,7 @@ for (const filePath of [htmlPath, cssPath, editorialCssPath, continuumCssPath, c
 }
 
 const html = fs.readFileSync(htmlPath, 'utf8');
+const bodySource = html.slice(html.indexOf('<body>'));
 const css = fs.readFileSync(cssPath, 'utf8');
 const editorialCss = fs.readFileSync(editorialCssPath, 'utf8');
 const continuumCss = fs.readFileSync(continuumCssPath, 'utf8');
@@ -58,6 +59,15 @@ assert.match(html, /server-enforced authority/);
 assert.match(html, /Runtime/);
 assert.match(html, /provenance|Source/i);
 assert.match(html, /Freshness/);
+
+// Editorial contract for public /doc copy. Keep the writing direct and human.
+assert.doesNotMatch(bodySource, /\.\.\.|…/);
+assert.doesNotMatch(bodySource, /—/);
+assert.doesNotMatch(bodySource, /\bit(?:'|’)s not\b/i);
+assert.doesNotMatch(bodySource, /\bnot\b[^<.!?]{0,90}\bbut\b/i);
+assert.doesNotMatch(bodySource, /\bit(?:'|’)s\b[^<.!?]{0,90},\s*not\b/i);
+assert.doesNotMatch(bodySource, /\brather than\b/i);
+assert.doesNotMatch(bodySource, /\bdoes not need\b/i);
 
 for (const id of [
   'overview',
