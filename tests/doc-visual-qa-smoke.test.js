@@ -8,13 +8,16 @@ const root = process.cwd();
 const html = fs.readFileSync(path.join(root, 'doc/index.html'), 'utf8');
 const qaCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-qa.css'), 'utf8');
 const humanCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-human.css'), 'utf8');
+const originCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.css'), 'utf8');
 
 const promiseIndex = html.indexOf('/assets/continuum-doc-promise.css?v=20260818-2');
 const qaIndex = html.indexOf('/assets/continuum-doc-qa.css?v=20260818-1');
 const humanIndex = html.indexOf('/assets/continuum-doc-human.css?v=20260818-2');
+const originIndex = html.indexOf('/assets/continuum-doc-origin.css?v=20260818-1');
 assert.ok(promiseIndex >= 0, 'Promise stylesheet must remain loaded.');
 assert.ok(qaIndex > promiseIndex, 'Visual QA stylesheet must load after the main Continuum styles.');
-assert.ok(humanIndex > qaIndex, 'Human-scale and prose-balance stylesheet must load last.');
+assert.ok(humanIndex > qaIndex, 'Human-scale typography must load after the broad QA layer.');
+assert.ok(originIndex > humanIndex, 'The scoped origin prose layer must load after the general typography layer.');
 
 // Light mode must own a complete Afterlife palette at every viewport.
 assert.match(qaCss, /html\[data-theme="light"\] \.afterlife-section\{/);
@@ -51,10 +54,17 @@ assert.match(humanCss, /\.clarity-automation-copy/);
 assert.match(humanCss, /\.clarity-automation-primer\.clarity-automation-explainer/);
 assert.match(humanCss, /\.clarity-product-map-section \.hero-network/);
 
+// The origin explanation remains a quiet prose bridge into the Across Time visual.
+assert.match(originCss, /\.continuum-origin-note/);
+assert.match(originCss, /max-width:860px/);
+assert.match(originCss, /\.continuum-origin-copy p/);
+assert.match(originCss, /line-height:1\.72/);
+assert.match(originCss, /@media\(max-width:680px\)/);
+
 // Light-mode supporting text should not regress to washed-out inherited colors.
 assert.match(qaCss, /--muted:#4b6278/);
 assert.match(qaCss, /--muted-strong:#263f56/);
 assert.match(qaCss, /html\[data-theme="light"\] \.status-live/);
 assert.match(qaCss, /html\[data-theme="light"\] \.status-later/);
 
-console.log('Continuum visual QA, heading scale and prose-balance smoke test passed.');
+console.log('Continuum visual QA, origin prose, heading scale and prose-balance smoke test passed.');
