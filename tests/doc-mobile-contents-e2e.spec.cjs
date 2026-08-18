@@ -26,7 +26,7 @@ async function swipeLeft(page, selector) {
   });
 }
 
-test('mobile Continuum doc keeps navigation compact and final visuals readable', async ({ page }, testInfo) => {
+test('mobile Continuum doc stays readable, compact and visual', async ({ page }, testInfo) => {
   test.skip(!['chromium-android', 'webkit-iphone'].includes(testInfo.project.name), 'Mobile document navigation runs in touch browser projects.');
   test.setTimeout(45000);
 
@@ -40,7 +40,7 @@ test('mobile Continuum doc keeps navigation compact and final visuals readable',
   const mobileLinks = drawer.locator('.mobile-document-toc a');
 
   await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/assets/continuum-doc-final.css?v=20260818-1"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/continuum-doc-final.css?v=20260818-2"]')).toHaveCount(1);
   await expect(page.locator('link[href*="continuum-doc-v2"], link[href*="continuum-doc-mobile-v3"]')).toHaveCount(0);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -57,6 +57,7 @@ test('mobile Continuum doc keeps navigation compact and final visuals readable',
     const firstNode = document.querySelector('.hero-network .network-card');
     const afterlife = document.querySelector('.afterlife-section');
     const afterlifeCard = document.querySelector('.afterlife-step');
+    const intro = document.querySelector('.section-intro');
     return {
       triggerWidth: Math.round(trigger.getBoundingClientRect().width),
       triggerRight: Math.round(window.innerWidth - trigger.getBoundingClientRect().right),
@@ -64,7 +65,8 @@ test('mobile Continuum doc keeps navigation compact and final visuals readable',
       networkDisplay: getComputedStyle(network).display,
       nodePosition: getComputedStyle(firstNode).position,
       afterlifeBackground: getComputedStyle(afterlife).backgroundImage,
-      afterlifeCardBackground: getComputedStyle(afterlifeCard).backgroundColor
+      afterlifeCardBackground: getComputedStyle(afterlifeCard).backgroundColor,
+      introFontSize: parseFloat(getComputedStyle(intro).fontSize)
     };
   });
 
@@ -75,11 +77,12 @@ test('mobile Continuum doc keeps navigation compact and final visuals readable',
   expect(mobileVisualState.nodePosition).toBe('relative');
   expect(mobileVisualState.afterlifeBackground).toContain('linear-gradient');
   expect(mobileVisualState.afterlifeCardBackground).not.toBe('rgba(255, 255, 255, 0.035)');
+  expect(mobileVisualState.introFontSize).toBeGreaterThanOrEqual(15);
 
   await expect(page.locator('.process-map')).toBeVisible();
-  await expect(page.locator('.glance-grid')).toBeVisible();
-  await expect(page.locator('.ai-gateway')).toBeVisible();
-  await expect(page.locator('.ingestion-map')).toBeVisible();
+  await expect(page.locator('.ai-journey')).toBeVisible();
+  await expect(page.locator('.term-guide')).toBeVisible();
+  await expect(page.locator('.possibility-board')).toBeVisible();
   await expect(page.locator('.policy-ring')).toBeVisible();
   await expect(page.locator('.policy-config')).toHaveCount(4);
   await expect(page.locator('.afterlife-step.is-trigger')).toBeVisible();
@@ -98,7 +101,7 @@ test('mobile Continuum doc keeps navigation compact and final visuals readable',
   await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Afterlife');
 
   await page.locator('#engineering').scrollIntoViewIfNeeded();
-  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Programming stack');
+  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('How the code works');
   await trigger.click();
   const engineeringLink = drawer.locator('a[href="#engineering"]');
   await expect(engineeringLink).toHaveAttribute('aria-current', 'location');
@@ -116,7 +119,7 @@ test('mobile Continuum doc keeps navigation compact and final visuals readable',
   await expectNoHorizontalOverflow(page);
 });
 
-test('desktop Continuum doc keeps rail, network connectors and final visual system', async ({ page }, testInfo) => {
+test('desktop Continuum doc keeps rail, network connectors and readable visual system', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop document isolation runs once in Chromium.');
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
@@ -126,6 +129,7 @@ test('desktop Continuum doc keeps rail, network connectors and final visual syst
   await expect(page.locator('[data-mobile-contents-trigger="true"]')).toBeHidden();
   await expect(page.locator('.network-lines')).toBeVisible();
   await expect(page.locator('.afterlife-policy')).toBeVisible();
+  await expect(page.locator('.possibility-board')).toBeVisible();
   await expect(page.locator('.roadmap-line')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
