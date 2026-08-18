@@ -99,18 +99,45 @@ Keep the high-quality document visual system inherited from the original Spaces 
 Visual layers:
 
 - `assets/continuum-doc.css` = Continuum foundation visuals;
-- `assets/continuum-doc-v2.css` = current visual-first, shorter-document refinement.
+- `assets/continuum-doc-v2.css` = shorter visual-first document refinement;
+- `assets/continuum-doc-mobile-v3.css` = current mobile-specific map, process, timeline, chart and contrast layer loaded last.
+
+## Mobile visual contract
+
+The 2026-08-18 Samsung review exposed four concrete failures in the prior layout:
+
+1. the desktop absolute-positioned Continuum map caused overlapping nodes, clipped copy and large empty areas on a narrow phone;
+2. the floating Contents card covered the document while reading;
+3. the dark Afterlife cards stayed visually heavy inside light mode;
+4. the Afterlife action and status blocks lost contrast against the light page.
+
+Preserve the current corrections:
+
+- mobile Continuum nodes participate in normal CSS Grid flow;
+- Runtime remains visible in the mobile map instead of disappearing;
+- the Contents control collapses to a compact utility at phone widths;
+- the one-minute section uses a connected vertical process map;
+- the operating loop and Space cards use touch-friendly horizontal scroll lanes where that saves vertical space;
+- Afterlife light mode uses light high-contrast cards;
+- Afterlife shows the current 72h + 24h policy as a 96h ring chart with separate window/grace colors;
+- Afterlife uses a connected numbered timeline with state badges and timing meters;
+- approved continuity outcomes use readable two-column cards on phone;
+- the programming stack becomes a connected vertical pipeline on phone;
+- mobile visuals stay CSS/HTML-based and avoid heavy canvas/WebGL work.
+
+Do not restore absolute-positioned hero nodes below 680px. Do not restore the large floating Contents card on narrow phones.
 
 The current page intentionally includes these teaching visuals:
 
-- Continuum system orbit;
-- one-minute operating loop;
+- Continuum system map;
+- one-minute operating process;
 - AI-session vs Continuum-environment comparison;
 - provenance/freshness example;
 - Personal Brief preview;
 - Automation workflow + Connection catalog;
 - authority examples;
-- Afterlife timeline;
+- 72h/24h Afterlife policy chart;
+- Afterlife numbered timeline and timing meters;
 - browser/API/database programming stack;
 - Lab-to-product build path;
 - compact current / Lab / next / later roadmap.
