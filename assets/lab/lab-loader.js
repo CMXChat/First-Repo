@@ -106,13 +106,13 @@
     html = replaceRequired(
       html,
       "<title>Check In · Dead Man Switch</title>",
-      "<title>Check In Lab · Dead Man Switch</title>",
+      "<title>Continuum Lab</title>",
       "document title"
     );
     html = replaceRequired(
       html,
       "</head>",
-      `  <meta name="cmx-lab-build" content="${BUILD}" />\n${styleTags()}\n</head>`,
+      `  <meta name="description" content="Continuum Lab for private product, workflow and system experiments." />\n  <meta name="cmx-lab-build" content="${BUILD}" />\n${styleTags()}\n</head>`,
       "head close"
     );
     html = replaceRequired(
@@ -161,7 +161,7 @@
       shell.dataset.state = "error";
       shell.innerHTML = `
         <div class="lab-boot-card" role="alert">
-          <span class="lab-boot-kicker">CHECK IN LAB</span>
+          <span class="lab-boot-kicker">CONTINUUM LAB</span>
           <strong>Lab snapshot unavailable</strong>
           <p>The isolated workspace could not finish loading.</p>
           <small>${message.replace(/[&<>"']/g, "")}</small>
@@ -169,9 +169,9 @@
         </div>`;
       document.getElementById("labBootRetry")?.addEventListener("click", () => location.reload());
     } else if (typeof document !== "undefined" && document.body) {
-      document.body.textContent = "Check In Lab could not load.";
+      document.body.textContent = "Continuum Lab could not load.";
     }
-    if (typeof console !== "undefined") console.error("Check In Lab bootstrap failed", error);
+    if (typeof console !== "undefined") console.error("Continuum Lab bootstrap failed", error);
   }
 
   async function boot() {
