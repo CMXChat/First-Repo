@@ -9,10 +9,11 @@ const htmlPath = path.join(root, 'doc/index.html');
 const cssPath = path.join(root, 'assets/personal-os-doc.css');
 const editorialCssPath = path.join(root, 'assets/personal-os-doc-editorial.css');
 const continuumCssPath = path.join(root, 'assets/continuum-doc.css');
+const continuumV2CssPath = path.join(root, 'assets/continuum-doc-v2.css');
 const jsPath = path.join(root, 'assets/personal-os-doc.js');
 const routesPath = path.join(root, 'assets/cmx-routes.json');
 
-for (const filePath of [htmlPath, cssPath, editorialCssPath, continuumCssPath, jsPath, routesPath]) {
+for (const filePath of [htmlPath, cssPath, editorialCssPath, continuumCssPath, continuumV2CssPath, jsPath, routesPath]) {
   assert.ok(fs.existsSync(filePath), `Missing required Continuum document file: ${filePath}`);
 }
 
@@ -20,6 +21,7 @@ const html = fs.readFileSync(htmlPath, 'utf8');
 const css = fs.readFileSync(cssPath, 'utf8');
 const editorialCss = fs.readFileSync(editorialCssPath, 'utf8');
 const continuumCss = fs.readFileSync(continuumCssPath, 'utf8');
+const continuumV2Css = fs.readFileSync(continuumV2CssPath, 'utf8');
 const js = fs.readFileSync(jsPath, 'utf8');
 const routes = JSON.parse(fs.readFileSync(routesPath, 'utf8'));
 
@@ -31,9 +33,10 @@ assert.match(html, /<body>\s*<main>/);
 assert.match(html, /meta name="referrer" content="no-referrer"/);
 assert.match(html, /meta name="robots" content="noindex, nofollow/);
 assert.match(html, /<title>Continuum \| Product, Architecture and Build Overview<\/title>/);
-assert.match(html, /This public noindex document combines working production pieces, active prototypes and planned architecture/);
-assert.match(html, /personal-os-doc\.js\?v=20260818-1/);
+assert.match(html, /working production, active prototypes and planned platform work/);
+assert.match(html, /personal-os-doc\.js\?v=20260818-2/);
 assert.match(html, /continuum-doc\.css\?v=20260818-1/);
+assert.match(html, /continuum-doc-v2\.css\?v=20260818-1/);
 assert.match(html, /<h1 id="pageTitle">Continuum<\/h1>/);
 assert.match(html, /Afterlife/);
 assert.match(html, /The Dead Man Switch/);
@@ -45,32 +48,31 @@ assert.match(html, /Python \+ FastAPI/);
 assert.match(html, /PostgreSQL/);
 assert.match(html, /React \/ TypeScript/);
 assert.match(html, /Codespaces \+ Dev Container/);
-assert.match(html, /Alembic/);
-assert.match(html, /OpenAPI/);
+assert.match(html, /Alembic migrations/);
+assert.match(html, /OpenAPI \+ generated client/);
 assert.match(html, /APIs \+ MCP/);
 assert.match(html, /WhatsApp Business/);
-assert.match(html, /Voice \+ SMS/);
+assert.match(html, /SMS \+ voice/);
 assert.match(html, /Finance/);
-assert.match(html, /AI Gateway/);
-assert.match(html, /AuthorityGrant/);
+assert.match(html, /server-enforced authority/);
 assert.match(html, /Runtime/);
+assert.match(html, /provenance|Source/i);
+assert.match(html, /Freshness/);
 
 for (const id of [
   'overview',
   'difference',
   'spaces',
-  'context',
-  'automations',
-  'connections',
-  'ai',
+  'action',
   'afterlife',
   'engineering',
   'build',
-  'status',
-  'architecture'
+  'status'
 ]) {
   assert.match(html, new RegExp(`id="${id}"`), `Missing required section: ${id}`);
 }
+
+assert.equal((html.match(/class="document-section continuum-section/g) || []).length, 8);
 
 const docRoute = routes.routes.find((route) => route.path === '/doc/');
 assert.ok(docRoute, '/doc/ must remain registered.');
@@ -83,6 +85,7 @@ assert.match(docRoute.description, /Afterlife: The Dead Man Switch/);
 assert.match(js, /IntersectionObserver/);
 assert.match(js, /window\.print/);
 assert.match(js, /aria-current/);
+assert.match(js, /continuum_doc_theme_v1/);
 assert.match(js, /spaces_doc_theme_v1/);
 assert.doesNotMatch(js, /plainCopy|createTreeWalker\(document\.body, NodeFilter\.SHOW_TEXT\).*MutationObserver/s);
 
@@ -95,11 +98,14 @@ assert.match(editorialCss, /classic light refinement/i);
 assert.match(editorialCss, /html\[data-theme="light"\] \.document-paper/);
 assert.match(continuumCss, /\.continuum-map/);
 assert.match(continuumCss, /\.afterlife-section/);
-assert.match(continuumCss, /\.connection-board/);
-assert.match(continuumCss, /\.ai-gateway-stage/);
-assert.match(continuumCss, /\.dev-stack/);
-assert.match(continuumCss, /@media \(max-width: 680px\)/);
-assert.match(continuumCss, /@media \(prefers-reduced-motion: reduce\)/);
-assert.match(continuumCss, /@media print/);
+assert.match(continuumV2Css, /\.tour-grid/);
+assert.match(continuumV2Css, /\.leverage-stage/);
+assert.match(continuumV2Css, /\.brief-preview/);
+assert.match(continuumV2Css, /\.workflow-card/);
+assert.match(continuumV2Css, /\.afterlife-track/);
+assert.match(continuumV2Css, /\.stack-visual/);
+assert.match(continuumV2Css, /@media \(max-width: 680px\)/);
+assert.match(continuumV2Css, /@media \(prefers-reduced-motion: reduce\)/);
+assert.match(continuumV2Css, /@media print/);
 
-console.log('Continuum document smoke test passed.');
+console.log('Continuum visual-first document smoke test passed.');
