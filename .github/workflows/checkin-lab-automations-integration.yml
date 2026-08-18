@@ -1,0 +1,141 @@
+name: Check In Lab Automations Integration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-automation-builder.js'
+      - 'assets/lab/lab-automations-main-bridge.js'
+      - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-app-v2.js'
+      - '.github/workflows/checkin-lab-automations-integration.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-automation-builder.js'
+      - 'assets/lab/lab-automations-main-bridge.js'
+      - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-app-v2.js'
+      - '.github/workflows/checkin-lab-automations-integration.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate integration JavaScript
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-main-bridge.js
+          node --check assets/lab/lab-automations-route-integration.js
+          node --check assets/lab/lab-automations-app-v2.js
+
+      - name: Validate shared Lab contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          loader = Path('assets/lab/lab-loader.js').read_text(encoding='utf-8')
+          old_builder = Path('assets/lab/lab-automation-builder.js').read_text(encoding='utf-8')
+          focused = Path('assets/lab/lab-automations-app-v2.js').read_text(encoding='utf-8')
+          bridge = Path('assets/lab/lab-automations-main-bridge.js').read_text(encoding='utf-8')
+          route = Path('assets/lab/lab-automations-route-integration.js').read_text(encoding='utf-8')
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+
+          required = {
+              'loader': (loader, [
+                  'lab-automation-builder.js',
+                  'lab-automations-main-bridge.js',
+                  'Focused Automations bridge was not inserted',
+              ]),
+              'bridge': (bridge, [
+                  'cmx-lab-automations-v1',
+                  '/lab/automations/',
+                  'One Automation editor',
+                  'data-focused-automation',
+                  'labAutomationsIntegrated',
+              ]),
+              'route': (route, [
+                  '/lab/#lab=view%3Aactions',
+                  'data-open=',
+                  '[data-new]',
+                  'labAutomationsRouteIntegration',
+              ]),
+              'focused html': (html, [
+                  '/assets/lab/lab-automations-route-integration.js?v=20260818-1',
+              ]),
+          }
+
+          for label, (text, terms) in required.items():
+              for term in terms:
+                  if term not in text:
+                      sys.exit(f'{label} missing integration contract: {term}')
+
+          storage = 'cmx-lab-automations-v1'
+          if storage not in old_builder or storage not in focused or storage not in bridge:
+              sys.exit('Lab and focused Automations no longer share the same draft store')
+
+          if loader.index('lab-automation-builder.js') > loader.index('lab-automations-main-bridge.js'):
+              sys.exit('focused bridge must load after the legacy Lab builder adapter')
+          if loader.index('lab-automations-main-bridge.js') > loader.index('lab-acceptance.js'):
+              sys.exit('focused bridge must load before final Lab acceptance hardening')
+
+          print('Lab hub and focused Automations share one draft store, one editor route, and bidirectional navigation.')
+          PY
+
+      - name: Browser integration smoke
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+          const snapshot = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
+          fs.writeFileSync('lab-integration-smoke.html', transformSnapshot(snapshot).replace('upgrade-insecure-requests', ''), 'utf8');
+          NODE
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/checkin-lab-integration-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab-integration-smoke.html' EXIT
+          sleep 1
+
+          dump() {
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=8000 "$@" --dump-dom
+          }
+
+          dump http://127.0.0.1:8000/lab-integration-smoke.html > /tmp/lab-hub.html
+          grep -q 'data-lab-automations-integrated="ready"' /tmp/lab-hub.html
+          grep -q 'id="labAutomationWorkspace"' /tmp/lab-hub.html
+          grep -q 'Automation workspace' /tmp/lab-hub.html
+          grep -q 'Open Automations' /tmp/lab-hub.html
+          grep -q 'WORKSPACE' /tmp/lab-hub.html
+          grep -q 'CONNECTED' /tmp/lab-hub.html
+
+          dump 'http://127.0.0.1:8000/lab/automations/?automation=auto-grace-escalation&from=lab' > /tmp/focused-deeplink.html
+          grep -q 'data-lab-automations-route-integration="ready"' /tmp/focused-deeplink.html
+          grep -q 'class="editor-page"' /tmp/focused-deeplink.html
+          grep -q 'Grace escalation' /tmp/focused-deeplink.html
+          grep -q 'href="/lab/#lab=view%3Aactions"' /tmp/focused-deeplink.html
+
+          dump 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/focused-new.html
+          grep -q 'data-lab-automations-route-integration="ready"' /tmp/focused-new.html
+          grep -q 'class="editor-page"' /tmp/focused-new.html
+          grep -q 'Name the automation' /tmp/focused-new.html
+
+          echo 'Lab hub ↔ focused Automations integration passed on headless Chromium.'
