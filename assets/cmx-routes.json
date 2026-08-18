@@ -1,6 +1,6 @@
 {
-  "version": 30,
-  "updated": "2026-08-07",
+  "version": 31,
+  "updated": "2026-08-18",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
     {"path":"/directory/","name":"Operations Directory","description":"Approved directory for current active private tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -17,7 +17,7 @@
     {"path":"/ai/","name":"AI Control Blueprint","description":"Focused plan for normal-language development, project context, GitHub actions, MCP, assistants, sandboxes, staging, approvals, automation and AI operations.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/updates/","name":"CMX Platform Notes & Brief","description":"Terminal-style daily notes plus the complete linked project briefing for AI, APIs, frontend and backend connection, security, phases, current status and platform changes.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/plans/","name":"CMX Plans","description":"Dated private product and platform plan entries, including the Spaces context-driven workspace direction.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
-    {"path":"/doc/","name":"Spaces Product Overview","description":"Public noindex product narrative explaining Spaces as a context-driven workspace for memory, documents, tasks, shared calendars, people, connected accounts, daily rituals, clear permissions and useful action.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/doc/","name":"Continuum Product & Architecture Overview","description":"Public noindex master overview of Continuum, including Spaces, private context, Automations, Connections, AI authority, Afterlife: The Dead Man Switch, engineering environment, current build and long-term capability direction.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/spaces/","name":"Spaces Demo","description":"Primary public noindex demonstration of Spaces with focused Brief views, weather, stats, memory, media, shared-calendar coordination, alarm and voice concepts, permissions and scenario-specific workspaces.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/brief/","name":"Legacy Spaces Demo Route","description":"Compatibility route that redirects old Brief links and bookmarks to /spaces/ while preserving query strings and section hashes.","category":"Legacy","status":"Legacy","visibility":"Legacy","directory":false,"gated":false},
     {"path":"/brief-next/","name":"Spaces Brief Rollback Snapshot","description":"Noindex pre-migration staging and rollback snapshot retained for comparison while /spaces/ is the active product route.","category":"Product Concept","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
