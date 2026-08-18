@@ -75,7 +75,7 @@ jobs:
               '/assets/lab/lab-automations-app-v2.js?v=20260817-5',
               '/assets/lab/lab-automations-dropdown-runtime.js',
               '/assets/lab/lab-automations-friendly-runtime.js?v=20260817-3',
-              '/assets/lab/lab-automations-content-runtime.js?v=20260817-1',
+              '/assets/lab/lab-automations-content-runtime.js?v=20260817-2',
               'noindex,nofollow',
           ]
           required_js = [
