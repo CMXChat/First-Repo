@@ -16,16 +16,18 @@ Read in this order before substantial work:
 3. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — executable checklist and open gates.
 4. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-READ-FIRST.md` — required product-model gate before backend Phase 2A.
 5. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-PLATFORM-ARCHITECTURE.md` — bird’s-eye platform/domain architecture.
-6. `CMXChat/jay-app/specs/003-server-checkin/AI-CAPABILITY-AND-TOOLS-CONTRACT.md` — general future AI/tool/capability boundary.
-7. `CMXChat/jay-app/specs/003-server-checkin/DELEGATED-AUTHORITY-BACKEND-CONTRACT.md` — standing contingency authority/activation rules.
-8. `CMXChat/jay-app/specs/003-server-checkin/COMMUNICATION-ACTIONS-BACKEND-CONTRACT.md` — Email/Message/Discord typed delivery contract.
-9. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md` — durable production/automation roadmap.
-10. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md` — production frontend/backend integration detail.
-11. `CMXChat/jay-app/specs/003-server-checkin/AUTOMATION-FRONTEND-CONTRACT.md` — focused Automation builder ↔ backend contract.
-12. `docs/checkin-product-design-CURRENT.md` — current human-interface/mobile design rules.
-13. `docs/checkin-communications-ai-CURRENT.md` — current Email + AI Task frontend contract.
-14. `docs/checkin-library-premium-CURRENT.md` — current focused Library UX contract.
-15. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — backend release/deployment continuity.
+6. `CMXChat/jay-app/specs/003-server-checkin/CAPABILITIES-CONNECTIONS-AI-ROADMAP.md` — long-term adaptable capability/Connection/AI expansion roadmap.
+7. `CMXChat/jay-app/specs/003-server-checkin/AI-CAPABILITY-AND-TOOLS-CONTRACT.md` — general future AI/tool/capability boundary.
+8. `CMXChat/jay-app/specs/003-server-checkin/DELEGATED-AUTHORITY-BACKEND-CONTRACT.md` — standing contingency authority/activation rules.
+9. `CMXChat/jay-app/specs/003-server-checkin/COMMUNICATION-ACTIONS-BACKEND-CONTRACT.md` — Email/Message/Discord typed delivery contract.
+10. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md` — durable production/automation roadmap.
+11. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md` — production frontend/backend integration detail.
+12. `CMXChat/jay-app/specs/003-server-checkin/AUTOMATION-FRONTEND-CONTRACT.md` — focused Automation builder ↔ backend contract.
+13. `docs/checkin-product-design-CURRENT.md` — current human-interface/mobile design rules.
+14. `docs/checkin-communications-ai-CURRENT.md` — current Email + AI Task frontend contract.
+15. `docs/checkin-future-capabilities-CURRENT.md` — future Connections/Tool/financial/MCP/voice capability UX direction.
+16. `docs/checkin-library-premium-CURRENT.md` — current focused Library UX contract.
+17. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — backend release/deployment continuity.
 
 Do not reconstruct architecture from chat memory when these files exist.
 
@@ -273,22 +275,137 @@ Backend contract:
 
 `CMXChat/jay-app/specs/003-server-checkin/DELEGATED-AUTHORITY-BACKEND-CONTRACT.md`
 
-# 7. Other contact/action methods
+# 7. Adaptable future capability model
+
+Check In is deliberately **not** being architected with a universal rule that AI can never perform a whole class of consequential operation forever.
+
+The long-term model is a typed Capability/Tool Registry plus Connection Catalog.
+
+Each capability may conceptually be governed as:
+
+```text
+disabled
+read_only
+approval_required
+standing_grant_allowed
+human_only
+```
+
+This lets capabilities mature safely as Runtime, providers, product policy and external constraints mature.
+
+Examples of future families include:
+
+```text
+COMMUNICATION
+Email
+SMS / MMS
+WhatsApp Business
+Discord
+Slack / Teams / Telegram
+Push
+Voice calls
+
+WORK / PRODUCTIVITY
+Calendar
+Drive/storage
+GitHub
+ClickUp/Asana/Jira/etc.
+CRM / support / documents
+
+OPERATIONS
+Monitoring
+DNS / hosting / cloud typed operations
+approved API actions
+
+FINANCE
+bank/credit/brokerage read + analysis
+transaction/order drafts
+explicitly supported transfers/payments/trades
+```
+
+High-consequence capabilities are not automatically autonomous.
+
+A tool such as `bank.transfer` or `brokerage.place_order` may begin disabled or approval-required. If a future provider/product policy explicitly supports it, the architecture can represent a narrowly bounded standing AuthorityGrant instead of requiring a redesign.
+
+Possible constraints include approved accounts/payees/instruments, maximum transaction/aggregate value, order type, time window, transaction count and explicit prohibitions on new payees/withdrawal destinations/security changes.
+
+AI never gets to invent those permissions.
+
+Canonical backend roadmap:
+
+`CMXChat/jay-app/specs/003-server-checkin/CAPABILITIES-CONNECTIONS-AI-ROADMAP.md`
+
+Frontend/product companion:
+
+`docs/checkin-future-capabilities-CURRENT.md`
+
+# 8. Network coordination / acting through people
+
+A future Agent may also achieve approved objectives by coordinating people in the owner’s network.
+
+Examples:
+
+```text
+request action from approved contact
+follow up
+schedule meeting
+request confirmation
+record completion
+```
+
+Person-mediated action is **not a loophole** around direct-tool policy.
+
+If a transaction/outcome is forbidden, AI may not bypass that restriction by asking someone else to perform it.
+
+A valid AuthorityGrant may explicitly authorize a bounded person-mediated outcome, such as asking an approved accountant to pay one named invoice within exact limits.
+
+This uses the same:
+
+- Audience;
+- Conversation;
+- AuthorityGrant;
+- Runtime;
+- limits;
+- Audit.
+
+# 9. MCP, APIs and AI-provider portability
+
+MCP is planned in both directions.
+
+```text
+External AI
+→ Check In MCP server
+→ typed Check In tools
+→ normal domain services/policy/Audit
+```
+
+and later:
+
+```text
+Check In Agent
+→ approved external MCP Connection
+→ discovered tool reviewed/mapped into Tool Registry
+→ risk/availability policy
+→ explicit grant
+```
+
+An external MCP server advertising a tool does not automatically authorize AI to use it.
+
+Check In should also use typed provider/API adapters and avoid a default architecture of arbitrary URL + secret + arbitrary JSON.
+
+Long-term AI provider direction is a Check In AI Gateway so model/provider choice can evolve without rebuilding Automations.
+
+Model policy may consider reasoning/vision/audio capability, privacy, latency, cost, availability and reliability.
+
+Model intelligence and tool authority remain separate.
+
+# 10. Other contact/action methods
 
 Do **not** build a separate architecture for every provider.
 
 Email and AI Task establish the reusable Action framework.
 
-Later typed methods can reuse the same domains:
-
-```text
-Message/SMS
-Discord
-File/Document release/handoff
-approved Web Request/API mutation
-```
-
-Reuse where appropriate:
+Later typed methods reuse the same domains where appropriate:
 
 - Audience;
 - ContentVersion;
@@ -300,7 +417,7 @@ Reuse where appropriate:
 
 Channel-specific semantics remain typed. For example CC/BCC is Email-specific and should not be forced onto SMS/Discord.
 
-# 8. Bird’s-eye platform direction
+# 11. Bird’s-eye platform direction
 
 Check In is a private information, automation, runtime, and bounded-delegation control plane.
 
@@ -317,7 +434,7 @@ AI          = bounded intelligence using the same typed services
 
 The Switch is one Trigger source inside that architecture.
 
-# 9. Stable-ID/service rule
+# 12. Stable-ID/service rule
 
 Names, filenames and paths are presentation, not identity.
 
@@ -335,7 +452,7 @@ MCP client ────┘
 
 Do not create machine-only god-mode database/provider endpoints.
 
-# 10. Backend plan from here
+# 13. Backend plan from here
 
 Do not begin provider/scheduler/AI execution while the Phase 1 acceptance gate remains open.
 
@@ -367,7 +484,9 @@ Then complete T041–T049 typed Automation definitions, including definition-tim
 
 Authority activation, provider send and AI execution remain later Runtime phases.
 
-# 11. Design/security rules
+Do not divert Phase 2A into building the entire future capability catalog.
+
+# 14. Design/security rules
 
 Preserve:
 
@@ -386,7 +505,7 @@ Preserve:
 - server-enforced approval/authority;
 - prompt text never expands authority.
 
-# 12. Security cleanup still owed
+# 15. Security cleanup still owed
 
 An SMTP credential was exposed earlier in diagnostic output. Never reproduce it in chat, docs, commits, prompts, or logs.
 
