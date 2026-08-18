@@ -1,220 +1,210 @@
-# Continuum Product Identity and Overview — CURRENT
+# Continuum Product Identity and Overview - CURRENT
 
 Date: 2026-08-18
-Status: Canonical frontend/product naming and public-overview contract
+Status: Canonical frontend/product naming and `/doc/` contract
 
 # Product identity
 
-**Continuum** is the umbrella product/system being built across the existing Spaces, Check In, Automation Lab and `jay-app` work.
+**Continuum** is the umbrella product across Spaces, Check In, the Automation Lab and `jay-app`.
 
 Use these names consistently:
 
-- **Continuum** = the overall private context, automation, Runtime, Connections and bounded-AI control plane.
-- **Spaces** = the briefing/context experience that turns approved information into a useful current view for a person or group.
-- **Automations** = typed definitions for triggers, rules, Actions, timing and review.
-- **Connections** = provider/API/MCP access to outside data and capabilities.
-- **Runtime** = durable execution history and orchestration: Runs, waits, retries, provider attempts, approvals, acknowledgements, limits and results.
-- **Afterlife** = **The Dead Man Switch**, the continuity experience that uses the same timing, information, people, Automation, Connection, authority and Runtime architecture when the owner stops responding.
-- **Check In** remains the current protected application route/backend program name in code and existing specs. Do not perform a broad technical rename merely because the umbrella product now has a name.
+- **Continuum** = private context, automation, Runtime, Connections and bounded AI under one control plane.
+- **Spaces** = briefing/context experience for approved personal, family, business and continuity information.
+- **Automations** = typed Trigger, Rule, Action, Timing and Review definitions.
+- **Connections** = provider, API and MCP access to outside information and capabilities.
+- **Runtime** = durable Runs, waits, retries, attempts, approvals, acknowledgements, limits and results.
+- **Afterlife** = **The Dead Man Switch**, using the same timing, information, people, policy, Automation, Connection, authority and Runtime architecture when the owner stops responding.
+- **Check In** remains the protected application/backend program name in current code and specs.
 
 # `/doc/` role
 
 `https://db.cmxchat.com/doc/` is the master public noindex visual explanation of Continuum.
 
-The current document is intentionally **visual-first and shorter than the earlier architecture-heavy version**. It uses eight main reading sections:
+The finished page uses eight reading sections:
 
 1. Continuum in one minute;
-2. why AI has more leverage inside durable Continuum state;
+2. AI inside Continuum;
 3. Spaces and incoming context;
-4. Automations, Connections, tools and authority;
+4. Automations and Connections;
 5. Afterlife: The Dead Man Switch;
-6. the real programming and engineering environment;
-7. the Lab → contract → backend → protected-product build path;
-8. current production truth and the ordered direction from here.
+6. the programming stack;
+7. Lab to protected-product build path;
+8. current build order.
 
-The page still carries the deeper architecture through diagrams, product-style previews and concrete examples. It should feel understandable to a normal reader before it feels comprehensive to an engineer.
+The page teaches through process maps, network diagrams, product-style UI, status graphics and short explanations. A normal reader should understand the product before reaching the deeper engineering material.
 
-The page is a product/architecture document, not a generic marketing landing page.
+# Final visual architecture
 
-# Reading hierarchy
+Continuum-specific `/doc/` styling is consolidated into:
 
-Preserve three levels of depth:
+`assets/continuum-doc-final.css`
+
+The page no longer loads the earlier Continuum v1, v2 or mobile-v3 visual layers.
+
+Shared document infrastructure remains in the existing `/doc/` base files for:
+
+- light/dark theme;
+- sticky desktop contents rail;
+- compact mobile Contents drawer;
+- reading progress;
+- print behavior;
+- accessibility and reduced motion.
+
+The final page intentionally includes:
+
+- central Continuum network with connected Directory, Spaces, Library, AI, Connections, Automations and Runtime modules;
+- five-stage Receive -> Store -> Policy -> Act -> Audit process map;
+- current production Check In state summary;
+- replaceable AI gateway over the same protected context and tools;
+- server-side capability/authority examples;
+- Spaces ingestion and provenance visual;
+- Personal Brief preview;
+- Automation workflow timeline;
+- Connection catalog and authority modes;
+- configurable Afterlife timing/policy visual;
+- emphasized Incident trigger;
+- approved continuity outcome branches;
+- browser -> FastAPI -> PostgreSQL request flow;
+- Lab -> contract -> backend -> protected API -> `/checkin/` build path;
+- first `continuity.md` private-data slice;
+- NOW -> NEXT -> RUNTIME -> LATER roadmap.
+
+# Mobile visual contract
+
+The Samsung review established these permanent rules:
+
+- mobile product maps use normal CSS flow;
+- the desktop absolute-positioned map never controls phone layout;
+- the mobile Contents control stays compact and sits outside reading content;
+- the desktop `Active development` rail panel is hidden on phone;
+- mobile touch targets remain comfortably readable;
+- important processes become vertical timelines on narrow screens;
+- compact horizontal card lanes are allowed where they reduce unnecessary page height;
+- light-mode Afterlife uses strong light-mode contrast;
+- the Incident trigger receives stronger visual emphasis than ordinary timing steps;
+- Runtime remains visible in the product map;
+- HTML, CSS and inline SVG provide the visual layer;
+- Canvas/WebGL-heavy presentation stays out of this page;
+- broad document-wide MutationObserver behavior stays prohibited because of the proven Samsung freeze.
+
+# Afterlife timing truth
+
+The 72h + 24h values are the **current production configuration**. They are not a permanent product limit.
+
+Phase 1 already supports:
+
+- configurable primary check-in interval;
+- configurable grace interval;
+- immutable policy versions;
+- current/current-window policy pointers;
+- pause/resume;
+- one-time deadline override;
+- reconciliation;
+- durable Incident snapshots and lifecycle;
+- server-authoritative UTC/PostgreSQL timing;
+- Audit and integrity protection.
+
+The current production policy is:
 
 ```text
-FIRST SCREEN
-what Continuum is + the main product map
-
-FAST TOUR
-receive → remember → reason → act → update
-why durable state gives AI more leverage
-Spaces / Automations / Connections / Afterlife
-
-DEEPER READER
-programming stack
-backend boundaries
-Lab → production method
-current vs next vs later
+protected check in
+-> authoritative server timestamp
+-> 72 elapsed hours
+-> deadline
+-> 24 elapsed hours grace
+-> triggered Incident
 ```
 
-A reader should understand the basic idea without reading every paragraph.
+`/doc/` must label 72h + 24h as the current production policy while showing that interval and grace are configurable now.
 
-# Writing rules for `/doc/`
+Provider execution, durable waits/retries, acknowledgements, inbound replies and autonomous coordination remain later Runtime work.
 
-Keep the page concrete and technical enough to be credible while remaining readable to someone learning backend development.
-
-Preserve these editorial rules:
-
-- one H1;
-- connected paragraphs;
-- visuals do much of the teaching;
-- short section introductions;
-- no ellipses;
-- no em dashes;
-- avoid formulaic contrast copy such as `it's not X, it's Y` or `not X but Y`;
-- avoid generic AI/SaaS slogans;
-- avoid a forced tagline for every product area;
-- explain real mechanisms and examples instead of making broad claims;
-- label current production, active prototype and planned architecture truthfully;
-- avoid restoring long architecture prose when a diagram already teaches the same thing.
-
-# Visual rules
-
-Keep the high-quality document visual system inherited from the original Spaces `/doc/`:
-
-- light first paint;
-- strong dark mode;
-- sticky desktop contents rail;
-- mobile Contents drawer;
-- reading progress;
-- print support;
-- CMX/Intel-like blue and restrained violet accents;
-- technical grids, architecture maps and real product-style UI previews;
-- varied section rhythm so every section does not look like the same card grid;
-- subtle motion only;
-- reduced-motion support;
-- no broad document-wide MutationObserver;
-- no heavy canvas/WebGL presentation layer;
-- mobile layout must remain usable on Samsung/Chrome-class devices.
-
-Visual layers:
-
-- `assets/continuum-doc.css` = Continuum foundation visuals;
-- `assets/continuum-doc-v2.css` = shorter visual-first document refinement;
-- `assets/continuum-doc-mobile-v3.css` = current mobile-specific map, process, timeline, chart and contrast layer loaded last.
-
-## Mobile visual contract
-
-The 2026-08-18 Samsung review exposed four concrete failures in the prior layout:
-
-1. the desktop absolute-positioned Continuum map caused overlapping nodes, clipped copy and large empty areas on a narrow phone;
-2. the floating Contents card covered the document while reading;
-3. the dark Afterlife cards stayed visually heavy inside light mode;
-4. the Afterlife action and status blocks lost contrast against the light page.
-
-Preserve the current corrections:
-
-- mobile Continuum nodes participate in normal CSS Grid flow;
-- Runtime remains visible in the mobile map instead of disappearing;
-- the Contents control collapses to a compact utility at phone widths;
-- the one-minute section uses a connected vertical process map;
-- the operating loop and Space cards use touch-friendly horizontal scroll lanes where that saves vertical space;
-- Afterlife light mode uses light high-contrast cards;
-- Afterlife shows the current 72h + 24h policy as a 96h ring chart with separate window/grace colors;
-- Afterlife uses a connected numbered timeline with state badges and timing meters;
-- approved continuity outcomes use readable two-column cards on phone;
-- the programming stack becomes a connected vertical pipeline on phone;
-- mobile visuals stay CSS/HTML-based and avoid heavy canvas/WebGL work.
-
-Do not restore absolute-positioned hero nodes below 680px. Do not restore the large floating Contents card on narrow phones.
-
-The current page intentionally includes these teaching visuals:
-
-- Continuum system map;
-- one-minute operating process;
-- AI-session vs Continuum-environment comparison;
-- provenance/freshness example;
-- Personal Brief preview;
-- Automation workflow + Connection catalog;
-- authority examples;
-- 72h/24h Afterlife policy chart;
-- Afterlife numbered timeline and timing meters;
-- browser/API/database programming stack;
-- Lab-to-product build path;
-- compact current / Lab / next / later roadmap.
-
-# Core product explanation
-
-Continuum receives approved information from people, files, APIs, MCP, provider sync, webhooks and future supported sources. The backend normalizes that information into durable protected state with identity, source, time, freshness and permissions attached.
-
-Spaces can reduce that state into a current Brief. AI can retrieve an approved task-specific slice and reason over it. Automations can define when work becomes eligible. Runtime can eventually execute approved Actions, wait, retry, receive replies, enforce limits and preserve what happened. Results can update state and affect the next Brief or decision.
-
-Conceptual loop:
+# Core product loop
 
 ```text
 RECEIVE
-→ NORMALIZE
-→ REMEMBER
-→ BUILD CONTEXT
-→ REASON
-→ DECIDE
-→ ACT
-→ OBSERVE RESULT
-→ UPDATE STATE
+-> NORMALIZE
+-> STORE
+-> BUILD CONTEXT
+-> APPLY POLICY
+-> REASON / DECIDE
+-> ACT
+-> OBSERVE RESULT
+-> UPDATE STATE
 ```
 
-# Why the AI layer becomes more useful
+Continuum receives approved information from people, files, APIs, MCP, provider sync, webhooks and future supported sources. The backend keeps identity, source, time, freshness and permissions with durable state.
+
+Spaces can reduce that state into a current Brief. AI can retrieve an approved task-specific slice. Automations define when work becomes eligible. Runtime later carries eligible work through execution, waits, retries, replies and final results.
+
+# AI and authority
 
 The durable application environment owns:
 
 - People and Organizations;
-- Groups/Audiences;
+- Groups and Audiences;
 - Library content and files;
-- records and source provenance;
-- current state and freshness;
+- source provenance and freshness;
 - Conversations;
-- Automations and immutable versions;
+- Automation definitions and immutable versions;
 - Connections;
-- tool/capability policy;
+- capability policy;
 - AuthorityGrants;
 - Runtime history;
 - results and Audit.
 
-AI models are replaceable reasoning providers over that environment. A stronger future model can use the same protected state and typed tools without rebuilding the user's world from prompt history.
+AI models are replaceable reasoning providers over that environment. Human UI, AI tools and future MCP adapters use the same typed domain services and server-side authority rules.
 
-# Ingestion/context direction
+Capability modes can represent:
 
-The public document includes the receive → normalize → context side of the architecture because input quality is as important as output capability.
+- read only;
+- approval required;
+- bounded standing authority;
+- owner control.
 
-Canonical backend semantics belong in:
-
-`CMXChat/jay-app/specs/003-server-checkin/CONTEXT-INGESTION-PROVENANCE-BACKEND-CONTRACT.md`
-
-That contract governs APIs, MCP resources, webhooks, sync, provenance, freshness, observations/events/messages, context building and feedback from Runtime results.
+The same architecture can later support supported banking, payment or trading actions and person-mediated coordination when explicit policy, provider support and safeguards exist.
 
 # Current routes and build method
 
 - `/spaces/` = active Spaces demonstration.
 - `/lab/automations/` = active Automation UX proving ground.
-- `/checkin/` = protected real product surface for server-backed Check In and later accepted Continuum capabilities.
-- `CMXChat/First-Repo` = current static/public/prototype source.
+- `/checkin/` = protected real product surface.
+- `CMXChat/First-Repo` = current public/static/prototype source.
 - `CMXChat/jay-app` = FastAPI/React/PostgreSQL protected application/backend source.
 
-Accepted product work follows:
+Accepted work follows:
 
 ```text
 Lab UX
-→ backend contract
-→ PostgreSQL/domain service
-→ protected FastAPI operation
-→ accepted UI migrated into /checkin/
-→ durable Runtime/provider execution only after its prerequisites exist
+-> backend contract
+-> PostgreSQL/domain service
+-> protected FastAPI operation
+-> accepted UI in /checkin/
+-> durable Runtime/provider execution after prerequisites
 ```
 
-Do not turn Lab into a permanent second production application.
+# Writing rules for `/doc/`
 
-# Long-term adaptability
+Preserve:
 
-Continuum is intended to grow as APIs, MCP ecosystems, communication providers, devices and AI models improve.
+- one H1;
+- connected paragraphs;
+- short section introductions;
+- visuals doing most of the teaching;
+- no ellipses;
+- no em dashes;
+- no formulaic `it's not X, it's Y` or `not X but Y` copy;
+- no generic AI/SaaS slogans;
+- no forced tagline for every product area;
+- truthful labels for production, prototype and planned work;
+- real mechanisms and examples instead of broad claims.
+
+The smoke test enforces the main editorial patterns.
+
+# Long-term capability direction
+
+Continuum is designed to grow with APIs, MCP ecosystems, communication providers, devices and stronger AI models.
 
 Potential capability families include:
 
@@ -222,18 +212,16 @@ Potential capability families include:
 - SMS/MMS;
 - WhatsApp Business;
 - Discord;
-- Slack/Teams/Telegram;
+- Slack, Teams and Telegram;
 - push notifications;
-- voice/phone;
+- voice and phone;
 - Calendar and productivity systems;
-- files/storage;
+- files and storage;
 - GitHub and development tools;
-- CRM/support/accounting/e-commerce;
+- CRM, support, accounting and e-commerce;
 - infrastructure and monitoring;
-- banking/credit/brokerage read and analysis;
-- explicitly supported transaction/trading capabilities under strong policy;
+- banking, credit and brokerage analysis;
+- supported transaction/trading capabilities under explicit policy;
 - person-mediated coordination through approved contacts;
-- external MCP resources/tools;
-- future data/device sources.
-
-Capability availability remains explicit and server-enforced. The architecture can represent read-only, approval-gated, standing pre-authorized and owner-only capability modes without allowing AI to create its own authority.
+- external MCP resources and tools;
+- future device and data sources.
