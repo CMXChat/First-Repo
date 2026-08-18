@@ -69,6 +69,7 @@ const legacyBrief = read('brief/index.html');
 const briefNext = read('brief-next/index.html');
 const doc = read('doc/index.html');
 const continuumDocCss = read('assets/continuum-doc.css');
+const continuumDocV2Css = read('assets/continuum-doc-v2.css');
 const routesRaw = read('assets/cmx-routes.json');
 const migrationDoc = read('docs/2026-08-06-spaces-route-migration.md');
 
@@ -108,16 +109,18 @@ assert(/spaces-legacy-redirect\.js/i.test(legacyBrief), '`/brief/` must preserve
 assert(/window\.location\.replace/i.test(read('assets/spaces-legacy-redirect.js')), 'Legacy redirect helper must replace browser history instead of adding a redirect hop.');
 
 assert(/<title>Continuum \| Product, Architecture and Build Overview<\/title>/i.test(doc), '`/doc/` must identify Continuum as the master product and architecture overview.');
-assert(/id=["']status["']/i.test(doc) && /Working now/i.test(doc) && /Next/i.test(doc) && /Later/i.test(doc), '`/doc/` must preserve a clear current-versus-future build boundary.');
+assert(/id=["']status["']/i.test(doc) && /Production Check In/i.test(doc) && /Product proving ground/i.test(doc) && /Durable private information/i.test(doc) && /Runtime \+ connected capability/i.test(doc), '`/doc/` must preserve a clear current-versus-future build boundary.');
 assert(/Afterlife/i.test(doc) && /The Dead Man Switch/i.test(doc), '`/doc/` must explain Afterlife as the Dead Man Switch continuity surface.');
 assert(/Spaces/i.test(doc) && /Automations/i.test(doc) && /Connections/i.test(doc) && /Runtime/i.test(doc), '`/doc/` must explain the major Continuum product areas.');
 assert(/FastAPI/i.test(doc) && /PostgreSQL/i.test(doc) && /Codespaces/i.test(doc) && /Alembic/i.test(doc), '`/doc/` must retain the real engineering environment overview.');
-assert(/MCP/i.test(doc) && /AI Gateway/i.test(doc) && /AuthorityGrant/i.test(doc), '`/doc/` must retain AI, MCP and authority direction.');
+assert(/MCP/i.test(doc) && /server-enforced authority/i.test(doc) && /typed tools/i.test(doc), '`/doc/` must retain AI, MCP and authority direction.');
 assert(/href=["']\/(?:spaces|brief)\/["']/i.test(doc), '`/doc/` must retain a working Spaces demo link.');
 assert(/href=["']\/lab\/automations\/["']/i.test(doc), '`/doc/` must link to the active Automation Lab.');
 assert(!/cmx-gate-black-prompt|data-cmx-gate|type=["']password["']/i.test(doc), '`/doc/` contains password-gate markup or assets.');
-assert(docAssets.has('/assets/continuum-doc.css'), '`/doc/` must load the Continuum visual layer.');
-assert(/@media \(prefers-reduced-motion: reduce\)/i.test(continuumDocCss), 'Continuum document visuals must respect reduced-motion preferences.');
+assert(docAssets.has('/assets/continuum-doc.css'), '`/doc/` must load the Continuum foundation visual layer.');
+assert(docAssets.has('/assets/continuum-doc-v2.css'), '`/doc/` must load the visual-first Continuum refinement layer.');
+assert(/@media \(prefers-reduced-motion: reduce\)/i.test(continuumDocCss), 'Continuum document foundation visuals must respect reduced-motion preferences.');
+assert(/@media \(prefers-reduced-motion: reduce\)/i.test(continuumDocV2Css), 'Continuum visual-first layer must respect reduced-motion preferences.');
 
 assert(/Shared calendars/i.test(migrationDoc), 'Migration documentation must define shared calendars explicitly.');
 assert(/Alarm and launch routine/i.test(migrationDoc), 'Migration documentation must define the alarm and launch routine.');
