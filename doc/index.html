@@ -10,8 +10,8 @@
   <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'" />
-  <title>Continuum | Product, Architecture and Build Overview</title>
-  <meta name="description" content="Continuum keeps information, people, tools, rules and AI connected so approved work can stay useful across time, including continuity when the owner cannot respond." />
+  <title>Continuum | Product Overview</title>
+  <meta name="description" content="Continuum connects people, saved information, rules, Automations and AI across Spaces, Check In and future Runtime." />
   <link rel="canonical" href="https://db.cmxchat.com/doc/" />
   <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260807-4" />
   <link rel="stylesheet" href="/assets/personal-os-doc-editorial.css?v=20260805-1" />
@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="/assets/continuum-doc-final.css?v=20260818-3" />
   <link rel="stylesheet" href="/assets/continuum-doc-promise.css?v=20260818-2" />
   <link rel="stylesheet" href="/assets/continuum-doc-qa.css?v=20260818-1" />
+  <link rel="stylesheet" href="/assets/continuum-doc-human.css?v=20260818-1" />
 </head>
 <body>
   <main>
@@ -31,10 +32,10 @@
       <div class="document-toolbar-inner">
         <a class="document-identity" href="#top" aria-label="Continuum overview, return to top">
           <span class="document-mark" aria-hidden="true">CT</span>
-          <span class="document-identity-copy"><strong>Continuum</strong><span>Product + architecture</span></span>
+          <span class="document-identity-copy"><strong>Continuum</strong><span>Overview</span></span>
         </a>
         <nav class="toolbar-links" aria-label="Primary document actions">
-          <a href="#overview">Overview</a><a href="#difference">AI</a><a href="#afterlife">Afterlife</a><a href="#engineering">Build</a>
+          <a href="#overview">Overview</a><a href="#difference">AI</a><a href="#action">Automations</a><a href="#afterlife">Afterlife</a>
         </nav>
         <div class="document-actions">
           <a class="document-action document-action-primary" href="/spaces/"><span>Explore Spaces</span><span aria-hidden="true">↗</span></a>
@@ -51,17 +52,17 @@
         <div class="rail-panel">
           <p class="rail-eyebrow">Contents</p>
           <nav class="document-toc">
-            <a href="#overview">Continuum in one minute</a>
-            <a href="#difference">What Continuum adds around AI</a>
-            <a href="#spaces">Spaces, people and saved information</a>
-            <a href="#action">Automations and possibilities</a>
-            <a href="#afterlife">Afterlife</a>
-            <a href="#engineering">How the code works</a>
-            <a href="#build">How ideas become real</a>
-            <a href="#status">Where it can go</a>
+            <a href="#overview">01 · Overview</a>
+            <a href="#difference">02 · AI</a>
+            <a href="#spaces">03 · Information</a>
+            <a href="#action">04 · Automations</a>
+            <a href="#afterlife">05 · Afterlife</a>
+            <a href="#engineering">06 · Architecture</a>
+            <a href="#build">07 · Build</a>
+            <a href="#status">08 · Roadmap</a>
           </nav>
         </div>
-        <div class="rail-panel rail-status"><span class="status-dot" aria-hidden="true"></span><div><strong>Active development</strong><p>Check In is LIVE. Spaces and the Automation Lab are LAB surfaces. Private information and Automation definitions are NEXT. Runtime and outside-provider execution are LATER.</p></div></div>
+        <div class="rail-panel rail-status"><span class="status-dot" aria-hidden="true"></span><div><strong>Where it stands</strong><p>Check In is LIVE. Spaces and Automations are LAB. Private information and Automation definitions are NEXT. Runtime and provider execution are LATER.</p></div></div>
       </aside>
 
       <article class="document-paper" id="documentContent">
@@ -70,12 +71,11 @@
           <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div>
           <div class="hero-orbit hero-orbit-two" aria-hidden="true"></div>
           <div class="hero-copy">
-            <div class="hero-kicker-row"><p class="hero-kicker">Your information, people, tools and AI in one place</p><span class="hero-status">Active development</span></div>
+            <div class="hero-kicker-row"><p class="hero-kicker">Information, people, rules and AI in one place</p><span class="hero-status">Active development</span></div>
             <h1 id="pageTitle">Continuum</h1>
-            <p class="hero-lead hero-lead-full"><span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time.</span> As more services connect through APIs, MCP and other providers, it can grow into something that helps coordinate people, follow up on projects, watch important changes, analyze money, communicate through email, messaging and future voice, and work with whatever AI models become more capable in the years ahead. <strong class="hero-lead-core">The deeper idea is that your context, priorities and instructions have somewhere durable to live, so Continuum can remain useful when you are busy, offline or unavailable.</strong> Afterlife carries that idea further: if you stop checking in for the period you chose, Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and eventually coordinating approved work within the limits you already set.</p>
-            <div class="hero-truth-row" aria-label="Core Continuum ideas"><span><i></i>Remembers</span><span><i></i>Connects</span><span><i></i>Acts with rules</span></div>
+            <p class="hero-lead hero-lead-full"><span class="hero-lead-first">Continuum keeps useful information, people and rules together so the same context is available when you need it.</span> It can build briefings, use approved Automations and support your continuity plan if you cannot respond.</p>
+            <div class="hero-truth-row" aria-label="Core Continuum ideas"><span><i></i>Keeps useful history</span><span><i></i>Links people + information</span><span><i></i>Runs approved rules</span></div>
             <div class="hero-actions"><a class="button button-primary" href="#overview"><span>See how it works</span><span aria-hidden="true">↓</span></a><a class="button button-secondary" href="/lab/automations/">Open Automation Lab</a></div>
-            <p class="hero-disclosure">The page marks what works today, what is next and what belongs later.</p>
           </div>
 
           <div class="hero-network" aria-label="Continuum product map">
@@ -94,7 +94,7 @@
           </div>
 
           <section class="continuum-presence" aria-labelledby="presenceTitle">
-            <div class="presence-heading"><div><span>BEYOND THE CURRENT SESSION</span><strong id="presenceTitle">Your intent has somewhere durable to live.</strong></div><p>Continuum is designed to stay useful across different levels of availability, from helping while you are actively using it to carrying a continuity plan when you cannot respond.</p></div>
+            <div class="presence-heading"><div><span>ACROSS TIME</span><strong id="presenceTitle">Keep the information and rules you choose.</strong></div><p>Continuum can help while you are using it, keep Automation definitions ready for later execution and support the Check In trigger when you cannot respond.</p></div>
             <div class="presence-track">
               <article class="presence-stage"><div class="presence-icon" aria-hidden="true">◉</div><span>WITH YOU</span><h3>Brief, understand, plan</h3><p>Bring together what matters now and help you decide what needs attention.</p><small>SPACES + AI</small></article>
               <article class="presence-stage"><div class="presence-icon" aria-hidden="true">↗</div><span>FOR YOU</span><h3>Coordinate, follow up, act</h3><p>Use approved people, information and tools to carry a defined workflow forward.</p><small>AUTOMATIONS</small></article>
@@ -112,7 +112,7 @@
         </header>
 
         <section id="overview" class="document-section continuum-section section-blue" aria-labelledby="overviewTitle">
-          <div class="section-heading"><div><p class="section-kicker">Continuum in one minute</p><h2 id="overviewTitle">How information moves through Continuum</h2></div><p class="section-intro">Here is the actual path: information comes in, gets stored, passes through your rules, reaches approved tools and leaves a record of what happened.</p></div>
+          <div class="section-heading"><div><p class="section-kicker">Start here</p><h2 id="overviewTitle">How information moves through Continuum</h2></div><p class="section-intro">The basic loop is simple: see what changed, save the useful part, check your rules, do approved work and keep the result for next time.</p></div>
           <div class="process-map" aria-label="Continuum operating process">
             <article class="process-step"><span class="process-no">01</span><div class="process-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V9M8 13l4-4 4 4M5 20h14"/></svg></div><h3>See what is happening</h3><p>Messages, files, calendars, money data, APIs, MCP and direct updates can arrive from approved sources.</p><span class="process-tag">INPUT</span></article>
             <article class="process-step"><span class="process-no">02</span><div class="process-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div><h3>Remember it</h3><p>The database keeps people, files, dates, history and saved versions so they are still there later.</p><span class="process-tag">MEMORY</span></article>
@@ -130,8 +130,8 @@
         </section>
 
         <section id="difference" class="document-section continuum-section section-violet" aria-labelledby="differenceTitle">
-          <div class="section-heading"><div><p class="section-kicker">What Continuum adds around AI</p><h2 id="differenceTitle">AI gets memory, tools, timing and rules</h2></div><p class="section-intro">A chat can think, write and plan from the information it has. Continuum gives that reasoning a lasting place to work with approved people, files, history, timers and connected tools.</p></div>
-          <div class="ai-answer"><strong>Why not just use AI by itself?</strong><p>AI can reason about what you give it. Continuum gives that reasoning persistent people, records, rules, timing, tools and history to work with.</p></div>
+          <div class="section-heading"><div><p class="section-kicker">AI inside Continuum</p><h2 id="differenceTitle">AI can use saved context, rules and approved tools</h2></div><p class="section-intro">An AI conversation uses the information available to that conversation. Continuum can provide saved people, files, history, timers and approved tools for a specific task.</p></div>
+          <div class="ai-answer"><strong>What Continuum adds to AI</strong><p>AI can reason with the information it receives. Continuum keeps the people, records, rules, timing, tools and history around that work.</p></div>
           <div class="ai-compare">
             <article class="ai-side ai-side-chat">
               <div class="visual-label-row"><span>AI CONVERSATION</span><b>Right now</b></div>
@@ -149,7 +149,7 @@
               </div>
             </article>
           </div>
-          <div class="model-swap-note"><div><span>AI MODELS CAN CHANGE</span><strong>Your Continuum data and rules stay in Continuum.</strong></div><div class="model-row"><span class="model-chip">OpenAI</span><span class="model-chip">Anthropic</span><span class="model-chip">Gemini</span><span class="model-chip">Future / local</span></div></div>
+          <div class="model-swap-note"><div><span>MODEL CHOICE CAN CHANGE</span><strong>Continuum keeps the approved data, rules and history around the model.</strong></div><div class="model-row"><span class="model-chip">OpenAI</span><span class="model-chip">Anthropic</span><span class="model-chip">Gemini</span><span class="model-chip">Future / local</span></div></div>
           <div class="control-panel" aria-label="Owner control over AI capabilities">
             <div class="control-panel-head"><span>YOU SET THE RULES</span><strong>The server enforces them</strong></div>
             <div class="control-rows">
@@ -160,11 +160,11 @@
               <div class="control-row"><b>What stays with you</b><small>Selected controls can remain owner-only.</small><em>OWNER CONTROL</em></div>
             </div>
           </div>
-          <div class="rule-callout"><strong>The AI cannot expand its own authority.</strong><span>Changing permissions requires an authorized server-side change.</span></div>
+          <div class="rule-callout"><strong>AI authority is set by server-side permissions.</strong><span>Permission changes require an authorized server-side update.</span></div>
         </section>
 
         <section id="spaces" class="document-section continuum-section section-mint" aria-labelledby="spacesTitle">
-          <div class="section-heading"><div><p class="section-kicker">Spaces, people and saved information</p><h2 id="spacesTitle">Scattered information can become one useful view</h2></div><p class="section-intro">Continuum can keep track of who people are, what information belongs together and what has changed recently. Spaces can turn that into a focused Personal, Family, Business or Afterlife brief.</p></div>
+          <div class="section-heading"><div><p class="section-kicker">People, information and briefs</p><h2 id="spacesTitle">Keep people, saved information and focused views connected</h2></div><p class="section-intro">Continuum can keep track of who people are, what information belongs together and what has changed recently. Spaces can turn that into a focused Personal, Family, Business or Afterlife brief.</p></div>
           <div class="spaces-stage">
             <article class="ingestion-map"><span class="visual-label">THINGS YOU ALREADY USE</span><div class="source-cloud"><span class="source-chip">Calendar</span><span class="source-chip">Email</span><span class="source-chip">Messages</span><span class="source-chip">Money</span><span class="source-chip">Files</span><span class="source-chip">APIs / MCP</span></div><div class="ingest-arrow">↓</div><div class="normalize-core"><strong>Continuum sorts and checks it</strong><small>Where did it come from? When was it updated? Who may use it? Which person, file or project does it belong to?</small></div><div class="space-targets"><span class="space-target">Personal</span><span class="space-target">Family</span><span class="space-target">Business</span><span class="space-target">Afterlife</span></div></article>
             <article class="brief-preview-final"><header><span>PERSONAL BRIEF</span><b>LAB PREVIEW</b></header><div class="brief-row"><i>08</i><div><strong>Two meetings today</strong><small>Your calendar places the first one at 10:30 AM.</small></div><span>CALENDAR</span></div><div class="brief-row"><i>$</i><div><strong>A client payment may arrive later</strong><small>Account data and a recent email point to tighter cash flow first.</small></div><span>MONEY</span></div><div class="brief-row"><i>↗</i><div><strong>Server transfer is waiting on a reply</strong><small>The last contact attempt is still open.</small></div><span>PROJECT</span></div><div class="brief-row"><i>✓</i><div><strong>Afterlife is safe</strong><small>The current Check In timer is still inside its window.</small></div><span>CONTINUITY</span></div></article>
@@ -193,9 +193,9 @@
         </section>
 
         <section id="action" class="document-section continuum-section section-orange" aria-labelledby="actionTitle">
-          <div class="section-heading"><div><p class="section-kicker">Automations + Connections</p><h2 id="actionTitle">This is where information turns into action</h2></div><p class="section-intro">An Automation says when something should happen and what to do next. Connections give Continuum approved ways to reach outside services. Runtime can later keep longer jobs moving through waits, replies and retries.</p></div>
+          <div class="section-heading"><div><p class="section-kicker">Automations and Runtime</p><h2 id="actionTitle">Automations define the steps. Runtime runs them.</h2></div><p class="section-intro">The builder defines the trigger, rules, actions and timing. Connections reach approved outside services. Future Runtime runs published workflows on the server and records the result.</p></div>
           <div class="everyday-workflow" aria-label="Everyday Automation example">
-            <div class="everyday-workflow-copy"><span>LATER EXAMPLE</span><strong>An ordinary day, not an emergency</strong><small>The same Automation structure can handle routine work too.</small></div>
+            <div class="everyday-workflow-copy"><span>LATER EXAMPLE</span><strong>Everyday workflow</strong><small>A payment update can feed the next approved step.</small></div>
             <div class="everyday-flow"><div class="everyday-step"><b>WHEN</b><span>A client payment arrives</span></div><div class="everyday-arrow">→</div><div class="everyday-step"><b>DO</b><span>Update the Money Space</span></div><div class="everyday-arrow">→</div><div class="everyday-step"><b>THEN</b><span>Include it in tomorrow's brief</span></div></div>
           </div>
           <div class="action-stage-final">
@@ -204,19 +204,19 @@
           </div>
           <div class="execution-modes" aria-label="Ways capabilities can be controlled"><article class="execution-mode mode-see"><b>See only</b><small>Use approved information for analysis and briefings.</small></article><article class="execution-mode mode-ask"><b>Ask first</b><small>Prepare the action and wait for approval.</small></article><article class="execution-mode mode-standing"><b>Pre-approved limits</b><small>Run a specific capability inside rules you already published.</small></article><article class="execution-mode mode-owner"><b>Owner only</b><small>Keep selected sensitive actions under direct control.</small></article></div>
 
-          <div class="possibility-heading"><span>WHAT THIS FOUNDATION COULD UNLOCK</span><strong>As more services connect, the same rules and history can support much more.</strong></div>
+          <div class="possibility-heading"><span>POSSIBLE LATER USES</span><strong>More connected services add more things Continuum can read, track or do under your rules.</strong></div>
           <div class="possibility-board" aria-label="Future Continuum possibilities">
             <article class="possibility-card possibility-morning"><i>☀</i><div><strong>Wake-up brief</strong><small>Calendar, messages, weather, money, tasks and anything important that changed overnight.</small></div><span>SPACES</span></article>
             <article class="possibility-card possibility-people"><i>◎</i><div><strong>Coordinate people</strong><small>Contact someone, wait for a reply, follow up, schedule something and update the project.</small></div><span>NETWORK</span></article>
             <article class="possibility-card possibility-money"><i>$</i><div><strong>Understand money</strong><small>Watch balances and transactions, explain changes, flag problems and later use supported actions under strict policy.</small></div><span>FINANCE</span></article>
             <article class="possibility-card possibility-comms"><i>☎</i><div><strong>Communicate anywhere</strong><small>Email, Discord, WhatsApp, SMS and eventually approved voice calls with the right people.</small></div><span>COMMS</span></article>
             <article class="possibility-card possibility-tools"><i>↔</i><div><strong>Use more tools</strong><small>Calendar, GitHub, storage, business apps, APIs, MCP servers and future devices can plug into the same control layer.</small></div><span>TOOLS</span></article>
-            <article class="possibility-card possibility-ai"><i>✦</i><div><strong>Smarter AI over time</strong><small>Newer models can use the same approved information and tools without rebuilding your world from the beginning.</small></div><span>AI</span></article>
+            <article class="possibility-card possibility-ai"><i>✦</i><div><strong>New AI models</strong><small>New models can use the same approved information and tools already connected to Continuum.</small></div><span>AI</span></article>
           </div>
         </section>
 
         <section id="afterlife" class="document-section continuum-section afterlife-section" aria-labelledby="afterlifeTitle">
-          <div class="section-heading"><div><p class="section-kicker">Continuity</p><div class="afterlife-title-row"><h2 id="afterlifeTitle">Afterlife</h2><small>The Dead Man Switch</small></div></div><p class="section-intro">You choose the timer. If you stop checking in long enough, the server records the trigger. Runtime can later start the continuity steps you already approved.</p></div>
+          <div class="section-heading"><div><p class="section-kicker">Continuity</p><div class="afterlife-title-row"><h2 id="afterlifeTitle">Afterlife</h2><small>The Dead Man Switch</small></div></div><p class="section-intro">Afterlife uses Continuum for continuity. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can run the approved steps that follow.</p></div>
 
           <div class="afterlife-simple-callout"><strong>72 + 24 is today's configuration. You choose these periods.</strong><span>The current live setup uses a 72-hour check-in window plus 24 hours of grace. Both values can be changed, and each policy change keeps its own history.</span></div>
 
@@ -238,13 +238,13 @@
         </section>
 
         <section id="engineering" class="document-section continuum-section section-cyan" aria-labelledby="engineeringTitle">
-          <div class="section-heading"><div><p class="section-kicker">How the code works</p><h2 id="engineeringTitle">What is actually running under the page</h2></div><p class="section-intro">The visible page is one layer. Server code checks requests and rules. The database keeps information that must survive refreshes, logins and restarts.</p></div>
+          <div class="section-heading"><div><p class="section-kicker">How the code works</p><h2 id="engineeringTitle">What is running under the page</h2></div><p class="section-intro">The visible page is one layer. Server code checks requests and rules. The database keeps information that must survive refreshes, logins and restarts.</p></div>
           <div class="engineering-stage">
             <div class="stack-pipeline" aria-label="Continuum programming stack"><article class="stack-node"><span>CODE HOME</span><strong>GitHub</strong><small>Where the project code and change history live.</small></article><article class="stack-node"><span>WORKBENCH</span><strong>Codespaces</strong><small>A ready-made development computer in the browser. Docker helps keep the setup repeatable.</small></article><article class="stack-node"><span>WHAT YOU SEE</span><strong>Frontend</strong><small>HTML, CSS and JavaScript today, with React and TypeScript in the protected app stack.</small></article><article class="stack-node"><span>SERVER CODE</span><strong>Python + FastAPI</strong><small>Receives requests, checks identity and rules, then decides what server work may happen.</small></article><article class="stack-node"><span>LONG-TERM MEMORY</span><strong>PostgreSQL</strong><small>The database keeps users, content, policy, trigger events called Incidents and future Runtime records.</small></article></div>
             <article class="request-loop"><span>WHEN YOU TAP A BUTTON</span><div class="request-hop"><b>1</b><span>You tap something in the browser</span></div><div class="request-hop"><b>2</b><span>The frontend sends a secure HTTPS request</span></div><div class="request-hop"><b>3</b><span>FastAPI checks who you are and what the request may do</span></div><div class="request-hop"><b>4</b><span>PostgreSQL reads or saves the durable data</span></div><div class="request-hop"><b>5</b><span>The answer comes back and the screen updates</span></div></article>
           </div>
           <div class="support-tools"><span><b>Docker</b><small>Keeps the development setup repeatable.</small></span><span><b>Alembic</b><small>Keeps database changes in order.</small></span><span><b>OpenAPI client</b><small>Helps the frontend call backend endpoints correctly.</small></span><span><b>Tests</b><small>Catch broken behavior before it spreads.</small></span></div>
-          <details class="tech-detail"><summary>See the technical version</summary><div><code>Browser → HTTPS/JSON → FastAPI domain services → PostgreSQL → JSON response → frontend</code><p>The frontend never talks directly to PostgreSQL. The backend owns business rules, permissions and database access.</p></div></details>
+          <details class="tech-detail"><summary>See the technical version</summary><div><code>Browser → HTTPS/JSON → FastAPI domain services → PostgreSQL → JSON response → frontend</code><p>Database access goes through the backend. The backend owns business rules, permissions and PostgreSQL access.</p></div></details>
         </section>
 
         <section id="build" class="document-section continuum-section section-indigo" aria-labelledby="buildTitle">
@@ -256,20 +256,20 @@
         </section>
 
         <section id="status" class="document-section continuum-section section-roadmap" aria-labelledby="statusTitle">
-          <div class="section-heading"><div><p class="section-kicker">Where Continuum can go</p><h2 id="statusTitle">Build the foundation, then add more capability</h2></div><p class="section-intro">New AI models, apps, communication channels and data sources can plug into the same information, rules and permission model. Each stage adds something useful while keeping the earlier work.</p></div>
+          <div class="section-heading"><div><p class="section-kicker">Roadmap</p><h2 id="statusTitle">Build the foundation, then add capability</h2></div><p class="section-intro">New apps, communication channels, data sources and AI models can use the same information, rules and permission model as each stage is built.</p></div>
           <div class="roadmap-line roadmap-rich" aria-label="Continuum roadmap">
             <article class="roadmap-card roadmap-now"><div class="roadmap-icon">✓</div><span>NOW</span><strong>Protected Check In</strong><p>Continuum can reliably know whether the owner checked in and which timing policy was active.</p><div class="roadmap-points"><b>Changeable timer + grace</b><b>Pause, resume + one-time override</b><b>Incidents, sessions + Audit</b></div></article>
             <article class="roadmap-card roadmap-next"><div class="roadmap-icon">▤</div><span>NEXT</span><strong>Real private information</strong><p>Continuum can safely remember real private information and use exact saved versions.</p><div class="roadmap-points"><b>Content + file versions</b><b>Protected search</b><b>Real backend editor state</b></div></article>
             <article class="roadmap-card roadmap-then"><div class="roadmap-icon">↻</div><span>THEN</span><strong>Keep workflows running</strong><p>Continuum can keep a workflow alive on the server after you leave the page.</p><div class="roadmap-points"><b>Runs + attempts</b><b>Replies + acknowledgements</b><b>Clear execution history</b></div></article>
-            <article class="roadmap-card roadmap-later"><div class="roadmap-icon">✦</div><span>LATER</span><strong>More connected capability</strong><p>Continuum can coordinate more of the outside world through approved tools and stronger AI.</p><div class="roadmap-points"><b>WhatsApp, SMS + voice</b><b>Money analysis + supported actions</b><b>AI Tasks, planning + bounded agents</b></div></article>
+            <article class="roadmap-card roadmap-later"><div class="roadmap-icon">✦</div><span>LATER</span><strong>More connected capability</strong><p>Continuum can work with more outside services through approved tools and supported AI models.</p><div class="roadmap-points"><b>WhatsApp, SMS + voice</b><b>Money analysis + supported actions</b><b>AI Tasks, planning + bounded agents</b></div></article>
           </div>
-          <div class="closing-note"><strong>The basic idea stays simple:</strong> Continuum keeps people, saved information, rules, tools, timing, conversations and results connected. Better AI can use that same world as it becomes more capable.</div>
+          <div class="closing-note">Continuum keeps people, saved information, rules, tools, timing, conversations and results connected. New AI models can use the same approved context and tools.</div>
         </section>
 
         <footer class="document-footer"><div><p class="section-kicker">Continuum</p><h2>The same protected information, rules and history support each stage.</h2></div><div class="footer-actions"><a class="button button-primary" href="/spaces/">Explore Spaces</a><a class="button button-secondary" href="/lab/automations/">Open Automation Lab</a></div></footer>
       </article>
     </div>
   </main>
-  <script src="/assets/personal-os-doc.js?v=20260818-3" defer></script>
+  <script src="/assets/personal-os-doc.js?v=20260818-4" defer></script>
 </body>
 </html>
