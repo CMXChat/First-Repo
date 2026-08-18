@@ -8,6 +8,7 @@ const root = process.cwd();
 const html = fs.readFileSync(path.join(root, "checkin/index.html"), "utf8");
 const js = fs.readFileSync(path.join(root, "assets/checkin/checkin.js"), "utf8");
 const css = fs.readFileSync(path.join(root, "assets/checkin/checkin.css"), "utf8");
+const phase1Js = fs.readFileSync(path.join(root, "assets/checkin/checkin-phase1-controls.js"), "utf8");
 const phase1Css = fs.readFileSync(path.join(root, "assets/checkin/checkin-phase1-controls.css"), "utf8");
 const refineJs = fs.readFileSync(path.join(root, "assets/checkin/checkin-refine.js"), "utf8");
 const contractJs = fs.readFileSync(path.join(root, "assets/checkin/checkin-status-contract.js"), "utf8");
@@ -162,5 +163,15 @@ assert.match(phase1Css, /:has\(#phase1OverrideMeta\):not\(:has\(#phase1DeadlineO
 assert.match(phase1Css, /content:"NOT ACTIVE"/);
 assert.doesNotMatch(contractJs, /observe\(document\.body,\s*\{[\s\S]{0,120}subtree:\s*true/);
 assert.doesNotMatch(refineJs, /observe\(document\.body,\s*\{[\s\S]{0,120}subtree:\s*true/);
+
+// Locked Settings must clear previously loaded private policy values, not only hide them.
+assert.match(phase1Js, /function clearPrivateControlState\(\)/);
+assert.match(phase1Js, /privateControls\.inert = !unlocked/);
+assert.match(phase1Js, /privateControls\.setAttribute\("aria-hidden", "true"\)/);
+assert.match(phase1Js, /clearPrivateControlState\(\);[\s\S]{0,80}policy = null/);
+assert.match(phase1Js, /"#phase1PolicyReason"/);
+assert.match(phase1Js, /"#phase1PauseReason"/);
+assert.match(phase1Js, /"#phase1DeadlineOverride"/);
+assert.doesNotMatch(phase1Js, /observe\(document\.body,\s*\{[\s\S]{0,120}subtree:\s*true/);
 
 console.log("Check-in operations smoke test passed.");
