@@ -137,7 +137,7 @@ jobs:
               'PROTECTED ATTACHMENTS',
               'sanitizeHtml',
               'safeHref',
-              'script',
+              '"SCRIPT"',
           ]
           required_dropdown = ['stopImmediatePropagation', '.smart-select.is-open', 'data-dropdown-trigger']
           required_css = ['.automation-app','.editor-footer','.step-rail','.do-card','html[data-theme="light"]','@media(max-width:760px)']
