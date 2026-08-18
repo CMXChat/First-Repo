@@ -1,0 +1,92 @@
+name: Check In Premium Library Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/index.html'
+      - 'assets/lab/lab-automations-library-premium.js'
+      - 'assets/lab/lab-automations-library-premium-fix.js'
+      - 'assets/lab/lab-automations-library-premium.css'
+      - 'assets/lab/lab-automations-editor-learning.js'
+      - 'assets/lab/lab-automations-editor-learning.css'
+      - 'docs/checkin-library-premium-CURRENT.md'
+      - '.github/workflows/checkin-library-premium-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/index.html'
+      - 'assets/lab/lab-automations-library-premium.js'
+      - 'assets/lab/lab-automations-library-premium-fix.js'
+      - 'assets/lab/lab-automations-library-premium.css'
+      - 'assets/lab/lab-automations-editor-learning.js'
+      - 'assets/lab/lab-automations-editor-learning.css'
+      - 'docs/checkin-library-premium-CURRENT.md'
+      - '.github/workflows/checkin-library-premium-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate premium Library JavaScript
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-library-premium.js
+          node --check assets/lab/lab-automations-library-premium-fix.js
+          node --check assets/lab/lab-automations-editor-learning.js
+
+      - name: Validate premium Library contract
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          js = Path('assets/lab/lab-automations-library-premium.js').read_text(encoding='utf-8')
+          fix = Path('assets/lab/lab-automations-library-premium-fix.js').read_text(encoding='utf-8')
+          css = Path('assets/lab/lab-automations-library-premium.css').read_text(encoding='utf-8')
+          learn = Path('assets/lab/lab-automations-editor-learning.js').read_text(encoding='utf-8')
+          handoff = Path('docs/checkin-library-premium-CURRENT.md').read_text(encoding='utf-8')
+
+          required_html = [
+              '/assets/lab/lab-automations-library-premium.js?v=',
+              '/assets/lab/lab-automations-library-premium-fix.js?v=',
+              '/assets/lab/lab-automations-library-premium.css?v=',
+              '/assets/lab/lab-automations-editor-learning.js?v=',
+              "connect-src 'self'",
+          ]
+          required_js = [
+              'cmx-lab-library-ui-v1','Recent','Favorites','premium-grid-view','premium-list-view',
+              'Save to Library','Save as Template','Save as Document','libraryVisible','saved_action_content',
+              'premium-action-sheet','Export / Save as','Replace with new version','data-premium-sort',
+          ]
+          required_fix = ['data-premium-save-library','data-premium-save-template','data-premium-save-document','data-content-save']
+          required_css = ['44px','premium-library-controls','premium-card-controls','premium-action-sheet','premium-reuse-card','is-learning-flash']
+          required_learn = ['is-learning-flash','Bold','Heading 2','Bulleted list','Insert link']
+          required_handoff = ['Library is **not** the ContentAsset database table','Favorites','Recent','Save to Library','Save as Template','Save as Document','first real backend vertical slice']
+
+          for term in required_html:
+              if term not in html: sys.exit(f'missing premium route asset: {term}')
+          for term in required_js:
+              if term not in js: sys.exit(f'missing premium Library behavior: {term}')
+          for term in required_fix:
+              if term not in fix: sys.exit(f'missing premium reuse hardening: {term}')
+          for term in required_css:
+              if term not in css: sys.exit(f'missing premium Library CSS: {term}')
+          for term in required_learn:
+              if term not in learn + css: sys.exit(f'missing learning behavior: {term}')
+          for term in required_handoff:
+              if term not in handoff: sys.exit(f'missing premium handoff: {term}')
+
+          combined = js + fix + learn
+          for term in ['api.cmxchat.com','MutationObserver','eval(','new Function(','blob:','data:application/']:
+              if term in combined: sys.exit(f'forbidden premium Lab behavior: {term}')
+
+          print('Premium Library contract passed.')
+          PY
