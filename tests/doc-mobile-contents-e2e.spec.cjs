@@ -36,7 +36,7 @@ async function swipeLeft(page, selector) {
   });
 }
 
-test('mobile Continuum doc Contents drawer tracks reading position and closes cleanly', async ({ page }, testInfo) => {
+test('mobile Continuum doc keeps navigation compact and visuals in flow', async ({ page }, testInfo) => {
   test.skip(!['chromium-android', 'webkit-iphone'].includes(testInfo.project.name), 'Mobile document navigation runs in touch browser projects.');
   test.setTimeout(45000);
 
@@ -51,6 +51,7 @@ test('mobile Continuum doc Contents drawer tracks reading position and closes cl
 
   await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
   await expect(page.locator('link[href="/assets/continuum-doc-v2.css?v=20260818-1"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/continuum-doc-mobile-v3.css?v=20260818-1"]')).toHaveCount(1);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
   await expect(sourceLinks).toHaveCount(8);
@@ -58,6 +59,37 @@ test('mobile Continuum doc Contents drawer tracks reading position and closes cl
   await expect(trigger.locator('#mobileContentsTriggerCurrent')).toContainText('Continuum in one minute');
   await expect(drawer).toHaveAttribute('aria-hidden', 'true');
   await expect(drawer).toHaveAttribute('inert', '');
+
+  const mobileVisualState = await page.evaluate(() => {
+    const trigger = document.querySelector('[data-mobile-contents-trigger="true"]');
+    const map = document.querySelector('.continuum-map.compact-map');
+    const firstNode = document.querySelector('.compact-map .continuum-node');
+    const afterlife = document.querySelector('.afterlife-section');
+    const afterlifeCard = document.querySelector('.afterlife-track article');
+    const triggerStyle = getComputedStyle(trigger);
+    const mapStyle = getComputedStyle(map);
+    const nodeStyle = getComputedStyle(firstNode);
+    const afterlifeStyle = getComputedStyle(afterlife);
+    const afterlifeCardStyle = getComputedStyle(afterlifeCard);
+    return {
+      triggerWidth: Math.round(trigger.getBoundingClientRect().width),
+      triggerRight: Math.round(window.innerWidth - trigger.getBoundingClientRect().right),
+      mapDisplay: mapStyle.display,
+      nodePosition: nodeStyle.position,
+      afterlifeBackground: afterlifeStyle.backgroundImage,
+      afterlifeCardBackground: afterlifeCardStyle.backgroundColor
+    };
+  });
+
+  expect(mobileVisualState.triggerWidth).toBeLessThanOrEqual(52);
+  expect(mobileVisualState.triggerRight).toBeLessThanOrEqual(16);
+  expect(mobileVisualState.mapDisplay).toBe('grid');
+  expect(mobileVisualState.nodePosition).toBe('relative');
+  expect(mobileVisualState.afterlifeBackground).toContain('linear-gradient');
+  expect(mobileVisualState.afterlifeCardBackground).not.toBe('rgba(10, 20, 34, 0.72)');
+  await expect(page.locator('.afterlife-policy-chart')).toBeVisible();
+  await expect(page.locator('.afterlife-policy-ring')).toBeVisible();
+  await expect(page.locator('.afterlife-meter')).toHaveCount(2);
   await expectNoHorizontalOverflow(page);
 
   await trigger.click();
@@ -108,5 +140,6 @@ test('desktop Continuum doc keeps the rail and hides the mobile reading control'
   await expect(page.locator('.document-rail .document-toc a')).toHaveCount(8);
   await expect(page.locator('[data-mobile-contents-trigger="true"]')).toBeHidden();
   await expect(page.locator('[data-mobile-contents-drawer="true"]')).toBeHidden();
+  await expect(page.locator('.afterlife-policy-chart')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
