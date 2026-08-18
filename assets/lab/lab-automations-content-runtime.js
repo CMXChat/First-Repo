@@ -61,7 +61,8 @@
   function safeHref(value) {
     const href = String(value || "").trim();
     if (!href) return "";
-    if (href.startsWith("#") || href.startsWith("/")) return href;
+    if (href.startsWith("#")) return href;
+    if (href.startsWith("/") && !href.startsWith("//")) return href;
     try {
       const url = new URL(href);
       return ["https:", "http:", "mailto:"].includes(url.protocol) ? url.href : "";
@@ -145,6 +146,10 @@
       };
       store.assets.unshift(asset);
       store.links[stepId] = asset.id;
+      persistStore(store);
+    } else if (asset.kind !== kind && (kind === "email" || kind === "message")) {
+      asset.kind = kind;
+      asset.updatedAt = now();
       persistStore(store);
     }
 
@@ -354,24 +359,31 @@
     const subject = overlay.querySelector("[data-content-subject]")?.value.trim() || "";
     const html = sanitizeHtml(body?.innerHTML || "<p><br></p>");
     const plainText = plainTextFromHtml(html);
-
-    asset.title = title;
-    asset.updatedAt = now();
-    asset.draft = {
-      ...(asset.draft || {}),
-      revision: Math.max(1, Number(asset.draft?.revision) || 1) + 1,
-      labFormat: "sanitized_html_v1",
-      subject,
-      html,
-      plainText,
-      updatedAt: now()
-    };
+    const previous = asset.draft || {};
+    const changed = asset.title !== title || previous.subject !== subject || previous.html !== html || previous.plainText !== plainText;
 
     store.links[active.stepId] = asset.id;
-    persistStore(store);
-    syncLegacyPlainText(active.stepId, plainText);
+
+    if (changed) {
+      asset.title = title;
+      asset.updatedAt = now();
+      asset.draft = {
+        ...previous,
+        revision: Math.max(1, Number(previous.revision) || 1) + 1,
+        labFormat: "sanitized_html_v1",
+        subject,
+        html,
+        plainText,
+        updatedAt: now()
+      };
+      persistStore(store);
+      syncLegacyPlainText(active.stepId, plainText);
+      updateContentCard(active.stepId);
+    } else {
+      persistStore(store);
+    }
+
     setSaveState(announce ? "Saved content" : "Saved just now", "saved");
-    updateContentCard(active.stepId);
   }
 
   function scheduleSave() {
