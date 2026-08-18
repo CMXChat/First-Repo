@@ -8,6 +8,8 @@ on:
       - 'assets/lab/lab-automations-app.css'
       - 'assets/lab/lab-automations-experience-v3.js'
       - 'assets/lab/lab-automations-experience-v3.css'
+      - 'assets/lab/lab-automations-system-surface.js'
+      - 'assets/lab/lab-automations-system-surface.css'
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-actions.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
@@ -19,6 +21,8 @@ on:
       - 'assets/lab/lab-automations-app.css'
       - 'assets/lab/lab-automations-experience-v3.js'
       - 'assets/lab/lab-automations-experience-v3.css'
+      - 'assets/lab/lab-automations-system-surface.js'
+      - 'assets/lab/lab-automations-system-surface.css'
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-actions.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
@@ -39,6 +43,7 @@ jobs:
           set -euo pipefail
           node --check assets/lab/lab-automations-experience-v3.js
           node --check assets/lab/lab-automations-route-integration.js
+          node --check assets/lab/lab-automations-system-surface.js
           python - <<'PY'
           from pathlib import Path
           import sys
@@ -46,6 +51,8 @@ jobs:
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
           js = Path('assets/lab/lab-automations-experience-v3.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-experience-v3.css').read_text(encoding='utf-8')
+          system_js = Path('assets/lab/lab-automations-system-surface.js').read_text(encoding='utf-8')
+          system_css = Path('assets/lab/lab-automations-system-surface.css').read_text(encoding='utf-8')
           base_css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
           route = Path('assets/lab/lab-automations-route-integration.js').read_text(encoding='utf-8')
           actions = Path('assets/lab/lab-actions.js').read_text(encoding='utf-8')
@@ -53,10 +60,13 @@ jobs:
           required_html = [
               "connect-src 'self'",
               'noindex,nofollow',
+              '<title>Continuum · Automations</title>',
               '/assets/lab/lab-automations-app.css?v=20260817-1',
               '/assets/lab/lab-automations-experience-v3.css?v=20260818-1',
+              '/assets/lab/lab-automations-system-surface.css?v=20260818-1',
               '/assets/lab/lab-automations-experience-v3.js?v=20260818-1',
               '/assets/lab/lab-automations-route-integration.js?v=20260818-1',
+              '/assets/lab/lab-automations-system-surface.js?v=20260818-1',
           ]
           required_js = [
               'cmx-lab-automations-v1',
@@ -97,6 +107,26 @@ jobs:
               'env(safe-area-inset-bottom)',
               'prefers-reduced-motion',
           ]
+          required_system_js = [
+              'CONTINUUM · AUTOMATIONS',
+              'v3-system-deck',
+              'v3-system-section-head',
+              'CONNECTED RECORDS',
+              'REUSABLE ACTIONS',
+              'Simulation only',
+              'labAutomationsSystemSurface',
+              'requestAnimationFrame',
+          ]
+          required_system_css = [
+              '.v3-system-deck',
+              '.v3-system-stat',
+              '.v3-system-section-head',
+              '.v3-stage-section>header h2',
+              '.v3-flow-node strong',
+              '.v3-editor-footer>div',
+              '@media (min-width:980px)',
+              '@media (max-width:760px)',
+          ]
           required_route = [
               '/lab/#lab=view%3Aactions',
               '[data-new]',
@@ -118,6 +148,10 @@ jobs:
               if term not in js: sys.exit(f'missing Automations v3 contract: {term}')
           for term in required_css:
               if term not in css: sys.exit(f'missing Automations v3 CSS contract: {term}')
+          for term in required_system_js:
+              if term not in system_js: sys.exit(f'missing system-surface behavior: {term}')
+          for term in required_system_css:
+              if term not in system_css: sys.exit(f'missing system-surface styling: {term}')
           for term in required_route:
               if term not in route: sys.exit(f'missing route integration contract: {term}')
           for term in required_action_library:
@@ -125,14 +159,14 @@ jobs:
 
           if 'lab-automations-app-v2.js' in html:
               sys.exit('superseded v2 builder must not be loaded by the focused route')
-          if 'api.cmxchat.com' in html + js:
+          if 'api.cmxchat.com' in html + js + system_js:
               sys.exit('focused Lab must not call the production Check In API')
-          for term in ['eval(', 'new Function(']:
-              if term in html + js: sys.exit(f'forbidden focused-Lab code pattern: {term}')
+          for term in ['eval(', 'new Function(', 'MutationObserver']:
+              if term in system_js: sys.exit(f'forbidden system-surface code pattern: {term}')
           if '.automation-app' not in base_css:
               sys.exit('base focused styling contract missing')
 
-          print('Focused Automations v3 UX, safety, Action-reference, timing and mobile contracts passed.')
+          print('Focused Automations v3 system-surface, safety, Action-reference, timing and mobile contracts passed.')
           PY
 
       - name: Browser smoke desktop and mobile
@@ -151,14 +185,20 @@ jobs:
 
           dump http://127.0.0.1:8000/lab/automations/ > /tmp/auto-desktop.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-desktop.html
-          grep -q 'AUTOMATION WORKSPACE' /tmp/auto-desktop.html
-          grep -q 'Start with a template' /tmp/auto-desktop.html
+          grep -q 'data-lab-automations-system-surface="ready"' /tmp/auto-desktop.html
+          grep -q 'data-system-surface="ready"' /tmp/auto-desktop.html
+          grep -q 'CONTINUUM · AUTOMATIONS' /tmp/auto-desktop.html
+          grep -q '>WORKFLOWS<' /tmp/auto-desktop.html
+          grep -q '>Templates<' /tmp/auto-desktop.html
+          grep -q 'CONNECTED RECORDS' /tmp/auto-desktop.html
           grep -q 'New automation' /tmp/auto-desktop.html
           grep -q 'LAB · SIMULATION ONLY' /tmp/auto-desktop.html
+          ! grep -qi 'Build the flow' /tmp/auto-desktop.html
           ! grep -qi 'Loading Automations' /tmp/auto-desktop.html
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/auto-mobile.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-mobile.html
+          grep -q 'data-lab-automations-system-surface="ready"' /tmp/auto-mobile.html
           grep -q 'class="v3-editor-page"' /tmp/auto-mobile.html
           grep -q 'What should start this' /tmp/auto-mobile.html
           grep -q 'LIVE FLOW' /tmp/auto-mobile.html
@@ -166,4 +206,4 @@ jobs:
           ! grep -qi 'Loading Automations' /tmp/auto-mobile.html
           ! grep -q 'Name the automation' /tmp/auto-mobile.html
 
-          echo 'Focused Automations v3 desktop and 390x844 mobile smoke passed.'
+          echo 'Focused Automations v3 system surface passed desktop and 390x844 mobile smoke.'
