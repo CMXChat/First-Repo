@@ -5,23 +5,27 @@ Status: Current cross-repository continuation guide
 
 This is the first file a new ChatGPT/Codex context should read for Check In.
 
-It records the **current active work** and the **approved post-Phase-1 direction**. It complements the longer historical handoff at `docs/checkin-context-handoff-2026-08-17.md`.
+It records current production truth, the remaining acceptance gate, the focused Lab state, and the approved platform/backend direction. Longer historical detail remains in `docs/checkin-context-handoff-2026-08-17.md`.
 
-If another context is already working on the current frontend gate, continue that work. Do not restart the project from the roadmap.
+# 1. Source-of-truth order
 
-## 1. Source-of-truth order
+Read in this order before substantial work:
 
-1. **This file** — newest cross-repository state and immediate continuation.
-2. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md` — current frontend/backend integration state.
-3. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — active executable checklist and phase gates.
-4. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md` — updated durable architecture and realistic automation roadmap.
-5. `CMXChat/jay-app/specs/003-server-checkin/ACTION-BUILDER-NEXT.md` — approved Automation/Actions UX and domain mapping.
-6. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — canonical backend release/deployment continuity journal.
-7. `docs/checkin-context-handoff-2026-08-17.md` — extensive history for this work period.
+1. **This file** — current cross-repo state and immediate continuation.
+2. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — executable checklist and open gates.
+3. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-READ-FIRST.md` — required product-model gate before backend Phase 2A.
+4. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-PLATFORM-ARCHITECTURE.md` — bird’s-eye platform/domain architecture.
+5. `CMXChat/jay-app/specs/003-server-checkin/AI-CAPABILITY-AND-TOOLS-CONTRACT.md` — future AI/tool/capability boundary.
+6. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-MASTER-PLAN.md` — durable production/automation roadmap.
+7. `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-NEXT.md` — production frontend/backend integration detail.
+8. `CMXChat/jay-app/specs/003-server-checkin/AUTOMATION-FRONTEND-CONTRACT.md` — focused Automation builder ↔ backend contract.
+9. `docs/checkin-product-design-CURRENT.md` — current human-interface/mobile design rules.
+10. `docs/checkin-library-premium-CURRENT.md` — current focused Library UX contract.
+11. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — backend release/deployment journal.
 
-The master plan was refreshed after the Phase 1 production release. Its current-production and roadmap sections now reflect the live Phase 1 backend and the approved automation-engine direction.
+Do not reconstruct architecture from chat memory when these files exist.
 
-## 2. Current production backend truth
+# 2. Production backend truth
 
 Phase 1 backend is fully live and production verified.
 
@@ -37,430 +41,343 @@ Recorded Aiven recovery checkpoint before migration:
 
 `2026-08-17 17:04:13 UTC`
 
-Production verification already passed for:
-
-- exactly one expected primary switch;
-- valid current/current-window policy pointers;
-- policy version 1;
-- UTC authoritative timing;
-- interval `259200` seconds = 72 hours;
-- grace `86400` seconds = 24 hours;
-- compatibility fields 72/24;
-- zero orphan policy pointers;
-- zero Incidents and zero active Incidents at release verification;
-- active-Incident uniqueness protection;
-- published-policy immutability protection;
-- approved-origin browser health HTTP 200 body `true`;
-- public status HTTP 200;
-- unauthenticated protected policy read HTTP 401 with `Operator unlock required`.
-
-The temporary release mutation freeze was released after verification. No production policy change, pause, resume, deadline override, reconcile, Action execution, or test check in was performed during release verification.
-
-Do not confuse later documentation commits on `jay-app/main` with the exact reviewed application SHA running on Render unless a later deploy is explicitly verified.
-
-## 3. Current switch semantics
-
-The live switch is not weekly.
+Current switch policy is **not weekly**.
 
 ```text
 successful protected check in
-→ backend records actual server timestamp
+→ authoritative server timestamp
 → 72 elapsed hours
 → deadline
 → 24 elapsed hour grace
 → triggered state
 ```
 
-A successful check in resets the next deadline exactly 72 elapsed hours after the server-authoritative timestamp. PostgreSQL/server UTC is authoritative.
+UTC/PostgreSQL/server time is authoritative.
 
-Old 168-hour/weekly compatibility history exists in older git/migration history. Do not resurrect it as current behavior.
+Phase 1 backend supports immutable policy versions, configurable interval/grace, policy/window pointers, pause/resume, one-time deadline override, reconciliation, immutable Incident snapshots/lifecycle, atomic Audit, DB constraints, protected private session, CSRF/Origin checks, protected records/content areas, and sanitized public status.
 
-## 4. Phase 1 backend capabilities already real
+Phase 1 still performs **no external Action execution**.
 
-The backend now supports:
+A triggered switch does not mean email/SMS/Discord/webhook/document/AI delivery happened.
 
-- immutable versioned switch policies;
-- configurable interval/grace values;
-- current published policy pointer;
-- current-window policy pointer;
-- apply policy starting next successful check in;
-- recalculate current window;
-- explicit-current-deadline publication;
-- pause;
-- fresh resume;
-- authoritative remaining-time resume where valid;
-- explicit-deadline resume;
-- one-time deadline override;
-- reconciliation;
-- immutable Incident snapshots/lifecycle state;
-- atomic Audit behavior;
-- PostgreSQL constraints/triggers protecting policy/Incident invariants.
+Do not mutate production merely to test UI acceptance. In particular, do not change policy timing, pause/resume, override a deadline, reconcile, or record a check in without a separate justified reason.
 
-Important protected routes under `/api/v1` include:
+# 3. Production frontend acceptance — current truth
 
-- `GET /checkin/operator/switch/policy`
-- `PUT /checkin/operator/switch/policy`
-- `POST /checkin/operator/switch/pause`
-- `POST /checkin/operator/switch/resume`
-- `PUT /checkin/operator/switch/deadline-override`
-- `POST /checkin/operator/switch/reconcile`
+The original Samsung problems were real and were repaired:
 
-Phase 1 still has **no external Action execution**.
+- public page had shown `SYNC REQUIRED / Status unavailable` because timer compatibility was coupled to ancillary aggregate counts;
+- the intended mobile Settings gear was hidden by mobile CSS.
 
-A `triggered` switch means authoritative switch state only. It does not mean configured email/SMS/Discord/webhook/document/AI Actions were sent or executed.
+Key fixes included:
 
-## 5. Current frontend integration
+- `2faa3d3f715b93667fe5ed913f91b0a62d34f989` — timer/status contract decoupled from aggregate counts;
+- `ac091472dc67edb299d1826a9d89c5377adfc718` — mobile Settings entry point restored;
+- `33760c63feca77f54dc7371054eba08354635f85` — mobile/header compatibility cleanup;
+- dedicated targeted regression/production validation coverage was added afterward.
 
-The first Phase 1 frontend integration is in `CMXChat/First-Repo/main` and deployed through GitHub Pages.
+## Real-device evidence already proven
 
-It added:
+Real Samsung/Chrome screenshots established:
 
-- policy-driven timing validation instead of requiring exactly 72 hours;
-- `assets/checkin/checkin-phase1-controls.js`;
-- `assets/checkin/checkin-phase1-controls.css`;
-- protected Settings wiring for policy read/update, pause, resume, and deadline override;
-- reuse of the existing protected cookie session + CSRF model;
-- paused-state presentation;
-- responsive/mobile work;
-- no intentional production switch mutation.
+- public `SAFE / LIVE` status;
+- real server-authoritative countdown;
+- Last Check In / Next Due rendering;
+- mobile Settings gear visible/reachable;
+- locked mobile Settings showing public `72 hours rolling · 24 hours grace` and deadline without private mutation controls;
+- authenticated protected **GET-only** policy load showing version 1, UTC, interval 72, grace 24 and current window/deadline;
+- private session strip after unlock;
+- one `Lock Now` control;
+- manual Lock Now removes the private session strip, detailed private Activity/Audit, and private Settings controls while preserving truthful public status;
+- no persistent Samsung freeze after the earlier broad-MutationObserver failure was removed.
 
-Relevant earlier functional frontend commits include:
+## Exactly two acceptance gaps remain
 
-- `5c6a95eb2e50b899c72ed76a9611d7d70f53702f` — policy-driven timing contract;
-- `844e1728a148ae1adefcbfb8aab4d1e33831445c` — Phase 1 controls;
-- `c8abf72fc76149ed91053af1cf57a6f20f771489` — controls wired into Check In;
-- `f3ebea04070a1c40690f1e5b39d8e844b7aeb2ac` — controls hardened;
-- `8f1ee107c77aa8df50bc6e95dfb6dd2e8f756550` — timing bounds aligned;
-- `7f22bcbbfade5e075eb5ffc7c64ebe5101b31c6a` — paused/mobile polish;
-- `102e7c07aba77daf811eb8f1c48bde2e69055fe6` — settings text wrapping.
+Do not silently mark the frontend gate complete until these are directly proven:
 
-Earlier desktop package fix that must remain intact:
+1. **Desktop locked Settings visual/privacy audit.**
+2. **Natural protected-session expiry** after the normal short session clears private UI/state and returns to truthful public state.
 
-- `36d95a0142bcbb9230046cc4b942570bb78ae7f6`.
+`tasks.md` now reflects this accurately: T034/T035/T036/T038/T040 are complete; T037 is mobile-complete but desktop-pending; T039 is manual-lock-complete but natural-expiry-pending.
 
-## 6. Samsung issues found, fixes already committed, live acceptance still pending
+# 4. Focused Lab truth
 
-The first real Samsung/Android screenshot after Phase 1 frontend integration showed two issues:
+Focused route:
 
-- `SYNC REQUIRED / Status unavailable / CONNECTING` even though backend browser smoke had previously passed;
-- no visible mobile Settings gear despite `#mobileSettings` existing in source.
+`https://db.cmxchat.com/lab/automations/`
 
-Two narrow frontend fixes were then committed:
+This is an isolated product prototype. Its CSP keeps `connect-src 'self'`; it does not call the production API.
 
-### Status/timer fix
+The Lab is deliberately useful for testing product semantics before backend models are locked, but localStorage state is not production persistence.
 
-Commit:
+## Automation builder prototype
 
-`2faa3d3f715b93667fe5ed913f91b0a62d34f989` — `Decouple Check In timer status from aggregate counts`
-
-What it changed:
-
-`checkin-status-contract.js` no longer treats aggregate inventory-count fields as required for the server-authoritative timer to be schema-compatible. Interval/grace validity controls the timer contract; missing/stale aggregate counts fall back to presentation defaults instead of forcing `SYNC REQUIRED`.
-
-This is intentionally narrow. It does not change backend timing or production switch state.
-
-### Mobile Settings-entry fix
-
-Commit:
-
-`ac091472dc67edb299d1826a9d89c5377adfc718` — `Restore mobile Check In settings entry point`
-
-What it changed:
-
-On screens up to 430px, `#mobileSettings` is explicitly displayed as the intended top-bar Settings control. It does not add a duplicate bottom-nav Settings destination.
-
-### Current acceptance state
-
-The code fixes exist, but **real-device verification remains the active gate**.
-
-Do not treat the commits alone as proof that the live Samsung page is now correct. Continue with `tasks.md` T036-T040 and only close T034/T035 once the working context is satisfied the diagnosed causes/fixes are correct.
-
-The next real actions are:
-
-1. hard refresh/reload the live Samsung page after the new frontend deploy reaches it;
-2. verify public status/countdown are truthful again;
-3. verify the top-bar Settings gear is visible/reachable;
-4. perform locked Settings visual/privacy audit on mobile and desktop;
-5. unlock only when ready and perform the first protected **GET-only** policy read;
-6. verify the UI represents the authoritative current 72+24 policy/window correctly;
-7. verify manual lock/session expiry removes private controls/state;
-8. add targeted regression coverage if the diagnosed failure warrants it.
-
-Do **not** publish policy timing, pause, resume, override a deadline, reconcile, or record a check in merely to complete this gate.
-
-If another context is already running these checks, let it finish. Do not redirect it into backend roadmap work.
-
-## 7. Approved product direction after the frontend gate
-
-Check In is intentionally evolving into a private automation/delegation control plane.
-
-Human mental model:
+Current human-facing flow is approximately:
 
 ```text
-WHEN something happens
-IF rules are true
-DO actions
-WAIT / REPEAT when configured
-THEN react to outcomes
+Basics
+Trigger
+Rules
+Actions
+Timing
+Finish
+Review
 ```
 
-The realistic target is **IFTTT-class trigger/action and workflow usefulness for the providers we deliberately connect**, with deeper private orchestration than simple one-trigger/one-action recipes.
-
-Check In should own:
-
-- durable Automation definitions;
-- immutable versions;
-- Switch/Incident state;
-- schedules;
-- conditions;
-- targets and protected records;
-- Runs;
-- Occurrences;
-- Execution Attempts;
-- retries/timeouts;
-- routing;
-- acknowledgements;
-- approvals;
-- audit history;
-- provider references;
-- bounded AI permissions.
-
-External providers supply capabilities such as email, SMS, Discord, AI, object storage, and approved APIs/webhooks.
-
-Core principle:
-
-> **Build the control plane. Rent the capabilities.**
-
-We are not trying to reproduce the entire IFTTT/Zapier/Make/n8n integration marketplace ourselves.
-
-## 8. Why the roadmap is realistically doable by us
-
-The implementation is intentionally split into narrow vertical slices using the existing FastAPI + PostgreSQL foundation.
-
-Do not:
-
-- build a platform-sized abstraction all at once;
-- rewrite the whole frontend into React merely because the backend gets more capable;
-- add Redis/Celery/Dramatiq/RQ simply because large systems use them;
-- add many providers before one fake and one real vertical slice work;
-- start AI Agent work early;
-- build a giant drag-and-drop workflow editor first.
-
-Prefer PostgreSQL-backed durable claims/jobs first if they satisfy reliability requirements. Add a separate queue only when real evidence justifies it.
-
-A small reliable engine with a few excellent provider adapters is more valuable than a fragile engine claiming dozens of integrations.
-
-## 9. Approved executable roadmap after the frontend gate
-
-`CMXChat/jay-app/specs/003-server-checkin/tasks.md` is the concrete checklist.
-
-### Engine Phase 2A — typed Automation definitions
-
-First backend milestone after the frontend gate.
-
-Build:
-
-- `Automation`;
-- immutable `AutomationVersion`;
-- small typed Trigger registry;
-- small typed Action registry;
-- stable protected targets/references;
-- only Conditions/Routes needed by the first slice;
-- graph/reference/cycle validation;
-- `DRAFT → REVIEW → PUBLISHED → ARCHIVED` lifecycle;
-- protected CRUD/publish APIs;
-- schema/authorization/cross-switch tests.
-
-No external side effects. No scheduler yet.
-
-### Engine Phase 2B — private human builder
-
-Evolve the private `Actions` area around:
+Backend mental model remains:
 
 ```text
-WHEN / IF / DO / WAIT / THEN
+WHEN
+IF
+DO
+WAIT / REPEAT
+THEN
 ```
 
-The compact step-editing flow:
+Important prototype decisions already locked into backend handoffs include:
+
+- grace explanation in trigger UX;
+- Action start timing: immediately / delay / not-before exact local date+time;
+- exact action time never bypasses the Trigger;
+- WAIT between individual Actions remains separate from Action start timing;
+- Repeat is separate from Retry;
+- recurring minutes/hours are elapsed cadence;
+- recurring days/weeks/months/years are calendar-aware with IANA timezone;
+- daily/weekly presets are calendar-aware;
+- monthly/yearly edge cases are explicitly backend-owned;
+- Finish defaults to simple `Finish here`, with advanced routing progressively disclosed.
+
+## Directory / Audience prototype
+
+Lab distinguishes:
 
 ```text
-ACTION / TARGET / WHEN / CONTENT / REVIEW
+Person ↔ Organization
+Labels
+Groups / saved Audiences
 ```
 
-is the editor for **one DO step**, not the architecture of the entire Automation.
+A Person can belong to multiple Organizations.
 
-Start with a structured linear/card builder. Do not build a freeform drag-and-drop canvas first.
+Labels describe People and may be suggested/custom.
 
-### Engine Phase 3 — durable runtime with fake provider
+Groups collect People/Organizations/Labels.
 
-Add:
+Automation Actions target typed Audience selectors and preview deduplicated unique People/channel readiness. Production resolution remains server-authoritative and future Runs freeze the exact resolved recipient snapshot before side effects.
 
-- `Run`;
-- `RunAction`;
-- `Occurrence`;
-- `ExecutionAttempt`;
-- immutable runtime snapshots;
-- persisted due times;
-- PostgreSQL lock/lease claim model;
-- stable idempotency identities;
-- restart/stale-claim recovery;
-- deterministic fake provider;
-- append-only runtime Audit;
-- protected runtime status/receipt APIs.
+## Private content/editor prototype
 
-Exit condition: fake workflows run reliably without the browser staying open and survive duplicate claims/restarts correctly.
+Check In owns authored message/email/document content. Gmail/Discord/provider drafts are not the source of truth.
 
-### Engine Phase 4 — one real low-risk provider
+Rich editor supports Docs-style native content, safe links, formatting, autosave, versions, Preview, mobile wrapped toolbar, larger touch targets, and transient learning labels such as `Bold`, `Heading 2`, `Bulleted list`, and `Insert link`.
 
-Choose one provider based on the simplest secure/operational setup.
+Action content is action-scoped by default. The user may explicitly:
 
-Preferred candidate: approved Discord webhook Connection.
+- Save to Library;
+- Save as Template;
+- Save as Document.
 
-Transactional email is an acceptable alternative if clearly simpler at implementation time.
+## Library prototype
 
-Prove:
+Library now prototypes:
+
+- logical folders;
+- obvious immediate-parent Back/Up behavior;
+- breadcrumbs;
+- native Rich Documents;
+- native Markdown `.md`;
+- native Text `.txt`;
+- Email/Message/Document Templates;
+- metadata-only binary FileAssets;
+- exact-version attachment pinning;
+- safe viewer shells;
+- versions / Details / Used by direction;
+- Recent;
+- Favorites;
+- search;
+- list/grid;
+- sort;
+- mobile Filter sheet;
+- compact `•••` actions;
+- archive/restore;
+- duplicate/rename/move where appropriate.
+
+Important storage direction:
 
 ```text
-trigger
-→ Run
-→ due Action
-→ claim
-→ worker
-→ provider
-→ result
-→ Audit
+native Rich/Markdown/Text/Templates
+→ PostgreSQL canonical content + immutable versions
+
+binary PDF/image/video/DOCX/XLSX/etc.
+→ private object storage bytes
+→ PostgreSQL FileAsset/FileVersion metadata + references
 ```
 
-Only then add more providers.
+Native Markdown is intentionally DB-native so humans and later authorized AI can search/read/version it directly.
 
-### Engine Phase 5 — deeper workflow power
+# 5. Bird’s-eye platform direction
 
-Add as real workflows require them:
+Check In is no longer being designed as only “a dead-man switch that sends messages.”
 
-- success/final-failure/timeout routes;
-- typed dependencies;
-- retries;
-- persisted WAIT/repeat behavior;
-- branch cancellation;
-- acknowledgements;
-- approvals;
-- calendar recurrence/timezone/DST hardening;
-- additional providers one at a time, including SMS when justified.
+The approved product architecture is:
 
-### Engine Phase 6 — AI Task + natural-language Planner
+> **A private information, automation, runtime, and bounded-delegation control plane.**
 
-AI Task first:
-
-- approved context IDs;
-- explicit output;
-- model/provider policy;
-- runtime/token/cost limits;
-- audited result;
-- approval where needed.
-
-Then Planner:
+Six domains:
 
 ```text
-plain language
-→ typed Automation draft
-→ schema validation
-→ policy validation
-→ graph validation
-→ human-readable preview
-→ user review/publish
+Directory   = who
+Library     = what information/content
+Automation  = what should happen
+Runtime     = what actually happened
+Connections = how external capability is reached
+AI          = bounded intelligence using the same typed services
 ```
 
-Planner creates drafts. It does not create authority.
+Read `CHECKIN-PLATFORM-ARCHITECTURE.md` for the detailed contract.
 
-### Engine Phase 7 — bounded AI Agent later
+The Switch is one future Trigger source inside that architecture.
 
-Only after normal runtime, providers, approvals, audit, typed tools, limits, and simulation are trustworthy.
+# 6. Stable-ID/service rule
 
-Server-enforced grants define allowed records, people, organizations, Connections, tools, communication rights, budget, steps, runtime, approvals, outputs, and stop conditions.
+Names, filenames, labels, and folder paths are presentation. They are not identity.
 
-Prompt text can never expand those permissions.
+Use stable protected IDs for People, Organizations, Groups, Folders, Content, ContentVersions, Files, FileVersions, Automations, AutomationVersions, Runs and Connections.
 
-## 10. Acceptance rule: drawings are not capabilities
+Renames/moves must not break references.
 
-A frontend card does not make a capability real.
+The human UI and future AI tools must use the **same typed domain services**.
 
-- A definition is real when the backend validates, versions, and persists it.
-- Runtime is real when due work survives restarts/duplicate claims safely.
-- Provider Action is real when the server executes it idempotently with safe credential boundaries and stores a truthful result.
-- WAIT is real when persisted server-side, not when JavaScript sleeps.
-- A route is real when runtime outcomes activate it deterministically.
-- AI delegation is real only when context, tools, permissions, limits, audit, and approvals are enforced server-side.
+Conceptually:
 
-Until these gates exist, do not claim Actions are armed, sent, delivered, released, executed, or completed.
+```text
+Human browser ─┐
+               ├→ protected API/domain service → auth → validation → persistence → audit
+AI tool call ──┘
+```
 
-## 11. Security/public-private guardrails
+Do not create AI-only god-mode database endpoints.
 
-Preserve:
+# 7. AI direction
 
-- sanitized read-only public status;
-- private records/action definitions/policy/activity behind private access;
-- Secure HttpOnly operator session cookie;
-- double-submit CSRF;
-- exact mutation Origin `https://db.cmxchat.com`;
-- no operator key/JWT/CSRF/private policy/private content in localStorage/sessionStorage;
-- no owner ID/switch UUID/database credentials in public frontend;
-- no raw provider credentials in Action JSON, Records, Audit, prompts, or frontend;
-- no arbitrary Python/JavaScript/shell/SQL/`eval` Actions or Conditions;
-- no unrestricted arbitrary webhook destinations;
-- idempotency and durable history for external side effects;
-- stronger policy/approvals before destructive operations.
+AI is deliberately planned, but not implemented as runtime authority yet.
 
-## 12. Samsung/mobile performance guardrail
+Future levels:
 
-A real Samsung/Android browser previously became unresponsive because broad DOM observation interacted with the frequently changing countdown.
+1. interactive Assistant;
+2. natural-language Planner producing typed drafts;
+3. bounded AI Task inside durable Runs;
+4. bounded Agent later.
 
-Do not add:
+AI receives explicit stable IDs/versions and server-enforced capabilities, not raw DB credentials, unrestricted SQL, provider secrets, storage keys, or prompt-granted authority.
 
-- full-document `MutationObserver`;
-- full-page `characterData` observation;
-- whole-page rescans every countdown tick;
-- observer callbacks that repeatedly mutate their own observed target.
+Future tool operations should be narrow wrappers over normal domain services, for example Library create/update/search/version, Directory resolve-audience, and Automation create/update/validate draft.
 
-Use targeted state/events.
+Read `AI-CAPABILITY-AND-TOOLS-CONTRACT.md` before implementing any AI tool/runtime.
 
-## 13. Files to inspect before frontend changes
+# 8. Backend plan from here
 
-Read current source before editing:
+Do not begin provider/scheduler/AI runtime work yet.
 
-- `checkin/index.html`
-- `assets/checkin/checkin.js`
-- `assets/checkin/checkin-status-contract.js`
-- `assets/checkin/checkin-phase1-controls.js`
-- `assets/checkin/checkin-phase1-controls.css`
-- `assets/checkin/checkin-refine.css`
-- `assets/checkin/checkin-legibility.css`
-- other `assets/checkin/*` files only as needed.
+## Immediate production gate
 
-Do not broadly rewrite `/checkin` from screenshots or memory.
+Finish the two remaining real-device acceptance items:
 
-## 14. Files to inspect before backend automation work
+- desktop locked Settings;
+- natural session expiry.
 
-After the active frontend gate passes, read:
+## First real Phase 2A milestone — private information layer
 
-- `specs/003-server-checkin/tasks.md`;
-- `specs/003-server-checkin/CHECKIN-MASTER-PLAN.md`;
-- `specs/003-server-checkin/ACTION-BUILDER-NEXT.md`;
-- current backend models/services/routes/migrations/tests.
+After that, the preferred backend vertical slice is:
 
-Then implement only the active checklist slice.
+```text
+Create continuity.md
+→ ContentAsset + mutable ContentDraft in PostgreSQL
+→ refresh / another authenticated session reads same Draft
+→ protected update with stale-write protection
+→ Save Version creates immutable ContentVersion v1
+→ create/move into real LibraryFolder
+→ parent/breadcrumb metadata supports obvious Back/Up
+→ protected PostgreSQL search finds it
+→ Details returns exact version ID + dependency count
+→ typed domain service is reusable by human UI and later AI tool adapter
+→ Automation Draft references it
+→ no provider side effect
+```
 
-## 15. Learning/working style
+This establishes the real private information layer that Automations and AI will consume.
+
+## Then complete Engine Phase 2A Automation definitions
+
+T041–T049 only:
+
+- Automation / immutable AutomationVersion;
+- typed Triggers;
+- typed Actions;
+- stable Audience/Content/File references;
+- only needed Conditions/Routes;
+- DRAFT → REVIEW → PUBLISHED → ARCHIVED;
+- protected CRUD/publish;
+- schema/auth/cross-scope tests.
+
+## Then
+
+```text
+Phase 2B → real human builder over backend drafts
+Phase 3  → durable Run/Occurrence/Attempt + fake provider
+Phase 4  → one real low-risk provider
+Phase 5  → routes/retries/acks/approvals/waits/more providers
+Phase 6  → AI Task + Planner
+Phase 7  → bounded Agent
+```
+
+# 9. Design rules that should survive implementation
+
+Read `docs/checkin-product-design-CURRENT.md` before major UX changes.
+
+Key rules:
+
+- mobile-first, normal 44px+ touch targets;
+- breadcrumbs supplement, not replace, obvious Back/Up;
+- progressive disclosure over developer density;
+- one obvious primary action per context;
+- secondary actions in sheets/menus;
+- no tiny desktop controls on phones;
+- rich editor controls wrap and teach their names briefly;
+- truthful `backend pending` language in Lab;
+- do not call configured Actions delivered/armed/executed before the server runtime exists;
+- no broad document MutationObserver due the proven Samsung freeze.
+
+Final protected navigation is **not frozen yet**. Library may deserve first-class protected navigation once the real Library/Directory domains exist and can be evaluated as one integrated product.
+
+# 10. Security rules
+
+Preserve and extend:
+
+- sanitized public status;
+- Secure HttpOnly private session;
+- CSRF + exact mutation Origin;
+- server-side scope checks;
+- no private auth/session secrets in local/session storage;
+- no raw provider secrets in Action JSON, content, Records, Audit, browser storage, or AI prompts;
+- no arbitrary Python/JS/shell/SQL/eval;
+- no unrestricted arbitrary webhooks;
+- no permanent public object URLs;
+- immutable published/versioned history;
+- idempotency for side effects;
+- stronger approval for consequential operations;
+- prompt text never grants authority.
+
+# 11. Learning/working rule
 
 The user is learning backend development while building this.
 
-When explaining concepts, use short beginner-friendly explanations tied to this project.
+When teaching, use short beginner explanations tied to the real project.
 
-For implementation, prefer one clear next action at a time unless a full plan is explicitly requested.
+For implementation, preserve a clear next step and do not burn Codex/Codespaces credits when normal GitHub tooling can safely inspect/change the repos.
 
-Codex/Codespaces credits are limited. If ChatGPT can safely inspect/change First-Repo through GitHub directly, do not burn Codex unnecessarily.
-
-## 16. Security cleanup still owed
+# 12. Security cleanup still owed
 
 An SMTP credential was exposed earlier in diagnostic output. Never reproduce it in chat, docs, commits, prompts, or logs.
 
-Before final overall project closeout, remind the user to rotate the active SMTP credential if that has not already been done.
+Before final project closeout, remind the user to rotate the active SMTP credential if it has not already been rotated.
