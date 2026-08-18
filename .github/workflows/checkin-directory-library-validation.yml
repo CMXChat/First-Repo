@@ -10,6 +10,10 @@ on:
       - 'assets/lab/lab-automations-audience.css'
       - 'assets/lab/lab-automations-library-runtime.js'
       - 'assets/lab/lab-automations-library.css'
+      - 'assets/lab/lab-automations-library-pro.js'
+      - 'assets/lab/lab-automations-library-pro.css'
+      - 'assets/lab/lab-automations-library-pro-polish.js'
+      - 'assets/lab/lab-automations-library-pro-polish.css'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'assets/lab/lab-automations-document-security.js'
@@ -24,6 +28,10 @@ on:
       - 'assets/lab/lab-automations-audience.css'
       - 'assets/lab/lab-automations-library-runtime.js'
       - 'assets/lab/lab-automations-library.css'
+      - 'assets/lab/lab-automations-library-pro.js'
+      - 'assets/lab/lab-automations-library-pro.css'
+      - 'assets/lab/lab-automations-library-pro-polish.js'
+      - 'assets/lab/lab-automations-library-pro-polish.css'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'assets/lab/lab-automations-document-security.js'
@@ -46,6 +54,8 @@ jobs:
           node --check assets/lab/lab-automations-audience-runtime.js
           node --check assets/lab/lab-automations-audience-review.js
           node --check assets/lab/lab-automations-library-runtime.js
+          node --check assets/lab/lab-automations-library-pro.js
+          node --check assets/lab/lab-automations-library-pro-polish.js
           node --check assets/lab/lab-automations-editor-learning.js
           node --check assets/lab/lab-automations-document-security.js
           python - <<'PY'
@@ -58,6 +68,10 @@ jobs:
           audience_css = Path('assets/lab/lab-automations-audience.css').read_text(encoding='utf-8')
           library = Path('assets/lab/lab-automations-library-runtime.js').read_text(encoding='utf-8')
           library_css = Path('assets/lab/lab-automations-library.css').read_text(encoding='utf-8')
+          pro = Path('assets/lab/lab-automations-library-pro.js').read_text(encoding='utf-8')
+          pro_css = Path('assets/lab/lab-automations-library-pro.css').read_text(encoding='utf-8')
+          polish = Path('assets/lab/lab-automations-library-pro-polish.js').read_text(encoding='utf-8')
+          polish_css = Path('assets/lab/lab-automations-library-pro-polish.css').read_text(encoding='utf-8')
           learning = Path('assets/lab/lab-automations-editor-learning.js').read_text(encoding='utf-8')
           learning_css = Path('assets/lab/lab-automations-editor-learning.css').read_text(encoding='utf-8')
           security = Path('assets/lab/lab-automations-document-security.js').read_text(encoding='utf-8')
@@ -67,11 +81,12 @@ jobs:
               '/assets/lab/lab-automations-audience-runtime.js?v=',
               '/assets/lab/lab-automations-audience-review.js?v=',
               '/assets/lab/lab-automations-library-runtime.js?v=',
+              '/assets/lab/lab-automations-library-pro.js?v=',
+              '/assets/lab/lab-automations-library-pro-polish.js?v=',
+              '/assets/lab/lab-automations-library-pro.css?v=',
+              '/assets/lab/lab-automations-library-pro-polish.css?v=',
               '/assets/lab/lab-automations-editor-learning.js?v=',
               '/assets/lab/lab-automations-document-security.js?v=',
-              '/assets/lab/lab-automations-audience.css?v=',
-              '/assets/lab/lab-automations-library.css?v=',
-              '/assets/lab/lab-automations-editor-learning.css?v=',
               "connect-src 'self'",
           ]
           required_audience = [
@@ -87,10 +102,30 @@ jobs:
               'linkedDocuments', 'fileVersionId', 'used by', 'cmx-lab-content-assets-v1',
               'cmx-lab-file-assets-v1',
           ]
+          required_pro = [
+              'cmx-lab-library-meta-v1', 'Continuity', 'Templates', 'New folder',
+              'Markdown file', 'Text file', 'Email template', 'Message template', 'Document template',
+              'ai-context-notes.md', 'MARKDOWN SOURCE', 'SAFE PREVIEW', 'Save version',
+              'Import as editable Markdown', 'templateSource', '{{recipient_name}}',
+              'Rename item', 'Move', 'Duplicate', 'Archive', 'AI READY',
+          ]
+          required_polish = [
+              'Folder is not empty', 'Restore', 'Replace current draft?', 'Apply link',
+              'production backend will never silently orphan',
+          ]
           required_learning = ['Bold','Heading 2','Bulleted list','Insert link','editor-learning-tip']
           required_security = ['ALLOWED', 'BLOCKED', 'safeHref', 'data-document-body', 'text/html']
-          required_css = ['.audience-manager-overlay','.audience-target-card','.library-overlay','.document-editor-overlay','.content-toolbar','.editor-learning-tip']
-          required_handoff = ['Person ↔ Organization','Groups = saved audiences','Document = native editable Check In content','Library = Documents + Files','DIRECTORY-AUDIENCE-LIBRARY-BACKEND-HANDOFF.md']
+          required_css = [
+              '.audience-manager-overlay','.audience-target-card','.library-overlay','.document-editor-overlay',
+              '.library-pro-overlay','.pro-create-grid','.pro-source-layout','.pro-md-toolbar',
+              '.content-template-shortcut','.template-picker-overlay','.pro-link-panel',
+              '.content-toolbar','.editor-learning-tip'
+          ]
+          required_handoff = [
+              'Person ↔ Organization','Groups = saved audiences','Native Markdown','Templates are now a first-class Library type',
+              'cmx-lab-library-meta-v1','Import as editable Markdown',
+              'LIBRARY-FOLDERS-TEMPLATES-MARKDOWN-BACKEND-HANDOFF.md'
+          ]
 
           for term in required_html:
               if term not in html: sys.exit(f'missing route contract: {term}')
@@ -100,20 +135,24 @@ jobs:
               if term not in audience_review: sys.exit(f'missing audience Review bridge: {term}')
           for term in required_library:
               if term not in library: sys.exit(f'missing library contract: {term}')
+          for term in required_pro:
+              if term not in pro: sys.exit(f'missing advanced Library contract: {term}')
+          for term in required_polish:
+              if term not in polish: sys.exit(f'missing advanced Library polish: {term}')
           for term in required_learning:
               if term not in learning + learning_css: sys.exit(f'missing editor learning contract: {term}')
           for term in required_security:
               if term not in security: sys.exit(f'missing document security contract: {term}')
           for term in required_css:
-              if term not in audience_css + library_css + learning_css: sys.exit(f'missing UX CSS: {term}')
+              if term not in audience_css + library_css + pro_css + polish_css + learning_css: sys.exit(f'missing UX CSS: {term}')
           for term in required_handoff:
               if term not in handoff: sys.exit(f'missing frontend handoff: {term}')
 
-          combined = audience + audience_review + library + learning + security
-          for term in ['api.cmxchat.com','eval(','new Function(','MutationObserver','localStorage.setItem("operator']:
+          combined = audience + audience_review + library + pro + polish + learning + security
+          for term in ['api.cmxchat.com','eval(','new Function(','MutationObserver','localStorage.setItem("operator','blob:','data:application/']:
               if term in combined: sys.exit(f'forbidden focused Lab behavior: {term}')
 
-          print('Directory, audience, Review, Library, Document and editor-learning contract passed.')
+          print('Directory, audience, folders, native Markdown/Text, Templates, Library and editor-learning contract passed.')
           PY
 
       - name: Browser smoke desktop and mobile
@@ -128,7 +167,7 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
-          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=4500 "$@" --dump-dom; }
+          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=5000 "$@" --dump-dom; }
           dump http://127.0.0.1:8000/lab/automations/ > /tmp/dl-desktop.html
           grep -q '>Automations<' /tmp/dl-desktop.html
           grep -q '>Library<' /tmp/dl-desktop.html
