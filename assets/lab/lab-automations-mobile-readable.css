@@ -1,0 +1,379 @@
+/* Mobile readability pass for the focused Automations Lab.
+   Keeps the existing visual language while removing desktop-density from phones. */
+
+@media (max-width: 700px) {
+  body { font-size: 16px; }
+
+  .topbar {
+    min-height: 78px;
+    padding: 13px 16px;
+    gap: 12px;
+  }
+
+  .brand { gap: 12px; }
+  .brand-mark { width: 44px; height: 44px; border-radius: 14px; }
+  .brand-copy strong { font-size: 16px; letter-spacing: .07em; }
+  .brand-copy small { font-size: 11px; line-height: 1.25; }
+  .top-actions { gap: 7px; }
+  .pill { min-height: 46px; padding: 0 14px; font-size: 12px; border-radius: 13px; }
+  .icon-btn { width: 46px; height: 46px; }
+
+  .shell {
+    padding: 24px 16px calc(92px + env(safe-area-inset-bottom));
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 18px;
+    padding: 20px 0 26px;
+  }
+
+  .hero h1 {
+    margin-top: 8px;
+    font-size: clamp(40px, 12vw, 54px);
+    line-height: .96;
+  }
+
+  .hero p {
+    max-width: none;
+    font-size: 16px;
+    line-height: 1.58;
+  }
+
+  .eyebrow,
+  .app-loading span { font-size: 11px; }
+
+  .primary,
+  .secondary,
+  .ghost,
+  .save-btn,
+  .continue-btn,
+  .back-btn,
+  .add-step {
+    min-height: 50px;
+    font-size: 14px;
+  }
+
+  .status-strip {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-bottom: 20px;
+  }
+
+  .status-card {
+    min-height: 68px;
+    padding: 14px 16px;
+  }
+
+  .status-card small { font-size: 10px; }
+  .status-card strong { font-size: 15px; }
+
+  .tabs {
+    width: 100%;
+    padding: 6px;
+    gap: 5px;
+  }
+
+  .tabs button {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .section-head {
+    align-items: flex-end;
+    margin: 28px 0 14px;
+  }
+
+  .section-head strong { font-size: 20px; }
+  .section-head small { font-size: 13px; }
+
+  .automation-list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .automation-card {
+    gap: 18px;
+    padding: 22px 20px;
+    border-radius: 22px;
+    box-shadow: 0 18px 44px rgba(0,0,0,.22);
+  }
+
+  .card-top { gap: 14px; }
+  .card-title { gap: 7px; }
+  .card-title small {
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: .13em;
+  }
+
+  .card-title strong {
+    font-size: 24px;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+  }
+
+  .state-chip {
+    padding: 8px 11px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .automation-card p {
+    font-size: 16px;
+    line-height: 1.58;
+  }
+
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .flow-node {
+    grid-template-columns: 56px minmax(0,1fr);
+    align-items: center;
+    gap: 10px;
+    min-height: 58px;
+    padding: 11px 13px;
+    border-radius: 13px;
+  }
+
+  .flow-node small {
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .flow-node strong {
+    font-size: 14px;
+    line-height: 1.3;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .card-foot {
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .card-foot b { font-size: 10px; }
+
+  .empty {
+    padding: 44px 20px;
+    font-size: 15px;
+  }
+
+  .empty strong { font-size: 21px; }
+
+  /* Editor */
+  .editor-head { top: 78px; }
+  .editor-title { padding: 14px 16px 11px; }
+  .editor-name small { font-size: 10px; }
+  .editor-name strong { font-size: 19px; }
+  .save-state { font-size: 11px; }
+
+  .step-rail-wrap { padding: 0 12px 13px; }
+  .step-rail { gap: 8px; }
+  .step-chip {
+    min-height: 54px;
+    padding: 9px 11px;
+  }
+  .step-chip b { width: 30px; height: 30px; font-size: 11px; }
+  .step-chip small { font-size: 9px; }
+  .step-chip em { font-size: 11px; }
+
+  .editor-body {
+    padding: 26px 16px 120px;
+  }
+
+  .step-section { gap: 20px; }
+  .step-heading { padding-bottom: 18px; }
+  .step-heading small { font-size: 10px; margin-bottom: 9px; }
+  .step-heading h2 {
+    font-size: 32px;
+    line-height: 1.04;
+    letter-spacing: -.045em;
+  }
+  .step-heading p {
+    margin-top: 9px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .field { gap: 8px; }
+  .field > span,
+  .time-number span { font-size: 12px; }
+
+  .field input,
+  .field textarea,
+  .field select,
+  .time-number input,
+  .smart-trigger,
+  .smart-search input {
+    font-size: 16px;
+  }
+
+  .field input,
+  .field select,
+  .time-number input,
+  .smart-trigger { min-height: 52px; }
+  .field textarea { min-height: 118px; padding: 14px; }
+
+  .choice-list { gap: 10px; }
+  .choice {
+    min-height: 76px;
+    padding: 14px;
+    gap: 13px;
+    border-radius: 16px;
+  }
+  .choice-mark { min-width: 46px; height: 40px; font-size: 10px; }
+  .choice-copy { gap: 5px; }
+  .choice-copy strong { font-size: 16px; line-height: 1.3; }
+  .choice-copy small { font-size: 13px; line-height: 1.45; }
+  .choice-check { width: 24px; font-size: 16px; }
+
+  .split,
+  .timing-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  .do-list { gap: 14px; }
+  .do-card {
+    padding: 17px;
+    gap: 14px;
+    border-radius: 18px;
+  }
+  .do-card-head strong { font-size: 16px; }
+  .do-card-head small { font-size: 10px; }
+  .remove-step { min-height: 40px; font-size: 12px; }
+
+  .concept-card summary,
+  .finish-advanced summary {
+    min-height: 68px;
+    padding: 14px;
+  }
+  .concept-card summary b,
+  .finish-advanced summary b { font-size: 15px; }
+  .concept-card summary small,
+  .finish-advanced summary small { font-size: 12px; line-height: 1.4; }
+  .concept-body { gap: 14px; padding: 0 14px 16px; }
+  .concept-body p { font-size: 13px; line-height: 1.55; }
+  .advanced-copy { font-size: 12px; }
+
+  .grace-timeline strong { font-size: 14px; }
+  .grace-timeline small { font-size: 12px; }
+  .trigger-vs-start > span small { font-size: 10px; }
+  .trigger-vs-start > span strong { font-size: 15px; }
+  .trigger-vs-start > span em { font-size: 12px; }
+
+  .timing-mode {
+    min-height: 78px;
+    padding: 14px;
+  }
+  .timing-mode > b { width: 42px; height: 42px; }
+  .timing-mode strong { font-size: 15px; }
+  .timing-mode small { font-size: 12px; line-height: 1.4; }
+  .timing-title h3 { font-size: 16px; }
+  .timing-title small { font-size: 12px; }
+  .timing-title > span { font-size: 10px; }
+  .preset-row button,
+  .repeat-pill { min-height: 44px; font-size: 12px; }
+  .time-preview small { font-size: 9px; }
+  .time-preview strong { font-size: 13px; }
+
+  .review-card { padding: 18px; border-radius: 18px; }
+  .review-card h3 { font-size: 23px; }
+  .review-sentence { font-size: 16px; }
+  .review-row { grid-template-columns: 92px 1fr; gap: 12px; }
+  .review-row small { font-size: 10px; }
+  .review-row span { font-size: 14px; }
+  .backend-note { font-size: 13px; }
+
+  /* Smart dropdowns */
+  .smart-option { min-height: 58px; padding: 13px 12px; }
+  .smart-option strong { font-size: 15px; }
+  .smart-option small { font-size: 12px; }
+  .smart-empty { font-size: 13px; }
+
+  /* Email + AI Task */
+  .action-family-guide strong,
+  .email-action-panel header strong,
+  .ai-task-panel header strong { font-size: 18px; }
+  .action-family-guide span,
+  .ai-task-panel > p { font-size: 14px; }
+  .action-family-guide small,
+  .email-action-panel small,
+  .ai-task-panel small,
+  .email-envelope-card small,
+  .ai-definition-card > small,
+  .ai-authority-summary small { font-size: 11px; }
+
+  .action-family-chips > *,
+  .action-family-chips span { font-size: 11px; }
+  .email-action-grid strong { font-size: 15px; }
+  .email-action-grid span { font-size: 13px; }
+  .email-action-panel footer,
+  .ai-task-panel footer { font-size: 13px; }
+  .ai-task-summary strong { font-size: 14px; }
+
+  .email-envelope-head strong { font-size: 20px; }
+  .email-envelope-head em { font-size: 11px; }
+  .email-sender-identity strong,
+  .email-recipient-card strong { font-size: 15px; }
+  .email-sender-identity span,
+  .email-recipient-card span,
+  .email-envelope-note span { font-size: 13px; }
+  .email-sender-row label > span,
+  .email-subject-field > span { font-size: 12px; }
+  .email-sender-row input,
+  .email-subject-field input { min-height: 50px; font-size: 16px; }
+  .email-recipient-card { min-height: 88px; }
+  .email-envelope-note strong { font-size: 14px; }
+
+  .ai-task-topbar strong { font-size: 20px; }
+  .ai-task-topbar em { font-size: 12px; }
+  .ai-definition-card h2 { font-size: 23px; }
+  .ai-definition-card > p { font-size: 14px; }
+  .ai-definition-card > label > span,
+  .ai-limit-grid label > span { font-size: 12px; }
+  .ai-definition-card textarea,
+  .ai-limit-grid input { font-size: 16px; }
+  .ai-capability-row { min-height: 72px; padding: 13px; }
+  .ai-capability-row strong { font-size: 15px; }
+  .ai-capability-row small { font-size: 13px; }
+  .ai-capability-row em { font-size: 10px; }
+  .ai-autonomy-card { min-height: 120px; padding: 16px; }
+  .ai-autonomy-card strong { font-size: 15px; }
+  .ai-autonomy-card span { font-size: 13px; }
+  .ai-contingency-note strong { font-size: 14px; }
+  .ai-contingency-note span { font-size: 13px; }
+  .ai-authority-summary strong { font-size: 17px; }
+  .ai-authority-summary span { font-size: 13px; }
+  .ai-authority-summary b { font-size: 11px; }
+
+  .editor-footer {
+    padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  }
+  .footer-inner {
+    grid-template-columns: auto auto minmax(138px,1fr);
+    gap: 7px;
+  }
+  .footer-inner button { min-height: 50px; }
+}
+
+@media (max-width: 430px) {
+  .topbar { padding-left: 14px; padding-right: 14px; }
+  .brand-copy small { display: none; }
+  .pill { padding: 0 12px; }
+  .shell { padding-left: 14px; padding-right: 14px; }
+  .automation-card { padding: 20px 18px; }
+  .card-title strong { font-size: 23px; }
+  .automation-card p { font-size: 15px; }
+  .flow-node { grid-template-columns: 52px minmax(0,1fr); }
+  .editor-body { padding-left: 14px; padding-right: 14px; }
+  .step-heading h2 { font-size: 30px; }
+  .review-row { grid-template-columns: 1fr; gap: 4px; }
+}
