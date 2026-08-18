@@ -71,11 +71,15 @@ jobs:
 
           dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-desktop.html
-          grep -q 'Continuum keeps useful information, people and rules together' /tmp/continuum-doc-desktop.html
-          grep -q 'Follow one update through Continuum' /tmp/continuum-doc-desktop.html
+          grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-desktop.html
+          grep -q 'Continuum in one minute' /tmp/continuum-doc-desktop.html
+          grep -q 'What happens when something changes' /tmp/continuum-doc-desktop.html
+          grep -q 'class="clarity-story-copy"' /tmp/continuum-doc-desktop.html
+          grep -q 'class="clarity-story-path"' /tmp/continuum-doc-desktop.html
           grep -q 'How the pieces fit together' /tmp/continuum-doc-desktop.html
-          grep -q 'Current status' /tmp/continuum-doc-desktop.html
+          grep -q 'What works today' /tmp/continuum-doc-desktop.html
           grep -q 'Automations define the steps. Runtime runs them.' /tmp/continuum-doc-desktop.html
+          grep -q 'class="clarity-automation-copy"' /tmp/continuum-doc-desktop.html
           grep -q 'What Continuum adds to AI' /tmp/continuum-doc-desktop.html
           grep -q 'AI authority is set by server-side permissions.' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-deep-dive"' /tmp/continuum-doc-desktop.html
@@ -84,6 +88,7 @@ jobs:
           grep -q 'class="clarity-possibilities"' /tmp/continuum-doc-desktop.html
           grep -q '01 · Overview' /tmp/continuum-doc-desktop.html
           grep -q '08 · Roadmap' /tmp/continuum-doc-desktop.html
+          ! grep -q 'Start here' /tmp/continuum-doc-desktop.html
           ! grep -q 'Why not just use AI by itself' /tmp/continuum-doc-desktop.html
           ! grep -q 'An ordinary day, not an emergency' /tmp/continuum-doc-desktop.html
 
@@ -93,27 +98,38 @@ jobs:
           hero_start = html.index('<header class="hero continuum-hero clarity-hero"')
           hero_end = html.index('</header>', hero_start)
           hero = html[hero_start:hero_end]
-          assert 'hero-network' not in hero, 'Product map must not compete with the opening hero.'
-          assert 'continuum-presence' not in hero, 'Availability map must come after the basic mental model.'
+          assert 'hero-network' not in hero, 'Product map must stay out of the opening hero.'
+          assert 'continuum-presence' not in hero, 'Availability map must stay with the Parts of Continuum section.'
           overview = html.index('id="overview"')
           story = html.index('clarity-story-section')
           product_map = html.index('clarity-product-map-section')
           ai = html.index('id="difference"')
           assert overview < story < product_map < ai, 'Teaching order regressed before the AI section.'
+          story_start = html.index('clarity-story-section')
+          story_end = html.index('</section>', story_start)
+          story_html = html[story_start:story_end]
+          assert 'clarity-story-flow' not in story_html, 'Ordinary example must stay prose-led instead of returning to a six-card diagram.'
+          assert 'clarity-story-copy' in story_html, 'Ordinary example prose is missing.'
+          product_start = html.index('clarity-product-map-section')
+          product_end = html.index('</section>', product_start)
+          product_html = html[product_start:product_end]
+          assert 'hero-network' in product_html, 'Parts of Continuum rich product map is missing.'
           afterlife = html.index('id="afterlife"')
           glance = html.index('class="glance-grid"', afterlife)
           assert glance > afterlife, 'Check In glance cards must live with Afterlife.'
-          print('Desktop DOM teaching order passed.')
+          print('Desktop DOM teaching order and prose balance passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
           grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-mobile.html
-          grep -q 'Continuum keeps useful information, people and rules together' /tmp/continuum-doc-mobile.html
-          grep -q 'Follow one update through Continuum' /tmp/continuum-doc-mobile.html
+          grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-mobile.html
+          grep -q 'Continuum in one minute' /tmp/continuum-doc-mobile.html
+          grep -q 'What happens when something changes' /tmp/continuum-doc-mobile.html
           grep -q 'How the pieces fit together' /tmp/continuum-doc-mobile.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-mobile.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-mobile.html
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
+          ! grep -q 'Start here' /tmp/continuum-doc-mobile.html
           ! grep -q 'Why not just use AI by itself' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc human copy, desktop teaching order and 390x844 mobile smoke passed.'
+          echo 'Continuum /doc prose balance, desktop teaching order and 390x844 mobile smoke passed.'
