@@ -1,23 +1,68 @@
-/* Check In Lab — keep the live switch as the first Status surface without DOM reordering. */
+/*
+ * Check In Lab — keep the live switch as the first Status surface.
+ *
+ * Presentation only: do not physically reorder the DOM. The Lab has multiple
+ * targeted observers and the mobile/Samsung guardrail is to avoid competing DOM
+ * mutations. These selectors bind directly to the static Lab marker so the hero
+ * hierarchy is correct on first paint, before lab-product-polish.js adds its
+ * enhancement classes.
+ */
 
+body[data-lab-mode="true"] [data-view-panel="overview"].is-active,
 [data-view-panel="overview"].lab-status-overview.is-active{
   display:flex!important;
   flex-direction:column;
 }
 
-[data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{order:-100}
+/* The glowing live-switch dashboard is always the first Status surface. */
+body[data-lab-mode="true"] [data-view-panel="overview"]>.dashboard-grid,
+[data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{
+  order:-100;
+  margin-top:0;
+}
+
+/* Keep the countdown console first inside the dashboard as well. */
+body[data-lab-mode="true"] [data-view-panel="overview"]>.dashboard-grid>#statusConsole,
+[data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first>#statusConsole{
+  order:-10;
+}
+
+body[data-lab-mode="true"] [data-view-panel="overview"]>.dashboard-grid>.quick-panel,
+[data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first>.quick-panel{
+  order:0;
+}
+
+/* Everything else follows the live switch. Hidden legacy summary blocks retain
+ * deterministic positions if they are ever made visible again. */
+body[data-lab-mode="true"] [data-view-panel="overview"]>.view-heading,
 [data-view-panel="overview"].lab-status-overview>.view-heading{order:-90}
+body[data-lab-mode="true"] [data-view-panel="overview"]>.mode-strip,
 [data-view-panel="overview"].lab-status-overview>.mode-strip{order:-80}
+body[data-lab-mode="true"] [data-view-panel="overview"]>.inventory-strip,
 [data-view-panel="overview"].lab-status-overview>.inventory-strip{order:-70}
+body[data-lab-mode="true"] [data-view-panel="overview"]>.metric-grid,
 [data-view-panel="overview"].lab-status-overview>.metric-grid{order:-60}
+body[data-lab-mode="true"] [data-view-panel="overview"]>#labPlanAssurance,
 [data-view-panel="overview"].lab-status-overview>#labPlanAssurance{order:-50}
+body[data-lab-mode="true"] [data-view-panel="overview"]>.recent-panel,
 [data-view-panel="overview"].lab-status-overview>.recent-panel{order:-40}
 
-/* The hero itself should visually announce the page before the secondary Status heading. */
-[data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{margin-top:0}
-[data-view-panel="overview"].lab-status-overview>.lab-status-heading-secondary{margin-top:14px}
+/* The secondary Status heading belongs below the live switch, matching the
+ * established /checkin hierarchy instead of competing with the hero. */
+body[data-lab-mode="true"] [data-view-panel="overview"]>.view-heading,
+[data-view-panel="overview"].lab-status-overview>.lab-status-heading-secondary{
+  margin-top:14px;
+}
 
 @media(max-width:700px){
-  [data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{margin-bottom:4px!important}
-  [data-view-panel="overview"].lab-status-overview>.lab-status-heading-secondary{margin-top:8px!important;margin-bottom:8px!important}
+  body[data-lab-mode="true"] [data-view-panel="overview"]>.dashboard-grid,
+  [data-view-panel="overview"].lab-status-overview>.dashboard-grid.lab-status-first{
+    margin-bottom:4px!important;
+  }
+
+  body[data-lab-mode="true"] [data-view-panel="overview"]>.view-heading,
+  [data-view-panel="overview"].lab-status-overview>.lab-status-heading-secondary{
+    margin-top:8px!important;
+    margin-bottom:8px!important;
+  }
 }
