@@ -5,8 +5,16 @@
   const ACTIONS_KEY = "cmx-lab-actions-v1";
   const CRM_KEY = "cmx-lab-crm-v1";
   const INVENTORY_KEY = "cmx-lab-inventory-v1";
+  const ACTION_CONTROL_SELECTORS = Object.freeze([
+    ["[data-move-up]", "Move up"],
+    ["[data-move-down]", "Move down"],
+    ["[data-duplicate-action]", "Duplicate action"],
+    ["[data-toggle-action]", null],
+    ["[data-remove-action]", "Remove action"]
+  ]);
 
   let queued = false;
+  let tooltipHideTimer = null;
 
   function readStore(key) {
     try {
@@ -43,6 +51,71 @@
       <strong>${value}</strong>
       <small>${note}</small>
     </div>`;
+  }
+
+  function actionControlLabel(button, fallback) {
+    if (!button.matches("[data-toggle-action]")) return fallback;
+    return button.textContent.trim() === "▶" ? "Resume action" : "Pause action";
+  }
+
+  function patchActionControlTooltips(page) {
+    ACTION_CONTROL_SELECTORS.forEach(([selector, fallback]) => {
+      page.querySelectorAll(selector).forEach(button => {
+        const label = actionControlLabel(button, fallback);
+        button.dataset.actionControlTooltip = label;
+        button.setAttribute("aria-label", label);
+        button.setAttribute("title", label);
+      });
+    });
+  }
+
+  function ensureTooltip() {
+    let tooltip = document.getElementById("v3ActionControlTooltip");
+    if (tooltip) return tooltip;
+    tooltip = document.createElement("div");
+    tooltip.id = "v3ActionControlTooltip";
+    tooltip.className = "v3-action-tooltip";
+    tooltip.setAttribute("role", "tooltip");
+    tooltip.hidden = true;
+    document.body.appendChild(tooltip);
+    return tooltip;
+  }
+
+  function positionTooltip(tooltip, target) {
+    const targetRect = target.getBoundingClientRect();
+    const width = tooltip.offsetWidth;
+    const height = tooltip.offsetHeight;
+    const viewportWidth = document.documentElement.clientWidth;
+    const center = targetRect.left + targetRect.width / 2;
+    const x = Math.max(width / 2 + 10, Math.min(viewportWidth - width / 2 - 10, center));
+    const showBelow = targetRect.top < height + 18;
+    tooltip.dataset.placement = showBelow ? "bottom" : "top";
+    tooltip.style.left = `${Math.round(x)}px`;
+    tooltip.style.top = `${Math.round(showBelow ? targetRect.bottom + 8 : targetRect.top - 8)}px`;
+  }
+
+  function showActionTooltip(target, { temporary = false } = {}) {
+    const label = target?.dataset?.actionControlTooltip;
+    if (!label) return;
+    clearTimeout(tooltipHideTimer);
+    const tooltip = ensureTooltip();
+    tooltip.textContent = label;
+    tooltip.hidden = false;
+    tooltip.classList.add("is-visible");
+    positionTooltip(tooltip, target);
+    if (temporary) tooltipHideTimer = setTimeout(hideActionTooltip, 1350);
+  }
+
+  function hideActionTooltip() {
+    clearTimeout(tooltipHideTimer);
+    const tooltip = document.getElementById("v3ActionControlTooltip");
+    if (!tooltip) return;
+    tooltip.classList.remove("is-visible");
+    tooltip.hidden = true;
+  }
+
+  function tooltipTarget(node) {
+    return node instanceof Element ? node.closest("[data-action-control-tooltip]") : null;
   }
 
   function patchDashboard() {
@@ -113,6 +186,7 @@
     const context = page.querySelector(".v3-step-context");
     if (context) context.setAttribute("aria-label", context.querySelector("small")?.textContent || "Builder step");
 
+    patchActionControlTooltips(page);
     page.dataset.systemSurface = "ready";
     return true;
   }
@@ -129,9 +203,33 @@
     requestAnimationFrame(() => requestAnimationFrame(patch));
   }
 
-  document.addEventListener("click", schedulePatch, false);
+  document.addEventListener("pointerover", event => {
+    const target = tooltipTarget(event.target);
+    if (target && !target.contains(event.relatedTarget)) showActionTooltip(target);
+  }, false);
+  document.addEventListener("pointerout", event => {
+    const target = tooltipTarget(event.target);
+    if (target && !target.contains(event.relatedTarget)) hideActionTooltip();
+  }, false);
+  document.addEventListener("focusin", event => {
+    const target = tooltipTarget(event.target);
+    if (target) showActionTooltip(target);
+  }, false);
+  document.addEventListener("focusout", event => {
+    if (tooltipTarget(event.target)) hideActionTooltip();
+  }, false);
+  document.addEventListener("pointerdown", event => {
+    const target = tooltipTarget(event.target);
+    if (target && event.pointerType === "touch") showActionTooltip(target, { temporary: true });
+  }, false);
+  document.addEventListener("click", event => {
+    if (tooltipTarget(event.target)) hideActionTooltip();
+    schedulePatch();
+  }, false);
   document.addEventListener("input", schedulePatch, false);
   document.addEventListener("change", schedulePatch, false);
+  window.addEventListener("resize", hideActionTooltip);
+  window.addEventListener("scroll", hideActionTooltip, { passive: true });
   window.addEventListener("pageshow", schedulePatch);
   window.addEventListener("storage", event => {
     if ([AUTOMATIONS_KEY, ACTIONS_KEY, CRM_KEY, INVENTORY_KEY].includes(event.key)) schedulePatch();
