@@ -44,6 +44,7 @@ jobs:
             assets/lab/lab-plan.js \
             assets/lab/lab-experience.js \
             assets/lab/lab-automation-builder.js \
+            assets/lab/lab-automations-progressive-preview.js \
             assets/lab/lab-acceptance.js \
             assets/lab/checkin-status-contract.js \
             assets/lab/checkin.js \
@@ -82,7 +83,7 @@ jobs:
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
           assert(shell.includes('/assets/lab/lab-loader.js'));
-          assert(shell.includes('20260817-auto1'));
+          assert(shell.includes('20260818-final-qa1'));
           assert(!shell.includes('document.write(html)'));
           assert(!shell.includes(".replace('</body>'"));
 
@@ -111,6 +112,7 @@ jobs:
             '/assets/lab/lab-experience.css',
             '/assets/lab/lab-automation-builder.js',
             '/assets/lab/lab-automation-builder.css',
+            '/assets/lab/lab-final-qa.css',
             '/assets/lab/lab-acceptance.js',
             '/assets/lab/lab-acceptance.css',
             'Check In Lab · Dead Man Switch'
@@ -123,6 +125,7 @@ jobs:
           assert(rendered.indexOf('/assets/lab/lab-product-polish.js') < rendered.indexOf('/assets/lab/lab-plan.js'));
           assert(rendered.indexOf('/assets/lab/lab-plan.js') < rendered.indexOf('/assets/lab/lab-experience.js'));
           assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
+          assert(rendered.indexOf('/assets/lab/lab-automation-builder.css') < rendered.indexOf('/assets/lab/lab-final-qa.css'));
           assert(rendered.indexOf('/assets/lab/lab-automation-builder.js') < rendered.indexOf('/assets/lab/lab-acceptance.js'));
 
           fs.writeFileSync('lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
@@ -157,6 +160,9 @@ jobs:
               'assets/lab/lab-experience.css',
               'assets/lab/lab-automation-builder.js',
               'assets/lab/lab-automation-builder.css',
+              'assets/lab/lab-final-qa.css',
+              'assets/lab/lab-automations-progressive-preview.js',
+              'assets/lab/lab-automations-final-qa.css',
               'assets/lab/lab-acceptance.js',
               'assets/lab/lab-acceptance.css',
               'assets/lab/BACKEND-HANDOFF.md',
@@ -174,7 +180,7 @@ jobs:
               failures.append('production /checkin references Lab code')
 
           terms = {
-              'assets/lab/lab-loader.js': ['CHECK IN LAB BOOTSTRAP', 'lab-plan.js', 'lab-experience.js', 'lab-automation-builder.js', 'CHECKINLABCLONE.md'],
+              'assets/lab/lab-loader.js': ['CHECK IN LAB BOOTSTRAP', 'lab-plan.js', 'lab-experience.js', 'lab-automation-builder.js', 'lab-final-qa.css', 'CHECKINLABCLONE.md'],
               'assets/lab/lab-mock-api.js': ['productionApiBlocked: true', 'PROD_API_ORIGIN', 'interval_hours: policy.intervalHours'],
               'assets/lab/lab-inventory.js': ['BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL'],
               'assets/lab/lab-actions.js': ['BACKEND HANDOFF', 'server-side scheduler/worker', 'stable IDs', 'SIMULATION ONLY'],
@@ -188,6 +194,9 @@ jobs:
               'assets/lab/lab-experience.css': ['--lx-surface', 'html[data-theme="light"]', 'phones get readable type'],
               'assets/lab/lab-automation-builder.js': ['AUTOMATION BUILDER PROTOTYPE', 'WHEN -> IF -> DO -> WAIT / REPEAT -> THEN', 'does not call providers', 'cmx-lab-automations-v1'],
               'assets/lab/lab-automation-builder.css': ['Automation Builder prototype', '.lab-automation-workspace', '.lab-automation-dialog', 'html[data-theme="light"]'],
+              'assets/lab/lab-final-qa.css': ['Screenshot-driven presentation rules', '.lab-audit-split', '.lab-decision-nodes', 'Light mode gets real contrast'],
+              'assets/lab/lab-automations-progressive-preview.js': ['FLOW PREVIEW', 'Choose a trigger', 'Choose an action', 'Not set yet', 'cmx-lab-automation-progress-v1'],
+              'assets/lab/lab-automations-final-qa.css': ['migration-worthy interaction/presentation rules', '.v3-flow-node.is-pending', '.v3-action-stack.is-progress-placeholder'],
               'assets/lab/lab-acceptance.js': ['ACCEPTANCE / STABILIZATION LAYER', 'syncPolicyLimits', 'trapPaletteFocus', 'validateDeepRoute'],
               'assets/lab/LAB-HANDOFF.md': ['Read this file first', 'lab-loader.js', 'lab-plan.js', 'lab-experience.js', 'CHECKINLABCLONE.md'],
               'assets/lab/CHECKINLABCLONE.md': ['Official Project Migration Blueprint', 'long-running', 'recurring', 'theme tokens', 'Official-project acceptance-test baseline'],
@@ -197,10 +206,14 @@ jobs:
               for term in required_terms:
                   if term not in text: failures.append(f'{filename} missing contract text: {term}')
 
+          progressive = Path('assets/lab/lab-automations-progressive-preview.js').read_text(encoding='utf-8')
+          if 'MutationObserver' in progressive:
+              failures.append('progressive Automation preview must not use broad MutationObserver patching')
+
           if failures:
               print('\n'.join(f' - {item}' for item in failures))
               sys.exit(1)
-          print('Lab safety, product UX, automation builder, light/dark theming, long-range planning, handoffs, and production isolation validated.')
+          print('Lab safety, screenshot QA, product UX, progressive Automation preview, theming, long-range planning, handoffs, and production isolation validated.')
           PY
 
       - name: Browser acceptance smoke tests
@@ -271,4 +284,4 @@ jobs:
           grep -q 'labTestCenter' /tmp/lab-mobile.html
           grep -q 'Long-range timeline' /tmp/lab-mobile.html
 
-          echo 'Desktop, Automation Builder, top Status hero, exact deep-link, user-friendly UX, long-range Sequence, and 390x844 mobile browser tests passed.'
+          echo 'Desktop, Automation Builder, top Status hero, exact deep-link, user-friendly UX, long-range Sequence, screenshot QA, and 390x844 mobile browser tests passed.'
