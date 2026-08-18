@@ -1,4 +1,4 @@
-/* Continuum /doc human-scale typography pass. Loaded after the existing visual layers. */
+/* Continuum /doc human-scale typography and reading balance. Loaded last. */
 
 /* Keep the name prominent without letting it take over the first viewport. */
 .clarity-hero h1,
@@ -8,7 +8,7 @@
   letter-spacing:-.055em!important;
 }
 
-/* Major section headings should lead the section without reading like landing-page billboards. */
+/* Major section headings lead the section without turning into billboards. */
 .document-section .section-heading h2,
 .clarity-section-heading h2,
 .afterlife-title-row h2{
@@ -22,12 +22,99 @@
   line-height:1.1!important;
 }
 
-/* Supporting headings stay clearly below H1/H2 scale. */
 .panel-head strong,
 .clarity-mini-heading strong,
 .presence-heading strong,
 .possibility-heading strong{
   line-height:1.25;
+}
+
+/* The ordinary example is a reading section now. One small path supports the copy. */
+.clarity-story-section.clarity-story-prose{
+  background:var(--paper)!important;
+}
+.clarity-story-prose .clarity-section-heading{
+  margin-bottom:18px!important;
+}
+.clarity-story-copy{
+  max-width:880px;
+  display:grid;
+  gap:12px;
+}
+.clarity-story-copy>p{
+  margin:0;
+  color:var(--muted-strong);
+  font-size:clamp(.96rem,1.15vw,1.04rem);
+  line-height:1.72;
+}
+.clarity-story-path{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:6px;
+  padding:12px 14px;
+  border-left:3px solid var(--ct-blue);
+  background:color-mix(in srgb,var(--ct-blue) 4%,var(--paper-raised));
+  color:var(--muted-strong);
+  font-size:.78rem;
+  font-weight:800;
+  line-height:1.35;
+}
+.clarity-story-path i{
+  color:var(--ct-blue);
+  font-style:normal;
+}
+
+/* Current state should read like a note, not another dashboard. */
+.clarity-status-frame{
+  padding:14px 16px!important;
+  border-radius:14px!important;
+  border-left:3px solid var(--ct-blue)!important;
+  background:color-mix(in srgb,var(--ct-blue) 3%,var(--paper-raised))!important;
+  box-shadow:none!important;
+}
+.clarity-status-frame .clarity-mini-heading{
+  grid-template-columns:minmax(180px,.55fr) minmax(0,1.45fr)!important;
+  gap:18px!important;
+  align-items:center!important;
+  margin:0!important;
+}
+.clarity-status-frame .clarity-mini-heading p{
+  font-size:.86rem!important;
+  line-height:1.5!important;
+}
+
+/* Explain Automations in words, then keep one compact builder line. */
+.clarity-automation-primer.clarity-automation-explainer{
+  gap:12px!important;
+  margin-bottom:22px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.clarity-automation-copy{
+  max-width:900px;
+  margin:0;
+  color:var(--muted-strong);
+  font-size:clamp(.94rem,1.1vw,1.02rem);
+  line-height:1.68;
+}
+.clarity-automation-copy strong{color:var(--ink-strong)}
+.clarity-automation-explainer .clarity-builder-sentence{
+  max-width:900px;
+  gap:5px!important;
+}
+.clarity-automation-explainer .clarity-builder-sentence>span{
+  min-height:0!important;
+  padding:9px 10px!important;
+  background:var(--paper-raised)!important;
+}
+
+/* The Parts of Continuum map remains the intentionally rich overview visual. */
+.clarity-product-map-section .hero-network{
+  box-shadow:var(--shadow-soft);
 }
 
 @media(max-width:680px){
@@ -45,5 +132,22 @@
 
   .document-footer h2{
     font-size:1.7rem!important;
+  }
+
+  .clarity-story-copy>p,
+  .clarity-automation-copy{
+    font-size:1rem;
+    line-height:1.62;
+  }
+  .clarity-story-path{
+    display:block;
+    font-size:.84rem;
+    line-height:1.7;
+  }
+  .clarity-story-path span,
+  .clarity-story-path i{display:inline}
+  .clarity-status-frame .clarity-mini-heading{
+    grid-template-columns:1fr!important;
+    gap:7px!important;
   }
 }
