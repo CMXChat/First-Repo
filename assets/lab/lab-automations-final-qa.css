@@ -31,6 +31,9 @@
 .v3-flow-node.is-pending::after{content:"PENDING";justify-self:end;align-self:center;padding:3px 6px;border:1px solid var(--v3-line);border-radius:999px;color:var(--v3-dim);font-size:8px;font-weight:900;letter-spacing:.07em}
 .v3-flow-node.is-pending{grid-template-columns:56px minmax(0,1fr) auto!important}
 
+/* The v3 data object keeps a compatibility placeholder Action, but a new user has not chosen it. */
+.v3-action-stack.is-progress-placeholder{display:none!important}
+
 .v3-progress-empty{
   display:grid;
   grid-template-columns:42px minmax(0,1fr);
