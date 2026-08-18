@@ -24,6 +24,7 @@ const mediaJs = read('assets/brief/brief-demo-media.js');
 const spacesRuntimeJs = read('assets/brief/brief-spaces-runtime.js');
 const docJs = read('assets/personal-os-doc.js');
 const docMobileCss = read('assets/personal-os-doc-mobile-fixes.css');
+const continuumDocCss = read('assets/continuum-doc.css');
 const routes = JSON.parse(read('assets/cmx-routes.json'));
 
 assert.match(html, /<html lang="en" data-theme="light">/);
@@ -189,20 +190,32 @@ assert.match(conversationJs, /touchstart/);
 assert.match(conversationJs, /touchend/);
 assert.match(conversationJs, /\}, 4200\)/);
 
-assert.match(docHtml, /<title>Spaces \| Shared Briefings and Context-Driven Workspace<\/title>/);
-assert.match(docHtml, /personal-os-doc-mobile-fixes\.css\?v=20260808-1/);
-assert.match(docHtml, /Planned Memory &amp; Data settings/);
+assert.match(docHtml, /<title>Continuum \| Product, Architecture and Build Overview<\/title>/);
+assert.match(docHtml, /continuum-doc\.css\?v=20260818-1/);
+assert.match(docHtml, /Afterlife/);
+assert.match(docHtml, /The Dead Man Switch/);
+assert.match(docHtml, /Python \+ FastAPI/);
+assert.match(docHtml, /PostgreSQL/);
 assert.doesNotMatch(docJs, /const plainCopy = new Map/);
 assert.match(docMobileCss, /\.final-cta \{[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
 assert.match(docMobileCss, /overflow-wrap: anywhere/);
 assert.match(docMobileCss, /@media \(max-width: 680px\)/);
 assert.match(docMobileCss, /html \{\s*font-size: 17px/);
+assert.match(continuumDocCss, /\.continuum-map/);
+assert.match(continuumDocCss, /\.afterlife-section/);
+assert.match(continuumDocCss, /@media \(prefers-reduced-motion: reduce\)/);
 
 const activeRoute = routes.routes.find(item => item.path === '/spaces/');
 assert.ok(activeRoute, '/spaces/ must be registered.');
 assert.equal(activeRoute.name, 'Spaces Demo');
 assert.equal(activeRoute.gated, false);
 assert.equal(activeRoute.status, 'Active');
+
+const docRoute = routes.routes.find(item => item.path === '/doc/');
+assert.ok(docRoute, '/doc/ must be registered.');
+assert.equal(docRoute.name, 'Continuum Product & Architecture Overview');
+assert.equal(docRoute.gated, false);
+assert.equal(docRoute.status, 'Active');
 
 const legacyRoute = routes.routes.find(item => item.path === '/brief/');
 assert.ok(legacyRoute, '/brief/ compatibility route must remain registered.');
@@ -213,4 +226,4 @@ const rollbackRoute = routes.routes.find(item => item.path === '/brief-next/');
 assert.ok(rollbackRoute, '/brief-next/ rollback snapshot must remain registered.');
 assert.equal(rollbackRoute.status, 'Experimental');
 
-console.log('Spaces device, route, soundtrack, accessibility, and light-theme smoke test passed.');
+console.log('Spaces device, Continuum doc, route, soundtrack, accessibility, and light-theme smoke test passed.');
