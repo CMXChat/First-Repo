@@ -4,26 +4,22 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/index.html'
       - 'assets/lab/lab-automations-communications-ai-runtime.js'
       - 'assets/lab/lab-automations-communications-ai-fix.js'
       - 'assets/lab/lab-automations-communications-ai.css'
       - 'docs/checkin-communications-ai-CURRENT.md'
       - 'docs/checkin-ai-product-design-CURRENT.md'
       - 'docs/checkin-content-editor-CURRENT.md'
-      - 'docs/checkin-context-handoff-CURRENT.md'
       - '.github/workflows/checkin-communications-ai-validation.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/index.html'
       - 'assets/lab/lab-automations-communications-ai-runtime.js'
       - 'assets/lab/lab-automations-communications-ai-fix.js'
       - 'assets/lab/lab-automations-communications-ai.css'
       - 'docs/checkin-communications-ai-CURRENT.md'
       - 'docs/checkin-ai-product-design-CURRENT.md'
       - 'docs/checkin-content-editor-CURRENT.md'
-      - 'docs/checkin-context-handoff-CURRENT.md'
       - '.github/workflows/checkin-communications-ai-validation.yml'
 
 permissions:
@@ -41,14 +37,13 @@ jobs:
           node --check assets/lab/lab-automations-communications-ai-runtime.js
           node --check assets/lab/lab-automations-communications-ai-fix.js
 
-      - name: Validate communications and AI product contract
+      - name: Validate retained communications and AI design modules
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
           import sys
 
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
           js = Path('assets/lab/lab-automations-communications-ai-runtime.js').read_text(encoding='utf-8')
           fix = Path('assets/lab/lab-automations-communications-ai-fix.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-communications-ai.css').read_text(encoding='utf-8')
@@ -56,12 +51,6 @@ jobs:
           ai_design = Path('docs/checkin-ai-product-design-CURRENT.md').read_text(encoding='utf-8')
           content_design = Path('docs/checkin-content-editor-CURRENT.md').read_text(encoding='utf-8')
 
-          required_html = [
-              '/assets/lab/lab-automations-communications-ai.css?v=',
-              '/assets/lab/lab-automations-communications-ai-runtime.js?v=',
-              '/assets/lab/lab-automations-communications-ai-fix.js?v=20260817-3',
-              "connect-src 'self'",
-          ]
           required_js = [
               'cmx-lab-email-actions-v1', 'cmx-lab-ai-task-actions-v1',
               'DELIVERY ENVELOPE', 'Verified sender connection',
@@ -95,10 +84,8 @@ jobs:
               'To / CC / BCC', 'plain-text multipart alternative', 'exact private FileVersions',
           ]
 
-          for term in required_html:
-              if term not in html: sys.exit(f'missing route wiring: {term}')
           for term in required_js:
-              if term not in js: sys.exit(f'missing communications/AI behavior: {term}')
+              if term not in js: sys.exit(f'missing communications/AI design behavior: {term}')
           for term in required_fix:
               if term not in fix: sys.exit(f'missing interaction hardening: {term}')
           for term in required_css:
@@ -115,11 +102,11 @@ jobs:
               if forbidden in combined: sys.exit(f'forbidden Lab execution/network behavior: {forbidden}')
 
           if 'data-audience-open' not in js:
-              sys.exit('Email roles must reuse the existing Audience manager')
+              sys.exit('Email design module must retain Audience manager integration')
           if 'content-editor-overlay' not in js:
-              sys.exit('Email must reuse the existing private Content editor')
+              sys.exit('Email design module must retain private Content editor integration')
           if 'senderConnectionId' not in js:
-              sys.exit('Email sender must retain Connection/SenderIdentity direction')
+              sys.exit('Email sender design must retain Connection/SenderIdentity direction')
 
-          print('Communications + AI Task definition contract passed.')
+          print('Retained Communications + AI Task design-module contract passed; active Automations v3 route is validated separately.')
           PY
