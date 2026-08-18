@@ -52,6 +52,7 @@
     const automations = loadAutomations();
     const drafts = automations.filter(item => (item.status || "Draft") === "Draft");
     workspace.dataset.focusedBridge = "true";
+    workspace.dataset.legacyAutomationContract = "Build a workflow";
     workspace.innerHTML = `
       <header class="lab-auto-head">
         <div>
