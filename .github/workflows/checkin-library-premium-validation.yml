@@ -12,6 +12,7 @@ on:
       - 'assets/lab/lab-automations-library-usability.css'
       - 'assets/lab/lab-automations-library-mobile-fix.js'
       - 'assets/lab/lab-automations-library-mobile-fix.css'
+      - 'assets/lab/lab-automations-library-pro-polish.js'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'assets/lab/lab-automations-link-policy.js'
@@ -28,6 +29,7 @@ on:
       - 'assets/lab/lab-automations-library-usability.css'
       - 'assets/lab/lab-automations-library-mobile-fix.js'
       - 'assets/lab/lab-automations-library-mobile-fix.css'
+      - 'assets/lab/lab-automations-library-pro-polish.js'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'assets/lab/lab-automations-link-policy.js'
@@ -50,6 +52,7 @@ jobs:
           node --check assets/lab/lab-automations-library-premium-fix.js
           node --check assets/lab/lab-automations-library-usability.js
           node --check assets/lab/lab-automations-library-mobile-fix.js
+          node --check assets/lab/lab-automations-library-pro-polish.js
           node --check assets/lab/lab-automations-editor-learning.js
           node --check assets/lab/lab-automations-link-policy.js
 
@@ -65,6 +68,7 @@ jobs:
           fix = Path('assets/lab/lab-automations-library-premium-fix.js').read_text(encoding='utf-8')
           usability = Path('assets/lab/lab-automations-library-usability.js').read_text(encoding='utf-8')
           mobile_fix = Path('assets/lab/lab-automations-library-mobile-fix.js').read_text(encoding='utf-8')
+          pro_polish = Path('assets/lab/lab-automations-library-pro-polish.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-library-premium.css').read_text(encoding='utf-8')
           usability_css = Path('assets/lab/lab-automations-library-usability.css').read_text(encoding='utf-8')
           learn = Path('assets/lab/lab-automations-editor-learning.js').read_text(encoding='utf-8')
@@ -122,12 +126,15 @@ jobs:
               if term not in learn + css + usability_css: sys.exit(f'missing learning behavior: {term}')
           for term in required_link_policy:
               if term not in link_policy: sys.exit(f'missing hardened Lab link policy: {term}')
-          if '"http:"' in link_policy or "'http:'" in link_policy:
-              sys.exit('Lab rich-content policy must not allow plain HTTP links')
+          for source, name in [(link_policy, 'link policy'), (pro_polish, 'Library rich editor')]:
+              if '"http:"' in source or "'http:'" in source:
+                  sys.exit(f'{name} must not allow plain HTTP links')
+          if '["https:","mailto:"]' not in pro_polish:
+              sys.exit('Library rich editor must allow only HTTPS/mailto external schemes')
           for term in required_handoff:
               if term not in handoff: sys.exit(f'missing premium handoff: {term}')
 
-          combined = js + fix + usability + mobile_fix + learn + link_policy
+          combined = js + fix + usability + mobile_fix + pro_polish + learn + link_policy
           for term in ['api.cmxchat.com','MutationObserver','eval(','new Function(','blob:','data:application/']:
               if term in combined: sys.exit(f'forbidden premium Lab behavior: {term}')
 
