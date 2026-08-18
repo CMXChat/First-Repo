@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1" />
   <link rel="stylesheet" href="/assets/continuum-doc.css?v=20260818-1" />
   <link rel="stylesheet" href="/assets/continuum-doc-v2.css?v=20260818-1" />
+  <link rel="stylesheet" href="/assets/continuum-doc-mobile-v3.css?v=20260818-1" />
 </head>
 <body>
   <main>
@@ -264,14 +265,50 @@
             <p class="section-intro">Afterlife applies Continuum's timing, protected information, people, Automations, Connections and authority when the owner stops responding. The current switch core already runs against authoritative server time.</p>
           </div>
 
-          <div class="afterlife-track" aria-label="Current Afterlife timing flow">
-            <article><span>01 · CHECK IN</span><strong>Protected check-in</strong><small>The backend records authoritative server time.</small></article>
-            <article><span>02 · WINDOW</span><strong>72 elapsed hours</strong><small>The active production deadline is measured in UTC.</small></article>
-            <article><span>03 · GRACE</span><strong>24 elapsed hours</strong><small>The configured grace window follows the primary deadline.</small></article>
-            <article><span>04 · INCIDENT</span><strong>Triggered</strong><small>A durable Incident can activate exact pre-authorized continuity rules.</small></article>
-            <article><span>05 · CONTINUE</span><strong>Approved workflows</strong><small>Future Runtime can communicate, release, coordinate and delegate within the published grant.</small></article>
+          <div class="afterlife-policy-chart" aria-label="Current 72 hour check-in window and 24 hour grace policy">
+            <div class="afterlife-policy-ring" aria-hidden="true"><span>96h<small>total</small></span></div>
+            <div class="afterlife-policy-legend">
+              <span><i aria-hidden="true"></i>72h check-in window</span>
+              <span><i aria-hidden="true"></i>24h grace period</span>
+            </div>
           </div>
 
+          <div class="afterlife-track" aria-label="Current Afterlife timing flow">
+            <article>
+              <span>CHECK IN</span>
+              <strong>Protected check-in</strong>
+              <small>The backend records authoritative server time.</small>
+              <em class="afterlife-state is-live">Live core</em>
+            </article>
+            <article>
+              <span>WINDOW</span>
+              <strong>72 elapsed hours</strong>
+              <small>The active production deadline is measured in UTC.</small>
+              <div class="afterlife-meter"><strong>72h</strong><small>Primary window</small><div class="afterlife-meter-bar"><i></i></div></div>
+              <em class="afterlife-state is-live">Current policy</em>
+            </article>
+            <article>
+              <span>GRACE</span>
+              <strong>24 elapsed hours</strong>
+              <small>The configured grace window follows the primary deadline.</small>
+              <div class="afterlife-meter is-grace"><strong>24h</strong><small>Grace window</small><div class="afterlife-meter-bar"><i></i></div></div>
+              <em class="afterlife-state is-live">Current policy</em>
+            </article>
+            <article>
+              <span>INCIDENT</span>
+              <strong>Triggered</strong>
+              <small>A durable Incident can activate exact pre-authorized continuity rules.</small>
+              <em class="afterlife-state is-trigger">Activation state</em>
+            </article>
+            <article>
+              <span>CONTINUE</span>
+              <strong>Approved workflows</strong>
+              <small>Future Runtime can communicate, release, coordinate and delegate within the published grant.</small>
+              <em class="afterlife-state">Runtime later</em>
+            </article>
+          </div>
+
+          <p class="afterlife-outcome-title">Approved continuity outcomes</p>
           <div class="afterlife-actions"><span>Contact trusted people</span><span>Release approved information</span><span>Coordinate replies</span><span>Run an approved continuity AI task</span></div>
           <div class="afterlife-now"><b>Working today:</b> server-backed Check In, configurable timing, immutable policy versions, Incidents, protected sessions, reconciliation and Audit. External provider execution and autonomous coordination are later Runtime work.</div>
         </section>
