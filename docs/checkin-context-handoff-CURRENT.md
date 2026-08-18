@@ -21,9 +21,10 @@ This is the first file a new ChatGPT/Codex/developer context should read before 
 10. `CMXChat/jay-app/specs/003-server-checkin/DELEGATED-AUTHORITY-BACKEND-CONTRACT.md` — standing contingency authority.
 11. `CMXChat/jay-app/specs/003-server-checkin/COMMUNICATION-ACTIONS-BACKEND-CONTRACT.md` — Email/Message/Discord delivery model.
 12. `CMXChat/jay-app/specs/003-server-checkin/INBOUND-COMMUNICATION-CONVERSATION-CONTRACT.md` — replies and future Conversation runtime.
-13. `docs/checkin-automations-frontend-CURRENT.md` — focused Automation Lab and current mobile readability rules.
-14. `docs/checkin-communications-ai-CURRENT.md` — Email + AI Task frontend contract.
-15. `docs/checkin-library-premium-CURRENT.md` — current Library quality/UX contract.
+13. `docs/checkin-automations-frontend-CURRENT.md` — focused Automations v3 Lab and current mobile-first UX contract.
+14. `docs/checkin-lab-automations-integration-CURRENT.md` — `/lab/` ↔ `/lab/automations/` integration, shared state and reusable Action references.
+15. `docs/checkin-communications-ai-CURRENT.md` — Email + AI Task design/backend-facing frontend contract.
+16. `docs/checkin-library-premium-CURRENT.md` — current Library quality/UX contract.
 
 Do not reconstruct the project from old chat memory when these files exist.
 
@@ -81,17 +82,21 @@ The prior Samsung freeze was caused by overly broad DOM observation. Preserve th
 - targeted events/observers only;
 - no production-state mutation just to test UI.
 
-The focused Automations Lab also has a new readability contract after real Samsung review showed desktop-density on phone cards.
+The focused Automation route was rebuilt on 2026-08-18 as Automations v3. The previous `lab-automations-mobile-readable.css` layer is no longer loaded by `/lab/automations/`; its readability goals have been absorbed into `assets/lab/lab-automations-experience-v3.css`.
 
-`assets/lab/lab-automations-mobile-readable.css` is loaded last and should remain the mobile readability floor. On phones, preserve roughly:
+On phones, preserve:
 
-- 24px Draft titles;
-- 16px Draft summary/body copy;
-- vertically stacked WHEN / DO / THEN summary nodes;
-- 44–50px controls;
-- 16px form input text;
-- readable Timing, Email and AI Task panels;
-- no horizontal compression that creates micro-copy.
+- one primary decision area at a time;
+- readable Draft and editor copy without zooming;
+- 44–50px-class primary controls where practical;
+- a horizontally scrollable five-stage rail instead of compressed labels;
+- one-column Action cards;
+- bottom-sheet pickers/modals;
+- a collapsible mobile live-flow preview instead of a squeezed desktop sidebar;
+- safe-area-aware fixed footer;
+- document-level scrolling without nested editor scroll traps;
+- no horizontal page overflow;
+- rich black dark mode plus usable light mode.
 
 See `docs/checkin-automations-frontend-CURRENT.md`.
 
@@ -101,7 +106,17 @@ Active route:
 
 `https://db.cmxchat.com/lab/automations/`
 
-This is the Check In/Continuum Automation product-design proving ground. `/lab/` remains the broader experiment umbrella.
+This is the Check In/Continuum Automation product-design proving ground. `/lab/` remains the broader experiment umbrella and links into the focused route.
+
+Current focused authority:
+
+```text
+assets/lab/lab-automations-experience-v3.js
+assets/lab/lab-automations-experience-v3.css
+assets/lab/lab-automations-route-integration.js
+```
+
+`lab-automations-app-v2.js` and the old focused enhancement runtimes remain repository history but are no longer loaded by the route.
 
 The focused route keeps:
 
@@ -116,24 +131,16 @@ Accepted UX later migrates into protected `/checkin/` after the matching backend
 Human editor:
 
 ```text
-BASICS
-TRIGGER
-RULES
-ACTIONS
-TIMING
-FINISH
-REVIEW
+WHEN  Trigger
+IF    Rules
+DO    Actions
+WAIT  Timing
+TEST  Review
 ```
 
-Backend mental model:
+Name/description are editable metadata instead of a blocking first screen. Finish behavior lives inside Review.
 
-```text
-WHEN
-IF
-DO
-WAIT / REPEAT
-THEN
-```
+The builder now includes quick-start templates, optional AND/OR rules, an ordered Action stack, live flow preview, visual timing, pre-flight checks and safe animated simulation.
 
 # Current Lab domains
 
@@ -166,9 +173,31 @@ Library is a protected projection over distinct models with logical folders, tem
 
 Binary files remain metadata-only in Lab. Do not fake object bytes or Base64 payloads in Action definitions.
 
+# Automation shared state and reusable Actions
+
+The main Lab and focused Automation route share:
+
+```text
+cmx-lab-automations-v1
+cmx-lab-crm-v1
+cmx-lab-inventory-v1
+```
+
+The focused route also reads the main Lab reusable Action store:
+
+```text
+cmx-lab-actions-v1
+```
+
+Saved Actions are inserted into an Automation as explicit `action_ref` entries containing the saved Action ID and label. Do not silently translate reusable SMS, Email, AI, Publish, Webhook/API, Digital Account or other Action types into the smaller inline Automation type set.
+
+The main Lab Action library remains the definition authority. A future backend must authorize, version/resolve and snapshot a referenced Action server-side before execution.
+
 # Email + AI Task
 
-Email is the first deeply modeled communication Action:
+The deeper Email and AI Task models remain architectural/product contracts even though the current v3 builder presents a simplified inline Action surface plus reusable Action references.
+
+Email design model:
 
 ```text
 From
@@ -184,7 +213,7 @@ Preview
 
 Production From comes from `Connection + SenderIdentity`. To/CC/BCC reuse Directory/Audience. Subject/body use private Content. Attachments use exact FileVersions. Lab sends nothing.
 
-AI Task remains structured:
+AI Task design model:
 
 ```text
 Objective
@@ -195,7 +224,7 @@ Autonomy
 Limits
 ```
 
-Current UX modes:
+Authority modes may later include:
 
 ```text
 Draft only
