@@ -6,12 +6,13 @@
   const printButton = document.getElementById('printDocument');
   const progressBar = document.querySelector('.reading-progress span');
   const themeMeta = document.querySelector('meta[name="theme-color"]');
-  const storageKey = 'spaces_doc_theme_v1';
-  const legacyStorageKey = 'personal_os_doc_theme_v3';
+  const storageKey = 'continuum_doc_theme_v1';
+  const legacyStorageKeys = ['spaces_doc_theme_v1', 'personal_os_doc_theme_v3'];
 
   function getStoredTheme() {
     try {
-      const stored = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
+      const stored = localStorage.getItem(storageKey)
+        || legacyStorageKeys.map((key) => localStorage.getItem(key)).find(Boolean);
       return stored === 'light' || stored === 'dark' ? stored : null;
     } catch {
       return null;
@@ -98,6 +99,7 @@
     const toolbar = document.querySelector('.document-toolbar');
     if (!sourceToc || !toolbar) return;
 
+    const defaultSectionLabel = sourceToc.querySelector('a')?.textContent?.trim() || 'Continuum overview';
     const trigger = document.createElement('button');
     trigger.id = 'mobileContentsTrigger';
     trigger.className = 'mobile-contents-trigger';
@@ -109,7 +111,7 @@
       <span class="mobile-contents-trigger-mark" aria-hidden="true"></span>
       <span class="mobile-contents-trigger-copy">
         <strong>Contents</strong>
-        <small id="mobileContentsTriggerCurrent">What Spaces is</small>
+        <small id="mobileContentsTriggerCurrent">${defaultSectionLabel}</small>
       </span>
       <span class="mobile-contents-trigger-arrow" aria-hidden="true">›</span>
     `;
@@ -140,7 +142,7 @@
       </header>
       <div class="mobile-contents-current">
         <span>Current section</span>
-        <strong id="mobileContentsCurrent">What Spaces is</strong>
+        <strong id="mobileContentsCurrent">${defaultSectionLabel}</strong>
       </div>
       <nav class="document-toc mobile-document-toc" aria-label="Mobile document contents"></nav>
       <div class="mobile-contents-drawer-footer"><i aria-hidden="true"></i><span data-mobile-contents-count></span></div>
@@ -165,7 +167,7 @@
       const active = mobileToc.querySelector('a[aria-current="location"]')
         || sourceToc.querySelector('a[aria-current="location"]')
         || sourceToc.querySelector('a');
-      const label = active?.textContent?.trim() || 'What Spaces is';
+      const label = active?.textContent?.trim() || defaultSectionLabel;
       if (triggerCurrent) triggerCurrent.textContent = label;
       if (drawerCurrent) drawerCurrent.textContent = label;
     };
@@ -271,22 +273,9 @@
     syncTriggerTop();
   }
 
-  function installFaqBehavior() {
-    const faqItems = Array.from(document.querySelectorAll('.faq-list details'));
-    faqItems.forEach((item) => {
-      item.addEventListener('toggle', () => {
-        if (!item.open) return;
-        faqItems.forEach((other) => {
-          if (other !== item) other.open = false;
-        });
-      });
-    });
-  }
-
   applyTheme(getRequestedTheme());
   installMobileContents();
   installSectionTracking();
-  installFaqBehavior();
 
   themeButton?.addEventListener('click', () => {
     applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
