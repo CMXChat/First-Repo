@@ -32,21 +32,23 @@ assert.match(html, /meta name="robots" content="noindex, nofollow/);
 assert.match(html, /<title>Continuum \| Product, Architecture and Build Overview<\/title>/);
 assert.match(html, /personal-os-doc\.js\?v=20260818-3/);
 assert.match(html, /continuum-doc-final\.css\?v=20260818-3/);
-assert.match(html, /continuum-doc-promise\.css\?v=20260818-1/);
+assert.match(html, /continuum-doc-promise\.css\?v=20260818-2/);
 assert.doesNotMatch(html, /continuum-doc(?:-v2|-mobile-v3)?\.css/);
 assert.doesNotMatch(html, /style=/i, 'Strict /doc CSP should not depend on inline style attributes.');
 assert.match(html, /<h1 id="pageTitle">Continuum<\/h1>/);
 
-// Opening promise must explain the whole product before architecture detail.
+// Opening promise must explain the product before architecture detail.
 assert.match(html, /Continuum brings your information, people, files, messages, services, automations and AI/);
 assert.match(html, /build briefings from connected sources/);
 assert.match(html, /analyze money/);
 assert.match(html, /future voice/);
+assert.match(html, /hero-lead-first/);
+assert.match(html, /hero-lead-core/);
 assert.match(html, /your context, priorities and instructions have somewhere durable to live/);
 assert.match(html, /Afterlife carries that idea further/);
 assert.match(html, /contacting trusted people, releasing approved information/);
 
-// Extension-of-you visual must remain directly in the hero story.
+// Extension-of-you visual and capability truth.
 assert.match(html, /BEYOND THE CURRENT SESSION/);
 assert.match(html, /Your intent has somewhere durable to live/);
 assert.match(html, /WITH YOU/);
@@ -58,9 +60,12 @@ assert.match(html, /Coordinate, follow up, act/);
 assert.match(html, /Wait, monitor, continue/);
 assert.match(html, /Begin your continuity plan/);
 assert.match(html, /The Check In trigger core works today/);
+assert.match(html, /status-key/);
+for (const label of ['LIVE','LAB','NEXT','LATER']) assert.match(html, new RegExp(`>${label}<`));
 
 // Plain-English product story.
-assert.match(html, /Think of it as a private control room/);
+assert.match(html, /How information moves through Continuum/);
+assert.match(html, /information comes in, gets stored, passes through your rules/);
 assert.match(html, /See what is happening/);
 assert.match(html, /Remember it/);
 assert.match(html, /Check your rules/);
@@ -68,6 +73,12 @@ assert.match(html, /Do approved work/);
 assert.match(html, /Remember the result/);
 assert.match(html, /What Continuum adds around AI/);
 assert.match(html, /AI gets memory, tools, timing and rules/);
+assert.match(html, /Why not just use AI by itself/);
+assert.match(html, /AI can reason about what you give it/);
+assert.match(html, /persistent people, records, rules, timing, tools and history/);
+assert.match(html, /YOU SET THE RULES/);
+assert.match(html, /The server enforces them/);
+assert.match(html, /The AI cannot expand its own authority/);
 assert.match(html, /API[\s\S]*A doorway apps use to talk to each other/);
 assert.match(html, /MCP[\s\S]*approved tools or information/);
 assert.match(html, /Runtime[\s\S]*keeps a workflow moving after it starts/);
@@ -79,24 +90,35 @@ assert.match(html, /Communicate anywhere/);
 assert.match(html, /Use more tools/);
 assert.match(html, /Smarter AI over time/);
 
-// Directory and Library must be taught visually.
+// Directory, Library and an everyday Automation must be visual.
 assert.match(html, /people-map/);
-assert.match(html, /Project Team/);
+assert.match(html, /Server Project/);
 assert.match(html, /library-tree/);
 assert.match(html, /continuity\.md/);
 assert.match(html, /Draft[\s\S]*Version 1[\s\S]*Automation/);
+assert.match(html, /everyday-workflow/);
+assert.match(html, /A client payment arrives/);
+assert.match(html, /Update the Money Space/);
+assert.match(html, /Include it in tomorrow's brief/);
+
+// Connection statuses use the final status vocabulary.
+assert.match(html, /connection-email[\s\S]*status-next">NEXT/);
+assert.match(html, /connection-discord[\s\S]*status-later">LATER/);
+assert.doesNotMatch(html, />MODELED<|>PLANNED<|>FUTURE<|>EXTENSIBLE<|>POLICY</);
 
 // Afterlife current truth and customization.
 assert.match(html, /Afterlife/);
 assert.match(html, /The Dead Man Switch/);
-assert.match(html, /You choose the timing/);
+assert.match(html, /72 \+ 24 is today's configuration\. You choose these periods\./);
 assert.match(html, /72h check-in timer \+ 24h grace/);
 assert.match(html, /Choose the interval/);
 assert.match(html, /Choose the extra time/);
 assert.match(html, /Pause or resume/);
 assert.match(html, /Move one deadline/);
 assert.match(html, /Continuity is triggered/);
-assert.match(html, /durable Incident/i);
+assert.match(html, /Incident, a saved record/);
+assert.match(html, /<b>LIVE:<\/b>/);
+assert.match(html, /<b>LATER:<\/b>/);
 
 // Build and long-term capability direction.
 assert.match(html, /\/lab\/automations\//);
@@ -111,17 +133,27 @@ assert.match(html, /WhatsApp Business/);
 assert.match(html, /SMS \+ voice/);
 assert.match(html, /Money analysis \+ supported actions/);
 
+// Roadmap outcomes explain what each stage makes possible.
+assert.match(html, /reliably know whether the owner checked in/);
+assert.match(html, /safely remember real private information/);
+assert.match(html, /keep a workflow alive on the server after you leave the page/);
+assert.match(html, /coordinate more of the outside world through approved tools/);
+
 // Core visual teaching components.
 for (const className of [
   'network-lines',
   'continuum-presence',
   'presence-track',
+  'status-key',
   'process-map',
+  'ai-answer',
   'ai-compare',
   'ai-journey',
+  'control-panel',
   'people-map',
   'library-tree',
   'term-guide',
+  'everyday-workflow',
   'workflow-nodes',
   'possibility-board',
   'policy-ring',
@@ -187,13 +219,16 @@ assert.match(finalCss, /@media\(max-width:680px\)/);
 assert.match(finalCss, /@media\(prefers-reduced-motion:reduce\)/);
 assert.match(finalCss, /@media print/);
 
+assert.match(promiseCss, /\.hero-lead-first/);
+assert.match(promiseCss, /\.hero-lead-core/);
 assert.match(promiseCss, /\.continuum-presence/);
-assert.match(promiseCss, /\.presence-track/);
-assert.match(promiseCss, /\.presence-stage/);
-assert.match(promiseCss, /\.presence-truth/);
+assert.match(promiseCss, /\.status-key/);
+assert.match(promiseCss, /\.ai-answer/);
+assert.match(promiseCss, /\.control-panel/);
+assert.match(promiseCss, /\.everyday-workflow/);
+assert.match(promiseCss, /font-size:max\(\.74rem,12px\)/);
 assert.match(promiseCss, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
 assert.match(promiseCss, /@media\(max-width:680px\)/);
-assert.match(promiseCss, /grid-template-columns:1fr/);
 assert.match(promiseCss, /@media print/);
 
 console.log('Final Continuum document smoke test passed.');
