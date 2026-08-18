@@ -1,0 +1,105 @@
+/* Continuum Lab final visual QA pass.
+   Screenshot-driven presentation rules for future /checkin/ migration.
+   Keep domain/runtime behavior in the existing Lab modules. */
+
+body[data-lab-mode="true"]{
+  --lab-qa-copy:var(--lx-muted,#8398aa);
+  --lab-qa-label:var(--lx-muted-2,#657b8e);
+}
+
+/* Desktop surfaces should use the viewport without turning into empty canvases. */
+@media (min-width:901px){
+  body[data-lab-mode="true"] .view-heading{
+    padding-top:30px!important;
+    padding-bottom:20px!important;
+  }
+
+  body[data-lab-mode="true"] :is(.lab-actions,.lab-sequence-root,.lab-audit-root,.lab-decision-workspace){
+    margin-bottom:18px!important;
+  }
+
+  /* Actions */
+  body[data-lab-mode="true"] .lab-action-layout{min-height:520px!important}
+  body[data-lab-mode="true"] .lab-action-list{max-height:478px!important}
+  body[data-lab-mode="true"] .lab-action-detail.empty{min-height:390px!important}
+  body[data-lab-mode="true"] .lab-action-detail{padding:15px!important}
+
+  /* Activity / Audit: a zero-event state should not consume most of a monitor. */
+  body[data-lab-mode="true"] .lab-audit-split{min-height:360px!important;max-height:500px}
+  body[data-lab-mode="true"] .lab-incidents-layout{min-height:440px!important}
+  body[data-lab-mode="true"] .lab-audit-detail{min-height:0!important}
+
+  /* Sequence: keep the clock visual prominent without a huge empty field. */
+  body[data-lab-mode="true"] .lab-sequence-rail{height:150px!important;margin:14px 4px 4px!important}
+  body[data-lab-mode="true"] .lab-sequence-track{top:64px!important}
+  body[data-lab-mode="true"] .lab-sequence-boundary{top:46px!important}
+  body[data-lab-mode="true"] .lab-sequence-clock{top:56px!important}
+  body[data-lab-mode="true"] .lab-sequence-marker{top:2px!important}
+
+  /* Action logic: keep the graph readable and reduce empty gulf between nodes. */
+  body[data-lab-mode="true"] .lab-decision-map-shell,
+  body[data-lab-mode="true"] .lab-decision-map{min-height:350px!important}
+  body[data-lab-mode="true"] .lab-decision-map{padding:24px 30px!important}
+  body[data-lab-mode="true"] .lab-decision-nodes{gap:56px 92px!important}
+}
+
+/* Desktop Lab text was visually too close to instrumentation micro-copy. */
+body[data-lab-mode="true"] :is(
+  .lab-policy-summary small,.lab-audit-summary small,.lab-health-kpis small,.lab-incident-kpis small,
+  .lab-action-pane-head span,.lab-card-head small,.lab-action-kicker,.lab-action-state,.lab-action-chip,
+  .lab-decision-kicker,.lab-decision-node-copy small,.lab-decision-section-title span,
+  .lab-sequence-stage-head small,.lab-sequence-panel-head small,.lab-sequence-marker>small
+){font-size:max(8px,.48rem)!important;line-height:1.3!important}
+
+body[data-lab-mode="true"] :is(
+  .lab-policy-summary span,.lab-audit-summary span,.lab-health-kpis span,.lab-incident-kpis span,
+  .lab-action-list-copy small,.lab-action-profile-title p,.lab-action-execution-summary,
+  .lab-audit-event em,.lab-audit-detail-card p,.lab-incident-event p,
+  .lab-decision-node-copy em,.lab-decision-check small,.lab-decision-head p,
+  .lab-sequence-brand small,.lab-sequence-marker>b,.lab-next-event p,.lab-trace-row p
+){font-size:max(9px,.54rem)!important;line-height:1.45!important}
+
+body[data-lab-mode="true"] :is(
+  .lab-action-list-copy strong,.lab-audit-event strong,.lab-incident-row strong,
+  .lab-decision-node-copy strong,.lab-decision-check strong,.lab-sequence-panel-head strong
+){font-size:max(10px,.6rem)!important;line-height:1.3!important}
+
+/* Empty states stay compact and visually intentional. */
+body[data-lab-mode="true"] :is(.lab-sequence-empty,.lab-decision-empty){
+  min-height:160px!important;
+  align-content:center;
+  justify-items:center;
+}
+body[data-lab-mode="true"] :is(.lab-sequence-empty,.lab-decision-empty) strong{font-size:12px!important}
+body[data-lab-mode="true"] :is(.lab-sequence-empty,.lab-decision-empty) p{max-width:420px;font-size:10px!important;line-height:1.5!important}
+
+/* Light mode gets real contrast, not a faded dark-mode translation. */
+html[data-theme="light"] body[data-lab-mode="true"] :is(
+  .lab-policy-summary span,.lab-audit-summary span,.lab-health-kpis span,.lab-incident-kpis span,
+  .lab-action-list-copy small,.lab-action-profile-title p,.lab-action-execution-summary,
+  .lab-audit-event em,.lab-audit-detail-card p,.lab-incident-event p,
+  .lab-decision-node-copy em,.lab-decision-check small,.lab-decision-head p,
+  .lab-sequence-brand small,.lab-next-event p,.lab-trace-row p
+){color:#536b80!important}
+
+html[data-theme="light"] body[data-lab-mode="true"] :is(
+  .lab-action-list-copy strong,.lab-audit-event strong,.lab-incident-row strong,
+  .lab-decision-node-copy strong,.lab-decision-check strong,.lab-sequence-panel-head strong
+){color:#173149!important}
+
+/* Tablet/mobile keeps one reading column and avoids viewport-filling subpanes. */
+@media (max-width:900px){
+  body[data-lab-mode="true"] .lab-audit-split,
+  body[data-lab-mode="true"] .lab-incidents-layout,
+  body[data-lab-mode="true"] .lab-decision-map-shell{min-height:0!important}
+  body[data-lab-mode="true"] .lab-action-layout{min-height:0!important}
+}
+
+@media (max-width:700px){
+  body[data-lab-mode="true"] .view-heading{padding-top:22px!important;padding-bottom:14px!important}
+  body[data-lab-mode="true"] :is(.lab-audit-root,.lab-sequence-root,.lab-decision-workspace,.lab-actions) :is(button,input,select,textarea){min-height:44px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  body[data-lab-mode="true"] *{scroll-behavior:auto!important}
+}
