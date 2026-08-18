@@ -1,7 +1,7 @@
 # Continuum Product Identity and `/doc/` Contract - CURRENT
 
 Date: 2026-08-18
-Status: **Clarity freeze after the teaching-order, human-copy and prose-balance rebuild**
+Status: **Clarity freeze after the teaching-order, human-copy, prose-balance and origin-insight rebuild**
 
 # Product identity
 
@@ -33,13 +33,14 @@ The visible reading path is:
 2. the five-step operating loop;
 3. one ordinary example explained mainly in prose;
 4. the Parts of Continuum map;
-5. how AI works inside Continuum;
-6. how people, saved information and Spaces stay connected;
-7. how Automations define work and Runtime executes it;
-8. how Afterlife uses the same foundation for continuity;
-9. optional architecture detail;
-10. optional build-process detail;
-11. the roadmap.
+5. the origin insight that connects the Dead Man Switch to the broader Continuum idea;
+6. how AI works inside Continuum;
+7. how people, saved information and Spaces stay connected;
+8. how Automations define work and Runtime executes it;
+9. how Afterlife uses the same foundation for continuity;
+10. optional architecture detail;
+11. optional build-process detail;
+12. the roadmap.
 
 The eight stable document anchors remain:
 
@@ -155,9 +156,38 @@ REASONING -> AI
 
 The network map and the Across Time visual may remain visually rich because this section benefits from seeing the product as one connected whole.
 
+# Origin insight: from Afterlife to Continuum
+
+The Dead Man Switch is part of the reason the broader Continuum idea exists. `/doc/` should say this plainly.
+
+This explanation appears inside the Parts of Continuum lesson, after the network map and before the Across Time visual.
+
+Canonical heading:
+
+`The idea started with the Dead Man Switch`
+
+Canonical explanation:
+
+> Afterlife began with a practical problem: if you stop responding, the people, information and instructions you prepared still need somewhere reliable to live. The Check In timer gives that problem a trigger.
+
+> That led to a broader idea. The same foundation matters before an emergency. You can be asleep, traveling, working, waiting on someone or simply away from the screen. Continuum keeps the context and rules you chose available so approved work can continue over time.
+
+> That is the line running through the product. Spaces and AI help while you are here. Automations define work that can continue. Runtime can later keep that work moving on the server. Afterlife uses the same foundation when you cannot respond.
+
+This is a prose explanation. Do not turn it into another card grid or decorative timeline. The existing Across Time visual immediately below it carries the supporting visual relationship.
+
+The idea should remain clear:
+
+```text
+WITH YOU -> Spaces + AI
+FOR YOU -> Automations
+WHEN YOU ARE AWAY -> future Runtime
+IF YOU CANNOT RESPOND -> Afterlife + the live Check In trigger core
+```
+
 # Across time
 
-The availability visual remains part of the Parts of Continuum lesson:
+The availability visual remains part of the Parts of Continuum lesson and follows the origin insight:
 
 ```text
 WITH YOU
@@ -269,6 +299,7 @@ Use rich visuals where seeing relationships matters:
 Use prose first when a paragraph explains the idea more clearly:
 
 - ordinary end-to-end example = prose plus one compact path;
+- Dead Man Switch origin insight = three short paragraphs followed by the existing Across Time visual;
 - Automation vs Runtime = explanatory paragraph plus one compact `WHEN -> IF -> DO -> WAIT -> REVIEW` line;
 - status explanation = short note;
 - secondary future possibilities = collapsed detail.
@@ -442,7 +473,7 @@ The compact status note near the beginning answers what exists today. The roadma
 
 # Backend boundary
 
-This clarity, copy and prose-balance rebuild changes presentation only. Backend schema, provider execution, Runtime authority and `jay-app` implementation order remain governed by the canonical backend documents under:
+This clarity, copy, prose-balance and origin-insight rebuild changes presentation only. Backend schema, provider execution, Runtime authority and `jay-app` implementation order remain governed by the canonical backend documents under:
 
 `CMXChat/jay-app/specs/003-server-checkin/`
 
@@ -467,9 +498,13 @@ The static HTML keeps the direct opening so the no-JS fallback matches the rende
 - shortening Contents labels;
 - normalizing older static copy into the same direct tone.
 
+`assets/continuum-doc-origin.js` adds the Dead Man Switch origin insight after the Parts of Continuum network map and immediately before the Across Time visual. It runs once after the main document clarity transform.
+
+`assets/continuum-doc-origin.css` keeps that origin explanation prose-led and visually quiet.
+
 `assets/continuum-doc-qa.css` keeps the existing light/dark, Afterlife, mobile, print and general clarity safeguards.
 
-`assets/continuum-doc-human.css` loads last and owns:
+`assets/continuum-doc-human.css` owns:
 
 - the final H1/H2 scale;
 - prose-led ordinary-story layout;
@@ -477,11 +512,11 @@ The static HTML keeps the direct opening so the no-JS fallback matches the rende
 - prose-first Automation explanation;
 - preservation of the rich Parts of Continuum desktop map.
 
-The clarity transformation runs once at page initialization. Avoid broad DOM mutation loops.
+The clarity and origin transforms run once during page initialization. Avoid broad DOM mutation loops.
 
 # Freeze rule
 
-The `/doc/` freeze protects clarity, direct human wording, reading balance and teaching order.
+The `/doc/` freeze protects clarity, direct human wording, reading balance, the origin insight and teaching order.
 
 Before changing `/doc/`, ask:
 
@@ -489,10 +524,11 @@ Before changing `/doc/`, ask:
 2. Does the visual make that explanation easier to understand?
 3. Does the sentence sound natural when read aloud?
 4. Does it preserve the five-step mental model?
-5. Does the Parts of Continuum overview remain clear on desktop and phone?
-6. Does it keep LIVE, LAB, NEXT and LATER truthful?
-7. Does it keep Automation definition separate from Runtime execution?
-8. Does technical depth stay secondary to the product story?
-9. Does it stay readable on phone and desktop?
+5. Does it preserve the link from the Dead Man Switch problem to the broader Continuum idea?
+6. Does the Parts of Continuum overview remain clear on desktop and phone?
+7. Does it keep LIVE, LAB, NEXT and LATER truthful?
+8. Does it keep Automation definition separate from Runtime execution?
+9. Does technical depth stay secondary to the product story?
+10. Does it stay readable on phone and desktop?
 
 Changes that weaken those points should come with a deliberate update to this CURRENT contract.
