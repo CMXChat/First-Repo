@@ -41,6 +41,7 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
 
   await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
   await expect(page.locator('link[href="/assets/continuum-doc-final.css?v=20260818-3"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/continuum-doc-promise.css?v=20260818-1"]')).toHaveCount(1);
   await expect(page.locator('link[href*="continuum-doc-v2"], link[href*="continuum-doc-mobile-v3"]')).toHaveCount(0);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -56,6 +57,8 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
     const railStatus = document.querySelector('.document-rail .rail-status');
     const network = document.querySelector('.hero-network');
     const firstNode = document.querySelector('.hero-network .network-card');
+    const presenceTrack = document.querySelector('.presence-track');
+    const firstPresenceStage = document.querySelector('.presence-stage');
     const firstJourney = document.querySelector('.journey-step');
     const afterlife = document.querySelector('.afterlife-section');
     const afterlifeCard = document.querySelector('.afterlife-step');
@@ -66,6 +69,8 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
       railStatusDisplay: getComputedStyle(railStatus).display,
       networkDisplay: getComputedStyle(network).display,
       nodePosition: getComputedStyle(firstNode).position,
+      presenceColumns: getComputedStyle(presenceTrack).gridTemplateColumns,
+      presenceStageWidth: Math.round(firstPresenceStage.getBoundingClientRect().width),
       journeyWidth: Math.round(firstJourney.getBoundingClientRect().width),
       journeyDisplay: getComputedStyle(firstJourney).display,
       afterlifeBackground: getComputedStyle(afterlife).backgroundImage,
@@ -79,11 +84,17 @@ test('mobile Continuum doc keeps navigation in header and visuals readable', asy
   expect(mobileVisualState.railStatusDisplay).toBe('none');
   expect(mobileVisualState.networkDisplay).toBe('grid');
   expect(mobileVisualState.nodePosition).toBe('relative');
+  expect(mobileVisualState.presenceColumns.split(' ').length).toBe(1);
+  expect(mobileVisualState.presenceStageWidth).toBeGreaterThan(250);
   expect(mobileVisualState.journeyWidth).toBeGreaterThan(230);
   expect(mobileVisualState.journeyDisplay).toBe('block');
   expect(mobileVisualState.afterlifeBackground).toContain('linear-gradient');
   expect(mobileVisualState.afterlifeCardBackground).not.toBe('rgba(255, 255, 255, 0.035)');
 
+  await expect(page.locator('.hero-lead-full')).toContainText('your context, priorities and instructions have somewhere durable to live');
+  await expect(page.locator('.continuum-presence')).toBeVisible();
+  await expect(page.locator('.presence-stage')).toHaveCount(4);
+  await expect(page.locator('.presence-stage').nth(3)).toContainText('IF YOU CANNOT RESPOND');
   await expect(page.locator('.process-map')).toBeVisible();
   await expect(page.locator('.ai-compare')).toBeVisible();
   await expect(page.locator('.people-map')).toBeVisible();
@@ -135,6 +146,8 @@ test('desktop Continuum doc keeps rail, connected diagrams and rich roadmap', as
   await expect(page.locator('.document-rail .document-toc a')).toHaveCount(8);
   await expect(page.locator('[data-mobile-contents-trigger="true"]')).toBeHidden();
   await expect(page.locator('.network-lines')).toBeVisible();
+  await expect(page.locator('.continuum-presence')).toBeVisible();
+  await expect(page.locator('.presence-stage')).toHaveCount(4);
   await expect(page.locator('.people-map')).toBeVisible();
   await expect(page.locator('.library-tree')).toBeVisible();
   await expect(page.locator('.afterlife-policy')).toBeVisible();
