@@ -30,6 +30,13 @@
   function teach(button) {
     const label = labelFor(button);
     if (!label) return;
+
+    button.classList.remove("is-learning-flash");
+    void button.offsetWidth;
+    button.classList.add("is-learning-flash");
+    clearTimeout(button._learningFlashTimer);
+    button._learningFlashTimer = setTimeout(() => button.classList.remove("is-learning-flash"), 300);
+
     document.querySelector(".editor-learning-tip")?.remove();
     const tip = document.createElement("div");
     tip.className = "editor-learning-tip";
@@ -47,7 +54,7 @@
       tip.classList.add("is-visible");
     });
     clearTimeout(teach.timer);
-    teach.timer = setTimeout(() => tip.remove(), 1050);
+    teach.timer = setTimeout(() => tip.remove(), 900);
   }
 
   document.addEventListener("click", event => {
