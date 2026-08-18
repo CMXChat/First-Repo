@@ -90,6 +90,36 @@ Preserve these writing rules:
 - keep current, next and future capability states clear;
 - preserve technical accuracy without requiring engineering knowledge.
 
+# Opening promise
+
+The hero should explain the complete idea before the reader reaches architecture detail.
+
+Canonical opening paragraph:
+
+> Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time. As more services connect through APIs, MCP and other providers, it can grow into something that helps coordinate people, follow up on projects, watch important changes, analyze money, communicate through email, messaging and future voice, and work with whatever AI models become more capable in the years ahead. The deeper idea is that your context, priorities and instructions have somewhere durable to live, so Continuum can remain useful when you are busy, offline or unavailable. Afterlife carries that idea further: if you stop checking in for the period you chose, Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and eventually coordinating approved work within the limits you already set.
+
+The opening visual directly under the hero map should explain changing levels of availability:
+
+```text
+WITH YOU
+Brief, understand, plan
+
+FOR YOU
+Coordinate, follow up, act
+
+WHEN YOU ARE AWAY
+Wait, monitor, continue
+
+IF YOU CANNOT RESPOND
+Begin your continuity plan
+```
+
+The heading for that visual is:
+
+`Your intent has somewhere durable to live.`
+
+The visual must keep current capability truth clear. The Check In trigger core works today. Long-running provider execution and autonomous coordination remain later Runtime work.
+
 # Core explanation
 
 Continuum helps software and AI understand what is happening in the user's world, remember what matters, follow the user's rules and use approved tools to get things done.
@@ -342,9 +372,10 @@ The public document can explain this as proving one small private document all t
 
 # Final visual contract
 
-Continuum-specific styling lives in:
+Continuum-specific styling currently lives in:
 
-`assets/continuum-doc-final.css`
+- `assets/continuum-doc-final.css` for the main document visual system;
+- `assets/continuum-doc-promise.css` for the hero opening promise and four-stage availability visual.
 
 Preserve:
 
@@ -380,6 +411,8 @@ Avoid narrow internal grids that turn normal sentences into one-word-per-line co
 
 The AI journey is the reference example: one numbered marker outside the card, with the title and explanation using the rest of the card width.
 
+The hero availability visual becomes one vertical connected track on phone so all four stages remain readable without horizontal squeezing.
+
 ## Semantic color rule
 
 Use color to teach meaning consistently:
@@ -399,6 +432,8 @@ Every major section should make sense from its visual before the reader studies 
 
 The current page intentionally includes:
 
+- full product-intro paragraph covering information, people, tools, AI, briefings, communications, finance and continuity;
+- WITH YOU -> FOR YOU -> WHEN YOU ARE AWAY -> IF YOU CANNOT RESPOND availability visual;
 - connected Continuum product map;
 - five-step plain-English operating loop;
 - AI conversation vs AI-with-Continuum comparison;
