@@ -1,0 +1,66 @@
+/* Mobile/document scroll resilience for the focused Automation builder. */
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-padding-top: 170px;
+  scroll-padding-bottom: 104px;
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.automation-app,
+.editor-page,
+.editor-body,
+.step-section {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.editor-page {
+  height: auto;
+  min-height: 100svh;
+  overflow: visible;
+}
+
+.editor-footer {
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+}
+
+.step-rail-wrap,
+.smart-options,
+.pro-create-menu,
+.library-filter-sheet > div {
+  -webkit-overflow-scrolling: touch;
+}
+
+.step-rail-wrap {
+  overscroll-behavior-x: contain;
+}
+
+.smart-options,
+.pro-create-menu,
+.library-filter-sheet > div {
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 700px) {
+  html {
+    scroll-padding-top: 205px;
+    scroll-padding-bottom: calc(112px + env(safe-area-inset-bottom));
+  }
+
+  .editor-page {
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+  }
+
+  .editor-body {
+    padding-bottom: calc(154px + env(safe-area-inset-bottom));
+  }
+
+  .editor-footer {
+    padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  }
+}
