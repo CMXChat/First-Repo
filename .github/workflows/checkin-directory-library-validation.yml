@@ -14,6 +14,8 @@ on:
       - 'assets/lab/lab-automations-library-pro.css'
       - 'assets/lab/lab-automations-library-pro-polish.js'
       - 'assets/lab/lab-automations-library-pro-polish.css'
+      - 'assets/lab/lab-automations-library-mobile-fix.js'
+      - 'assets/lab/lab-automations-library-mobile-fix.css'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'assets/lab/lab-automations-document-security.js'
@@ -32,6 +34,8 @@ on:
       - 'assets/lab/lab-automations-library-pro.css'
       - 'assets/lab/lab-automations-library-pro-polish.js'
       - 'assets/lab/lab-automations-library-pro-polish.css'
+      - 'assets/lab/lab-automations-library-mobile-fix.js'
+      - 'assets/lab/lab-automations-library-mobile-fix.css'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'assets/lab/lab-automations-document-security.js'
@@ -56,6 +60,7 @@ jobs:
           node --check assets/lab/lab-automations-library-runtime.js
           node --check assets/lab/lab-automations-library-pro.js
           node --check assets/lab/lab-automations-library-pro-polish.js
+          node --check assets/lab/lab-automations-library-mobile-fix.js
           node --check assets/lab/lab-automations-editor-learning.js
           node --check assets/lab/lab-automations-document-security.js
           python - <<'PY'
@@ -72,6 +77,8 @@ jobs:
           pro_css = Path('assets/lab/lab-automations-library-pro.css').read_text(encoding='utf-8')
           polish = Path('assets/lab/lab-automations-library-pro-polish.js').read_text(encoding='utf-8')
           polish_css = Path('assets/lab/lab-automations-library-pro-polish.css').read_text(encoding='utf-8')
+          mobile_fix = Path('assets/lab/lab-automations-library-mobile-fix.js').read_text(encoding='utf-8')
+          mobile_fix_css = Path('assets/lab/lab-automations-library-mobile-fix.css').read_text(encoding='utf-8')
           learning = Path('assets/lab/lab-automations-editor-learning.js').read_text(encoding='utf-8')
           learning_css = Path('assets/lab/lab-automations-editor-learning.css').read_text(encoding='utf-8')
           security = Path('assets/lab/lab-automations-document-security.js').read_text(encoding='utf-8')
@@ -83,8 +90,10 @@ jobs:
               '/assets/lab/lab-automations-library-runtime.js?v=',
               '/assets/lab/lab-automations-library-pro.js?v=',
               '/assets/lab/lab-automations-library-pro-polish.js?v=',
+              '/assets/lab/lab-automations-library-mobile-fix.js?v=',
               '/assets/lab/lab-automations-library-pro.css?v=',
               '/assets/lab/lab-automations-library-pro-polish.css?v=',
+              '/assets/lab/lab-automations-library-mobile-fix.css?v=',
               '/assets/lab/lab-automations-editor-learning.js?v=',
               '/assets/lab/lab-automations-document-security.js?v=',
               "connect-src 'self'",
@@ -113,12 +122,18 @@ jobs:
               'Folder is not empty', 'Restore', 'Replace current draft?', 'Apply link',
               'production backend will never silently orphan',
           ]
-          required_learning = ['Bold','Heading 2','Bulleted list','Insert link','editor-learning-tip']
+          required_mobile_fix = [
+              '__automation_internal__', 'LIBRARY_KINDS', 'dedupeFiles', 'dedupeFolders',
+              'A folder with this name already exists here.', 'Documents', 'pro-create-close',
+              'libraryVisible', 'fileVersionId',
+          ]
+          required_learning = ['Bold','Heading 2','Bulleted list','Insert link','editor-learning-tip','data-pro-command','data-md-insert']
           required_security = ['ALLOWED', 'BLOCKED', 'safeHref', 'data-document-body', 'text/html']
           required_css = [
               '.audience-manager-overlay','.audience-target-card','.library-overlay','.document-editor-overlay',
               '.library-pro-overlay','.pro-create-grid','.pro-source-layout','.pro-md-toolbar',
               '.content-template-shortcut','.template-picker-overlay','.pro-link-panel',
+              '.pro-create-close','.library-pro-overlay.is-nested .pro-stats',
               '.content-toolbar','.editor-learning-tip'
           ]
           required_handoff = [
@@ -139,20 +154,22 @@ jobs:
               if term not in pro: sys.exit(f'missing advanced Library contract: {term}')
           for term in required_polish:
               if term not in polish: sys.exit(f'missing advanced Library polish: {term}')
+          for term in required_mobile_fix:
+              if term not in mobile_fix: sys.exit(f'missing mobile Library cleanup: {term}')
           for term in required_learning:
               if term not in learning + learning_css: sys.exit(f'missing editor learning contract: {term}')
           for term in required_security:
               if term not in security: sys.exit(f'missing document security contract: {term}')
           for term in required_css:
-              if term not in audience_css + library_css + pro_css + polish_css + learning_css: sys.exit(f'missing UX CSS: {term}')
+              if term not in audience_css + library_css + pro_css + polish_css + mobile_fix_css + learning_css: sys.exit(f'missing UX CSS: {term}')
           for term in required_handoff:
               if term not in handoff: sys.exit(f'missing frontend handoff: {term}')
 
-          combined = audience + audience_review + library + pro + polish + learning + security
+          combined = audience + audience_review + library + pro + polish + mobile_fix + learning + security
           for term in ['api.cmxchat.com','eval(','new Function(','MutationObserver','localStorage.setItem("operator','blob:','data:application/']:
               if term in combined: sys.exit(f'forbidden focused Lab behavior: {term}')
 
-          print('Directory, audience, folders, native Markdown/Text, Templates, Library and editor-learning contract passed.')
+          print('Directory, audience, folders, native Markdown/Text, Templates, mobile Library cleanup and editor-learning contract passed.')
           PY
 
       - name: Browser smoke desktop and mobile
