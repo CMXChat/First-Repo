@@ -11,7 +11,7 @@
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'" />
   <title>Continuum | Product, Architecture and Build Overview</title>
-  <meta name="description" content="Continuum connects private information, people, services, workflows and AI through one durable control plane. This document explains the product, architecture, current build and long-term direction." />
+  <meta name="description" content="Continuum connects private information, people, services, workflows and AI through one durable control plane. See how Spaces, Automations, Connections, Runtime and Afterlife fit together." />
   <link rel="canonical" href="https://db.cmxchat.com/doc/" />
   <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260807-4" />
   <link rel="stylesheet" href="/assets/personal-os-doc-editorial.css?v=20260805-1" />
@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/assets/personal-os-doc-mobile-fixes.css?v=20260808-1" />
   <link rel="stylesheet" href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1" />
   <link rel="stylesheet" href="/assets/continuum-doc.css?v=20260818-1" />
+  <link rel="stylesheet" href="/assets/continuum-doc-v2.css?v=20260818-1" />
 </head>
 <body>
   <main>
@@ -37,7 +38,7 @@
 
         <nav class="toolbar-links" aria-label="Primary document actions">
           <a href="#overview">Overview</a>
-          <a href="#spaces">Spaces</a>
+          <a href="#difference">Why it works</a>
           <a href="#afterlife">Afterlife</a>
           <a href="#engineering">Build</a>
         </nav>
@@ -47,9 +48,7 @@
             <span>Explore Spaces</span>
             <span aria-hidden="true">↗</span>
           </a>
-          <button id="printDocument" class="document-action document-action-icon" type="button" aria-label="Print or save this document">
-            <span aria-hidden="true">⇩</span>
-          </button>
+          <button id="printDocument" class="document-action document-action-icon" type="button" aria-label="Print or save this document"><span aria-hidden="true">⇩</span></button>
           <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
             <span class="theme-toggle-track" aria-hidden="true">
               <span class="theme-option theme-option-dark">Dark</span>
@@ -66,18 +65,14 @@
         <div class="rail-panel">
           <p class="rail-eyebrow">Contents</p>
           <nav class="document-toc">
-            <a href="#overview">The whole system</a>
-            <a href="#difference">Why it has leverage</a>
-            <a href="#spaces">Spaces</a>
-            <a href="#context">Information and context</a>
-            <a href="#automations">Automations and Runtime</a>
-            <a href="#connections">Connections and tools</a>
-            <a href="#ai">AI and authority</a>
+            <a href="#overview">Continuum in one minute</a>
+            <a href="#difference">Why AI has more leverage here</a>
+            <a href="#spaces">Spaces and incoming context</a>
+            <a href="#action">Automations, tools and authority</a>
             <a href="#afterlife">Afterlife</a>
-            <a href="#engineering">Engineering environment</a>
-            <a href="#build">Lab to production</a>
-            <a href="#status">Current build</a>
-            <a href="#architecture">The complete picture</a>
+            <a href="#engineering">How it is programmed</a>
+            <a href="#build">How the pieces become real</a>
+            <a href="#status">Current reality</a>
           </nav>
         </div>
 
@@ -85,7 +80,7 @@
           <span class="status-dot" aria-hidden="true"></span>
           <div>
             <strong>Active development</strong>
-            <p>Server-backed Check In is live. Spaces and the Automation Lab are active design surfaces. Durable private content, typed Automation definitions and Runtime execution are being built in stages.</p>
+            <p>Check In is server-backed today. Spaces and the Automation Lab are active design surfaces. Private content, typed Automations and Runtime are being added in dependency order.</p>
           </div>
         </div>
       </aside>
@@ -102,41 +97,36 @@
               <span class="hero-status">Building now</span>
             </div>
             <h1 id="pageTitle">Continuum</h1>
-            <p class="hero-lead">Continuum connects your information, people, services, workflows and AI in one private environment. It keeps the underlying state and history durable, gives approved intelligence the context and tools it needs, and carries work forward through Automations and Runtime.</p>
+            <p class="hero-lead">Continuum brings your information, people, services, workflows and AI into one private environment. The platform keeps durable state and history, while approved AI and Automations can use that context to help carry real work forward.</p>
 
             <div class="hero-product-line" aria-label="Continuum product areas">
-              <span>Spaces</span>
-              <span>Directory</span>
-              <span>Library</span>
-              <span>Automations</span>
-              <span>Connections</span>
-              <span>AI</span>
-              <span>Runtime</span>
-              <span>Afterlife</span>
+              <span>Spaces</span><span>Directory</span><span>Library</span><span>Automations</span><span>Connections</span><span>AI</span><span>Runtime</span><span>Afterlife</span>
+            </div>
+
+            <div class="quick-proof" aria-label="Continuum core capabilities">
+              <span><b>Know</b><small>Keep useful state, source and history.</small></span>
+              <span><b>Coordinate</b><small>Connect people, tools and workflows.</small></span>
+              <span><b>Continue</b><small>Carry approved work beyond one chat session.</small></span>
             </div>
 
             <div class="hero-actions">
-              <a class="button button-primary" href="#overview">
-                <span>See how it fits together</span>
-                <span aria-hidden="true">↓</span>
-              </a>
+              <a class="button button-primary" href="#overview"><span>Understand it in one minute</span><span aria-hidden="true">↓</span></a>
               <a class="button button-secondary" href="/lab/automations/">Open Automation Lab</a>
             </div>
 
-            <p class="hero-disclosure">This public noindex document combines working production pieces, active prototypes and planned architecture. Each section labels the current reality where the distinction matters.</p>
+            <p class="hero-disclosure">This public noindex overview separates working production, active prototypes and planned platform work throughout the page.</p>
           </div>
 
-          <div class="continuum-map" aria-label="Continuum system map">
+          <div class="continuum-map compact-map" aria-label="Continuum system map">
             <span class="map-pulse map-pulse-a" aria-hidden="true"></span>
             <span class="map-pulse map-pulse-b" aria-hidden="true"></span>
-            <span class="map-pulse map-pulse-c" aria-hidden="true"></span>
             <div class="continuum-core"><div><span>Control plane</span><strong>Continuum</strong></div></div>
-            <div class="continuum-node node-spaces"><span>Spaces</span><strong>Current briefings and context</strong></div>
-            <div class="continuum-node node-directory"><span>Directory</span><strong>People, groups and organizations</strong></div>
-            <div class="continuum-node node-library"><span>Library</span><strong>Content, files and durable knowledge</strong></div>
-            <div class="continuum-node node-ai"><span>AI</span><strong>Reasoning through approved tools</strong></div>
+            <div class="continuum-node node-spaces"><span>Spaces</span><strong>Briefings and current context</strong></div>
+            <div class="continuum-node node-directory"><span>Directory</span><strong>People and organizations</strong></div>
+            <div class="continuum-node node-library"><span>Library</span><strong>Content, files and knowledge</strong></div>
+            <div class="continuum-node node-ai"><span>AI</span><strong>Reason through approved tools</strong></div>
             <div class="continuum-node node-connections"><span>Connections</span><strong>APIs, MCP and providers</strong></div>
-            <div class="continuum-node node-automations"><span>Automations</span><strong>Rules, timing and actions</strong></div>
+            <div class="continuum-node node-automations"><span>Automations</span><strong>Rules, timing and action</strong></div>
             <div class="continuum-node node-runtime"><span>Runtime</span><strong>Execution and history</strong></div>
           </div>
         </header>
@@ -144,65 +134,54 @@
         <section id="overview" class="document-section continuum-section" aria-labelledby="overviewTitle">
           <div class="section-heading section-heading-wide">
             <div>
-              <p class="section-kicker">The whole system</p>
-              <h2 id="overviewTitle">Information comes in, becomes usable context, and can lead to real action</h2>
+              <p class="section-kicker">Continuum in one minute</p>
+              <h2 id="overviewTitle">One loop connects information to what happens next</h2>
             </div>
-            <p class="section-intro">Continuum is being designed around a continuous loop. Connected services and people provide new information. The platform keeps source, identity, freshness, permissions and history attached. AI can reason over the part that matters, Automations decide when work should run, and Runtime carries the approved work through.</p>
+            <p class="section-intro">Continuum receives approved information, keeps where it came from and how current it is, builds the context needed for a decision, then gives Automations or AI access to approved tools. Results can return to the same durable state and change the next briefing or action.</p>
           </div>
 
-          <div class="master-flow" aria-label="Continuum information and action loop">
-            <div class="master-flow-sources">
-              <span>Email</span><span>Calendar</span><span>Messages</span><span>Finance</span><span>Files</span><span>APIs + MCP</span>
-            </div>
-            <div class="master-flow-connector" aria-hidden="true">↓</div>
-            <div class="master-flow-core">
-              <article class="master-flow-stage"><b>01</b><strong>Connections</strong><small>Receive approved data through provider APIs, MCP, webhooks, sync and direct input.</small></article>
-              <article class="master-flow-stage"><b>02</b><strong>Private state</strong><small>Directory, Library, records, conversations, versions, provenance and current status.</small></article>
-              <article class="master-flow-stage"><b>03</b><strong>Context + AI</strong><small>Retrieve the relevant approved slice, reason over it, and produce typed outputs.</small></article>
-              <article class="master-flow-stage"><b>04</b><strong>Automations</strong><small>Triggers, rules, Actions, timing, approvals and standing authority.</small></article>
-              <article class="master-flow-stage"><b>05</b><strong>Runtime</strong><small>Execute, wait, retry, receive results, enforce limits and preserve history.</small></article>
-            </div>
-            <div class="master-flow-connector" aria-hidden="true">↓</div>
-            <div class="master-flow-outcomes">
-              <span>Brief</span><span>Message</span><span>Task</span><span>Decision</span><span>Transaction</span><span>Updated state</span>
-            </div>
+          <div class="tour-grid">
+            <article class="tour-card"><b>01</b><strong>Receive</strong><p>Email, calendar, messages, files, finance, APIs, MCP, webhooks and direct updates can become inputs.</p></article>
+            <article class="tour-card"><b>02</b><strong>Remember</strong><p>Directory, Library, records, conversations, versions and source history stay attached to stable IDs.</p></article>
+            <article class="tour-card"><b>03</b><strong>Reason</strong><p>AI receives the smallest approved context needed for the task and uses typed tools through protected services.</p></article>
+            <article class="tour-card"><b>04</b><strong>Act and update</strong><p>Automations and future Runtime can communicate, wait, retry, coordinate, record results and update state.</p></article>
           </div>
 
-          <p class="current-note">The durable core is intentionally independent from any single model or provider. The information, permissions, versions, connections and execution history remain part of Continuum as AI providers and external services change over time.</p>
+          <div class="loop-strip" aria-label="Continuum operating loop">
+            <span>Receive</span><span>Normalize</span><span>Remember</span><span>Build context</span><span>Decide</span><span>Act</span><span>Update</span>
+          </div>
         </section>
 
         <section id="difference" class="document-section continuum-section" aria-labelledby="differenceTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Where the leverage comes from</p>
-              <h2 id="differenceTitle">AI gets a persistent world to work inside</h2>
+              <p class="section-kicker">Why AI has more leverage here</p>
+              <h2 id="differenceTitle">The model gets a persistent world to work inside</h2>
             </div>
-            <p class="section-intro">A strong model can reason, write and plan. Continuum adds durable state, identity, source tracking, time, permissions, tools, conversations and execution around that reasoning. The result can carry forward after the original conversation has ended.</p>
+            <p class="section-intro">A model can reason and generate. Continuum adds durable identity, source tracking, time, permissions, tools, conversations and execution history around that reasoning. A future model can become smarter while the underlying world stays available.</p>
           </div>
 
-          <div class="ai-difference">
-            <article class="ai-session">
-              <header class="compare-header"><span>AI session</span><h3>Reason over the context in front of it</h3></header>
-              <div class="ai-session-body">
-                <div class="chat-bubble user">Make sure the server transfer gets finished this week.</div>
-                <div class="chat-bubble">I can help you plan the steps, draft a message and identify what information you need.</div>
-              </div>
-              <p class="ai-session-footer">The model provides reasoning and generation. The surrounding application determines what persists and what can happen outside the conversation.</p>
+          <div class="leverage-stage">
+            <article class="leverage-card">
+              <header><span>AI session</span><h3>Useful reasoning in the current conversation</h3></header>
+              <div class="simple-chat"><p>Make sure the server transfer gets finished this week.</p><p>I can plan the steps, draft a message and help you decide what to do next.</p></div>
+              <footer>The model can reason over what the application gives it during that interaction.</footer>
             </article>
 
-            <article class="continuum-environment">
-              <header class="compare-header"><span>Continuum environment</span><h3>Carry the objective through a changing real-world process</h3></header>
-              <div class="environment-grid">
-                <article><span>Identity</span><strong>Resolve the right people, organizations and groups</strong></article>
-                <article><span>Context</span><strong>Read the approved server record and related conversation</strong></article>
-                <article><span>Action</span><strong>Contact the approved people through available channels</strong></article>
-                <article><span>Time</span><strong>Wait for replies and continue on the right schedule</strong></article>
-                <article><span>Tools</span><strong>Use Calendar, tasks, files, APIs or MCP when granted</strong></article>
-                <article><span>Runtime</span><strong>Track retries, results, limits and the current objective state</strong></article>
-                <article><span>Authority</span><strong>Enforce the exact scope you approved on the server</strong></article>
-                <article><span>History</span><strong>Keep what happened available for the next decision</strong></article>
+            <article class="leverage-card">
+              <header><span>Continuum environment</span><h3>The objective can stay attached to people, tools, time and state</h3></header>
+              <div class="world-grid">
+                <article><span>Identity</span><strong>Know who Adam and Mike are</strong><small>Directory records and relationships.</small></article>
+                <article><span>Context</span><strong>Find the relevant server records</strong><small>Protected search and stable references.</small></article>
+                <article><span>Action</span><strong>Use approved communication</strong><small>Email, Discord, SMS, voice or another supported tool.</small></article>
+                <article><span>Runtime</span><strong>Wait, follow up and record results</strong><small>Durable state continues after the first request.</small></article>
               </div>
-              <p class="environment-callout">The model can become more capable over time while the platform continues to own the state, permissions and tools around it. A future model inherits a useful environment instead of starting your world again from a blank prompt.</p>
+              <div class="provenance-ribbon" aria-label="Example provenance record">
+                <div><small>Source</small><b>Connected checking account</b></div>
+                <div><small>Observed</small><b>08:14 today</b></div>
+                <div><small>Freshness</small><b>Current</b></div>
+                <div><small>Use</small><b>Approved Money analysis</b></div>
+              </div>
             </article>
           </div>
         </section>
@@ -210,336 +189,173 @@
         <section id="spaces" class="document-section continuum-section" aria-labelledby="spacesTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Spaces</p>
-              <h2 id="spacesTitle">Turn a large amount of context into the view that matters right now</h2>
+              <p class="section-kicker">Spaces + incoming context</p>
+              <h2 id="spacesTitle">A large private world can become a small useful briefing</h2>
             </div>
-            <p class="section-intro">Spaces is the briefing and context experience inside Continuum. Each Space can have its own people, information, goals, permissions, tools and current view. A Brief reduces that larger state to the changes, decisions and actions worth seeing.</p>
+            <p class="section-intro">Spaces is the briefing experience inside Continuum. Each Space can draw from the people, records, files, conversations and connected services that belong there, while permissions keep private information within the right boundary.</p>
           </div>
 
-          <div class="space-constellation" aria-label="Example Spaces">
-            <article class="space-card featured"><span>Current brief</span><strong>Personal</strong><small>Today, priorities, schedule, money, conversations and the few things that need attention.</small></article>
-            <article class="space-card"><span>Shared context</span><strong>Family</strong><small>Schedule, plans, responsibilities, household information and approved shared memory.</small></article>
-            <article class="space-card"><span>Work</span><strong>Business</strong><small>Clients, projects, tasks, communications, revenue, deadlines and operating context.</small></article>
-            <article class="space-card"><span>Financial view</span><strong>Money</strong><small>Balances, cash flow, obligations, investments and decisions within approved account access.</small></article>
-            <article class="space-card"><span>Personal state</span><strong>Health</strong><small>Approved health, fitness, routine and appointment information from supported sources.</small></article>
-            <article class="space-card"><span>Execution</span><strong>Projects</strong><small>Work in motion, dependencies, people, files, decisions and next steps.</small></article>
-            <article class="space-card"><span>People</span><strong>Network</strong><small>Relationships, organizations, conversations, commitments and coordination context.</small></article>
-            <article class="space-card"><span>Continuity</span><strong>Afterlife</strong><small>Check In state, trusted people, protected instructions and contingency workflows.</small></article>
-          </div>
+          <div class="brief-stage">
+            <div class="space-mini-grid" aria-label="Example Spaces">
+              <article class="space-mini"><span>Personal</span><strong>Today</strong><small>Schedule, money, messages and priorities.</small></article>
+              <article class="space-mini"><span>Family</span><strong>Shared life</strong><small>Plans, responsibilities and approved shared context.</small></article>
+              <article class="space-mini"><span>Business</span><strong>Work in motion</strong><small>Clients, tasks, projects, revenue and deadlines.</small></article>
+              <article class="space-mini"><span>Continuity</span><strong>Afterlife</strong><small>Check In state, trusted people and protected instructions.</small></article>
+            </div>
 
-          <p class="current-note">The existing <span class="inline-code">/spaces/</span> route is the visual proving ground for this briefing experience. As the protected backend grows, the same ideas can be powered by durable private records instead of demonstration data.</p>
+            <article class="brief-preview" aria-label="Illustrative Personal Brief">
+              <header><span>PERSONAL BRIEF</span><b>Illustrative future view</b></header>
+              <div class="brief-items">
+                <div class="brief-item"><b>08</b><div><strong>Two meetings today</strong><small>Calendar sync places the first one at 10:30 AM.</small></div><span>CALENDAR</span></div>
+                <div class="brief-item"><b>$</b><div><strong>Payment timing may tighten cash flow</strong><small>Current account data and an email update point to a later client payment.</small></div><span>MONEY</span></div>
+                <div class="brief-item"><b>↗</b><div><strong>Server transfer is waiting on a reply</strong><small>The last approved contact attempt is still open.</small></div><span>PROJECT</span></div>
+                <div class="brief-item"><b>✓</b><div><strong>Afterlife remains safe</strong><small>The current server-backed Check In window is active.</small></div><span>CONTINUITY</span></div>
+              </div>
+            </article>
+          </div>
         </section>
 
-        <section id="context" class="document-section continuum-section" aria-labelledby="contextTitle">
+        <section id="action" class="document-section continuum-section" aria-labelledby="actionTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Information and context</p>
-              <h2 id="contextTitle">Useful decisions depend on where information came from and how current it is</h2>
+              <p class="section-kicker">Automations + Connections + AI</p>
+              <h2 id="actionTitle">The same control plane can coordinate software, services and people</h2>
             </div>
-            <p class="section-intro">Continuum can eventually receive information through connected APIs, MCP servers, webhooks, scheduled sync, files, direct input and conversations. Incoming data is normalized into protected application records while provenance and freshness stay attached.</p>
+            <p class="section-intro">Automations define when work becomes eligible. Connections expose approved external capabilities. AI can use typed tools within server-enforced authority. Runtime will later carry the work through waits, retries, replies, limits and final results.</p>
           </div>
 
-          <div class="context-pipeline">
-            <article class="pipeline-panel">
-              <h3>Receive</h3>
-              <div class="pipeline-list">
-                <span>Provider APIs</span><span>MCP resources</span><span>Webhooks and events</span><span>Scheduled sync</span><span>Files and documents</span><span>Human updates</span>
+          <div class="action-stage">
+            <article class="workflow-card">
+              <header><span>Example workflow</span><strong>Continuity escalation</strong></header>
+              <div class="workflow-line">
+                <div><b>WHEN</b><span><strong>Grace expires</strong><small>Server-authoritative Incident trigger</small></span></div>
+                <div><b>DO</b><span><strong>Email Family</strong><small>Approved sender, audience, content and files</small></span></div>
+                <div><b>WAIT</b><span><strong>15 minutes</strong><small>Runtime keeps the wait durable</small></span></div>
+                <div><b>DO</b><span><strong>Escalate through another channel</strong><small>SMS, Discord, WhatsApp or voice when supported</small></span></div>
+                <div><b>THEN</b><span><strong>Coordinate follow-up</strong><small>Deterministic steps or a bounded AI task</small></span></div>
               </div>
             </article>
-            <div class="pipeline-arrow" aria-hidden="true">→</div>
-            <article class="pipeline-panel">
-              <h3>Normalize and preserve meaning</h3>
-              <div class="pipeline-list">
-                <span>Stable source ID</span><span>Person or organization identity</span><span>Observed and updated time</span><span>Permission scope</span><span>Fact, message, event or interpretation type</span>
-              </div>
-              <div class="provenance-card">
-                <header><strong>Example account observation</strong><span>Current</span></header>
-                <div class="provenance-grid">
-                  <div><small>Value</small><b>$4,200</b></div>
-                  <div><small>Source</small><b>Connected checking account</b></div>
-                  <div><small>Observed</small><b>08:14 today</b></div>
-                  <div><small>Use</small><b>Money Space + approved analysis</b></div>
-                </div>
-              </div>
-            </article>
-            <div class="pipeline-arrow" aria-hidden="true">→</div>
-            <article class="pipeline-panel">
-              <h3>Build task-specific context</h3>
-              <div class="pipeline-list">
-                <span>Search approved sources</span><span>Check freshness</span><span>Resolve relationships</span><span>Select the smallest useful context</span><span>Pass stable references to AI</span><span>Keep provenance with the result</span>
+
+            <article class="connection-compact">
+              <header><span>Connection catalog</span><strong>Capabilities can grow with the platform</strong></header>
+              <div class="connection-list">
+                <div class="connection-line"><div><strong>Email</strong><small>Rich content, attachments, replies</small></div><span>MODELED</span></div>
+                <div class="connection-line"><div><strong>Discord + messaging</strong><small>Channels, messages, approved conversations</small></div><span>PLANNED</span></div>
+                <div class="connection-line"><div><strong>SMS + voice</strong><small>Messages, calls, speech, acknowledgement</small></div><span>FUTURE</span></div>
+                <div class="connection-line"><div><strong>WhatsApp Business</strong><small>Business API messages and replies</small></div><span>FUTURE</span></div>
+                <div class="connection-line"><div><strong>APIs + MCP</strong><small>External resources and typed tools</small></div><span>EXTENSIBLE</span></div>
+                <div class="connection-line"><div><strong>Finance</strong><small>Read, analyze, prepare and supported execution</small></div><span>POLICY</span></div>
               </div>
             </article>
           </div>
 
-          <p class="current-note">PostgreSQL search is the first retrieval layer. Semantic retrieval and embeddings can be added later while retaining stable source and version references, authorization checks and provenance.</p>
-        </section>
-
-        <section id="automations" class="document-section continuum-section" aria-labelledby="automationsTitle">
-          <div class="section-heading">
-            <div>
-              <p class="section-kicker">Automations + Runtime</p>
-              <h2 id="automationsTitle">Define what should happen, then keep a durable record of what actually happened</h2>
-            </div>
-            <p class="section-intro">Automation definitions describe triggers, rules, Actions and timing. Runtime handles the execution side later: claims, retries, waiting, provider results, approvals, acknowledgements, limits and Audit.</p>
+          <div class="authority-strip">
+            <article class="authority-mini"><span>AI authority</span><strong>Permission stays server-side</strong><p>A task can receive specific tools, people, resources, Connections, time windows and limits. The model cannot widen its own grant.</p></article>
+            <article class="authority-mini"><span>Adaptable execution</span><strong>Read, ask, pre-authorize or keep owner-only</strong><p>High-consequence capabilities can mature through explicit policy as providers and safeguards improve, including bounded financial or person-mediated actions where supported.</p></article>
           </div>
-
-          <div class="automation-stage">
-            <article class="automation-editor">
-              <header class="panel-titlebar"><span>Human workflow</span><b>Definition</b></header>
-              <div class="builder-steps">
-                <div class="builder-step"><span>WHEN</span><div><strong>Grace expires</strong><small>Server-authoritative Incident trigger</small></div></div>
-                <div class="builder-step"><span>IF</span><div><strong>No acknowledgement</strong><small>Evaluate typed condition</small></div></div>
-                <div class="builder-step"><span>DO</span><div><strong>Email Family</strong><small>Approved sender, audience, content and files</small></div></div>
-                <div class="builder-step"><span>WAIT</span><div><strong>15 minutes</strong><small>Durable timing inside Runtime</small></div></div>
-                <div class="builder-step"><span>DO</span><div><strong>Escalate through another approved channel</strong><small>SMS, Discord, voice or another supported adapter</small></div></div>
-                <div class="builder-step"><span>THEN</span><div><strong>Coordinate and close</strong><small>Bounded AI or deterministic follow-up</small></div></div>
-              </div>
-            </article>
-
-            <article class="automation-runtime-preview">
-              <header class="panel-titlebar"><span>Runtime history</span><b>Future execution layer</b></header>
-              <div class="runtime-sequence">
-                <div class="runtime-event"><i aria-hidden="true"></i><div><strong>Run starts</strong><small>Freeze exact AutomationVersion, authority and current inputs.</small></div></div>
-                <div class="runtime-event"><i aria-hidden="true"></i><div><strong>Resolve recipients and content</strong><small>Freeze sender, recipient snapshot, ContentVersion and FileVersions.</small></div></div>
-                <div class="runtime-event"><i aria-hidden="true"></i><div><strong>Perform typed Action</strong><small>Provider adapter receives an idempotent normalized request.</small></div></div>
-                <div class="runtime-event"><i aria-hidden="true"></i><div><strong>Wait or receive a reply</strong><small>Conversation events can update the same Run without losing history.</small></div></div>
-                <div class="runtime-event"><i aria-hidden="true"></i><div><strong>Continue, retry or finish</strong><small>Server-enforced policy determines the next permitted step.</small></div></div>
-              </div>
-            </article>
-          </div>
-
-          <p class="current-note"><span class="inline-code">/lab/automations/</span> is the active UX proving ground. Email and structured AI Task editors are already modeled there. Real provider execution waits for durable Runtime, idempotency, recovery, Audit and protected Connections.</p>
-        </section>
-
-        <section id="connections" class="document-section continuum-section" aria-labelledby="connectionsTitle">
-          <div class="section-heading">
-            <div>
-              <p class="section-kicker">Connections + tools</p>
-              <h2 id="connectionsTitle">External capability plugs into the same control plane</h2>
-            </div>
-            <p class="section-intro">A Connection represents access to an outside service. A typed tool describes a specific thing Continuum can read or do through that Connection. This keeps provider credentials, capability scope and risk policy separate from AI prompts and workflow copy.</p>
-          </div>
-
-          <div class="connection-board" aria-label="Future Connections catalog example">
-            <header class="connection-header"><div><h3>Connections</h3><span>Illustrative long-term catalog</span></div><span>Capabilities remain individually controlled</span></header>
-            <div class="connection-table">
-              <div class="connection-row"><div class="connection-name"><strong>Google</strong><small>Gmail · Calendar · Drive</small></div><div class="connection-tools">Read context · create event · send through approved identity</div><span class="capability-state future">Planned</span></div>
-              <div class="connection-row"><div class="connection-name"><strong>Discord</strong><small>Bot · channels · approved conversations</small></div><div class="connection-tools">Send · receive · coordinate inside supported API boundaries</div><span class="capability-state future">Planned</span></div>
-              <div class="connection-row"><div class="connection-name"><strong>Email</strong><small>Sender identity · recipients · threads</small></div><div class="connection-tools">Rich content · files · replies · delivery history</div><span class="capability-state approval">Modeled</span></div>
-              <div class="connection-row"><div class="connection-name"><strong>WhatsApp Business</strong><small>Business API connection</small></div><div class="connection-tools">Messages · approved templates · replies</div><span class="capability-state future">Future</span></div>
-              <div class="connection-row"><div class="connection-name"><strong>Voice + SMS</strong><small>Telephony provider</small></div><div class="connection-tools">SMS · MMS · calls · speech · keypad acknowledgement</div><span class="capability-state future">Future</span></div>
-              <div class="connection-row"><div class="connection-name"><strong>Finance</strong><small>Banking · credit · brokerage</small></div><div class="connection-tools">Read · analyze · prepare · execute where explicitly supported</div><span class="capability-state restricted">High consequence</span></div>
-              <div class="connection-row"><div class="connection-name"><strong>MCP</strong><small>External tool and resource servers</small></div><div class="connection-tools">Discover · normalize · review · grant approved capabilities</div><span class="capability-state future">Extensible</span></div>
-            </div>
-            <div class="capability-legend" aria-label="Capability availability modes">
-              <span>Unavailable</span><span>Read only</span><span>Ask before acting</span><span>Can be pre-authorized</span><span>Only owner can act</span>
-            </div>
-          </div>
-
-          <p class="current-note">The Tool Registry is designed to grow with technology. Examples include <span class="inline-code">email.send</span>, <span class="inline-code">calendar.create_event</span>, <span class="inline-code">library.search</span>, <span class="inline-code">voice.call</span>, <span class="inline-code">bank.read_transactions</span> and, where a provider and deployment policy support it, bounded transaction or brokerage tools.</p>
-        </section>
-
-        <section id="ai" class="document-section continuum-section" aria-labelledby="aiTitle">
-          <div class="section-heading">
-            <div>
-              <p class="section-kicker">AI + authority</p>
-              <h2 id="aiTitle">Model intelligence can improve without giving the model control over its own permissions</h2>
-            </div>
-            <p class="section-intro">Continuum treats models as replaceable reasoning providers. AI uses typed tools through the same protected services as the human interface. Server-side grants determine which information, people, Connections and consequential Actions are available for a specific task or Run.</p>
-          </div>
-
-          <div class="ai-gateway-stage">
-            <div class="model-row" aria-label="Replaceable model providers">
-              <span>OpenAI</span><span>Anthropic</span><span>Gemini</span><span>Local or future model</span>
-            </div>
-            <div class="gateway-arrow" aria-hidden="true">↓</div>
-            <div class="gateway-core"><span>Model policy</span><strong>Continuum AI Gateway</strong></div>
-            <div class="gateway-arrow" aria-hidden="true">↓</div>
-            <div class="tool-row" aria-label="Example approved tool families">
-              <span>Library + retrieval</span><span>Directory + people</span><span>Communication</span><span>External operations</span>
-            </div>
-
-            <div class="authority-check">
-              <article class="authority-card">
-                <span>Example grant</span>
-                <strong>Coordinate server transfer before Friday</strong>
-                <div class="authority-list">
-                  <span>Read server records <b>Allowed</b></span>
-                  <span>Contact Adam + Mike <b>Allowed</b></span>
-                  <span>Email + Discord <b>Allowed</b></span>
-                  <span>Maximum messages <b>10</b></span>
-                  <span>Credential mutation <b class="denied">Blocked</b></span>
-                </div>
-              </article>
-              <article class="authority-card">
-                <span>Future financial example</span>
-                <strong>Exact policy can govern direct or person-mediated execution</strong>
-                <div class="authority-list">
-                  <span>Approved account <b>Scoped</b></span>
-                  <span>Approved payee or ticker <b>Scoped</b></span>
-                  <span>Per-operation maximum <b>Enforced</b></span>
-                  <span>Daily or Incident maximum <b>Enforced</b></span>
-                  <span>New beneficiary creation <b class="denied">Blocked</b></span>
-                </div>
-              </article>
-            </div>
-          </div>
-
-          <p class="current-note">The same authority model applies when AI asks a trusted person to perform an operation. Communication is part of the execution path, so outcome policy follows the requested result as well as the transport channel.</p>
         </section>
 
         <section id="afterlife" class="document-section continuum-section afterlife-section" aria-labelledby="afterlifeTitle">
           <div class="section-heading">
             <div>
               <p class="section-kicker">Continuity</p>
-              <h2 id="afterlifeTitle">Afterlife</h2>
-              <span class="afterlife-name">The Dead Man Switch</span>
+              <div class="afterlife-title-row"><h2 id="afterlifeTitle">Afterlife</h2><small>The Dead Man Switch</small></div>
             </div>
-            <p class="section-intro">Afterlife uses Continuum's timing, protected information, Directory, Automations, Connections, authority and Runtime architecture for the moment the owner stops responding. The core switch already runs against authoritative server time.</p>
+            <p class="section-intro">Afterlife applies Continuum's timing, protected information, people, Automations, Connections and authority when the owner stops responding. The current switch core already runs against authoritative server time.</p>
           </div>
 
-          <div class="afterlife-timeline" aria-label="Afterlife Dead Man Switch timeline">
-            <article class="afterlife-step"><span>01 · Check In</span><strong>Protected successful check-in</strong><small>The backend records authoritative server time and resets the current window.</small></article>
-            <article class="afterlife-step"><span>02 · Window</span><strong>72 elapsed hours</strong><small>The current production policy measures real elapsed time in UTC.</small></article>
-            <article class="afterlife-step"><span>03 · Grace</span><strong>24 elapsed hours</strong><small>The configured grace window follows the primary deadline.</small></article>
-            <article class="afterlife-step"><span>04 · Incident</span><strong>Triggered state</strong><small>A durable Incident snapshot can become the deterministic activation condition for pre-authorized continuity.</small></article>
-            <article class="afterlife-step"><span>05 · Continuity</span><strong>Approved workflows begin</strong><small>Future Runtime can execute the exact deterministic Actions and bounded delegation prepared in advance.</small></article>
+          <div class="afterlife-track" aria-label="Current Afterlife timing flow">
+            <article><span>01 · CHECK IN</span><strong>Protected check-in</strong><small>The backend records authoritative server time.</small></article>
+            <article><span>02 · WINDOW</span><strong>72 elapsed hours</strong><small>The active production deadline is measured in UTC.</small></article>
+            <article><span>03 · GRACE</span><strong>24 elapsed hours</strong><small>The configured grace window follows the primary deadline.</small></article>
+            <article><span>04 · INCIDENT</span><strong>Triggered</strong><small>A durable Incident can activate exact pre-authorized continuity rules.</small></article>
+            <article><span>05 · CONTINUE</span><strong>Approved workflows</strong><small>Future Runtime can communicate, release, coordinate and delegate within the published grant.</small></article>
           </div>
 
-          <div class="afterlife-branches">
-            <article><span>Communicate</span><strong>Email, SMS, Discord, WhatsApp, voice or later supported channels</strong></article>
-            <article><span>Release</span><strong>Deliver exact approved ContentVersions and FileVersions to approved recipients</strong></article>
-            <article><span>Coordinate</span><strong>Receive replies, follow up, request confirmation and escalate through trusted people</strong></article>
-            <article><span>Delegate</span><strong>Activate a bounded Continuity Agent under a standing owner-published AuthorityGrant</strong></article>
-          </div>
-
-          <div class="afterlife-current"><b>Live core</b><p>Production currently includes server-backed Check In, configurable timing, immutable policy versions, Incident lifecycle, protected sessions, reconciliation and Audit. External provider execution and autonomous coordination belong to later Runtime phases.</p></div>
+          <div class="afterlife-actions"><span>Contact trusted people</span><span>Release approved information</span><span>Coordinate replies</span><span>Activate bounded continuity AI</span></div>
+          <div class="afterlife-now"><b>Working today:</b> server-backed Check In, configurable timing, immutable policy versions, Incidents, protected sessions, reconciliation and Audit. External provider execution and autonomous coordination are later Runtime work.</div>
         </section>
 
         <section id="engineering" class="document-section continuum-section" aria-labelledby="engineeringTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Engineering environment</p>
-              <h2 id="engineeringTitle">The product doubles as a real backend and application-development learning environment</h2>
+              <p class="section-kicker">How it is programmed</p>
+              <h2 id="engineeringTitle">A real browser, API and database stack with clear boundaries</h2>
             </div>
-            <p class="section-intro">The project is intentionally built from common production technologies with clear boundaries between browser, API and database. The same environment is being used to learn how those pieces actually communicate, persist data, evolve schemas and reach production.</p>
+            <p class="section-intro">The project is also a practical learning environment for how modern applications work. The browser handles the interface, FastAPI owns protected server behavior, PostgreSQL holds durable state, and migrations evolve the database deliberately.</p>
           </div>
 
-          <div class="dev-stack">
-            <div class="dev-stack-top">
-              <article class="dev-tool"><span>Source</span><strong>GitHub</strong><small>Repositories, history, reviews and deployment source of truth.</small></article>
-              <article class="dev-tool"><span>Development</span><strong>Codespaces + Dev Container</strong><small>A repeatable environment that can start with the expected tools and dependencies.</small></article>
-              <article class="dev-tool"><span>Packaging</span><strong>Docker</strong><small>Defines a consistent application environment across development and deployment.</small></article>
-              <article class="dev-tool"><span>Database change</span><strong>Alembic</strong><small>Versioned PostgreSQL migrations that evolve the schema deliberately.</small></article>
+          <div class="stack-visual">
+            <div class="stack-flow">
+              <article><span>Source</span><strong>GitHub</strong><small>Repositories, commits, reviews and source of truth.</small></article>
+              <article><span>Development</span><strong>Codespaces + Dev Container</strong><small>A repeatable environment with the expected tools and dependencies.</small></article>
+              <article><span>Frontend</span><strong>HTML, CSS, JavaScript + React / TypeScript</strong><small>Static prototypes today and a typed application frontend for protected product work.</small></article>
+              <article><span>Backend</span><strong>Python + FastAPI</strong><small>Endpoints and domain services validate requests, enforce rules and return JSON over HTTPS.</small></article>
+              <article><span>Database</span><strong>PostgreSQL</strong><small>Durable server-authoritative state for users, content, versions, policies, Automations and future Runtime.</small></article>
             </div>
-
-            <div class="stack-runtime" aria-label="Continuum application stack">
-              <article class="stack-block"><span>Frontend</span><strong>HTML / CSS / JavaScript + React / TypeScript</strong><small>First-Repo serves static design surfaces today. The full application environment uses React, TypeScript, TanStack tooling, Tailwind, shadcn/ui and a generated API client.</small></article>
-              <div class="stack-arrow" aria-hidden="true">→</div>
-              <article class="stack-block"><span>Backend</span><strong>Python + FastAPI</strong><small>Protected endpoints and domain services validate requests, enforce business rules and return structured JSON over HTTPS.</small></article>
-              <div class="stack-arrow" aria-hidden="true">→</div>
-              <article class="stack-block"><span>Database</span><strong>PostgreSQL</strong><small>Durable server-authoritative state for users, policies, content, versions, Automations, Runtime history and future connected records.</small></article>
-            </div>
+            <div class="stack-support"><span>Docker</span><span>Alembic migrations</span><span>OpenAPI + generated client</span><span>Tests + deployment gates</span></div>
           </div>
 
-          <div class="engineering-principles">
-            <article><span>API contract</span><strong>OpenAPI connects frontend and backend</strong><p>FastAPI describes protected endpoints and the frontend can use a generated client instead of hand-building every request shape.</p></article>
-            <article><span>Identity</span><strong>Stable IDs survive renames and moves</strong><p>People, files, content, versions, Connections and workflows keep durable identities while presentation changes around them.</p></article>
-            <article><span>History</span><strong>Published versions remain immutable</strong><p>Automation, content, policy and authority history can explain exactly what a past Run used.</p></article>
-            <article><span>Security</span><strong>Private authority stays server-side</strong><p>Secure HttpOnly sessions, CSRF and Origin checks, protected services and server-held provider secrets define the boundary.</p></article>
-            <article><span>Reliability</span><strong>External effects become idempotent Runtime work</strong><p>Retries, provider attempts, frozen inputs and Audit are designed before real autonomous side effects are enabled.</p></article>
-            <article><span>AI</span><strong>Typed tools sit over normal services</strong><p>Human UI, AI and later MCP adapters reach the same business rules instead of receiving privileged database shortcuts.</p></article>
-          </div>
+          <div class="final-sentence"><strong>Programming principle:</strong> the frontend asks for work through protected APIs. Business rules live in reusable backend services. AI and later MCP adapters call those same typed services, so the product does not need a separate privileged path for machines.</div>
         </section>
 
         <section id="build" class="document-section continuum-section" aria-labelledby="buildTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">How we build it</p>
-              <h2 id="buildTitle">Prototype the experience, lock the contract, build the durable service, then move the accepted interaction into the product</h2>
+              <p class="section-kicker">How the pieces become real</p>
+              <h2 id="buildTitle">Design quickly, then move accepted behavior onto durable infrastructure</h2>
             </div>
-            <p class="section-intro">The Lab provides speed while the backend provides truth. This keeps early interface experiments cheap to change and prevents prototype state from becoming the production data model by accident.</p>
+            <p class="section-intro">The Lab gives us room to change the product quickly. Once an interaction makes sense, the backend contract locks the data and authority semantics, jay-app implements the service, and the accepted experience moves into the protected product.</p>
           </div>
 
-          <div class="build-path" aria-label="Lab to production development path">
-            <article><b>01</b><strong>/lab/automations/</strong><small>Explore the workflow, editor and interaction until the product behavior makes sense.</small></article>
-            <article><b>02</b><strong>Backend contract</strong><small>Record the stable entities, versions, permissions, Runtime boundaries and provider semantics.</small></article>
-            <article><b>03</b><strong>jay-app services</strong><small>Implement PostgreSQL models, migrations, FastAPI services, authorization and tests.</small></article>
-            <article><b>04</b><strong>Protected API</strong><small>Expose narrow typed operations that the real frontend and later AI tools can share.</small></article>
-            <article><b>05</b><strong>/checkin/ product</strong><small>Replace prototype storage with server-backed state and carry the accepted UX into the protected application.</small></article>
-          </div>
+          <div class="build-and-status">
+            <article class="build-lane">
+              <header><span>Build path</span><strong>Lab to protected product</strong></header>
+              <div class="build-steps">
+                <div class="build-step"><b>1</b><span><strong>/lab/automations/</strong><small>Prove the workflow and editor experience.</small></span></div>
+                <div class="build-step"><b>2</b><span><strong>Backend contract</strong><small>Define stable IDs, versions, permissions and Runtime boundaries.</small></span></div>
+                <div class="build-step"><b>3</b><span><strong>jay-app</strong><small>Implement PostgreSQL models, Alembic migrations, FastAPI services and tests.</small></span></div>
+                <div class="build-step"><b>4</b><span><strong>Protected API</strong><small>Expose narrow operations shared by the frontend and later AI tools.</small></span></div>
+                <div class="build-step"><b>5</b><span><strong>/checkin/</strong><small>Replace prototype state with the real server-backed product.</small></span></div>
+              </div>
+            </article>
 
-          <p class="current-note">The first real private-information vertical slice is deliberately small: create <span class="inline-code">continuity.md</span>, store its mutable Draft in PostgreSQL, read it across sessions, save immutable v1, place it in a real Library folder, find it through protected search and reference it from an Automation Draft.</p>
+            <article class="status-lane">
+              <header><span>First real private-data slice</span><strong>Small enough to verify end to end</strong></header>
+              <div class="status-stack">
+                <div class="status-phase"><span>CREATE</span><strong>continuity.md</strong><p>Create a mutable ContentDraft in PostgreSQL.</p></div>
+                <div class="status-phase"><span>REFRESH</span><strong>Read the same data again</strong><p>Another authenticated request sees the same server state.</p></div>
+                <div class="status-phase"><span>VERSION</span><strong>Save immutable v1</strong><p>History keeps the exact content referenced later.</p></div>
+                <div class="status-phase"><span>ORGANIZE</span><strong>Place it in Library</strong><p>Real folders, protected search and stable dependency details.</p></div>
+                <div class="status-phase"><span>REFERENCE</span><strong>Use it in an Automation Draft</strong><p>The definition references durable content without performing a side effect.</p></div>
+              </div>
+            </article>
+          </div>
         </section>
 
         <section id="status" class="document-section continuum-section" aria-labelledby="statusTitle">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">Current build</p>
-              <h2 id="statusTitle">The foundation is being delivered in dependency order</h2>
+              <p class="section-kicker">Current reality</p>
+              <h2 id="statusTitle">A broad destination with a deliberately narrow build order</h2>
             </div>
-            <p class="section-intro">The long-term capability catalog is broad, while implementation stays narrow enough to verify each layer before the next one depends on it.</p>
+            <p class="section-intro">The architecture leaves room for stronger AI, more data sources, more communication methods, voice, MCP, financial tools and new services. Implementation stays ordered so each new capability rests on durable state, authority and Runtime foundations.</p>
           </div>
 
-          <div class="status-roadmap">
-            <article class="status-column">
-              <span>Working now</span><h3>Production core + design surfaces</h3>
-              <ul>
-                <li>Server-backed Check In with the current 72-hour window and 24-hour grace.</li>
-                <li>Immutable timing policy versions, Incidents, reconciliation and Audit.</li>
-                <li>Protected session and public status separation.</li>
-                <li>Spaces demo and focused Automation Lab.</li>
-                <li>Directory, Library, Email Action and structured AI Task UX prototypes.</li>
-              </ul>
-            </article>
-            <article class="status-column">
-              <span>Next</span><h3>Durable private information + typed definitions</h3>
-              <ul>
-                <li>PostgreSQL ContentAsset, Draft and immutable ContentVersion.</li>
-                <li>Real Library folders, protected search and dependency details.</li>
-                <li>Directory and Audience services with stable recipient resolution.</li>
-                <li>Typed Automation definitions including Email and AI Task configuration.</li>
-                <li>Protected frontend adapters that replace accepted Lab localStorage patterns.</li>
-              </ul>
-            </article>
-            <article class="status-column">
-              <span>Later</span><h3>Runtime, providers and increasingly capable AI</h3>
-              <ul>
-                <li>Durable Runs, waits, retries, idempotency, approvals and acknowledgements.</li>
-                <li>One real provider after fake-provider Runtime tests.</li>
-                <li>Inbound Conversations and reply coordination.</li>
-                <li>AI Task, Planner and finally bounded Agent.</li>
-                <li>APIs, MCP, more communication methods, voice, financial tools and future capabilities through the same control plane.</li>
-              </ul>
-            </article>
-          </div>
-        </section>
-
-        <section id="architecture" class="document-section continuum-section" aria-labelledby="architectureTitle">
-          <div class="section-heading section-heading-wide">
-            <div>
-              <p class="section-kicker">The complete picture</p>
-              <h2 id="architectureTitle">A durable private environment that can know, reason, coordinate and act</h2>
-            </div>
-            <p class="section-intro">Continuum is built so each capability strengthens the same underlying platform. A new model, provider, communication channel, data source or tool can plug into existing identity, permissions, versions, Runtime and Audit instead of creating a separate product each time.</p>
+          <div class="tour-grid">
+            <article class="tour-card"><b>NOW</b><strong>Production Check In</strong><p>Server timing, immutable policies, Incidents, protected sessions, reconciliation and Audit are live.</p></article>
+            <article class="tour-card"><b>LAB</b><strong>Product proving ground</strong><p>Spaces, Directory, Library, Email and AI Task experiences are being shaped before backend migration.</p></article>
+            <article class="tour-card"><b>NEXT</b><strong>Durable private information</strong><p>Content, Library, Directory and typed Automation definitions become real protected services.</p></article>
+            <article class="tour-card"><b>LATER</b><strong>Runtime + connected capability</strong><p>Providers, replies, bounded AI, APIs, MCP, voice, finance and new tools plug into the same control plane.</p></article>
           </div>
 
-          <div class="control-plane-final">
-            <strong>Continuum</strong>
-            <p>Directory and Library hold durable context. Spaces turns it into a current view. Connections bring the outside world within reach. AI reasons through approved tools. Automations define what should happen. Runtime carries it through. Afterlife applies the same machinery to continuity when the owner cannot respond.</p>
-            <div class="final-map" aria-label="Continuum domains">
-              <span>Spaces</span><span>Directory</span><span>Library</span><span>Connections</span><span>AI</span><span>Automations</span><span>Runtime</span><span>Conversations</span><span>Authority</span><span>APIs + MCP</span><span>Tools</span><span>Afterlife</span>
-            </div>
-            <div class="final-loop" aria-label="Continuum operating loop">
-              <span>Receive</span><span>Understand</span><span>Remember</span><span>Decide</span><span>Act</span><span>Observe</span><span>Update</span>
-            </div>
-          </div>
+          <div class="final-sentence"><strong>Continuum keeps the useful world around the model:</strong> people, records, source history, permissions, tools, timing, conversations and execution state. As AI improves, that same environment can support better decisions and more capable approved action without rebuilding the foundation each time.</div>
         </section>
 
         <footer class="document-footer">
           <div>
             <p class="section-kicker">Continuum</p>
-            <h2>Built as one system, delivered one reliable layer at a time.</h2>
+            <h2>One private environment for context, coordination and continuity.</h2>
           </div>
           <div class="footer-actions">
             <a class="button button-primary" href="/spaces/">Explore Spaces</a>
@@ -550,6 +366,6 @@
     </div>
   </main>
 
-  <script src="/assets/personal-os-doc.js?v=20260818-1" defer></script>
+  <script src="/assets/personal-os-doc.js?v=20260818-2" defer></script>
 </body>
 </html>
