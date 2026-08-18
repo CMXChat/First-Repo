@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
       - 'assets/lab/lab-automations-files-runtime.js'
       - 'assets/lab/lab-automations-files.css'
       - 'docs/checkin-files-CURRENT.md'
@@ -13,10 +12,10 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
       - 'assets/lab/lab-automations-files-runtime.js'
       - 'assets/lab/lab-automations-files.css'
       - 'docs/checkin-files-CURRENT.md'
+      - 'docs/checkin-content-editor-CURRENT.md'
       - '.github/workflows/checkin-files-validation.yml'
 
 permissions:
@@ -29,7 +28,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate file UX and isolation contract
+      - name: Validate retained file UX and isolation contract
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-files-runtime.js
@@ -37,17 +36,10 @@ jobs:
           from pathlib import Path
           import sys
 
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
           js = Path('assets/lab/lab-automations-files-runtime.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-files.css').read_text(encoding='utf-8')
           current = Path('docs/checkin-files-CURRENT.md').read_text(encoding='utf-8')
 
-          required_html = [
-              "connect-src 'self'",
-              '/assets/lab/lab-automations-files.css?v=',
-              '/assets/lab/lab-automations-files-runtime.js?v=',
-              'noindex,nofollow',
-          ]
           required_js = [
               'cmx-lab-file-assets-v1',
               'cmx-lab-content-assets-v1',
@@ -84,35 +76,15 @@ jobs:
               'FILE-ASSETS-BACKEND-HANDOFF.md',
           ]
 
-          for term in required_html:
-              if term not in html: sys.exit(f'missing file HTML contract: {term}')
           for term in required_js:
-              if term not in js: sys.exit(f'missing file JS contract: {term}')
+              if term not in js: sys.exit(f'missing retained file JS contract: {term}')
           for term in required_css:
-              if term not in css: sys.exit(f'missing file CSS contract: {term}')
+              if term not in css: sys.exit(f'missing retained file CSS contract: {term}')
           for term in required_current:
               if term not in current: sys.exit(f'missing file handoff contract: {term}')
 
-          forbidden = ['api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver', 'data:application/', 'blob:']
-          for term in forbidden:
+          for term in ['api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver', 'data:application/', 'blob:']:
               if term in js: sys.exit(f'forbidden file Lab behavior: {term}')
 
-          print('Protected file library/viewer/version-pinning contract passed.')
+          print('Retained protected file-library/version-pinning design contract passed; active Automations v3 route is validated separately.')
           PY
-
-      - name: Browser smoke
-        run: |
-          set -euo pipefail
-          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
-          if [ -z "$BROWSER" ]; then
-            echo 'No Chromium-compatible browser available.' >&2
-            exit 1
-          fi
-          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/checkin-files-http.log 2>&1 &
-          SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
-          sleep 1
-          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=4000 --window-size=390,844 --dump-dom http://127.0.0.1:8000/lab/automations/ > /tmp/files-mobile.html
-          grep -q '>Automations<' /tmp/files-mobile.html
-          ! grep -qi 'Loading Automations' /tmp/files-mobile.html
-          echo 'Protected files mobile boot smoke passed.'
