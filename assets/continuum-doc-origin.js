@@ -1,6 +1,29 @@
 'use strict';
 
 (() => {
+  function neutralizeExampleNames() {
+    const firstJourneyCopy = document.querySelector('#difference .journey-step small');
+    if (firstJourneyCopy && /Directory knows who/i.test(firstJourneyCopy.textContent || '')) {
+      firstJourneyCopy.textContent = 'Directory knows which people belong to the project.';
+    }
+
+    const people = document.querySelectorAll('#spaces .person-node');
+    if (people[0]) {
+      const name = people[0].querySelector('strong');
+      const role = people[0].querySelector('small');
+      if (name) name.textContent = 'Project lead';
+      if (role) role.textContent = 'Primary contact';
+    }
+    if (people[1]) {
+      const name = people[1].querySelector('strong');
+      const role = people[1].querySelector('small');
+      if (name) name.textContent = 'Technical lead';
+      if (role) role.textContent = 'Technical contact';
+    }
+  }
+
+  neutralizeExampleNames();
+
   const mapSection = document.querySelector('.clarity-product-map-section');
   const presence = mapSection?.querySelector('.continuum-presence');
   if (!mapSection || !presence || mapSection.querySelector('.continuum-origin-note')) return;
