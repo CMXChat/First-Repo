@@ -25,6 +25,11 @@
     line-height: 1.62;
   }
 
+  /* Contents now lives in the real toolbar. Keep the phone header focused on theme + navigation. */
+  #printDocument {
+    display: none;
+  }
+
   .final-cta .button {
     width: 100%;
     min-width: 0;
