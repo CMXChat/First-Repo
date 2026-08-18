@@ -220,6 +220,42 @@
     });
   }
 
+  function clearPrivateControlState() {
+    [
+      "#phase1Interval",
+      "#phase1Grace",
+      "#phase1PolicyDeadline",
+      "#phase1PolicyReason",
+      "#phase1PauseReason",
+      "#phase1ResumeDeadline",
+      "#phase1DeadlineOverride",
+    ].forEach(selector => {
+      const control = $(selector);
+      if (control) control.value = "";
+    });
+
+    const windowBehavior = $("#phase1WindowBehavior");
+    if (windowBehavior) windowBehavior.value = "next_checkin";
+    const resumeBehavior = $("#phase1ResumeBehavior");
+    if (resumeBehavior) resumeBehavior.value = "fresh";
+
+    const policyVersion = $("#phase1PolicyVersion");
+    if (policyVersion) policyVersion.textContent = "Version —";
+    const pauseMeta = $("#phase1PauseMeta");
+    if (pauseMeta) pauseMeta.textContent = "Private";
+    const overrideMeta = $("#phase1OverrideMeta");
+    if (overrideMeta) overrideMeta.textContent = "Private";
+
+    const pauseControls = $("#phase1PauseControls");
+    if (pauseControls) pauseControls.hidden = false;
+    const resumeControls = $("#phase1ResumeControls");
+    if (resumeControls) resumeControls.hidden = true;
+    const policyDeadlineField = $("#phase1PolicyDeadlineField");
+    if (policyDeadlineField) policyDeadlineField.hidden = true;
+    const resumeDeadlineField = $("#phase1ResumeDeadlineField");
+    if (resumeDeadlineField) resumeDeadlineField.hidden = true;
+  }
+
   function expirePrivateAccess() {
     policy = null;
     setError("Private access expired. Unlock again to use switch controls.");
@@ -315,12 +351,20 @@
     const privateControls = $("#phase1PrivateControls");
     const stateBadge = $("#phase1PolicyState");
     if (locked) locked.hidden = unlocked;
-    if (privateControls) privateControls.hidden = !unlocked;
+    if (privateControls) {
+      privateControls.hidden = !unlocked;
+      privateControls.inert = !unlocked;
+      if (unlocked) privateControls.removeAttribute("aria-hidden");
+      else privateControls.setAttribute("aria-hidden", "true");
+    }
     if (stateBadge && !unlocked) {
       stateBadge.dataset.state = "locked";
       stateBadge.textContent = "LOCKED";
     }
-    if (!unlocked) policy = null;
+    if (!unlocked) {
+      clearPrivateControlState();
+      policy = null;
+    }
   }
 
   function renderPolicy() {
