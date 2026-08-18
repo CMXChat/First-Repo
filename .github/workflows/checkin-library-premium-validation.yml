@@ -8,6 +8,10 @@ on:
       - 'assets/lab/lab-automations-library-premium.js'
       - 'assets/lab/lab-automations-library-premium-fix.js'
       - 'assets/lab/lab-automations-library-premium.css'
+      - 'assets/lab/lab-automations-library-usability.js'
+      - 'assets/lab/lab-automations-library-usability.css'
+      - 'assets/lab/lab-automations-library-mobile-fix.js'
+      - 'assets/lab/lab-automations-library-mobile-fix.css'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'docs/checkin-library-premium-CURRENT.md'
@@ -19,6 +23,10 @@ on:
       - 'assets/lab/lab-automations-library-premium.js'
       - 'assets/lab/lab-automations-library-premium-fix.js'
       - 'assets/lab/lab-automations-library-premium.css'
+      - 'assets/lab/lab-automations-library-usability.js'
+      - 'assets/lab/lab-automations-library-usability.css'
+      - 'assets/lab/lab-automations-library-mobile-fix.js'
+      - 'assets/lab/lab-automations-library-mobile-fix.css'
       - 'assets/lab/lab-automations-editor-learning.js'
       - 'assets/lab/lab-automations-editor-learning.css'
       - 'docs/checkin-library-premium-CURRENT.md'
@@ -38,6 +46,8 @@ jobs:
           set -euo pipefail
           node --check assets/lab/lab-automations-library-premium.js
           node --check assets/lab/lab-automations-library-premium-fix.js
+          node --check assets/lab/lab-automations-library-usability.js
+          node --check assets/lab/lab-automations-library-mobile-fix.js
           node --check assets/lab/lab-automations-editor-learning.js
 
       - name: Validate premium Library contract
@@ -50,7 +60,10 @@ jobs:
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
           js = Path('assets/lab/lab-automations-library-premium.js').read_text(encoding='utf-8')
           fix = Path('assets/lab/lab-automations-library-premium-fix.js').read_text(encoding='utf-8')
+          usability = Path('assets/lab/lab-automations-library-usability.js').read_text(encoding='utf-8')
+          mobile_fix = Path('assets/lab/lab-automations-library-mobile-fix.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-library-premium.css').read_text(encoding='utf-8')
+          usability_css = Path('assets/lab/lab-automations-library-usability.css').read_text(encoding='utf-8')
           learn = Path('assets/lab/lab-automations-editor-learning.js').read_text(encoding='utf-8')
           handoff = Path('docs/checkin-library-premium-CURRENT.md').read_text(encoding='utf-8')
 
@@ -58,6 +71,10 @@ jobs:
               '/assets/lab/lab-automations-library-premium.js?v=',
               '/assets/lab/lab-automations-library-premium-fix.js?v=',
               '/assets/lab/lab-automations-library-premium.css?v=',
+              '/assets/lab/lab-automations-library-usability.js?v=',
+              '/assets/lab/lab-automations-library-usability.css?v=',
+              '/assets/lab/lab-automations-library-mobile-fix.js?v=20260817-2',
+              '/assets/lab/lab-automations-library-mobile-fix.css?v=20260817-2',
               '/assets/lab/lab-automations-editor-learning.js?v=',
               "connect-src 'self'",
           ]
@@ -67,9 +84,18 @@ jobs:
               'premium-action-sheet','Export / Save as','Replace with new version','data-premium-sort',
           ]
           required_fix = ['data-premium-save-library','data-premium-save-template','data-premium-save-document','data-content-save']
+          required_usability = [
+              'Back to Automations','Back to ${info.parentName}','data-library-up','goUpOneFolder',
+              'Filter · ${filterLabel()}','All types','Documents','Files','Templates','Archived',
+              'Documents", "Files", "Templates", "Folders',
+          ]
           required_css = ['44px','premium-library-controls','premium-card-controls','premium-action-sheet','premium-reuse-card','is-learning-flash']
+          required_usability_css = ['48px','premium-folder-up','premium-filter-trigger','library-filter-sheet','font-size:17px','font-size:12.5px']
           required_learn = ['is-learning-flash','Bold','Heading 2','Bulleted list','Insert link']
-          required_handoff = ['Library is **not** the ContentAsset database table','Favorites','Recent','Save to Library','Save as Template','Save as Document','first real backend vertical slice']
+          required_handoff = [
+              'Library is **not** the ContentAsset database table','Favorites','Recent','Save to Library','Save as Template','Save as Document',
+              'Mobile folder navigation rule','Mobile sizing rule','Mobile filtering simplification','first real backend vertical slice'
+          ]
 
           for term in required_html:
               if term not in html: sys.exit(f'missing premium route asset: {term}')
@@ -77,16 +103,20 @@ jobs:
               if term not in js: sys.exit(f'missing premium Library behavior: {term}')
           for term in required_fix:
               if term not in fix: sys.exit(f'missing premium reuse hardening: {term}')
+          for term in required_usability:
+              if term not in usability: sys.exit(f'missing mobile Library usability behavior: {term}')
           for term in required_css:
               if term not in css: sys.exit(f'missing premium Library CSS: {term}')
+          for term in required_usability_css:
+              if term not in usability_css: sys.exit(f'missing mobile Library usability CSS: {term}')
           for term in required_learn:
-              if term not in learn + css: sys.exit(f'missing learning behavior: {term}')
+              if term not in learn + css + usability_css: sys.exit(f'missing learning behavior: {term}')
           for term in required_handoff:
               if term not in handoff: sys.exit(f'missing premium handoff: {term}')
 
-          combined = js + fix + learn
+          combined = js + fix + usability + mobile_fix + learn
           for term in ['api.cmxchat.com','MutationObserver','eval(','new Function(','blob:','data:application/']:
               if term in combined: sys.exit(f'forbidden premium Lab behavior: {term}')
 
-          print('Premium Library contract passed.')
+          print('Premium Library navigation, sizing, filtering, reuse and editor-learning contract passed.')
           PY
