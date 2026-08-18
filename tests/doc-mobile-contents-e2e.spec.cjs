@@ -50,12 +50,12 @@ test('mobile Continuum doc Contents drawer tracks reading position and closes cl
   const mobileLinks = drawer.locator('.mobile-document-toc a');
 
   await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/assets/continuum-doc.css?v=20260818-1"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/continuum-doc-v2.css?v=20260818-1"]')).toHaveCount(1);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
-  await expect(sourceLinks).toHaveCount(12);
-  await expect(mobileLinks).toHaveCount(12);
-  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toContainText('The whole system');
+  await expect(sourceLinks).toHaveCount(8);
+  await expect(mobileLinks).toHaveCount(8);
+  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toContainText('Continuum in one minute');
   await expect(drawer).toHaveAttribute('aria-hidden', 'true');
   await expect(drawer).toHaveAttribute('inert', '');
   await expectNoHorizontalOverflow(page);
@@ -67,22 +67,22 @@ test('mobile Continuum doc Contents drawer tracks reading position and closes cl
   await expect(drawer).not.toHaveAttribute('inert', '');
   await expect(mobileLinks.first()).toBeFocused();
 
-  await drawer.locator('a[href="#context"]').click();
+  await drawer.locator('a[href="#afterlife"]').click();
   await expect(page.locator('html')).not.toHaveClass(/doc-mobile-contents-open/);
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
-  await expect(page).toHaveURL(/#context$/);
-  await expect.poll(() => page.evaluate(() => document.getElementById('context')?.getBoundingClientRect().top ?? 9999)).toBeLessThan(180);
-  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Information and context');
+  await expect(page).toHaveURL(/#afterlife$/);
+  await expect.poll(() => page.evaluate(() => document.getElementById('afterlife')?.getBoundingClientRect().top ?? 9999)).toBeLessThan(180);
+  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('Afterlife');
 
-  await page.locator('#architecture').scrollIntoViewIfNeeded();
-  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('The complete picture');
+  await page.locator('#engineering').scrollIntoViewIfNeeded();
+  await expect(trigger.locator('#mobileContentsTriggerCurrent')).toHaveText('How it is programmed');
   await trigger.click();
-  const architectureLink = drawer.locator('a[href="#architecture"]');
-  await expect(architectureLink).toHaveAttribute('aria-current', 'location');
-  await expect(drawer.locator('#mobileContentsCurrent')).toHaveText('The complete picture');
-  await expect(architectureLink).toBeFocused();
+  const engineeringLink = drawer.locator('a[href="#engineering"]');
+  await expect(engineeringLink).toHaveAttribute('aria-current', 'location');
+  await expect(drawer.locator('#mobileContentsCurrent')).toHaveText('How it is programmed');
+  await expect(engineeringLink).toBeFocused();
 
-  await architectureLink.press('Escape');
+  await engineeringLink.press('Escape');
   await expect(page.locator('html')).not.toHaveClass(/doc-mobile-contents-open/);
   await expect(trigger).toBeFocused();
 
@@ -98,14 +98,14 @@ test('mobile Continuum doc Contents drawer tracks reading position and closes cl
   await expectNoHorizontalOverflow(page);
 });
 
-test('desktop Continuum doc keeps the existing rail and hides the mobile reading control', async ({ page }, testInfo) => {
+test('desktop Continuum doc keeps the rail and hides the mobile reading control', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop document isolation runs once in Chromium.');
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('.document-rail .rail-panel').first()).toBeVisible();
-  await expect(page.locator('.document-rail .document-toc a')).toHaveCount(12);
+  await expect(page.locator('.document-rail .document-toc a')).toHaveCount(8);
   await expect(page.locator('[data-mobile-contents-trigger="true"]')).toBeHidden();
   await expect(page.locator('[data-mobile-contents-drawer="true"]')).toBeHidden();
   await expectNoHorizontalOverflow(page);
