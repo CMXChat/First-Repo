@@ -11,7 +11,7 @@
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'" />
   <title>Continuum | Product, Architecture and Build Overview</title>
-  <meta name="description" content="Continuum helps software and AI remember what matters, understand current context, follow your rules and use approved tools across your digital life." />
+  <meta name="description" content="Continuum keeps information, people, tools, rules and AI connected so approved work can stay useful across time, including continuity when the owner cannot respond." />
   <link rel="canonical" href="https://db.cmxchat.com/doc/" />
   <link rel="stylesheet" href="/assets/personal-os-doc.css?v=20260807-4" />
   <link rel="stylesheet" href="/assets/personal-os-doc-editorial.css?v=20260805-1" />
@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/assets/personal-os-doc-mobile-fixes.css?v=20260808-1" />
   <link rel="stylesheet" href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1" />
   <link rel="stylesheet" href="/assets/continuum-doc-final.css?v=20260818-3" />
+  <link rel="stylesheet" href="/assets/continuum-doc-promise.css?v=20260818-1" />
 </head>
 <body>
   <main>
@@ -70,7 +71,7 @@
           <div class="hero-copy">
             <div class="hero-kicker-row"><p class="hero-kicker">Your information, people, tools and AI in one place</p><span class="hero-status">Active development</span></div>
             <h1 id="pageTitle">Continuum</h1>
-            <p class="hero-lead">Continuum keeps the parts of your digital life connected so software and AI can understand what is happening, remember useful history, follow your rules and carry approved work forward.</p>
+            <p class="hero-lead hero-lead-full">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time. As more services connect through APIs, MCP and other providers, it can grow into something that helps coordinate people, follow up on projects, watch important changes, analyze money, communicate through email, messaging and future voice, and work with whatever AI models become more capable in the years ahead. The deeper idea is that your context, priorities and instructions have somewhere durable to live, so Continuum can remain useful when you are busy, offline or unavailable. Afterlife carries that idea further: if you stop checking in for the period you chose, Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and eventually coordinating approved work within the limits you already set.</p>
             <div class="hero-truth-row" aria-label="Core Continuum ideas"><span><i></i>Remembers</span><span><i></i>Connects</span><span><i></i>Acts with rules</span></div>
             <div class="hero-actions"><a class="button button-primary" href="#overview"><span>See how it works</span><span aria-hidden="true">↓</span></a><a class="button button-secondary" href="/lab/automations/">Open Automation Lab</a></div>
             <p class="hero-disclosure">The page marks what works today, what we are building next and what the same foundation could support later.</p>
@@ -90,6 +91,17 @@
             <article class="network-card node-runtime"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l4-5 4 2 4-7 4 3M4 20h16"/></svg><div><strong>Runtime</strong><small>Keeps work moving and records results</small></div></article>
             <div class="network-legend"><span>Information</span><span>Rules</span><span>Actions</span></div>
           </div>
+
+          <section class="continuum-presence" aria-labelledby="presenceTitle">
+            <div class="presence-heading"><div><span>BEYOND THE CURRENT SESSION</span><strong id="presenceTitle">Your intent has somewhere durable to live.</strong></div><p>Continuum is designed to stay useful across different levels of availability, from helping while you are actively using it to carrying a continuity plan when you cannot respond.</p></div>
+            <div class="presence-track">
+              <article class="presence-stage"><div class="presence-icon" aria-hidden="true">◉</div><span>WITH YOU</span><h3>Brief, understand, plan</h3><p>Bring together what matters now and help you decide what needs attention.</p><small>SPACES + AI</small></article>
+              <article class="presence-stage"><div class="presence-icon" aria-hidden="true">↗</div><span>FOR YOU</span><h3>Coordinate, follow up, act</h3><p>Use approved people, information and tools to carry a defined workflow forward.</p><small>AUTOMATIONS</small></article>
+              <article class="presence-stage"><div class="presence-icon" aria-hidden="true">↻</div><span>WHEN YOU ARE AWAY</span><h3>Wait, monitor, continue</h3><p>Future Runtime can keep longer work alive on the server through time, replies and retries.</p><small>RUNTIME LATER</small></article>
+              <article class="presence-stage"><div class="presence-icon" aria-hidden="true">◇</div><span>IF YOU CANNOT RESPOND</span><h3>Begin your continuity plan</h3><p>Afterlife can record the trigger you defined and connect it to the steps you prepared in advance.</p><small>AFTERLIFE</small></article>
+            </div>
+            <div class="presence-truth"><i aria-hidden="true"></i><span>The Check In trigger core works today. Provider delivery, long-running execution and autonomous coordination remain later Runtime work.</span></div>
+          </section>
         </header>
 
         <section id="overview" class="document-section continuum-section section-blue" aria-labelledby="overviewTitle">
