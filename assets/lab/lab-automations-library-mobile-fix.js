@@ -182,10 +182,11 @@
     const files = load(FILE_KEY, {assets:[]});
     const meta = load(META_KEY, {folders:[], archived:{}});
     const visibleNative = (content.assets || []).filter(asset => ["document","markdown","text"].includes(asset.kind) && !meta.archived?.[`content:${asset.id}`]).length;
+    const activeFiles = (files.assets || []).filter(file => !meta.archived?.[`file:${file.id}`]).length;
     const templates = (content.assets || []).filter(asset => asset.kind === "template" && !meta.archived?.[`content:${asset.id}`]).length;
     const activeFolders = (meta.folders || []).filter(folder => !meta.archived?.[`folder:${folder.id}`]).length;
     const stats = [...overlay.querySelectorAll(".pro-stats > div")];
-    const values = [[visibleNative,"Documents"],[(files.assets||[]).length,"Files"],[templates,"Templates"],[activeFolders,"Folders"]];
+    const values = [[visibleNative,"Documents"],[activeFiles,"Files"],[templates,"Templates"],[activeFolders,"Folders"]];
     stats.forEach((box,index) => {
       if (!values[index]) return;
       const strong = box.querySelector("strong");
