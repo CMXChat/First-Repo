@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-repository continuation guide
+Status: Current cross-repository continuation guide; Phase 1 acceptance complete
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
@@ -12,7 +12,7 @@ This is the first file a new ChatGPT/Codex/developer context should read before 
 1. `docs/checkin-context-handoff-CURRENT.md` — this file, current cross-repo truth and immediate order.
 2. `docs/continuum-product-CURRENT.md` — Continuum naming, `/doc/` role, visual/editorial rules and product hierarchy.
 3. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical architecture map and conflict order.
-4. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — executable checklist and open Phase 1 acceptance gates.
+4. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — executable checklist and Phase 2A gate state.
 5. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-READ-FIRST.md` — implementation decisions before backend Phase 2A.
 6. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-PLATFORM-ARCHITECTURE.md` — Directory / Library / Automation / Runtime / Connections / AI architecture.
 7. `CMXChat/jay-app/specs/003-server-checkin/CONTEXT-INGESTION-PROVENANCE-BACKEND-CONTRACT.md` — APIs/MCP/webhooks/sync/provenance/freshness/context-builder direction.
@@ -63,14 +63,24 @@ Phase 1 performs no external provider/Action execution. A triggered Incident doe
 
 Do not mutate production merely to test presentation.
 
-# Remaining Phase 1 acceptance gate
+# Phase 1 acceptance gate — complete
 
-Exactly two direct acceptance observations remain open:
+T034–T040 are complete.
 
-1. desktop locked Settings visual/privacy review;
-2. natural protected-session expiry after the normal short session, proving private UI/state clears and truthful public state remains.
+Direct browser/device evidence now covers:
 
-T037/T039 stay partial until that evidence exists.
+- Samsung public live status/countdown;
+- mobile Settings access and locked privacy presentation;
+- desktop locked Settings privacy/presentation after width/overflow hardening;
+- authenticated read-only protected policy representation;
+- manual Lock Now cleanup;
+- natural short-session expiry without pressing Lock Now;
+- private Settings DOM-value scrubbing on lock/expiry;
+- truthful public status remaining after private access expires.
+
+Natural expiry evidence was observed on real Chrome: the private session showed 5:55 remaining at 3:11 PM, the page was left alone, and by 3:17 PM it had returned to locked state. The private strip was gone, the top action returned to `Access`, System Integrity showed `LOCKED`, and locked Settings exposed only the public current window plus the unlock affordance.
+
+No production policy mutation, pause/resume, deadline override, reconciliation or proof-of-life check in was performed merely to close the acceptance gate.
 
 # Samsung / mobile guardrails
 
@@ -92,7 +102,7 @@ On phones, preserve:
 - a horizontally scrollable five-stage rail instead of compressed labels;
 - one-column Action cards;
 - bottom-sheet pickers/modals;
-- a collapsible mobile live-flow preview instead of a squeezed desktop sidebar;
+- a collapsible mobile flow preview instead of a squeezed desktop sidebar;
 - safe-area-aware fixed footer;
 - document-level scrolling without nested editor scroll traps;
 - no horizontal page overflow;
@@ -140,7 +150,7 @@ TEST  Review
 
 Name/description are editable metadata instead of a blocking first screen. Finish behavior lives inside Review.
 
-The builder now includes quick-start templates, optional AND/OR rules, an ordered Action stack, live flow preview, visual timing, pre-flight checks and safe animated simulation.
+The builder includes quick-start templates, optional AND/OR rules, an ordered Action stack, progressive Flow Preview, visual timing, pre-flight checks and safe animated simulation. A brand-new draft must not present future stages as if the user already configured them. The preview grows from real choices; pending stages stay visibly unset until configured or intentionally accepted as a real default.
 
 # Current Lab domains
 
@@ -284,18 +294,7 @@ Spaces is the briefing/context experience over that protected state. It should r
 
 `https://db.cmxchat.com/doc/` is the public noindex visual master explanation of Continuum.
 
-The 2026-08-18 version is intentionally shorter and more visual than the previous architecture-heavy rewrite. It currently uses eight main reading sections:
-
-1. Continuum in one minute;
-2. why AI has more leverage inside durable state;
-3. Spaces and incoming context;
-4. Automations, Connections, tools and authority;
-5. Afterlife: The Dead Man Switch;
-6. how the application is programmed;
-7. Lab → backend → protected-product build path;
-8. current reality.
-
-The page should be understandable without reading every paragraph. Preserve the visual system orbit, operating loop, provenance example, briefing mock, workflow/Connection view, Afterlife timeline, programming stack and build path.
+The 2026-08-18 version is the frozen visual/editorial explanation. Future changes should be factual product updates, accessibility/browser fixes, genuine capability-status changes, or correction of outdated examples.
 
 Do not expand `/doc/` back into a long wall of architecture prose when the visuals already teach the mechanism.
 
@@ -316,11 +315,9 @@ Lab is the design proving ground. It is not a permanent second production applic
 
 # Immediate backend order
 
-Do not start providers, scheduler/worker, autonomous AI or MCP execution in parallel with the foundation.
+Phase 1 acceptance is complete. Do not reopen it unless a real production defect appears.
 
-First finish the two Phase 1 acceptance observations.
-
-Then build the first real private-information vertical slice:
+Now build the first real private-information vertical slice:
 
 ```text
 create continuity.md
