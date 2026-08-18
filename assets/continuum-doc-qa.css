@@ -247,3 +247,326 @@ html[data-theme="light"] .status-later{color:#93530d;background:#fff2e2}
   html[data-theme="light"] .afterlife-section{background:#fff!important}
   .afterlife-step{break-inside:avoid}
 }
+
+/* ========================================================================== */
+/* Continuum clarity rebuild                                                   */
+/* ========================================================================== */
+
+/* The hero introduces the idea. Product taxonomy comes after the five-step loop. */
+.clarity-hero{
+  display:block!important;
+  min-height:0!important;
+  padding-bottom:34px!important;
+}
+.clarity-hero .hero-copy{
+  max-width:900px!important;
+  padding-bottom:0!important;
+}
+.clarity-hero .hero-grid{opacity:.42}
+.clarity-hero .hero-orbit{opacity:.45}
+.clarity-hero h1{
+  margin-bottom:18px!important;
+  font-size:clamp(3.4rem,7vw,5.6rem)!important;
+  line-height:.96!important;
+}
+.clarity-hero .hero-lead.hero-lead-full{
+  max-width:820px!important;
+  margin-bottom:22px!important;
+  font-size:clamp(1rem,1.5vw,1.16rem)!important;
+  line-height:1.62!important;
+}
+.clarity-hero .hero-lead-first{font-weight:760}
+.clarity-hero .hero-actions{margin-top:22px!important}
+.clarity-hero .hero-disclosure{
+  max-width:700px;
+  margin-top:15px!important;
+  color:var(--muted)!important;
+  font-size:.82rem!important;
+}
+
+/* Main explanatory copy gets a stronger readability floor. */
+.document-paper :is(
+  .section-intro,.clarity-mini-heading p,.clarity-story-flow small,.clarity-story-note,
+  .clarity-automation-split p,.clarity-deep-dive summary small,.clarity-possibilities summary small
+){font-size:max(.82rem,13px);line-height:1.55}
+
+/* Make the desktop contents rail quieter than the document itself. */
+@media(min-width:1180px){
+  .document-shell{grid-template-columns:minmax(190px,224px) minmax(0,1fr)!important;gap:24px!important}
+  .rail-panel{padding:18px!important}
+  .document-toc a{font-size:.82rem!important;line-height:1.28!important}
+}
+
+/* Current truth appears early, directly after the operating loop. */
+.clarity-status-frame{
+  margin:18px 0 4px;
+  padding:18px;
+  border:1px solid color-mix(in srgb,var(--ct-blue) 20%,var(--line));
+  border-radius:20px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--ct-blue) 5%,var(--paper-raised)),var(--paper-raised));
+}
+.clarity-mini-heading{
+  display:grid;
+  grid-template-columns:minmax(0,.8fr) minmax(280px,1.2fr);
+  gap:22px;
+  align-items:end;
+  margin-bottom:12px;
+}
+.clarity-mini-heading>div{display:grid;gap:4px}
+.clarity-mini-heading span{
+  color:var(--ct-blue);
+  font-size:.7rem;
+  font-weight:900;
+  letter-spacing:.1em;
+}
+.clarity-mini-heading strong{color:var(--ink-strong);font-size:1.06rem}
+.clarity-mini-heading p{margin:0;color:var(--muted)}
+.clarity-status-frame .status-key{margin:0}
+
+/* One ordinary example acts as the bridge from mechanics into product names. */
+.clarity-story-section,.clarity-product-map-section{
+  padding:48px 44px;
+  border-top:1px solid var(--line);
+}
+.clarity-story-section{
+  background:
+    radial-gradient(circle at 10% 10%,color-mix(in srgb,var(--ct-blue) 8%,transparent),transparent 25rem),
+    var(--paper);
+}
+.clarity-section-heading{margin-bottom:24px}
+.clarity-story-flow{
+  display:flex;
+  align-items:stretch;
+  gap:8px;
+  overflow-x:auto;
+  padding:3px 2px 12px;
+  scrollbar-width:thin;
+}
+.clarity-story-flow>article{
+  flex:1 0 165px;
+  min-width:0;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:10px;
+  padding:15px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--paper-raised);
+  box-shadow:0 12px 30px color-mix(in srgb,var(--shadow-color,#000) 8%,transparent);
+}
+.clarity-story-flow>article>b{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  color:var(--ct-blue);
+  background:color-mix(in srgb,var(--ct-blue) 9%,transparent);
+  font-size:.72rem;
+}
+.clarity-story-flow>article>div{display:grid;align-content:start;gap:4px}
+.clarity-story-flow span{
+  color:var(--ct-blue);
+  font-size:.65rem;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.clarity-story-flow strong{color:var(--ink-strong);font-size:.9rem;line-height:1.25}
+.clarity-story-flow small{color:var(--muted)}
+.clarity-story-flow>i{
+  flex:0 0 18px;
+  display:grid;
+  place-items:center;
+  color:var(--muted);
+  font-style:normal;
+  font-weight:900;
+}
+.clarity-story-note{
+  margin:12px 0 0;
+  padding:12px 14px;
+  border-left:3px solid var(--ct-mint);
+  border-radius:0 12px 12px 0;
+  background:color-mix(in srgb,var(--ct-mint) 5%,var(--paper-raised));
+  color:var(--muted);
+}
+.clarity-story-note strong{color:var(--ink-strong)}
+
+/* Product vocabulary is introduced only after the reader understands the loop and story. */
+.clarity-product-map-section{
+  background:
+    radial-gradient(circle at 88% 10%,color-mix(in srgb,var(--ct-violet) 8%,transparent),transparent 26rem),
+    var(--paper-soft);
+}
+.clarity-product-map-section .hero-network{
+  position:relative!important;
+  inset:auto!important;
+  width:min(100%,980px)!important;
+  min-height:620px!important;
+  margin:12px auto 30px!important;
+  transform:none!important;
+}
+.clarity-product-map-section .continuum-presence{
+  grid-column:auto!important;
+  margin:0!important;
+}
+.clarity-concept{
+  display:inline-flex;
+  width:max-content;
+  margin-bottom:3px;
+  color:var(--ct-blue);
+  font-size:.58rem;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.network-card.node-library .clarity-concept{color:var(--ct-mint)}
+.network-card.node-automations .clarity-concept{color:var(--ct-orange)}
+.network-card.node-runtime .clarity-concept,.network-card.node-ai .clarity-concept{color:var(--ct-violet)}
+
+/* Check In implementation details belong in Afterlife, not in the generic operating loop. */
+.afterlife-section>.glance-grid{
+  margin:0 0 18px;
+  padding:0;
+}
+
+/* Make the Automation definition/execution distinction obvious before examples. */
+.clarity-automation-primer{
+  display:grid;
+  gap:14px;
+  margin:0 0 24px;
+  padding:18px;
+  border:1px solid color-mix(in srgb,var(--ct-orange) 22%,var(--line));
+  border-radius:20px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--ct-orange) 5%,var(--paper-raised)),var(--paper-raised));
+}
+.clarity-builder-sentence{
+  display:flex;
+  align-items:stretch;
+  gap:7px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  scrollbar-width:thin;
+}
+.clarity-builder-sentence>span{
+  flex:1 0 112px;
+  display:grid;
+  gap:4px;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--paper);
+}
+.clarity-builder-sentence b{color:var(--ct-orange);font-size:.72rem;letter-spacing:.08em}
+.clarity-builder-sentence small{color:var(--muted);font-size:.76rem;line-height:1.3}
+.clarity-builder-sentence>i{display:grid;place-items:center;color:var(--muted);font-style:normal;font-weight:900}
+.clarity-automation-split{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+}
+.clarity-automation-split article{
+  min-height:112px;
+  display:grid;
+  align-content:start;
+  gap:5px;
+  padding:14px 15px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--paper);
+}
+.clarity-automation-split span{color:var(--ct-orange);font-size:.66rem;font-weight:900;letter-spacing:.09em}
+.clarity-automation-split article:last-child span{color:var(--ct-violet)}
+.clarity-automation-split strong{color:var(--ink-strong);font-size:1rem}
+.clarity-automation-split p{margin:0;color:var(--muted)}
+.clarity-automation-split>i{color:var(--muted);font-style:normal;text-align:center;font-weight:900}
+
+/* Secondary futures and engineering detail stay available without crowding the primary lesson. */
+.clarity-possibilities,.clarity-deep-dive{
+  margin-top:20px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--paper-raised);
+  overflow:hidden;
+}
+.clarity-possibilities>summary,.clarity-deep-dive>summary{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:70px;
+  padding:14px 16px;
+  cursor:pointer;
+}
+.clarity-possibilities>summary::-webkit-details-marker,.clarity-deep-dive>summary::-webkit-details-marker{display:none}
+.clarity-possibilities>summary>span,.clarity-deep-dive>summary>span{display:grid;gap:3px}
+.clarity-possibilities>summary b,.clarity-deep-dive>summary b{color:var(--ink-strong);font-size:.94rem}
+.clarity-possibilities>summary small,.clarity-deep-dive>summary small{color:var(--muted)}
+.clarity-possibilities>summary>strong,.clarity-deep-dive>summary>strong{
+  flex:0 0 auto;
+  padding:7px 9px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  color:var(--ct-blue);
+  background:var(--paper);
+  font-size:.72rem;
+}
+.clarity-possibilities[open]>summary,.clarity-deep-dive[open]>summary{border-bottom:1px solid var(--line)}
+.clarity-possibilities[open]>summary>strong::after,.clarity-deep-dive[open]>summary>strong::after{content:"ed"}
+.clarity-possibilities[open]>summary>strong,.clarity-deep-dive[open]>summary>strong{font-size:0}
+.clarity-possibilities[open]>summary>strong::before,.clarity-deep-dive[open]>summary>strong::before{content:"Clos";font-size:.72rem}
+.clarity-possibilities .possibility-heading{margin:18px 18px 10px}
+.clarity-possibilities .possibility-board{margin:0 18px 18px}
+.clarity-deep-dive>:not(summary){margin-left:18px;margin-right:18px}
+.clarity-deep-dive>:last-child{margin-bottom:18px}
+
+/* Architecture and build remain legitimate sections while reading as optional depth. */
+#engineering>.section-heading,#build>.section-heading{margin-bottom:12px}
+#engineering>.section-heading .section-intro,#build>.section-heading .section-intro{max-width:640px}
+
+html[data-theme="light"] :is(
+  .clarity-status-frame,.clarity-story-flow>article,.clarity-story-note,.clarity-automation-primer,
+  .clarity-builder-sentence>span,.clarity-automation-split article,.clarity-possibilities,.clarity-deep-dive
+){border-color:#d3e0ea}
+html[data-theme="light"] .clarity-story-flow>article{box-shadow:0 10px 24px rgba(35,72,108,.07)}
+
+@media(max-width:980px){
+  .clarity-story-section,.clarity-product-map-section{padding:40px 26px}
+  .clarity-product-map-section .hero-network{min-height:570px!important}
+  .clarity-mini-heading{grid-template-columns:1fr;gap:8px;align-items:start}
+}
+
+@media(max-width:680px){
+  .clarity-hero{padding-bottom:24px!important}
+  .clarity-hero h1{font-size:clamp(3rem,16vw,4.2rem)!important}
+  .clarity-hero .hero-lead.hero-lead-full{font-size:1rem!important;line-height:1.58!important}
+  .clarity-story-section,.clarity-product-map-section{padding:34px 16px}
+  .clarity-story-flow{display:grid;gap:8px;overflow:visible}
+  .clarity-story-flow>article{grid-template-columns:38px minmax(0,1fr);padding:13px}
+  .clarity-story-flow>i{height:18px;transform:rotate(90deg)}
+  .clarity-product-map-section .hero-network{min-height:0!important;margin-top:8px!important}
+  .clarity-product-map-section .continuum-presence{margin-top:14px!important}
+  .clarity-status-frame{padding:14px}
+  .clarity-status-frame .status-key{grid-template-columns:1fr 1fr}
+  .clarity-builder-sentence{display:grid;grid-template-columns:1fr;overflow:visible}
+  .clarity-builder-sentence>span{min-width:0}
+  .clarity-builder-sentence>i{height:16px;transform:rotate(90deg)}
+  .clarity-automation-split{grid-template-columns:1fr}
+  .clarity-automation-split>i{transform:rotate(90deg)}
+  .clarity-possibilities>summary,.clarity-deep-dive>summary{align-items:flex-start;padding:13px 14px}
+  .clarity-possibilities .possibility-heading{margin:15px 14px 8px}
+  .clarity-possibilities .possibility-board{margin:0 14px 14px}
+  .clarity-deep-dive>:not(summary){margin-left:14px;margin-right:14px}
+  .document-paper :is(.section-intro,.clarity-story-flow small,.clarity-story-note,.clarity-automation-split p,.clarity-deep-dive summary small,.clarity-possibilities summary small){font-size:max(.86rem,14px)}
+}
+
+@media(max-width:430px){
+  .clarity-status-frame .status-key{grid-template-columns:1fr}
+  .clarity-story-section,.clarity-product-map-section{padding-left:14px;padding-right:14px}
+}
+
+@media print{
+  .clarity-possibilities,.clarity-deep-dive{display:block;overflow:visible}
+  .clarity-possibilities>summary,.clarity-deep-dive>summary{display:none}
+  .clarity-story-flow{overflow:visible}
+}
