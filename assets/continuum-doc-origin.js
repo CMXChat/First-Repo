@@ -5,7 +5,7 @@
     const heroLead = document.querySelector('.continuum-hero .hero-lead');
     if (!heroLead) return;
 
-    heroLead.innerHTML = `<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, Automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time.</span> As more services connect through APIs, MCP connections and other outside services, it can grow into something that helps coordinate people, follow up on projects, watch important changes, analyze financial information, communicate through email, messaging and future voice, and work with whichever AI models are most useful over time. The deeper idea is that your context, priorities and instructions have somewhere durable to live, so Continuum can remain useful while you are busy, offline or unavailable. Afterlife, the Dead Man Switch, carries that idea further: if you stop checking in for the period you chose, Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and continuing bounded work you authorized beforehand.`;
+    heroLead.innerHTML = `<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, Automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time.</span> As more outside services connect, including APIs and MCP tools, Continuum can coordinate people, follow up on projects, watch important changes, analyze financial information, communicate through email, messaging and future voice, and work with whichever AI models are most useful over time. Your context, priorities and instructions stay in one place, so Continuum can still be useful while you are busy, offline or unavailable. Afterlife, the Dead Man Switch, uses the same setup if you stop responding: Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and continuing bounded work you authorized beforehand.`;
   }
 
   function clarifyFirstTimeReaderCopy() {
@@ -25,7 +25,7 @@
 
     const overviewIntro = document.querySelector('#overview .section-intro');
     if (overviewIntro) {
-      overviewIntro.textContent = 'Think of Continuum as a loop: information comes in from approved sources, Continuum keeps the useful context, rules decide what may happen, approved work goes back out, and the result becomes part of the context for next time.';
+      overviewIntro.textContent = 'The flow is simple: information comes in from approved sources, Continuum keeps the useful context, your rules decide what may happen, approved work goes back out, and the result becomes part of the context for next time.';
     }
 
     const processSteps = document.querySelectorAll('#overview .process-step');
@@ -64,14 +64,20 @@
       if (node) node.textContent = copy;
     });
 
+    const presenceTitle = document.querySelector('.presence-heading strong');
+    if (presenceTitle) presenceTitle.textContent = 'What Continuum can do over time';
+
     const presenceCopy = document.querySelector('.presence-heading > p');
     if (presenceCopy) {
-      presenceCopy.textContent = 'Continuum can help you understand current information, keep approved rules ready for later work and support the Check In trigger when you cannot respond.';
+      presenceCopy.textContent = 'While you are using it, Continuum can help you understand current information. It can also keep saved rules ready for later work and support the Check In trigger if you stop responding.';
     }
+
+    const spacesTitle = document.querySelector('#spaces h2');
+    if (spacesTitle) spacesTitle.textContent = 'How people, saved information and Spaces connect';
 
     const spacesIntro = document.querySelector('#spaces .section-intro');
     if (spacesIntro) {
-      spacesIntro.textContent = 'A Space is a focused brief built from approved information already connected to Continuum. Directory keeps track of the people and organizations involved. Library keeps saved content and files. Personal, Family, Business and Afterlife Spaces can each show the slice that matters in that context.';
+      spacesIntro.textContent = 'A Space is a focused brief built from approved information already connected to Continuum. Directory keeps track of the people and organizations involved. Library keeps saved content and files. Personal, Family, Business and Afterlife Spaces can each show the part that matters in that context.';
     }
 
     const ingestionLabel = document.querySelector('#spaces .ingestion-map .visual-label');
@@ -79,21 +85,48 @@
 
     const actionIntro = document.querySelector('#action .section-intro');
     if (actionIntro) {
-      actionIntro.textContent = 'Automations define the trigger, rules, approved actions and timing. Connections are the approved bridges to outside apps and services. Future Runtime will run published workflows on the server, carry allowed actions out through those Connections and record the result back in Continuum.';
+      actionIntro.textContent = 'Automations define the trigger, rules, approved actions and timing. Connections are the approved bridges to outside apps and services. Future Runtime will run published workflows on the server, use those Connections for allowed actions and record the result back in Continuum.';
     }
 
     const primer = document.querySelector('#action .clarity-automation-copy');
     if (primer) {
-      primer.innerHTML = '<strong>Automations define what should happen.</strong> They use information already in Continuum or events coming in through approved Connections. The builder saves the trigger, rules, actions, timing and finish behavior. Runtime is the future server layer that will carry out a published Automation and record what happened.';
+      primer.innerHTML = '<strong>Automations define what should happen.</strong> They can use information already in Continuum or events coming in through approved Connections. The builder saves the trigger, rules, actions, timing and finish behavior. Runtime is the future server layer that will carry out a published Automation and record what happened.';
     }
 
     const connectionsHead = document.querySelector('#action .connections-panel .panel-head strong');
     if (connectionsHead) connectionsHead.textContent = 'Connections can bring information in and carry approved actions out';
 
+    const afterlifeIntro = document.querySelector('#afterlife .section-intro');
+    if (afterlifeIntro) {
+      afterlifeIntro.textContent = 'Afterlife is the Dead Man Switch part of Continuum. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can run the approved steps that follow.';
+    }
+
+    const laterTruth = document.querySelector('#afterlife .afterlife-truth div:last-child');
+    if (laterTruth) {
+      laterTruth.innerHTML = '<b>LATER:</b> sending through outside services, server-side waits, retries, replies, acknowledgements and approved AI tasks through Runtime.';
+    }
+
+    const buildTitle = document.querySelector('#build h2');
+    if (buildTitle) buildTitle.textContent = 'How a Lab idea becomes a real feature';
+
+    const statusTitle = document.querySelector('#status h2');
+    if (statusTitle) statusTitle.textContent = 'What gets built next';
+
+    const statusIntro = document.querySelector('#status .section-intro');
+    if (statusIntro) {
+      statusIntro.textContent = 'The plan is to add private information first, then server-run workflows, then more outside services and AI tools.';
+    }
+
+    const laterRoadmapTitle = document.querySelector('#status .roadmap-later strong');
+    if (laterRoadmapTitle) laterRoadmapTitle.textContent = 'More connected services';
+
     const closingNote = document.querySelector('#status .closing-note');
     if (closingNote) {
-      closingNote.textContent = 'Continuum keeps a continuous loop around your work: approved information comes in, people and saved context stay connected, Spaces and AI help make sense of it, Automations define what should happen, Runtime can later carry approved actions out, and the result becomes part of the history used next time.';
+      closingNote.textContent = 'The result is one connected flow: information comes in, Continuum keeps the useful context, Spaces and AI help make sense of it, Automations define what should happen, Runtime can later carry approved actions out, and the result is saved for next time.';
     }
+
+    const footerTitle = document.querySelector('.document-footer h2');
+    if (footerTitle) footerTitle.textContent = 'Each part of Continuum uses the same saved people, information, rules and history.';
   }
 
   function neutralizeExampleNames() {
@@ -133,8 +166,8 @@
       <p class="continuum-origin-kicker">WHERE CONTINUUM CAME FROM</p>
       <h2 id="continuumOriginTitle">The idea started with the Dead Man Switch</h2>
       <p>Afterlife began with a practical problem: if you stop responding, the people, information and instructions you prepared still need somewhere reliable to live. The Check In timer gives that problem a trigger.</p>
-      <p>That led to a broader idea. The same foundation matters before an emergency. You can be asleep, traveling, working, waiting on someone or simply away from the screen. Continuum keeps the context and rules you chose available so approved work can continue over time.</p>
-      <p>That is the line running through the product. Spaces are focused briefings that help show what matters while you are here, and AI can reason with approved context. Automations define work that should happen. Runtime can later keep that work moving on the server and carry approved actions through Connections. Afterlife uses the same foundation when you cannot respond.</p>
+      <p>The same setup is useful before an emergency. You can be asleep, traveling, working, waiting on someone or simply away from the screen. Continuum keeps the context and rules you chose available so approved work can continue over time.</p>
+      <p>Spaces turn current information into focused briefs while you are here, and AI can use the context you allow. Automations define work that should happen. Runtime can later keep that work moving on the server and use Connections for approved outside actions. Afterlife uses the same pieces when you cannot respond.</p>
     </div>`;
 
   presence.before(origin);
