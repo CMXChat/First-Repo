@@ -15,6 +15,7 @@ on:
       - 'assets/lab/lab-automations-friendly.css'
       - 'assets/lab/lab-automations-content-runtime.js'
       - 'assets/lab/lab-automations-content.css'
+      - 'assets/lab/lab-automations-mobile-readable.css'
       - 'docs/checkin-automations-frontend-CURRENT.md'
       - 'docs/checkin-content-editor-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
@@ -30,6 +31,7 @@ on:
       - 'assets/lab/lab-automations-friendly.css'
       - 'assets/lab/lab-automations-content-runtime.js'
       - 'assets/lab/lab-automations-content.css'
+      - 'assets/lab/lab-automations-mobile-readable.css'
       - 'docs/checkin-content-editor-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
 
@@ -64,6 +66,7 @@ jobs:
           calendar_css = Path('assets/lab/lab-automations-calendar.css').read_text(encoding='utf-8')
           friendly_css = Path('assets/lab/lab-automations-friendly.css').read_text(encoding='utf-8')
           content_css = Path('assets/lab/lab-automations-content.css').read_text(encoding='utf-8')
+          mobile_css = Path('assets/lab/lab-automations-mobile-readable.css').read_text(encoding='utf-8')
 
           required_html = [
               "connect-src 'self'",
@@ -72,6 +75,7 @@ jobs:
               '/assets/lab/lab-automations-calendar.css',
               '/assets/lab/lab-automations-friendly.css?v=20260817-1',
               '/assets/lab/lab-automations-content.css?v=20260817-1',
+              '/assets/lab/lab-automations-mobile-readable.css?v=20260818-1',
               '/assets/lab/lab-automations-app-v2.js?v=20260817-5',
               '/assets/lab/lab-automations-dropdown-runtime.js',
               '/assets/lab/lab-automations-friendly-runtime.js?v=20260817-3',
@@ -145,6 +149,22 @@ jobs:
           required_calendar_css = ['.repeat-zone','.calendar-cadence-note']
           required_friendly_css = ['.concept-card','.grace-timeline','.trigger-vs-start','.finish-advanced','@media(max-width:700px)']
           required_content_css = ['.content-asset-card','.content-editor-overlay','.content-toolbar','.content-paper','.content-rich-body','.content-attachments-card','@media(max-width:760px)']
+          required_mobile_css = [
+              '@media (max-width: 700px)',
+              '.automation-list',
+              'grid-template-columns: 1fr',
+              '.card-title strong',
+              'font-size: 24px',
+              '.automation-card p',
+              'font-size: 16px',
+              '.flow-node',
+              'grid-template-columns: 56px minmax(0,1fr)',
+              '.field input',
+              'font-size: 16px',
+              '.choice-copy strong',
+              '.email-envelope-head strong',
+              '.ai-definition-card h2',
+          ]
           for term in required_html:
               if term not in html: sys.exit(f'missing HTML contract: {term}')
           for term in required_js:
@@ -165,11 +185,13 @@ jobs:
               if term not in friendly_css: sys.exit(f'missing friendly CSS contract: {term}')
           for term in required_content_css:
               if term not in content_css: sys.exit(f'missing content CSS contract: {term}')
+          for term in required_mobile_css:
+              if term not in mobile_css: sys.exit(f'missing mobile readability contract: {term}')
           if '<select' in js: sys.exit('native select reintroduced into focused Automations v2')
           if 'MutationObserver' in friendly_js + content_js: sys.exit('broad observer-style UX patch must not be introduced')
           for term in ['api.cmxchat.com','eval(','new Function(','localStorage.setItem("operator']:
               if term in html + js + dropdown_js + friendly_js + content_js: sys.exit(f'forbidden focused-Lab contract: {term}')
-          print('Focused Automation safety, human UX, timing, content authoring, dropdown, and calendar recurrence contract passed.')
+          print('Focused Automation safety, human UX, mobile readability, timing, content authoring, dropdown, and calendar recurrence contract passed.')
           PY
 
       - name: Browser smoke desktop and mobile
