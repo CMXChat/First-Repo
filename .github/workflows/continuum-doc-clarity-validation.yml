@@ -71,17 +71,21 @@ jobs:
 
           dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-desktop.html
-          grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-desktop.html
+          grep -q 'Continuum keeps useful information, people and rules together' /tmp/continuum-doc-desktop.html
           grep -q 'Follow one update through Continuum' /tmp/continuum-doc-desktop.html
-          grep -q 'The product names follow the simple idea' /tmp/continuum-doc-desktop.html
-          grep -q 'Current product truth' /tmp/continuum-doc-desktop.html
-          grep -q 'Automations define the plan. Runtime carries it through.' /tmp/continuum-doc-desktop.html
+          grep -q 'How the pieces fit together' /tmp/continuum-doc-desktop.html
+          grep -q 'Current status' /tmp/continuum-doc-desktop.html
+          grep -q 'Automations define the steps. Runtime runs them.' /tmp/continuum-doc-desktop.html
+          grep -q 'What Continuum adds to AI' /tmp/continuum-doc-desktop.html
+          grep -q 'AI authority is set by server-side permissions.' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-deep-dive"' /tmp/continuum-doc-desktop.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-desktop.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-possibilities"' /tmp/continuum-doc-desktop.html
           grep -q '01 · Overview' /tmp/continuum-doc-desktop.html
           grep -q '08 · Roadmap' /tmp/continuum-doc-desktop.html
+          ! grep -q 'Why not just use AI by itself' /tmp/continuum-doc-desktop.html
+          ! grep -q 'An ordinary day, not an emergency' /tmp/continuum-doc-desktop.html
 
           python3 - <<'PY'
           from pathlib import Path
@@ -104,10 +108,12 @@ jobs:
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
           grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-mobile.html
+          grep -q 'Continuum keeps useful information, people and rules together' /tmp/continuum-doc-mobile.html
           grep -q 'Follow one update through Continuum' /tmp/continuum-doc-mobile.html
-          grep -q 'The product names follow the simple idea' /tmp/continuum-doc-mobile.html
+          grep -q 'How the pieces fit together' /tmp/continuum-doc-mobile.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-mobile.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-mobile.html
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
+          ! grep -q 'Why not just use AI by itself' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc clarity, desktop teaching order and 390x844 mobile smoke passed.'
+          echo 'Continuum /doc human copy, desktop teaching order and 390x844 mobile smoke passed.'
