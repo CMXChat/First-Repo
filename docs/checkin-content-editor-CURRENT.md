@@ -27,6 +27,16 @@ private ContentAsset
 
 Editing content later must not silently rewrite an already-published Automation.
 
+Binary attachments follow the matching version rule:
+
+```text
+FileAsset
+→ immutable FileVersion
+→ ContentVersion pins exact FileVersion IDs
+```
+
+Uploading a newer file version must not silently alter a published Automation.
+
 ## Lab storage
 
 The Lab uses a dedicated browser-only adapter:
@@ -43,9 +53,23 @@ The Lab adapter may save sanitized HTML plus plain text for interaction testing.
 
 The Lab HTML shape is not the PostgreSQL schema.
 
-## First editor slice
+File metadata/version interaction uses the separate Lab adapter:
 
-The first focused editor is intended to support:
+`cmx-lab-file-assets-v1`
+
+That adapter contains no real file bytes.
+
+Current file/attachment frontend handoff:
+
+`CMXChat/First-Repo/docs/checkin-files-CURRENT.md`
+
+Backend file contract:
+
+`CMXChat/jay-app/specs/003-server-checkin/FILE-ASSETS-BACKEND-HANDOFF.md`
+
+## Current editor slice
+
+The focused editor supports:
 
 - full-screen mobile/desktop authoring;
 - internal content name;
@@ -66,9 +90,14 @@ The first focused editor is intended to support:
 - autosave;
 - explicit Save content;
 - Done/close;
-- truthful protected-attachment placeholder until object storage exists.
+- protected attachment manager prototype;
+- exact file-version pinning in content drafts;
+- file search/library;
+- file Preview/Details/Versions/Used by UI;
+- image/PDF/video/audio/spreadsheet/text viewer shells;
+- truthful backend-pending upload explanation.
 
-The current implementation deliberately avoids provider execution and does not pretend file attachments are durable yet.
+The current implementation deliberately avoids provider execution and does not pretend binary files are durable in Lab.
 
 ## Compatibility adapter
 
@@ -95,13 +124,19 @@ Do not allow:
 
 Production backend validation remains authoritative later.
 
+Protected files must also avoid permanent public object URLs. Production viewers/downloads need authenticated, exact-version authorization.
+
 ## Backend handoff
 
 Canonical content backend companion:
 
 `CMXChat/jay-app/specs/003-server-checkin/CONTENT-ASSETS-BACKEND-HANDOFF.md`
 
-That contract defines:
+Canonical file/backend companion:
+
+`CMXChat/jay-app/specs/003-server-checkin/FILE-ASSETS-BACKEND-HANDOFF.md`
+
+Together they define:
 
 - ContentAsset identity;
 - mutable ContentDraft revisions;
@@ -109,10 +144,15 @@ That contract defines:
 - structured-document canonical representation;
 - exact content-version references from published AutomationVersions;
 - provider-specific rendering;
-- private object storage for binary attachments later;
+- FileAsset identity;
+- immutable FileVersion;
+- private object storage;
+- exact attachment-version references;
+- protected viewers/downloads;
+- upload/finalize/scan state;
 - autosave/concurrency rules;
 - lock/session/privacy requirements;
-- migration away from inline Action payloads.
+- migration away from inline Action payloads and provider drafts.
 
 ## What eventually moves into /checkin
 
@@ -126,9 +166,10 @@ ACTIONS
 → Target: protected Person/Organization
 → Content: Emergency continuity email
 → Open content editor
+→ Attach exact protected FileVersions
 ```
 
-The editor should then read/write protected backend ContentAssets, not browser localStorage.
+The editor should then read/write protected backend ContentAssets and FileAssets, not browser localStorage.
 
 Published Automations reference immutable versions.
 
@@ -145,17 +186,18 @@ Deferred until real requirements:
 - provider-side drafts;
 - arbitrary executable embeds.
 
-## Next frontend extensions after first slice is accepted
+## Next frontend extensions after current slice is accepted
 
 Potential next work:
 
 - Content Library dashboard;
+- broader protected Files/Media library under Records;
 - reusable content/templates;
-- version-history UI;
+- content version-history UI;
 - protected variable insertion (`recipient name`, etc.);
-- channel-specific previews;
-- protected attachment picker after storage architecture is real;
-- image/document embeds as protected references;
+- richer channel-specific previews;
+- protected inline image/document embeds;
 - Markdown view for advanced users if it remains useful;
 - template duplication;
-- destination capability warnings.
+- destination/provider capability warnings;
+- actual upload progress UX once the backend upload-intent contract exists.
