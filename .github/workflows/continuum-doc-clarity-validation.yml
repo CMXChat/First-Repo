@@ -1,0 +1,113 @@
+name: Continuum Doc Clarity Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'doc/**'
+      - 'assets/personal-os-doc.js'
+      - 'assets/personal-os-doc*.css'
+      - 'assets/continuum-doc-*.css'
+      - 'docs/continuum-product-CURRENT.md'
+      - 'tests/personal-os-doc-smoke.test.js'
+      - 'tests/doc-visual-qa-smoke.test.js'
+      - 'tests/continuum-doc-clarity-smoke.test.js'
+      - '.github/workflows/continuum-doc-clarity-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'doc/**'
+      - 'assets/personal-os-doc.js'
+      - 'assets/personal-os-doc*.css'
+      - 'assets/continuum-doc-*.css'
+      - 'docs/continuum-product-CURRENT.md'
+      - 'tests/personal-os-doc-smoke.test.js'
+      - 'tests/doc-visual-qa-smoke.test.js'
+      - 'tests/continuum-doc-clarity-smoke.test.js'
+      - '.github/workflows/continuum-doc-clarity-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate source and document contracts
+        run: |
+          set -euo pipefail
+          node --check assets/personal-os-doc.js
+          node tests/personal-os-doc-smoke.test.js
+          node tests/doc-visual-qa-smoke.test.js
+          node tests/continuum-doc-clarity-smoke.test.js
+
+      - name: Browser clarity smoke desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-doc-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          dump() {
+            "$BROWSER" \
+              --headless \
+              --no-sandbox \
+              --disable-gpu \
+              --disable-dev-shm-usage \
+              --virtual-time-budget=8000 \
+              "$@" \
+              --dump-dom
+          }
+
+          dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-desktop.html
+          grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-desktop.html
+          grep -q 'Follow one update through Continuum' /tmp/continuum-doc-desktop.html
+          grep -q 'The product names follow the simple idea' /tmp/continuum-doc-desktop.html
+          grep -q 'Current product truth' /tmp/continuum-doc-desktop.html
+          grep -q 'Automations define the plan. Runtime carries it through.' /tmp/continuum-doc-desktop.html
+          grep -q 'class="clarity-deep-dive"' /tmp/continuum-doc-desktop.html
+          grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-desktop.html
+          grep -q 'Open the build workflow' /tmp/continuum-doc-desktop.html
+          grep -q 'class="clarity-possibilities"' /tmp/continuum-doc-desktop.html
+          grep -q '01 · Overview' /tmp/continuum-doc-desktop.html
+          grep -q '08 · Roadmap' /tmp/continuum-doc-desktop.html
+
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path('/tmp/continuum-doc-desktop.html').read_text(encoding='utf-8')
+          hero_start = html.index('<header class="hero continuum-hero clarity-hero"')
+          hero_end = html.index('</header>', hero_start)
+          hero = html[hero_start:hero_end]
+          assert 'hero-network' not in hero, 'Product map must not compete with the opening hero.'
+          assert 'continuum-presence' not in hero, 'Availability map must come after the basic mental model.'
+          overview = html.index('id="overview"')
+          story = html.index('clarity-story-section')
+          product_map = html.index('clarity-product-map-section')
+          ai = html.index('id="difference"')
+          assert overview < story < product_map < ai, 'Teaching order regressed before the AI section.'
+          afterlife = html.index('id="afterlife"')
+          glance = html.index('class="glance-grid"', afterlife)
+          assert glance > afterlife, 'Check In glance cards must live with Afterlife.'
+          print('Desktop DOM teaching order passed.')
+          PY
+
+          dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
+          grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-mobile.html
+          grep -q 'Follow one update through Continuum' /tmp/continuum-doc-mobile.html
+          grep -q 'The product names follow the simple idea' /tmp/continuum-doc-mobile.html
+          grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-mobile.html
+          grep -q 'Open the build workflow' /tmp/continuum-doc-mobile.html
+          grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
+
+          echo 'Continuum /doc clarity, desktop teaching order and 390x844 mobile smoke passed.'
