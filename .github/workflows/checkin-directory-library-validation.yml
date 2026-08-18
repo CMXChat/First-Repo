@@ -1,0 +1,132 @@
+name: Check In Directory Library Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-audience-runtime.js'
+      - 'assets/lab/lab-automations-audience.css'
+      - 'assets/lab/lab-automations-library-runtime.js'
+      - 'assets/lab/lab-automations-library.css'
+      - 'assets/lab/lab-automations-editor-learning.js'
+      - 'assets/lab/lab-automations-editor-learning.css'
+      - 'assets/lab/lab-automations-document-security.js'
+      - 'docs/checkin-directory-library-CURRENT.md'
+      - '.github/workflows/checkin-directory-library-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-audience-runtime.js'
+      - 'assets/lab/lab-automations-audience.css'
+      - 'assets/lab/lab-automations-library-runtime.js'
+      - 'assets/lab/lab-automations-library.css'
+      - 'assets/lab/lab-automations-editor-learning.js'
+      - 'assets/lab/lab-automations-editor-learning.css'
+      - 'assets/lab/lab-automations-document-security.js'
+      - 'docs/checkin-directory-library-CURRENT.md'
+      - '.github/workflows/checkin-directory-library-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate JavaScript and product contract
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-audience-runtime.js
+          node --check assets/lab/lab-automations-library-runtime.js
+          node --check assets/lab/lab-automations-editor-learning.js
+          node --check assets/lab/lab-automations-document-security.js
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          audience = Path('assets/lab/lab-automations-audience-runtime.js').read_text(encoding='utf-8')
+          audience_css = Path('assets/lab/lab-automations-audience.css').read_text(encoding='utf-8')
+          library = Path('assets/lab/lab-automations-library-runtime.js').read_text(encoding='utf-8')
+          library_css = Path('assets/lab/lab-automations-library.css').read_text(encoding='utf-8')
+          learning = Path('assets/lab/lab-automations-editor-learning.js').read_text(encoding='utf-8')
+          learning_css = Path('assets/lab/lab-automations-editor-learning.css').read_text(encoding='utf-8')
+          security = Path('assets/lab/lab-automations-document-security.js').read_text(encoding='utf-8')
+          handoff = Path('docs/checkin-directory-library-CURRENT.md').read_text(encoding='utf-8')
+
+          required_html = [
+              '/assets/lab/lab-automations-audience-runtime.js?v=',
+              '/assets/lab/lab-automations-library-runtime.js?v=',
+              '/assets/lab/lab-automations-editor-learning.js?v=',
+              '/assets/lab/lab-automations-document-security.js?v=',
+              '/assets/lab/lab-automations-audience.css?v=',
+              '/assets/lab/lab-automations-library.css?v=',
+              '/assets/lab/lab-automations-editor-learning.css?v=',
+              "connect-src 'self'",
+          ]
+          required_audience = [
+              'organizationIds', 'labels', 'groups', 'Create custom group', 'Create custom label',
+              'Person, organization, group, or label', 'email-ready', 'phone-ready',
+              'resolutionMode:"live"', 'Duplicate people are automatically counted once',
+              'data-person-org', 'data-person-label', 'data-group-member',
+          ]
+          required_library = [
+              'Documents & files', 'New document', 'Native Check In Document', 'Save version',
+              'Save as', 'PDF', 'Word DOCX', 'Markdown', 'HTML', 'Plain text',
+              'linkedDocuments', 'fileVersionId', 'Used by', 'cmx-lab-content-assets-v1',
+              'cmx-lab-file-assets-v1',
+          ]
+          required_learning = ['Bold','Heading 2','Bulleted list','Insert link','editor-learning-tip']
+          required_security = ['ALLOWED', 'BLOCKED', 'safeHref', 'data-document-body', 'text/html']
+          required_css = ['.audience-manager-overlay','.audience-target-card','.library-overlay','.document-editor-overlay','.content-toolbar','.editor-learning-tip']
+          required_handoff = ['Person ↔ Organization','Groups = saved audiences','Document = native editable Check In content','Library = Documents + Files','DIRECTORY-AUDIENCE-LIBRARY-BACKEND-HANDOFF.md']
+
+          for term in required_html:
+              if term not in html: sys.exit(f'missing route contract: {term}')
+          for term in required_audience:
+              if term not in audience: sys.exit(f'missing audience contract: {term}')
+          for term in required_library:
+              if term not in library: sys.exit(f'missing library contract: {term}')
+          for term in required_learning:
+              if term not in learning + learning_css: sys.exit(f'missing editor learning contract: {term}')
+          for term in required_security:
+              if term not in security: sys.exit(f'missing document security contract: {term}')
+          for term in required_css:
+              if term not in audience_css + library_css + learning_css: sys.exit(f'missing UX CSS: {term}')
+          for term in required_handoff:
+              if term not in handoff: sys.exit(f'missing frontend handoff: {term}')
+
+          combined = audience + library + learning + security
+          for term in ['api.cmxchat.com','eval(','new Function(','MutationObserver','localStorage.setItem("operator']:
+              if term in combined: sys.exit(f'forbidden focused Lab behavior: {term}')
+
+          print('Directory, audience, Library, Document and editor-learning contract passed.')
+          PY
+
+      - name: Browser smoke desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/checkin-directory-library-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=4500 "$@" --dump-dom; }
+          dump http://127.0.0.1:8000/lab/automations/ > /tmp/dl-desktop.html
+          grep -q '>Automations<' /tmp/dl-desktop.html
+          grep -q '>Library<' /tmp/dl-desktop.html
+          ! grep -qi 'Loading Automations' /tmp/dl-desktop.html
+          dump --window-size=390,844 http://127.0.0.1:8000/lab/automations/ > /tmp/dl-mobile.html
+          grep -q '>Automations<' /tmp/dl-mobile.html
+          grep -q '>Library<' /tmp/dl-mobile.html
+          ! grep -qi 'Loading Automations' /tmp/dl-mobile.html
+          echo 'Directory/Library desktop and mobile boot smoke passed.'
