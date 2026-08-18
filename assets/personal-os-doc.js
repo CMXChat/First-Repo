@@ -108,42 +108,32 @@
     });
   }
 
-  function makeStatusSnapshot(statusKey) {
+  function makeStatusSnapshot() {
     const frame = document.createElement('section');
     frame.className = 'clarity-status-frame';
     frame.setAttribute('aria-labelledby', 'clarityStatusTitle');
     frame.innerHTML = `
       <div class="clarity-mini-heading">
-        <div><span>WHERE IT STANDS TODAY</span><strong id="clarityStatusTitle">Current status</strong></div>
-        <p>LIVE works with protected backend state now. LAB is interactive prototype work. NEXT is the next backend milestone. LATER comes after that foundation.</p>
+        <div><span>WHERE IT STANDS TODAY</span><strong id="clarityStatusTitle">What works today</strong></div>
+        <p>Check In is LIVE. Spaces and Automations are LAB. Private information and Automation definitions are NEXT. Runtime and provider execution are LATER.</p>
       </div>`;
-    frame.append(statusKey);
     return frame;
   }
 
   function makeStorySection() {
     const section = document.createElement('section');
-    section.className = 'clarity-story-section';
+    section.className = 'clarity-story-section clarity-story-prose';
     section.setAttribute('aria-labelledby', 'clarityStoryTitle');
     section.innerHTML = `
       <div class="section-heading clarity-section-heading">
-        <div><p class="section-kicker">One example</p><h2 id="clarityStoryTitle">Follow one update through Continuum</h2></div>
-        <p class="section-intro">A client says a payment was sent. Continuum can tie that update to the client, keep the useful details, show the change in a Business brief and use it in an Automation.</p>
+        <div><p class="section-kicker">A real example</p><h2 id="clarityStoryTitle">What happens when something changes</h2></div>
+        <p class="section-intro">A single update can stay connected to the person, the saved information, the briefing and the Automation that uses it.</p>
       </div>
-      <div class="clarity-story-flow" aria-label="Example Continuum information flow">
-        <article><b>01</b><div><span>INPUT</span><strong>The message arrives</strong><small>An approved email or message source provides the update.</small></div></article>
-        <i aria-hidden="true">→</i>
-        <article><b>02</b><div><span>DIRECTORY</span><strong>Match it to the client</strong><small>Directory links the message to the right person and company.</small></div></article>
-        <i aria-hidden="true">→</i>
-        <article><b>03</b><div><span>LIBRARY</span><strong>Keep the useful details</strong><small>Saved information can include its source, history and allowed use.</small></div></article>
-        <i aria-hidden="true">→</i>
-        <article><b>04</b><div><span>SPACE</span><strong>Show the change in Business</strong><small>The next briefing can include the payment update and related context.</small></div></article>
-        <i aria-hidden="true">→</i>
-        <article><b>05</b><div><span>AUTOMATION</span><strong>Apply the rules you set</strong><small>The Automation defines the next approved step.</small></div></article>
-        <i aria-hidden="true">→</i>
-        <article><b>06</b><div><span>RUNTIME · LATER</span><strong>Keep the workflow running</strong><small>Future Runtime can wait, retry, receive replies and record the result.</small></div></article>
-      </div>
-      <p class="clarity-story-note">The update stays tied to the client, saved information, briefing, Automation and eventual result.</p>`;
+      <div class="clarity-story-copy">
+        <p>A client emails to say a payment was sent. Continuum can match that message to the client, keep the useful details with their source, show the update in a Business Space and let an Automation use that information for the next approved step.</p>
+        <p>When Runtime is built, it can keep the published workflow running on the server, handle waits or replies that belong to that workflow and record the result.</p>
+        <div class="clarity-story-path" aria-label="Example Continuum information path"><span>Message</span><i>→</i><span>Directory</span><i>→</i><span>Library</span><i>→</i><span>Business Space</span><i>→</i><span>Automation</span><i>→</i><span>Runtime</span></div>
+      </div>`;
     return section;
   }
 
@@ -164,19 +154,15 @@
   function makeAutomationPrimer(actionSection) {
     if (qs('.clarity-automation-primer', actionSection)) return;
     const primer = document.createElement('div');
-    primer.className = 'clarity-automation-primer';
+    primer.className = 'clarity-automation-primer clarity-automation-explainer';
     primer.innerHTML = `
+      <p class="clarity-automation-copy"><strong>Automations define what should happen.</strong> The builder saves the trigger, rules, actions, timing and finish behavior. Runtime is the server layer that will later run a published Automation and record what happened.</p>
       <div class="clarity-builder-sentence" aria-label="Automation builder model">
         <span><b>WHEN</b><small>what starts it</small></span><i>→</i>
         <span><b>IF</b><small>which rules apply</small></span><i>→</i>
         <span><b>DO</b><small>approved actions</small></span><i>→</i>
         <span><b>WAIT</b><small>timing or repeat</small></span><i>→</i>
         <span><b>REVIEW</b><small>test before publish</small></span>
-      </div>
-      <div class="clarity-automation-split">
-        <article><span>AUTOMATION</span><strong>The plan</strong><p>Defines the trigger, rules, actions, timing and finish behavior.</p></article>
-        <i aria-hidden="true">→</i>
-        <article><span>RUNTIME</span><strong>The execution</strong><p>Later runs a published workflow on the server and records what happened.</p></article>
       </div>`;
     const heading = qs('.section-heading', actionSection);
     heading?.after(primer);
@@ -276,21 +262,20 @@
     const heroDisclosure = qs('.hero-disclosure', hero);
     if (hero) hero.classList.add('clarity-hero');
     if (heroKicker) heroKicker.textContent = 'Information, people, rules and AI in one place';
-    if (heroLead) heroLead.innerHTML = '<span class="hero-lead-first">Continuum keeps useful information, people and rules together so the same context is available when you need it.</span> It can build briefings, use approved Automations and support your continuity plan if you cannot respond.';
+    if (heroLead) heroLead.innerHTML = '<span class="hero-lead-first">Continuum keeps useful context in one private place so your information, people, rules and AI stay connected over time.</span> It can brief you while you’re here, follow approved Automations when work needs to continue, and support a continuity plan if you cannot respond.';
     if (heroTruth) heroTruth.innerHTML = '<span><i></i>Keeps useful history</span><span><i></i>Links people + information</span><span><i></i>Runs approved rules</span>';
     heroDisclosure?.remove();
 
     const overview = document.getElementById('overview');
     const overviewKicker = qs('.section-kicker', overview);
     const overviewIntro = qs('.section-intro', overview);
-    if (overviewKicker) overviewKicker.textContent = 'Start here';
+    if (overviewKicker) overviewKicker.textContent = 'Continuum in one minute';
     if (overviewIntro) overviewIntro.textContent = 'The basic loop is simple: see what changed, save the useful part, check your rules, do approved work and keep the result for next time.';
 
     const network = qs('.hero-network', hero);
     const presence = qs('.continuum-presence', hero);
-    const statusKey = qs('.status-key', presence);
     const processMap = qs('.process-map', overview);
-    if (statusKey && processMap) processMap.after(makeStatusSnapshot(statusKey));
+    if (processMap) processMap.after(makeStatusSnapshot());
 
     const glance = qs('.glance-grid', overview);
     const afterlife = document.getElementById('afterlife');
