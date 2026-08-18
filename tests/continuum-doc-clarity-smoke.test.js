@@ -7,8 +7,10 @@ const path = require('node:path');
 const root = process.cwd();
 const html = fs.readFileSync(path.join(root, 'doc/index.html'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'assets/personal-os-doc.js'), 'utf8');
+const originJs = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'assets/continuum-doc-qa.css'), 'utf8');
 const humanCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-human.css'), 'utf8');
+const originCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.css'), 'utf8');
 const contract = fs.readFileSync(path.join(root, 'docs/continuum-product-CURRENT.md'), 'utf8');
 
 // The visible reading path starts with the fuller plain-language introduction and then the mental model.
@@ -46,6 +48,20 @@ for (const concept of [
   'REASONING'
 ]) assert.match(js, new RegExp(concept.replace('+', '\\+')));
 
+// The Dead Man Switch origin insight explains why the same foundation matters across time.
+assert.match(html, /continuum-doc-origin\.css\?v=20260818-1/);
+assert.match(html, /continuum-doc-origin\.js\?v=20260818-1/);
+assert.match(originJs, /The idea started with the Dead Man Switch/);
+assert.match(originJs, /Afterlife began with a practical problem/);
+assert.match(originJs, /The same foundation matters before an emergency/);
+assert.match(originJs, /Spaces and AI help while you are here/);
+assert.match(originJs, /Automations define work that can continue/);
+assert.match(originJs, /Afterlife uses the same foundation when you cannot respond/);
+assert.match(originJs, /presence\.before\(origin\)/);
+assert.match(originJs, /dataset\.continuumOrigin = 'ready'/);
+assert.match(originCss, /\.continuum-origin-note/);
+assert.match(originCss, /\.continuum-origin-copy p/);
+
 // Current capability truth stays early, while the detailed four-state key remains with the product map.
 assert.match(js, /What works today/);
 assert.match(js, /processMap\.after\(makeStatusSnapshot\(\)\)/);
@@ -75,7 +91,7 @@ for (const label of [
 ]) assert.match(js, new RegExp(label.replace('·', '·')));
 
 // Copy stays free of the recurring artificial-writing patterns.
-for (const source of [html, js]) {
+for (const source of [html, js, originJs]) {
   assert.doesNotMatch(source, /\.\.\.|…|—/);
   assert.doesNotMatch(source, /Why not just use AI by itself/i);
   assert.doesNotMatch(source, /An ordinary day, not an emergency/i);
@@ -111,15 +127,20 @@ assert.match(humanCss, /clarity-product-map-section \.hero-network/);
 // The CURRENT contract stays authoritative for future /doc edits.
 assert.match(contract, /human-copy rebuild/);
 assert.match(contract, /Concepts before product names/i);
+assert.match(contract, /Dead Man Switch/);
+assert.match(contract, /origin insight/i);
 assert.match(contract, /Automation = the plan/);
 assert.match(contract, /Runtime = the execution layer/);
 assert.match(contract, /Check In-specific timer values belong in the Afterlife section/);
 assert.match(contract, /optional depth in the normal reading path/);
 assert.match(contract, /AI authority is set by server-side permissions/);
 assert.match(contract, /assets\/continuum-doc-human\.css/);
+assert.match(contract, /assets\/continuum-doc-origin\.js/);
 
 // The clarity transform is deterministic at initialization. Avoid broad mutation loops.
 assert.doesNotMatch(js, /MutationObserver/);
 assert.doesNotMatch(js, /setInterval\(/);
+assert.doesNotMatch(originJs, /MutationObserver/);
+assert.doesNotMatch(originJs, /setInterval\(/);
 
-console.log('Continuum prose balance, human-copy and teaching-order smoke test passed.');
+console.log('Continuum origin insight, prose balance, human-copy and teaching-order smoke test passed.');
