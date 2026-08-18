@@ -1,0 +1,117 @@
+/* Continuum Lab Automations final QA layer.
+   Loaded last. These are migration-worthy interaction/presentation rules for future /checkin/. */
+
+/* The builder and its preview should read as one workspace, without nested scrolling. */
+@media (min-width:980px){
+  .v3-editor-shell{
+    grid-template-columns:minmax(0,1fr) minmax(330px,360px)!important;
+    gap:24px!important;
+    align-items:start;
+  }
+  .v3-editor-main{max-width:none!important;padding-right:0!important}
+  .v3-live-panel{
+    position:sticky!important;
+    top:190px!important;
+    align-self:start!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+}
+
+/* A preview is allowed to be incomplete. Pending choices should look pending. */
+.v3-flow-node.is-pending{
+  border-style:dashed!important;
+  border-color:color-mix(in srgb,var(--v3-dim) 52%,var(--v3-line))!important;
+  background:color-mix(in srgb,var(--v3-panel) 84%,var(--v3-bg-soft))!important;
+  opacity:.82;
+}
+.v3-flow-node.is-pending>span{color:var(--v3-dim)!important}
+.v3-flow-node.is-pending strong{color:var(--v3-muted)!important;font-weight:760!important}
+.v3-flow-node.is-pending small{color:var(--v3-dim)!important}
+.v3-flow-node.is-pending::after{content:"PENDING";justify-self:end;align-self:center;padding:3px 6px;border:1px solid var(--v3-line);border-radius:999px;color:var(--v3-dim);font-size:8px;font-weight:900;letter-spacing:.07em}
+.v3-flow-node.is-pending{grid-template-columns:56px minmax(0,1fr) auto!important}
+
+.v3-progress-empty{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  margin-bottom:10px;
+  padding:15px;
+  border:1px dashed var(--v3-line-strong);
+  border-radius:14px;
+  background:color-mix(in srgb,var(--v3-panel-2) 72%,transparent);
+}
+.v3-progress-empty>b{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--v3-line-strong);border-radius:11px;color:var(--v3-blue);font-size:18px}
+.v3-progress-empty span{display:grid;gap:3px}
+.v3-progress-empty strong{font-size:14px;color:var(--v3-text)}
+.v3-progress-empty small{font-size:12px;line-height:1.42;color:var(--v3-muted)}
+
+.v3-choice.is-progress-pending,.v3-timing-modes button.is-progress-pending,.v3-finish-card button.is-progress-pending{
+  border-color:var(--v3-line)!important;
+  background:var(--v3-panel)!important;
+  box-shadow:none!important;
+}
+.v3-choice.is-progress-pending .choice-check,
+.v3-choice.is-progress-pending>i,
+.v3-timing-modes button.is-progress-pending>i{color:transparent!important}
+
+.v3-stage-rail button:disabled{
+  opacity:.42;
+  cursor:not-allowed;
+  filter:saturate(.55);
+}
+.v3-stage-rail button:disabled:hover{background:transparent;border-color:transparent}
+
+.v3-footer-primary:disabled,.v3-simulate:disabled[data-progress-disabled="true"]{
+  opacity:.45!important;
+  cursor:not-allowed!important;
+  box-shadow:none!important;
+}
+
+.v3-progress-hint{
+  margin-top:10px;
+  padding:10px 12px;
+  border-left:3px solid var(--v3-blue);
+  border-radius:0 10px 10px 0;
+  background:color-mix(in srgb,var(--v3-blue) 6%,var(--v3-panel));
+  color:var(--v3-muted);
+  font-size:11px;
+  line-height:1.45;
+}
+.v3-progress-hint strong{color:var(--v3-text)}
+
+/* Light mode needs stronger boundaries in the builder, especially in the preview. */
+html[data-theme="light"] .v3-live-panel,
+html[data-theme="light"] .v3-choice,
+html[data-theme="light"] .v3-progress-empty,
+html[data-theme="light"] .v3-action-card,
+html[data-theme="light"] .v3-review-flow,
+html[data-theme="light"] .v3-finish-card,
+html[data-theme="light"] .v3-check-card{
+  border-color:#cfdde8!important;
+}
+html[data-theme="light"] .v3-flow-node.is-pending{background:#f7fafc!important;border-color:#c8d6e2!important}
+html[data-theme="light"] .v3-flow-node.is-pending strong{color:#61778b!important}
+html[data-theme="light"] .v3-flow-node.is-pending small{color:#7a8ea0!important}
+
+/* Keep the live panel useful without making the main form feel secondary. */
+.v3-live-panel{box-shadow:0 14px 38px color-mix(in srgb,var(--v3-bg) 48%,transparent)!important}
+.v3-live-head{padding-bottom:11px!important;margin-bottom:10px!important}
+.v3-live-summary{margin-top:12px!important;padding-top:12px!important}
+
+@media (max-width:979px){
+  .v3-live-panel{display:none!important}
+  .v3-mobile-flow-toggle{display:grid!important}
+}
+
+@media (max-width:760px){
+  .v3-progress-empty{grid-template-columns:38px minmax(0,1fr);padding:13px}
+  .v3-progress-empty>b{width:36px;height:36px}
+  .v3-flow-node.is-pending{grid-template-columns:48px minmax(0,1fr)!important}
+  .v3-flow-node.is-pending::after{grid-column:2;justify-self:start;margin-top:3px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .v3-flow-node,.v3-choice,.v3-stage-rail button{transition:none!important}
+}
