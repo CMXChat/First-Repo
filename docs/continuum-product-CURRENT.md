@@ -433,7 +433,8 @@ Each stage must explain what becomes possible:
 Continuum-specific styling currently lives in:
 
 - `assets/continuum-doc-final.css` for the main visual system;
-- `assets/continuum-doc-promise.css` for the hero promise, availability visual and final readability/status polish.
+- `assets/continuum-doc-promise.css` for the hero promise, availability visual and final readability/status polish;
+- `assets/continuum-doc-qa.css` as the final screenshot-QA layer for rendered contrast, card density, Afterlife light mode and mobile header hardening.
 
 Preserve:
 
@@ -452,6 +453,27 @@ Preserve:
 - reduced-motion support;
 - no broad document-wide MutationObserver;
 - strict CSP with no inline `style` attributes.
+
+## Screenshot QA rule
+
+Rendered screenshots are part of acceptance. DOM presence and overflow tests are necessary, but they are not enough to approve the page visually.
+
+A section fails visual QA if important text becomes faint, a status is hard to read, a card has large empty space with disconnected copy, a control overlaps the reading area, or light/dark mode loses the intended hierarchy.
+
+Afterlife is the reference contrast case:
+
+- normal light-mode titles use dark ink;
+- supporting copy remains visibly darker than the card background;
+- LIVE pills are readable blue/green states;
+- the Trigger card uses a warm background with a dark title;
+- timeline content stays grouped instead of spreading across oversized cards;
+- mobile stacks the status below the copy without squeezing the content.
+
+Regression guards:
+
+- `tests/doc-visual-qa-smoke.test.js` checks the final QA stylesheet and source contract;
+- `tests/doc-light-mode-visual-qa.spec.cjs` checks rendered desktop/mobile Afterlife contrast, density and overflow;
+- `tests/doc-mobile-contents-e2e.spec.cjs` continues to protect toolbar navigation, drawer behavior and major responsive visuals.
 
 Semantic color meanings:
 
@@ -525,7 +547,7 @@ Near-term order remains:
 Future changes should be limited to:
 
 - correcting factual product truth;
-- fixing accessibility, browser or responsive bugs;
+- fixing accessibility, browser, responsive or rendered-contrast bugs;
 - reflecting a capability that actually moved from LAB/NEXT/LATER to another state;
 - replacing an outdated example after the underlying product changes.
 
