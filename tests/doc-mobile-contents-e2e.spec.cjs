@@ -26,7 +26,7 @@ async function swipeLeft(page, selector) {
   });
 }
 
-test('mobile Continuum doc stays readable, compact and visual', async ({ page }, testInfo) => {
+test('mobile Continuum doc keeps navigation in header and visuals readable', async ({ page }, testInfo) => {
   test.skip(!['chromium-android', 'webkit-iphone'].includes(testInfo.project.name), 'Mobile document navigation runs in touch browser projects.');
   test.setTimeout(45000);
 
@@ -40,7 +40,7 @@ test('mobile Continuum doc stays readable, compact and visual', async ({ page },
   const mobileLinks = drawer.locator('.mobile-document-toc a');
 
   await expect(page.locator('link[href="/assets/personal-os-doc-mobile-contents.css?v=20260809-1"]')).toHaveCount(1);
-  await expect(page.locator('link[href="/assets/continuum-doc-final.css?v=20260818-2"]')).toHaveCount(1);
+  await expect(page.locator('link[href="/assets/continuum-doc-final.css?v=20260818-3"]')).toHaveCount(1);
   await expect(page.locator('link[href*="continuum-doc-v2"], link[href*="continuum-doc-mobile-v3"]')).toHaveCount(0);
   await expect(trigger).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -52,41 +52,48 @@ test('mobile Continuum doc stays readable, compact and visual', async ({ page },
 
   const mobileVisualState = await page.evaluate(() => {
     const trigger = document.querySelector('[data-mobile-contents-trigger="true"]');
+    const actions = document.querySelector('.document-actions');
     const railStatus = document.querySelector('.document-rail .rail-status');
     const network = document.querySelector('.hero-network');
     const firstNode = document.querySelector('.hero-network .network-card');
+    const firstJourney = document.querySelector('.journey-step');
     const afterlife = document.querySelector('.afterlife-section');
     const afterlifeCard = document.querySelector('.afterlife-step');
-    const intro = document.querySelector('.section-intro');
     return {
+      triggerParentIsActions: trigger?.parentElement === actions,
       triggerWidth: Math.round(trigger.getBoundingClientRect().width),
-      triggerRight: Math.round(window.innerWidth - trigger.getBoundingClientRect().right),
+      triggerPosition: getComputedStyle(trigger).position,
       railStatusDisplay: getComputedStyle(railStatus).display,
       networkDisplay: getComputedStyle(network).display,
       nodePosition: getComputedStyle(firstNode).position,
+      journeyWidth: Math.round(firstJourney.getBoundingClientRect().width),
+      journeyDisplay: getComputedStyle(firstJourney).display,
       afterlifeBackground: getComputedStyle(afterlife).backgroundImage,
-      afterlifeCardBackground: getComputedStyle(afterlifeCard).backgroundColor,
-      introFontSize: parseFloat(getComputedStyle(intro).fontSize)
+      afterlifeCardBackground: getComputedStyle(afterlifeCard).backgroundColor
     };
   });
 
-  expect(mobileVisualState.triggerWidth).toBeLessThanOrEqual(52);
-  expect(mobileVisualState.triggerRight).toBeLessThanOrEqual(16);
+  expect(mobileVisualState.triggerParentIsActions).toBe(true);
+  expect(mobileVisualState.triggerWidth).toBeLessThanOrEqual(48);
+  expect(mobileVisualState.triggerPosition).toBe('relative');
   expect(mobileVisualState.railStatusDisplay).toBe('none');
   expect(mobileVisualState.networkDisplay).toBe('grid');
   expect(mobileVisualState.nodePosition).toBe('relative');
+  expect(mobileVisualState.journeyWidth).toBeGreaterThan(230);
+  expect(mobileVisualState.journeyDisplay).toBe('block');
   expect(mobileVisualState.afterlifeBackground).toContain('linear-gradient');
   expect(mobileVisualState.afterlifeCardBackground).not.toBe('rgba(255, 255, 255, 0.035)');
-  expect(mobileVisualState.introFontSize).toBeGreaterThanOrEqual(15);
 
   await expect(page.locator('.process-map')).toBeVisible();
-  await expect(page.locator('.ai-journey')).toBeVisible();
-  await expect(page.locator('.term-guide')).toBeVisible();
+  await expect(page.locator('.ai-compare')).toBeVisible();
+  await expect(page.locator('.people-map')).toBeVisible();
+  await expect(page.locator('.library-tree')).toBeVisible();
   await expect(page.locator('.possibility-board')).toBeVisible();
   await expect(page.locator('.policy-ring')).toBeVisible();
   await expect(page.locator('.policy-config')).toHaveCount(4);
   await expect(page.locator('.afterlife-step.is-trigger')).toBeVisible();
   await expect(page.locator('.stack-pipeline')).toBeVisible();
+  await expect(page.locator('.roadmap-rich .roadmap-card')).toHaveCount(4);
   await expectNoHorizontalOverflow(page);
 
   await trigger.click();
@@ -119,7 +126,7 @@ test('mobile Continuum doc stays readable, compact and visual', async ({ page },
   await expectNoHorizontalOverflow(page);
 });
 
-test('desktop Continuum doc keeps rail, network connectors and readable visual system', async ({ page }, testInfo) => {
+test('desktop Continuum doc keeps rail, connected diagrams and rich roadmap', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'Desktop document isolation runs once in Chromium.');
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/doc/?theme=light', { waitUntil: 'domcontentloaded' });
@@ -128,8 +135,9 @@ test('desktop Continuum doc keeps rail, network connectors and readable visual s
   await expect(page.locator('.document-rail .document-toc a')).toHaveCount(8);
   await expect(page.locator('[data-mobile-contents-trigger="true"]')).toBeHidden();
   await expect(page.locator('.network-lines')).toBeVisible();
+  await expect(page.locator('.people-map')).toBeVisible();
+  await expect(page.locator('.library-tree')).toBeVisible();
   await expect(page.locator('.afterlife-policy')).toBeVisible();
-  await expect(page.locator('.possibility-board')).toBeVisible();
-  await expect(page.locator('.roadmap-line')).toBeVisible();
+  await expect(page.locator('.roadmap-rich')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
