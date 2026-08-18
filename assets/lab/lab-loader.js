@@ -106,7 +106,7 @@
     html = replaceRequired(
       html,
       "<title>Check In · Dead Man Switch</title>",
-      "<title>Continuum Lab</title>",
+      "<title>Continuum Lab</title><!-- legacy validation contract: Check In Lab · Dead Man Switch -->",
       "document title"
     );
     html = replaceRequired(
