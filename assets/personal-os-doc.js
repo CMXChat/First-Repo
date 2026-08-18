@@ -97,13 +97,15 @@
 
     const sourceToc = document.querySelector('.document-rail .document-toc');
     const toolbar = document.querySelector('.document-toolbar');
-    if (!sourceToc || !toolbar) return;
+    const actions = toolbar?.querySelector('.document-actions');
+    if (!sourceToc || !toolbar || !actions) return;
 
     const defaultSectionLabel = sourceToc.querySelector('a')?.textContent?.trim() || 'Continuum overview';
     const trigger = document.createElement('button');
     trigger.id = 'mobileContentsTrigger';
     trigger.className = 'mobile-contents-trigger';
     trigger.type = 'button';
+    trigger.setAttribute('aria-label', 'Open document contents');
     trigger.setAttribute('aria-controls', 'mobileContentsDrawer');
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('data-mobile-contents-trigger', 'true');
@@ -115,7 +117,7 @@
       </span>
       <span class="mobile-contents-trigger-arrow" aria-hidden="true">›</span>
     `;
-    toolbar.insertAdjacentElement('afterend', trigger);
+    actions.insertBefore(trigger, printButton || themeButton || null);
 
     const backdrop = document.createElement('div');
     backdrop.id = 'mobileContentsBackdrop';
@@ -135,13 +137,13 @@
     drawer.innerHTML = `
       <header class="mobile-contents-drawer-header">
         <div>
-          <p class="mobile-contents-drawer-eyebrow">Reading navigator</p>
+          <p class="mobile-contents-drawer-eyebrow">Jump to a section</p>
           <h2 class="mobile-contents-drawer-title" id="mobileContentsTitle">Contents</h2>
         </div>
         <button class="mobile-contents-close" type="button" aria-label="Close document contents" data-mobile-contents-close="true">×</button>
       </header>
       <div class="mobile-contents-current">
-        <span>Current section</span>
+        <span>You are reading</span>
         <strong id="mobileContentsCurrent">${defaultSectionLabel}</strong>
       </div>
       <nav class="document-toc mobile-document-toc" aria-label="Mobile document contents"></nav>
@@ -170,11 +172,6 @@
       const label = active?.textContent?.trim() || defaultSectionLabel;
       if (triggerCurrent) triggerCurrent.textContent = label;
       if (drawerCurrent) drawerCurrent.textContent = label;
-    };
-
-    const syncTriggerTop = () => {
-      const bottom = Math.max(0, toolbar.getBoundingClientRect().bottom);
-      root.style.setProperty('--mobile-contents-top', `${Math.ceil(bottom + 10)}px`);
     };
 
     const focusableItems = () => Array.from(drawer.querySelectorAll('a[href], button:not([disabled])'))
@@ -260,17 +257,13 @@
     });
 
     const handleViewportChange = () => {
-      syncTriggerTop();
       if (!mobileQuery.matches) closeDrawer({ restoreFocus: false });
     };
 
     if (typeof mobileQuery.addEventListener === 'function') mobileQuery.addEventListener('change', handleViewportChange);
     else mobileQuery.addListener(handleViewportChange);
-    window.addEventListener('resize', syncTriggerTop, { passive: true });
-    window.addEventListener('pageshow', syncTriggerTop);
 
     syncCurrentLabel();
-    syncTriggerTop();
   }
 
   applyTheme(getRequestedTheme());
