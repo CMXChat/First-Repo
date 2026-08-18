@@ -303,6 +303,26 @@
   }
 }
 
+/* Keep the header-owned hamburger centered inside its bordered control. */
+@media (max-width: 920px) {
+  .document-actions .mobile-contents-trigger {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    align-self: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    line-height: 1;
+  }
+
+  .document-actions .mobile-contents-trigger::before {
+    grid-area: 1 / 1;
+    place-self: center;
+    margin: 0;
+    line-height: 1;
+    text-align: center;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mobile-contents-trigger,
   .mobile-contents-backdrop,
