@@ -78,7 +78,7 @@ jobs:
           required_library = [
               'Documents & files', 'New document', 'Native Check In Document', 'Save version',
               'Save as', 'PDF', 'Word DOCX', 'Markdown', 'HTML', 'Plain text',
-              'linkedDocuments', 'fileVersionId', 'Used by', 'cmx-lab-content-assets-v1',
+              'linkedDocuments', 'fileVersionId', 'used by', 'cmx-lab-content-assets-v1',
               'cmx-lab-file-assets-v1',
           ]
           required_learning = ['Bold','Heading 2','Bulleted list','Insert link','editor-learning-tip']
