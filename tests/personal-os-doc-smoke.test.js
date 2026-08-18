@@ -10,10 +10,11 @@ const cssPath = path.join(root, 'assets/personal-os-doc.css');
 const editorialCssPath = path.join(root, 'assets/personal-os-doc-editorial.css');
 const continuumCssPath = path.join(root, 'assets/continuum-doc.css');
 const continuumV2CssPath = path.join(root, 'assets/continuum-doc-v2.css');
+const continuumMobileV3CssPath = path.join(root, 'assets/continuum-doc-mobile-v3.css');
 const jsPath = path.join(root, 'assets/personal-os-doc.js');
 const routesPath = path.join(root, 'assets/cmx-routes.json');
 
-for (const filePath of [htmlPath, cssPath, editorialCssPath, continuumCssPath, continuumV2CssPath, jsPath, routesPath]) {
+for (const filePath of [htmlPath, cssPath, editorialCssPath, continuumCssPath, continuumV2CssPath, continuumMobileV3CssPath, jsPath, routesPath]) {
   assert.ok(fs.existsSync(filePath), `Missing required Continuum document file: ${filePath}`);
 }
 
@@ -23,6 +24,7 @@ const css = fs.readFileSync(cssPath, 'utf8');
 const editorialCss = fs.readFileSync(editorialCssPath, 'utf8');
 const continuumCss = fs.readFileSync(continuumCssPath, 'utf8');
 const continuumV2Css = fs.readFileSync(continuumV2CssPath, 'utf8');
+const continuumMobileV3Css = fs.readFileSync(continuumMobileV3CssPath, 'utf8');
 const js = fs.readFileSync(jsPath, 'utf8');
 const routes = JSON.parse(fs.readFileSync(routesPath, 'utf8'));
 
@@ -38,11 +40,17 @@ assert.match(html, /working production, active prototypes and planned platform w
 assert.match(html, /personal-os-doc\.js\?v=20260818-2/);
 assert.match(html, /continuum-doc\.css\?v=20260818-1/);
 assert.match(html, /continuum-doc-v2\.css\?v=20260818-1/);
+assert.match(html, /continuum-doc-mobile-v3\.css\?v=20260818-1/);
 assert.match(html, /<h1 id="pageTitle">Continuum<\/h1>/);
 assert.match(html, /Afterlife/);
 assert.match(html, /The Dead Man Switch/);
 assert.match(html, /72 elapsed hours/);
 assert.match(html, /24 elapsed hours/);
+assert.match(html, /96h/);
+assert.match(html, /afterlife-policy-chart/);
+assert.match(html, /afterlife-meter/);
+assert.match(html, /afterlife-state/);
+assert.match(html, /Approved continuity outcomes/);
 assert.match(html, /\/lab\/automations\//);
 assert.match(html, /continuity\.md/);
 assert.match(html, /Python \+ FastAPI/);
@@ -114,8 +122,15 @@ assert.match(continuumV2Css, /\.brief-preview/);
 assert.match(continuumV2Css, /\.workflow-card/);
 assert.match(continuumV2Css, /\.afterlife-track/);
 assert.match(continuumV2Css, /\.stack-visual/);
-assert.match(continuumV2Css, /@media \(max-width: 680px\)/);
-assert.match(continuumV2Css, /@media \(prefers-reduced-motion: reduce\)/);
-assert.match(continuumV2Css, /@media print/);
+assert.match(continuumMobileV3Css, /\.afterlife-policy-ring/);
+assert.match(continuumMobileV3Css, /conic-gradient/);
+assert.match(continuumMobileV3Css, /\.afterlife-track::before/);
+assert.match(continuumMobileV3Css, /#overview \.tour-grid::before/);
+assert.match(continuumMobileV3Css, /grid-auto-flow:column/);
+assert.match(continuumMobileV3Css, /\.compact-map \.node-runtime/);
+assert.match(continuumMobileV3Css, /\.mobile-contents-trigger::before/);
+assert.match(continuumMobileV3Css, /@media \(max-width: 680px\)/);
+assert.match(continuumMobileV3Css, /@media \(prefers-reduced-motion: reduce\)/);
+assert.match(continuumMobileV3Css, /@media print/);
 
-console.log('Continuum visual-first document smoke test passed.');
+console.log('Continuum mobile infographic document smoke test passed.');
