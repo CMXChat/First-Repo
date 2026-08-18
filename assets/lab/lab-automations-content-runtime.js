@@ -82,14 +82,16 @@
           return;
         }
         if (!allowedTags.has(tag)) {
+          cleanNode(child);
           child.replaceWith(...child.childNodes);
           return;
         }
 
+        const rawHref = tag === "A" ? child.getAttribute("href") || "" : "";
+        const rawAlign = child.style?.textAlign || child.getAttribute("align") || "";
         [...child.attributes].forEach(attr => child.removeAttribute(attr.name));
 
         if (tag === "A") {
-          const rawHref = child.getAttribute("href") || "";
           const href = safeHref(rawHref);
           if (href) {
             child.setAttribute("href", href);
@@ -97,9 +99,7 @@
           }
         }
 
-        const rawStyle = child.style?.textAlign || "";
-        if (rawStyle && safeAlign.has(rawStyle)) child.style.textAlign = rawStyle;
-
+        if (rawAlign && safeAlign.has(rawAlign)) child.style.textAlign = rawAlign;
         cleanNode(child);
       });
     };
