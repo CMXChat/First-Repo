@@ -46,7 +46,8 @@
     ["lab-plan.css", "20260816-plan1"],
     ["lab-plan-overrides.css", "20260816-plan1"],
     ["lab-status-top.css", "20260818-status1"],
-    ["lab-automation-builder.css", "20260817-auto1"]
+    ["lab-automation-builder.css", "20260817-auto1"],
+    ["lab-final-qa.css", "20260818-final1"]
   ]);
 
   const LAB_SCRIPTS = Object.freeze([
@@ -150,6 +151,7 @@
     if (!html.includes("/assets/lab/lab-automation-builder.js")) throw new Error("Automation Builder prototype was not inserted.");
     if (!html.includes("/assets/lab/lab-automations-main-bridge.js")) throw new Error("Focused Automations bridge was not inserted.");
     if (!html.includes("/assets/lab/lab-acceptance.js")) throw new Error("Acceptance hardening layer was not inserted.");
+    if (!html.includes("/assets/lab/lab-final-qa.css")) throw new Error("Final Lab visual QA layer was not inserted.");
 
     return html;
   }
