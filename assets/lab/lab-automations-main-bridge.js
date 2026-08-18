@@ -80,7 +80,7 @@
       </div>
 
       <footer class="lab-auto-library-link">
-        <div><small>REUSABLE DO DEFINITIONS</small><strong>Action library</strong><p>Detailed reusable Action definitions stay in the main Lab below and can be referenced by Automations.</p></div>
+        <div><small>REUSABLE ACTION DEFINITIONS</small><strong>Action library</strong><p>The detailed Action library remains in the main Lab below. Automation drafts already share Lab people and records; reusable Action-definition linking is still a separate future integration.</p></div>
         <button type="button" data-main-action-library>Open action library ↓</button>
       </footer>`;
 
