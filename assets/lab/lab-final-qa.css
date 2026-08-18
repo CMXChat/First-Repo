@@ -18,6 +18,19 @@ body[data-lab-mode="true"]{
     margin-bottom:18px!important;
   }
 
+  /* Operational UI is allowed to be dense, never microscopic. */
+  body[data-lab-mode="true"] :is(.lab-actions,.lab-sequence-root,.lab-audit-root,.lab-decision-workspace) small{
+    font-size:max(9px,.54rem)!important;
+    line-height:1.4!important;
+  }
+  body[data-lab-mode="true"] :is(.lab-actions,.lab-sequence-root,.lab-audit-root,.lab-decision-workspace) p{
+    font-size:max(10px,.6rem)!important;
+    line-height:1.48!important;
+  }
+  body[data-lab-mode="true"] :is(.lab-actions,.lab-sequence-root,.lab-audit-root,.lab-decision-workspace) button{
+    font-size:max(9px,.54rem)!important;
+  }
+
   /* Actions */
   body[data-lab-mode="true"] .lab-action-layout{min-height:520px!important}
   body[data-lab-mode="true"] .lab-action-list{max-height:478px!important}
@@ -43,7 +56,7 @@ body[data-lab-mode="true"]{
   body[data-lab-mode="true"] .lab-decision-nodes{gap:56px 92px!important}
 }
 
-/* Desktop Lab text was visually too close to instrumentation micro-copy. */
+/* Specific labels can stay compact while remaining readable. */
 body[data-lab-mode="true"] :is(
   .lab-policy-summary small,.lab-audit-summary small,.lab-health-kpis small,.lab-incident-kpis small,
   .lab-action-pane-head span,.lab-card-head small,.lab-action-kicker,.lab-action-state,.lab-action-chip,
