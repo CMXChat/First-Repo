@@ -193,8 +193,10 @@ assert.match(conversationJs, /\}, 4200\)/);
 
 // The Spaces compatibility smoke only checks stable /doc integration points.
 assert.match(docHtml, /<title>Continuum \| Product Overview<\/title>/);
-assert.match(docHtml, /continuum-doc-human\.css\?v=20260818-1/);
-assert.match(docHtml, /personal-os-doc\.js\?v=20260818-4/);
+assert.match(docHtml, /continuum-doc-human\.css\?v=20260818-2/);
+assert.match(docHtml, /personal-os-doc\.js\?v=20260818-5/);
+assert.match(docHtml, /Continuum keeps useful context in one private place/);
+assert.match(docHtml, /Continuum in one minute/);
 assert.match(docHtml, /Afterlife/);
 assert.match(docHtml, /The Dead Man Switch/);
 assert.match(docHtml, /Python \+ FastAPI/);
@@ -202,6 +204,7 @@ assert.match(docHtml, /PostgreSQL/);
 assert.doesNotMatch(docHtml, /Why not just use AI by itself|An ordinary day, not an emergency|\.\.\.|…|—/);
 assert.doesNotMatch(docJs, /const plainCopy = new Map/);
 assert.match(continuumHumanCss, /font-size:clamp\(3rem,5\.4vw,4\.4rem\)/);
+assert.match(continuumHumanCss, /clarity-story-copy/);
 assert.match(docMobileCss, /\.final-cta \{[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
 assert.match(docMobileCss, /overflow-wrap: anywhere/);
 assert.match(docMobileCss, /@media \(max-width: 680px\)/);
