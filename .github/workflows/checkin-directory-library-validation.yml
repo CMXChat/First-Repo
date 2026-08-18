@@ -6,6 +6,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-audience-runtime.js'
+      - 'assets/lab/lab-automations-audience-review.js'
       - 'assets/lab/lab-automations-audience.css'
       - 'assets/lab/lab-automations-library-runtime.js'
       - 'assets/lab/lab-automations-library.css'
@@ -19,6 +20,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-audience-runtime.js'
+      - 'assets/lab/lab-automations-audience-review.js'
       - 'assets/lab/lab-automations-audience.css'
       - 'assets/lab/lab-automations-library-runtime.js'
       - 'assets/lab/lab-automations-library.css'
@@ -42,6 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-audience-runtime.js
+          node --check assets/lab/lab-automations-audience-review.js
           node --check assets/lab/lab-automations-library-runtime.js
           node --check assets/lab/lab-automations-editor-learning.js
           node --check assets/lab/lab-automations-document-security.js
@@ -51,6 +54,7 @@ jobs:
 
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
           audience = Path('assets/lab/lab-automations-audience-runtime.js').read_text(encoding='utf-8')
+          audience_review = Path('assets/lab/lab-automations-audience-review.js').read_text(encoding='utf-8')
           audience_css = Path('assets/lab/lab-automations-audience.css').read_text(encoding='utf-8')
           library = Path('assets/lab/lab-automations-library-runtime.js').read_text(encoding='utf-8')
           library_css = Path('assets/lab/lab-automations-library.css').read_text(encoding='utf-8')
@@ -61,6 +65,7 @@ jobs:
 
           required_html = [
               '/assets/lab/lab-automations-audience-runtime.js?v=',
+              '/assets/lab/lab-automations-audience-review.js?v=',
               '/assets/lab/lab-automations-library-runtime.js?v=',
               '/assets/lab/lab-automations-editor-learning.js?v=',
               '/assets/lab/lab-automations-document-security.js?v=',
@@ -75,6 +80,7 @@ jobs:
               'resolutionMode:"live"', 'Duplicate people are automatically counted once',
               'data-person-org', 'data-person-label', 'data-group-member',
           ]
+          required_audience_review = ['AUDIENCE','unique ${people.size','cmx-lab-audience-last-steps-v1']
           required_library = [
               'Documents & files', 'New document', 'Native Check In Document', 'Save version',
               'Save as', 'PDF', 'Word DOCX', 'Markdown', 'HTML', 'Plain text',
@@ -90,6 +96,8 @@ jobs:
               if term not in html: sys.exit(f'missing route contract: {term}')
           for term in required_audience:
               if term not in audience: sys.exit(f'missing audience contract: {term}')
+          for term in required_audience_review:
+              if term not in audience_review: sys.exit(f'missing audience Review bridge: {term}')
           for term in required_library:
               if term not in library: sys.exit(f'missing library contract: {term}')
           for term in required_learning:
@@ -101,11 +109,11 @@ jobs:
           for term in required_handoff:
               if term not in handoff: sys.exit(f'missing frontend handoff: {term}')
 
-          combined = audience + library + learning + security
+          combined = audience + audience_review + library + learning + security
           for term in ['api.cmxchat.com','eval(','new Function(','MutationObserver','localStorage.setItem("operator']:
               if term in combined: sys.exit(f'forbidden focused Lab behavior: {term}')
 
-          print('Directory, audience, Library, Document and editor-learning contract passed.')
+          print('Directory, audience, Review, Library, Document and editor-learning contract passed.')
           PY
 
       - name: Browser smoke desktop and mobile
