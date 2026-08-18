@@ -11,7 +11,7 @@ const css = fs.readFileSync(path.join(root, "assets/checkin/checkin.css"), "utf8
 const phase1Css = fs.readFileSync(path.join(root, "assets/checkin/checkin-phase1-controls.css"), "utf8");
 const refineJs = fs.readFileSync(path.join(root, "assets/checkin/checkin-refine.js"), "utf8");
 const contractJs = fs.readFileSync(path.join(root, "assets/checkin/checkin-status-contract.js"), "utf8");
-const { normalize } = require(path.join(root, "assets/checkin/checkin-status-contract.js"));
+const { normalize, dueSoonWindowMs } = require(path.join(root, "assets/checkin/checkin-status-contract.js"));
 
 const validStatus = normalize({ interval_hours: 72, grace_hours: 24, document_count: 0, contact_count: 0, organization_count: 0, update_revision_count: 0, trigger_action_count: 1 });
 assert.deepEqual(validStatus, { schemaCompatible: true, intervalHours: 72, graceHours: 24, documentCount: 0, contactCount: 0, organizationCount: 0, updateRevisionCount: 0, actionCount: 1 });
@@ -29,6 +29,13 @@ assert.equal(invalidTiming.schemaCompatible, false);
 assert.equal(invalidTiming.intervalHours, 72);
 assert.equal(invalidTiming.graceHours, 24);
 assert.doesNotMatch(Object.values(invalidTiming).join(" "), /undefined|null|NaN/);
+
+// Keep frontend state classification aligned with backend calculate_state():
+// due-soon = min(12 hours, 20% of the configured interval).
+assert.equal(dueSoonWindowMs(72), 12 * 60 * 60 * 1000);
+assert.equal(dueSoonWindowMs(24), 4.8 * 60 * 60 * 1000);
+assert.equal(dueSoonWindowMs(1), 0.2 * 60 * 60 * 1000);
+assert.equal(dueSoonWindowMs(0), 0);
 
 assert.match(html, /Primary 72 hour switch/);
 assert.match(html, /new 72 hour window/);
@@ -90,14 +97,23 @@ assert.match(contractJs, /organization_count/);
 assert.match(contractJs, /update_revision_count/);
 assert.match(contractJs, /trigger_action_count/);
 assert.match(contractJs, /schemaCompatible: intervalValid && graceValid/);
+assert.match(contractJs, /Math\.min\(12, hours \* 0\.2\)/);
+assert.match(js, /CheckInStatusContract\.dueSoonWindowMs\(state\.intervalHours\)/);
+assert.doesNotMatch(js, /state\.dueAt - now <= 12 \* 3600000/);
 assert.match(js, /renderLockedInventory/);
 assert.match(js, /session\.expires_at/);
 assert.match(js, /clearPrivateState/);
+assert.match(js, /sessionExpiryTimer/);
+assert.match(js, /scheduleSessionExpiry/);
+assert.match(js, /setTimeout\(expirePrivateSession, remaining \+ 50\)/);
+assert.match(js, /visibilitychange/);
+assert.match(js, /window\.addEventListener\("focus", updateSessionCountdown\)/);
 assert.match(js, /els\.lockNowButton[\s\S]*addEventListener\("click", lockOperator\)/);
 assert.match(js, /renderPublicActionSequence/);
 assert.match(js, /state\.actionCount/);
 assert.match(js, /state\.intervalHours = normalized\.intervalHours/);
 assert.match(js, /state\.intervalHours \* 3600000/);
+assert.match(js, /state\.graceHours \* 3600000/);
 assert.match(js, /`\$\{state\.intervalHours\} hours rolling`/);
 assert.match(js, /clearPrivateState/);
 assert.match(js, /editorDirty/);
