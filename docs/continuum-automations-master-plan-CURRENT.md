@@ -1,7 +1,7 @@
 # Continuum Automations Master Plan — CURRENT
 
 Date: 2026-08-18
-Status: Canonical Automation product/UX direction; Lab v4.2 implemented, protected Runtime/provider execution still later
+Status: Canonical Automation product/UX direction; Lab v4.3 implemented, protected Runtime/provider execution still later
 
 # Purpose
 
@@ -39,7 +39,7 @@ Core principle:
 
 **Automation = the plan. Runtime = the execution layer.**
 
-# Current Lab v4.2 stack
+# Current Lab v4.3 stack
 
 The focused route keeps the proven v3 Draft/persistence engine and layers current product behavior on top.
 
@@ -52,6 +52,7 @@ Current responsibilities:
 - `lab-automations-directory-v4.js` — Directory counts/readiness integration;
 - `lab-automations-audience-v4.js` — typed multi-selector Audience Lab adapter;
 - `lab-automations-intelligence-v4.js` — contextual recommendations, typed data-reference UX and richer local step testing;
+- `lab-automations-input-routing-v4.js` — field-level mapping from a typed source to a specific receiving Action input;
 - matching v4 CSS/QA layers — current desktop/mobile presentation.
 
 The old focused v2 builder is history and is not loaded.
@@ -150,7 +151,7 @@ Never shrink a desktop workflow canvas onto a phone.
 
 Use readable vertical flow, one primary decision area at a time, large tap targets, one-column choices, bottom-sheet/full-screen configuration surfaces, safe-area-aware controls, no nested scroll traps and no horizontal overflow.
 
-Audience and data-reference selectors follow the same mobile rule.
+Audience, data-reference and input-routing selectors follow the same mobile rule.
 
 # Capability Catalog
 
@@ -164,28 +165,15 @@ The Lab catalog contains current prototype-usable items labeled `LAB NOW` and fu
 
 Future catalog visibility never means backend/Runtime/provider implementation exists.
 
-Large option breadth is handled through:
-
-- contextual recommendations;
-- categories;
-- search;
-- reusable user Actions;
-- Connection-provided capabilities later;
-- explicit readiness/availability state.
+Large option breadth is handled through contextual recommendations, categories, search, reusable user Actions, Connection-provided capabilities later and explicit readiness/availability state.
 
 ## Contextual recommendations now proven in Lab
 
 Automations v4.2 derives a small **RECOMMENDED NEXT** set from current Trigger/flow context.
 
-Examples:
-
-- grace events prioritize communication/review choices;
-- calendar triggers prioritize AI/review/notification patterns;
-- flows containing AI Task prioritize human review and downstream use of the result.
-
 Recommendations use the same Capability Catalog. They never create hidden capability types or silently mutate the Draft.
 
-Future ranking can become more sophisticated using typed capability metadata, current Connections, Directory readiness and workflow context while preserving the same rule.
+Future ranking can use typed capability metadata, current Connections, Directory readiness and workflow context while preserving that rule.
 
 # Capability ownership
 
@@ -257,17 +245,38 @@ Do **not** make arbitrary JavaScript, Python, shell, SQL or template expressions
 
 Later data sources can include Library, normalized inbound Event/Conversation data, Connection outputs and Runtime context once those domains are real.
 
+# Field input routing v4.3
+
+V4.3 proves the receiving side of that model.
+
+An Action can map a typed source into a named input slot such as:
+
+- Email subject;
+- Email body data;
+- AI task context;
+- AI task focus value;
+- notification message data;
+- manual-review context.
+
+Prototype intent uses `inputBindings[]` entries with:
+
+- `targetField`;
+- typed source kind;
+- stable source/step ID;
+- typed output path;
+- readable display label.
+
+The Lab also uses `cmx-lab-automation-input-bindings-v1` as compatibility scaffolding so the older v3 Draft engine does not erase the richer field-routing prototype.
+
+Production should not copy that local store. The server Automation Draft should carry validated typed input bindings directly.
+
+The important future rule is that the capability registry describes both **outputs** and **receiving input fields**, allowing human UI and AI Planner to produce only compatible mappings.
+
 # Testing
 
 `TEST THIS STEP` is now a richer Lab proving surface.
 
-V4.2 can show a local input → normalization/resolution → sample output trace for:
-
-- Trigger;
-- Rules;
-- Actions;
-- Timing;
-- Review/preflight.
+V4.2 can show a local input → normalization/resolution → sample output trace for Trigger, Rules, Actions, Timing and Review/preflight.
 
 Action traces can show resolved Audience counts, channel readiness, mapped-data sample values and simulated output text.
 
@@ -283,9 +292,9 @@ Review should be one of Continuum's strongest product surfaces.
 
 Never use cosmetic health percentages.
 
-Show deterministic readiness such as Trigger configured, Audience resolves, required channel readiness, ContentVersion available, Connection ready, timing valid, authority sufficient and Runtime/capability availability.
+Show deterministic readiness such as Trigger configured, Audience resolves, required channel readiness, typed input references resolve, ContentVersion available, Connection ready, timing valid, authority sufficient and Runtime/capability availability.
 
-Current Lab includes Directory/Audience readiness plus richer local structural blockers.
+Current Lab includes Directory/Audience readiness, input-routing summary and richer local structural blockers.
 
 Production readiness belongs to backend services.
 
@@ -299,13 +308,35 @@ Provider secrets never belong in Automation Draft JSON.
 
 # AI
 
-AI has distinct Automation roles.
+AI has distinct Continuum roles, but all of them use the same typed domain services as human UI.
 
-## Planner
+## Automation Planner
 
-Natural language → the same typed Draft humans edit.
+Natural language → the same typed Automation Draft humans edit.
+
+The Planner can eventually choose known capabilities, create/reorder Actions, choose stable Directory audiences, wire typed input/output references and propose timing/rules.
 
 AI changes to a published Automation become the next mutable Draft/version proposal, never silent mutation of immutable history.
+
+## Cross-domain Continuum Planner
+
+The broader product should also support requests that span Automations plus Directory/Library, for example:
+
+“Organize my emergency contacts, create a Family group, and build a missed Check In escalation using them.”
+
+That becomes a structured **Change Plan** containing typed operations against the owning domains.
+
+The flow is:
+
+`natural-language intent → Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain mutations`
+
+The Planner may author Automation Draft state, Directory records/relationships/Groups and supported Library structures, but it does not get a hidden database/admin path.
+
+Prompt text never grants authority. The Planner cannot publish consequential work, merge identities, broaden standing authority or invent executable capabilities unless the relevant protected service and authority path permit it.
+
+Backend companion:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 
 ## AI Task
 
@@ -346,13 +377,16 @@ Current order remains:
 3. widen Automation definitions in bounded typed families;
 4. add protected Directory foundation in bounded slices;
 5. add canonical audience resolution/readiness and typed Automation Audience;
-6. add typed data-reference validation as Action/Trigger output schemas become real;
+6. add typed data-reference + receiving-input validation as Action/Trigger schemas become real;
 7. Phase 2B protected human builder;
 8. Phase 3 durable Runtime + fake provider;
 9. Phase 4 one real low-risk provider;
 10. Phase 5 waits/routes/retries/acknowledgements/approvals/escalation;
-11. Phase 6 AI Task execution then Planner;
-12. Phase 7 bounded Agent.
+11. Phase 6 AI Task execution then Automation Planner;
+12. cross-domain Change Plan execution after the relevant domain mutation services are mature;
+13. Phase 7 bounded Agent.
+
+Planner UX/contracts can be designed before execution exists, but AI must not become the implementation path for domain capabilities that normal human/API services do not support.
 
 Exact cross-domain sequencing can overlap safely after the Phase 2A production release boundary, but no new work should destabilize that reviewed migration.
 
@@ -361,6 +395,8 @@ Exact cross-domain sequencing can overlap safely after the Phase 2A production r
 Preserve protected sessions, Origin/CSRF, owner/scope checks, stable IDs, immutable history, secret separation, typed references, explicit authority and the prohibition on arbitrary workflow code.
 
 Browser audience resolution and data mapping never become production authority.
+
+AI Planner must never treat natural-language instructions as authority or gain a shadow mutation path.
 
 No broad document MutationObserver loops in accepted frontend paths.
 
@@ -374,9 +410,11 @@ A mature Automation product should answer clearly:
 - Who/what does each step reference?
 - When may it start/wait/repeat?
 - Which typed data flows between steps?
+- Which receiving field gets each mapped value?
 - Is every required Connection/resource/recipient ready?
 - Which authority permits consequential work?
 - Which immutable definition was published?
+- What exact changes did AI propose if it helped build the workflow?
 - What exactly happened when Runtime ran it?
 
 If complexity forces the user to mentally reconstruct the workflow from unrelated forms, the product architecture is wrong.
