@@ -93,6 +93,7 @@
     setText('#difference .ai-answer p', 'AI provides reasoning. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity.');
     setText('#difference .model-swap-note > div:first-child span', 'MODEL CHOICE CAN CHANGE');
     setText('#difference .model-swap-note > div:first-child strong', 'Continuum keeps the approved context, authority, policy and history around the model.');
+    setText('#difference .capability-layer-head p', 'Continuum can add new capabilities over time and evaluate each one under the same durable rules.');
     setText('#difference .rule-callout strong', 'Server-side policy remains the enforcement point.');
     setText('#difference .rule-callout span', 'AI can interpret objectives and choose among allowed capabilities, while protected server rules decide whether the action may actually run.');
 
@@ -223,7 +224,7 @@
       <div class="continuum-routing-copy">
         <span>MODEL ROUTING</span>
         <strong>Different approved intelligence can fit different jobs.</strong>
-        <p>Coding, research, vision, sensitive local work and future tasks can use different models when privacy, cost, availability and policy allow. Changing the model does not change the authority.</p>
+        <p>Coding, research, vision, sensitive local work and future tasks can use different models when privacy, cost, availability and policy allow. Authority stays fixed unless policy changes.</p>
       </div>
       <div class="continuum-boundary-grid">
         <span><b>Model</b><small>Can this intelligence handle the task?</small></span>
