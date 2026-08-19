@@ -4,16 +4,28 @@ on:
   push:
     paths:
       - 'lab/control/**'
+      - 'lab/automations/index.html'
       - 'assets/lab/control-center-*.js'
       - 'assets/lab/control-center-*.css'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
+      - 'docs/continuum-control-center-lab-CURRENT.md'
+      - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-control-center-v1.test.js'
+      - 'tests/continuum-control-center-focus-v4.test.js'
+      - 'tests/continuum-shared-app-shell.test.js'
       - '.github/workflows/control-center-lab-validation.yml'
   pull_request:
     paths:
       - 'lab/control/**'
+      - 'lab/automations/index.html'
       - 'assets/lab/control-center-*.js'
       - 'assets/lab/control-center-*.css'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
+      - 'docs/continuum-control-center-lab-CURRENT.md'
+      - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-control-center-v1.test.js'
+      - 'tests/continuum-control-center-focus-v4.test.js'
+      - 'tests/continuum-shared-app-shell.test.js'
       - '.github/workflows/control-center-lab-validation.yml'
 
 permissions:
@@ -30,3 +42,7 @@ jobs:
           node-version: '22'
       - name: Validate standalone Control Center contract
         run: node tests/continuum-control-center-v1.test.js
+      - name: Validate Control Center focus containment
+        run: node tests/continuum-control-center-focus-v4.test.js
+      - name: Validate shared Continuum shell contract
+        run: node tests/continuum-shared-app-shell.test.js
