@@ -12,9 +12,9 @@ Current source, tests, workflows and `*-CURRENT.md` contracts take priority over
 1. `checkin-context-handoff-CURRENT.md` — current cross-repository truth.
 2. `continuum-product-CURRENT.md` — Continuum identity and `/doc/` contract.
 3. `continuum-automations-master-plan-CURRENT.md` — Automation product/model direction.
-4. `checkin-automations-frontend-CURRENT.md` — exact Automations v5 frontend/model/Planner truth.
+4. `checkin-automations-frontend-CURRENT.md` — exact Automations v5/model/Planner/QA truth.
 5. `continuum-directory-master-plan-CURRENT.md` — durable Directory/CRM-quality direction.
-6. `checkin-directory-library-CURRENT.md` — current Directory/Audience/Library/Planner cross-domain truth.
+6. `checkin-directory-library-CURRENT.md` — Directory/Audience/Library/Planner cross-domain truth.
 7. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
 8. `checkin-content-editor-CURRENT.md` — native content/editor contract.
 9. `checkin-files-CURRENT.md` — binary File direction.
@@ -34,16 +34,17 @@ Broader Continuum experiment workspace.
 
 Records runs **Directory v2** with People, Organizations, Groups, memberships, ContactMethods/readiness, Labels, Person relationships, Activity/notes, Group resolution, duplicate warnings, Automation usage and responsive desktop/mobile presentation.
 
-Directory `AI setup` presents a **CONTINUUM PLANNER · PREVIEW** using the shared Lab Change Plan vocabulary across Directory, Library and Automations.
+Directory `AI setup` opens **CONTINUUM PLANNER · PREVIEW** using the shared Lab Change Plan vocabulary across Directory, Library and Automations.
 
 Browser markers:
 
 - `data-lab-planner-contract="v1"`;
+- `data-lab-planner-review="v1"`;
 - `data-lab-directory-planner="typed-v2"`.
 
-It has no model call, no free-text interpretation, no mutation and no hidden authority. Fixed examples show typed operations and preflight blockers, including a **Full Continuum setup** example spanning all three domains.
+It has no model call, free-text interpretation, mutation or hidden authority. Fixed examples show typed operations, blockers and the shared Change Review, including a **Full Continuum setup** example spanning all three domains.
 
-Current phone QA also fixes the Directory command-bar collision between `AI setup` and the primary New action and raises Planner tap targets/readability for narrow Samsung-class layouts.
+Current phone QA fixes the Directory command-bar collision between `AI setup` and New, raises key controls to 44px+, and validates the rendered Planner at 390px width.
 
 ## `/lab/automations/`
 
@@ -51,7 +52,7 @@ Focused Automation operating/testing surface with:
 
 - v3 Draft/autosave compatibility editor;
 - **v5 canonical ordered workflow model**;
-- compact FLOW PREVIEW + **ORDERED SEQUENCE** v5 presentation;
+- compact FLOW PREVIEW + **ORDERED SEQUENCE**;
 - v4 command center / Capability Catalog;
 - **15 editable scenarios**;
 - Directory readiness;
@@ -61,13 +62,14 @@ Focused Automation operating/testing surface with:
 - Advanced Flow v4.4 inter-step IF / WAIT authoring;
 - **deterministic typed Planner v5 proving surface**;
 - shared **Planner Contract v1** operation vocabulary;
-- final v5 mobile QA layer for ordered-flow and Planner readability/tap targets.
+- shared **Change Review v1** effect/domain/review summary;
+- final v5 mobile QA layer.
 
 V5 semantic shape:
 
 `Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
 
-The beginner rail remains:
+Beginner rail:
 
 `WHEN → IF → DO → WAIT → TEST`
 
@@ -77,10 +79,11 @@ Automations Planner v5 is explicitly local/non-AI:
 
 - `TYPED PLAN PREVIEW · LOCAL`;
 - `NO AI CALL`;
-- shows ordered v5 flow;
-- shows conceptual typed Change Plan operations;
-- shows preflight blockers;
-- `Use this draft` creates a normal editable Lab Draft and normalizes it through v5.
+- ordered v5 flow;
+- typed Change Plan operations;
+- preflight blockers;
+- shared Change Review;
+- `Use this draft` creates an ordinary editable Lab Draft and normalizes it through v5.
 
 It does not call a model, backend, provider or Runtime.
 
@@ -98,9 +101,20 @@ Python-first development/learning environment.
 
 # One Planner language
 
-The Lab now loads `assets/lab/lab-continuum-planner-contract-v1.js` in both Directory and focused Automations.
+Both Directory and focused Automations load:
 
-That file is a **browser proving registry**, not backend authority. It defines the current allowlisted Lab operation vocabulary and metadata families used by Change Plan examples, such as:
+`assets/lab/lab-continuum-planner-contract-v1.js`
+
+This is a **browser proving registry**, not backend authority.
+
+It defines the shared Lab operation vocabulary and product metadata, including:
+
+- owning domain;
+- operation family;
+- effect: Resolve / Create / Update / Link;
+- review class.
+
+Examples include:
 
 - `directory.upsert_group`;
 - `library.create_folder`;
@@ -110,21 +124,60 @@ That file is a **browser proving registry**, not backend authority. It defines t
 - `automation.reference_audience`;
 - `automation.reference_content`.
 
-Current CI extracts typed operation literals from both Planner surfaces and fails if either uses an operation that is absent from the shared registry.
+Current CI extracts typed operation literals from both Planner surfaces and fails if either uses an operation absent from the shared registry.
 
-This prevents the two prototypes from silently inventing incompatible Planner languages while the real protected server operation allowlist is still future work.
+This prevents the prototypes from silently inventing incompatible Planner languages while the protected server allowlist is still future work.
 
-Current product contract remains:
+# One Change Review language
+
+Both Planner surfaces also load:
+
+- `assets/lab/lab-continuum-planner-review-v1.js`;
+- `assets/lab/lab-continuum-planner-review-v1.css`.
+
+The review layer turns operation metadata into visible badges and a **CHANGE REVIEW** summary.
+
+Current product-facing states include:
+
+- `CREATE`;
+- `UPDATE`;
+- `LINK`;
+- `RESOLVE`;
+- `STANDARD REVIEW`;
+- `CHECK REQUIRED`;
+- future `APPROVAL REQUIRED` / `BLOCKED` representation.
+
+The summary shows typed change count, represented blockers, approval/check state and affected domains.
+
+This is product/UX proof only. Real server preflight, permissions, duplicate resolution, stale-revision handling, risk classification and approvals remain authoritative later.
+
+Canonical desired flow:
 
 `INTENT → TYPED CHANGE PLAN → PREFLIGHT → REVIEW → APPLY through normal protected services`
 
 Current prototypes:
 
 - Directory Planner typed-v2 = fixed cross-domain examples, no free-text interpretation;
-- Automations Planner v5 = small local deterministic pattern matcher that can create an ordinary v5 Lab Draft;
+- Automations Planner v5 = small local deterministic matcher that can create an ordinary v5 Lab Draft;
 - neither = the real protected Continuum AI Planner.
 
-The future protected Planner replaces these adapters and the Lab operation registry with server-backed typed planning/tools while humans and AI continue using the same domain services.
+# Mobile geometry validation
+
+`tests/continuum-mobile-layout-probe.js` plus `.github/workflows/continuum-mobile-layout-validation.yml` now provide rendered browser geometry QA at **390×844**.
+
+The probe checks:
+
+- horizontal overflow before/after Planner interaction;
+- Directory AI setup/New overlap;
+- 44px+ key tap targets;
+- Directory Planner viewport containment;
+- Directory Change Review rendering;
+- Automations Planner result rendering;
+- Automations Change Review rendering;
+- Automations Planner viewport containment;
+- mobile tap targets after the richer review content appears.
+
+This is stronger than CSS-string-only validation because it measures actual headless Chromium geometry.
 
 # Backend boundary
 
@@ -134,9 +187,10 @@ Production still has no general:
 
 - Directory v2 persistence;
 - canonical Group/Label Audience resolver;
-- typed Automation data/input/inter-step flow service matching Lab;
-- server equivalent of the Lab v5 ordered model;
-- server Planner operation registry equivalent to the Lab contract;
+- typed Automation data/input/inter-step service matching Lab;
+- server equivalent of Lab v5;
+- authoritative server Planner operation registry;
+- authoritative Planner preflight/review/apply;
 - Automation Runtime / persisted waits / branching;
 - provider execution;
 - AI Task execution;
@@ -144,18 +198,19 @@ Production still has no general:
 - Agent;
 - MCP execution.
 
-Do not infer backend capability from Lab visuals, browser models, Planner previews or the Lab operation registry.
+Do not infer backend capability from Lab visuals, browser models, Planner previews, the Lab operation registry or Change Review.
 
 # Current validation workflows
 
-Relevant source workflows include:
+Relevant workflows include:
 
 - `checkin-lab-validation.yml`;
 - `automations-v5-model-validation.yml`;
 - `automations-v5-planner-validation.yml`;
-- `continuum-directory-validation.yml`.
+- `continuum-directory-validation.yml`;
+- `continuum-mobile-layout-validation.yml`.
 
-They now protect the shared Planner registry, both Planner vocabularies, mobile QA, model semantics, isolation and no-network/no-execution boundaries.
+They protect model semantics, shared Planner vocabulary/review, mobile QA, geometry, isolation and no-network/no-execution boundaries.
 
 The available connector cannot independently expose push-triggered workflow-run results in this context, so do not claim an observed green run or Pages pickup until a later context can verify it.
 
