@@ -1,7 +1,7 @@
 # Continuum Directory Master Plan — CURRENT
 
 Date: 2026-08-18
-Status: Canonical Directory product/UX direction; Lab Directory v2 + polish and Automations Audience v4.1 implemented, protected backend expansion pending
+Status: Canonical Directory product/UX direction; Lab Directory v2 + polish + AI setup preview, Automations Audience v4.1 and field input routing v4.3 implemented, protected backend expansion pending
 
 # Purpose
 
@@ -27,7 +27,9 @@ Current files:
 - `assets/lab/lab-crm.css` — retained compatibility styling;
 - `assets/lab/lab-directory-v2.js` — richer Directory model/product surface;
 - `assets/lab/lab-directory-v2.css` — Directory v2 base presentation;
-- `assets/lab/lab-directory-v2-polish.css` — presentation-only density/responsive polish.
+- `assets/lab/lab-directory-v2-polish.css` — presentation-only density/responsive polish;
+- `assets/lab/lab-directory-planner-preview.js` — natural-language AI setup / Change Plan product preview;
+- `assets/lab/lab-directory-planner-preview.css` — matching desktop/mobile Planner presentation.
 
 Shared browser store:
 
@@ -38,6 +40,8 @@ Directory-only navigation preferences:
 `cmx-lab-directory-ui-v2`
 
 The polish layer adds stronger app hierarchy, sticky desktop controls, denser record/profile presentation and dedicated phone refinements. It does not add persistence or authority.
+
+The AI setup layer is explicitly a preview. It performs no model call and no data mutation. It establishes the future flow from natural-language intent to a reviewed typed Change Plan.
 
 Directory v2 preserves old compatibility fields such as `orgId`, `email`, `phone` and `tags` while prototyping richer fields such as:
 
@@ -76,9 +80,74 @@ Current demonstrations include:
 - email-ready/phone-ready counts;
 - exact-email / normalized-phone duplicate warning prototype;
 - direct Automation usage links;
-- light/dark presentation.
+- light/dark presentation;
+- **AI setup** preview for the future natural-language environment builder.
 
 The original `.lab-crm` remains compatibility scaffolding and is hidden when Directory v2 successfully loads.
+
+# Natural-language AI environment setup
+
+Continuum should eventually let the user describe the environment they want in ordinary language, including requests such as:
+
+- add or organize People;
+- connect People to Organizations;
+- add Labels and explicit relationships;
+- create Groups/saved audiences;
+- create or modify Automation Drafts;
+- link or organize Library information;
+- configure supporting structures that the owner is authorized to change.
+
+This should feel dramatically faster than manual CRM administration while preserving the same domain rules.
+
+The core contract is:
+
+`natural-language intent → AI Planner → typed Change Plan → deterministic preflight → review/approval where required → normal protected domain services → authoritative updated state + Activity/Audit`
+
+## Change Plan
+
+AI should not directly freestyle-mutate tables or UI state.
+
+A Change Plan is a structured proposal containing ordered typed operations such as:
+
+- create Person;
+- update Person fields;
+- create/update Organization;
+- create membership;
+- add Label;
+- create/update Group selectors;
+- create PersonRelationship;
+- create/update Automation Draft;
+- add typed Audience selectors;
+- add typed Automation input routing;
+- create/link Library content where supported.
+
+Each operation should include stable references or temporary plan-local references, expected effects, validation/readiness state, risk/approval requirements and conflict information.
+
+A Planner request can span domains, but each operation is still executed by the owning domain service.
+
+## Preview before apply
+
+The user should be able to see what AI proposes before consequential changes are applied.
+
+The preview should clearly distinguish:
+
+- create;
+- update;
+- link/associate;
+- archive/remove;
+- blocked/missing prerequisite;
+- duplicate/conflict;
+- approval required.
+
+Low-risk reversible organizational changes may eventually support broader approval policies, but high-impact or consequential changes must follow the existing capability/authority rules.
+
+## No AI shadow state
+
+Manual UI and AI must converge on the same Person, Organization, Group, Automation Draft and Library models.
+
+Do not create a separate AI-only contact store, AI workflow format or hidden metadata model that becomes impossible to reconcile with human edits.
+
+The current `AI setup` Lab modal is a product preview of this contract only. It explicitly says no model is connected and does not interpret arbitrary text or mutate Directory.
 
 # Core durable model
 
@@ -161,7 +230,8 @@ The useful core should eventually support:
 - bulk actions with review;
 - recent/favorite records;
 - excellent mobile access;
-- linked Automations and Library information.
+- linked Automations and Library information;
+- natural-language AI setup over the same typed foundation.
 
 Add these because they strengthen Continuum identity/context, not because another CRM has them.
 
@@ -205,7 +275,7 @@ Production still requires the canonical protected Audience resolver/readiness se
 
 ## Automations Intelligence v4.2 Directory data use
 
-The focused Automation Lab can now select friendly typed data references from Directory/Audience context, currently including:
+The focused Automation Lab can select friendly typed data references from Directory/Audience context, currently including:
 
 - resolved People count;
 - email-ready count;
@@ -215,7 +285,15 @@ These are **sample/reference UX only**. They prove how Directory values can appe
 
 They do not make browser resolution authoritative and they do not create an expression engine.
 
-Production direction remains typed server paths/references validated against real output schemas and authorized Directory services.
+## Automations field input routing v4.3
+
+The focused Automation Lab now also demonstrates **input routing**: a typed source can be assigned to a specific receiving field such as Email subject/body, AI task context/focus, notification message data or human-review context.
+
+Prototype Action fields use `inputBindings[]` with a `targetField` plus typed source reference.
+
+This is the important bridge from “these values exist” to “this exact field receives this exact typed value.”
+
+Production direction remains typed server paths/references validated against real capability input/output schemas and authorized Directory services.
 
 # Contact readiness
 
@@ -241,9 +319,15 @@ Spaces can retrieve minimum-necessary authorized Directory context such as who i
 
 # Directory and AI
 
-AI later accesses Directory through narrow typed protected tools such as search/get Person/get Organization/preview audience/suggest duplicates/propose Group.
+AI later accesses Directory through narrow typed protected tools such as search/get Person/get Organization/preview audience/suggest duplicates/propose Group/create or update low-risk Draft state where authorized.
 
-AI cannot silently widen Group membership, grant trust/authority, expose hidden contact methods or merge identities without appropriate authorization.
+The cross-domain Planner can compose those tools into a Change Plan, but it must still use the same domain services as human UI.
+
+AI cannot silently widen Groups, grant trust/authority, expose hidden contact methods, merge identities, publish consequential Automations or bypass required review.
+
+Backend companion:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 
 # Duplicate and merge direction
 
@@ -290,7 +374,7 @@ Preserve:
 - 16px inputs where needed to avoid zoom;
 - no compressed three-column desktop layout.
 
-Audience/data pickers follow the same bottom-sheet/full-screen mobile pattern with safe-area-aware actions.
+Audience/data pickers and AI setup follow the same bottom-sheet/full-screen mobile pattern with safe-area-aware actions.
 
 # Production backend order
 
@@ -311,7 +395,10 @@ After that release boundary:
 11. duplicate suggestion + explicit merge;
 12. custom fields/saved views as needed;
 13. staged import/export;
-14. deeper Connection/inbound identity and Runtime history integration.
+14. deeper Connection/inbound identity and Runtime history integration;
+15. cross-domain AI Change Plan execution only after the relevant domain mutation services are mature enough to support it safely.
+
+Planner UX/contracts can be designed earlier, but AI must not become the implementation path for domain capabilities that human/API services do not yet support.
 
 Each slice gets models, migrations, services, protected APIs, tests and generated frontend client changes before production claims widen.
 
@@ -321,6 +408,8 @@ Rebuild accepted semantics in protected React/FastAPI/PostgreSQL.
 
 Do not copy localStorage, DOM patching, compatibility `orgId`, browser audience resolution as authority, compatibility target summaries, browser reload save mechanics or client-generated Audit truth.
 
+The AI setup Lab surface also remains presentation/prototyping only. Production Planner calls protected typed services and returns authoritative post-mutation state.
+
 # Security
 
 Directory contains sensitive personal information.
@@ -328,6 +417,8 @@ Directory contains sensitive personal information.
 Preserve protected reads, Origin + CSRF mutations, scope checks, stable IDs, contact privacy, audited material mutations, controlled exports, explicit authority, minimum-necessary AI retrieval and frozen Runtime recipient history later.
 
 Labels/Groups/relationships are metadata/selectors, not implicit permissions.
+
+AI Planner must never use prompt text as authority, silently broaden resource scope or bypass duplicate/merge/approval rules.
 
 # Validation target
 
@@ -343,5 +434,6 @@ A mature Directory should answer clearly:
 - Which Library records and Automations use them?
 - Are there duplicate/conflicting identities?
 - If an Automation runs, exactly which People resolve and which channels are ready?
+- If AI is asked to organize the environment, what exact typed changes is it proposing before they are applied?
 
 If those answers require duplicated ad hoc identity data in every product surface, the Directory architecture is wrong.
