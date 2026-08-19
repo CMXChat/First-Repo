@@ -40,6 +40,8 @@
 
 body.cc-quiet-preview .cc-status-strip{background:linear-gradient(145deg,color-mix(in srgb,var(--green-soft) 30%,var(--bg-raised)),var(--bg-raised) 64%)}
 body.cc-quiet-preview .cc-orbit{border-color:color-mix(in srgb,var(--green) 30%,var(--line));background:radial-gradient(circle at 42% 36%,color-mix(in srgb,var(--green) 20%,var(--bg-raised)),var(--bg-soft) 66%)}
+body.cc-quiet-preview .cc-chip[data-tone="attention"]{border-color:color-mix(in srgb,var(--green) 24%,var(--line));color:var(--green)}
+body.cc-quiet-preview .cc-chip[data-tone="attention"] i{background:var(--green)}
 
 @media(max-width:580px){
   .cc-detail-summary{grid-template-columns:1fr;margin-bottom:11px}
