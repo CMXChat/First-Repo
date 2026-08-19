@@ -1,0 +1,150 @@
+name: Continuum Automations v5 Model Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-model-v5.js'
+      - 'assets/lab/lab-automations-sequence-v4.js'
+      - '.github/workflows/automations-v5-model-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-model-v5.js'
+      - 'assets/lab/lab-automations-sequence-v4.js'
+      - '.github/workflows/automations-v5-model-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Syntax and model contract
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-model-v5.js
+
+          node <<'NODE'
+          const fs = require('fs');
+          const vm = require('vm');
+          const assert = require('assert');
+
+          const memory = new Map();
+          global.localStorage = {
+            getItem(key) { return memory.has(key) ? memory.get(key) : null; },
+            setItem(key, value) { memory.set(key, String(value)); },
+            removeItem(key) { memory.delete(key); }
+          };
+          global.document = {
+            documentElement: { dataset: {} },
+            addEventListener() {},
+            dispatchEvent() {}
+          };
+          global.window = {
+            addEventListener() {},
+            dispatchEvent() {}
+          };
+          global.CustomEvent = function CustomEvent(type, init) { this.type = type; this.detail = init?.detail; };
+
+          const legacy = {
+            id: 'auto-v5-test',
+            trigger: 'manual',
+            conditions: [{ id: 'rule-pre', type: 'switch_in_grace' }],
+            ruleMode: 'all',
+            actions: [
+              { id: 'step-ai', type: 'ai_task', content: 'Summarize', enabled: true },
+              { id: 'step-email', type: 'email', content: 'Send summary', enabled: true }
+            ],
+            flowControls: [
+              {
+                id: 'gate-urgent',
+                type: 'condition',
+                afterActionId: 'step-ai',
+                source: { sourceType: 'step', sourceId: 'step-ai', path: 'output.priority', label: 'AI priority' },
+                operator: 'equals',
+                compareValue: 'urgent',
+                enabled: true
+              },
+              {
+                id: 'wait-short',
+                type: 'wait',
+                afterActionId: 'step-ai',
+                duration: { days: 0, hours: 0, minutes: 15 },
+                enabled: true
+              }
+            ],
+            timing: { mode: 'none' },
+            repeatConfig: { mode: 'none' },
+            outcome: 'end'
+          };
+
+          memory.set('cmx-lab-automations-v1', JSON.stringify({ version: 1, automations: [legacy] }));
+          vm.runInThisContext(fs.readFileSync('assets/lab/lab-automations-model-v5.js', 'utf8'));
+
+          const api = window.CMXAutomationModelV5;
+          assert(api, 'v5 model API must be exposed');
+          assert.equal(api.version, 5);
+
+          const model = api.build(legacy);
+          const summary = api.summary(model);
+          assert.deepEqual(summary, {
+            trigger: 1,
+            preconditions: 1,
+            actions: 2,
+            sequenceConditions: 1,
+            waits: 1,
+            finish: 1
+          });
+          assert.equal(api.validate(model).ok, true);
+          assert.deepEqual(
+            model.nodes.map(node => `${node.kind}:${node.phase || ''}:${node.id}`),
+            [
+              'trigger::v5-trigger:auto-v5-test',
+              'condition:pre:rule-pre',
+              'action::step-ai',
+              'condition:sequence:gate-urgent',
+              'wait:sequence:wait-short',
+              'action::step-email',
+              'finish::v5-finish:auto-v5-test'
+            ]
+          );
+
+          const bad = JSON.parse(JSON.stringify(model));
+          bad.nodes.find(node => node.id === 'gate-urgent').source.sourceId = 'step-email';
+          const badVerdict = api.validate(bad);
+          assert.equal(badVerdict.ok, false);
+          assert(badVerdict.errors.some(item => item.code === 'condition_uses_future_or_missing_step'));
+
+          api.syncStore();
+          const stored = JSON.parse(memory.get('cmx-lab-automations-v1'));
+          assert.equal(stored.automations[0].workflowV5.version, 5);
+          assert.equal(document.documentElement.dataset.labAutomationsModel, 'v5');
+
+          console.log('Automations v5 canonical model contract passed.');
+          NODE
+
+      - name: Browser marker smoke
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-v5-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 \
+            --dump-dom 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-v5.html
+          grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5.html
+          grep -q 'data-lab-automations-sequence="v4-4"' /tmp/continuum-v5.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-v5.html
+          echo 'Automations v5 model marker passed browser smoke.'
