@@ -29,6 +29,10 @@ Backend architecture companion:
 
 `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md`
 
+Shared product-shell companion:
+
+`docs/continuum-shared-app-shell-CURRENT.md`
+
 # Standalone implementation decision
 
 The Control Center prototype deliberately does not inherit the main `/lab/` Check In snapshot-loader stack.
@@ -40,8 +44,12 @@ Current files:
 - `assets/lab/control-center-v1.css`
 - `assets/lab/control-center-mobile-polish-v2.css`
 - `assets/lab/control-center-interaction-v3.css`
+- `assets/lab/control-center-focus-v4.css`
 - `assets/lab/control-center-v1.js`
+- `assets/lab/control-center-focus-v4.js`
 - `tests/continuum-control-center-v1.test.js`
+- `tests/continuum-control-center-focus-v4.test.js`
+- `tests/continuum-shared-app-shell.test.js`
 - `.github/workflows/control-center-lab-validation.yml`
 
 Reason:
@@ -148,7 +156,7 @@ The Autonomy `Why` control now has its own correct explanation. It no longer reu
 
 ## All Activity filtering
 
-The All Activity view now creates local filters for:
+The All Activity view creates local filters for:
 
 - All;
 - Needs you;
@@ -176,6 +184,46 @@ This prevents the Control Center design from depending on fake alerts to remain 
 ## CSS loading
 
 `control-center-interaction-v3.css` is same-origin and is loaded by the Control Center JS under the existing CSP. It adds presentation only for the v3 detail/filter/quiet interactions.
+
+# Focus and overlay hardening v4
+
+The Control Center now has a dedicated focus-containment layer for command/detail/simulation surfaces.
+
+`control-center-theme-init.js` loads the same-origin v4 focus CSS and JS early under the existing strict CSP. The focus JS waits for DOM readiness before attaching behavior.
+
+The v4 contract includes:
+
+- drawers receive dialog semantics and `aria-modal`;
+- the background shell and mobile navigation become inert while an overlay/dialog is open;
+- keyboard `Tab` / `Shift+Tab` stay inside the active modal surface;
+- focus is restored to the invoking control after the modal closes when that control still exists;
+- command and simulation triggers expose dialog intent through `aria-haspopup`;
+- focus-visible rings remain clear in both themes;
+- mobile drawers/palette account for safe-area bottom insets;
+- sticky mobile drawer/palette headers keep the close/search affordance available during scroll;
+- reduced-motion preference suppresses the focus-return pulse.
+
+This layer changes interaction containment only. It does not change sample State, authority, simulation behavior or backend truth.
+
+# Shared Continuum shell direction
+
+The accepted shell rule is:
+
+```text
+shared shell owns app switching / environment / global command / appearance
+current domain owns its own workspace
+protected backend owns truth / authority / actual effects
+```
+
+This keeps Control Center, Automations, Check In, Directory, Library, Spaces and Connections visually coherent without forcing them into one identical layout.
+
+Current concrete convergence change:
+
+- the Automation Lab Continuum brand/home affordance now returns to `/lab/control/`;
+- the LIVE `/checkin/` route has not been wrapped in experimental shell chrome;
+- the broad legacy `/lab/` snapshot-loader stack has not been refactored simply to make navigation look uniform.
+
+See `docs/continuum-shared-app-shell-CURRENT.md` for the canonical shell direction and future route-graduation rules.
 
 # Explainability
 
@@ -260,9 +308,10 @@ At narrow widths:
 - detail facts stack cleanly inside the mobile drawer;
 - activity filters become a horizontally scrollable chip row;
 - the command palette becomes a bottom-sheet style surface;
+- modal backgrounds become inert and keyboard focus remains contained;
 - view tabs remain horizontally usable and sticky below the top bar;
 - touch targets remain appropriately large;
-- reduced-motion preference is respected.
+- safe-area insets and reduced-motion preferences are respected.
 
 # Navigation
 
@@ -283,9 +332,9 @@ Do not widen the page into every future Continuum feature simply because the Con
 
 Recommended next product work:
 
-1. harden focus restoration and keyboard behavior across command/detail/simulation overlays;
-2. decide whether one compact filter/search treatment should also exist for Upcoming/History after real use justifies it;
-3. define a shared Continuum Lab navigation shell only if Control Center, Directory and Automations benefit from one consistent top-level frame without destabilizing their current experiments;
+1. let the v4 focus/shell behavior settle without reworking the Control Center layout again immediately;
+2. migrate Directory toward a cleaner isolated domain boundary when Directory becomes the next active surface;
+3. use the shared-shell contract when adding Library and Connections rather than inventing different navigation patterns independently;
 4. keep `/lab/control/` as the flagship prototype while production `/control/` waits for real server-backed activity/Runtime projections;
 5. replace sample sections incrementally with protected typed data as backend domains mature;
 6. preserve the Control Center as an operational surface instead of turning it into a configuration dump.
