@@ -47,22 +47,21 @@ jobs:
 
           required_source = [
               'LATER · PLANNER',
-              'AI can help configure Continuum too.',
+              'Natural language can configure the control layer without becoming authority.',
               'typed Change Plan',
-              'Protected domain services remain the authority.',
-              'LATER · SIGNALS',
-              'Something Continuum observes can start real work.',
-              'APPROVED SOURCE',
-              'OBSERVATION',
+              'Executable capability and authority remain protected server decisions.',
+              'LATER · SIGNALS + STATE',
+              'Observed change can alter what Continuum understands about the current situation.',
               'SIGNAL',
-              'AUTOMATION',
+              'STATE',
+              'POLICY',
+              'AUTHORITY',
               'RUNTIME',
-              'ACTION',
-              'observe-only',
-              'require approval',
-              'Outside information provides evidence. It never grants permission by itself.',
-              'Signals can later watch selected sources for meaningful changes.',
-              'Signals can later turn meaningful changes from approved sources into typed inputs.',
+              'RESULT',
+              'Evidence changes understanding. Published authority controls execution.',
+              'Signals are how Continuum can notice that the world changed.',
+              'Source',
+              'Observation',
               'data.continuumSignalsPlanner'
           ]
           for term in required_source:
@@ -71,7 +70,8 @@ jobs:
 
           required_css = [
               '.continuum-forward-note', '.continuum-forward-flow', '.continuum-planner-note',
-              '.continuum-signals-note', '@media(max-width:680px)', '@media print'
+              '.continuum-signals-note', '.continuum-senses-strip', '.continuum-senses-flow',
+              '@media(max-width:680px)', '@media print'
           ]
           for term in required_css:
               if term not in css:
@@ -91,7 +91,7 @@ jobs:
           if 'noindex' not in html:
               raise SystemExit('/doc must remain noindex')
 
-          print('Continuum /doc Planner + Signals copy, safety and stable-anchor contracts passed.')
+          print('Continuum /doc Planner, Signals, State and sensing contracts passed.')
           PY
 
       - name: Browser smoke desktop and mobile
@@ -118,13 +118,14 @@ jobs:
 
             grep -q 'data-continuum-signals-planner="ready"' "$out"
             grep -q 'LATER · PLANNER' "$out"
-            grep -q 'AI can help configure Continuum too.' "$out"
-            grep -q 'LATER · SIGNALS' "$out"
-            grep -q 'Something Continuum observes can start real work.' "$out"
-            grep -q 'Outside information provides evidence. It never grants permission by itself.' "$out"
+            grep -q 'Natural language can configure the control layer without becoming authority.' "$out"
+            grep -q 'LATER · SIGNALS + STATE' "$out"
+            grep -q 'Observed change can alter what Continuum understands about the current situation.' "$out"
+            grep -q 'Evidence changes understanding. Published authority controls execution.' "$out"
+            grep -q 'Signals are how Continuum can notice that the world changed.' "$out"
             grep -q 'The idea started with the Dead Man Switch' "$out"
           }
 
           check_view 1280 900
           check_view 390 844
-          echo 'Continuum /doc Planner + Signals rendered on desktop and 390px mobile.'
+          echo 'Continuum /doc Planner, Signals and State rendered on desktop and 390px mobile.'
