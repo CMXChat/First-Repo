@@ -47,7 +47,7 @@ Reason:
 
 The main `/lab/` route is useful compatibility/prototyping scaffolding built by transforming a Check In snapshot and layering many local product scripts over it. The Control Center needs a clean flagship interaction model that can later be rebuilt in the real React/FastAPI application without inheriting that compatibility architecture.
 
-# V1 product structure
+# Product structure
 
 Primary views:
 
@@ -58,7 +58,7 @@ History
 All activity
 ```
 
-The first `Now` view contains:
+The `Now` view contains:
 
 ```text
 current operational summary
@@ -95,7 +95,32 @@ The device-review v2 polish therefore:
 - keeps keyboard activation for non-button attention rows;
 - preserves the strict same-origin Lab CSP and zero production API calls.
 
-This remains a source/device-informed QA pass. A fresh post-change screenshot is still the preferred visual confirmation before treating v2 presentation as visually accepted.
+# Flagship refinement pass
+
+After the direct device review, the next pass continues without requiring new screenshots.
+
+Desktop now receives stronger hierarchy instead of merely inheriting the original card layout:
+
+- a larger and more deliberate primary state surface;
+- stronger visual separation between owner attention and supporting state;
+- a unified primary operational column for Attention, Running & waiting and Activity;
+- a narrower supporting rail for continuity, upcoming work and infrastructure health;
+- restrained attention accents instead of adding more cards or dashboard chrome;
+- richer spacing and scale at large desktop widths while keeping the mobile layout independent.
+
+The top command surface is now functional in Lab instead of being a placeholder.
+
+`Cmd/Ctrl + K` or the search button opens a local command palette that can:
+
+- jump to Now, Upcoming, History or All activity;
+- open the safe Simulation drawer;
+- open Check In, Directory, Automations, Spaces or the Continuum document;
+- toggle the current theme;
+- filter commands locally by typed text.
+
+The palette performs no API request and creates no new authority or product truth. It is navigation and Lab interaction only.
+
+Asset versions were bumped after this pass so mobile/desktop browsers do not keep serving the earlier cached JS/CSS under the same URL.
 
 # Explainability
 
@@ -116,7 +141,7 @@ This is presentation only. Production would use protected backend references, ex
 
 # Simulation
 
-The V1 drawer includes fixed safe sample scenarios:
+The drawer includes fixed safe sample scenarios:
 
 - owner unavailable for 7 days;
 - primary email unavailable;
@@ -151,7 +176,7 @@ The existing `/checkin/` route remains the current LIVE protected Continuum prod
 
 # Theme and visual direction
 
-V1 defaults light and remembers an explicit user theme choice under:
+The prototype defaults light and remembers an explicit user theme choice under:
 
 `continuum-control-center-theme-v1`
 
@@ -179,6 +204,7 @@ At narrow widths:
 - dashboard columns become one flow;
 - attention and work rows preserve readable labels;
 - Why/Simulation use content-hugging bottom sheets with bounded scrolling;
+- the command palette becomes a bottom-sheet style surface;
 - view tabs remain horizontally usable and sticky below the top bar;
 - touch targets remain appropriately large;
 - reduced-motion preference is respected.
@@ -198,15 +224,15 @@ Directory still lives inside the broader Lab experience. Library and Connections
 
 # Next product passes
 
-Do not immediately widen the page into every future Continuum feature.
+Do not widen the page into every future Continuum feature simply because the Control Center can eventually display them.
 
-Recommended next work after the v2 mobile QA pass:
+Recommended next product work:
 
-1. capture fresh mobile screenshots after cache refresh and verify the grouped Now surface and content-hugging simulation sheet;
-2. review a desktop screenshot at a normal desktop viewport before changing desktop density;
-3. decide whether the top-level Continuum navigation should become a shared Lab shell across Control Center, Directory and Automations;
-4. define the first server-backed Control Center projection only after Runtime/activity backend primitives exist;
-5. later replace sample sections incrementally with protected typed data rather than one giant fake dashboard-to-production rewrite.
+1. continue interaction refinement around item detail, filtering and quiet/empty states without inventing backend truth;
+2. define a shared Continuum Lab navigation shell only if Control Center, Directory and Automations now benefit from one consistent top-level frame;
+3. keep `/lab/control/` as the flagship prototype while production `/control/` waits for real server-backed activity/Runtime projections;
+4. replace sample sections incrementally with protected typed data as backend domains mature;
+5. preserve the Control Center as an operational surface instead of turning it into a configuration dump.
 
 # Backend boundary
 
