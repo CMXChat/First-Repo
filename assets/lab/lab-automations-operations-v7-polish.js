@@ -21,6 +21,30 @@
     }
   }
 
+  function patchWorkspaceActions() {
+    const actions = document.querySelector(".v7-ops-actions");
+    if (!actions || actions.querySelector("[data-v7-open-planner]")) return;
+    const manage = actions.querySelector("[data-v7-manage]");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "v7-planner-button";
+    button.dataset.v7OpenPlanner = "";
+    button.innerHTML = "<span>Planner</span><b>✦</b>";
+    button.setAttribute("aria-label", "Open the local typed Automation Planner");
+    if (manage) manage.before(button);
+    else actions.append(button);
+  }
+
+  function openPlanner() {
+    const create = document.querySelector(".v7-workspace-head [data-new], [data-new]");
+    if (!create) return;
+    create.click();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const planner = document.querySelector(".v4-new-modal [data-v4-start='planner']");
+      planner?.click();
+    }));
+  }
+
   function patchStartModal() {
     const modal = document.querySelector(".v4-new-modal");
     if (!modal) return;
@@ -52,6 +76,7 @@
   function patch() {
     queued = false;
     patchChrome();
+    patchWorkspaceActions();
     patchStartModal();
     patchPlannerModal();
     document.documentElement.dataset.labAutomationsOperationsPolish = "v7";
@@ -63,7 +88,14 @@
     requestAnimationFrame(() => requestAnimationFrame(patch));
   }
 
-  document.addEventListener("click", schedulePatch, false);
+  document.addEventListener("click", event => {
+    const plannerButton = event.target.closest("[data-v7-open-planner]");
+    if (plannerButton) {
+      event.preventDefault();
+      openPlanner();
+    }
+    schedulePatch();
+  }, false);
   window.addEventListener("pageshow", schedulePatch);
   window.addEventListener("cmx:lab-automations-updated", schedulePatch);
   schedulePatch();
