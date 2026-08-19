@@ -1,7 +1,7 @@
 # Continuum Automations Master Plan — CURRENT
 
-Date: 2026-08-18
-Status: Canonical Automation product/UX direction; Lab v5 canonical workflow model + ordered Flow Preview active over the v4.4 authoring surface, protected Runtime/provider execution still later
+Date: 2026-08-19
+Status: Canonical Automation product/UX direction; Lab v5 canonical workflow model + ordered Flow Preview + deterministic typed Planner proving surface active over the v4.4 authoring surface, protected Runtime/provider execution still later
 
 # Purpose
 
@@ -34,7 +34,7 @@ Current responsibilities:
 - `lab-automations-experience-v3.js` — local Draft normalization/autosave and five-stage compatibility editor;
 - `lab-automations-model-v5.js` — canonical Lab workflow normalization, ordered typed-node model, validation and compatibility projection;
 - `lab-automations-progressive-preview.js` — truthful blank/pending states;
-- `lab-automations-platform-v4.js` — command center, Capability Catalog, compact interactive flow, Planner/Run previews;
+- `lab-automations-platform-v4.js` — command center, Capability Catalog, compact interactive flow, creation chooser and Runs preview;
 - `lab-automations-scenarios-v4.js` — **15 editable starting patterns total**, including output-dependent IF and inter-step WAIT examples;
 - `lab-automations-directory-v4.js` — Directory readiness integration;
 - `lab-automations-audience-v4.js` — Audience v4.1;
@@ -42,6 +42,7 @@ Current responsibilities:
 - `lab-automations-input-routing-v4.js` — v4.3 receiving-field input routing;
 - `lab-automations-sequence-v4.js` — v4.4 linear inter-step IF / WAIT authoring UX, now reading/writing through v5 first;
 - `lab-automations-flow-v5.js/.css` — ordered v5 Flow Preview presentation;
+- `lab-automations-planner-v5.js/.css` — deterministic local typed Planner proving surface with ordered v5 flow, typed Change Plan operations, preflight blockers and ordinary Draft creation;
 - matching CSS/QA layers — desktop/mobile presentation.
 
 The v3/v4 files remain compatibility/product-proving layers. They are no longer the conceptual destination for the workflow domain model.
@@ -140,7 +141,9 @@ Normal New Automation offers:
 
 1. Build manually;
 2. start from scenario;
-3. AI Planner preview.
+3. AI Planner.
+
+The current AI Planner path is a **local deterministic proving surface**, not a connected AI system. It can preview a typed plan and create an ordinary editable Lab Draft without a model call, production API call, provider execution or Publish.
 
 `/lab/automations/?new=1&from=lab` remains the direct-new exception and opens a blank Draft at Trigger.
 
@@ -244,7 +247,7 @@ Do not restore `LIVE FLOW` as the product label.
 
 The compact Flow Preview remains the beginner stage navigator and continues to surface inter-step IF/WAIT counts on the DO node when present.
 
-The v5 presentation now adds **ORDERED SEQUENCE** directly beneath that compact preview.
+The v5 presentation adds **ORDERED SEQUENCE** directly beneath that compact preview.
 
 It reads the canonical `workflowV5` model and can visibly show a sequence such as:
 
@@ -267,6 +270,45 @@ Browser marker:
 `data-lab-automations-flow="v5"`
 
 This is the first direct v5 presentation layer and a meaningful step toward Zapier/n8n-style whole-flow awareness while preserving IFTTT-level beginner simplicity.
+
+# Deterministic typed Planner proving surface v5
+
+The Automation creation path now has a real Planner proving surface in `lab-automations-planner-v5.js/.css`.
+
+It is intentionally **not an AI execution feature**. The current Lab uses deterministic local intent matching against supported patterns so the product can prove the authoring contract without contacting a model.
+
+Current flow:
+
+`describe intent → local typed-plan preview → ordered v5 flow → Change Plan operations → preflight blockers → Use this draft`
+
+The preview can show:
+
+- proposed Automation name;
+- Trigger;
+- pre-action Conditions;
+- ordered Actions;
+- supported inter-step IF/WAIT controls;
+- Finish policy;
+- typed operations such as `automation.create_draft`, `automation.set_trigger`, `automation.add_action`, `automation.add_condition`, `automation.add_wait` and `automation.set_finish`;
+- unresolved prerequisites such as protected Directory Audience selection, exact schedule confirmation or future Runtime support.
+
+`Use this draft` creates a normal editable Lab Automation in `cmx-lab-automations-v1`, then v5 normalizes it into `workflowV5`.
+
+The resulting Draft is not special AI state. Human edits, scenarios and Planner-created Drafts converge on the same Lab model.
+
+Current boundaries remain explicit:
+
+- no external AI/model call;
+- no `fetch`, XHR, WebSocket or production API path in the Planner layer;
+- no provider call;
+- no Publish;
+- no Runtime;
+- no hidden Planner authority;
+- no arbitrary executable expressions/code.
+
+This proving surface exists so the eventual real Planner can replace deterministic matching with protected AI reasoning **without changing the product contract or creating a shadow workflow format**.
+
+Directory's `AI setup` preview now uses the same typed Change Plan vocabulary across Directory, Library and Automations, so the long-term Continuum Planner has one cross-domain mutation language.
 
 # Capability Catalog
 
@@ -327,7 +369,7 @@ Current traces can show input, normalization/resolution, Audience/readiness, map
 
 Review can show Audience readiness, input-routing summary and inter-step control count with `RUNTIME REQUIRED` where applicable.
 
-Dedicated v5 CI validates:
+Dedicated v5 model CI validates:
 
 - ordered model normalization;
 - structural/future-step reference rejection;
@@ -337,23 +379,27 @@ Dedicated v5 CI validates:
 - mobile/direct-new markers;
 - 15 scenarios including the advanced IF/WAIT examples.
 
-Never convert Lab simulation into fake Run history.
+Dedicated Planner safety CI validates the separate authoring boundary, including syntax, typed-plan labels, ordinary Draft creation, v5 normalization and prohibitions on network/model calls, production API usage, `eval` and dynamic Function.
+
+Never convert Lab simulation or Planner previews into fake Run history.
 
 Future server preflight returns deterministic blockers/readiness rather than cosmetic percentages.
 
 # AI authoring
 
-Automation Planner eventually creates/edits the same typed Draft humans use.
+The long-term Automation Planner creates/edits the same typed Draft humans use.
 
-V5 is intentionally closer to the model AI Planner should target: explicit typed nodes, stable IDs, bounded configuration and deterministic validation.
+The current Lab already proves the **shape** of that experience with deterministic local intent matching, typed operations, ordered v5 preview, blocker disclosure and normal Draft creation. It does not prove AI execution.
 
-AI can choose known capabilities, Directory audiences, typed input/output mappings and supported flow controls only when their backend definitions exist.
+V5 is intentionally close to the model AI Planner should target: explicit typed nodes, stable IDs, bounded configuration and deterministic validation.
+
+Future real AI can choose known capabilities, Directory audiences, typed input/output mappings and supported flow controls only when their backend definitions exist.
 
 The broader Continuum Planner may propose a cross-domain Change Plan spanning Directory, Automations and Library:
 
 `natural-language intent → typed Change Plan → preflight/conflicts → review/approval → normal protected domain services`
 
-No shadow workflow format, direct database path or prompt-granted authority.
+Human UI and AI converge on the same domain models and services. There is no shadow workflow format, direct database path or prompt-granted authority.
 
 Backend companion: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`.
 
@@ -370,11 +416,11 @@ Recommended order remains:
 5. persisted inter-step WAIT / retries / acknowledgements / approvals;
 6. typed routing/branching only after linear Runtime is reliable;
 7. one real low-risk provider in the approved phase order;
-8. AI Task, then Planner;
+8. AI Task, then real Planner;
 9. cross-domain Change Plan apply after mature domain mutation services;
 10. bounded Agent later.
 
-V5 Lab modeling/presentation does not move those backend execution phases earlier.
+V5 Lab modeling, presentation and deterministic Planner proving do not move those backend execution phases earlier.
 
 # Security / production rules
 
