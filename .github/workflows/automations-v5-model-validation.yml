@@ -8,6 +8,7 @@ on:
       - 'assets/lab/lab-automations-model-v5.js'
       - 'assets/lab/lab-automations-flow-v5.js'
       - 'assets/lab/lab-automations-flow-v5.css'
+      - 'assets/lab/lab-automations-v5-mobile-qa.css'
       - 'assets/lab/lab-automations-sequence-v4.js'
       - 'assets/lab/lab-automations-scenarios-v4.js'
       - '.github/workflows/automations-v5-model-validation.yml'
@@ -18,6 +19,7 @@ on:
       - 'assets/lab/lab-automations-model-v5.js'
       - 'assets/lab/lab-automations-flow-v5.js'
       - 'assets/lab/lab-automations-flow-v5.css'
+      - 'assets/lab/lab-automations-v5-mobile-qa.css'
       - 'assets/lab/lab-automations-sequence-v4.js'
       - 'assets/lab/lab-automations-scenarios-v4.js'
       - '.github/workflows/automations-v5-model-validation.yml'
@@ -56,8 +58,12 @@ jobs:
           grep -q 'labAutomationsFlow = "v5"' assets/lab/lab-automations-flow-v5.js
           grep -q '.v5-ordered-flow' assets/lab/lab-automations-flow-v5.css
           grep -q '.v3-mobile-flow .v5-ordered-flow' assets/lab/lab-automations-flow-v5.css
+          grep -q '.v3-mobile-flow .v5-sequence-node strong{font-size:12px' assets/lab/lab-automations-v5-mobile-qa.css
+          grep -q '.v4-planner-examples button{min-height:44px' assets/lab/lab-automations-v5-mobile-qa.css
+          grep -q '.v5-planner-result>footer>button{min-height:46px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q 'lab-automations-flow-v5.js' lab/automations/index.html
           grep -q 'lab-automations-flow-v5.css' lab/automations/index.html
+          grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile1' lab/automations/index.html
 
           node <<'NODE'
           const fs = require('fs');
@@ -207,4 +213,4 @@ jobs:
           grep -q 'What should start this' /tmp/continuum-v5-mobile.html
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-mobile.html
 
-          echo 'Automations v5 model, ordered Flow Preview, v5-owned sequence mutation and 15-scenario browser smoke passed.'
+          echo 'Automations v5 model, ordered Flow Preview, mobile QA, v5-owned sequence mutation and 15-scenario browser smoke passed.'
