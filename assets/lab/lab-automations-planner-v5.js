@@ -9,6 +9,7 @@
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
   }[ch]));
+  const attr = value => esc(Array.isArray(value) ? value.join(",") : value || "");
   const makeId = prefix => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
   const EXAMPLES = Object.freeze({
@@ -34,6 +35,58 @@
     } catch {
       return { version: 1, automations: [] };
     }
+  }
+
+  function buildOperations(plan) {
+    const automationRef = "temp:automation:draft";
+    const operations = [
+      { id: "automation-create", type: "automation.create_draft", detail: plan.name, produces: automationRef },
+      { id: "automation-trigger", type: "automation.set_trigger", detail: triggerLabel(plan.trigger), uses: [automationRef], dependsOn: ["automation-create"] }
+    ];
+
+    if (plan.conditions.length) {
+      operations.push({
+        id: "automation-preconditions",
+        type: "automation.set_preconditions",
+        detail: `${plan.conditions.length} pre-action rule${plan.conditions.length === 1 ? "" : "s"}`,
+        uses: [automationRef],
+        dependsOn: ["automation-create"]
+      });
+    }
+
+    plan.actions.forEach(action => {
+      operations.push({
+        id: `action-${action.key}`,
+        type: "automation.add_action",
+        detail: actionLabel(action.type),
+        uses: [automationRef],
+        dependsOn: ["automation-create"],
+        produces: `temp:step:${action.key}`
+      });
+    });
+
+    plan.flowControls.forEach((control, index) => {
+      const sourceKeys = [...new Set([control.afterKey, control.sourceKey].filter(Boolean))];
+      operations.push({
+        id: `control-${index + 1}-${control.type}`,
+        type: control.type === "wait" ? "automation.add_wait" : "automation.add_condition",
+        detail: control.type === "wait"
+          ? durationLabel(control.duration)
+          : `${control.label} ${operatorLabel(control.operator)} ${control.compareValue}`,
+        uses: [automationRef, ...sourceKeys.map(key => `temp:step:${key}`)],
+        dependsOn: ["automation-create", ...sourceKeys.map(key => `action-${key}`)]
+      });
+    });
+
+    operations.push({
+      id: "automation-finish",
+      type: "automation.set_finish",
+      detail: finishLabel(plan.outcome),
+      uses: [automationRef],
+      dependsOn: ["automation-create"]
+    });
+
+    return operations;
   }
 
   function planFromIntent(intent) {
@@ -107,14 +160,11 @@
       plan.rationale = "No specific local pattern matched, so the preview keeps the request bounded behind manual review.";
     }
 
-    plan.operations = [
-      { type: "automation.create_draft", detail: plan.name },
-      { type: "automation.set_trigger", detail: triggerLabel(plan.trigger) },
-      ...(plan.conditions.length ? [{ type: "automation.set_preconditions", detail: `${plan.conditions.length} pre-action rule${plan.conditions.length === 1 ? "" : "s"}` }] : []),
-      ...plan.actions.map(action => ({ type: "automation.add_action", detail: actionLabel(action.type) })),
-      ...plan.flowControls.map(control => ({ type: control.type === "wait" ? "automation.add_wait" : "automation.add_condition", detail: control.type === "wait" ? durationLabel(control.duration) : `${control.label} ${operatorLabel(control.operator)} ${control.compareValue}` })),
-      { type: "automation.set_finish", detail: finishLabel(plan.outcome) }
-    ];
+    plan.operations = buildOperations(plan);
+    const verdict = window.CMXContinuumPlannerContractV1?.validatePlan?.(plan.operations);
+    if (verdict && !verdict.ok) {
+      plan.blockers.push(`Local plan dependency validation found ${verdict.errors.length} issue${verdict.errors.length === 1 ? "" : "s"}.`);
+    }
     return plan;
   }
 
@@ -166,9 +216,9 @@
     panel.innerHTML = `
       <header><div><span>TYPED PLAN PREVIEW · LOCAL</span><strong>${esc(plan.name)}</strong><small>${esc(plan.rationale)}</small></div><b>NO AI CALL</b></header>
       <section class="v5-planner-sequence"><span>ORDERED V5 FLOW</span><div>${rows.map((row, index) => `<article><b>${esc(row.badge)}</b><span><strong>${esc(row.title)}</strong><small>${esc(row.detail)}</small></span><i>${index < rows.length - 1 ? "↓" : "✓"}</i></article>`).join("")}</div></section>
-      <section class="v5-planner-ops"><span>CHANGE PLAN</span><div>${plan.operations.map((operation, index) => `<article><b>${String(index + 1).padStart(2, "0")}</b><span><small>${esc(operation.type)}</small><strong>${esc(operation.detail)}</strong></span></article>`).join("")}</div></section>
+      <section class="v5-planner-ops"><span>CHANGE PLAN</span><div>${plan.operations.map((operation, index) => `<article data-plan-op-id="${attr(operation.id)}" data-plan-produces="${attr(operation.produces)}" data-plan-uses="${attr(operation.uses)}" data-plan-depends="${attr(operation.dependsOn)}"><b>${String(index + 1).padStart(2, "0")}</b><span><small>${esc(operation.type)}</small><strong>${esc(operation.detail)}</strong></span></article>`).join("")}</div></section>
       <section class="v5-planner-blockers ${plan.blockers.length ? "has-blockers" : ""}"><span>${plan.blockers.length ? "PREFLIGHT" : "PREFLIGHT · CLEAR"}</span>${plan.blockers.length ? `<ul>${plan.blockers.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : `<p>No additional blocker is represented by this local pattern. Production preflight would still validate real capabilities, references, authority and Connections.</p>`}</section>
-      <footer><span>This preview creates a normal editable Lab Draft. It does not publish or execute anything.</span><button type="button" data-v5-planner-use>Use this draft</button></footer>`;
+      <footer><span>Temporary <code>temp:</code> references exist only inside this plan. Use this draft creates ordinary Lab state and does not publish or execute anything.</span><button type="button" data-v5-planner-use>Use this draft</button></footer>`;
   }
 
   function createDraft(plan) {
