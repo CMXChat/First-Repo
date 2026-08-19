@@ -49,7 +49,8 @@ jobs:
             assets/lab/lab-automations-platform-v4.js \
             assets/lab/lab-automations-scenarios-v4.js \
             assets/lab/lab-automations-directory-v4.js \
-            assets/lab/lab-automations-audience-v4.js
+            assets/lab/lab-automations-audience-v4.js \
+            assets/lab/lab-automations-intelligence-v4.js
           do
             node --check "$file"
           done
@@ -68,13 +69,16 @@ jobs:
           directory = Path('assets/lab/lab-automations-directory-v4.js').read_text(encoding='utf-8')
           audience = Path('assets/lab/lab-automations-audience-v4.js').read_text(encoding='utf-8')
           audience_css = Path('assets/lab/lab-automations-audience-v4.css').read_text(encoding='utf-8')
+          intelligence = Path('assets/lab/lab-automations-intelligence-v4.js').read_text(encoding='utf-8')
+          intelligence_css = Path('assets/lab/lab-automations-intelligence-v4.css').read_text(encoding='utf-8')
 
           required_html = [
               "connect-src 'self'", 'noindex,nofollow', '<title>Continuum · Automations</title>',
               'lab-automations-platform-v4.css', 'lab-automations-platform-v4-qa.css',
               'lab-automations-directory-v4.css', 'lab-automations-audience-v4.css',
-              'lab-automations-platform-v4.js', 'lab-automations-scenarios-v4.js',
-              'lab-automations-directory-v4.js', 'lab-automations-audience-v4.js'
+              'lab-automations-intelligence-v4.css', 'lab-automations-platform-v4.js',
+              'lab-automations-scenarios-v4.js', 'lab-automations-directory-v4.js',
+              'lab-automations-audience-v4.js', 'lab-automations-intelligence-v4.js'
           ]
           required_v3 = [
               'cmx-lab-automations-v1', 'cmx-lab-crm-v1', 'cmx-lab-actions-v1',
@@ -97,39 +101,49 @@ jobs:
               'Who should this reach?', 'Unique people', 'Email ready', 'Phone ready',
               'duplicates removed', 'Overlapping People are counted once', 'labAutomationsAudience'
           ]
+          required_intelligence = [
+              'cmx-lab-automation-data-bindings-v1', 'RECOMMENDED NEXT', 'USE DATA',
+              'Trigger, Directory and earlier-step outputs', 'dataBindings', 'data-v4-map-action',
+              'LOCAL ACTION TRACE · NO SIDE EFFECTS', 'No provider, AI model, server Runtime or connected account was touched',
+              'labAutomationsIntelligence = "v4-2"'
+          ]
+          required_intelligence_css = [
+              '.v4-smart-recommendations', '.v4-data-map', '.v4-data-modal-backdrop',
+              '.v4-rich-test-result', '.v4-action-test-list', '@media (max-width:760px)',
+              'env(safe-area-inset-bottom)'
+          ]
           required_audience_css = [
               '.v4-audience-readiness', '.v4-audience-modal-backdrop', '.v4-audience-picker-list',
               '.v4-audience-preview-metrics', '@media (max-width:760px)', 'env(safe-area-inset-bottom)'
           ]
 
-          for term in required_html:
-              if term not in html: sys.exit(f'missing focused HTML contract: {term}')
-          for term in required_v3:
-              if term not in v3: sys.exit(f'missing v3 compatibility contract: {term}')
-          for term in required_progressive:
-              if term not in progressive: sys.exit(f'missing progressive Draft contract: {term}')
-          for term in required_platform:
-              if term not in platform: sys.exit(f'missing v4 platform contract: {term}')
-          for term in required_scenarios:
-              if term not in scenarios: sys.exit(f'missing v4 scenario: {term}')
-          for term in required_directory:
-              if term not in directory: sys.exit(f'missing Directory integration: {term}')
-          for term in required_audience:
-              if term not in audience: sys.exit(f'missing typed Audience contract: {term}')
-          for term in required_audience_css:
-              if term not in audience_css: sys.exit(f'missing typed Audience styling: {term}')
+          checks = [
+              (required_html, html, 'focused HTML'),
+              (required_v3, v3, 'v3 compatibility'),
+              (required_progressive, progressive, 'progressive Draft'),
+              (required_platform, platform, 'v4 platform'),
+              (required_scenarios, scenarios, 'v4 scenario'),
+              (required_directory, directory, 'Directory integration'),
+              (required_audience, audience, 'typed Audience'),
+              (required_audience_css, audience_css, 'typed Audience styling'),
+              (required_intelligence, intelligence, 'v4.2 intelligence'),
+              (required_intelligence_css, intelligence_css, 'v4.2 intelligence styling'),
+          ]
+          for terms, source, label in checks:
+              for term in terms:
+                  if term not in source: sys.exit(f'missing {label} contract: {term}')
 
           if 'lab-automations-app-v2.js' in html:
               sys.exit('superseded v2 builder must not be loaded')
 
-          combined = html + v3 + route + system + progressive + platform + scenarios + directory + audience
+          combined = html + v3 + route + system + progressive + platform + scenarios + directory + audience + intelligence
           if 'api.cmxchat.com' in combined:
               sys.exit('focused Lab must not call the production API')
-          for name, source in [('system', system), ('progressive', progressive), ('platform', platform), ('directory', directory), ('audience', audience)]:
+          for name, source in [('system', system), ('progressive', progressive), ('platform', platform), ('directory', directory), ('audience', audience), ('intelligence', intelligence)]:
               for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
                   if forbidden in source: sys.exit(f'forbidden {name} pattern: {forbidden}')
 
-          print('Automations v4.1 platform, typed Audience, progressive Draft and safety contracts passed.')
+          print('Automations v4.2 capability recommendations, typed Audience, data references, richer local tests and safety contracts passed.')
           PY
 
       - name: Browser smoke desktop and direct-new mobile
@@ -164,6 +178,7 @@ jobs:
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-platform="v4"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-audience="v4-1"' /tmp/auto-mobile.html
+          grep -q 'data-lab-automations-intelligence="v4-2"' /tmp/auto-mobile.html
           grep -q 'class="v3-editor-page"' /tmp/auto-mobile.html
           grep -q 'data-progressive-preview="true"' /tmp/auto-mobile.html
           grep -q 'What should start this' /tmp/auto-mobile.html
@@ -174,4 +189,4 @@ jobs:
           ! grep -q 'LIVE FLOW' /tmp/auto-mobile.html
           ! grep -q 'How do you want to start' /tmp/auto-mobile.html
 
-          echo 'Focused Automations v4.1 passed desktop and 390x844 direct-new mobile smoke.'
+          echo 'Focused Automations v4.2 passed desktop and 390x844 direct-new mobile smoke.'
