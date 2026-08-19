@@ -26,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260819-planner-preflight-v1";
+  const BUILD = "20260819-planner-preflight-v1r1";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -60,7 +60,7 @@
     ["lab-directory-v2.js", "20260818-directory2"],
     ["lab-continuum-planner-contract-v1.js", "20260819-v1preflight1"],
     ["lab-directory-planner-preview.js", "20260819-directory-planner-v2deps1"],
-    ["lab-continuum-planner-preflight-v1.js", "20260819-v1"],
+    ["lab-continuum-planner-preflight-v1.js", "20260819-v1r1"],
     ["lab-continuum-planner-review-v1.js", "20260819-v1preflight1"],
     ["lab-inventory.js", "20260816-inventory1"],
     ["lab-actions.js", "20260816-actions1"],
@@ -102,51 +102,16 @@
       .replaceAll("https://db.cmxchat.com/checkin/", "https://db.cmxchat.com/lab/")
       .replaceAll('href="/checkin/"', 'href="/lab/"');
 
-    html = replaceRequired(
-      html,
-      "connect-src 'self' https://api.cmxchat.com;",
-      "connect-src 'self';",
-      "production API CSP"
-    );
-    html = replaceRequired(
-      html,
-      "style-src 'self';",
-      "style-src 'self' 'unsafe-inline';",
-      "Lab dynamic-style CSP compatibility"
-    );
-    html = replaceRequired(
-      html,
-      "<title>Check In · Dead Man Switch</title>",
-      "<title>Continuum Lab</title><!-- legacy validation contract: Check In Lab · Dead Man Switch -->",
-      "document title"
-    );
-    html = replaceRequired(
-      html,
-      "</head>",
-      `  <meta name="description" content="Continuum Lab for private product, workflow and system experiments." />\n  <meta name="cmx-lab-build" content="${BUILD}" />\n${styleTags()}\n</head>`,
-      "head close"
-    );
-    html = replaceRequired(
-      html,
-      "<body>",
-      '<body data-lab-mode="true">',
-      "body element"
-    );
+    html = replaceRequired(html, "connect-src 'self' https://api.cmxchat.com;", "connect-src 'self';", "production API CSP");
+    html = replaceRequired(html, "style-src 'self';", "style-src 'self' 'unsafe-inline';", "Lab dynamic-style CSP compatibility");
+    html = replaceRequired(html, "<title>Check In · Dead Man Switch</title>", "<title>Continuum Lab</title><!-- legacy validation contract: Check In Lab · Dead Man Switch -->", "document title");
+    html = replaceRequired(html, "</head>", `  <meta name="description" content="Continuum Lab for private product, workflow and system experiments." />\n  <meta name="cmx-lab-build" content="${BUILD}" />\n${styleTags()}\n</head>`, "head close");
+    html = replaceRequired(html, "<body>", '<body data-lab-mode="true">', "body element");
 
     const snapshotStatusContract = '<script src="/assets/lab/checkin-status-contract.js?v=20260816-2"></script>';
     const labStatusContract = '<script src="/assets/lab/checkin-status-contract.js?v=20260816-acceptance2"></script>';
-    html = replaceRequired(
-      html,
-      snapshotStatusContract,
-      `<script src="/assets/lab/lab-mock-api.js?v=20260816-lab-safe5"></script>\n  ${labStatusContract}`,
-      "status contract script"
-    );
-    html = replaceRequired(
-      html,
-      "</body>",
-      `${scriptTags()}\n</body>`,
-      "body close"
-    );
+    html = replaceRequired(html, snapshotStatusContract, `<script src="/assets/lab/lab-mock-api.js?v=20260816-lab-safe5"></script>\n  ${labStatusContract}`, "status contract script");
+    html = replaceRequired(html, "</body>", `${scriptTags()}\n</body>`, "body close");
 
     if (html.includes("/assets/checkin/")) throw new Error("Lab snapshot still references production asset paths.");
     if (html.includes("connect-src 'self' https://api.cmxchat.com;")) throw new Error("Lab snapshot still permits the production API in CSP.");
