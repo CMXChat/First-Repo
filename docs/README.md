@@ -28,7 +28,16 @@ Current source, tests, workflows and `*-CURRENT.md` contracts take priority over
 
 ## `/doc/`
 
-Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab UX/model/Planner work does not justify editing it automatically.
+Noindex master explanation of Continuum. It remains under a separate clarity freeze.
+
+The August 19 architecture pass is a deliberate narrow freeze exception because two product-level ideas now belong in the master explanation:
+
+- **Planner** is explained inside the AI lesson as a future natural-language path into a typed Change Plan, deterministic preflight, review and protected domain services;
+- **Signals** are explained inside Automations as future provenance-bearing observations that can become typed Automation inputs and later cause approved Actions through Runtime.
+
+Both are visibly `LATER`. The page still uses the same eight anchors and teaching order. No new large product-map node, feature grid or section was added.
+
+`continuum-doc-signals-planner-validation.yml` protects the new copy, no-network boundary, eight stable anchors and desktop/390px rendered presence.
 
 ## `/lab/`
 
@@ -47,7 +56,7 @@ Browser markers:
 
 It has no model call, free-text interpretation, protected mutation or hidden authority.
 
-Current fixed examples can show plan dependencies, typed preflight issues and Change Review. The Business contacts example can record a sample ambiguity decision. The Full Continuum setup spans Directory + Library + Automations.
+Current fixed examples can show plan dependencies, typed preflight issues and Change Review. The Business contacts example can record a sample ambiguity decision. The Full Continuum setup spans Directory + Library + Automations. The **Online signals** example proposes a Watch, approved source, filter, bounded interpretation and Automation reference while keeping Signals service and Connection requirements blocked.
 
 ## `/lab/automations/`
 
@@ -138,7 +147,7 @@ The shared Lab Planner vocabulary is already prepared for future reviewed config
 - `signals.pause_watch`;
 - `automation.reference_signal`.
 
-This is vocabulary preparation only. No current Lab Planner example performs online observation and no new network authority was added.
+The current **Online signals** Planner example uses that vocabulary as a definition-only proof. It performs no online observation. Signals service and source Connection remain explicit blocked preflight requirements.
 
 # One Planner language
 
@@ -203,7 +212,9 @@ Relevant dedicated workflows:
 - `continuum-mobile-layout-validation.yml` — overall Directory/Planner geometry;
 - `automations-v6-action-stack-validation.yml` — compact Action stack, accordion and Remove behavior;
 - `continuum-planner-preflight-validation.yml` — preflight decisions/defer state, affected Change Plan rows and persistent Runtime blockers;
-- `automations-v5-planner-edit-validation.yml` — proposed Action removal, dependency pruning, Reset proposal and narrow-phone fit.
+- `automations-v5-planner-edit-validation.yml` — proposed Action removal, dependency pruning, Reset proposal and narrow-phone fit;
+- `continuum-signals-planner-validation.yml` — definition-only Signals plan, correct blocked mappings and 360/390px fit;
+- `continuum-doc-signals-planner-validation.yml` — public `/doc/` Planner/Signals integration and 390px rendering.
 
 The Planner-edit browser contract proves:
 
