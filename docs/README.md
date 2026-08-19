@@ -15,20 +15,22 @@ Current source, tests, workflows and `*-CURRENT.md` contracts take priority over
 4. `continuum-signals-observations-master-plan-CURRENT.md` — Signals/Observations/State product direction.
 5. `checkin-future-capabilities-CURRENT.md` — future Sources, Connections, capabilities, MCP/API discovery, Control Center and autonomy UX.
 6. `continuum-automations-master-plan-CURRENT.md` — Automation product/model direction.
-7. `checkin-automations-frontend-CURRENT.md` — exact Automations v5, Planner Preflight, mobile Action-stack and QA truth.
-8. `continuum-directory-master-plan-CURRENT.md` — durable Directory direction.
-9. `checkin-directory-library-CURRENT.md` — Directory/Audience/Library/Planner cross-domain truth.
-10. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
-11. `checkin-content-editor-CURRENT.md` — native content/editor contract.
-12. `checkin-files-CURRENT.md` — binary File direction.
-13. `checkin-ai-product-design-CURRENT.md` — broader AI product direction.
-14. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
-15. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md` — durable Knowledge/State/Authority/Policy/Audit invariants.
-16. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md` — desktop/mobile Control Center, Pause Autonomy, re-contact and simulation.
-17. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md` — Sources, API/MCP discovery, typed adapters and bounded self-improvement.
-18. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOAL-DRIVEN-ARCHITECTURE-EVOLUTION-CONTRACT.md` — governed Goal → architecture-gap → test/simulate/release/measure evolution path.
-19. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
-20. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md` — protected Signals/Observation/State architecture.
+7. `continuum-automations-operations-v7-CURRENT.md` — accepted focused Automation operating workspace, readiness, local lifecycle management, authoritative Runs boundary and future capability cues.
+8. `checkin-automations-frontend-CURRENT.md` — exact Automations v5, Planner Preflight, mobile Action-stack and QA truth beneath v7.
+9. `continuum-directory-master-plan-CURRENT.md` — durable Directory direction.
+10. `checkin-directory-library-CURRENT.md` — Directory/Audience/Library/Planner cross-domain truth.
+11. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
+12. `checkin-content-editor-CURRENT.md` — native content/editor contract.
+13. `checkin-files-CURRENT.md` — binary File direction.
+14. `checkin-ai-product-design-CURRENT.md` — broader AI product direction.
+15. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
+16. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md` — durable Knowledge/State/Authority/Policy/Audit invariants.
+17. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATION-OPERATIONS-WORKSPACE-CONTRACT.md` — future protected list/readiness/lifecycle/Run/capability semantics for the accepted v7 workspace.
+18. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md` — desktop/mobile Control Center, Pause Autonomy, re-contact and simulation.
+19. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md` — Sources, API/MCP discovery, typed adapters and bounded self-improvement.
+20. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOAL-DRIVEN-ARCHITECTURE-EVOLUTION-CONTRACT.md` — governed Goal → architecture-gap → test/simulate/release/measure evolution path.
+21. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
+22. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md` — protected Signals/Observation/State architecture.
 
 # Core architecture in one view
 
@@ -87,7 +89,9 @@ It performs no online observation.
 
 ## `/lab/automations/`
 
-Focused Automation operating/testing surface with:
+Focused Continuum Automation operating/testing workspace.
+
+Current accepted layers include:
 
 - v3 Draft/autosave compatibility editor;
 - **v5 canonical ordered workflow model**;
@@ -103,19 +107,41 @@ Focused Automation operating/testing surface with:
 - typed Preflight v1;
 - Change Review v1;
 - compact mobile Action stack v6;
-- rendered mobile QA.
+- **operations workspace v7** with Draft readiness, search/status filters and denser Automation rows;
+- browser-local **Manage Automations** for duplicate/archive/restore/delete-local-copy;
+- direct local Planner workspace action;
+- explicit `LAB · EXECUTION OFF` boundary;
+- authoritative future Runs placeholder that never mixes local simulations into Run history;
+- `LATER` capability previews for Signal Trigger, State Condition, Goal progress and durable State wait;
+- desktop/mobile v7 validation source.
 
-V5 semantic shape:
+V5 semantic shape remains:
 
 `Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
 
-Beginner rail:
+Beginner rail remains:
 
 `WHEN → IF → DO → WAIT → TEST`
 
+V7 is an operating layer over v5. It does not introduce another workflow model.
+
 Current inter-step IF is a linear gate only. Inter-step WAIT is Runtime-required. There is no YES/NO branch graph yet.
 
+`Ready to test` is a local definition-readiness cue. It does not mean Publish or Runtime is available.
+
+Manage operations only mutate browser-local Lab definitions. Production lifecycle/retention semantics are defined separately.
+
+The future Runs surface is reserved for server-owned Runtime history. Local simulation never becomes a fake Run.
+
 None of the Lab Planner/Signals/Automation proof calls a model, protected backend mutation, provider, online monitor or Runtime.
+
+Canonical v7 companion:
+
+`continuum-automations-operations-v7-CURRENT.md`
+
+Backend companion:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATION-OPERATIONS-WORKSPACE-CONTRACT.md`
 
 ## `/checkin/`
 
