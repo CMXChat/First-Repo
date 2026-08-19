@@ -126,6 +126,11 @@
     }
 
     setText('#engineering .section-kicker', 'Architecture');
+    const postgresNode = qsa('#engineering .stack-node').find((node) => (qs('strong', node)?.textContent || '').trim() === 'PostgreSQL');
+    if (postgresNode) {
+      setText('small', 'Keeps durable knowledge, operational State, policy, incidents, authority and future Runtime records.', postgresNode);
+    }
+
     setText('#build .section-kicker', 'Build process');
     setText('#build h2', 'Design quickly, then make the authority and state real');
     setText('#build .section-intro', 'The Lab lets us test an experience quickly. Once it feels right, we define durable data, authority and policy, build the backend behavior, then connect the accepted interface to protected APIs.');
@@ -273,6 +278,24 @@
     }
   }
 
+  function addGoalMissionNote() {
+    const actionSection = document.getElementById('action');
+    const anchor = qs('.policy-translation', actionSection);
+    if (!actionSection || !anchor || qs('.continuum-goal-note', actionSection)) return;
+
+    const goal = document.createElement('aside');
+    goal.className = 'continuum-forward-note continuum-goal-note';
+    goal.setAttribute('aria-label', 'Future Continuum Goals and Missions');
+    goal.innerHTML = `
+      <span class="continuum-forward-kicker">LATER · GOALS / MISSIONS</span>
+      <strong>Automations handle rules. Goals let Continuum pursue an outcome.</strong>
+      <p>A Goal can define what success means, what must never happen, which approvals are required, how long the effort may continue and when to stop. Planner can prepare or revise the strategy while Runtime carries approved work across waits, replies and changing State.</p>
+      <div class="continuum-forward-flow" aria-label="Future Goal orchestration flow"><span>GOAL</span><i>→</i><span>PLAN</span><i>→</i><span>ACT</span><i>→</i><span>OBSERVE</span><i>→</i><span>REPLAN</span><i>→</i><span>SUCCESS / STOP</span></div>
+      <div class="continuum-capability-example"><b>Example</b><span>Help an authorized person pursue a suitable job within 60 days. Never misrepresent qualifications, respect the allowed locations and require approval before anything is sent in that person's name.</span></div>
+      <small>Replanning can change strategy. It cannot silently change hard constraints, success criteria or authority.</small>`;
+    anchor.after(goal);
+  }
+
   function addCapabilityExtensionNote() {
     const capabilityLayer = qs('#difference .capability-layer');
     if (!capabilityLayer) return;
@@ -290,6 +313,25 @@
       <div class="continuum-forward-flow" aria-label="Future capability adoption flow"><span>DISCOVER</span><i>→</i><span>MAP</span><i>→</i><span>TEST</span><i>→</i><span>SIMULATE</span><i>→</i><span>POLICY</span><i>→</i><span>ENABLE</span></div>
       <div class="continuum-capability-example"><b>Example</b><span>A workflow keeps stopping because deployment access is missing. Continuum could identify a compatible GitHub or deployment capability, prepare the integration mapping and tests, simulate what would change and surface the setup for approval or an already-authorized adoption policy.</span></div>
       <small>Capability growth and permission growth stay separate.</small>`;
+  }
+
+  function addControlCenterNote() {
+    const engineering = document.getElementById('engineering');
+    const anchor = qs('.concept-architecture', engineering);
+    if (!engineering || !anchor || qs('.continuum-control-center-note', engineering)) return;
+
+    const note = document.createElement('aside');
+    note.className = 'continuum-forward-note continuum-control-center-note';
+    note.setAttribute('aria-label', 'Future Continuum Control Center');
+    note.innerHTML = `
+      <span class="continuum-forward-kicker">LATER · CONTROL CENTER</span>
+      <strong>Continuum should stay inspectable even when work keeps moving in the background.</strong>
+      <p>One protected control surface can show what is active now, what is waiting, what is coming next and what already happened. You should be able to inspect why an action happened, manage supported work and see which policy and authority are in effect.</p>
+      <div class="continuum-forward-flow" aria-label="Future Control Center views"><span>NOW</span><i>·</i><span>WAITING</span><i>·</i><span>UPCOMING</span><i>·</i><span>HISTORY</span></div>
+      <div class="continuum-capability-example"><b>Pause Autonomy</b><span>Block new autonomous consequential Actions while approved observation, State maintenance, drafting and briefings can continue.</span></div>
+      <div class="continuum-capability-example"><b>Simulation</b><span>Test what a policy, Goal or continuity situation would do using current or hypothetical State without performing real side effects.</span></div>
+      <small>The activity view can be simplified for people. Consequential Audit remains durable server truth.</small>`;
+    anchor.after(note);
   }
 
   function addOriginNote() {
@@ -339,11 +381,15 @@
   addSensesStrip();
   addModelRouting();
   addPlannerAndSignalsNotes();
+  addGoalMissionNote();
   addCapabilityExtensionNote();
+  addControlCenterNote();
   addOriginNote();
 
   document.documentElement.dataset.continuumOrigin = 'ready';
   document.documentElement.dataset.continuumSignalsPlanner = 'ready';
   document.documentElement.dataset.continuumPowerClarity = '20260819';
   document.documentElement.dataset.continuumArchitectureAligned = '20260819';
+  document.documentElement.dataset.continuumGoals = 'ready';
+  document.documentElement.dataset.continuumControlCenter = 'ready';
 })();
