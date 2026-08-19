@@ -13,10 +13,6 @@
   let returnFocus = null;
 
   const normalize = value => String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
-  const truncate = (value, max = 42) => {
-    const text = String(value || "").trim().replace(/\s+/g, " ");
-    return text.length > max ? `${text.slice(0, max - 1)}…` : text;
-  };
 
   function kindFromLabel(label) {
     const value = normalize(label);
@@ -91,6 +87,7 @@
     const replacing = /replace action/i.test(document.querySelector(".v3-picker header h2")?.textContent || "");
     picker.querySelectorAll("[data-choose-inline]").forEach(button => {
       button.querySelector(".v9-existing-count")?.remove();
+      delete button.dataset.v9ExistingCount;
       if (replacing) return;
       const kind = button.dataset.chooseInline;
       const count = countKind(kind);
@@ -185,7 +182,9 @@
   function schedule() {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => requestAnimationFrame(patch));
+    // v5 rebuilds its ordered sequence three animation frames after editor changes.
+    // Run one frame later so descriptive labels and duplicate cues survive that redraw.
+    requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(patch))));
   }
 
   document.addEventListener("click", event => {
