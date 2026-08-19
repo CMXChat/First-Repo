@@ -75,11 +75,16 @@ jobs:
 
           for term in [
               'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
-              'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset', 'labPlannerPreflight = "v1"'
+              'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset',
+              'continuum-preflight-operation-link', 'data.preflightOpState', 'AFFECTS CHANGE',
+              'labPlannerPreflight = "v1"'
           ]:
               if term not in preflight:
                   raise SystemExit(f'Planner preflight missing: {term}')
-          for term in ['.continuum-preflight-panel', '.continuum-preflight-actions', '@media (max-width:760px)']:
+          for term in [
+              '.continuum-preflight-panel', '.continuum-preflight-actions', '.continuum-preflight-operation-link',
+              '@media (max-width:760px)'
+          ]:
               if term not in preflight_css:
                   raise SystemExit(f'Planner preflight CSS missing: {term}')
           for term in ['CHANGE REVIEW', 'cmx:lab-planner-preflight-updated', 'ISSUES']:
@@ -98,9 +103,9 @@ jobs:
 
           required_assets = [
               'lab-continuum-planner-contract-v1.js?v=20260819-v1preflight1',
-              'lab-continuum-planner-preflight-v1.css?v=20260819-v1',
+              'lab-continuum-planner-preflight-v1.css?v=20260819-v1r2',
               'lab-continuum-planner-review-v1.css?v=20260819-v1preflight1',
-              'lab-continuum-planner-preflight-v1.js?v=20260819-v1r1',
+              'lab-continuum-planner-preflight-v1.js?v=20260819-v1r2',
               'lab-continuum-planner-review-v1.js?v=20260819-v1preflight1',
               'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2'
           ]
@@ -119,7 +124,7 @@ jobs:
           if html.index('lab-continuum-planner-review-v1.css') > html.index('lab-automations-v5-mobile-qa.css'):
               raise SystemExit('final mobile QA must remain after shared Planner CSS')
 
-          print('Automations v5 deterministic Planner, dependencies, typed preflight and Change Review contracts passed.')
+          print('Automations v5 deterministic Planner, dependencies, typed preflight/change links and Change Review contracts passed.')
           PY
 
       - name: Focused route asset smoke
