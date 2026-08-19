@@ -71,7 +71,7 @@ assert.match(finalJs, /Different approved intelligence can fit different jobs/);
 for (const boundary of ['Model', 'Provider', 'Capability', 'Policy']) {
   assert.match(finalJs, new RegExp(`<b>${boundary}<\\/b>`));
 }
-assert.match(finalJs, /Changing the model does not change the authority\./);
+assert.match(finalJs, /Authority stays fixed unless policy changes\./);
 
 // Capability growth includes a safe improvement path instead of hidden self-rewrite language.
 assert.match(finalJs, /LATER · LIVE CAPABILITY/);
@@ -133,7 +133,7 @@ assert.match(contract, /The capability ceiling can move/);
 assert.match(contract, /Signals \+ State note/);
 assert.match(contract, /Live capability extension lesson/);
 assert.match(contract, /Pause Autonomy \/ Control Center direction/);
-assert.match(contract, /final one-time architecture alignment layer/);
+assert.match(contract, /final one-time architecture and power-clarity alignment layer/);
 
 // Initialization stays deterministic. No broad document mutation or hidden network behavior is introduced.
 for (const source of [baseJs, finalJs]) {
