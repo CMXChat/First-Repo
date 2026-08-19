@@ -1,7 +1,7 @@
 # Check In / Continuum Directory, Audiences & Library — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-domain frontend handoff; Directory v2 active in Lab, advanced Library contracts remain separate, production backend expansion pending
+Status: Current cross-domain frontend handoff; Directory v2 and Automations Audience v4.1 active in Lab, production backend expansion pending
 
 ## Read this with
 
@@ -41,7 +41,7 @@ Directory answers **who**. Library answers **what information**. Automations def
 
 # Current Directory v2 Lab surface
 
-The main `/lab/` Records area now renders **Directory v2**.
+The main `/lab/` Records area renders **Directory v2**.
 
 Active files:
 
@@ -52,7 +52,7 @@ assets/lab/lab-directory-v2.js
 assets/lab/lab-directory-v2.css
 ```
 
-`lab-crm.js` remains compatibility scaffolding and seeds the shared local store. Directory v2 then enriches that store and owns the visible Directory product surface.
+`lab-crm.js` remains compatibility scaffolding and seeds the shared local store. Directory v2 enriches that store and owns the visible Directory product surface.
 
 The older `.lab-crm` remains in the DOM for compatibility but is hidden when Directory v2 loads successfully.
 
@@ -92,8 +92,10 @@ The interface includes:
 - explicit Person relationship prototype data;
 - Group/saved-audience editing;
 - Group resolution previews;
-- direct Automation usage for People/Organizations;
-- exact-email / normalized-phone duplicate warning prototype.
+- email-ready and phone-ready counts;
+- exact-email / normalized-phone duplicate warning prototype;
+- direct Automation usage links for People and Organizations;
+- dark and light presentation.
 
 # Person ↔ Organization
 
@@ -143,7 +145,7 @@ Users may create arbitrary useful labels. Suggested labels are only starting poi
 
 # Groups / saved audiences
 
-Groups are now visible and editable in Directory v2.
+Groups are visible and editable in Directory v2.
 
 A Group may contain typed selectors for:
 
@@ -177,35 +179,77 @@ A future production audience resolver must return deterministic per-Person readi
 
 # Current focused Automations integration
 
-The focused route remains:
+Focused route:
 
 `/lab/automations/`
 
-Current Directory integration files:
+Current Directory/readiness integration files:
 
 ```text
 assets/lab/lab-automations-directory-v4.js
 assets/lab/lab-automations-directory-v4.css
 ```
 
-Current truthful behavior:
-
-- direct Person targets remain selectable through the existing v3 target field;
-- direct Organization targets remain selectable through the existing v3 target field;
-- Person target rows show email/phone readiness;
-- Organization rows show current resolved People and channel-readiness counts;
-- the Actions stage shows Directory People/Organization/Group counts;
-- Review shows Directory readiness counts;
-- saved Groups are visible in the target picker as audience previews;
-- Groups/Labels are **not** silently forced into the old scalar target field.
-
-The next real audience milestone is a typed multi-selector Audience editor that can represent:
+Current typed Audience layer:
 
 ```text
-Person | Organization | Group | Label
+assets/lab/lab-automations-audience-v4.js
+assets/lab/lab-automations-audience-v4.css
 ```
 
-without corrupting the current compatibility model.
+## Typed Audience v4.1
+
+Communication Actions currently represented by the Lab as `Notify a person` or `Send email` now use a multi-selector Audience manager instead of the old one-target picker.
+
+The Lab can select one or more:
+
+- Person;
+- Organization;
+- Group;
+- Label.
+
+The current Action Draft stores prototype fields similar to:
+
+```text
+audienceSelectors[]
+audienceResolution.mode = live_membership
+audienceResolution.dedupe = person_id
+```
+
+The Lab resolver:
+
+1. expands Organization membership;
+2. expands Group selectors;
+3. expands Label membership;
+4. includes directly selected People;
+5. deduplicates by stable Person ID;
+6. previews email-ready and phone-ready counts.
+
+The Audience modal shows the resolved People before the selection is applied.
+
+## Compatibility with the proven v3 editor
+
+V3 still has older `targetRef` / `targetLabel` fields.
+
+The v4.1 Audience adapter preserves compatibility deliberately:
+
+- one direct Person or Organization selector mirrors into the old stable target reference;
+- a multi-selector/Group/Label audience writes a readable compatibility target label;
+- the canonical Lab audience intent remains `audienceSelectors[]`;
+- before saving Audience, the adapter flushes the current v3 Draft Save;
+- after writing the audience selectors to the shared Automation Draft, the route reloads the exact Draft so v3 rehydrates the extra fields and does not overwrite them on a later autosave.
+
+This reload is Lab compatibility behavior. Production must not copy it.
+
+## Other Directory integration
+
+The focused builder also shows:
+
+- Directory People/Organization/Group counts on the Actions stage;
+- Person email/phone readiness;
+- Organization member/readiness counts;
+- Directory readiness in Review;
+- Audience preflight for communication Actions.
 
 Production rule remains:
 
@@ -218,6 +262,10 @@ AutomationVersion stores stable selector IDs
 → freezes exact Person + contact endpoint snapshot
 → provider uses the frozen execution inputs
 ```
+
+The browser resolver is not production authority.
+
+Historical Runs must remain unchanged when Directory data later changes.
 
 # Relationship model
 
@@ -246,7 +294,7 @@ Activity and immutable security Audit remain separate concepts.
 
 # Duplicate direction
 
-The current Lab only warns on exact email or normalized phone collisions.
+The current Lab warns only on exact email or normalized phone collisions.
 
 Production duplicate detection may become more sophisticated, but merge must remain explicit and auditable.
 
@@ -297,7 +345,7 @@ AI cannot silently widen Groups, change trusted relationships, merge People, exp
 
 # Production migration boundary
 
-Do not port Directory v2 by copying localStorage or DOM adapters into the protected application.
+Do not port Directory v2 or Audience v4.1 by copying localStorage or DOM adapters into the protected application.
 
 The production path is:
 
@@ -306,7 +354,7 @@ accepted Lab semantics
 → backend models/migrations/services/tests
 → protected API + generated client
 → protected React Directory surface
-→ Automation Audience integration
+→ typed Automation Audience integration
 → future Runtime recipient freezing
 ```
 
@@ -332,13 +380,15 @@ Recommended broad sequence after the current Phase 2A release boundary:
 10. duplicate suggestion + explicit merge;
 11. custom fields/saved views/import/export only as needed.
 
+The accepted Lab `audienceSelectors[]` semantics should inform the protected Automation Audience API, but the browser field names do not have to become the exact Pydantic/PostgreSQL names.
+
 # Safety / truthfulness
 
-Do not claim current Lab Directory features are durable production capabilities.
+Do not claim current Lab Directory/Audience features are durable production capabilities.
 
 The Lab still has no production:
 
-- Directory mutations;
+- Directory mutations matching v2;
 - Group/Label persistence;
 - authoritative audience resolution;
 - contact-method verification service;
