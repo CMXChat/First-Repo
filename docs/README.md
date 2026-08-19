@@ -1,6 +1,6 @@
 # CMX Documentation Index
 
-Last reconciled: **August 18, 2026**
+Last reconciled: **August 19, 2026**
 Repository: `CMXChat/First-Repo`
 
 ## Current rule
@@ -34,13 +34,16 @@ Broader Continuum experiment workspace.
 
 Records runs **Directory v2** with People, Organizations, Groups, memberships, ContactMethods/readiness, Labels, Person relationships, Activity/notes, Group resolution, duplicate warnings, Automation usage and responsive desktop/mobile presentation.
 
-Directory `AI setup` now presents a **CONTINUUM PLANNER · PREVIEW** using one typed Change Plan vocabulary across Directory, Library and Automations.
+Directory `AI setup` presents a **CONTINUUM PLANNER · PREVIEW** using the shared Lab Change Plan vocabulary across Directory, Library and Automations.
 
-Browser marker:
+Browser markers:
 
-`data-lab-directory-planner="typed-v2"`
+- `data-lab-planner-contract="v1"`;
+- `data-lab-directory-planner="typed-v2"`.
 
 It has no model call, no free-text interpretation, no mutation and no hidden authority. Fixed examples show typed operations and preflight blockers, including a **Full Continuum setup** example spanning all three domains.
+
+Current phone QA also fixes the Directory command-bar collision between `AI setup` and the primary New action and raises Planner tap targets/readability for narrow Samsung-class layouts.
 
 ## `/lab/automations/`
 
@@ -56,7 +59,9 @@ Focused Automation operating/testing surface with:
 - typed data/recommendations/tests v4.2;
 - Input Routing v4.3;
 - Advanced Flow v4.4 inter-step IF / WAIT authoring;
-- **deterministic typed Planner v5 proving surface**.
+- **deterministic typed Planner v5 proving surface**;
+- shared **Planner Contract v1** operation vocabulary;
+- final v5 mobile QA layer for ordered-flow and Planner readability/tap targets.
 
 V5 semantic shape:
 
@@ -93,7 +98,23 @@ Python-first development/learning environment.
 
 # One Planner language
 
-Current Lab proving surfaces deliberately converge on:
+The Lab now loads `assets/lab/lab-continuum-planner-contract-v1.js` in both Directory and focused Automations.
+
+That file is a **browser proving registry**, not backend authority. It defines the current allowlisted Lab operation vocabulary and metadata families used by Change Plan examples, such as:
+
+- `directory.upsert_group`;
+- `library.create_folder`;
+- `automation.create_draft`;
+- `automation.add_condition`;
+- `automation.add_wait`;
+- `automation.reference_audience`;
+- `automation.reference_content`.
+
+Current CI extracts typed operation literals from both Planner surfaces and fails if either uses an operation that is absent from the shared registry.
+
+This prevents the two prototypes from silently inventing incompatible Planner languages while the real protected server operation allowlist is still future work.
+
+Current product contract remains:
 
 `INTENT → TYPED CHANGE PLAN → PREFLIGHT → REVIEW → APPLY through normal protected services`
 
@@ -103,7 +124,7 @@ Current prototypes:
 - Automations Planner v5 = small local deterministic pattern matcher that can create an ordinary v5 Lab Draft;
 - neither = the real protected Continuum AI Planner.
 
-The future protected Planner replaces these adapters with server-backed typed planning/tools while humans and AI continue using the same domain services.
+The future protected Planner replaces these adapters and the Lab operation registry with server-backed typed planning/tools while humans and AI continue using the same domain services.
 
 # Backend boundary
 
@@ -115,6 +136,7 @@ Production still has no general:
 - canonical Group/Label Audience resolver;
 - typed Automation data/input/inter-step flow service matching Lab;
 - server equivalent of the Lab v5 ordered model;
+- server Planner operation registry equivalent to the Lab contract;
 - Automation Runtime / persisted waits / branching;
 - provider execution;
 - AI Task execution;
@@ -122,15 +144,18 @@ Production still has no general:
 - Agent;
 - MCP execution.
 
-Do not infer backend capability from Lab visuals, browser models or Planner previews.
+Do not infer backend capability from Lab visuals, browser models, Planner previews or the Lab operation registry.
 
 # Current validation workflows
 
 Relevant source workflows include:
 
+- `checkin-lab-validation.yml`;
 - `automations-v5-model-validation.yml`;
 - `automations-v5-planner-validation.yml`;
 - `continuum-directory-validation.yml`.
+
+They now protect the shared Planner registry, both Planner vocabularies, mobile QA, model semantics, isolation and no-network/no-execution boundaries.
 
 The available connector cannot independently expose push-triggered workflow-run results in this context, so do not claim an observed green run or Pages pickup until a later context can verify it.
 
