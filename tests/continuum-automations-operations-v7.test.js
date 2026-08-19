@@ -16,7 +16,7 @@ assert.match(index, /lab-automations-operations-v7\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7-future\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7-polish\.css\?v=20260819-v7ops2/);
 assert.match(index, /lab-automations-operations-v7\.js\?v=20260819-v7ops2/);
-assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops3/);
+assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops4/);
 assert.ok(index.indexOf('lab-automations-operations-v7.js') > index.indexOf('lab-automations-action-stack-v6.js'), 'v7 must load after accepted authoring layers');
 assert.ok(index.indexOf('lab-automations-operations-v7-polish.js') > index.indexOf('lab-automations-operations-v7.js'), 'v7 chrome polish must load last');
 
@@ -53,6 +53,8 @@ assert.match(polish, /LAB · EXECUTION OFF/);
 assert.match(polish, /PLANNER · LOCAL PREVIEW/);
 assert.match(polish, /Create a local typed proposal before opening the Draft/);
 assert.match(polish, /No model call or provider action occurs/);
+assert.match(polish, /brand\.href = "\/lab\/control\/"/);
+assert.match(polish, /Back to Continuum Control Center/);
 assert.match(polish, /dataset\.v7OpenPlanner/);
 assert.match(polish, /function openPlanner\(\)/);
 assert.match(polish, /data-v4-start='planner'/);
