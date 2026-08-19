@@ -1,7 +1,7 @@
 # Check In Automations Frontend — CURRENT
 
 Date: 2026-08-19
-Status: Active Continuum Lab Automations v5 workflow model + deterministic Planner + typed Preflight + shared Change Review + compact v6 mobile Action stack
+Status: Active Continuum Lab Automations v5 workflow model + editable deterministic Planner + typed Preflight/Change Review + mobile Action-stack v6; Signals/Observations prepared as future trigger/input architecture
 
 # Focused route
 
@@ -9,7 +9,7 @@ Status: Active Continuum Lab Automations v5 workflow model + deterministic Plann
 
 This is the canonical Automation operating/prototyping/testing route. `/lab/` remains the broader Continuum Lab workspace.
 
-Lab boundary remains strict:
+Lab boundary is strict:
 
 - `connect-src 'self'`;
 - no production API calls;
@@ -17,43 +17,46 @@ Lab boundary remains strict:
 - no authoritative scheduling;
 - no real Publish;
 - no provider secrets;
-- no external AI/model execution.
+- no external AI/model execution;
+- no online observation/crawling authority.
 
 Strategic product direction: `docs/continuum-automations-master-plan-CURRENT.md`.
 
-# Current active stack
+Signals companion: `docs/continuum-signals-observations-master-plan-CURRENT.md`.
 
-The route deliberately separates browser-editor compatibility from newer product/model proofs:
+# Current active model and UI layers
 
-- `lab-automations-experience-v3.js/.css` — browser Draft/autosave compatibility core and five-stage editor;
+The route still uses the v3 browser Draft/autosave editor for compatibility while newer layers prove the product model that should eventually move into protected React/server services.
+
+Current important layers:
+
+- `lab-automations-experience-v3.js/.css` — compatibility Draft/autosave editor;
 - `lab-automations-model-v5.js` — canonical Lab ordered workflow normalization/validation;
-- `lab-continuum-planner-contract-v1.js` — shared browser-only Change Plan vocabulary, dependency validation and typed preflight issue vocabulary;
-- `lab-automations-route-integration.js`;
-- `lab-automations-system-surface.js/.css`;
-- `lab-automations-progressive-preview.js`;
-- `lab-automations-platform-v4.js/.css` + QA;
+- `lab-automations-platform-v4.js/.css` — command center, Capability Catalog, Templates/Runs shell;
 - `lab-automations-scenarios-v4.js` — 15 editable starting patterns;
-- `lab-automations-directory-v4.js/.css`;
-- `lab-automations-audience-v4.js/.css`;
-- `lab-automations-intelligence-v4.js/.css`;
-- `lab-automations-input-routing-v4.js/.css`;
+- `lab-automations-directory-v4.js/.css` — Directory readiness;
+- `lab-automations-audience-v4.js/.css` — Person/Organization/Group/Label Audience proof;
+- `lab-automations-intelligence-v4.js/.css` — recommendations, typed data references and richer local tests;
+- `lab-automations-input-routing-v4.js/.css` — typed source → receiving-field routing;
 - `lab-automations-sequence-v4.js/.css` — inter-step IF/WAIT authoring UX;
-- `lab-automations-flow-v5.js/.css` — ordered v5 Flow Preview;
-- `lab-automations-planner-v5.js/.css` — deterministic local typed Planner proving surface;
-- `lab-continuum-planner-preflight-v1.js/.css` — shared typed issue review, decisions/defer state and Change Plan row linkage;
-- `lab-continuum-planner-review-v1.js/.css` — shared effect/domain/review/dependency summary;
-- `lab-automations-action-stack-v6.js/.css` — compact mobile Action-stack authoring layer;
-- `lab-automations-v5-mobile-qa.css` — final focused-route mobile QA layer.
+- `lab-automations-flow-v5.js/.css` — ordered whole-flow preview;
+- `lab-continuum-planner-contract-v1.js` — shared browser Change Plan operation/dependency/preflight vocabulary;
+- `lab-automations-planner-v5.js/.css` — deterministic local Planner proposal;
+- `lab-automations-planner-edit-v5.css` + `lab-automations-planner-reset-v5.js` — edit/reset proposed plan before Draft creation;
+- `lab-continuum-planner-preflight-v1.js/.css` — typed interactive preflight;
+- `lab-continuum-planner-review-v1.js/.css` — shared Change Review;
+- `lab-automations-action-stack-v6.js/.css` — compact mobile DO-stage authoring;
+- `lab-automations-v5-mobile-qa.css` — final focused-route mobile QA.
 
-Older v2 and earlier experiment files remain history. Production does not copy this DOM/localStorage/sessionStorage architecture.
+Older prototype files remain history. Production must migrate accepted semantics, not this DOM/localStorage architecture.
 
 # Canonical Lab workflow model v5
 
-`lab-automations-model-v5.js` normalizes an Automation into one ordered `workflowV5` model:
+Each Automation can normalize into one ordered `workflowV5` model:
 
 `Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
 
-Start timing and recurrence stay separate policies because they are semantically different from an inter-step WAIT.
+Start timing and recurrence remain separate policies because they are different from an inter-step WAIT.
 
 V5 validates:
 
@@ -61,315 +64,318 @@ V5 validates:
 - Trigger first and Finish last;
 - unique node IDs;
 - pre-action Conditions before Actions;
-- sequence IF/WAIT controls between Actions;
-- a step-output Condition cannot reference a future or missing Action.
+- sequence IF/WAIT controls only between Actions;
+- step-output Conditions cannot reference future/missing Actions.
 
-A model with no Actions is structurally valid with a `no_actions` warning, but the current v3 compatibility editor still maintains at least one Action slot. Changing that compatibility rule should be deliberate instead of hidden inside a mobile presentation patch.
+A zero-Action model can be structurally represented with a warning, but the current v3 compatibility editor still maintains at least one Action slot. Do not silently change that rule inside presentation code.
 
-Compatibility fields remain while the UI migrates:
+**Do not copy browser `workflowV5` JSON into backend schema.** It is Lab evidence for the ordered semantics, not server authority.
 
-- `trigger`;
-- `conditions[]`;
-- `actions[]`;
-- `flowControls[]`;
-- `timing`;
-- `repeatConfig`;
-- `outcome`.
+# Beginner navigation
 
-Browser marker: `data-lab-automations-model="v5"`.
+Keep the simple rail:
 
-# Progressive truth and beginner navigation
+`WHEN → IF → DO → WAIT → TEST`
 
-A blank Draft remains visibly incomplete until the user makes or confirms choices. Compatibility defaults must never look like confirmed user intent.
-
-Accepted product label remains **FLOW PREVIEW**.
-
-The simple navigation rail remains:
+Meaning:
 
 - WHEN — Trigger;
-- IF — pre-action Rules;
-- DO — Action sequence + optional inter-step controls;
-- WAIT — start timing / recurrence;
+- IF — rules evaluable before Actions begin;
+- DO — ordered Action sequence plus inter-step controls;
+- WAIT — start timing / recurrence policy;
 - TEST — Review / Finish / simulation.
 
-This rail is beginner navigation over the richer ordered model, not the long-term storage shape.
+Accepted label remains **FLOW PREVIEW**.
 
-# Advanced Flow v4.4 on v5
+Blank Drafts keep truthful pending labels such as Choose a trigger / Choose an action / Not set yet. Compatibility defaults must never look like confirmed user intent.
 
-Between Actions, the DO stage can author:
+# Inter-step logic
 
-- `IF / Continue if…` — a linear gate;
-- `WAIT / Wait between steps` — a future durable inter-step delay.
+Important distinction:
 
-The authoring layer reads through `CMXAutomationModelV5.getFlowControls()` and writes through `CMXAutomationModelV5.setFlowControls()` first.
+- top-level IF = pre-action rule;
+- inter-step IF = may reference an earlier Action output;
+- top-level timing = when the first Action may begin;
+- inter-step WAIT = durable future workflow state between Actions.
 
-`flowControls[]`, `afterActionId` and `cmx-lab-automation-flow-controls-v1` remain compatibility projection/fallback.
+Current inter-step IF is a **linear gate**. If false, the remaining path stops. There is no YES/NO branch graph yet.
 
-The IF source picker exposes only Trigger values and earlier Action outputs available at that position. Current IF is linear only. If false, the remaining path stops. There is no YES/NO branch graph yet.
+Inter-step WAIT is labeled Runtime-required. Browser timers are never execution authority.
 
-Inter-step WAIT remains distinct from start Timing and requires future persisted Runtime state.
+The visible v4.4 authoring layer reads/writes inter-step controls through `CMXAutomationModelV5` first. Older `flowControls[]`, `afterActionId` and the compatibility store remain projection/fallback only.
 
-Browser markers:
+# Ordered Flow Preview
 
-- `data-lab-automations-sequence="v4-4"`;
-- `data-lab-automations-sequence-model="v5"` when v5 owns the mutation path.
+Complex Drafts can expose the actual sequence, for example:
 
-# Ordered Flow Preview v5
+`WHEN Manual start → DO AI task → IF AI priority urgent → WAIT 2h → DO Notify → FINISH`
 
-The compact FLOW PREVIEW remains the beginner navigator. `lab-automations-flow-v5.js/.css` adds **ORDERED SEQUENCE** beneath it for direct whole-flow visibility.
+Complex flows expand by default. Simple flows stay compact. Rows navigate back to the corresponding authoring stage. Mobile renders the sequence vertically.
 
-A complex Draft can read:
+# Directory / Audience
 
-`WHEN → DO AI task → IF priority urgent → WAIT 2h → DO Notify → FINISH`
+Communication Actions can compose selectors across:
 
-Complex flows open by default; simple flows stay collapsed. Rows navigate to the corresponding authoring stage. Start timing/recurrence appears separately as a `START` policy. Mobile uses the same ordered vertical sequence with larger controls.
+- Person;
+- Organization;
+- Group;
+- Label.
 
-Browser marker: `data-lab-automations-flow="v5"`.
+Lab resolves current unique People and channel-readiness counts for UX proof. Production Audience resolution remains server-owned.
 
-# Scenarios
+Prototype intent uses `audienceSelectors[]`; old `targetRef` / `targetLabel` remain compatibility fields.
 
-Current total: **15 editable starting patterns**.
+# Typed data + input routing
 
-Important advanced examples:
+Data references can come from:
 
-- **Urgent AI follow-up** — AI assessment → IF priority urgent → Notify;
-- **Delayed backup escalation** — primary Action → WAIT two hours → backup Action.
+- Trigger outputs;
+- earlier Action outputs;
+- Directory/Audience values.
 
-They create ordinary editable Drafts and normalize into v5.
+Input routing gives those values a destination such as:
 
-# Directory, Audience and typed data
+- Email subject/body;
+- AI Task context/focus;
+- Notify message;
+- Manual Review context.
 
-Audience v4.1 allows communication Actions to compose Person, Organization, Group and Label selectors. Lab resolves unique People plus email/phone readiness. Production Audience resolution remains server-owned.
+Example trace:
 
-Intelligence v4.2 adds contextual recommendations, friendly typed `Use data` references and richer local step-test traces. Sources can come from Trigger values, earlier Action outputs and Directory/Audience values.
+`Body data ← Step 1 · AI summary`
 
-Input Routing v4.3 maps a typed source into a named receiving Action field, for example:
+The Lab uses friendly typed references. It does not expose arbitrary executable JS/Python/expression logic.
 
-- Email `subject` / `body`;
-- AI Task `context` / `focus`;
-- Manual Review `review_context`;
-- Notify `message`.
+# Mobile Action stack v6
 
-No arbitrary executable expression language is introduced.
+A user-provided narrow-phone screenshot exposed that the DO stage was technically responsive but far too tall because every Action and augmentation panel stayed expanded.
 
-Compatibility stores remain:
+At `<=760px`, Action-stack v6 now provides:
 
-- `cmx-lab-automation-data-bindings-v1`;
-- `cmx-lab-automation-input-bindings-v1`.
+- compact Action rows by default;
+- one expanded step at a time;
+- explicit **Edit / Hide**;
+- a separate labeled **Remove** control;
+- Collapse all;
+- reorder/duplicate/pause controls while a step is open;
+- collapsed Audience/Input Routing/Use Data panels with the Action;
+- no drag authoring on phone;
+- desktop behavior unchanged.
 
-# Planner v5 proving surface
+When multiple Actions exist, Remove delegates to the existing v3 mutation path. The final remaining Action is disabled as `Only step` because the compatibility editor still expects one Action slot.
+
+Session-only UI state:
+
+`cmx-lab-automations-action-stack-ui-v1`
+
+Browser marker:
+
+`data-lab-automations-action-stack="v6-mobile"`
+
+# Planner v5
 
 The Automation Planner remains a **deterministic local proving adapter**, not connected AI.
 
-Current local patterns include daily briefing, continuity escalation, delayed reminder, AI report/review and urgent AI follow-up.
+It can match a small set of proving intents such as:
 
-A result is explicitly labeled:
+- daily AI briefing;
+- missed Check In escalation;
+- delayed reminder;
+- AI report/review;
+- urgent AI follow-up.
+
+The result is labeled:
 
 - `TYPED PLAN PREVIEW · LOCAL`;
 - `NO AI CALL`.
 
-It shows:
+The proposal shows:
 
-1. **ORDERED V5 FLOW**;
-2. **CHANGE PLAN** typed operations;
-3. **PREFLIGHT · TYPED REVIEW**;
-4. **CHANGE REVIEW**.
+1. ordered v5 flow;
+2. typed Change Plan operations;
+3. plan-local dependencies/temp refs;
+4. typed Preflight;
+5. shared Change Review.
 
-`Use this draft` creates a normal local Automation Draft, records `plannerPreview.source = "local-deterministic-v5"`, then normalizes it through `CMXAutomationModelV5.syncStore()`.
+`Use this draft` creates an ordinary browser-local Automation Draft and normalizes it through v5. It does not publish or execute.
 
-No model, backend, provider, Runtime, Publish or hidden authority is involved.
+# Editable Planner proposals
 
-# Shared Planner Contract and plan dependencies
+The Planner proposal can now be edited **before** Draft creation.
 
-`lab-continuum-planner-contract-v1.js` is shared by Directory and focused Automations.
+Current proving edits:
 
-It is a browser proving registry for operation types such as:
+- remove a proposed Action when more than one exists;
+- remove a proposed inter-step IF/WAIT;
+- reset the proposal to the original deterministic interpretation.
 
-- `directory.upsert_group`;
-- `library.create_folder`;
-- `automation.create_draft`;
-- `automation.add_condition`;
-- `automation.add_wait`;
-- `automation.reference_audience`;
-- `automation.reference_content`.
+Removing an Action changes the real `activePlan`, not just a DOM row.
 
-Registry metadata includes owning domain, family, effect and review class.
+After an edit, the Planner:
 
-Plans may carry browser-only dependency semantics:
+1. prunes inter-step controls whose anchor/source is no longer valid;
+2. removes blockers that no longer apply, such as a Runtime blocker after the only inter-step WAIT disappears;
+3. rebuilds typed Change Plan operations;
+4. reruns local dependency validation;
+5. refreshes Preflight + Change Review.
 
-- operation `id`;
+The final proposed Action remains protected as `Only action` for compatibility with the current editor.
+
+`Reset proposal` simply regenerates the deterministic proposal from the current intent. It restores removed Actions/controls and their corresponding blockers.
+
+A created Draft records:
+
+- `plannerPreview.source = "local-deterministic-v5"`;
+- `editCount`;
+- whether it was `editedBeforeDraft`.
+
+This is UX proof of the future workflow:
+
+`describe intent → AI proposes typed plan → user/AI revises plan → preflight → review → create Draft/apply through protected services later`
+
+# Shared Planner Contract v1
+
+Directory and focused Automations use one browser-only typed operation vocabulary.
+
+Current domains represented in the registry:
+
+- Directory;
+- Library;
+- **Signals**;
+- Automations.
+
+Plan operations may carry:
+
+- `id`;
 - `dependsOn[]`;
-- `produces` temporary `temp:…` result;
-- `uses[]` earlier plan-local results.
+- temporary `produces: temp:…`;
+- `uses[]` earlier temporary results.
 
-The Lab validator rejects missing/future dependencies, unavailable temporary references, duplicate temporary outputs and invalid non-temporary produced references.
+The browser validator rejects future/missing dependencies, unavailable temporary references, duplicate temp outputs and invalid non-temporary produced refs.
 
-These `temp:` references are product proof only. Future server Change Plans own their own plan-local references and replace successfully created temporary results with authoritative stable IDs during protected apply.
+This registry is **not** the future protected server allowlist.
 
-Browser marker: `data-lab-planner-contract="v1"`.
+# Signals / Observations preparation
 
-# Typed Planner Preflight v1
+Signals are now an explicit future Automation input/Trigger layer.
 
-`lab-continuum-planner-preflight-v1.js/.css` turns local Planner warnings into one shared typed review surface across Directory and Automations.
+Canonical product plan:
 
-The shared contract currently recognizes proving issue codes including:
+`docs/continuum-signals-observations-master-plan-CURRENT.md`
 
-- `directory.ambiguous_match`;
-- `directory.identity_check_required`;
-- `directory.audience_required`;
-- `automation.schedule_unconfirmed`;
-- `runtime.required`;
-- `library.service_required`;
-- `connections.required`;
-- `authority.approval_required`;
-- `planner.dependency_invalid`;
-- `planner.review_required`.
+Backend plan:
 
-Current review states are intentionally distinct:
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md`
 
-- **CHECK REQUIRED** — the user still needs to review a decision;
-- **PREVIEW DECISION** — a sample Lab decision has been recorded, with no protected mutation;
-- **DEFERRED TO DRAFT** — safe to continue creating an editable Draft, while the configuration remains incomplete;
-- **BLOCKED** — a real server/capability/Runtime prerequisite is unavailable and cannot be cleared in Lab;
-- **APPROVAL REQUIRED** — reserved for an explicit authority path. Planner cannot approve itself.
+Durable path:
 
-A sample Directory ambiguity can be reviewed with `Use existing match` or `Keep separate`. The choice changes preview state only and can be changed again.
+`SignalSource → Observation → Signal → Automation eligibility → Runtime Run`
 
-A missing Automation Audience or unconfirmed timing can be marked **Handle in Draft**. That does not resolve the requirement. It moves it into the editable Draft and can be undone.
+Future source families may include approved provider APIs/webhooks, feeds, constrained webpage watches, approved search/news sources, GitHub/status events and approved MCP resources.
 
-A missing Runtime, Connection, protected server identity service or approval remains visible as blocked/approval state.
+The shared Planner registry is already prepared for reviewed definition operations such as:
 
-Each typed issue is also linked back to the Change Plan row it affects. The operation row can visibly carry:
+- `signals.create_watch`;
+- `signals.update_watch`;
+- `signals.attach_source`;
+- `signals.set_filter`;
+- `signals.set_interpretation`;
+- `signals.pause_watch`;
+- `automation.reference_signal`.
 
-- `CHECK`;
-- `DECISION · …`;
-- `DEFERRED`;
-- `BLOCKED`;
-- `APPROVAL`.
+The main `/lab/` Directory Planner now has a fixed **Online signals** example showing:
 
-The issue card identifies `AFFECTS CHANGE ##` when a current proving mapping exists. Plan-level issues remain explicitly plan-level.
+`Create Watch → Attach approved source → Set filter → Set bounded interpretation → Create Automation Draft → Reference Signal Watch`
 
-Browser marker: `data-lab-planner-preflight="v1"`.
+It is explicitly labeled **NO ONLINE OBSERVATION**. No fetch/search/crawler/model/provider call occurs.
 
-Important implementation boundary: the local proving adapters still start with human-readable blocker messages, and `classifyIssue()` maps those messages into the shared issue vocabulary. Production must **not** copy that text-classification mechanism. The protected Planner/preflight service later returns authoritative structured issue codes, stable references, revisions, readiness, permissions and approval requirements directly from server domain services.
+The example intentionally keeps two real capability gaps blocked:
 
-# Shared Change Review v1
+- protected Signals service required;
+- Connection/source required.
 
-`lab-continuum-planner-review-v1.js/.css` presents the shared operation metadata in one review language.
+Preflight links the Signals-service blocker to **Create Watch** and the Connection blocker to **Attach approved source**, so review does not blame an unrelated Action.
 
-Each proposed operation can show:
+External web/feed/search content is untrusted data. A Signal can make an Automation eligible later, but it cannot grant authority or directly perform provider work.
 
-- effect: CREATE / UPDATE / LINK / RESOLVE;
+# Typed Preflight v1
+
+Current proving states:
+
+- CHECK REQUIRED;
+- PREVIEW DECISION;
+- DEFERRED TO DRAFT;
+- BLOCKED;
+- APPROVAL REQUIRED.
+
+Lab may record/change a sample ambiguity decision or defer a Draft-level configuration item. It cannot clear a real missing Runtime, Connection, protected service or authority requirement.
+
+Preflight links typed issues to affected Change Plan rows where the proving adapter has a deterministic mapping.
+
+The current browser adapter begins with local human-readable warnings and classifies them into typed issue codes. **Do not copy text matching into production.** Protected domain services must return structured issue codes directly.
+
+Signals issue vocabulary now reserves:
+
+- `signals.source_required`;
+- `signals.service_required`.
+
+# Change Review
+
+Shared Change Review displays:
+
+- CREATE / UPDATE / LINK / RESOLVE effect;
 - owning domain;
-- review level;
-- `Produces …` plan-local result;
-- `Uses Step …` dependency;
-- current typed preflight state when the issue maps to that Change Plan row.
+- review state;
+- plan dependencies such as Produces / Uses Step;
+- current Preflight state;
+- aggregate change / unresolved issue / approval / linked-step counts.
 
-The **CHANGE REVIEW** summary shows typed changes, unresolved issues, approval state and linked-step/domain context.
+Reviewed/deferred issues stop counting as unresolved. Real blockers remain unresolved.
 
-Reviewed/deferred preflight items stop counting as unresolved. A true blocked or approval-required item remains in the unresolved count.
+# Validation
 
-This is UX proof only. Real server preflight, permissions, stale revisions, duplicate resolution, risk classification, approvals and apply remain authoritative later.
+Current dedicated browser contracts include:
 
-Browser marker: `data-lab-planner-review="v1"`.
+- `automations-v6-action-stack-validation.yml` — mobile accordion/Remove behavior;
+- `automations-v5-planner-edit-validation.yml` — proposal remove/dependency-prune/reset behavior;
+- `continuum-planner-preflight-validation.yml` — interactive Preflight decisions/defer and persistent blockers;
+- `continuum-signals-planner-validation.yml` — Online signals typed plan, Signals/Connection blockers and correct issue-to-change mapping;
+- broader v5 model/Planner/mobile workflows.
 
-# Mobile Action stack v6
+Rendered tests cover **360×800** and **390×844** for the newer phone interactions.
 
-The user-provided phone view exposed a real usability problem: every Action plus Audience, Input Routing, Use Data and advanced-flow UI remained expanded, creating an excessively tall DO stage. The old remove control also existed only as a small icon beside several other controls.
+The available GitHub connector does not independently expose push-triggered workflow results in this context. Source/workflow presence must not be described as an observed green Actions run.
 
-`lab-automations-action-stack-v6.js/.css` fixes the mobile authoring experience without changing workflow semantics.
+# Current backend boundary
 
-At `<=760px`:
+Validated Phase 2A backend source remains intentionally much smaller:
 
-- multi-Action stacks are compact by default;
-- one Action opens at a time as an accordion;
-- each compact row keeps a readable step summary;
-- **Edit / Hide** is explicit;
-- **Remove** is a separate labeled control instead of a buried tiny X;
-- when multiple Actions exist, any step can be removed using the existing v3 mutation path;
-- the final remaining Action stays disabled as `Only step` because the v3 compatibility editor currently maintains one Action slot;
-- reorder, duplicate and pause/resume controls appear when the step is expanded;
-- original action controls receive accessible labels/titles;
-- Audience, Input Routing, Use Data and other per-step augmentation panels collapse with the step;
-- advanced IF/WAIT connectors are visually compressed on phone;
-- mobile card dragging is disabled because explicit controls are safer on touch;
-- desktop authoring behavior remains unchanged.
+- Triggers: `manual`, `checkin_grace_start`, `checkin_grace_expiry`;
+- Action: definition-only `manual_review`;
+- immediate start policy;
+- simple Finish;
+- no real Conditions;
+- no production Directory/Audience/data/input/inter-step service matching Lab;
+- no server equivalent of browser v5;
+- no authoritative Planner operation registry/preflight/apply;
+- no SignalSource / Observation / SignalWatch / Signal service;
+- no webpage/search/news monitoring;
+- no Runtime/provider/AI execution.
 
-The accordion state is presentation-only session state in `cmx-lab-automations-action-stack-ui-v1`.
-
-Browser marker: `data-lab-automations-action-stack="v6-mobile"`.
-
-# Mobile / Samsung validation
-
-Preserve one primary work area, large touch targets, readable 16px editing inputs where needed, vertical flow presentation, safe-area-aware actions, no nested-scroll traps and no horizontal overflow.
-
-The current browser QA covers both **360×800** and **390×844** where relevant.
-
-Action-stack interaction contract:
-
-`.github/workflows/automations-v6-action-stack-validation.yml`
-
-It exercises:
-
-`open Draft → enter DO → duplicate to two Actions → collapse → open one → remove one → verify one remains`
-
-Planner preflight interaction contract:
-
-`.github/workflows/continuum-planner-preflight-validation.yml`
-
-It exercises:
-
-- Directory ambiguity starts as `CHECK` on the affected Change Plan row;
-- recording `Use existing match` changes the row to `DECISION · Use existing match` and removes it from OPEN;
-- Automation Audience starts as `CHECK` on an affected Action row;
-- `Handle in Draft` changes that row to `DEFERRED`;
-- the corresponding WAIT remains `BLOCKED` because Runtime is still unavailable;
-- preflight controls remain 44px+ on phone;
-- no horizontal overflow at 360 or 390px.
-
-The GitHub connector does not provide an independently observed push-triggered workflow result here, so source/workflow presence must not be described as an observed green CI run.
-
-# Command center and persistence
-
-Normal New Automation offers Build manually, Scenario and Planner preview. `/lab/automations/?new=1&from=lab` remains the direct-new path and opens Trigger immediately.
-
-Runs remains `RUNTIME OFF`.
-
-Current relevant Lab persistence:
-
-- Automation Drafts + embedded `workflowV5`: `cmx-lab-automations-v1`;
-- progressive UI: `cmx-lab-automation-progress-v1`;
-- Directory: `cmx-lab-crm-v1`;
-- reusable Actions: `cmx-lab-actions-v1`;
-- v4 platform state: `cmx-lab-automations-platform-v4`;
-- data-reference compatibility: `cmx-lab-automation-data-bindings-v1`;
-- input-routing compatibility: `cmx-lab-automation-input-bindings-v1`;
-- advanced-flow compatibility/fallback: `cmx-lab-automation-flow-controls-v1`;
-- mobile Action-stack presentation only: `cmx-lab-automations-action-stack-ui-v1` in sessionStorage.
-
-Typed preflight decisions currently live only in page-memory for the open proving surface. They are not durable Planner state and do not mutate protected domains.
+The prepared Phase 2A production migration remains the immediate backend boundary.
 
 # Production migration rule
 
 Migrate accepted semantics into protected React + typed server Draft/domain services using the generated API client.
 
-Do not copy browser localStorage/sessionStorage, DOM patching, browser Audience/data resolution as authority, `workflowV5` JSON as server schema, local deterministic Planner matching, browser Planner registries, blocker-text classification, browser Change Review counts, or browser timing into production.
+Do not copy:
 
-# Backend truth
-
-Current validated Phase 2A backend remains intentionally much smaller:
-
-- Trigger: `manual`, `checkin_grace_start`, `checkin_grace_expiry`;
-- Action: `manual_review`;
-- immediate start policy;
-- simple Finish;
-- no real Conditions;
-- no production Audience/data/input-routing/inter-step service;
-- no server v5-equivalent ordered model;
-- no authoritative Planner operation registry;
-- no authoritative Planner preflight/review/apply;
-- no Planner/Change Plan execution;
-- no Runtime/provider/AI execution.
-
-The prepared Phase 2A production migration remains the immediate backend boundary. The v6 Action-stack and typed Planner Preflight work are Lab frontend/product proofs only and do not alter that boundary.
+- browser localStorage/sessionStorage;
+- DOM patching;
+- browser Audience/data resolution as authority;
+- browser `workflowV5` JSON as server schema;
+- local deterministic Planner matching;
+- browser Planner registry as server allowlist;
+- browser warning-text preflight classification;
+- browser timing/WAIT execution;
+- any fake online observation path.
