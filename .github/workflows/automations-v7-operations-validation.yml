@@ -9,6 +9,7 @@ on:
       - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-operations-v7.css'
       - 'assets/lab/lab-automations-operations-v7-future.css'
+      - 'assets/lab/lab-automations-operations-v7-polish.css'
       - 'tests/continuum-automations-operations-v7.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
   pull_request:
@@ -19,6 +20,7 @@ on:
       - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-operations-v7.css'
       - 'assets/lab/lab-automations-operations-v7-future.css'
+      - 'assets/lab/lab-automations-operations-v7-polish.css'
       - 'tests/continuum-automations-operations-v7.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
 
@@ -68,6 +70,7 @@ jobs:
           grep -q 'READY TO TEST' /tmp/continuum-auto-v7-desktop.html
           grep -q 'NEEDS SETUP' /tmp/continuum-auto-v7-desktop.html
           grep -q 'RUNTIME LATER' /tmp/continuum-auto-v7-desktop.html
+          grep -q 'data-v7-open-planner' /tmp/continuum-auto-v7-desktop.html
           grep -q 'data-v7-manage' /tmp/continuum-auto-v7-desktop.html
           grep -q 'v7-automation-row' /tmp/continuum-auto-v7-desktop.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-desktop.html
@@ -77,6 +80,7 @@ jobs:
           grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'Automation workspace' /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'data-v7-filter="needs-setup"' /tmp/continuum-auto-v7-mobile-dashboard.html
+          grep -q 'data-v7-open-planner' /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'data-v7-manage' /tmp/continuum-auto-v7-mobile-dashboard.html
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-v7-mobile-editor.html
