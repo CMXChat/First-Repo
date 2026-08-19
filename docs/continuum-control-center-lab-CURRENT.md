@@ -38,6 +38,7 @@ Current files:
 - `lab/control/index.html`
 - `assets/lab/control-center-theme-init.js`
 - `assets/lab/control-center-v1.css`
+- `assets/lab/control-center-mobile-polish-v2.css`
 - `assets/lab/control-center-v1.js`
 - `tests/continuum-control-center-v1.test.js`
 - `.github/workflows/control-center-lab-validation.yml`
@@ -71,6 +72,30 @@ simulation entry
 ```
 
 The hierarchy deliberately avoids a generic equal-card dashboard. The current-state summary is visually dominant, attention is second, and supporting health/activity views sit underneath.
+
+# Direct mobile screenshot QA - 2026-08-19
+
+The first real Samsung/Android screenshots showed that the structure worked, but the narrow layout still read too much like a sequence of separate rounded dashboard cards. The simulation bottom sheet also used a fixed mobile height that left a large empty white region beneath its content.
+
+The device-review v2 polish therefore:
+
+- compresses the primary state surface without weakening its hierarchy;
+- changes the summary copy to `Stable. 2 things need review.` so attention and overall health do not sound contradictory;
+- changes the first status chip to `2 need you`;
+- groups Attention, Running & waiting and Recent Activity into one continuous operational surface on mobile instead of three visually unrelated cards;
+- makes the Now/Upcoming/History/All activity tabs sticky below the mobile top bar;
+- increases practical mobile text legibility while preserving dense operator presentation;
+- keeps Continuity, Upcoming and Connections as secondary supporting surfaces;
+- reduces the visual weight of repeated rounded containers;
+- keeps the bottom navigation intact because the real-device layout proved it works well;
+- changes the mobile Why/Simulation drawer from fixed height to content-hugging `height:auto` with a bounded `max-height`;
+- tightens simulation scenario spacing and result presentation;
+- scrolls a newly generated simulation result into the nearest visible area;
+- makes View activity / All activity switch to the actual Activity view;
+- keeps keyboard activation for non-button attention rows;
+- preserves the strict same-origin Lab CSP and zero production API calls.
+
+This remains a source/device-informed QA pass. A fresh post-change screenshot is still the preferred visual confirmation before treating v2 presentation as visually accepted.
 
 # Explainability
 
@@ -149,11 +174,12 @@ At narrow widths:
 
 - desktop rail is replaced by a five-item bottom navigation;
 - primary status stays first;
-- autonomy/simulation controls stack cleanly;
+- autonomy/simulation controls stay compact and immediately accessible;
+- the primary Now sections read as one operational surface;
 - dashboard columns become one flow;
 - attention and work rows preserve readable labels;
-- Why/Simulation become bottom-sheet style drawers;
-- view tabs remain horizontally usable;
+- Why/Simulation use content-hugging bottom sheets with bounded scrolling;
+- view tabs remain horizontally usable and sticky below the top bar;
 - touch targets remain appropriately large;
 - reduced-motion preference is respected.
 
@@ -174,10 +200,10 @@ Directory still lives inside the broader Lab experience. Library and Connections
 
 Do not immediately widen the page into every future Continuum feature.
 
-Recommended next work after direct visual/device review:
+Recommended next work after the v2 mobile QA pass:
 
-1. fix any real desktop/mobile visual issues exposed by screenshots;
-2. refine density and hierarchy based on actual device feel;
+1. capture fresh mobile screenshots after cache refresh and verify the grouped Now surface and content-hugging simulation sheet;
+2. review a desktop screenshot at a normal desktop viewport before changing desktop density;
 3. decide whether the top-level Continuum navigation should become a shared Lab shell across Control Center, Directory and Automations;
 4. define the first server-backed Control Center projection only after Runtime/activity backend primitives exist;
 5. later replace sample sections incrementally with protected typed data rather than one giant fake dashboard-to-production rewrite.
