@@ -1,7 +1,18 @@
 (() => {
   "use strict";
 
+  const STORE_KEY = "cmx-lab-automations-v1";
   let queued = false;
+  let manageReturnFocus = null;
+
+  function readAutomations() {
+    try {
+      const value = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      return Array.isArray(value?.automations) ? value.automations : [];
+    } catch {
+      return [];
+    }
+  }
 
   function patchChrome() {
     const brand = document.querySelector(".v3-brand");
@@ -33,6 +44,23 @@
     button.setAttribute("aria-label", "Open the local typed Automation Planner");
     if (manage) manage.before(button);
     else actions.append(button);
+  }
+
+  function patchDraftSummary() {
+    const ops = window.CMXAutomationOperationsV7;
+    const summary = document.querySelector(".v7-ops-summary");
+    if (!ops?.assess || !summary) return;
+    const drafts = readAutomations().filter(item => (item.status || "Draft") === "Draft");
+    const assessments = drafts.map(item => ops.assess(item));
+    const values = [
+      drafts.length,
+      assessments.filter(item => item.readiness === "ready").length,
+      assessments.filter(item => item.readiness === "needs-setup").length,
+      assessments.filter(item => item.runtimeLater).length
+    ];
+    summary.querySelectorAll(":scope > span > strong").forEach((node, index) => {
+      if (Number.isInteger(values[index])) node.textContent = String(values[index]);
+    });
   }
 
   function openPlanner() {
@@ -73,6 +101,30 @@
     if (copy) copy.textContent = "Supported intents become a typed proposal you can inspect and edit. No model call or provider action occurs.";
   }
 
+  function patchManageModal() {
+    const modal = document.querySelector(".v7-manage-modal");
+    if (!modal) return;
+    modal.tabIndex = -1;
+    const title = modal.querySelector("h2");
+    if (title) {
+      title.id = "v7ManageTitle";
+      modal.setAttribute("aria-labelledby", title.id);
+      modal.removeAttribute("aria-label");
+    }
+    if (modal.dataset.v7Focus !== "ready") {
+      modal.dataset.v7Focus = "ready";
+      modal.focus({ preventScroll: true });
+    }
+  }
+
+  function restoreManageFocus() {
+    const target = manageReturnFocus;
+    manageReturnFocus = null;
+    requestAnimationFrame(() => {
+      if (target?.isConnected && typeof target.focus === "function") target.focus({ preventScroll: true });
+    });
+  }
+
   function collapseStackedCatalogModals() {
     const backdrops = Array.from(document.querySelectorAll(".v4-modal-backdrop"));
     if (backdrops.length < 2) return;
@@ -83,8 +135,10 @@
     queued = false;
     patchChrome();
     patchWorkspaceActions();
+    patchDraftSummary();
     patchStartModal();
     patchPlannerModal();
+    patchManageModal();
     collapseStackedCatalogModals();
     document.documentElement.dataset.labAutomationsOperationsPolish = "v7";
   }
@@ -101,8 +155,24 @@
       event.preventDefault();
       openPlanner();
     }
+
+    const manageButton = event.target.closest("[data-v7-manage]");
+    if (manageButton) manageReturnFocus = manageButton;
+
+    if (event.target.matches(".v7-manage-backdrop")) {
+      event.preventDefault();
+      event.target.querySelector("[data-v7-manage-close]")?.click();
+      restoreManageFocus();
+      return;
+    }
+
+    if (event.target.closest("[data-v7-manage-close]")) restoreManageFocus();
     schedulePatch();
   }, false);
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && document.querySelector(".v7-manage-modal")) restoreManageFocus();
+  });
   window.addEventListener("pageshow", schedulePatch);
   window.addEventListener("cmx:lab-automations-updated", schedulePatch);
   schedulePatch();
