@@ -107,6 +107,48 @@
       timing: { mode: "none" },
       repeat: { mode: "daily", every: 1, unit: "days" },
       outcome: "review"
+    },
+    {
+      id: "ai-urgent-follow-up",
+      eyebrow: "AI + IF",
+      name: "Urgent AI follow-up",
+      description: "Prepare an AI assessment, then continue to notification only when the AI priority output is urgent.",
+      trigger: "manual",
+      conditions: [],
+      actions: [
+        { type: "ai_task", content: "Review approved information and return a structured priority plus concise summary." },
+        { type: "notify", content: "Prepare an urgent notification using the approved audience and mapped AI output." }
+      ],
+      flowControls: [{
+        type: "condition",
+        afterActionIndex: 0,
+        source: { sourceType: "step", sourceActionIndex: 0, path: "output.priority", label: "Step 1 · AI priority" },
+        operator: "equals",
+        compareValue: "urgent"
+      }],
+      timing: { mode: "none" },
+      repeat: { mode: "none" },
+      outcome: "end"
+    },
+    {
+      id: "delayed-backup-escalation",
+      eyebrow: "WAIT",
+      name: "Delayed backup escalation",
+      description: "Prepare the primary escalation, wait two hours between steps, then prepare the backup escalation.",
+      trigger: "grace_expiry",
+      conditions: [{ type: "not_acknowledged" }],
+      actions: [
+        { type: "notify", content: "Prepare the primary protected escalation notice." },
+        { type: "notify", content: "Prepare the backup escalation notice if the path still needs attention." }
+      ],
+      flowControls: [{
+        type: "wait",
+        afterActionIndex: 0,
+        duration: { days: 0, hours: 2, minutes: 0 }
+      }],
+      timing: { mode: "none" },
+      repeat: { mode: "none" },
+      outcome: "no_ack"
     }
   ]);
 
@@ -135,6 +177,46 @@
 
   function createDraft(scenario) {
     const id = makeId("auto");
+    const actions = scenario.actions.map(action => ({
+      id: makeId("step"),
+      type: action.type,
+      targetRef: null,
+      targetLabel: "",
+      content: action.content || "",
+      enabled: true
+    }));
+    const flowControls = (scenario.flowControls || []).map(control => {
+      const afterActionId = actions[control.afterActionIndex]?.id;
+      if (!afterActionId) return null;
+      if (control.type === "condition") {
+        const source = { ...(control.source || {}) };
+        if (source.sourceType === "step" && Number.isInteger(source.sourceActionIndex)) {
+          source.sourceId = actions[source.sourceActionIndex]?.id || "";
+          delete source.sourceActionIndex;
+        }
+        return {
+          id: makeId("gate"),
+          type: "condition",
+          afterActionId,
+          source,
+          operator: control.operator || "equals",
+          compareValue: control.compareValue || "",
+          enabled: true
+        };
+      }
+      return {
+        id: makeId("wait"),
+        type: "wait",
+        afterActionId,
+        duration: {
+          days: Number(control.duration?.days) || 0,
+          hours: Number(control.duration?.hours) || 0,
+          minutes: Number(control.duration?.minutes) || 0
+        },
+        enabled: true
+      };
+    }).filter(Boolean);
+
     return {
       id,
       name: scenario.name,
@@ -145,14 +227,8 @@
       condition: scenario.conditions[0]?.type || "none",
       conditions: scenario.conditions.map(rule => ({ id: makeId("rule"), type: rule.type })),
       ruleMode: "all",
-      actions: scenario.actions.map(action => ({
-        id: makeId("step"),
-        type: action.type,
-        targetRef: null,
-        targetLabel: "",
-        content: action.content || "",
-        enabled: true
-      })),
+      actions,
+      flowControls,
       timing: timingShape(scenario.timing),
       repeatConfig: repeatShape(scenario.repeat),
       outcome: scenario.outcome || "end",
@@ -173,6 +249,7 @@
     const draft = createDraft(scenario);
     store.automations.unshift(draft);
     localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    window.CMXAutomationModelV5?.syncStore?.();
     location.assign(`${location.pathname}?automation=${encodeURIComponent(draft.id)}&from=templates`);
   }
 
