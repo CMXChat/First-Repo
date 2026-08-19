@@ -7,6 +7,7 @@ on:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-model-v5.js'
       - 'assets/lab/lab-automations-sequence-v4.js'
+      - 'assets/lab/lab-automations-scenarios-v4.js'
       - '.github/workflows/automations-v5-model-validation.yml'
   pull_request:
     branches: [main]
@@ -14,6 +15,7 @@ on:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-model-v5.js'
       - 'assets/lab/lab-automations-sequence-v4.js'
+      - 'assets/lab/lab-automations-scenarios-v4.js'
       - '.github/workflows/automations-v5-model-validation.yml'
 
 permissions:
@@ -30,6 +32,12 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-model-v5.js
+          node --check assets/lab/lab-automations-scenarios-v4.js
+
+          grep -q 'Urgent AI follow-up' assets/lab/lab-automations-scenarios-v4.js
+          grep -q 'Delayed backup escalation' assets/lab/lab-automations-scenarios-v4.js
+          grep -q 'sourceActionIndex' assets/lab/lab-automations-scenarios-v4.js
+          grep -q 'flowControls' assets/lab/lab-automations-scenarios-v4.js
 
           node <<'NODE'
           const fs = require('fs');
@@ -93,8 +101,7 @@ jobs:
           assert.equal(api.version, 5);
 
           const model = api.build(legacy);
-          const summary = api.summary(model);
-          assert.deepEqual(summary, {
+          assert.deepEqual(api.summary(model), {
             trigger: 1,
             preconditions: 1,
             actions: 2,
@@ -130,7 +137,7 @@ jobs:
           console.log('Automations v5 canonical model contract passed.');
           NODE
 
-      - name: Browser marker smoke
+      - name: Browser model and scenario smoke
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
@@ -142,9 +149,22 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
-          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 \
-            --dump-dom 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-v5.html
-          grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5.html
-          grep -q 'data-lab-automations-sequence="v4-4"' /tmp/continuum-v5.html
-          ! grep -qi 'Loading Automations' /tmp/continuum-v5.html
-          echo 'Automations v5 model marker passed browser smoke.'
+
+          dump() {
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom
+          }
+
+          dump 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-v5-dashboard.html
+          grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5-dashboard.html
+          grep -q '15 editable starting patterns' /tmp/continuum-v5-dashboard.html
+          grep -q 'Urgent AI follow-up' /tmp/continuum-v5-dashboard.html
+          grep -q 'Delayed backup escalation' /tmp/continuum-v5-dashboard.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-v5-dashboard.html
+
+          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-v5-mobile.html
+          grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5-mobile.html
+          grep -q 'data-lab-automations-sequence="v4-4"' /tmp/continuum-v5-mobile.html
+          grep -q 'What should start this' /tmp/continuum-v5-mobile.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-v5-mobile.html
+
+          echo 'Automations v5 model and 15-scenario browser smoke passed.'
