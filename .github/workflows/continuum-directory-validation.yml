@@ -1,0 +1,162 @@
+name: Continuum Directory Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'lab/automations/**'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-crm.js'
+      - 'assets/lab/lab-crm.css'
+      - 'assets/lab/lab-directory-v2.js'
+      - 'assets/lab/lab-directory-v2.css'
+      - 'assets/lab/lab-automations-directory-v4.js'
+      - 'assets/lab/lab-automations-directory-v4.css'
+      - 'docs/continuum-directory-master-plan-CURRENT.md'
+      - 'docs/checkin-directory-library-CURRENT.md'
+      - '.github/workflows/continuum-directory-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'lab/automations/**'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-crm.js'
+      - 'assets/lab/lab-crm.css'
+      - 'assets/lab/lab-directory-v2.js'
+      - 'assets/lab/lab-directory-v2.css'
+      - 'assets/lab/lab-automations-directory-v4.js'
+      - 'assets/lab/lab-automations-directory-v4.css'
+      - 'docs/continuum-directory-master-plan-CURRENT.md'
+      - 'docs/checkin-directory-library-CURRENT.md'
+      - '.github/workflows/continuum-directory-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-directory:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Directory JavaScript and safety
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-directory-v2.js
+          node --check assets/lab/lab-automations-directory-v4.js
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          directory = Path('assets/lab/lab-directory-v2.js').read_text(encoding='utf-8')
+          directory_css = Path('assets/lab/lab-directory-v2.css').read_text(encoding='utf-8')
+          automation = Path('assets/lab/lab-automations-directory-v4.js').read_text(encoding='utf-8')
+          automation_css = Path('assets/lab/lab-automations-directory-v4.css').read_text(encoding='utf-8')
+          loader = Path('assets/lab/lab-loader.js').read_text(encoding='utf-8')
+          focused = Path('lab/automations/index.html').read_text(encoding='utf-8')
+
+          required_directory = [
+              'cmx-lab-crm-v1',
+              'cmx-lab-directory-ui-v2',
+              'organizationIds',
+              'contactMethods',
+              'relationshipLinks',
+              'STARTER_GROUPS',
+              'resolveGroup',
+              'CONTACT READINESS',
+              'Duplicate',
+              'Automation usage',
+              'Audience selector boundary',
+              'data-lab-directory',
+          ]
+          required_automation = [
+              'Groups & audiences',
+              'Audience selector boundary',
+              'Email ready',
+              'Phone ready',
+              'DIRECTORY READINESS',
+              'data-lab-automations-directory',
+              'requestAnimationFrame',
+          ]
+          required_css = [
+              '.lab-directory-v2',
+              '.dir2-layout',
+              '.dir2-profile-tabs',
+              '.dir2-readiness',
+              '.dir2-dialog',
+              '@media (max-width:760px)',
+              'env(safe-area-inset-bottom)',
+              'html[data-theme="light"]',
+          ]
+          for term in required_directory:
+              if term not in directory: sys.exit(f'missing Directory v2 contract: {term}')
+          for term in required_automation:
+              if term not in automation: sys.exit(f'missing Automation/Directory integration: {term}')
+          for term in required_css:
+              if term not in directory_css: sys.exit(f'missing Directory v2 styling: {term}')
+          if '.v4-directory-strip' not in automation_css or '.v4-audience-preview' not in automation_css:
+              sys.exit('missing focused Automation Directory styling')
+          for term in ['lab-directory-v2.css', 'lab-directory-v2.js']:
+              if term not in loader: sys.exit(f'Lab loader missing Directory asset: {term}')
+          for term in ['lab-automations-directory-v4.css', 'lab-automations-directory-v4.js']:
+              if term not in focused: sys.exit(f'focused Automations missing Directory integration asset: {term}')
+          combined = directory + automation
+          for forbidden in ['api.cmxchat.com', 'MutationObserver', 'eval(', 'new Function(']:
+              if forbidden in combined: sys.exit(f'forbidden Directory pattern: {forbidden}')
+          print('Directory v2 model, mobile UX, Automations readiness integration and Lab safety contracts passed.')
+          PY
+
+      - name: Build isolated Lab snapshot
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const assert = require('assert');
+          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+          const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
+          const rendered = transformSnapshot(source).replace('upgrade-insecure-requests', '');
+          assert(rendered.includes('/assets/lab/lab-directory-v2.css'));
+          assert(rendered.includes('/assets/lab/lab-directory-v2.js'));
+          assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
+          assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
+          fs.writeFileSync('directory-browser-smoke.html', rendered, 'utf8');
+          NODE
+
+      - name: Browser smoke desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-directory-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f directory-browser-smoke.html' EXIT
+          sleep 1
+          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom; }
+
+          dump http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-desktop.html
+          grep -q 'data-lab-directory="v2"' /tmp/directory-desktop.html
+          grep -q 'class="lab-directory-v2"' /tmp/directory-desktop.html
+          grep -q '>People<' /tmp/directory-desktop.html
+          grep -q '>Organizations<' /tmp/directory-desktop.html
+          grep -q '>Groups<' /tmp/directory-desktop.html
+          grep -q 'Audience readiness' /tmp/directory-desktop.html
+          grep -q 'Overview' /tmp/directory-desktop.html
+          grep -q 'Relationships' /tmp/directory-desktop.html
+          grep -q 'Automation' /tmp/directory-desktop.html
+
+          dump --window-size=390,844 http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-mobile.html
+          grep -q 'data-lab-directory="v2"' /tmp/directory-mobile.html
+          grep -q 'class="lab-directory-v2"' /tmp/directory-mobile.html
+          grep -q 'Search Directory' /tmp/directory-mobile.html
+
+          dump http://127.0.0.1:8000/lab/automations/ > /tmp/automations-directory.html
+          grep -q 'data-lab-automations-directory="v4"' /tmp/automations-directory.html
+          ! grep -qi 'Loading Automations' /tmp/automations-directory.html
+
+          echo 'Continuum Directory v2 passed desktop/mobile and focused Automations integration smoke.'
