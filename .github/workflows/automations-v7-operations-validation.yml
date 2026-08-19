@@ -11,8 +11,12 @@ on:
       - 'assets/lab/lab-automations-operations-v7-future.css'
       - 'assets/lab/lab-automations-operations-v7-polish.css'
       - 'assets/lab/lab-automations-operations-v7-desktop-density.css'
+      - 'assets/lab/lab-automations-editor-focus-v8.css'
+      - 'assets/lab/lab-automations-editor-focus-v8.js'
+      - 'assets/lab/lab-automations-mobile-focus-v8.css'
       - 'tests/continuum-automations-operations-v7.test.js'
       - 'tests/continuum-automations-desktop-density-v7.test.js'
+      - 'tests/continuum-automations-mobile-focus-v8.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
   pull_request:
     branches: [main]
@@ -24,8 +28,12 @@ on:
       - 'assets/lab/lab-automations-operations-v7-future.css'
       - 'assets/lab/lab-automations-operations-v7-polish.css'
       - 'assets/lab/lab-automations-operations-v7-desktop-density.css'
+      - 'assets/lab/lab-automations-editor-focus-v8.css'
+      - 'assets/lab/lab-automations-editor-focus-v8.js'
+      - 'assets/lab/lab-automations-mobile-focus-v8.css'
       - 'tests/continuum-automations-operations-v7.test.js'
       - 'tests/continuum-automations-desktop-density-v7.test.js'
+      - 'tests/continuum-automations-mobile-focus-v8.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
 
 permissions:
@@ -38,13 +46,15 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate v7 source contracts
+      - name: Validate v7/v8 source contracts
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-operations-v7.js
           node --check assets/lab/lab-automations-operations-v7-polish.js
+          node --check assets/lab/lab-automations-editor-focus-v8.js
           node tests/continuum-automations-operations-v7.test.js
           node tests/continuum-automations-desktop-density-v7.test.js
+          node tests/continuum-automations-mobile-focus-v8.test.js
 
       - name: Render desktop and mobile operating surfaces
         run: |
@@ -84,6 +94,7 @@ jobs:
           grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v7-desktop-editor.html
           grep -q 'v7-editor-status' /tmp/continuum-auto-v7-desktop-editor.html
           grep -q 'LOCAL DRAFT' /tmp/continuum-auto-v7-desktop-editor.html
+          grep -q 'v8-flow-toggle' /tmp/continuum-auto-v7-desktop-editor.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-desktop-editor.html
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-v7-mobile-dashboard.html
@@ -103,4 +114,10 @@ jobs:
           grep -q 'FLOW PREVIEW' /tmp/continuum-auto-v7-mobile-editor.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-mobile-editor.html
 
-          echo 'Automations v7 operating workspace rendered on desktop editor, dashboard and 390x844 mobile.'
+          dump --window-size=360,800 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-v8-phone-editor.html
+          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v8-phone-editor.html
+          grep -q 'v7-editor-status' /tmp/continuum-auto-v8-phone-editor.html
+          grep -q 'What should start this?' /tmp/continuum-auto-v8-phone-editor.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v8-phone-editor.html
+
+          echo 'Automations operating workspace rendered on desktop plus 390x844 and 360x800 phone editor surfaces.'
