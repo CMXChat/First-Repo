@@ -18,17 +18,31 @@ for (const anchor of ['overview', 'difference', 'spaces', 'action', 'afterlife',
   assert.match(html, new RegExp(`id="${anchor}"`));
 }
 assert.match(html, /BUILT TO OUTLIVE THE MODEL/);
-assert.match(html, /Knowledge, authority, rules and AI in one private layer/);
+assert.match(html, /Your information, people, tools and AI in one private operating layer/);
 assert.match(html, /The capability ceiling can move as technology moves/);
 assert.match(html, /Natural language can express intent\. Structured policy controls execution\./);
+
+// Check In is a first-class LIVE product destination instead of being buried as background context.
+assert.match(html, /href="\/checkin\/"/);
+assert.match(html, /Open Check In/);
+assert.match(html, /continuum-route-live/);
+assert.match(html, /Protected proof of life, timing and activity/);
+assert.match(html, /Explore Spaces/);
+assert.match(html, /Open Automation Lab/);
+assert.match(html, /continuum-doc-origin\.js\?v=20260819-2/);
+assert.match(html, /continuum-doc-origin\.css\?v=20260819-2/);
 
 // The final one-time pass owns rendered architecture wording after the older clarity transform.
 assert.match(finalJs, /dataset\.continuumArchitectureAligned = '20260819'/);
 assert.match(finalJs, /dataset\.continuumPowerClarity = '20260819'/);
 assert.match(finalJs, /dataset\.continuumGoals = 'ready'/);
 assert.match(finalJs, /dataset\.continuumControlCenter = 'ready'/);
+assert.match(finalJs, /dataset\.continuumCheckInRoute = 'ready'/);
+assert.match(finalJs, /Continuum brings your information, people, files, messages, services, automations and AI into one private environment/);
+assert.match(finalJs, /remember useful history and understand what is true right now/);
+assert.match(finalJs, /As more services, APIs, MCP servers and devices connect/);
 assert.match(finalJs, /AI provides reasoning\. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity\./);
-assert.match(finalJs, /A durable operating layer for changing intelligence and expanding capability\./);
+assert.match(finalJs, /Start with what is live\. Explore what Continuum is becoming\./);
 
 // State is tangible instead of remaining an abstract architecture word.
 assert.match(finalJs, /continuum-state-strip/);
@@ -93,10 +107,12 @@ assert.match(finalJs, /A workflow keeps stopping because deployment access is mi
 assert.match(finalJs, /Capability growth and permission growth stay separate\./);
 assert.match(finalJs, /Software, APIs, MCP servers, infrastructure, financial systems, operating systems, vehicles, wearables, smart devices and future technology/);
 
-// Continuity explains ordinary unavailability and serious continuity events under the same prepared authority rule.
+// Continuity explains ordinary unavailability and links directly to the working Check In surface.
 assert.match(finalJs, /asleep, on a flight, in a meeting, offline, unreachable before a deadline or in a serious continuity event/);
 assert.match(finalJs, /The applicable fallback path still comes from authority established beforehand\./);
 assert.match(finalJs, /The idea started with the Dead Man Switch/);
+assert.match(finalJs, /Open the live Check In app/);
+assert.match(finalJs, /link\.href = '\/checkin\/'/);
 
 // Planner remains typed, reviewable and separate from executable authority.
 assert.match(finalJs, /LATER · PLANNER/);
@@ -116,7 +132,7 @@ assert.match(finalJs, /Block new autonomous consequential Actions while approved
 assert.match(finalJs, /Simulation/);
 assert.match(finalJs, /without performing real side effects/);
 
-// New compact visuals have desktop, dark-mode, phone and print coverage.
+// Compact visuals and product routes have desktop, dark-mode, phone and print coverage.
 for (const selector of [
   '.continuum-state-strip',
   '.continuum-state-chips',
@@ -126,8 +142,12 @@ for (const selector of [
   '.continuum-model-routing',
   '.continuum-boundary-grid',
   '.continuum-capability-example',
-  '.continuum-forward-note'
-]) assert.ok(finalCss.includes(selector), `Missing power-clarity styling: ${selector}`);
+  '.continuum-forward-note',
+  '.continuum-route-link',
+  '.continuum-route-live',
+  '.continuum-checkin-context-link',
+  '.continuum-inline-status'
+]) assert.ok(finalCss.includes(selector), `Missing /doc clarity styling: ${selector}`);
 assert.match(finalCss, /@media\(max-width:900px\)/);
 assert.match(finalCss, /@media\(max-width:680px\)/);
 assert.match(finalCss, /@media\(max-width:420px\)/);
@@ -149,13 +169,14 @@ for (const source of [html, baseJs, finalJs]) {
   assert.doesNotMatch(source, /\brather than\b/i);
 }
 
-// The CURRENT contract records the same public teaching decisions.
+// The CURRENT contract records the same public teaching and navigation decisions.
 assert.match(contract, /Knowledge \+ State \+ Authority \+ Policy \+ Audit/);
 assert.match(contract, /The capability ceiling can move/);
-assert.match(contract, /Signals \+ State note/);
+assert.match(contract, /Signals \+ State lesson/);
 assert.match(contract, /Live capability extension lesson/);
 assert.match(contract, /Pause Autonomy \/ Control Center direction/);
 assert.match(contract, /final one-time architecture and power-clarity alignment layer/);
+assert.match(contract, /Check In/);
 
 // Initialization stays deterministic. No broad document mutation or hidden network behavior is introduced.
 for (const source of [baseJs, finalJs]) {
@@ -166,4 +187,4 @@ for (const forbidden of ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(
   assert.doesNotMatch(finalJs, new RegExp(forbidden.replace('(', '\\(')));
 }
 
-console.log('Continuum /doc power, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
+console.log('Continuum /doc intro, Check In routes, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
