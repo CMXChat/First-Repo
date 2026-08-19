@@ -6,14 +6,22 @@ on:
       - 'lab/directory/**'
       - 'assets/lab/directory-*.js'
       - 'assets/lab/directory-*.css'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'docs/continuum-directory-standalone-CURRENT.md'
+      - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-directory-standalone-v1.test.js'
+      - 'tests/continuum-shared-app-shell.test.js'
       - '.github/workflows/directory-lab-validation.yml'
   pull_request:
     paths:
       - 'lab/directory/**'
       - 'assets/lab/directory-*.js'
       - 'assets/lab/directory-*.css'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'docs/continuum-directory-standalone-CURRENT.md'
+      - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-directory-standalone-v1.test.js'
+      - 'tests/continuum-shared-app-shell.test.js'
       - '.github/workflows/directory-lab-validation.yml'
 
 permissions:
@@ -30,3 +38,5 @@ jobs:
           node-version: '22'
       - name: Validate standalone Directory contract
         run: node tests/continuum-directory-standalone-v1.test.js
+      - name: Validate shared Continuum shell contract
+        run: node tests/continuum-shared-app-shell.test.js
