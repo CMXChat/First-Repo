@@ -112,8 +112,8 @@
     }
 
     setText('#action .connections-panel .panel-head strong', 'Each connection adds specific abilities');
-    setText('#action .ceiling-note span', 'EXAMPLES, NOT A CAPABILITY CEILING');
-    setText('#action .ceiling-note strong', "Continuum's useful abilities can expand as new models, services, tools and devices become available.");
+    setText('#action .ceiling-note span', 'CAPABILITY CAN KEEP EXPANDING');
+    setText('#action .ceiling-note strong', 'New models, services, tools and devices can add new abilities over time.');
     setText('#action .ceiling-note p', 'Software, APIs, MCP servers, infrastructure, financial systems, operating systems, vehicles, wearables, smart devices and future technology can become Sources or capabilities when suitable interfaces exist. Adding capability expands what Continuum can potentially do. Permission remains separate.');
 
     setText('#afterlife .section-kicker', 'Continuity');
