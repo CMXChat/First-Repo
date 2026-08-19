@@ -4,6 +4,13 @@
   const STORE_KEY = "cmx-lab-automations-v1";
   const UI_KEY = "cmx-lab-automations-operations-v7";
   const RUNTIME_TYPES = new Set(["notify", "email", "ai_task", "action_ref"]);
+  const FUTURE_CAPABILITIES = Object.freeze([
+    { id: "trigger.signal_observed", kind: "WHEN", category: "Signals", label: "Signal observed", description: "Start when an approved Signal records a meaningful change in current State." },
+    { id: "condition.state_matches", kind: "IF", category: "State", label: "Current State matches", description: "Continue when protected operational State satisfies a typed condition." },
+    { id: "action.goal_progress", kind: "DO", category: "Goals", label: "Update Goal progress", description: "Record approved progress or evidence against a future Goal or Mission." },
+    { id: "workflow.wait_for_state", kind: "FLOW", category: "Runtime", label: "Wait for a State change", description: "Persist a wait until approved State changes, a deadline arrives or policy stops the Run." }
+  ]);
+
   let queued = false;
   let filter = "all";
   let manageModal = null;
@@ -12,7 +19,6 @@
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
   }[ch]));
-
   const clone = value => JSON.parse(JSON.stringify(value ?? null));
   const makeId = prefix => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -25,11 +31,19 @@
     }
   }
 
-  function writeStore(store, reason) {
-    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+  function announceUpdate(reason) {
     const detail = { reason: reason || "operations-v7" };
     document.dispatchEvent(new CustomEvent("cmx:lab-automations-updated", { detail }));
     window.dispatchEvent(new CustomEvent("cmx:lab-automations-updated", { detail }));
+  }
+
+  function writeStore(store, reason, reload = false) {
+    localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    announceUpdate(reason);
+    if (reload) {
+      requestAnimationFrame(() => location.reload());
+      return;
+    }
     schedulePatch();
   }
 
@@ -82,10 +96,9 @@
     const runtimeLater = waits > 0 || item?.repeatConfig?.mode === "until_ack" || item?.outcome === "no_ack";
     const providerSteps = actions.filter(action => RUNTIME_TYPES.has(action.type)).length;
     const uniqueBlockers = [...new Set(blockers)];
-    const readiness = uniqueBlockers.length ? "needs-setup" : "ready";
 
     return {
-      readiness,
+      readiness: uniqueBlockers.length ? "needs-setup" : "ready",
       blockers: uniqueBlockers,
       actions: actions.length,
       waits,
@@ -155,15 +168,11 @@
   function ensureOperationsBar(dashboard) {
     const nav = dashboard.querySelector(".v4-workspace-nav");
     if (!nav) return;
-    let bar = dashboard.querySelector(".v7-operations-bar");
-    if (!bar) {
-      nav.insertAdjacentHTML("afterend", operationsBarMarkup());
-      bar = dashboard.querySelector(".v7-operations-bar");
-    } else {
-      const replacement = document.createElement("div");
-      replacement.innerHTML = operationsBarMarkup();
-      bar.replaceWith(replacement.firstElementChild);
-    }
+    const current = dashboard.querySelector(".v7-operations-bar");
+    const holder = document.createElement("div");
+    holder.innerHTML = operationsBarMarkup();
+    if (current) current.replaceWith(holder.firstElementChild);
+    else nav.insertAdjacentElement("afterend", holder.firstElementChild);
   }
 
   function cardId(card) {
@@ -218,9 +227,7 @@
         list.append(empty);
       }
       empty.innerHTML = `<strong>No matching Automations</strong><span>Change the filter or search to see the rest of the workspace.</span>`;
-    } else {
-      empty?.remove();
-    }
+    } else empty?.remove();
   }
 
   function patchWorkspaceNav(dashboard) {
@@ -238,14 +245,13 @@
     if (!section) return;
     section.classList.add("v7-template-workspace");
     const intro = section.querySelector(".v4-template-intro");
-    if (intro) {
-      const label = intro.querySelector("span");
-      const title = intro.querySelector("strong");
-      const copy = intro.querySelector("p");
-      if (label) label.textContent = "STARTING PATTERNS";
-      if (title) title.textContent = "Templates";
-      if (copy) copy.textContent = "Create an ordinary editable Draft from a known pattern.";
-    }
+    if (!intro) return;
+    const label = intro.querySelector("span");
+    const title = intro.querySelector("strong");
+    const copy = intro.querySelector("p");
+    if (label) label.textContent = "STARTING PATTERNS";
+    if (title) title.textContent = "Templates";
+    if (copy) copy.textContent = "Create an ordinary editable Draft from a known pattern.";
   }
 
   function patchRuns(dashboard) {
@@ -261,9 +267,7 @@
       if (copy) copy.textContent = "This view is reserved for server-owned occurrences, attempts, waits, outputs and failures. Local simulations never appear here as fake Runs.";
     }
     const preview = panel.querySelector(".v4-run-preview");
-    if (preview && !panel.querySelector(".v7-run-columns")) {
-      preview.insertAdjacentHTML("beforebegin", `<div class="v7-run-columns" aria-hidden="true"><span>TIME</span><span>STEP</span><span>EVENT</span><span>SOURCE</span></div>`);
-    }
+    if (preview && !panel.querySelector(".v7-run-columns")) preview.insertAdjacentHTML("beforebegin", `<div class="v7-run-columns" aria-hidden="true"><span>TIME</span><span>STEP</span><span>EVENT</span><span>SOURCE</span></div>`);
     panel.dataset.v7Runs = "ready";
   }
 
@@ -285,21 +289,15 @@
     const page = document.querySelector(".v3-editor-page");
     if (!page) return null;
     const store = readStore();
-    const openId = page.querySelector("[data-automation-id]")?.dataset.automationId
-      || page.dataset.automationId
-      || new URLSearchParams(location.search).get("automation");
-    if (openId) return store.automations.find(item => item.id === openId) || null;
-
     const title = page.querySelector(".v3-title-button strong")?.textContent?.trim();
     if (title) return store.automations.find(item => String(item.name || "").trim() === title) || null;
-    return store.automations.find(item => (item.status || "Draft") === "Draft") || store.automations[0] || null;
+    return null;
   }
 
   function editorStatusMarkup(item) {
     const info = assess(item || {});
-    const readiness = info.readiness === "ready" ? "READY TO TEST" : "NEEDS SETUP";
     return `<div class="v7-editor-status" aria-label="Draft status">
-      <span><small>DEFINITION</small><strong>${readiness}</strong></span>
+      <span><small>DEFINITION</small><strong>${info.readiness === "ready" ? "READY TO TEST" : "NEEDS SETUP"}</strong></span>
       <span><small>MODEL</small><strong>V5</strong></span>
       <span><small>STATE</small><strong>LOCAL DRAFT</strong></span>
       <span class="is-off"><small>EXECUTION</small><strong>OFF</strong></span>
@@ -323,16 +321,22 @@
     if (!page) return false;
     page.dataset.operationsV7 = "ready";
     const item = currentAutomation();
-
-    const titleArea = page.querySelector(".v3-title-button")?.parentElement || page.querySelector(".v3-editor-head");
-    if (titleArea && !page.querySelector(".v7-editor-status")) titleArea.insertAdjacentHTML("afterend", editorStatusMarkup(item));
-    else if (page.querySelector(".v7-editor-status")) page.querySelector(".v7-editor-status").outerHTML = editorStatusMarkup(item);
+    const titleArea = page.querySelector(".v3-editor-title-row");
+    const currentStatus = page.querySelector(".v7-editor-status");
+    if (titleArea) {
+      const holder = document.createElement("div");
+      holder.innerHTML = editorStatusMarkup(item);
+      if (currentStatus) currentStatus.replaceWith(holder.firstElementChild);
+      else titleArea.insertAdjacentElement("afterend", holder.firstElementChild);
+    }
 
     const review = page.querySelector(".v3-review-stage");
     if (review) {
-      let readiness = review.querySelector(".v7-review-readiness");
-      if (!readiness) review.insertAdjacentHTML("afterbegin", reviewReadinessMarkup(item));
-      else readiness.outerHTML = reviewReadinessMarkup(item);
+      const holder = document.createElement("div");
+      holder.innerHTML = reviewReadinessMarkup(item);
+      const existing = review.querySelector(".v7-review-readiness");
+      if (existing) existing.replaceWith(holder.firstElementChild);
+      else review.insertAdjacentElement("afterbegin", holder.firstElementChild);
     }
 
     const liveHead = page.querySelector(".v3-live-head");
@@ -342,8 +346,26 @@
       if (title) title.textContent = "FLOW PREVIEW";
       if (hint) hint.textContent = "Navigate the definition";
     }
-
     return true;
+  }
+
+  function futureCapabilityMarkup(item) {
+    return `<button type="button" class="v7-future-capability" data-v7-future-info="${esc(item.id)}"><b>${esc(item.kind)}</b><span><strong>${esc(item.label)}</strong><small>${esc(item.description)}</small></span><em>LATER</em></button>`;
+  }
+
+  function patchFutureCatalog() {
+    document.querySelectorAll(".v4-catalog-modal").forEach(modal => {
+      if (modal.querySelector(".v7-future-capability-group")) return;
+      const groups = modal.querySelector(".v4-modal-groups");
+      if (!groups) return;
+      groups.insertAdjacentHTML("beforeend", `<section class="v7-future-capability-group"><h3>Continuum control layer</h3><p>Future typed capabilities already accounted for in the architecture.</p><div>${FUTURE_CAPABILITIES.map(futureCapabilityMarkup).join("")}</div></section>`);
+    });
+  }
+
+  function futureCapabilityInfo(id) {
+    const item = FUTURE_CAPABILITIES.find(capability => capability.id === id);
+    if (!item) return;
+    document.body.insertAdjacentHTML("beforeend", `<div class="v4-modal-backdrop" data-v4-modal-close><section class="v4-modal v4-info-modal" role="dialog" aria-modal="true"><header><div><span>LATER · ${esc(item.category.toUpperCase())}</span><h2>${esc(item.label)}</h2><p>${esc(item.description)}</p></div><button type="button" data-v4-modal-close aria-label="Close">×</button></header><div class="v4-info-body"><div><span>TYPE</span><strong>${esc(item.kind)}</strong></div><div><span>STATUS</span><strong>LATER</strong></div><div><span>BOUNDARY</span><strong>Definition preview only</strong></div></div><p class="v4-info-note">This is architectural discoverability only. It becomes selectable after the protected service, typed definition, policy checks and Runtime behavior exist.</p></section></div>`);
   }
 
   function manageRows() {
@@ -352,30 +374,18 @@
     return store.automations.map(item => {
       const info = assess(item);
       const confirm = pendingDelete === item.id;
-      return `<article class="v7-manage-row" data-v7-manage-row="${esc(item.id)}">
-        <div class="v7-manage-copy"><span>${esc((item.status || "Draft").toUpperCase())}</span><strong>${esc(item.name || "Untitled automation")}</strong><small>${info.readiness === "ready" ? "Ready to test" : esc(info.blockers[0] || "Needs setup")}${info.runtimeLater ? " · Runtime later" : ""}</small></div>
-        <div class="v7-manage-actions">
-          <button type="button" data-v7-duplicate="${esc(item.id)}">Duplicate</button>
-          <button type="button" data-v7-archive="${esc(item.id)}">${item.status === "Archived" ? "Restore" : "Archive"}</button>
-          ${confirm ? `<button type="button" class="is-danger" data-v7-delete-confirm="${esc(item.id)}">Delete local copy</button><button type="button" data-v7-delete-cancel>Cancel</button>` : `<button type="button" data-v7-delete="${esc(item.id)}">Delete</button>`}
-        </div>
-      </article>`;
+      return `<article class="v7-manage-row" data-v7-manage-row="${esc(item.id)}"><div class="v7-manage-copy"><span>${esc((item.status || "Draft").toUpperCase())}</span><strong>${esc(item.name || "Untitled automation")}</strong><small>${info.readiness === "ready" ? "Ready to test" : esc(info.blockers[0] || "Needs setup")}${info.runtimeLater ? " · Runtime later" : ""}</small></div><div class="v7-manage-actions"><button type="button" data-v7-duplicate="${esc(item.id)}">Duplicate</button><button type="button" data-v7-archive="${esc(item.id)}">${item.status === "Archived" ? "Restore" : "Archive"}</button>${confirm ? `<button type="button" class="is-danger" data-v7-delete-confirm="${esc(item.id)}">Delete local copy</button><button type="button" data-v7-delete-cancel>Cancel</button>` : `<button type="button" data-v7-delete="${esc(item.id)}">Delete</button>`}</div></article>`;
     }).join("");
   }
 
   function manageModalMarkup() {
-    return `<div class="v7-manage-backdrop" data-v7-manage-close><section class="v7-manage-modal" role="dialog" aria-modal="true" aria-label="Manage Automations">
-      <header><div><span>LOCAL WORKSPACE</span><h2>Manage Automations</h2><p>These controls only change browser-local Lab definitions. They do not publish, execute or touch production.</p></div><button type="button" data-v7-manage-close aria-label="Close">×</button></header>
-      <div class="v7-manage-list">${manageRows()}</div>
-      <footer><span>Execution remains off</span><button type="button" data-v7-manage-close>Done</button></footer>
-    </section></div>`;
+    return `<div class="v7-manage-backdrop" data-v7-manage-close><section class="v7-manage-modal" role="dialog" aria-modal="true" aria-label="Manage Automations"><header><div><span>LOCAL WORKSPACE</span><h2>Manage Automations</h2><p>These controls only change browser-local Lab definitions. They do not publish, execute or touch production.</p></div><button type="button" data-v7-manage-close aria-label="Close">×</button></header><div class="v7-manage-list">${manageRows()}</div><footer><span>Execution remains off</span><button type="button" data-v7-manage-close>Done</button></footer></section></div>`;
   }
 
   function openManage() {
     closeManage();
     document.body.insertAdjacentHTML("beforeend", manageModalMarkup());
     manageModal = document.querySelector(".v7-manage-backdrop");
-    manageModal?.querySelector(".v7-manage-modal")?.focus?.({ preventScroll: true });
   }
 
   function refreshManage() {
@@ -393,19 +403,32 @@
     const store = readStore();
     const source = store.automations.find(item => item.id === id);
     if (!source) return;
+    const sourceControls = flowControls(source);
     const copy = clone(source);
     copy.id = makeId("auto");
     copy.name = `${source.name || "Untitled automation"} copy`;
     copy.nameAuto = false;
     copy.status = "Draft";
     copy.updatedAt = new Date().toISOString();
-    copy.actions = (copy.actions || []).map(action => ({ ...action, id: makeId("step") }));
+
+    const idMap = new Map();
+    copy.actions = (copy.actions || []).map(action => {
+      const nextId = makeId("step");
+      idMap.set(action.id, nextId);
+      return { ...action, id: nextId };
+    });
     copy.conditions = (copy.conditions || []).map(rule => ({ ...rule, id: makeId("rule") }));
-    copy.flowControls = [];
+    copy.flowControls = sourceControls.map(control => ({
+      ...clone(control),
+      id: makeId(control.type === "wait" ? "wait" : "gate"),
+      afterActionId: idMap.get(control.afterActionId) || control.afterActionId,
+      source: control.source?.sourceType === "step"
+        ? { ...clone(control.source), sourceId: idMap.get(control.source.sourceId) || control.source.sourceId }
+        : clone(control.source)
+    }));
     delete copy.workflowV5;
     store.automations.unshift(copy);
-    writeStore(store, "operations-v7-duplicate");
-    refreshManage();
+    writeStore(store, "operations-v7-duplicate", true);
   }
 
   function archiveAutomation(id) {
@@ -414,21 +437,20 @@
     if (!item) return;
     item.status = item.status === "Archived" ? "Draft" : "Archived";
     item.updatedAt = new Date().toISOString();
-    writeStore(store, "operations-v7-lifecycle");
-    refreshManage();
+    writeStore(store, "operations-v7-lifecycle", true);
   }
 
   function deleteAutomation(id) {
     const store = readStore();
     store.automations = store.automations.filter(item => item.id !== id);
-    writeStore(store, "operations-v7-delete-local");
     pendingDelete = null;
-    refreshManage();
+    writeStore(store, "operations-v7-delete-local", true);
   }
 
   function patch() {
     queued = false;
     const changed = patchDashboard() || patchEditor();
+    patchFutureCatalog();
     if (changed) {
       document.documentElement.dataset.labAutomationsOperations = "v7";
       try { localStorage.setItem(UI_KEY, JSON.stringify({ version: 7, filter })); } catch {}
@@ -444,44 +466,18 @@
   document.addEventListener("click", event => {
     const target = event.target.closest("button,a,[role='button']");
     if (!target) return;
-
-    if (target.matches("[data-v7-filter]")) {
-      filter = target.dataset.v7Filter || "all";
-      schedulePatch();
-      return;
-    }
-    if (target.matches("[data-v7-manage]")) {
-      openManage();
-      return;
-    }
+    if (target.matches("[data-v7-filter]")) { filter = target.dataset.v7Filter || "all"; schedulePatch(); return; }
+    if (target.matches("[data-v7-manage]")) { openManage(); return; }
     if (target.matches("[data-v7-manage-close]")) {
       if (target.classList.contains("v7-manage-backdrop") && event.target !== target) return;
-      closeManage();
-      return;
+      closeManage(); return;
     }
-    if (target.matches("[data-v7-duplicate]")) {
-      duplicateAutomation(target.dataset.v7Duplicate);
-      return;
-    }
-    if (target.matches("[data-v7-archive]")) {
-      archiveAutomation(target.dataset.v7Archive);
-      return;
-    }
-    if (target.matches("[data-v7-delete]")) {
-      pendingDelete = target.dataset.v7Delete;
-      refreshManage();
-      return;
-    }
-    if (target.matches("[data-v7-delete-cancel]")) {
-      pendingDelete = null;
-      refreshManage();
-      return;
-    }
-    if (target.matches("[data-v7-delete-confirm]")) {
-      deleteAutomation(target.dataset.v7DeleteConfirm);
-      return;
-    }
-
+    if (target.matches("[data-v7-duplicate]")) { duplicateAutomation(target.dataset.v7Duplicate); return; }
+    if (target.matches("[data-v7-archive]")) { archiveAutomation(target.dataset.v7Archive); return; }
+    if (target.matches("[data-v7-delete]")) { pendingDelete = target.dataset.v7Delete; refreshManage(); return; }
+    if (target.matches("[data-v7-delete-cancel]")) { pendingDelete = null; refreshManage(); return; }
+    if (target.matches("[data-v7-delete-confirm]")) { deleteAutomation(target.dataset.v7DeleteConfirm); return; }
+    if (target.matches("[data-v7-future-info]")) { futureCapabilityInfo(target.dataset.v7FutureInfo); return; }
     schedulePatch();
   }, true);
 
@@ -490,14 +486,12 @@
     schedulePatch();
   }, true);
   document.addEventListener("change", schedulePatch, true);
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && manageModal) closeManage();
-  });
-  window.addEventListener("storage", event => {
-    if (event.key === STORE_KEY) schedulePatch();
-  });
+  document.addEventListener("keydown", event => { if (event.key === "Escape" && manageModal) closeManage(); });
+  window.addEventListener("storage", event => { if (event.key === STORE_KEY) schedulePatch(); });
   window.addEventListener("pageshow", schedulePatch);
   window.addEventListener("cmx:lab-automations-updated", schedulePatch);
+
+  window.CMXAutomationOperationsV7 = Object.freeze({ assess, counts, futureCapabilities: FUTURE_CAPABILITIES });
 
   try {
     const saved = JSON.parse(localStorage.getItem(UI_KEY) || "null");
