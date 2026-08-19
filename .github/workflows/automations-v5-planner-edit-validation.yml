@@ -1,0 +1,122 @@
+name: Continuum Automations v5 Planner Edit Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-edit-v5.css'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'tests/continuum-automations-planner-edit-probe.js'
+      - '.github/workflows/automations-v5-planner-edit-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-edit-v5.css'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'tests/continuum-automations-planner-edit-probe.js'
+      - '.github/workflows/automations-v5-planner-edit-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  planner-edit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate source contracts
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-planner-v5.js
+          node --check tests/continuum-automations-planner-edit-probe.js
+
+          python - <<'PY'
+          from pathlib import Path
+          source = Path('assets/lab/lab-automations-planner-v5.js').read_text(encoding='utf-8')
+          css = Path('assets/lab/lab-automations-planner-edit-v5.css').read_text(encoding='utf-8')
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+
+          for term in [
+              'EDIT PLAN BEFORE DRAFT', 'data-v5-planner-remove-action', 'data-v5-planner-remove-control',
+              'pruneFlowControls', 'pruneBlockers', 'refreshEditedPlan', 'editedBeforeDraft', 'editCount'
+          ]:
+              if term not in source:
+                  raise SystemExit(f'missing Planner edit contract: {term}')
+
+          for term in ['.v5-planner-edit-note', '.v5-planner-row-remove', 'min-height:44px']:
+              if term not in css:
+                  raise SystemExit(f'missing Planner edit style contract: {term}')
+
+          if 'lab-automations-planner-v5.js?v=20260819-v5edit1' not in html:
+              raise SystemExit('focused route is not cache-busted to editable Planner source')
+          if 'lab-automations-planner-edit-v5.css?v=20260819-v5edit1' not in html:
+              raise SystemExit('focused route missing Planner edit CSS')
+
+          for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
+              if forbidden in source:
+                  raise SystemExit(f'forbidden Planner edit boundary pattern: {forbidden}')
+          PY
+
+      - name: Build editable Planner test page
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const probe = '<script src="/tests/continuum-automations-planner-edit-probe.js"></script>';
+          const page = fs.readFileSync('lab/automations/index.html', 'utf8').replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('lab/automations/planner-edit-test.html', page, 'utf8');
+          NODE
+
+      - name: Exercise plan editing at 360px and 390px
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-planner-edit-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab/automations/planner-edit-test.html' EXIT
+          sleep 1
+
+          check_width() {
+            local width="$1"
+            local height="$2"
+            local out="/tmp/planner-edit-${width}.html"
+
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --window-size="${width},${height}" --virtual-time-budget=20000 --dump-dom \
+              'http://127.0.0.1:8000/lab/automations/planner-edit-test.html' > "$out"
+
+            grep -q 'data-qa-planner-edit-complete="true"' "$out"
+            grep -q "data-qa-planner-edit-viewport=\"${width}\"" "$out"
+            grep -q 'data-qa-planner-edit-result="true"' "$out"
+            grep -q 'data-qa-planner-edit-actions-before="2"' "$out"
+            grep -q 'data-qa-planner-edit-wait-before="1"' "$out"
+            grep -q 'data-qa-planner-edit-wait-operation-before="true"' "$out"
+            grep -q 'data-qa-planner-edit-runtime-before="true"' "$out"
+            grep -q 'data-qa-planner-edit-remove-tap="true"' "$out"
+            grep -q 'data-qa-planner-edit-actions-after="1"' "$out"
+            grep -q 'data-qa-planner-edit-wait-after="0"' "$out"
+            grep -q 'data-qa-planner-edit-wait-operation-after="false"' "$out"
+            grep -q 'data-qa-planner-edit-runtime-after="false"' "$out"
+            grep -q 'data-qa-planner-edit-audience-after="true"' "$out"
+            grep -q 'data-qa-planner-edit-count="true"' "$out"
+            grep -q 'data-qa-planner-edit-only-action-disabled="true"' "$out"
+            grep -q 'data-qa-planner-edit-only-action-label="true"' "$out"
+            grep -q 'data-qa-planner-edit-fit="true"' "$out"
+          }
+
+          check_width 360 800
+          check_width 390 844
+          echo 'Editable Automation Planner proposal behavior passed at 360px and 390px.'
