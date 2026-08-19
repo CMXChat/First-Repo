@@ -32,15 +32,26 @@
       toolbar.innerHTML = '<a href="#overview">Overview</a><a href="#difference">AI + Authority</a><a href="#action">Automations</a><a href="#afterlife">Continuity</a>';
     }
 
-    setText('.hero-kicker', 'Knowledge, authority, rules and AI in one private layer');
+    const toolbarPrimary = qs('.document-action-primary');
+    if (toolbarPrimary) {
+      toolbarPrimary.href = '/checkin/';
+      toolbarPrimary.innerHTML = '<span>Open Check In</span><span aria-hidden="true">↗</span>';
+    }
+
+    setText('.hero-kicker', 'Your information, people, tools and AI in one private operating layer');
     const heroLead = qs('.continuum-hero .hero-lead');
     if (heroLead) {
-      heroLead.innerHTML = '<span class="hero-lead-first">Continuum keeps useful context, current state, authority and policy connected over time.</span> It can brief you while you are here, carry approved work forward when you leave, and follow a continuity plan if you cannot respond.';
+      heroLead.innerHTML = '<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and maintain the State that matters now.</span><span class="hero-lead-second">It can follow rules you set, use approved tools and eventually keep important work moving across hours, days and changing conditions. As more Sources and capabilities connect through APIs, MCP, providers and future devices, Continuum can gain new ways to perceive, reason and act while keeping authority, policy and history coherent.</span>';
     }
 
     const heroTruth = qs('.hero-truth-row');
     if (heroTruth) {
-      heroTruth.innerHTML = '<span><i></i>Keeps durable context</span><span><i></i>Expands with new capabilities</span><span><i></i>Acts inside published authority</span>';
+      heroTruth.innerHTML = '<span><i></i>Keeps context + current State</span><span><i></i>Grows with new tools + intelligence</span><span><i></i>Acts inside authority you set</span>';
+    }
+
+    const heroActions = qs('.continuum-hero .hero-actions');
+    if (heroActions) {
+      heroActions.innerHTML = '<a class="button button-primary" href="/checkin/"><span>Open Check In</span><small class="continuum-inline-status">LIVE</small></a><a class="button button-secondary" href="#overview">See how Continuum works</a>';
     }
 
     setText('#overview .section-kicker', 'Continuum in one minute');
@@ -142,7 +153,38 @@
     setText('#status .roadmap-later p', 'Continuum can work with more outside services, models, tools and future devices through the same control layer.');
     setText('#status .closing-note', 'Continuum is a durable operating layer around changing intelligence. As models gain new abilities and new tools become available, it can gain new ways to perceive and act while keeping knowledge, State, authority, policy and history coherent.');
 
-    setText('.document-footer h2', 'A durable operating layer for changing intelligence and expanding capability.');
+    setText('.document-footer h2', 'Start with what is live. Explore what Continuum is becoming.');
+
+    const footerActions = qs('.document-footer .footer-actions');
+    if (footerActions) {
+      footerActions.classList.add('continuum-product-actions');
+      footerActions.innerHTML = `
+        <a class="continuum-route-link continuum-route-live" href="/checkin/">
+          <span class="continuum-route-status">LIVE</span>
+          <strong>Open Check In</strong>
+          <small>Protected proof of life, timing and activity</small>
+        </a>
+        <a class="continuum-route-link" href="/spaces/">
+          <span class="continuum-route-status">LAB</span>
+          <strong>Explore Spaces</strong>
+          <small>Context and briefing experience</small>
+        </a>
+        <a class="continuum-route-link" href="/lab/automations/">
+          <span class="continuum-route-status">LAB</span>
+          <strong>Open Automation Lab</strong>
+          <small>Build and test workflow definitions</small>
+        </a>`;
+    }
+  }
+
+  function addCheckInContextLink() {
+    const callout = qs('#afterlife .afterlife-simple-callout');
+    if (!callout || qs('.continuum-checkin-context-link', callout)) return;
+    const link = document.createElement('a');
+    link.className = 'continuum-checkin-context-link';
+    link.href = '/checkin/';
+    link.innerHTML = '<span>Open the live Check In app</span><b aria-hidden="true">↗</b>';
+    callout.append(link);
   }
 
   function addStateStrip() {
@@ -375,6 +417,7 @@
   }
 
   restoreArchitectureCopy();
+  addCheckInContextLink();
   addStateStrip();
   strengthenRuntimeStory();
   neutralizeExampleNames();
@@ -392,4 +435,5 @@
   document.documentElement.dataset.continuumArchitectureAligned = '20260819';
   document.documentElement.dataset.continuumGoals = 'ready';
   document.documentElement.dataset.continuumControlCenter = 'ready';
+  document.documentElement.dataset.continuumCheckInRoute = 'ready';
 })();
