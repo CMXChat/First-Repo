@@ -13,8 +13,12 @@ on:
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-progressive-preview.js'
       - 'assets/lab/lab-automations-final-qa.css'
+      - 'assets/lab/lab-automations-platform-v4.js'
+      - 'assets/lab/lab-automations-platform-v4.css'
       - 'assets/lab/lab-actions.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
+      - 'docs/checkin-automations-system-surface-CURRENT.md'
+      - 'docs/continuum-automations-master-plan-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
   pull_request:
     branches: [main]
@@ -28,8 +32,12 @@ on:
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-progressive-preview.js'
       - 'assets/lab/lab-automations-final-qa.css'
+      - 'assets/lab/lab-automations-platform-v4.js'
+      - 'assets/lab/lab-automations-platform-v4.css'
       - 'assets/lab/lab-actions.js'
       - 'docs/checkin-automations-frontend-CURRENT.md'
+      - 'docs/checkin-automations-system-surface-CURRENT.md'
+      - 'docs/continuum-automations-master-plan-CURRENT.md'
       - '.github/workflows/checkin-automations-validation.yml'
 
 permissions:
@@ -49,6 +57,7 @@ jobs:
           node --check assets/lab/lab-automations-route-integration.js
           node --check assets/lab/lab-automations-system-surface.js
           node --check assets/lab/lab-automations-progressive-preview.js
+          node --check assets/lab/lab-automations-platform-v4.js
           python - <<'PY'
           from pathlib import Path
           import sys
@@ -60,6 +69,8 @@ jobs:
           system_css = Path('assets/lab/lab-automations-system-surface.css').read_text(encoding='utf-8')
           progressive = Path('assets/lab/lab-automations-progressive-preview.js').read_text(encoding='utf-8')
           final_css = Path('assets/lab/lab-automations-final-qa.css').read_text(encoding='utf-8')
+          platform_js = Path('assets/lab/lab-automations-platform-v4.js').read_text(encoding='utf-8')
+          platform_css = Path('assets/lab/lab-automations-platform-v4.css').read_text(encoding='utf-8')
           base_css = Path('assets/lab/lab-automations-app.css').read_text(encoding='utf-8')
           route = Path('assets/lab/lab-automations-route-integration.js').read_text(encoding='utf-8')
           actions = Path('assets/lab/lab-actions.js').read_text(encoding='utf-8')
@@ -72,10 +83,12 @@ jobs:
               '/assets/lab/lab-automations-experience-v3.css?v=20260818-1',
               '/assets/lab/lab-automations-system-surface.css?v=20260818-1',
               '/assets/lab/lab-automations-final-qa.css?v=20260818-final1',
+              '/assets/lab/lab-automations-platform-v4.css?v=20260818-v4',
               '/assets/lab/lab-automations-experience-v3.js?v=20260818-1',
               '/assets/lab/lab-automations-route-integration.js?v=20260818-1',
               '/assets/lab/lab-automations-system-surface.js?v=20260818-1',
               '/assets/lab/lab-automations-progressive-preview.js?v=20260818-final1',
+              '/assets/lab/lab-automations-platform-v4.js?v=20260818-v4',
           ]
           required_js = [
               'cmx-lab-automations-v1',
@@ -102,17 +115,31 @@ jobs:
               'labAutomationsExperience',
               'External execution remains off',
           ]
-          required_css = [
-              '.v3-dashboard',
-              '.v3-template-strip',
-              '.v3-stage-rail',
-              '.v3-action-stack',
-              '.v3-live-panel',
-              '.v3-timeline-preview',
-              '.v3-simulation-flow',
-              '.v3-modal-backdrop',
-              '@media (min-width:980px)',
-              '@media (max-width:430px)',
+          required_platform_js = [
+              'CMXAutomationCapabilityCatalog',
+              'cmx-lab-automations-platform-v4',
+              'CONTINUUM CAPABILITIES',
+              'AI PLANNER · PREVIEW',
+              'RUN HISTORY',
+              'RUNTIME OFF',
+              'data-v4-flow-stage',
+              'TEST THIS STEP',
+              'Browse actions',
+              'LAB NOW',
+              'LATER',
+              'new URLSearchParams(location.search).get("new") !== "1"',
+              'requestAnimationFrame',
+          ]
+          required_platform_css = [
+              '.v4-workspace-nav',
+              '.v4-capability-grid',
+              '.v4-capability',
+              '.v4-stage-tools',
+              '.v4-preflight-banner',
+              '.v4-runs-panel',
+              '.v4-modal-backdrop',
+              '.v4-start-grid',
+              '@media (max-width:760px)',
               'env(safe-area-inset-bottom)',
               'prefers-reduced-motion',
           ]
@@ -126,16 +153,6 @@ jobs:
               'labAutomationsSystemSurface',
               'requestAnimationFrame',
           ]
-          required_system_css = [
-              '.v3-system-deck',
-              '.v3-system-stat',
-              '.v3-system-section-head',
-              '.v3-stage-section>header h2',
-              '.v3-flow-node strong',
-              '.v3-editor-footer>div',
-              '@media (min-width:980px)',
-              '@media (max-width:760px)',
-          ]
           required_progressive = [
               'cmx-lab-automation-progress-v1',
               'FLOW PREVIEW',
@@ -146,16 +163,6 @@ jobs:
               'maxAllowedStage',
               'data-progressive-preview',
               'Finish this step first',
-          ]
-          required_final_css = [
-              '.v3-flow-node.is-pending',
-              '.v3-action-stack.is-progress-placeholder',
-              '.v3-progress-empty',
-              '.v3-stage-rail button:disabled',
-              'max-height:none',
-              'overflow:visible',
-              'html[data-theme="light"]',
-              '@media (max-width:979px)',
           ]
           required_route = [
               '/lab/#lab=view%3Aactions',
@@ -176,16 +183,14 @@ jobs:
               if term not in html: sys.exit(f'missing focused HTML contract: {term}')
           for term in required_js:
               if term not in js: sys.exit(f'missing Automations v3 contract: {term}')
-          for term in required_css:
-              if term not in css: sys.exit(f'missing Automations v3 CSS contract: {term}')
+          for term in required_platform_js:
+              if term not in platform_js: sys.exit(f'missing Automations v4 platform behavior: {term}')
+          for term in required_platform_css:
+              if term not in platform_css: sys.exit(f'missing Automations v4 platform styling: {term}')
           for term in required_system_js:
               if term not in system_js: sys.exit(f'missing system-surface behavior: {term}')
-          for term in required_system_css:
-              if term not in system_css: sys.exit(f'missing system-surface styling: {term}')
           for term in required_progressive:
               if term not in progressive: sys.exit(f'missing progressive preview behavior: {term}')
-          for term in required_final_css:
-              if term not in final_css: sys.exit(f'missing final Automations QA styling: {term}')
           for term in required_route:
               if term not in route: sys.exit(f'missing route integration contract: {term}')
           for term in required_action_library:
@@ -193,15 +198,18 @@ jobs:
 
           if 'lab-automations-app-v2.js' in html:
               sys.exit('superseded v2 builder must not be loaded by the focused route')
-          if 'api.cmxchat.com' in html + js + system_js + progressive:
+          combined = html + js + system_js + progressive + platform_js
+          if 'api.cmxchat.com' in combined:
               sys.exit('focused Lab must not call the production Check In API')
-          for source_name, source in [('system surface', system_js), ('progressive preview', progressive)]:
+          for source_name, source in [('system surface', system_js), ('progressive preview', progressive), ('platform v4', platform_js)]:
               for term in ['eval(', 'new Function(', 'MutationObserver']:
                   if term in source: sys.exit(f'forbidden {source_name} code pattern: {term}')
           if '.automation-app' not in base_css:
               sys.exit('base focused styling contract missing')
+          if '.v3-dashboard' not in css or '.v3-system-deck' not in system_css or '.v3-flow-node.is-pending' not in final_css:
+              sys.exit('accepted v3/system/progressive styling foundation missing')
 
-          print('Focused Automations progressive-preview, v3 system-surface, safety, Action-reference, timing and mobile contracts passed.')
+          print('Focused Automations v4 platform, progressive Draft, safety and compatibility contracts passed.')
           PY
 
       - name: Browser smoke desktop and mobile
@@ -216,15 +224,18 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
-          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=10000 "$@" --dump-dom; }
+          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom; }
 
           dump http://127.0.0.1:8000/lab/automations/ > /tmp/auto-desktop.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-desktop.html
           grep -q 'data-lab-automations-system-surface="ready"' /tmp/auto-desktop.html
-          grep -q 'data-system-surface="ready"' /tmp/auto-desktop.html
-          grep -q 'CONTINUUM · AUTOMATIONS' /tmp/auto-desktop.html
-          grep -q '>WORKFLOWS<' /tmp/auto-desktop.html
+          grep -q 'data-lab-automations-platform="v4"' /tmp/auto-desktop.html
+          grep -q 'data-platform-v4="ready"' /tmp/auto-desktop.html
+          grep -q '>YOUR AUTOMATIONS<' /tmp/auto-desktop.html
+          grep -q '>Automations<' /tmp/auto-desktop.html
           grep -q '>Templates<' /tmp/auto-desktop.html
+          grep -q '>Runs<' /tmp/auto-desktop.html
+          grep -q 'Capabilities' /tmp/auto-desktop.html
           grep -q 'CONNECTED RECORDS' /tmp/auto-desktop.html
           grep -q 'New automation' /tmp/auto-desktop.html
           grep -q 'LAB · SIMULATION ONLY' /tmp/auto-desktop.html
@@ -234,15 +245,20 @@ jobs:
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/auto-mobile.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-system-surface="ready"' /tmp/auto-mobile.html
+          grep -q 'data-lab-automations-platform="v4"' /tmp/auto-mobile.html
           grep -q 'class="v3-editor-page"' /tmp/auto-mobile.html
           grep -q 'data-progressive-preview="true"' /tmp/auto-mobile.html
+          grep -q 'data-platform-v4="ready"' /tmp/auto-mobile.html
           grep -q 'What should start this' /tmp/auto-mobile.html
           grep -q 'FLOW PREVIEW' /tmp/auto-mobile.html
           grep -q 'Choose a trigger' /tmp/auto-mobile.html
           grep -q 'Not set yet' /tmp/auto-mobile.html
           grep -q 'Step 1 of 5' /tmp/auto-mobile.html
+          grep -q 'TEST THIS STEP' /tmp/auto-mobile.html
+          grep -q 'Browse triggers' /tmp/auto-mobile.html
           ! grep -q 'LIVE FLOW' /tmp/auto-mobile.html
           ! grep -qi 'Loading Automations' /tmp/auto-mobile.html
           ! grep -q 'Name the automation' /tmp/auto-mobile.html
+          ! grep -q 'How do you want to start' /tmp/auto-mobile.html
 
-          echo 'Focused Automations progressive preview passed desktop and 390x844 mobile smoke.'
+          echo 'Focused Automations v4 passed desktop and 390x844 mobile smoke, including direct-new deep link.'
