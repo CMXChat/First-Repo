@@ -26,13 +26,14 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260818-directory2";
+  const BUILD = "20260818-directory2p";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
     ["lab-safety.css", "20260816-lab-safe1"],
     ["lab-crm.css", "20260816-crm1"],
     ["lab-directory-v2.css", "20260818-directory2"],
+    ["lab-directory-v2-polish.css", "20260818-directory2p"],
     ["lab-inventory.css", "20260816-inventory1"],
     ["lab-actions.css", "20260816-actions1"],
     ["lab-timeline.css", "20260816-sequence1"],
@@ -146,6 +147,7 @@
     if (!html.includes('data-lab-mode="true"')) throw new Error("Lab mode marker was not applied.");
     if (!html.includes("/assets/lab/lab-mock-api.js")) throw new Error("Lab mock API was not inserted.");
     if (!html.includes("/assets/lab/lab-directory-v2.js")) throw new Error("Directory v2 product layer was not inserted.");
+    if (!html.includes("/assets/lab/lab-directory-v2-polish.css")) throw new Error("Directory v2 polish layer was not inserted.");
     if (!html.includes("/assets/lab/lab-command.js")) throw new Error("Phase 8 integration layer was not inserted.");
     if (!html.includes("/assets/lab/lab-test-center.js")) throw new Error("Lab Test Center was not inserted.");
     if (!html.includes("/assets/lab/lab-product-polish.js")) throw new Error("Lab product polish layer was not inserted.");
