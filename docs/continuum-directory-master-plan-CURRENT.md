@@ -1,35 +1,45 @@
 # Continuum Directory Master Plan — CURRENT
 
 Date: 2026-08-18
-Status: Canonical product/UX direction for Directory; Lab Directory v2 and Automations Audience v4.1 implemented, protected backend expansion pending
+Status: Canonical Directory product/UX direction; Lab Directory v2 + polish and Automations Audience v4.1 implemented, protected backend expansion pending
 
-## Purpose
+# Purpose
 
 Directory is Continuum's durable identity and relationship layer.
 
-It should eventually feel as polished and useful as the core contact-management experience in a serious CRM while remaining broader than a sales CRM. The product needs to understand people, organizations, relationships, contact methods, saved audiences and history because Spaces, Automations, Library, Connections, AI and future Runtime all need stable identities.
+It should eventually feel as polished and useful as the core contact-management experience in a serious CRM while remaining broader than a sales CRM. Spaces, Automations, Library, Connections, AI and future Runtime all need stable people/organization identity, relationships, contact methods and saved audiences.
 
-The goal is not to recreate every HubSpot or Pipedrive product surface. The goal is a high-quality Directory core that can support personal, family, continuity, business and operational relationships without forcing all of them into a sales pipeline model.
+The goal is a high-quality Directory core, not a clone of every HubSpot/Pipedrive sales, marketing, support and forecasting product.
 
-## Product principle
+Core principle:
 
 **Directory knows who. Library knows what. Automations define what should happen. Runtime records what actually happened.**
 
-A Person or Organization should remain the same stable entity even when names, email addresses, phone numbers, memberships, labels or other mutable details change.
+A Person or Organization remains the same stable entity when mutable names, email addresses, phone numbers, memberships, Labels or other details change.
 
-## Current Lab Directory v2
+# Current Lab Directory v2
 
-The main `/lab/` Records area has a richer Directory v2 product layer.
+The main `/lab/` Records area runs Directory v2 over the existing shared local CRM data.
 
-Current implementation files:
+Current files:
 
-- `assets/lab/lab-crm.js` remains the compatibility data/editor foundation;
-- `assets/lab/lab-directory-v2.js` enriches the local Directory model and renders the current Directory product surface;
-- `assets/lab/lab-directory-v2.css` owns Directory v2 presentation;
-- `cmx-lab-crm-v1` remains the shared browser-local store;
-- `cmx-lab-directory-ui-v2` stores Directory-only navigation preferences.
+- `assets/lab/lab-crm.js` — compatibility data/editor foundation;
+- `assets/lab/lab-crm.css` — retained compatibility styling;
+- `assets/lab/lab-directory-v2.js` — richer Directory model/product surface;
+- `assets/lab/lab-directory-v2.css` — Directory v2 base presentation;
+- `assets/lab/lab-directory-v2-polish.css` — presentation-only density/responsive polish.
 
-Directory v2 is additive. It preserves compatibility fields such as `orgId`, `email`, `phone` and `tags` while adding prototype fields such as:
+Shared browser store:
+
+`cmx-lab-crm-v1`
+
+Directory-only navigation preferences:
+
+`cmx-lab-directory-ui-v2`
+
+The polish layer adds stronger app hierarchy, sticky desktop controls, denser record/profile presentation and dedicated phone refinements. It does not add persistence or authority.
+
+Directory v2 preserves old compatibility fields such as `orgId`, `email`, `phone` and `tags` while prototyping richer fields such as:
 
 - `organizationIds`;
 - `labels`;
@@ -37,11 +47,11 @@ Directory v2 is additive. It preserves compatibility fields such as `orgId`, `em
 - `lifecycle`;
 - `relationshipLinks`;
 - `customFields` shell;
-- `groups` at the Directory store level.
+- Directory-level `groups`.
 
-These browser fields are product-prototyping shapes. Production must use typed server models and services.
+Production must use typed server models/services instead of these browser shapes.
 
-## Current Lab UX
+# Current Lab UX
 
 Directory v2 exposes:
 
@@ -49,121 +59,62 @@ Directory v2 exposes:
 2. Organizations;
 3. Groups.
 
-The application surface includes:
+Current demonstrations include:
 
-- compact Directory command bar;
-- search;
-- useful views/filters;
-- three-column desktop layout;
-- dedicated mobile list-to-profile navigation;
-- Overview / Activity / Relationships / Automation profile tabs;
-- contact-readiness indicators;
-- multiple Organization memberships in the v2 editor;
+- compact command bar;
+- search and useful views/filters;
+- strong Person/Organization/Group profiles;
+- three-column desktop layout with responsive collapse;
+- mobile list → profile navigation;
+- Overview / Activity / Relationships / Automation tabs;
+- multiple Organization memberships;
+- ContactMethod/readiness indicators;
 - Labels;
-- notes and activity history;
+- notes and Activity history;
 - saved Groups/audiences;
 - Group resolution previews;
-- email-ready and phone-ready counts;
+- email-ready/phone-ready counts;
 - exact-email / normalized-phone duplicate warning prototype;
-- direct Automation usage links for People and Organizations;
-- dark and light presentation.
+- direct Automation usage links;
+- light/dark presentation.
 
-The original `.lab-crm` remains in the generated Lab DOM for compatibility but is hidden when Directory v2 successfully loads.
+The original `.lab-crm` remains compatibility scaffolding and is hidden when Directory v2 successfully loads.
 
-## Core object model
+# Core durable model
 
-### Person
+## Person
 
-A stable human identity.
+Stable human identity.
 
-A Person may eventually include:
+Useful durable concepts include stable ID, display/preferred identity, lifecycle, role/title metadata, timezone/location when intentionally stored, multiple ContactMethods, multiple Organization memberships, Labels, Groups, explicit Person relationships, custom fields, notes, linked Library records, Automation usage, Activity and provenance.
 
-- stable ID;
-- display/legal/preferred names;
-- role/title metadata;
-- lifecycle state;
-- importance/priority as user metadata;
-- time zone and location;
-- multiple ContactMethods;
-- multiple Organization memberships;
-- Labels;
-- Group membership by resolution;
-- explicit Person-to-Person relationships;
-- custom fields;
-- notes;
-- linked Library records;
-- Automation usage;
-- Activity timeline;
-- provenance/source metadata.
+## Organization
 
-### Organization
+Stable organization identity with name/type, lifecycle/status, website/location, optional organization-level ContactMethods, Labels, custom fields, notes/summary, many Person memberships, linked Library records, Automation usage and Activity.
 
-A stable real-world organization identity.
+## PersonOrganizationMembership
 
-An Organization may include:
+Many-to-many Person ↔ Organization relationship.
 
-- stable ID;
-- name and type;
-- lifecycle/status;
-- website/location;
-- organization-level contact methods where useful;
-- Labels;
-- custom fields;
-- notes/summary;
-- many Person memberships;
-- linked Library records;
-- Automation usage;
-- Activity timeline.
-
-### PersonOrganizationMembership
-
-The durable production relationship between a Person and an Organization.
-
-A Person may have zero, one or many memberships.
-
-Membership can later carry:
-
-- role/title within that Organization;
-- primary/secondary flag;
-- active/inactive dates;
-- routing priority where useful;
-- ownership/source;
-- timestamps;
-- Audit provenance.
+It may later carry role/title, primary/secondary status, active dates, routing priority where useful, timestamps and Audit provenance.
 
 Do not make one `organization_id` the production relationship model.
 
-### ContactMethod
+## ContactMethod
 
-Email and phone should eventually be records, not permanent scalar properties on Person.
+Email/phone become durable contact endpoint records rather than Person identity.
 
-A ContactMethod can carry:
+Useful fields include stable ID, type, raw/display and normalized value, label, preferred flag, active state, verification/readiness, source/provenance and timestamps.
 
-- stable ID;
-- type such as email / phone / future supported method;
-- value;
-- label such as work / personal / mobile;
-- preferred flag;
-- active/inactive state;
-- verification/readiness state;
-- source;
-- created/updated timestamps.
+## Label
 
-The Lab still mirrors preferred email and phone into older scalar fields for compatibility.
+Stable descriptive metadata used for organization/search/audience selection.
 
-### Label
+Labels never grant permission by themselves.
 
-Labels describe entities and support search, organization and audience selection.
+## Group
 
-Labels are metadata. They do not grant permission by themselves.
-
-Suggested labels are starting points only. Users can create their own.
-
-### Group
-
-A Group is a saved audience.
-
-A Group is deliberately different from a Label and Organization.
+A Group is a saved audience, distinct from a Label and Organization.
 
 Current Lab Group selectors can reference:
 
@@ -171,341 +122,226 @@ Current Lab Group selectors can reference:
 - Organization;
 - Label.
 
-The Group resolver expands those selectors into current unique People and deduplicates by stable Person ID.
+Resolution expands those selectors into current unique People and deduplicates by stable Person ID.
 
-Nested Groups remain deferred until a real need exists because nested resolution introduces graph/cycle complexity.
+Nested Groups stay deferred until a real need exists because they introduce cycle/graph complexity.
 
-### PersonRelationship
+## PersonRelationship
 
-Continuum should support explicit Person-to-Person relationships instead of forcing all relationship meaning into free text or Organizations.
+Explicit Person-to-Person relationship edge.
 
-Examples may include:
+Examples can include partner/spouse, family, friend, lawyer, doctor, accountant, emergency contact, business partner, manager/report or custom relationship type.
 
-- spouse/partner;
-- family;
-- friend;
-- lawyer;
-- doctor;
-- accountant;
-- emergency contact;
-- trusted person;
-- business partner;
-- manager/report;
-- custom relationship type.
+Relationship description does not automatically grant authority.
 
-Relationship type is descriptive context. Separate policy decides whether a relationship grants authority.
+## Activity
 
-### Activity
+User-facing profile timeline that can project notes, membership/Label/contact changes, messages/meetings where authorized, Library associations, Automation references and future Runtime results.
 
-A record profile should eventually have a unified activity timeline.
+Activity is not a replacement for immutable security Audit.
 
-Activity can project events such as:
+# CRM-quality direction
 
-- note created;
-- membership changed;
-- label changed;
-- contact method changed;
-- message/call/meeting event where connected and authorized;
-- Library link change;
-- Automation publication/reference;
-- future Runtime outcome;
-- import/merge activity.
+The useful core should eventually support:
 
-Product Activity and immutable security Audit remain separate concerns even when some events appear in both views.
-
-## CRM-quality product surface
-
-The long-term Directory should support the useful core of mature contact-management products:
-
-- fast global search;
+- fast protected search;
 - filters and saved views;
-- strong Person and Organization profile pages;
+- strong profiles;
 - multiple contact methods;
 - many-to-many Organization membership;
-- Labels and saved Groups;
+- Labels and Groups;
 - explicit relationships;
 - custom fields;
 - notes;
 - activities/tasks where useful;
 - timeline/history;
-- duplicate detection;
-- merge workflow;
-- imports;
-- exports;
+- duplicate detection and explicit merge;
+- staged imports;
+- authorized exports;
 - bulk actions with review;
 - recent/favorite records;
-- mobile-first profile access;
-- linked Automations and Library records.
+- excellent mobile access;
+- linked Automations and Library information.
 
-These capabilities should be added because they improve Continuum's identity layer, not because another CRM has them.
+Add these because they strengthen Continuum identity/context, not because another CRM has them.
 
-## Features deliberately deferred
+# Deliberate non-goals
 
-Do not turn Directory work into an attempt to build all of HubSpot.
-
-Defer until a concrete Continuum use case exists:
+Defer until real Continuum requirements exist:
 
 - sales deal pipelines;
-- marketing campaigns;
-- lead scoring suites;
+- marketing campaign suites;
+- lead scoring;
 - ad attribution;
-- customer-service ticketing suites;
+- full helpdesk/ticketing;
 - quote/invoice suites;
-- complex forecasting;
+- forecasting;
 - arbitrary CRM marketplace parity.
 
-A future Business domain can introduce Deal, Project, Ticket or custom business objects without changing Person/Organization identity.
+A later Business domain can introduce Deal/Project/Ticket/custom business objects while continuing to reference the same Person/Organization identities.
 
-## Directory and Automations
+# Directory and Automations
 
-Automation definitions should store stable protected audience selector IDs instead of copied mutable recipient strings.
+Automation definitions should store stable protected selector IDs instead of copied mutable recipient strings.
 
-Conceptual direction:
+Long-term flow:
 
-`Person / Organization / Group / Label selector → resolve current authorized People → check channel readiness → deduplicate → future Runtime freezes exact recipient snapshot → provider receives frozen execution inputs`
+`Person / Organization / Group / Label selectors → server resolves current authorized People → readiness/authority checks → future Runtime freezes exact recipient/contact snapshot → provider`
 
-### Current Automations Audience v4.1 Lab integration
+## Audience v4.1 Lab proof
 
-The typed multi-selector Audience editor is now active in the focused Lab for communication Actions.
-
-Current files:
-
-- `assets/lab/lab-automations-directory-v4.js`;
-- `assets/lab/lab-automations-directory-v4.css`;
-- `assets/lab/lab-automations-audience-v4.js`;
-- `assets/lab/lab-automations-audience-v4.css`.
-
-A communication Action can select one or more:
+The focused Automation Lab supports multi-selector communication audiences across:
 
 - Person;
 - Organization;
 - Group;
 - Label.
 
-The Lab stores `audienceSelectors[]`, resolves current unique People, deduplicates by Person ID and previews email/phone readiness.
+Prototype intent lives in `audienceSelectors[]` with live-membership/dedupe semantics.
 
-For compatibility with the proven v3 Draft engine:
+The browser previews current unique People and email/phone readiness. Compatibility `targetRef` / `targetLabel` fields exist only to coexist with the older v3 Draft engine.
 
-- one direct Person/Organization can still mirror to `targetRef`;
-- multi-selector/Group/Label audiences use a compatibility `targetLabel` summary;
-- `audienceSelectors[]` remains the richer Lab intent;
-- the adapter flushes v3 Save before writing selectors and reloads the exact Draft so the v3 normalizer rehydrates the extra fields.
+Production still requires the canonical protected Audience resolver/readiness service.
 
-That reload is prototype compatibility behavior, not production architecture.
+## Automations Intelligence v4.2 Directory data use
 
-The Actions stage and Review also show Directory/readiness information.
+The focused Automation Lab can now select friendly typed data references from Directory/Audience context, currently including:
 
-## Contact readiness
+- resolved People count;
+- email-ready count;
+- phone-ready count.
+
+These are **sample/reference UX only**. They prove how Directory values can appear beside Trigger and prior-step outputs in the Automation builder.
+
+They do not make browser resolution authoritative and they do not create an expression engine.
+
+Production direction remains typed server paths/references validated against real output schemas and authorized Directory services.
+
+# Contact readiness
 
 Identity resolution and delivery readiness are separate.
 
-A Person may exist without a usable email or phone.
+A Person may exist without usable email/phone. An Organization or Group may resolve many People with different channel readiness.
 
-An Organization or Group may resolve many People with different channel readiness.
+Directory should expose deterministic counts and per-Person reasons before Publish/Run.
 
-Directory should expose this before Publish, for example:
+Provider execution later must preserve skipped/failure reasons instead of silently dropping recipients.
 
-- 8 People resolved;
-- 7 email-ready;
-- 5 phone-ready;
-- 1 missing required channel.
+# Directory and Library
 
-Future provider delivery must preserve exact skipped/failure reasons instead of silently dropping unresolved recipients.
+Directory relationships can project linked Library information without making folders into permission boundaries.
 
-The current browser resolution is Lab preview logic only. Production resolution belongs to a protected backend service.
+Useful associations may include Person/Organization ↔ ContentAsset/FileAsset and Group/audience usage ↔ Automation definitions.
 
-## Directory and Library
+Exact immutable versions are frozen where published workflows require reproducibility.
 
-Directory relationships should eventually project linked Library information without making folder placement a permission boundary.
+# Directory and Spaces
 
-Useful associations may include:
+Spaces can retrieve minimum-necessary authorized Directory context such as who is involved, Organization/role/relationship, relevant recent Activity and Group membership.
 
-- Person ↔ ContentAsset/FileAsset;
-- Organization ↔ ContentAsset/FileAsset;
-- Group/audience usage ↔ Automation definitions;
-- exact immutable versions frozen when required by published workflows.
+# Directory and AI
 
-The user-facing profile may show linked documents/files while ownership and authorization stay in backend domain services.
+AI later accesses Directory through narrow typed protected tools such as search/get Person/get Organization/preview audience/suggest duplicates/propose Group.
 
-## Directory and Spaces
+AI cannot silently widen Group membership, grant trust/authority, expose hidden contact methods or merge identities without appropriate authorization.
 
-Spaces can use authorized Directory context to answer questions such as:
+# Duplicate and merge direction
 
-- who is involved;
-- what Organization they belong to;
-- current role/relationship;
-- what recent activity matters;
-- what Group/audience they belong to.
+Conservative duplicate signals include exact normalized email, exact normalized phone, verified external source identity and later strong normalized-name + corroborating context as suggestion only.
 
-Spaces should retrieve only the minimum authorized context needed for the briefing.
+Merge is an explicit high-impact mutation and must preserve aliases/provenance and historical references.
 
-## Directory and AI
+Current Lab only warns. It does not auto-merge.
 
-AI can later use Directory through typed protected tools.
+# Custom fields
 
-Useful bounded capabilities may include:
+Use stable typed CustomFieldDefinition plus validated typed values.
 
-- search People/Organizations;
-- inspect authorized profile fields;
-- resolve an audience preview;
-- suggest possible duplicates;
-- draft a Group from user intent;
-- suggest labels/relationship metadata;
-- summarize recent authorized activity.
+Do not hide first-class concepts such as ContactMethod, membership, Label or lifecycle inside arbitrary custom fields.
 
-AI must not receive raw database access or permission to silently widen audience membership, contact authority or standing permission.
+# Search and saved views
 
-AI may propose Directory mutations. Normal authorization and confirmation rules still apply.
+Search begins in PostgreSQL over authorized Directory fields.
 
-## Duplicate and merge direction
+Saved views persist navigation/filter/sort/presentation preferences and do not become authority rules by themselves.
 
-Duplicate detection should begin conservatively.
+# Import/export
 
-Potential signals can include:
+Future import flow:
 
-- exact normalized email;
-- exact normalized phone;
-- strong normalized-name match plus corroborating context;
-- external source IDs where available.
+`source → staging parse → field mapping → normalization → duplicate/conflict analysis → preview → transactional commit → Activity/Audit`
 
-A merge must be explicit and auditable.
+Do not silently overwrite trusted records.
 
-Merge should preserve aliases/provenance and redirect internal references safely instead of deleting history.
+Exports require authorized scope and sensitivity controls.
 
-The current Lab only shows an exact email/normalized-phone duplicate warning. It does not perform destructive merge.
-
-## Custom fields
-
-Custom fields are useful but should not force uncontrolled schema changes.
-
-Preferred direction:
-
-- typed CustomFieldDefinition scoped to the owner/workspace;
-- typed values with validation;
-- supported field types such as text, number, boolean, date, enum and reference where justified;
-- indexed/searchable subset where useful;
-- stable definition IDs;
-- archived definitions remain interpretable in history.
-
-Do not store all first-class Directory semantics as arbitrary custom fields.
-
-## Search and saved views
-
-Search should begin in PostgreSQL over authorized Directory fields.
-
-Saved views can later persist:
-
-- object type;
-- filters;
-- sorting;
-- visible columns/profile summary preferences;
-- owner/scope.
-
-A saved view is navigation/configuration. It does not become an authorization rule unless a separate policy explicitly uses it.
-
-## Import/export
-
-Future imports should support review before committing rows.
-
-Expected flow:
-
-`upload/import source → parse to staging rows → map fields → detect duplicates/conflicts → preview → commit authorized records → Audit`
-
-Imports must not silently overwrite trusted existing data.
-
-Exports should respect current authorization and sensitivity controls.
-
-## Mobile contract
+# Mobile contract
 
 Phone Directory UX is first-class.
 
-Current Lab v2 uses:
+Preserve:
 
-- full-width type controls;
-- full-width search;
-- simple record list;
-- tap record to replace list with profile;
+- full-width type controls/search;
+- simple list → profile navigation;
 - explicit Back to Directory;
-- horizontally scrollable profile tabs;
+- scrollable profile tabs;
 - stacked facts/metrics;
 - large edit controls;
-- 16px form inputs to avoid mobile zoom;
+- 16px inputs where needed to avoid zoom;
 - no compressed three-column desktop layout.
 
-The focused Audience manager becomes a full-width bottom-sheet-style workflow on phone with one-column selectors and safe-area-aware actions.
+Audience/data pickers follow the same bottom-sheet/full-screen mobile pattern with safe-area-aware actions.
 
-Production should preserve these interaction principles.
+# Production backend order
 
-## Production backend order
+Do not interrupt the already validated Phase 2A production migration.
 
-Do not interrupt the already validated Phase 2A production migration merely because Directory v2 and Audience v4.1 exist in Lab.
-
-Recommended backend order after that release boundary:
+After that release boundary:
 
 1. Person;
 2. Organization;
 3. PersonOrganizationMembership;
 4. ContactMethod;
 5. Label + PersonLabel;
-6. Group + typed Group members/selectors;
-7. audience resolution/readiness service;
-8. typed Automation Audience definition/API using stable selector refs;
-9. protected search/list/detail APIs;
-10. activity/note projection;
-11. duplicate detection and explicit merge;
-12. custom fields and saved views when needed;
-13. import/export;
-14. deeper communication/Runtime history integration.
+6. Group + typed selectors;
+7. canonical audience resolution/readiness;
+8. typed Automation Audience definition/API;
+9. protected search/list/detail;
+10. notes/Activity + explicit PersonRelationship;
+11. duplicate suggestion + explicit merge;
+12. custom fields/saved views as needed;
+13. staged import/export;
+14. deeper Connection/inbound identity and Runtime history integration.
 
-Each slice gets models, migrations, services, protected APIs, tests and generated frontend client changes before production UX claims widen.
+Each slice gets models, migrations, services, protected APIs, tests and generated frontend client changes before production claims widen.
 
-## Production migration rule
+# Production migration rule
 
-The static Lab is a design and semantics proving ground.
+Rebuild accepted semantics in protected React/FastAPI/PostgreSQL.
 
-Production implementation should be rebuilt in the protected React/FastAPI/PostgreSQL application using typed services and the generated API client.
+Do not copy localStorage, DOM patching, compatibility `orgId`, browser audience resolution as authority, compatibility target summaries, browser reload save mechanics or client-generated Audit truth.
 
-Do not copy:
+# Security
 
-- browser localStorage as persistence;
-- Lab DOM patching;
-- compatibility `orgId` as the production relationship model;
-- client-side audience resolution as authority;
-- compatibility `targetLabel` as canonical audience identity;
-- browser reload as a save mechanism;
-- client-generated Audit truth.
+Directory contains sensitive personal information.
 
-## Security
+Preserve protected reads, Origin + CSRF mutations, scope checks, stable IDs, contact privacy, audited material mutations, controlled exports, explicit authority, minimum-necessary AI retrieval and frozen Runtime recipient history later.
 
-Directory is sensitive data.
+Labels/Groups/relationships are metadata/selectors, not implicit permissions.
 
-Preserve:
+# Validation target
 
-- authenticated protected reads;
-- exact Origin + CSRF for mutations;
-- owner/workspace/switch scope checks;
-- stable IDs;
-- contact method privacy;
-- no secrets in browser storage in production;
-- audited membership/contact changes;
-- explicit authorization for export;
-- no label/group-based permission inference unless policy explicitly defines it;
-- minimum-necessary retrieval for AI and Spaces;
-- frozen Run recipient history when Runtime exists.
-
-## Validation target
-
-A mature Directory should be able to answer clearly:
+A mature Directory should answer clearly:
 
 - Who is this Person?
 - Which Organizations are they connected to?
 - How can they currently be contacted?
-- Which method is preferred and usable?
+- Which methods are preferred/usable?
 - Which Labels and Groups include them?
 - What explicit relationships matter?
 - What changed recently?
 - Which Library records and Automations use them?
 - Are there duplicate/conflicting identities?
-- If an Automation runs, exactly which People will resolve and which channels are ready?
+- If an Automation runs, exactly which People resolve and which channels are ready?
 
-If those answers require duplicated ad hoc data in every product surface, the Directory architecture is wrong.
+If those answers require duplicated ad hoc identity data in every product surface, the Directory architecture is wrong.
