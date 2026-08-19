@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v4.4 + Directory v2 + AI setup preview active in Lab
+Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v5 model foundation + v4.4 authoring UX + Directory v2 active in Lab
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
@@ -98,7 +98,7 @@ Do not mix new Directory schema, Runtime, providers or AI execution into the rev
 
 # `/lab/automations/` current truth
 
-The focused route is **Automations v4.4**.
+The focused route now has a **v5 canonical Lab workflow model foundation** underneath the current v4.4 authoring experience.
 
 It remains isolated:
 
@@ -110,17 +110,18 @@ It remains isolated:
 - no provider secrets;
 - no external AI model call.
 
-Current layers:
+Current stack:
 
-- v3 Draft/localStorage/autosave compatibility core;
+- v3 Draft/localStorage/autosave compatibility editor;
+- **v5 canonical workflow normalization/validation model** in `lab-automations-model-v5.js`;
 - progressive blank-Draft truth;
 - v4 command center + Capability Catalog + interactive Flow Preview + Planner/Runs previews;
-- 13 editable scenarios;
+- **15 editable scenarios**;
 - Directory readiness;
 - Audience v4.1 Person/Organization/Group/Label composition;
 - Intelligence v4.2 recommendations + typed `Use data` references + richer local step traces;
 - Input Routing v4.3 typed source → named Action input;
-- **Advanced Flow v4.4** linear inter-step IF / WAIT authoring preview.
+- Advanced Flow v4.4 linear inter-step IF / WAIT authoring preview.
 
 Beginner rail remains:
 
@@ -130,7 +131,44 @@ Finish stays inside Review. Accepted flow label remains **FLOW PREVIEW**.
 
 `/lab/automations/?new=1&from=lab` still opens Trigger directly.
 
-# Important v4.4 workflow correction
+# Canonical Lab workflow model v5
+
+Each Automation can now carry `workflowV5`, a normalized ordered definition.
+
+Current node model:
+
+`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+
+Start timing and recurrence remain separate policies because they are not the same thing as an inter-step WAIT.
+
+V5 currently normalizes and validates the accepted browser Draft shape while projecting compatibility fields back for existing UI code.
+
+Compatibility fields include:
+
+- `trigger`;
+- `conditions[]`;
+- `actions[]`;
+- `flowControls[]`;
+- `timing`;
+- `repeatConfig`;
+- `outcome`.
+
+Structural validation currently enforces:
+
+- one Trigger and one Finish;
+- Trigger first and Finish last;
+- unique node IDs;
+- pre-action Conditions before Actions;
+- sequence controls only between Actions;
+- a step-output Condition cannot reference a future or missing Action.
+
+Browser marker:
+
+`data-lab-automations-model="v5"`
+
+This is **Lab model truth only**. It is not production schema or Runtime truth.
+
+# IF and WAIT semantics
 
 The top-level IF stage happens before the DO sequence, so it may only use data available before Actions run.
 
@@ -140,17 +178,11 @@ Example:
 
 `AI task → IF AI priority equals urgent → Notify`
 
-V4.4 therefore allows a linear `Continue if…` gate or an inter-step WAIT between two Actions.
-
-Prototype intent:
-
-- `flowControls[]`;
-- stable `afterActionId` anchor;
-- compatibility store `cmx-lab-automation-flow-controls-v1`.
+V4.4 authors this through a linear `Continue if…` gate between Actions. V5 normalizes that gate into sequence order.
 
 Current IF operators: equals, does not equal, contains, greater than, less than, is true.
 
-The source picker only exposes Trigger data and outputs that exist by that point in the flow.
+The source picker only exposes Trigger data and outputs available by that point in the flow.
 
 False stops the remaining linear path in the preview.
 
@@ -158,17 +190,16 @@ There is **no YES/NO branching graph yet**.
 
 Inter-step WAIT is separate from current start Timing and is marked `RUNTIME REQUIRED`. Future Runtime must persist due state across server/process restarts.
 
-# Automation consolidation direction
+# Scenarios
 
-V4.4 proves that the long-term workflow domain is more naturally an ordered typed sequence/graph even if the simple five-stage rail remains as beginner navigation.
+Current total: **15 editable starting patterns**.
 
-Likely future consolidated shape:
+Newest advanced patterns:
 
-`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+- **Urgent AI follow-up** — AI assessment → IF priority is urgent → notification;
+- **Delayed backup escalation** — primary escalation → WAIT two hours → backup escalation.
 
-Do not indefinitely stack static DOM adapters. A later consolidation should carry accepted v4.x semantics into a coherent sequence model before the real protected React/Phase 2B implementation becomes too far separated from the prototype.
-
-Branch nodes wait for durable Runtime routing semantics.
+They create ordinary Drafts and normalize into the same v5 model. They do not imply Runtime/provider execution exists.
 
 # Audience / data / input routing
 
@@ -179,6 +210,8 @@ V4.2 uses typed source references rather than executable expressions. Compatibil
 V4.3 maps those sources into named inputs such as Email subject/body, AI Task context/focus, Notify message data and Manual Review context. Compatibility store: `cmx-lab-automation-input-bindings-v1`.
 
 Step tests can preserve the receiving-field route, for example `Body data ← Step 1 · AI summary`.
+
+Advanced-flow compatibility store remains `cmx-lab-automation-flow-controls-v1`, while `workflowV5` is embedded in the Automation Draft store.
 
 Production needs canonical server Audience resolution and typed output/input compatibility validation.
 
@@ -201,6 +234,8 @@ Canonical flow:
 `natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services → authoritative state + Activity/Audit`
 
 Potential supported operations later include Directory identity/relationships/Groups, Automation Drafts/Audiences/typed data routing/supported flow controls and Library organization/content.
+
+V5 is intentionally closer to the Automation shape Planner should eventually target because the workflow is expressed as explicit typed ordered nodes instead of UI-only stage assumptions.
 
 Hard rules:
 
@@ -235,7 +270,7 @@ Keep the backend canonical phase order. Broadly:
 8. bounded Agent later;
 9. MCP as adapter, never authority bypass.
 
-Lab v4.4 does not move branching/WAIT execution forward in that order.
+Lab v5 modeling does not move branching/WAIT execution forward in that order.
 
 # Non-negotiable rules
 
@@ -253,12 +288,12 @@ Lab v4.4 does not move branching/WAIT execution forward in that order.
 - Unknown executable capability/Planner operation types are rejected.
 - No arbitrary Python/JavaScript/shell/SQL/eval workflow logic.
 - External/inbound content is untrusted data.
-- Lab visual completeness never becomes production truth.
+- Lab visual/model completeness never becomes production truth.
 - No broad document-wide MutationObserver loops in accepted frontend paths.
 
 # `/doc/` boundary
 
-`/doc/` remains under its separate clarity freeze. Do not edit it merely because Lab UX changes.
+`/doc/` remains under its separate clarity freeze. Do not edit it merely because Lab UX/model changes.
 
 # Next backend action
 
