@@ -32,6 +32,16 @@
 .continuum-preflight-actions button{min-height:34px;padding:0 9px;border:1px solid rgba(118,173,214,.2);border-radius:8px;background:rgba(80,150,204,.07);color:#9ed7ff;font-size:8px;font-weight:850;cursor:pointer}
 .continuum-preflight-actions button:hover{border-color:rgba(118,190,241,.38);background:rgba(80,150,204,.11)}
 
+.continuum-preflight-operation-link{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:7px;padding:6px 7px;border:1px solid rgba(244,194,97,.18);border-radius:8px;background:rgba(244,194,97,.045)}
+.continuum-preflight-operation-link>b{padding:4px 6px;border-radius:6px;background:rgba(244,194,97,.08);color:#f0c76f;font:900 6.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}
+.continuum-preflight-operation-link>span{color:#7d92a3;font-size:8px;line-height:1.35}
+.continuum-preflight-operation-link[data-preflight-op-state="blocked"]{border-color:rgba(255,145,91,.2);background:rgba(255,145,91,.045)}
+.continuum-preflight-operation-link[data-preflight-op-state="blocked"]>b{background:rgba(255,145,91,.08);color:#ffb07b}
+.continuum-preflight-operation-link[data-preflight-op-state="reviewed"],.continuum-preflight-operation-link[data-preflight-op-state="deferred"]{border-color:rgba(102,205,170,.18);background:rgba(102,205,170,.035)}
+.continuum-preflight-operation-link[data-preflight-op-state="reviewed"]>b,.continuum-preflight-operation-link[data-preflight-op-state="deferred"]>b{background:rgba(102,205,170,.07);color:#8ed9bf}
+.continuum-preflight-operation-link[data-preflight-op-state="approval"]{border-color:rgba(255,196,109,.22);background:rgba(255,196,109,.045)}
+.continuum-preflight-operation-link[data-preflight-op-state="approval"]>b{background:rgba(255,196,109,.08);color:#ffd08a}
+
 .continuum-preflight-clear{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:9px;padding:10px;border:1px solid rgba(102,205,170,.18);border-radius:10px;background:rgba(102,205,170,.035)}
 .continuum-preflight-clear>b{width:34px;height:34px;display:grid;place-items:center;border:1px solid rgba(102,205,170,.22);border-radius:9px;color:#8ed9bf}
 .continuum-preflight-clear>span{display:grid;gap:2px}.continuum-preflight-clear strong{font-size:10px}.continuum-preflight-clear small{color:#758b9d;font-size:8px;line-height:1.4}
@@ -42,7 +52,7 @@
 html[data-theme="light"] .continuum-preflight-panel{border-color:rgba(31,103,154,.16);background:linear-gradient(180deg,rgba(67,146,201,.055),rgba(247,250,253,.82))}
 html[data-theme="light"] .continuum-preflight-metrics>article,html[data-theme="light"] .continuum-preflight-issue{border-color:rgba(31,103,154,.12);background:rgba(255,255,255,.75)}
 html[data-theme="light"] .continuum-preflight-panel>header span{color:#176b9f}
-html[data-theme="light"] .continuum-preflight-issue>p,html[data-theme="light"] .continuum-preflight-issue>footer>span,html[data-theme="light"] .continuum-preflight-panel>footer>span,html[data-theme="light"] .continuum-preflight-metrics span{color:#647887}
+html[data-theme="light"] .continuum-preflight-issue>p,html[data-theme="light"] .continuum-preflight-issue>footer>span,html[data-theme="light"] .continuum-preflight-panel>footer>span,html[data-theme="light"] .continuum-preflight-metrics span,html[data-theme="light"] .continuum-preflight-operation-link>span{color:#647887}
 
 @media (max-width:760px){
   .continuum-preflight-panel{gap:11px;padding:11px}
@@ -68,6 +78,9 @@ html[data-theme="light"] .continuum-preflight-issue>p,html[data-theme="light"] .
   .continuum-preflight-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
   .continuum-preflight-actions:has(button:only-child){grid-template-columns:1fr}
   .continuum-preflight-actions button{min-height:44px;font-size:10px}
+  .continuum-preflight-operation-link{gap:5px;padding:7px;margin-top:7px}
+  .continuum-preflight-operation-link>b{font-size:7px}
+  .continuum-preflight-operation-link>span{font-size:9px}
   .continuum-preflight-panel>footer{align-items:flex-start;flex-wrap:wrap}
   .continuum-preflight-panel>footer>span{flex:1 0 100%;font-size:9.5px;line-height:1.45}
 }
