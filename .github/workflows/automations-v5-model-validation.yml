@@ -58,12 +58,13 @@ jobs:
           grep -q 'labAutomationsFlow = "v5"' assets/lab/lab-automations-flow-v5.js
           grep -q '.v5-ordered-flow' assets/lab/lab-automations-flow-v5.css
           grep -q '.v3-mobile-flow .v5-ordered-flow' assets/lab/lab-automations-flow-v5.css
+          grep -q '.v4-modal>header>button{width:44px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v3-mobile-flow .v5-sequence-node strong{font-size:12px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v4-planner-examples button{min-height:44px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v5-planner-result>footer>button{min-height:46px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q 'lab-automations-flow-v5.js' lab/automations/index.html
           grep -q 'lab-automations-flow-v5.css' lab/automations/index.html
-          grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile1' lab/automations/index.html
+          grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2' lab/automations/index.html
 
           node <<'NODE'
           const fs = require('fs');
