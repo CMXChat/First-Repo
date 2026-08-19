@@ -41,7 +41,7 @@
     setText('.hero-kicker', 'Your information, people, tools and AI in one private operating layer');
     const heroLead = qs('.continuum-hero .hero-lead');
     if (heroLead) {
-      heroLead.innerHTML = '<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and understand what is true right now.</span><span class="hero-lead-second">It can brief you, follow rules you set, use approved tools and eventually keep important work moving across hours, days and changing conditions. As more services, APIs, MCP servers and devices connect, Continuum can see more of what is happening and take on more work while keeping authority, policy and history coherent.</span>';
+      heroLead.innerHTML = '<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and understand what is true right now.</span><span class="hero-lead-second">It can brief you, follow rules you set, use approved tools and eventually carry approved work on your behalf across hours, days and changing conditions. As more services, APIs, MCP servers and devices connect, Continuum can see more of what is happening and take on more work while keeping authority, policy and history coherent.</span>';
     }
 
     const heroTruth = qs('.hero-truth-row');
@@ -94,8 +94,16 @@
     Object.entries(nodeCopy).forEach(([selector, copy]) => setText(selector, copy));
 
     setText('.presence-heading > div > span', 'ACROSS TIME');
-    setText('.presence-heading strong', 'Keep the context and rules that should survive the moment.');
-    setText('.presence-heading > p', 'Continuum can help while you are using it, keep defined work ready and later follow continuity rules when direct approval is unavailable.');
+    setText('.presence-heading strong', 'Keep your context, rules and approved intent available across time.');
+    setText('.presence-heading > p', 'Continuum can help while you are using it, keep defined work ready and later carry specific work forward under continuity rules you prepared.');
+
+    const presenceStages = qsa('.presence-stage');
+    if (presenceStages[3]) {
+      setText('span', 'IF YOU CANNOT RESPOND', presenceStages[3]);
+      setText('h3', 'Carry approved intent forward', presenceStages[3]);
+      setText('p', 'Use the people, information, priorities and fallback rules you prepared when direct approval is unavailable.', presenceStages[3]);
+      setText('small', 'CONTINUITY', presenceStages[3]);
+    }
 
     setText('#difference .section-kicker', 'AI, capability and authority');
     setText('#difference h2', 'The intelligence can change while the control layer stays durable');
@@ -128,8 +136,10 @@
     setText('#action .ceiling-note p', 'Software, APIs, MCP servers, infrastructure, financial systems, operating systems, vehicles, wearables, smart devices and future technology can become Sources or capabilities when suitable interfaces exist. Adding capability expands what Continuum can potentially do. Permission remains separate.');
 
     setText('#afterlife .section-kicker', 'Continuity');
-    setText('#afterlife .section-intro', 'Afterlife uses Continuum for continuity. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can follow the authority and steps prepared in advance.');
-    setText('#afterlife .continuity-authority-head p', 'Direct approval can be unavailable because you are asleep, on a flight, in a meeting, offline, unreachable before a deadline or in a serious continuity event. The applicable fallback path still comes from authority established beforehand.');
+    setText('#afterlife .section-intro', 'Afterlife uses Continuum for continuity. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can use the people, information, instructions and authority you prepared to carry specific work forward on your behalf.');
+    setText('#afterlife .continuity-authority-head span', 'CONTINUITY OF AUTHORIZED INTENT');
+    setText('#afterlife .continuity-authority-head strong', 'Prepare what should continue before you need it.');
+    setText('#afterlife .continuity-authority-head p', 'A continuity policy can tie saved instructions, selected people, approved information and fallback authority to the State that determines what happens next.');
 
     const laterTruth = qs('#afterlife .afterlife-truth div:last-child');
     if (laterTruth) {
@@ -151,7 +161,7 @@
     setText('#status .section-intro', 'New apps, communication channels, data sources, models and future tools can use the same knowledge, policy, authority and audit model as each stage becomes real.');
     setText('#status .roadmap-later strong', 'Expandable capability');
     setText('#status .roadmap-later p', 'Continuum can work with more outside services, models, tools and future devices through the same control layer.');
-    setText('#status .closing-note', 'Continuum is a durable operating layer around changing intelligence. Better models and new tools can expand what it can see and do while knowledge, State, authority, policy and history stay coherent.');
+    setText('#status .closing-note', 'Continuum is a durable operating layer around changing intelligence. Better models, new tools and better architecture can expand what it can see and do while knowledge, State, authority, policy and history stay coherent across time.');
 
     setText('.document-footer h2', 'Start with what is live. Explore what Continuum is becoming.');
 
@@ -354,7 +364,7 @@
     goal.innerHTML = `
       <span class="continuum-forward-kicker">LATER · GOALS / MISSIONS</span>
       <strong>Automations handle repeatable rules. Goals keep an outcome alive.</strong>
-      <p>A Goal can define what success means, what must never happen, which approvals are required, how long the effort may continue and when to stop. Planner can revise the strategy while Runtime carries approved work across waits, replies and changing State.</p>
+      <p>A Goal can define what success means, what must never happen, which approvals are required, how long the effort may continue and when to stop. Planner can revise the strategy while Runtime carries approved work across waits, replies and changing State. A Goal can keep moving during your unavailability when its published continuity policy allows it, with the same success criteria, limits and stop conditions.</p>
       <div class="continuum-forward-flow" aria-label="Future Goal orchestration flow"><span>GOAL</span><i>→</i><span>PLAN</span><i>→</i><span>ACT</span><i>→</i><span>OBSERVE</span><i>→</i><span>REPLAN</span><i>→</i><span>SUCCESS / STOP</span></div>
       <div class="continuum-capability-example"><b>Example</b><span>Help an authorized person pursue a suitable job within 60 days. Never misrepresent qualifications, respect the allowed locations and require approval before anything is sent in that person's name.</span></div>
       <small>Replanning can change strategy. It cannot silently change hard constraints, success criteria or authority.</small>`;
@@ -378,6 +388,42 @@
       <div class="continuum-forward-flow" aria-label="Future capability adoption flow"><span>DISCOVER</span><i>→</i><span>MAP</span><i>→</i><span>TEST</span><i>→</i><span>SIMULATE</span><i>→</i><span>POLICY</span><i>→</i><span>ENABLE</span></div>
       <div class="continuum-capability-example"><b>Example</b><span>A workflow keeps stopping because deployment access is missing. Continuum could identify a compatible GitHub or deployment capability, prepare the mapping and tests, simulate what would change and surface the setup for approval or an already-authorized adoption policy.</span></div>
       <small>Capability growth and permission growth stay separate.</small>`;
+  }
+
+  function addAuthorizedContinuityNote() {
+    const afterlife = document.getElementById('afterlife');
+    const anchor = qs('.continuity-authority', afterlife);
+    if (!afterlife || !anchor || qs('.continuum-authorized-continuity-note', afterlife)) return;
+
+    const note = document.createElement('aside');
+    note.className = 'continuum-forward-note continuum-authorized-continuity-note';
+    note.setAttribute('aria-label', 'Future continuity of authorized intent');
+    note.innerHTML = `
+      <span class="continuum-forward-kicker">LATER · AUTHORIZED CONTINUITY</span>
+      <strong>Specific work can continue on your behalf when you cannot take part directly.</strong>
+      <p>You can prepare the people, information, priorities, limits and authority ahead of time. Future Runtime can check current State, follow that policy, contact the right people, release approved information, wait for replies and carry the next allowed step forward.</p>
+      <div class="continuum-forward-flow" aria-label="Future continuity of authorized intent flow"><span>PREPARED INTENT</span><i>→</i><span>CURRENT STATE</span><i>→</i><span>CONTINUITY POLICY</span><i>→</i><span>AUTHORIZED ACTION</span><i>→</i><span>WAIT / REPLY</span><i>→</i><span>CONTINUE</span><i>→</i><span>AUDIT</span></div>
+      <div class="continuum-capability-example"><b>Across time</b><span>The same model can cover a flight, hospitalization, extended incapacity or long-term continuity after death. What happens in each case comes from the policy you chose beforehand.</span></div>
+      <small>Your absence never expands the authority already published.</small>`;
+    anchor.after(note);
+  }
+
+  function addArchitectureEvolutionNote() {
+    const build = document.getElementById('build');
+    const anchor = qs('.build-stage-final', build) || qs('.section-intro', build);
+    if (!build || !anchor || qs('.continuum-architecture-evolution-note', build)) return;
+
+    const note = document.createElement('aside');
+    note.className = 'continuum-forward-note continuum-architecture-evolution-note';
+    note.setAttribute('aria-label', 'Future goal-driven architecture evolution');
+    note.innerHTML = `
+      <span class="continuum-forward-kicker">LATER · ARCHITECTURE EVOLUTION</span>
+      <strong>A Goal can expose a limitation in Continuum itself.</strong>
+      <p>If the same kind of work keeps failing because the current data model, service or Runtime behavior is missing, Continuum can eventually prepare the smallest architecture change that would solve the recurring problem.</p>
+      <div class="continuum-forward-flow" aria-label="Future architecture evolution flow"><span>GOAL BLOCKED</span><i>→</i><span>GAP</span><i>→</i><span>CHANGE PLAN</span><i>→</i><span>CODE + TESTS</span><i>→</i><span>SIMULATE</span><i>→</i><span>AUTHORIZE</span><i>→</i><span>RELEASE</span><i>→</i><span>MEASURE</span></div>
+      <div class="continuum-capability-example"><b>Example</b><span>A long-running hiring Goal keeps forcing interview stages into generic notes. Continuum could propose a typed interview-stage model, migration, service changes and tests, then measure whether the change makes that Goal more reliable.</span></div>
+      <small>Architecture changes use versioning, migration checks, tests, release authority and rollback. Permission stays governed separately.</small>`;
+    anchor.after(note);
   }
 
   function addControlCenterNote() {
@@ -450,6 +496,8 @@
   addPlannerAndSignalsNotes();
   addGoalMissionNote();
   addCapabilityExtensionNote();
+  addAuthorizedContinuityNote();
+  addArchitectureEvolutionNote();
   addControlCenterNote();
   addOriginNote();
 
@@ -461,4 +509,6 @@
   document.documentElement.dataset.continuumControlCenter = 'ready';
   document.documentElement.dataset.continuumCheckInRoute = 'ready';
   document.documentElement.dataset.continuumKnowledgeQuality = 'ready';
+  document.documentElement.dataset.continuumAuthorizedContinuity = 'ready';
+  document.documentElement.dataset.continuumArchitectureEvolution = 'ready';
 })();
