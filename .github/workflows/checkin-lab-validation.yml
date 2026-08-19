@@ -32,6 +32,7 @@ jobs:
             assets/lab/lab-mock-api.js \
             assets/lab/lab-crm.js \
             assets/lab/lab-directory-v2.js \
+            assets/lab/lab-continuum-planner-contract-v1.js \
             assets/lab/lab-directory-planner-preview.js \
             assets/lab/lab-inventory.js \
             assets/lab/lab-actions.js \
@@ -66,7 +67,7 @@ jobs:
           const contract = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260819-directory-planner-v2qa1');
+          assert.equal(BUILD, '20260819-planner-contract-v1');
 
           const counts = {
             document_count: 6,
@@ -83,7 +84,7 @@ jobs:
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-directory-planner-v2qa1'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-contract-v1'));
           assert(!shell.includes('document.write(html)'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
@@ -97,6 +98,7 @@ jobs:
             '/assets/lab/lab-directory-v2.js',
             '/assets/lab/lab-directory-v2.css',
             '/assets/lab/lab-directory-v2-polish.css',
+            '/assets/lab/lab-continuum-planner-contract-v1.js?v=20260819-v1',
             '/assets/lab/lab-directory-planner-preview.js',
             '/assets/lab/lab-directory-planner-preview.css?v=20260819-directory-planner-v2qa1',
             '/assets/lab/lab-inventory.js',
@@ -117,7 +119,8 @@ jobs:
           required.forEach(term => assert(rendered.includes(term), `missing generated Lab contract: ${term}`));
           assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'));
           assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
-          assert(rendered.indexOf('/assets/lab/lab-directory-v2.js') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.js'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-v2.js') < rendered.indexOf('/assets/lab/lab-continuum-planner-contract-v1.js'));
+          assert(rendered.indexOf('/assets/lab/lab-continuum-planner-contract-v1.js') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.js'));
           assert(rendered.indexOf('/assets/lab/lab-directory-v2.css') < rendered.indexOf('/assets/lab/lab-directory-v2-polish.css'));
           assert(rendered.indexOf('/assets/lab/lab-directory-v2-polish.css') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.css'));
           assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
@@ -129,6 +132,7 @@ jobs:
 
           python - <<'PY'
           from pathlib import Path
+          import re
           import sys
 
           production = Path('checkin/index.html').read_text(encoding='utf-8')
@@ -138,6 +142,7 @@ jobs:
           active = [
               'assets/lab/lab-loader.js',
               'assets/lab/lab-directory-v2.js',
+              'assets/lab/lab-continuum-planner-contract-v1.js',
               'assets/lab/lab-directory-planner-preview.js',
               'assets/lab/lab-command.js',
               'assets/lab/lab-product-polish.js',
@@ -149,7 +154,7 @@ jobs:
           combined = '\n'.join(Path(path).read_text(encoding='utf-8') for path in active)
           if 'api.cmxchat.com' in combined:
               sys.exit('active Lab layer references production API')
-          for path in ['assets/lab/lab-directory-v2.js', 'assets/lab/lab-directory-planner-preview.js']:
+          for path in ['assets/lab/lab-directory-v2.js', 'assets/lab/lab-continuum-planner-contract-v1.js', 'assets/lab/lab-directory-planner-preview.js']:
               source = Path(path).read_text(encoding='utf-8')
               for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
                   if forbidden in source:
@@ -157,9 +162,28 @@ jobs:
 
           planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
           planner_css = Path('assets/lab/lab-directory-planner-preview.css').read_text(encoding='utf-8')
+          planner_contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
           for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket']:
-              if forbidden in planner:
-                  sys.exit(f'Directory Planner must remain local/no-network: {forbidden}')
+              if forbidden in planner + planner_contract:
+                  sys.exit(f'Planner layers must remain local/no-network: {forbidden}')
+
+          for term in [
+              'CMXContinuumPlannerContractV1', 'validateOperations',
+              'directory.upsert_group', 'library.create_folder', 'automation.create_draft',
+              'automation.add_wait', 'data.labPlannerContract'
+          ]:
+              if term == 'data.labPlannerContract':
+                  if 'dataset.labPlannerContract = "v1"' not in planner_contract:
+                      sys.exit('shared Planner contract missing browser marker')
+              elif term not in planner_contract:
+                  sys.exit(f'shared Planner contract missing operation/contract: {term}')
+
+          # Every typed operation literal used by the Directory Planner must exist in the shared registry.
+          directory_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', planner))
+          registry_ops = set(re.findall(r'"((?:directory|library|automation)\.[a-z0-9_]+)":\s*Object\.freeze', planner_contract))
+          unknown = sorted(directory_ops - registry_ops)
+          if unknown:
+              sys.exit(f'Directory Planner uses unregistered operations: {unknown}')
 
           polish = Path('assets/lab/lab-directory-v2-polish.css').read_text(encoding='utf-8')
           for term in ['position:sticky', '@media (max-width:760px)', 'prefers-reduced-motion']:
@@ -181,7 +205,7 @@ jobs:
           ]:
               if term not in planner_css: sys.exit(f'Directory Planner mobile QA missing contract: {term}')
 
-          print('Continuum Lab snapshot, production isolation, Directory v2 polish and typed Planner v2 mobile QA passed.')
+          print('Continuum Lab snapshot, shared Planner operation contract, Directory v2 polish and typed Planner v2 mobile QA passed.')
           PY
 
       - name: Browser acceptance smoke desktop and mobile
@@ -210,6 +234,7 @@ jobs:
           grep -q 'data-lab-experience="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-automation-builder="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-desktop.html
+          grep -q 'data-lab-planner-contract="v1"' /tmp/lab-desktop.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/lab-desktop.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-desktop.html
           grep -q 'AI setup' /tmp/lab-desktop.html
@@ -221,6 +246,7 @@ jobs:
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-mobile.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-mobile.html
+          grep -q 'data-lab-planner-contract="v1"' /tmp/lab-mobile.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/lab-mobile.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-mobile.html
           grep -q 'AI setup' /tmp/lab-mobile.html
@@ -228,4 +254,4 @@ jobs:
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
 
-          echo 'Continuum Lab desktop/mobile smoke passed with Directory typed Planner v2 mobile QA and existing operating surfaces.'
+          echo 'Continuum Lab desktop/mobile smoke passed with shared Planner contract, Directory typed Planner v2 mobile QA and existing operating surfaces.'
