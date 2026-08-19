@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-19
-Status: Canonical cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, rich Continuum Lab product proofs active
+Status: Canonical cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Continuum core/Signals/State/live-world/autonomy architecture aligned, rich Lab product proofs active
 
 Read this first before changing Continuum or Check In.
 
@@ -10,37 +10,69 @@ Read this first before changing Continuum or Check In.
 - **Continuum** = umbrella product.
 - **Check In** = current protected application/backend program name.
 - **Directory** = People, Organizations, relationships, contact methods and saved audiences.
-- **Library** = protected content, files and saved knowledge.
-- **Signals / Observations** = approved outside/connected-source observations and typed noteworthy conditions.
+- **Library** = protected content, files and durable saved knowledge.
+- **Signals / Observations** = provenance-backed evidence from approved outside/internal sources.
+- **State** = current operational truth used by policy, Automations and Runtime.
 - **Automations** = typed workflow definitions.
-- **Connections** = approved paths to outside capability/sources.
+- **Connections / Capabilities** = approved paths to outside sources/tools plus the typed operations Continuum can currently use.
+- **Policy / Authority** = conditions, limits, approvals and explicit permission for consequential behavior.
 - **Runtime** = future durable execution/history.
-- **AI / Planner** = bounded intelligence and natural-language authoring through the same typed domain services humans use.
+- **AI / Planner** = replaceable reasoning and natural-language authoring through the same typed domain services humans use.
+- **Control Center** = future desktop/mobile management, activity, autonomy and simulation surface.
 - **Spaces** = briefing/context experience.
 - **Afterlife / Dead Man Switch** = continuity use case on the shared foundation.
 
-Core principle:
+Core principles:
 
-> Build the control plane. Rent the capabilities.
+> **Build the control plane. Rent the capabilities.**
+
+> **The capability ceiling can move. Authority still comes from policy.**
+
+# Core architecture
+
+Durable control core:
+
+`Knowledge + State + Authority + Policy + Audit`
+
+Replaceable/expanding layers:
+
+`Reasoning + Capabilities + Runtime`
+
+Canonical consequence path:
+
+`OBSERVE → SIGNAL → STATE → POLICY → AUTHORITY → CAPABILITY → RUNTIME → RESULT → AUDIT`
+
+Important rules:
+
+- evidence can change State/eligibility;
+- evidence never grants authority;
+- stronger models/new APIs/MCP tools can expand reasoning/capability without silently widening authority;
+- humans, AI, workers and MCP adapters use the same protected typed services;
+- operational State is server-backed where consequence depends on it;
+- policy/authority/capability versions used for consequential work remain auditable.
 
 # Read order
 
 1. `docs/checkin-context-handoff-CURRENT.md`
 2. `docs/continuum-product-CURRENT.md`
-3. `docs/continuum-automations-master-plan-CURRENT.md`
-4. `docs/checkin-automations-frontend-CURRENT.md`
-5. `docs/continuum-directory-master-plan-CURRENT.md`
-6. `docs/checkin-directory-library-CURRENT.md`
-7. `docs/continuum-signals-observations-master-plan-CURRENT.md`
-8. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`
-9. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md`
-10. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-PRODUCTION-DEPLOYMENT-RUNBOOK.md`
-11. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-CONTINUATION-PLAN.md`
-12. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md`
-13. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-DIRECTORY-PLATFORM-PLAN.md`
-14. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
-15. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md`
-16. `CMXChat/jay-app/specs/003-server-checkin/tasks.md`
+3. `docs/continuum-signals-observations-master-plan-CURRENT.md`
+4. `docs/checkin-future-capabilities-CURRENT.md`
+5. `docs/continuum-automations-master-plan-CURRENT.md`
+6. `docs/checkin-automations-frontend-CURRENT.md`
+7. `docs/continuum-directory-master-plan-CURRENT.md`
+8. `docs/checkin-directory-library-CURRENT.md`
+9. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`
+10. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md`
+11. `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-PLATFORM-ARCHITECTURE.md`
+12. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md`
+13. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md`
+14. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md`
+15. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
+16. `CMXChat/jay-app/specs/003-server-checkin/DELEGATED-AUTHORITY-BACKEND-CONTRACT.md`
+17. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md`
+18. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-PRODUCTION-DEPLOYMENT-RUNBOOK.md`
+19. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-CONTINUATION-PLAN.md`
+20. `CMXChat/jay-app/specs/003-server-checkin/tasks.md`
 
 Current source/tests and `*-CURRENT.md` files beat older chats, dated handoffs and stale READMEs.
 
@@ -101,7 +133,151 @@ Publish freezes exact immutable ContentVersion identity and later Draft edits ca
 
 Before broad Directory/Signals/Runtime/Planner schema expansion, execute the prepared Phase 2A production migration/deployment runbook and then the separate first protected `continuity.md` acceptance proof.
 
-Do **not** mix new Directory schema, Signals services, Runtime, providers or AI execution into the reviewed Phase 2A migration.
+Do **not** mix new Directory schema, Signals services, general State/authority schema, Runtime, providers, capability discovery, Control Center persistence or AI execution into the reviewed Phase 2A migration.
+
+Architecture reconciliation does not authorize production deployment/migration.
+
+# Live world / API / MCP direction
+
+Canonical backend contract:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md`
+
+Continuum should grow as new APIs, MCP servers, tools, services and devices become available without redesigning the durable core.
+
+Candidate capability lifecycle:
+
+`DISCOVER → NORMALIZE → CLASSIFY → MAP → TEST → SIMULATE → REVIEW/POLICY → ENABLE → MONITOR → VERSION/DEPRECATE`
+
+Possible live information paths include:
+
+- provider push/webhooks;
+- scheduled polling;
+- RSS/feed sync;
+- constrained webpage monitoring;
+- approved search/news providers;
+- MCP resources;
+- on-demand typed reads;
+- internal domain events;
+- future approved device/sensor streams.
+
+A newly advertised API/MCP capability is a **candidate**, not authority.
+
+Continuum may eventually help generate adapter/schema/test proposals. There is no hidden path where AI edits/deploys production code and grants itself access.
+
+# Signals / Observations / State direction
+
+Canonical product plan:
+
+`docs/continuum-signals-observations-master-plan-CURRENT.md`
+
+Backend plan:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md`
+
+Durable path:
+
+`SignalSource → Observation → Signal → State / eligibility → Policy + Authority → Capability → Runtime → result`
+
+Future approved sources may include provider APIs/webhooks, RSS/feed, constrained webpage monitoring, approved search/news sources, GitHub/status/provider events, approved MCP resources, account/project streams, device sources and trusted-person attestations where configured.
+
+Signals may eventually:
+
+- start an Automation;
+- satisfy/invalidate a Condition;
+- change protected State/eligibility;
+- contribute to an Incident;
+- wake/resume Runtime;
+- contribute to availability confidence;
+- feed Spaces/briefings or AI reasoning.
+
+External content is untrusted. It cannot expand tools, Audience, Connections, policy, grants or Runtime authority.
+
+Conflicting evidence should be preserved where material. Confidence may incorporate freshness, corroboration, source reliability, history, context, outcomes and feedback.
+
+There is no single universal confidence threshold for every consequence.
+
+Initial learned trust/relevance changes should be recommendations. Later selected low-risk automatic tuning requires explicit policy/meta-authority.
+
+# Availability / continuity architecture
+
+Owner availability should eventually be able to use multiple approved Signals, not only the Dead Man Switch timer.
+
+Possible evidence includes missed Check Ins, lack of replies, approved device/account activity, deadlines, trusted-person attestations and other configured sources.
+
+The owner must be able to disable the availability-inference system or individual evidence sources.
+
+Trusted-person attestations are evidence by default. A trusted person can directly change authoritative State only under separate explicit authority.
+
+Fallback authority means previously published authority becomes eligible when its conditions are satisfied.
+
+Silence, absence or urgency never creates authority.
+
+When owner availability is restored:
+
+`no new fallback-authority claims → already-started work follows typed recovery semantics`
+
+# Master autonomy pause
+
+The future system needs a first-class **Pause Autonomy** control.
+
+While paused:
+
+- new autonomous consequential Actions are blocked;
+- observation, Signals, State maintenance, learning, drafting and briefings may continue;
+- direct owner-requested actions are handled according to their own interaction/policy rules.
+
+Pause may support:
+
+- until manually resumed;
+- until a chosen date/time;
+- long deliberate durations such as one year;
+- future scoped pauses.
+
+Timed pause expiry does not silently turn autonomy back on.
+
+Desired flow:
+
+`pause expires → contact owner through configured strategy → wait effective response window → if owner responds, use decision → if not, evaluate published continuity/fallback policy`
+
+General default response-window direction is 24 hours with per-policy overrides.
+
+Contact strategy may be all channels at once, staged escalation, preferred order, retries, stop-on-acknowledgement or trusted-person escalation depending on the policy.
+
+# Control Center / simulation direction
+
+Canonical backend/product contract:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md`
+
+Control Center is intended as a first-class desktop **and mobile** surface.
+
+Preferred primary views:
+
+- Now;
+- Upcoming;
+- History;
+- All Activity.
+
+Underneath, one canonical event/activity truth should cover observations, Signals, State changes, policy/authority changes, Actions, waits, retries, contact attempts, results and management actions.
+
+Opening a consequential item should expose:
+
+`evidence → State → policy → authority → capability → Runtime → result`
+
+The user should eventually be able to edit/cancel/retry supported future work, hide/archive user-facing history, use Undo where truly reversible, pause autonomy and inspect source/capability health.
+
+Consequential Audit remains durable even if the UI hides an item.
+
+Simulation should:
+
+- start from a frozen snapshot of real current State where useful;
+- allow hypothetical inputs;
+- perform no real side effects or real authority activation;
+- save named scenarios;
+- rerun important scenarios after relevant policy/capability changes;
+- show what changed and why;
+- classify changed outcomes as advisory safer/riskier/materially different with reasons.
 
 # `/lab/automations/` current truth
 
@@ -154,9 +330,7 @@ Inter-step WAIT remains Runtime-required.
 
 # Mobile authoring truth
 
-A real phone screenshot exposed that the DO stage was responsive but excessively tall.
-
-Mobile Action-stack v6 now gives multi-Action flows:
+Mobile Action-stack v6 gives multi-Action flows:
 
 - compact rows;
 - one open Action at a time;
@@ -179,8 +353,6 @@ Shared desired flow:
 
 `intent → typed Change Plan → preflight → review → protected apply later`
 
-## Plan-local dependencies
-
 Browser operations may demonstrate:
 
 - `id`;
@@ -188,25 +360,11 @@ Browser operations may demonstrate:
 - `produces: temp:…`;
 - `uses[]` earlier plan results.
 
-Temporary refs are plan-local proof only. Future protected Planner owns its own plan-local reference implementation and replaces successful temporary results with authoritative IDs.
+Temporary refs are plan-local proof only.
 
-## Editable proposal
+Automation Planner proposals can be revised before creating a Draft by removing proposed Actions/inter-step controls and resetting the original deterministic proposal. Removing an Action recalculates the actual plan, prunes invalid dependencies, rebuilds typed operations and reruns Preflight/Change Review.
 
-Automation Planner proposals can now be revised before creating a Draft.
-
-Current proving edits:
-
-- remove a proposed Action;
-- remove proposed inter-step IF/WAIT;
-- reset to the original deterministic proposal.
-
-Removing an Action recalculates the actual proposed plan, prunes now-invalid dependent controls, rebuilds typed operations, reruns dependency checks and refreshes Preflight/Change Review.
-
-The resulting Draft records whether the proposal was edited before Draft creation.
-
-## Typed Preflight
-
-Current Lab states:
+Current Lab Preflight states:
 
 - CHECK REQUIRED;
 - PREVIEW DECISION;
@@ -214,57 +372,27 @@ Current Lab states:
 - BLOCKED;
 - APPROVAL REQUIRED.
 
-Lab can record/change a sample decision or defer something to the editable Draft. It cannot clear real missing Runtime, Connection, protected service or authority requirements.
-
-Issues can link to affected Change Plan rows.
-
 The browser proving adapter currently classifies local warning text into typed issue codes. Protected backend services must return structured issue objects directly. **Do not implement production preflight as text matching.**
+
+Future Planner may propose Directory, Library, Signals/Sources, Automations, Connection/capability mapping and policy/authority operations only through mature typed domain services.
+
+A discovered API/MCP tool never becomes executable merely because Planner understood it.
 
 # Directory current truth
 
 Main `/lab/` Records surface uses Directory v2 over browser-local prototype state.
 
-Current concepts include:
-
-- People;
-- Organizations;
-- Groups / saved audiences;
-- many-Organization memberships;
-- ContactMethods/readiness;
-- Labels;
-- Person relationships;
-- notes/Activity;
-- Group resolution;
-- duplicate warnings;
-- Automation usage;
-- mobile/light/dark presentation.
+Current concepts include People, Organizations, Groups/saved audiences, many-Organization memberships, ContactMethods/readiness, Labels, Person relationships, notes/Activity, Group resolution, duplicate warnings, Automation usage and responsive desktop/mobile presentation.
 
 Production still needs typed protected Directory models/services.
 
 Automation Audience v4.1 can compose Person / Organization / Group / Label selectors and preview unique Person resolution/readiness. Production resolution remains server-owned.
 
-# Signals / Observations current direction
+Relationships/Labels do not silently grant authority.
 
-Signals are now a first-class **architecture target**, not a hidden Automation hack.
+# Shared Planner Signals vocabulary
 
-Durable path:
-
-`SignalSource → Observation → Signal → Automation eligibility → Runtime Run → recorded result`
-
-Future approved sources may include:
-
-- provider APIs/webhooks;
-- RSS/feed;
-- constrained webpage monitoring;
-- approved search/news sources;
-- GitHub/status events;
-- approved MCP resources.
-
-External content is untrusted. A webpage/feed/search result can inform Continuum but cannot expand AI tools, Audience, Connections, grants or Runtime authority.
-
-## Shared Planner vocabulary prepared
-
-Browser Change Plan registry now reserves definition operations such as:
+Browser Change Plan registry reserves definition operations such as:
 
 - `signals.create_watch`;
 - `signals.update_watch`;
@@ -276,34 +404,11 @@ Browser Change Plan registry now reserves definition operations such as:
 
 This is vocabulary preparation only, not a protected server allowlist.
 
-## Visible Online signals proof
-
 Directory Planner includes a fixed **Online signals** example:
 
 `Create Watch → Attach approved source → Set filter → Set bounded interpretation → Create Automation Draft → Reference Signal Watch`
 
-It is explicitly **NO ONLINE OBSERVATION**.
-
-It keeps these gaps blocked:
-
-- protected Signals service required;
-- source/Connection required.
-
-Preflight maps those issues to the correct proposed Watch/source changes.
-
-Current Continuum does **not** crawl arbitrary websites, continuously search news, poll arbitrary URLs, observe live online sources, emit production Signals or start Runs from Signals.
-
-# Future AI direction
-
-Future Continuum Planner should let a user say things like:
-
-“Organize these contacts, create the groups, watch approved online sources for my company, add meaningful signals to my brief, and build the workflow.”
-
-That request becomes one reviewed typed Change Plan across mature domain services.
-
-AI and humans call the same services. AI gets no shadow database, unrestricted network path or provider credentials.
-
-Signal interpretation may later summarize changes/classify relevance, but every interpretation retains supporting Observation/evidence references.
+It is explicitly **NO ONLINE OBSERVATION** and keeps Signals service/source Connection gaps blocked.
 
 # Validation contracts
 
@@ -322,21 +427,56 @@ Current important workflows include:
 
 Newer mobile interactions are exercised at **360×800** and **390×844**.
 
-The available GitHub connector does not independently expose push-triggered workflow-run results in this context. Do not claim an observed green Actions run or live Pages pickup until separately verified.
+Do not claim a green workflow run unless it was actually observed/verified.
+
+# Current non-production list
+
+Production still does **not** have general:
+
+- Directory v2 persistence;
+- canonical Group/Label Audience resolver;
+- SignalSource / Observation / SignalWatch / Signal service;
+- multi-source availability inference;
+- broad online monitoring/web search/news polling;
+- Source Catalog / live source health UI;
+- broad server Capability Registry;
+- API/OpenAPI/MCP discovery/import pipeline;
+- typed Automation data/input/inter-step service matching Lab;
+- server equivalent of Lab v5;
+- authoritative Planner registry/preflight/review/apply;
+- Automation Runtime;
+- persisted waits/branching;
+- provider delivery;
+- acknowledgement/approval engine;
+- Control Center matching the new contract;
+- real simulation engine;
+- AI Task execution;
+- Planner / Change Plan execution;
+- Agent;
+- MCP execution;
+- autonomous capability adoption;
+- self-deploying AI code.
 
 # What to do next
 
-Keep frontend/product work and backend sequencing separate.
+Immediate backend work remains the prepared Phase 2A production migration/deployment boundary, only after explicit authorization.
 
-Immediate backend work remains the prepared Phase 2A production migration/deployment boundary.
+After that boundary and the separate `continuity.md` proof, architecture order remains:
 
-Safe frontend/product continuation can keep refining accepted Lab semantics, especially:
+1. bounded Directory/Automation/domain-service breadth;
+2. real protected builder surfaces;
+3. one narrow read-only Source/Observation/provenance path;
+4. durable linear Runtime + fake provider;
+5. one real low-risk provider;
+6. one deterministic SignalWatch/Signal family and protected State slice;
+7. waits/retries/acknowledgements/approvals, then typed routing;
+8. AI Task + read-only Planner tools;
+9. Change Plan generation/preflight then low-risk apply;
+10. broader Signals/Planner-created Watches;
+11. second provider to prove adapter extensibility;
+12. bounded MCP discovery/import;
+13. OpenAPI-assisted capability proposals;
+14. explicit-policy low-risk tuning/adoption;
+15. bounded Agent / broader continuity autonomy later.
 
-- Planner proposal editing/reordering while preserving dependencies;
-- richer typed field configuration;
-- clearer capability discovery;
-- Directory product depth;
-- Signals/Watch authoring UX as definition-only proof;
-- rendered mobile QA.
-
-Do not start real Signals ingestion, Runtime, branch execution, provider delivery or AI execution merely because the Lab can describe those concepts.
+Safe frontend/product work can keep refining accepted Lab semantics and documenting future Control Center/Source/Capability UX without claiming backend implementation.
