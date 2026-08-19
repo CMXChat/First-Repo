@@ -1,0 +1,141 @@
+name: Continuum Mobile Layout Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'lab/automations/**'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-directory-v2.js'
+      - 'assets/lab/lab-directory-v2.css'
+      - 'assets/lab/lab-directory-v2-polish.css'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-directory-planner-preview.css'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-automations-platform-v4.js'
+      - 'assets/lab/lab-automations-platform-v4.css'
+      - 'assets/lab/lab-automations-model-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.css'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-v5.css'
+      - 'assets/lab/lab-automations-v5-mobile-qa.css'
+      - 'tests/continuum-mobile-layout-probe.js'
+      - '.github/workflows/continuum-mobile-layout-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'lab/automations/**'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-directory-v2.js'
+      - 'assets/lab/lab-directory-v2.css'
+      - 'assets/lab/lab-directory-v2-polish.css'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-directory-planner-preview.css'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-automations-platform-v4.js'
+      - 'assets/lab/lab-automations-platform-v4.css'
+      - 'assets/lab/lab-automations-model-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.css'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-v5.css'
+      - 'assets/lab/lab-automations-v5-mobile-qa.css'
+      - 'tests/continuum-mobile-layout-probe.js'
+      - '.github/workflows/continuum-mobile-layout-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-geometry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate probe syntax and safety
+        run: |
+          set -euo pipefail
+          node --check tests/continuum-mobile-layout-probe.js
+          python - <<'PY'
+          from pathlib import Path
+          source = Path('tests/continuum-mobile-layout-probe.js').read_text(encoding='utf-8')
+          for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'eval(', 'new Function(', 'MutationObserver']:
+              if forbidden in source:
+                  raise SystemExit(f'forbidden mobile probe pattern: {forbidden}')
+          for required in [
+              'qaDirectoryCommandOverlap', 'qaDirectoryPlannerFit', 'qaAutomationsPlannerFit',
+              'qaAutomationsPlannerResult', 'qaHorizontalOverflowAfter', 'qaLayoutProbe'
+          ]:
+              if required not in source:
+                  raise SystemExit(f'mobile probe missing marker: {required}')
+          PY
+
+      - name: Build isolated mobile QA pages
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+
+          const probe = '<script src="/tests/continuum-mobile-layout-probe.js"></script>';
+
+          const labSource = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
+          const labRendered = transformSnapshot(labSource)
+            .replace('upgrade-insecure-requests', '')
+            .replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('directory-mobile-geometry.html', labRendered, 'utf8');
+
+          const automationSource = fs.readFileSync('lab/automations/index.html', 'utf8');
+          const automationRendered = automationSource.replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('lab/automations/mobile-geometry.html', automationRendered, 'utf8');
+          NODE
+
+      - name: Validate 390px Directory and Planner geometry
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-mobile-layout-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f directory-mobile-geometry.html lab/automations/mobile-geometry.html' EXIT
+          sleep 1
+
+          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --window-size=390,844 --virtual-time-budget=15000 --dump-dom \
+            'http://127.0.0.1:8000/directory-mobile-geometry.html' > /tmp/directory-mobile-geometry.html
+
+          grep -q 'data-qa-layout-probe="complete"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-viewport-width="390"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-horizontal-overflow="false"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-horizontal-overflow-after="false"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-directory-command-overlap="false"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-directory-buttons-fit="true"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-directory-planner-open="true"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-directory-planner-fit="true"' /tmp/directory-mobile-geometry.html
+
+      - name: Validate 390px Automations Planner geometry
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+
+          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --window-size=390,844 --virtual-time-budget=15000 --dump-dom \
+            'http://127.0.0.1:8000/lab/automations/mobile-geometry.html' > /tmp/automations-mobile-geometry.html
+
+          grep -q 'data-qa-layout-probe="complete"' /tmp/automations-mobile-geometry.html
+          grep -q 'data-qa-viewport-width="390"' /tmp/automations-mobile-geometry.html
+          grep -q 'data-qa-horizontal-overflow="false"' /tmp/automations-mobile-geometry.html
+          grep -q 'data-qa-horizontal-overflow-after="false"' /tmp/automations-mobile-geometry.html
+          grep -q 'data-qa-automations-planner-open="true"' /tmp/automations-mobile-geometry.html
+          grep -q 'data-qa-automations-planner-result="true"' /tmp/automations-mobile-geometry.html
+          grep -q 'data-qa-automations-planner-fit="true"' /tmp/automations-mobile-geometry.html
+
+          echo 'Continuum 390px Directory and Automations Planner geometry passed.'
