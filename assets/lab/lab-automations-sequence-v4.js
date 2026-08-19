@@ -140,7 +140,6 @@
         <button type="button" class="v44-add" data-v44-add="${esc(action.id)}"><span>＋</span><strong>Add logic between steps</strong><small>Continue if… or wait before Step ${index + 2}</small></button>`;
       card.after(connector);
     });
-    document.documentElement.dataset.labAutomationsSequence = "v4-4";
   }
 
   function patchReview(context) {
@@ -267,6 +266,7 @@
     queued = false;
     const context = currentContext();
     if (!context || !document.querySelector(".v3-editor-page")) return;
+    document.documentElement.dataset.labAutomationsSequence = "v4-4";
     patchSequence(context);
     patchReview(context);
   }
