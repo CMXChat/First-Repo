@@ -69,9 +69,9 @@ jobs:
           const status = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260819-planner-preflight-v1');
+          assert.equal(BUILD, '20260819-planner-preflight-v1r1');
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-preflight-v1'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-preflight-v1r1'));
           assert(!shell.includes('document.write(html)'));
 
           const counts = {
@@ -100,7 +100,7 @@ jobs:
             '/assets/lab/lab-directory-v2-polish.css',
             '/assets/lab/lab-continuum-planner-contract-v1.js?v=20260819-v1preflight1',
             '/assets/lab/lab-directory-planner-preview.js?v=20260819-directory-planner-v2deps1',
-            '/assets/lab/lab-continuum-planner-preflight-v1.js?v=20260819-v1',
+            '/assets/lab/lab-continuum-planner-preflight-v1.js?v=20260819-v1r1',
             '/assets/lab/lab-continuum-planner-preflight-v1.css?v=20260819-v1',
             '/assets/lab/lab-continuum-planner-review-v1.js?v=20260819-v1preflight1',
             '/assets/lab/lab-continuum-planner-review-v1.css?v=20260819-v1preflight1',
@@ -160,7 +160,7 @@ jobs:
 
           for term in [
               'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
-              'data-preflight-choice', 'data-preflight-defer', 'labPlannerPreflight = "v1"'
+              'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset', 'labPlannerPreflight = "v1"'
           ]:
               if term not in preflight:
                   raise SystemExit(f'Planner preflight missing: {term}')
