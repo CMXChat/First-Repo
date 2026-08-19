@@ -6,6 +6,8 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'assets/lab/lab-automations-planner-v5.css'
       - 'assets/lab/lab-automations-v5-mobile-qa.css'
@@ -15,6 +17,8 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'assets/lab/lab-automations-planner-v5.css'
       - 'assets/lab/lab-automations-v5-mobile-qa.css'
@@ -34,10 +38,13 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-continuum-planner-contract-v1.js
+          node --check assets/lab/lab-continuum-planner-review-v1.js
           node --check assets/lab/lab-automations-planner-v5.js
 
           grep -q 'CMXContinuumPlannerContractV1' assets/lab/lab-continuum-planner-contract-v1.js
           grep -q 'validateOperations' assets/lab/lab-continuum-planner-contract-v1.js
+          grep -q 'effectLabel' assets/lab/lab-continuum-planner-contract-v1.js
+          grep -q 'reviewLabel' assets/lab/lab-continuum-planner-contract-v1.js
           grep -q 'automation.create_draft' assets/lab/lab-continuum-planner-contract-v1.js
           grep -q 'directory.upsert_group' assets/lab/lab-continuum-planner-contract-v1.js
           grep -q 'library.create_folder' assets/lab/lab-continuum-planner-contract-v1.js
@@ -53,6 +60,13 @@ jobs:
           grep -q 'automation.add_wait' assets/lab/lab-automations-planner-v5.js
           grep -q 'Notification audience still needs a protected Directory selection' assets/lab/lab-automations-planner-v5.js
 
+          grep -q 'CHANGE REVIEW' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q 'data-plan-meta="effect"' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q 'data-plan-meta="review"' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q 'labPlannerReview = "v1"' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q '.continuum-plan-review-summary' assets/lab/lab-continuum-planner-review-v1.css
+          grep -q '@media (max-width:760px)' assets/lab/lab-continuum-planner-review-v1.css
+
           grep -q '.v5-planner-result' assets/lab/lab-automations-planner-v5.css
           grep -q '.v5-planner-sequence' assets/lab/lab-automations-planner-v5.css
           grep -q '.v5-planner-ops' assets/lab/lab-automations-planner-v5.css
@@ -61,7 +75,9 @@ jobs:
           grep -q '.v4-planner-examples button{min-height:44px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v5-planner-result>footer>button{min-height:46px' assets/lab/lab-automations-v5-mobile-qa.css
 
-          grep -q 'lab-continuum-planner-contract-v1.js?v=20260819-v1' lab/automations/index.html
+          grep -q 'lab-continuum-planner-contract-v1.js?v=20260819-v1review1' lab/automations/index.html
+          grep -q 'lab-continuum-planner-review-v1.css?v=20260819-v1' lab/automations/index.html
+          grep -q 'lab-continuum-planner-review-v1.js?v=20260819-v1' lab/automations/index.html
           grep -q 'lab-automations-planner-v5.js' lab/automations/index.html
           grep -q 'lab-automations-planner-v5.css' lab/automations/index.html
           grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2' lab/automations/index.html
@@ -72,12 +88,13 @@ jobs:
 
           source = Path('assets/lab/lab-automations-planner-v5.js').read_text(encoding='utf-8')
           contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
+          review = Path('assets/lab/lab-continuum-planner-review-v1.js').read_text(encoding='utf-8')
           forbidden = [
               'fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(',
               'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver'
           ]
           for term in forbidden:
-              if term in source + contract:
+              if term in source + contract + review:
                   raise SystemExit(f'forbidden Planner boundary pattern: {term}')
 
           planner_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', source))
@@ -91,8 +108,12 @@ jobs:
               raise SystemExit('focused Lab must keep self-only connect-src')
           if html.index('lab-continuum-planner-contract-v1.js') > html.index('lab-automations-planner-v5.js'):
               raise SystemExit('shared Planner contract must load before Automations Planner')
+          if html.index('lab-automations-planner-v5.js') > html.index('lab-continuum-planner-review-v1.js'):
+              raise SystemExit('Planner review layer must load after Automations Planner')
+          if html.index('lab-continuum-planner-review-v1.css') > html.index('lab-automations-v5-mobile-qa.css'):
+              raise SystemExit('mobile QA must remain the final focused Planner CSS layer')
 
-          print('Automations v5 deterministic Planner, shared operation contract and mobile tap QA passed.')
+          print('Automations v5 deterministic Planner, shared operation/review contracts and mobile tap QA passed.')
           PY
 
       - name: Focused route asset smoke
@@ -110,7 +131,8 @@ jobs:
           "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 \
             --dump-dom 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-v5-planner.html
           grep -q 'data-lab-planner-contract="v1"' /tmp/continuum-v5-planner.html
+          grep -q 'data-lab-planner-review="v1"' /tmp/continuum-v5-planner.html
           grep -q 'New automation' /tmp/continuum-v5-planner.html
           grep -q 'AI PLANNER' /tmp/continuum-v5-planner.html || true
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-planner.html
-          echo 'Focused Automations route loaded with shared Planner contract and v5 Planner assets.'
+          echo 'Focused Automations route loaded with shared Planner operation/review contracts and v5 Planner assets.'
