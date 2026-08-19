@@ -18,7 +18,7 @@
 
   if (!document.querySelector('script[data-continuum-knowledge-time]')) {
     const script = document.createElement('script');
-    script.src = '/assets/continuum-doc-knowledge-time.js?v=20260819-1';
+    script.src = '/assets/continuum-doc-knowledge-time.js?v=20260819-2';
     script.defer = true;
     script.dataset.continuumKnowledgeTime = 'loader';
     document.body.append(script);
