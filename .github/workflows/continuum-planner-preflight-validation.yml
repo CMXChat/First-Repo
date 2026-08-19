@@ -59,11 +59,22 @@ jobs:
               if term not in contract:
                   raise SystemExit(f'missing typed preflight contract: {term}')
 
-          for term in ['PREFLIGHT · TYPED REVIEW', 'data-preflight-choice', 'data-preflight-defer', 'BLOCKED FOR APPLY']:
+          for term in [
+              'PREFLIGHT · TYPED REVIEW', 'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset',
+              'continuum-preflight-operation-link', 'AFFECTS CHANGE', 'BLOCKED FOR APPLY'
+          ]:
               if term not in preflight:
                   raise SystemExit(f'missing interactive preflight behavior: {term}')
           if 'cmx:lab-planner-preflight-updated' not in review:
               raise SystemExit('Change Review is not wired to preflight updates')
+
+          for term in [
+              'qaPreflightDirectoryChangeLinkedBefore', 'qaPreflightDirectoryChangeStateAfter',
+              'qaPreflightAutomationAudienceChangeBefore', 'qaPreflightAutomationAudienceStateAfter',
+              'qaPreflightAutomationWaitChangeBefore', 'qaPreflightAutomationWaitStateAfter'
+          ]:
+              if term not in probe:
+                  raise SystemExit(f'preflight browser probe missing Change Plan row assertion: {term}')
 
           for source in [contract, preflight, review, probe]:
               for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'eval(', 'new Function(', 'MutationObserver']:
@@ -122,10 +133,15 @@ jobs:
             grep -q 'data-qa-preflight-directory-code="true"' "$dirout"
             grep -q 'data-qa-preflight-directory-open-before="1"' "$dirout"
             grep -q 'data-qa-preflight-directory-blocked-before="0"' "$dirout"
+            grep -q 'data-qa-preflight-directory-change-linked-before="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-change-state-before="true"' "$dirout"
             grep -q 'data-qa-preflight-directory-choice-tap="true"' "$dirout"
             grep -q 'data-qa-preflight-directory-open-after="0"' "$dirout"
             grep -q 'data-qa-preflight-directory-reviewed-after="1"' "$dirout"
             grep -q 'data-qa-preflight-directory-decision="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-change-linked-after="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-change-state-after="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-review-sync="true"' "$dirout"
             grep -q 'data-qa-preflight-directory-fit="true"' "$dirout"
 
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
@@ -142,15 +158,23 @@ jobs:
             grep -q 'data-qa-preflight-automation-runtime="true"' "$autoout"
             grep -q 'data-qa-preflight-automation-open-before="1"' "$autoout"
             grep -q 'data-qa-preflight-automation-blocked-before="1"' "$autoout"
+            grep -q 'data-qa-preflight-automation-audience-change-before="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-audience-state-before="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-wait-change-before="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-wait-state-before="true"' "$autoout"
             grep -q 'data-qa-preflight-automation-defer-tap="true"' "$autoout"
             grep -q 'data-qa-preflight-automation-open-after="0"' "$autoout"
             grep -q 'data-qa-preflight-automation-deferred-after="1"' "$autoout"
             grep -q 'data-qa-preflight-automation-blocked-after="1"' "$autoout"
             grep -q 'data-qa-preflight-automation-runtime-still-blocked="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-audience-change-after="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-audience-state-after="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-wait-change-after="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-wait-state-after="true"' "$autoout"
             grep -q 'data-qa-preflight-automation-status="true"' "$autoout"
             grep -q 'data-qa-preflight-automation-fit="true"' "$autoout"
           }
 
           check_width 360 800
           check_width 390 844
-          echo 'Continuum Planner typed preflight decisions and persistent blockers passed at 360px and 390px.'
+          echo 'Continuum Planner typed preflight decisions, Change Plan row states and persistent blockers passed at 360px and 390px.'
