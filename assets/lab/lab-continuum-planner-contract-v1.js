@@ -24,7 +24,45 @@
     "automation.reference_content": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Library content", effect: "link", review: "conditional" })
   });
 
+  const PREFLIGHT_ISSUES = Object.freeze({
+    "directory.ambiguous_match": Object.freeze({
+      domain: "Directory", severity: "check", label: "Ambiguous identity match", resolution: "preview-choice",
+      options: Object.freeze([
+        { id: "use-existing", label: "Use existing match" },
+        { id: "create-separate", label: "Keep separate" }
+      ])
+    }),
+    "directory.identity_check_required": Object.freeze({
+      domain: "Directory", severity: "blocked", label: "Protected identity check required", resolution: "server"
+    }),
+    "directory.audience_required": Object.freeze({
+      domain: "Directory", severity: "check", label: "Audience still required", resolution: "draft"
+    }),
+    "automation.schedule_unconfirmed": Object.freeze({
+      domain: "Automations", severity: "check", label: "Timing needs confirmation", resolution: "draft"
+    }),
+    "runtime.required": Object.freeze({
+      domain: "Runtime", severity: "blocked", label: "Runtime required", resolution: "locked"
+    }),
+    "library.service_required": Object.freeze({
+      domain: "Library", severity: "blocked", label: "Protected Library service required", resolution: "server"
+    }),
+    "connections.required": Object.freeze({
+      domain: "Connections", severity: "blocked", label: "Connection required", resolution: "locked"
+    }),
+    "authority.approval_required": Object.freeze({
+      domain: "Authority", severity: "approval", label: "Explicit approval required", resolution: "approval"
+    }),
+    "planner.dependency_invalid": Object.freeze({
+      domain: "Planner", severity: "blocked", label: "Invalid plan dependency", resolution: "locked"
+    }),
+    "planner.review_required": Object.freeze({
+      domain: "Planner", severity: "check", label: "Review required", resolution: "server"
+    })
+  });
+
   const knownTypes = Object.freeze(Object.keys(OPERATIONS));
+  const knownIssueCodes = Object.freeze(Object.keys(PREFLIGHT_ISSUES));
   const EFFECT_LABELS = Object.freeze({
     resolve: "RESOLVE",
     create: "CREATE",
@@ -39,12 +77,21 @@
     required: "APPROVAL REQUIRED",
     blocked: "BLOCKED"
   });
+  const ISSUE_SEVERITY_LABELS = Object.freeze({
+    check: "CHECK REQUIRED",
+    blocked: "BLOCKED",
+    approval: "APPROVAL REQUIRED"
+  });
 
   const asList = value => Array.isArray(value) ? value.filter(Boolean).map(String) : [];
   const isTempRef = value => String(value || "").startsWith("temp:");
 
   function get(type) {
     return OPERATIONS[String(type || "")] || null;
+  }
+
+  function getIssue(code) {
+    return PREFLIGHT_ISSUES[String(code || "")] || null;
   }
 
   function validateOperations(operations) {
@@ -100,6 +147,30 @@
     };
   }
 
+  function classifyIssue(message) {
+    const text = String(message || "").trim();
+    const q = text.toLowerCase();
+    let code = "planner.review_required";
+
+    if (/dependency validation|plan dependency/.test(q)) code = "planner.dependency_invalid";
+    else if (/ambiguous people|ambiguous organization|ambiguous .*match/.test(q)) code = "directory.ambiguous_match";
+    else if (/audience.*still need|audiences.*still need|needs a protected directory selection|need protected directory selections/.test(q)) code = "directory.audience_required";
+    else if (/exact schedule|exact .*time.*confirmation|schedule\/time.*confirmation/.test(q)) code = "automation.schedule_unconfirmed";
+    else if (/inter-step wait.*runtime|requires future runtime|runtime.*before execution|runtime.*unavailable|runtime\/provider execution/.test(q)) code = "runtime.required";
+    else if (/library mutations|protected library services|library service/.test(q)) code = "library.service_required";
+    else if (/connection.*required|missing connection/.test(q)) code = "connections.required";
+    else if (/approval required|explicit approval/.test(q)) code = "authority.approval_required";
+    else if (/duplicate resolution|identity matching|people\/organization matching|protected audience identity|server directory services|real people.*matching/.test(q)) code = "directory.identity_check_required";
+
+    return describeIssue(code, text);
+  }
+
+  function validateIssues(issues) {
+    const list = Array.isArray(issues) ? issues : [];
+    const unknown = list.map(issue => String(issue?.code || "")).filter(code => !PREFLIGHT_ISSUES[code]);
+    return { ok: unknown.length === 0, count: list.length, unknown: [...new Set(unknown)] };
+  }
+
   function effectLabel(effect) {
     return EFFECT_LABELS[String(effect || "")] || "CHANGE";
   }
@@ -108,36 +179,51 @@
     return REVIEW_LABELS[String(review || "")] || "REVIEW";
   }
 
+  function issueSeverityLabel(severity) {
+    return ISSUE_SEVERITY_LABELS[String(severity || "")] || "REVIEW";
+  }
+
   function describe(type) {
     const meta = get(type);
     if (!meta) return {
-      type: String(type || ""),
-      domain: "Unknown",
-      family: "unknown",
-      label: "Unknown operation",
-      effect: "unknown",
-      effectLabel: "UNKNOWN",
-      review: "blocked",
-      reviewLabel: "BLOCKED"
+      type: String(type || ""), domain: "Unknown", family: "unknown", label: "Unknown operation",
+      effect: "unknown", effectLabel: "UNKNOWN", review: "blocked", reviewLabel: "BLOCKED"
+    };
+    return { type: String(type), ...meta, effectLabel: effectLabel(meta.effect), reviewLabel: reviewLabel(meta.review) };
+  }
+
+  function describeIssue(code, message = "") {
+    const meta = getIssue(code);
+    if (!meta) return {
+      code: String(code || "planner.review_required"), domain: "Planner", severity: "check",
+      severityLabel: "CHECK REQUIRED", label: "Review required", resolution: "server", options: [], message: String(message || "")
     };
     return {
-      type: String(type),
+      code: String(code),
       ...meta,
-      effectLabel: effectLabel(meta.effect),
-      reviewLabel: reviewLabel(meta.review)
+      options: Array.isArray(meta.options) ? meta.options.map(option => ({ ...option })) : [],
+      severityLabel: issueSeverityLabel(meta.severity),
+      message: String(message || "")
     };
   }
 
   window.CMXContinuumPlannerContractV1 = Object.freeze({
     version: 1,
     operations: OPERATIONS,
+    preflightIssues: PREFLIGHT_ISSUES,
     knownTypes,
+    knownIssueCodes,
     get,
+    getIssue,
     describe,
+    describeIssue,
+    classifyIssue,
     validateOperations,
     validatePlan,
+    validateIssues,
     effectLabel,
     reviewLabel,
+    issueSeverityLabel,
     isTempRef
   });
 
