@@ -9,6 +9,7 @@
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
   }[ch]));
+  const attr = value => esc(Array.isArray(value) ? value.join(",") : value || "");
 
   const EXAMPLES = Object.freeze([
     {
@@ -16,10 +17,10 @@
       label: "Family setup",
       prompt: "Add my close family, label them family, create a Family group, and make it easy for Automations to target them.",
       operations: [
-        { type: "directory.match_or_create_people", detail: "Resolve close-family People", note: "Search existing stable identities before proposing creates." },
-        { type: "directory.apply_label", detail: "Apply Family label", note: "Descriptive metadata only. No permission is implied." },
-        { type: "directory.upsert_group", detail: "Create or update Family group", note: "Saved selectors resolve current People." },
-        { type: "automation.reference_audience", detail: "Expose Family as an Audience selector", note: "Definition-only. No provider execution." }
+        { id: "family-people", type: "directory.match_or_create_people", detail: "Resolve close-family People", note: "Search existing stable identities before proposing creates.", produces: "temp:people:family" },
+        { id: "family-label", type: "directory.apply_label", detail: "Apply Family label", note: "Descriptive metadata only. No permission is implied.", uses: ["temp:people:family"], dependsOn: ["family-people"] },
+        { id: "family-group", type: "directory.upsert_group", detail: "Create or update Family group", note: "Saved selectors resolve current People.", uses: ["temp:people:family"], dependsOn: ["family-people"], produces: "temp:group:family" },
+        { id: "family-audience", type: "automation.reference_audience", detail: "Expose Family as an Audience selector", note: "Definition-only. No provider execution.", uses: ["temp:group:family"], dependsOn: ["family-group"] }
       ],
       blockers: ["Real duplicate resolution and protected identity matching require server Directory services."]
     },
@@ -28,11 +29,11 @@
       label: "Business contacts",
       prompt: "Organize my accountant, lawyer and business partners, connect them to the right organizations, and create useful groups for operations.",
       operations: [
-        { type: "directory.match_people", detail: "Match accountant, lawyer and partners", note: "Preserve existing stable Person identities." },
-        { type: "directory.match_organizations", detail: "Resolve related Organizations", note: "Do not create duplicates from display-name matches alone." },
-        { type: "directory.upsert_membership", detail: "Create Person-Organization memberships", note: "Typed membership records keep identity separate from organization." },
-        { type: "directory.upsert_relationship", detail: "Record useful Person relationships", note: "Relationships remain descriptive and do not grant authority." },
-        { type: "directory.upsert_group", detail: "Create operations Groups", note: "Groups become reusable saved audiences." }
+        { id: "business-people", type: "directory.match_people", detail: "Match accountant, lawyer and partners", note: "Preserve existing stable Person identities.", produces: "temp:people:business" },
+        { id: "business-orgs", type: "directory.match_organizations", detail: "Resolve related Organizations", note: "Do not create duplicates from display-name matches alone.", produces: "temp:organizations:business" },
+        { id: "business-memberships", type: "directory.upsert_membership", detail: "Create Person-Organization memberships", note: "Typed membership records keep identity separate from organization.", uses: ["temp:people:business", "temp:organizations:business"], dependsOn: ["business-people", "business-orgs"] },
+        { id: "business-relationships", type: "directory.upsert_relationship", detail: "Record useful Person relationships", note: "Relationships remain descriptive and do not grant authority.", uses: ["temp:people:business"], dependsOn: ["business-people"] },
+        { id: "business-groups", type: "directory.upsert_group", detail: "Create operations Groups", note: "Groups become reusable saved audiences.", uses: ["temp:people:business"], dependsOn: ["business-people"], produces: "temp:group:operations" }
       ],
       blockers: ["Ambiguous People or Organization matches would require explicit review before apply."]
     },
@@ -41,11 +42,11 @@
       label: "Continuity setup",
       prompt: "Set up my emergency contacts and create a missed Check In escalation that reaches family first and a backup contact later.",
       operations: [
-        { type: "directory.match_or_create_people", detail: "Resolve emergency People", note: "Check identity and current contact readiness." },
-        { type: "directory.upsert_group", detail: "Create primary and backup Groups", note: "Deduplicate resolved People by Person ID." },
-        { type: "automation.create_draft", detail: "Create missed Check In escalation", note: "The same typed Draft a human edits." },
-        { type: "automation.reference_audience", detail: "Attach primary and backup Audience selectors", note: "Stable Directory selectors, not copied email strings." },
-        { type: "automation.add_wait", detail: "Add delayed backup escalation", note: "Inter-step WAIT requires future Runtime before execution." }
+        { id: "continuity-people", type: "directory.match_or_create_people", detail: "Resolve emergency People", note: "Check identity and current contact readiness.", produces: "temp:people:emergency" },
+        { id: "continuity-groups", type: "directory.upsert_group", detail: "Create primary and backup Groups", note: "Deduplicate resolved People by Person ID.", uses: ["temp:people:emergency"], dependsOn: ["continuity-people"], produces: "temp:group:continuity" },
+        { id: "continuity-automation", type: "automation.create_draft", detail: "Create missed Check In escalation", note: "The same typed Draft a human edits.", produces: "temp:automation:continuity" },
+        { id: "continuity-audience", type: "automation.reference_audience", detail: "Attach primary and backup Audience selectors", note: "Stable Directory selectors, not copied email strings.", uses: ["temp:automation:continuity", "temp:group:continuity"], dependsOn: ["continuity-groups", "continuity-automation"] },
+        { id: "continuity-wait", type: "automation.add_wait", detail: "Add delayed backup escalation", note: "Inter-step WAIT requires future Runtime before execution.", uses: ["temp:automation:continuity"], dependsOn: ["continuity-automation"] }
       ],
       blockers: [
         "Protected Audience identity and channel readiness require server Directory services.",
@@ -57,14 +58,14 @@
       label: "Full Continuum setup",
       prompt: "Organize my family and emergency contacts, create a continuity folder with instructions, and build a missed Check In workflow that reaches family first and a backup contact later.",
       operations: [
-        { type: "directory.match_or_create_people", detail: "Resolve family and emergency People", note: "Read before write and surface duplicate candidates." },
-        { type: "directory.upsert_group", detail: "Create Family and Backup groups", note: "Saved audiences resolve current protected identities." },
-        { type: "library.create_folder", detail: "Create Continuity folder", note: "Protected Library structure only." },
-        { type: "library.create_document", detail: "Create continuity instructions Draft", note: "Mutable Draft until explicitly versioned/published." },
-        { type: "automation.create_draft", detail: "Create missed Check In escalation", note: "Ordinary typed Automation Draft." },
-        { type: "automation.reference_audience", detail: "Reference Family then Backup audiences", note: "Stable selector IDs, with future Run resolution." },
-        { type: "automation.reference_content", detail: "Reference continuity instructions", note: "Publish later freezes an exact immutable ContentVersion." },
-        { type: "automation.add_wait", detail: "Wait before backup escalation", note: "Runtime-required inter-step control." }
+        { id: "full-people", type: "directory.match_or_create_people", detail: "Resolve family and emergency People", note: "Read before write and surface duplicate candidates.", produces: "temp:people:continuity" },
+        { id: "full-groups", type: "directory.upsert_group", detail: "Create Family and Backup groups", note: "Saved audiences resolve current protected identities.", uses: ["temp:people:continuity"], dependsOn: ["full-people"], produces: "temp:group:continuity" },
+        { id: "full-folder", type: "library.create_folder", detail: "Create Continuity folder", note: "Protected Library structure only.", produces: "temp:folder:continuity" },
+        { id: "full-document", type: "library.create_document", detail: "Create continuity instructions Draft", note: "Mutable Draft until explicitly versioned/published.", uses: ["temp:folder:continuity"], dependsOn: ["full-folder"], produces: "temp:content:continuity" },
+        { id: "full-automation", type: "automation.create_draft", detail: "Create missed Check In escalation", note: "Ordinary typed Automation Draft.", produces: "temp:automation:continuity" },
+        { id: "full-audience", type: "automation.reference_audience", detail: "Reference Family then Backup audiences", note: "Stable selector IDs, with future Run resolution.", uses: ["temp:automation:continuity", "temp:group:continuity"], dependsOn: ["full-groups", "full-automation"] },
+        { id: "full-content", type: "automation.reference_content", detail: "Reference continuity instructions", note: "Publish later freezes an exact immutable ContentVersion.", uses: ["temp:automation:continuity", "temp:content:continuity"], dependsOn: ["full-document", "full-automation"] },
+        { id: "full-wait", type: "automation.add_wait", detail: "Wait before backup escalation", note: "Runtime-required inter-step control.", uses: ["temp:automation:continuity"], dependsOn: ["full-automation"] }
       ],
       blockers: [
         "Real People/Organization matching requires protected Directory services.",
@@ -124,7 +125,7 @@
   }
 
   function operationsMarkup(operations) {
-    return `<div class="dir2-ai-ops">${operations.map((operation, index) => `<article><b>${String(index + 1).padStart(2, "0")}</b><span><small>${esc(operation.type)}</small><strong>${esc(operation.detail)}</strong><em>${esc(operation.note)}</em></span></article>`).join("")}</div>`;
+    return `<div class="dir2-ai-ops">${operations.map((operation, index) => `<article data-plan-op-id="${attr(operation.id)}" data-plan-produces="${attr(operation.produces)}" data-plan-uses="${attr(operation.uses)}" data-plan-depends="${attr(operation.dependsOn)}"><b>${String(index + 1).padStart(2, "0")}</b><span><small>${esc(operation.type)}</small><strong>${esc(operation.detail)}</strong><em>${esc(operation.note)}</em></span></article>`).join("")}</div>`;
   }
 
   function blockersMarkup(blockers = []) {
@@ -133,12 +134,16 @@
   }
 
   function examplePlan(example) {
-    return `<span>TYPED PLAN PREVIEW · LOCAL</span><h3>${esc(example.label)}</h3><p class="dir2-ai-intent">“${esc(example.prompt)}”</p>${operationsMarkup(example.operations)}${blockersMarkup(example.blockers)}<p>This is a fixed product example. Continuum did not interpret the text, call a model or mutate any domain.</p>`;
+    const verdict = window.CMXContinuumPlannerContractV1?.validatePlan?.(example.operations);
+    const planBlockers = verdict && !verdict.ok
+      ? [...example.blockers, `Local plan dependency validation found ${verdict.errors.length} issue${verdict.errors.length === 1 ? "" : "s"}.`]
+      : example.blockers;
+    return `<span>TYPED PLAN PREVIEW · LOCAL</span><h3>${esc(example.label)}</h3><p class="dir2-ai-intent">“${esc(example.prompt)}”</p>${operationsMarkup(example.operations)}${blockersMarkup(planBlockers)}<p>This is a fixed product example. Plan-local <code>temp:</code> references are temporary planning handles only. Continuum did not interpret the text, call a model or mutate any domain.</p>`;
   }
 
   function genericContract() {
     const value = modal?.querySelector("[data-dir2-ai-prompt]")?.value.trim() || "Your natural-language setup request";
-    return `<span>CHANGE PLAN CONTRACT · NO AI CALL</span><h3>Planner request</h3><p class="dir2-ai-intent">“${esc(value)}”</p><div class="dir2-ai-gates"><div><b>INTENT</b><span>Interpret the requested outcome without treating prompt text as authority.</span></div><div><b>TYPED PLAN</b><span>Propose allowlisted operations against known Directory, Automation and Library services.</span></div><div><b>PREFLIGHT</b><span>Resolve duplicates, stable IDs, stale revisions, missing fields, authority and cross-domain dependencies.</span></div><div><b>REVIEW</b><span>Show exact proposed changes, conflicts and which operations require explicit confirmation.</span></div><div><b>APPLY</b><span>Normal protected domain services perform approved mutations and return authoritative state.</span></div></div><p>This free-text Lab control does not interpret the request. Use a fixed example to inspect the current typed-plan vocabulary.</p>`;
+    return `<span>CHANGE PLAN CONTRACT · NO AI CALL</span><h3>Planner request</h3><p class="dir2-ai-intent">“${esc(value)}”</p><div class="dir2-ai-gates"><div><b>INTENT</b><span>Interpret the requested outcome without treating prompt text as authority.</span></div><div><b>TYPED PLAN</b><span>Propose allowlisted operations, dependencies and temporary plan-local references against known Directory, Automation and Library services.</span></div><div><b>PREFLIGHT</b><span>Resolve duplicates, stable IDs, stale revisions, missing fields, authority and cross-domain dependencies.</span></div><div><b>REVIEW</b><span>Show exact proposed changes, dependency chains, conflicts and which operations require explicit confirmation.</span></div><div><b>APPLY</b><span>Normal protected domain services replace temporary refs with authoritative IDs as approved operations succeed.</span></div></div><p>This free-text Lab control does not interpret the request. Use a fixed example to inspect the current typed-plan vocabulary and dependency model.</p>`;
   }
 
   document.addEventListener("click", event => {
