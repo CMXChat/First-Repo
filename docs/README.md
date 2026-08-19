@@ -49,7 +49,7 @@ It remains under a separate clarity freeze. Lab changes alone do not justify edi
 
 Broader Continuum / Check In experiment workspace.
 
-The Records area now runs **Directory v2** over the shared Lab CRM store.
+The Records area runs **Directory v2** over the shared Lab CRM store, with a presentation-only polish layer loaded after the Directory base styles.
 
 Current Directory v2 demonstrations include:
 
@@ -64,7 +64,8 @@ Current Directory v2 demonstrations include:
 - Group resolution;
 - duplicate warnings;
 - Automation usage;
-- mobile list → profile behavior.
+- mobile list → profile behavior;
+- denser desktop hierarchy and dedicated mobile presentation.
 
 All state remains browser-local prototype state.
 
@@ -80,18 +81,18 @@ Current stack:
 - v4 scenario layer with 13 editable starting patterns;
 - Directory readiness integration;
 - **Audience v4.1** multi-selector layer;
+- **Intelligence v4.2** recommendations, typed data-reference UX and richer local test traces;
 - strict Lab-only execution boundary.
 
-Communication Actions can now select one or more:
+Communication Actions can select one or more Person, Organization, Group or Label selectors. The Lab resolves current unique People, deduplicates by Person ID and previews email/phone readiness.
 
-- Person;
-- Organization;
-- Group;
-- Label.
+Actions can also prototype typed references to Trigger outputs, Directory/Audience values and outputs from earlier Actions. The compatibility store is `cmx-lab-automation-data-bindings-v1`, with references mirrored to Action `dataBindings[]` where possible.
 
-The Lab stores `audienceSelectors[]`, resolves current unique People, deduplicates by Person ID and previews email/phone readiness.
+These references are not a free-form expression language. The Lab does not execute arbitrary JavaScript/Python/template code.
 
-This is Lab semantics only. Production still needs the typed protected Audience model, canonical resolver and Runtime recipient freezing.
+`TEST THIS STEP` now produces a richer local input → resolution/normalization → sample output trace while explicitly avoiding providers, external AI, Runtime and connected accounts.
+
+This is Lab semantics only. Production still needs the typed protected Audience model, typed data-path validation, canonical resolver and Runtime execution/history.
 
 ## `/checkin/`
 
@@ -113,7 +114,7 @@ Python-first development/learning environment.
 
 `continuum-automations-master-plan-CURRENT.md`
 
-Use for command-center UX, Capability Catalog, scenarios, mobile, testing/preflight, Planner direction, Connections and Runtime destination.
+Use for command-center UX, Capability Catalog, scenarios, mobile, testing/preflight, data mapping, Planner direction, Connections and Runtime destination.
 
 ## Exact frontend truth
 
@@ -138,6 +139,8 @@ Important Automation backend docs include:
 - `AUTOMATION-FRONTEND-CONTRACT.md`;
 - `AI-CAPABILITY-AND-TOOLS-CONTRACT.md`;
 - `DELEGATED-AUTHORITY-BACKEND-CONTRACT.md`.
+
+The backend Automation plan already requires typed data references to Trigger/prior-step/Directory/Library inputs and explicitly rejects arbitrary JavaScript/Python as the normal mapping model.
 
 # Directory documentation
 
@@ -190,6 +193,7 @@ Current production still has no general:
 - Directory v2 persistence;
 - Group/Label audience service;
 - typed multi-selector Automation Audience service;
+- typed Automation data-mapping service;
 - Automation Runtime;
 - worker/scheduler;
 - provider execution;
@@ -226,6 +230,7 @@ Preserve:
 - light mode needs explicit contrast decisions;
 - no provider secrets in frontend stores;
 - no production API calls from isolated Lab routes;
+- typed data mapping must not become arbitrary executable frontend expressions;
 - accepted Lab behavior migrates into production as semantics, not DOM/localStorage architecture.
 
 # Historical records
