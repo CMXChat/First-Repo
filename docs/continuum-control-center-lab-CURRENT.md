@@ -39,6 +39,7 @@ Current files:
 - `assets/lab/control-center-theme-init.js`
 - `assets/lab/control-center-v1.css`
 - `assets/lab/control-center-mobile-polish-v2.css`
+- `assets/lab/control-center-interaction-v3.css`
 - `assets/lab/control-center-v1.js`
 - `tests/continuum-control-center-v1.test.js`
 - `.github/workflows/control-center-lab-validation.yml`
@@ -99,7 +100,7 @@ The device-review v2 polish therefore:
 
 After the direct device review, the next pass continues without requiring new screenshots.
 
-Desktop now receives stronger hierarchy instead of merely inheriting the original card layout:
+Desktop receives stronger hierarchy instead of merely inheriting the original card layout:
 
 - a larger and more deliberate primary state surface;
 - stronger visual separation between owner attention and supporting state;
@@ -108,7 +109,7 @@ Desktop now receives stronger hierarchy instead of merely inheriting the origina
 - restrained attention accents instead of adding more cards or dashboard chrome;
 - richer spacing and scale at large desktop widths while keeping the mobile layout independent.
 
-The top command surface is now functional in Lab instead of being a placeholder.
+The top command surface is functional in Lab instead of being a placeholder.
 
 `Cmd/Ctrl + K` or the search button opens a local command palette that can:
 
@@ -120,13 +121,65 @@ The top command surface is now functional in Lab instead of being a placeholder.
 
 The palette performs no API request and creates no new authority or product truth. It is navigation and Lab interaction only.
 
-Asset versions were bumped after this pass so mobile/desktop browsers do not keep serving the earlier cached JS/CSS under the same URL.
+# Interaction-depth v3
+
+The next pass makes the Control Center more operable without widening production claims.
+
+## Item detail
+
+Attention rows, Recent/All Activity items and the three sample Running & waiting rows can open one consistent detail drawer.
+
+The drawer now separates:
+
+```text
+current sample status
++ domain
++ time/context
++ what happens next
++ optional safe navigation
++ why this state exists
+```
+
+The final causal section still teaches the protected direction through State, policy, authority, capability and result. Production would replace the sample fields with authoritative refs/versions and Runtime/Audit truth.
+
+The work rows are keyboard-accessible as well as tappable/clickable.
+
+The Autonomy `Why` control now has its own correct explanation. It no longer reuses the Simulation causal story. Its detail explicitly states that the Lab is observe-only and cannot activate production autonomy.
+
+## All Activity filtering
+
+The All Activity view now creates local filters for:
+
+- All;
+- Needs you;
+- Continuity;
+- Automations;
+- Check In.
+
+Filtering only hides/shows the fixed sample rows already present on the page. It does not query a backend, alter Audit, or imply that a production activity event stream exists.
+
+## Quiet-state preview
+
+The command palette includes `Toggle quiet-state preview`.
+
+This is a local presentation test for the important state where nothing requires owner attention. It:
+
+- changes the primary summary to `Quiet. Nothing needs you right now.`;
+- changes the attention count to zero;
+- replaces the Attention sample panel with a calm quiet-state message;
+- leaves waiting work visible;
+- uses a green healthy treatment;
+- resets on page reload and never mutates backend truth.
+
+This prevents the Control Center design from depending on fake alerts to remain visually interesting.
+
+## CSS loading
+
+`control-center-interaction-v3.css` is same-origin and is loaded by the Control Center JS under the existing CSP. It adds presentation only for the v3 detail/filter/quiet interactions.
 
 # Explainability
 
-Activity and attention rows can open a `Why did Continuum do that?` drawer.
-
-The prototype teaches the causal direction:
+Activity and attention rows can expose an inspectable causal direction:
 
 ```text
 Trigger / evidence
@@ -190,7 +243,7 @@ Visual principles:
 - calm status motion/lighting;
 - clear attention tones;
 - high information density with breathing room;
-- meaningful empty/sample states;
+- meaningful quiet/empty/sample states;
 - mobile designed independently instead of shrinking the desktop grid.
 
 # Mobile contract
@@ -204,6 +257,8 @@ At narrow widths:
 - dashboard columns become one flow;
 - attention and work rows preserve readable labels;
 - Why/Simulation use content-hugging bottom sheets with bounded scrolling;
+- detail facts stack cleanly inside the mobile drawer;
+- activity filters become a horizontally scrollable chip row;
 - the command palette becomes a bottom-sheet style surface;
 - view tabs remain horizontally usable and sticky below the top bar;
 - touch targets remain appropriately large;
@@ -228,11 +283,12 @@ Do not widen the page into every future Continuum feature simply because the Con
 
 Recommended next product work:
 
-1. continue interaction refinement around item detail, filtering and quiet/empty states without inventing backend truth;
-2. define a shared Continuum Lab navigation shell only if Control Center, Directory and Automations now benefit from one consistent top-level frame;
-3. keep `/lab/control/` as the flagship prototype while production `/control/` waits for real server-backed activity/Runtime projections;
-4. replace sample sections incrementally with protected typed data as backend domains mature;
-5. preserve the Control Center as an operational surface instead of turning it into a configuration dump.
+1. harden focus restoration and keyboard behavior across command/detail/simulation overlays;
+2. decide whether one compact filter/search treatment should also exist for Upcoming/History after real use justifies it;
+3. define a shared Continuum Lab navigation shell only if Control Center, Directory and Automations benefit from one consistent top-level frame without destabilizing their current experiments;
+4. keep `/lab/control/` as the flagship prototype while production `/control/` waits for real server-backed activity/Runtime projections;
+5. replace sample sections incrementally with protected typed data as backend domains mature;
+6. preserve the Control Center as an operational surface instead of turning it into a configuration dump.
 
 # Backend boundary
 
