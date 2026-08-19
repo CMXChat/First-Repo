@@ -1,5 +1,7 @@
 /* Continuum Automations v5 mobile QA. Presentation only. */
 @media (max-width:760px){
+  .v4-modal>header>button{width:44px;height:44px;min-width:44px;min-height:44px}
+
   .v3-mobile-flow .v5-ordered-flow{gap:10px;padding-left:0;padding-right:0}
   .v3-mobile-flow .v5-ordered-flow>header{align-items:flex-start;gap:12px}
   .v3-mobile-flow .v5-ordered-flow>header>div{gap:4px}
