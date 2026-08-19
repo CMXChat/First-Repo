@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v5 model + ordered Flow Preview + v4.4 authoring UX + Directory v2 active in Lab
+Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v5 + typed Planner proving surface + Directory v2 typed Change Plan preview active in Lab
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
@@ -15,8 +15,8 @@ This is the first file a new ChatGPT/Codex/developer context should read before 
 - **Automations** = typed workflow definitions.
 - **Connections** = approved paths to outside capability.
 - **Runtime** = future server execution/history.
-- **AI** = bounded intelligence using the same typed services as human UI.
-- **Afterlife: The Dead Man Switch** = continuity use case on the shared foundation.
+- **AI / Planner** = bounded intelligence and natural-language authoring through the same typed domain services humans use.
+- **Afterlife: The Dead Man Switch** = continuity use case on the shared Continuum foundation.
 
 Core principle:
 
@@ -27,8 +27,8 @@ Core principle:
 1. `docs/checkin-context-handoff-CURRENT.md`
 2. `docs/continuum-product-CURRENT.md`
 3. `docs/continuum-automations-master-plan-CURRENT.md`
-4. `docs/continuum-directory-master-plan-CURRENT.md`
-5. `docs/checkin-automations-frontend-CURRENT.md`
+4. `docs/checkin-automations-frontend-CURRENT.md`
+5. `docs/continuum-directory-master-plan-CURRENT.md`
 6. `docs/checkin-directory-library-CURRENT.md`
 7. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`
 8. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md`
@@ -39,15 +39,19 @@ Core principle:
 13. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 14. `CMXChat/jay-app/specs/003-server-checkin/tasks.md`
 
-Current files beat older chats, dated handoffs and stale READMEs.
+Current source-of-truth files beat older chats, dated handoffs and stale READMEs.
 
 # Production truth
 
 Production remains Phase 1.
 
-Reviewed Render release: `de55627926316581808337f8e9c10d26e7d64588`
+Reviewed Render release:
 
-Production Alembic revision: `c41f9b8d2e70`
+`de55627926316581808337f8e9c10d26e7d64588`
+
+Production Alembic revision:
+
+`c41f9b8d2e70`
 
 Current protected timer:
 
@@ -57,7 +61,7 @@ UTC/PostgreSQL/server time is authoritative.
 
 Production does **not** execute email, SMS, Discord, webhook, AI, file release or other provider Actions. A triggered Incident does not mean an external Action ran.
 
-Phase 1 acceptance T034–T040 is complete.
+Phase 1 acceptance T034–T040 is complete. Do not reopen it without a real defect.
 
 # Validated Phase 2A source truth
 
@@ -98,7 +102,20 @@ Do not mix new Directory schema, Runtime, providers or AI execution into the rev
 
 # `/lab/automations/` current truth
 
-The focused route now has a **v5 canonical Lab workflow model and ordered Flow Preview** underneath the current v4.4 Actions-stage authoring experience.
+The focused route now combines:
+
+- v3 Draft/localStorage/autosave compatibility editor;
+- **v5 canonical workflow model**;
+- progressive blank-Draft truth;
+- v4 command center + Capability Catalog;
+- **15 editable scenarios**;
+- Directory readiness;
+- Audience v4.1;
+- Intelligence v4.2 typed data/recommendations/tests;
+- Input Routing v4.3;
+- Advanced Flow v4.4 inter-step IF/WAIT authoring;
+- **ordered v5 Flow Preview**;
+- **deterministic typed Planner v5 proving surface**.
 
 It remains isolated:
 
@@ -110,41 +127,25 @@ It remains isolated:
 - no provider secrets;
 - no external AI model call.
 
-Current stack:
-
-- v3 Draft/localStorage/autosave compatibility editor;
-- **v5 canonical workflow normalization/validation model** in `lab-automations-model-v5.js`;
-- progressive blank-Draft truth;
-- v4 command center + Capability Catalog + compact interactive Flow Preview + Planner/Runs previews;
-- **15 editable scenarios**;
-- Directory readiness;
-- Audience v4.1 Person/Organization/Group/Label composition;
-- Intelligence v4.2 recommendations + typed `Use data` references + richer local step traces;
-- Input Routing v4.3 typed source → named Action input;
-- Advanced Flow v4.4 linear inter-step IF / WAIT authoring UX;
-- **ordered v5 Flow Preview** in `lab-automations-flow-v5.js/.css`.
-
 Beginner rail remains:
 
 `WHEN → IF → DO → WAIT → TEST`
 
 Finish stays inside Review. Accepted product label remains **FLOW PREVIEW**.
 
-`/lab/automations/?new=1&from=lab` still opens Trigger directly.
+`/lab/automations/?new=1&from=lab` still opens a blank Draft directly on Trigger.
 
-# Canonical Lab workflow model v5
+# Automations v5 canonical browser model
 
-Each Automation can carry `workflowV5`, a normalized ordered definition.
+Each Lab Automation can carry embedded `workflowV5`.
 
-Current node model:
+Current ordered semantic shape:
 
 `Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
 
-Start timing and recurrence remain separate policies because they are not the same thing as an inter-step WAIT.
+Start timing and recurrence remain separate policies because they are different concepts from an inter-step WAIT.
 
-V5 normalizes and validates the accepted browser Draft shape while projecting compatibility fields back for older UI code.
-
-Compatibility fields include:
+Compatibility fields remain while the existing editor migrates:
 
 - `trigger`;
 - `conditions[]`;
@@ -154,43 +155,72 @@ Compatibility fields include:
 - `repeatConfig`;
 - `outcome`.
 
-Structural validation currently enforces:
+V5 normalizes those fields into one ordered model and can project compatibility state back for older UI code.
 
-- one Trigger and one Finish;
-- Trigger first and Finish last;
+Structural validation protects:
+
+- exactly one Trigger and Finish;
+- Trigger first / Finish last;
 - unique node IDs;
 - pre-action Conditions before Actions;
 - sequence controls only between Actions;
-- a step-output Condition cannot reference a future or missing Action.
+- step-output Conditions cannot reference future or missing Actions.
 
 Browser marker:
 
 `data-lab-automations-model="v5"`
 
-This is **Lab model truth only**. It is not production schema or Runtime truth.
+**Do not copy the browser `workflowV5` JSON into the production backend.** It is Lab authoring/model evidence, not production schema.
 
 # V5 owns inter-step mutation
 
-The v4.4 Actions UI remains the visible editor for inter-step IF/WAIT, but the mutation path now prefers the canonical v5 API:
+The v4.4 Actions UI remains the visible editor for inter-step controls, but it now uses v5 first:
 
 - read: `CMXAutomationModelV5.getFlowControls()`;
 - write: `CMXAutomationModelV5.setFlowControls()`.
 
-`flowControls[]`, `afterActionId` and `cmx-lab-automation-flow-controls-v1` remain compatibility projection/fallback for the older editor.
+`flowControls[]`, `afterActionId` and `cmx-lab-automation-flow-controls-v1` are compatibility projection/fallback only.
 
-Browser marker when v5 owns the path:
+Browser marker:
 
 `data-lab-automations-sequence-model="v5"`
 
-This prevents the compatibility flow-control store from becoming a second permanent workflow engine.
+This prevents the compatibility store from becoming a second workflow engine.
+
+# IF / WAIT semantics
+
+Top-level **IF** is pre-action. It can only use information available before Actions begin.
+
+Output-dependent logic belongs after the Action that produced the output.
+
+Example:
+
+`AI task → IF AI priority equals urgent → Notify`
+
+Current inter-step IF operators:
+
+- equals;
+- does not equal;
+- contains;
+- greater than;
+- less than;
+- is true.
+
+The source picker only exposes Trigger data and earlier Action outputs available at that insertion point.
+
+Current IF is a **linear gate only**. If false, the remaining path stops in the preview.
+
+There is no YES/NO branch graph yet.
+
+Inter-step WAIT is separate from start timing and recurrence. It is labeled `RUNTIME REQUIRED` because future Runtime must persist due state across restarts. Browser sleeps/timers are never execution authority.
 
 # Ordered v5 Flow Preview
 
 The compact Flow Preview remains the beginner stage navigator and preserves progressive pending-state truth.
 
-The new **ORDERED SEQUENCE** view renders the canonical v5 flow underneath it.
+`lab-automations-flow-v5.js/.css` adds **ORDERED SEQUENCE** underneath it using the canonical v5 model.
 
-For a complex Draft it can visibly show:
+A complex flow can visibly show:
 
 `WHEN Manual start`
 
@@ -206,154 +236,261 @@ For a complex Draft it can visibly show:
 
 Behavior:
 
-- complex flows expand the ordered sequence by default;
-- simple flows remain collapsed by default;
+- complex flows expand by default;
+- simple flows stay collapsed by default;
 - Show/Hide is presentation-only;
-- ordered rows navigate back to the correct builder stage;
+- rows navigate back to the relevant builder stage;
 - start timing/recurrence appears separately as a `START` policy row;
-- blank/new Drafts inherit the progressive DOM truth, so compatibility defaults cannot leak as user intent;
-- mobile renders the same sequence vertically with larger tap targets.
+- blank/new Drafts use the progressive pending DOM so compatibility defaults never appear as confirmed user intent;
+- mobile renders the same ordered sequence vertically with larger tap targets.
 
 Browser marker:
 
 `data-lab-automations-flow="v5"`
 
-# IF and WAIT semantics
+# Automations Planner v5 proving surface
 
-The top-level IF stage happens before the DO sequence, so it may only use data available before Actions run.
+The focused Planner is now more than a dead-end modal, but it is still **not real AI**.
 
-Output-dependent logic belongs after the Action that produced the output.
+Files:
 
-Example:
+- `assets/lab/lab-automations-planner-v5.js`;
+- `assets/lab/lab-automations-planner-v5.css`.
 
-`AI task → IF AI priority equals urgent → Notify`
+A small local deterministic matcher recognizes a few proving patterns such as:
 
-Current IF operators: equals, does not equal, contains, greater than, less than, is true.
+- daily AI briefing;
+- continuity escalation;
+- delayed reminder;
+- AI report with review;
+- urgent AI follow-up.
 
-The source picker only exposes Trigger data and outputs available by that point in the flow.
+The result is explicitly labeled:
 
-False stops the remaining linear path in the preview.
+- `TYPED PLAN PREVIEW · LOCAL`;
+- `NO AI CALL`.
 
-There is **no YES/NO branching graph yet**.
+It shows:
 
-Inter-step WAIT is separate from current start Timing and is marked `RUNTIME REQUIRED`. Future Runtime must persist due state across server/process restarts.
+1. **ORDERED V5 FLOW**;
+2. **CHANGE PLAN** typed Automation operations;
+3. **PREFLIGHT** blockers.
+
+Example conceptual operations:
+
+```text
+automation.create_draft
+automation.set_trigger
+automation.set_preconditions
+automation.add_action
+automation.add_condition
+automation.add_wait
+automation.set_finish
+```
+
+`Use this draft` creates a normal browser-local Draft, records `plannerPreview.source = "local-deterministic-v5"`, then normalizes through `CMXAutomationModelV5`.
+
+It does not call a model, backend, provider or Runtime and does not publish anything.
+
+This proves the desired future interaction:
+
+`natural-language-like intent → typed plan → preflight → normal editable Draft`
+
+without pretending the protected Planner exists.
 
 # Scenarios
 
 Current total: **15 editable starting patterns**.
 
-Newest advanced patterns:
+Newest advanced scenarios:
 
-- **Urgent AI follow-up** — AI assessment → IF priority is urgent → notification;
+- **Urgent AI follow-up** — AI assessment → IF priority urgent → notification;
 - **Delayed backup escalation** — primary escalation → WAIT two hours → backup escalation.
 
-They create ordinary Drafts and normalize into the same v5 model. They do not imply Runtime/provider execution exists.
+They create ordinary Drafts and normalize into v5. They do not imply Runtime/provider execution exists.
 
-# Audience / data / input routing
+# Directory v2 current truth
 
-Audience v4.1 stores richer `audienceSelectors[]` intent and previews current Person-ID-deduped resolution/readiness.
+The main `/lab/` Records surface renders Directory v2 over browser-local `cmx-lab-crm-v1` prototype state.
 
-V4.2 uses typed source references rather than executable expressions. Compatibility store: `cmx-lab-automation-data-bindings-v1`.
+Current concepts include:
 
-V4.3 maps those sources into named inputs such as Email subject/body, AI Task context/focus, Notify message data and Manual Review context. Compatibility store: `cmx-lab-automation-input-bindings-v1`.
+- People;
+- Organizations;
+- Groups / saved audiences;
+- many-Organization Person membership;
+- ContactMethods/readiness;
+- Labels;
+- Person relationships;
+- notes/Activity;
+- Group resolution;
+- duplicate warnings;
+- Automation usage;
+- mobile/light/dark presentation.
 
-Step tests preserve the receiving-field route, for example `Body data ← Step 1 · AI summary`.
+Production still needs typed protected Directory models/services.
 
-Production needs canonical server Audience resolution and typed output/input compatibility validation.
+# Directory Planner typed-v2
 
-# Directory v2 + AI setup
+Directory `AI setup` now presents itself as **CONTINUUM PLANNER · PREVIEW** and uses the same typed Change Plan vocabulary as Automations.
 
-Main `/lab/` Records renders Directory v2 over browser-local `cmx-lab-crm-v1`.
+Browser marker:
 
-Current concepts include People, Organizations, Groups, many-Organization membership, ContactMethods/readiness, Labels, Person relationships, notes/Activity, Group resolution, duplicate warnings, Automation usage and first-class mobile/light/dark presentation.
+`data-lab-directory-planner="typed-v2"`
 
-Directory `AI setup` is a preview only. It makes no model call or mutation and demonstrates:
+Current boundary:
 
-`Describe → Plan → Preflight → Review → Apply`
+- no model call;
+- no free-text interpretation;
+- no data mutation;
+- no production API;
+- no provider execution;
+- no hidden authority.
 
-# Cross-domain Continuum Planner
+Fixed examples show typed operations across Directory, Library and Automations.
 
-Long-term goal: the user can describe how they want Continuum organized and AI prepares the setup through the same typed services humans use.
+Examples include:
 
-Canonical flow:
+```text
+directory.match_or_create_people
+directory.upsert_membership
+directory.upsert_relationship
+directory.apply_label
+directory.upsert_group
+library.create_folder
+library.create_document
+automation.create_draft
+automation.reference_audience
+automation.reference_content
+automation.add_wait
+```
+
+The **Full Continuum setup** example demonstrates one future Change Plan that can:
+
+`resolve People → create Groups → create Library folder/document → create Automation Draft → reference Audiences/content → add inter-step WAIT`
+
+Every example surfaces preflight blockers instead of pretending it is ready to apply.
+
+# One Planner language
+
+Directory and Automations now intentionally converge on the same product contract:
+
+`INTENT → TYPED CHANGE PLAN → PREFLIGHT → REVIEW → APPLY through normal protected services`
+
+The current prototypes prove different pieces:
+
+- Directory Planner = fixed cross-domain typed examples, no free-text interpretation;
+- Automations Planner = tiny local deterministic pattern matcher that can create an ordinary v5 Lab Draft;
+- neither = the real future Continuum AI Planner.
+
+The protected Planner later replaces these proving adapters with server-backed typed planning/tools using the same domain services as human UI.
+
+# Cross-domain Continuum Planner architecture
+
+Long-term goal: the user can describe how they want Continuum organized and AI prepares the setup across supported domains.
+
+Canonical architecture:
 
 `natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services → authoritative state + Activity/Audit`
 
-Potential supported operations later include Directory identity/relationships/Groups, Automation Drafts/Audiences/typed data routing/supported flow controls and Library organization/content.
-
-V5 is intentionally closer to the Automation shape Planner should eventually target because the workflow is expressed as explicit typed ordered nodes instead of UI-only stage assumptions.
-
 Hard rules:
 
+- AI and humans use the same typed services;
 - no AI-only database/contact/workflow format;
 - prompt text is intent, never authority;
 - AI cannot invent executable capabilities;
 - identity merge remains explicit/high-impact;
 - published Automation changes become a new Draft/version proposal;
 - external provider effects remain Runtime behavior;
-- stale revisions/duplicates/permissions/incompatible mappings are deterministic blockers;
-- apply is idempotent and reports partial success honestly when cross-domain atomicity is impossible.
+- stale revisions, duplicate ambiguity, permission problems and incompatible mappings are deterministic blockers;
+- apply must be idempotent and report partial success honestly if cross-domain atomicity is impossible.
 
-Canonical backend plan: `CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`.
+Canonical backend contract:
 
-# Directory backend direction
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 
-After the Phase 2A production boundary, grow Directory through typed domain slices: Person, Organization, membership, ContactMethod, Label, Group/selectors, canonical Audience resolution, Automation Audience, protected search/detail, Activity/notes/PersonRelationship, duplicate suggestion/explicit merge, then custom fields/saved views/import-export as needed.
+# Audience / data / input routing
 
-Planner mutation execution comes only after matching human/API domain services exist.
+Audience v4.1 composes Person, Organization, Group and Label selectors and previews current Person-ID-deduped resolution/readiness.
 
-# Runtime / AI order
+V4.2 uses typed source references from Trigger, earlier Actions and Directory/Audience values rather than executable expressions.
 
-Keep the backend canonical phase order. Broadly:
+V4.3 maps those values into named inputs such as Email subject/body, AI Task context/focus, Notify message data and Manual Review context.
 
-1. Phase 2A private information + typed definitions;
-2. protected human builder/domain surfaces;
-3. durable linear Runtime + fake provider;
-4. approved provider phases;
-5. persisted waits/retries/acknowledgements/approvals and later typed routing;
-6. AI Task then Planner;
-7. cross-domain Change Plan apply after mature services;
-8. bounded Agent later;
-9. MCP as adapter, never authority bypass.
+Example test trace:
 
-Lab v5 modeling/presentation does not move branching/WAIT execution forward in that order.
+`Body data ← Step 1 · AI summary`
 
-# Validation
+Production needs canonical server Audience resolution and capability-schema validation for source/output/input compatibility.
 
-Dedicated `automations-v5-model-validation.yml` protects:
+# Library boundary
 
-- v5 model syntax and ordered normalization;
-- future-step reference rejection;
-- v5-owned flow-control mutation and compatibility projection;
-- 15 scenarios and the two advanced examples;
-- ordered Flow Preview source/style contracts;
-- blank-Draft `Choose a trigger` / `Choose an action` truth;
-- mobile/direct-new markers.
+Native protected content direction:
 
-The GitHub connector available in this context does not expose push-triggered workflow-run results, and this environment cannot resolve GitHub/db.cmxchat.com over its container network. Therefore source/workflow contracts are committed, but do **not** claim an independently observed green push run or live Pages pickup until a later context can verify it.
+`ContentAsset → mutable ContentDraft → immutable ContentVersion`
+
+Binary direction:
+
+`FileAsset → immutable FileVersion → private object storage`
+
+Current Planner examples may reference conceptual Library operations, but the Lab does not execute them.
+
+Folders are organizational structure, not permission boundaries.
+
+# Backend / Runtime order
+
+Keep the canonical backend phase plans authoritative.
+
+Broadly:
+
+1. execute the validated Phase 2A production migration/deployment + separate `continuity.md` proof;
+2. grow typed Directory/Automation human-facing services in bounded slices;
+3. add canonical Audience and typed source/output/input validation;
+4. build protected human Automation authoring over server Drafts;
+5. durable **linear** Runtime + fake provider;
+6. persisted waits/retries/acknowledgements/approvals;
+7. typed route/branch behavior only after linear Runtime is reliable;
+8. approved provider phases;
+9. AI Task then Planner;
+10. cross-domain Change Plan apply only after the relevant domain mutation services are mature;
+11. bounded Agent later.
+
+Lab v5 / Planner work does not move those backend execution phases earlier.
+
+# Validation status
+
+Current source includes dedicated workflows for:
+
+- `automations-v5-model-validation.yml`;
+- `automations-v5-planner-validation.yml`;
+- `continuum-directory-validation.yml`.
+
+They protect the model, Planner safety boundary, typed Change Plan vocabulary, mobile/direct-new behavior and no-network/no-execution constraints.
+
+The GitHub connector available in this context does not expose push-triggered workflow-run results, and the working container cannot resolve GitHub or `db.cmxchat.com` over its network. Therefore the workflow/source contracts are committed on `main`, but **do not claim an independently observed green push run or live GitHub Pages pickup until later verification is available**.
 
 # Non-negotiable rules
 
-- PostgreSQL/server time authoritative for protected timing.
+- PostgreSQL/server time is authoritative for protected timing.
 - Frontend never accesses PostgreSQL directly.
 - Stable protected IDs beat copied mutable names/contact strings.
-- Person identity is not one email/phone.
-- Labels/relationships do not silently grant permission.
-- Audience identity and readiness are separate.
+- Person identity is not one email or phone.
+- Labels/Groups/relationships do not silently grant permission.
+- Audience identity and channel readiness are separate.
 - Data flow uses typed source/output/input references, not arbitrary executable expressions.
-- Immutable history stays immutable.
+- Immutable published/history records stay immutable.
 - Human UI and AI call the same typed services.
 - Prompt text never grants authority.
 - Provider secrets stay outside definitions/content/prompts/Audit.
 - Unknown executable capability/Planner operation types are rejected.
 - No arbitrary Python/JavaScript/shell/SQL/eval workflow logic.
 - External/inbound content is untrusted data.
-- Lab visual/model completeness never becomes production truth.
+- Lab visual/model/Planner completeness never becomes production truth.
 - No broad document-wide MutationObserver loops in accepted frontend paths.
 
 # `/doc/` boundary
 
-`/doc/` remains under its separate clarity freeze. Do not edit it merely because Lab UX/model changes.
+`/doc/` remains under its separate clarity freeze. Do not edit it merely because Lab UX/model/Planner changes.
 
 # Next backend action
 
