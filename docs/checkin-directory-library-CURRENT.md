@@ -1,7 +1,7 @@
 # Continuum Directory, Audiences, Library & Planner — CURRENT
 
 Date: 2026-08-19
-Status: Current cross-domain frontend handoff; Directory v2 + typed Planner v2 + shared Planner Contract/Change Review, Automations v5, Audience v4.1 and typed data/input routing active in Lab; protected backend expansion pending
+Status: Current cross-domain frontend handoff; Directory v2 + typed Planner v2 + shared Planner Contract/Preflight/Change Review, Automations v5 + mobile Action-stack v6, Audience v4.1 and typed data/input routing active in Lab; protected backend expansion pending
 
 # Read this with
 
@@ -32,7 +32,7 @@ Durable relationship:
 ```text
 stable Directory / Library references
 → Automation Draft / Version
-→ future server eligibility + preflight
+→ server eligibility + authoritative preflight
 → exact authorized resolution
 → frozen execution inputs
 → Runtime later
@@ -51,6 +51,7 @@ Active core files:
 - `assets/lab/lab-directory-v2-polish.css`;
 - `assets/lab/lab-directory-planner-preview.js/.css`;
 - `assets/lab/lab-continuum-planner-contract-v1.js`;
+- `assets/lab/lab-continuum-planner-preflight-v1.js/.css`;
 - `assets/lab/lab-continuum-planner-review-v1.js/.css`.
 
 Shared prototype store: `cmx-lab-crm-v1`.
@@ -105,15 +106,15 @@ The Directory command bar exposes **AI setup**, opening **CONTINUUM PLANNER · P
 
 Browser marker: `data-lab-directory-planner="typed-v2"`.
 
-Current flow:
+Current product flow:
 
-`Describe → typed Change Plan → Preflight → Review → Apply`
+`Describe → typed Change Plan → typed Preflight → Review → future protected Apply`
 
 Current safety boundary:
 
 - no AI/model call;
 - no arbitrary free-text interpretation;
-- no mutation;
+- no protected mutation;
 - no production API;
 - no provider execution;
 - no hidden authority.
@@ -149,45 +150,67 @@ Both Directory and focused Automations load:
 
 Browser marker: `data-lab-planner-contract="v1"`.
 
-This is one **browser proving vocabulary** for typed Change Plan operations. Current families include:
+This is one **browser proving vocabulary** for typed Change Plan operations.
 
-Directory:
+Current operation families include Directory identity/relationship/audience changes, Library folder/document creation and Automation Draft/Trigger/Action/Condition/WAIT/Finish/reference changes.
 
-- `directory.match_or_create_people`;
-- `directory.match_people`;
-- `directory.match_organizations`;
-- `directory.apply_label`;
-- `directory.upsert_group`;
-- `directory.upsert_membership`;
-- `directory.upsert_relationship`.
-
-Library:
-
-- `library.create_folder`;
-- `library.create_document`.
-
-Automations:
-
-- `automation.create_draft`;
-- `automation.set_trigger`;
-- `automation.set_preconditions`;
-- `automation.add_action`;
-- `automation.add_condition`;
-- `automation.add_wait`;
-- `automation.set_finish`;
-- `automation.reference_audience`;
-- `automation.reference_content`.
-
-Each registry entry also carries product metadata:
+Each registry entry carries product metadata:
 
 - owning domain;
 - operation family;
 - effect such as Resolve / Create / Update / Link;
 - review class.
 
-Current CI extracts typed operation literals from both Planner surfaces and rejects any operation absent from this shared Lab registry.
+Plans can also express browser-only dependency semantics:
 
-This browser registry is **not** the future server allowlist and must not be copied into FastAPI as authority.
+- operation `id`;
+- `dependsOn[]`;
+- temporary `produces` result using `temp:…`;
+- `uses[]` references to earlier plan-local results.
+
+The validator rejects missing/future dependencies, unavailable temp refs, duplicate temp results and invalid non-temporary produced refs.
+
+Current CI also extracts Planner operation literals and rejects operation types absent from the shared Lab registry.
+
+This browser registry and its temporary refs are **not** the future server allowlist/identity model. The protected Planner later owns authoritative operation registration, plan-local references and stable-ID resolution during apply.
+
+# Shared typed Preflight v1
+
+Both Planner surfaces load:
+
+- `assets/lab/lab-continuum-planner-preflight-v1.js`;
+- `assets/lab/lab-continuum-planner-preflight-v1.css`.
+
+Browser marker: `data-lab-planner-preflight="v1"`.
+
+The shared contract currently has proving issue families for:
+
+- ambiguous Directory matches;
+- protected identity checks;
+- missing Audience selection;
+- unconfirmed Automation timing;
+- Runtime requirement;
+- protected Library service requirement;
+- missing Connection;
+- explicit authority approval;
+- invalid Planner dependencies;
+- generic review requirement.
+
+The UI keeps five meanings distinct:
+
+- **CHECK REQUIRED** — an unresolved review choice;
+- **PREVIEW DECISION** — a local sample choice has been recorded;
+- **DEFERRED TO DRAFT** — the Draft may be created while the requirement stays incomplete;
+- **BLOCKED** — the required protected service/capability/Runtime is unavailable;
+- **APPROVAL REQUIRED** — an authority decision Planner cannot make for itself.
+
+Directory's Business contacts example demonstrates an ambiguity review. The user may choose `Use existing match` or `Keep separate`, then change that preview decision again. No Person/Organization is mutated.
+
+Automation examples can defer an Audience or timing requirement to the Draft. Runtime/Connection/server/authority requirements cannot be made green by the Lab.
+
+Each issue is linked to the affected Change Plan operation when a current proving mapping exists. The row itself can display `CHECK`, `DECISION`, `DEFERRED`, `BLOCKED`, or `APPROVAL`, while the issue card says `AFFECTS CHANGE ##`.
+
+The current local adapters still begin with human-readable blocker strings, which `classifyIssue()` maps into shared issue codes. This is intentionally prototype glue. Production must return structured authoritative issues from server domain services. It must not depend on matching English warning text.
 
 # Shared Change Review v1
 
@@ -200,42 +223,38 @@ Browser marker: `data-lab-planner-review="v1"`.
 
 Each typed operation can display:
 
-- effect: `CREATE`, `UPDATE`, `LINK`, `RESOLVE`, or combined variants;
+- effect: CREATE / UPDATE / LINK / RESOLVE;
 - owning domain;
-- review state such as `STANDARD REVIEW`, `CHECK REQUIRED`, future `APPROVAL REQUIRED`, or `BLOCKED`.
+- review class;
+- plan-local production/use/dependency links;
+- typed Preflight state when that issue maps to the operation.
 
-A **CHANGE REVIEW** summary presents:
+The **CHANGE REVIEW** summary presents typed change count, unresolved issues, approval/check state and linked-step/domain context.
 
-- typed change count;
-- represented blocker count;
-- approval/check state;
-- affected domains.
+Reviewed/deferred issues are no longer counted as unresolved. Real blocked/approval items remain visible.
 
-This is the beginning of the serious “AI set up my environment” review experience: the user can see exactly what a Planner proposes before apply.
-
-It is not authoritative preflight. Real permission checks, stale-revision handling, duplicate resolution, risk classification and approvals remain server-owned.
+This is product/UX proof. Authoritative identity resolution, current revisions, permissions, risk decisions, approval and apply remain server-owned.
 
 # Mobile / Samsung QA
 
-The shared Planner work is now covered by a dedicated Chromium geometry probe at **390×844**.
-
-It measures real rendered geometry rather than only checking CSS strings.
+The shared Planner work is covered by rendered Chromium checks at **360×800** and **390×844** where relevant.
 
 Current checks include:
 
-- no horizontal overflow before/after Planner interaction;
+- no horizontal overflow;
 - Directory `AI setup` and New controls do not overlap;
-- key Directory controls meet 44px+ tap sizing;
-- Directory Planner modal fits the viewport;
-- Directory Change Review renders after choosing an example;
-- Automations Planner opens and renders a typed plan;
-- Automations Change Review renders;
-- key Automations Planner controls meet 44px+ tap sizing;
-- Planner modals remain inside the viewport after richer review content appears.
+- key controls meet 44px+ tap sizing;
+- Planner modals fit the viewport;
+- Change Review and plan dependencies render;
+- typed Preflight renders;
+- Directory ambiguity moves from CHECK to a preview DECISION on the affected Change Plan row;
+- Automation Audience can move from CHECK to DEFERRED on the affected row;
+- Runtime WAIT stays BLOCKED after that defer;
+- richer review/preflight content still fits the phone viewport.
 
-Directory mobile QA also explicitly resets the New action from older absolute positioning to the current command-bar grid so AI setup and New cannot collide on narrow phones.
+Directory mobile QA also resets the New action from older absolute positioning to the current command-bar grid so AI setup and New cannot collide on narrow phones.
 
-# Automations v5 relationship
+# Automations v5 + mobile Action stack relationship
 
 Focused route: `/lab/automations/`.
 
@@ -251,7 +270,9 @@ Start timing and recurrence remain separate policies.
 
 V5 gives Planner/Audience/data integration explicit workflow positions instead of relying on screen order alone.
 
-Do not copy the browser `workflowV5` JSON into production backend schema.
+Mobile Action-stack v6 now collapses multi-Action DO views into compact step rows with one expanded step at a time, explicit Edit/Hide and a separate labeled Remove control. Multiple Actions can be removed through the existing v3 mutation path. The final compatibility Action remains protected as `Only step` for now.
+
+This is frontend authoring UX only. Do not infer a new backend Action model from it.
 
 # Automations Planner v5
 
@@ -260,9 +281,9 @@ The focused Planner remains deterministic/local and explicitly non-AI.
 It renders:
 
 1. **ORDERED V5 FLOW**;
-2. **CHANGE PLAN** operations;
-3. **PREFLIGHT** blockers;
-4. shared **CHANGE REVIEW** effect/domain/review metadata.
+2. **CHANGE PLAN** operations and dependencies;
+3. **PREFLIGHT · TYPED REVIEW**;
+4. shared **CHANGE REVIEW**.
 
 `Use this draft` creates a normal browser-local Automation Draft and normalizes it through `CMXAutomationModelV5`.
 
@@ -343,9 +364,9 @@ Future Runtime freezes exact recipient/contact endpoints and other execution inp
 
 # Duplicate / merge
 
-Current Lab warnings are conservative.
+Current Lab warnings and ambiguity choices are conservative product proofs.
 
-Production merge remains explicit/high-impact. AI cannot silently merge People because names look similar.
+Production merge remains explicit/high-impact. AI cannot silently merge People because names look similar. A preview `Use existing match` choice does not perform a real protected merge or match.
 
 # Activity vs Audit
 
@@ -353,7 +374,7 @@ Directory Activity is user-facing history.
 
 Immutable security Audit remains separate.
 
-Future Planner apply should preserve provenance showing what was proposed, approved, applied, blocked or partially failed.
+Future Planner apply should preserve provenance showing what was proposed, reviewed, approved, applied, blocked, deferred or partially failed.
 
 # Production backend boundary
 
@@ -365,7 +386,7 @@ Current production still has no general:
 - typed Automation data/input/inter-step service matching Lab;
 - server equivalent of Lab v5;
 - authoritative Planner operation registry;
-- authoritative Planner preflight/review/apply;
+- authoritative structured Planner preflight/review/apply;
 - Runtime / persisted WAIT / branch execution;
 - provider delivery;
 - AI Task / Planner execution.
@@ -406,7 +427,7 @@ Preserve:
 - no prompt-granted authority;
 - no arbitrary Python/JavaScript/shell/SQL/eval workflow logic;
 - no hidden AI persistence path;
-- browser Audience/data/Planner/Change Review results never become production authority;
+- browser Audience/data/Planner/Preflight/Change Review results never become production authority;
 - immutable published/history records stay immutable;
 - external/inbound content remains untrusted data;
 - no broad document-wide MutationObserver loops in accepted frontend paths.
