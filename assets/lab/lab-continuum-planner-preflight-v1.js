@@ -8,11 +8,13 @@
     "directory.ambiguous_match": ["directory.match_people", "directory.match_organizations", "directory.match_or_create_people"],
     "directory.identity_check_required": ["directory.match_or_create_people", "directory.match_people", "directory.match_organizations"],
     "directory.audience_required": ["automation.reference_audience", "automation.add_action"],
+    "signals.source_required": ["signals.attach_source", "signals.create_watch"],
+    "signals.service_required": ["signals.create_watch"],
     "runtime.required": ["automation.add_wait"],
     "library.service_required": ["library.create_document", "library.create_folder", "automation.reference_content"],
-    "connections.required": ["automation.add_action"],
+    "connections.required": ["signals.attach_source", "automation.add_action"],
     "authority.approval_required": ["automation.add_action"],
-    "planner.dependency_invalid": ["automation.create_draft", "directory.match_or_create_people"],
+    "planner.dependency_invalid": ["automation.create_draft", "directory.match_or_create_people", "signals.create_watch"],
     "planner.review_required": ["automation.create_draft"]
   });
 
