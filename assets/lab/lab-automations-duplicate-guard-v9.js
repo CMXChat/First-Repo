@@ -19,6 +19,10 @@
     return Object.entries(INLINE).find(([, meta]) => normalize(meta.label) === value || normalize(meta.short) === value)?.[0] || "";
   }
 
+  function isPlaceholder(kind, target = "", instruction = "", index = -1) {
+    return index === 0 && kind === "notify" && !normalize(target) && !normalize(instruction);
+  }
+
   function actionCards() {
     return Array.from(document.querySelectorAll(".v3-action-card[data-action-card]"));
   }
@@ -78,7 +82,11 @@
   }
 
   function countKind(kind) {
-    return actionCards().filter(card => baseKind(card) === kind).length;
+    return actionCards().filter((card, index) => {
+      const cardKind = baseKind(card);
+      if (cardKind !== kind) return false;
+      return !isPlaceholder(cardKind, targetText(card), instructionText(card), index);
+    }).length;
   }
 
   function annotatePicker() {
@@ -129,8 +137,21 @@
     });
   }
 
+  function setPickerHidden(hidden) {
+    const picker = document.querySelector(".v3-picker");
+    if (!picker) return;
+    if (hidden) {
+      picker.dataset.v9DuplicateHidden = "true";
+      picker.setAttribute("aria-hidden", "true");
+    } else if (picker.dataset.v9DuplicateHidden === "true") {
+      delete picker.dataset.v9DuplicateHidden;
+      picker.removeAttribute("aria-hidden");
+    }
+  }
+
   function closeWarning({ restore = true } = {}) {
     document.querySelector(".v9-duplicate-backdrop")?.remove();
+    setPickerHidden(false);
     pendingChoice = null;
     if (restore) {
       const target = returnFocus;
@@ -143,6 +164,7 @@
     closeWarning({ restore: false });
     pendingChoice = button;
     returnFocus = button;
+    setPickerHidden(true);
     const kind = button.dataset.chooseInline;
     const meta = INLINE[kind] || { label: button.querySelector("strong")?.textContent || "this action" };
     const backdrop = document.createElement("div");
@@ -230,6 +252,7 @@
   window.CMXAutomationDuplicateGuardV9 = Object.freeze({
     normalize,
     kindFromLabel,
+    isPlaceholder,
     describe(kind, target = "") {
       if (kind === "email" && target) return `Email ${target}`;
       if (kind === "notify" && target) return `Notify ${target}`;
