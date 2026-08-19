@@ -1,0 +1,126 @@
+name: Continuum Directory Planner Dependency Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.css'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-loader.js'
+      - 'lab/index.html'
+      - 'tests/continuum-mobile-layout-probe.js'
+      - '.github/workflows/continuum-directory-planner-dependency-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.css'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-loader.js'
+      - 'lab/index.html'
+      - 'tests/continuum-mobile-layout-probe.js'
+      - '.github/workflows/continuum-directory-planner-dependency-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate shared contract and Directory plan dependencies
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-continuum-planner-contract-v1.js
+          node --check assets/lab/lab-continuum-planner-review-v1.js
+          node --check assets/lab/lab-directory-planner-preview.js
+
+          grep -q 'validatePlan' assets/lab/lab-continuum-planner-contract-v1.js
+          grep -q 'dependency_not_earlier' assets/lab/lab-continuum-planner-contract-v1.js
+          grep -q 'temp_ref_not_available' assets/lab/lab-continuum-planner-contract-v1.js
+          grep -q 'duplicate_temp_ref' assets/lab/lab-continuum-planner-contract-v1.js
+          grep -q 'plan_ref_must_be_temporary' assets/lab/lab-continuum-planner-contract-v1.js
+
+          grep -q 'temp:people:continuity' assets/lab/lab-directory-planner-preview.js
+          grep -q 'temp:group:continuity' assets/lab/lab-directory-planner-preview.js
+          grep -q 'temp:folder:continuity' assets/lab/lab-directory-planner-preview.js
+          grep -q 'temp:content:continuity' assets/lab/lab-directory-planner-preview.js
+          grep -q 'temp:automation:continuity' assets/lab/lab-directory-planner-preview.js
+          grep -q 'data-plan-produces' assets/lab/lab-directory-planner-preview.js
+          grep -q 'data-plan-uses' assets/lab/lab-directory-planner-preview.js
+          grep -q 'data-plan-depends' assets/lab/lab-directory-planner-preview.js
+
+          grep -q 'continuum-plan-dependency-meta' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q 'Produces' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q 'Uses' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q 'After' assets/lab/lab-continuum-planner-review-v1.js
+          grep -q '.continuum-plan-dependency-meta' assets/lab/lab-continuum-planner-review-v1.css
+
+          node <<'NODE'
+          const fs = require('fs');
+          const vm = require('vm');
+          const assert = require('assert');
+
+          global.window = {};
+          global.document = { documentElement: { dataset: {} } };
+          vm.runInThisContext(fs.readFileSync('assets/lab/lab-continuum-planner-contract-v1.js', 'utf8'));
+          const api = window.CMXContinuumPlannerContractV1;
+          assert(api, 'shared Planner contract must load');
+
+          const fullContinuumShape = [
+            { id: 'people', type: 'directory.match_or_create_people', produces: 'temp:people:continuity' },
+            { id: 'groups', type: 'directory.upsert_group', uses: ['temp:people:continuity'], dependsOn: ['people'], produces: 'temp:group:continuity' },
+            { id: 'folder', type: 'library.create_folder', produces: 'temp:folder:continuity' },
+            { id: 'content', type: 'library.create_document', uses: ['temp:folder:continuity'], dependsOn: ['folder'], produces: 'temp:content:continuity' },
+            { id: 'automation', type: 'automation.create_draft', produces: 'temp:automation:continuity' },
+            { id: 'audience', type: 'automation.reference_audience', uses: ['temp:automation:continuity', 'temp:group:continuity'], dependsOn: ['groups', 'automation'] },
+            { id: 'reference-content', type: 'automation.reference_content', uses: ['temp:automation:continuity', 'temp:content:continuity'], dependsOn: ['content', 'automation'] },
+            { id: 'wait', type: 'automation.add_wait', uses: ['temp:automation:continuity'], dependsOn: ['automation'] }
+          ];
+          const good = api.validatePlan(fullContinuumShape);
+          assert.equal(good.ok, true);
+          assert.equal(good.count, 8);
+
+          const badFuture = [
+            { id: 'group', type: 'directory.upsert_group', dependsOn: ['people'] },
+            { id: 'people', type: 'directory.match_people', produces: 'temp:people:future' }
+          ];
+          assert(api.validatePlan(badFuture).errors.some(error => error.code === 'dependency_not_earlier'));
+
+          const badRef = [
+            { id: 'audience', type: 'automation.reference_audience', uses: ['temp:group:missing'] }
+          ];
+          assert(api.validatePlan(badRef).errors.some(error => error.code === 'temp_ref_not_available'));
+
+          const badProduce = [
+            { id: 'people', type: 'directory.match_people', produces: 'person-real-id' }
+          ];
+          assert(api.validatePlan(badProduce).errors.some(error => error.code === 'plan_ref_must_be_temporary'));
+
+          console.log('Directory cross-domain Planner dependency contract passed.');
+          NODE
+
+      - name: Validate no authority or network expansion
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          sources = '\n'.join(Path(path).read_text(encoding='utf-8') for path in [
+              'assets/lab/lab-continuum-planner-contract-v1.js',
+              'assets/lab/lab-continuum-planner-review-v1.js',
+              'assets/lab/lab-directory-planner-preview.js'
+          ])
+          for forbidden in [
+              'api.cmxchat.com', 'fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(',
+              'eval(', 'new Function(', 'MutationObserver'
+          ]:
+              if forbidden in sources:
+                  raise SystemExit(f'forbidden Directory Planner dependency pattern: {forbidden}')
+          print('Directory Planner dependency layers remain local and non-authoritative.')
+          PY
