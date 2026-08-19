@@ -1,27 +1,31 @@
 # Check In Future Capabilities & Connections — CURRENT
 
-Date: 2026-08-17
+Date: 2026-08-19
 Status: Long-term frontend/product contract; future-facing, not proof of current integrations
 
-Backend canonical roadmap:
+Backend canonical companions:
 
-`CMXChat/jay-app/specs/003-server-checkin/CAPABILITIES-CONNECTIONS-AI-ROADMAP.md`
+- `CMXChat/jay-app/specs/003-server-checkin/CAPABILITIES-CONNECTIONS-AI-ROADMAP.md`
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md`
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md`
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md`
 
 Read with:
 
 - `docs/checkin-product-design-CURRENT.md`
 - `docs/checkin-ai-product-design-CURRENT.md`
 - `docs/checkin-communications-ai-CURRENT.md`
+- `docs/continuum-signals-observations-master-plan-CURRENT.md`
 - `CMXChat/jay-app/specs/003-server-checkin/AI-CAPABILITY-AND-TOOLS-CONTRACT.md`
 - `CMXChat/jay-app/specs/003-server-checkin/DELEGATED-AUTHORITY-BACKEND-CONTRACT.md`
 
-This document defines how the broader future Check In capability system should make sense to a human.
+This document defines how the broader future Continuum/Check In capability system should make sense to a human.
 
 It does **not** mean these providers or execution capabilities exist today.
 
 # Product principle
 
-> **Show people what Check In can reach, what it can do, and exactly how much authority it currently has.**
+> **Show people what Continuum can observe, what it can do, what is available right now and exactly how much authority it currently has.**
 
 The interface should never reduce all of this to one mysterious `Connect` button or one giant AI prompt.
 
@@ -31,13 +35,13 @@ The interface should never reduce all of this to one mysterious `Connect` button
 
 Use Lab to validate new Action/editor/capability UX before backend models are locked.
 
-Once a capability has a real protected backend service, accepted interaction patterns should move into `/checkin/`.
+Once a capability has a real protected backend service, accepted interaction patterns should move into `/checkin/` or the future protected Continuum Control Center/Connections surfaces.
 
 Do not turn `/lab/automations/` into a second permanent production app.
 
 # Future Connections experience
 
-A protected Connections area should eventually show connected services and their usable capabilities.
+A protected Connections area should eventually show connected services and their usable Sources/capabilities.
 
 Example:
 
@@ -46,18 +50,22 @@ CONNECTIONS
 
 Google                    CONNECTED
 Gmail · Calendar · Drive
+Sources: mail + calendar events
+Capabilities: read / create / update
 
 Discord                   CONNECTED
-Messages · Channels
+Sources: approved channels/events
+Capabilities: read / send / reply
 
 Voice & SMS               NOT CONNECTED
-SMS · MMS · Calls
+Capabilities: SMS · MMS · Calls
 
-WhatsApp Business         NOT CONNECTED
-Messages · Replies
+GitHub                    CONNECTED
+Sources: repo events/checks
+Capabilities: read repo · create issue · comment
 
-Brokerage                 CONNECTED
-Holdings · Orders
+External MCP              NEEDS REVIEW
+7 tools discovered · 3 resources discovered
 ```
 
 Connection status should distinguish at least:
@@ -66,13 +74,63 @@ Connection status should distinguish at least:
 - needs attention/re-auth;
 - partially available;
 - disconnected;
-- provider unavailable.
+- provider unavailable;
+- schema/version changed;
+- new capability available.
 
 Do not expose raw secrets in this interface.
 
+# Source Catalog UX
+
+Continuum should eventually have a protected **Sources** view showing how live information gets in.
+
+Useful Source cards/rows might show:
+
+```text
+SOURCE
+GitHub · CMXChat/jay-app checks
+
+MODE
+Webhook + reconciliation
+
+LAST OBSERVED
+2 min ago
+
+HEALTH
+Current
+
+USED BY
+2 Watches · Business Space
+```
+
+Other examples:
+
+- news/search Watch;
+- webpage monitor;
+- RSS feed;
+- Gmail event stream;
+- calendar/account data;
+- status page;
+- weather/market API;
+- MCP resource;
+- future device/sensor;
+- trusted-person attestation source.
+
+Source health should use plain language such as:
+
+- Current;
+- Stale;
+- Delayed;
+- Needs sign-in;
+- Rate limited;
+- Provider down;
+- Paused.
+
+A source being stale is different from “nothing happened.”
+
 # Capability detail
 
-Opening a Connection should show what Check In can actually do through it.
+Opening a Connection should show what Continuum can actually do through it.
 
 Example:
 
@@ -101,9 +159,9 @@ A user should not have to understand backend risk-tier terminology to understand
 
 # Capability availability language
 
-The product should communicate the backend modes clearly.
+The product should communicate backend modes clearly.
 
-Conceptual backend modes:
+Conceptual backend modes may include:
 
 ```text
 disabled
@@ -123,7 +181,140 @@ Can be pre-authorized
 Only I can do this
 ```
 
-The UX can evolve, but it must preserve the distinction.
+The UX can evolve, but it must preserve the distinction between technical availability and authority.
+
+# New capability discovered
+
+When an API, provider or MCP server exposes something new, Continuum should be able to surface it without silently enabling it.
+
+Example:
+
+```text
+NEW CAPABILITY AVAILABLE
+GitHub · Create deployment environment
+
+Continuum found a new provider operation.
+
+TYPE
+External write
+
+REQUIRES
+GitHub Connection · repo administration scope
+
+CURRENT POLICY
+Unavailable until reviewed
+
+[See details] [Test in simulation]
+```
+
+For a low-risk read capability:
+
+```text
+NEW READ CAPABILITY
+Weather provider · Severe-weather alerts
+
+✓ Adapter schema valid
+✓ Read only
+✓ Existing provider scope supports it
+
+Your policy allows automatic adoption of tested read-only capabilities.
+
+[Enabled] [Review]
+```
+
+That second behavior exists only if the owner deliberately published such an adoption policy.
+
+# Capability discovery lifecycle in the UI
+
+The backend lifecycle is:
+
+`DISCOVER → NORMALIZE → CLASSIFY → MAP → TEST → SIMULATE → REVIEW/POLICY → ENABLE → MONITOR → VERSION/DEPRECATE`
+
+The UI should translate this into normal human states such as:
+
+- New capability found;
+- Checking compatibility;
+- Test passed;
+- Needs review;
+- Ready to enable;
+- Available;
+- Changed upstream;
+- Needs attention;
+- Replaced/deprecated.
+
+Do not expose raw model reasoning or provider schema noise by default. Advanced/Developer detail can show exact capability IDs, versions, schemas and adapter metadata.
+
+# MCP UX direction
+
+## Continuum exposed through MCP
+
+A protected Connections/Developer area may later show:
+
+```text
+MCP ACCESS
+
+External AI client: connected
+Allowed Continuum tools:
+✓ Search Library
+✓ Read selected content
+✓ Create Automation drafts
+× Publish Automation
+× Send messages
+```
+
+External clients still use normal Continuum authority/policy/domain services.
+
+## External MCP inside Continuum
+
+If a user connects an external MCP server, do not present every discovered tool as automatically approved.
+
+Potential flow:
+
+```text
+Connect MCP server
+→ discover tools/resources
+→ show new capability candidates
+→ classify / map
+→ test / simulate
+→ review policy
+→ enable selected capabilities
+```
+
+Display provider/source, capability kind, data access and consequence clearly.
+
+If the MCP server advertises new tools later, show **New capability available**. Do not silently add them to an Agent's active authority.
+
+# OpenAPI / API integration assistant UX
+
+A future integration assistant may accept an approved API/OpenAPI description and help turn it into typed Continuum capability proposals.
+
+Useful review might show:
+
+```text
+API INTEGRATION PROPOSAL
+Acme Monitoring API
+
+FOUND
+8 read operations
+3 mutation operations
+2 webhook event families
+
+MAPPED
+monitoring.read_status
+monitoring.list_incidents
+signal.status_changed
+
+NEEDS REVIEW
+incident.create
+maintenance.schedule
+
+TESTS
+12/12 schema fixtures passed
+
+[Review mapping] [Simulate] [Enable selected]
+```
+
+AI may help explain/generate mappings/tests. The provider/API description is metadata, not authority.
 
 # Communications catalog
 
@@ -138,7 +329,7 @@ Potential communication families:
 - Slack;
 - Microsoft Teams;
 - Telegram or other supported bot platforms;
-- Check In push notifications;
+- Continuum push notifications;
 - Voice calls;
 - future communication channels when provider APIs justify them.
 
@@ -166,6 +357,11 @@ AI task
 Financial analysis
 Research
 
+OBSERVE
+Watch source
+Read status
+Search approved provider
+
 OPERATE
 Approved API action
 Infrastructure action
@@ -185,7 +381,7 @@ Channel editors should share common concepts where appropriate:
 - timing;
 - Runtime history.
 
-But do not force Email-specific concepts like CC/BCC onto SMS/Discord.
+Do not force Email-specific concepts like CC/BCC onto SMS/Discord.
 
 # Voice/call UX direction
 
@@ -218,7 +414,7 @@ Review
 
 If custom or cloned voices are supported later, make consent/identity status visible and never make a generated voice look like an unimportant cosmetic dropdown.
 
-# Tool Registry in the UI
+# Tool / Capability Registry in the UI
 
 The backend may eventually have many typed tools. Humans do not need a raw developer registry dump.
 
@@ -243,7 +439,7 @@ Read balances
 Transfer funds
 ```
 
-Advanced users may later inspect exact capability IDs in a Details/Developer view.
+Advanced users may later inspect exact capability IDs/versions in a Details/Developer view.
 
 # AI Task / Agent capability picker
 
@@ -258,6 +454,7 @@ Information
 ✓ Search approved Library
 ✓ Read selected records
 ✓ Read this Conversation
+✓ Read these Signal sources
 
 Communication
 ✓ Draft email
@@ -279,19 +476,21 @@ The interface should show why a disabled capability is unavailable:
 - not in grant;
 - approval required;
 - provider unavailable;
-- product policy disables it.
+- capability changed upstream;
+- Runtime support missing;
+- product/policy disables it.
 
-# Standing authority UX
+# Standing / fallback authority UX
 
-Standing delegated authority needs a serious Review screen.
+Standing and fallback delegated authority need serious Review screens.
 
 Example:
 
 ```text
-CONTINGENCY AUTHORITY
+CONTINUITY AUTHORITY
 
 ACTIVATES WHEN
-Primary Check In Incident reaches Triggered
+Published availability/Incident policy says fallback is eligible
 
 AI / RUNTIME MAY
 ✓ Read selected continuity documents
@@ -305,34 +504,49 @@ LIMITS
 24 hours
 
 STILL NOT ALLOWED
-× Change Check In policy
+× Change Check In policy unless separately granted
 × Add recipients
 × Change credentials
 × Move money
 ```
 
-For a deliberately broader future grant, the review might instead show a bounded financial permission.
+The UI should make clear which evidence/State activates eligibility and which previously published authority allows the actual action.
 
-Example:
+# Master autonomy pause UX
 
-```text
-FINANCIAL AUTHORITY
+The future Control Center needs a prominent Pause Autonomy control.
 
-✓ Pay named invoice INV-123
-From: Operating Checking
-Maximum: $2,500
-Payee: existing approved vendor only
+Possible choices:
 
-OR
-✓ Ask Approved Accountant group to complete this exact payment
+- Until I resume;
+- Until a chosen date/time;
+- long deliberate duration such as one year;
+- future scoped pause for one Automation/capability/Connection.
 
-× Add payee
-× Change destination account
-× Make another payment
-× Withdraw cash
-```
+While paused, observation, Signals, State updates, learning, drafting and briefings can continue. New autonomous consequential Actions are blocked.
 
-The UI should make the consequence impossible to miss.
+A timed pause expiry does **not** silently reactivate autonomy.
+
+Desired flow:
+
+`Pause expires → ask owner → use configured contact strategy → wait effective response window → if still no qualifying response, evaluate published continuity policy → activate only the Actions/AI already authorized`
+
+General default response-window direction is 24 hours with per-policy overrides.
+
+# Contact strategy UX
+
+Continuity/re-contact policies should support options such as:
+
+- all approved channels at once;
+- staged escalation;
+- preferred order;
+- retries;
+- stop on acknowledgement;
+- continue until stronger confirmation;
+- involve trusted people after a threshold;
+- different strategies for different scenarios.
+
+Where providers expose real delivery truth, distinguish attempted, sent/accepted, delivered, failed, acknowledged and explicitly confirmed/denied.
 
 # Financial product progression
 
@@ -374,9 +588,9 @@ WHY THIS TOOL IS ALLOWED
 
 ## Pre-authorized bounded execution
 
-Only display this option when the backend/provider/product policy actually supports standing-grant authority for that capability.
+Only display this option when the backend/provider/product policy actually supports standing/fallback authority for that capability.
 
-Do not imply that every high-risk tool can be delegated merely because AuthorityGrant exists.
+Do not imply every high-risk tool can be delegated merely because AuthorityGrant exists.
 
 # Person-mediated coordination UX
 
@@ -406,7 +620,7 @@ Request billing changes
 Request password/security changes outside the approved task
 ```
 
-For consequential outcomes such as a payment, show that the AI is authorized to **request that outcome from the named person**, not merely that it has permission to send generic messages.
+A messaging tool is not a loophole around outcome authority.
 
 # Future Mission experience
 
@@ -431,7 +645,7 @@ Tools
 [Email] [Discord] [Calendar] [ClickUp]
 
 Authority
-[Approval rules / standing grant]
+[Approval rules / standing/fallback grant]
 
 Limits
 [10 messages] [1 meeting] [5 days]
@@ -441,40 +655,6 @@ Stop when
 ```
 
 Do not create this UI until Runtime/Agent concepts are mature enough to make it truthful.
-
-# MCP UX direction
-
-## Check In exposed through MCP
-
-A protected Connections/Developer area may later show:
-
-```text
-MCP ACCESS
-
-External AI client: connected
-Allowed Check In tools:
-✓ Search Library
-✓ Read selected content
-✓ Create Automation drafts
-× Publish Automation
-× Send messages
-```
-
-## External MCP inside Check In
-
-If a user connects an external MCP server, do not present every discovered tool as automatically approved.
-
-Potential flow:
-
-```text
-Connect MCP server
-→ discover tools
-→ review capabilities
-→ classify / map
-→ user chooses what Check In may expose to Automations/AI
-```
-
-Display provider/source and risk clearly.
 
 # AI Gateway / model UX
 
@@ -495,7 +675,7 @@ BUDGET
 Maximum per Run
 ```
 
-Advanced settings may later expose a preferred model/provider.
+Advanced settings may later expose preferred models/providers.
 
 A task should remain portable across providers where semantics allow.
 
@@ -503,7 +683,7 @@ Model selection never changes tool authority.
 
 # AI source/retrieval UX
 
-When AI uses private data, continue showing sources and versions.
+When AI uses private data or outside evidence, keep sources and versions visible.
 
 Example:
 
@@ -512,62 +692,105 @@ USING
 continuity.md · v5
 Server Access · current record
 Conversation with Mike · 3 messages
+GitHub check Signal · 2 supporting observations
+Status provider · observed 3 min ago
 ```
 
 Future semantic search should feel smarter without making scope invisible.
 
-# Activity / receipts
+# Self-improvement UX
 
-As capability breadth grows, Activity needs to become one of the strongest trust surfaces.
+Continuum should be able to improve without presenting that as mysterious autonomous code rewriting.
 
-Examples:
+Useful categories:
 
 ```text
-AI searched 4 approved Library items
-AI drafted email
-You approved payment
-Worker submitted transfer
-Provider accepted transfer
-Adam replied by email
-AI requested confirmation
-Mike confirmed task complete
-Mission closed
+LEARNED RECOMMENDATION
+“This source has produced 18 low-value alerts. Raise the relevance threshold?”
+
+NEW CAPABILITY
+“Your connected provider now supports read-only incident history.”
+
+MODEL ROUTING
+“This task class performs better with the approved reasoning model at similar cost.”
+
+POLICY SUGGESTION
+“You usually approve this low-risk cleanup. Allow it automatically?”
 ```
 
-Distinguish:
+The owner can decide which categories remain recommendation-only and which low-risk classes may later be automatically adopted under explicit meta-authority.
 
-- AI decision/proposal;
-- backend authorization;
-- worker execution;
-- provider acceptance/delivery;
-- human/inbound response.
+If Continuum ever gains code-generation/deployment tools, show those as separate high-impact capabilities with repository/environment scope, tests, approvals, rollback and Audit.
 
-# Simulation
+# Control Center / Activity
 
-Before enabling consequential standing authority, show a simulation.
+As capability breadth grows, the Control Center should become one of the strongest trust surfaces on both desktop and mobile.
+
+Preferred primary views:
+
+- **Now** — active/waiting/needs attention;
+- **Upcoming** — timers, scheduled work and waits;
+- **History** — completed/failed/cancelled/resolved;
+- **All Activity** — chronological event stream with filters.
+
+Activity may include:
+
+```text
+Source refreshed
+Signal emitted
+State changed
+AI proposed a policy change
+New provider capability discovered
+You approved capability mapping
+Runtime queued Action
+Provider accepted Action
+Trusted person acknowledged
+Run paused
+Simulation outcome changed
+```
+
+Opening a consequential item should explain:
+
+`evidence → State → policy → authority → capability → Runtime → result`
+
+The user may hide/archive UI history where supported. Immutable consequential Audit remains preserved.
+
+# Undo
+
+Where a management operation is genuinely reversible, show a short Undo window.
 
 Example:
 
-```text
-IF THIS INCIDENT HAPPENED NOW
+`Automation deleted → Undo for 30 seconds`
 
-Would activate
-Continuity Authority v3
+Undo is a new protected operation and both the original change and restoration remain in Audit.
 
-Would allow
-Email Family
-SMS Trusted Contacts
-Coordinate with Adam
+Do not fake Undo for irreversible provider side effects.
 
-Would still require you
-Brokerage order
+# Simulation
 
-Would deny
-New recipients
-Credential changes
-```
+Simulation should be a first-class Control Center tool.
 
-Simulation performs no side effects.
+It can:
+
+- start from a frozen copy of real current State;
+- change hypothetical facts;
+- run policy/authority/capability/Runtime evaluation without side effects;
+- save named scenarios;
+- rerun important scenarios after relevant policy/capability changes;
+- show structural diffs;
+- explain whether the new simulated result appears safer, riskier or materially different.
+
+Example overrides:
+
+- pretend I stop responding now;
+- pretend I miss five Check Ins;
+- pretend email is down;
+- pretend this trusted person does not reply;
+- pretend a Connection fails;
+- pretend a new Signal arrives.
+
+Simulation sends nothing, contacts nobody and activates no real authority.
 
 # Progressive disclosure
 
@@ -576,44 +799,43 @@ The product may eventually be extremely capable. The interface should still feel
 Default views show:
 
 - the decision the user needs to make;
-- current Connection/readiness;
+- current Source/Connection/readiness;
 - exact Audience/content;
 - important consequence;
-- approval/authority state.
+- approval/authority state;
+- why something is unavailable or waiting.
 
 Advanced implementation detail belongs behind Details.
 
-Do not turn Check In into a developer console by default.
+Do not turn Continuum into a developer console by default.
 
 # Future capability design test
 
 A normal person should eventually understand a request like:
 
 ```text
-Coordinate getting server access transferred before Friday.
-You can email Adam and Mike, use Discord, schedule one call, and update ClickUp.
-Do not touch billing or credentials.
+Watch approved sources for changes to this company.
+Put important changes in my Business brief.
+If a critical Signal is strongly supported, use my incident policy.
+If my connected provider adds a useful read-only capability, tell me what it does and test it.
 ```
 
-And the product should be able to show before execution:
+The product should be able to show:
 
+- which Sources are watched;
+- source freshness/health;
 - what AI can read;
 - who it may contact;
-- which Connections/tools it may use;
+- which Connections/capabilities it may use;
 - whether any step requires approval;
-- limits;
-- stop conditions.
+- which authority/fallback path applies;
+- limits/stop conditions;
+- what would happen in simulation.
 
-For a high-consequence case, the product should be equally explicit:
-
-```text
-If this contingency triggers, pay only invoice INV-123 up to $2,500 from the approved account, or ask the approved accountant to do it.
-```
-
-That should never visually collapse into a vague toggle labeled `Autonomous`.
+A newly discovered API/MCP capability should fit this model without redesigning the whole product.
 
 # Current boundary
 
 Today these ideas remain future design except for the Lab concepts and production Check In features explicitly documented elsewhere.
 
-Do not label WhatsApp, SMS, voice, financial execution, MCP runtime, external AI providers, Missions or autonomous coordination as implemented until their backend/provider/runtime layers actually exist.
+Do not label Sources/Signals monitoring, WhatsApp, SMS, voice, financial execution, MCP runtime, API/OpenAPI discovery, Missions, Control Center simulation, autonomous capability adoption or autonomous coordination as implemented until their backend/provider/runtime layers actually exist.
