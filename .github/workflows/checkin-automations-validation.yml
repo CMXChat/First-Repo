@@ -92,9 +92,10 @@ jobs:
           required_scenarios = ['Weekly planning review', 'Grace-window heads-up', 'AI briefing with review']
           required_directory = ['DIRECTORY READINESS', 'Typed Audience available', 'Open Directory']
           required_audience = [
-              'audienceSelectors', 'live_membership', 'Person', 'organization', 'group', 'label',
+              'audienceSelectors', 'live_membership', 'selector.type === "person"',
+              'selector.type === "organization"', 'selector.type === "group"', 'selector.type === "label"',
               'Who should this reach?', 'Unique people', 'Email ready', 'Phone ready',
-              'duplicates removed', 'data-lab-automations-audience'
+              'duplicates removed', 'Overlapping People are counted once', 'labAutomationsAudience'
           ]
           required_audience_css = [
               '.v4-audience-readiness', '.v4-audience-modal-backdrop', '.v4-audience-picker-list',
