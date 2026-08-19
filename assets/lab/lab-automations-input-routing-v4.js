@@ -63,6 +63,10 @@
     ];
   }
 
+  function fieldLabel(action, fieldId) {
+    return fieldDefinitions(action).find(field => field.id === fieldId)?.label || fieldId;
+  }
+
   function activeMethods(person) {
     const values = Array.isArray(person?.contactMethods)
       ? person.contactMethods.filter(item => item?.active !== false && item?.value)
@@ -163,9 +167,11 @@
   }
 
   function inputBindingsFor(automation, action) {
-    if (Array.isArray(action?.inputBindings)) return action.inputBindings;
     const store = readJson(INPUT_BINDINGS_KEY, { version: 1, automations: {} });
-    return store?.automations?.[inputKey(automation.id, action.id)] || [];
+    const saved = store?.automations?.[inputKey(automation.id, action.id)] || [];
+    if (Array.isArray(action?.inputBindings) && action.inputBindings.length) return action.inputBindings;
+    if (saved.length) return saved;
+    return Array.isArray(action?.inputBindings) ? action.inputBindings : [];
   }
 
   function bindingForField(automation, action, fieldId) {
@@ -243,6 +249,32 @@
       review.append(block);
     }
     block.innerHTML = `<span>INPUT ROUTING</span><div><strong>${mapped.length} mapped field${mapped.length === 1 ? "" : "s"}</strong><small>${mapped.length ? "Typed references point to specific receiving fields." : "Static instructions only. No dynamic field routing is configured."}</small></div><b>${mapped.length ? "LAB READY" : "OPTIONAL"}</b>`;
+  }
+
+  function augmentActionTest() {
+    const context = currentContext();
+    if (!context) return;
+    const result = document.querySelector(".v4-step-test-result:not([hidden])");
+    const list = result?.querySelector(".v4-action-test-list");
+    if (!list) return;
+    const articles = [...list.querySelectorAll("article")];
+    (context.automation.actions || []).forEach((action, index) => {
+      const article = articles[index];
+      if (!article) return;
+      const bindings = inputBindingsFor(context.automation, action);
+      let row = article.querySelector(".v43-test-routing");
+      if (!bindings.length) {
+        row?.remove();
+        return;
+      }
+      if (!row) {
+        row = document.createElement("div");
+        row.className = "v43-test-routing";
+        const paragraph = article.querySelector("p");
+        if (paragraph) paragraph.before(row); else article.append(row);
+      }
+      row.innerHTML = `<span>Input routing</span><em>${bindings.map(binding => `${esc(fieldLabel(action, binding.targetField))} ← ${esc(binding.label)}`).join(" · ")}</em>`;
+    });
   }
 
   function openRouter(actionId, fieldId) {
@@ -333,6 +365,11 @@
       return;
     }
     schedule();
+  }, true);
+
+  document.addEventListener("pointerup", event => {
+    if (!event.target.closest?.("[data-v4-test-step]")) return;
+    requestAnimationFrame(() => requestAnimationFrame(augmentActionTest));
   }, true);
 
   document.addEventListener("input", schedule, true);
