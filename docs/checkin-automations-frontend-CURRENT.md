@@ -1,60 +1,144 @@
 # Check In Automations Frontend — CURRENT
 
 Date: 2026-08-18
-Status: Active Continuum Lab v4 Automation experience
+Status: Active Continuum Lab Automations v4.1 experience with Directory v2 + typed Audience integration
 
-## Focused route
+# Focused route
 
 `https://db.cmxchat.com/lab/automations/`
 
-This is the canonical place to operate, prototype and test the Automation UX. `/lab/` remains the larger Continuum / Check In Lab workspace and links into this route.
+This is the canonical Automation operating/prototyping/testing route.
 
-The focused route remains Lab-only. Its CSP keeps `connect-src 'self'`. It must not call the production Check In API, execute providers, schedule authoritative work, publish a production Automation or claim a Draft is live.
+`/lab/` remains the broader Continuum / Check In Lab workspace.
 
-Strategic product direction is now canonical in:
+The focused route remains Lab-only:
+
+- CSP keeps `connect-src 'self'`;
+- no production API calls;
+- no provider execution;
+- no authoritative scheduling;
+- no real Publish;
+- no provider secrets;
+- no AI model call from Planner preview.
+
+Strategic direction:
 
 `docs/continuum-automations-master-plan-CURRENT.md`
 
-## Current frontend authority
+Directory/Audience truth:
 
-The route keeps the proven v3 Draft engine and layers v4 product behavior on top.
+`docs/checkin-directory-library-CURRENT.md`
 
-Current loaded files:
+# Current frontend authority
+
+The route keeps the proven v3 Draft engine and layers current product behavior on top.
+
+Loaded files:
 
 - `lab/automations/index.html`;
-- `assets/lab/lab-automations-app.css` — retained base/brand layer;
-- `assets/lab/lab-automations-experience-v3.css` — accepted responsive editor foundation;
-- `assets/lab/lab-automations-system-surface.css` — accepted system hierarchy/readability layer;
-- `assets/lab/lab-automations-final-qa.css` — pending-state and screenshot regression layer;
-- `assets/lab/lab-automations-platform-v4.css` — current v4 application/capability/mobile presentation;
-- `assets/lab/lab-automations-experience-v3.js` — browser-local Draft, normalization, autosave and five-stage editor authority;
-- `assets/lab/lab-automations-route-integration.js` — exact Draft/new deep links and return navigation only;
-- `assets/lab/lab-automations-system-surface.js` — retained system-surface adaptation;
-- `assets/lab/lab-automations-progressive-preview.js` — truthful new-Draft pending-state adapter;
-- `assets/lab/lab-automations-platform-v4.js` — current command-center, capability, flow-navigation, step-test, Planner-preview and Runs-preview layer;
-- `assets/lab/lab-automations-scenarios-v4.js` — expanded v3-compatible editable scenarios.
+- `assets/lab/lab-automations-app.css`;
+- `assets/lab/lab-automations-experience-v3.css`;
+- `assets/lab/lab-automations-system-surface.css`;
+- `assets/lab/lab-automations-final-qa.css`;
+- `assets/lab/lab-automations-platform-v4.css`;
+- `assets/lab/lab-automations-platform-v4-qa.css`;
+- `assets/lab/lab-automations-directory-v4.css`;
+- `assets/lab/lab-automations-audience-v4.css`;
+- `assets/lab/lab-automations-experience-v3.js`;
+- `assets/lab/lab-automations-route-integration.js`;
+- `assets/lab/lab-automations-system-surface.js`;
+- `assets/lab/lab-automations-progressive-preview.js`;
+- `assets/lab/lab-automations-platform-v4.js`;
+- `assets/lab/lab-automations-scenarios-v4.js`;
+- `assets/lab/lab-automations-directory-v4.js`;
+- `assets/lab/lab-automations-audience-v4.js`.
 
-The old focused v2 builder and its enhancement runtimes remain repository history. They are not loaded by `/lab/automations/` and are not current UX authority.
+The old focused v2 builder/enhancement files remain history. They are not loaded by the focused route.
 
-## Why v3 remains underneath v4
+# Layer responsibilities
 
-V3 already owns useful, regression-tested prototype behavior:
+## V3 behavior core
 
-- shared `cmx-lab-automations-v1` Draft compatibility;
+`lab-automations-experience-v3.js` owns:
+
+- `cmx-lab-automations-v1` Draft compatibility;
+- Draft normalization;
 - autosave/resume;
-- multiple ordered Actions;
-- reusable `action_ref` entries;
-- timing and repeat prototype fields;
-- deep links;
-- safe local simulation;
-- current target selection;
-- legacy compatibility normalization.
+- five-stage editor;
+- ordered Actions;
+- reusable `action_ref` behavior;
+- timing/repeat prototype fields;
+- target compatibility fields;
+- local simulation;
+- legacy shared-Lab compatibility fields.
 
-V4 intentionally does not create a second Automation data model. It changes how the user operates the same Drafts and introduces a scalable capability-catalog direction.
+## Progressive-preview layer
 
-Production must later rebuild accepted behavior in the protected React/frontend stack using typed backend services. LocalStorage adapters and DOM-presentation layers are not production architecture.
+Protects truthful new-Draft state.
 
-## Human workflow model
+Blank Draft begins as:
+
+- WHEN — Choose a trigger;
+- IF — Not set yet;
+- DO — Choose an action;
+- WAIT — Not set yet;
+- FINISH — Not set yet.
+
+Internal defaults/placeholders must never appear as user intent before they are chosen/confirmed.
+
+## V4 platform layer
+
+Owns the current application/command-center experience:
+
+- Automations / Templates / Runs views;
+- search;
+- Capability Catalog;
+- New Automation chooser;
+- interactive Flow Preview navigation;
+- per-stage local tests;
+- stronger preflight presentation;
+- Planner preview;
+- future Runs preview marked `RUNTIME OFF`;
+- desktop/mobile v4 application presentation.
+
+## V4 scenario layer
+
+Adds eight editable scenarios to the original five templates.
+
+Current total: **13 editable starting patterns**.
+
+## Directory integration layer
+
+Shows:
+
+- Directory People/Organization/Group totals;
+- Person email/phone readiness;
+- Organization member/readiness counts;
+- Directory readiness in Review;
+- link back to the main Directory.
+
+## Audience v4.1 layer
+
+Communication Actions now use the typed multi-selector Audience Lab adapter.
+
+Selectors can reference:
+
+- Person;
+- Organization;
+- Group;
+- Label.
+
+The Lab stores prototype fields:
+
+```text
+audienceSelectors[]
+audienceResolution.mode = live_membership
+audienceResolution.dedupe = person_id
+```
+
+The browser resolves current People, deduplicates by Person ID and previews email/phone readiness.
+
+# Human workflow model
 
 The accepted five stages remain:
 
@@ -64,88 +148,47 @@ The accepted five stages remain:
 - WAIT — start timing / recurrence presentation;
 - TEST — Review, Finish and simulation.
 
-Name and description remain metadata, not a blocking first screen.
+Name/description remain metadata.
 
 Finish remains inside Review.
 
-The backend preserves domain semantics instead of persisting these UI labels literally.
+# Command center
 
-## Command-center dashboard
+Current top-level views:
 
-The focused route is now an application surface.
-
-Current workspace navigation:
-
-- **Automations** — current Draft / Published / Archived prototype workflow list;
+- **Automations** — Draft / Published / Archived prototype definitions;
 - **Templates** — editable starting scenarios;
-- **Runs** — explicit future Runtime preview, labeled `RUNTIME OFF`.
+- **Runs** — future Runtime preview, explicitly `RUNTIME OFF`.
 
-The Automations view includes:
+The route should feel like an application, not a product landing page.
 
-- New Automation;
-- search;
-- system status;
-- lifecycle tabs;
-- actual Automation cards;
-- direct access to the capability catalog.
+Do not restore a billboard hero above the working Automations list.
 
-Do not restore a large landing-page hero above the working surface.
+# New Automation
 
-## New Automation entry points
-
-A normal manual click on `New automation` opens a chooser with:
+Normal `New automation` opens:
 
 1. Build manually;
-2. start from a scenario/template;
+2. start from scenario/template;
 3. AI Planner preview.
 
-Every path conceptually leads to the same Automation Draft model.
+Planner is visual/prototype behavior only and does not invoke a model.
 
-The AI Planner preview is intentionally non-functional as AI. It makes the future Planner entry point visible while performing no model request, provider call or production mutation.
-
-### Direct-new deep-link exception
-
-The established integration URL:
+## Direct-new exception
 
 `/lab/automations/?new=1&from=lab`
 
-must continue to open a blank Draft directly on Trigger.
+must still open a blank Draft directly on Trigger.
 
-The v4 layer explicitly bypasses its creation chooser while the one-shot `new=1` parameter is present. This protects the main-Lab bridge and current mobile regression contract.
+This protects the `/lab/` bridge and mobile regression contract.
 
-## Progressive Flow Preview
+# Flow Preview
 
-The accepted label remains **FLOW PREVIEW**.
+Accepted label: **FLOW PREVIEW**.
 
-Do not use `LIVE FLOW`. `LIVE` has a product-status meaning elsewhere in Continuum.
+Do not use `LIVE FLOW`.
 
-A new blank Draft must begin visibly incomplete:
-
-- WHEN — Choose a trigger;
-- IF — Not set yet;
-- DO — Choose an action;
-- WAIT — Not set yet;
-- FINISH — Not set yet.
-
-Rules:
-
-- Trigger is visually unselected until chosen;
-- optional Rules become `Always continue` only after that stage is confirmed;
-- the internal compatibility Action placeholder remains hidden until the user selects an Action;
-- Timing becomes `Immediately` only after the user confirms Timing without another start policy;
-- Finish requires explicit choice for a new blank Draft;
-- future stages remain unavailable until required earlier choices exist;
-- configured templates/scenarios show their full stored flow;
-- existing Drafts show their actual stored flow;
-- new progressive Draft UI confirmation uses `cmx-lab-automation-progress-v1` only as Lab presentation state.
-
-Production must preserve the principle: **never visually invent an unmade user selection**.
-
-## Flow as navigator
-
-V4 makes the visible flow interactive.
-
-Selecting a Flow Preview node navigates to its relevant configuration stage:
+V4 makes visible Flow Preview nodes navigable:
 
 - WHEN → Trigger;
 - IF → Rules;
@@ -153,48 +196,32 @@ Selecting a Flow Preview node navigates to its relevant configuration stage:
 - WAIT → Timing;
 - FINISH → Review.
 
-This is the current bridge toward the long-term split-editor model where the workflow remains visible while selected-step configuration happens beside it.
+The current flow remains linear. Real branch/subflow Runtime does not exist yet.
 
-The flow is still intentionally linear because real branch/subflow Runtime behavior does not exist yet.
+# Capability Catalog
 
-## Capability Catalog
+The browser-local Capability Catalog is a UX architecture prototype.
 
-V4 introduces a browser-local capability catalog as a UX architecture prototype.
+It supports:
 
-The catalog currently includes Trigger, Condition, Action and future Workflow-control concepts.
-
-Current prototype-usable entries proxy to existing v3 choices. Future entries are clearly labeled `LATER` and open an explanation instead of becoming executable.
-
-Examples of later-preview families include:
-
-- inbound email/reply events;
-- Directory and Library events;
-- Discord and SMS;
-- acknowledgement;
-- Library writes;
-- Directory changes;
-- approval;
-- approved webhook/API capability;
-- explicit inter-step WAIT;
-- branch;
-- reusable Automation/subflow.
-
-Showing a future capability in the catalog does not mean the backend, Connection, Runtime or provider exists.
-
-The catalog UI supports:
-
-- category browsing;
+- Trigger;
+- Condition;
+- Action;
+- future Workflow-control concepts;
 - search;
-- Lab-now versus later status;
-- existing reusable Lab Actions.
+- categories;
+- `LAB NOW` versus `LATER` status;
+- reusable Lab Actions.
 
-The strategic destination is documented in the master plan. The future server should expose trusted typed registry metadata instead of copying this browser-local catalog as execution authority.
+Later-preview concepts can include inbound email/reply, Discord/SMS, Directory/Library events, acknowledgement, approval, explicit WAIT, branch, reusable subflow and constrained HTTP/API.
 
-## Templates and scenarios
+A catalog item labeled `LATER` is not backend/runtime/provider capability.
 
-Templates create ordinary editable Drafts.
+Production should eventually receive trusted typed capability metadata from server-owned registries.
 
-The original five built-in patterns remain:
+# Templates / scenarios
+
+Original five:
 
 - Missed check-in escalation;
 - Daily briefing;
@@ -202,7 +229,7 @@ The original five built-in patterns remain:
 - AI prepares report;
 - Multi-step emergency contact.
 
-V4 adds eight more v3-compatible scenarios:
+V4 additions:
 
 - Weekly planning review;
 - Grace-window heads-up;
@@ -213,198 +240,213 @@ V4 adds eight more v3-compatible scenarios:
 - No-ack follow-up;
 - AI briefing with review.
 
-Current total: **13 editable starting patterns**.
+Every scenario creates an ordinary editable shared Draft.
 
-The additional scenario layer writes normal shared Lab Drafts and reopens the exact new Draft through the existing `?automation=<id>` route. It does not introduce a scenario-specific persistence model.
+# Actions
 
-## Actions
+Current v3 behavior remains:
 
-Current v3 Action behavior remains:
-
-- ordered multiple steps;
-- up/down controls;
-- drag/drop on pointer-capable devices;
+- ordered multiple Actions;
+- move up/down;
+- pointer drag/drop;
 - duplicate;
 - pause/enable;
 - remove;
 - replace type;
-- protected target selection;
-- searchable picker;
 - reusable Lab Action references.
 
-Current simple inline prototype types remain:
+Current simple inline Action types remain:
 
 - Notify a person;
 - Send email;
 - AI task;
 - Manual review.
 
-`Send email` is still a definition/simulation concept only. It does not send.
+Names are compatibility/user labels. `Notify a person` can now carry a multi-selector Audience in Lab.
 
-The v4 picker wraps these current options in the wider capability-catalog UX and previews future families without making them active.
+`Send email` remains simulation/definition only and does not send.
 
-## Rules
+# Typed Audience v4.1
 
-Current prototype Rule types remain limited to the existing v3 concepts.
+For communication Actions, clicking the old Target control is intercepted by the Audience manager.
+
+The modal allows multiple selections across People, Organizations, Groups and Labels.
+
+Resolution behavior:
+
+1. directly selected People are included;
+2. Organizations expand to current People;
+3. Groups expand their current Person/Organization/Label selectors;
+4. Labels expand matching People;
+5. overlapping People are deduplicated by stable Person ID;
+6. email-ready and phone-ready counts are shown;
+7. resolved People are previewed before applying.
+
+## V3 compatibility behavior
+
+V3 still expects `targetRef` / `targetLabel`.
+
+The v4.1 adapter preserves that without treating it as canonical audience identity:
+
+- one direct Person/Organization selector mirrors into `targetRef`;
+- multi-selector/Group/Label audiences write a readable compatibility `targetLabel`;
+- canonical Lab intent remains `audienceSelectors[]`;
+- the adapter triggers the normal v3 Save before writing Audience changes;
+- it then updates the shared Draft and reloads the exact Automation so v3 rehydrates/preserves the additional fields on later autosaves.
+
+This reload is Lab compatibility scaffolding. Production must use normal protected Draft mutations and return updated typed state without a browser reload requirement.
+
+# Rules
+
+Current Rule types remain the existing v3 prototype concepts.
 
 Multiple Rules support:
 
 - Match all / AND;
 - Match any / OR.
 
-Future backend Conditions must remain typed and server-validated. Do not introduce a free-form executable condition language.
+Future backend Conditions remain typed/server-validated. No free-form executable condition language.
 
-## Timing
+# Timing
 
-The current WAIT stage continues to represent the action-sequence start policy and recurrence presentation.
+Current WAIT stage still presents action-sequence start timing and recurrence.
 
-Current start modes:
+Start modes:
 
 - Immediate;
 - Delay;
 - Exact date & time.
 
-Current repeat choices:
+Repeat choices:
 
-- no repeat;
+- none;
 - daily;
 - weekly;
 - custom;
 - until acknowledged.
 
-Preserve the backend distinction:
+Keep separate in backend architecture:
 
 - Trigger eligibility;
-- action-sequence start policy;
-- future explicit inter-step WAIT;
+- start policy;
+- future inter-step WAIT;
 - recurrence;
 - retry.
 
-The browser never becomes authoritative scheduling infrastructure.
+Browser never owns authoritative scheduling.
 
-## Per-stage local testing
+# Testing / Review
 
-V4 adds **TEST THIS STEP** to the current stage.
+Every stage can show **TEST THIS STEP** local explanatory checks.
 
-These tests are explanatory local checks. They inspect the current Draft presentation and explicitly state that no external event source, provider, server scheduler or Runtime was used.
+Review contains:
 
-This is the product bridge toward real protected testing later, where safe sample events and fake-provider results can supply typed inputs/outputs.
+- complete flow;
+- Finish behavior;
+- local validation;
+- Directory readiness;
+- Audience preflight for communication Actions;
+- local animated simulation;
+- local simulation log.
 
-## Review and simulation
+Simulation must never send a message, call a webhook, run an external AI model, mutate an outside account, create authoritative scheduling or publish a production Automation.
 
-Review remains the full preflight/simulation surface.
+Future protected Review should use deterministic backend readiness output and exact blocking reasons.
 
-V4 adds a Continuum preflight boundary that clearly distinguishes:
+# Runs preview
 
-- Draft structure;
-- Lab-only simulation;
-- Runtime being off.
+The Runs view exists only to establish the future operating model.
 
-Existing local validation and full animated simulation remain.
+It is labeled `RUNTIME OFF` and must never turn local simulation into fake authoritative Run history.
 
-Simulation must never:
-
-- send email/SMS/Discord;
-- call a webhook;
-- run an external AI model;
-- mutate a connected account;
-- schedule authoritative work;
-- publish a production Automation.
-
-Future production Review should use deterministic backend readiness output and exact blocking reasons, not cosmetic health percentages.
-
-## Runs preview
-
-The v4 dashboard includes a Runs surface so the future operating model is visible early.
-
-It is explicitly a preview and displays `RUNTIME OFF`.
-
-It must not transform local simulations into fake Runs or imply execution history exists.
-
-Future authoritative Runs belong to the server Runtime and should expose exact occurrence, step, attempt, wait, input/output and error history.
-
-## Mobile contract
-
-Phone UX remains first-class, especially Samsung/Chrome-sized screens.
+# Mobile contract
 
 Preserve:
 
 - one primary decision area at a time;
-- readable copy without zooming;
 - large tap targets;
-- horizontally scrollable stage rail where needed;
-- one-column Action and capability cards;
-- mobile modal/bottom-sheet presentation;
-- safe-area-aware controls;
-- no nested editor scroll traps;
-- no horizontal page overflow;
-- rich black dark mode plus separately usable light mode;
+- readable copy without zooming;
+- horizontally scrollable stage rail when necessary;
+- one-column Action/capability cards;
+- mobile modal/bottom-sheet behavior;
+- full-width Audience selector sheet with one-column options;
+- safe-area-aware action footer;
+- no nested scroll traps;
+- no horizontal overflow;
+- rich black dark mode and separately usable light mode;
 - reduced-motion support.
 
-Do not turn the future product into a scaled-down desktop node canvas.
+Do not make mobile a shrunken desktop node canvas.
 
-## Shared Lab stores
+# Shared Lab stores
 
-Current prototype stores remain:
+Current relevant stores:
 
 - Automations: `cmx-lab-automations-v1`;
 - Automation UI progress: `cmx-lab-automation-progress-v1`;
-- CRM/Directory: `cmx-lab-crm-v1`;
+- Directory: `cmx-lab-crm-v1`;
+- Directory UI preference: `cmx-lab-directory-ui-v2` on the main Lab route;
 - Inventory: `cmx-lab-inventory-v1`;
 - reusable Actions: `cmx-lab-actions-v1`;
-- v4 platform marker: `cmx-lab-automations-platform-v4`.
+- v4 platform marker/preferences: `cmx-lab-automations-platform-v4`.
 
-These are browser-local prototype adapters.
+`audienceSelectors[]` lives inside the normal Automation Draft object, not a second Audience localStorage database.
 
-Production must use PostgreSQL/server Drafts and protected domain services.
+# Production migration rule
 
-## Reusable Action references
+Production must rebuild accepted behavior in the protected React/FastAPI/PostgreSQL application.
 
-The focused builder continues to store reusable Lab Action references explicitly as `action_ref` prototype entries.
+Do not copy:
 
-It does not silently map saved SMS/Webhook/Digital Account/etc. definitions into the smaller inline Action list.
+- localStorage persistence;
+- DOM patching;
+- browser audience resolution as authority;
+- compatibility `targetLabel` as canonical audience identity;
+- reload-after-audience-save behavior;
+- client-generated execution/Audit truth.
 
-Future production must resolve, authorize and version/snapshot reusable definitions server-side for reproducible execution.
+Production needs:
 
-## Backend handoff
-
-Canonical backend truth remains under:
-
-`CMXChat/jay-app/specs/003-server-checkin/`
-
-Production implementation must preserve:
-
-- server-owned Draft persistence;
-- typed Trigger / Condition / Action / outcome registries;
-- stable protected IDs;
-- ordered multiple Actions;
+- server Draft persistence;
+- optimistic concurrency;
+- protected Directory services;
+- typed Audience selectors;
+- canonical server audience resolution/readiness;
 - immutable published AutomationVersions;
-- protected Directory/Audience and Library references;
-- timing/recurrence semantics;
-- server authorization;
-- future scheduler/worker authority;
-- immutable Run/Audit history.
+- future Runtime recipient snapshots;
+- generated frontend client integration.
 
-The v4 capability catalog does **not** authorize immediate backend widening. The already validated Phase 2A production migration remains the next backend release boundary before definition breadth is expanded.
+# Backend truth
 
-## Regression protection
+Current validated Phase 2A backend is still much smaller than this Lab surface.
 
-`.github/workflows/checkin-automations-validation.yml` now protects:
+Current real backend definition subset:
 
-- syntax for v3, route, system, progressive, v4 platform and v4 scenario scripts;
-- v4 asset load order;
-- strict Lab CSP and no production API calls;
-- no `eval`, dynamic Function or MutationObserver in presentation layers;
-- v3 Draft/action compatibility;
-- progressive pending-state contract;
-- v4 command-center markers;
-- Automations / Templates / Runs surfaces;
-- capability-catalog presence;
-- expanded scenario presence;
-- exact direct-new mobile deep link opening the Trigger editor;
-- `FLOW PREVIEW` remaining the accepted label;
-- per-stage local-test control;
-- no old name-first wizard;
-- no old `Build the flow` landing-page hero.
+- Trigger: `manual`, `checkin_grace_start`, `checkin_grace_expiry`;
+- Action: `manual_review`;
+- start policy: `immediate`;
+- simple Finish;
+- no real Conditions;
+- no production Directory v2/Audience service;
+- no provider execution;
+- no Runtime;
+- no AI execution.
 
-Keep CI aligned whenever the focused route changes.
+The Phase 2A production migration/deployment remains the immediate backend boundary before broad new Directory/Automation schema work.
+
+# Regression protection
+
+Current workflows should protect:
+
+- v3 syntax/compatibility core;
+- progressive blank-Draft truth;
+- v4 command center;
+- v4 scenarios;
+- Directory integration;
+- Audience v4.1 source/styling;
+- self-only focused CSP;
+- no production API reference;
+- direct-new mobile behavior;
+- no `MutationObserver`, `eval` or dynamic Function in current v4 adapters;
+- desktop/mobile smoke markers;
+- the distinction between Lab audience resolution and production authority.
