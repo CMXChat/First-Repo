@@ -10,7 +10,9 @@ on:
       - 'assets/lab/lab-automations-operations-v7.css'
       - 'assets/lab/lab-automations-operations-v7-future.css'
       - 'assets/lab/lab-automations-operations-v7-polish.css'
+      - 'assets/lab/lab-automations-operations-v7-desktop-density.css'
       - 'tests/continuum-automations-operations-v7.test.js'
+      - 'tests/continuum-automations-desktop-density-v7.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
   pull_request:
     branches: [main]
@@ -21,7 +23,9 @@ on:
       - 'assets/lab/lab-automations-operations-v7.css'
       - 'assets/lab/lab-automations-operations-v7-future.css'
       - 'assets/lab/lab-automations-operations-v7-polish.css'
+      - 'assets/lab/lab-automations-operations-v7-desktop-density.css'
       - 'tests/continuum-automations-operations-v7.test.js'
+      - 'tests/continuum-automations-desktop-density-v7.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
 
 permissions:
@@ -40,6 +44,7 @@ jobs:
           node --check assets/lab/lab-automations-operations-v7.js
           node --check assets/lab/lab-automations-operations-v7-polish.js
           node tests/continuum-automations-operations-v7.test.js
+          node tests/continuum-automations-desktop-density-v7.test.js
 
       - name: Render desktop and mobile operating surfaces
         run: |
@@ -75,6 +80,12 @@ jobs:
           grep -q 'v7-automation-row' /tmp/continuum-auto-v7-desktop.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-desktop.html
 
+          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-v7-desktop-editor.html
+          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v7-desktop-editor.html
+          grep -q 'v7-editor-status' /tmp/continuum-auto-v7-desktop-editor.html
+          grep -q 'LOCAL DRAFT' /tmp/continuum-auto-v7-desktop-editor.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-desktop-editor.html
+
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-mobile-dashboard.html
@@ -92,4 +103,4 @@ jobs:
           grep -q 'FLOW PREVIEW' /tmp/continuum-auto-v7-mobile-editor.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-mobile-editor.html
 
-          echo 'Automations v7 operating workspace rendered on desktop and 390x844 mobile.'
+          echo 'Automations v7 operating workspace rendered on desktop editor, dashboard and 390x844 mobile.'
