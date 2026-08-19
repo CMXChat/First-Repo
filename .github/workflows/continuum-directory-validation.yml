@@ -56,7 +56,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate Directory, Planner, Audience and data integration
+      - name: Validate Directory, typed Planner, Audience and data integration
         run: |
           set -euo pipefail
           node --check assets/lab/lab-directory-v2.js
@@ -92,9 +92,12 @@ jobs:
               'Duplicate', 'Automation usage', 'document.documentElement.dataset.labDirectory = "v2"'
           ]
           required_planner = [
-              'AI SETUP · PREVIEW', 'CHANGE PLAN CONTRACT', 'Directory', 'Automations',
-              'No model is connected', 'no data mutation', 'no hidden AI authority',
-              'labDirectoryPlanner = "preview-v1"'
+              'CONTINUUM PLANNER · PREVIEW', 'TYPED CHANGE PLAN · PREVIEW', 'TYPED PLAN PREVIEW · LOCAL',
+              'directory.match_or_create_people', 'directory.upsert_group', 'library.create_folder',
+              'library.create_document', 'automation.create_draft', 'automation.reference_audience',
+              'automation.reference_content', 'automation.add_wait', 'Full Continuum setup',
+              'NO AI CALL · NO DATA MUTATION · NO HIDDEN AUTHORITY',
+              'labDirectoryPlanner = "typed-v2"'
           ]
           required_audience = [
               'audienceSelectors', 'live_membership', 'person_id', 'Who should this reach?',
@@ -127,7 +130,7 @@ jobs:
 
           checks = [
               (required_directory, directory, 'Directory v2'),
-              (required_planner, planner, 'Directory Planner preview'),
+              (required_planner, planner, 'typed Continuum Planner preview'),
               (required_audience, audience, 'Audience v4.1'),
               (required_css, directory_css, 'Directory v2 styling'),
               (required_polish, polish_css, 'Directory polish'),
@@ -138,22 +141,27 @@ jobs:
           ]
           for terms, source, label in checks:
               for term in terms:
-                  if term not in source: sys.exit(f'missing {label}: {term}')
+                  if term not in source:
+                      sys.exit(f'missing {label}: {term}')
 
           if 'Typed Audience available' not in integration or '.v4-directory-strip' not in integration_css:
               sys.exit('missing Directory-to-Automations integration contract')
           for term in required_docs:
-              if term not in master + handoff: sys.exit(f'missing current Directory/Audience/Planner documentation: {term}')
+              if term not in master + handoff:
+                  sys.exit(f'missing current Directory/Audience/Planner documentation: {term}')
           for term in ['lab-directory-v2.css', 'lab-directory-v2-polish.css', 'lab-directory-planner-preview.css', 'lab-directory-v2.js', 'lab-directory-planner-preview.js']:
-              if term not in loader: sys.exit(f'Lab loader missing Directory asset: {term}')
+              if term not in loader:
+                  sys.exit(f'Lab loader missing Directory asset: {term}')
           for term in ['lab-automations-directory-v4.css', 'lab-automations-directory-v4.js', 'lab-automations-audience-v4.css', 'lab-automations-audience-v4.js', 'lab-automations-intelligence-v4.js', 'lab-automations-input-routing-v4.js']:
-              if term not in focused: sys.exit(f'focused Automations missing Directory/Audience/data asset: {term}')
+              if term not in focused:
+                  sys.exit(f'focused Automations missing Directory/Audience/data asset: {term}')
 
           combined = directory + planner + integration + audience + intelligence + inputs
-          for forbidden in ['api.cmxchat.com', 'MutationObserver', 'eval(', 'new Function(']:
-              if forbidden in combined: sys.exit(f'forbidden Directory/Audience/Planner pattern: {forbidden}')
+          for forbidden in ['api.cmxchat.com', 'MutationObserver', 'eval(', 'new Function(', 'fetch(', 'XMLHttpRequest', 'WebSocket(']:
+              if forbidden in combined:
+                  sys.exit(f'forbidden Directory/Audience/Planner pattern: {forbidden}')
 
-          print('Directory v2, AI setup Change Plan preview, Audience v4.1 and Automations v4.3 data contracts passed.')
+          print('Directory v2, typed Continuum Change Plan preview, Audience v4.1 and Automations data contracts passed.')
           PY
 
       - name: Build isolated Lab snapshot
@@ -193,7 +201,7 @@ jobs:
 
           dump http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-desktop.html
           grep -q 'data-lab-directory="v2"' /tmp/directory-desktop.html
-          grep -q 'data-lab-directory-planner="preview-v1"' /tmp/directory-desktop.html
+          grep -q 'data-lab-directory-planner="typed-v2"' /tmp/directory-desktop.html
           grep -q 'class="lab-directory-v2"' /tmp/directory-desktop.html
           grep -q '>People<' /tmp/directory-desktop.html
           grep -q '>Organizations<' /tmp/directory-desktop.html
@@ -206,7 +214,7 @@ jobs:
 
           dump --window-size=390,844 http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-mobile.html
           grep -q 'data-lab-directory="v2"' /tmp/directory-mobile.html
-          grep -q 'data-lab-directory-planner="preview-v1"' /tmp/directory-mobile.html
+          grep -q 'data-lab-directory-planner="typed-v2"' /tmp/directory-mobile.html
           grep -q 'class="lab-directory-v2"' /tmp/directory-mobile.html
           grep -q 'Search Directory' /tmp/directory-mobile.html
           grep -q 'AI setup' /tmp/directory-mobile.html
@@ -216,4 +224,4 @@ jobs:
           grep -q 'data-lab-automations-audience="v4-1"' /tmp/automations-directory.html
           ! grep -qi 'Loading Automations' /tmp/automations-directory.html
 
-          echo 'Continuum Directory AI setup preview and Automations data integration passed desktop/mobile smoke.'
+          echo 'Continuum Directory typed Change Plan preview and Automations data integration passed desktop/mobile smoke.'
