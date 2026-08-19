@@ -41,7 +41,7 @@
     setText('.hero-kicker', 'Your information, people, tools and AI in one private operating layer');
     const heroLead = qs('.continuum-hero .hero-lead');
     if (heroLead) {
-      heroLead.innerHTML = '<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and maintain the State that matters now.</span><span class="hero-lead-second">It can follow rules you set, use approved tools and eventually keep important work moving across hours, days and changing conditions. As more Sources and capabilities connect through APIs, MCP, providers and future devices, Continuum can gain new ways to perceive, reason and act while keeping authority, policy and history coherent.</span>';
+      heroLead.innerHTML = '<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and understand what is true right now.</span><span class="hero-lead-second">It can brief you, follow rules you set, use approved tools and eventually keep important work moving across hours, days and changing conditions. As more services, APIs, MCP servers and devices connect, Continuum can gain new ways to see what is happening, reason about it and act while keeping authority, policy and history coherent.</span>';
     }
 
     const heroTruth = qs('.hero-truth-row');
