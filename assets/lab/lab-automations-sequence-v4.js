@@ -37,13 +37,9 @@
     return automation ? { store, automation } : null;
   }
 
-  function controlKey(automationId) {
-    return automationId;
-  }
-
   function controlsFor(automation) {
     const fallback = readJson(CONTROLS_KEY, { version: 1, automations: {} });
-    const saved = fallback?.automations?.[controlKey(automation.id)] || [];
+    const saved = fallback?.automations?.[automation.id] || [];
     const inline = Array.isArray(automation.flowControls) ? automation.flowControls : [];
     const raw = inline.length ? inline : saved;
     const validAnchors = new Set((automation.actions || []).slice(0, -1).map(action => action.id));
@@ -53,7 +49,7 @@
   function persistControls(context, controls) {
     const store = readJson(CONTROLS_KEY, { version: 1, automations: {} });
     if (!store.automations) store.automations = {};
-    store.automations[controlKey(context.automation.id)] = controls;
+    store.automations[context.automation.id] = controls;
     localStorage.setItem(CONTROLS_KEY, JSON.stringify(store));
 
     context.automation.flowControls = controls;
@@ -106,6 +102,31 @@
     if (Number(d.hours)) parts.push(`${Number(d.hours)}h`);
     if (Number(d.minutes)) parts.push(`${Number(d.minutes)}m`);
     return parts.join(" ") || "Set duration";
+  }
+
+  function patchFlowSummary(context) {
+    const controls = controlsFor(context.automation);
+    const nodes = [...document.querySelectorAll(".v3-flow-node")];
+    const doNode = nodes.find(node => node.querySelector(":scope > span")?.textContent.trim().toUpperCase().startsWith("DO"));
+    if (!doNode) return;
+
+    let badge = doNode.querySelector(".v44-flow-summary");
+    if (!controls.length) {
+      badge?.remove();
+      return;
+    }
+
+    if (!badge) {
+      badge = document.createElement("small");
+      badge.className = "v44-flow-summary";
+      const open = doNode.querySelector(".v4-flow-open");
+      if (open) open.before(badge); else doNode.append(badge);
+    }
+
+    const conditions = controls.filter(control => control.type === "condition").length;
+    const waits = controls.filter(control => control.type === "wait").length;
+    badge.textContent = `${conditions} IF · ${waits} WAIT`;
+    badge.title = "Advanced inter-step flow controls · Lab preview";
   }
 
   function patchSequence(context) {
@@ -267,6 +288,7 @@
     const context = currentContext();
     if (!context || !document.querySelector(".v3-editor-page")) return;
     document.documentElement.dataset.labAutomationsSequence = "v4-4";
+    patchFlowSummary(context);
     patchSequence(context);
     patchReview(context);
   }
