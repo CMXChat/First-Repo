@@ -104,6 +104,12 @@
     });
   }
 
+  function jumpToView(name) {
+    setView(name);
+    tabs.find((item) => item.dataset.ccTab === name)?.focus({ preventScroll: true });
+    document.querySelector('.cc-view-tabs')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
   function openDrawer(drawer) {
     [whyDrawer, simDrawer].forEach((item) => {
       if (!item) return;
@@ -162,7 +168,7 @@
   });
 
   document.querySelectorAll('[data-cc-tab-link]').forEach((trigger) => {
-    trigger.addEventListener('click', () => setView(trigger.dataset.ccTabLink));
+    trigger.addEventListener('click', () => jumpToView(trigger.dataset.ccTabLink));
   });
 
   document.querySelectorAll('[data-why]').forEach((trigger) => {
@@ -203,6 +209,7 @@
     simResultTitle.textContent = item.title;
     simResultText.textContent = item.text;
     simResult.hidden = false;
+    simResult.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   });
 
   const autonomyButton = document.getElementById('autonomyInfo');
