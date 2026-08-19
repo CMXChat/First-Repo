@@ -1,0 +1,36 @@
+name: Library Lab validation
+
+on:
+  push:
+    paths:
+      - 'lab/library/**'
+      - 'assets/lab/library-*.js'
+      - 'assets/lab/library-*.css'
+      - 'docs/continuum-library-lab-CURRENT.md'
+      - 'docs/continuum-shared-app-shell-CURRENT.md'
+      - 'tests/continuum-library-standalone-v1.test.js'
+      - '.github/workflows/library-lab-validation.yml'
+  pull_request:
+    paths:
+      - 'lab/library/**'
+      - 'assets/lab/library-*.js'
+      - 'assets/lab/library-*.css'
+      - 'docs/continuum-library-lab-CURRENT.md'
+      - 'docs/continuum-shared-app-shell-CURRENT.md'
+      - 'tests/continuum-library-standalone-v1.test.js'
+      - '.github/workflows/library-lab-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  library-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate standalone Library contract
+        run: node tests/continuum-library-standalone-v1.test.js
