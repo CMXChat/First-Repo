@@ -25,6 +25,8 @@ assert.match(html, /Natural language can express intent\. Structured policy cont
 // The final one-time pass owns rendered architecture wording after the older clarity transform.
 assert.match(finalJs, /dataset\.continuumArchitectureAligned = '20260819'/);
 assert.match(finalJs, /dataset\.continuumPowerClarity = '20260819'/);
+assert.match(finalJs, /dataset\.continuumGoals = 'ready'/);
+assert.match(finalJs, /dataset\.continuumControlCenter = 'ready'/);
 assert.match(finalJs, /AI provides reasoning\. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity\./);
 assert.match(finalJs, /A durable operating layer for changing intelligence and expanding capability\./);
 
@@ -39,6 +41,7 @@ for (const state of [
   'Incident active'
 ]) assert.match(finalJs, new RegExp(state));
 assert.match(finalJs, /Knowledge keeps useful history\. State keeps the current condition/);
+assert.match(finalJs, /Keeps durable knowledge, operational State, policy, incidents, authority and future Runtime records\./);
 
 // The real-world example demonstrates a process surviving time, replies and a closed app.
 assert.match(baseJs, /clarity-story-section clarity-story-prose/);
@@ -73,6 +76,14 @@ for (const boundary of ['Model', 'Provider', 'Capability', 'Policy']) {
 }
 assert.match(finalJs, /Authority stays fixed unless policy changes\./);
 
+// Goals/Missions sit above ordinary Automations and preserve explicit success/stop boundaries.
+assert.match(finalJs, /continuum-goal-note/);
+assert.match(finalJs, /LATER · GOALS \/ MISSIONS/);
+assert.match(finalJs, /Automations handle rules\. Goals let Continuum pursue an outcome\./);
+assert.match(finalJs, /GOAL<\/span><i>→<\/i><span>PLAN<\/span><i>→<\/i><span>ACT<\/span><i>→<\/i><span>OBSERVE<\/span><i>→<\/i><span>REPLAN/);
+assert.match(finalJs, /Help an authorized person pursue a suitable job within 60 days/);
+assert.match(finalJs, /Replanning can change strategy\. It cannot silently change hard constraints, success criteria or authority\./);
+
 // Capability growth includes a safe improvement path instead of hidden self-rewrite language.
 assert.match(finalJs, /LATER · LIVE CAPABILITY/);
 assert.match(finalJs, /DISCOVER/);
@@ -95,6 +106,16 @@ assert.match(finalJs, /PREFLIGHT/);
 assert.match(finalJs, /REVIEW/);
 assert.match(finalJs, /Executable capability and authority remain protected server decisions\./);
 
+// Control Center keeps background work inspectable and exposes Pause Autonomy + Simulation without claiming they exist today.
+assert.match(finalJs, /continuum-control-center-note/);
+assert.match(finalJs, /LATER · CONTROL CENTER/);
+assert.match(finalJs, /Continuum should stay inspectable even when work keeps moving in the background\./);
+for (const view of ['NOW', 'WAITING', 'UPCOMING', 'HISTORY']) assert.match(finalJs, new RegExp(view));
+assert.match(finalJs, /Pause Autonomy/);
+assert.match(finalJs, /Block new autonomous consequential Actions while approved observation, State maintenance, drafting and briefings can continue\./);
+assert.match(finalJs, /Simulation/);
+assert.match(finalJs, /without performing real side effects/);
+
 // New compact visuals have desktop, dark-mode, phone and print coverage.
 for (const selector of [
   '.continuum-state-strip',
@@ -104,7 +125,8 @@ for (const selector of [
   '.continuum-senses-strip',
   '.continuum-model-routing',
   '.continuum-boundary-grid',
-  '.continuum-capability-example'
+  '.continuum-capability-example',
+  '.continuum-forward-note'
 ]) assert.ok(finalCss.includes(selector), `Missing power-clarity styling: ${selector}`);
 assert.match(finalCss, /@media\(max-width:900px\)/);
 assert.match(finalCss, /@media\(max-width:680px\)/);
@@ -144,4 +166,4 @@ for (const forbidden of ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(
   assert.doesNotMatch(finalJs, new RegExp(forbidden.replace('(', '\\(')));
 }
 
-console.log('Continuum /doc power, adaptability, State, Signals, Runtime and authority clarity smoke passed.');
+console.log('Continuum /doc power, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
