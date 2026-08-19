@@ -106,20 +106,26 @@
 
   function openDrawer(drawer) {
     [whyDrawer, simDrawer].forEach((item) => {
-      if (item && item !== drawer) item.dataset.open = 'false';
+      if (!item) return;
+      const active = item === drawer;
+      item.dataset.open = active ? 'true' : 'false';
+      item.setAttribute('aria-hidden', active ? 'false' : 'true');
     });
-    drawer.dataset.open = 'true';
     backdrop.dataset.open = 'true';
-    document.body.style.overflow = 'hidden';
+    backdrop.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('cc-drawer-open');
     drawer.querySelector('button, [href], [tabindex="0"]')?.focus();
   }
 
   function closeDrawers() {
     [whyDrawer, simDrawer].forEach((drawer) => {
-      if (drawer) drawer.dataset.open = 'false';
+      if (!drawer) return;
+      drawer.dataset.open = 'false';
+      drawer.setAttribute('aria-hidden', 'true');
     });
     backdrop.dataset.open = 'false';
-    document.body.style.overflow = '';
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cc-drawer-open');
   }
 
   function renderWhy(key) {
@@ -155,8 +161,19 @@
     });
   });
 
+  document.querySelectorAll('[data-cc-tab-link]').forEach((trigger) => {
+    trigger.addEventListener('click', () => setView(trigger.dataset.ccTabLink));
+  });
+
   document.querySelectorAll('[data-why]').forEach((trigger) => {
     trigger.addEventListener('click', () => renderWhy(trigger.dataset.why));
+    if (trigger.tagName !== 'BUTTON') {
+      trigger.addEventListener('keydown', (event) => {
+        if (!['Enter', ' '].includes(event.key)) return;
+        event.preventDefault();
+        renderWhy(trigger.dataset.why);
+      });
+    }
   });
 
   document.querySelectorAll('[data-close-drawer]').forEach((button) => button.addEventListener('click', closeDrawers));
@@ -193,10 +210,11 @@
 
   const command = document.getElementById('commandButton');
   command?.addEventListener('click', () => {
-    command.querySelector('span').textContent = 'Command surface is a Lab placeholder';
+    const label = command.querySelector('span');
+    if (!label) return;
+    label.textContent = 'Command surface is a Lab placeholder';
     window.setTimeout(() => {
-      const label = command.querySelector('span');
-      if (label) label.textContent = 'Search, jump or ask Continuum';
+      label.textContent = 'Search, jump or ask Continuum';
     }, 1800);
   });
 
@@ -208,6 +226,7 @@
     if (date) date.textContent = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
   }
 
+  closeDrawers();
   updateClock();
   window.setInterval(updateClock, 30000);
   applyTheme(root.dataset.theme === 'dark' ? 'dark' : 'light');
