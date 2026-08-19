@@ -194,6 +194,15 @@ assert.match(finalCss, /@media\(max-width:420px\)/);
 assert.match(finalCss, /html\[data-theme="dark"\]/);
 assert.match(finalCss, /@media print/);
 
+// Theme aliases and explicit dark-flow guards prevent white-on-white pills like the August 19 mobile regression.
+assert.match(finalCss, /--surface:var\(--paper-raised,#ffffff\)/);
+assert.match(finalCss, /--text:var\(--ink-strong,#0d1b2d\)/);
+assert.match(finalCss, /--accent:var\(--blue,#2563eb\)/);
+assert.match(finalCss, /html\[data-theme="dark"\] \.continuum-forward-flow span/);
+assert.match(finalCss, /html\[data-theme="dark"\] \.continuum-forward-flow i/);
+assert.match(finalCss, /border-color:color-mix\(in srgb,var\(--line-strong/);
+assert.match(finalCss, /overflow-wrap:anywhere/);
+
 // Existing readability and product-map safeguards remain in place.
 assert.match(qaCss, /\.clarity-product-map-section/);
 assert.match(qaCss, /@media\(max-width:680px\)/);
@@ -227,4 +236,4 @@ for (const forbidden of ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(
   assert.doesNotMatch(finalJs, new RegExp(forbidden.replace('(', '\\(')));
 }
 
-console.log('Continuum /doc intro, Check In routes, information quality, authorized continuity, architecture evolution, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
+console.log('Continuum /doc intro, Check In routes, information quality, authorized continuity, architecture evolution, dark-mode contrast, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
