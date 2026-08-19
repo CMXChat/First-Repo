@@ -1,0 +1,32 @@
+name: Directory Lab validation
+
+on:
+  push:
+    paths:
+      - 'lab/directory/**'
+      - 'assets/lab/directory-*.js'
+      - 'assets/lab/directory-*.css'
+      - 'tests/continuum-directory-standalone-v1.test.js'
+      - '.github/workflows/directory-lab-validation.yml'
+  pull_request:
+    paths:
+      - 'lab/directory/**'
+      - 'assets/lab/directory-*.js'
+      - 'assets/lab/directory-*.css'
+      - 'tests/continuum-directory-standalone-v1.test.js'
+      - '.github/workflows/directory-lab-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  directory-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate standalone Directory contract
+        run: node tests/continuum-directory-standalone-v1.test.js
