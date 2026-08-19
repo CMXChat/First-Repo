@@ -75,7 +75,7 @@ jobs:
 
           for term in [
               'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
-              'data-preflight-choice', 'data-preflight-defer', 'labPlannerPreflight = "v1"'
+              'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset', 'labPlannerPreflight = "v1"'
           ]:
               if term not in preflight:
                   raise SystemExit(f'Planner preflight missing: {term}')
@@ -100,7 +100,7 @@ jobs:
               'lab-continuum-planner-contract-v1.js?v=20260819-v1preflight1',
               'lab-continuum-planner-preflight-v1.css?v=20260819-v1',
               'lab-continuum-planner-review-v1.css?v=20260819-v1preflight1',
-              'lab-continuum-planner-preflight-v1.js?v=20260819-v1',
+              'lab-continuum-planner-preflight-v1.js?v=20260819-v1r1',
               'lab-continuum-planner-review-v1.js?v=20260819-v1preflight1',
               'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2'
           ]
