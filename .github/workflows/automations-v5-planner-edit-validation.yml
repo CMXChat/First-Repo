@@ -6,6 +6,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-reset-v5.js'
       - 'assets/lab/lab-automations-planner-edit-v5.css'
       - 'assets/lab/lab-continuum-planner-preflight-v1.js'
       - 'assets/lab/lab-continuum-planner-review-v1.js'
@@ -16,6 +17,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-reset-v5.js'
       - 'assets/lab/lab-automations-planner-edit-v5.css'
       - 'assets/lab/lab-continuum-planner-preflight-v1.js'
       - 'assets/lab/lab-continuum-planner-review-v1.js'
@@ -36,11 +38,13 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-planner-v5.js
+          node --check assets/lab/lab-automations-planner-reset-v5.js
           node --check tests/continuum-automations-planner-edit-probe.js
 
           python - <<'PY'
           from pathlib import Path
           source = Path('assets/lab/lab-automations-planner-v5.js').read_text(encoding='utf-8')
+          reset = Path('assets/lab/lab-automations-planner-reset-v5.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-planner-edit-v5.css').read_text(encoding='utf-8')
           html = Path('lab/automations/index.html').read_text(encoding='utf-8')
 
@@ -51,18 +55,25 @@ jobs:
               if term not in source:
                   raise SystemExit(f'missing Planner edit contract: {term}')
 
-          for term in ['.v5-planner-edit-note', '.v5-planner-row-remove', 'min-height:44px']:
+          for term in ['data-v5-planner-reset-proposal', 'Reset proposal', 'data-v5-planner-preview', 'labAutomationsPlannerReset']:
+              if term not in reset:
+                  raise SystemExit(f'missing Planner reset contract: {term}')
+
+          for term in ['.v5-planner-edit-note', '.v5-planner-row-remove', '.v5-planner-reset-proposal', 'min-height:44px']:
               if term not in css:
                   raise SystemExit(f'missing Planner edit style contract: {term}')
 
           if 'lab-automations-planner-v5.js?v=20260819-v5edit1' not in html:
               raise SystemExit('focused route is not cache-busted to editable Planner source')
-          if 'lab-automations-planner-edit-v5.css?v=20260819-v5edit1' not in html:
-              raise SystemExit('focused route missing Planner edit CSS')
+          if 'lab-automations-planner-reset-v5.js?v=20260819-v5edit2' not in html:
+              raise SystemExit('focused route missing Planner reset layer')
+          if 'lab-automations-planner-edit-v5.css?v=20260819-v5edit2' not in html:
+              raise SystemExit('focused route missing current Planner edit CSS')
 
-          for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
-              if forbidden in source:
-                  raise SystemExit(f'forbidden Planner edit boundary pattern: {forbidden}')
+          for checked in [source, reset]:
+              for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
+                  if forbidden in checked:
+                      raise SystemExit(f'forbidden Planner edit boundary pattern: {forbidden}')
           PY
 
       - name: Build editable Planner test page
@@ -75,7 +86,7 @@ jobs:
           fs.writeFileSync('lab/automations/planner-edit-test.html', page, 'utf8');
           NODE
 
-      - name: Exercise plan editing at 360px and 390px
+      - name: Exercise plan editing and reset at 360px and 390px
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
@@ -95,7 +106,7 @@ jobs:
             local out="/tmp/planner-edit-${width}.html"
 
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-              --window-size="${width},${height}" --virtual-time-budget=20000 --dump-dom \
+              --window-size="${width},${height}" --virtual-time-budget=22000 --dump-dom \
               'http://127.0.0.1:8000/lab/automations/planner-edit-test.html' > "$out"
 
             grep -q 'data-qa-planner-edit-complete="true"' "$out"
@@ -114,9 +125,15 @@ jobs:
             grep -q 'data-qa-planner-edit-count="true"' "$out"
             grep -q 'data-qa-planner-edit-only-action-disabled="true"' "$out"
             grep -q 'data-qa-planner-edit-only-action-label="true"' "$out"
+            grep -q 'data-qa-planner-edit-reset-tap="true"' "$out"
+            grep -q 'data-qa-planner-edit-actions-reset="2"' "$out"
+            grep -q 'data-qa-planner-edit-wait-reset="1"' "$out"
+            grep -q 'data-qa-planner-edit-wait-operation-reset="true"' "$out"
+            grep -q 'data-qa-planner-edit-runtime-reset="true"' "$out"
+            grep -q 'data-qa-planner-edit-reset-gone="true"' "$out"
             grep -q 'data-qa-planner-edit-fit="true"' "$out"
           }
 
           check_width 360 800
           check_width 390 844
-          echo 'Editable Automation Planner proposal behavior passed at 360px and 390px.'
+          echo 'Editable Automation Planner proposal remove/reset behavior passed at 360px and 390px.'
