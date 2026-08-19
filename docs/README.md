@@ -7,6 +7,8 @@ Repository: `CMXChat/First-Repo`
 
 Current source, tests, workflows and `*-CURRENT.md` contracts take priority over older dated notes. Older Spaces, Brief, CRM and Automation prototypes remain decision history only.
 
+For **backend implementation sequence**, `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-BACKEND-ORDER-OF-WORK-CURRENT.md` is the current execution-order overlay. It wins over older sequencing language while specialized contracts continue to govern domain semantics, security, authority, reliability and data integrity. It does not authorize production migration/deployment by itself.
+
 # Start here
 
 1. `checkin-context-handoff-CURRENT.md` — current cross-repository truth and release boundary.
@@ -24,13 +26,15 @@ Current source, tests, workflows and `*-CURRENT.md` contracts take priority over
 13. `checkin-files-CURRENT.md` — binary File direction.
 14. `checkin-ai-product-design-CURRENT.md` — broader AI product direction.
 15. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
-16. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md` — durable Knowledge/State/Authority/Policy/Audit invariants.
-17. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATION-OPERATIONS-WORKSPACE-CONTRACT.md` — future protected list/readiness/lifecycle/Run/capability semantics for the accepted v7 workspace.
-18. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md` — desktop/mobile Control Center, Pause Autonomy, re-contact and simulation.
-19. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md` — Sources, API/MCP discovery, typed adapters and bounded self-improvement.
-20. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOAL-DRIVEN-ARCHITECTURE-EVOLUTION-CONTRACT.md` — governed Goal → architecture-gap → test/simulate/release/measure evolution path.
-21. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
-22. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md` — protected Signals/Observation/State architecture.
+16. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — current production/repository truth and release handoff.
+17. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-BACKEND-ORDER-OF-WORK-CURRENT.md` — current recommended backend execution sequence.
+18. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md` — durable Knowledge/State/Authority/Policy/Audit invariants.
+19. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATION-OPERATIONS-WORKSPACE-CONTRACT.md` — future protected list/readiness/lifecycle/Run/capability semantics for the accepted v7 workspace.
+20. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md` — desktop/mobile Control Center, Pause Autonomy, re-contact and simulation.
+21. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md` — Sources, API/MCP discovery, typed adapters and bounded self-improvement.
+22. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOAL-DRIVEN-ARCHITECTURE-EVOLUTION-CONTRACT.md` — governed Goal → architecture-gap → test/simulate/release/measure evolution path.
+23. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
+24. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md` — protected Signals/Observation/State architecture.
 
 # Core architecture in one view
 
@@ -49,6 +53,23 @@ Canonical consequence path:
 The capability ceiling can move as providers/models/tools improve. Authority still comes from policy.
 
 Evidence can change State or eligibility. It never creates authority.
+
+# Current backend execution order
+
+The shortest current path to a real end-to-end Continuum is:
+
+```text
+Stage 0  controlled Phase 2A production release
+→ Stage 1  protected continuity.md production acceptance proof
+→ Stage 2  minimum Person/ContactMethod + Connection/SenderIdentity + definition-only Email
+→ Stage 3  durable Runtime with fake provider
+→ Stage 4  one real provider under direct owner control
+→ Stage 5  minimum standing/fallback authority for one unattended Check In continuity action
+```
+
+The real protected React Automation builder may proceed in parallel after the Stage 2 APIs/models it needs are stable enough. Broader continuity, Signals, Knowledge ingestion, AI Tasks, Planner, Goals and Agent behavior follow the staged order in the backend order-of-work contract.
+
+Existing Check In/Incident state is intentionally the first deterministic continuity condition, so the general Signals platform does not block the first Runtime/continuity workflow. AI comes after durable control and must not become a required dependency for owner-marked deterministic essential continuity actions.
 
 # Current key routes
 
