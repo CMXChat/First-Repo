@@ -41,37 +41,50 @@ Noindex master explanation of Continuum. It remains under a separate clarity fre
 
 Broader Continuum experiment workspace.
 
-Its Records surface now runs **Directory v2** with People, Organizations, Groups, many-to-many membership concepts, ContactMethods/readiness, Labels, Person relationships, Activity/notes, duplicate warnings, Automation usage and polished desktop/mobile treatment.
+Records runs **Directory v2** with People, Organizations, Groups, membership concepts, ContactMethods/readiness, Labels, Person relationships, Activity/notes, duplicate warnings, Automation usage and polished desktop/mobile treatment.
 
-Directory also has an **AI setup preview** establishing the future natural-language environment-authoring flow:
+Directory also has an **AI setup preview** for future natural-language environment authoring:
 
 `Describe → Plan → Preflight → Review → Apply`
 
-The Lab preview performs no model call and no data mutation.
+The preview performs no model call and no mutation.
 
 ## `/lab/automations/`
 
-Focused Automation operating/testing surface, currently **v4.3**.
+Focused Automation operating/testing surface, currently **v4.4**.
 
 It keeps the proven v3 Draft/autosave core and adds:
 
-- Automations / Templates / Runs command-center navigation;
+- Automations / Templates / Runs command center;
 - searchable Capability Catalog;
 - interactive FLOW PREVIEW;
 - 13 editable scenarios;
 - Directory readiness;
 - Audience v4.1 Person/Organization/Group/Label selectors;
-- Intelligence v4.2 contextual recommendations and typed `Use data` references;
+- Intelligence v4.2 contextual recommendations + typed `Use data`;
 - richer local `TEST THIS STEP` traces;
-- input routing v4.3 from typed source outputs into named Action fields;
+- Input Routing v4.3 from typed source outputs into named Action fields;
+- **Advanced Flow v4.4** with linear inter-step `IF / Continue if…` and `WAIT / Wait between steps` authoring preview;
 - manual / template / Planner-preview creation paths;
 - mobile-specific selectors/modals.
 
+The v4.4 correction matters: top-level IF is pre-action, so a condition that depends on an Action output belongs after that Action. The current inter-step IF is a linear gate only. YES/NO branching remains later. Inter-step WAIT is distinct from start timing and needs future persisted Runtime state.
+
 The route stays isolated: `connect-src 'self'`, no production API/provider execution, no real scheduling/Publish, no secrets and no external AI model call.
+
+## Automation consolidation direction
+
+V4.4 demonstrates that the long-term workflow domain should become a coherent ordered typed sequence/graph while preserving the simple WHEN / IF / DO / WAIT / TEST rail for beginner navigation.
+
+Likely semantic shape:
+
+`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+
+Do not treat the current DOM/localStorage layers as production architecture. Branch nodes come only after durable Runtime routing semantics are designed.
 
 ## AI environment-authoring direction
 
-The long-term goal is that the user can describe how they want Continuum organized and AI can prepare the whole setup using the same domain services as human UI.
+The long-term goal is that the user can describe how they want Continuum organized and AI prepares the setup through the same typed services as human UI.
 
 Canonical flow:
 
@@ -103,8 +116,6 @@ Production currently performs no general Automation/provider/AI execution.
 
 Contains static HTML/CSS/JavaScript routes, Lab/product proving surfaces, current frontend/product contracts and browser/static validation workflows.
 
-Static pages cannot execute Python or access PostgreSQL directly.
-
 ### `CMXChat/jay-app`
 
 Owns FastAPI/Python, PostgreSQL/SQLModel, Alembic, protected services/APIs, tests, generated OpenAPI client, official React/TypeScript path, current Check In backend and validated Phase 2A Library + typed Automation source.
@@ -115,7 +126,7 @@ Browser/frontend code reaches protected data through backend services. It never 
 
 The first Phase 2A Library + typed Automation source is validated on `jay-app/main` but is **not production-migrated/deployed**.
 
-Before broad backend capability/Directory/Planner expansion, use the canonical Phase 2A production runbook in `jay-app`.
+Before broad backend capability/Directory/Planner/flow-control expansion, use the canonical Phase 2A production runbook in `jay-app`.
 
 Lab visuals do not redefine production truth.
 
@@ -132,6 +143,8 @@ Preserve:
 - prompt text never grants authority;
 - no arbitrary Python/JavaScript/shell/SQL/eval workflow logic;
 - typed Automation data flow uses validated source/output/input references;
+- inter-step WAIT is durable server state when real, never a browser sleep;
+- branching is typed routing, not arbitrary expression/code execution;
 - no unrestricted webhook/API escape hatch;
 - no broad document-wide MutationObserver loops in accepted Check In/Lab paths;
 - Lab simulation/future capability must be labeled truthfully;
