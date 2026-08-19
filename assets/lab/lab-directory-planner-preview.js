@@ -54,6 +54,25 @@
       ]
     },
     {
+      id: "signals",
+      label: "Online signals",
+      prompt: "Watch approved online sources for meaningful CMX mentions, use bounded AI to classify importance, and prepare an Automation that reviews important signals.",
+      operations: [
+        { id: "signals-watch", type: "signals.create_watch", detail: "Create CMX mention Watch", note: "Configuration only. No source is contacted from this Lab preview.", produces: "temp:signals:watch:cmx" },
+        { id: "signals-source", type: "signals.attach_source", detail: "Attach approved news/web source", note: "A real source must be explicitly approved and constrained by Connection/source policy.", uses: ["temp:signals:watch:cmx"], dependsOn: ["signals-watch"] },
+        { id: "signals-filter", type: "signals.set_filter", detail: "Match meaningful CMX mentions", note: "Deterministic filters, dedupe and freshness belong to the protected Signals service.", uses: ["temp:signals:watch:cmx"], dependsOn: ["signals-source"] },
+        { id: "signals-interpret", type: "signals.set_interpretation", detail: "Classify relevance and priority", note: "Future AI interpretation is bounded and must retain supporting Observation evidence.", uses: ["temp:signals:watch:cmx"], dependsOn: ["signals-filter"] },
+        { id: "signals-automation", type: "automation.create_draft", detail: "Create important-signal review Automation", note: "Ordinary Automation Draft. No Runtime or provider execution.", produces: "temp:automation:signals" },
+        { id: "signals-reference", type: "automation.reference_signal", detail: "Reference CMX mention Watch as Trigger context", note: "The protected Automation service later owns the real typed Signal Trigger definition.", uses: ["temp:automation:signals", "temp:signals:watch:cmx"], dependsOn: ["signals-watch", "signals-automation"] },
+        { id: "signals-trigger", type: "automation.set_trigger", detail: "Set Signal Watch matched Trigger", note: "Definition-only until protected Signals services and durable Runtime exist.", uses: ["temp:automation:signals", "temp:signals:watch:cmx"], dependsOn: ["signals-reference"] },
+        { id: "signals-review", type: "automation.add_action", detail: "Add Manual Review Action", note: "A bounded review step keeps the proving workflow consequence-free.", uses: ["temp:automation:signals"], dependsOn: ["signals-automation"] }
+      ],
+      blockers: [
+        "Protected Signals service required before any Watch can observe online sources.",
+        "Connection required before an authenticated or provider-backed Signal source can be observed."
+      ]
+    },
+    {
       id: "continuum",
       label: "Full Continuum setup",
       prompt: "Organize my family and emergency contacts, create a continuity folder with instructions, and build a missed Check In workflow that reaches family first and a backup contact later.",
@@ -102,17 +121,17 @@
     modal = document.createElement("div");
     modal.className = "dir2-ai-backdrop";
     modal.innerHTML = `<section class="dir2-ai-modal" role="dialog" aria-modal="true" aria-labelledby="dir2AiTitle">
-      <header><div><span>CONTINUUM PLANNER · PREVIEW</span><h2 id="dir2AiTitle">Describe how you want Continuum organized.</h2><p>The future Planner will translate natural language into one reviewed typed Change Plan across Directory, Automations and Library. This Lab surface has no AI model or mutation authority.</p></div><button type="button" data-dir2-ai-close aria-label="Close">×</button></header>
+      <header><div><span>CONTINUUM PLANNER · PREVIEW</span><h2 id="dir2AiTitle">Describe how you want Continuum organized.</h2><p>The future Planner will translate natural language into one reviewed typed Change Plan across Directory, Signals, Automations and Library. This Lab surface has no AI model, observation or mutation authority.</p></div><button type="button" data-dir2-ai-close aria-label="Close">×</button></header>
       <div class="dir2-ai-body">
-        <label class="dir2-ai-prompt"><span>WHAT SHOULD CONTINUUM SET UP?</span><textarea data-dir2-ai-prompt placeholder="Example: Add my accountant, connect her to my company, label her finance, create a Finance group, and build a monthly review Automation."></textarea></label>
+        <label class="dir2-ai-prompt"><span>WHAT SHOULD CONTINUUM SET UP?</span><textarea data-dir2-ai-prompt placeholder="Example: Add my accountant, organize my Finance group, watch an approved source for relevant changes, and build a review Automation."></textarea></label>
         <div class="dir2-ai-examples"><span>TRY A TYPED PLAN EXAMPLE</span><div>${EXAMPLES.map(example => `<button type="button" data-dir2-ai-example="${esc(example.id)}">${esc(example.label)}</button>`).join("")}</div></div>
         <section class="dir2-ai-contract" data-dir2-ai-result>
           <span>TYPED CHANGE PLAN · PREVIEW</span>
           <div class="dir2-ai-flow"><b>1 · DESCRIBE</b><i>→</i><b>2 · PLAN</b><i>→</i><b>3 · PREFLIGHT</b><i>→</i><b>4 · REVIEW</b><i>→</i><b>5 · APPLY</b></div>
-          <p>A real Planner will return allowlisted typed operations, stable references, conflicts and permission requirements before anything changes.</p>
+          <p>A real Planner will return allowlisted typed operations, stable references, conflicts and permission requirements before anything changes or any approved source is observed.</p>
         </section>
       </div>
-      <footer><span>NO AI CALL · NO DATA MUTATION · NO HIDDEN AUTHORITY</span><div><button type="button" data-dir2-ai-close>Close</button><button type="button" class="primary" data-dir2-ai-preview>Preview Change Plan</button></div></footer>
+      <footer><span>NO AI CALL · NO DATA MUTATION · NO ONLINE OBSERVATION · NO HIDDEN AUTHORITY</span><div><button type="button" data-dir2-ai-close>Close</button><button type="button" class="primary" data-dir2-ai-preview>Preview Change Plan</button></div></footer>
     </section>`;
     document.body.append(modal);
     document.body.classList.add("dir2-ai-open");
@@ -129,7 +148,7 @@
   }
 
   function blockersMarkup(blockers = []) {
-    if (!blockers.length) return `<div class="dir2-ai-gates"><div><b>PREFLIGHT</b><span>No fixed-example blocker is represented. Real server preflight still validates identity, scope, authority and dependencies.</span></div></div>`;
+    if (!blockers.length) return `<div class="dir2-ai-gates"><div><b>PREFLIGHT</b><span>No fixed-example blocker is represented. Real server preflight still validates identity, scope, sources, authority and dependencies.</span></div></div>`;
     return `<div class="dir2-ai-gates">${blockers.map(blocker => `<div><b>PREFLIGHT</b><span>${esc(blocker)}</span></div>`).join("")}</div>`;
   }
 
@@ -138,12 +157,12 @@
     const planBlockers = verdict && !verdict.ok
       ? [...example.blockers, `Local plan dependency validation found ${verdict.errors.length} issue${verdict.errors.length === 1 ? "" : "s"}.`]
       : example.blockers;
-    return `<span>TYPED PLAN PREVIEW · LOCAL</span><h3>${esc(example.label)}</h3><p class="dir2-ai-intent">“${esc(example.prompt)}”</p>${operationsMarkup(example.operations)}${blockersMarkup(planBlockers)}<p>This is a fixed product example. Plan-local <code>temp:</code> references are temporary planning handles only. Continuum did not interpret the text, call a model or mutate any domain.</p>`;
+    return `<span>TYPED PLAN PREVIEW · LOCAL</span><h3>${esc(example.label)}</h3><p class="dir2-ai-intent">“${esc(example.prompt)}”</p>${operationsMarkup(example.operations)}${blockersMarkup(planBlockers)}<p>This is a fixed product example. Plan-local <code>temp:</code> references are temporary planning handles only. Continuum did not interpret the text, call a model, observe an online source or mutate any domain.</p>`;
   }
 
   function genericContract() {
     const value = modal?.querySelector("[data-dir2-ai-prompt]")?.value.trim() || "Your natural-language setup request";
-    return `<span>CHANGE PLAN CONTRACT · NO AI CALL</span><h3>Planner request</h3><p class="dir2-ai-intent">“${esc(value)}”</p><div class="dir2-ai-gates"><div><b>INTENT</b><span>Interpret the requested outcome without treating prompt text as authority.</span></div><div><b>TYPED PLAN</b><span>Propose allowlisted operations, dependencies and temporary plan-local references against known Directory, Automation and Library services.</span></div><div><b>PREFLIGHT</b><span>Resolve duplicates, stable IDs, stale revisions, missing fields, authority and cross-domain dependencies.</span></div><div><b>REVIEW</b><span>Show exact proposed changes, dependency chains, conflicts and which operations require explicit confirmation.</span></div><div><b>APPLY</b><span>Normal protected domain services replace temporary refs with authoritative IDs as approved operations succeed.</span></div></div><p>This free-text Lab control does not interpret the request. Use a fixed example to inspect the current typed-plan vocabulary and dependency model.</p>`;
+    return `<span>CHANGE PLAN CONTRACT · NO AI CALL</span><h3>Planner request</h3><p class="dir2-ai-intent">“${esc(value)}”</p><div class="dir2-ai-gates"><div><b>INTENT</b><span>Interpret the requested outcome without treating prompt text as authority.</span></div><div><b>TYPED PLAN</b><span>Propose allowlisted operations, dependencies and temporary plan-local references against known Directory, Signals, Automation and Library services.</span></div><div><b>PREFLIGHT</b><span>Resolve duplicates, stable IDs, source readiness, stale revisions, missing fields, authority and cross-domain dependencies.</span></div><div><b>REVIEW</b><span>Show exact proposed changes, dependency chains, conflicts and which operations require explicit confirmation.</span></div><div><b>APPLY</b><span>Normal protected domain services replace temporary refs with authoritative IDs as approved operations succeed. Signal source observation remains a separate protected ingestion path.</span></div></div><p>This free-text Lab control does not interpret the request. Use a fixed example to inspect the current typed-plan vocabulary and dependency model.</p>`;
   }
 
   document.addEventListener("click", event => {
