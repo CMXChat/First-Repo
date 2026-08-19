@@ -1,7 +1,7 @@
 # Continuum Product Identity and `/doc/` Contract - CURRENT
 
 Date: 2026-08-19
-Status: Canonical product identity and public `/doc/` contract after the Continuum core, Goals/Missions, Signals/State, authority, live-world capability, Runtime power-clarity, Control Center direction and rendered-copy reconciliation
+Status: Canonical product identity and public `/doc/` contract after the Continuum core, Goals/Missions, Signals/State, authority, live-world capability, Runtime power clarity, Control Center direction, human-first opening and first-class Check In routing
 
 # Product identity
 
@@ -10,7 +10,7 @@ Status: Canonical product identity and public `/doc/` contract after the Continu
 Use these names consistently:
 
 - **Continuum** = the whole durable private control environment.
-- **Check In** = current protected application/backend program name in code/specs and the live proof-of-life/timing foundation.
+- **Check In** = the current protected application/backend program name in code/specs and the live proof-of-life/timing foundation.
 - **Afterlife** = The Dead Man Switch continuity experience built on the same foundation.
 - **Directory** = People, Organizations, relationships, contact methods and saved audiences.
 - **Library** = protected content, files, versions and durable saved knowledge.
@@ -55,11 +55,25 @@ Product principles:
 
 `https://db.cmxchat.com/doc/` is the master public noindex explanation of Continuum.
 
-It should explain the product to a first-time reader while staying truthful about current implementation status.
+It should let a first-time reader understand the product from ordinary language, then progressively expose deeper architecture.
 
-It is a document first. Visuals support the explanation instead of replacing it.
+The page is a document first. Visuals support the explanation.
 
-The goal of the August 19 power-clarity pass is specific: a reader should understand how Continuum becomes powerful when it has live information, durable State, Runtime, expanding capability and later durable Goals without turning `/doc/` into a product manual or speculative feature wall.
+A reader should leave understanding that Continuum can eventually:
+
+- connect useful information, people, files, services and AI;
+- know what is true now through durable State;
+- notice meaningful changes through approved Sources and Signals;
+- use different approved intelligence for different jobs;
+- keep work moving through durable Runtime;
+- pursue longer Goals with explicit success and stop conditions;
+- gain new capabilities as APIs, MCP, providers and devices improve;
+- remain governed by explicit authority and policy;
+- explain meaningful actions through durable provenance and Audit.
+
+The page must keep current implementation status explicit while explaining the longer-term architecture.
+
+# Stable reading path
 
 The eight stable anchors remain:
 
@@ -85,24 +99,30 @@ Current visible Contents direction:
 08 · Roadmap
 ```
 
-# `/doc/` opening
+Do not add another top-level section only to surface one future concept. Goals, Signals, Control Center and capability growth fit inside the existing reading path unless the product genuinely needs a new primary domain explanation later.
+
+# Human-first opening
+
+The opening should explain the human value before asking a first-time reader to decode architecture terms.
 
 Current hero direction:
 
 **Kicker**
 
-`Knowledge, authority, rules and AI in one private layer`
+`Your information, people, tools and AI in one private operating layer`
 
 **Lead**
 
-> Continuum keeps useful context, current state, authority and policy connected over time. It can brief you while you are here, carry approved work forward when you leave, and follow a continuity plan if you cannot respond.
+> Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and understand what is true right now.
+
+> It can brief you, follow rules you set, use approved tools and eventually keep important work moving across hours, days and changing conditions. As more services, APIs, MCP servers and devices connect, Continuum can gain new ways to see what is happening, reason about it and act while keeping authority, policy and history coherent.
 
 **Three ideas**
 
 ```text
-Keeps durable context
-Expands with new capabilities
-Acts inside published authority
+Keeps context + current State
+Grows with new tools + intelligence
+Acts inside authority you set
 ```
 
 The hero also teaches:
@@ -110,6 +130,68 @@ The hero also teaches:
 `BUILT TO OUTLIVE THE MODEL`
 
 Models, tools, services and interfaces can change while Continuum keeps durable knowledge, authority, policy and history around them.
+
+The first paragraph should remain human. The rest of the page can introduce `State`, `Policy`, `Authority`, `Runtime` and other exact architecture terms with examples.
+
+# Check In is a first-class product route
+
+Check In is the only current LIVE protected Continuum product surface and the foundation that proved server-owned timing, State, policy history, Incidents and Audit behavior.
+
+`/doc/` should never make Spaces and Automation Lab appear to be the only places a reader can go next.
+
+Current route hierarchy:
+
+## Opening hero
+
+Primary action:
+
+`Open Check In · LIVE`
+
+Secondary action:
+
+`See how Continuum works`
+
+The second action keeps the reader inside `/doc/` and continues the explanation.
+
+## Desktop toolbar
+
+The primary product action points to:
+
+`/checkin/`
+
+with label:
+
+`Open Check In`
+
+The mobile toolbar may hide this action when screen space requires it. The hero and footer keep the destination obvious on mobile.
+
+## Continuity section
+
+The current Check In timing explanation includes a contextual link:
+
+`Open the live Check In app`
+
+This connects the explanation directly to the protected experience that implements the live timer today.
+
+## Closing destinations
+
+The footer presents three clear destinations with truthful status:
+
+```text
+LIVE
+Open Check In
+Protected proof of life, timing and activity
+
+LAB
+Explore Spaces
+Context and briefing experience
+
+LAB
+Open Automation Lab
+Build and test workflow definitions
+```
+
+The close should visually distinguish the LIVE Check In route while keeping Spaces and Automations easy to explore.
 
 # Core lesson
 
@@ -125,7 +207,7 @@ See what is happening
 
 Approved live information may eventually come from messages, files, calendars, financial data, APIs, MCP, direct updates and other typed Sources.
 
-Do not imply those live Sources all exist today.
+Keep LIVE/LAB/NEXT/LATER status clear so future-source examples never read like current production claims.
 
 ## State must feel concrete
 
@@ -146,13 +228,13 @@ Public explanation:
 
 > Knowledge keeps useful history. State keeps the current condition that policy, AI and Runtime can use for the next decision.
 
-This is the key distinction between remembering what happened and knowing what is true now.
+This distinguishes remembering what happened from knowing what is true now.
 
-The technical explanation should also reinforce that consequential operational State becomes protected server-backed truth when implemented. It does not live only in model context or browser state.
+Consequential operational State becomes protected server-backed truth when implemented. Browser state and model context do not replace that authority.
 
 # One real workflow
 
-The prose-led example after the first operating loop should demonstrate what durable Runtime actually means.
+The prose-led example after the first operating loop demonstrates what durable Runtime actually means.
 
 Current scenario:
 
@@ -171,13 +253,13 @@ Compact path:
 
 `Access missing → State updated → Policy checked → Contact → Wait → Reply → Continue`
 
-The example remains prose-led. Do not convert it into a giant workflow board.
+The example remains prose-led. Avoid turning it into a large workflow dashboard.
 
 ## Explainability receipt
 
 The same scenario contains one small `WHY DID CONTINUUM DO THAT?` receipt.
 
-It should make Audit feel like a real product capability by showing the causal chain through fields such as:
+It should make Audit feel useful by showing the causal chain through fields such as:
 
 ```text
 Trigger
@@ -188,26 +270,26 @@ Capability
 Result
 ```
 
-The public UI can summarize those fields. Protected backend refs and exact versions remain authoritative.
+The public UI can summarize these fields. Protected backend refs and exact versions remain authoritative.
 
 # AI + Authority lesson
 
-The canonical section heading is:
+Canonical section heading:
 
 `The intelligence can change while the control layer stays durable`
 
-The plain-English explanation should include:
+Plain-English explanation:
 
 > AI provides reasoning. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity.
 
 The lesson should make these ideas obvious:
 
 - models are replaceable;
-- Continuum keeps durable context/State around the model;
-- new tools/services/devices can expand technical capability;
+- Continuum keeps durable context and State around the model;
+- new tools, services and devices can expand technical capability;
 - server-side policy remains the enforcement point;
 - friendly authority concepts can include Observe, Prepare, Ask, Standing authority, Fallback authority and Never;
-- these labels never replace the typed backend grant/policy truth;
+- the friendly labels never replace typed backend grant/policy truth;
 - model quality and authority are separate.
 
 The capability visual should preserve:
@@ -220,7 +302,7 @@ and the principle:
 
 # Model routing lesson
 
-The existing model strip should now explain that Continuum may eventually use different approved intelligence for different jobs.
+Continuum may eventually use different approved intelligence for different jobs.
 
 Examples may include:
 
@@ -232,7 +314,7 @@ Examples may include:
 
 Selection may depend on capability, privacy, availability, cost and policy.
 
-The compact four-part distinction is:
+Compact distinction:
 
 ```text
 Model      = can this intelligence handle the task?
@@ -243,9 +325,9 @@ Policy     = is that tool allowed to run here?
 
 Public rule:
 
-> Changing the model does not change the authority.
+> Authority stays fixed unless policy changes.
 
-This distinction matters because Continuum may route around a model/provider limitation when another approved option exists, while policy remains enforceable.
+Continuum may route around a model/provider limitation when another approved option exists. Policy remains enforceable.
 
 # Planner note
 
@@ -261,13 +343,13 @@ Boundary:
 
 > Planner can propose new configuration and policy. Executable capability and authority remain protected server decisions.
 
-Natural language is intent. Protected typed domain services remain authoritative.
+Natural language expresses intent. Protected typed domain services remain authoritative.
 
 # Signals + State lesson
 
 Signals remain visibly **LATER**.
 
-The page teaches Signals in two places without creating a separate giant section.
+The page teaches Signals in two places without creating another major top-level section.
 
 ## Sensing strip in Information
 
@@ -295,8 +377,6 @@ Public boundary:
 
 Potential future Sources may include APIs, webhooks, feeds, constrained webpages, approved search/news providers, MCP resources, account/project event streams and future approved devices.
 
-Do not imply current production already performs live monitoring.
-
 # Live capability extension lesson
 
 `/doc/` should explain that Continuum can grow as APIs, MCP, tools, providers and devices improve.
@@ -305,7 +385,7 @@ Future public capability lifecycle:
 
 `DISCOVER → MAP → TEST → SIMULATE → POLICY → ENABLE`
 
-The backend contract is more detailed:
+Backend lifecycle:
 
 `DISCOVER → NORMALIZE → CLASSIFY → MAP → TEST → SIMULATE → REVIEW/POLICY → ENABLE → MONITOR → VERSION/DEPRECATE`
 
@@ -321,17 +401,11 @@ The page may name broad future capability families such as:
 - smart devices;
 - future technology with suitable interfaces.
 
-These are direction examples. LIVE/LAB/NEXT/LATER status must remain truthful.
-
 Public rule:
 
 > Adding capability expands what Continuum can potentially do. Permission remains separate.
 
-## Safe self-improvement example
-
-The capability note should show one practical form of improvement without implying hidden production self-rewrite.
-
-Current example:
+## Safe improvement example
 
 A workflow repeatedly stops because deployment access is missing. Continuum could eventually identify a compatible GitHub or deployment capability, prepare the integration mapping and tests, simulate what would change and surface the setup for approval or an already-authorized adoption policy.
 
@@ -339,17 +413,19 @@ Public summary:
 
 > Capability growth and permission growth stay separate.
 
+Deeper goal-driven architecture evolution lives in the backend architecture contracts. The public page only needs enough to show that Continuum can notice capability gaps and evolve through governed paths.
+
 # Knowledge / State / Spaces lesson
 
 Directory, Library, Sources/Signals and Spaces should remain understandable without engineering knowledge.
 
-- Directory keeps stable identity/relationships;
-- Library keeps durable saved content/files/versions;
+- Directory keeps stable identity and relationships;
+- Library keeps durable saved content, files and versions;
 - Sources/Observations bring approved current information in later;
 - State captures what is true now where decisions depend on it;
 - Spaces present approved current context as focused views.
 
-Example technology terms may explain API, MCP, webhook and Runtime in plain language.
+Technology terms may explain API, MCP, webhook and Runtime in plain language.
 
 # Automations / policy / Runtime lesson
 
@@ -359,23 +435,23 @@ Canonical heading:
 
 The section should teach:
 
-- natural language can express objective/boundaries;
+- natural language can express objectives and boundaries;
 - typed structure gives the server deterministic fields to validate;
 - policy may include people, information, trigger, conditions, allowed Actions, approval level, fallback authority, prohibitions, expiration, Audit rules and tools;
 - Connections add specific external abilities;
 - Runtime later executes published work;
-- Runtime can persist waits, retries, replies and state changes after the browser closes when those capabilities are implemented;
-- capability examples are examples, not the permanent product ceiling.
+- Runtime can persist waits, retries, replies and State changes after the browser closes when those capabilities are implemented;
+- capability examples are directions, with current implementation status shown separately.
 
-The existing readable Automation mental model can remain available for beginner surfaces:
+The readable Automation mental model can remain available for beginner surfaces:
 
 `WHEN → IF → DO → WAIT → TEST/REVIEW`
 
-Do not collapse policy, authority and Runtime into a vague `AI does it` story.
+Keep policy, authority and Runtime explicit instead of collapsing them into a vague AI action story.
 
 # Goals / Missions lesson
 
-Goals remain visibly **LATER** and should appear as one compact idea inside the Automations/Runtime section instead of a ninth top-level document section.
+Goals remain visibly **LATER** and appear as one compact idea inside Automations/Runtime.
 
 Public distinction:
 
@@ -398,17 +474,17 @@ A Goal may eventually define:
 - allowed capabilities/Connections;
 - applicable authority/policy.
 
-Planner may prepare/revise the strategy. Runtime may later carry approved child work across waits, replies and changing State. A Goal may use multiple Automations, AI Tasks, human tasks and Signals.
+Planner may prepare or revise the strategy. Runtime may later carry approved child work across waits, replies and changing State. A Goal may use multiple Automations, AI Tasks, human tasks and Signals.
 
 Public hard rule:
 
 > **Replanning can change strategy. It cannot silently change hard constraints, success criteria or authority.**
 
-`Until done` must resolve to explicit success/stop semantics. It never means unlimited execution.
+`Until done` resolves to explicit success/stop semantics, budgets and loop/stagnation controls.
 
-When a Goal concerns another person, applicable consent/representation authority remains separate from Directory relationships.
+When a Goal concerns another person, applicable consent and representation authority remain separate from Directory relationships.
 
-Current public example uses an authorized person pursuing a suitable job with a 60-day horizon, factual/representation constraints and Ask-before-send behavior. It is an architecture example only.
+Current public example uses an authorized person pursuing a suitable job with a 60-day horizon, factual/representation constraints and Ask-before-send behavior. It is an architecture example.
 
 Read `docs/continuum-goals-missions-CURRENT.md` and the backend Goal contract for deeper semantics.
 
@@ -425,7 +501,7 @@ Current production truth:
 - one-time deadline override;
 - Incident creation at trigger;
 - protected sessions;
-- Audit/repair behavior documented in backend handoff.
+- Audit and repair behavior documented in backend handoff.
 
 Future continuity direction may explain:
 
@@ -439,11 +515,13 @@ The public explanation should make clear that direct approval can be unavailable
 
 Hard public rule:
 
-> Silence, absence or urgency is not permission by itself. Fallback behavior uses authority established beforehand.
+> Silence, absence or urgency never creates permission. Fallback behavior uses authority established beforehand.
+
+The live Check In app should be directly reachable from this section.
 
 # Pause Autonomy / Control Center direction
 
-These concepts are future architecture, not current `/doc/` production claims.
+These concepts are future architecture.
 
 The future Control Center is first-class on desktop and mobile and should eventually show:
 
@@ -466,7 +544,7 @@ A timed pause expiry should trigger re-contact before fallback policy is evaluat
 
 Simulation performs no real side effects and may use frozen real-State snapshots plus hypothetical overrides.
 
-The main `/doc/` should introduce inspectability, Pause Autonomy and simulation as compact product ideas when useful. Detailed Control Center management rules stay in the dedicated architecture contract so this page remains readable.
+The main `/doc/` introduces inspectability, Pause Autonomy and simulation as compact product ideas. Detailed rules stay in the dedicated backend architecture contract.
 
 # Capability status vocabulary
 
@@ -484,7 +562,7 @@ Current truthful status:
 - validated Phase 2A private information/Automation definition source = NEXT for production migration/deployment;
 - general Runtime/provider delivery/live Signals monitoring/AI execution/MCP execution/Goal orchestration = LATER.
 
-Validated source on `jay-app/main` is not production truth until the prepared Phase 2A deployment boundary succeeds.
+Validated source on `jay-app/main` becomes production truth only after the prepared Phase 2A deployment boundary succeeds and is recorded.
 
 # Roadmap direction
 
@@ -504,19 +582,19 @@ LATER
 Expandable capability
 ```
 
-The detailed backend architecture adds Directory, Sources/Signals, provider adapters, Planner, Goals/Missions and broader AI in controlled phases without changing this simple public teaching order.
+Detailed backend architecture adds Directory, Sources/Signals, provider adapters, Planner, Goals/Missions and broader AI in controlled phases while keeping this simple public teaching order.
 
 # Closing direction
 
-The close should land on the durable operating-layer idea in plain language.
-
-Current rendered direction:
+The roadmap close should land on the durable operating-layer idea in plain language:
 
 > Continuum is a durable operating layer around changing intelligence. As models gain new abilities and new tools become available, it can gain new ways to perceive and act while keeping knowledge, State, authority, policy and history coherent.
 
-The footer can summarize this as:
+The footer then shifts from explanation into clear product navigation:
 
-`A durable operating layer for changing intelligence and expanding capability.`
+`Start with what is live. Explore what Continuum is becoming.`
+
+The three status-labeled destinations are Check In, Spaces and Automation Lab as defined above.
 
 # Writing contract
 
@@ -526,7 +604,7 @@ Keep:
 
 - one H1;
 - connected paragraphs;
-- concrete verbs/examples;
+- concrete verbs and examples;
 - direct sentences;
 - enough prose to understand the idea without decoding visuals;
 - no ellipses;
@@ -536,6 +614,12 @@ Keep:
 - keep current/future status explicit;
 - use technical words only where they add clarity;
 - translate backend semantics into normal language.
+
+The opening gets an extra rule:
+
+> **Human meaning first, architecture vocabulary second.**
+
+Do not make the first paragraph read like a schema definition.
 
 # Visual contract
 
@@ -550,33 +634,39 @@ Use rich visuals where relationships matter:
 - optional architecture/build process;
 - roadmap.
 
-The August 19 power-clarity pass deliberately keeps additions compact:
+The August 19 clarity additions remain compact:
 
 1. **State strip** in Overview;
 2. **Source → Observation → Signal → State** sensing strip in Information;
 3. **Why did Continuum do that?** receipt inside the real workflow example;
 4. **Goals / Missions** prose-led note inside Automations/Runtime;
-5. **Control Center / Pause Autonomy / Simulation** prose-led note inside Architecture.
+5. **Control Center / Pause Autonomy / Simulation** prose-led note inside Architecture;
+6. **Check In LIVE route treatment** in the hero, Continuity context and footer.
 
-Model routing is a compact existing-section addition. Capability self-improvement is a concise example inside the existing capability note.
+Model routing is a compact existing-section addition. Capability improvement is a concise example inside the existing capability note.
 
-Avoid adding card grids solely for decoration.
+Avoid card grids that exist only for decoration. The three closing route cards are functional navigation and status communication.
 
 Architecture and Build detail remain secondary/collapsible in the normal reading path.
 
 # Render implementation truth
 
-Static `doc/index.html` contains the modern August 19 architecture copy and visuals.
+Static `doc/index.html` contains the current August 19 architecture, human-first opening, Check In routes and status-aware footer.
 
 Current scripts load in this order:
 
 1. `assets/personal-os-doc.js`;
 2. `assets/continuum-doc-origin.js`.
 
-`personal-os-doc.js` still owns document mechanics and the earlier clarity transforms such as theme, Contents behavior, section tracking, mobile drawer, optional deep-dives and layout restructuring.
+`personal-os-doc.js` owns document mechanics and the earlier clarity transforms such as theme, Contents behavior, section tracking, mobile drawer, optional deep-dives and layout restructuring.
 
-`continuum-doc-origin.js` is the **final one-time architecture and power-clarity alignment layer**. It runs after the clarity transform and restores the August 19 architecture wording/labels, then adds/updates:
+`continuum-doc-origin.js` is the **final one-time architecture and power-clarity alignment layer**. It runs after the clarity transform and restores the current wording/labels, then adds or updates:
 
+- human-first hero copy;
+- hero Check In LIVE action;
+- toolbar Check In action;
+- contextual Continuity Check In link;
+- three status-aware closing destinations;
 - concrete State strip;
 - long-running Runtime story;
 - explainability receipt;
@@ -591,7 +681,7 @@ Current scripts load in this order:
 - Dead Man Switch origin insight;
 - ordinary-unavailability continuity copy;
 - neutralized example names;
-- durable operating-layer close.
+- durable operating-layer roadmap close.
 
 It sets:
 
@@ -601,15 +691,20 @@ It sets:
 
 `data-continuum-goals="ready"`
 
-and:
-
 `data-continuum-control-center="ready"`
+
+`data-continuum-check-in-route="ready"`
 
 Do not add a broad MutationObserver to keep rewriting the document. The final reconciliation runs once during initialization.
 
-The static no-JS HTML already contains the modern architecture narrative. The final render adds the compact teaching details above while preserving the same architecture and capability-status truth.
+The static no-JS HTML already contains the current architecture and navigation truth. The final render adds compact teaching details while preserving that truth.
 
-The accepted page currently still uses the existing `continuum-doc-origin.js` query string in static HTML. Do not rewrite the entire large frozen HTML file only to change a cache token unless a real stale-render problem appears or the HTML is already being safely edited for another reason.
+Current cache-busted final assets in `doc/index.html`:
+
+- `assets/continuum-doc-origin.css?v=20260819-2`;
+- `assets/continuum-doc-origin.js?v=20260819-2`.
+
+Bump these tokens deliberately when the final layer changes and stale browser caching could hide accepted copy or layout.
 
 # Backend canonical companions
 
@@ -617,6 +712,7 @@ Read `/doc/` claims against:
 
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md`;
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOALS-MISSIONS-ORCHESTRATION-CONTRACT.md`;
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOAL-DRIVEN-ARCHITECTURE-EVOLUTION-CONTRACT.md`;
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-MULTI-USER-ORGANIZATION-SCOPE-CONTRACT.md`;
 - `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-PLATFORM-ARCHITECTURE.md`;
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md`;
@@ -628,26 +724,29 @@ Read `/doc/` claims against:
 
 # Freeze rule
 
-The `/doc/` freeze now protects **clarity plus architectural consistency**.
+The `/doc/` freeze protects clarity, product truth and architectural consistency.
 
 Before changing it, ask:
 
 1. Can a first-time reader understand the product from the words alone?
-2. Does the page preserve `Knowledge + State + Authority + Policy + Audit`?
-3. Can the reader tell the difference between durable knowledge and current State?
-4. Can the reader understand how approved Sources become Observations, Signals and State?
-5. Does it keep evidence separate from authority?
-6. Does it keep model/provider/capability limits separate from policy restrictions?
-7. Does it show that Runtime can eventually survive time, replies, retries and a closed app?
-8. Does capability growth stay separate from permission growth?
-9. Does it keep Automation definition separate from Runtime execution?
-10. Can the reader distinguish an Automation from a Goal/Mission?
-11. Does a Goal have explicit success/stop/constraint semantics instead of `run forever` ambiguity?
-12. Does it preserve the Dead Man Switch origin/continuity insight?
-13. Does it keep background autonomy inspectable through the Control Center direction?
-14. Are LIVE / LAB / NEXT / LATER claims truthful?
-15. Does the static HTML remain architecturally consistent with the final rendered page?
-16. Does the change avoid broad DOM mutation loops and preserve mobile quality?
-17. Does it still point back to current backend/release truth instead of turning architecture plans into implementation claims?
+2. Does the opening explain human value before architecture vocabulary?
+3. Is the working `/checkin/` surface easy to reach, especially on mobile?
+4. Do Check In, Spaces and Automations show truthful LIVE/LAB status where they are offered together?
+5. Does the page preserve `Knowledge + State + Authority + Policy + Audit`?
+6. Can the reader tell the difference between durable Knowledge and current State?
+7. Can the reader understand how approved Sources become Observations, Signals and State?
+8. Does it keep evidence separate from authority?
+9. Does it keep model/provider/capability limits separate from policy restrictions?
+10. Does it show that Runtime can eventually survive time, replies, retries and a closed app?
+11. Does capability growth stay separate from permission growth?
+12. Does it keep Automation definition separate from Runtime execution?
+13. Can the reader distinguish an Automation from a Goal/Mission?
+14. Does a Goal have explicit success/stop/constraint semantics?
+15. Does it preserve the Dead Man Switch origin and continuity insight?
+16. Does it keep background autonomy inspectable through the Control Center direction?
+17. Are LIVE / LAB / NEXT / LATER claims truthful?
+18. Does static HTML remain consistent with the final rendered page?
+19. Does the change avoid broad DOM mutation loops and preserve mobile quality?
+20. Does it still point back to current backend/release truth instead of turning architecture plans into implementation claims?
 
 If a change makes the page prettier while weakening those answers, do not ship it.
