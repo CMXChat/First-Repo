@@ -15,12 +15,14 @@ Current source, tests, workflows and `*-CURRENT.md` contracts take priority over
 4. `checkin-automations-frontend-CURRENT.md` — exact Automations v5, Planner Preflight, mobile Action-stack and QA truth.
 5. `continuum-directory-master-plan-CURRENT.md` — durable Directory direction.
 6. `checkin-directory-library-CURRENT.md` — Directory/Audience/Library/Planner cross-domain truth.
-7. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
-8. `checkin-content-editor-CURRENT.md` — native content/editor contract.
-9. `checkin-files-CURRENT.md` — binary File direction.
-10. `checkin-ai-product-design-CURRENT.md` — broader AI product direction.
-11. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
-12. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
+7. `continuum-signals-observations-master-plan-CURRENT.md` — Signals/Observations/watch product direction.
+8. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
+9. `checkin-content-editor-CURRENT.md` — native content/editor contract.
+10. `checkin-files-CURRENT.md` — binary File direction.
+11. `checkin-ai-product-design-CURRENT.md` — broader AI product direction.
+12. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
+13. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
+14. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md` — protected Signals/Observation architecture.
 
 # Current key routes
 
@@ -100,6 +102,26 @@ Spaces briefing/context proving surface.
 
 Python-first development/learning environment.
 
+# Signals / Observations direction
+
+Continuum now has an explicit architecture target for approved external observation.
+
+Canonical product plan:
+
+`continuum-signals-observations-master-plan-CURRENT.md`
+
+Backend companion:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md`
+
+Durable relationship:
+
+`Source → Observation → Signal → Automation eligibility → Runtime action → recorded result`
+
+Future source families may include provider APIs/webhooks, RSS/feed, constrained webpage monitoring, approved search/news sources, GitHub/status events and approved MCP resources.
+
+Signals are future typed inputs to Automations and Spaces. External content remains untrusted and never grants authority. Current Continuum does **not** crawl arbitrary sites, continuously search news, poll arbitrary URLs, emit production Signals or start production Runs from Signals.
+
 # One Planner language
 
 Both Directory and focused Automations load:
@@ -176,6 +198,8 @@ Production still has no general:
 - server equivalent of Lab v5;
 - authoritative Planner operation registry;
 - authoritative structured Planner preflight/review/apply;
+- SignalSource / Observation / SignalWatch / Signal service;
+- online webpage/search/news monitoring;
 - Automation Runtime / persisted waits / branching;
 - provider execution;
 - AI Task execution;
@@ -183,7 +207,7 @@ Production still has no general:
 - Agent;
 - MCP execution.
 
-Do not infer backend capability from Lab visuals, browser models, Planner previews, preflight decisions, mobile Action behavior or Change Review.
+Do not infer backend capability from Lab visuals, browser models, Planner previews, preflight decisions, mobile Action behavior, Signals architecture documents or Change Review.
 
 # Copy and frontend safety
 
