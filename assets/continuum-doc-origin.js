@@ -8,8 +8,40 @@
     heroLead.innerHTML = `<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, Automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time.</span> As more outside services connect, including APIs and MCP tools, Continuum can coordinate people, follow up on projects, watch important changes, analyze financial information, communicate through email, messaging and future voice, and work with whichever AI models are most useful over time. Your context, priorities and instructions stay in one place, so Continuum can still be useful while you are busy, offline or unavailable. Afterlife, the Dead Man Switch, uses the same setup if you stop responding: Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and continuing bounded work you authorized beforehand.`;
   }
 
+  function addPlannerAndSignalsNotes() {
+    const aiSection = document.getElementById('difference');
+    const aiAnswer = aiSection?.querySelector('.ai-answer');
+    if (aiAnswer && !aiSection.querySelector('.continuum-planner-note')) {
+      const planner = document.createElement('aside');
+      planner.className = 'continuum-forward-note continuum-planner-note';
+      planner.setAttribute('aria-label', 'Future Continuum Planner');
+      planner.innerHTML = `
+        <span class="continuum-forward-kicker">LATER · PLANNER</span>
+        <strong>AI can help configure Continuum too.</strong>
+        <p>You can eventually describe the setup you want in normal language. Continuum can turn that request into a typed Change Plan for things such as People, Groups, Library content and Automation Drafts, show exactly what would change, run preflight checks and keep protected changes behind the same permissions used by the normal product.</p>
+        <div class="continuum-forward-flow" aria-label="Future Planner change flow"><span>INTENT</span><i>→</i><span>CHANGE PLAN</span><i>→</i><span>PREFLIGHT</span><i>→</i><span>REVIEW</span><i>→</i><span>APPLY</span></div>
+        <small>AI proposes typed changes. Protected domain services remain the authority.</small>`;
+      aiAnswer.after(planner);
+    }
+
+    const actionSection = document.getElementById('action');
+    const everyday = actionSection?.querySelector('.everyday-workflow');
+    if (everyday && !actionSection.querySelector('.continuum-signals-note')) {
+      const signals = document.createElement('aside');
+      signals.className = 'continuum-forward-note continuum-signals-note';
+      signals.setAttribute('aria-label', 'Future Signals and observed changes');
+      signals.innerHTML = `
+        <span class="continuum-forward-kicker">LATER · SIGNALS</span>
+        <strong>Something Continuum observes can start real work.</strong>
+        <p>Continuum can later watch approved sources, keep each observation with its source, turn a meaningful change into a typed Signal and let an Automation decide what should happen next. Your rules can keep a Signal observe-only, require approval, or allow specific Actions inside published limits.</p>
+        <div class="continuum-forward-flow continuum-signal-flow" aria-label="Future Signal to Action flow"><span>APPROVED SOURCE</span><i>→</i><span>OBSERVATION</span><i>→</i><span>SIGNAL</span><i>→</i><span>AUTOMATION</span><i>→</i><span>RUNTIME</span><i>→</i><span>ACTION</span></div>
+        <small>Outside information provides evidence. It never grants permission by itself.</small>`;
+      everyday.after(signals);
+    }
+  }
+
   function clarifyFirstTimeReaderCopy() {
-    const earlyStatusCopy = 'Check In (the live Dead Man Switch trigger) is LIVE. Spaces (focused briefings) and Automations (saved rules and steps) are LAB. Private information and Automation definitions are NEXT. Runtime (server-side execution) and outside-service delivery are LATER.';
+    const earlyStatusCopy = 'Check In (the live Dead Man Switch trigger) is LIVE. Spaces (focused briefings) and Automations (saved rules and steps) are LAB. Private information and Automation definitions are NEXT. Runtime, Signals monitoring and outside-service delivery are LATER.';
 
     const railStatus = document.querySelector('.rail-status p');
     if (railStatus) railStatus.textContent = earlyStatusCopy;
@@ -30,7 +62,7 @@
 
     const processSteps = document.querySelectorAll('#overview .process-step');
     const processCopy = [
-      ['See what is happening', 'Email, calendars, messages, files, money data, APIs, MCP and direct updates can come in from approved outside sources.'],
+      ['See what is happening', 'Email, calendars, messages, files, money data, APIs, MCP and direct updates can come in from approved outside sources. Signals can later watch selected sources for meaningful changes.'],
       ['Remember the useful part', 'Continuum keeps the people, content, files, dates, source history and saved versions that matter later.'],
       ['Check your rules', 'Continuum checks who may use the information, which tools are allowed, whether approval is needed and whether a trigger or condition has been reached.'],
       ['Produce or carry out approved work', 'Spaces can produce focused briefings, AI can help reason and write, and future Runtime can send messages, call APIs or use other approved tools.'],
@@ -47,7 +79,7 @@
 
     const mapIntro = document.querySelector('.clarity-product-map-section .section-intro');
     if (mapIntro) {
-      mapIntro.textContent = 'Connections are the bridges to outside services: they can bring approved information in and later carry approved actions back out. Directory keeps track of people and organizations. Library keeps saved content and files. Spaces turn approved information into focused briefings. AI can reason with the context allowed for a task. Automations define what should happen. Runtime will later execute published work on the server and save the result back into Continuum.';
+      mapIntro.textContent = 'Connections are the bridges to outside services: they can bring approved information in and later carry approved actions back out. Directory keeps track of people and organizations. Library keeps saved content and files. Spaces turn approved information into focused briefings. Signals can later turn meaningful changes from approved sources into typed inputs. AI can reason with the context allowed for a task. Automations define what should happen. Runtime will later execute published work on the server and save the result back into Continuum.';
     }
 
     const nodeCopy = {
@@ -85,12 +117,12 @@
 
     const actionIntro = document.querySelector('#action .section-intro');
     if (actionIntro) {
-      actionIntro.textContent = 'Automations define the trigger, rules, approved actions and timing. Connections are the approved bridges to outside apps and services. Future Runtime will run published workflows on the server, use those Connections for allowed actions and record the result back in Continuum.';
+      actionIntro.textContent = 'Automations define the trigger, rules, approved actions and timing. A trigger can come from information already in Continuum, an approved Connection or later a typed Signal. Future Runtime will run published workflows on the server, use approved Connections for allowed actions and record the result back in Continuum.';
     }
 
     const primer = document.querySelector('#action .clarity-automation-copy');
     if (primer) {
-      primer.innerHTML = '<strong>Automations define what should happen.</strong> They can use information already in Continuum or events coming in through approved Connections. The builder saves the trigger, rules, actions, timing and finish behavior. Runtime is the future server layer that will carry out a published Automation and record what happened.';
+      primer.innerHTML = '<strong>Automations define what should happen.</strong> They can use information already in Continuum, events coming through approved Connections and later typed Signals from approved observations. The builder saves the trigger, rules, actions, timing and finish behavior. Runtime is the future server layer that will carry out a published Automation and record what happened.';
     }
 
     const connectionsHead = document.querySelector('#action .connections-panel .panel-head strong');
@@ -114,7 +146,7 @@
 
     const statusIntro = document.querySelector('#status .section-intro');
     if (statusIntro) {
-      statusIntro.textContent = 'The plan is to add private information first, then server-run workflows, then more outside services and AI tools.';
+      statusIntro.textContent = 'The plan is to add private information first, then server-run workflows, then more outside services, Signals and AI tools.';
     }
 
     const laterRoadmapTitle = document.querySelector('#status .roadmap-later strong');
@@ -122,7 +154,7 @@
 
     const closingNote = document.querySelector('#status .closing-note');
     if (closingNote) {
-      closingNote.textContent = 'The result is one connected flow: information comes in, Continuum keeps the useful context, Spaces and AI help make sense of it, Automations define what should happen, Runtime can later carry approved actions out, and the result is saved for next time.';
+      closingNote.textContent = 'The result is one connected flow: information comes in, Continuum keeps the useful context, Signals can later identify meaningful changes, Spaces and AI help make sense of what matters, Automations define what should happen, Runtime can carry approved actions out, and the result is saved for next time.';
     }
 
     const footerTitle = document.querySelector('.document-footer h2');
@@ -153,6 +185,7 @@
   restoreFullHeroIntroduction();
   clarifyFirstTimeReaderCopy();
   neutralizeExampleNames();
+  addPlannerAndSignalsNotes();
 
   const mapSection = document.querySelector('.clarity-product-map-section');
   const presence = mapSection?.querySelector('.continuum-presence');
@@ -167,9 +200,10 @@
       <h2 id="continuumOriginTitle">The idea started with the Dead Man Switch</h2>
       <p>Afterlife began with a practical problem: if you stop responding, the people, information and instructions you prepared still need somewhere reliable to live. The Check In timer gives that problem a trigger.</p>
       <p>The same setup is useful before an emergency. You can be asleep, traveling, working, waiting on someone or simply away from the screen. Continuum keeps the context and rules you chose available so approved work can continue over time.</p>
-      <p>Spaces turn current information into focused briefs while you are here, and AI can use the context you allow. Automations define work that should happen. Runtime can later keep that work moving on the server and use Connections for approved outside actions. Afterlife uses the same pieces when you cannot respond.</p>
+      <p>Spaces turn current information into focused briefs while you are here, and AI can use the context you allow. Automations define work that should happen. Runtime can later keep that work moving on the server and use Connections for approved outside actions. Signals can later make selected outside changes part of that same flow. Afterlife uses the same pieces when you cannot respond.</p>
     </div>`;
 
   presence.before(origin);
   document.documentElement.dataset.continuumOrigin = 'ready';
+  document.documentElement.dataset.continuumSignalsPlanner = 'ready';
 })();
