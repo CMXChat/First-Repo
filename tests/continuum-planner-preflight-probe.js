@@ -18,6 +18,14 @@
     return Boolean(node) && node.getBoundingClientRect().height >= minimum - 0.5;
   }
 
+  function operationByType(scope, type, state = null) {
+    const rows = [...(scope?.querySelectorAll(".v5-planner-ops article,.dir2-ai-ops article") || [])];
+    return rows.find(row => {
+      const rowType = row.querySelector(":scope > span > small")?.textContent?.trim();
+      return rowType === type && (!state || row.dataset.preflightOpState === state);
+    }) || null;
+  }
+
   async function directoryProbe() {
     const open = document.querySelector("[data-dir2-ai-setup]");
     if (!open) return false;
@@ -30,10 +38,13 @@
     await settle(80);
 
     let panel = modal?.querySelector(".continuum-preflight-panel");
+    let affected = operationByType(modal, "directory.match_people", "open");
     root.dataset.qaPreflightDirectoryPanel = panel ? "true" : "false";
     root.dataset.qaPreflightDirectoryCode = panel?.querySelector("[data-preflight-code='directory.ambiguous_match']") ? "true" : "false";
     root.dataset.qaPreflightDirectoryOpenBefore = panel?.dataset.preflightOpenCount || "missing";
     root.dataset.qaPreflightDirectoryBlockedBefore = panel?.dataset.preflightBlockedCount || "missing";
+    root.dataset.qaPreflightDirectoryChangeLinkedBefore = affected ? "true" : "false";
+    root.dataset.qaPreflightDirectoryChangeStateBefore = affected?.querySelector(".continuum-preflight-operation-link")?.textContent?.includes("CHECK") ? "true" : "false";
 
     const choice = panel?.querySelector("[data-preflight-choice][data-preflight-value='Use existing match']");
     root.dataset.qaPreflightDirectoryChoiceTap = tap(choice) ? "true" : "false";
@@ -41,9 +52,12 @@
     await settle(70);
 
     panel = modal?.querySelector(".continuum-preflight-panel");
+    affected = operationByType(modal, "directory.match_people", "reviewed");
     root.dataset.qaPreflightDirectoryOpenAfter = panel?.dataset.preflightOpenCount || "missing";
     root.dataset.qaPreflightDirectoryReviewedAfter = panel?.dataset.preflightReviewedCount || "missing";
     root.dataset.qaPreflightDirectoryDecision = panel?.textContent?.includes("Preview choice recorded: Use existing match") ? "true" : "false";
+    root.dataset.qaPreflightDirectoryChangeLinkedAfter = affected ? "true" : "false";
+    root.dataset.qaPreflightDirectoryChangeStateAfter = affected?.querySelector(".continuum-preflight-operation-link")?.textContent?.includes("DECISION · Use existing match") ? "true" : "false";
     root.dataset.qaPreflightDirectoryReviewSync = modal?.querySelector(".continuum-plan-review-summary")?.textContent?.includes("ISSUES") ? "true" : "false";
     root.dataset.qaPreflightDirectoryFit = fitsHorizontally() ? "true" : "false";
     return true;
@@ -65,11 +79,17 @@
     await settle(90);
 
     let panel = modal?.querySelector(".continuum-preflight-panel");
+    let audienceChange = operationByType(modal, "automation.add_action", "open");
+    let waitChange = operationByType(modal, "automation.add_wait", "blocked");
     root.dataset.qaPreflightAutomationPanel = panel ? "true" : "false";
     root.dataset.qaPreflightAutomationAudience = panel?.querySelector("[data-preflight-code='directory.audience_required']") ? "true" : "false";
     root.dataset.qaPreflightAutomationRuntime = panel?.querySelector("[data-preflight-code='runtime.required'][data-preflight-state='blocked']") ? "true" : "false";
     root.dataset.qaPreflightAutomationOpenBefore = panel?.dataset.preflightOpenCount || "missing";
     root.dataset.qaPreflightAutomationBlockedBefore = panel?.dataset.preflightBlockedCount || "missing";
+    root.dataset.qaPreflightAutomationAudienceChangeBefore = audienceChange ? "true" : "false";
+    root.dataset.qaPreflightAutomationAudienceStateBefore = audienceChange?.querySelector(".continuum-preflight-operation-link")?.textContent?.includes("CHECK") ? "true" : "false";
+    root.dataset.qaPreflightAutomationWaitChangeBefore = waitChange ? "true" : "false";
+    root.dataset.qaPreflightAutomationWaitStateBefore = waitChange?.querySelector(".continuum-preflight-operation-link")?.textContent?.includes("BLOCKED") ? "true" : "false";
 
     const defer = panel?.querySelector("[data-preflight-defer]");
     root.dataset.qaPreflightAutomationDeferTap = tap(defer) ? "true" : "false";
@@ -77,10 +97,16 @@
     await settle(70);
 
     panel = modal?.querySelector(".continuum-preflight-panel");
+    audienceChange = operationByType(modal, "automation.add_action", "deferred");
+    waitChange = operationByType(modal, "automation.add_wait", "blocked");
     root.dataset.qaPreflightAutomationOpenAfter = panel?.dataset.preflightOpenCount || "missing";
     root.dataset.qaPreflightAutomationDeferredAfter = panel?.dataset.preflightDeferredCount || "missing";
     root.dataset.qaPreflightAutomationBlockedAfter = panel?.dataset.preflightBlockedCount || "missing";
     root.dataset.qaPreflightAutomationRuntimeStillBlocked = panel?.querySelector("[data-preflight-code='runtime.required'][data-preflight-state='blocked']") ? "true" : "false";
+    root.dataset.qaPreflightAutomationAudienceChangeAfter = audienceChange ? "true" : "false";
+    root.dataset.qaPreflightAutomationAudienceStateAfter = audienceChange?.querySelector(".continuum-preflight-operation-link")?.textContent?.includes("DEFERRED") ? "true" : "false";
+    root.dataset.qaPreflightAutomationWaitChangeAfter = waitChange ? "true" : "false";
+    root.dataset.qaPreflightAutomationWaitStateAfter = waitChange?.querySelector(".continuum-preflight-operation-link")?.textContent?.includes("BLOCKED") ? "true" : "false";
     root.dataset.qaPreflightAutomationStatus = panel?.querySelector(":scope > header > b")?.textContent?.trim() === "BLOCKED FOR APPLY" ? "true" : "false";
     root.dataset.qaPreflightAutomationFit = fitsHorizontally() ? "true" : "false";
     return true;
