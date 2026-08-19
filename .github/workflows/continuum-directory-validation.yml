@@ -12,6 +12,7 @@ on:
       - 'assets/lab/lab-directory-v2.js'
       - 'assets/lab/lab-directory-v2.css'
       - 'assets/lab/lab-directory-v2-polish.css'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-directory-planner-preview.css'
       - 'assets/lab/lab-automations-directory-v4.js'
@@ -34,6 +35,7 @@ on:
       - 'assets/lab/lab-directory-v2.js'
       - 'assets/lab/lab-directory-v2.css'
       - 'assets/lab/lab-directory-v2-polish.css'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-directory-planner-preview.css'
       - 'assets/lab/lab-automations-directory-v4.js'
@@ -60,6 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-directory-v2.js
+          node --check assets/lab/lab-continuum-planner-contract-v1.js
           node --check assets/lab/lab-directory-planner-preview.js
           node --check assets/lab/lab-automations-directory-v4.js
           node --check assets/lab/lab-automations-audience-v4.js
@@ -68,11 +71,13 @@ jobs:
 
           python - <<'PY'
           from pathlib import Path
+          import re
           import sys
 
           directory = Path('assets/lab/lab-directory-v2.js').read_text(encoding='utf-8')
           directory_css = Path('assets/lab/lab-directory-v2.css').read_text(encoding='utf-8')
           polish_css = Path('assets/lab/lab-directory-v2-polish.css').read_text(encoding='utf-8')
+          planner_contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
           planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
           planner_css = Path('assets/lab/lab-directory-planner-preview.css').read_text(encoding='utf-8')
           integration = Path('assets/lab/lab-automations-directory-v4.js').read_text(encoding='utf-8')
@@ -90,6 +95,12 @@ jobs:
               'cmx-lab-crm-v1', 'cmx-lab-directory-ui-v2', 'organizationIds', 'contactMethods',
               'relationshipLinks', 'STARTER_GROUPS', 'resolveGroup', 'CONTACT READINESS',
               'Duplicate', 'Automation usage', 'document.documentElement.dataset.labDirectory = "v2"'
+          ]
+          required_planner_contract = [
+              'CMXContinuumPlannerContractV1', 'validateOperations',
+              'directory.upsert_group', 'library.create_folder', 'automation.create_draft',
+              'automation.reference_audience', 'automation.reference_content', 'automation.add_wait',
+              'dataset.labPlannerContract = "v1"'
           ]
           required_planner = [
               'CONTINUUM PLANNER · PREVIEW', 'TYPED CHANGE PLAN · PREVIEW', 'TYPED PLAN PREVIEW · LOCAL',
@@ -110,7 +121,12 @@ jobs:
               'html[data-theme="light"]'
           ]
           required_polish = ['position:sticky', 'backdrop-filter', '@media (max-width:760px)', 'prefers-reduced-motion']
-          required_planner_css = ['.dir2-ai-setup', '.dir2-ai-modal', '.dir2-ai-gates', '@media (max-width:760px)', 'env(safe-area-inset-bottom)']
+          required_planner_css = [
+              '.dir2-ai-setup', '.dir2-ai-modal', '.dir2-ai-gates', '@media (max-width:760px)',
+              'env(safe-area-inset-bottom)', '.lab-directory-v2 .dir2-primary{position:static',
+              '.dir2-ai-examples button{min-height:44px', '.dir2-ai-ops strong{font-size:11px',
+              '.dir2-ai-modal>footer button{min-height:46px'
+          ]
           required_audience_css = [
               '.v4-audience-readiness', '.v4-audience-preflight', '.v4-audience-modal-backdrop',
               '.v4-audience-picker-list', '.v4-audience-preview-metrics', '@media (max-width:760px)'
@@ -130,11 +146,12 @@ jobs:
 
           checks = [
               (required_directory, directory, 'Directory v2'),
+              (required_planner_contract, planner_contract, 'shared Planner operation contract'),
               (required_planner, planner, 'typed Continuum Planner preview'),
               (required_audience, audience, 'Audience v4.1'),
               (required_css, directory_css, 'Directory v2 styling'),
               (required_polish, polish_css, 'Directory polish'),
-              (required_planner_css, planner_css, 'Directory Planner styling'),
+              (required_planner_css, planner_css, 'Directory Planner styling/mobile QA'),
               (required_audience_css, audience_css, 'Audience v4.1 styling'),
               (required_intelligence, intelligence, 'Directory data-reference integration'),
               (required_inputs, inputs, 'field input routing'),
@@ -144,24 +161,40 @@ jobs:
                   if term not in source:
                       sys.exit(f'missing {label}: {term}')
 
+          directory_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', planner))
+          registry_ops = set(re.findall(r'"((?:directory|library|automation)\.[a-z0-9_]+)":\s*Object\.freeze', planner_contract))
+          unknown = sorted(directory_ops - registry_ops)
+          if unknown:
+              sys.exit(f'Directory Planner uses unregistered operations: {unknown}')
+
           if 'Typed Audience available' not in integration or '.v4-directory-strip' not in integration_css:
               sys.exit('missing Directory-to-Automations integration contract')
           for term in required_docs:
               if term not in master + handoff:
                   sys.exit(f'missing current Directory/Audience/Planner documentation: {term}')
-          for term in ['lab-directory-v2.css', 'lab-directory-v2-polish.css', 'lab-directory-planner-preview.css', 'lab-directory-v2.js', 'lab-directory-planner-preview.js']:
+          for term in [
+              'lab-directory-v2.css', 'lab-directory-v2-polish.css', 'lab-continuum-planner-contract-v1.js',
+              'lab-directory-planner-preview.css', 'lab-directory-v2.js', 'lab-directory-planner-preview.js'
+          ]:
               if term not in loader:
-                  sys.exit(f'Lab loader missing Directory asset: {term}')
-          for term in ['lab-automations-directory-v4.css', 'lab-automations-directory-v4.js', 'lab-automations-audience-v4.css', 'lab-automations-audience-v4.js', 'lab-automations-intelligence-v4.js', 'lab-automations-input-routing-v4.js']:
+                  sys.exit(f'Lab loader missing Directory/Planner asset: {term}')
+          if loader.index('lab-continuum-planner-contract-v1.js') > loader.index('lab-directory-planner-preview.js'):
+              sys.exit('shared Planner contract must load before Directory Planner')
+          for term in [
+              'lab-continuum-planner-contract-v1.js', 'lab-automations-directory-v4.css',
+              'lab-automations-directory-v4.js', 'lab-automations-audience-v4.css',
+              'lab-automations-audience-v4.js', 'lab-automations-intelligence-v4.js',
+              'lab-automations-input-routing-v4.js'
+          ]:
               if term not in focused:
-                  sys.exit(f'focused Automations missing Directory/Audience/data asset: {term}')
+                  sys.exit(f'focused Automations missing Planner/Directory/Audience/data asset: {term}')
 
-          combined = directory + planner + integration + audience + intelligence + inputs
+          combined = directory + planner_contract + planner + integration + audience + intelligence + inputs
           for forbidden in ['api.cmxchat.com', 'MutationObserver', 'eval(', 'new Function(', 'fetch(', 'XMLHttpRequest', 'WebSocket(']:
               if forbidden in combined:
                   sys.exit(f'forbidden Directory/Audience/Planner pattern: {forbidden}')
 
-          print('Directory v2, typed Continuum Change Plan preview, Audience v4.1 and Automations data contracts passed.')
+          print('Directory v2, shared Planner operation registry, typed Continuum Change Plan preview, Audience v4.1 and Automations data contracts passed.')
           PY
 
       - name: Build isolated Lab snapshot
@@ -177,9 +210,11 @@ jobs:
           assert(rendered.includes('/assets/lab/lab-directory-v2-polish.css'));
           assert(rendered.includes('/assets/lab/lab-directory-planner-preview.css'));
           assert(rendered.includes('/assets/lab/lab-directory-v2.js'));
+          assert(rendered.includes('/assets/lab/lab-continuum-planner-contract-v1.js'));
           assert(rendered.includes('/assets/lab/lab-directory-planner-preview.js'));
           assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
-          assert(rendered.indexOf('/assets/lab/lab-directory-v2.js') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.js'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-v2.js') < rendered.indexOf('/assets/lab/lab-continuum-planner-contract-v1.js'));
+          assert(rendered.indexOf('/assets/lab/lab-continuum-planner-contract-v1.js') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.js'));
           assert(rendered.indexOf('/assets/lab/lab-directory-v2-polish.css') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.css'));
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
           fs.writeFileSync('directory-browser-smoke.html', rendered, 'utf8');
@@ -201,6 +236,7 @@ jobs:
 
           dump http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-desktop.html
           grep -q 'data-lab-directory="v2"' /tmp/directory-desktop.html
+          grep -q 'data-lab-planner-contract="v1"' /tmp/directory-desktop.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/directory-desktop.html
           grep -q 'class="lab-directory-v2"' /tmp/directory-desktop.html
           grep -q '>People<' /tmp/directory-desktop.html
@@ -214,14 +250,16 @@ jobs:
 
           dump --window-size=390,844 http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-mobile.html
           grep -q 'data-lab-directory="v2"' /tmp/directory-mobile.html
+          grep -q 'data-lab-planner-contract="v1"' /tmp/directory-mobile.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/directory-mobile.html
           grep -q 'class="lab-directory-v2"' /tmp/directory-mobile.html
           grep -q 'Search Directory' /tmp/directory-mobile.html
           grep -q 'AI setup' /tmp/directory-mobile.html
 
           dump http://127.0.0.1:8000/lab/automations/ > /tmp/automations-directory.html
+          grep -q 'data-lab-planner-contract="v1"' /tmp/automations-directory.html
           grep -q 'data-lab-automations-directory="v4"' /tmp/automations-directory.html
           grep -q 'data-lab-automations-audience="v4-1"' /tmp/automations-directory.html
           ! grep -qi 'Loading Automations' /tmp/automations-directory.html
 
-          echo 'Continuum Directory typed Change Plan preview and Automations data integration passed desktop/mobile smoke.'
+          echo 'Continuum Directory shared Planner contract, typed Change Plan preview and Automations data integration passed desktop/mobile smoke.'
