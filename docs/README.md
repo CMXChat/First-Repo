@@ -26,7 +26,7 @@ Current source, tests, workflows and `*-CURRENT.md` contracts take priority over
 
 ## `/doc/`
 
-Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab-only UX changes do not justify editing it.
+Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab-only UX/model changes do not justify editing it.
 
 ## `/lab/`
 
@@ -38,32 +38,46 @@ AI setup demonstrates `Describe → Plan → Preflight → Review → Apply` wit
 
 ## `/lab/automations/`
 
-Focused Automation operating/testing surface, currently **v4.4**.
+Focused Automation operating/testing surface with a **v5 canonical Lab workflow model foundation** under the current v4.4 authoring experience.
 
 Current stack:
 
-- v3 Draft/autosave compatibility core;
+- v3 Draft/autosave compatibility editor;
+- **v5 ordered workflow normalization/validation** in `lab-automations-model-v5.js`;
 - progressive blank-Draft truth;
 - v4 command-center/Capability Catalog;
-- 13 editable scenarios;
+- **15 editable scenarios**;
 - Directory readiness;
 - Audience v4.1 Person/Organization/Group/Label targeting;
 - Intelligence v4.2 recommendations, typed `Use data` references and richer stage traces;
 - Input Routing v4.3 typed source → named Action input;
-- **Advanced Flow v4.4** linear inter-step `IF / Continue if…` and `WAIT / Wait between steps` authoring preview;
+- Advanced Flow v4.4 linear inter-step `IF / Continue if…` and `WAIT / Wait between steps` authoring preview;
 - strict Lab-only execution boundary.
 
-V4.4 corrects an important workflow-order issue: the top-level IF stage is pre-action, so any condition depending on an Action output must live after the Action that produced that data.
+V5 normalizes the accepted Draft into:
 
-Current compatibility stores include:
+`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+
+while the simple WHEN / IF / DO / WAIT / TEST rail remains the beginner navigation model.
+
+Start timing and recurrence stay separate policies. A step-output Condition cannot reference a future/missing Action.
+
+Newest scenarios demonstrate:
+
+- **Urgent AI follow-up** — AI output → IF urgent → notification;
+- **Delayed backup escalation** — primary Action → WAIT → backup Action.
+
+Compatibility stores still include:
 
 - `cmx-lab-automation-data-bindings-v1`;
 - `cmx-lab-automation-input-bindings-v1`;
 - `cmx-lab-automation-flow-controls-v1`.
 
-Production must not copy these browser persistence mechanisms.
+`workflowV5` is embedded in the browser Automation Draft store during the Lab migration.
 
-The current v4.4 IF is a linear gate only. YES/NO branching remains later and requires durable Runtime routing semantics. Inter-step WAIT remains separate from start timing and requires future persisted Runtime state.
+Production must not copy these browser persistence mechanisms or treat the Lab node JSON as backend truth.
+
+The current IF remains a linear gate only. YES/NO branching requires later durable Runtime routing semantics. Inter-step WAIT remains separate from start timing and requires future persisted Runtime state.
 
 ## `/checkin/`
 
@@ -81,8 +95,8 @@ Python-first development/learning environment.
 
 Use:
 
-- `continuum-automations-master-plan-CURRENT.md` for destination/product architecture and the eventual sequence-model consolidation;
-- `checkin-automations-frontend-CURRENT.md` for exact route/files/stores;
+- `continuum-automations-master-plan-CURRENT.md` for destination/product architecture and v5 model direction;
+- `checkin-automations-frontend-CURRENT.md` for exact route/files/stores/model markers;
 - `checkin-automations-system-surface-CURRENT.md` for operating-surface UX;
 - `checkin-lab-automations-integration-CURRENT.md` for `/lab/` ↔ focused-route integration;
 - `checkin-directory-library-CURRENT.md` for Directory/Audience/data integration.
@@ -91,21 +105,21 @@ Backend companions include `CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md`, `AUTOMATION
 
 # AI environment-authoring direction
 
-The desired product eventually accepts broad natural-language instructions such as organizing contacts, creating Groups, linking Organizations, creating Automation Drafts, wiring typed data and, when supported server-side, composing typed inter-step controls.
+The desired product eventually accepts broad natural-language instructions such as organizing contacts, creating Groups, linking Organizations, creating Automation Drafts, wiring typed data and composing supported workflow controls.
 
 Canonical architecture:
 
 `natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services`
 
-AI does not receive a shadow database or separate workflow format. Prompt text never grants authority. Published Automation changes become a new Draft/version proposal. External provider side effects remain Runtime behavior.
+V5 gives the frontend/product a clearer typed ordered target for Automation Planner, but AI still uses protected server services in production. AI does not receive a shadow database or separate workflow format. Prompt text never grants authority.
 
 # Current backend boundary
 
 The first Phase 2A Library + typed Automation source is validated on `jay-app/main` but is **not production-migrated/deployed**.
 
-Current production still has no general Directory v2 persistence, Group/Label Audience service, typed Automation data/input/flow-control service, Automation Runtime, persisted waits/branch routing, provider execution, AI Task execution, Planner/Change Plan execution, Agent or MCP execution.
+Current production still has no general Directory v2 persistence, Group/Label Audience service, typed Automation data/input/flow-control service, server v5-equivalent sequence model, Automation Runtime, persisted waits/branch routing, provider execution, AI Task execution, Planner/Change Plan execution, Agent or MCP execution.
 
-Do not infer backend capability from Lab visuals.
+Do not infer backend capability from Lab visuals or browser model completeness.
 
 # Copy and frontend safety
 
