@@ -62,6 +62,7 @@ Focused Automation operating/testing surface with:
 - typed data v4.2 + Input Routing v4.3;
 - Advanced Flow v4.4 inter-step IF / WAIT authoring;
 - deterministic local Planner v5;
+- editable Planner proposals before Draft creation;
 - shared **Planner Contract v1**;
 - shared **typed Preflight v1**;
 - shared **Change Review v1**;
@@ -86,9 +87,14 @@ Automations Planner remains local/non-AI. It shows:
 - typed Change Plan operations/dependencies;
 - typed Preflight;
 - Change Review;
+- **Edit plan before Draft** controls for removing proposed Actions and inter-step controls;
+- dependency pruning and Preflight recalculation after edits;
+- **Reset proposal** to regenerate the original deterministic proposal;
 - `Use this draft` into an ordinary editable Lab Draft.
 
-It does not call a model, backend, provider or Runtime.
+Removing a proposed Action changes the actual active plan, not only the rendered row. Any inter-step IF/WAIT that is no longer valid is removed from the proposal before the typed Change Plan is rebuilt. The final proposed Action remains protected because the current v3 compatibility editor still expects one Action slot.
+
+The resulting Draft records whether the Planner proposal was edited before Draft creation. None of this calls a model, backend, provider or Runtime.
 
 ## `/checkin/`
 
@@ -122,6 +128,18 @@ Future source families may include provider APIs/webhooks, RSS/feed, constrained
 
 Signals are future typed inputs to Automations and Spaces. External content remains untrusted and never grants authority. Current Continuum does **not** crawl arbitrary sites, continuously search news, poll arbitrary URLs, emit production Signals or start production Runs from Signals.
 
+The shared Lab Planner vocabulary is already prepared for future reviewed configuration operations including:
+
+- `signals.create_watch`;
+- `signals.update_watch`;
+- `signals.attach_source`;
+- `signals.set_filter`;
+- `signals.set_interpretation`;
+- `signals.pause_watch`;
+- `automation.reference_signal`.
+
+This is vocabulary preparation only. No current Lab Planner example performs online observation and no new network authority was added.
+
 # One Planner language
 
 Both Directory and focused Automations load:
@@ -130,7 +148,7 @@ Both Directory and focused Automations load:
 
 This is a **browser proving registry**, not backend authority.
 
-It defines shared Lab operation vocabulary, operation metadata, plan-local dependency validation and typed preflight issue vocabulary.
+It defines shared Lab operation vocabulary, operation metadata, plan-local dependency validation and typed preflight issue vocabulary across Directory, Library, Signals and Automations.
 
 Plan operations may carry:
 
@@ -164,6 +182,8 @@ Typed issues are linked to affected Change Plan rows where the current proving a
 
 The current prototype maps local human-readable blocker text into typed issue codes. Production must return structured issue objects from protected domain services and must not use text matching as authority.
 
+Signals vocabulary also reserves `signals.source_required` and `signals.service_required` for future typed preflight, without claiming those services exist now.
+
 # One Change Review language
 
 `lab-continuum-planner-review-v1.js/.css` combines operation effect/domain/review metadata, plan dependencies and current preflight state into one summary.
@@ -182,7 +202,12 @@ Relevant dedicated workflows:
 
 - `continuum-mobile-layout-validation.yml` — overall Directory/Planner geometry;
 - `automations-v6-action-stack-validation.yml` — compact Action stack, accordion and Remove behavior;
-- `continuum-planner-preflight-validation.yml` — preflight decisions/defer state, affected Change Plan rows and persistent Runtime blockers.
+- `continuum-planner-preflight-validation.yml` — preflight decisions/defer state, affected Change Plan rows and persistent Runtime blockers;
+- `automations-v5-planner-edit-validation.yml` — proposed Action removal, dependency pruning, Reset proposal and narrow-phone fit.
+
+The Planner-edit browser contract proves:
+
+`2 proposed Actions + WAIT → remove backup Action → invalid WAIT/Runtime issue disappear → Reset proposal → original 2 Actions + WAIT/Runtime issue return`
 
 The available connector does not independently expose push-triggered workflow results here, so do not claim an observed green run or live Pages pickup without separate verification.
 
