@@ -9,7 +9,7 @@ const source = fs.readFileSync('assets/lab/lab-automations-duplicate-guard-v9.js
 const css = fs.readFileSync('assets/lab/lab-automations-duplicate-guard-v9.css', 'utf8');
 
 assert.match(index, /lab-automations-duplicate-guard-v9\.css\?v=20260819-v9guard1/);
-assert.match(index, /lab-automations-duplicate-guard-v9\.js\?v=20260819-v9guard2/);
+assert.match(index, /lab-automations-duplicate-guard-v9\.js\?v=20260819-v9guard3/);
 assert.ok(index.indexOf('lab-automations-duplicate-guard-v9.js') > index.indexOf('lab-automations-editor-focus-v8.js'), 'duplicate guard must load after accepted v8 editor focus');
 
 for (const copy of [
@@ -26,6 +26,9 @@ assert.match(source, /event\.stopImmediatePropagation\(\)/);
 assert.match(source, /dataset\.v9ExactDuplicate/);
 assert.match(source, /Email \$\{target\}/);
 assert.match(source, /Notify \$\{target\}/);
+assert.match(source, /function isPlaceholder/);
+assert.match(source, /setPickerHidden\(true\)/);
+assert.match(source, /setPickerHidden\(false\)/);
 assert.match(source, /v5 rebuilds its ordered sequence three animation frames after editor changes/);
 assert.match(source, /requestAnimationFrame\(\(\) => requestAnimationFrame\(\(\) => requestAnimationFrame\(\(\) => requestAnimationFrame\(patch\)\)\)\)/);
 assert.match(source, /dataset\.labAutomationsDuplicateGuard = "v9"/);
@@ -68,5 +71,9 @@ assert.equal(api.describe('email', 'Hassan'), 'Email Hassan');
 assert.equal(api.describe('notify', 'Primary contact'), 'Notify Primary contact');
 assert.equal(api.describe('manual_review'), 'Manual review');
 assert.equal(api.normalize('  Same   Instruction  '), 'same instruction');
+assert.equal(api.isPlaceholder('notify', '', '', 0), true);
+assert.equal(api.isPlaceholder('notify', 'Primary contact', '', 0), false);
+assert.equal(api.isPlaceholder('email', '', '', 0), false);
+assert.equal(api.isPlaceholder('notify', '', '', 1), false);
 
 console.log('Continuum Automations duplicate guard v9 contracts passed.');
