@@ -50,6 +50,10 @@
   background:color-mix(in srgb,var(--surface,#ffffff) 94%,var(--accent,#2563eb) 6%);
 }
 
+.continuum-planner-note{
+  margin-top:.95rem;
+}
+
 .continuum-forward-note>strong{
   display:block;
   margin:.1rem 0 .45rem;
