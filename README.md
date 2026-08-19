@@ -2,228 +2,145 @@
 
 `db.cmxchat.com` is the CMX private operational, research, learning and product-prototyping subdomain.
 
-`CMXChat/First-Repo` currently owns the static GitHub Pages surfaces used to prototype and explain parts of **Continuum**, including Spaces, Check In frontend surfaces, the broader Lab and the focused Automation Lab.
+`CMXChat/First-Repo` owns static GitHub Pages surfaces used to prototype and explain parts of **Continuum**. The protected FastAPI/PostgreSQL application lives in `CMXChat/jay-app`.
 
-The protected Python/PostgreSQL backend lives separately in `CMXChat/jay-app`.
+## Current Continuum model
 
-## Current product structure
-
-**Continuum** is the umbrella product.
-
-- **Spaces** = focused briefing/context experience.
-- **Directory** = people and organizations.
+- **Directory** = people, organizations, relationships, contact methods and saved audiences.
 - **Library** = protected content, files and saved knowledge.
-- **Automations** = definitions for when approved work should happen.
-- **Connections** = approved external capability paths.
-- **Runtime** = future server execution layer.
-- **AI** = bounded intelligence using the same typed domain services as human UI.
-- **Afterlife: The Dead Man Switch** = continuity experience using the same foundation.
-- **Check In** = current protected application/backend program name in existing routes/code/specs.
+- **Automations** = typed workflow definitions.
+- **Connections** = approved paths to outside capability.
+- **Runtime** = future server execution/history.
+- **AI** = bounded intelligence using the same typed services as human UI.
+- **Spaces** = briefing/context experience.
+- **Afterlife: The Dead Man Switch** = continuity experience.
+- **Check In** = current protected backend/application program name.
 
-## Read current documentation first
+Core principle:
 
-Start with:
+> Build the control plane. Rent the capabilities.
+
+## Read current docs first
 
 1. `docs/checkin-context-handoff-CURRENT.md`
 2. `docs/continuum-product-CURRENT.md`
 3. `docs/continuum-automations-master-plan-CURRENT.md`
-4. `docs/checkin-automations-frontend-CURRENT.md`
-5. `docs/README.md`
-6. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`
+4. `docs/continuum-directory-master-plan-CURRENT.md`
+5. `docs/checkin-automations-frontend-CURRENT.md`
+6. `docs/checkin-directory-library-CURRENT.md`
+7. `docs/README.md`
+8. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`
 
-Current `*-CURRENT.md` contracts, source, tests and workflows beat older dated concept notes.
+Current `*-CURRENT.md` contracts, source, tests and workflows beat older dated notes.
 
-## Current important routes
+## `/doc/`
 
-### `/doc/`
+Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab UX work alone does not authorize edits to `/doc/`.
 
-Public noindex master explanation of **Continuum**.
+## `/lab/`
 
-It is no longer a Spaces-only product overview.
+Broader Continuum experiment workspace.
 
-The document explains the operating loop, Directory, Library, Spaces, Automations, Connections, future Runtime, AI, Afterlife, architecture and roadmap.
+Its Records surface now runs **Directory v2** with People, Organizations, Groups, many-to-many membership concepts, ContactMethods/readiness, Labels, Person relationships, Activity/notes, duplicate warnings, Automation usage and polished desktop/mobile treatment.
 
-`/doc/` is under a separate clarity freeze. Lab UI work does not automatically authorize `/doc/` changes.
+Directory also has an **AI setup preview** establishing the future natural-language environment-authoring flow:
 
-### `/lab/`
+`Describe → Plan → Preflight → Review → Apply`
 
-Broader Continuum / Check In experiment workspace.
+The Lab preview performs no model call and no data mutation.
 
-It is the proving surface for private-system concepts and shared prototype records/actions.
+## `/lab/automations/`
 
-### `/lab/automations/`
+Focused Automation operating/testing surface, currently **v4.3**.
 
-Focused Continuum Automation operating and testing surface.
+It keeps the proven v3 Draft/autosave core and adds:
 
-Current v4 experience keeps the proven v3 browser-local Draft/autosave core and adds:
-
-- application-style Automations / Templates / Runs navigation;
+- Automations / Templates / Runs command-center navigation;
 - searchable Capability Catalog;
-- interactive Flow Preview;
-- per-stage local tests;
-- stronger Review/preflight;
-- manual / template / AI Planner-preview creation paths;
-- expanded editable scenarios;
-- mobile-specific capability/modal behavior.
+- interactive FLOW PREVIEW;
+- 13 editable scenarios;
+- Directory readiness;
+- Audience v4.1 Person/Organization/Group/Label selectors;
+- Intelligence v4.2 contextual recommendations and typed `Use data` references;
+- richer local `TEST THIS STEP` traces;
+- input routing v4.3 from typed source outputs into named Action fields;
+- manual / template / Planner-preview creation paths;
+- mobile-specific selectors/modals.
 
-The route remains an isolated Lab prototype:
+The route stays isolated: `connect-src 'self'`, no production API/provider execution, no real scheduling/Publish, no secrets and no external AI model call.
 
-- `connect-src 'self'`;
-- no production API calls;
-- no provider execution;
-- no real scheduling authority;
-- no production Publish;
-- no provider secrets;
-- no AI model call from the Planner preview.
+## AI environment-authoring direction
 
-See `docs/continuum-automations-master-plan-CURRENT.md`.
+The long-term goal is that the user can describe how they want Continuum organized and AI can prepare the whole setup using the same domain services as human UI.
 
-### `/checkin/`
+Canonical flow:
+
+`natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services`
+
+A future Change Plan may coordinate supported Directory, Automation and Library operations. AI never gets a shadow database/workflow format, prompt-granted authority or arbitrary executable code path.
+
+Backend contract:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
+
+## `/checkin/`
 
 Protected Check In frontend.
 
-The authoritative backend and operational truth live in `CMXChat/jay-app/specs/003-server-checkin/`.
+Production remains Phase 1 until the separate validated Phase 2A production migration/deployment sequence succeeds.
 
-Current production backend remains Phase 1 until the separate validated Phase 2A migration/deployment sequence is executed.
+Current reviewed backend release: `de55627926316581808337f8e9c10d26e7d64588`
 
-Current production timer is a configurable 72 elapsed hours plus 24 elapsed hours of grace.
+Current production Alembic revision: `c41f9b8d2e70`
 
-Current reviewed backend release recorded by the canonical handoff:
-
-`de55627926316581808337f8e9c10d26e7d64588`
-
-Current production Alembic revision:
-
-`c41f9b8d2e70`
+Current timer: 72 elapsed hours + 24 elapsed hours grace, server/PostgreSQL authoritative.
 
 Production currently performs no general Automation/provider/AI execution.
-
-### `/spaces/`
-
-Spaces briefing/context proving experience.
-
-Spaces remains part of Continuum. Older Spaces-specific documentation still controls Spaces behavior where it has not been deliberately superseded by newer current contracts.
-
-### `/environment/`
-
-Python-first learning/development environment specification and related project-learning surface.
 
 ## First-Repo vs jay-app
 
 ### `CMXChat/First-Repo`
 
-Currently contains:
-
-- static HTML/CSS/JavaScript routes served through GitHub Pages;
-- product-prototyping Lab surfaces;
-- current frontend/product contracts;
-- route and browser validation workflows;
-- Continuum `/doc/` explanation;
-- Spaces proving surfaces;
-- Check In frontend presentation.
+Contains static HTML/CSS/JavaScript routes, Lab/product proving surfaces, current frontend/product contracts and browser/static validation workflows.
 
 Static pages cannot execute Python or access PostgreSQL directly.
 
 ### `CMXChat/jay-app`
 
-Owns the protected application architecture:
+Owns FastAPI/Python, PostgreSQL/SQLModel, Alembic, protected services/APIs, tests, generated OpenAPI client, official React/TypeScript path, current Check In backend and validated Phase 2A Library + typed Automation source.
 
-- FastAPI/Python backend;
-- PostgreSQL/SQLModel;
-- Alembic migrations;
-- protected domain services/APIs;
-- tests;
-- generated OpenAPI frontend client;
-- official React/TypeScript frontend path;
-- current Check In backend;
-- validated Phase 2A Library + typed Automation source.
-
-Browser/frontend code reaches protected data through backend services. It does not connect directly to PostgreSQL.
+Browser/frontend code reaches protected data through backend services. It never connects directly to PostgreSQL.
 
 ## Current Phase 2A boundary
 
-The first Phase 2A source slice is validated on `jay-app/main` but is **not yet deployed to production**.
+The first Phase 2A Library + typed Automation source is validated on `jay-app/main` but is **not production-migrated/deployed**.
 
-Validated source includes:
+Before broad backend capability/Directory/Planner expansion, use the canonical Phase 2A production runbook in `jay-app`.
 
-- `LibraryFolder`;
-- `ContentAsset → mutable ContentDraft → immutable ContentVersion`;
-- `Automation → mutable AutomationDraft → immutable AutomationVersion`;
-- current small typed Trigger registry;
-- definition-only `manual_review` Action;
-- immutable publication/content-version freezing;
-- database-level immutable version protections.
+Lab visuals do not redefine production truth.
 
-Before broad backend capability expansion, use the production migration/deployment runbook in `jay-app`.
+## Architecture rules
 
-The v4 Automation Lab catalog may preview future capability names without making them backend truth.
+Preserve:
 
-## Automation architecture direction
-
-The Automation platform is moving toward a trusted server Capability Registry.
-
-The goal is to let the product support many future Triggers, Conditions, Actions, workflow controls and Connection-provided capabilities without redesigning the builder.
-
-Humans and future AI Planner can compose known typed capabilities into Drafts/templates/scenarios.
-
-They cannot invent arbitrary executable server types.
-
-Runtime comes later and will be responsible for durable Runs, persisted waits, attempts, idempotency and execution history.
-
-Canonical backend plan:
-
-`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md`
-
-## Development / learning architecture
-
-The current full-stack learning environment in `jay-app` is based on:
-
-- FastAPI;
-- Python;
-- SQLModel;
-- PostgreSQL;
-- Alembic;
-- React;
-- TypeScript;
-- Vite;
-- TanStack Router/Query;
-- generated OpenAPI client;
-- Docker;
-- Pytest;
-- Playwright.
-
-The basic application path is:
-
-`Browser → HTTPS/JSON → FastAPI domain services → PostgreSQL → JSON response → frontend`
-
-## Security principles
-
-Preserve these rules:
-
-- frontend/browser code does not receive DB credentials;
-- provider credentials remain server-side;
-- protected mutations use server authorization and the required Origin/CSRF controls;
-- stable protected IDs are used instead of copied mutable names/addresses;
+- frontend has no DB credentials;
+- provider secrets stay server-side;
+- protected mutations use server authorization and Origin/CSRF controls;
+- stable IDs beat copied mutable names/contact strings;
 - published/version history stays immutable;
-- AI prompt text never grants authority;
+- human UI and AI use the same typed services;
+- prompt text never grants authority;
 - no arbitrary Python/JavaScript/shell/SQL/eval workflow logic;
-- no unrestricted generic webhook/API escape hatch;
-- no broad document-wide MutationObserver loops in the accepted Check In/Lab path;
-- Lab prototypes must state when behavior is simulation/future-only;
+- typed Automation data flow uses validated source/output/input references;
+- no unrestricted webhook/API escape hatch;
+- no broad document-wide MutationObserver loops in accepted Check In/Lab paths;
+- Lab simulation/future capability must be labeled truthfully;
 - visual completeness never proves backend execution exists.
 
-## Repository rules
+## Development / learning stack
 
-- Preserve active routes unless a deliberate migration says otherwise.
-- Keep GitHub Pages Lab/prototype claims truthful.
-- Keep current frontend contracts aligned with `jay-app` backend contracts.
-- Add/update validation whenever a focused route contract changes.
-- Do not treat an empty GitHub status response as proof that CI passed.
-- Never commit credentials, tokens, private keys or production configuration.
-- Use source-of-truth handoffs instead of stale READMEs or chat memory for release decisions.
+The protected learning/application stack in `jay-app` uses FastAPI, Python, SQLModel, PostgreSQL, Alembic, React, TypeScript, Vite, TanStack Router/Query, generated OpenAPI client, Docker, Pytest and Playwright.
 
-## Historical notes
+Basic path:
 
-Older Personal OS, Brief and early Spaces documents describe earlier product phases and route decisions.
-
-Keep them as history, but do not use them to override current Continuum naming, `/doc/` role, Automation v4 status or current Check In backend truth.
+`Browser → HTTPS/JSON → FastAPI domain services → PostgreSQL → JSON response → frontend`
