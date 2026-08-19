@@ -51,7 +51,8 @@ jobs:
             assets/lab/lab-automations-directory-v4.js \
             assets/lab/lab-automations-audience-v4.js \
             assets/lab/lab-automations-intelligence-v4.js \
-            assets/lab/lab-automations-input-routing-v4.js
+            assets/lab/lab-automations-input-routing-v4.js \
+            assets/lab/lab-automations-sequence-v4.js
           do
             node --check "$file"
           done
@@ -74,15 +75,18 @@ jobs:
           intelligence_css = Path('assets/lab/lab-automations-intelligence-v4.css').read_text(encoding='utf-8')
           inputs = Path('assets/lab/lab-automations-input-routing-v4.js').read_text(encoding='utf-8')
           inputs_css = Path('assets/lab/lab-automations-input-routing-v4.css').read_text(encoding='utf-8')
+          sequence = Path('assets/lab/lab-automations-sequence-v4.js').read_text(encoding='utf-8')
+          sequence_css = Path('assets/lab/lab-automations-sequence-v4.css').read_text(encoding='utf-8')
 
           required_html = [
               "connect-src 'self'", 'noindex,nofollow', '<title>Continuum · Automations</title>',
               'lab-automations-platform-v4.css', 'lab-automations-platform-v4-qa.css',
               'lab-automations-directory-v4.css', 'lab-automations-audience-v4.css',
               'lab-automations-intelligence-v4.css', 'lab-automations-input-routing-v4.css',
-              'lab-automations-platform-v4.js', 'lab-automations-scenarios-v4.js',
-              'lab-automations-directory-v4.js', 'lab-automations-audience-v4.js',
-              'lab-automations-intelligence-v4.js', 'lab-automations-input-routing-v4.js'
+              'lab-automations-sequence-v4.css', 'lab-automations-platform-v4.js',
+              'lab-automations-scenarios-v4.js', 'lab-automations-directory-v4.js',
+              'lab-automations-audience-v4.js', 'lab-automations-intelligence-v4.js',
+              'lab-automations-input-routing-v4.js', 'lab-automations-sequence-v4.js'
           ]
           required_v3 = [
               'cmx-lab-automations-v1', 'cmx-lab-crm-v1', 'cmx-lab-actions-v1',
@@ -114,7 +118,16 @@ jobs:
           required_inputs = [
               'cmx-lab-automation-input-bindings-v1', 'INPUT ROUTING', 'targetField',
               'subject', 'body', 'context', 'review_context', 'data-v43-route-input',
-              'Typed reference only', 'labAutomationsInputs = "v4-3"'
+              'Typed reference only', 'v43-test-routing', 'labAutomationsInputs = "v4-3"'
+          ]
+          required_sequence = [
+              'cmx-lab-automation-flow-controls-v1', 'ADVANCED FLOW · PREVIEW',
+              'Continue if…', 'Wait between steps', 'flowControls', 'afterActionId',
+              'RUNTIME REQUIRED', 'remaining path stops', 'labAutomationsSequence = "v4-4"'
+          ]
+          required_audience_css = [
+              '.v4-audience-readiness', '.v4-audience-modal-backdrop', '.v4-audience-picker-list',
+              '.v4-audience-preview-metrics', '@media (max-width:760px)', 'env(safe-area-inset-bottom)'
           ]
           required_intelligence_css = [
               '.v4-smart-recommendations', '.v4-data-map', '.v4-data-modal-backdrop',
@@ -123,12 +136,13 @@ jobs:
           ]
           required_inputs_css = [
               '.v43-input-routing', '.v43-input-row', '.v43-input-preflight',
-              '.v43-route-backdrop', '.v43-source-option', '@media (max-width:760px)',
-              'env(safe-area-inset-bottom)'
+              '.v43-route-backdrop', '.v43-source-option', '.v43-test-routing',
+              '@media (max-width:760px)', 'env(safe-area-inset-bottom)'
           ]
-          required_audience_css = [
-              '.v4-audience-readiness', '.v4-audience-modal-backdrop', '.v4-audience-picker-list',
-              '.v4-audience-preview-metrics', '@media (max-width:760px)', 'env(safe-area-inset-bottom)'
+          required_sequence_css = [
+              '.v44-sequence-intro', '.v44-between', '.v44-controls', '.v44-add',
+              '.v44-sequence-preflight', '.v44-backdrop', '.v44-form',
+              '@media (max-width:760px)', 'env(safe-area-inset-bottom)'
           ]
 
           checks = [
@@ -144,6 +158,8 @@ jobs:
               (required_intelligence_css, intelligence_css, 'v4.2 intelligence styling'),
               (required_inputs, inputs, 'v4.3 input routing'),
               (required_inputs_css, inputs_css, 'v4.3 input routing styling'),
+              (required_sequence, sequence, 'v4.4 advanced flow'),
+              (required_sequence_css, sequence_css, 'v4.4 advanced flow styling'),
           ]
           for terms, source, label in checks:
               for term in terms:
@@ -152,14 +168,14 @@ jobs:
           if 'lab-automations-app-v2.js' in html:
               sys.exit('superseded v2 builder must not be loaded')
 
-          combined = html + v3 + route + system + progressive + platform + scenarios + directory + audience + intelligence + inputs
+          combined = html + v3 + route + system + progressive + platform + scenarios + directory + audience + intelligence + inputs + sequence
           if 'api.cmxchat.com' in combined:
               sys.exit('focused Lab must not call the production API')
-          for name, source in [('system', system), ('progressive', progressive), ('platform', platform), ('directory', directory), ('audience', audience), ('intelligence', intelligence), ('inputs', inputs)]:
+          for name, source in [('system', system), ('progressive', progressive), ('platform', platform), ('directory', directory), ('audience', audience), ('intelligence', intelligence), ('inputs', inputs), ('sequence', sequence)]:
               for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
                   if forbidden in source: sys.exit(f'forbidden {name} pattern: {forbidden}')
 
-          print('Automations v4.3 field input routing, v4.2 data flow, typed Audience and safety contracts passed.')
+          print('Automations v4.4 advanced flow, v4.3 input routing, v4.2 data flow, Audience and safety contracts passed.')
           PY
 
       - name: Browser smoke desktop and direct-new mobile
@@ -196,6 +212,7 @@ jobs:
           grep -q 'data-lab-automations-audience="v4-1"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-intelligence="v4-2"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-inputs="v4-3"' /tmp/auto-mobile.html
+          grep -q 'data-lab-automations-sequence="v4-4"' /tmp/auto-mobile.html
           grep -q 'class="v3-editor-page"' /tmp/auto-mobile.html
           grep -q 'data-progressive-preview="true"' /tmp/auto-mobile.html
           grep -q 'What should start this' /tmp/auto-mobile.html
@@ -206,4 +223,4 @@ jobs:
           ! grep -q 'LIVE FLOW' /tmp/auto-mobile.html
           ! grep -q 'How do you want to start' /tmp/auto-mobile.html
 
-          echo 'Focused Automations v4.3 passed desktop and 390x844 direct-new mobile smoke.'
+          echo 'Focused Automations v4.4 passed desktop and 390x844 direct-new mobile smoke.'
