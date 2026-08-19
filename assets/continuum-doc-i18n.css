@@ -1,0 +1,469 @@
+/* Continuum /doc internationalization compatibility.
+   This is a frozen-page accessibility layer: English/LTR stays unchanged while
+   translated RTL languages can mirror navigation, reading order and directional UI. */
+
+/* Translation engines may expose RTL through lang, dir, or translated-rtl classes. */
+html.translated-rtl,
+html[lang|="he"],
+html[lang|="ar"],
+html[lang|="fa"],
+html[lang|="ur"],
+html[lang|="yi"],
+body.translated-rtl{
+  direction:rtl;
+}
+
+/* Use a Hebrew/Arabic-capable system stack when the resolved page direction is RTL. */
+body:dir(rtl),
+html.translated-rtl body,
+body.translated-rtl{
+  font-family:"Noto Sans Hebrew","Noto Sans Arabic","Arial Hebrew","Segoe UI",Roboto,Arial,sans-serif;
+}
+
+/* Preserve bidi stability for technical tokens, numbers and fixed-direction controls. */
+.document-mark,
+.theme-toggle,
+.theme-toggle-track,
+.tech-detail code,
+.process-no,
+.roadmap-icon,
+.status-pill,
+.continuum-route-status{
+  direction:ltr;
+  unicode-bidi:isolate;
+}
+
+.document-shell:dir(rtl),
+.document-paper:dir(rtl),
+.document-rail:dir(rtl),
+.document-toc:dir(rtl),
+.toolbar-links:dir(rtl){
+  text-align:start;
+}
+
+body:dir(rtl) .reading-progress span,
+html.translated-rtl .reading-progress span{
+  margin-inline-start:auto;
+}
+
+body:dir(rtl) .skip-link,
+html.translated-rtl .skip-link{
+  left:auto;
+  right:12px;
+}
+
+/* Desktop contents rail follows the inline-start edge. */
+.document-toc:dir(rtl) a{
+  border-left:0;
+  border-right:2px solid transparent;
+  border-radius:9px 0 0 9px;
+  text-align:start;
+}
+
+.document-toc:dir(rtl) a.is-current{
+  border-left-color:transparent;
+  border-right-color:var(--blue);
+  background:linear-gradient(270deg,var(--blue-soft),transparent);
+}
+
+/* Reader-facing labels should not keep Latin-style tracking after translation. */
+.document-paper:dir(rtl) .section-kicker,
+.document-paper:dir(rtl) .visual-label,
+.document-paper:dir(rtl) .visual-label-row span,
+.document-paper:dir(rtl) .continuum-forward-kicker,
+.document-paper:dir(rtl) .continuum-origin-kicker,
+.document-paper:dir(rtl) .continuum-state-head>span,
+.document-paper:dir(rtl) .continuum-senses-copy>span,
+.document-paper:dir(rtl) .continuum-routing-copy>span,
+.document-paper:dir(rtl) .continuum-receipt-head>span,
+.document-paper:dir(rtl) .panel-head span,
+.document-paper:dir(rtl) .presence-heading span,
+.document-paper:dir(rtl) .presence-stage>span,
+.document-paper:dir(rtl) .capability-principle span,
+.document-paper:dir(rtl) .capability-layer-head span,
+.document-paper:dir(rtl) .policy-translation-head span,
+.document-paper:dir(rtl) .continuity-authority-head span,
+.document-paper:dir(rtl) .concept-architecture-head span{
+  letter-spacing:.02em;
+  text-transform:none;
+}
+
+/* Final note accents move to the RTL reading edge. */
+.document-paper:dir(rtl) .continuum-forward-note{
+  border-left-width:1px;
+  border-left-color:color-mix(in srgb,var(--line,#c9d5e2) 78%,transparent);
+  border-right:3px solid color-mix(in srgb,var(--accent,#2563eb) 72%,transparent);
+}
+
+.document-paper:dir(rtl) .clarity-story-path,
+.document-paper:dir(rtl) .clarity-status-frame{
+  border-left-width:1px!important;
+  border-right:3px solid var(--ct-blue)!important;
+}
+
+/* Hero spacing and decorative anchoring mirror without changing the composition. */
+.document-paper:dir(rtl) .continuum-hero .hero-copy{
+  padding-left:30px;
+  padding-right:60px;
+}
+
+.document-paper:dir(rtl) .hero-orbit-one{
+  right:auto;
+  left:-180px;
+}
+
+.document-paper:dir(rtl) .hero-orbit-two{
+  right:auto;
+  left:-55px;
+}
+
+.document-paper:dir(rtl) .network-legend{
+  left:auto;
+  right:18px;
+}
+
+.document-paper:dir(rtl) .support-tools span{
+  text-align:start;
+}
+
+.document-paper:dir(rtl) .file-row{
+  margin-left:0;
+  margin-right:20px;
+}
+
+/* Vertical process/timeline rails belong on inline-start in RTL. */
+.document-paper:dir(rtl) .ai-journey{
+  padding-left:18px;
+  padding-right:64px;
+}
+
+.document-paper:dir(rtl) .ai-journey::before{
+  left:auto;
+  right:34px;
+}
+
+.document-paper:dir(rtl) .journey-step>b{
+  left:auto;
+  right:-48px;
+}
+
+.document-paper:dir(rtl) .workflow-nodes{
+  padding-left:18px;
+  padding-right:64px;
+}
+
+.document-paper:dir(rtl) .workflow-nodes::before{
+  left:auto;
+  right:34px;
+}
+
+.document-paper:dir(rtl) .workflow-node::before{
+  left:auto;
+  right:-49px;
+}
+
+.document-paper:dir(rtl) .workflow-node.when-node{
+  border-left:1px solid var(--line);
+  border-right:4px solid var(--ct-blue);
+}
+
+.document-paper:dir(rtl) .workflow-node.do-node{
+  border-left:1px solid var(--line);
+  border-right:4px solid var(--ct-mint);
+}
+
+.document-paper:dir(rtl) .workflow-node.wait-node{
+  border-left:1px solid var(--line);
+  border-right:4px solid var(--ct-orange);
+}
+
+.document-paper:dir(rtl) .workflow-node.ai-node{
+  border-left:1px solid var(--line);
+  border-right:4px solid var(--ct-violet);
+}
+
+.document-paper:dir(rtl) .afterlife-timeline{
+  padding-left:0;
+  padding-right:62px;
+}
+
+.document-paper:dir(rtl) .afterlife-timeline::before{
+  left:auto;
+  right:26px;
+}
+
+.document-paper:dir(rtl) .afterlife-step::before{
+  left:auto;
+  right:-62px;
+}
+
+.document-paper:dir(rtl) .afterlife-step.is-trigger::before{
+  left:auto;
+  right:-65px;
+}
+
+.document-paper:dir(rtl) .afterlife-step em{
+  right:auto;
+  left:13px;
+}
+
+.document-paper:dir(rtl) .bar-track i{
+  margin-left:auto;
+}
+
+.document-paper:dir(rtl) .build-list,
+.document-paper:dir(rtl) .slice-list{
+  padding-left:18px;
+  padding-right:62px;
+}
+
+.document-paper:dir(rtl) .build-list::before,
+.document-paper:dir(rtl) .slice-list::before{
+  left:auto;
+  right:32px;
+}
+
+.document-paper:dir(rtl) .build-item::before,
+.document-paper:dir(rtl) .slice-item::before{
+  left:auto;
+  right:-47px;
+}
+
+.document-paper:dir(rtl) .roadmap-phase::before,
+.document-paper:dir(rtl) .roadmap-icon{
+  left:auto;
+  right:18px;
+}
+
+.document-paper:dir(rtl) .roadmap-rich .roadmap-card::after{
+  right:auto;
+  left:-50px;
+}
+
+.document-paper:dir(rtl) .possibility-card::after{
+  right:auto;
+  left:-36px;
+}
+
+.document-paper:dir(rtl) .possibility-card>span{
+  left:auto;
+  right:17px;
+}
+
+/* Horizontal sequences read from right to left and directional arrows follow them. */
+@media(min-width:981px){
+  .document-paper:dir(rtl) .hero-network{
+    margin-right:0;
+    margin-left:26px;
+  }
+
+  .document-paper:dir(rtl) .process-step::after,
+  .document-paper:dir(rtl) .stack-node::after{
+    right:auto;
+    left:-10px;
+    content:"←";
+  }
+}
+
+@media(min-width:1101px){
+  .document-paper:dir(rtl) .concept-node:not(:last-child)::after{
+    right:auto;
+    left:-9px;
+    content:"←";
+  }
+}
+
+@media(min-width:761px){
+  .document-paper:dir(rtl) .policy-arrow,
+  .document-paper:dir(rtl) .path-steps i{
+    transform:scaleX(-1);
+  }
+}
+
+@media(min-width:681px){
+  .document-paper:dir(rtl) .continuum-forward-flow i,
+  .document-paper:dir(rtl) .continuum-senses-flow i,
+  .document-paper:dir(rtl) .clarity-story-path i,
+  .document-paper:dir(rtl) .everyday-arrow,
+  .document-paper:dir(rtl) .version-flow b{
+    transform:scaleX(-1);
+  }
+}
+
+/* Mobile side navigation opens from the RTL edge and keeps the trigger on that side. */
+@media(max-width:920px){
+  body:dir(rtl) .mobile-contents-trigger,
+  html.translated-rtl .mobile-contents-trigger{
+    left:auto;
+    right:max(10px,env(safe-area-inset-right));
+    text-align:start;
+  }
+
+  body:dir(rtl) .mobile-contents-drawer,
+  html.translated-rtl .mobile-contents-drawer{
+    inset:0 0 0 auto;
+    border-right:0;
+    border-left:1px solid color-mix(in srgb,var(--blue) 23%,var(--line-strong));
+    box-shadow:-24px 0 70px rgba(0,0,0,.28);
+    transform:translate3d(104%,0,0);
+  }
+
+  body:dir(rtl) .mobile-document-toc a,
+  html.translated-rtl .mobile-document-toc a{
+    padding:11px 16px 11px 14px;
+    border-left:1px solid transparent;
+    border-right:3px solid transparent;
+    border-radius:12px 0 0 12px;
+    text-align:start;
+  }
+
+  body:dir(rtl) .mobile-document-toc a:hover,
+  body:dir(rtl) .mobile-document-toc a:focus-visible,
+  html.translated-rtl .mobile-document-toc a:hover,
+  html.translated-rtl .mobile-document-toc a:focus-visible{
+    border-left-color:color-mix(in srgb,var(--blue) 18%,transparent);
+    border-right-color:color-mix(in srgb,var(--blue) 48%,transparent);
+  }
+
+  body:dir(rtl) .mobile-document-toc a[aria-current="location"],
+  html.translated-rtl .mobile-document-toc a[aria-current="location"]{
+    border-left-color:color-mix(in srgb,var(--blue) 22%,transparent);
+    border-right-color:var(--blue);
+    background:linear-gradient(270deg,color-mix(in srgb,var(--blue) 16%,transparent),color-mix(in srgb,var(--violet) 6%,transparent));
+  }
+
+  body:dir(rtl) .mobile-document-toc a[aria-current="location"]::after,
+  html.translated-rtl .mobile-document-toc a[aria-current="location"]::after{
+    float:left;
+    margin-left:0;
+    margin-right:8px;
+    letter-spacing:.02em;
+  }
+
+  html.doc-mobile-contents-open body:dir(rtl) .mobile-contents-trigger,
+  html.translated-rtl.doc-mobile-contents-open .mobile-contents-trigger{
+    transform:translateX(12px);
+  }
+
+  html.doc-mobile-contents-open body:dir(rtl) .mobile-contents-drawer,
+  html.translated-rtl.doc-mobile-contents-open .mobile-contents-drawer{
+    transform:translate3d(0,0,0);
+  }
+}
+
+@media(max-width:760px){
+  .document-paper:dir(rtl) .policy-arrow{
+    transform:rotate(90deg);
+  }
+}
+
+@media(max-width:680px){
+  .document-paper:dir(rtl) .continuum-hero .hero-copy{
+    padding-left:22px;
+    padding-right:22px;
+  }
+
+  .document-paper:dir(rtl) .process-map{
+    padding-left:0;
+    padding-right:48px;
+  }
+
+  .document-paper:dir(rtl) .process-map::before{
+    left:auto;
+    right:17px;
+  }
+
+  .document-paper:dir(rtl) .process-no{
+    left:auto;
+    right:-48px;
+  }
+
+  .document-paper:dir(rtl) .presence-track{
+    padding-left:0;
+    padding-right:46px;
+  }
+
+  .document-paper:dir(rtl) .presence-track::before{
+    left:auto;
+    right:17px;
+  }
+
+  .document-paper:dir(rtl) .presence-icon{
+    left:auto;
+    right:-45px;
+  }
+
+  .document-paper:dir(rtl) .ai-side .ai-journey{
+    padding-left:14px;
+    padding-right:58px;
+  }
+
+  .document-paper:dir(rtl) .ai-journey::before{
+    left:auto;
+    right:29px;
+  }
+
+  .document-paper:dir(rtl) .journey-step>b{
+    left:auto;
+    right:-42px;
+  }
+
+  .document-paper:dir(rtl) .continuum-forward-flow i,
+  .document-paper:dir(rtl) .continuum-senses-flow i,
+  .document-paper:dir(rtl) .everyday-arrow,
+  .document-paper:dir(rtl) .version-flow b{
+    transform:rotate(90deg);
+  }
+
+  .document-paper:dir(rtl) .afterlife-timeline{
+    padding-left:0;
+    padding-right:52px;
+  }
+
+  .document-paper:dir(rtl) .afterlife-timeline::before{
+    left:auto;
+    right:22px;
+  }
+
+  .document-paper:dir(rtl) .afterlife-step::before{
+    left:auto;
+    right:-52px;
+  }
+
+  .document-paper:dir(rtl) .afterlife-step.is-trigger::before{
+    left:auto;
+    right:-55px;
+  }
+
+  .document-paper:dir(rtl) .afterlife-step em{
+    left:auto;
+  }
+}
+
+@media(max-width:430px){
+  .document-paper:dir(rtl) .continuum-hero .hero-copy{
+    padding-left:20px;
+    padding-right:20px;
+  }
+
+  .document-paper:dir(rtl) .people-map::before,
+  .document-paper:dir(rtl) .people-map::after{
+    left:auto;
+    right:30px;
+  }
+
+  .document-paper:dir(rtl) .person-one,
+  .document-paper:dir(rtl) .person-two,
+  .document-paper:dir(rtl) .person-three{
+    left:14px;
+    right:14px;
+  }
+}
+
+@media print{
+  body,
+  .document-shell,
+  .document-paper{
+    direction:ltr;
+  }
+}
