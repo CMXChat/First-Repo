@@ -1,32 +1,35 @@
 # Check In Lab ↔ Automations Integration — CURRENT
 
 Date: 2026-08-18
-Status: Active Continuum Lab v4 frontend integration contract
+Status: Active Continuum Lab v4.1 integration contract with Directory v2 + typed Audience
 
-## Canonical product structure
+# Canonical product structure
 
 `/lab/` is the broader Continuum / Check In Lab workspace.
 
 `/lab/automations/` is the dedicated Automation workspace and the single full Automation editor.
 
-Do not build a competing full Automation editor inside `/lab/`. The main Lab summarizes shared Drafts and links into the focused route.
+Do not build a competing full Automation editor inside `/lab/`. The main Lab summarizes shared Drafts, owns the rich Directory v2 surface and links into the focused route.
 
-The Lab remains a proving ground for future protected `/checkin/`. Accepted interaction behavior must later be rebuilt in the official React/frontend + typed backend stack. LocalStorage adapters and DOM-presentation layers do not migrate as production architecture.
+The Lab remains a proving ground. Accepted product semantics migrate later into the official React/frontend + typed backend stack. LocalStorage and DOM adapters do not become production architecture.
 
-Strategic Automation direction is canonical in:
+Read with:
 
-`docs/continuum-automations-master-plan-CURRENT.md`
+- `docs/continuum-automations-master-plan-CURRENT.md`;
+- `docs/continuum-directory-master-plan-CURRENT.md`;
+- `docs/checkin-automations-frontend-CURRENT.md`;
+- `docs/checkin-directory-library-CURRENT.md`.
 
-## Focused route authority
+# Focused route authority
 
-The focused route now uses:
-
-### Behavior/persistence core
+## V3 behavior core
 
 - `assets/lab/lab-automations-experience-v3.js`;
 - `assets/lab/lab-automations-experience-v3.css`.
 
-### Accepted support layers
+V3 owns local Draft normalization, editing, autosave, compatibility fields and full-flow simulation.
+
+## Accepted support layers
 
 - `assets/lab/lab-automations-system-surface.js`;
 - `assets/lab/lab-automations-system-surface.css`;
@@ -34,21 +37,24 @@ The focused route now uses:
 - `assets/lab/lab-automations-final-qa.css`;
 - `assets/lab/lab-automations-route-integration.js`.
 
-### Current v4 platform layers
+## V4/V4.1 product layers
 
 - `assets/lab/lab-automations-platform-v4.js`;
 - `assets/lab/lab-automations-platform-v4.css`;
-- `assets/lab/lab-automations-scenarios-v4.js`.
+- `assets/lab/lab-automations-platform-v4-qa.css`;
+- `assets/lab/lab-automations-scenarios-v4.js`;
+- `assets/lab/lab-automations-directory-v4.js`;
+- `assets/lab/lab-automations-directory-v4.css`;
+- `assets/lab/lab-automations-audience-v4.js`;
+- `assets/lab/lab-automations-audience-v4.css`.
 
-V3 continues to own browser-local Draft normalization, editing, autosave, shared-store compatibility and full-flow simulation.
+V4/V4.1 owns the current operating experience: command-center navigation, capability discovery, interactive flow navigation, per-stage tests, preflight, creation chooser, Planner preview, scenarios, Directory readiness and typed Audience composition.
 
-V4 owns the current operating experience: Automations/Templates/Runs navigation, capability discovery, flow navigation, per-stage local tests, stronger preflight, creation chooser, Planner preview and expanded scenarios.
+Older focused v2 builder files remain history and are not loaded.
 
-Older focused v2 builder files remain repository history and are not loaded by `/lab/automations/`.
+# Builder model
 
-## Builder model
-
-The focused builder remains five-stage:
+The focused builder remains:
 
 1. Trigger / WHEN;
 2. Rules / IF;
@@ -56,17 +62,15 @@ The focused builder remains five-stage:
 4. Timing / WAIT;
 5. Review / TEST.
 
-There is no name-first wizard.
+No name-first wizard.
 
-Finish remains inside Review.
+Finish stays inside Review.
 
-The v4 flow is interactive navigation over these same stages, not a second workflow engine.
+# Progressive Flow Preview
 
-## Progressive Flow Preview
+Accepted label: **FLOW PREVIEW**.
 
-The accepted label is **FLOW PREVIEW**.
-
-A new blank Automation begins visibly incomplete:
+Blank Draft starts visibly incomplete:
 
 - WHEN — Choose a trigger;
 - IF — Not set yet;
@@ -74,229 +78,213 @@ A new blank Automation begins visibly incomplete:
 - WAIT — Not set yet;
 - FINISH — Not set yet.
 
-Rules:
+Compatibility defaults must never appear as user intent before confirmation.
 
-- Trigger begins visually blank;
-- optional Rules become `Always continue` after explicit stage confirmation;
-- compatibility placeholder Action remains hidden until a real Action is chosen;
-- Timing becomes `Immediately` only after Timing is confirmed;
-- Finish requires explicit choice for a new Draft;
-- later stages stay unavailable until required earlier choices are complete;
-- configured templates/scenarios show their stored flow immediately;
-- existing Drafts show stored configuration;
-- Lab progress metadata remains `cmx-lab-automation-progress-v1` and is presentation-only.
+# Shared state
 
-Production must never visually invent an unmade user choice.
-
-## Shared state
-
-The main Lab and focused route continue to share:
+The broader Lab and focused route share:
 
 - Automation Drafts: `cmx-lab-automations-v1`;
-- CRM / Directory prototype: `cmx-lab-crm-v1`;
-- Inventory prototype: `cmx-lab-inventory-v1`;
+- Directory prototype: `cmx-lab-crm-v1`;
+- Inventory: `cmx-lab-inventory-v1`;
 - reusable Actions: `cmx-lab-actions-v1`.
 
-Focused new-Draft UI progress uses:
+Focused progressive UI state:
 
 - `cmx-lab-automation-progress-v1`.
 
-V4 stores only a non-domain platform marker under:
+Directory navigation-only state:
+
+- `cmx-lab-directory-ui-v2`.
+
+V4 platform marker/preferences:
 
 - `cmx-lab-automations-platform-v4`.
 
-These remain browser-local prototype adapters.
+Typed Audience data lives inside the normal Automation Draft Action as `audienceSelectors[]`. It does not use a separate Audience localStorage database.
 
-## Main Lab → focused route navigation
+# Main Lab → focused route
 
 From `/lab/` Actions:
 
-- `Open Automations` opens `/lab/automations/`;
-- selecting a shared Draft uses `/lab/automations/?automation=<id>&from=lab`;
-- creating the first Automation uses `/lab/automations/?new=1&from=lab`;
-- the reusable Action library stays available in the main Lab.
+- Open Automations → `/lab/automations/`;
+- exact Draft → `/lab/automations/?automation=<id>&from=lab`;
+- direct new Draft → `/lab/automations/?new=1&from=lab`.
 
-### Exact Draft
+`?new=1` deliberately bypasses the v4 creation chooser and opens the blank Trigger editor directly.
 
-`?automation=<id>` opens that exact shared Draft.
+Exact-Draft and one-shot query behavior remain owned by `lab-automations-route-integration.js`.
 
-### Direct new Draft
+# Focused route → main Lab
 
-`?new=1` remains a special integration contract.
-
-Even though a normal manual New Automation click in v4 opens the new Build / Templates / Planner chooser, the direct `?new=1` route must bypass that chooser and open the blank Trigger editor immediately.
-
-This preserves current main-Lab integration and mobile regression behavior.
-
-The one-shot query is cleaned after it is consumed.
-
-## Focused route → main Lab
-
-The Check In Lab brand/back control returns to:
+The Lab brand/back control returns to:
 
 `/lab/#lab=view%3Aactions`
 
-`assets/lab/lab-automations-route-integration.js` owns this cross-route navigation only. It does not own Draft data or execution.
+The main Lab Directory is reachable at:
 
-## Main-Lab bridge
+`/lab/#lab=view%3Arecords`
 
-`assets/lab/lab-automations-main-bridge.js` remains the bridge from the broader Lab Actions area into the focused Automation route.
+# Main-Lab bridge
 
-The bridge may:
+`lab-automations-main-bridge.js` may:
 
 - read shared Drafts;
-- show Draft count/status;
+- show Draft status/count;
 - open exact Drafts;
-- start a direct new Draft;
-- show compact timing/action summaries;
-- point to the reusable Action library.
+- start direct-new Draft;
+- show compact Action/timing summaries;
+- point to reusable Actions.
 
-It must not become a second full editor, second persistence model or execution authority.
+It must not become a second full editor, persistence model or execution authority.
 
-## V4 command-center behavior
+# Directory v2 integration
 
-The focused route now has three top-level working surfaces:
+The broader Lab Records surface owns the rich Directory v2 experience.
+
+Directory v2 enriches the shared `cmx-lab-crm-v1` store with prototype concepts including:
+
+- many-Organization Person membership;
+- ContactMethods/readiness;
+- Labels;
+- Groups/saved audiences;
+- explicit Person relationships;
+- Activity/notes.
+
+The focused Automation route reads the same shared store.
+
+# Typed Audience v4.1 integration
+
+Communication Actions represented by current inline `notify` and `email` types use the v4.1 Audience manager.
+
+Selectors can include:
+
+- Person;
+- Organization;
+- Group;
+- Label.
+
+The browser resolves current unique People, deduplicates by Person ID and previews email/phone readiness.
+
+Prototype Action fields include:
+
+- `audienceSelectors[]`;
+- `audienceResolution.mode = live_membership`;
+- `audienceResolution.dedupe = person_id`.
+
+## V3 compatibility rule
+
+The v3 core still understands `targetRef` / `targetLabel`.
+
+The Audience adapter therefore:
+
+1. triggers the normal v3 Save before changing Audience state;
+2. writes `audienceSelectors[]` into the shared Action object;
+3. mirrors one direct Person/Organization into the compatibility target reference where possible;
+4. uses a readable compatibility target label for larger/Group/Label audiences;
+5. reloads the exact Draft so the v3 normalizer rehydrates/preserves the extra fields.
+
+This reload is static-Lab compatibility behavior only.
+
+Production must use normal protected Draft mutations and a canonical server resolver.
+
+# Command center
+
+Current top-level views:
 
 - Automations;
 - Templates;
 - Runs preview.
 
-Automations owns Draft / Published / Archived prototype lists.
+Runs stays explicitly `RUNTIME OFF` until authoritative Runtime exists.
 
-Templates owns editable starting patterns.
+# Templates/scenarios
 
-Runs is intentionally future-facing and must remain labeled `RUNTIME OFF` until authoritative server Runtime exists.
+Current total: **13**.
 
-Search and the Capability Catalog belong to the focused route and do not change main-Lab persistence.
+Scenarios instantiate ordinary shared Drafts. No separate scenario execution/persistence engine.
 
-## Templates and scenarios
+# Capability Catalog
 
-The original five focused-route templates remain.
+The browser-local catalog can show current prototype options and future concepts with clear `LAB NOW` / `LATER` states.
 
-V4 adds eight more editable scenario starting points:
+It is discovery scaffolding only.
 
-- Weekly planning review;
-- Grace-window heads-up;
-- Final continuity review;
-- AI note summary;
-- Six-hour reminder;
-- Daily records check;
-- No-ack follow-up;
-- AI briefing with review.
+Future server-owned registry metadata must decide real supported capability types/readiness.
 
-Current total: 13.
+# Reusable Actions
 
-The new scenario layer creates a normal v3-compatible Draft in `cmx-lab-automations-v1` and then reopens that exact Draft using the established exact-Draft route.
+Saved Lab Actions remain explicit `action_ref` entries.
 
-Templates/scenarios do not get a separate domain model.
+Do not silently convert types such as SMS/Webhook/Digital Account/Publish into simpler inline types.
 
-## Capability Catalog integration
+Production later resolves/authorizes/version-freezes reusable definitions server-side.
 
-The v4 capability catalog is browser-local UX scaffolding for the future extensible Automation platform.
+# Testing
 
-It can show:
+**TEST THIS STEP** remains local explanatory testing.
 
-- currently representable Lab options;
-- future Triggers, Conditions, Actions and workflow-control concepts;
-- clear `LAB NOW` / `LATER` availability;
-- category/search discovery;
-- reusable Lab Actions.
+Full-flow simulation remains local.
 
-Future capability entries must remain informational and non-executable until matching backend definitions/services/Connections/Runtime exist.
+Audience resolution/readiness shown in Lab is also local preview, not authoritative execution history.
 
-The browser-local catalog is not production authorization or execution truth.
+# AI Planner preview
 
-## Reusable Action references
+Planner establishes the future product rule:
 
-Saved Actions from the main Lab Action library remain selectable as explicit `action_ref` entries.
+- natural-language intent becomes the same typed Draft a human edits;
+- no shadow AI workflow format;
+- immutable published history is never silently rewritten.
 
-The focused Automation does not silently convert reusable types such as SMS, Webhook/API, Digital Account or Publish into one of the simple inline types.
+Current Planner performs no model request.
 
-Production later needs to resolve and authorize referenced Actions server-side and freeze the resolved version/execution inputs for reproducibility.
+# Mobile contract
 
-## Per-stage test integration
+Preserve:
 
-V4 adds **TEST THIS STEP** inside the focused editor.
-
-These are local explanatory checks only. They do not call the main Lab, production API, provider or external AI model.
-
-The existing full-flow simulation remains local.
-
-## AI Planner preview
-
-The manual New Automation chooser can open an AI Planner preview.
-
-It exists to establish future product behavior:
-
-- natural-language intent should become the same typed Automation Draft a human edits;
-- AI should not create a shadow workflow format;
-- published history should never be silently rewritten by AI.
-
-Current Planner preview performs no AI/model request and may only point the user toward existing local starting patterns.
-
-## Screenshot/mobile contract
-
-Permanent cross-route lessons remain:
-
-- focused editing stays on one route;
-- mobile is a separate readable layout, not a scaled desktop console;
-- no tiny primary text;
-- no giant empty operational canvases;
+- one primary working area;
+- readable type;
+- large tap targets;
+- one-column capability/Action cards;
+- bottom-sheet/full-screen pickers;
+- full-width Audience selector sheet;
+- safe-area controls;
 - no nested scroll traps;
-- light mode needs intentional contrast;
-- pending state is first-class;
-- capability/modals use phone-friendly bottom-sheet presentation;
-- no broad document-wide MutationObserver.
+- no horizontal page movement;
+- no desktop canvas squeezed onto phone.
 
-## Draft compatibility
+# Safety boundary
 
-V3 continues to normalize older `cmx-lab-automations-v1` data and write legacy compatibility fields needed by older Lab surfaces.
-
-Current newer prototype fields include:
-
-- `conditions`;
-- `ruleMode`;
-- per-Action `enabled`;
-- `action_ref`;
-- `editorStage`.
-
-The progressive layer continues to hide internal placeholder/default values on a brand-new Draft.
-
-Do not remove legacy compatibility fields until the broader Lab bridge and validation contracts are deliberately migrated.
-
-## Safety boundary
-
-Both `/lab/` and `/lab/automations/` remain prototypes.
+Both routes remain prototypes.
 
 They do not:
 
-- publish real Automations;
+- publish production Automations;
 - execute communication providers;
-- run external AI tools;
+- call production Check In API from the focused route;
+- run external AI models;
 - schedule authoritative work;
 - mutate connected accounts;
 - hold provider secrets.
 
-Keep focused-route CSP `connect-src 'self'` and production isolation intact.
+Keep `connect-src 'self'` on the focused route.
 
-## Regression protection
+# Regression protection
 
-`.github/workflows/checkin-automations-validation.yml` now covers:
+Current validation should cover:
 
-- v3, route, system, progressive, platform-v4 and scenarios-v4 syntax;
-- focused-route asset load order;
-- v4 dashboard/application markers;
-- Automations / Templates / Runs presence;
-- expanded scenario presence;
-- capability-catalog presence;
-- exact Draft deep links;
-- direct-new deep link opening Trigger, not the creation chooser;
+- v3 compatibility core;
 - progressive blank-Draft truth;
-- `FLOW PREVIEW` naming;
-- per-stage local-test presence;
-- strict Lab isolation;
-- no MutationObserver/eval/dynamic Function in presentation layers.
+- v4 command-center/capability layers;
+- scenario layer;
+- Directory integration;
+- Audience v4.1 source/styling;
+- Automations / Templates / Runs;
+- direct-new and exact-Draft navigation;
+- FLOW PREVIEW;
+- per-stage testing;
+- strict production isolation;
+- mobile smoke;
+- no broad MutationObserver/eval/dynamic Function in current adapters.
 
-`.github/workflows/checkin-lab-validation.yml` remains responsible for the broader Lab bridge/general workspace contract.
-
-Keep both workflows aligned when shared integration behavior changes.
+Broad Lab validation separately protects the generated main-Lab snapshot and Directory v2 load order.
