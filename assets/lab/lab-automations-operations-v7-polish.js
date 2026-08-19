@@ -10,7 +10,7 @@
       brand.setAttribute("aria-label", "Back to Continuum Lab");
       const strong = brand.querySelector(".brand-copy strong");
       const small = brand.querySelector(".brand-copy small");
-      if (strong) strong.textContent = "CONTINUUM";
+      if (strong) strong.textContent = "Continuum";
       if (small) small.textContent = "LAB · AUTOMATIONS";
     }
 
@@ -73,12 +73,19 @@
     if (copy) copy.textContent = "Supported intents become a typed proposal you can inspect and edit. No model call or provider action occurs.";
   }
 
+  function collapseStackedCatalogModals() {
+    const backdrops = Array.from(document.querySelectorAll(".v4-modal-backdrop"));
+    if (backdrops.length < 2) return;
+    backdrops.slice(0, -1).forEach(node => node.remove());
+  }
+
   function patch() {
     queued = false;
     patchChrome();
     patchWorkspaceActions();
     patchStartModal();
     patchPlannerModal();
+    collapseStackedCatalogModals();
     document.documentElement.dataset.labAutomationsOperationsPolish = "v7";
   }
 
