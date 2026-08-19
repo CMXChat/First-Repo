@@ -1,0 +1,64 @@
+/* Continuum Control Center v4 focus + overlay polish.
+   Accessibility and interaction containment only. No product state or backend claims. */
+
+.cc-shell :is(a,button,[role="button"],input):focus-visible,
+.cc-drawer :is(a,button,[role="button"],input):focus-visible,
+.cc-command-overlay :is(a,button,[role="button"],input):focus-visible{
+  outline:2px solid color-mix(in srgb,var(--blue) 70%,#fff 10%);
+  outline-offset:2px;
+}
+
+body.cc-drawer-open,
+body.cc-command-open{overflow:hidden;overscroll-behavior:none}
+
+.cc-drawer[role="dialog"]{isolation:isolate}
+.cc-drawer[data-open="true"]{will-change:transform}
+.cc-drawer-backdrop[data-open="true"]{will-change:opacity}
+
+.cc-command-overlay[data-open="true"] .cc-command-palette,
+.cc-drawer[data-open="true"]{
+  box-shadow:0 34px 100px rgba(0,0,0,.22);
+}
+html[data-theme="dark"] .cc-command-overlay[data-open="true"] .cc-command-palette,
+html[data-theme="dark"] .cc-drawer[data-open="true"]{
+  box-shadow:0 34px 110px rgba(0,0,0,.56);
+}
+
+.cc-command-item[data-active="true"] .cc-command-item-icon{
+  border-color:color-mix(in srgb,var(--blue) 42%,var(--line));
+  background:color-mix(in srgb,var(--blue-soft) 72%,var(--bg-raised));
+}
+
+.cc-focus-return-pulse{
+  animation:cc-focus-return .42s ease-out;
+}
+@keyframes cc-focus-return{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--blue) 30%,transparent)}
+  55%{box-shadow:0 0 0 5px color-mix(in srgb,var(--blue) 13%,transparent)}
+  100%{box-shadow:0 0 0 0 transparent}
+}
+
+@media(max-width:580px){
+  .cc-drawer[data-open="true"],
+  .cc-command-overlay[data-open="true"] .cc-command-palette{
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .cc-drawer-head{
+    position:sticky;
+    top:0;
+    z-index:2;
+    background:color-mix(in srgb,var(--bg-raised) 96%,transparent);
+    backdrop-filter:blur(16px);
+  }
+  .cc-command-input-wrap{
+    position:sticky;
+    top:0;
+    z-index:2;
+    background:color-mix(in srgb,var(--bg-raised) 97%,transparent);
+    backdrop-filter:blur(16px);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .cc-focus-return-pulse{animation:none!important}
+}
