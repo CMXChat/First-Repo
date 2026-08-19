@@ -38,6 +38,14 @@
   }
 
   function controlsFor(automation) {
+    const v5 = window.CMXAutomationModelV5;
+    if (v5?.getFlowControls) {
+      try {
+        const controls = v5.getFlowControls(automation);
+        if (Array.isArray(controls)) return controls;
+      } catch {}
+    }
+
     const fallback = readJson(CONTROLS_KEY, { version: 1, automations: {} });
     const saved = fallback?.automations?.[automation.id] || [];
     const inline = Array.isArray(automation.flowControls) ? automation.flowControls : [];
@@ -47,6 +55,16 @@
   }
 
   function persistControls(context, controls) {
+    const v5 = window.CMXAutomationModelV5;
+    if (v5?.setFlowControls) {
+      try {
+        const model = v5.setFlowControls(context.automation.id, controls);
+        if (model) return;
+      } catch (error) {
+        console.warn("Automations v5 flow-control write fell back to compatibility persistence.", error);
+      }
+    }
+
     const store = readJson(CONTROLS_KEY, { version: 1, automations: {} });
     if (!store.automations) store.automations = {};
     store.automations[context.automation.id] = controls;
@@ -288,6 +306,7 @@
     const context = currentContext();
     if (!context || !document.querySelector(".v3-editor-page")) return;
     document.documentElement.dataset.labAutomationsSequence = "v4-4";
+    document.documentElement.dataset.labAutomationsSequenceModel = window.CMXAutomationModelV5 ? "v5" : "compat";
     patchFlowSummary(context);
     patchSequence(context);
     patchReview(context);
