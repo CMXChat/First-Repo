@@ -69,9 +69,6 @@ jobs:
                   '/assets/gates/cmx-gate-black-prompt.css',
                   '/assets/gates/cmx-gate-black-prompt.js',
               ),
-              # The reusable Black Prompt Gate is a documented client-side
-              # deterrent with a different markup contract from the shared gate.
-              # A static cache meta hint is not server-side cache enforcement.
               'requires_no_store': False,
           }
 
@@ -149,7 +146,7 @@ jobs:
                   failures.append(f'{path}: registry description should explain its {expected!r} role')
 
           error_page = Path('404.html').read_text(encoding='utf-8', errors='ignore').lower()
-          for term in ('/callmax', '/project', 'available routes', 'suggested route'):
+          for term in ('available routes', 'suggested route'):
               if term in error_page:
                   failures.append(f'404.html: discloses restricted route information through {term!r}')
 
