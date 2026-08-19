@@ -23,4 +23,12 @@
     script.dataset.continuumKnowledgeTime = 'loader';
     document.body.append(script);
   }
+
+  if (!document.querySelector('script[data-continuum-top-routes]')) {
+    const script = document.createElement('script');
+    script.src = '/assets/continuum-doc-top-routes.js?v=20260819-1';
+    script.async = false;
+    script.dataset.continuumTopRoutes = 'loader';
+    document.body.append(script);
+  }
 })();
