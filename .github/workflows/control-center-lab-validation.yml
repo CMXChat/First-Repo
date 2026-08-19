@@ -1,0 +1,32 @@
+name: Control Center Lab validation
+
+on:
+  push:
+    paths:
+      - 'lab/control/**'
+      - 'assets/lab/control-center-*.js'
+      - 'assets/lab/control-center-*.css'
+      - 'tests/continuum-control-center-v1.test.js'
+      - '.github/workflows/control-center-lab-validation.yml'
+  pull_request:
+    paths:
+      - 'lab/control/**'
+      - 'assets/lab/control-center-*.js'
+      - 'assets/lab/control-center-*.css'
+      - 'tests/continuum-control-center-v1.test.js'
+      - '.github/workflows/control-center-lab-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  control-center-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate standalone Control Center contract
+        run: node tests/continuum-control-center-v1.test.js
