@@ -21,8 +21,6 @@ PAGES = {
     "resources/index.html": ("CMX OSINT Resources", "Private CMX library of approved open-source intelligence tools, references and research resources.", "OSINT", "Active", True),
     "seo/index.html": ("CMX Pricing Calculator", "Private CMX pricing calculator for estimating digital service project costs.", "Business", "Legacy", True),
     "services/index.html": ("CMX Services Hub", "Private CMX services reference covering websites, SEO, content and operational systems.", "Business", "Active", True),
-    "project/index.html": ("Callmax SEO Master Plan", "Private interactive SEO planning report for Callmax Solutions.", "Client", "Active", True),
-    "callmax/index.html": ("Callmax Project Workspace", "Private CMX project workspace for Callmax research, planning and deliverables.", "Client", "Active", True),
     "ovaro/index.html": ("Ovaro Project Workspace", "Private CMX workspace for Ovaro strategy, planning and internal project resources.", "Project", "Active", True),
     "internal/index.html": ("CMX and Ovaro Vision Map", "Private structural overview of the CMX and Ovaro ecosystem and long-term direction.", "Internal", "Active", True),
     "collab1/index.html": ("CMX Agency Concept 1", "Private CMX website concept for a digital agency serving creators and startups.", "Experimental", "Experimental", True),
