@@ -2,7 +2,6 @@
   "use strict";
 
   const AUTOMATIONS_KEY = "cmx-lab-automations-v1";
-  const DIRECTORY_KEY = "cmx-lab-crm-v1";
   const CONTROLS_KEY = "cmx-lab-automation-flow-controls-v1";
   let modal = null;
   let queued = false;
@@ -32,7 +31,7 @@
     let automation = id ? store.automations.find(item => item.id === id) : null;
     if (!automation) {
       const actionIds = [...document.querySelectorAll("[data-action-card]")].map(card => card.dataset.actionCard).filter(Boolean);
-      automation = store.automations.find(item => (item.actions || []).some(action => actionIds.includes(item.id))) || null;
+      automation = store.automations.find(item => (item.actions || []).some(action => actionIds.includes(action.id))) || null;
     }
     if (!automation && document.querySelector(".v3-editor-page")) automation = store.automations[0] || null;
     return automation ? { store, automation } : null;
@@ -45,9 +44,10 @@
   function controlsFor(automation) {
     const fallback = readJson(CONTROLS_KEY, { version: 1, automations: {} });
     const saved = fallback?.automations?.[controlKey(automation.id)] || [];
-    if (Array.isArray(automation.flowControls) && automation.flowControls.length) return automation.flowControls;
-    if (saved.length) return saved;
-    return Array.isArray(automation.flowControls) ? automation.flowControls : [];
+    const inline = Array.isArray(automation.flowControls) ? automation.flowControls : [];
+    const raw = inline.length ? inline : saved;
+    const validAnchors = new Set((automation.actions || []).slice(0, -1).map(action => action.id));
+    return raw.filter(control => control?.id && validAnchors.has(control.afterActionId) && ["condition", "wait"].includes(control.type));
   }
 
   function persistControls(context, controls) {
@@ -226,9 +226,9 @@
     const context = currentContext();
     if (!context || !modal) return;
     const duration = {
-      days: Math.max(0, Number(modal.querySelector("[data-v44-days]")?.value) || 0),
-      hours: Math.max(0, Number(modal.querySelector("[data-v44-hours]")?.value) || 0),
-      minutes: Math.max(0, Number(modal.querySelector("[data-v44-minutes]")?.value) || 0)
+      days: Math.min(365, Math.max(0, Number(modal.querySelector("[data-v44-days]")?.value) || 0)),
+      hours: Math.min(23, Math.max(0, Number(modal.querySelector("[data-v44-hours]")?.value) || 0)),
+      minutes: Math.min(59, Math.max(0, Number(modal.querySelector("[data-v44-minutes]")?.value) || 0))
     };
     if (!duration.days && !duration.hours && !duration.minutes) {
       modal.querySelector("[data-v44-minutes]")?.focus();
@@ -332,7 +332,7 @@
   document.addEventListener("cmx:lab-automations-updated", schedule);
   window.addEventListener("cmx:lab-automations-updated", schedule);
   window.addEventListener("storage", event => {
-    if ([AUTOMATIONS_KEY, DIRECTORY_KEY, CONTROLS_KEY].includes(event.key)) schedule();
+    if ([AUTOMATIONS_KEY, CONTROLS_KEY].includes(event.key)) schedule();
   });
   window.addEventListener("pageshow", schedule);
   schedule();
