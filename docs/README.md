@@ -1,146 +1,259 @@
 # CMX Documentation Index
 
-Last reconciled: **August 9, 2026**
+Last reconciled: **August 18, 2026**
 Repository: `CMXChat/First-Repo`
-Verified code baseline: `e7a73bba4804cc485a848de2d5cfa348c40a93e9`
 
-## Read this first
+## Current rule
 
-Current code, tests, workflows, route policy, and current operational documents take priority over older notes. Dated concept documents remain useful as decision history.
+Current source, tests, workflows and `*-CURRENT.md` contracts take priority over older dated notes.
 
-Use this order when starting Spaces work:
+Dated concept documents remain useful as decision history. Do not rewrite history to make old names look current.
 
-1. `docs/spaces-demo-continuity.md`
-2. `docs/spaces-visual-design-system.md`
-3. `docs/2026-08-06-spaces-route-migration.md`
-4. `docs/2026-08-09-spaces-balanced-briefing.md`
-5. `docs/spaces-product-direction-2026-08-06.md`
-6. `docs/2026-08-05-repository-reconciliation.md`
-7. `docs/personal-os-release-safeguards.md`
-8. `docs/brief-recovery-handoff.md`
-9. `docs/cmx-brief-master-context.md`
-10. `docs/brief-interface-validation.md`
-11. `docs/brief-interface-failures.md`
-12. Current source, tests, workflows, and `assets/cmx-routes.json`
+The repository now contains multiple Continuum proving surfaces. Do not assume an older Spaces-only README describes the whole product.
 
-For the Python-first learning and development environment, start with `docs/development-environment-requirements.md` and `/environment/`.
+# Start here for Continuum / Check In
 
-## Current operational documents
+Read in this order:
 
-| File | Purpose |
-|---|---|
-| `development-environment-requirements.md` | Requirements for the Python-first development environment, project structure, AI guardrails, learning behavior, recovery, deployment, handbook, and acceptance standard. |
-| `spaces-demo-continuity.md` | Current seven-scenario product, responsive entry, product-document investment comparison, design, data, validation, publishing, and rollback contract. |
-| `spaces-visual-design-system.md` | Current Spaces visual language, color direction, realistic visualization rules, interlinking, Everything progress, mobile behavior, accessibility, and review standard. |
-| `2026-08-06-spaces-route-migration.md` | Canonical route decision plus shared-calendar, alarm, voice, compatibility, and release contracts. |
-| `2026-08-09-spaces-balanced-briefing.md` | Current briefing composition: rich desktop Today, focused phone sections, compact Explore previews, one briefing-settings surface, and full Everything view. |
-| `spaces-product-direction-2026-08-06.md` | Current product name, category, doctrine, input model, memory settings, and Cloudflare relationship. |
-| `2026-08-05-repository-reconciliation.md` | Comparison between the August 4 notes and the August 5 repository. |
-| `personal-os-release-safeguards.md` | Release gate, production smoke, accessibility, cache, inventory, and documentation-freshness safeguards. The filename is retained for continuity. |
-| `brief-recovery-handoff.md` | Historical continuity handoff for `/brief/`, `/brief-next/`, and `/doc/`; use the route migration document for the current route contract. |
-| `cmx-brief-master-context.md` | Product, architecture, trust, and roadmap context. |
-| `brief-interface-validation.md` | Validation history and interface expectations that still apply to the active experience. |
-| `brief-interface-failures.md` | Resolved failures, remaining risks, and known constraints. |
-| `concepts/brief-program-status-and-roadmap-2026-08-05.md` | Dated snapshot from before the Spaces rename. |
+1. `checkin-context-handoff-CURRENT.md` — current cross-repository production, backend and Lab truth.
+2. `continuum-product-CURRENT.md` — Continuum product identity, `/doc/` role and status vocabulary.
+3. `continuum-automations-master-plan-CURRENT.md` — canonical Automations product/UX/capability direction.
+4. `checkin-automations-frontend-CURRENT.md` — exact focused `/lab/automations/` frontend truth.
+5. `checkin-automations-system-surface-CURRENT.md` — current Automations operating-surface presentation contract.
+6. `checkin-lab-automations-integration-CURRENT.md` — `/lab/` ↔ `/lab/automations/` integration.
+7. `checkin-product-design-CURRENT.md` — protected Check In product design.
+8. `checkin-directory-library-CURRENT.md` — Directory/Library product behavior.
+9. `checkin-library-premium-CURRENT.md` — premium Library navigation/projection behavior.
+10. `checkin-content-editor-CURRENT.md` — content editor behavior.
+11. `checkin-files-CURRENT.md` — file UX direction.
+12. `checkin-ai-product-design-CURRENT.md` — AI product direction.
+13. `checkin-communications-ai-CURRENT.md` — communication + AI Task frontend concepts.
+14. `checkin-future-capabilities-CURRENT.md` — later capability direction where still applicable.
+15. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
 
-## Naming contract
+Do not reconstruct current state from old chats when these documents exist.
 
-- The user-facing product name is **Spaces**.
-- Describe it as a context-driven workspace, personal intelligence platform, or platform built around Spaces.
-- Avoid AI OS, Personal OS, Life OS, Agent OS, and Intelligence OS in current user-facing copy.
-- Older dated documents may preserve former names and routes as history.
-- Legacy internal filenames, storage keys, test names, and workflow filenames can remain until a separate safe migration removes them.
-- The Brief is the focused daily experience inside a Space, not the product or canonical route name.
+# Current product naming
 
-## Current routes
+- **Continuum** = umbrella product.
+- **Spaces** = focused briefing/context experience inside Continuum.
+- **Directory** = people and organizations.
+- **Library** = protected content, files and saved knowledge.
+- **Automations** = typed definitions for when approved work should happen.
+- **Connections** = approved paths to outside apps, APIs, MCP services and providers.
+- **Runtime** = future server execution layer.
+- **AI** = bounded intelligence using the same typed domain services as humans.
+- **Afterlife: The Dead Man Switch** = continuity experience using the shared Continuum foundation.
+- **Check In** = current protected application/backend program name in existing routes/code/specs.
 
-- `/environment/`: protected direct-link Python-first development environment specification and learning workflow.
-- `/spaces/`: canonical public noindex Spaces demo, light in the initial HTML, with manual dark mode.
-- `/brief/`: public noindex compatibility route that redirects old links and bookmarks to `/spaces/` while preserving query strings and hashes.
-- `/brief-next/`: public noindex pre-migration rollback snapshot; it is intentionally separate from the active route.
-- `/doc/`: public noindex Spaces product overview, light by default, without a password gate. Desktop keeps the existing document rail. Phones use a small sticky Contents control that opens a left reading drawer built from the same section list, tracks the current section, and closes through section selection, close control, backdrop, Escape, or a left swipe.
+Legacy Personal OS / Brief names may remain in historical filenames and dated documents.
 
-## Development environment contract
+# Current key routes
 
-- Python is the primary backend language and FastAPI is the primary application template.
-- Confirmed direction, proposed defaults, and unresolved choices remain visibly separate.
-- Project structure should keep routes, services, schemas, database code, models, tests, migrations, and configuration in predictable locations.
-- AI may handle routine project work inside defined boundaries while dependencies, schema changes, destructive commands, broad architecture changes, secrets, and deployment receive stronger review controls.
-- Secrets remain outside source and browser code.
-- Git and GitHub provide checkpoints, reviewable diffs, branches, commits, pull requests, and recovery.
-- Local development, sandboxes, validation, staging, production, observation, and rollback should form one understandable lifecycle.
-- Database backup and restore are part of the normal operating model.
-- The handbook should explain both the workflow and the underlying technology.
-- The example project should demonstrate the full lifecycle from local FastAPI through database, tests, deployment, logs, rollback, and restore.
-- The long-term goal is increasing independence from both the handbook and AI for routine work.
+## `/doc/`
 
-## Spaces experience contract
+Public noindex master explanation of **Continuum**.
 
-- Every entry, reset, and Space switch returns to Today.
-- `/spaces/` is the active experience and `/brief/` must remain a working compatibility redirect.
-- `/brief-next/` is a rollback snapshot and must not be required to match `/spaces/` byte for byte.
-- The Space selector must remain readable and operable in light and dark mode on desktop and mobile.
-- The live topbar contains the soundtrack control and the same explicit `Dark` and `Light` segmented appearance control used by `/doc/`.
-- The active demo contains seven contexts, including Business partners and Accountant and client.
-- Each context can show one compact priority notice, one scenario-aware alert-routing preview, and one short correction question.
-- Each context links to three signature modules and can open a conversation from the current section.
-- The entry defines Spaces as briefings built from approved information. A scenario carried in URL state may remain available as context, but the chooser must not visually present a briefing as selected until the person explicitly chooses one in the current entry session.
-- Tablet-sized layouts can show the selected briefing and permission preview; phones remove that repeated preview and keep the selected card, confirmation label, disabled or active natural action, and contextual sticky action.
-- Desktop Today keeps Weather, Useful numbers, the recommendation, and Flow visible together so the wider layout still communicates the range of the briefing.
-- Phone Today uses a compact Weather, Numbers, and Flow focus control in the default Focused style. A local Full review preference restores all main Today sections when a user wants the longer view.
-- Explore keeps the selected category in the full scenario-specific renderer and shows the other categories as compact previews with a direct Open action. Rich calendars, financial sheets, boards, charts, lists, and other category-specific interfaces remain available when selected.
-- The category controls in Explore remain real tabs with keyboard and `aria-selected` behavior. Choosing a preview or tab moves that category into the full focused panel while the other categories return to compact previews.
-- The repeated `Explore the full picture` card rail is hidden from the active experience because it duplicated the category controls and forced an extra click before people could see content.
-- `Everything` remains the complete nine-section cross-briefing view with its own jump navigation. It stays intentionally full because Today and Explore already provide the shorter paths.
-- Today exposes one Briefing settings control for local demo preferences including scheduled opening, Focused or Full review style, calendar context, music on open, priority routing, sharing review, and soundtrack access. It reuses the existing routing, Spaces, and music interfaces instead of adding duplicate controls around the app.
-- Briefing settings remain local demo state. They do not send messages, invitations, calendar changes, or private records. A connected version requires authenticated accounts, permission checks, recipient consent where relevant, delivery history, and clear controls for changing or stopping access.
-- The entry also rotates through practical product ideas in a thin changing-accent pill, fits common desktop viewports, gives phones a readable vertical flow, and exposes an explicit scroll affordance when a smaller desktop window needs it.
-- Every context offers one primary soundtrack and two alternate choices.
-- Product documentation remains available from entry and How it works.
-- `/doc/` mobile navigation must reuse the desktop table-of-contents structure, preserve active-section tracking, keep keyboard focus inside the drawer while open, restore focus after dismissal, and avoid horizontal page movement. Desktop document navigation stays unchanged.
-- Scenario buttons use native button semantics with `aria-pressed`.
-- Secondary text remains WCAG AA compliant.
-- Entry remains silent; soundtrack playback begins from a direct action in the top-right music drawer.
-- Spotify preparation never blocks Spaces.
-- Provider limits and direct-tap fallback copy remain honest.
-- Shared calendars expose only approved Space-level coordination data, not unrelated private event details.
-- Alarm and voice behavior remain planned, opt-in, visible, reviewable, and limited by the current person, device, time, and Space.
-- Alert routing is a local demo setting. No WhatsApp, text, push, or email delivery occurs. Production delivery requires authenticated connections, recipient consent, route scope, revocation, logs, and failure handling.
+It explains the product in a prose-led reading order, including:
 
-## Copy standard
+- the operating loop;
+- Directory / Library / Spaces / Automations / Connections / Runtime / AI;
+- the Dead Man Switch origin insight;
+- Automation versus Runtime;
+- Afterlife;
+- architecture/build detail;
+- roadmap/status.
 
-- Write plain, direct, connected sentences.
-- Keep labels, controls, metrics, and navigation concise.
-- Avoid stacked slogan fragments and generated-sounding symmetry.
-- Avoid ellipses, em dashes, repeated choppy sentence stacks, and abstract product-deck language when a normal phrase is clearer.
-- Keep demonstrated, fictional, and planned capabilities clearly separated.
-- Prefer final product wording in source files. A small compatibility adapter is acceptable when it protects a staged rename across dynamic legacy modules.
+`/doc/` is under a separate clarity freeze. Do not change it merely because Lab presentation changes.
 
-## Required safeguards
+## `/lab/`
 
-Do not remove or weaken:
+Broader Continuum / Check In experiment workspace.
 
-- the Spaces browser matrix across Chromium, Firefox, WebKit, iPhone, and Android profiles;
-- the Spaces release gate;
-- active-route, compatibility-route, rollback, and product-boundary checks;
-- cache-version enforcement for active Spaces assets;
-- demo-versus-live boundary checks;
-- documentation freshness checks;
-- Spotify lifecycle tests;
-- desktop and mobile Chromium accessibility workflows;
-- active and rollback Spaces asset inventory checks.
+It remains the shared proving environment for Actions, Directory/Inventory-shaped records, Automation bridge behavior and other private-system concepts.
 
-The former Brief and Brief Next parity rule is retired because `/brief/` is now a redirect and `/brief-next/` is a rollback snapshot.
+## `/lab/automations/`
 
-## Historical records
+Dedicated focused Automation operating and testing surface.
 
-Older Personal OS and `/brief/` references describe the same project before the August 6, 2026 Spaces route migration. Do not rewrite dated concept files to hide that decision history.
+Current route uses:
 
-`briefing-design-standard.md` records the earlier dark-first briefing baseline. It no longer controls the light-default `/spaces/` interface where it conflicts with `spaces-visual-design-system.md`.
+- proven v3 local Draft/autosave core;
+- progressive blank-Draft truth layer;
+- Continuum Automations v4 command-center/capability layer;
+- expanded v4 scenario layer;
+- strict Lab-only execution boundary.
 
-## Documentation rules
+Current workspace includes:
 
-- Record a verified commit SHA in current operational documents.
-- Recheck GitHub before describing an open branch, failure, or check as current.
-- Treat static browser demos as demonstrations. They do not prove a backend, authentication layer, memory service, connector, or live private data pipeline exists.
-- Update this index whenever a current document, route contract, or release safeguard is added, superseded, or archived.
+- Automations;
+- Templates;
+- Runs preview with Runtime explicitly off;
+- searchable Capability Catalog;
+- interactive Flow Preview;
+- per-stage local tests;
+- stronger Review/preflight;
+- manual / template / Planner-preview creation paths;
+- thirteen current editable starting patterns.
+
+See `continuum-automations-master-plan-CURRENT.md` first for direction.
+
+## `/checkin/`
+
+Protected Check In application.
+
+Production currently remains the Phase 1 switch/timing/policy/Incident/Audit system.
+
+Do not claim the v4 Lab Automation experience is production Check In functionality.
+
+## `/spaces/`
+
+Spaces briefing/context demo and design proving surface.
+
+Spaces remains part of Continuum. Older Spaces documents continue to control Spaces-specific behavior where they have not been deliberately superseded.
+
+## `/brief/`
+
+Compatibility route for older briefing links where the current route policy still uses it.
+
+## `/environment/`
+
+Python-first development/learning environment specification and related workflow.
+
+# Automations documentation
+
+## Strategic truth
+
+`continuum-automations-master-plan-CURRENT.md`
+
+Defines:
+
+- best-of-mature-automation-product interaction goals;
+- capability-catalog architecture;
+- scalable trigger/condition/action discovery;
+- templates/scenarios;
+- mobile interaction model;
+- per-step testing;
+- preflight;
+- AI Planner direction;
+- Connections and Runtime destination;
+- production migration rule.
+
+## Exact focused frontend truth
+
+`checkin-automations-frontend-CURRENT.md`
+
+Defines current files, v3/v4 responsibility, current scenarios, direct-new route behavior, progressive Draft truth, timing, testing, safety and production migration expectations.
+
+## System-surface truth
+
+`checkin-automations-system-surface-CURRENT.md`
+
+Defines the command-center/application hierarchy and presentation constraints.
+
+## Cross-route truth
+
+`checkin-lab-automations-integration-CURRENT.md`
+
+Defines shared Lab state and exact/new Draft deep links between `/lab/` and `/lab/automations/`.
+
+## Backend truth
+
+See `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`.
+
+The most relevant backend files for Automations now include:
+
+- `PHASE2A-CONTINUATION-PLAN.md`;
+- `CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md`;
+- `AUTOMATION-FRONTEND-CONTRACT.md`;
+- `CHECKIN-PLATFORM-ARCHITECTURE.md`;
+- `AI-CAPABILITY-AND-TOOLS-CONTRACT.md`;
+- `DELEGATED-AUTHORITY-BACKEND-CONTRACT.md`;
+- communication, Directory/Audience, Library, provenance and reliability contracts.
+
+# Current backend boundary
+
+The first Phase 2A Library + typed Automation source is validated on `jay-app/main` but is **not yet production-migrated/deployed**.
+
+Production remains Phase 1 until the separate production migration/deployment runbook succeeds.
+
+Do not infer backend capability from Lab visuals.
+
+Current production still has no general:
+
+- Automation Runtime;
+- worker/scheduler;
+- provider execution;
+- acknowledgement/approval engine;
+- AI Task execution;
+- Planner execution;
+- Agent;
+- MCP execution.
+
+# Spaces-specific documentation
+
+Spaces remains an active Continuum product experience, but the older Spaces documents no longer define the entire repository/product.
+
+Important Spaces references include:
+
+- `spaces-demo-continuity.md`;
+- `spaces-visual-design-system.md`;
+- `2026-08-06-spaces-route-migration.md`;
+- `2026-08-09-spaces-balanced-briefing.md`;
+- `spaces-product-direction-2026-08-06.md`;
+- `personal-os-release-safeguards.md`;
+- historical Brief recovery/validation documents where needed.
+
+Where a Spaces document describes `/doc/` as a Spaces-only product overview, the newer `continuum-product-CURRENT.md` wins.
+
+# Development environment documentation
+
+For the Python-first learning/development environment, begin with:
+
+`development-environment-requirements.md`
+
+and the `/environment/` route.
+
+The broader environment direction includes:
+
+- Python/FastAPI backend learning;
+- predictable routes/services/schemas/database/models/tests/config structure;
+- PostgreSQL/Alembic;
+- React/TypeScript frontend understanding;
+- generated API client;
+- Docker/deployment/recovery;
+- AI-assisted learning with architecture guardrails;
+- secrets outside source/browser code;
+- Git/GitHub checkpoints and reviewable changes.
+
+# Copy standard
+
+For current product copy:
+
+- use plain, direct, connected sentences;
+- keep labels/controls concise;
+- avoid generic SaaS/AI slogans;
+- avoid ellipses and em dashes in user-facing editorial copy;
+- keep LIVE / LAB / NEXT / LATER claims truthful where that vocabulary applies;
+- clearly distinguish demonstrated, protected-live and future capability;
+- avoid micro-copy for important meaning.
+
+# Frontend safety lessons
+
+Preserve current hard-earned rules:
+
+- no broad document-wide MutationObserver for Lab/Check In synchronization;
+- mobile is a separate readable layout, not a scaled desktop console;
+- no nested scroll traps in normal builders;
+- no giant empty operational canvases;
+- pending state must look pending;
+- light mode needs its own contrast decisions;
+- no provider secrets in frontend stores;
+- no production API calls from a route whose contract says isolated Lab;
+- accepted Lab behavior migrates into production as product semantics, not as DOM/localStorage architecture.
+
+# Historical records
+
+Older Personal OS, Brief and early Spaces documents remain useful decision history.
+
+Do not use them to override current Continuum naming, `/doc/` role, Automation v4 status or current backend release truth.
