@@ -8,9 +8,11 @@ const root = process.cwd();
 const html = fs.readFileSync(path.join(root, 'doc/index.html'), 'utf8');
 const baseJs = fs.readFileSync(path.join(root, 'assets/personal-os-doc.js'), 'utf8');
 const finalJs = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.js'), 'utf8');
+const i18nJs = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.js'), 'utf8');
 const qaCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-qa.css'), 'utf8');
 const humanCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-human.css'), 'utf8');
 const finalCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.css'), 'utf8');
+const i18nCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.css'), 'utf8');
 const contract = fs.readFileSync(path.join(root, 'docs/continuum-product-CURRENT.md'), 'utf8');
 
 // The document keeps the stable eight-section reading path and the modern architecture frame.
@@ -29,8 +31,14 @@ assert.match(html, /continuum-route-live/);
 assert.match(html, /Protected proof of life, timing and activity/);
 assert.match(html, /Explore Spaces/);
 assert.match(html, /Open Automation Lab/);
-assert.match(html, /continuum-doc-origin\.js\?v=20260819-2/);
-assert.match(html, /continuum-doc-origin\.css\?v=20260819-2/);
+assert.match(html, /continuum-doc-origin\.js\?v=20260819-3/);
+assert.match(html, /continuum-doc-origin\.css\?v=20260819-3/);
+assert.match(html, /continuum-doc-i18n\.css\?v=20260819-1/);
+assert.match(html, /continuum-doc-i18n\.js\?v=20260819-1/);
+assert.ok(
+  html.indexOf('continuum-doc-i18n.css') > html.indexOf('continuum-doc-capability.css'),
+  'RTL compatibility stylesheet must load after the frozen visual layers.'
+);
 
 // The final one-time pass owns rendered architecture wording after the older clarity transform.
 assert.match(finalJs, /dataset\.continuumArchitectureAligned = '20260819'/);
@@ -203,6 +211,28 @@ assert.match(finalCss, /html\[data-theme="dark"\] \.continuum-forward-flow i/);
 assert.match(finalCss, /border-color:color-mix\(in srgb,var\(--line-strong/);
 assert.match(finalCss, /overflow-wrap:anywhere/);
 
+// Browser translation can resolve RTL direction without changing the frozen English/LTR design.
+assert.match(i18nJs, /setAttribute\('dir', 'auto'\)/);
+assert.match(i18nJs, /dataset\.continuumI18n = 'rtl-ready'/);
+for (const target of ['.document-shell', '.document-rail', '.document-toc', '.document-paper', '.toolbar-links']) {
+  assert.match(i18nJs, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+}
+assert.match(i18nCss, /html\[lang\|="he"\]/);
+assert.match(i18nCss, /html\[lang\|="ar"\]/);
+assert.match(i18nCss, /body:dir\(rtl\)/);
+assert.match(i18nCss, /Noto Sans Hebrew/);
+assert.match(i18nCss, /unicode-bidi:isolate/);
+assert.match(i18nCss, /\.document-toc:dir\(rtl\) a/);
+assert.match(i18nCss, /\.process-step::after/);
+assert.match(i18nCss, /content:"←"/);
+assert.match(i18nCss, /\.workflow-node\.when-node/);
+assert.match(i18nCss, /border-right:4px solid var\(--ct-blue\)/);
+assert.match(i18nCss, /\.mobile-contents-drawer/);
+assert.match(i18nCss, /transform:translate3d\(104%,0,0\)/);
+assert.match(i18nCss, /\.continuum-forward-flow i/);
+assert.match(i18nCss, /transform:rotate\(90deg\)/);
+assert.match(i18nCss, /@media\(max-width:680px\)/);
+
 // Existing readability and product-map safeguards remain in place.
 assert.match(qaCss, /\.clarity-product-map-section/);
 assert.match(qaCss, /@media\(max-width:680px\)/);
@@ -228,12 +258,14 @@ assert.match(contract, /final one-time architecture and power-clarity alignment 
 assert.match(contract, /Check In/);
 
 // Initialization stays deterministic. No broad document mutation or hidden network behavior is introduced.
-for (const source of [baseJs, finalJs]) {
+for (const source of [baseJs, finalJs, i18nJs]) {
   assert.doesNotMatch(source, /MutationObserver/);
   assert.doesNotMatch(source, /setInterval\(/);
 }
 for (const forbidden of ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'eval(', 'new Function(']) {
-  assert.doesNotMatch(finalJs, new RegExp(forbidden.replace('(', '\\(')));
+  const pattern = new RegExp(forbidden.replace('(', '\\('));
+  assert.doesNotMatch(finalJs, pattern);
+  assert.doesNotMatch(i18nJs, pattern);
 }
 
-console.log('Continuum /doc intro, Check In routes, information quality, authorized continuity, architecture evolution, dark-mode contrast, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
+console.log('Continuum /doc intro, Check In routes, information quality, authorized continuity, architecture evolution, dark-mode contrast, RTL translation compatibility, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
