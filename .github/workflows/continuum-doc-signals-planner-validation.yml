@@ -1,0 +1,130 @@
+name: Continuum Doc Planner and Signals Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'doc/**'
+      - 'assets/personal-os-doc.js'
+      - 'assets/continuum-doc-origin.js'
+      - 'assets/continuum-doc-origin.css'
+      - 'assets/continuum-doc-*.css'
+      - 'tests/continuum-doc-signals-planner-probe.js'
+      - '.github/workflows/continuum-doc-signals-planner-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'doc/**'
+      - 'assets/personal-os-doc.js'
+      - 'assets/continuum-doc-origin.js'
+      - 'assets/continuum-doc-origin.css'
+      - 'assets/continuum-doc-*.css'
+      - 'tests/continuum-doc-signals-planner-probe.js'
+      - '.github/workflows/continuum-doc-signals-planner-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-doc-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate source and copy contracts
+        run: |
+          set -euo pipefail
+          node --check assets/personal-os-doc.js
+          node --check assets/continuum-doc-origin.js
+
+          python - <<'PY'
+          from pathlib import Path
+
+          source = Path('assets/continuum-doc-origin.js').read_text(encoding='utf-8')
+          css = Path('assets/continuum-doc-origin.css').read_text(encoding='utf-8')
+          html = Path('doc/index.html').read_text(encoding='utf-8')
+
+          required_source = [
+              'LATER · PLANNER',
+              'AI can help configure Continuum too.',
+              'typed Change Plan',
+              'Protected domain services remain the authority.',
+              'LATER · SIGNALS',
+              'Something Continuum observes can start real work.',
+              'APPROVED SOURCE',
+              'OBSERVATION',
+              'SIGNAL',
+              'AUTOMATION',
+              'RUNTIME',
+              'ACTION',
+              'observe-only',
+              'require approval',
+              'Outside information provides evidence. It never grants permission by itself.',
+              'Signals can later watch selected sources for meaningful changes.',
+              'Signals can later turn meaningful changes from approved sources into typed inputs.',
+              'data.continuumSignalsPlanner'
+          ]
+          for term in required_source:
+              if term not in source:
+                  raise SystemExit(f'missing /doc Planner/Signals contract: {term}')
+
+          required_css = [
+              '.continuum-forward-note', '.continuum-forward-flow', '.continuum-planner-note',
+              '.continuum-signals-note', '@media(max-width:680px)', '@media print'
+          ]
+          for term in required_css:
+              if term not in css:
+                  raise SystemExit(f'missing /doc Planner/Signals style contract: {term}')
+
+          for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
+              if forbidden in source:
+                  raise SystemExit(f'forbidden /doc integration pattern: {forbidden}')
+
+          anchors = ['overview', 'difference', 'spaces', 'action', 'afterlife', 'engineering', 'build', 'status']
+          for anchor in anchors:
+              if f'id="{anchor}"' not in html:
+                  raise SystemExit(f'/doc lost stable anchor: {anchor}')
+
+          if "connect-src 'none'" not in html:
+              raise SystemExit('/doc must keep connect-src none')
+          if 'noindex' not in html:
+              raise SystemExit('/doc must remain noindex')
+
+          print('Continuum /doc Planner + Signals copy, safety and stable-anchor contracts passed.')
+          PY
+
+      - name: Browser smoke desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-doc-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          check_view() {
+            local width="$1"
+            local height="$2"
+            local out="/tmp/continuum-doc-${width}.html"
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --window-size="${width},${height}" --virtual-time-budget=14000 --dump-dom \
+              'http://127.0.0.1:8000/doc/' > "$out"
+
+            grep -q 'data-continuum-signals-planner="ready"' "$out"
+            grep -q 'LATER · PLANNER' "$out"
+            grep -q 'AI can help configure Continuum too.' "$out"
+            grep -q 'LATER · SIGNALS' "$out"
+            grep -q 'Something Continuum observes can start real work.' "$out"
+            grep -q 'Outside information provides evidence. It never grants permission by itself.' "$out"
+            grep -q 'The idea started with the Dead Man Switch' "$out"
+          }
+
+          check_view 1280 900
+          check_view 390 844
+          echo 'Continuum /doc Planner + Signals rendered on desktop and 390px mobile.'
