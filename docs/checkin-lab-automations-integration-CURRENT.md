@@ -1,7 +1,7 @@
 # Check In Lab ↔ Automations Integration — CURRENT
 
 Date: 2026-08-18
-Status: Active Continuum Lab v4.4 integration contract with Directory v2, AI setup preview, typed Audience, data/input routing and linear inter-step flow controls
+Status: Active Continuum Lab integration contract with Automations v5 model foundation, v4.4 authoring UX, Directory v2, AI setup preview, typed Audience and data/input routing
 
 # Canonical structure
 
@@ -17,28 +17,30 @@ Read with `continuum-automations-master-plan-CURRENT.md`, `continuum-directory-m
 
 # Focused route authority
 
-V3 remains the local Draft normalization/editing/autosave/full-flow simulation compatibility core.
+V3 remains the browser-local Draft/editing/autosave/full-flow simulation compatibility core.
 
-Current v4.x layers add:
+`lab-automations-model-v5.js` now sits immediately after it as the canonical Lab workflow normalization/validation layer.
+
+Current product layers add:
 
 - command-center navigation;
 - Capability Catalog;
-- 13 scenarios;
+- **15 scenarios**;
 - Flow Preview navigation;
 - Planner preview;
 - Directory readiness;
 - Audience v4.1;
 - v4.2 contextual recommendations, typed data references and richer tests;
 - v4.3 field-level input routing;
-- **v4.4 linear inter-step IF / WAIT authoring preview**.
-
-Current product files include platform/scenario/Directory/Audience/intelligence/input-routing layers plus `lab-automations-sequence-v4.js/.css`.
+- v4.4 linear inter-step IF / WAIT authoring preview.
 
 Older focused v2 files remain history.
 
 # Shared state
 
 The broader and focused Lab share Automations (`cmx-lab-automations-v1`), Directory (`cmx-lab-crm-v1`), Inventory and reusable Actions.
+
+Each Automation may now include embedded `workflowV5`, normalized from the compatibility Draft shape.
 
 Focused compatibility/UI stores include:
 
@@ -50,7 +52,25 @@ Focused compatibility/UI stores include:
 
 Directory navigation state remains `cmx-lab-directory-ui-v2`.
 
-Richer intent belongs to `audienceSelectors[]`, `dataBindings[]`, `inputBindings[]` and `flowControls[]` where possible. Extra stores only protect richer prototype fields from the older compatibility engine.
+Richer intent belongs to `audienceSelectors[]`, `dataBindings[]`, `inputBindings[]`, `flowControls[]` and now the normalized `workflowV5` model where possible. Extra stores protect prototype fields from older compatibility code and remain temporary scaffolding.
+
+# V5 workflow normalization
+
+V5 represents the current accepted flow as an ordered typed model:
+
+`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+
+Start timing and recurrence remain separate policies.
+
+Current structural validation rejects invalid node order, duplicate node identity and output-dependent Conditions that reference future/missing Actions.
+
+The simple WHEN / IF / DO / WAIT / TEST rail remains the user navigation model.
+
+Browser marker:
+
+`data-lab-automations-model="v5"`
+
+V5 is Lab model truth only. Production still needs protected typed server Drafts and preflight.
 
 # Route integration
 
@@ -99,50 +119,51 @@ No arbitrary executable expression code. Production validates mappings against s
 
 # Advanced Flow v4.4
 
-The Actions stack can now represent logic **between** Action cards.
+The Actions stack represents logic **between** Action cards.
 
 Current controls:
 
 - `IF / Continue if…` — linear gate;
 - `WAIT / Wait between steps` — inter-step delay preview.
 
-This corrects a structural limit in the legacy five-stage editor. The top-level IF stage is pre-action, so it cannot truthfully depend on output from a later Action. Output-dependent logic must be positioned after the producing Action.
+The top-level IF stage is pre-action, so output-dependent logic must be positioned after the producing Action.
 
-V4.4 source selection therefore includes only Trigger data and outputs available by the insertion point.
+V4.4 source selection includes only Trigger data and outputs available by the insertion point.
 
-Prototype `flowControls[]` entries are anchored by `afterActionId`.
+Compatibility `flowControls[]` entries remain anchored by `afterActionId`; v5 normalizes them into sequence order.
 
 False IF stops the remaining linear path in the preview. No YES/NO branching graph exists yet.
 
 Inter-step WAIT remains distinct from top-level start Timing and is explicitly `RUNTIME REQUIRED`.
 
-This is authoring/product proof only. The browser does not execute waits or sequence routing.
+The browser does not execute waits or sequence routing.
 
-# Future consolidation rule
+# Scenarios
 
-V4.4 proves that the long-term Automation domain is better represented as an ordered typed sequence/graph while preserving the beginner WHEN / IF / DO / WAIT / TEST rail as navigation.
+Current total: **15**.
 
-Do not indefinitely extend the static Lab through unrelated DOM patches.
+Newest v5-ready examples:
 
-A future consolidated authoring model should be able to represent:
+- **Urgent AI follow-up** — AI assessment → IF priority urgent → notification;
+- **Delayed backup escalation** — primary escalation → WAIT two hours → backup escalation.
 
-`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
-
-Branch nodes wait for durable Runtime routing semantics.
+Scenario creation calls v5 normalization before navigating into the Draft so richer examples land on the same canonical model.
 
 # AI Planner rule
 
 Natural language eventually edits the same typed environment as human UI.
 
-Planner can author inter-step controls only once matching server types/schema validation exist. Lab `flowControls[]` is not backend truth.
+V5 strengthens the Automation authoring target by making ordered nodes and data availability explicit.
+
+Planner can author inter-step controls only once matching server types/schema validation exist. Browser `workflowV5` is not backend truth.
 
 Cross-domain AI uses a typed Change Plan, never a shadow AI contact store/workflow/database path. Prompt text never grants authority.
 
 Backend companion: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`.
 
-# Command center / scenarios / mobile
+# Command center / mobile
 
-Top-level views remain Automations, Templates and Runs preview. Runs stays `RUNTIME OFF`. Current scenarios: **13**.
+Top-level views remain Automations, Templates and Runs preview. Runs stays `RUNTIME OFF`.
 
 Phone remains a vertical readable workflow with one-column controls, full-screen/bottom-sheet pickers, safe-area actions, no nested-scroll traps and no desktop graph squeezed onto mobile.
 
@@ -154,4 +175,4 @@ Keep focused `connect-src 'self'`.
 
 # Regression protection
 
-Validation should cover v3 compatibility, progressive blank-Draft truth, Directory/Audience, AI setup preview, v4.2 typed data/tests, v4.3 input routing, v4.4 inter-step IF/WAIT, command-center views, exact/new Draft navigation, FLOW PREVIEW, production isolation, mobile smoke and no broad MutationObserver/eval/dynamic Function.
+Validation should cover v3 compatibility, v5 model normalization/ordering/future-step rejection, progressive blank-Draft truth, Directory/Audience, AI setup preview, v4.2 typed data/tests, v4.3 input routing, v4.4 inter-step IF/WAIT, **15 scenarios**, command-center views, exact/new Draft navigation, FLOW PREVIEW, production isolation, mobile smoke and no broad MutationObserver/eval/dynamic Function.
