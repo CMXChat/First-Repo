@@ -11,7 +11,7 @@
 - **Automations** = typed workflow definitions.
 - **Connections** = approved paths to outside capability.
 - **Runtime** = future server execution/history.
-- **AI** = bounded intelligence using the same typed services as human UI.
+- **AI / Planner** = bounded intelligence and natural-language authoring through the same typed services humans use.
 - **Spaces** = briefing/context experience.
 - **Afterlife: The Dead Man Switch** = continuity experience.
 - **Check In** = current protected backend/application program name.
@@ -25,8 +25,8 @@ Core principle:
 1. `docs/checkin-context-handoff-CURRENT.md`
 2. `docs/continuum-product-CURRENT.md`
 3. `docs/continuum-automations-master-plan-CURRENT.md`
-4. `docs/continuum-directory-master-plan-CURRENT.md`
-5. `docs/checkin-automations-frontend-CURRENT.md`
+4. `docs/checkin-automations-frontend-CURRENT.md`
+5. `docs/continuum-directory-master-plan-CURRENT.md`
 6. `docs/checkin-directory-library-CURRENT.md`
 7. `docs/README.md`
 8. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`
@@ -35,7 +35,7 @@ Current `*-CURRENT.md` contracts, source, tests and workflows beat older dated n
 
 ## `/doc/`
 
-Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab UX/model work alone does not authorize edits to `/doc/`.
+Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab UX/model/Planner work alone does not authorize edits to `/doc/`.
 
 ## `/lab/`
 
@@ -43,59 +43,66 @@ Broader Continuum experiment workspace.
 
 Records runs **Directory v2** with People, Organizations, Groups, membership concepts, ContactMethods/readiness, Labels, Person relationships, Activity/notes, duplicate warnings, Automation usage and polished desktop/mobile treatment.
 
-Directory also has an **AI setup preview** for future natural-language environment authoring:
+Directory `AI setup` is now a **CONTINUUM PLANNER · PREVIEW** using typed Change Plan examples across Directory, Library and Automations.
 
-`Describe → Plan → Preflight → Review → Apply`
+The strongest fixed example is **Full Continuum setup**:
 
-The preview performs no model call and no mutation.
+`resolve People → create Groups → create Library folder/document → create Automation Draft → reference Audiences/content → add inter-step WAIT`
+
+It performs no model call, no free-text interpretation and no mutation.
 
 ## `/lab/automations/`
 
-Focused Automation operating/testing surface with a **v5 canonical Lab workflow model foundation** under the current v4.4 authoring experience.
-
-It currently includes:
+Focused Automation operating/testing surface with:
 
 - v3 Draft/autosave compatibility editor;
-- **v5 ordered workflow normalization/validation**;
+- **v5 canonical ordered workflow model**;
+- compact FLOW PREVIEW + **ORDERED SEQUENCE** v5 view;
 - Automations / Templates / Runs command center;
 - searchable Capability Catalog;
-- interactive FLOW PREVIEW;
 - **15 editable scenarios**;
 - Directory readiness;
 - Audience v4.1 Person/Organization/Group/Label selectors;
-- Intelligence v4.2 contextual recommendations + typed `Use data`;
-- richer local `TEST THIS STEP` traces;
-- Input Routing v4.3 from typed source outputs into named Action fields;
-- Advanced Flow v4.4 with linear inter-step `IF / Continue if…` and `WAIT / Wait between steps` authoring preview;
-- manual / template / Planner-preview creation paths;
-- mobile-specific selectors/modals.
+- typed data/recommendations/tests v4.2;
+- Input Routing v4.3;
+- Advanced Flow v4.4 with linear inter-step IF / WAIT authoring;
+- **deterministic typed Planner v5 proving surface**;
+- mobile-specific selectors/modals/ordered flow.
 
 V5 normalizes the accepted workflow as:
 
 `Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
 
-while the simple `WHEN → IF → DO → WAIT → TEST` rail remains the beginner navigation model.
+while `WHEN → IF → DO → WAIT → TEST` remains the beginner navigation model.
 
-Top-level IF is pre-action, so a condition depending on an Action output belongs after that Action. The current inter-step IF is a linear gate only. YES/NO branching remains later. Inter-step WAIT is distinct from start timing and needs future persisted Runtime state.
+Top-level IF is pre-action. Output-dependent IF belongs after the Action producing the output. Current inter-step IF is a linear gate only. YES/NO branching remains later. Inter-step WAIT is distinct from start timing and requires future persisted Runtime state.
 
-Newest scenarios demonstrate those semantics directly:
+The focused Planner is explicitly local/non-AI:
 
-- **Urgent AI follow-up** — AI output → IF urgent → notification;
-- **Delayed backup escalation** — primary Action → WAIT → backup Action.
+- `TYPED PLAN PREVIEW · LOCAL`;
+- `NO AI CALL`;
+- ordered v5 flow;
+- typed Automation Change Plan operations;
+- preflight blockers;
+- `Use this draft` creates a normal editable Lab Draft and normalizes it through v5.
 
 The route stays isolated: `connect-src 'self'`, no production API/provider execution, no real scheduling/Publish, no secrets and no external AI model call.
 
-Browser `workflowV5`, localStorage and v4 compatibility fields remain Lab scaffolding. They do not define production backend schema.
+Browser `workflowV5`, localStorage, deterministic Planner matching and v4 compatibility fields remain Lab scaffolding. They do not define production backend schema or execution truth.
 
-## AI environment-authoring direction
+## One Planner language
 
-The long-term goal is that the user can describe how they want Continuum organized and AI prepares the setup through the same typed services as human UI.
+Current Lab proving surfaces converge on:
 
-Canonical flow:
+`INTENT → TYPED CHANGE PLAN → PREFLIGHT → REVIEW → APPLY through normal protected services`
 
-`natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services`
+- Directory Planner typed-v2 proves fixed cross-domain Change Plans.
+- Automations Planner v5 proves local intent → typed Automation plan → normal editable v5 Draft.
+- neither is the real protected Continuum AI Planner.
 
-A future Change Plan may coordinate supported Directory, Automation and Library operations. V5 gives Automation Planner a clearer ordered typed target, but AI never gets a shadow database/workflow format, prompt-granted authority or arbitrary executable code path.
+The long-term goal is that a user can describe how they want Continuum organized and a protected Planner prepares the setup through the same typed domain services human UI uses.
+
+AI never gets a shadow database/workflow format, prompt-granted authority or arbitrary executable code path.
 
 Backend contract:
 
@@ -133,7 +140,17 @@ The first Phase 2A Library + typed Automation source is validated on `jay-app/ma
 
 Before broad backend capability/Directory/Planner/flow-control expansion, use the canonical Phase 2A production runbook in `jay-app`.
 
-Lab visuals or model completeness do not redefine production truth.
+Lab visuals, browser models or Planner previews do not redefine production truth.
+
+## Current validation
+
+Relevant source workflows include:
+
+- `automations-v5-model-validation.yml`;
+- `automations-v5-planner-validation.yml`;
+- `continuum-directory-validation.yml`.
+
+The available connector cannot independently expose push-triggered workflow-run results in this context, so do not claim an observed green run or Pages pickup until later verification is available.
 
 ## Architecture rules
 
@@ -153,7 +170,7 @@ Preserve:
 - no unrestricted webhook/API escape hatch;
 - no broad document-wide MutationObserver loops in accepted Check In/Lab paths;
 - Lab simulation/future capability must be labeled truthfully;
-- browser model completeness never proves backend execution exists.
+- browser model/Planner completeness never proves backend execution exists.
 
 ## Development / learning stack
 
