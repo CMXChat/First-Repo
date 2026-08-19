@@ -1,0 +1,159 @@
+name: Continuum Signals Planner Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.css'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'tests/continuum-signals-planner-probe.js'
+      - 'docs/continuum-signals-observations-master-plan-CURRENT.md'
+      - '.github/workflows/continuum-signals-planner-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'assets/lab/lab-loader.js'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.css'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'tests/continuum-signals-planner-probe.js'
+      - 'docs/continuum-signals-observations-master-plan-CURRENT.md'
+      - '.github/workflows/continuum-signals-planner-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-signals-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Signals contract and safety
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-continuum-planner-contract-v1.js
+          node --check assets/lab/lab-directory-planner-preview.js
+          node --check assets/lab/lab-continuum-planner-preflight-v1.js
+          node --check tests/continuum-signals-planner-probe.js
+
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
+          planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
+          preflight = Path('assets/lab/lab-continuum-planner-preflight-v1.js').read_text(encoding='utf-8')
+          plan = Path('docs/continuum-signals-observations-master-plan-CURRENT.md').read_text(encoding='utf-8')
+
+          for term in [
+              'signals.create_watch', 'signals.update_watch', 'signals.attach_source',
+              'signals.set_filter', 'signals.set_interpretation', 'signals.pause_watch',
+              'automation.reference_signal', 'signals.source_required', 'signals.service_required'
+          ]:
+              if term not in contract:
+                  raise SystemExit(f'missing Signals Planner vocabulary: {term}')
+
+          for term in [
+              'Online signals', 'NO ONLINE OBSERVATION', 'signals.create_watch', 'signals.attach_source',
+              'signals.set_filter', 'signals.set_interpretation', 'automation.reference_signal',
+              'Protected Signals service required', 'Connection required'
+          ]:
+              if term not in planner:
+                  raise SystemExit(f'missing Online signals example contract: {term}')
+
+          for term in [
+              '"signals.source_required": ["signals.attach_source", "signals.create_watch"]',
+              '"signals.service_required": ["signals.create_watch"]',
+              '"connections.required": ["signals.attach_source", "automation.add_action"]'
+          ]:
+              if term not in preflight:
+                  raise SystemExit(f'missing Signals issue-to-change mapping: {term}')
+
+          for term in ['Source → Observation → Signal', 'External content is untrusted', 'Current Continuum Lab does **not**']:
+              if term not in plan:
+                  raise SystemExit(f'missing Signals architecture boundary: {term}')
+
+          planner_ops = set(re.findall(r'type:\s*"((?:directory|library|automation|signals)\.[a-z0-9_]+)"', planner))
+          registry_ops = set(re.findall(r'"((?:directory|library|automation|signals)\.[a-z0-9_]+)":\s*Object\.freeze', contract))
+          unknown = sorted(planner_ops - registry_ops)
+          if unknown:
+              raise SystemExit(f'Online signals example uses unregistered operations: {unknown}')
+
+          for checked in [contract, planner, preflight]:
+              for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
+                  if forbidden in checked:
+                      raise SystemExit(f'Signals proving surface must remain local/no-network: {forbidden}')
+
+          print('Signals Planner vocabulary, Online signals example, provenance boundary and no-network safety passed.')
+          PY
+
+      - name: Build isolated Signals Planner page
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+          const probe = '<script src="/tests/continuum-signals-planner-probe.js"></script>';
+          const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
+          const page = transformSnapshot(source)
+            .replace('upgrade-insecure-requests', '')
+            .replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('signals-planner-test.html', page, 'utf8');
+          NODE
+
+      - name: Exercise Online signals plan at 360px and 390px
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-signals-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f signals-planner-test.html' EXIT
+          sleep 1
+
+          check_width() {
+            local width="$1"
+            local height="$2"
+            local out="/tmp/signals-planner-${width}.html"
+
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --window-size="${width},${height}" --virtual-time-budget=20000 --dump-dom \
+              'http://127.0.0.1:8000/signals-planner-test.html' > "$out"
+
+            grep -q 'data-qa-signals-complete="true"' "$out"
+            grep -q "data-qa-signals-viewport=\"${width}\"" "$out"
+            grep -q 'data-qa-signals-example-available="true"' "$out"
+            grep -q 'data-qa-signals-plan-rendered="true"' "$out"
+            grep -q 'data-qa-signals-create-watch="true"' "$out"
+            grep -q 'data-qa-signals-attach-source="true"' "$out"
+            grep -q 'data-qa-signals-filter="true"' "$out"
+            grep -q 'data-qa-signals-interpretation="true"' "$out"
+            grep -q 'data-qa-signals-automation-reference="true"' "$out"
+            grep -q 'data-qa-signals-preflight="true"' "$out"
+            grep -q 'data-qa-signals-service-blocked="true"' "$out"
+            grep -q 'data-qa-signals-connection-blocked="true"' "$out"
+            grep -q 'data-qa-signals-blocked-count="2"' "$out"
+            grep -q 'data-qa-signals-linked-count="2"' "$out"
+            grep -q 'data-qa-signals-watch-row-blocked="true"' "$out"
+            grep -q 'data-qa-signals-source-row-blocked="true"' "$out"
+            grep -q 'data-qa-signals-no-observation-label="true"' "$out"
+            grep -q 'data-qa-signals-fit="true"' "$out"
+          }
+
+          check_width 360 800
+          check_width 390 844
+          echo 'Online signals typed Change Plan and persistent capability blockers passed at 360px and 390px.'
