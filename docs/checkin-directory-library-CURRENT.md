@@ -12,6 +12,7 @@ Status: Current cross-domain frontend handoff; Directory v2 + typed Planner v2 +
 - `checkin-library-premium-CURRENT.md` — Library direction;
 - `checkin-content-editor-CURRENT.md` — native content/editor direction;
 - `checkin-files-CURRENT.md` — binary File direction;
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-KNOWLEDGE-IMPORT-INGESTION-BACKEND-CONTRACT.md` — AI/Markdown/JSON knowledge import and extraction direction;
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-DIRECTORY-PLATFORM-PLAN.md` — backend Directory plan;
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected Planner / Change Plan contract.
 
@@ -352,6 +353,44 @@ Directory may project stable Library associations later. Published workflows fre
 
 Current Planner `library.*` operations are product vocabulary only. The Lab does not execute them.
 
+# Knowledge import / ingestion direction
+
+Continuum must also treat externally supplied knowledge as a first-class protected Library input.
+
+Canonical backend contract:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-KNOWLEDGE-IMPORT-INGESTION-BACKEND-CONTRACT.md`
+
+Target sources include Markdown, plain text, JSON, AI-generated handoffs/context exports and later approved PDF/DOCX/spreadsheet/provider documents.
+
+Durable relationship:
+
+```text
+exact source FileVersion / ContentVersion
+→ IngestionJob
+→ safe derived representation
+→ typed extraction candidates where useful
+→ review/reconciliation through normal domain services
+→ authorized search / Context Builder / AI use
+```
+
+Important rules:
+
+- preserve the exact imported source and provenance;
+- imported AI content is information, not authority;
+- Markdown code fences and embedded active content never execute;
+- unknown JSON remains document data instead of becoming database commands;
+- AI/heuristic extraction produces candidates, not unquestioned Current State;
+- source spans/sections or JSON paths should remain traceable from extracted facts;
+- PostgreSQL full-text/structured search comes before adding vector infrastructure;
+- later semantic indexes remain derived and version-linked;
+- no AI-only persistence path exists;
+- Directory/State changes still use the same protected typed services and preflight/review rules as human operations.
+
+A future portable `continuum.context.bundle.v1` JSON interchange format is reserved for structured AI-to-Continuum context handoff. It is an import/export schema, not the PostgreSQL schema, and foreign AI confidence never becomes Continuum trust automatically.
+
+This work begins after the current Phase 2A migration/deployment boundary and the protected `continuity.md` acceptance proof. The first backend import slice should prove deterministic Markdown/JSON storage, parsing, provenance and authorized retrieval before adding AI-assisted extraction.
+
 # Contact readiness and historical truth
 
 Identity resolution and delivery readiness remain separate.
@@ -389,7 +428,8 @@ Current production still has no general:
 - authoritative structured Planner preflight/review/apply;
 - Runtime / persisted WAIT / branch execution;
 - provider delivery;
-- AI Task / Planner execution.
+- AI Task / Planner execution;
+- general Markdown/JSON/AI-export knowledge ingestion pipeline.
 
 The validated Phase 2A Library + typed Automation source remains pending deliberate production migration/deployment.
 
@@ -399,19 +439,21 @@ Lab modeling/review completeness does not widen production truth.
 
 After the current Phase 2A release boundary:
 
-1. Person + Organization;
-2. PersonOrganizationMembership;
-3. ContactMethod;
-4. Label + Group selectors;
-5. canonical Audience resolution/readiness;
-6. typed Automation Audience/input contracts as schemas become real;
-7. protected Directory search/detail + relationships/Activity;
-8. duplicate suggestion + explicit merge;
-9. Library/File relationships as needed;
-10. protected human Automation builder over server Drafts;
-11. durable linear Runtime before persisted WAIT/branching;
-12. AI Task / Planner after underlying human/API services mature;
-13. cross-domain Change Plan apply after those same domain services can safely execute every operation.
+1. protected `continuity.md` acceptance proof and stabilize the Library/content slice;
+2. first deterministic Markdown/JSON knowledge-import vertical slice: exact source version → parse → provenance → PostgreSQL search/retrieval, with no automatic domain mutation;
+3. Person + Organization;
+4. PersonOrganizationMembership;
+5. ContactMethod;
+6. Label + Group selectors;
+7. canonical Audience resolution/readiness;
+8. typed Automation Audience/input contracts as schemas become real;
+9. protected Directory search/detail + relationships/Activity;
+10. duplicate suggestion + explicit merge;
+11. Library/File relationships and typed extraction/reconciliation as needed;
+12. protected human Automation builder over server Drafts;
+13. durable linear Runtime before persisted WAIT/branching;
+14. AI-assisted knowledge extraction and AI Task / Planner only after underlying storage/provenance and human/API services mature;
+15. cross-domain Change Plan apply after those same domain services can safely execute every operation.
 
 Immediate backend action remains the prepared Phase 2A production migration/deployment sequence followed by the separate protected `continuity.md` proof.
 
@@ -427,6 +469,7 @@ Preserve:
 - no prompt-granted authority;
 - no arbitrary Python/JavaScript/shell/SQL/eval workflow logic;
 - no hidden AI persistence path;
+- imported files/documents remain untrusted input until normalized/reconciled;
 - browser Audience/data/Planner/Preflight/Change Review results never become production authority;
 - immutable published/history records stay immutable;
 - external/inbound content remains untrusted data;
