@@ -1,0 +1,61 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+
+const html = fs.readFileSync('lab/control/index.html', 'utf8');
+const css = fs.readFileSync('assets/lab/control-center-v1.css', 'utf8');
+const js = fs.readFileSync('assets/lab/control-center-v1.js', 'utf8');
+const theme = fs.readFileSync('assets/lab/control-center-theme-init.js', 'utf8');
+
+assert.match(html, /<title>Continuum · Control Center<\/title>/);
+assert.match(html, /CONTROL CENTER · LAB/);
+assert.match(html, /sample and prototype state/i);
+assert.match(html, /does not claim production Runtime/i);
+assert.match(html, /Observe only · execution off/);
+assert.match(html, /Now · Sample state/);
+assert.match(html, /Attention/);
+assert.match(html, /Running &amp; waiting/);
+assert.match(html, /Continuity · Sample projection/);
+assert.match(html, /Connections &amp; sources/);
+assert.match(html, /Why did Continuum do that\?/);
+assert.match(html, /Simulation · Lab only/);
+assert.match(html, /I disappear for 7 days/);
+assert.match(html, /data-cc-tab="now"/);
+assert.match(html, /data-cc-tab="upcoming"/);
+assert.match(html, /data-cc-tab="history"/);
+assert.match(html, /data-cc-tab="activity"/);
+assert.match(html, /href="\/checkin\/"/);
+assert.match(html, /href="\/lab\/automations\/"/);
+assert.match(html, /control-center-theme-init\.js\?v=20260819-1/);
+assert.match(html, /control-center-v1\.css\?v=20260819-1/);
+assert.match(html, /control-center-v1\.js\?v=20260819-1/);
+assert.doesNotMatch(html, /https:\/\/api\.cmxchat\.com/);
+assert.doesNotMatch(html, /<script(?![^>]*src=)[^>]*>/i);
+assert.doesNotMatch(html, /<style[\s>]/i);
+
+assert.match(css, /html\[data-theme="dark"\]/);
+assert.match(css, /--bg:#060708/);
+assert.match(css, /\.cc-status-strip/);
+assert.match(css, /\.cc-dashboard/);
+assert.match(css, /\.cc-drawer/);
+assert.match(css, /@media\(max-width:880px\)/);
+assert.match(css, /\.cc-mobile-nav\{display:grid/);
+assert.match(css, /@media\(max-width:580px\)/);
+assert.match(css, /@media\(max-width:380px\)/);
+assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+assert.doesNotMatch(css, /url\(https?:/i);
+
+assert.match(theme, /continuum-control-center-theme-v1/);
+assert.match(js, /continuum-control-center-theme-v1/);
+assert.match(js, /function setView/);
+assert.match(js, /function renderWhy/);
+assert.match(js, /function openDrawer/);
+assert.match(js, /function closeDrawers/);
+assert.match(js, /runSimulation/);
+assert.match(js, /silence alone never creates permission/i);
+assert.match(js, /AI availability is irrelevant to essential steps/i);
+assert.doesNotMatch(js, /fetch\s*\(/);
+assert.doesNotMatch(js, /XMLHttpRequest/);
+
+console.log('Continuum Control Center v1 standalone Lab contract passed.');
