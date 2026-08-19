@@ -1,5 +1,5 @@
 {
-  "version": 33,
+  "version": 34,
   "updated": "2026-08-19",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -19,6 +19,7 @@
     {"path":"/plans/","name":"CMX Plans","description":"Dated private product and platform plan entries, including the Spaces context-driven workspace direction.","category":"Operational","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/doc/","name":"Continuum Product & Architecture Overview","description":"Public noindex master overview of Continuum, including Check In, Spaces, private context, Automations, Goals, Connections, AI authority, Afterlife: The Dead Man Switch, engineering environment, current build and long-term capability direction.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/checkin/","name":"Continuum Check In","description":"Live protected proof-of-life and timing experience for Check In state, policy, Incident and activity behavior.","category":"Product","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
+    {"path":"/lab/automations/","name":"Continuum Automations Lab","description":"Focused noindex Automation workspace for browser-local Draft authoring, typed v5 flow modeling, deterministic Planner proposals, readiness checks, capability discovery, simulation and local definition management. Runtime and provider execution remain off.","category":"Product Lab","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/spaces/","name":"Spaces Demo","description":"Primary public noindex demonstration of Spaces with focused Brief views, weather, stats, memory, media, shared-calendar coordination, alarm and voice concepts, permissions and scenario-specific workspaces.","category":"Product Concept","status":"Active","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/brief/","name":"Legacy Spaces Demo Route","description":"Compatibility route that redirects old Brief links and bookmarks to /spaces/ while preserving query strings and section hashes.","category":"Legacy","status":"Legacy","visibility":"Legacy","directory":false,"gated":false},
     {"path":"/brief-next/","name":"Spaces Brief Rollback Snapshot","description":"Noindex pre-migration staging and rollback snapshot retained for comparison while /spaces/ is the active product route.","category":"Product Concept","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
