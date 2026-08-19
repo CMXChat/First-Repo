@@ -1,21 +1,21 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v4.3 + Directory v2 + AI setup preview active in Lab
+Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v4.4 + Directory v2 + AI setup preview active in Lab
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
 # Product map
 
 - **Continuum** = umbrella product.
-- **Check In** = current protected application/backend program name in routes/code/specs.
+- **Check In** = current protected application/backend program name.
 - **Spaces** = briefing/context experience.
 - **Directory** = people, organizations, relationships, contact methods and saved audiences.
 - **Library** = protected content, files and saved knowledge.
 - **Automations** = typed workflow definitions.
 - **Connections** = approved paths to outside capability.
-- **Runtime** = future server execution/history layer.
-- **AI** = bounded intelligence using the same typed domain services as human UI.
+- **Runtime** = future server execution/history.
+- **AI** = bounded intelligence using the same typed services as human UI.
 - **Afterlife: The Dead Man Switch** = continuity use case on the shared foundation.
 
 Core principle:
@@ -39,7 +39,7 @@ Core principle:
 13. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 14. `CMXChat/jay-app/specs/003-server-checkin/tasks.md`
 
-Current source-of-truth files beat old chats, dated handoffs and stale READMEs.
+Current files beat older chats, dated handoffs and stale READMEs.
 
 # Production truth
 
@@ -55,7 +55,7 @@ Current protected timer:
 
 UTC/PostgreSQL/server time is authoritative.
 
-Production does **not** execute email, SMS, Discord, webhook, AI, file-release or other provider Actions. A triggered Incident does not mean an external Action ran.
+Production does **not** execute email, SMS, Discord, webhook, AI, file release or other provider Actions. A triggered Incident does not mean an external Action ran.
 
 Phase 1 acceptance T034–T040 is complete.
 
@@ -69,13 +69,13 @@ Migration chain:
 
 These Phase 2A revisions are **not deployed to production yet**.
 
-Current validated Library direction:
+Validated Library direction:
 
 `LibraryFolder`
 
 `ContentAsset → mutable ContentDraft → immutable ContentVersion`
 
-Current validated Automation direction:
+Validated Automation direction:
 
 `Automation → mutable AutomationDraft → REVIEW → immutable AutomationVersion`
 
@@ -92,13 +92,13 @@ Publish freezes exact immutable ContentVersion identity and later Draft edits ca
 
 # Immediate backend boundary
 
-Before broad new Automation/Directory/Planner schema work, execute the prepared Phase 2A production migration/deployment runbook and then the separate first real protected `continuity.md` acceptance proof.
+Before broad new Automation/Directory/Planner schema work, execute the prepared Phase 2A production migration/deployment runbook and then the separate first protected `continuity.md` acceptance proof.
 
-Do not mix new Directory schema, Runtime, provider or AI execution into the already-reviewed Phase 2A migration.
+Do not mix new Directory schema, Runtime, providers or AI execution into the reviewed Phase 2A migration.
 
 # `/lab/automations/` current truth
 
-The focused route is now **Automations v4.3**.
+The focused route is **Automations v4.4**.
 
 It remains isolated:
 
@@ -113,156 +113,144 @@ It remains isolated:
 Current layers:
 
 - v3 Draft/localStorage/autosave compatibility core;
-- progressive blank-Draft truth layer;
+- progressive blank-Draft truth;
 - v4 command center + Capability Catalog + interactive Flow Preview + Planner/Runs previews;
 - 13 editable scenarios;
-- Directory readiness integration;
-- Audience v4.1 multi-selector Person/Organization/Group/Label targeting;
-- Intelligence v4.2 contextual recommendations + typed `Use data` references + richer local step traces;
-- **Input routing v4.3** mapping typed sources into named Action input fields.
+- Directory readiness;
+- Audience v4.1 Person/Organization/Group/Label composition;
+- Intelligence v4.2 recommendations + typed `Use data` references + richer local step traces;
+- Input Routing v4.3 typed source → named Action input;
+- **Advanced Flow v4.4** linear inter-step IF / WAIT authoring preview.
 
-Current human model remains:
+Beginner rail remains:
 
 `WHEN → IF → DO → WAIT → TEST`
 
-Finish is configured inside Review. Accepted flow label remains **FLOW PREVIEW**.
+Finish stays inside Review. Accepted flow label remains **FLOW PREVIEW**.
 
-`/lab/automations/?new=1&from=lab` still opens a blank Draft directly on Trigger.
+`/lab/automations/?new=1&from=lab` still opens Trigger directly.
 
-# Audience v4.1
+# Important v4.4 workflow correction
 
-Communication Actions can choose multiple Person, Organization, Group and Label selectors.
+The top-level IF stage happens before the DO sequence, so it may only use data available before Actions run.
 
-Lab stores `audienceSelectors[]`, resolves current unique People, deduplicates by Person ID and previews email/phone readiness.
+Output-dependent logic belongs after the Action that produced the output.
 
-V3 target fields remain compatibility scaffolding only. Production still needs canonical protected Audience resolution/readiness.
+Example:
 
-# Intelligence v4.2
+`AI task → IF AI priority equals urgent → Notify`
 
-Actions get context-aware **RECOMMENDED NEXT** suggestions from the same Capability Catalog.
+V4.4 therefore allows a linear `Continue if…` gate or an inter-step WAIT between two Actions.
 
-Actions can also select friendly typed source references from Trigger outputs, earlier Action outputs and Directory/Audience values.
+Prototype intent:
 
-Prototype `dataBindings[]` are protected from older compatibility saves through `cmx-lab-automation-data-bindings-v1`.
+- `flowControls[]`;
+- stable `afterActionId` anchor;
+- compatibility store `cmx-lab-automation-flow-controls-v1`.
 
-These are typed references, not free-form executable expressions.
+Current IF operators: equals, does not equal, contains, greater than, less than, is true.
 
-`TEST THIS STEP` shows local input → normalization/resolution → sample output traces and remains explicit that no provider, model, Runtime or real event source was used.
+The source picker only exposes Trigger data and outputs that exist by that point in the flow.
 
-# Input routing v4.3
+False stops the remaining linear path in the preview.
 
-The focused builder now maps a typed source into a specific receiving field.
+There is **no YES/NO branching graph yet**.
 
-Current Lab input slots include:
+Inter-step WAIT is separate from current start Timing and is marked `RUNTIME REQUIRED`. Future Runtime must persist due state across server/process restarts.
 
-- Email subject/body;
-- AI Task context/focus;
-- notification message data;
-- manual-review context.
+# Automation consolidation direction
 
-Prototype intent uses `inputBindings[]` with `targetField` plus typed source reference.
+V4.4 proves that the long-term workflow domain is more naturally an ordered typed sequence/graph even if the simple five-stage rail remains as beginner navigation.
 
-Compatibility store: `cmx-lab-automation-input-bindings-v1`.
+Likely future consolidated shape:
 
-Production direction is server validation against capability output/input schemas.
+`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
 
-# Directory v2 current truth
+Do not indefinitely stack static DOM adapters. A later consolidation should carry accepted v4.x semantics into a coherent sequence model before the real protected React/Phase 2B implementation becomes too far separated from the prototype.
 
-The main `/lab/` Records surface renders Directory v2 over shared `cmx-lab-crm-v1` prototype state.
+Branch nodes wait for durable Runtime routing semantics.
 
-Current object views:
+# Audience / data / input routing
 
-- People;
-- Organizations;
-- Groups / saved audiences.
+Audience v4.1 stores richer `audienceSelectors[]` intent and previews current Person-ID-deduped resolution/readiness.
 
-Current demonstrations include search/views, strong profiles, many-Organization Person membership, ContactMethods/readiness, Labels, explicit Person relationships, notes/Activity, Group resolution, duplicate warnings, Automation usage, mobile list→profile behavior and dark/light presentation.
+V4.2 uses typed source references rather than executable expressions. Compatibility store: `cmx-lab-automation-data-bindings-v1`.
 
-`lab-directory-v2-polish.css` is presentation-only.
+V4.3 maps those sources into named inputs such as Email subject/body, AI Task context/focus, Notify message data and Manual Review context. Compatibility store: `cmx-lab-automation-input-bindings-v1`.
 
-# Directory AI setup preview
+Step tests can preserve the receiving-field route, for example `Body data ← Step 1 · AI summary`.
 
-Directory now exposes **AI setup** in Lab.
+Production needs canonical server Audience resolution and typed output/input compatibility validation.
 
-It performs no model call and no mutation. It establishes the intended future UX:
+# Directory v2 + AI setup
+
+Main `/lab/` Records renders Directory v2 over browser-local `cmx-lab-crm-v1`.
+
+Current concepts include People, Organizations, Groups, many-Organization membership, ContactMethods/readiness, Labels, Person relationships, notes/Activity, Group resolution, duplicate warnings, Automation usage and first-class mobile/light/dark presentation.
+
+Directory `AI setup` is a preview only. It makes no model call or mutation and demonstrates:
 
 `Describe → Plan → Preflight → Review → Apply`
 
-Fixed examples show how one request could become typed operations across Directory and Automations.
-
 # Cross-domain Continuum Planner
 
-The long-term goal is that a user can describe how they want the environment organized and AI can prepare the whole setup across supported domains.
+Long-term goal: the user can describe how they want Continuum organized and AI prepares the setup through the same typed services humans use.
 
-Canonical architecture:
+Canonical flow:
 
 `natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services → authoritative state + Activity/Audit`
 
-A Change Plan may eventually propose supported operations involving People, Organizations, memberships, ContactMethods, Labels, Groups, relationships, Automation Drafts, Audience selectors, typed input routing and Library state.
+Potential supported operations later include Directory identity/relationships/Groups, Automation Drafts/Audiences/typed data routing/supported flow controls and Library organization/content.
 
 Hard rules:
 
-- AI and humans use the same typed domain services;
-- no AI-only contact store or workflow format;
+- no AI-only database/contact/workflow format;
 - prompt text is intent, never authority;
 - AI cannot invent executable capabilities;
 - identity merge remains explicit/high-impact;
 - published Automation changes become a new Draft/version proposal;
-- external provider side effects remain Runtime behavior, not Planner setup;
-- stale revisions, duplicates, permission issues and incompatible mappings are deterministic preflight blockers;
-- apply must be idempotent and report partial success honestly when cross-domain atomicity is impossible.
+- external provider effects remain Runtime behavior;
+- stale revisions/duplicates/permissions/incompatible mappings are deterministic blockers;
+- apply is idempotent and reports partial success honestly when cross-domain atomicity is impossible.
 
-Canonical backend plan:
-
-`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
+Canonical backend plan: `CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`.
 
 # Directory backend direction
 
-After the Phase 2A release boundary, grow Directory through typed domain slices:
+After the Phase 2A production boundary, grow Directory through typed domain slices: Person, Organization, membership, ContactMethod, Label, Group/selectors, canonical Audience resolution, Automation Audience, protected search/detail, Activity/notes/PersonRelationship, duplicate suggestion/explicit merge, then custom fields/saved views/import-export as needed.
 
-1. Person;
-2. Organization;
-3. PersonOrganizationMembership;
-4. ContactMethod;
-5. Label + PersonLabel;
-6. Group + typed selectors;
-7. canonical audience resolution/readiness;
-8. typed Automation Audience;
-9. protected search/list/detail;
-10. notes/Activity + PersonRelationship;
-11. duplicate suggestion + explicit merge;
-12. custom fields/saved views/import/export as needed.
-
-Planner mutation execution comes only after the underlying human/API domain services are mature enough to support those same operations safely.
+Planner mutation execution comes only after matching human/API domain services exist.
 
 # Runtime / AI order
 
-Keep the high-level order:
+Keep the backend canonical phase order. Broadly:
 
-1. Phase 2A — private information + typed definitions;
-2. Phase 2B — protected human builder/product surfaces;
-3. Phase 3 — durable Runtime + fake provider;
-4. Phase 4 — one real low-risk provider;
-5. Phase 5 — waits/routes/retries/acknowledgements/approvals/escalation;
-6. Phase 6 — AI Task execution, then Automation Planner;
-7. cross-domain Change Plan apply once mature domain services exist;
-8. Phase 7 — bounded Agent;
-9. MCP — adapter over mature typed services, never authority bypass.
+1. Phase 2A private information + typed definitions;
+2. protected human builder/domain surfaces;
+3. durable linear Runtime + fake provider;
+4. approved provider phases;
+5. persisted waits/retries/acknowledgements/approvals and later typed routing;
+6. AI Task then Planner;
+7. cross-domain Change Plan apply after mature services;
+8. bounded Agent later;
+9. MCP as adapter, never authority bypass.
 
-# Non-negotiable architecture rules
+Lab v4.4 does not move branching/WAIT execution forward in that order.
 
-- PostgreSQL/server time is authoritative for protected timing.
+# Non-negotiable rules
+
+- PostgreSQL/server time authoritative for protected timing.
 - Frontend never accesses PostgreSQL directly.
-- Stable protected IDs beat copied names/contact strings.
+- Stable protected IDs beat copied mutable names/contact strings.
 - Person identity is not one email/phone.
 - Labels/relationships do not silently grant permission.
-- Audience identity and channel readiness are separate.
+- Audience identity and readiness are separate.
 - Data flow uses typed source/output/input references, not arbitrary executable expressions.
-- Immutable versions/history remain immutable.
+- Immutable history stays immutable.
 - Human UI and AI call the same typed services.
 - Prompt text never grants authority.
 - Provider secrets stay outside definitions/content/prompts/Audit.
-- Unknown executable capability types are rejected.
+- Unknown executable capability/Planner operation types are rejected.
 - No arbitrary Python/JavaScript/shell/SQL/eval workflow logic.
 - External/inbound content is untrusted data.
 - Lab visual completeness never becomes production truth.
@@ -270,9 +258,7 @@ Keep the high-level order:
 
 # `/doc/` boundary
 
-`/doc/` explains Continuum and remains under its separate clarity freeze. Do not change it merely because Lab UX changes.
-
-Automation remains the plan. Runtime remains future execution.
+`/doc/` remains under its separate clarity freeze. Do not edit it merely because Lab UX changes.
 
 # Next backend action
 
