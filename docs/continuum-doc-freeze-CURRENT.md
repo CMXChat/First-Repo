@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-19
-Status: FROZEN after final product, continuity, architecture and dark-mode QA pass
+Status: FROZEN after final product, continuity, architecture, dark-mode QA and RTL accessibility pass
 
 ## Freeze decision
 
@@ -82,6 +82,38 @@ This protects the same component wherever it appears, including:
 
 The mobile flow layout keeps full-width readable steps and supports long labels without overflow.
 
+## Internationalization / RTL compatibility after freeze
+
+The owner explicitly requested better phone translation behavior for Hebrew and other right-to-left languages. This was treated as accessibility/internationalization maintenance under the freeze. It did not reopen the English copy, product positioning, section order or visual design.
+
+The final compatibility layer is separated from the frozen visual system:
+
+- `assets/continuum-doc-i18n.css` loads last;
+- `assets/continuum-doc-i18n.js` performs a one-time direction preparation only;
+- English remains the source language and keeps the existing LTR presentation;
+- the page does not ship a built-in translator or hard-coded Hebrew copy;
+- the user's browser/phone translation feature still performs the translation itself.
+
+The i18n script assigns `dir="auto"` to the main reader-facing containers after the dynamic `/doc/` content is assembled. This lets translated Hebrew, Arabic and other RTL text resolve its own direction without a MutationObserver, polling loop or network behavior.
+
+The RTL stylesheet supports standards-based `:dir(rtl)` behavior plus language/class fallbacks for Hebrew, Arabic, Persian, Urdu and Yiddish. When RTL is active it mirrors the parts whose meaning depends on direction, including:
+
+- desktop contents rail treatment;
+- mobile contents drawer and active-item treatment;
+- reading progress origin;
+- timeline rails and numbered markers;
+- workflow and build rails;
+- horizontal process, architecture and policy arrows;
+- continuity and Goal flow arrows;
+- RTL-facing accent borders and decorative anchors;
+- small-screen layout rails.
+
+Mobile flows that become vertical continue to point downward instead of being horizontally reversed.
+
+Technical tokens, code, status chips and fixed identifiers use bidi isolation where appropriate so mixed Hebrew/English content stays readable.
+
+This work makes browser-translated RTL output substantially more natural. It is still translation compatibility, not a separately authored Hebrew localization, so translation wording remains controlled by the browser/translation provider.
+
 ## Regression guard
 
 `tests/continuum-doc-clarity-smoke.test.js` now checks:
@@ -91,6 +123,14 @@ The mobile flow layout keeps full-width readable steps and supports long labels 
 - dark flow arrows are explicitly styled;
 - strong dark border treatment exists;
 - long labels can wrap safely;
+- the RTL stylesheet loads after the frozen visual layers;
+- the i18n script applies local `dir="auto"` preparation;
+- Hebrew/Arabic RTL fallbacks exist;
+- desktop horizontal arrows reverse in RTL;
+- mobile contents opens from the RTL edge;
+- colored workflow borders move to the RTL reading edge;
+- mobile vertical flows continue downward;
+- bidi isolation exists for fixed-direction technical tokens;
 - existing desktop/mobile/dark/print coverage remains present.
 
 The existing browser workflow continues to validate the rendered teaching order and the major desktop/390×844 mobile content markers.
@@ -99,11 +139,11 @@ A workflow file existing is not proof that CI passed. Do not report a green run 
 
 ## Cache note
 
-The current static HTML still references the final origin assets with the `20260819-2` query token.
+The static HTML now references the accepted final origin assets with the `20260819-3` query token and the dedicated RTL compatibility assets with `20260819-1`.
 
-The accepted source files are current on `main`. If a browser temporarily serves an older cached asset, a forced refresh or a later explicit cache-token bump may be needed. A cache-token bump is allowed under this freeze because it changes delivery, not product design.
+The cache bump was made under the freeze's delivery exception so browsers receive the already-accepted final dark-mode/copy layer together with the RTL accessibility layer. It does not reopen product design.
 
-Do not use that cache note as a reason to reopen the document wording or layout.
+Future cache-token changes remain allowed when needed to deliver an accepted bug/accessibility fix. Do not use cache delivery as a reason to reopen the document wording or layout.
 
 ## Backend boundary unchanged
 
