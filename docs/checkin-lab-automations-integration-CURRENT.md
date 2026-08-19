@@ -1,7 +1,7 @@
 # Check In Lab ↔ Automations Integration — CURRENT
 
 Date: 2026-08-18
-Status: Active Continuum Lab v4.2 integration contract with Directory v2, typed Audience and typed data-reference UX
+Status: Active Continuum Lab v4.3 integration contract with Directory v2, AI setup preview, typed Audience, typed data references and field input routing
 
 # Canonical structure
 
@@ -13,12 +13,7 @@ Do not build a competing full editor inside `/lab/`. The broader Lab summarizes 
 
 Accepted Lab semantics migrate later into the official React/frontend + typed backend stack. LocalStorage and DOM adapters do not become production architecture.
 
-Read with:
-
-- `docs/continuum-automations-master-plan-CURRENT.md`;
-- `docs/continuum-directory-master-plan-CURRENT.md`;
-- `docs/checkin-automations-frontend-CURRENT.md`;
-- `docs/checkin-directory-library-CURRENT.md`.
+Read with `continuum-automations-master-plan-CURRENT.md`, `continuum-directory-master-plan-CURRENT.md`, `checkin-automations-frontend-CURRENT.md` and `checkin-directory-library-CURRENT.md`.
 
 # Focused route authority
 
@@ -33,9 +28,10 @@ Current v4.x product layers add:
 - Planner preview;
 - Directory readiness;
 - typed Audience v4.1;
-- contextual Action recommendations;
+- contextual recommendations;
 - typed Use data references;
-- richer local stage-test traces.
+- richer local stage-test traces;
+- field-level input routing v4.3.
 
 Current files include:
 
@@ -44,46 +40,25 @@ Current files include:
 - `lab-automations-scenarios-v4.js`;
 - `lab-automations-directory-v4.js/.css`;
 - `lab-automations-audience-v4.js/.css`;
-- `lab-automations-intelligence-v4.js/.css`.
+- `lab-automations-intelligence-v4.js/.css`;
+- `lab-automations-input-routing-v4.js/.css`.
 
 Older focused v2 files remain history.
 
-# Builder model
-
-The focused builder remains:
-
-1. Trigger / WHEN;
-2. Rules / IF;
-3. Actions / DO;
-4. Timing / WAIT;
-5. Review / TEST.
-
-Finish stays inside Review.
-
-FLOW PREVIEW stays truthful for blank Drafts and never promotes compatibility defaults into user intent.
-
 # Shared state
 
-The broader and focused Lab share:
+The broader and focused Lab share Automations (`cmx-lab-automations-v1`), Directory (`cmx-lab-crm-v1`), Inventory and reusable Actions.
 
-- Automations: `cmx-lab-automations-v1`;
-- Directory: `cmx-lab-crm-v1`;
-- Inventory: `cmx-lab-inventory-v1`;
-- reusable Actions: `cmx-lab-actions-v1`.
-
-Focused UI stores include:
+Focused compatibility/UI stores include:
 
 - `cmx-lab-automation-progress-v1`;
 - `cmx-lab-automations-platform-v4`;
-- `cmx-lab-automation-data-bindings-v1` compatibility store.
+- `cmx-lab-automation-data-bindings-v1`;
+- `cmx-lab-automation-input-bindings-v1`.
 
-Directory navigation-only state:
+Directory navigation state remains `cmx-lab-directory-ui-v2`.
 
-- `cmx-lab-directory-ui-v2`.
-
-Richer Audience intent lives in Action `audienceSelectors[]`. Typed data-reference intent mirrors to Action `dataBindings[]` where possible.
-
-The extra data-binding store exists only because the older v3 compatibility engine may drop unknown fields during save.
+Richer intent belongs to Action `audienceSelectors[]`, `dataBindings[]` and `inputBindings[]` where possible. Extra stores exist only because the older compatibility engine may drop unknown fields.
 
 # Route integration
 
@@ -100,67 +75,65 @@ Focused route → broader Lab:
 - Actions → `/lab/#lab=view%3Aactions`;
 - Directory → `/lab/#lab=view%3Arecords`.
 
-`lab-automations-main-bridge.js` remains a bridge/summary layer only. It must not become a second editor or execution authority.
+`lab-automations-main-bridge.js` remains a summary/navigation bridge only.
 
-# Directory v2
+# Directory v2 + AI setup
 
-The broader Lab owns the richer People / Organizations / Groups surface.
+The broader Lab owns People / Organizations / Groups with memberships, ContactMethods/readiness, Labels, Groups, Person relationships and Activity/notes.
 
-It enriches shared Directory state with many-Organization memberships, ContactMethods/readiness, Labels, Groups, Person relationships and Activity/notes.
+The Directory command bar now also exposes an **AI setup** preview. It demonstrates the future natural-language Change Plan flow and fixed examples, but performs no model call and no data mutation.
 
-The focused Automation route reads the same shared store for targeting/readiness previews.
+Future contract:
+
+`natural-language intent → typed Change Plan → preflight/conflicts → review/approval → normal protected domain services`
+
+The focused Automation route reads the shared Directory store for Lab targeting/readiness/data previews.
 
 # Typed Audience v4.1
 
-Communication Actions represented by `notify` / `email` can select Person, Organization, Group and Label selectors.
+Communication Actions can select Person, Organization, Group and Label selectors.
 
 Browser Lab resolution deduplicates People and previews channel readiness.
 
-Prototype fields:
-
-- `audienceSelectors[]`;
-- live-membership resolution metadata;
-- Person-ID dedupe metadata.
-
-V3 target fields remain compatibility scaffolding only.
-
-Production must use protected Draft mutations and canonical server audience resolution/readiness.
+V3 target fields remain compatibility scaffolding only. Production uses protected Draft mutations and canonical server audience resolution/readiness.
 
 # Automations Intelligence v4.2
 
-## Recommendations
+The Actions stage derives contextual recommendations from the current flow while reusing the Capability Catalog.
 
-The focused Actions stage derives a small recommended set from the current Trigger/flow while reusing the existing Capability Catalog.
+Each Action can also select typed source references from Trigger outputs, prior Action outputs and Directory/Audience values.
 
-This affects discovery only. It does not silently mutate the Draft or invent capabilities.
+The normal model is a typed source/step reference plus typed output path, not arbitrary executable expression code.
 
-## Typed data references
+`TEST THIS STEP` can render local input → normalization/resolution → sample output traces. No provider, model, server Runtime, real event source or connected account is used.
 
-Each Action can open **Use data** to select references from:
+# Input routing v4.3
 
-- Trigger outputs;
-- prior Action outputs;
-- Directory/Audience values.
+The receiving side of typed data flow is now represented.
 
-The normal product concept is a typed source/step reference plus typed path, not arbitrary executable expression code.
+Supported inline Actions expose named inputs such as Email subject/body, AI Task context/focus, notification message data and manual-review context.
 
-The current local compatibility store is:
+Prototype `inputBindings[]` map one typed source into one `targetField`.
 
-`cmx-lab-automation-data-bindings-v1`
+This proves:
 
-Production uses server-validated typed references instead.
+`typed source output → named compatible Action input`
 
-## Richer local testing
+The local compatibility store `cmx-lab-automation-input-bindings-v1` is not production architecture. Production validates mappings against server-owned capability input/output schemas.
 
-`TEST THIS STEP` can now render local input → normalization/resolution → sample output traces, including Audience/readiness and mapped-data samples for Actions.
+# AI Planner rule
 
-No provider, AI model, server Runtime, real event source or connected account is used.
+Natural language eventually edits the same typed environment as human UI.
+
+The Automation Planner can create/edit Automation Drafts. The broader Continuum Planner can propose a cross-domain Change Plan involving supported Directory, Automation and Library operations.
+
+No shadow AI contact store, workflow format or database mutation path is allowed. Published Automation changes become new Draft/version proposals, and prompt text never grants authority.
+
+Backend companion: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`.
 
 # Command center / scenarios
 
-Top-level focused views remain Automations, Templates and Runs preview.
-
-Runs stays `RUNTIME OFF`.
+Top-level focused views remain Automations, Templates and Runs preview. Runs stays `RUNTIME OFF`.
 
 Current scenarios: **13** ordinary editable Draft starting points.
 
@@ -168,52 +141,18 @@ Current scenarios: **13** ordinary editable Draft starting points.
 
 The browser-local catalog can show current prototype options and deliberate future concepts with `LAB NOW` / `LATER` states.
 
-It is discovery scaffolding, not execution authority.
-
-Future server registry metadata owns real capability/readiness truth.
-
-# AI Planner
-
-Planner establishes the rule that natural-language intent edits the same typed Draft model as human UI.
-
-Current Planner performs no model call and cannot rewrite immutable published history.
+Future server registry metadata owns real capability/readiness truth and eventually the typed input/output schemas used by routing and Planner.
 
 # Mobile contract
 
-Preserve:
-
-- one primary work area;
-- readable type/large tap targets;
-- one-column Action/capability/data choices;
-- bottom-sheet/full-screen pickers;
-- Audience/data sheets with safe-area controls;
-- no nested scroll traps;
-- no horizontal overflow;
-- no desktop canvas squeezed onto phone.
+Preserve one primary work area, readable type/large tap targets, one-column choices, bottom-sheet/full-screen pickers, safe-area controls, no nested scroll traps, no horizontal overflow and no desktop canvas squeezed onto phone.
 
 # Safety boundary
 
-Both routes remain prototypes.
-
-They do not publish production Automations, execute providers, call production Check In from the focused route, run external AI models, schedule authoritative work, mutate connected accounts or store provider secrets.
+Both routes remain prototypes. They do not publish production Automations, execute providers, run external AI models, schedule authoritative work, mutate connected accounts or store provider secrets.
 
 Keep focused `connect-src 'self'`.
 
 # Regression protection
 
-Validation should cover:
-
-- v3 compatibility core;
-- progressive blank-Draft truth;
-- v4.2 product layers;
-- Directory/Audience integration;
-- recommendations and Use data;
-- richer stage tests;
-- Automations / Templates / Runs;
-- exact/new Draft navigation;
-- FLOW PREVIEW;
-- production isolation;
-- mobile smoke;
-- no broad MutationObserver/eval/dynamic Function in current adapters.
-
-Broad Lab validation separately protects the generated main-Lab snapshot and Directory v2 load order/polish.
+Validation should cover v3 compatibility, progressive blank-Draft truth, v4.3 layers, Directory/Audience integration, Directory AI setup preview, recommendations, typed data references, field input routing, stage tests, command-center views, exact/new Draft navigation, FLOW PREVIEW, production isolation, mobile smoke and no broad MutationObserver/eval/dynamic Function.
