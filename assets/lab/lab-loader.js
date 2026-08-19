@@ -26,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260819-planner-signals-v1";
+  const BUILD = "20260819-planner-signals-v2";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -59,7 +59,7 @@
     ["lab-crm.js", "20260816-crm1"],
     ["lab-directory-v2.js", "20260818-directory2"],
     ["lab-continuum-planner-contract-v1.js", "20260819-v1signals1"],
-    ["lab-directory-planner-preview.js", "20260819-directory-planner-v2deps1"],
+    ["lab-directory-planner-preview.js", "20260819-directory-planner-signals1"],
     ["lab-continuum-planner-preflight-v1.js", "20260819-v1r2"],
     ["lab-continuum-planner-review-v1.js", "20260819-v1preflight1"],
     ["lab-inventory.js", "20260816-inventory1"],
