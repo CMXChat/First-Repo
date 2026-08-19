@@ -25,6 +25,9 @@
   font-size:11px;
 }
 @media(max-width:760px){
+  .v7-ops-actions{
+    grid-template-columns:minmax(0,1fr) auto auto;
+  }
   .v7-planner-button{
     min-height:40px;
     justify-content:center;
