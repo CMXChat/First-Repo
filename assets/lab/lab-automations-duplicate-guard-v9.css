@@ -1,0 +1,168 @@
+/* Continuum Automations duplicate-action guard v9.
+   Soft prevention only: repeated capabilities stay allowed, exact configured duplicates become visible. */
+
+.v9-existing-count{
+  display:inline-flex;
+  width:max-content;
+  margin-top:5px;
+  padding:3px 6px;
+  border:1px solid color-mix(in srgb,var(--v3-gold) 36%,var(--v3-line));
+  border-radius:999px;
+  background:color-mix(in srgb,var(--v3-gold) 8%,var(--v3-bg-soft));
+  color:var(--v3-gold);
+  font-style:normal;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.04em;
+}
+
+.v3-action-type strong{
+  overflow-wrap:anywhere;
+}
+
+.v9-exact-duplicate{
+  display:grid;
+  gap:3px;
+  margin-top:10px;
+  padding:9px 10px;
+  border:1px solid color-mix(in srgb,var(--v3-gold) 42%,var(--v3-line));
+  border-radius:10px;
+  background:color-mix(in srgb,var(--v3-gold) 7%,var(--v3-panel));
+}
+
+.v9-exact-duplicate b{
+  color:var(--v3-gold);
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+
+.v9-exact-duplicate span{
+  color:var(--v3-muted);
+  font-size:9px;
+  line-height:1.45;
+}
+
+.v9-duplicate-backdrop{
+  position:fixed;
+  z-index:190;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(9px);
+}
+
+.v9-duplicate-dialog{
+  width:min(460px,100%);
+  display:grid;
+  gap:10px;
+  padding:18px;
+  border:1px solid var(--v3-line-strong);
+  border-radius:18px;
+  background:var(--v3-panel);
+  color:var(--v3-text);
+  box-shadow:var(--v3-shadow);
+  outline:none;
+}
+
+.v9-duplicate-dialog>span{
+  color:var(--v3-gold);
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.12em;
+}
+
+.v9-duplicate-dialog h2{
+  margin:0;
+  font-size:22px;
+  line-height:1.08;
+  letter-spacing:-.03em;
+}
+
+.v9-duplicate-dialog p{
+  margin:0;
+  color:var(--v3-muted);
+  font-size:11px;
+  line-height:1.58;
+}
+
+.v9-duplicate-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:5px;
+}
+
+.v9-duplicate-actions button{
+  min-height:44px;
+  border:1px solid var(--v3-line-strong);
+  border-radius:11px;
+  background:var(--v3-bg-soft);
+  color:var(--v3-text);
+  font:inherit;
+  font-size:10px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.v9-duplicate-actions button:last-child{
+  border-color:#338be0;
+  background:linear-gradient(180deg,#1987f0,#0e68c8);
+  color:#fff;
+}
+
+.v9-duplicate-actions button:focus-visible,
+.v9-duplicate-actions button:hover{
+  outline:none;
+  border-color:color-mix(in srgb,var(--v3-blue) 58%,var(--v3-line-strong));
+}
+
+@media(max-width:680px){
+  .v9-duplicate-backdrop{
+    place-items:end center;
+    padding:0;
+  }
+
+  .v9-duplicate-dialog{
+    width:100%;
+    padding:17px 16px calc(16px + env(safe-area-inset-bottom));
+    border-radius:20px 20px 0 0;
+    border-left:0;
+    border-right:0;
+    border-bottom:0;
+  }
+
+  .v9-duplicate-dialog h2{
+    font-size:21px;
+  }
+
+  .v9-duplicate-dialog p{
+    font-size:11px;
+  }
+
+  .v9-duplicate-actions button{
+    min-height:48px;
+  }
+}
+
+@media(max-width:390px){
+  .v9-duplicate-actions{
+    grid-template-columns:1fr;
+  }
+
+  .v9-existing-count{
+    font-size:6.5px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .v9-duplicate-backdrop,
+  .v9-duplicate-dialog,
+  .v9-exact-duplicate{
+    transition:none!important;
+    animation:none!important;
+  }
+}
