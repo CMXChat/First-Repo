@@ -89,6 +89,44 @@
     return operations;
   }
 
+  function pruneFlowControls(plan) {
+    const indexByKey = new Map(plan.actions.map((action, index) => [action.key, index]));
+    const lastIndex = plan.actions.length - 1;
+    plan.flowControls = plan.flowControls.filter(control => {
+      const afterIndex = indexByKey.get(control.afterKey);
+      if (!Number.isInteger(afterIndex) || afterIndex >= lastIndex) return false;
+      if (control.sourceKey) {
+        const sourceIndex = indexByKey.get(control.sourceKey);
+        if (!Number.isInteger(sourceIndex) || sourceIndex > afterIndex) return false;
+      }
+      return true;
+    });
+  }
+
+  function pruneBlockers(plan) {
+    const hasCommunication = plan.actions.some(action => ["notify", "email"].includes(action.type));
+    const hasWait = plan.flowControls.some(control => control.type === "wait");
+    plan.blockers = (plan.blockers || []).filter(blocker => {
+      const text = String(blocker || "").toLowerCase();
+      if (!hasCommunication && /audience|directory selection/.test(text)) return false;
+      if (!hasWait && /inter-step wait|future runtime/.test(text)) return false;
+      return true;
+    });
+  }
+
+  function refreshEditedPlan(plan) {
+    pruneFlowControls(plan);
+    pruneBlockers(plan);
+    plan.operations = buildOperations(plan);
+    plan.editCount = Number(plan.editCount || 0) + 1;
+    const verdict = window.CMXContinuumPlannerContractV1?.validatePlan?.(plan.operations);
+    plan.blockers = (plan.blockers || []).filter(item => !/^Local plan dependency validation found /i.test(item));
+    if (verdict && !verdict.ok) {
+      plan.blockers.push(`Local plan dependency validation found ${verdict.errors.length} issue${verdict.errors.length === 1 ? "" : "s"}.`);
+    }
+    return plan;
+  }
+
   function planFromIntent(intent) {
     const text = String(intent || "").trim();
     const q = text.toLowerCase();
@@ -104,7 +142,8 @@
       repeatConfig: blankRepeat(),
       outcome: "end",
       operations: [],
-      blockers: []
+      blockers: [],
+      editCount: 0
     };
 
     if ((q.includes("urgent") || q.includes("priority")) && q.includes("ai")) {
@@ -193,19 +232,32 @@
   }
 
   function sequenceRows(plan) {
-    const rows = [{ badge: "WHEN", title: triggerLabel(plan.trigger), detail: "Trigger" }];
-    if (plan.conditions.length) rows.push(...plan.conditions.map(rule => ({ badge: "IF", title: rule.type === "not_acknowledged" ? "No acknowledgement" : rule.type, detail: "Pre-action rule" })));
-    else rows.push({ badge: "IF", title: "Always continue", detail: "No pre-action rule" });
+    const rows = [{ badge: "WHEN", title: triggerLabel(plan.trigger), detail: "Trigger", editable: false }];
+    if (plan.conditions.length) rows.push(...plan.conditions.map(rule => ({ badge: "IF", title: rule.type === "not_acknowledged" ? "No acknowledgement" : rule.type, detail: "Pre-action rule", editable: false })));
+    else rows.push({ badge: "IF", title: "Always continue", detail: "No pre-action rule", editable: false });
 
     plan.actions.forEach(action => {
-      rows.push({ badge: "DO", title: actionLabel(action.type), detail: action.content });
-      plan.flowControls.filter(control => control.afterKey === action.key).forEach(control => {
-        if (control.type === "wait") rows.push({ badge: "WAIT", title: durationLabel(control.duration), detail: "Inter-step control · Runtime later" });
-        else rows.push({ badge: "IF", title: `${control.label} ${operatorLabel(control.operator)} ${control.operator === "is_true" ? "" : control.compareValue}`.trim(), detail: "Inter-step linear gate · Runtime later" });
+      rows.push({ badge: "DO", title: actionLabel(action.type), detail: action.content, editable: true, actionKey: action.key });
+      plan.flowControls.forEach((control, controlIndex) => {
+        if (control.afterKey !== action.key) return;
+        if (control.type === "wait") rows.push({ badge: "WAIT", title: durationLabel(control.duration), detail: "Inter-step control · Runtime later", editable: true, controlIndex });
+        else rows.push({ badge: "IF", title: `${control.label} ${operatorLabel(control.operator)} ${control.operator === "is_true" ? "" : control.compareValue}`.trim(), detail: "Inter-step linear gate · Runtime later", editable: true, controlIndex });
       });
     });
-    rows.push({ badge: "FINISH", title: finishLabel(plan.outcome), detail: "Finish policy" });
+    rows.push({ badge: "FINISH", title: finishLabel(plan.outcome), detail: "Finish policy", editable: false });
     return rows;
+  }
+
+  function rowEditMarkup(row, plan) {
+    if (!row.editable) return "";
+    if (row.actionKey) {
+      const disabled = plan.actions.length <= 1;
+      return `<button type="button" class="v5-planner-row-remove" data-v5-planner-remove-action="${esc(row.actionKey)}" ${disabled ? "disabled" : ""} aria-label="${disabled ? "Keep at least one proposed action" : `Remove ${esc(row.title)} from proposed plan`}">${disabled ? "Only action" : "Remove"}</button>`;
+    }
+    if (Number.isInteger(row.controlIndex)) {
+      return `<button type="button" class="v5-planner-row-remove" data-v5-planner-remove-control="${row.controlIndex}" aria-label="Remove ${esc(row.badge)} from proposed plan">Remove</button>`;
+    }
+    return "";
   }
 
   function renderPlan(plan) {
@@ -215,10 +267,12 @@
     panel.hidden = false;
     panel.innerHTML = `
       <header><div><span>TYPED PLAN PREVIEW · LOCAL</span><strong>${esc(plan.name)}</strong><small>${esc(plan.rationale)}</small></div><b>NO AI CALL</b></header>
-      <section class="v5-planner-sequence"><span>ORDERED V5 FLOW</span><div>${rows.map((row, index) => `<article><b>${esc(row.badge)}</b><span><strong>${esc(row.title)}</strong><small>${esc(row.detail)}</small></span><i>${index < rows.length - 1 ? "↓" : "✓"}</i></article>`).join("")}</div></section>
+      <section class="v5-planner-edit-note"><span>EDIT PLAN BEFORE DRAFT</span><strong>Remove anything you do not want.</strong><small>Actions and inter-step controls update the active typed plan. Dependencies and Preflight are rebuilt locally before Draft creation.</small>${plan.editCount ? `<b>${plan.editCount} edit${plan.editCount === 1 ? "" : "s"}</b>` : ""}</section>
+      <section class="v5-planner-sequence"><span>ORDERED V5 FLOW</span><div>${rows.map((row, index) => `<article data-v5-plan-row="${esc(row.badge.toLowerCase())}" ${row.actionKey ? `data-v5-plan-action="${esc(row.actionKey)}"` : ""} ${Number.isInteger(row.controlIndex) ? `data-v5-plan-control="${row.controlIndex}"` : ""}><b>${esc(row.badge)}</b><span><strong>${esc(row.title)}</strong><small>${esc(row.detail)}</small></span><i>${index < rows.length - 1 ? "↓" : "✓"}</i>${rowEditMarkup(row, plan)}</article>`).join("")}</div></section>
       <section class="v5-planner-ops"><span>CHANGE PLAN</span><div>${plan.operations.map((operation, index) => `<article data-plan-op-id="${attr(operation.id)}" data-plan-produces="${attr(operation.produces)}" data-plan-uses="${attr(operation.uses)}" data-plan-depends="${attr(operation.dependsOn)}"><b>${String(index + 1).padStart(2, "0")}</b><span><small>${esc(operation.type)}</small><strong>${esc(operation.detail)}</strong></span></article>`).join("")}</div></section>
       <section class="v5-planner-blockers ${plan.blockers.length ? "has-blockers" : ""}"><span>${plan.blockers.length ? "PREFLIGHT" : "PREFLIGHT · CLEAR"}</span>${plan.blockers.length ? `<ul>${plan.blockers.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : `<p>No additional blocker is represented by this local pattern. Production preflight would still validate real capabilities, references, authority and Connections.</p>`}</section>
       <footer><span>Temporary <code>temp:</code> references exist only inside this plan. Use this draft creates ordinary Lab state and does not publish or execute anything.</span><button type="button" data-v5-planner-use>Use this draft</button></footer>`;
+    window.dispatchEvent(new CustomEvent("cmx:lab-automations-updated", { detail: { source: "planner-v5", edits: Number(plan.editCount || 0) } }));
   }
 
   function createDraft(plan) {
@@ -268,7 +322,13 @@
       outcome: plan.outcome,
       editorStage: 0,
       editorStep: 1,
-      plannerPreview: { source: "local-deterministic-v5", intent: plan.intent, createdAt: new Date().toISOString() },
+      plannerPreview: {
+        source: "local-deterministic-v5",
+        intent: plan.intent,
+        editCount: Number(plan.editCount || 0),
+        editedBeforeDraft: Number(plan.editCount || 0) > 0,
+        createdAt: new Date().toISOString()
+      },
       updatedAt: new Date().toISOString()
     };
 
@@ -348,6 +408,31 @@
       event.stopImmediatePropagation();
       const textarea = document.querySelector(".v4-planner-modal [data-v4-planner-text]");
       activePlan = planFromIntent(textarea?.value || "");
+      renderPlan(activePlan);
+      return;
+    }
+
+    const removeAction = event.target.closest?.("[data-v5-planner-remove-action]");
+    if (removeAction) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!activePlan || activePlan.actions.length <= 1 || removeAction.disabled) return;
+      const key = removeAction.dataset.v5PlannerRemoveAction;
+      activePlan.actions = activePlan.actions.filter(action => action.key !== key);
+      activePlan = refreshEditedPlan(activePlan);
+      renderPlan(activePlan);
+      return;
+    }
+
+    const removeControl = event.target.closest?.("[data-v5-planner-remove-control]");
+    if (removeControl) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!activePlan) return;
+      const index = Number(removeControl.dataset.v5PlannerRemoveControl);
+      if (!Number.isInteger(index) || index < 0 || index >= activePlan.flowControls.length) return;
+      activePlan.flowControls.splice(index, 1);
+      activePlan = refreshEditedPlan(activePlan);
       renderPlan(activePlan);
       return;
     }
