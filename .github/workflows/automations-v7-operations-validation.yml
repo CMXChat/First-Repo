@@ -1,4 +1,4 @@
-name: Continuum Automations v7 Operations Validation
+name: Continuum Automations Operations Validation
 
 on:
   push:
@@ -14,9 +14,12 @@ on:
       - 'assets/lab/lab-automations-editor-focus-v8.css'
       - 'assets/lab/lab-automations-editor-focus-v8.js'
       - 'assets/lab/lab-automations-mobile-focus-v8.css'
+      - 'assets/lab/lab-automations-duplicate-guard-v9.css'
+      - 'assets/lab/lab-automations-duplicate-guard-v9.js'
       - 'tests/continuum-automations-operations-v7.test.js'
       - 'tests/continuum-automations-desktop-density-v7.test.js'
       - 'tests/continuum-automations-mobile-focus-v8.test.js'
+      - 'tests/continuum-automations-duplicate-guard-v9.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
   pull_request:
     branches: [main]
@@ -31,9 +34,12 @@ on:
       - 'assets/lab/lab-automations-editor-focus-v8.css'
       - 'assets/lab/lab-automations-editor-focus-v8.js'
       - 'assets/lab/lab-automations-mobile-focus-v8.css'
+      - 'assets/lab/lab-automations-duplicate-guard-v9.css'
+      - 'assets/lab/lab-automations-duplicate-guard-v9.js'
       - 'tests/continuum-automations-operations-v7.test.js'
       - 'tests/continuum-automations-desktop-density-v7.test.js'
       - 'tests/continuum-automations-mobile-focus-v8.test.js'
+      - 'tests/continuum-automations-duplicate-guard-v9.test.js'
       - '.github/workflows/automations-v7-operations-validation.yml'
 
 permissions:
@@ -46,15 +52,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate v7/v8 source contracts
+      - name: Validate v7-v9 source contracts
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-operations-v7.js
           node --check assets/lab/lab-automations-operations-v7-polish.js
           node --check assets/lab/lab-automations-editor-focus-v8.js
+          node --check assets/lab/lab-automations-duplicate-guard-v9.js
           node tests/continuum-automations-operations-v7.test.js
           node tests/continuum-automations-desktop-density-v7.test.js
           node tests/continuum-automations-mobile-focus-v8.test.js
+          node tests/continuum-automations-duplicate-guard-v9.test.js
 
       - name: Render desktop and mobile operating surfaces
         run: |
@@ -65,7 +73,7 @@ jobs:
             exit 1
           fi
 
-          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-auto-v7-http.log 2>&1 &
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-auto-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
@@ -74,50 +82,55 @@ jobs:
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=14000 "$@" --dump-dom
           }
 
-          dump 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-v7-desktop.html
-          grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'CONTINUUM' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'LAB · AUTOMATIONS' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'LAB · EXECUTION OFF' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'Automation workspace' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'READY TO TEST' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'NEEDS SETUP' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'RUNTIME LATER' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'data-v7-open-planner' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'data-v7-manage' /tmp/continuum-auto-v7-desktop.html
-          grep -q 'v7-automation-row' /tmp/continuum-auto-v7-desktop.html
-          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-desktop.html
+          dump 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-desktop.html
+          grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-desktop.html
+          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-desktop.html
+          grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-desktop.html
+          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-desktop.html
+          grep -q 'CONTINUUM' /tmp/continuum-auto-desktop.html
+          grep -q 'LAB · AUTOMATIONS' /tmp/continuum-auto-desktop.html
+          grep -q 'LAB · EXECUTION OFF' /tmp/continuum-auto-desktop.html
+          grep -q 'Automation workspace' /tmp/continuum-auto-desktop.html
+          grep -q 'READY TO TEST' /tmp/continuum-auto-desktop.html
+          grep -q 'NEEDS SETUP' /tmp/continuum-auto-desktop.html
+          grep -q 'RUNTIME LATER' /tmp/continuum-auto-desktop.html
+          grep -q 'data-v7-open-planner' /tmp/continuum-auto-desktop.html
+          grep -q 'data-v7-manage' /tmp/continuum-auto-desktop.html
+          grep -q 'v7-automation-row' /tmp/continuum-auto-desktop.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-desktop.html
 
-          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-v7-desktop-editor.html
-          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v7-desktop-editor.html
-          grep -q 'v7-editor-status' /tmp/continuum-auto-v7-desktop-editor.html
-          grep -q 'LOCAL DRAFT' /tmp/continuum-auto-v7-desktop-editor.html
-          grep -q 'v8-flow-toggle' /tmp/continuum-auto-v7-desktop-editor.html
-          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-desktop-editor.html
+          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-desktop-editor.html
+          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-desktop-editor.html
+          grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-desktop-editor.html
+          grep -q 'v7-editor-status' /tmp/continuum-auto-desktop-editor.html
+          grep -q 'LOCAL DRAFT' /tmp/continuum-auto-desktop-editor.html
+          grep -q 'v8-flow-toggle' /tmp/continuum-auto-desktop-editor.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-desktop-editor.html
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-v7-mobile-dashboard.html
-          grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-v7-mobile-dashboard.html
-          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-mobile-dashboard.html
-          grep -q 'Automation workspace' /tmp/continuum-auto-v7-mobile-dashboard.html
-          grep -q 'data-v7-filter="needs-setup"' /tmp/continuum-auto-v7-mobile-dashboard.html
-          grep -q 'data-v7-open-planner' /tmp/continuum-auto-v7-mobile-dashboard.html
-          grep -q 'data-v7-manage' /tmp/continuum-auto-v7-mobile-dashboard.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-mobile-dashboard.html
+          grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-mobile-dashboard.html
+          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-mobile-dashboard.html
+          grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-mobile-dashboard.html
+          grep -q 'Automation workspace' /tmp/continuum-auto-mobile-dashboard.html
+          grep -q 'data-v7-filter="needs-setup"' /tmp/continuum-auto-mobile-dashboard.html
+          grep -q 'data-v7-open-planner' /tmp/continuum-auto-mobile-dashboard.html
+          grep -q 'data-v7-manage' /tmp/continuum-auto-mobile-dashboard.html
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-v7-mobile-editor.html
-          grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-v7-mobile-editor.html
-          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-mobile-editor.html
-          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v7-mobile-editor.html
-          grep -q 'v7-editor-status' /tmp/continuum-auto-v7-mobile-editor.html
-          grep -q 'LOCAL DRAFT' /tmp/continuum-auto-v7-mobile-editor.html
-          grep -q 'FLOW PREVIEW' /tmp/continuum-auto-v7-mobile-editor.html
-          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v7-mobile-editor.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-mobile-editor.html
+          grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-mobile-editor.html
+          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-mobile-editor.html
+          grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-mobile-editor.html
+          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-mobile-editor.html
+          grep -q 'v7-editor-status' /tmp/continuum-auto-mobile-editor.html
+          grep -q 'LOCAL DRAFT' /tmp/continuum-auto-mobile-editor.html
+          grep -q 'FLOW PREVIEW' /tmp/continuum-auto-mobile-editor.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-mobile-editor.html
 
-          dump --window-size=360,800 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-v8-phone-editor.html
-          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v8-phone-editor.html
-          grep -q 'v7-editor-status' /tmp/continuum-auto-v8-phone-editor.html
-          grep -q 'What should start this?' /tmp/continuum-auto-v8-phone-editor.html
-          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v8-phone-editor.html
+          dump --window-size=360,800 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-phone-editor.html
+          grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-phone-editor.html
+          grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-phone-editor.html
+          grep -q 'v7-editor-status' /tmp/continuum-auto-phone-editor.html
+          grep -q 'What should start this?' /tmp/continuum-auto-phone-editor.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-phone-editor.html
 
-          echo 'Automations operating workspace rendered on desktop plus 390x844 and 360x800 phone editor surfaces.'
+          echo 'Automations workspace rendered with v7 operations, v8 focus and v9 duplicate guard on desktop and phone surfaces.'
