@@ -1,11 +1,11 @@
 # Continuum Product Identity and `/doc/` Contract - CURRENT
 
 Date: 2026-08-19
-Status: Canonical product identity and public `/doc/` contract after the Continuum core, Signals/State, authority, live-world capability, Runtime power-clarity and rendered-copy reconciliation
+Status: Canonical product identity and public `/doc/` contract after the Continuum core, Goals/Missions, Signals/State, authority, live-world capability, Runtime power-clarity, Control Center direction and rendered-copy reconciliation
 
 # Product identity
 
-**Continuum** is the umbrella product across Spaces, Check In, Directory, Library, Signals, Automations, Connections, Runtime, AI/Planner and the future Control Center.
+**Continuum** is the umbrella product across Spaces, Check In, Directory, Library, Signals, Automations, Goals/Missions, Connections, Runtime, AI/Planner and the future Control Center.
 
 Use these names consistently:
 
@@ -15,14 +15,15 @@ Use these names consistently:
 - **Directory** = People, Organizations, relationships, contact methods and saved audiences.
 - **Library** = protected content, files, versions and durable saved knowledge.
 - **Signals / Observations** = provenance-backed evidence from approved outside/internal Sources.
-- **State** = current operational truth used by policy, Automations and Runtime.
+- **State** = current operational truth used by policy, Automations, Goals and Runtime.
 - **Automations** = typed definitions for objectives, triggers, conditions, Actions, timing and finish behavior.
+- **Goals / Missions** = future durable outcome definitions with success criteria, constraints, stop conditions and plan/replanning behavior above ordinary Automations.
 - **Connections / Capabilities** = approved external access plus the typed operations Continuum can currently read, prepare or do.
 - **Policy / Authority** = conditions, limits, approvals, fallback paths, prohibitions and explicit permission.
 - **Runtime** = future durable execution, waiting, retry, acknowledgement, recovery and history layer.
 - **AI / Planner** = replaceable reasoning and natural-language authoring using the same protected services humans use.
 - **Spaces** = focused briefings/current-context views.
-- **Control Center** = future desktop/mobile activity, autonomy, source/capability health and simulation surface.
+- **Control Center** = future desktop/mobile activity, autonomy, Goal progress, source/capability health and simulation surface.
 
 # Durable product model
 
@@ -46,6 +47,8 @@ Product principles:
 
 > **A stronger model may improve reasoning without silently increasing what it is allowed to do.**
 
+> **A Goal may change strategy without silently changing hard constraints, success criteria or authority.**
+
 > **Humans, AI, workers and future MCP adapters use the same protected typed domain services.**
 
 # `/doc/` role
@@ -56,7 +59,7 @@ It should explain the product to a first-time reader while staying truthful abou
 
 It is a document first. Visuals support the explanation instead of replacing it.
 
-The goal of the August 19 power-clarity pass is specific: a reader should understand how Continuum becomes powerful when it has live information, durable State, Runtime and expanding capability without turning `/doc/` into a product manual or speculative feature wall.
+The goal of the August 19 power-clarity pass is specific: a reader should understand how Continuum becomes powerful when it has live information, durable State, Runtime, expanding capability and later durable Goals without turning `/doc/` into a product manual or speculative feature wall.
 
 The eight stable anchors remain:
 
@@ -144,6 +147,8 @@ Public explanation:
 > Knowledge keeps useful history. State keeps the current condition that policy, AI and Runtime can use for the next decision.
 
 This is the key distinction between remembering what happened and knowing what is true now.
+
+The technical explanation should also reinforce that consequential operational State becomes protected server-backed truth when implemented. It does not live only in model context or browser state.
 
 # One real workflow
 
@@ -250,7 +255,7 @@ Canonical flow:
 
 `INTENT → CHANGE PLAN → PREFLIGHT → REVIEW → APPLY`
 
-Planner may eventually propose typed changes across mature domains including Directory, Library, Sources/Signals, Automations, capability mappings and policy.
+Planner may eventually propose typed changes across mature domains including Directory, Library, Sources/Signals, Automations, Goals/Goal Plans, capability mappings and policy.
 
 Boundary:
 
@@ -282,7 +287,7 @@ Canonical compact flow:
 
 `SIGNAL → STATE → POLICY → AUTHORITY → RUNTIME → RESULT`
 
-A Signal may eventually update State, satisfy a condition, change priority, wake waiting Runtime work or make a published policy eligible.
+A Signal may eventually update State, satisfy a condition, change priority, wake waiting Runtime work, update Goal progress or make a published policy eligible.
 
 Public boundary:
 
@@ -368,6 +373,45 @@ The existing readable Automation mental model can remain available for beginner 
 
 Do not collapse policy, authority and Runtime into a vague `AI does it` story.
 
+# Goals / Missions lesson
+
+Goals remain visibly **LATER** and should appear as one compact idea inside the Automations/Runtime section instead of a ninth top-level document section.
+
+Public distinction:
+
+> **Automations handle rules. Goals let Continuum pursue an outcome.**
+
+Canonical compact flow:
+
+`GOAL → PLAN → ACT → OBSERVE → REPLAN → SUCCESS / STOP`
+
+A Goal may eventually define:
+
+- an outcome;
+- explicit success criteria;
+- stop/failure criteria;
+- hard constraints/prohibitions;
+- approvals;
+- deadline/time horizon;
+- budget/resource/attempt limits;
+- allowed Knowledge/resources;
+- allowed capabilities/Connections;
+- applicable authority/policy.
+
+Planner may prepare/revise the strategy. Runtime may later carry approved child work across waits, replies and changing State. A Goal may use multiple Automations, AI Tasks, human tasks and Signals.
+
+Public hard rule:
+
+> **Replanning can change strategy. It cannot silently change hard constraints, success criteria or authority.**
+
+`Until done` must resolve to explicit success/stop semantics. It never means unlimited execution.
+
+When a Goal concerns another person, applicable consent/representation authority remains separate from Directory relationships.
+
+Current public example uses an authorized person pursuing a suitable job with a 60-day horizon, factual/representation constraints and Ask-before-send behavior. It is an architecture example only.
+
+Read `docs/continuum-goals-missions-CURRENT.md` and the backend Goal contract for deeper semantics.
+
 # Continuity / Afterlife lesson
 
 Afterlife remains the concrete continuity use case.
@@ -404,9 +448,11 @@ These concepts are future architecture, not current `/doc/` production claims.
 The future Control Center is first-class on desktop and mobile and should eventually show:
 
 - Now;
+- Waiting;
 - Upcoming;
 - History;
 - All Activity;
+- Goal/Mission progress and blockers;
 - Sources/Connection/capability health;
 - pending approvals/waits;
 - why something happened;
@@ -420,7 +466,7 @@ A timed pause expiry should trigger re-contact before fallback policy is evaluat
 
 Simulation performs no real side effects and may use frozen real-State snapshots plus hypothetical overrides.
 
-The main `/doc/` should introduce inspectability and simulation as product ideas when useful. Detailed Control Center management rules stay in the dedicated architecture contract so this page remains readable.
+The main `/doc/` should introduce inspectability, Pause Autonomy and simulation as compact product ideas when useful. Detailed Control Center management rules stay in the dedicated architecture contract so this page remains readable.
 
 # Capability status vocabulary
 
@@ -436,7 +482,7 @@ Current truthful status:
 - Check In Phase 1 = LIVE;
 - Spaces and Automations Lab = LAB;
 - validated Phase 2A private information/Automation definition source = NEXT for production migration/deployment;
-- general Runtime/provider delivery/live Signals monitoring/AI execution/MCP execution = LATER.
+- general Runtime/provider delivery/live Signals monitoring/AI execution/MCP execution/Goal orchestration = LATER.
 
 Validated source on `jay-app/main` is not production truth until the prepared Phase 2A deployment boundary succeeds.
 
@@ -458,7 +504,7 @@ LATER
 Expandable capability
 ```
 
-The detailed backend architecture adds Directory, Sources/Signals, provider adapters, Planner and broader AI in controlled phases without changing this simple public teaching order.
+The detailed backend architecture adds Directory, Sources/Signals, provider adapters, Planner, Goals/Missions and broader AI in controlled phases without changing this simple public teaching order.
 
 # Closing direction
 
@@ -504,11 +550,13 @@ Use rich visuals where relationships matter:
 - optional architecture/build process;
 - roadmap.
 
-The August 19 power-clarity pass deliberately adds only three compact visual ideas:
+The August 19 power-clarity pass deliberately keeps additions compact:
 
 1. **State strip** in Overview;
 2. **Source → Observation → Signal → State** sensing strip in Information;
-3. **Why did Continuum do that?** receipt inside the real workflow example.
+3. **Why did Continuum do that?** receipt inside the real workflow example;
+4. **Goals / Missions** prose-led note inside Automations/Runtime;
+5. **Control Center / Pause Autonomy / Simulation** prose-led note inside Architecture.
 
 Model routing is a compact existing-section addition. Capability self-improvement is a concise example inside the existing capability note.
 
@@ -536,7 +584,10 @@ Current scripts load in this order:
 - Planner note;
 - Signals + State note;
 - sensing strip;
+- Goal/Mission outcome-orchestration note;
 - live capability extension note and safe improvement example;
+- Control Center / Pause Autonomy / Simulation note;
+- PostgreSQL wording that makes operational State explicitly server-backed;
 - Dead Man Switch origin insight;
 - ordinary-unavailability continuity copy;
 - neutralized example names;
@@ -546,19 +597,27 @@ It sets:
 
 `data-continuum-architecture-aligned="20260819"`
 
+`data-continuum-power-clarity="20260819"`
+
+`data-continuum-goals="ready"`
+
 and:
 
-`data-continuum-power-clarity="20260819"`
+`data-continuum-control-center="ready"`
 
 Do not add a broad MutationObserver to keep rewriting the document. The final reconciliation runs once during initialization.
 
 The static no-JS HTML already contains the modern architecture narrative. The final render adds the compact teaching details above while preserving the same architecture and capability-status truth.
+
+The accepted page currently still uses the existing `continuum-doc-origin.js` query string in static HTML. Do not rewrite the entire large frozen HTML file only to change a cache token unless a real stale-render problem appears or the HTML is already being safely edited for another reason.
 
 # Backend canonical companions
 
 Read `/doc/` claims against:
 
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md`;
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOALS-MISSIONS-ORCHESTRATION-CONTRACT.md`;
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-MULTI-USER-ORGANIZATION-SCOPE-CONTRACT.md`;
 - `CMXChat/jay-app/specs/003-server-checkin/CHECKIN-PLATFORM-ARCHITECTURE.md`;
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md`;
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md`;
@@ -582,10 +641,13 @@ Before changing it, ask:
 7. Does it show that Runtime can eventually survive time, replies, retries and a closed app?
 8. Does capability growth stay separate from permission growth?
 9. Does it keep Automation definition separate from Runtime execution?
-10. Does it preserve the Dead Man Switch origin/continuity insight?
-11. Are LIVE / LAB / NEXT / LATER claims truthful?
-12. Does the static HTML remain architecturally consistent with the final rendered page?
-13. Does the change avoid broad DOM mutation loops and preserve mobile quality?
-14. Does it still point back to current backend/release truth instead of turning architecture plans into implementation claims?
+10. Can the reader distinguish an Automation from a Goal/Mission?
+11. Does a Goal have explicit success/stop/constraint semantics instead of `run forever` ambiguity?
+12. Does it preserve the Dead Man Switch origin/continuity insight?
+13. Does it keep background autonomy inspectable through the Control Center direction?
+14. Are LIVE / LAB / NEXT / LATER claims truthful?
+15. Does the static HTML remain architecturally consistent with the final rendered page?
+16. Does the change avoid broad DOM mutation loops and preserve mobile quality?
+17. Does it still point back to current backend/release truth instead of turning architecture plans into implementation claims?
 
 If a change makes the page prettier while weakening those answers, do not ship it.
