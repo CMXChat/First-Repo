@@ -1,7 +1,7 @@
 # Check In Automations Frontend — CURRENT
 
 Date: 2026-08-18
-Status: Active Continuum Lab Automations v4.2 experience with Directory v2, typed Audience and typed data-reference UX
+Status: Active Continuum Lab Automations v4.3 experience with Directory v2, typed Audience, typed data references and field input routing
 
 # Focused route
 
@@ -23,7 +23,7 @@ Strategic direction:
 
 `docs/continuum-automations-master-plan-CURRENT.md`
 
-Directory/Audience truth:
+Directory/Audience/Planner truth:
 
 `docs/checkin-directory-library-CURRENT.md`
 
@@ -43,7 +43,8 @@ Behavior/presentation files now include:
 - `assets/lab/lab-automations-scenarios-v4.js`;
 - `assets/lab/lab-automations-directory-v4.js/.css`;
 - `assets/lab/lab-automations-audience-v4.js/.css`;
-- `assets/lab/lab-automations-intelligence-v4.js/.css`.
+- `assets/lab/lab-automations-intelligence-v4.js/.css`;
+- `assets/lab/lab-automations-input-routing-v4.js/.css`.
 
 Older focused v2 builder/enhancement files remain history and are not current route authority.
 
@@ -80,17 +81,7 @@ Compatibility defaults never appear as user intent before selection/confirmation
 
 ## V4 platform layer
 
-Owns:
-
-- Automations / Templates / Runs;
-- search;
-- Capability Catalog;
-- New Automation chooser;
-- interactive Flow Preview navigation;
-- Planner preview;
-- preflight presentation;
-- `RUNTIME OFF` Runs preview;
-- current desktop/mobile application shell.
+Owns Automations / Templates / Runs, search, Capability Catalog, New Automation chooser, interactive Flow Preview navigation, Planner preview, preflight presentation, `RUNTIME OFF` Runs preview and current desktop/mobile application shell.
 
 ## V4 scenarios
 
@@ -104,18 +95,9 @@ Shows Directory counts, Person/Organization readiness, Review readiness and navi
 
 ## Audience v4.1
 
-Communication Actions can select one or more:
+Communication Actions can select one or more Person, Organization, Group and Label references.
 
-- Person;
-- Organization;
-- Group;
-- Label.
-
-Prototype Draft intent:
-
-`audienceSelectors[]`
-
-with live-membership/dedupe metadata.
+Prototype Draft intent uses `audienceSelectors[]` with live-membership/dedupe metadata.
 
 The browser resolves current unique People and previews email/phone readiness. Production resolution remains server-owned.
 
@@ -131,11 +113,7 @@ Recommendations use the same Capability Catalog and preserve `LAB NOW` / `LATER`
 
 ### Typed Use Data references
 
-Each Action can open **Use data** and select friendly references from:
-
-- Trigger outputs;
-- Directory/Audience readiness values;
-- outputs exposed by earlier Actions.
+Each Action can open **Use data** and select friendly references from Trigger outputs, Directory/Audience readiness values and outputs exposed by earlier Actions.
 
 Prototype references mirror to Action `dataBindings[]` and are also protected from older v3 compatibility saves through:
 
@@ -143,30 +121,46 @@ Prototype references mirror to Action `dataBindings[]` and are also protected fr
 
 That separate local store is Lab scaffolding only.
 
-The important product rule is the reference model:
+The important reference model is:
 
-`typed source → stable source ID → typed path → receiving field later`
+`typed source → stable source ID → typed output path → compatible receiving field`
 
-This is **not** a free-form expression language. No arbitrary JavaScript, Python or template code is evaluated.
+This is not a free-form expression language. No arbitrary JavaScript, Python or template code is evaluated.
 
 ### Richer TEST THIS STEP
 
 The v4.2 layer intercepts the existing stage-test control and renders a local input → normalize/resolve → sample output trace.
 
-Examples include:
+Examples include Trigger normalized fields, current Rules, Audience resolution/readiness, mapped sample values, Action-specific simulated output, Timing interpretation and local Review blockers.
 
-- Trigger normalized fields;
-- current Rule list;
-- Audience resolved People;
-- email/phone readiness;
-- mapped sample values;
-- Action-specific simulated output;
-- Timing interpretation;
-- local Review blockers.
-
-Every trace remains explicit that no provider, AI model, server Runtime, event source or connected account was used.
+Every trace remains explicit that no provider, AI model, server Runtime, real event source or connected account was used.
 
 Test/simulation evidence is never authoritative Run history.
+
+## Input routing v4.3
+
+V4.3 adds the receiving side of typed data mapping.
+
+Each supported inline Action exposes named input slots. Current Lab examples:
+
+- Email: `subject`, `body`;
+- AI Task: `context`, `focus`;
+- Manual Review: `review_context`;
+- Notify: `message`.
+
+The user chooses one typed source for a specific target field. Prototype intent uses `inputBindings[]` entries with `targetField` plus source kind, source/step ID, typed path and readable label.
+
+The compatibility store is:
+
+`cmx-lab-automation-input-bindings-v1`
+
+That store exists only so the older v3 engine cannot erase the richer prototype fields. Production should put validated input bindings directly on the protected server Draft.
+
+Review now summarizes configured input routing.
+
+The browser marker is:
+
+`data-lab-automations-inputs="v4-3"`
 
 # Human workflow model
 
@@ -212,13 +206,7 @@ Accepted label: **FLOW PREVIEW**.
 
 Do not use `LIVE FLOW`.
 
-Visible nodes navigate to:
-
-- WHEN → Trigger;
-- IF → Rules;
-- DO → Actions;
-- WAIT → Timing;
-- FINISH → Review.
+Visible nodes navigate to WHEN / Trigger, IF / Rules, DO / Actions, WAIT / Timing and FINISH / Review.
 
 The current flow remains linear because real branch/subflow Runtime behavior does not exist yet.
 
@@ -226,79 +214,55 @@ The current flow remains linear because real branch/subflow Runtime behavior doe
 
 The browser-local catalog demonstrates scalable discovery across Trigger, Condition, Action and future workflow-control families.
 
-It supports:
+It supports categories, search, `LAB NOW` / `LATER` state, reusable Lab Actions and contextual recommendations.
 
-- categories;
-- search;
-- `LAB NOW` / `LATER` state;
-- reusable Lab Actions;
-- current contextual recommendations.
+Future concepts remain previews until matching backend/services/Connections/Runtime exist.
 
-Future concepts such as inbound email, Discord/SMS, acknowledgement, approval, Library/Directory actions, WAIT, branch, subflow and constrained HTTP/API remain previews until matching backend/services/Connections/Runtime exist.
+Production should eventually expose safe trusted registry metadata from the server-owned Capability Registry, including typed output and receiving-input schemas.
 
-Production should eventually expose safe trusted registry metadata from the server-owned Capability Registry.
-
-# Typed Audience v4.1 compatibility
+# Typed Audience compatibility
 
 V3 still expects `targetRef` / `targetLabel`.
 
-The adapter preserves compatibility without treating those fields as canonical audience identity:
+The adapter preserves compatibility while richer intent remains `audienceSelectors[]`.
 
-- one direct Person/Organization can mirror into `targetRef`;
-- multi-selector/Group/Label audiences receive a readable compatibility `targetLabel`;
-- richer intent remains `audienceSelectors[]`;
-- the adapter flushes the normal v3 Save, writes the richer selectors and reloads the exact Draft so v3 rehydrates them.
+This reload/save behavior is Lab scaffolding. Production should use typed protected Draft mutations.
 
-This reload is Lab scaffolding. Production should use typed protected Draft mutations.
-
-# Rules
+# Rules and timing
 
 Current Rule concepts remain prototypes with Match all / Match any behavior.
 
 Future backend Conditions stay typed/server-validated. No free-form executable condition language.
 
-# Timing
-
 Current WAIT stage still presents sequence start timing and recurrence.
 
-Keep backend concepts separate:
-
-- Trigger eligibility;
-- start policy;
-- future inter-step WAIT;
-- recurrence;
-- retry.
+Keep Trigger eligibility, start policy, future inter-step WAIT, recurrence and retry separate in backend architecture.
 
 Browser never owns authoritative scheduling.
 
 # Review / simulation
 
-Review can include:
-
-- complete flow;
-- Finish behavior;
-- local validation;
-- Directory readiness;
-- Audience preflight;
-- richer v4.2 stage traces;
-- local animated full-flow simulation/log.
+Review can include complete flow, Finish behavior, local validation, Directory readiness, Audience preflight, input-routing summary, richer stage traces and local animated full-flow simulation/log.
 
 Future protected Review should use deterministic backend readiness and exact blockers.
 
+# AI authoring direction
+
+The focused Planner is currently visual-only, but the long-term contract is larger than Automation creation alone.
+
+A future Continuum Planner may interpret natural-language intent and propose a typed **Change Plan** spanning supported Directory, Automations and Library operations.
+
+Within Automations, AI can eventually create/edit the same Draft humans use, select known capabilities, choose protected Audience selectors and wire compatible typed outputs into named receiving fields.
+
+AI does not get a shadow workflow format or hidden mutation path. Changes to a published Automation become a new mutable Draft/version proposal.
+
+Backend companion:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
+
 # Mobile contract
 
-Preserve:
-
-- one primary decision area at a time;
-- large tap targets;
-- readable inputs without browser zoom;
-- one-column Action/capability/data-reference choices;
-- bottom-sheet/full-screen-style modals;
-- safe-area-aware action footers;
-- no nested scroll traps;
-- no horizontal overflow;
-- rich black dark mode plus separately usable light mode;
-- reduced-motion support.
+Preserve one primary decision area at a time, large tap targets, readable inputs without browser zoom, one-column choices, bottom-sheet/full-screen modals, safe-area-aware action footers, no nested scroll traps, no horizontal overflow, rich black dark mode plus usable light mode and reduced-motion support.
 
 Do not shrink a desktop node canvas onto a phone.
 
@@ -309,25 +273,18 @@ Do not shrink a desktop node canvas onto a phone.
 - Directory: `cmx-lab-crm-v1`;
 - reusable Actions: `cmx-lab-actions-v1`;
 - v4 platform marker/preferences: `cmx-lab-automations-platform-v4`;
-- typed data-reference compatibility store: `cmx-lab-automation-data-bindings-v1`.
+- typed data-reference compatibility store: `cmx-lab-automation-data-bindings-v1`;
+- field input-routing compatibility store: `cmx-lab-automation-input-bindings-v1`.
 
-`audienceSelectors[]` and `dataBindings[]` belong to the normal Automation/Action prototype intent where possible. Extra local stores exist only to survive the older compatibility engine.
+`audienceSelectors[]`, `dataBindings[]` and `inputBindings[]` belong to normal Automation/Action prototype intent where possible. Extra local stores exist only to survive the older compatibility engine.
 
 # Production migration rule
 
 Production must rebuild accepted semantics in the protected React/FastAPI/PostgreSQL application.
 
-Do not copy:
+Do not copy localStorage persistence, DOM patch layers, browser audience resolution as authority, compatibility target summaries as identity, browser reload save behavior, browser data mapping as authoritative validation or client-generated Runtime/Audit truth.
 
-- localStorage persistence;
-- DOM patch layers;
-- browser audience resolution as authority;
-- compatibility target summaries as identity;
-- browser reload save behavior;
-- browser data mapping as authoritative validation;
-- client-generated Runtime/Audit truth.
-
-Production needs server Drafts, optimistic concurrency, typed Directory/Audience services, typed data references, immutable AutomationVersions, deterministic preflight and later Runtime execution snapshots.
+Production needs server Drafts, optimistic concurrency, typed Directory/Audience services, typed source/output/input schemas, immutable AutomationVersions, deterministic preflight and later Runtime execution snapshots.
 
 # Backend truth
 
@@ -339,7 +296,7 @@ Current validated Phase 2A backend remains much smaller than the Lab:
 - simple Finish;
 - no real Conditions;
 - no production Directory/Audience service;
-- no production data-mapping service;
+- no production data-mapping/input-routing service;
 - no provider execution;
 - no Runtime;
 - no AI execution.
@@ -348,16 +305,4 @@ The prepared Phase 2A production migration/deployment remains the immediate back
 
 # Regression protection
 
-Current CI should protect:
-
-- v3 compatibility/autosave core;
-- progressive pending-state truth;
-- v4 platform/scenarios;
-- Directory/Audience layers;
-- v4.2 recommendations/data-reference/test layers;
-- self-only CSP and production isolation;
-- direct-new mobile behavior;
-- `FLOW PREVIEW` naming;
-- no `MutationObserver`, `eval` or dynamic Function in current v4 adapters;
-- desktop/mobile smoke markers;
-- the distinction between Lab simulation and production authority.
+Current CI should protect v3 compatibility/autosave, progressive pending-state truth, v4 platform/scenarios, Directory/Audience, v4.2 recommendations/data references/tests, v4.3 input routing, self-only CSP, direct-new mobile behavior, `FLOW PREVIEW` naming, production isolation and the prohibition on `MutationObserver`, `eval` and dynamic Function in current adapters.
