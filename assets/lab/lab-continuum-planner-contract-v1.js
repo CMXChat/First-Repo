@@ -2,29 +2,43 @@
   "use strict";
 
   const OPERATIONS = Object.freeze({
-    "directory.match_or_create_people": Object.freeze({ domain: "Directory", family: "identity", label: "Match or create People", review: "conditional" }),
-    "directory.match_people": Object.freeze({ domain: "Directory", family: "identity", label: "Match People", review: "conditional" }),
-    "directory.match_organizations": Object.freeze({ domain: "Directory", family: "identity", label: "Match Organizations", review: "conditional" }),
-    "directory.apply_label": Object.freeze({ domain: "Directory", family: "organization", label: "Apply Label", review: "low-risk" }),
-    "directory.upsert_group": Object.freeze({ domain: "Directory", family: "audience", label: "Create or update Group", review: "low-risk" }),
-    "directory.upsert_membership": Object.freeze({ domain: "Directory", family: "relationship", label: "Create or update membership", review: "conditional" }),
-    "directory.upsert_relationship": Object.freeze({ domain: "Directory", family: "relationship", label: "Create or update relationship", review: "conditional" }),
+    "directory.match_or_create_people": Object.freeze({ domain: "Directory", family: "identity", label: "Match or create People", effect: "resolve", review: "conditional" }),
+    "directory.match_people": Object.freeze({ domain: "Directory", family: "identity", label: "Match People", effect: "resolve", review: "conditional" }),
+    "directory.match_organizations": Object.freeze({ domain: "Directory", family: "identity", label: "Match Organizations", effect: "resolve", review: "conditional" }),
+    "directory.apply_label": Object.freeze({ domain: "Directory", family: "organization", label: "Apply Label", effect: "link", review: "low-risk" }),
+    "directory.upsert_group": Object.freeze({ domain: "Directory", family: "audience", label: "Create or update Group", effect: "create-update", review: "low-risk" }),
+    "directory.upsert_membership": Object.freeze({ domain: "Directory", family: "relationship", label: "Create or update membership", effect: "link-update", review: "conditional" }),
+    "directory.upsert_relationship": Object.freeze({ domain: "Directory", family: "relationship", label: "Create or update relationship", effect: "link-update", review: "conditional" }),
 
-    "library.create_folder": Object.freeze({ domain: "Library", family: "structure", label: "Create folder", review: "low-risk" }),
-    "library.create_document": Object.freeze({ domain: "Library", family: "content", label: "Create document Draft", review: "low-risk" }),
+    "library.create_folder": Object.freeze({ domain: "Library", family: "structure", label: "Create folder", effect: "create", review: "low-risk" }),
+    "library.create_document": Object.freeze({ domain: "Library", family: "content", label: "Create document Draft", effect: "create", review: "low-risk" }),
 
-    "automation.create_draft": Object.freeze({ domain: "Automations", family: "definition", label: "Create Automation Draft", review: "low-risk" }),
-    "automation.set_trigger": Object.freeze({ domain: "Automations", family: "definition", label: "Set Trigger", review: "low-risk" }),
-    "automation.set_preconditions": Object.freeze({ domain: "Automations", family: "definition", label: "Set pre-action Conditions", review: "low-risk" }),
-    "automation.add_action": Object.freeze({ domain: "Automations", family: "definition", label: "Add Action", review: "conditional" }),
-    "automation.add_condition": Object.freeze({ domain: "Automations", family: "sequence", label: "Add inter-step Condition", review: "conditional" }),
-    "automation.add_wait": Object.freeze({ domain: "Automations", family: "sequence", label: "Add inter-step WAIT", review: "conditional" }),
-    "automation.set_finish": Object.freeze({ domain: "Automations", family: "definition", label: "Set Finish policy", review: "low-risk" }),
-    "automation.reference_audience": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Directory Audience", review: "conditional" }),
-    "automation.reference_content": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Library content", review: "conditional" })
+    "automation.create_draft": Object.freeze({ domain: "Automations", family: "definition", label: "Create Automation Draft", effect: "create", review: "low-risk" }),
+    "automation.set_trigger": Object.freeze({ domain: "Automations", family: "definition", label: "Set Trigger", effect: "update", review: "low-risk" }),
+    "automation.set_preconditions": Object.freeze({ domain: "Automations", family: "definition", label: "Set pre-action Conditions", effect: "update", review: "low-risk" }),
+    "automation.add_action": Object.freeze({ domain: "Automations", family: "definition", label: "Add Action", effect: "update", review: "conditional" }),
+    "automation.add_condition": Object.freeze({ domain: "Automations", family: "sequence", label: "Add inter-step Condition", effect: "update", review: "conditional" }),
+    "automation.add_wait": Object.freeze({ domain: "Automations", family: "sequence", label: "Add inter-step WAIT", effect: "update", review: "conditional" }),
+    "automation.set_finish": Object.freeze({ domain: "Automations", family: "definition", label: "Set Finish policy", effect: "update", review: "low-risk" }),
+    "automation.reference_audience": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Directory Audience", effect: "link", review: "conditional" }),
+    "automation.reference_content": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Library content", effect: "link", review: "conditional" })
   });
 
   const knownTypes = Object.freeze(Object.keys(OPERATIONS));
+  const EFFECT_LABELS = Object.freeze({
+    resolve: "RESOLVE",
+    create: "CREATE",
+    update: "UPDATE",
+    link: "LINK",
+    "create-update": "CREATE / UPDATE",
+    "link-update": "LINK / UPDATE"
+  });
+  const REVIEW_LABELS = Object.freeze({
+    "low-risk": "STANDARD REVIEW",
+    conditional: "CHECK REQUIRED",
+    required: "APPROVAL REQUIRED",
+    blocked: "BLOCKED"
+  });
 
   function get(type) {
     return OPERATIONS[String(type || "")] || null;
@@ -42,10 +56,32 @@
     };
   }
 
+  function effectLabel(effect) {
+    return EFFECT_LABELS[String(effect || "")] || "CHANGE";
+  }
+
+  function reviewLabel(review) {
+    return REVIEW_LABELS[String(review || "")] || "REVIEW";
+  }
+
   function describe(type) {
     const meta = get(type);
-    if (!meta) return { type: String(type || ""), domain: "Unknown", family: "unknown", label: "Unknown operation", review: "blocked" };
-    return { type: String(type), ...meta };
+    if (!meta) return {
+      type: String(type || ""),
+      domain: "Unknown",
+      family: "unknown",
+      label: "Unknown operation",
+      effect: "unknown",
+      effectLabel: "UNKNOWN",
+      review: "blocked",
+      reviewLabel: "BLOCKED"
+    };
+    return {
+      type: String(type),
+      ...meta,
+      effectLabel: effectLabel(meta.effect),
+      reviewLabel: reviewLabel(meta.review)
+    };
   }
 
   window.CMXContinuumPlannerContractV1 = Object.freeze({
@@ -54,7 +90,9 @@
     knownTypes,
     get,
     describe,
-    validateOperations
+    validateOperations,
+    effectLabel,
+    reviewLabel
   });
 
   document.documentElement.dataset.labPlannerContract = "v1";
