@@ -8,7 +8,9 @@ on:
       - 'assets/personal-os-doc.js'
       - 'assets/continuum-doc-origin.js'
       - 'assets/continuum-doc-origin.css'
+      - 'assets/continuum-doc-*.js'
       - 'assets/continuum-doc-*.css'
+      - 'tests/continuum-doc-*.test.js'
       - 'tests/continuum-doc-signals-planner-probe.js'
       - '.github/workflows/continuum-doc-signals-planner-validation.yml'
   pull_request:
@@ -18,7 +20,9 @@ on:
       - 'assets/personal-os-doc.js'
       - 'assets/continuum-doc-origin.js'
       - 'assets/continuum-doc-origin.css'
+      - 'assets/continuum-doc-*.js'
       - 'assets/continuum-doc-*.css'
+      - 'tests/continuum-doc-*.test.js'
       - 'tests/continuum-doc-signals-planner-probe.js'
       - '.github/workflows/continuum-doc-signals-planner-validation.yml'
 
@@ -37,12 +41,17 @@ jobs:
           set -euo pipefail
           node --check assets/personal-os-doc.js
           node --check assets/continuum-doc-origin.js
+          node --check assets/continuum-doc-i18n.js
+          node --check assets/continuum-doc-knowledge-time.js
+          node --test tests/continuum-doc-knowledge-time-smoke.test.js
 
           python - <<'PY'
           from pathlib import Path
 
           source = Path('assets/continuum-doc-origin.js').read_text(encoding='utf-8')
           css = Path('assets/continuum-doc-origin.css').read_text(encoding='utf-8')
+          knowledge_time = Path('assets/continuum-doc-knowledge-time.js').read_text(encoding='utf-8')
+          knowledge_time_css = Path('assets/continuum-doc-knowledge-time.css').read_text(encoding='utf-8')
           html = Path('doc/index.html').read_text(encoding='utf-8')
 
           required_source = [
@@ -77,8 +86,20 @@ jobs:
               if term not in css:
                   raise SystemExit(f'missing /doc Planner/Signals style contract: {term}')
 
+          for term in [
+              'BRING KNOWLEDGE IN', 'Paste + bulk text', 'AI handoffs', 'Files + OCR / vision',
+              'CAPTURE', 'UNDERSTAND', 'REVIEW', 'INTEGRATE', 'REAL TEMPORAL AWARENESS',
+              'roughly two seconds passed', "dataset.continuumKnowledgeTime = 'ready'"
+          ]:
+              if term not in knowledge_time:
+                  raise SystemExit(f'missing /doc knowledge/time contract: {term}')
+
+          for term in ['.continuum-kt-panel', '.continuum-kt-flow', '.continuum-kt-clock-grid', 'body:dir(rtl)', '@media(max-width:680px)']:
+              if term not in knowledge_time_css:
+                  raise SystemExit(f'missing /doc knowledge/time style: {term}')
+
           for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
-              if forbidden in source:
+              if forbidden in source or forbidden in knowledge_time:
                   raise SystemExit(f'forbidden /doc integration pattern: {forbidden}')
 
           anchors = ['overview', 'difference', 'spaces', 'action', 'afterlife', 'engineering', 'build', 'status']
@@ -91,7 +112,7 @@ jobs:
           if 'noindex' not in html:
               raise SystemExit('/doc must remain noindex')
 
-          print('Continuum /doc Planner, Signals, State and sensing contracts passed.')
+          print('Continuum /doc Planner, Signals, State, knowledge and time contracts passed.')
           PY
 
       - name: Browser smoke desktop and mobile
@@ -117,15 +138,20 @@ jobs:
               'http://127.0.0.1:8000/doc/' > "$out"
 
             grep -q 'data-continuum-signals-planner="ready"' "$out"
+            grep -q 'data-continuum-knowledge-time="ready"' "$out"
             grep -q 'LATER · PLANNER' "$out"
             grep -q 'Natural language can configure the control layer without becoming authority.' "$out"
             grep -q 'LATER · SIGNALS + STATE' "$out"
             grep -q 'Observed change can alter what Continuum understands about the current situation.' "$out"
             grep -q 'Evidence changes understanding. Published authority controls execution.' "$out"
             grep -q 'Signals are how Continuum can notice that the world changed.' "$out"
+            grep -q 'BRING KNOWLEDGE IN' "$out"
+            grep -q 'Files + OCR / vision' "$out"
+            grep -q 'REAL TEMPORAL AWARENESS' "$out"
+            grep -q 'roughly two seconds passed' "$out"
             grep -q 'The idea started with the Dead Man Switch' "$out"
           }
 
           check_view 1280 900
           check_view 390 844
-          echo 'Continuum /doc Planner, Signals and State rendered on desktop and 390px mobile.'
+          echo 'Continuum /doc rendered Planner, Signals, knowledge and time teaching on desktop and 390px mobile.'
