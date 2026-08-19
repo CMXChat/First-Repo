@@ -11,22 +11,24 @@ Current source, tests, workflows and `*-CURRENT.md` contracts take priority over
 
 1. `checkin-context-handoff-CURRENT.md` — current cross-repository truth and release boundary.
 2. `continuum-product-CURRENT.md` — Continuum identity and `/doc/` contract.
-3. `continuum-signals-observations-master-plan-CURRENT.md` — Signals/Observations/State product direction.
-4. `checkin-future-capabilities-CURRENT.md` — future Sources, Connections, capabilities, MCP/API discovery, Control Center and autonomy UX.
-5. `continuum-automations-master-plan-CURRENT.md` — Automation product/model direction.
-6. `checkin-automations-frontend-CURRENT.md` — exact Automations v5, Planner Preflight, mobile Action-stack and QA truth.
-7. `continuum-directory-master-plan-CURRENT.md` — durable Directory direction.
-8. `checkin-directory-library-CURRENT.md` — Directory/Audience/Library/Planner cross-domain truth.
-9. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
-10. `checkin-content-editor-CURRENT.md` — native content/editor contract.
-11. `checkin-files-CURRENT.md` — binary File direction.
-12. `checkin-ai-product-design-CURRENT.md` — broader AI product direction.
-13. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
-14. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md` — durable Knowledge/State/Authority/Policy/Audit invariants.
-15. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md` — desktop/mobile Control Center, Pause Autonomy, re-contact and simulation.
-16. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md` — Sources, API/MCP discovery, typed adapters and bounded self-improvement.
-17. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
-18. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md` — protected Signals/Observation/State architecture.
+3. `continuum-doc-authorized-continuity-CURRENT.md` — focused `/doc/` contract for authorized continuity, Goals during unavailability, information quality and goal-driven architecture evolution.
+4. `continuum-signals-observations-master-plan-CURRENT.md` — Signals/Observations/State product direction.
+5. `checkin-future-capabilities-CURRENT.md` — future Sources, Connections, capabilities, MCP/API discovery, Control Center and autonomy UX.
+6. `continuum-automations-master-plan-CURRENT.md` — Automation product/model direction.
+7. `checkin-automations-frontend-CURRENT.md` — exact Automations v5, Planner Preflight, mobile Action-stack and QA truth.
+8. `continuum-directory-master-plan-CURRENT.md` — durable Directory direction.
+9. `checkin-directory-library-CURRENT.md` — Directory/Audience/Library/Planner cross-domain truth.
+10. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
+11. `checkin-content-editor-CURRENT.md` — native content/editor contract.
+12. `checkin-files-CURRENT.md` — binary File direction.
+13. `checkin-ai-product-design-CURRENT.md` — broader AI product direction.
+14. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
+15. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CORE-ARCHITECTURE-CONTRACT.md` — durable Knowledge/State/Authority/Policy/Audit invariants.
+16. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md` — desktop/mobile Control Center, Pause Autonomy, re-contact and simulation.
+17. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVE-WORLD-CAPABILITY-EXTENSION-CONTRACT.md` — Sources, API/MCP discovery, typed adapters and bounded self-improvement.
+18. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOAL-DRIVEN-ARCHITECTURE-EVOLUTION-CONTRACT.md` — governed Goal → architecture-gap → test/simulate/release/measure evolution path.
+19. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md` — protected cross-domain Planner contract.
+20. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-SIGNALS-OBSERVATIONS-PLATFORM-PLAN.md` — protected Signals/Observation/State architecture.
 
 # Core architecture in one view
 
@@ -54,14 +56,24 @@ Noindex master explanation of Continuum.
 
 The August 19 architecture work deliberately expanded the product explanation around:
 
+- a human-first explanation of information, people, tools and AI in one private operating layer;
+- Check In as the first-class LIVE route;
 - capability/model portability;
 - Knowledge + State + Authority + Policy + Audit;
-- typed policy/authority;
+- tangible Current State;
 - Signals as evidence;
+- information quality across Observation / Claim / Derived conclusion / Current State;
 - Planner as natural language → typed Change Plan;
-- future live-world inputs through Connections/Sources/APIs/MCP.
+- future live-world inputs through Connections/Sources/APIs/MCP;
+- long-running Runtime that can survive a closed page, waits and replies;
+- Goals/Missions with success, stop and constraint semantics;
+- continuity of authorized intent when direct participation is unavailable;
+- future architecture evolution when a Goal exposes a recurring structural gap;
+- future Control Center, Pause Autonomy and simulation direction.
 
-Keep capability status truthful. The page may describe architecture direction as future, but it must not imply that current production already has Runtime, broad Signals monitoring, provider delivery, MCP execution or autonomous AI.
+Keep capability status truthful. The page may describe architecture direction as future, but it must not imply that current production already has Runtime, broad Signals monitoring, provider delivery, MCP execution, Goal orchestration or autonomous AI.
+
+Authorized continuity is described as durable context plus prepared authority across time. Avoid supernatural, digital-clone or immortality framing.
 
 ## `/lab/`
 
@@ -137,6 +149,8 @@ Signals may start Automations, satisfy/invalidate Conditions, update protected S
 
 Conflicting evidence should be preserved where material. Confidence may use freshness, corroboration, source history, context and user feedback. Different consequences may require different evidence strength.
 
+Information quality should preserve the distinction between Observation, Claim, Derived conclusion and Current State, including source, freshness and conflicts.
+
 # Live world / capability extension
 
 Canonical backend contract:
@@ -152,6 +166,38 @@ Discovery is technical awareness, not permission.
 A newly advertised MCP/API tool never enters an active grant automatically.
 
 Continuum may eventually help generate adapter/schema/test proposals and low-risk policy recommendations. There is no hidden self-rewrite/self-deploy path.
+
+# Authorized continuity
+
+Focused public companion:
+
+`continuum-doc-authorized-continuity-CURRENT.md`
+
+Future conceptual flow:
+
+`PREPARED INTENT → CURRENT STATE → CONTINUITY POLICY → AUTHORIZED ACTION → WAIT / REPLY → CONTINUE → AUDIT`
+
+Continuum may eventually carry specific approved work forward on a person's behalf when that person cannot participate directly. Prepared people, information, priorities, limits and authority remain the basis for that work.
+
+The same architecture can support short-term unavailability, hospitalization, extended incapacity and long-term continuity after death according to the policy chosen beforehand.
+
+Absence never expands published authority.
+
+A future Goal may continue during unavailability when its published continuity policy allows it. Success criteria, constraints, budgets and stop conditions remain in force.
+
+# Goal-driven architecture evolution
+
+Canonical backend contract:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-GOAL-DRIVEN-ARCHITECTURE-EVOLUTION-CONTRACT.md`
+
+Future conceptual flow:
+
+`GOAL → ATTEMPT → GAP DETECTED → CHANGE PLAN → TEST → SIMULATE → AUTHORIZE → IMPLEMENT → RELEASE → MEASURE → KEEP / REVISE / ROLLBACK`
+
+This is deeper than adding a provider capability. A Goal may eventually expose a recurring limitation in the data model, domain services, Runtime, capability mapping or other architecture. Continuum can prepare the smallest justified change and pass it through normal engineering and release controls.
+
+Architecture evolution keeps versioning, migrations, tests, release authority, Audit/provenance and rollback. Permission remains governed separately.
 
 # Control Center / autonomy / simulation
 
@@ -221,6 +267,7 @@ Production still has no general:
 - server equivalent of Lab v5;
 - authoritative Planner registry/preflight/review/apply;
 - Automation Runtime / persisted waits / branching;
+- Goal/Mission orchestration;
 - provider execution;
 - acknowledgement/approval engine;
 - Control Center/simulation engine;
@@ -228,7 +275,8 @@ Production still has no general:
 - Planner / Change Plan execution;
 - Agent;
 - MCP execution;
-- autonomous capability adoption or self-deployment.
+- autonomous capability adoption;
+- architecture-evolution execution or self-deployment.
 
 Do not infer backend capability from Lab visuals, browser models, architecture contracts or product docs.
 
