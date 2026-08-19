@@ -1,4 +1,4 @@
-/* Continuum origin note. Prose first, with the existing product map carrying the visual weight. */
+/* Continuum origin and forward-looking notes. Prose first, with the existing product map carrying the visual weight. */
 
 .continuum-origin-note{
   margin:clamp(2rem,4vw,3.5rem) 0 0;
@@ -10,7 +10,8 @@
   max-width:860px;
 }
 
-.continuum-origin-kicker{
+.continuum-origin-kicker,
+.continuum-forward-kicker{
   margin:0 0 .55rem;
   font-size:max(.72rem,12px);
   font-weight:800;
@@ -39,12 +40,85 @@
   margin-top:.9rem;
 }
 
-html[data-theme="dark"] .continuum-origin-copy h2{
+.continuum-forward-note{
+  max-width:920px;
+  margin:1.35rem 0 1.65rem;
+  padding:1.05rem 1.15rem 1.1rem;
+  border:1px solid color-mix(in srgb,var(--line,#c9d5e2) 78%,transparent);
+  border-left:3px solid color-mix(in srgb,var(--accent,#2563eb) 72%,transparent);
+  border-radius:12px;
+  background:color-mix(in srgb,var(--surface,#ffffff) 94%,var(--accent,#2563eb) 6%);
+}
+
+.continuum-forward-note>strong{
+  display:block;
+  margin:.1rem 0 .45rem;
+  color:var(--ink,#102038);
+  font-size:clamp(1rem,1.35vw,1.12rem);
+  line-height:1.35;
+}
+
+.continuum-forward-note>p{
+  margin:0;
+  max-width:860px;
+  color:var(--muted-strong,#324b62);
+  font-size:clamp(.94rem,1.12vw,1rem);
+  line-height:1.68;
+}
+
+.continuum-forward-note>small{
+  display:block;
+  margin-top:.75rem;
+  color:var(--muted,#64788a);
+  font-size:max(.78rem,12px);
+  line-height:1.5;
+}
+
+.continuum-forward-flow{
+  display:flex;
+  align-items:center;
+  gap:.42rem;
+  flex-wrap:wrap;
+  margin:.85rem 0 0;
+}
+
+.continuum-forward-flow span{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:.35rem .55rem;
+  border:1px solid color-mix(in srgb,var(--line,#c9d5e2) 80%,transparent);
+  border-radius:999px;
+  background:color-mix(in srgb,var(--surface,#ffffff) 97%,var(--accent,#2563eb) 3%);
+  color:var(--ink,#102038);
+  font-size:max(.7rem,11px);
+  font-weight:800;
+  letter-spacing:.04em;
+}
+
+.continuum-forward-flow i{
+  color:var(--muted,#64788a);
+  font-style:normal;
+  font-size:.8rem;
+}
+
+.continuum-signals-note{
+  margin-top:1rem;
+}
+
+html[data-theme="dark"] .continuum-origin-copy h2,
+html[data-theme="dark"] .continuum-forward-note>strong,
+html[data-theme="dark"] .continuum-forward-flow span{
   color:var(--text,#f5f8fc);
 }
 
-html[data-theme="dark"] .continuum-origin-copy p{
+html[data-theme="dark"] .continuum-origin-copy p,
+html[data-theme="dark"] .continuum-forward-note>p{
   color:var(--muted,#b3c0cf);
+}
+
+html[data-theme="dark"] .continuum-forward-note{
+  background:color-mix(in srgb,var(--surface,#0b1119) 92%,var(--accent,#4d8fff) 8%);
 }
 
 @media(max-width:680px){
@@ -61,10 +135,38 @@ html[data-theme="dark"] .continuum-origin-copy p{
     font-size:1rem;
     line-height:1.68;
   }
+
+  .continuum-forward-note{
+    margin:1.05rem 0 1.35rem;
+    padding:1rem;
+  }
+
+  .continuum-forward-note>p{
+    font-size:.95rem;
+  }
+
+  .continuum-forward-flow{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:.35rem;
+  }
+
+  .continuum-forward-flow span{
+    width:100%;
+    justify-content:center;
+    min-height:36px;
+  }
+
+  .continuum-forward-flow i{
+    justify-self:center;
+    transform:rotate(90deg);
+    line-height:1;
+  }
 }
 
 @media print{
-  .continuum-origin-note{
+  .continuum-origin-note,
+  .continuum-forward-note{
     break-inside:avoid;
   }
 }
