@@ -1,7 +1,7 @@
 # Check In Automations Frontend — CURRENT
 
 Date: 2026-08-18
-Status: Active Continuum Lab Automations v4.4 experience with Directory v2, Audience, typed data/input routing and linear inter-step flow controls
+Status: Active Continuum Lab Automations v5 model foundation with v4.4 authoring UX, Directory v2, Audience, typed data/input routing and linear inter-step controls
 
 # Focused route
 
@@ -23,9 +23,10 @@ Strategic direction: `docs/continuum-automations-master-plan-CURRENT.md`.
 
 # Current loaded stack
 
-The route keeps the v3 behavior core and loads current product layers after it:
+The route keeps the proven v3 behavior core, loads the canonical v5 model immediately after it, then loads current product layers:
 
 - `lab-automations-experience-v3.js/.css`;
+- `lab-automations-model-v5.js`;
 - `lab-automations-route-integration.js`;
 - `lab-automations-system-surface.js/.css`;
 - `lab-automations-progressive-preview.js`;
@@ -41,31 +42,82 @@ The route keeps the v3 behavior core and loads current product layers after it:
 
 Older focused v2 files remain history.
 
-# Layer responsibilities
+# Model responsibilities
 
 ## V3 compatibility core
 
-Still owns browser-local `cmx-lab-automations-v1`, normalization, autosave/resume, five-stage editing, ordered Actions, reusable Action references, start timing/repeat fields and full-flow local simulation.
+Still owns browser-local `cmx-lab-automations-v1`, autosave/resume, the accepted five-stage editor, existing Action editing, reusable Action references, start timing/repeat fields and local full-flow simulation.
 
-V4.x does not create a second execution engine.
+It is now a compatibility/editor layer, not the long-term workflow domain model.
+
+## Canonical workflow model v5
+
+`lab-automations-model-v5.js` normalizes each Automation into `workflowV5`.
+
+The ordered model can contain:
+
+- Trigger;
+- pre-action Conditions;
+- Actions;
+- inter-step Conditions;
+- inter-step WAIT nodes;
+- Finish.
+
+Start timing and recurrence remain separate policies because they have different semantics from a true inter-step WAIT.
+
+Conceptual shape:
+
+`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+
+The model validates:
+
+- one Trigger / one Finish;
+- Trigger first / Finish last;
+- unique node IDs;
+- pre-action Rules stay before Actions;
+- inter-step controls stay between Actions;
+- a step-output Condition cannot reference a future or missing Action.
+
+Existing Draft fields remain compatibility projections while the UI migrates:
+
+- `trigger`;
+- `conditions[]`;
+- `actions[]`;
+- `flowControls[]`;
+- `timing`;
+- `repeatConfig`;
+- `outcome`.
+
+Browser marker:
+
+`data-lab-automations-model="v5"`
+
+Production does not copy this browser persistence mechanism. It migrates the accepted semantics into protected typed Draft services.
 
 ## Progressive truth layer
 
-Blank Draft remains visibly incomplete until each choice is made/confirmed. Accepted label remains **FLOW PREVIEW**.
+A blank Draft remains visibly incomplete until choices are made/confirmed. Accepted label remains **FLOW PREVIEW**.
 
-## Platform/scenarios
+# Platform and scenarios
 
-V4 command center owns Automations / Templates / Runs, search, Capability Catalog, interactive Flow Preview navigation, creation chooser, Planner preview and future Runs preview.
+The v4 command center owns Automations / Templates / Runs, search, Capability Catalog, interactive Flow Preview navigation, creation chooser, Planner preview and future Runs preview.
 
-Current scenario total: **13 editable starting patterns**.
+Current scenario total: **15 editable starting patterns**.
 
-## Directory + Audience v4.1
+The two newest scenarios deliberately demonstrate richer sequence logic:
+
+- **Urgent AI follow-up** — AI assessment → IF priority is urgent → Notify;
+- **Delayed backup escalation** — primary escalation → WAIT two hours → backup escalation.
+
+They remain ordinary editable Drafts and are normalized into the same v5 model.
+
+# Directory + Audience v4.1
 
 Communication Actions may compose Person, Organization, Group and Label selectors. Browser Lab preview resolves unique People and current email/phone readiness.
 
 Production Audience resolution remains server-owned.
 
-## Intelligence v4.2
+# Intelligence v4.2
 
 Adds:
 
@@ -77,7 +129,7 @@ Compatibility store: `cmx-lab-automation-data-bindings-v1`.
 
 No arbitrary executable expression language.
 
-## Input routing v4.3
+# Input routing v4.3
 
 Maps a typed source into a named receiving field.
 
@@ -92,47 +144,47 @@ Prototype Action intent: `inputBindings[]` with `targetField` plus typed source 
 
 Compatibility store: `cmx-lab-automation-input-bindings-v1`.
 
-Step tests now preserve field routing, for example `Body data ← Step 1 · AI summary`.
+Step tests preserve field routing, for example `Body data ← Step 1 · AI summary`.
 
 Browser marker: `data-lab-automations-inputs="v4-3"`.
 
-## Advanced Flow v4.4
+# Advanced Flow v4.4
 
-V4.4 adds an **ADVANCED FLOW · PREVIEW** section inside the Actions sequence.
+V4.4 remains the current authoring UX for inter-step logic.
 
 Between two Action cards, the user may author:
 
 - `IF / Continue if…` — a linear gate;
 - `WAIT / Wait between steps` — an inter-step delay preview.
 
-Prototype Automation intent: `flowControls[]`.
-
-Each control is anchored by `afterActionId` so it belongs to a specific point in the Action sequence.
+Compatibility projection uses `flowControls[]`, with each control anchored by `afterActionId`.
 
 Compatibility store: `cmx-lab-automation-flow-controls-v1`.
 
+V5 normalizes these controls into ordered Condition/WAIT nodes inside `workflowV5`.
+
 Browser marker: `data-lab-automations-sequence="v4-4"`.
 
-### Inter-step IF source rule
+## Inter-step IF source rule
 
-The picker exposes only Trigger values and outputs from Actions that have already occurred at that insertion point.
+The picker exposes only Trigger values and outputs from Actions already available at that insertion point.
 
-This prevents impossible flows such as a pre-action rule reading an output from a future Action.
+This prevents impossible flows such as reading output from a future Action.
 
 Current operators are equals, does not equal, contains, greater than, less than and is true.
 
-If the gate is false, the remaining linear path stops in the preview.
+If false, the remaining linear path stops in the preview.
 
 There is **no YES/NO branching graph yet**.
 
-### Inter-step WAIT rule
+## Inter-step WAIT rule
 
 This is distinct from the existing top-level Timing stage.
 
 - top-level Timing = when the first Action may start / recurrence presentation;
-- inter-step WAIT = future persisted delay between two Actions.
+- inter-step WAIT = future persisted delay between Actions.
 
-V4.4 authoring is preview-only and Review marks these controls `RUNTIME REQUIRED`.
+Review marks these controls `RUNTIME REQUIRED`.
 
 Future Runtime must persist due state. Browser timers are never authoritative execution.
 
@@ -142,11 +194,13 @@ Keep the simple rail:
 
 - WHEN — Trigger;
 - IF — pre-action Rules;
-- DO — Action sequence + optional advanced inter-step controls;
+- DO — Action sequence + optional inter-step controls;
 - WAIT — start timing / recurrence;
 - TEST — Review / Finish / simulation.
 
-The top-level IF stage is for rules whose input exists before Actions begin. Output-dependent conditions belong between Actions after their source output exists.
+The rail is a beginner navigation model over the richer v5 sequence.
+
+Top-level IF is for data available before Actions begin. Output-dependent Conditions belong after their source Action.
 
 # Command center and direct-new behavior
 
@@ -156,17 +210,13 @@ Normal New Automation offers Build manually / Scenario / Planner preview.
 
 Runs remains `RUNTIME OFF`.
 
-# Data/flow model direction
+# Flow Preview
 
-The current v4.x adapters prove semantics over the old editor. They should not be treated as the final protected implementation.
+`FLOW PREVIEW` remains the accepted label.
 
-The likely consolidated product model is an ordered typed sequence such as:
+The current summary exposes inter-step IF/WAIT counts on the DO node when they exist, so richer logic does not disappear inside the Action editor.
 
-`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
-
-Branch nodes come only after durable Runtime routing is designed.
-
-The beginner rail may remain even when the underlying model becomes a proper sequence/graph.
+Future UI consolidation can render v5 nodes more directly while preserving the compact beginner rail and mobile readability.
 
 # Review / simulation
 
@@ -181,9 +231,9 @@ Review may show:
 
 Local tests/simulation never become authoritative Runs.
 
-# Current relevant Lab stores
+# Current relevant Lab persistence
 
-- Automation Drafts: `cmx-lab-automations-v1`;
+- Automation Drafts + embedded `workflowV5`: `cmx-lab-automations-v1`;
 - progressive UI: `cmx-lab-automation-progress-v1`;
 - Directory: `cmx-lab-crm-v1`;
 - reusable Actions: `cmx-lab-actions-v1`;
@@ -192,13 +242,15 @@ Local tests/simulation never become authoritative Runs.
 - receiving-field routing compatibility: `cmx-lab-automation-input-bindings-v1`;
 - advanced flow-control compatibility: `cmx-lab-automation-flow-controls-v1`.
 
-Extra stores exist only because the older compatibility core may drop unknown fields.
+Extra stores remain migration scaffolding while older UI code still needs them.
 
 # AI authoring
 
 Future Automation Planner and broader Continuum Planner use the same typed Draft/domain services as human UI.
 
-Planner may author inter-step controls only when their backend capability/schema exists. It must not use the Lab's `flowControls[]` shape as execution authority merely because the prototype can draw it.
+The v5 ordered model is intentionally closer to that target because Planner can reason about explicit typed nodes and valid data availability at each position.
+
+Planner may author inter-step controls only when matching backend capability/schema exists. The Lab model never becomes execution authority merely because it can represent the flow.
 
 Published Automation edits become the next Draft/version proposal.
 
@@ -208,13 +260,13 @@ Cross-domain Planner contract: `CMXChat/jay-app/specs/003-server-checkin/CONTINU
 
 Preserve one primary work area, large tap targets, readable 16px inputs where needed, one-column selectors, bottom-sheet/full-screen modals, safe-area-aware actions, no nested scroll traps and no horizontal overflow.
 
-Advanced Flow controls must stay linear/readable on phone. Do not squeeze a desktop graph canvas onto mobile.
+Advanced Flow controls stay linear/readable on phone. Do not squeeze a desktop graph canvas onto mobile.
 
 # Production migration rule
 
 Migrate accepted semantics into protected React + server Drafts + typed domain services/generated client.
 
-Do not copy localStorage, DOM patching, browser Audience/data resolution as authority, compatibility target summaries, or browser flow-control timing into production.
+Do not copy localStorage, DOM patching, browser Audience/data resolution as authority, compatibility target summaries or browser flow-control timing into production.
 
 Production needs typed input/output schemas, stable references, optimistic concurrency, deterministic preflight, immutable AutomationVersions and later durable Runtime.
 
@@ -232,16 +284,20 @@ Current validated Phase 2A backend remains much smaller:
 
 The prepared Phase 2A production migration remains the immediate backend boundary.
 
+V5 is a Lab authoring-model consolidation and does not widen production backend truth.
+
 # Regression protection
 
 CI should protect:
 
 - v3 autosave/compatibility;
+- v5 ordered-model normalization and structural validation;
 - progressive blank-Draft truth;
 - v4.1 Audience;
 - v4.2 recommendations/data/tests;
 - v4.3 input routing;
 - v4.4 linear inter-step IF/WAIT preview;
+- 15 scenarios including advanced IF/WAIT examples;
 - direct-new mobile route;
 - `FLOW PREVIEW` naming;
 - self-only CSP / no production API;
