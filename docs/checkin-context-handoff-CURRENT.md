@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-repository continuation guide; Phase 1 complete, Phase 2A source validated, production Phase 2A migration pending
+Status: Current cross-repository continuation guide; Phase 1 production, Phase 2A source validated, production Phase 2A migration pending, Automations Lab v4 active
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
@@ -10,18 +10,13 @@ This is the first file a new ChatGPT/Codex/developer context should read before 
 - **Continuum** = umbrella product.
 - **Check In** = current protected application/backend program name in routes, code and existing specs.
 - **Spaces** = briefing/context experience.
-- **Afterlife: The Dead Man Switch** = continuity experience built on the shared timing, information, people, Automation, Connections, authority and future Runtime architecture.
-
-Core domains:
-
-```text
-Directory    = who
-Library      = protected information/content
-Automation   = what should happen
-Runtime      = what actually happened
-Connections  = approved external capability
-AI           = bounded intelligence using the same typed services
-```
+- **Directory** = people and organizations.
+- **Library** = protected content, files and saved knowledge.
+- **Automations** = typed definitions for what should happen.
+- **Connections** = approved external capability paths.
+- **Runtime** = future server execution layer that records what actually happened.
+- **AI** = bounded intelligence using the same typed domain services as human UI.
+- **Afterlife: The Dead Man Switch** = continuity experience built on the same timing, people, information, Automation, Connections, authority and future Runtime foundation.
 
 Core principle:
 
@@ -30,50 +25,64 @@ Core principle:
 ## Read first
 
 1. `docs/checkin-context-handoff-CURRENT.md` — this file.
-2. `docs/continuum-product-CURRENT.md` — umbrella product naming, `/doc/` role and visual/editorial rules.
-3. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
-4. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — current backend/release truth.
-5. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-VALIDATION-RESULT-2026-08-18.md` — executable validation evidence.
-6. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-PRODUCTION-DEPLOYMENT-RUNBOOK.md` — prepared production migration procedure, not yet executed.
-7. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — broad Phase 2A+ roadmap gates.
-8. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-CONTINUATION-PLAN.md` — approved definition/backend continuation decisions; where an older validation-pending paragraph conflicts, the newer HANDOFF + validation record win.
-9. `docs/checkin-automations-frontend-CURRENT.md` — focused Automations v3 UX contract.
-10. `docs/checkin-communications-ai-CURRENT.md` — Email + AI Task product contract.
-11. `docs/checkin-directory-library-CURRENT.md` and `docs/checkin-library-premium-CURRENT.md` — Directory/Library frontend contracts.
+2. `docs/continuum-product-CURRENT.md` — umbrella product naming and `/doc/` contract.
+3. `docs/continuum-automations-master-plan-CURRENT.md` — current Automation product/UX/capability direction.
+4. `docs/checkin-automations-frontend-CURRENT.md` — exact focused Automations v4 frontend truth.
+5. `docs/checkin-automations-system-surface-CURRENT.md` — current focused operating-surface contract.
+6. `docs/checkin-lab-automations-integration-CURRENT.md` — `/lab/` ↔ `/lab/automations/` integration.
+7. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
+8. `CMXChat/jay-app/specs/003-server-checkin/HANDOFF.md` — current backend/release truth.
+9. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-VALIDATION-RESULT-2026-08-18.md` — Phase 2A validation evidence.
+10. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-PRODUCTION-DEPLOYMENT-RUNBOOK.md` — prepared migration procedure, not yet executed.
+11. `CMXChat/jay-app/specs/003-server-checkin/PHASE2A-CONTINUATION-PLAN.md` — canonical backend continuation after migration.
+12. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md` — backend translation of the v4 extensible Automation direction.
+13. `CMXChat/jay-app/specs/003-server-checkin/tasks.md` — broad delivery gates.
 
-Do not reconstruct current state from old chats when these files exist.
+Do not reconstruct current state from old chats or stale READMEs when these files exist.
 
 # Production truth
 
 Production is still the reviewed Phase 1 backend.
 
-```text
-Reviewed Render application release
-= de55627926316581808337f8e9c10d26e7d64588
+Reviewed Render application release:
 
-Production Alembic revision
-= c41f9b8d2e70
+`de55627926316581808337f8e9c10d26e7d64588`
 
-Recorded Phase 1 Aiven recovery checkpoint
-= 2026-08-17 17:04:13 UTC
-```
+Production Alembic revision:
 
-Current timing:
+`c41f9b8d2e70`
 
-```text
-successful protected check in
-→ authoritative server timestamp
-→ 72 elapsed hours
-→ grace begins
-→ 24 elapsed hours
-→ triggered if grace expires
-```
+Recorded Phase 1 Aiven recovery checkpoint:
 
-UTC/PostgreSQL/server time is authoritative. The 72 + 24 values are the current operating configuration, not a permanent product limit.
+`2026-08-17 17:04:13 UTC`
 
-Production Phase 1 supports immutable policy versions, current/window policy pointers, configurable timing, pause/resume, one-time deadline override, reconciliation, immutable Incident snapshots/lifecycle, atomic Audit, DB integrity, protected short sessions, CSRF/exact Origin and sanitized public state.
+Current operating timer:
 
-Production performs no external provider/Action execution. A triggered Incident does not mean an email, SMS, Discord message, file release or AI action happened.
+`successful protected check in → 72 elapsed hours → grace begins → 24 elapsed hours → triggered if grace expires`
+
+UTC/PostgreSQL/server time is authoritative.
+
+The current 72 + 24 values are configurable operating policy, not a permanent product definition.
+
+Production Phase 1 supports:
+
+- DeadManSwitch state;
+- immutable policy versions;
+- current/current-window policy pointers;
+- configurable interval and grace;
+- pause/resume;
+- one-time deadline override;
+- reconciliation;
+- immutable Incident lifecycle/snapshots;
+- atomic Audit/integrity safeguards;
+- short protected private sessions;
+- exact Origin + CSRF protections;
+- protected Records/Actions/Activity/policy surfaces;
+- sanitized public status.
+
+Production does **not** execute configured provider Actions.
+
+A triggered Incident does not mean an email, SMS, Discord message, file release, webhook or AI action happened.
 
 Do not mutate production merely to test presentation.
 
@@ -81,322 +90,399 @@ Do not mutate production merely to test presentation.
 
 T034 through T040 are complete.
 
-Direct browser/device evidence covers:
+Accepted evidence includes:
 
-- Samsung public live status/countdown;
-- mobile and desktop locked Settings privacy/presentation;
-- authenticated read-only protected policy representation;
+- Samsung/mobile public live status/countdown;
+- locked Settings privacy/presentation;
+- authenticated protected policy read behavior;
 - manual Lock Now cleanup;
-- natural private-session expiry while the page was left alone;
-- public status/countdown remaining truthful after private access expires;
-- private Settings DOM-value scrubbing on lock/expiry;
-- corrected Settings dialog width/overflow;
-- no broad document MutationObserver.
+- natural private-session expiry;
+- public state staying truthful after private access expires;
+- private Settings value scrubbing on lock/expiry;
+- corrected mobile dialog sizing/overflow;
+- removal of the broad MutationObserver pattern that caused Samsung freezes.
 
-Do not reopen Phase 1 acceptance unless a real production defect appears.
+Do not reopen Phase 1 acceptance without a real production defect.
 
-# Phase 2A repository truth — validated
+# Phase 2A source truth — validated, not production-deployed
 
-`jay-app/main` now contains a validated first private-information + typed Automation source slice.
-
-Library migration:
-
-`f2a0c1d2e3b4`
-
-Automation migration:
-
-`a31c7d8e9f20`
+`jay-app/main` contains a validated first private-information + typed Automation source slice.
 
 Migration chain:
 
-```text
-c41f9b8d2e70
-→ f2a0c1d2e3b4
-→ a31c7d8e9f20
-```
+`c41f9b8d2e70 → f2a0c1d2e3b4 → a31c7d8e9f20`
 
-These Phase 2A revisions are **not deployed to production yet**.
+Where:
 
-## Real Library/content source
+- `f2a0c1d2e3b4` = Library/content foundation;
+- `a31c7d8e9f20` = typed Automation definitions.
 
-```text
-LibraryFolder
-ContentAsset
-→ mutable ContentDraft
-→ immutable ContentVersion
-```
+These revisions are **not applied to production yet**.
 
-Validated source includes:
+## Library/content source
 
-- logical folders + breadcrumbs;
-- stable content IDs;
-- protected create/read/list/search operations;
-- stale-write-safe Draft edits;
-- immutable saved versions;
-- Markdown/text canonical source in PostgreSQL for the first slice;
-- action-scoped content exclusion from the normal Library projection;
-- stable dependency / `Used by` counts;
-- generated typed frontend client.
+Current first slice:
 
-Binary files remain a separate future `FileAsset → FileVersion → private object storage` boundary.
+`LibraryFolder`
 
-## Real first Automation source
+`ContentAsset → mutable ContentDraft → immutable ContentVersion`
 
-```text
-Automation
-→ mutable AutomationDraft
-→ REVIEW
-→ immutable AutomationVersion
-```
+Validated behavior includes:
 
-Validated first definition subset includes:
+- protected Markdown/text ownership in PostgreSQL;
+- folder hierarchy/navigation/breadcrumbs;
+- stable IDs;
+- stale-write protection;
+- immutable saved ContentVersions;
+- protected list/search/details;
+- safe snippets;
+- dependency counts;
+- content visibility including Library vs action-scoped;
+- generated typed frontend client;
+- DB-level protection against updating immutable ContentVersion rows.
+
+Binary files remain a separate future boundary:
+
+`FileAsset → immutable FileVersion → private StorageObject`
+
+## Automation source
+
+Current first slice:
+
+`Automation → mutable AutomationDraft → REVIEW → immutable AutomationVersion`
+
+Validated backend subset is intentionally small:
 
 - Trigger: `manual`, `checkin_grace_start`, `checkin_grace_expiry`;
 - Action: definition-only `manual_review`;
-- sequence-start policy: `immediate`;
+- start policy: `immediate`;
 - Finish: simple finish boundary;
-- progressive Draft fields that may genuinely remain unset;
-- DRAFT → REVIEW → PUBLISHED → ARCHIVED lifecycle;
-- protected list/create/read/draft-update/review/publish/archive API;
-- strict schemas rejecting unknown definition fields;
-- Draft content reference by stable ContentAsset ID;
-- Publish freezes exact immutable ContentVersion ID;
-- stale content blocks publication;
-- concurrent content rows are locked while the publish snapshot is frozen;
-- published AutomationVersion has DB immutability protection;
-- later mutable Content edits cannot rewrite published Automation history;
+- Conditions disabled until real typed behavior exists;
+- Draft fields may genuinely remain unset while authoring;
+- lifecycle supports Draft / Review / Published / Archived semantics;
+- protected create/list/read/update/review/publish/archive operations;
+- strict unknown-field/type rejection;
+- content reference by stable ContentAsset ID;
+- Publish requires a matching immutable current ContentVersion;
+- Publish freezes exact ContentVersion ID;
+- later mutable content edits cannot rewrite published AutomationVersion history;
+- DB-level immutable AutomationVersion protection;
 - no provider, Runtime, scheduler or AI execution.
 
-Concrete first proof:
+Concrete accepted proof remains:
 
-```text
-continuity.md
-→ ContentAsset + mutable Draft
-→ protected persistence/read
-→ stale-write protection
-→ immutable ContentVersion v1
-→ LibraryFolder
-→ search + breadcrumbs
-→ exact version/dependency Details
-→ Automation Draft reference
-→ Review
-→ Publish freezes exact ContentVersion
-→ later Draft edits do not change published AutomationVersion
-→ no external side effect
-```
+`create continuity.md → persistent mutable Draft → stale-write rejection → immutable ContentVersion → folder/search/details → Automation Draft references ContentAsset → Review → Publish freezes exact ContentVersion → later content edits do not rewrite published history → no provider side effect`
 
-# Validation evidence
+# Immediate backend release boundary
 
-Validation PR:
+Before widening backend definition breadth, follow:
 
-`CMXChat/jay-app #14`
+`CMXChat/jay-app/specs/003-server-checkin/PHASE2A-PRODUCTION-DEPLOYMENT-RUNBOOK.md`
 
-Clean validated head:
+The migration/deployment procedure must preserve Phase 1 switch truth and includes the prepared operational hold/freeze/recovery-checkpoint/migration/invariant-verification/deploy/smoke sequence.
 
-`3f88bb62bb350f75d854140685886149dc1c01d5`
+The first real production `continuity.md` write proof is a separate post-migration acceptance step. Do not seed private content inside schema migrations.
 
-All clean-head workflow gates passed:
+# Automations Lab v4 — current frontend truth
 
-```text
-Test Backend  32184728853  success
-pre-commit    32184728874  success
-Playwright    32184728846  success
-```
-
-That includes isolated PostgreSQL migration/tests, the backend coverage gate, Ruff, formatting, mypy, `ty`, generated frontend SDK consistency and all four Playwright shards.
-
-Detailed evidence lives in:
-
-`CMXChat/jay-app/specs/003-server-checkin/PHASE2A-VALIDATION-RESULT-2026-08-18.md`
-
-# Important frontend availability rule
-
-**Do not wire production `/checkin/` to these new Library/Automation endpoints yet.**
-
-The source is validated in the repository, but production remains at Phase 1 schema `c41f9b8d2e70` and the reviewed Phase 1 backend release.
-
-Until the Phase 2A production migration + backend release is explicitly completed and verified:
-
-- Lab stays prototype/local-only;
-- `/checkin/` must not assume the new tables/routes are live;
-- do not remove truthful `backend pending` / `execution off` boundaries based only on source existing in GitHub;
-- no provider delivery or Runtime should be implied.
-
-After the backend migration is accepted, Phase 2B can migrate accepted UX into protected `/checkin/` against the real typed API.
-
-# Focused Automation Lab
-
-Active route:
+Focused route:
 
 `https://db.cmxchat.com/lab/automations/`
 
-Lab is a design proving ground, not a permanent second production application.
+The route remains Lab-only and keeps:
 
-Current human model:
+- `connect-src 'self'`;
+- no production API calls;
+- no provider execution;
+- no authoritative scheduling;
+- no real Publish;
+- no provider secrets;
+- no AI model call from Planner preview.
 
-```text
-WHEN  Trigger
-IF    Rules
-DO    Actions
-WAIT  Timing
-TEST  Review
-```
+## Architecture of the current prototype
 
-Name/description are metadata. Finish behavior lives inside Review.
+V3 remains the browser-local Draft/autosave/normalization behavior core.
 
-A brand-new Automation must remain progressive. It cannot visually claim that Trigger, Rules, Actions, Timing or Finish are configured before the user actually chooses or intentionally accepts them.
+The progressive-preview layer still protects truthful blank-Draft state.
 
-The preview grows from real state:
+V4 adds the current product/operating layer:
 
-```text
-WHEN   Choose a trigger
-IF     Not set yet
-DO     Choose an action
-WAIT   Not set yet
-FINISH Not set yet
-```
+- Automations / Templates / Runs workspace views;
+- search;
+- scalable Capability Catalog;
+- New Automation chooser for manual creation;
+- Build manually / Templates / AI Planner preview entry paths;
+- interactive Flow Preview nodes;
+- per-stage `TEST THIS STEP` local checks;
+- stronger Continuum preflight presentation;
+- mobile bottom-sheet/modal capability discovery;
+- future Runs preview marked `RUNTIME OFF`;
+- eight additional editable scenarios on top of the existing five templates.
 
-Saved/configured drafts show their actual configured flow.
+Current total starting patterns: **13**.
 
-Accepted Lab behavior later migrates into protected `/checkin/`; the Lab loader/localStorage/DOM-adapter implementation does not.
+Current v4 scenario additions:
 
-# Mobile / Samsung rules
+- Weekly planning review;
+- Grace-window heads-up;
+- Final continuity review;
+- AI note summary;
+- Six-hour reminder;
+- Daily records check;
+- No-ack follow-up;
+- AI briefing with review.
+
+The v4 scenario layer creates ordinary shared v3-compatible Drafts. It does not create a new persistence model.
+
+## Current human model
+
+The focused builder remains:
+
+- WHEN — Trigger;
+- IF — Rules;
+- DO — Actions;
+- WAIT — Timing;
+- TEST — Review.
+
+Finish stays inside Review.
+
+Name/description are metadata.
+
+## Flow Preview truth
+
+Accepted label: **FLOW PREVIEW**.
+
+Do not call it `LIVE FLOW`.
+
+Blank Draft starts as:
+
+- WHEN — Choose a trigger;
+- IF — Not set yet;
+- DO — Choose an action;
+- WAIT — Not set yet;
+- FINISH — Not set yet.
+
+Internal fallback/default values must not be shown as if the user selected them.
+
+V4 flow nodes are now interactive navigation controls into their relevant stage.
+
+## New Automation behavior
+
+A normal manual `New automation` click opens:
+
+- Build manually;
+- Start from a scenario;
+- AI Planner preview.
+
+The existing cross-route direct-new URL remains special:
+
+`/lab/automations/?new=1&from=lab`
+
+It still opens a blank Draft directly on Trigger. V4 explicitly preserves this regression contract.
+
+## Capability Catalog
+
+The v4 Lab now prototypes a scalable catalog across Trigger, Condition, Action and future workflow-control families.
+
+Current representable Lab options are labeled `LAB NOW`.
+
+Future ideas are labeled `LATER` and remain non-executable.
+
+The catalog can preview concepts such as inbound email/reply, Discord/SMS, Directory/Library updates, acknowledgement, approval, explicit WAIT, branch, reusable subflow and constrained HTTP/API without claiming those backend capabilities exist.
+
+This browser-local catalog is UX scaffolding, not production registry/authority.
+
+Canonical product plan:
+
+`docs/continuum-automations-master-plan-CURRENT.md`
+
+Canonical backend translation:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md`
+
+# Backend direction after the Phase 2A migration
+
+Do not mirror the whole Lab catalog in one migration.
+
+Widen real typed capability families incrementally.
+
+Current recommended sequence remains:
+
+1. complete deterministic auto-naming + explicit-name override behavior;
+2. add definition enabled/disabled semantics only when useful without faking Runtime;
+3. add Calendar Trigger only with timezone/DST rules and tests;
+4. add real typed Conditions only for implemented behavior;
+5. add Directory/Audience stable references;
+6. add definition/preflight-only Email with no send;
+7. add structured AI Task definition shape with no model execution;
+8. expand start-policy timing as required;
+9. add approved AuthorityGrant references where needed;
+10. add other typed Action families one at a time;
+11. keep explicit inter-step WAIT separate and later;
+12. add routes/branches/acknowledgements/approvals only with their Runtime prerequisites.
+
+# Capability architecture
+
+Long-term server direction:
+
+- trusted server-owned Capability Registry;
+- stable capability identifiers and version semantics;
+- safe metadata exposed to the protected builder;
+- contextual availability/readiness based on implementation, Connection, scope and authority;
+- users/AI compose capability instances and templates;
+- users/AI do not invent arbitrary executable types;
+- Connections unlock/satisfy typed capability prerequisites;
+- AI Planner edits the same typed Draft as human UI;
+- AI Task later executes as a bounded Runtime Action;
+- published AutomationVersions remain immutable;
+- Runtime later freezes exact execution inputs and records exact Runs.
+
+Do not permit arbitrary Python/JavaScript/shell/SQL/eval workflow logic.
+
+# Directory / Audience direction
+
+Person ↔ Organization is many-to-many through membership.
+
+Labels describe. They are not permissions.
+
+Groups are saved audiences and remain distinct from Labels/Organizations.
+
+Definitions store stable Person/Audience selector identity instead of copied mutable contact strings.
+
+Future Runtime default:
+
+`published selector → resolve current authorized membership/contact methods at Run eligibility → readiness/authority checks → freeze exact recipients/contact endpoints into Run history → provider adapter`
+
+Historical Runs stay unchanged when Directory data later changes.
+
+# Library direction
+
+Library is a protected projection, not one giant `LibraryItem` SQL table.
+
+Native content:
+
+`ContentAsset → mutable ContentDraft → immutable ContentVersion`
+
+Binary file direction:
+
+`FileAsset → immutable FileVersion → private StorageObject`
+
+Action-scoped content is excluded from general Library by default.
+
+Favorites/Recent/list-grid/sort/filter are navigation preferences, not workflow/version state.
+
+Folder placement does not grant authorization or AI authority.
+
+Search starts in PostgreSQL.
+
+# Communication direction
+
+Communication definition separates:
+
+- Connection + SenderIdentity;
+- protected Audience selectors;
+- exact immutable ContentVersion;
+- exact FileVersion attachments later;
+- Runtime frozen recipient/sender/content/attachment/idempotency snapshots.
+
+Provider adapter performs delivery. It does not decide audience or authority.
+
+Inbound replies become normalized protected Conversation/Event data later.
+
+Inbound content remains untrusted and cannot expand authority.
+
+# AI and authority
+
+AI progression remains:
+
+- Assistant;
+- AI Task definition/execution;
+- Planner;
+- bounded Agent last.
+
+AI gets typed tools over normal domain services.
+
+AI does not receive:
+
+- raw DB credentials;
+- arbitrary ORM/SQL access;
+- provider secrets;
+- unrestricted shell/code execution;
+- arbitrary webhook authority;
+- blanket Directory/Library access.
+
+Prompt text is intent, not authority.
+
+Standing Permission maps to the existing AuthorityGrant architecture.
+
+AI cannot create, widen, activate, renew or republish its own authority grant.
+
+# Runtime order
+
+Keep the architecture order:
+
+1. Phase 2A — private information + typed definitions;
+2. Phase 2B — protected human builder;
+3. Phase 3 — durable Runtime + fake provider;
+4. Phase 4 — one real low-risk provider;
+5. Phase 5 — waits, routes, retries, acknowledgements, approvals, escalation;
+6. Phase 6 — AI Task execution, then Planner;
+7. Phase 7 — bounded Agent;
+8. MCP — adapters over mature typed services, never an authority bypass.
+
+No browser-owned scheduling.
+
+# `/doc/` boundary
+
+`/doc/` explains Continuum and is under a separate clarity freeze.
+
+Do not change `/doc/` simply because the Lab UX changes.
+
+Its capability claims should change only when product/backend truth changes materially.
+
+Current conceptual distinction remains:
+
+- Automation = the plan;
+- Runtime = the execution layer.
+
+# Repository relationship
+
+`First-Repo` currently owns the static Lab proving surfaces and current frontend/product contracts.
+
+`jay-app` owns protected backend architecture, models, migrations, services, APIs, tests and the future official React/frontend path.
+
+Accepted Lab behavior migrates as semantics, not by copying localStorage or DOM patches.
+
+The protected Phase 2B builder should use:
+
+- React/TypeScript;
+- generated OpenAPI client;
+- server Drafts;
+- optimistic concurrency;
+- protected sessions + Origin/CSRF;
+- server Capability Registry/readiness metadata;
+- stable protected IDs.
+
+# Safety rules that keep winning
 
 Preserve:
 
-- one primary decision area at a time;
-- readable type without zooming;
-- 44px+ touch targets where practical;
-- vertical stacking over cramped desktop grids;
-- horizontal stage rail when needed;
-- one-column Action cards;
-- bottom-sheet mobile pickers/modals;
-- collapsible mobile flow preview;
-- document-level scrolling without nested editor scroll traps;
-- no horizontal page overflow;
-- rich black dark mode plus usable light mode;
-- no broad document-wide/subtree/characterData MutationObserver loops.
-
-# Directory, Library, communication and AI direction
-
-Directory/Audience:
-
-```text
-Person ↔ Organization
-Labels
-Groups / saved Audiences
-```
-
-Automations eventually target stable protected identities/selectors. Do not copy ordinary email/phone strings into reusable definitions as canonical identity.
-
-Email model remains:
-
-```text
-From
-To / CC / BCC
-Reply-To
-Subject
-Rich body
-Attachments
-Preview
-```
-
-Future production From uses `Connection + SenderIdentity`; recipients use Directory/Audience; content uses exact protected versions; attachments use exact FileVersions.
-
-AI Task model remains:
-
-```text
-Objective
-Instructions
-Context
-Tools
-Autonomy
-Limits
-```
-
-Prompt text is intent, never authority. AI cannot create, widen, activate, renew or publish its own permission.
-
-User-facing Standing Permission maps to bounded backend AuthorityGrant/AuthorityGrantVersion semantics, not a second authority model.
-
-Critical Afterlife continuity should use deterministic pre-approved actions for essential first steps. Bounded AI can later interpret, coordinate and follow up within explicit authority.
-
-# Continuum input / Spaces direction
-
-```text
-RECEIVE
-→ NORMALIZE
-→ REMEMBER
-→ BUILD CONTEXT
-→ REASON
-→ DECIDE
-→ ACT
-→ OBSERVE RESULT
-→ UPDATE STATE
-```
-
-Future inputs can arrive through provider APIs, verified webhooks, polling/sync, MCP resources/tools, files, humans and Conversations.
-
-Keep provenance, source IDs, observed/updated time, freshness, coverage, permissions and sync health attached. A stale or partial observation cannot be presented as complete current truth.
-
-Spaces builds protected briefings from this durable state.
-
-# `/doc/`
-
-`https://db.cmxchat.com/doc/` is the public noindex visual master explanation of Continuum.
-
-The current design/editorial version is frozen. Only factual capability/status updates, accessibility/browser fixes and real defects should change it.
-
-# Build method
-
-```text
-Lab UX
-→ backend contract
-→ PostgreSQL/domain service
-→ protected FastAPI operation
-→ accepted UI migrated into /checkin/
-→ durable Runtime
-→ one real provider
-→ deeper workflow power
-→ AI later
-```
-
-# Immediate order
-
-Phase 1 acceptance is closed and the first Phase 2A source slice is validated.
-
-Immediate backend/release work is now:
-
-1. review `f2a0c1d2e3b4` + `a31c7d8e9f20` as production migrations;
-2. use `PHASE2A-PRODUCTION-DEPLOYMENT-RUNBOOK.md` as the controlled procedure;
-3. verify Render deploy hold/Auto-Deploy state before any schema mutation because service startup runs Alembic prestart;
-4. create and verify a fresh Aiven provider-native recovery checkpoint;
-5. confirm production is still exactly at `c41f9b8d2e70`;
-6. deliberately migrate/deploy Phase 2A only after those preconditions pass;
-7. verify Phase 1 status remains unchanged and protected new Library/Automation read boundaries work;
-8. only after migration acceptance consider the first real production `continuity.md` write proof;
-9. continue remaining broad T041–T049 definition work in bounded increments;
-10. Directory/Audience stable references before real communication definitions;
-11. Phase 2B protected builder after the definition gate;
-12. durable Runtime with fake provider before any real provider;
-13. one real low-risk provider after idempotency/recovery/Audit;
-14. AI Task, Planner, Agent and MCP later.
-
-Broad T041–T049 task IDs remain open where their full acceptance criteria extend beyond the validated first slice. Do not mark the whole Phase 2A exit gate complete yet.
-
-# Security / reliability
-
-Preserve:
-
-- Secure HttpOnly protected sessions + CSRF/exact Origin;
-- server-authoritative timing/state;
+- Secure HttpOnly protected session;
+- exact Origin + CSRF for protected mutations;
+- server-side ownership/scope checks;
 - stable protected IDs;
-- immutable published/version history;
-- no provider secrets in browser storage/content/prompts/Audit;
-- no arbitrary Python/JavaScript/shell/SQL/eval;
-- no unrestricted arbitrary webhook execution;
-- idempotency before external side effects;
-- server-enforced approvals/authority;
-- prompt text never expands authority;
-- truthful capability/status language.
+- immutable history;
+- stale-write rejection;
+- no private/provider secrets in browser storage, definitions, content, prompts or Audit;
+- no arbitrary executable workflow code;
+- no unrestricted webhook/API escape hatch;
+- no prompt-granted authority;
+- no broad document-wide MutationObserver loops;
+- no provider side effect from definition operations;
+- no claim that a pretty Lab UI means Runtime exists.
 
-An SMTP credential was exposed earlier in diagnostic output. Never reproduce it. Before overall project closeout, rotate it if that has not already been completed.
+# Next backend action
+
+The immediate backend action remains the prepared Phase 2A production migration/deployment sequence.
+
+Do not start Runtime/provider/AI execution in parallel merely because Automations v4 now shows the future operating model.
