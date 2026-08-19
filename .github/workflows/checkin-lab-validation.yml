@@ -66,7 +66,7 @@ jobs:
           const contract = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260819-directory-planner-v2');
+          assert.equal(BUILD, '20260819-directory-planner-v2qa1');
 
           const counts = {
             document_count: 6,
@@ -83,7 +83,7 @@ jobs:
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-directory-planner-v2'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-directory-planner-v2qa1'));
           assert(!shell.includes('document.write(html)'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
@@ -98,7 +98,7 @@ jobs:
             '/assets/lab/lab-directory-v2.css',
             '/assets/lab/lab-directory-v2-polish.css',
             '/assets/lab/lab-directory-planner-preview.js',
-            '/assets/lab/lab-directory-planner-preview.css',
+            '/assets/lab/lab-directory-planner-preview.css?v=20260819-directory-planner-v2qa1',
             '/assets/lab/lab-inventory.js',
             '/assets/lab/lab-actions.js',
             '/assets/lab/lab-timeline-live.js',
@@ -156,6 +156,7 @@ jobs:
                       sys.exit(f'{path} forbidden pattern: {forbidden}')
 
           planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
+          planner_css = Path('assets/lab/lab-directory-planner-preview.css').read_text(encoding='utf-8')
           for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket']:
               if forbidden in planner:
                   sys.exit(f'Directory Planner must remain local/no-network: {forbidden}')
@@ -172,7 +173,15 @@ jobs:
           ]:
               if term not in planner: sys.exit(f'Directory Planner typed-v2 missing contract: {term}')
 
-          print('Continuum Lab snapshot, production isolation, Directory v2 polish and typed Planner v2 passed.')
+          for term in [
+              '.lab-directory-v2 .dir2-primary{position:static',
+              '.dir2-ai-examples button{min-height:44px',
+              '.dir2-ai-ops strong{font-size:11px',
+              '.dir2-ai-modal>footer button{min-height:46px'
+          ]:
+              if term not in planner_css: sys.exit(f'Directory Planner mobile QA missing contract: {term}')
+
+          print('Continuum Lab snapshot, production isolation, Directory v2 polish and typed Planner v2 mobile QA passed.')
           PY
 
       - name: Browser acceptance smoke desktop and mobile
@@ -219,4 +228,4 @@ jobs:
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
 
-          echo 'Continuum Lab desktop/mobile smoke passed with Directory typed Planner v2 and existing operating surfaces.'
+          echo 'Continuum Lab desktop/mobile smoke passed with Directory typed Planner v2 mobile QA and existing operating surfaces.'
