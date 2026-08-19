@@ -12,6 +12,7 @@ on:
       - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'assets/lab/lab-automations-planner-v5.css'
+      - 'assets/lab/lab-automations-planner-edit-v5.css'
       - 'assets/lab/lab-automations-v5-mobile-qa.css'
       - '.github/workflows/automations-v5-planner-validation.yml'
   pull_request:
@@ -25,6 +26,7 @@ on:
       - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'assets/lab/lab-automations-planner-v5.css'
+      - 'assets/lab/lab-automations-planner-edit-v5.css'
       - 'assets/lab/lab-automations-v5-mobile-qa.css'
       - '.github/workflows/automations-v5-planner-validation.yml'
 
@@ -51,6 +53,7 @@ jobs:
           import re
 
           source = Path('assets/lab/lab-automations-planner-v5.js').read_text(encoding='utf-8')
+          edit_css = Path('assets/lab/lab-automations-planner-edit-v5.css').read_text(encoding='utf-8')
           contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
           preflight = Path('assets/lab/lab-continuum-planner-preflight-v1.js').read_text(encoding='utf-8')
           preflight_css = Path('assets/lab/lab-continuum-planner-preflight-v1.css').read_text(encoding='utf-8')
@@ -68,10 +71,16 @@ jobs:
           for term in [
               'TYPED PLAN PREVIEW · LOCAL', 'NO AI CALL', 'CHANGE PLAN', 'Use this draft',
               'local-deterministic-v5', 'automation.create_draft', 'automation.add_condition', 'automation.add_wait',
-              'temp:automation:draft', 'temp:step:'
+              'temp:automation:draft', 'temp:step:', 'EDIT PLAN BEFORE DRAFT',
+              'data-v5-planner-remove-action', 'data-v5-planner-remove-control',
+              'refreshEditedPlan', 'pruneFlowControls', 'editedBeforeDraft', 'editCount'
           ]:
               if term not in source:
                   raise SystemExit(f'Automation Planner missing: {term}')
+
+          for term in ['.v5-planner-edit-note', '.v5-planner-row-remove', 'min-height:44px', '@media (max-width:760px)']:
+              if term not in edit_css:
+                  raise SystemExit(f'Planner edit CSS missing: {term}')
 
           for term in [
               'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
@@ -103,6 +112,8 @@ jobs:
 
           required_assets = [
               'lab-continuum-planner-contract-v1.js?v=20260819-v1preflight1',
+              'lab-automations-planner-v5.js?v=20260819-v5edit1',
+              'lab-automations-planner-edit-v5.css?v=20260819-v5edit1',
               'lab-continuum-planner-preflight-v1.css?v=20260819-v1r2',
               'lab-continuum-planner-review-v1.css?v=20260819-v1preflight1',
               'lab-continuum-planner-preflight-v1.js?v=20260819-v1r2',
@@ -124,7 +135,7 @@ jobs:
           if html.index('lab-continuum-planner-review-v1.css') > html.index('lab-automations-v5-mobile-qa.css'):
               raise SystemExit('final mobile QA must remain after shared Planner CSS')
 
-          print('Automations v5 deterministic Planner, dependencies, typed preflight/change links and Change Review contracts passed.')
+          print('Automations v5 editable Planner, dependencies, typed preflight/change links and Change Review contracts passed.')
           PY
 
       - name: Focused route asset smoke
@@ -146,4 +157,4 @@ jobs:
           grep -q 'data-lab-planner-review="v1"' /tmp/continuum-v5-planner.html
           grep -q 'New automation' /tmp/continuum-v5-planner.html
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-planner.html
-          echo 'Focused Automations route loaded with typed Planner preflight/review assets.'
+          echo 'Focused Automations route loaded with editable typed Planner preflight/review assets.'
