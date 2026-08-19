@@ -57,12 +57,14 @@ jobs:
           grep -q '.v5-planner-sequence' assets/lab/lab-automations-planner-v5.css
           grep -q '.v5-planner-ops' assets/lab/lab-automations-planner-v5.css
           grep -q '@media (max-width:760px)' assets/lab/lab-automations-planner-v5.css
+          grep -q '.v4-modal>header>button{width:44px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v4-planner-examples button{min-height:44px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v5-planner-result>footer>button{min-height:46px' assets/lab/lab-automations-v5-mobile-qa.css
 
           grep -q 'lab-continuum-planner-contract-v1.js?v=20260819-v1' lab/automations/index.html
           grep -q 'lab-automations-planner-v5.js' lab/automations/index.html
           grep -q 'lab-automations-planner-v5.css' lab/automations/index.html
+          grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2' lab/automations/index.html
 
           python - <<'PY'
           from pathlib import Path
@@ -78,7 +80,6 @@ jobs:
               if term in source + contract:
                   raise SystemExit(f'forbidden Planner boundary pattern: {term}')
 
-          # Every typed operation emitted by the deterministic Automation Planner must be registered.
           planner_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', source))
           registry_ops = set(re.findall(r'"((?:directory|library|automation)\.[a-z0-9_]+)":\s*Object\.freeze', contract))
           unknown = sorted(planner_ops - registry_ops)
@@ -91,7 +92,7 @@ jobs:
           if html.index('lab-continuum-planner-contract-v1.js') > html.index('lab-automations-planner-v5.js'):
               raise SystemExit('shared Planner contract must load before Automations Planner')
 
-          print('Automations v5 deterministic Planner and shared operation contract passed.')
+          print('Automations v5 deterministic Planner, shared operation contract and mobile tap QA passed.')
           PY
 
       - name: Focused route asset smoke
