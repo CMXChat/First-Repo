@@ -10,11 +10,13 @@ const source = fs.readFileSync('assets/lab/lab-automations-operations-v7.js', 'u
 const polish = fs.readFileSync('assets/lab/lab-automations-operations-v7-polish.js', 'utf8');
 const css = fs.readFileSync('assets/lab/lab-automations-operations-v7.css', 'utf8');
 const futureCss = fs.readFileSync('assets/lab/lab-automations-operations-v7-future.css', 'utf8');
+const polishCss = fs.readFileSync('assets/lab/lab-automations-operations-v7-polish.css', 'utf8');
 
 assert.match(index, /lab-automations-operations-v7\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7-future\.css\?v=20260819-v7ops1/);
+assert.match(index, /lab-automations-operations-v7-polish\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7\.js\?v=20260819-v7ops2/);
-assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops1/);
+assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops2/);
 assert.ok(index.indexOf('lab-automations-operations-v7.js') > index.indexOf('lab-automations-action-stack-v6.js'), 'v7 must load after accepted authoring layers');
 assert.ok(index.indexOf('lab-automations-operations-v7-polish.js') > index.indexOf('lab-automations-operations-v7.js'), 'v7 chrome polish must load last');
 
@@ -52,6 +54,9 @@ assert.match(polish, /LAB · EXECUTION OFF/);
 assert.match(polish, /PLANNER · LOCAL PREVIEW/);
 assert.match(polish, /Create a local typed proposal before opening the Draft/);
 assert.match(polish, /No model call or provider action occurs/);
+assert.match(polish, /dataset\.v7OpenPlanner/);
+assert.match(polish, /function openPlanner\(\)/);
+assert.match(polish, /data-v4-start='planner'/);
 assert.match(polish, /dataset\.labAutomationsOperationsPolish = "v7"/);
 
 for (const checkedSource of [source, polish]) {
@@ -79,6 +84,9 @@ assert.match(css, /@media\(max-width:420px\)/);
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 assert.match(futureCss, /\.v7-future-capability/);
 assert.match(futureCss, /@media\(max-width:680px\)/);
+assert.match(polishCss, /\.v7-planner-button/);
+assert.match(polishCss, /@media\(max-width:760px\)/);
+assert.match(polishCss, /@media\(max-width:420px\)/);
 
 const memory = new Map();
 global.localStorage = {
@@ -91,7 +99,8 @@ global.document = {
   addEventListener() {},
   dispatchEvent() {},
   querySelector() { return null; },
-  querySelectorAll() { return []; }
+  querySelectorAll() { return []; },
+  createElement() { return { dataset: {}, setAttribute() {}, append() {} }; }
 };
 global.window = {
   addEventListener() {},
@@ -145,4 +154,4 @@ const runtimeLater = ops.assess({
 assert.equal(runtimeLater.runtimeLater, true);
 assert.equal(runtimeLater.waits, 1);
 
-console.log('Continuum Automations operations v7 readiness, management, capability, chrome and responsive contracts passed.');
+console.log('Continuum Automations operations v7 readiness, management, capability, Planner, chrome and responsive contracts passed.');
