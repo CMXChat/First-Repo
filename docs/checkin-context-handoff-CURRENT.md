@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v5 model foundation + v4.4 authoring UX + Directory v2 active in Lab
+Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v5 model + ordered Flow Preview + v4.4 authoring UX + Directory v2 active in Lab
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
@@ -98,7 +98,7 @@ Do not mix new Directory schema, Runtime, providers or AI execution into the rev
 
 # `/lab/automations/` current truth
 
-The focused route now has a **v5 canonical Lab workflow model foundation** underneath the current v4.4 authoring experience.
+The focused route now has a **v5 canonical Lab workflow model and ordered Flow Preview** underneath the current v4.4 Actions-stage authoring experience.
 
 It remains isolated:
 
@@ -115,25 +115,26 @@ Current stack:
 - v3 Draft/localStorage/autosave compatibility editor;
 - **v5 canonical workflow normalization/validation model** in `lab-automations-model-v5.js`;
 - progressive blank-Draft truth;
-- v4 command center + Capability Catalog + interactive Flow Preview + Planner/Runs previews;
+- v4 command center + Capability Catalog + compact interactive Flow Preview + Planner/Runs previews;
 - **15 editable scenarios**;
 - Directory readiness;
 - Audience v4.1 Person/Organization/Group/Label composition;
 - Intelligence v4.2 recommendations + typed `Use data` references + richer local step traces;
 - Input Routing v4.3 typed source → named Action input;
-- Advanced Flow v4.4 linear inter-step IF / WAIT authoring preview.
+- Advanced Flow v4.4 linear inter-step IF / WAIT authoring UX;
+- **ordered v5 Flow Preview** in `lab-automations-flow-v5.js/.css`.
 
 Beginner rail remains:
 
 `WHEN → IF → DO → WAIT → TEST`
 
-Finish stays inside Review. Accepted flow label remains **FLOW PREVIEW**.
+Finish stays inside Review. Accepted product label remains **FLOW PREVIEW**.
 
 `/lab/automations/?new=1&from=lab` still opens Trigger directly.
 
 # Canonical Lab workflow model v5
 
-Each Automation can now carry `workflowV5`, a normalized ordered definition.
+Each Automation can carry `workflowV5`, a normalized ordered definition.
 
 Current node model:
 
@@ -141,7 +142,7 @@ Current node model:
 
 Start timing and recurrence remain separate policies because they are not the same thing as an inter-step WAIT.
 
-V5 currently normalizes and validates the accepted browser Draft shape while projecting compatibility fields back for existing UI code.
+V5 normalizes and validates the accepted browser Draft shape while projecting compatibility fields back for older UI code.
 
 Compatibility fields include:
 
@@ -168,6 +169,55 @@ Browser marker:
 
 This is **Lab model truth only**. It is not production schema or Runtime truth.
 
+# V5 owns inter-step mutation
+
+The v4.4 Actions UI remains the visible editor for inter-step IF/WAIT, but the mutation path now prefers the canonical v5 API:
+
+- read: `CMXAutomationModelV5.getFlowControls()`;
+- write: `CMXAutomationModelV5.setFlowControls()`.
+
+`flowControls[]`, `afterActionId` and `cmx-lab-automation-flow-controls-v1` remain compatibility projection/fallback for the older editor.
+
+Browser marker when v5 owns the path:
+
+`data-lab-automations-sequence-model="v5"`
+
+This prevents the compatibility flow-control store from becoming a second permanent workflow engine.
+
+# Ordered v5 Flow Preview
+
+The compact Flow Preview remains the beginner stage navigator and preserves progressive pending-state truth.
+
+The new **ORDERED SEQUENCE** view renders the canonical v5 flow underneath it.
+
+For a complex Draft it can visibly show:
+
+`WHEN Manual start`
+
+`DO AI task`
+
+`IF Step 1 · AI priority equals urgent`
+
+`WAIT 2h`
+
+`DO Notify`
+
+`FINISH End workflow`
+
+Behavior:
+
+- complex flows expand the ordered sequence by default;
+- simple flows remain collapsed by default;
+- Show/Hide is presentation-only;
+- ordered rows navigate back to the correct builder stage;
+- start timing/recurrence appears separately as a `START` policy row;
+- blank/new Drafts inherit the progressive DOM truth, so compatibility defaults cannot leak as user intent;
+- mobile renders the same sequence vertically with larger tap targets.
+
+Browser marker:
+
+`data-lab-automations-flow="v5"`
+
 # IF and WAIT semantics
 
 The top-level IF stage happens before the DO sequence, so it may only use data available before Actions run.
@@ -177,8 +227,6 @@ Output-dependent logic belongs after the Action that produced the output.
 Example:
 
 `AI task → IF AI priority equals urgent → Notify`
-
-V4.4 authors this through a linear `Continue if…` gate between Actions. V5 normalizes that gate into sequence order.
 
 Current IF operators: equals, does not equal, contains, greater than, less than, is true.
 
@@ -209,9 +257,7 @@ V4.2 uses typed source references rather than executable expressions. Compatibil
 
 V4.3 maps those sources into named inputs such as Email subject/body, AI Task context/focus, Notify message data and Manual Review context. Compatibility store: `cmx-lab-automation-input-bindings-v1`.
 
-Step tests can preserve the receiving-field route, for example `Body data ← Step 1 · AI summary`.
-
-Advanced-flow compatibility store remains `cmx-lab-automation-flow-controls-v1`, while `workflowV5` is embedded in the Automation Draft store.
+Step tests preserve the receiving-field route, for example `Body data ← Step 1 · AI summary`.
 
 Production needs canonical server Audience resolution and typed output/input compatibility validation.
 
@@ -270,7 +316,21 @@ Keep the backend canonical phase order. Broadly:
 8. bounded Agent later;
 9. MCP as adapter, never authority bypass.
 
-Lab v5 modeling does not move branching/WAIT execution forward in that order.
+Lab v5 modeling/presentation does not move branching/WAIT execution forward in that order.
+
+# Validation
+
+Dedicated `automations-v5-model-validation.yml` protects:
+
+- v5 model syntax and ordered normalization;
+- future-step reference rejection;
+- v5-owned flow-control mutation and compatibility projection;
+- 15 scenarios and the two advanced examples;
+- ordered Flow Preview source/style contracts;
+- blank-Draft `Choose a trigger` / `Choose an action` truth;
+- mobile/direct-new markers.
+
+The GitHub connector available in this context does not expose push-triggered workflow-run results, and this environment cannot resolve GitHub/db.cmxchat.com over its container network. Therefore source/workflow contracts are committed, but do **not** claim an independently observed green push run or live Pages pickup until a later context can verify it.
 
 # Non-negotiable rules
 
