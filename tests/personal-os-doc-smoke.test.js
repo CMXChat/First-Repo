@@ -18,8 +18,10 @@ const requiredFiles = [
   'assets/continuum-doc-human.css',
   'assets/continuum-doc-origin.css',
   'assets/continuum-doc-capability.css',
+  'assets/continuum-doc-i18n.css',
   'assets/personal-os-doc.js',
   'assets/continuum-doc-origin.js',
+  'assets/continuum-doc-i18n.js',
   'assets/cmx-routes.json'
 ];
 
@@ -30,10 +32,12 @@ for (const relative of requiredFiles) {
 const html = fs.readFileSync(path.join(root, 'doc/index.html'), 'utf8');
 const baseJs = fs.readFileSync(path.join(root, 'assets/personal-os-doc.js'), 'utf8');
 const finalJs = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.js'), 'utf8');
+const i18nJs = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.js'), 'utf8');
 const baseCss = fs.readFileSync(path.join(root, 'assets/personal-os-doc.css'), 'utf8');
 const finalCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-final.css'), 'utf8');
 const qaCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-qa.css'), 'utf8');
 const originCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.css'), 'utf8');
+const i18nCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.css'), 'utf8');
 const routes = JSON.parse(fs.readFileSync(path.join(root, 'assets/cmx-routes.json'), 'utf8'));
 
 // Public document boundary stays strict and direct-link only.
@@ -66,8 +70,10 @@ assert.match(html, /continuum-route-link continuum-route-live" href="\/checkin\/
 assert.match(html, /Protected proof of life, timing and activity/);
 assert.match(html, /href="\/spaces\/"/);
 assert.match(html, /href="\/lab\/automations\/"/);
-assert.match(html, /continuum-doc-origin\.css\?v=20260819-2/);
-assert.match(html, /continuum-doc-origin\.js\?v=20260819-2/);
+assert.match(html, /continuum-doc-origin\.css\?v=20260819-3/);
+assert.match(html, /continuum-doc-origin\.js\?v=20260819-3/);
+assert.match(html, /continuum-doc-i18n\.css\?v=20260819-1/);
+assert.match(html, /continuum-doc-i18n\.js\?v=20260819-1/);
 
 // Stable navigation and teaching anchors remain unchanged.
 for (const id of ['overview', 'difference', 'spaces', 'action', 'afterlife', 'engineering', 'build', 'status']) {
@@ -122,7 +128,16 @@ assert.match(finalJs, /Start with what is live\. Explore what Continuum is becom
 assert.doesNotMatch(finalJs, /MutationObserver/);
 assert.doesNotMatch(finalJs, /setInterval\(/);
 
-// CSS layers preserve light/dark, responsive, route-card and print behavior.
+// The accessibility-only translation layer prepares direction without adding runtime/network behavior.
+assert.match(i18nJs, /setAttribute\('dir', 'auto'\)/);
+assert.match(i18nJs, /dataset\.continuumI18n = 'rtl-ready'/);
+assert.doesNotMatch(i18nJs, /MutationObserver|setInterval\(|fetch\(|XMLHttpRequest|WebSocket\(/);
+assert.match(i18nCss, /html\[lang\|="he"\]/);
+assert.match(i18nCss, /body:dir\(rtl\)/);
+assert.match(i18nCss, /unicode-bidi:isolate/);
+assert.match(i18nCss, /\.mobile-contents-drawer/);
+
+// CSS layers preserve light/dark, responsive, route-card, RTL and print behavior.
 assert.match(baseCss, /html\[data-theme="light"\]/);
 assert.match(finalCss, /\.hero-network/);
 assert.match(qaCss, /@media\(max-width:680px\)/);
@@ -134,6 +149,7 @@ assert.match(originCss, /\.continuum-route-link/);
 assert.match(originCss, /\.continuum-checkin-context-link/);
 assert.match(originCss, /@media\(max-width:420px\)/);
 assert.match(originCss, /@media print/);
+assert.match(i18nCss, /@media\(max-width:680px\)/);
 
 // Current public copy avoids the recurring artificial-writing patterns.
 for (const source of [html, baseJs, finalJs]) {
@@ -153,4 +169,4 @@ assert.equal(docRoute.name, 'Continuum Product & Architecture Overview');
 const checkInRoute = routes.routes.find((route) => route.path === '/checkin/');
 assert.ok(checkInRoute, '/checkin/ must remain registered as the LIVE product destination linked from /doc/.');
 
-console.log('Continuum base document, Check In routing, architecture, safety and responsive-layer smoke test passed.');
+console.log('Continuum base document, Check In routing, architecture, RTL accessibility, safety and responsive-layer smoke test passed.');
