@@ -69,9 +69,9 @@ jobs:
           const status = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260819-planner-signals-v1');
+          assert.equal(BUILD, '20260819-planner-signals-v2');
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-signals-v1'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-signals-v2'));
           assert(!shell.includes('document.write(html)'));
 
           const counts = {
@@ -99,7 +99,7 @@ jobs:
             '/assets/lab/lab-directory-v2.css',
             '/assets/lab/lab-directory-v2-polish.css',
             '/assets/lab/lab-continuum-planner-contract-v1.js?v=20260819-v1signals1',
-            '/assets/lab/lab-directory-planner-preview.js?v=20260819-directory-planner-v2deps1',
+            '/assets/lab/lab-directory-planner-preview.js?v=20260819-directory-planner-signals1',
             '/assets/lab/lab-continuum-planner-preflight-v1.js?v=20260819-v1r2',
             '/assets/lab/lab-continuum-planner-preflight-v1.css?v=20260819-v1r2',
             '/assets/lab/lab-continuum-planner-review-v1.js?v=20260819-v1preflight1',
@@ -161,6 +161,13 @@ jobs:
                   raise SystemExit(f'shared Planner contract missing: {term}')
 
           for term in [
+              'Online signals', 'signals.create_watch', 'signals.attach_source', 'signals.set_interpretation',
+              'automation.reference_signal', 'NO ONLINE OBSERVATION'
+          ]:
+              if term not in planner:
+                  raise SystemExit(f'Directory Planner Signals example missing: {term}')
+
+          for term in [
               'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
               'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset',
               'continuum-preflight-operation-link', 'AFFECTS CHANGE', 'labPlannerPreflight = "v1"'
@@ -180,7 +187,7 @@ jobs:
           if 'cmx:lab-planner-preflight-updated' not in review:
               raise SystemExit('Change Review does not consume preflight updates')
 
-          print('Continuum Lab isolation, Signals-aware Planner operation/dependency vocabulary and typed preflight/change-link contracts passed.')
+          print('Continuum Lab isolation, visible Online signals Planner proof, Signals-aware operation vocabulary and typed preflight contracts passed.')
           PY
 
       - name: Browser acceptance smoke desktop and mobile
@@ -222,4 +229,4 @@ jobs:
           grep -q 'mobile-nav' /tmp/lab-mobile.html
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
 
-          echo 'Continuum Lab desktop/mobile smoke passed with Signals-aware shared typed Planner preflight and review assets.'
+          echo 'Continuum Lab desktop/mobile smoke passed with visible Signals-aware shared typed Planner assets.'
