@@ -34,6 +34,7 @@ jobs:
             assets/lab/lab-directory-v2.js \
             assets/lab/lab-continuum-planner-contract-v1.js \
             assets/lab/lab-directory-planner-preview.js \
+            assets/lab/lab-continuum-planner-review-v1.js \
             assets/lab/lab-inventory.js \
             assets/lab/lab-actions.js \
             assets/lab/lab-timeline-live.js \
@@ -67,7 +68,7 @@ jobs:
           const contract = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260819-planner-contract-v1qa2');
+          assert.equal(BUILD, '20260819-planner-review-v1');
 
           const counts = {
             document_count: 6,
@@ -84,7 +85,7 @@ jobs:
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-contract-v1qa2'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-review-v1'));
           assert(!shell.includes('document.write(html)'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
@@ -98,9 +99,11 @@ jobs:
             '/assets/lab/lab-directory-v2.js',
             '/assets/lab/lab-directory-v2.css',
             '/assets/lab/lab-directory-v2-polish.css',
-            '/assets/lab/lab-continuum-planner-contract-v1.js?v=20260819-v1',
+            '/assets/lab/lab-continuum-planner-contract-v1.js?v=20260819-v1review1',
             '/assets/lab/lab-directory-planner-preview.js',
             '/assets/lab/lab-directory-planner-preview.css?v=20260819-directory-planner-v2qa2',
+            '/assets/lab/lab-continuum-planner-review-v1.js?v=20260819-v1',
+            '/assets/lab/lab-continuum-planner-review-v1.css?v=20260819-v1',
             '/assets/lab/lab-inventory.js',
             '/assets/lab/lab-actions.js',
             '/assets/lab/lab-timeline-live.js',
@@ -121,8 +124,10 @@ jobs:
           assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
           assert(rendered.indexOf('/assets/lab/lab-directory-v2.js') < rendered.indexOf('/assets/lab/lab-continuum-planner-contract-v1.js'));
           assert(rendered.indexOf('/assets/lab/lab-continuum-planner-contract-v1.js') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.js'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-planner-preview.js') < rendered.indexOf('/assets/lab/lab-continuum-planner-review-v1.js'));
           assert(rendered.indexOf('/assets/lab/lab-directory-v2.css') < rendered.indexOf('/assets/lab/lab-directory-v2-polish.css'));
           assert(rendered.indexOf('/assets/lab/lab-directory-v2-polish.css') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.css'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-planner-preview.css') < rendered.indexOf('/assets/lab/lab-continuum-planner-review-v1.css'));
           assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
           assert(!rendered.includes('/assets/checkin/'));
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
@@ -144,6 +149,7 @@ jobs:
               'assets/lab/lab-directory-v2.js',
               'assets/lab/lab-continuum-planner-contract-v1.js',
               'assets/lab/lab-directory-planner-preview.js',
+              'assets/lab/lab-continuum-planner-review-v1.js',
               'assets/lab/lab-command.js',
               'assets/lab/lab-product-polish.js',
               'assets/lab/lab-plan.js',
@@ -154,7 +160,7 @@ jobs:
           combined = '\n'.join(Path(path).read_text(encoding='utf-8') for path in active)
           if 'api.cmxchat.com' in combined:
               sys.exit('active Lab layer references production API')
-          for path in ['assets/lab/lab-directory-v2.js', 'assets/lab/lab-continuum-planner-contract-v1.js', 'assets/lab/lab-directory-planner-preview.js']:
+          for path in ['assets/lab/lab-directory-v2.js', 'assets/lab/lab-continuum-planner-contract-v1.js', 'assets/lab/lab-directory-planner-preview.js', 'assets/lab/lab-continuum-planner-review-v1.js']:
               source = Path(path).read_text(encoding='utf-8')
               for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
                   if forbidden in source:
@@ -163,12 +169,14 @@ jobs:
           planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
           planner_css = Path('assets/lab/lab-directory-planner-preview.css').read_text(encoding='utf-8')
           planner_contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
+          planner_review = Path('assets/lab/lab-continuum-planner-review-v1.js').read_text(encoding='utf-8')
+          planner_review_css = Path('assets/lab/lab-continuum-planner-review-v1.css').read_text(encoding='utf-8')
           for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket']:
-              if forbidden in planner + planner_contract:
+              if forbidden in planner + planner_contract + planner_review:
                   sys.exit(f'Planner layers must remain local/no-network: {forbidden}')
 
           for term in [
-              'CMXContinuumPlannerContractV1', 'validateOperations',
+              'CMXContinuumPlannerContractV1', 'validateOperations', 'effectLabel', 'reviewLabel',
               'directory.upsert_group', 'library.create_folder', 'automation.create_draft',
               'automation.add_wait', 'data.labPlannerContract'
           ]:
@@ -177,6 +185,13 @@ jobs:
                       sys.exit('shared Planner contract missing browser marker')
               elif term not in planner_contract:
                   sys.exit(f'shared Planner contract missing operation/contract: {term}')
+
+          for term in ['CHANGE REVIEW', 'data-plan-meta="effect"', 'data-plan-meta="review"', 'labPlannerReview = "v1"']:
+              if term not in planner_review:
+                  sys.exit(f'shared Planner review missing contract: {term}')
+          for term in ['.continuum-plan-review-summary', '.continuum-plan-op-meta', '@media (max-width:760px)']:
+              if term not in planner_review_css:
+                  sys.exit(f'shared Planner review styling missing contract: {term}')
 
           directory_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', planner))
           registry_ops = set(re.findall(r'"((?:directory|library|automation)\.[a-z0-9_]+)":\s*Object\.freeze', planner_contract))
@@ -205,7 +220,7 @@ jobs:
           ]:
               if term not in planner_css: sys.exit(f'Directory Planner mobile QA missing contract: {term}')
 
-          print('Continuum Lab snapshot, shared Planner operation contract, Directory v2 polish and typed Planner v2 mobile QA passed.')
+          print('Continuum Lab snapshot, shared Planner operation/review contracts, Directory v2 polish and typed Planner v2 mobile QA passed.')
           PY
 
       - name: Browser acceptance smoke desktop and mobile
@@ -235,6 +250,7 @@ jobs:
           grep -q 'data-lab-automation-builder="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-desktop.html
           grep -q 'data-lab-planner-contract="v1"' /tmp/lab-desktop.html
+          grep -q 'data-lab-planner-review="v1"' /tmp/lab-desktop.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/lab-desktop.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-desktop.html
           grep -q 'AI setup' /tmp/lab-desktop.html
@@ -247,6 +263,7 @@ jobs:
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-mobile.html
           grep -q 'data-lab-planner-contract="v1"' /tmp/lab-mobile.html
+          grep -q 'data-lab-planner-review="v1"' /tmp/lab-mobile.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/lab-mobile.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-mobile.html
           grep -q 'AI setup' /tmp/lab-mobile.html
@@ -254,4 +271,4 @@ jobs:
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
 
-          echo 'Continuum Lab desktop/mobile smoke passed with shared Planner contract, Directory typed Planner v2 mobile QA and existing operating surfaces.'
+          echo 'Continuum Lab desktop/mobile smoke passed with shared Planner operation/review contracts, Directory typed Planner v2 mobile QA and existing operating surfaces.'
