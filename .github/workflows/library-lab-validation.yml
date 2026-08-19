@@ -6,18 +6,26 @@ on:
       - 'lab/library/**'
       - 'assets/lab/library-*.js'
       - 'assets/lab/library-*.css'
+      - 'assets/lab/continuum-library-shell-convergence-v1.js'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/directory-theme-init.js'
       - 'docs/continuum-library-lab-CURRENT.md'
       - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-library-standalone-v1.test.js'
+      - 'tests/continuum-library-shell-convergence-v1.test.js'
       - '.github/workflows/library-lab-validation.yml'
   pull_request:
     paths:
       - 'lab/library/**'
       - 'assets/lab/library-*.js'
       - 'assets/lab/library-*.css'
+      - 'assets/lab/continuum-library-shell-convergence-v1.js'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/directory-theme-init.js'
       - 'docs/continuum-library-lab-CURRENT.md'
       - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-library-standalone-v1.test.js'
+      - 'tests/continuum-library-shell-convergence-v1.test.js'
       - '.github/workflows/library-lab-validation.yml'
 
 permissions:
@@ -34,3 +42,5 @@ jobs:
           node-version: '22'
       - name: Validate standalone Library contract
         run: node tests/continuum-library-standalone-v1.test.js
+      - name: Validate Library shared-shell convergence
+        run: node tests/continuum-library-shell-convergence-v1.test.js
