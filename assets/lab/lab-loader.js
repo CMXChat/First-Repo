@@ -26,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260819-planner-contract-v1qa2";
+  const BUILD = "20260819-planner-review-v1";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -35,6 +35,7 @@
     ["lab-directory-v2.css", "20260818-directory2"],
     ["lab-directory-v2-polish.css", "20260818-directory2p"],
     ["lab-directory-planner-preview.css", "20260819-directory-planner-v2qa2"],
+    ["lab-continuum-planner-review-v1.css", "20260819-v1"],
     ["lab-inventory.css", "20260816-inventory1"],
     ["lab-actions.css", "20260816-actions1"],
     ["lab-timeline.css", "20260816-sequence1"],
@@ -56,8 +57,9 @@
   const LAB_SCRIPTS = Object.freeze([
     ["lab-crm.js", "20260816-crm1"],
     ["lab-directory-v2.js", "20260818-directory2"],
-    ["lab-continuum-planner-contract-v1.js", "20260819-v1"],
+    ["lab-continuum-planner-contract-v1.js", "20260819-v1review1"],
     ["lab-directory-planner-preview.js", "20260819-directory-planner-v2"],
+    ["lab-continuum-planner-review-v1.js", "20260819-v1"],
     ["lab-inventory.js", "20260816-inventory1"],
     ["lab-actions.js", "20260816-actions1"],
     ["lab-timeline-live.js", "20260816-sequence1"],
@@ -154,6 +156,8 @@
     if (!html.includes("/assets/lab/lab-continuum-planner-contract-v1.js")) throw new Error("Shared Continuum Planner contract was not inserted.");
     if (!html.includes("/assets/lab/lab-directory-planner-preview.js")) throw new Error("Directory AI setup preview was not inserted.");
     if (!html.includes("/assets/lab/lab-directory-planner-preview.css")) throw new Error("Directory AI setup preview styling was not inserted.");
+    if (!html.includes("/assets/lab/lab-continuum-planner-review-v1.js")) throw new Error("Shared Continuum Planner review layer was not inserted.");
+    if (!html.includes("/assets/lab/lab-continuum-planner-review-v1.css")) throw new Error("Shared Continuum Planner review styling was not inserted.");
     if (!html.includes("/assets/lab/lab-command.js")) throw new Error("Phase 8 integration layer was not inserted.");
     if (!html.includes("/assets/lab/lab-test-center.js")) throw new Error("Lab Test Center was not inserted.");
     if (!html.includes("/assets/lab/lab-product-polish.js")) throw new Error("Lab product polish layer was not inserted.");
