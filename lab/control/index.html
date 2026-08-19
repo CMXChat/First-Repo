@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#f5f7fa" />
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex" />
+  <meta name="description" content="Continuum Control Center Lab prototype for operational state, attention, continuity, activity and simulation." />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
+  <title>Continuum · Control Center</title>
+  <script src="/assets/lab/control-center-theme-init.js?v=20260819-1"></script>
+  <link rel="stylesheet" href="/assets/lab/control-center-v1.css?v=20260819-1" />
+</head>
+<body>
+  <div class="cc-shell">
+    <aside class="cc-rail" aria-label="Continuum">
+      <a class="cc-mark" href="/lab/control/" aria-label="Continuum Control Center">C</a>
+      <nav class="cc-rail-nav" aria-label="Primary">
+        <a class="cc-rail-link" href="/lab/control/" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>Control Center</span>
+        </a>
+        <a class="cc-rail-link" href="/checkin/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg><span>Check In · LIVE</span>
+        </a>
+        <a class="cc-rail-link" href="/lab/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20c.7-4.2 3-6.3 6.5-6.3s5.8 2.1 6.5 6.3"/></svg><span>Directory · LAB</span>
+        </a>
+        <a class="cc-rail-link" href="/lab/automations/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h8M5 17h14M16 4v6M8 14v6"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>Automations · LAB</span>
+        </a>
+        <a class="cc-rail-link" href="/spaces/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h5A1.5 1.5 0 0 1 12 5.5v5a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 10.5v-5Zm8 8A1.5 1.5 0 0 1 13.5 12h5a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5h-5a1.5 1.5 0 0 1-1.5-1.5v-5Z"/><path d="M15 4h5v5M4 15v5h5"/></svg><span>Spaces · LAB</span>
+        </a>
+      </nav>
+      <div class="cc-rail-bottom">
+        <a class="cc-rail-link" href="/doc/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3.5h8l4 4V20.5H6v-17Z"/><path d="M14 3.5v4h4M9 12h6M9 15.5h6"/></svg><span>Continuum doc</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="cc-main">
+      <header class="cc-topbar">
+        <div class="cc-heading">
+          <div class="cc-eyebrow"><span class="cc-lab-dot"></span> Continuum · Lab</div>
+          <h1>Control Center</h1>
+        </div>
+        <button class="cc-command" id="commandButton" type="button" aria-label="Open command surface">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+          <span>Search, jump or ask Continuum</span><kbd class="cc-kbd">⌘ K</kbd>
+        </button>
+        <div class="cc-time" aria-label="Local time">
+          <strong id="localTime">5:06 PM</strong><span id="localDate">Wed, Aug 19</span>
+        </div>
+        <button class="cc-icon-button" id="themeToggle" type="button" aria-label="Toggle theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/><circle cx="12" cy="12" r="4"/></svg>
+          <span id="themeLabel" hidden>Use dark theme</span>
+        </button>
+      </header>
+
+      <div class="cc-wrap">
+        <section class="cc-status-strip" aria-labelledby="nowHeading">
+          <div class="cc-now">
+            <div class="cc-orbit" aria-hidden="true"></div>
+            <div class="cc-now-copy">
+              <span class="cc-now-label">Now · Sample state</span>
+              <h2 id="nowHeading">Quiet, with 2 things to review.</h2>
+              <p>Nothing in this Lab is executing. The Control Center is showing how Continuum can surface attention, waiting work and continuity health from one operational view.</p>
+              <div class="cc-now-meta">
+                <span class="cc-chip" data-tone="attention"><i></i> 2 attention</span>
+                <span class="cc-chip" data-tone="blue"><i></i> 3 waiting</span>
+                <span class="cc-chip"><i></i> continuity healthy</span>
+              </div>
+            </div>
+          </div>
+          <div class="cc-controls">
+            <div class="cc-autonomy">
+              <div class="cc-autonomy-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 11V8a4 4 0 1 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M12 15v2"/></svg>
+              </div>
+              <div class="cc-autonomy-copy"><small>Autonomy · Lab</small><strong>Observe only · execution off</strong></div>
+              <button class="cc-toggle" id="autonomyInfo" type="button">Why</button>
+            </div>
+            <button class="cc-sim-button" id="openSimulation" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 7 8 5-8 5V7Z"/><circle cx="12" cy="12" r="9"/></svg>
+              Simulate
+            </button>
+          </div>
+        </section>
+
+        <div class="cc-view-tabs" role="tablist" aria-label="Control Center views">
+          <button class="cc-view-tab" data-cc-tab="now" role="tab" aria-selected="true">Now <span class="cc-view-count">5</span></button>
+          <button class="cc-view-tab" data-cc-tab="upcoming" role="tab" aria-selected="false" tabindex="-1">Upcoming <span class="cc-view-count">4</span></button>
+          <button class="cc-view-tab" data-cc-tab="history" role="tab" aria-selected="false" tabindex="-1">History</button>
+          <button class="cc-view-tab" data-cc-tab="activity" role="tab" aria-selected="false" tabindex="-1">All activity</button>
+        </div>
+
+        <section class="cc-view" data-cc-view="now">
+          <div class="cc-dashboard">
+            <div class="cc-stack">
+              <section class="cc-panel" aria-labelledby="attentionHeading">
+                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Needs you</span><h3 id="attentionHeading">Attention</h3></div><button class="cc-panel-link" type="button" data-cc-tab-link="activity">View activity</button></header>
+                <div class="cc-panel-body">
+                  <div class="cc-attention-row" role="button" tabindex="0" data-why="attention-connection">
+                    <span class="cc-attention-dot" data-tone="red"></span>
+                    <div class="cc-row-main"><div class="cc-row-title">GitHub connection needs attention <small>Blocked</small></div><div class="cc-row-desc">A sample dependent workflow is waiting for connection readiness.</div></div>
+                    <div class="cc-row-side"><strong>Connection</strong>8m ago <svg class="cc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 6 6 6-6 6"/></svg></div>
+                  </div>
+                  <div class="cc-attention-row" role="button" tabindex="0" data-why="attention-review">
+                    <span class="cc-attention-dot"></span>
+                    <div class="cc-row-main"><div class="cc-row-title">Continuity instruction needs review <small>Review</small></div><div class="cc-row-desc">Sample owner-intent revalidation is due. The instruction remains preserved.</div></div>
+                    <div class="cc-row-side"><strong>Continuity</strong>Today <svg class="cc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 6 6 6-6 6"/></svg></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="cc-panel" aria-labelledby="workHeading">
+                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Active state</span><h3 id="workHeading">Running &amp; waiting</h3></div><button class="cc-panel-link" type="button">Manage</button></header>
+                <div class="cc-work-list">
+                  <div class="cc-work-row">
+                    <div class="cc-work-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5v14"/></svg></div>
+                    <div class="cc-work-copy"><strong>Website migration follow-up</strong><span>Waiting for access · sample Goal/work item</span></div><span class="cc-state" data-tone="waiting">WAITING</span>
+                  </div>
+                  <div class="cc-work-row">
+                    <div class="cc-work-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M7 4v6M17 4v6M6 13h4M6 17h7"/></svg></div>
+                    <div class="cc-work-copy"><strong>Morning briefing</strong><span>Prepared from Lab sample context</span></div><span class="cc-state" data-tone="quiet">READY</span>
+                  </div>
+                  <div class="cc-work-row">
+                    <div class="cc-work-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></div>
+                    <div class="cc-work-copy"><strong>Trusted-person role setup</strong><span>Waiting on owner to choose a backup person</span></div><span class="cc-state">DRAFT</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="cc-panel" aria-labelledby="activityHeading">
+                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Recent</span><h3 id="activityHeading">Activity</h3></div><button class="cc-panel-link" type="button">All activity</button></header>
+                <div class="cc-activity">
+                  <button class="cc-event" type="button" data-why="event-checkin"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 12 3 3 7-7"/></svg></span><span class="cc-event-copy"><strong>Check In state refreshed</strong><span>Sample projection from the live protected Check In domain.</span></span><span class="cc-event-time">4:48 PM</span></button>
+                  <button class="cc-event" type="button" data-why="event-draft"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19h14M7 15l8-8 2 2-8 8H7v-2Z"/></svg></span><span class="cc-event-copy"><strong>Automation draft changed</strong><span>Definition updated in Lab. No provider execution occurred.</span></span><span class="cc-event-time">3:31 PM</span></button>
+                  <button class="cc-event" type="button" data-why="event-simulation"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 7 8 5-8 5V7Z"/></svg></span><span class="cc-event-copy"><strong>Continuity scenario simulated</strong><span>Dry-run outcome remained separate from real state and authority.</span></span><span class="cc-event-time">1:12 PM</span></button>
+                </div>
+              </section>
+            </div>
+
+            <aside class="cc-stack">
+              <section class="cc-panel" aria-labelledby="continuityHeading">
+                <div class="cc-continuity">
+                  <div class="cc-continuity-top"><div class="cc-mini-orbit" aria-hidden="true"><span></span></div><div class="cc-continuity-copy"><small>Continuity · Sample projection</small><strong id="continuityHeading">Healthy</strong><p>Live Check In remains a separate protected route.</p></div></div>
+                  <div class="cc-health-grid">
+                    <div class="cc-health-cell"><small>Check In</small><strong data-tone="green">LIVE route</strong></div>
+                    <div class="cc-health-cell"><small>Plan health</small><strong data-tone="green">Healthy</strong></div>
+                    <div class="cc-health-cell"><small>Intent review</small><strong data-tone="amber">1 due</strong></div>
+                    <div class="cc-health-cell"><small>Recovery</small><strong>Lab only</strong></div>
+                  </div>
+                  <p class="cc-continuity-note"><b>Prototype truth:</b> this card does not read production continuity-health services. Those services are future architecture.</p>
+                </div>
+              </section>
+
+              <section class="cc-panel" aria-labelledby="upcomingHeading">
+                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Next</span><h3 id="upcomingHeading">Upcoming</h3></div></header>
+                <div class="cc-upcoming">
+                  <div class="cc-time-row"><div class="cc-time-label">5:30 PM</div><div class="cc-time-line"></div><div class="cc-time-content"><strong>Review connection issue</strong><span>Owner attention · sample</span></div></div>
+                  <div class="cc-time-row"><div class="cc-time-label">Tomorrow</div><div class="cc-time-line"></div><div class="cc-time-content"><strong>Morning briefing</strong><span>7:00 AM · Lab schedule</span></div></div>
+                  <div class="cc-time-row"><div class="cc-time-label">Aug 22</div><div class="cc-time-line"></div><div class="cc-time-content"><strong>Continuity review</strong><span>Revalidation example</span></div></div>
+                </div>
+              </section>
+
+              <section class="cc-panel" aria-labelledby="healthHeading">
+                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Infrastructure view</span><h3 id="healthHeading">Connections &amp; sources</h3></div></header>
+                <div class="cc-health-list">
+                  <div class="cc-health-row"><span class="cc-health-indicator"></span><div class="cc-health-copy"><strong>Email provider</strong><span>Sample capability ready</span></div><span class="cc-health-meta">READY</span></div>
+                  <div class="cc-health-row"><span class="cc-health-indicator" data-tone="amber"></span><div class="cc-health-copy"><strong>GitHub</strong><span>Sample auth refresh required</span></div><span class="cc-health-meta">ATTENTION</span></div>
+                  <div class="cc-health-row"><span class="cc-health-indicator"></span><div class="cc-health-copy"><strong>Internal Check In</strong><span>Live product domain</span></div><span class="cc-health-meta">LIVE</span></div>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <section class="cc-view" data-cc-view="upcoming" hidden>
+          <div class="cc-full-view">
+            <div class="cc-list-card">
+              <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Chronological</span><h3>Upcoming work</h3></div></header>
+              <div class="cc-large-list">
+                <div class="cc-large-row"><div class="cc-large-time">Today<br>5:30 PM</div><div><strong>Review GitHub connection</strong><p>Sample blocker affecting one waiting workflow.</p></div><span class="cc-badge" data-tone="amber">Attention</span></div>
+                <div class="cc-large-row"><div class="cc-large-time">Tomorrow<br>7:00 AM</div><div><strong>Morning briefing</strong><p>Lab presentation of a future server-owned briefing schedule.</p></div><span class="cc-badge" data-tone="blue">Scheduled</span></div>
+                <div class="cc-large-row"><div class="cc-large-time">Aug 22</div><div><strong>Continuity instruction review</strong><p>Sample owner-intent revalidation checkpoint.</p></div><span class="cc-badge">Review</span></div>
+                <div class="cc-large-row"><div class="cc-large-time">Aug 25</div><div><strong>Saved scenario readiness check</strong><p>Future dry-run regression direction. No production service exists yet.</p></div><span class="cc-badge">Lab</span></div>
+              </div>
+            </div>
+            <section class="cc-panel"><div class="cc-continuity"><div class="cc-continuity-copy"><small>Timeline principle</small><strong>One operational truth</strong><p>Upcoming, Now, History and Activity should remain projections of the same server-owned event/runtime truth when implemented.</p></div></div></section>
+          </div>
+        </section>
+
+        <section class="cc-view" data-cc-view="history" hidden>
+          <div class="cc-full-view">
+            <div class="cc-list-card">
+              <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Resolved sample state</span><h3>History</h3></div></header>
+              <div class="cc-large-list">
+                <div class="cc-large-row"><div class="cc-large-time">4:48 PM</div><div><strong>Check In state refreshed</strong><p>Read-only sample projection completed.</p></div><span class="cc-badge" data-tone="green">Complete</span></div>
+                <div class="cc-large-row"><div class="cc-large-time">3:31 PM</div><div><strong>Automation draft updated</strong><p>Definition changed with zero external side effects.</p></div><span class="cc-badge" data-tone="green">Saved</span></div>
+                <div class="cc-large-row"><div class="cc-large-time">1:12 PM</div><div><strong>Continuity scenario simulated</strong><p>Dry-run result kept separate from real state.</p></div><span class="cc-badge" data-tone="blue">Simulation</span></div>
+              </div>
+            </div>
+            <section class="cc-panel"><div class="cc-continuity"><div class="cc-continuity-copy"><small>History rule</small><strong>UI cleanup does not erase Audit</strong><p>Future hide/archive controls may simplify the activity view while consequential backend Audit remains durable.</p></div></div></section>
+          </div>
+        </section>
+
+        <section class="cc-view" data-cc-view="activity" hidden>
+          <div class="cc-full-view">
+            <div class="cc-list-card">
+              <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Chronological sample</span><h3>All activity</h3></div></header>
+              <div class="cc-activity">
+                <button class="cc-event" type="button" data-why="event-checkin"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 12 3 3 7-7"/></svg></span><span class="cc-event-copy"><strong>Check In state refreshed</strong><span>Read-only sample projection.</span></span><span class="cc-event-time">4:48 PM</span></button>
+                <button class="cc-event" type="button" data-why="attention-connection"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span><span class="cc-event-copy"><strong>Connection health changed</strong><span>GitHub sample moved to attention.</span></span><span class="cc-event-time">4:42 PM</span></button>
+                <button class="cc-event" type="button" data-why="event-draft"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19h14M7 15l8-8 2 2-8 8H7v-2Z"/></svg></span><span class="cc-event-copy"><strong>Automation draft changed</strong><span>No provider action occurred.</span></span><span class="cc-event-time">3:31 PM</span></button>
+                <button class="cc-event" type="button" data-why="attention-review"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 4h12v16H6zM9 8h6M9 12h6"/></svg></span><span class="cc-event-copy"><strong>Owner-intent review became due</strong><span>Instruction remains preserved.</span></span><span class="cc-event-time">2:00 PM</span></button>
+                <button class="cc-event" type="button" data-why="event-simulation"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 7 8 5-8 5V7Z"/></svg></span><span class="cc-event-copy"><strong>Simulation completed</strong><span>Zero real side effects.</span></span><span class="cc-event-time">1:12 PM</span></button>
+              </div>
+            </div>
+            <section class="cc-panel"><div class="cc-continuity"><div class="cc-continuity-copy"><small>Explainability</small><strong>Open any consequential item</strong><p>The future detail surface follows evidence → State → policy → authority → capability → Runtime → result.</p></div><button class="cc-run-sim" id="openSimulationSecondary" type="button">Open simulation</button></div></section>
+          </div>
+        </section>
+
+        <p class="cc-sample-banner"><b>CONTROL CENTER · LAB</b> — This route uses sample and prototype state. It does not claim production Runtime, Signals, Connection health, continuity health, Goals, simulation services or autonomous execution.</p>
+      </div>
+    </main>
+  </div>
+
+  <nav class="cc-mobile-nav" aria-label="Mobile primary">
+    <a class="cc-mobile-link" href="/lab/control/" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>Control</a>
+    <a class="cc-mobile-link" href="/checkin/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Check In</a>
+    <a class="cc-mobile-link" href="/lab/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M6 20c.7-4 2.7-6 6-6s5.3 2 6 6"/></svg>Directory</a>
+    <a class="cc-mobile-link" href="/lab/automations/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h8M5 17h14M16 4v6M8 14v6"/></svg>Automation</a>
+    <a class="cc-mobile-link" href="/spaces/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Spaces</a>
+  </nav>
+
+  <div class="cc-drawer-backdrop" id="drawerBackdrop" data-open="false" aria-hidden="true"></div>
+
+  <aside class="cc-drawer" id="whyDrawer" data-open="false" aria-labelledby="whyTitle">
+    <header class="cc-drawer-head"><div class="cc-drawer-title"><small>Why did Continuum do that?</small><strong id="whyTitle">Explain activity</strong></div><button class="cc-icon-button cc-drawer-close" type="button" data-close-drawer aria-label="Close detail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div class="cc-drawer-body"><p class="cc-drawer-intro" id="whyIntro"></p><div class="cc-causal" id="causalChain"></div><p class="cc-drawer-note">This is a Lab visualization of the causal receipt direction. Protected backend references and exact versions would remain the authoritative truth in production.</p></div>
+  </aside>
+
+  <aside class="cc-drawer" id="simDrawer" data-open="false" aria-labelledby="simHeading">
+    <header class="cc-drawer-head"><div class="cc-drawer-title"><small>Simulation · Lab only</small><strong id="simHeading">What should we pretend changed?</strong></div><button class="cc-icon-button cc-drawer-close" type="button" data-close-drawer aria-label="Close simulation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div class="cc-drawer-body">
+      <p class="cc-drawer-intro">Choose one saved-style scenario. This prototype computes a fixed explanatory sample only. It does not read or mutate real Continuum State.</p>
+      <div class="cc-scenario-grid">
+        <button class="cc-scenario" type="button" data-scenario="disappear" aria-pressed="true"><strong>I disappear for 7 days</strong><span>Explore a continuity path with owner unavailability.</span></button>
+        <button class="cc-scenario" type="button" data-scenario="email" aria-pressed="false"><strong>Primary email is unavailable</strong><span>See how a connection failure should affect eligibility.</span></button>
+        <button class="cc-scenario" type="button" data-scenario="approver" aria-pressed="false"><strong>Trusted approver does not respond</strong><span>Test the waiting and escalation boundary.</span></button>
+      </div>
+      <button class="cc-run-sim" id="runSimulation" type="button">Run safe simulation</button>
+      <div class="cc-sim-result" id="simResult" hidden><small>Predicted sample path</small><strong id="simResultTitle"></strong><p id="simResultText"></p></div>
+    </div>
+  </aside>
+
+  <script src="/assets/lab/control-center-v1.js?v=20260819-1"></script>
+</body>
+</html>
