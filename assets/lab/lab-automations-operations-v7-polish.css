@@ -1,0 +1,39 @@
+.v7-planner-button{
+  appearance:none;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-height:31px;
+  padding:0 9px;
+  border:1px solid color-mix(in srgb,var(--v7-blue) 34%,var(--v4-border));
+  border-radius:7px;
+  background:var(--v7-blue-soft);
+  color:var(--v4-text);
+  font:inherit;
+  font-size:9px;
+  font-weight:850;
+  cursor:pointer;
+}
+.v7-planner-button:hover,
+.v7-planner-button:focus-visible{
+  border-color:color-mix(in srgb,var(--v7-blue) 58%,var(--v4-border-strong));
+  background:color-mix(in srgb,var(--v7-blue) 18%,var(--v4-surface-2));
+  outline:none;
+}
+.v7-planner-button b{
+  color:var(--v7-blue);
+  font-size:11px;
+}
+@media(max-width:760px){
+  .v7-planner-button{
+    min-height:40px;
+    justify-content:center;
+  }
+}
+@media(max-width:420px){
+  .v7-planner-button span{display:none}
+  .v7-planner-button{
+    width:40px;
+    padding:0;
+  }
+}
