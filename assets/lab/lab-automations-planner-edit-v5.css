@@ -1,0 +1,29 @@
+/* Continuum Lab Automation Planner proposal editing. Presentation only. */
+.v5-planner-edit-note{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 12px;padding:10px 11px;border:1px solid rgba(103,180,234,.16);border-radius:10px;background:rgba(79,155,211,.045)}
+.v5-planner-edit-note>span{grid-column:1;color:#7bcaff;font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+.v5-planner-edit-note>strong{grid-column:1;font-size:11px;line-height:1.35}
+.v5-planner-edit-note>small{grid-column:1;color:#778e9f;font-size:8.5px;line-height:1.45}
+.v5-planner-edit-note>b{grid-column:2;grid-row:1/4;align-self:center;padding:5px 7px;border:1px solid rgba(103,180,234,.18);border-radius:999px;color:#9bd8ff;background:rgba(75,151,209,.07);font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+
+.v5-planner-sequence article{position:relative}
+.v5-planner-row-remove{align-self:center;min-height:30px;padding:0 8px;border:1px solid rgba(224,118,118,.17);border-radius:8px;background:rgba(185,72,72,.04);color:#dba0a0;font-size:8px;font-weight:850;cursor:pointer;white-space:nowrap}
+.v5-planner-row-remove:hover:not(:disabled){border-color:rgba(237,138,138,.32);background:rgba(185,72,72,.08);color:#f0b3b3}
+.v5-planner-row-remove:disabled{border-color:rgba(118,147,168,.12);background:rgba(118,147,168,.025);color:#607483;cursor:not-allowed}
+
+html[data-theme="light"] .v5-planner-edit-note{border-color:rgba(31,103,154,.14);background:rgba(59,142,198,.04)}
+html[data-theme="light"] .v5-planner-edit-note>span{color:#176b9f}
+html[data-theme="light"] .v5-planner-edit-note>small{color:#667d8e}
+html[data-theme="light"] .v5-planner-row-remove{border-color:rgba(159,73,73,.16);background:rgba(181,80,80,.035);color:#9c5656}
+
+@media (max-width:760px){
+  .v5-planner-edit-note{grid-template-columns:1fr;gap:4px;padding:11px}
+  .v5-planner-edit-note>span{font-size:8.5px}
+  .v5-planner-edit-note>strong{font-size:12.5px}
+  .v5-planner-edit-note>small{font-size:10px;line-height:1.5}
+  .v5-planner-edit-note>b{grid-column:1;grid-row:auto;width:max-content;margin-top:3px;min-height:25px;display:flex;align-items:center;font-size:7.5px}
+  .v5-planner-sequence article{grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center}
+  .v5-planner-sequence article>i{display:none!important}
+  .v5-planner-row-remove{grid-column:2/4;width:100%;min-height:44px;margin-top:3px;font-size:10px}
+}
+
+@media (prefers-reduced-motion:reduce){.v5-planner-row-remove{transition:none!important}}
