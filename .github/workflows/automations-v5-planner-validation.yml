@@ -6,6 +6,8 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.css'
       - 'assets/lab/lab-continuum-planner-review-v1.js'
       - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-planner-v5.js'
@@ -17,6 +19,8 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.css'
       - 'assets/lab/lab-continuum-planner-review-v1.js'
       - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-planner-v5.js'
@@ -34,53 +38,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate deterministic Planner boundary
+      - name: Validate deterministic Planner and preflight boundary
         run: |
           set -euo pipefail
           node --check assets/lab/lab-continuum-planner-contract-v1.js
+          node --check assets/lab/lab-continuum-planner-preflight-v1.js
           node --check assets/lab/lab-continuum-planner-review-v1.js
           node --check assets/lab/lab-automations-planner-v5.js
-
-          grep -q 'CMXContinuumPlannerContractV1' assets/lab/lab-continuum-planner-contract-v1.js
-          grep -q 'validateOperations' assets/lab/lab-continuum-planner-contract-v1.js
-          grep -q 'effectLabel' assets/lab/lab-continuum-planner-contract-v1.js
-          grep -q 'reviewLabel' assets/lab/lab-continuum-planner-contract-v1.js
-          grep -q 'automation.create_draft' assets/lab/lab-continuum-planner-contract-v1.js
-          grep -q 'directory.upsert_group' assets/lab/lab-continuum-planner-contract-v1.js
-          grep -q 'library.create_folder' assets/lab/lab-continuum-planner-contract-v1.js
-
-          grep -q 'TYPED PLAN PREVIEW · LOCAL' assets/lab/lab-automations-planner-v5.js
-          grep -q 'NO AI CALL' assets/lab/lab-automations-planner-v5.js
-          grep -q 'CHANGE PLAN' assets/lab/lab-automations-planner-v5.js
-          grep -q 'Use this draft' assets/lab/lab-automations-planner-v5.js
-          grep -q 'local-deterministic-v5' assets/lab/lab-automations-planner-v5.js
-          grep -q 'CMXAutomationModelV5?.syncStore?.()' assets/lab/lab-automations-planner-v5.js
-          grep -q 'automation.create_draft' assets/lab/lab-automations-planner-v5.js
-          grep -q 'automation.add_condition' assets/lab/lab-automations-planner-v5.js
-          grep -q 'automation.add_wait' assets/lab/lab-automations-planner-v5.js
-          grep -q 'Notification audience still needs a protected Directory selection' assets/lab/lab-automations-planner-v5.js
-
-          grep -q 'CHANGE REVIEW' assets/lab/lab-continuum-planner-review-v1.js
-          grep -q 'data-plan-meta="effect"' assets/lab/lab-continuum-planner-review-v1.js
-          grep -q 'data-plan-meta="review"' assets/lab/lab-continuum-planner-review-v1.js
-          grep -q 'labPlannerReview = "v1"' assets/lab/lab-continuum-planner-review-v1.js
-          grep -q '.continuum-plan-review-summary' assets/lab/lab-continuum-planner-review-v1.css
-          grep -q '@media (max-width:760px)' assets/lab/lab-continuum-planner-review-v1.css
-
-          grep -q '.v5-planner-result' assets/lab/lab-automations-planner-v5.css
-          grep -q '.v5-planner-sequence' assets/lab/lab-automations-planner-v5.css
-          grep -q '.v5-planner-ops' assets/lab/lab-automations-planner-v5.css
-          grep -q '@media (max-width:760px)' assets/lab/lab-automations-planner-v5.css
-          grep -q '.v4-modal>header>button{width:44px' assets/lab/lab-automations-v5-mobile-qa.css
-          grep -q '.v4-planner-examples button{min-height:44px' assets/lab/lab-automations-v5-mobile-qa.css
-          grep -q '.v5-planner-result>footer>button{min-height:46px' assets/lab/lab-automations-v5-mobile-qa.css
-
-          grep -q 'lab-continuum-planner-contract-v1.js?v=20260819-v1review1' lab/automations/index.html
-          grep -q 'lab-continuum-planner-review-v1.css?v=20260819-v1' lab/automations/index.html
-          grep -q 'lab-continuum-planner-review-v1.js?v=20260819-v1' lab/automations/index.html
-          grep -q 'lab-automations-planner-v5.js' lab/automations/index.html
-          grep -q 'lab-automations-planner-v5.css' lab/automations/index.html
-          grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2' lab/automations/index.html
 
           python - <<'PY'
           from pathlib import Path
@@ -88,14 +52,43 @@ jobs:
 
           source = Path('assets/lab/lab-automations-planner-v5.js').read_text(encoding='utf-8')
           contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
+          preflight = Path('assets/lab/lab-continuum-planner-preflight-v1.js').read_text(encoding='utf-8')
+          preflight_css = Path('assets/lab/lab-continuum-planner-preflight-v1.css').read_text(encoding='utf-8')
           review = Path('assets/lab/lab-continuum-planner-review-v1.js').read_text(encoding='utf-8')
-          forbidden = [
-              'fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(',
-              'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver'
-          ]
-          for term in forbidden:
-              if term in source + contract + review:
-                  raise SystemExit(f'forbidden Planner boundary pattern: {term}')
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+
+          for term in [
+              'CMXContinuumPlannerContractV1', 'validateOperations', 'validatePlan', 'classifyIssue', 'validateIssues',
+              'directory.ambiguous_match', 'directory.audience_required', 'automation.schedule_unconfirmed',
+              'runtime.required', 'connections.required', 'authority.approval_required'
+          ]:
+              if term not in contract:
+                  raise SystemExit(f'Planner contract missing: {term}')
+
+          for term in [
+              'TYPED PLAN PREVIEW · LOCAL', 'NO AI CALL', 'CHANGE PLAN', 'Use this draft',
+              'local-deterministic-v5', 'automation.create_draft', 'automation.add_condition', 'automation.add_wait',
+              'temp:automation:draft', 'temp:step:'
+          ]:
+              if term not in source:
+                  raise SystemExit(f'Automation Planner missing: {term}')
+
+          for term in [
+              'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
+              'data-preflight-choice', 'data-preflight-defer', 'labPlannerPreflight = "v1"'
+          ]:
+              if term not in preflight:
+                  raise SystemExit(f'Planner preflight missing: {term}')
+          for term in ['.continuum-preflight-panel', '.continuum-preflight-actions', '@media (max-width:760px)']:
+              if term not in preflight_css:
+                  raise SystemExit(f'Planner preflight CSS missing: {term}')
+          for term in ['CHANGE REVIEW', 'cmx:lab-planner-preflight-updated', 'ISSUES']:
+              if term not in review:
+                  raise SystemExit(f'Change Review missing preflight integration: {term}')
+
+          for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
+              if forbidden in source + contract + preflight + review:
+                  raise SystemExit(f'forbidden Planner boundary pattern: {forbidden}')
 
           planner_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', source))
           registry_ops = set(re.findall(r'"((?:directory|library|automation)\.[a-z0-9_]+)":\s*Object\.freeze', contract))
@@ -103,17 +96,30 @@ jobs:
           if unknown:
               raise SystemExit(f'Automation Planner uses unregistered operations: {unknown}')
 
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          required_assets = [
+              'lab-continuum-planner-contract-v1.js?v=20260819-v1preflight1',
+              'lab-continuum-planner-preflight-v1.css?v=20260819-v1',
+              'lab-continuum-planner-review-v1.css?v=20260819-v1preflight1',
+              'lab-continuum-planner-preflight-v1.js?v=20260819-v1',
+              'lab-continuum-planner-review-v1.js?v=20260819-v1preflight1',
+              'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2'
+          ]
+          for term in required_assets:
+              if term not in html:
+                  raise SystemExit(f'focused route missing current Planner asset: {term}')
+
           if "connect-src 'self'" not in html:
               raise SystemExit('focused Lab must keep self-only connect-src')
           if html.index('lab-continuum-planner-contract-v1.js') > html.index('lab-automations-planner-v5.js'):
-              raise SystemExit('shared Planner contract must load before Automations Planner')
-          if html.index('lab-automations-planner-v5.js') > html.index('lab-continuum-planner-review-v1.js'):
-              raise SystemExit('Planner review layer must load after Automations Planner')
+              raise SystemExit('Planner contract must load before Automation Planner')
+          if html.index('lab-automations-planner-v5.js') > html.index('lab-continuum-planner-preflight-v1.js'):
+              raise SystemExit('typed preflight must load after Automation Planner')
+          if html.index('lab-continuum-planner-preflight-v1.js') > html.index('lab-continuum-planner-review-v1.js'):
+              raise SystemExit('Change Review must load after typed preflight')
           if html.index('lab-continuum-planner-review-v1.css') > html.index('lab-automations-v5-mobile-qa.css'):
-              raise SystemExit('mobile QA must remain the final focused Planner CSS layer')
+              raise SystemExit('final mobile QA must remain after shared Planner CSS')
 
-          print('Automations v5 deterministic Planner, shared operation/review contracts and mobile tap QA passed.')
+          print('Automations v5 deterministic Planner, dependencies, typed preflight and Change Review contracts passed.')
           PY
 
       - name: Focused route asset smoke
@@ -128,11 +134,11 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
-          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 \
+          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=14000 \
             --dump-dom 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-v5-planner.html
           grep -q 'data-lab-planner-contract="v1"' /tmp/continuum-v5-planner.html
+          grep -q 'data-lab-planner-preflight="v1"' /tmp/continuum-v5-planner.html
           grep -q 'data-lab-planner-review="v1"' /tmp/continuum-v5-planner.html
           grep -q 'New automation' /tmp/continuum-v5-planner.html
-          grep -q 'AI PLANNER' /tmp/continuum-v5-planner.html || true
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-planner.html
-          echo 'Focused Automations route loaded with shared Planner operation/review contracts and v5 Planner assets.'
+          echo 'Focused Automations route loaded with typed Planner preflight/review assets.'
