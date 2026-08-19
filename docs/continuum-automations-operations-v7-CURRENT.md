@@ -35,9 +35,25 @@ Priorities:
 
 Avoid restoring a large explanatory/marketing hero over the workspace.
 
+# Product chrome
+
+The focused route identifies itself as:
+
+`Continuum`
+
+`LAB · AUTOMATIONS`
+
+The global boundary is explicit:
+
+`LAB · EXECUTION OFF`
+
+The product brand links back to `/lab/`.
+
+This keeps the route visually inside Continuum while preserving the isolated Lab truth.
+
 # Dashboard v7
 
-The top surface is now compact:
+The top surface is compact:
 
 `Automation workspace`
 
@@ -51,6 +67,8 @@ Current operations summary:
 - READY TO TEST;
 - NEEDS SETUP;
 - RUNTIME LATER.
+
+The readiness/support counts intentionally derive from current Drafts. Archived local definitions remain available through Manage but do not inflate Draft readiness numbers.
 
 These are browser-local derived product states only.
 
@@ -111,6 +129,26 @@ Each row can surface:
 
 The row remains the normal way to open the Automation editor.
 
+# Planner access
+
+Planner is a first-class workspace action because natural-language intent is a primary Continuum authoring direction.
+
+The v7 `Planner` shortcut does not introduce another planner or AI path. It opens the same existing local deterministic Planner flow already available under New Automation.
+
+Current Planner chrome says:
+
+`PLANNER · LOCAL PREVIEW`
+
+and makes clear that supported intents become a typed proposal that can be inspected and edited.
+
+There is no model or provider call.
+
+Current local deterministic proving path remains:
+
+`intent → typed plan → ordered v5 flow → Change Plan → preflight → Change Review → ordinary Draft`
+
+Future Planner management requests such as duplicate/archive/fix setup/add Signal Trigger must call the same protected services as human UI.
+
 # Manage Automations
 
 V7 adds a browser-local management surface.
@@ -127,6 +165,15 @@ Hard boundary:
 > These operations only mutate the browser-local Lab store. They never publish, execute or touch production.
 
 The management implementation intentionally reloads the focused route after a lifecycle mutation. The old v3 compatibility editor holds an in-memory copy of localStorage, so reload prevents stale state from later resurrecting a duplicated/archived/deleted definition.
+
+The Manage surface behaves as an actual dialog/bottom sheet:
+
+- focus moves into it when opened;
+- Escape closes through the accepted underlying handler;
+- tapping the backdrop closes it;
+- focus returns to the Manage control where possible;
+- mobile uses a bottom-sheet presentation;
+- destructive deletion requires confirmation.
 
 ## Duplicate
 
@@ -177,7 +224,7 @@ Accepted model remains v5 ordered semantics.
 
 # Runs
 
-The Runs surface is now deliberately framed as:
+The Runs surface is deliberately framed as:
 
 `AUTHORITATIVE RUNS`
 
@@ -209,7 +256,7 @@ No separate template execution engine.
 
 # Future capability cues
 
-The Capability Catalog now includes a small architecture-only `LATER` group for concepts already accepted across Continuum:
+The Capability Catalog includes a small architecture-only `LATER` group for concepts already accepted across Continuum:
 
 - **Signal observed** — future WHEN;
 - **Current State matches** — future IF;
@@ -221,6 +268,8 @@ These cards are discoverability only.
 They cannot be selected into a Draft and do not execute anything.
 
 Each card explains that protected services, typed definitions, policy checks and Runtime behavior must exist first.
+
+Opening one of these future cards should replace the Capability Catalog modal instead of stacking modal backdrops.
 
 This keeps the Automation product visually aligned with the larger architecture without converting future plans into implementation claims.
 
@@ -248,18 +297,6 @@ It must eventually persist server-owned waiting state and resume correctly throu
 
 Browser event listeners/timers are never durable execution authority.
 
-# Planner
-
-Planner remains the accepted typed-authoring direction.
-
-Current local deterministic proving path remains:
-
-`intent → typed plan → ordered v5 flow → Change Plan → preflight → Change Review → ordinary Draft`
-
-V7 does not create a new Planner format.
-
-Future Planner management requests such as duplicate/archive/fix setup/add Signal Trigger must call the same protected services as human UI.
-
 # Mobile
 
 V7 keeps mobile as an operating surface, not squeezed desktop.
@@ -270,10 +307,13 @@ At narrow widths:
 - New Automation stays obvious;
 - status summary can scroll horizontally;
 - filter controls remain tap-sized;
+- Planner and Manage remain direct controls alongside the scrollable filter group;
 - readiness remains readable on each Automation;
 - Manage Automations becomes a bottom-sheet style surface;
 - destructive action still requires confirmation;
 - the existing v6 mobile Action stack remains authoritative for DO-stage compact authoring.
+
+The operations row explicitly switches to three mobile columns for Filter / Planner / Manage so adding Planner does not create an implicit-wrap layout bug on Samsung-width screens.
 
 # Files
 
@@ -282,14 +322,18 @@ V7 final layer:
 - `assets/lab/lab-automations-operations-v7.js`;
 - `assets/lab/lab-automations-operations-v7.css`;
 - `assets/lab/lab-automations-operations-v7-future.css`;
+- `assets/lab/lab-automations-operations-v7-polish.js`;
+- `assets/lab/lab-automations-operations-v7-polish.css`;
 - `tests/continuum-automations-operations-v7.test.js`;
 - `.github/workflows/automations-v7-operations-validation.yml`.
 
-Route load order keeps v7 last after accepted authoring layers.
+Route load order keeps v7 and its final polish layer after accepted authoring layers.
 
-Browser marker:
+Browser markers:
 
 `data-lab-automations-operations="v7"`
+
+`data-lab-automations-operations-polish="v7"`
 
 Page marker:
 
@@ -314,7 +358,7 @@ V7 adds no:
 - prompt-granted authority;
 - arbitrary executable code.
 
-The final layer contains no `fetch`, XHR, WebSocket, EventSource, `eval` or dynamic Function path.
+The final layers contain no `fetch`, XHR, WebSocket, EventSource, `eval`, dynamic Function or broad MutationObserver path.
 
 # Backend companion
 
@@ -323,6 +367,22 @@ Canonical backend alignment:
 `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AUTOMATION-OPERATIONS-WORKSPACE-CONTRACT.md`
 
 That contract defines future protected list/readiness/lifecycle/Run/capability semantics without changing the existing production deployment boundary.
+
+# Validation
+
+Source validation covers:
+
+- v7 load order and cache tokens;
+- v5 readiness integration;
+- local management boundaries;
+- duplicate flow-reference remapping;
+- Signals/State/Goals/Runtime future capability cues;
+- Planner shortcut and local-preview wording;
+- no network/eval/MutationObserver paths in the final layers;
+- desktop/mobile responsive styles;
+- rendered Chromium checks on desktop and 390×844 mobile when GitHub Actions runs the workflow.
+
+Workflow source existence is not proof of a passing run. Do not claim CI green until an actual run is observed.
 
 # Next implementation direction
 
