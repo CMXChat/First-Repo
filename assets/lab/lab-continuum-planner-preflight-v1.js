@@ -68,6 +68,12 @@
   }
 
   function actionMarkup(issue, state, issueKey) {
+    if (state.state === "reviewed") {
+      return `<div class="continuum-preflight-actions"><button type="button" data-preflight-reset="${esc(issueKey)}">Change decision</button></div>`;
+    }
+    if (state.state === "deferred") {
+      return `<div class="continuum-preflight-actions"><button type="button" data-preflight-reset="${esc(issueKey)}">Undo defer</button></div>`;
+    }
     if (state.state !== "open") return "";
     if (issue.resolution === "preview-choice" && issue.options.length) {
       return `<div class="continuum-preflight-actions">${issue.options.map(option => `<button type="button" data-preflight-choice="${esc(issueKey)}" data-preflight-value="${esc(option.label)}">${esc(option.label)}</button>`).join("")}</div>`;
@@ -169,6 +175,14 @@
     if (defer) {
       event.preventDefault();
       decisions.set(defer.dataset.preflightDefer, { state: "deferred", decision: "Handle in Draft" });
+      patch();
+      return;
+    }
+
+    const reset = event.target.closest?.("[data-preflight-reset]");
+    if (reset) {
+      event.preventDefault();
+      decisions.delete(reset.dataset.preflightReset);
       patch();
       return;
     }
