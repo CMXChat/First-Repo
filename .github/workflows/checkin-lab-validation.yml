@@ -65,7 +65,7 @@ jobs:
           const contract = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260818-directory2');
+          assert.equal(BUILD, '20260818-directory2p');
 
           const counts = {
             document_count: 6,
@@ -82,7 +82,7 @@ jobs:
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260818-directory2'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260818-directory2p'));
           assert(!shell.includes('document.write(html)'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
@@ -95,6 +95,7 @@ jobs:
             '/assets/lab/lab-crm.js',
             '/assets/lab/lab-directory-v2.js',
             '/assets/lab/lab-directory-v2.css',
+            '/assets/lab/lab-directory-v2-polish.css',
             '/assets/lab/lab-inventory.js',
             '/assets/lab/lab-actions.js',
             '/assets/lab/lab-timeline-live.js',
@@ -113,6 +114,7 @@ jobs:
           required.forEach(term => assert(rendered.includes(term), `missing generated Lab contract: ${term}`));
           assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'));
           assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-v2.css') < rendered.indexOf('/assets/lab/lab-directory-v2-polish.css'));
           assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
           assert(!rendered.includes('/assets/checkin/'));
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
@@ -145,7 +147,11 @@ jobs:
               if forbidden in Path('assets/lab/lab-directory-v2.js').read_text(encoding='utf-8'):
                   sys.exit(f'Directory v2 forbidden pattern: {forbidden}')
 
-          print('Continuum Lab snapshot, production isolation and Directory v2 load order passed.')
+          polish = Path('assets/lab/lab-directory-v2-polish.css').read_text(encoding='utf-8')
+          for term in ['position:sticky', '@media (max-width:760px)', 'prefers-reduced-motion']:
+              if term not in polish: sys.exit(f'Directory polish missing contract: {term}')
+
+          print('Continuum Lab snapshot, production isolation and Directory v2 polish load order passed.')
           PY
 
       - name: Browser acceptance smoke desktop and mobile
@@ -188,4 +194,4 @@ jobs:
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
 
-          echo 'Continuum Lab desktop/mobile smoke passed with Directory v2 and existing operating surfaces.'
+          echo 'Continuum Lab desktop/mobile smoke passed with Directory v2 polish and existing operating surfaces.'
