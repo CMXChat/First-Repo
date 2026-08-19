@@ -32,13 +32,19 @@ assert.match(html, /data-cc-tab="activity"/);
 assert.match(html, /data-cc-tab-link="activity"/);
 assert.match(html, /href="\/checkin\/"/);
 assert.match(html, /href="\/lab\/automations\/"/);
-assert.match(html, /control-center-theme-init\.js\?v=20260819-1/);
+assert.match(html, /control-center-theme-init\.js\?v=20260819-2/);
 assert.match(html, /control-center-v1\.css\?v=20260819-1/);
 assert.match(html, /control-center-mobile-polish-v2\.css\?v=20260819-3/);
+assert.match(html, /control-center-focus-v4\.css\?v=20260819-1/);
 assert.match(html, /control-center-v1\.js\?v=20260819-3/);
+assert.match(html, /control-center-focus-v4\.js\?v=20260819-3/);
 assert.ok(
   html.indexOf('control-center-mobile-polish-v2.css') > html.indexOf('control-center-v1.css'),
   'device-review polish must load after base Control Center styles'
+);
+assert.ok(
+  html.indexOf('control-center-focus-v4.css') > html.indexOf('control-center-mobile-polish-v2.css'),
+  'focus polish must load after visual/device layers'
 );
 assert.doesNotMatch(html, /https:\/\/api\.cmxchat\.com/);
 assert.doesNotMatch(html, /<script(?![^>]*src=)[^>]*>/i);
@@ -78,6 +84,7 @@ assert.match(interaction, /@media\(max-width:580px\)/);
 assert.doesNotMatch(interaction, /url\(https?:/i);
 
 assert.match(theme, /continuum-control-center-theme-v1/);
+assert.doesNotMatch(theme, /control-center-focus-v4/);
 assert.match(js, /continuum-control-center-theme-v1/);
 assert.match(js, /control-center-interaction-v3\.css\?v=20260819-1/);
 assert.match(js, /function setView/);
@@ -103,4 +110,4 @@ assert.match(js, /AI availability is irrelevant to essential steps/i);
 assert.doesNotMatch(js, /fetch\s*\(/);
 assert.doesNotMatch(js, /XMLHttpRequest/);
 
-console.log('Continuum Control Center v1 + device v2 + interaction v3 contract passed.');
+console.log('Continuum Control Center v1 + device v2 + interaction v3 + explicit focus v4 asset contract passed.');
