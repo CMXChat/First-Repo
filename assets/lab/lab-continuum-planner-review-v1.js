@@ -26,17 +26,11 @@
     const kind = parts.shift();
     const name = parts.join(" ").replace(/[_-]+/g, " ");
     const labels = {
-      people: "People",
-      person: "Person",
-      organizations: "Organizations",
-      organization: "Organization",
-      group: "Group",
-      folder: "Folder",
-      content: "Content",
-      automation: "Automation",
-      step: "Step"
+      people: "People", person: "Person", organizations: "Organizations", organization: "Organization",
+      group: "Group", folder: "Folder", content: "Content", automation: "Automation", step: "Step"
     };
-    return `${name ? name.replace(/\b\w/g, char => char.toUpperCase()) + " " : ""}${labels[kind] || kind}`.trim();
+    const pretty = name ? name.replace(/\bai\b/gi, "AI").replace(/\b\w/g, char => char.toUpperCase()) : "";
+    return `${pretty ? `${pretty} ` : ""}${labels[kind] || kind}`.trim();
   }
 
   function ensureOperationMeta(article, meta) {
@@ -83,8 +77,8 @@
       chips.push(`<b data-plan-link="uses">Uses ${step ? `Step ${step} · ` : ""}<span>${refLabel(ref)}</span></b>`);
     });
 
-    const dependencyIdsAlreadyShown = new Set(uses.map(ref => producerByRef.get(ref)).filter(Boolean));
-    dependsOn.filter(id => !dependencyIdsAlreadyShown.has(id)).forEach(id => {
+    const alreadyShown = new Set(uses.map(ref => producerByRef.get(ref)).filter(Boolean));
+    dependsOn.filter(id => !alreadyShown.has(id)).forEach(id => {
       const step = stepById.get(id);
       chips.push(`<b data-plan-link="depends">After ${step ? `Step ${step}` : "earlier operation"}</b>`);
     });
@@ -94,7 +88,18 @@
     article.dataset.planDependencyCount = String(chips.length);
   }
 
+  function preflightPanel(root) {
+    return root.querySelector(":scope > .continuum-preflight-panel");
+  }
+
   function blockerCount(root) {
+    const preflight = preflightPanel(root);
+    if (preflight) {
+      return Number(preflight.dataset.preflightOpenCount || 0)
+        + Number(preflight.dataset.preflightBlockedCount || 0)
+        + Number(preflight.dataset.preflightApprovalCount || 0);
+    }
+
     const automation = root.querySelector(".v5-planner-blockers");
     if (automation) return automation.classList.contains("has-blockers") ? automation.querySelectorAll("li").length : 0;
 
@@ -144,11 +149,15 @@
       host.before(summary);
     }
 
+    const preflight = preflightPanel(root);
     const blockers = blockerCount(root);
-    const approvals = descriptions.filter(item => item.review === "required").length;
+    const preflightApprovals = Number(preflight?.dataset.preflightApprovalCount || 0);
+    const approvals = descriptions.filter(item => item.review === "required").length + preflightApprovals;
     const checks = descriptions.filter(item => item.review === "conditional").length;
     const domains = new Set(descriptions.map(item => item.domain)).size;
     const linked = articles.filter(article => Number(article.dataset.planDependencyCount || 0) > 0).length;
+    const deferred = Number(preflight?.dataset.preflightDeferredCount || 0);
+    const reviewed = Number(preflight?.dataset.preflightReviewedCount || 0);
 
     summary.classList.toggle("has-blockers", blockers > 0);
     summary.classList.toggle("has-approval", approvals > 0);
@@ -156,8 +165,8 @@
       <header><span>CHANGE REVIEW</span><strong>Know exactly what the plan proposes.</strong></header>
       <div>
         <article><small>CHANGES</small><b>${descriptions.length}</b><span>typed operations</span></article>
-        <article class="${blockers ? "is-blocked" : ""}"><small>BLOCKERS</small><b>${blockers}</b><span>${blockers ? "resolve before apply" : "none represented"}</span></article>
-        <article class="${approvals ? "is-approval" : ""}"><small>APPROVAL</small><b>${approvals}</b><span>${approvals ? "explicit approval" : checks ? `${checks} need checking` : "standard review"}</span></article>
+        <article class="${blockers ? "is-blocked" : ""}"><small>ISSUES</small><b>${blockers}</b><span>${blockers ? "still needs attention" : deferred || reviewed ? `${deferred + reviewed} reviewed/deferred` : "none represented"}</span></article>
+        <article class="${approvals ? "is-approval" : ""}"><small>APPROVAL</small><b>${approvals}</b><span>${approvals ? "explicit approval" : checks ? `${checks} operation checks` : "standard review"}</span></article>
         <article><small>LINKED STEPS</small><b>${linked}</b><span>${domains} domain${domains === 1 ? "" : "s"} · plan dependencies</span></article>
       </div>
       <footer><b>CREATE</b><b>UPDATE</b><b>LINK</b><b>RESOLVE</b><span>Temporary `temp:` results exist only inside this plan. Production preflight/apply resolves them to authoritative stable IDs.</span></footer>`;
@@ -177,6 +186,7 @@
 
   document.addEventListener("click", schedule, true);
   document.addEventListener("input", schedule, true);
+  document.addEventListener("cmx:lab-planner-preflight-updated", schedule);
   window.addEventListener("pageshow", schedule);
   window.addEventListener("cmx:lab-directory-updated", schedule);
   window.addEventListener("cmx:lab-automations-updated", schedule);
