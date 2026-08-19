@@ -1,7 +1,7 @@
 # Check In Automations Frontend — CURRENT
 
 Date: 2026-08-19
-Status: Active Continuum Lab Automations v5 workflow model + deterministic Planner + shared Change Review + compact v6 mobile Action stack
+Status: Active Continuum Lab Automations v5 workflow model + deterministic Planner + typed Preflight + shared Change Review + compact v6 mobile Action stack
 
 # Focused route
 
@@ -23,11 +23,11 @@ Strategic product direction: `docs/continuum-automations-master-plan-CURRENT.md`
 
 # Current active stack
 
-The route deliberately separates older browser-editor compatibility from newer product/model proofs:
+The route deliberately separates browser-editor compatibility from newer product/model proofs:
 
 - `lab-automations-experience-v3.js/.css` — browser Draft/autosave compatibility core and five-stage editor;
 - `lab-automations-model-v5.js` — canonical Lab ordered workflow normalization/validation;
-- `lab-continuum-planner-contract-v1.js` — shared browser-only Change Plan vocabulary and plan dependency validation;
+- `lab-continuum-planner-contract-v1.js` — shared browser-only Change Plan vocabulary, dependency validation and typed preflight issue vocabulary;
 - `lab-automations-route-integration.js`;
 - `lab-automations-system-surface.js/.css`;
 - `lab-automations-progressive-preview.js`;
@@ -40,7 +40,8 @@ The route deliberately separates older browser-editor compatibility from newer p
 - `lab-automations-sequence-v4.js/.css` — inter-step IF/WAIT authoring UX;
 - `lab-automations-flow-v5.js/.css` — ordered v5 Flow Preview;
 - `lab-automations-planner-v5.js/.css` — deterministic local typed Planner proving surface;
-- `lab-continuum-planner-review-v1.js/.css` — shared effect/domain/review/dependency presentation;
+- `lab-continuum-planner-preflight-v1.js/.css` — shared typed issue review, decisions/defer state and Change Plan row linkage;
+- `lab-continuum-planner-review-v1.js/.css` — shared effect/domain/review/dependency summary;
 - `lab-automations-action-stack-v6.js/.css` — compact mobile Action-stack authoring layer;
 - `lab-automations-v5-mobile-qa.css` — final focused-route mobile QA layer.
 
@@ -171,7 +172,8 @@ It shows:
 
 1. **ORDERED V5 FLOW**;
 2. **CHANGE PLAN** typed operations;
-3. **PREFLIGHT** blockers.
+3. **PREFLIGHT · TYPED REVIEW**;
+4. **CHANGE REVIEW**.
 
 `Use this draft` creates a normal local Automation Draft, records `plannerPreview.source = "local-deterministic-v5"`, then normalizes it through `CMXAutomationModelV5.syncStore()`.
 
@@ -193,7 +195,7 @@ It is a browser proving registry for operation types such as:
 
 Registry metadata includes owning domain, family, effect and review class.
 
-Plans may also carry browser-only dependency semantics:
+Plans may carry browser-only dependency semantics:
 
 - operation `id`;
 - `dependsOn[]`;
@@ -206,6 +208,51 @@ These `temp:` references are product proof only. Future server Change Plans own 
 
 Browser marker: `data-lab-planner-contract="v1"`.
 
+# Typed Planner Preflight v1
+
+`lab-continuum-planner-preflight-v1.js/.css` turns local Planner warnings into one shared typed review surface across Directory and Automations.
+
+The shared contract currently recognizes proving issue codes including:
+
+- `directory.ambiguous_match`;
+- `directory.identity_check_required`;
+- `directory.audience_required`;
+- `automation.schedule_unconfirmed`;
+- `runtime.required`;
+- `library.service_required`;
+- `connections.required`;
+- `authority.approval_required`;
+- `planner.dependency_invalid`;
+- `planner.review_required`.
+
+Current review states are intentionally distinct:
+
+- **CHECK REQUIRED** — the user still needs to review a decision;
+- **PREVIEW DECISION** — a sample Lab decision has been recorded, with no protected mutation;
+- **DEFERRED TO DRAFT** — safe to continue creating an editable Draft, while the configuration remains incomplete;
+- **BLOCKED** — a real server/capability/Runtime prerequisite is unavailable and cannot be cleared in Lab;
+- **APPROVAL REQUIRED** — reserved for an explicit authority path. Planner cannot approve itself.
+
+A sample Directory ambiguity can be reviewed with `Use existing match` or `Keep separate`. The choice changes preview state only and can be changed again.
+
+A missing Automation Audience or unconfirmed timing can be marked **Handle in Draft**. That does not resolve the requirement. It moves it into the editable Draft and can be undone.
+
+A missing Runtime, Connection, protected server identity service or approval remains visible as blocked/approval state.
+
+Each typed issue is also linked back to the Change Plan row it affects. The operation row can visibly carry:
+
+- `CHECK`;
+- `DECISION · …`;
+- `DEFERRED`;
+- `BLOCKED`;
+- `APPROVAL`.
+
+The issue card identifies `AFFECTS CHANGE ##` when a current proving mapping exists. Plan-level issues remain explicitly plan-level.
+
+Browser marker: `data-lab-planner-preflight="v1"`.
+
+Important implementation boundary: the local proving adapters still start with human-readable blocker messages, and `classifyIssue()` maps those messages into the shared issue vocabulary. Production must **not** copy that text-classification mechanism. The protected Planner/preflight service later returns authoritative structured issue codes, stable references, revisions, readiness, permissions and approval requirements directly from server domain services.
+
 # Shared Change Review v1
 
 `lab-continuum-planner-review-v1.js/.css` presents the shared operation metadata in one review language.
@@ -216,11 +263,14 @@ Each proposed operation can show:
 - owning domain;
 - review level;
 - `Produces …` plan-local result;
-- `Uses Step …` dependency.
+- `Uses Step …` dependency;
+- current typed preflight state when the issue maps to that Change Plan row.
 
-The **CHANGE REVIEW** summary shows typed changes, represented blockers, approval/check state, affected domains and linked-step context.
+The **CHANGE REVIEW** summary shows typed changes, unresolved issues, approval state and linked-step/domain context.
 
-This is UX proof only. Real server preflight, permissions, stale revisions, duplicate resolution, risk classification and approvals remain authoritative later.
+Reviewed/deferred preflight items stop counting as unresolved. A true blocked or approval-required item remains in the unresolved count.
+
+This is UX proof only. Real server preflight, permissions, stale revisions, duplicate resolution, risk classification, approvals and apply remain authoritative later.
 
 Browser marker: `data-lab-planner-review="v1"`.
 
@@ -254,26 +304,29 @@ Browser marker: `data-lab-automations-action-stack="v6-mobile"`.
 
 Preserve one primary work area, large touch targets, readable 16px editing inputs where needed, vertical flow presentation, safe-area-aware actions, no nested-scroll traps and no horizontal overflow.
 
-Planner and broader mobile geometry remain covered by the existing mobile validation work.
+The current browser QA covers both **360×800** and **390×844** where relevant.
 
-The Action stack now has a dedicated interactive browser contract:
+Action-stack interaction contract:
 
 `.github/workflows/automations-v6-action-stack-validation.yml`
 
-It exercises the real UI at **360×800** and **390×844**:
+It exercises:
 
 `open Draft → enter DO → duplicate to two Actions → collapse → open one → remove one → verify one remains`
 
-The probe also checks:
+Planner preflight interaction contract:
 
-- v6 marker loaded;
-- compact collapsed-card height;
-- hidden detail fields while collapsed;
-- one-open-at-a-time accordion behavior;
-- visible Remove availability when multiple Actions exist;
-- final single-step Remove protection;
-- 44px+ main Edit/Remove touch targets;
-- horizontal viewport fit.
+`.github/workflows/continuum-planner-preflight-validation.yml`
+
+It exercises:
+
+- Directory ambiguity starts as `CHECK` on the affected Change Plan row;
+- recording `Use existing match` changes the row to `DECISION · Use existing match` and removes it from OPEN;
+- Automation Audience starts as `CHECK` on an affected Action row;
+- `Handle in Draft` changes that row to `DEFERRED`;
+- the corresponding WAIT remains `BLOCKED` because Runtime is still unavailable;
+- preflight controls remain 44px+ on phone;
+- no horizontal overflow at 360 or 390px.
 
 The GitHub connector does not provide an independently observed push-triggered workflow result here, so source/workflow presence must not be described as an observed green CI run.
 
@@ -295,11 +348,13 @@ Current relevant Lab persistence:
 - advanced-flow compatibility/fallback: `cmx-lab-automation-flow-controls-v1`;
 - mobile Action-stack presentation only: `cmx-lab-automations-action-stack-ui-v1` in sessionStorage.
 
+Typed preflight decisions currently live only in page-memory for the open proving surface. They are not durable Planner state and do not mutate protected domains.
+
 # Production migration rule
 
 Migrate accepted semantics into protected React + typed server Draft/domain services using the generated API client.
 
-Do not copy browser localStorage/sessionStorage, DOM patching, browser Audience/data resolution as authority, `workflowV5` JSON as server schema, local deterministic Planner matching, browser Planner registries, browser Change Review counts, or browser timing into production.
+Do not copy browser localStorage/sessionStorage, DOM patching, browser Audience/data resolution as authority, `workflowV5` JSON as server schema, local deterministic Planner matching, browser Planner registries, blocker-text classification, browser Change Review counts, or browser timing into production.
 
 # Backend truth
 
@@ -313,7 +368,8 @@ Current validated Phase 2A backend remains intentionally much smaller:
 - no production Audience/data/input-routing/inter-step service;
 - no server v5-equivalent ordered model;
 - no authoritative Planner operation registry;
+- no authoritative Planner preflight/review/apply;
 - no Planner/Change Plan execution;
 - no Runtime/provider/AI execution.
 
-The prepared Phase 2A production migration remains the immediate backend boundary. The v6 Action-stack work is frontend authoring UX only and does not alter that boundary.
+The prepared Phase 2A production migration remains the immediate backend boundary. The v6 Action-stack and typed Planner Preflight work are Lab frontend/product proofs only and do not alter that boundary.
