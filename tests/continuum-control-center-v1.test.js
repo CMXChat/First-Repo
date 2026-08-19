@@ -33,8 +33,8 @@ assert.match(html, /href="\/checkin\/"/);
 assert.match(html, /href="\/lab\/automations\/"/);
 assert.match(html, /control-center-theme-init\.js\?v=20260819-1/);
 assert.match(html, /control-center-v1\.css\?v=20260819-1/);
-assert.match(html, /control-center-mobile-polish-v2\.css\?v=20260819-2/);
-assert.match(html, /control-center-v1\.js\?v=20260819-2/);
+assert.match(html, /control-center-mobile-polish-v2\.css\?v=20260819-3/);
+assert.match(html, /control-center-v1\.js\?v=20260819-3/);
 assert.ok(
   html.indexOf('control-center-mobile-polish-v2.css') > html.indexOf('control-center-v1.css'),
   'device-review polish must load after base Control Center styles'
