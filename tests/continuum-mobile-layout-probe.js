@@ -32,6 +32,15 @@
     return Boolean(node) && node.getBoundingClientRect().height >= minimum - 0.5;
   }
 
+  function reviewRendered(rootNode) {
+    return Boolean(
+      rootNode?.querySelector(".continuum-plan-review-summary")
+      && rootNode?.querySelector(".continuum-plan-op-meta [data-plan-meta='effect']")
+      && rootNode?.querySelector(".continuum-plan-op-meta [data-plan-meta='domain']")
+      && rootNode?.querySelector(".continuum-plan-op-meta [data-plan-meta='review']")
+    );
+  }
+
   async function probeDirectory() {
     await sleepFrame();
     const ai = document.querySelector("[data-dir2-ai-setup]");
@@ -51,6 +60,12 @@
     root.dataset.qaDirectoryPlannerFit = modal && rectFitsViewport(modal) && pageFitsHorizontally(modal) ? "true" : "false";
     root.dataset.qaDirectoryPlannerOpen = modal ? "true" : "false";
     root.dataset.qaDirectoryPlannerTapTargets = tapHeightAtLeast(example) && tapHeightAtLeast(close) ? "true" : "false";
+
+    example?.click();
+    await sleepFrame();
+    await wait(40);
+    root.dataset.qaDirectoryPlannerReview = reviewRendered(modal) ? "true" : "false";
+    root.dataset.qaDirectoryPlannerFitAfterReview = modal && rectFitsViewport(modal) && pageFitsHorizontally(modal) ? "true" : "false";
     return true;
   }
 
@@ -74,12 +89,13 @@
     const example = modal.querySelector("[data-v5-planner-example='urgent-ai']") || modal.querySelector("[data-v5-planner-example]");
     example?.click();
     await sleepFrame();
-    await wait(30);
+    await wait(40);
 
     const result = modal.querySelector(".v5-planner-result:not([hidden])");
     const useDraft = modal.querySelector("[data-v5-planner-use]");
     const close = modal.querySelector("[data-v4-modal-close]");
     root.dataset.qaAutomationsPlannerResult = result ? "true" : "false";
+    root.dataset.qaAutomationsPlannerReview = reviewRendered(result) ? "true" : "false";
     root.dataset.qaAutomationsPlannerFit = rectFitsViewport(modal) && pageFitsHorizontally(modal) ? "true" : "false";
     root.dataset.qaAutomationsPlannerTapTargets = tapHeightAtLeast(example) && tapHeightAtLeast(useDraft) && tapHeightAtLeast(close) ? "true" : "false";
     return true;
