@@ -67,7 +67,7 @@ jobs:
           const contract = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260819-planner-contract-v1');
+          assert.equal(BUILD, '20260819-planner-contract-v1qa2');
 
           const counts = {
             document_count: 6,
@@ -84,7 +84,7 @@ jobs:
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-contract-v1'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-contract-v1qa2'));
           assert(!shell.includes('document.write(html)'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
@@ -100,7 +100,7 @@ jobs:
             '/assets/lab/lab-directory-v2-polish.css',
             '/assets/lab/lab-continuum-planner-contract-v1.js?v=20260819-v1',
             '/assets/lab/lab-directory-planner-preview.js',
-            '/assets/lab/lab-directory-planner-preview.css?v=20260819-directory-planner-v2qa1',
+            '/assets/lab/lab-directory-planner-preview.css?v=20260819-directory-planner-v2qa2',
             '/assets/lab/lab-inventory.js',
             '/assets/lab/lab-actions.js',
             '/assets/lab/lab-timeline-live.js',
@@ -178,7 +178,6 @@ jobs:
               elif term not in planner_contract:
                   sys.exit(f'shared Planner contract missing operation/contract: {term}')
 
-          # Every typed operation literal used by the Directory Planner must exist in the shared registry.
           directory_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', planner))
           registry_ops = set(re.findall(r'"((?:directory|library|automation)\.[a-z0-9_]+)":\s*Object\.freeze', planner_contract))
           unknown = sorted(directory_ops - registry_ops)
@@ -199,6 +198,7 @@ jobs:
 
           for term in [
               '.lab-directory-v2 .dir2-primary{position:static',
+              '.dir2-ai-modal>header button{width:44px',
               '.dir2-ai-examples button{min-height:44px',
               '.dir2-ai-ops strong{font-size:11px',
               '.dir2-ai-modal>footer button{min-height:46px'
