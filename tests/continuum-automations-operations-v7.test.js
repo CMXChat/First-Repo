@@ -14,9 +14,9 @@ const polishCss = fs.readFileSync('assets/lab/lab-automations-operations-v7-poli
 
 assert.match(index, /lab-automations-operations-v7\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7-future\.css\?v=20260819-v7ops1/);
-assert.match(index, /lab-automations-operations-v7-polish\.css\?v=20260819-v7ops1/);
+assert.match(index, /lab-automations-operations-v7-polish\.css\?v=20260819-v7ops2/);
 assert.match(index, /lab-automations-operations-v7\.js\?v=20260819-v7ops2/);
-assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops2/);
+assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops3/);
 assert.ok(index.indexOf('lab-automations-operations-v7.js') > index.indexOf('lab-automations-action-stack-v6.js'), 'v7 must load after accepted authoring layers');
 assert.ok(index.indexOf('lab-automations-operations-v7-polish.js') > index.indexOf('lab-automations-operations-v7.js'), 'v7 chrome polish must load last');
 
@@ -48,7 +48,6 @@ assert.match(source, /location\.reload\(\)/);
 assert.match(source, /idMap\.get\(control\.afterActionId\)/);
 assert.match(source, /sourceId: idMap\.get\(control\.source\.sourceId\)/);
 
-assert.match(polish, /CONTINUUM/);
 assert.match(polish, /LAB · AUTOMATIONS/);
 assert.match(polish, /LAB · EXECUTION OFF/);
 assert.match(polish, /PLANNER · LOCAL PREVIEW/);
@@ -57,6 +56,12 @@ assert.match(polish, /No model call or provider action occurs/);
 assert.match(polish, /dataset\.v7OpenPlanner/);
 assert.match(polish, /function openPlanner\(\)/);
 assert.match(polish, /data-v4-start='planner'/);
+assert.match(polish, /function patchDraftSummary\(\)/);
+assert.match(polish, /filter\(item => \(item\.status \|\| "Draft"\) === "Draft"\)/);
+assert.match(polish, /aria-labelledby/);
+assert.match(polish, /\.v7-manage-backdrop/);
+assert.match(polish, /function collapseStackedCatalogModals\(\)/);
+assert.match(polish, /restoreManageFocus/);
 assert.match(polish, /dataset\.labAutomationsOperationsPolish = "v7"/);
 
 for (const checkedSource of [source, polish]) {
@@ -85,6 +90,7 @@ assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 assert.match(futureCss, /\.v7-future-capability/);
 assert.match(futureCss, /@media\(max-width:680px\)/);
 assert.match(polishCss, /\.v7-planner-button/);
+assert.match(polishCss, /grid-template-columns:minmax\(0,1fr\) auto auto/);
 assert.match(polishCss, /@media\(max-width:760px\)/);
 assert.match(polishCss, /@media\(max-width:420px\)/);
 
