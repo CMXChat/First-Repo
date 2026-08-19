@@ -13,6 +13,13 @@
     "library.create_folder": Object.freeze({ domain: "Library", family: "structure", label: "Create folder", effect: "create", review: "low-risk" }),
     "library.create_document": Object.freeze({ domain: "Library", family: "content", label: "Create document Draft", effect: "create", review: "low-risk" }),
 
+    "signals.create_watch": Object.freeze({ domain: "Signals", family: "watch", label: "Create Signal Watch", effect: "create", review: "conditional" }),
+    "signals.update_watch": Object.freeze({ domain: "Signals", family: "watch", label: "Update Signal Watch", effect: "update", review: "conditional" }),
+    "signals.attach_source": Object.freeze({ domain: "Signals", family: "source", label: "Attach approved Signal source", effect: "link", review: "conditional" }),
+    "signals.set_filter": Object.freeze({ domain: "Signals", family: "matching", label: "Set Signal filters", effect: "update", review: "low-risk" }),
+    "signals.set_interpretation": Object.freeze({ domain: "Signals", family: "interpretation", label: "Set bounded Signal interpretation", effect: "update", review: "conditional" }),
+    "signals.pause_watch": Object.freeze({ domain: "Signals", family: "watch", label: "Pause Signal Watch", effect: "update", review: "low-risk" }),
+
     "automation.create_draft": Object.freeze({ domain: "Automations", family: "definition", label: "Create Automation Draft", effect: "create", review: "low-risk" }),
     "automation.set_trigger": Object.freeze({ domain: "Automations", family: "definition", label: "Set Trigger", effect: "update", review: "low-risk" }),
     "automation.set_preconditions": Object.freeze({ domain: "Automations", family: "definition", label: "Set pre-action Conditions", effect: "update", review: "low-risk" }),
@@ -21,7 +28,8 @@
     "automation.add_wait": Object.freeze({ domain: "Automations", family: "sequence", label: "Add inter-step WAIT", effect: "update", review: "conditional" }),
     "automation.set_finish": Object.freeze({ domain: "Automations", family: "definition", label: "Set Finish policy", effect: "update", review: "low-risk" }),
     "automation.reference_audience": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Directory Audience", effect: "link", review: "conditional" }),
-    "automation.reference_content": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Library content", effect: "link", review: "conditional" })
+    "automation.reference_content": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Library content", effect: "link", review: "conditional" }),
+    "automation.reference_signal": Object.freeze({ domain: "Automations", family: "reference", label: "Reference Signal Watch", effect: "link", review: "conditional" })
   });
 
   const PREFLIGHT_ISSUES = Object.freeze({
@@ -40,6 +48,12 @@
     }),
     "automation.schedule_unconfirmed": Object.freeze({
       domain: "Automations", severity: "check", label: "Timing needs confirmation", resolution: "draft"
+    }),
+    "signals.source_required": Object.freeze({
+      domain: "Signals", severity: "check", label: "Signal source still required", resolution: "draft"
+    }),
+    "signals.service_required": Object.freeze({
+      domain: "Signals", severity: "blocked", label: "Protected Signals service required", resolution: "server"
     }),
     "runtime.required": Object.freeze({
       domain: "Runtime", severity: "blocked", label: "Runtime required", resolution: "locked"
@@ -156,6 +170,8 @@
     else if (/ambiguous people|ambiguous organization|ambiguous .*match/.test(q)) code = "directory.ambiguous_match";
     else if (/audience.*still need|audiences.*still need|needs a protected directory selection|need protected directory selections/.test(q)) code = "directory.audience_required";
     else if (/exact schedule|exact .*time.*confirmation|schedule\/time.*confirmation/.test(q)) code = "automation.schedule_unconfirmed";
+    else if (/signal.*source.*required|watch.*source.*required|signal source still need/.test(q)) code = "signals.source_required";
+    else if (/protected signals service|signals service required|signalwatch service/.test(q)) code = "signals.service_required";
     else if (/inter-step wait.*runtime|requires future runtime|runtime.*before execution|runtime.*unavailable|runtime\/provider execution/.test(q)) code = "runtime.required";
     else if (/library mutations|protected library services|library service/.test(q)) code = "library.service_required";
     else if (/connection.*required|missing connection/.test(q)) code = "connections.required";
