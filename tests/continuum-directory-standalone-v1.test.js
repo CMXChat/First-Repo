@@ -9,7 +9,7 @@ const js = fs.readFileSync('assets/lab/directory-app-v1.js', 'utf8');
 const theme = fs.readFileSync('assets/lab/directory-theme-init.js', 'utf8');
 
 assert.match(html, /<title>Continuum · Directory<\/title>/);
-assert.match(html, /Identity &amp; relationships · sample data/);
+assert.match(html, /Identity & relationships · sample data/);
 assert.match(html, /People/);
 assert.match(html, /Organizations/);
 assert.match(html, /Groups/);
