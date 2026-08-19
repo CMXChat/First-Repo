@@ -40,6 +40,9 @@
     blocked: "BLOCKED"
   });
 
+  const asList = value => Array.isArray(value) ? value.filter(Boolean).map(String) : [];
+  const isTempRef = value => String(value || "").startsWith("temp:");
+
   function get(type) {
     return OPERATIONS[String(type || "")] || null;
   }
@@ -53,6 +56,47 @@
       ok: unknown.length === 0,
       count: list.length,
       unknown: [...new Set(unknown)]
+    };
+  }
+
+  function validatePlan(operations) {
+    const list = Array.isArray(operations) ? operations : [];
+    const errors = [];
+    const seenIds = new Set();
+    const produced = new Map();
+
+    list.forEach((operation, index) => {
+      const id = String(operation?.id || `op-${index + 1}`);
+      const type = String(operation?.type || "");
+      const dependsOn = asList(operation?.dependsOn);
+      const uses = asList(operation?.uses);
+      const produces = operation?.produces ? String(operation.produces) : "";
+
+      if (!OPERATIONS[type]) errors.push({ code: "unknown_operation", operationId: id, type });
+      if (seenIds.has(id)) errors.push({ code: "duplicate_operation_id", operationId: id });
+
+      dependsOn.forEach(dependencyId => {
+        if (!seenIds.has(dependencyId)) errors.push({ code: "dependency_not_earlier", operationId: id, dependencyId });
+      });
+
+      uses.filter(isTempRef).forEach(ref => {
+        if (!produced.has(ref)) errors.push({ code: "temp_ref_not_available", operationId: id, ref });
+      });
+
+      if (produces) {
+        if (!isTempRef(produces)) errors.push({ code: "plan_ref_must_be_temporary", operationId: id, ref: produces });
+        else if (produced.has(produces)) errors.push({ code: "duplicate_temp_ref", operationId: id, ref: produces });
+        else produced.set(produces, id);
+      }
+
+      seenIds.add(id);
+    });
+
+    return {
+      ok: errors.length === 0,
+      count: list.length,
+      errors,
+      produced: Object.fromEntries(produced)
     };
   }
 
@@ -91,8 +135,10 @@
     get,
     describe,
     validateOperations,
+    validatePlan,
     effectLabel,
-    reviewLabel
+    reviewLabel,
+    isTempRef
   });
 
   document.documentElement.dataset.labPlannerContract = "v1";
