@@ -32,12 +32,18 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-model-v5.js
+          node --check assets/lab/lab-automations-sequence-v4.js
           node --check assets/lab/lab-automations-scenarios-v4.js
 
           grep -q 'Urgent AI follow-up' assets/lab/lab-automations-scenarios-v4.js
           grep -q 'Delayed backup escalation' assets/lab/lab-automations-scenarios-v4.js
           grep -q 'sourceActionIndex' assets/lab/lab-automations-scenarios-v4.js
           grep -q 'flowControls' assets/lab/lab-automations-scenarios-v4.js
+
+          grep -q 'CMXAutomationModelV5' assets/lab/lab-automations-sequence-v4.js
+          grep -q 'getFlowControls' assets/lab/lab-automations-sequence-v4.js
+          grep -q 'setFlowControls' assets/lab/lab-automations-sequence-v4.js
+          grep -q 'labAutomationsSequenceModel' assets/lab/lab-automations-sequence-v4.js
 
           node <<'NODE'
           const fs = require('fs');
@@ -129,12 +135,27 @@ jobs:
           assert.equal(badVerdict.ok, false);
           assert(badVerdict.errors.some(item => item.code === 'condition_uses_future_or_missing_step'));
 
+          const nextControls = api.getFlowControls(legacy).filter(control => control.type !== 'wait');
+          nextControls.push({
+            id: 'wait-v5-owned',
+            type: 'wait',
+            afterActionId: 'step-ai',
+            duration: { days: 0, hours: 2, minutes: 0 },
+            enabled: true
+          });
+          const committed = api.setFlowControls('auto-v5-test', nextControls);
+          assert(committed, 'v5 setFlowControls should commit');
+          assert(committed.nodes.some(node => node.id === 'wait-v5-owned' && node.kind === 'wait'));
+          const committedStore = JSON.parse(memory.get('cmx-lab-automations-v1'));
+          assert(committedStore.automations[0].flowControls.some(control => control.id === 'wait-v5-owned'));
+          assert.equal(committedStore.automations[0].workflowV5.version, 5);
+
           api.syncStore();
           const stored = JSON.parse(memory.get('cmx-lab-automations-v1'));
           assert.equal(stored.automations[0].workflowV5.version, 5);
           assert.equal(document.documentElement.dataset.labAutomationsModel, 'v5');
 
-          console.log('Automations v5 canonical model contract passed.');
+          console.log('Automations v5 canonical model and mutation contract passed.');
           NODE
 
       - name: Browser model and scenario smoke
@@ -164,7 +185,8 @@ jobs:
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-v5-mobile.html
           grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5-mobile.html
           grep -q 'data-lab-automations-sequence="v4-4"' /tmp/continuum-v5-mobile.html
+          grep -q 'data-lab-automations-sequence-model="v5"' /tmp/continuum-v5-mobile.html
           grep -q 'What should start this' /tmp/continuum-v5-mobile.html
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-mobile.html
 
-          echo 'Automations v5 model and 15-scenario browser smoke passed.'
+          echo 'Automations v5 model, v5-owned sequence mutation and 15-scenario browser smoke passed.'
