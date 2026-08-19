@@ -26,7 +26,7 @@
    * router/components/API client/backend instead. See CHECKINLABCLONE.md.
    */
 
-  const BUILD = "20260819-planner-preflight-v1r1";
+  const BUILD = "20260819-planner-preflight-v1r2";
   const SNAPSHOT_URL = `/assets/lab/checkin-index-snapshot.html?v=${BUILD}`;
 
   const LAB_STYLES = Object.freeze([
@@ -35,7 +35,7 @@
     ["lab-directory-v2.css", "20260818-directory2"],
     ["lab-directory-v2-polish.css", "20260818-directory2p"],
     ["lab-directory-planner-preview.css", "20260819-directory-planner-v2qa2"],
-    ["lab-continuum-planner-preflight-v1.css", "20260819-v1"],
+    ["lab-continuum-planner-preflight-v1.css", "20260819-v1r2"],
     ["lab-continuum-planner-review-v1.css", "20260819-v1preflight1"],
     ["lab-inventory.css", "20260816-inventory1"],
     ["lab-actions.css", "20260816-actions1"],
@@ -60,7 +60,7 @@
     ["lab-directory-v2.js", "20260818-directory2"],
     ["lab-continuum-planner-contract-v1.js", "20260819-v1preflight1"],
     ["lab-directory-planner-preview.js", "20260819-directory-planner-v2deps1"],
-    ["lab-continuum-planner-preflight-v1.js", "20260819-v1r1"],
+    ["lab-continuum-planner-preflight-v1.js", "20260819-v1r2"],
     ["lab-continuum-planner-review-v1.js", "20260819-v1preflight1"],
     ["lab-inventory.js", "20260816-inventory1"],
     ["lab-actions.js", "20260816-actions1"],
