@@ -61,6 +61,17 @@
       window.requestAnimationFrame(() => {
         restoreQueued = false;
         if (currentOpenSurface()) return;
+
+        const current = document.activeElement;
+        const currentIsUseful = current instanceof HTMLElement
+          && current !== document.body
+          && current !== document.documentElement
+          && !current.closest('.cc-drawer, .cc-command-overlay');
+        if (currentIsUseful) {
+          returnFocus = null;
+          return;
+        }
+
         const target = returnFocus;
         returnFocus = null;
         if (!target?.isConnected || typeof target.focus !== 'function') return;
