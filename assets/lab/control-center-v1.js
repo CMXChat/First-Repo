@@ -111,6 +111,7 @@
   }
 
   function openDrawer(drawer) {
+    closeCommandPalette();
     [whyDrawer, simDrawer].forEach((item) => {
       if (!item) return;
       const active = item === drawer;
@@ -154,6 +155,134 @@
     if (label) label.textContent = theme === 'dark' ? 'Use light theme' : 'Use dark theme';
   }
 
+  const commandItems = [
+    { group: 'Control Center', title: 'Now', desc: 'Current attention and active work', key: 'N', action: () => jumpToView('now') },
+    { group: 'Control Center', title: 'Upcoming', desc: 'Scheduled and due work', key: 'U', action: () => jumpToView('upcoming') },
+    { group: 'Control Center', title: 'History', desc: 'Completed and resolved sample work', key: 'H', action: () => jumpToView('history') },
+    { group: 'Control Center', title: 'All activity', desc: 'Chronological sample activity', key: 'A', action: () => jumpToView('activity') },
+    { group: 'Control Center', title: 'Run simulation', desc: 'Open the safe Lab scenario runner', key: 'S', action: () => openDrawer(simDrawer) },
+    { group: 'Open', title: 'Check In', desc: 'Open the live protected Check In route', href: '/checkin/' },
+    { group: 'Open', title: 'Directory', desc: 'Open the current Directory Lab', href: '/lab/' },
+    { group: 'Open', title: 'Automations', desc: 'Open the focused Automation Lab', href: '/lab/automations/' },
+    { group: 'Open', title: 'Spaces', desc: 'Open the Spaces Lab experience', href: '/spaces/' },
+    { group: 'Open', title: 'Continuum document', desc: 'Read the current Continuum product document', href: '/doc/' },
+    { group: 'Appearance', title: 'Toggle theme', desc: 'Switch between light and rich-black dark mode', key: 'T', action: () => applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark') }
+  ];
+
+  let commandOverlay;
+  let commandInput;
+  let commandResults;
+  let commandFiltered = [...commandItems];
+  let commandActiveIndex = 0;
+
+  function commandIcon() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5v14"/></svg>';
+  }
+
+  function createCommandPalette() {
+    if (commandOverlay) return;
+    commandOverlay = document.createElement('div');
+    commandOverlay.className = 'cc-command-overlay';
+    commandOverlay.dataset.open = 'false';
+    commandOverlay.setAttribute('aria-hidden', 'true');
+    commandOverlay.innerHTML = `
+      <section class="cc-command-palette" role="dialog" aria-modal="true" aria-label="Continuum command palette">
+        <div class="cc-command-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+          <input class="cc-command-input" type="search" autocomplete="off" spellcheck="false" placeholder="Jump, open, or find an action" aria-label="Search Control Center commands" />
+        </div>
+        <div class="cc-command-results"></div>
+        <div class="cc-command-footer"><span><kbd>↑↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span><span>Lab navigation only</span></div>
+      </section>`;
+    document.body.appendChild(commandOverlay);
+    commandInput = commandOverlay.querySelector('.cc-command-input');
+    commandResults = commandOverlay.querySelector('.cc-command-results');
+    commandOverlay.addEventListener('mousedown', (event) => {
+      if (event.target === commandOverlay) closeCommandPalette();
+    });
+    commandInput.addEventListener('input', () => {
+      const query = commandInput.value.trim().toLowerCase();
+      commandFiltered = commandItems.filter((item) => `${item.group} ${item.title} ${item.desc}`.toLowerCase().includes(query));
+      commandActiveIndex = 0;
+      renderCommandResults();
+    });
+    commandInput.addEventListener('keydown', handleCommandKeys);
+    renderCommandResults();
+  }
+
+  function renderCommandResults() {
+    if (!commandResults) return;
+    if (!commandFiltered.length) {
+      commandResults.innerHTML = '<div class="cc-command-empty">No matching Control Center command.</div>';
+      return;
+    }
+    let lastGroup = '';
+    commandResults.innerHTML = commandFiltered.map((item, index) => {
+      const group = item.group !== lastGroup ? `<div class="cc-command-group">${item.group}</div>` : '';
+      lastGroup = item.group;
+      return `${group}<button class="cc-command-item" type="button" data-command-index="${index}" data-active="${index === commandActiveIndex ? 'true' : 'false'}"><span class="cc-command-item-icon">${commandIcon()}</span><span><strong>${item.title}</strong><span>${item.desc}</span></span><span class="cc-command-key">${item.key || '↗'}</span></button>`;
+    }).join('');
+    commandResults.querySelectorAll('[data-command-index]').forEach((button) => {
+      button.addEventListener('mouseenter', () => {
+        commandActiveIndex = Number(button.dataset.commandIndex);
+        syncCommandActive();
+      });
+      button.addEventListener('click', () => runCommand(Number(button.dataset.commandIndex)));
+    });
+  }
+
+  function syncCommandActive() {
+    commandResults?.querySelectorAll('[data-command-index]').forEach((button) => {
+      button.dataset.active = Number(button.dataset.commandIndex) === commandActiveIndex ? 'true' : 'false';
+    });
+    commandResults?.querySelector(`[data-command-index="${commandActiveIndex}"]`)?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function runCommand(index) {
+    const item = commandFiltered[index];
+    if (!item) return;
+    closeCommandPalette();
+    if (item.href) {
+      window.location.href = item.href;
+      return;
+    }
+    item.action?.();
+  }
+
+  function handleCommandKeys(event) {
+    if (!commandFiltered.length) return;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const delta = event.key === 'ArrowDown' ? 1 : -1;
+      commandActiveIndex = (commandActiveIndex + delta + commandFiltered.length) % commandFiltered.length;
+      syncCommandActive();
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      runCommand(commandActiveIndex);
+    }
+  }
+
+  function openCommandPalette() {
+    closeDrawers();
+    createCommandPalette();
+    commandFiltered = [...commandItems];
+    commandActiveIndex = 0;
+    commandInput.value = '';
+    renderCommandResults();
+    commandOverlay.dataset.open = 'true';
+    commandOverlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('cc-command-open');
+    window.requestAnimationFrame(() => commandInput.focus());
+  }
+
+  function closeCommandPalette() {
+    if (!commandOverlay) return;
+    commandOverlay.dataset.open = 'false';
+    commandOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cc-command-open');
+  }
+
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => setView(tab.dataset.ccTab));
     tab.addEventListener('keydown', (event) => {
@@ -185,7 +314,15 @@
   document.querySelectorAll('[data-close-drawer]').forEach((button) => button.addEventListener('click', closeDrawers));
   backdrop?.addEventListener('click', closeDrawers);
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeDrawers();
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      commandOverlay?.dataset.open === 'true' ? closeCommandPalette() : openCommandPalette();
+      return;
+    }
+    if (event.key === 'Escape') {
+      if (commandOverlay?.dataset.open === 'true') closeCommandPalette();
+      else closeDrawers();
+    }
   });
 
   document.getElementById('themeToggle')?.addEventListener('click', () => {
@@ -212,18 +349,8 @@
     simResult.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   });
 
-  const autonomyButton = document.getElementById('autonomyInfo');
-  autonomyButton?.addEventListener('click', () => renderWhy('event-simulation'));
-
-  const command = document.getElementById('commandButton');
-  command?.addEventListener('click', () => {
-    const label = command.querySelector('span');
-    if (!label) return;
-    label.textContent = 'Command surface is a Lab placeholder';
-    window.setTimeout(() => {
-      label.textContent = 'Search, jump or ask Continuum';
-    }, 1800);
-  });
+  document.getElementById('autonomyInfo')?.addEventListener('click', () => renderWhy('event-simulation'));
+  document.getElementById('commandButton')?.addEventListener('click', openCommandPalette);
 
   function updateClock() {
     const now = new Date();
