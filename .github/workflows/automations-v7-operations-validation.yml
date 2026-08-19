@@ -6,6 +6,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-operations-v7.js'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-operations-v7.css'
       - 'assets/lab/lab-automations-operations-v7-future.css'
       - 'tests/continuum-automations-operations-v7.test.js'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-operations-v7.js'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-operations-v7.css'
       - 'assets/lab/lab-automations-operations-v7-future.css'
       - 'tests/continuum-automations-operations-v7.test.js'
@@ -34,6 +36,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-operations-v7.js
+          node --check assets/lab/lab-automations-operations-v7-polish.js
           node tests/continuum-automations-operations-v7.test.js
 
       - name: Render desktop and mobile operating surfaces
@@ -56,7 +59,11 @@ jobs:
 
           dump 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-v7-desktop.html
           grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-v7-desktop.html
+          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-desktop.html
           grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v7-desktop.html
+          grep -q 'CONTINUUM' /tmp/continuum-auto-v7-desktop.html
+          grep -q 'LAB · AUTOMATIONS' /tmp/continuum-auto-v7-desktop.html
+          grep -q 'LAB · EXECUTION OFF' /tmp/continuum-auto-v7-desktop.html
           grep -q 'Automation workspace' /tmp/continuum-auto-v7-desktop.html
           grep -q 'READY TO TEST' /tmp/continuum-auto-v7-desktop.html
           grep -q 'NEEDS SETUP' /tmp/continuum-auto-v7-desktop.html
@@ -67,12 +74,14 @@ jobs:
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-v7-mobile-dashboard.html
+          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'Automation workspace' /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'data-v7-filter="needs-setup"' /tmp/continuum-auto-v7-mobile-dashboard.html
           grep -q 'data-v7-manage' /tmp/continuum-auto-v7-mobile-dashboard.html
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-v7-mobile-editor.html
           grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-v7-mobile-editor.html
+          grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-v7-mobile-editor.html
           grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-v7-mobile-editor.html
           grep -q 'v7-editor-status' /tmp/continuum-auto-v7-mobile-editor.html
           grep -q 'LOCAL DRAFT' /tmp/continuum-auto-v7-mobile-editor.html
