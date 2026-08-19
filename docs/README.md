@@ -7,29 +7,22 @@ Repository: `CMXChat/First-Repo`
 
 Current source, tests, workflows and `*-CURRENT.md` contracts take priority over older dated notes.
 
-Dated concept documents remain decision history. Do not let an older Spaces-only, Brief or early Check In document override current Continuum product truth.
+Dated concept documents remain decision history. Do not let an older Spaces-only, Brief, CRM or Automation prototype override current Continuum truth.
 
-# Start here for Continuum / Check In
+# Start here
 
-Read in this order:
-
-1. `checkin-context-handoff-CURRENT.md` — current cross-repository production, backend and Lab truth.
-2. `continuum-product-CURRENT.md` — Continuum identity, `/doc/` role and capability-status vocabulary.
-3. `continuum-automations-master-plan-CURRENT.md` — canonical Automation product/UX/capability direction.
-4. `continuum-directory-master-plan-CURRENT.md` — canonical Directory identity/relationship/CRM-quality direction.
-5. `checkin-automations-frontend-CURRENT.md` — exact focused `/lab/automations/` frontend truth.
-6. `checkin-automations-system-surface-CURRENT.md` — focused Automation operating-surface contract.
-7. `checkin-lab-automations-integration-CURRENT.md` — `/lab/` ↔ `/lab/automations/` integration.
-8. `checkin-directory-library-CURRENT.md` — current Directory/Audience/Library cross-domain frontend truth.
-9. `checkin-library-premium-CURRENT.md` — advanced Library navigation/projection behavior.
-10. `checkin-content-editor-CURRENT.md` — native content editor behavior.
-11. `checkin-files-CURRENT.md` — binary File UX direction.
-12. `checkin-ai-product-design-CURRENT.md` — AI product direction.
-13. `checkin-communications-ai-CURRENT.md` — communication + AI Task frontend direction.
-14. `checkin-product-design-CURRENT.md` — protected Check In product design.
-15. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
-
-Do not reconstruct current state from old chats when these documents exist.
+1. `checkin-context-handoff-CURRENT.md` — concise current cross-repository truth.
+2. `continuum-product-CURRENT.md` — Continuum identity and `/doc/` contract.
+3. `continuum-automations-master-plan-CURRENT.md` — Automation product/capability direction.
+4. `continuum-directory-master-plan-CURRENT.md` — Directory identity/relationship/CRM-quality direction.
+5. `checkin-automations-frontend-CURRENT.md` — exact focused Automations frontend truth.
+6. `checkin-directory-library-CURRENT.md` — exact current Directory/Audience/Library cross-domain frontend truth.
+7. `checkin-library-premium-CURRENT.md` — Library projection/navigation contract.
+8. `checkin-content-editor-CURRENT.md` — native content editor contract.
+9. `checkin-files-CURRENT.md` — binary File direction.
+10. `checkin-ai-product-design-CURRENT.md` — AI product direction.
+11. `checkin-communications-ai-CURRENT.md` — communication + AI Task direction.
+12. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md` — canonical backend read map.
 
 # Current product naming
 
@@ -37,14 +30,12 @@ Do not reconstruct current state from old chats when these documents exist.
 - **Spaces** = focused briefing/context experience.
 - **Directory** = people, organizations, relationships, contact methods and saved audiences.
 - **Library** = protected content, files and saved knowledge.
-- **Automations** = typed definitions for when approved work should happen.
+- **Automations** = typed workflow definitions.
 - **Connections** = approved paths to outside apps, APIs, MCP services and providers.
-- **Runtime** = future server execution layer.
-- **AI** = bounded intelligence using the same typed domain services as humans.
-- **Afterlife: The Dead Man Switch** = continuity experience using the shared Continuum foundation.
-- **Check In** = current protected application/backend program name in existing routes/code/specs.
-
-Legacy Personal OS / Brief names may remain in historical filenames and dated documents.
+- **Runtime** = future server execution/history layer.
+- **AI** = bounded intelligence using the same typed services as humans.
+- **Afterlife: The Dead Man Switch** = continuity experience on the shared foundation.
+- **Check In** = current protected application/backend program name.
 
 # Current key routes
 
@@ -52,74 +43,69 @@ Legacy Personal OS / Brief names may remain in historical filenames and dated do
 
 Public noindex master explanation of Continuum.
 
-It remains under a separate clarity freeze. Do not change it merely because Lab presentation changes.
+It remains under a separate clarity freeze. Lab changes alone do not justify editing it.
 
 ## `/lab/`
 
 Broader Continuum / Check In experiment workspace.
 
-Current important product surfaces include Actions, Sequence, Activity and **Directory v2**.
+The Records area now runs **Directory v2** over the shared Lab CRM store.
 
-Directory v2 currently exposes:
+Current Directory v2 demonstrations include:
 
 - People;
 - Organizations;
 - Groups / saved audiences;
-- many-Organization Person membership in the v2 editor;
+- many-Organization Person membership;
 - ContactMethod/readiness prototypes;
 - Labels;
-- explicit relationships;
+- Person relationships;
 - notes and Activity;
+- Group resolution;
+- duplicate warnings;
 - Automation usage;
-- Group audience resolution;
-- mobile profile navigation.
+- mobile list → profile behavior.
 
-All Directory state is local Lab prototype state. It is not production persistence.
+All state remains browser-local prototype state.
 
 ## `/lab/automations/`
 
-Dedicated focused Automation operating and testing surface.
+Focused Automation operating/testing surface.
 
-Current route uses:
+Current stack:
 
-- proven v3 local Draft/autosave core;
+- v3 local Draft/autosave compatibility core;
 - progressive blank-Draft truth layer;
-- Continuum Automations v4 command-center/capability layer;
-- expanded v4 scenario layer;
+- v4 command-center/Capability Catalog layer;
+- v4 scenario layer with 13 editable starting patterns;
 - Directory readiness integration;
+- **Audience v4.1** multi-selector layer;
 - strict Lab-only execution boundary.
 
-Current workspace includes:
+Communication Actions can now select one or more:
 
-- Automations;
-- Templates;
-- Runs preview with Runtime explicitly off;
-- searchable Capability Catalog;
-- interactive Flow Preview;
-- per-stage local tests;
-- stronger Review/preflight;
-- manual / template / Planner-preview creation paths;
-- thirteen current editable starting patterns;
-- direct Person/Organization targets with Directory readiness;
-- saved Group previews.
+- Person;
+- Organization;
+- Group;
+- Label.
 
-Direct Group/Label Automation targeting is intentionally not faked through the old scalar target field. The next milestone is a typed multi-selector Audience model.
+The Lab stores `audienceSelectors[]`, resolves current unique People, deduplicates by Person ID and previews email/phone readiness.
+
+This is Lab semantics only. Production still needs the typed protected Audience model, canonical resolver and Runtime recipient freezing.
 
 ## `/checkin/`
 
 Protected Check In application.
 
-Production remains the Phase 1 switch/timing/policy/Incident/Audit system until the validated Phase 2A migration/deployment boundary is deliberately completed.
+Production remains Phase 1 until the validated Phase 2A migration/deployment runbook is deliberately completed.
 
 ## `/spaces/`
 
-Spaces briefing/context demo and design proving surface.
-
-Spaces remains part of Continuum. Older Spaces documents continue to control Spaces-specific behavior where they have not been deliberately superseded.
+Spaces briefing/context proving surface inside Continuum.
 
 ## `/environment/`
 
-Python-first development/learning environment specification and workflow.
+Python-first development/learning environment.
 
 # Automations documentation
 
@@ -127,29 +113,25 @@ Python-first development/learning environment specification and workflow.
 
 `continuum-automations-master-plan-CURRENT.md`
 
-Defines:
-
-- command-center direction;
-- capability-catalog architecture;
-- scalable trigger/condition/action discovery;
-- templates/scenarios;
-- mobile interaction model;
-- per-step testing;
-- preflight;
-- AI Planner direction;
-- Connections and Runtime destination.
+Use for command-center UX, Capability Catalog, scenarios, mobile, testing/preflight, Planner direction, Connections and Runtime destination.
 
 ## Exact frontend truth
 
 `checkin-automations-frontend-CURRENT.md`
 
-Defines current files, v3/v4 responsibility, scenarios, direct-new route behavior, progressive Draft truth, testing, timing, safety and migration expectations.
+Use for actual focused-route files, v3/v4 responsibilities, progressive Draft rules, safety and migration expectations.
+
+## Directory/Audience integration
+
+`checkin-directory-library-CURRENT.md`
+
+Use for current Audience v4.1 semantics, compatibility behavior and production boundary.
 
 ## Backend truth
 
 See `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`.
 
-Important backend Automation documents include:
+Important Automation backend docs include:
 
 - `PHASE2A-CONTINUATION-PLAN.md`;
 - `CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md`;
@@ -163,36 +145,26 @@ Important backend Automation documents include:
 
 `continuum-directory-master-plan-CURRENT.md`
 
-Defines:
+Use for:
 
 - Person / Organization / membership model;
 - ContactMethods;
 - Labels;
-- Groups/saved audiences;
-- explicit Person relationships;
-- profile Activity;
-- CRM-quality search/view/profile direction;
+- Groups;
+- PersonRelationship;
+- CRM-quality profile/search/view direction;
+- Activity;
 - duplicate/merge direction;
 - custom fields;
 - import/export;
 - mobile UX;
 - Automations/Library/Spaces/AI integration;
-- deliberate non-goals such as sales-pipeline and marketing-suite parity.
-
-## Current frontend truth
-
-`checkin-directory-library-CURRENT.md`
-
-Defines the current Directory v2 Lab surface, its compatibility store, current Automation readiness integration, typed Audience next step and Library boundary.
+- deliberate non-goals such as full sales/marketing CRM parity.
 
 ## Backend truth
 
-Most relevant backend documents:
-
-- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-DIRECTORY-PLATFORM-PLAN.md`;
-- `CMXChat/jay-app/specs/003-server-checkin/DIRECTORY-AUDIENCE-LIBRARY-BACKEND-HANDOFF.md`.
-
-The first is the broader CRM-quality Directory platform plan. The second remains the durable companion contract for membership, Labels, Groups and audience resolution semantics.
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-DIRECTORY-PLATFORM-PLAN.md` — broad Directory platform plan.
+- `CMXChat/jay-app/specs/003-server-checkin/DIRECTORY-AUDIENCE-LIBRARY-BACKEND-HANDOFF.md` — durable membership/Label/Group/audience companion contract.
 
 # Library documentation
 
@@ -211,16 +183,13 @@ Backend companions include:
 
 # Current backend boundary
 
-The first Phase 2A Library + typed Automation source is validated on `jay-app/main` but is **not yet production-migrated/deployed**.
-
-Production remains Phase 1 until the separate production migration/deployment runbook succeeds.
-
-Do not infer backend capability from Lab visuals.
+The first Phase 2A Library + typed Automation source is validated on `jay-app/main` but is **not production-migrated/deployed**.
 
 Current production still has no general:
 
-- server-backed Directory v2;
+- Directory v2 persistence;
 - Group/Label audience service;
+- typed multi-selector Automation Audience service;
 - Automation Runtime;
 - worker/scheduler;
 - provider execution;
@@ -230,42 +199,35 @@ Current production still has no general:
 - Agent;
 - MCP execution.
 
-# Development environment documentation
+Do not infer backend capability from Lab visuals.
 
-For the Python-first learning/development environment, begin with:
+# Development environment
 
-`development-environment-requirements.md`
-
-The broader environment direction includes Python/FastAPI, PostgreSQL/Alembic, React/TypeScript, generated API client, Docker/deployment/recovery, secrets outside source/browser code and Git/GitHub checkpoints.
+For the Python-first learning/development environment, start with `development-environment-requirements.md` and `/environment/`.
 
 # Copy standard
 
-For current product copy:
-
 - use plain, direct, connected sentences;
-- keep labels/controls concise;
+- keep labels and controls concise;
 - avoid generic SaaS/AI slogans;
 - avoid ellipses and em dashes in user-facing editorial copy;
-- keep LIVE / LAB / NEXT / LATER claims truthful where that vocabulary applies;
-- clearly distinguish demonstrated, protected-live and future capability;
+- keep capability status truthful;
+- clearly distinguish Lab, protected-live and future capability;
 - avoid micro-copy for important meaning.
 
 # Frontend safety lessons
 
 Preserve:
 
-- no broad document-wide MutationObserver for accepted Lab/Check In synchronization;
-- mobile is a separate readable layout, not a scaled desktop console;
+- no broad document-wide MutationObserver in accepted Lab/Check In synchronization;
+- mobile is a separate readable layout;
 - no nested scroll traps in normal builders;
-- no giant empty operational canvases;
 - pending state must look pending;
-- light mode needs its own contrast decisions;
+- light mode needs explicit contrast decisions;
 - no provider secrets in frontend stores;
 - no production API calls from isolated Lab routes;
-- accepted Lab behavior migrates into production as product semantics, not DOM/localStorage architecture.
+- accepted Lab behavior migrates into production as semantics, not DOM/localStorage architecture.
 
 # Historical records
 
-Older Personal OS, Brief, early Spaces and superseded Automation/Audience modules remain useful decision history.
-
-Do not use them to override current Continuum naming, `/doc/` role, Automations v4 status, Directory v2 status or current backend release truth.
+Older Personal OS, Brief, early Spaces and superseded Automation/Audience modules remain useful decision history only.
