@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
 Date: 2026-08-18
-Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v4.1 + Directory v2 active in Lab
+Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v4.2 + Directory v2 active in Lab
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
@@ -119,7 +119,7 @@ Do not mix new Directory schema, Runtime, providers or AI execution into the alr
 
 # `/lab/automations/` current truth
 
-The focused Automations route is now the v4.1 Lab product surface.
+The focused Automations route is now the v4.2 Lab product surface.
 
 It remains isolated:
 
@@ -135,10 +135,11 @@ Current structure:
 
 - v3 remains Draft/localStorage/autosave compatibility core;
 - progressive-preview layer protects truthful blank Draft state;
-- v4 platform layer adds Automations / Templates / Runs, Capability Catalog, flow navigation, per-step tests, preflight and Planner preview;
+- v4 platform layer adds Automations / Templates / Runs, Capability Catalog, flow navigation, preflight and Planner preview;
 - v4 scenario layer provides 13 editable starting patterns;
 - Directory integration adds readiness/context;
-- Audience v4.1 adds real Lab multi-selector audiences for communication Actions.
+- Audience v4.1 adds real Lab multi-selector audiences for communication Actions;
+- Intelligence v4.2 adds contextual Action recommendations, typed data-reference UX and richer local step-test traces.
 
 Current human model remains:
 
@@ -156,7 +157,7 @@ still opens a blank Draft directly on Trigger.
 
 # Automations Audience v4.1
 
-Communication Actions represented as Notify/Email can now choose multiple Directory selectors in Lab:
+Communication Actions represented as Notify/Email can choose multiple Directory selectors in Lab:
 
 - Person;
 - Organization;
@@ -175,9 +176,52 @@ This is **Lab adapter behavior only**.
 
 Production still needs a protected typed Audience model and canonical server-side audience-resolution/readiness service.
 
+# Automations Intelligence v4.2
+
+The focused editor now demonstrates the next composition layer without adding execution authority.
+
+## Contextual recommendations
+
+The Actions stage derives a small recommended set from the current Trigger and existing flow. Recommendations use the same Capability Catalog and preserve `LAB NOW` versus `LATER` truth.
+
+The recommendation layer never invents a capability or silently adds one.
+
+## Typed data references
+
+Each Action can open **Use data** and select friendly typed references from:
+
+- Trigger outputs;
+- Directory/Audience readiness values;
+- outputs exposed by earlier Action steps.
+
+Prototype references are mirrored to Action `dataBindings[]` and also stored under:
+
+`cmx-lab-automation-data-bindings-v1`
+
+The separate Lab store protects the prototype from older v3 compatibility saves. Production should not copy that persistence pattern.
+
+Important rule: these are references, not free-form executable expressions. The Lab does not evaluate arbitrary JavaScript/Python/template code.
+
+The backend destination remains the typed path/reference model already documented in `CONTINUUM-AUTOMATIONS-PLATFORM-PLAN.md` and `AUTOMATION-FRONTEND-CONTRACT.md`.
+
+## Richer per-stage tests
+
+`TEST THIS STEP` now shows a local input → normalization/resolution → sample output trace.
+
+For Actions it can include:
+
+- resolved Audience counts;
+- email/phone readiness;
+- mapped data sample values;
+- simulated Action-specific output text.
+
+Every trace states that no provider, AI model, server Runtime, event source or connected account was used.
+
+Simulation/test output is never authoritative Run history.
+
 # Directory v2 current truth
 
-The main `/lab/` Records surface now renders Continuum Directory v2 over the existing shared `cmx-lab-crm-v1` prototype store.
+The main `/lab/` Records surface renders Continuum Directory v2 over the existing shared `cmx-lab-crm-v1` prototype store.
 
 Current object views:
 
@@ -202,6 +246,8 @@ Current UX/model demonstrations include:
 - direct Automation usage links;
 - mobile list → profile behavior;
 - light/dark presentation.
+
+`lab-directory-v2-polish.css` is a presentation-only layer that makes the Directory denser and more app-like with sticky desktop controls, stronger hierarchy and mobile-specific layout rules. It does not change persistence or authority.
 
 The old `.lab-crm` remains compatibility scaffolding and is hidden after Directory v2 loads.
 
@@ -253,6 +299,7 @@ Directory backend slices can progress after the Phase 2A migration without waiti
 - Person identity is not one email address or phone number.
 - Labels and relationships do not silently grant permission.
 - Audience identity and delivery readiness are separate.
+- Data mapping uses typed references, not arbitrary executable expressions.
 - Immutable versions/history stay immutable.
 - Human UI and AI call the same typed services.
 - Prompt text never grants authority.
