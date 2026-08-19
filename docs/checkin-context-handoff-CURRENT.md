@@ -1,7 +1,7 @@
 # Check In / Continuum Context Handoff — CURRENT
 
-Date: 2026-08-18
-Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v5 + typed Planner proving surface + Directory v2 typed Change Plan preview active in Lab
+Date: 2026-08-19
+Status: Current cross-repository continuation guide; Phase 1 production, validated Phase 2A source pending production migration, Automations v5 + mobile Action-stack v6 + shared Planner Contract/Preflight/Change Review + Directory v2 active in Lab
 
 This is the first file a new ChatGPT/Codex/developer context should read before changing Continuum or Check In.
 
@@ -39,7 +39,7 @@ Core principle:
 13. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 14. `CMXChat/jay-app/specs/003-server-checkin/tasks.md`
 
-Current source-of-truth files beat older chats, dated handoffs and stale READMEs.
+Current source/tests and `*-CURRENT.md` files beat older chats, dated handoffs and stale READMEs.
 
 # Production truth
 
@@ -102,7 +102,7 @@ Do not mix new Directory schema, Runtime, providers or AI execution into the rev
 
 # `/lab/automations/` current truth
 
-The focused route now combines:
+The focused route currently combines:
 
 - v3 Draft/localStorage/autosave compatibility editor;
 - **v5 canonical workflow model**;
@@ -114,8 +114,12 @@ The focused route now combines:
 - Intelligence v4.2 typed data/recommendations/tests;
 - Input Routing v4.3;
 - Advanced Flow v4.4 inter-step IF/WAIT authoring;
-- **ordered v5 Flow Preview**;
-- **deterministic typed Planner v5 proving surface**.
+- ordered v5 Flow Preview;
+- deterministic local typed Planner v5;
+- shared Planner operation/dependency contract;
+- shared typed Planner Preflight;
+- shared Change Review;
+- compact mobile Action stack v6.
 
 It remains isolated:
 
@@ -131,7 +135,7 @@ Beginner rail remains:
 
 `WHEN → IF → DO → WAIT → TEST`
 
-Finish stays inside Review. Accepted product label remains **FLOW PREVIEW**.
+Accepted product label remains **FLOW PREVIEW**.
 
 `/lab/automations/?new=1&from=lab` still opens a blank Draft directly on Trigger.
 
@@ -154,8 +158,6 @@ Compatibility fields remain while the existing editor migrates:
 - `timing`;
 - `repeatConfig`;
 - `outcome`.
-
-V5 normalizes those fields into one ordered model and can project compatibility state back for older UI code.
 
 Structural validation protects:
 
@@ -181,133 +183,48 @@ The v4.4 Actions UI remains the visible editor for inter-step controls, but it n
 
 `flowControls[]`, `afterActionId` and `cmx-lab-automation-flow-controls-v1` are compatibility projection/fallback only.
 
+Current IF is a **linear gate only**. There is no YES/NO branch graph yet.
+
+Inter-step WAIT is distinct from start timing/recurrence and remains `RUNTIME REQUIRED`. Browser timers never become execution authority.
+
+# Mobile Action stack v6
+
+A user-provided narrow-phone screenshot exposed that the DO stage was becoming excessively long because every Action and all per-step augmentation panels remained expanded. The old remove action also existed as a small icon mixed with other controls.
+
+Current mobile treatment at `<=760px`:
+
+- multi-Action stacks render compact rows by default;
+- one Action is open at a time;
+- explicit **Edit / Hide**;
+- separate labeled **Remove**;
+- multiple Actions can be removed through the existing v3 mutation path;
+- the final compatibility Action remains disabled as `Only step` for now;
+- reorder/duplicate/pause controls show when expanded;
+- Audience / Input Routing / Use Data panels collapse with the step;
+- advanced IF/WAIT connector presentation is compressed;
+- desktop behavior remains unchanged.
+
 Browser marker:
 
-`data-lab-automations-sequence-model="v5"`
+`data-lab-automations-action-stack="v6-mobile"`
 
-This prevents the compatibility store from becoming a second workflow engine.
-
-# IF / WAIT semantics
-
-Top-level **IF** is pre-action. It can only use information available before Actions begin.
-
-Output-dependent logic belongs after the Action that produced the output.
-
-Example:
-
-`AI task → IF AI priority equals urgent → Notify`
-
-Current inter-step IF operators:
-
-- equals;
-- does not equal;
-- contains;
-- greater than;
-- less than;
-- is true.
-
-The source picker only exposes Trigger data and earlier Action outputs available at that insertion point.
-
-Current IF is a **linear gate only**. If false, the remaining path stops in the preview.
-
-There is no YES/NO branch graph yet.
-
-Inter-step WAIT is separate from start timing and recurrence. It is labeled `RUNTIME REQUIRED` because future Runtime must persist due state across restarts. Browser sleeps/timers are never execution authority.
+This is frontend authoring UX only. It does not change backend Action semantics.
 
 # Ordered v5 Flow Preview
 
-The compact Flow Preview remains the beginner stage navigator and preserves progressive pending-state truth.
+The compact Flow Preview remains the beginner stage navigator.
 
-`lab-automations-flow-v5.js/.css` adds **ORDERED SEQUENCE** underneath it using the canonical v5 model.
+`lab-automations-flow-v5.js/.css` adds **ORDERED SEQUENCE** using the v5 model.
 
 A complex flow can visibly show:
 
-`WHEN Manual start`
+`WHEN → DO AI task → IF priority urgent → WAIT 2h → DO Notify → FINISH`
 
-`DO AI task`
-
-`IF Step 1 · AI priority equals urgent`
-
-`WAIT 2h`
-
-`DO Notify`
-
-`FINISH End workflow`
-
-Behavior:
-
-- complex flows expand by default;
-- simple flows stay collapsed by default;
-- Show/Hide is presentation-only;
-- rows navigate back to the relevant builder stage;
-- start timing/recurrence appears separately as a `START` policy row;
-- blank/new Drafts use the progressive pending DOM so compatibility defaults never appear as confirmed user intent;
-- mobile renders the same ordered sequence vertically with larger tap targets.
+Complex flows expand by default; simple flows stay collapsed. Rows navigate to the relevant builder stage. Start timing/recurrence appears separately as a `START` policy row.
 
 Browser marker:
 
 `data-lab-automations-flow="v5"`
-
-# Automations Planner v5 proving surface
-
-The focused Planner is now more than a dead-end modal, but it is still **not real AI**.
-
-Files:
-
-- `assets/lab/lab-automations-planner-v5.js`;
-- `assets/lab/lab-automations-planner-v5.css`.
-
-A small local deterministic matcher recognizes a few proving patterns such as:
-
-- daily AI briefing;
-- continuity escalation;
-- delayed reminder;
-- AI report with review;
-- urgent AI follow-up.
-
-The result is explicitly labeled:
-
-- `TYPED PLAN PREVIEW · LOCAL`;
-- `NO AI CALL`.
-
-It shows:
-
-1. **ORDERED V5 FLOW**;
-2. **CHANGE PLAN** typed Automation operations;
-3. **PREFLIGHT** blockers.
-
-Example conceptual operations:
-
-```text
-automation.create_draft
-automation.set_trigger
-automation.set_preconditions
-automation.add_action
-automation.add_condition
-automation.add_wait
-automation.set_finish
-```
-
-`Use this draft` creates a normal browser-local Draft, records `plannerPreview.source = "local-deterministic-v5"`, then normalizes through `CMXAutomationModelV5`.
-
-It does not call a model, backend, provider or Runtime and does not publish anything.
-
-This proves the desired future interaction:
-
-`natural-language-like intent → typed plan → preflight → normal editable Draft`
-
-without pretending the protected Planner exists.
-
-# Scenarios
-
-Current total: **15 editable starting patterns**.
-
-Newest advanced scenarios:
-
-- **Urgent AI follow-up** — AI assessment → IF priority urgent → notification;
-- **Delayed backup escalation** — primary escalation → WAIT two hours → backup escalation.
-
-They create ordinary Drafts and normalize into v5. They do not imply Runtime/provider execution exists.
 
 # Directory v2 current truth
 
@@ -330,168 +247,214 @@ Current concepts include:
 
 Production still needs typed protected Directory models/services.
 
-# Directory Planner typed-v2
+# One Planner language
 
-Directory `AI setup` now presents itself as **CONTINUUM PLANNER · PREVIEW** and uses the same typed Change Plan vocabulary as Automations.
+Directory and Automations intentionally converge on:
+
+`INTENT → TYPED CHANGE PLAN → TYPED PREFLIGHT → REVIEW → PROTECTED APPLY LATER`
+
+Current proving adapters:
+
+- Directory Planner typed-v2 = fixed cross-domain examples, no free-text interpretation;
+- Automations Planner v5 = small local deterministic matcher that can create an ordinary v5 Lab Draft;
+- neither = real protected AI Planner execution.
+
+Both load `lab-continuum-planner-contract-v1.js`.
+
+The shared browser registry owns the current proving operation vocabulary plus metadata for domain/family/effect/review.
+
+Lab Change Plan operations can also carry:
+
+- `id`;
+- `dependsOn[]`;
+- temporary `produces: temp:…`;
+- `uses[]` earlier temporary results.
+
+The validator rejects future/missing dependencies, unavailable temp refs, duplicate temp refs and non-temporary produced refs.
+
+The **Full Continuum setup** example demonstrates:
+
+`resolve People → create Groups → create Library folder/document → create Automation Draft → reference Audiences/content → add WAIT`
+
+These temporary refs prove dependency semantics only. Future protected server Change Plans own their own plan-local references and resolve successful creates to authoritative stable IDs during apply.
+
+# Typed Planner Preflight v1
+
+Both Planner surfaces load `lab-continuum-planner-preflight-v1.js/.css`.
 
 Browser marker:
 
-`data-lab-directory-planner="typed-v2"`
+`data-lab-planner-preflight="v1"`
 
-Current boundary:
+Current proving issue families cover:
 
-- no model call;
-- no free-text interpretation;
-- no data mutation;
-- no production API;
-- no provider execution;
-- no hidden authority.
+- Directory ambiguity / protected identity checks;
+- missing Audience;
+- unconfirmed Automation timing;
+- Runtime required;
+- protected Library service required;
+- Connection required;
+- explicit authority approval;
+- invalid Planner dependencies;
+- generic review requirement.
 
-Fixed examples show typed operations across Directory, Library and Automations.
+Current states stay deliberately separate:
 
-Examples include:
+- **CHECK REQUIRED** — unresolved review;
+- **PREVIEW DECISION** — local sample decision recorded;
+- **DEFERRED TO DRAFT** — Draft can continue while configuration remains incomplete;
+- **BLOCKED** — required protected service/capability/Runtime is unavailable;
+- **APPROVAL REQUIRED** — authority path Planner cannot self-approve.
 
-```text
-directory.match_or_create_people
-directory.upsert_membership
-directory.upsert_relationship
-directory.apply_label
-directory.upsert_group
-library.create_folder
-library.create_document
-automation.create_draft
-automation.reference_audience
-automation.reference_content
-automation.add_wait
-```
+A Directory ambiguity can record `Use existing match` or `Keep separate`, then change that choice again. This never mutates a protected identity.
 
-The **Full Continuum setup** example demonstrates one future Change Plan that can:
+An Audience or timing issue may be `Handle in Draft`, then undone. This keeps the requirement incomplete instead of falsely clearing it.
 
-`resolve People → create Groups → create Library folder/document → create Automation Draft → reference Audiences/content → add inter-step WAIT`
+Runtime, Connections, protected server-service gaps and approval requirements remain blocked/approval states.
 
-Every example surfaces preflight blockers instead of pretending it is ready to apply.
+Preflight issues are also linked to the Change Plan rows they affect. Rows visibly carry CHECK / DECISION / DEFERRED / BLOCKED / APPROVAL state, while issue cards identify `AFFECTS CHANGE ##` where a proving mapping exists.
 
-# One Planner language
+Important prototype boundary: current local adapters start from human-readable blocker messages and `classifyIssue()` maps them to shared typed issue codes. **Production must not use English text matching as preflight authority.** Protected domain services later return authoritative structured issue codes, stable refs, revisions, capability readiness, permissions and approval requirements.
 
-Directory and Automations now intentionally converge on the same product contract:
+# Shared Change Review v1
 
-`INTENT → TYPED CHANGE PLAN → PREFLIGHT → REVIEW → APPLY through normal protected services`
+`lab-continuum-planner-review-v1.js/.css` combines:
 
-The current prototypes prove different pieces:
+- operation effect/domain/review metadata;
+- plan-local Produce / Uses / dependency links;
+- current typed Preflight state;
+- summary counts.
 
-- Directory Planner = fixed cross-domain typed examples, no free-text interpretation;
-- Automations Planner = tiny local deterministic pattern matcher that can create an ordinary v5 Lab Draft;
-- neither = the real future Continuum AI Planner.
+Reviewed/deferred issues stop counting as unresolved. True blockers and approval requirements remain unresolved.
 
-The protected Planner later replaces these proving adapters with server-backed typed planning/tools using the same domain services as human UI.
+Browser marker:
 
-# Cross-domain Continuum Planner architecture
+`data-lab-planner-review="v1"`
 
-Long-term goal: the user can describe how they want Continuum organized and AI prepares the setup across supported domains.
+# Planner safety boundary
 
-Canonical architecture:
+The Planner layers do not:
 
-`natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services → authoritative state + Activity/Audit`
+- call an AI model;
+- call production backend APIs;
+- mutate protected Directory/Library state;
+- publish Automations;
+- run providers;
+- run Runtime;
+- grant authority;
+- hide capability gaps.
 
-Hard rules:
+`Use this draft` in focused Automations creates only an ordinary browser-local Draft and normalizes it through v5.
 
-- AI and humans use the same typed services;
-- no AI-only database/contact/workflow format;
-- prompt text is intent, never authority;
-- AI cannot invent executable capabilities;
-- identity merge remains explicit/high-impact;
-- published Automation changes become a new Draft/version proposal;
-- external provider effects remain Runtime behavior;
-- stale revisions, duplicate ambiguity, permission problems and incompatible mappings are deterministic blockers;
-- apply must be idempotent and report partial success honestly if cross-domain atomicity is impossible.
+# Mobile / regression validation
+
+Current rendered Chromium validation includes **360×800** and **390×844** where relevant.
+
+Dedicated workflows now cover:
+
+- `continuum-mobile-layout-validation.yml` — overall mobile Planner/Directory geometry;
+- `automations-v6-action-stack-validation.yml` — mobile Action accordion, Remove behavior and viewport fit;
+- `continuum-planner-preflight-validation.yml` — typed decisions/defer state, affected Change Plan row state and persistent Runtime blocker behavior;
+- existing v5 model/Planner/Directory workflows.
+
+The available GitHub connector does not independently expose push-triggered workflow results in this context. Do not claim an observed green run or live Pages pickup without separate verification.
+
+# Directory / Audience / data direction
+
+Audience v4.1 composes Person / Organization / Group / Label selectors and previews current unique-Person channel readiness.
+
+V4.2 uses typed source references from Trigger, earlier Actions and Directory/Audience values.
+
+V4.3 maps those sources into named receiving fields.
+
+Production needs protected server schemas and Audience resolution. Browser resolution is never authority.
+
+# Library direction
+
+Validated Phase 2A native content model:
+
+`ContentAsset → mutable ContentDraft → immutable ContentVersion`
+
+Future binary direction:
+
+`FileAsset → immutable FileVersion → private object storage`
+
+Planner `library.*` operations in Lab are typed vocabulary only. They do not execute.
+
+# Cross-domain Planner backend direction
 
 Canonical backend contract:
 
 `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 
-# Audience / data / input routing
+Long-term protected flow:
 
-Audience v4.1 composes Person, Organization, Group and Label selectors and previews current Person-ID-deduped resolution/readiness.
+`natural language → typed Change Plan → deterministic server preflight/conflicts → review/approval → normal protected domain services → authoritative results + Activity/Audit`
 
-V4.2 uses typed source references from Trigger, earlier Actions and Directory/Audience values rather than executable expressions.
+Hard rules:
 
-V4.3 maps those values into named inputs such as Email subject/body, AI Task context/focus, Notify message data and Manual Review context.
+- humans and AI use the same services;
+- prompt text is intent, never authority;
+- no AI-only database/business logic;
+- no arbitrary Python/JS/shell/SQL/eval;
+- AI cannot invent executable capabilities;
+- identity merge remains explicit/high-impact;
+- published workflow changes become a new Draft/version proposal;
+- external side effects remain Runtime behavior;
+- stale revisions and partial apply must be reported honestly;
+- Planner cannot approve its own authority.
 
-Example test trace:
+# Production backend boundary
 
-`Body data ← Step 1 · AI summary`
+Production currently has no general:
 
-Production needs canonical server Audience resolution and capability-schema validation for source/output/input compatibility.
+- Directory v2 service;
+- Group/Label Audience resolver;
+- typed Automation data/input/inter-step service matching Lab;
+- server equivalent of Lab v5;
+- authoritative Planner operation registry;
+- authoritative structured Planner preflight/review/apply;
+- Runtime/persisted WAIT/branch execution;
+- provider delivery;
+- AI Task execution;
+- Planner execution;
+- Agent;
+- MCP execution.
 
-# Library boundary
+The validated Phase 2A Library + typed Automation source remains pending deliberate production migration/deployment.
 
-Native protected content direction:
+Lab completeness never widens production truth.
 
-`ContentAsset → mutable ContentDraft → immutable ContentVersion`
+# Backend continuation order
 
-Binary direction:
+Keep the existing backend phase plans authoritative. Broadly:
 
-`FileAsset → immutable FileVersion → private object storage`
-
-Current Planner examples may reference conceptual Library operations, but the Lab does not execute them.
-
-Folders are organizational structure, not permission boundaries.
-
-# Backend / Runtime order
-
-Keep the canonical backend phase plans authoritative.
-
-Broadly:
-
-1. execute the validated Phase 2A production migration/deployment + separate `continuity.md` proof;
-2. grow typed Directory/Automation human-facing services in bounded slices;
-3. add canonical Audience and typed source/output/input validation;
-4. build protected human Automation authoring over server Drafts;
-5. durable **linear** Runtime + fake provider;
-6. persisted waits/retries/acknowledgements/approvals;
-7. typed route/branch behavior only after linear Runtime is reliable;
-8. approved provider phases;
-9. AI Task then Planner;
-10. cross-domain Change Plan apply only after the relevant domain mutation services are mature;
-11. bounded Agent later.
-
-Lab v5 / Planner work does not move those backend execution phases earlier.
-
-# Validation status
-
-Current source includes dedicated workflows for:
-
-- `automations-v5-model-validation.yml`;
-- `automations-v5-planner-validation.yml`;
-- `continuum-directory-validation.yml`.
-
-They protect the model, Planner safety boundary, typed Change Plan vocabulary, mobile/direct-new behavior and no-network/no-execution constraints.
-
-The GitHub connector available in this context does not expose push-triggered workflow-run results, and the working container cannot resolve GitHub or `db.cmxchat.com` over its network. Therefore the workflow/source contracts are committed on `main`, but **do not claim an independently observed green push run or live GitHub Pages pickup until later verification is available**.
+1. complete the prepared Phase 2A production migration/release boundary;
+2. protected human/domain surfaces;
+3. Directory/Audience slices in bounded server models/services;
+4. durable **linear** Runtime + fake provider;
+5. approved provider phases;
+6. persisted WAIT/retry/acknowledgement/approval and typed routing/branching when prerequisites exist;
+7. AI Task then Planner;
+8. cross-domain Change Plan apply after mature domain services;
+9. bounded Agent later;
+10. MCP as adapter, never authority bypass.
 
 # Non-negotiable rules
 
 - PostgreSQL/server time is authoritative for protected timing.
 - Frontend never accesses PostgreSQL directly.
-- Stable protected IDs beat copied mutable names/contact strings.
-- Person identity is not one email or phone.
-- Labels/Groups/relationships do not silently grant permission.
-- Audience identity and channel readiness are separate.
-- Data flow uses typed source/output/input references, not arbitrary executable expressions.
-- Immutable published/history records stay immutable.
+- Stable IDs beat copied mutable contact strings.
+- Immutable versions/history stay immutable.
+- Labels/relationships never silently grant authority.
+- Audience identity and channel readiness remain separate.
 - Human UI and AI call the same typed services.
 - Prompt text never grants authority.
 - Provider secrets stay outside definitions/content/prompts/Audit.
-- Unknown executable capability/Planner operation types are rejected.
-- No arbitrary Python/JavaScript/shell/SQL/eval workflow logic.
+- Unknown capability/Planner operation types are rejected.
+- Data flow uses typed references, not arbitrary code/expression execution.
+- Real inter-step WAIT is durable server state, never browser sleep.
+- Branching is typed routing, never arbitrary code.
 - External/inbound content is untrusted data.
-- Lab visual/model/Planner completeness never becomes production truth.
 - No broad document-wide MutationObserver loops in accepted frontend paths.
-
-# `/doc/` boundary
-
-`/doc/` remains under its separate clarity freeze. Do not edit it merely because Lab UX/model/Planner changes.
-
-# Next backend action
-
-The immediate backend action remains the prepared Phase 2A production migration/deployment sequence, followed by the separate protected `continuity.md` acceptance proof.
+- `/doc/` remains under its separate clarity freeze. Do not edit it merely because Lab UX becomes richer.
