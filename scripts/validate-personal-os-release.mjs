@@ -112,18 +112,21 @@ assert(/window\.location\.replace/i.test(read('assets/spaces-legacy-redirect.js'
 
 assert(/<title>Continuum \| Product Overview<\/title>/i.test(doc), '`/doc/` must identify Continuum as the product overview.');
 assert(/>LIVE<|>LAB<|>NEXT<|>LATER</i.test(doc), '`/doc/` must retain visible capability status labels.');
-assert(/Protected Check In/i.test(doc) && /Real private information/i.test(doc) && /Keep workflows running/i.test(doc) && /More connected capability/i.test(doc), '`/doc/` must preserve the current build order.');
+assert(/Protected Check In/i.test(doc) && /Real private knowledge/i.test(doc) && /Policy-driven Runtime/i.test(doc) && /Expandable capability/i.test(doc), '`/doc/` must preserve the current public build order.');
 assert(/Afterlife/i.test(doc) && /The Dead Man Switch/i.test(doc), '`/doc/` must explain Afterlife as the Dead Man Switch continuity surface.');
 assert(/Spaces/i.test(doc) && /Automations/i.test(doc) && /Connections/i.test(doc) && /Runtime/i.test(doc), '`/doc/` must explain the major Continuum product areas.');
 assert(/FastAPI/i.test(doc) && /PostgreSQL/i.test(doc) && /Codespaces/i.test(doc) && /Alembic/i.test(doc), '`/doc/` must retain the real engineering environment overview.');
-assert(/MCP/i.test(doc) && /AI authority is set by server-side permissions/i.test(doc) && /approved tools/i.test(doc), '`/doc/` must retain AI, MCP and authority direction.');
+assert(/MCP/i.test(doc) && /Authority is explicit/i.test(doc) && /Server-side policy remains the enforcement point/i.test(doc) && /approved tools/i.test(doc), '`/doc/` must retain AI, MCP and authority direction.');
+assert(/href=["']\/checkin\/["']/i.test(doc), '`/doc/` must link to the LIVE Check In surface.');
 assert(/href=["']\/(?:spaces|brief)\/["']/i.test(doc), '`/doc/` must retain a working Spaces demo link.');
 assert(/href=["']\/lab\/automations\/["']/i.test(doc), '`/doc/` must link to the active Automation Lab.');
+assert(/Protected proof of life, timing and activity/i.test(doc), '`/doc/` must identify Check In as the LIVE product destination in closing navigation.');
 assert(!/cmx-gate-black-prompt|data-cmx-gate|type=["']password["']/i.test(doc), '`/doc/` contains password-gate markup or assets.');
 assert(docAssets.has('/assets/continuum-doc-final.css'), '`/doc/` must load the final Continuum visual layer.');
 assert(docAssets.has('/assets/continuum-doc-promise.css'), '`/doc/` must load the Continuum promise layer.');
 assert(docAssets.has('/assets/continuum-doc-qa.css'), '`/doc/` must load the Continuum QA layer.');
 assert(docAssets.has('/assets/continuum-doc-human.css'), '`/doc/` must load the human-scale typography layer.');
+assert(docAssets.has('/assets/continuum-doc-origin.css'), '`/doc/` must load the final architecture/navigation layer.');
 assert(/@media\(prefers-reduced-motion:reduce\)/i.test(continuumFinalCss), 'Continuum final visuals must respect reduced-motion preferences.');
 assert(/@media print/i.test(continuumPromiseCss), 'Continuum promise layer must retain print rules.');
 assert(/\.clarity-hero/i.test(continuumQaCss), 'Continuum QA layer must retain the clarity layout.');
@@ -146,7 +149,8 @@ if (routes?.routes) {
     ['/spaces/', 'Active', false],
     ['/brief/', 'Legacy', false],
     ['/brief-next/', 'Experimental', false],
-    ['/doc/', 'Active', false]
+    ['/doc/', 'Active', false],
+    ['/checkin/', 'Active', false]
   ];
 
   for (const [routePath, status, gated] of expected) {
@@ -163,6 +167,11 @@ if (routes?.routes) {
   const docRoute = routes.routes.find(item => item.path === '/doc/');
   assert(/Continuum/i.test(docRoute?.name || ''), 'The `/doc/` route name must identify Continuum.');
   assert(/Afterlife/i.test(docRoute?.description || ''), 'The `/doc/` route description must include the Afterlife continuity surface.');
+  assert(/Check In/i.test(docRoute?.description || ''), 'The `/doc/` route description must include the live Check In surface.');
+
+  const checkInRoute = routes.routes.find(item => item.path === '/checkin/');
+  assert(/Check In/i.test(checkInRoute?.name || ''), 'The `/checkin/` route name must identify Check In.');
+  assert(/proof-of-life|proof of life/i.test(checkInRoute?.description || ''), 'The `/checkin/` route description must explain its live proof-of-life role.');
 }
 
 const baseSha = process.env.BASE_SHA || process.argv.find(argument => argument.startsWith('--base='))?.slice(7) || '';
