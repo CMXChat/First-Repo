@@ -26,7 +26,7 @@ Examples:
 - Automations remains an authoring/editor workspace.
 - Check In remains a focused safety and continuity interaction.
 - Directory remains a people/relationship workspace.
-- Library remains an information/content workspace.
+- Library remains an information/content/media workspace.
 - Spaces remains a briefing/context experience.
 - Connections remains a capability/integration management surface.
 
@@ -53,6 +53,7 @@ Examples today:
 ```text
 /lab/control/       Control Center flagship prototype
 /lab/directory/     standalone Directory prototype
+/lab/library/       standalone Library prototype
 /lab/automations/   Automation authoring prototype
 /lab/               broad legacy compatibility workspace
 /checkin/           current LIVE protected Check In surface
@@ -86,7 +87,7 @@ Wide-screen direction:
 - environment truth remains visible without dominating the workspace;
 - domain-specific secondary navigation stays inside the domain.
 
-The current Control Center and standalone Directory rails are Lab references for the global-navigation role, but neither is automatically copied pixel-for-pixel into every existing route.
+The current Control Center, standalone Directory and standalone Library rails are Lab references for the global-navigation role, but none is automatically copied pixel-for-pixel into every existing route.
 
 An editor such as Automations may use a thinner global-home/app-switching treatment so the editor canvas remains primary.
 
@@ -94,7 +95,7 @@ An editor such as Automations may use a thinner global-home/app-switching treatm
 
 Mobile must remain an app experience, not a compressed desktop rail.
 
-The Control Center and standalone Directory bottom navigation use the same near-term Lab destination model:
+Control Center and standalone Directory currently use the earlier five-destination Lab pattern:
 
 ```text
 Control
@@ -104,9 +105,21 @@ Automations
 Spaces
 ```
 
-As Library and Connections become real first-class surfaces, mobile should not grow into seven tiny permanent tabs. The likely production direction is four high-frequency destinations plus a fifth `More` / app-switcher destination.
+The standalone Library is the first surface proving the expected growth direction:
 
-The exact final five-slot set should be chosen from real usage once those surfaces exist. Do not prematurely demote Directory, Spaces or another domain based only on architecture diagrams.
+```text
+Control
+Check In
+Directory
+Library
+More
+```
+
+Its `More` sheet exposes lower-frequency destinations such as Automations and Spaces without shrinking seven destinations into unusably small tabs.
+
+This is an experiment toward the likely production model of four high-frequency/current-context destinations plus a fifth `More` / app-switcher destination. Do not force every existing Lab surface onto that pattern until the interaction has settled.
+
+The exact production slots should be chosen from real usage once Library, Connections and the broader app are server-backed. Do not prematurely demote a domain based only on architecture diagrams.
 
 # What stays out of primary navigation for now
 
@@ -135,7 +148,7 @@ Signals and State are underlying product capabilities and may later have dedicat
 
 # Global command
 
-The Control Center and standalone Directory Lab command palettes are reference directions for global jump behavior:
+The Control Center, Directory and Library Lab command palettes are reference directions for global jump behavior:
 
 ```text
 Cmd/Ctrl + K
@@ -156,7 +169,7 @@ Rules:
 
 - a Lab shell never makes a sample feature look production-live;
 - one live domain does not make every card in Control Center live;
-- `LIVE Check In` may coexist with `LAB Control Center` and `LAB Directory`;
+- `LIVE Check In` may coexist with `LAB Control Center`, `LAB Directory` and `LAB Library`;
 - future production app chrome must distinguish degraded/partial states when necessary instead of presenting one misleading global green state.
 
 # Theme and appearance
@@ -185,17 +198,17 @@ Global overlays and app-switching surfaces must behave as real modal/interactive
 - mobile sheets respect safe-area insets;
 - reduced-motion preferences remain respected.
 
-The Control Center v4 focus layer is the strongest current Lab reference implementation of this behavior. Directory uses native dialog semantics for its local edit/Planner surfaces and should receive the same hardening where needed during later QA.
+The Control Center v4 focus layer is the strongest current Lab reference implementation. Directory and Library use native dialog semantics for local create/edit/import surfaces and should receive the same hardening where later QA exposes gaps.
 
 # Current implementation changes
 
 As of this document:
 
 1. `/lab/control/` remains the flagship Control Center prototype and proposed Continuum Lab home.
-2. `/lab/directory/` is now implemented as a standalone Directory product surface with People, Organizations and Groups.
-3. The standalone Directory uses the shared Lab app-switching destination model while retaining its own identity/relationship workspace.
-4. The Automation Lab Continuum brand/home link returns to `/lab/control/` instead of the old broad `/lab/` destination.
-5. Control Center visible Directory navigation is converging on `/lab/directory/`; a temporary static Lab bootstrap bridges old `/lab/` Directory affordances until the real router owns this.
+2. `/lab/directory/` is implemented as a standalone Directory product surface with People, Organizations and Groups.
+3. `/lab/library/` is implemented as a standalone Library product surface with folders, native content, files/media, versions, Used by, smart views and knowledge-ingestion preview.
+4. Standalone Directory and Library retain their own domain-specific workspace designs while using the same top-level app identity/destination direction.
+5. The Automation Lab Continuum brand/home link returns to `/lab/control/` instead of the old broad `/lab/` destination.
 6. No shared-shell chrome has been injected into the LIVE `/checkin/` route.
 7. No broad refactor of the legacy `/lab/` snapshot-loader stack has been attempted.
 8. Control Center overlays retain the dedicated v4 focus-containment/accessibility layer.
@@ -212,7 +225,7 @@ A future shared production shell integration must preserve:
 - explicit continuity safety semantics;
 - focused primary action hierarchy.
 
-Until a proper production shell exists, linking *to* Check In from Lab is safer than wrapping Check In in experimental Lab chrome.
+Until a proper production shell exists, linking to Check In from Lab is safer than wrapping Check In in experimental Lab chrome.
 
 # Directory migration
 
@@ -236,6 +249,28 @@ Long-term production graduation remains:
 
 inside the real application shell after protected backend/frontend services are ready.
 
+# Library migration
+
+The Library now has a preferred standalone Lab destination:
+
+`/lab/library/`
+
+Earlier premium Library/content/file UX inside `/lab/automations/` remains compatibility/reference behavior while migration settles. The standalone route reuses the same browser content/file/meta stores so the two surfaces do not invent separate Lab identities for the same content.
+
+The standalone Library is a product projection over folders, reusable native content, Templates, FileAssets/media metadata, versions, dependency/Used by information and knowledge-ingestion previews.
+
+It does not claim PostgreSQL persistence or object-storage bytes.
+
+See:
+
+`docs/continuum-library-lab-CURRENT.md`
+
+Long-term production graduation remains:
+
+`/library/`
+
+when protected Library APIs, persistence, search and file storage/viewer boundaries are real.
+
 # Production shell migration
 
 The shared shell should ultimately be rebuilt in the real frontend application architecture, not copied from static Lab loaders.
@@ -252,16 +287,18 @@ Suggested migration sequence:
 7. graduate clean routes individually
 ```
 
-The first isolated Lab proofs now include both Control Center and Directory.
+The isolated Lab proofs now include Control Center, Directory and Library.
 
 # Non-goals
 
 This shell work must not:
 
 - delay the backend Phase 2A deployment / continuity.md proof;
-- invent Library, Connections, Goals or Signals production services;
+- confuse the standalone Library Lab with production Library persistence;
+- invent Connections, Goals or Signals production services;
 - turn Control Center into a configuration dump;
 - turn Directory into a generic sales CRM;
+- turn Library into a generic file browser or public sharing product;
 - turn Automations into a generic dashboard;
 - force Check In into experimental chrome;
 - create a second source of product authority in frontend navigation state;
