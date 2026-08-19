@@ -1,0 +1,127 @@
+/* Continuum Automations desktop editor focus v8.
+   Final desktop-only refinement: the editor owns the viewport and Flow Preview behaves as supporting context. */
+
+@media (min-width:980px){
+  .v3-editor-page[data-operations-v7="ready"] .v3-editor-shell{
+    grid-template-columns:minmax(0,1fr) 248px;
+    gap:14px;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-live-panel{
+    top:151px;
+    padding:10px;
+    border-radius:12px;
+    box-shadow:none;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-live-head{
+    gap:8px;
+    margin-bottom:7px;
+    padding-bottom:7px;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-live-head span{
+    font-size:8px;
+    letter-spacing:.1em;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-live-head small{
+    font-size:8px;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-flow{
+    gap:0;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-flow-node{
+    grid-template-columns:42px minmax(0,1fr);
+    gap:7px;
+    padding:7px 8px;
+    border-radius:10px;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-flow-node>span{
+    font-size:7px;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-flow-node strong{
+    font-size:10px;
+    line-height:1.2;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-flow-node small{
+    font-size:8px;
+    line-height:1.3;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-flow-line{
+    min-height:8px;
+    margin-left:21px;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-live-summary{
+    padding-top:7px;
+  }
+
+  .v3-editor-page[data-operations-v7="ready"] .v3-live-summary p{
+    font-size:9px;
+    line-height:1.35;
+  }
+
+  .v8-flow-toggle{
+    flex:0 0 auto;
+    width:26px;
+    height:26px;
+    display:grid;
+    place-items:center;
+    margin-left:auto;
+    border:1px solid var(--v3-line-strong);
+    border-radius:8px;
+    background:var(--v3-panel-2);
+    color:var(--v3-muted);
+    font:900 14px/1 ui-sans-serif,system-ui,sans-serif;
+    cursor:pointer;
+  }
+
+  .v8-flow-toggle:hover,
+  .v8-flow-toggle:focus-visible{
+    color:var(--v3-text);
+    border-color:color-mix(in srgb,var(--v3-blue) 42%,var(--v3-line-strong));
+    outline:none;
+  }
+
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v3-editor-shell{
+    grid-template-columns:minmax(0,1fr) 42px;
+    gap:10px;
+  }
+
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v3-live-panel{
+    min-width:42px;
+    padding:7px;
+    overflow:hidden;
+  }
+
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v3-live-head{
+    min-height:28px;
+    margin:0;
+    padding:0;
+    border:0;
+  }
+
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v3-live-head span,
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v3-live-head small,
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v3-flow,
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v3-live-summary{
+    display:none!important;
+  }
+
+  .v3-editor-page[data-flow-preview-collapsed="true"] .v8-flow-toggle{
+    width:28px;
+    height:28px;
+    margin:0 auto;
+  }
+}
+
+@media (max-width:979px){
+  .v8-flow-toggle{display:none!important}
+}
