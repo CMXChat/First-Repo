@@ -77,7 +77,15 @@ jobs:
           grep -q 'data-continuum-origin="ready"' /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-architecture-aligned="20260819"' /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-power-clarity="20260819"' /tmp/continuum-doc-desktop.html
-          grep -q 'Knowledge, authority, rules and AI in one private layer' /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-check-in-route="ready"' /tmp/continuum-doc-desktop.html
+          grep -q 'Your information, people, tools and AI in one private operating layer' /tmp/continuum-doc-desktop.html
+          grep -q 'remember useful history and understand what is true right now' /tmp/continuum-doc-desktop.html
+          grep -q 'As more services, APIs, MCP servers and devices connect' /tmp/continuum-doc-desktop.html
+          grep -q 'Open Check In' /tmp/continuum-doc-desktop.html
+          grep -q 'href="/checkin/"' /tmp/continuum-doc-desktop.html
+          grep -q 'Protected proof of life, timing and activity' /tmp/continuum-doc-desktop.html
+          grep -q 'Explore Spaces' /tmp/continuum-doc-desktop.html
+          grep -q 'Open Automation Lab' /tmp/continuum-doc-desktop.html
           grep -q 'A continuous loop from change to useful action' /tmp/continuum-doc-desktop.html
           grep -q 'STATE IS WHAT IS TRUE NOW' /tmp/continuum-doc-desktop.html
           grep -q 'Waiting for reply' /tmp/continuum-doc-desktop.html
@@ -91,6 +99,7 @@ jobs:
           grep -q 'Capability growth and permission growth stay separate.' /tmp/continuum-doc-desktop.html
           grep -q 'The idea started with the Dead Man Switch' /tmp/continuum-doc-desktop.html
           grep -q 'on a flight, in a meeting' /tmp/continuum-doc-desktop.html
+          grep -q 'Open the live Check In app' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-deep-dive"' /tmp/continuum-doc-desktop.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-desktop.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-desktop.html
@@ -106,6 +115,7 @@ jobs:
           hero = html[hero_start:hero_end]
           assert 'hero-network' not in hero, 'Product map must stay out of the opening hero.'
           assert 'continuum-presence' not in hero, 'Availability map must stay with the Parts of Continuum section.'
+          assert 'href="/checkin/"' in hero, 'The opening hero must link to the LIVE Check In surface.'
           overview = html.index('id="overview"')
           state = html.index('continuum-state-strip', overview)
           story = html.index('clarity-story-section')
@@ -126,11 +136,17 @@ jobs:
           afterlife = html.index('id="afterlife"')
           glance = html.index('class="glance-grid"', afterlife)
           assert glance > afterlife, 'Check In glance cards must live with Afterlife.'
-          print('Desktop DOM power clarity, teaching order and explainability passed.')
+          assert html.count('href="/checkin/"') >= 3, 'Check In should be reachable from multiple meaningful /doc locations.'
+          footer = html.index('class="document-footer"')
+          assert html.index('continuum-route-live', footer) > footer, 'Footer must present Check In as the LIVE route.'
+          print('Desktop DOM intro, Check In routing, power clarity, teaching order and explainability passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
           grep -q 'data-continuum-power-clarity="20260819"' /tmp/continuum-doc-mobile.html
+          grep -q 'data-continuum-check-in-route="ready"' /tmp/continuum-doc-mobile.html
+          grep -q 'Open Check In' /tmp/continuum-doc-mobile.html
+          grep -q 'Protected proof of life, timing and activity' /tmp/continuum-doc-mobile.html
           grep -q 'STATE IS WHAT IS TRUE NOW' /tmp/continuum-doc-mobile.html
           grep -q 'WHY DID CONTINUUM DO THAT?' /tmp/continuum-doc-mobile.html
           grep -q 'Signals are how Continuum can notice that the world changed.' /tmp/continuum-doc-mobile.html
@@ -141,4 +157,4 @@ jobs:
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           ! grep -q 'Start here' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc power clarity rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc intro, Check In routing and power clarity rendered on desktop and 390x844 mobile.'
