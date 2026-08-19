@@ -38,10 +38,11 @@ assert.match(finalJs, /dataset\.continuumPowerClarity = '20260819'/);
 assert.match(finalJs, /dataset\.continuumGoals = 'ready'/);
 assert.match(finalJs, /dataset\.continuumControlCenter = 'ready'/);
 assert.match(finalJs, /dataset\.continuumCheckInRoute = 'ready'/);
+assert.match(finalJs, /dataset\.continuumKnowledgeQuality = 'ready'/);
 assert.match(finalJs, /Continuum brings your information, people, files, messages, services, automations and AI into one private environment/);
 assert.match(finalJs, /remember useful history and understand what is true right now/);
 assert.match(finalJs, /As more services, APIs, MCP servers and devices connect/);
-assert.match(finalJs, /AI provides reasoning\. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity\./);
+assert.match(finalJs, /AI provides reasoning\. Continuum gives that reasoning memory, live State, senses, tools, rules and continuity\./);
 assert.match(finalJs, /Start with what is live\. Explore what Continuum is becoming\./);
 
 // State is tangible instead of remaining an abstract architecture word.
@@ -76,15 +77,26 @@ for (const label of ['Trigger', 'State', 'Policy', 'Authority', 'Capability', 'R
 
 // Sources and Signals are presented as the future sensing layer.
 assert.match(finalJs, /continuum-senses-strip/);
-assert.match(finalJs, /Signals are how Continuum can notice that the world changed/);
+assert.match(finalJs, /Signals let Continuum notice when something changes/);
 assert.match(finalJs, /Source<\/b><i>→<\/i><b>Observation<\/b><i>→<\/i><b>Signal<\/b><i>→<\/i><b>State/);
 assert.match(finalJs, /LATER · SIGNALS \+ STATE/);
 assert.match(finalJs, /SIGNAL<\/span><i>→<\/i><span>STATE<\/span><i>→<\/i><span>POLICY<\/span><i>→<\/i><span>AUTHORITY/);
-assert.match(finalJs, /Evidence changes understanding\. Published authority controls execution\./);
+assert.match(finalJs, /Published authority still controls execution\./);
+
+// Information quality keeps observations, claims, derived conclusions and current State distinct.
+assert.match(finalJs, /continuum-knowledge-quality-note/);
+assert.match(finalJs, /HOW CONTINUUM TREATS INFORMATION/);
+assert.match(finalJs, /Different kinds of information carry different weight\./);
+for (const label of ['Observation', 'Claim', 'Derived conclusion', 'Current State']) {
+  assert.match(finalJs, new RegExp(`<b>${label}<\\/b>`));
+}
+assert.match(finalJs, /Client says payment will arrive Friday/);
+assert.match(finalJs, /verified account event showing the payment posted/);
+assert.match(finalJs, /Old or conflicting information stays traceable/);
 
 // Model routing keeps model, provider, capability and policy limitations distinct.
 assert.match(finalJs, /continuum-model-routing/);
-assert.match(finalJs, /Different approved intelligence can fit different jobs/);
+assert.match(finalJs, /Different approved models can handle different jobs/);
 for (const boundary of ['Model', 'Provider', 'Capability', 'Policy']) {
   assert.match(finalJs, new RegExp(`<b>${boundary}<\\/b>`));
 }
@@ -93,7 +105,7 @@ assert.match(finalJs, /Authority stays fixed unless policy changes\./);
 // Goals/Missions sit above ordinary Automations and preserve explicit success/stop boundaries.
 assert.match(finalJs, /continuum-goal-note/);
 assert.match(finalJs, /LATER · GOALS \/ MISSIONS/);
-assert.match(finalJs, /Automations handle rules\. Goals let Continuum pursue an outcome\./);
+assert.match(finalJs, /Automations handle repeatable rules\. Goals keep an outcome alive\./);
 assert.match(finalJs, /GOAL<\/span><i>→<\/i><span>PLAN<\/span><i>→<\/i><span>ACT<\/span><i>→<\/i><span>OBSERVE<\/span><i>→<\/i><span>REPLAN/);
 assert.match(finalJs, /Help an authorized person pursue a suitable job within 60 days/);
 assert.match(finalJs, /Replanning can change strategy\. It cannot silently change hard constraints, success criteria or authority\./);
@@ -102,7 +114,7 @@ assert.match(finalJs, /Replanning can change strategy\. It cannot silently chang
 assert.match(finalJs, /LATER · LIVE CAPABILITY/);
 assert.match(finalJs, /DISCOVER/);
 assert.match(finalJs, /SIMULATE/);
-assert.match(finalJs, /Continuum can notice how its environment could become more capable/);
+assert.match(finalJs, /When work keeps getting blocked by a missing tool/);
 assert.match(finalJs, /A workflow keeps stopping because deployment access is missing/);
 assert.match(finalJs, /Capability growth and permission growth stay separate\./);
 assert.match(finalJs, /Software, APIs, MCP servers, infrastructure, financial systems, operating systems, vehicles, wearables, smart devices and future technology/);
@@ -116,6 +128,7 @@ assert.match(finalJs, /link\.href = '\/checkin\/'/);
 
 // Planner remains typed, reviewable and separate from executable authority.
 assert.match(finalJs, /LATER · PLANNER/);
+assert.match(finalJs, /Describe the setup in normal language\. The result still has to pass the same server rules\./);
 assert.match(finalJs, /INTENT/);
 assert.match(finalJs, /CHANGE PLAN/);
 assert.match(finalJs, /PREFLIGHT/);
@@ -125,7 +138,7 @@ assert.match(finalJs, /Executable capability and authority remain protected serv
 // Control Center keeps background work inspectable and exposes Pause Autonomy + Simulation without claiming they exist today.
 assert.match(finalJs, /continuum-control-center-note/);
 assert.match(finalJs, /LATER · CONTROL CENTER/);
-assert.match(finalJs, /Continuum should stay inspectable even when work keeps moving in the background\./);
+assert.match(finalJs, /Background work should never become invisible\./);
 for (const view of ['NOW', 'WAITING', 'UPCOMING', 'HISTORY']) assert.match(finalJs, new RegExp(view));
 assert.match(finalJs, /Pause Autonomy/);
 assert.match(finalJs, /Block new autonomous consequential Actions while approved observation, State maintenance, drafting and briefings can continue\./);
@@ -187,4 +200,4 @@ for (const forbidden of ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(
   assert.doesNotMatch(finalJs, new RegExp(forbidden.replace('(', '\\(')));
 }
 
-console.log('Continuum /doc intro, Check In routes, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
+console.log('Continuum /doc intro, Check In routes, information quality, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
