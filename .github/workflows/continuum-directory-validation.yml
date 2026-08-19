@@ -11,10 +11,12 @@ on:
       - 'assets/lab/lab-crm.css'
       - 'assets/lab/lab-directory-v2.js'
       - 'assets/lab/lab-directory-v2.css'
+      - 'assets/lab/lab-directory-v2-polish.css'
       - 'assets/lab/lab-automations-directory-v4.js'
       - 'assets/lab/lab-automations-directory-v4.css'
       - 'assets/lab/lab-automations-audience-v4.js'
       - 'assets/lab/lab-automations-audience-v4.css'
+      - 'assets/lab/lab-automations-intelligence-v4.js'
       - 'docs/continuum-directory-master-plan-CURRENT.md'
       - 'docs/checkin-directory-library-CURRENT.md'
       - '.github/workflows/continuum-directory-validation.yml'
@@ -28,10 +30,12 @@ on:
       - 'assets/lab/lab-crm.css'
       - 'assets/lab/lab-directory-v2.js'
       - 'assets/lab/lab-directory-v2.css'
+      - 'assets/lab/lab-directory-v2-polish.css'
       - 'assets/lab/lab-automations-directory-v4.js'
       - 'assets/lab/lab-automations-directory-v4.css'
       - 'assets/lab/lab-automations-audience-v4.js'
       - 'assets/lab/lab-automations-audience-v4.css'
+      - 'assets/lab/lab-automations-intelligence-v4.js'
       - 'docs/continuum-directory-master-plan-CURRENT.md'
       - 'docs/checkin-directory-library-CURRENT.md'
       - '.github/workflows/continuum-directory-validation.yml'
@@ -46,12 +50,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate Directory and Audience JavaScript
+      - name: Validate Directory, Audience and data-reference integration
         run: |
           set -euo pipefail
           node --check assets/lab/lab-directory-v2.js
           node --check assets/lab/lab-automations-directory-v4.js
           node --check assets/lab/lab-automations-audience-v4.js
+          node --check assets/lab/lab-automations-intelligence-v4.js
 
           python - <<'PY'
           from pathlib import Path
@@ -59,10 +64,12 @@ jobs:
 
           directory = Path('assets/lab/lab-directory-v2.js').read_text(encoding='utf-8')
           directory_css = Path('assets/lab/lab-directory-v2.css').read_text(encoding='utf-8')
+          polish_css = Path('assets/lab/lab-directory-v2-polish.css').read_text(encoding='utf-8')
           integration = Path('assets/lab/lab-automations-directory-v4.js').read_text(encoding='utf-8')
           integration_css = Path('assets/lab/lab-automations-directory-v4.css').read_text(encoding='utf-8')
           audience = Path('assets/lab/lab-automations-audience-v4.js').read_text(encoding='utf-8')
           audience_css = Path('assets/lab/lab-automations-audience-v4.css').read_text(encoding='utf-8')
+          intelligence = Path('assets/lab/lab-automations-intelligence-v4.js').read_text(encoding='utf-8')
           loader = Path('assets/lab/lab-loader.js').read_text(encoding='utf-8')
           focused = Path('lab/automations/index.html').read_text(encoding='utf-8')
           master = Path('docs/continuum-directory-master-plan-CURRENT.md').read_text(encoding='utf-8')
@@ -83,38 +90,47 @@ jobs:
               '.dir2-dialog', '@media (max-width:760px)', 'env(safe-area-inset-bottom)',
               'html[data-theme="light"]'
           ]
+          required_polish = ['position:sticky', 'backdrop-filter', '@media (max-width:760px)', 'prefers-reduced-motion']
           required_audience_css = [
               '.v4-audience-readiness', '.v4-audience-preflight', '.v4-audience-modal-backdrop',
               '.v4-audience-picker-list', '.v4-audience-preview-metrics', '@media (max-width:760px)'
           ]
           required_docs = [
-              'Automations Audience v4.1', 'typed multi-selector Audience editor',
-              'PersonOrganizationMembership', 'ContactMethod', 'PersonRelationship',
-              'audienceSelectors[]', 'browser resolver is not production authority'
+              'Audience v4.1', 'multi-selector', 'PersonOrganizationMembership',
+              'ContactMethod', 'PersonRelationship', 'audienceSelectors[]',
+              'Automations Intelligence v4.2', 'sample/reference UX only'
+          ]
+          required_intelligence = [
+              'audience.resolved_people_count', 'audience.email_ready_count',
+              'audience.phone_ready_count', 'cmx-lab-automation-data-bindings-v1'
           ]
 
-          for term in required_directory:
-              if term not in directory: sys.exit(f'missing Directory v2 contract: {term}')
-          for term in required_audience:
-              if term not in audience: sys.exit(f'missing Audience v4.1 contract: {term}')
-          for term in required_css:
-              if term not in directory_css: sys.exit(f'missing Directory v2 styling: {term}')
-          for term in required_audience_css:
-              if term not in audience_css: sys.exit(f'missing Audience v4.1 styling: {term}')
+          checks = [
+              (required_directory, directory, 'Directory v2'),
+              (required_audience, audience, 'Audience v4.1'),
+              (required_css, directory_css, 'Directory v2 styling'),
+              (required_polish, polish_css, 'Directory polish'),
+              (required_audience_css, audience_css, 'Audience v4.1 styling'),
+              (required_intelligence, intelligence, 'Directory data-reference integration'),
+          ]
+          for terms, source, label in checks:
+              for term in terms:
+                  if term not in source: sys.exit(f'missing {label}: {term}')
+
           if 'Typed Audience available' not in integration or '.v4-directory-strip' not in integration_css:
               sys.exit('missing Directory-to-Automations integration contract')
           for term in required_docs:
               if term not in master + handoff: sys.exit(f'missing current Directory/Audience documentation: {term}')
-          for term in ['lab-directory-v2.css', 'lab-directory-v2.js']:
+          for term in ['lab-directory-v2.css', 'lab-directory-v2-polish.css', 'lab-directory-v2.js']:
               if term not in loader: sys.exit(f'Lab loader missing Directory asset: {term}')
-          for term in ['lab-automations-directory-v4.css', 'lab-automations-directory-v4.js', 'lab-automations-audience-v4.css', 'lab-automations-audience-v4.js']:
-              if term not in focused: sys.exit(f'focused Automations missing Directory/Audience asset: {term}')
+          for term in ['lab-automations-directory-v4.css', 'lab-automations-directory-v4.js', 'lab-automations-audience-v4.css', 'lab-automations-audience-v4.js', 'lab-automations-intelligence-v4.js']:
+              if term not in focused: sys.exit(f'focused Automations missing Directory/Audience/data asset: {term}')
 
-          combined = directory + integration + audience
+          combined = directory + integration + audience + intelligence
           for forbidden in ['api.cmxchat.com', 'MutationObserver', 'eval(', 'new Function(']:
               if forbidden in combined: sys.exit(f'forbidden Directory/Audience pattern: {forbidden}')
 
-          print('Directory v2, Audience v4.1, mobile UX and Lab safety contracts passed.')
+          print('Directory v2 polish, Audience v4.1 and Automations v4.2 Directory data-reference contracts passed.')
           PY
 
       - name: Build isolated Lab snapshot
@@ -127,8 +143,10 @@ jobs:
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
           const rendered = transformSnapshot(source).replace('upgrade-insecure-requests', '');
           assert(rendered.includes('/assets/lab/lab-directory-v2.css'));
+          assert(rendered.includes('/assets/lab/lab-directory-v2-polish.css'));
           assert(rendered.includes('/assets/lab/lab-directory-v2.js'));
           assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-v2.css') < rendered.indexOf('/assets/lab/lab-directory-v2-polish.css'));
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
           fs.writeFileSync('directory-browser-smoke.html', rendered, 'utf8');
           NODE
@@ -168,4 +186,4 @@ jobs:
           grep -q 'data-lab-automations-audience="v4-1"' /tmp/automations-directory.html
           ! grep -qi 'Loading Automations' /tmp/automations-directory.html
 
-          echo 'Continuum Directory v2 and Audience v4.1 passed desktop/mobile and focused Automations smoke.'
+          echo 'Continuum Directory v2 polish and Audience v4.1 passed desktop/mobile and focused Automations smoke.'
