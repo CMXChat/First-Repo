@@ -9,7 +9,7 @@ const source = fs.readFileSync('assets/lab/lab-automations-duplicate-guard-v9.js
 const css = fs.readFileSync('assets/lab/lab-automations-duplicate-guard-v9.css', 'utf8');
 
 assert.match(index, /lab-automations-duplicate-guard-v9\.css\?v=20260819-v9guard1/);
-assert.match(index, /lab-automations-duplicate-guard-v9\.js\?v=20260819-v9guard1/);
+assert.match(index, /lab-automations-duplicate-guard-v9\.js\?v=20260819-v9guard2/);
 assert.ok(index.indexOf('lab-automations-duplicate-guard-v9.js') > index.indexOf('lab-automations-editor-focus-v8.js'), 'duplicate guard must load after accepted v8 editor focus');
 
 for (const copy of [
@@ -26,6 +26,8 @@ assert.match(source, /event\.stopImmediatePropagation\(\)/);
 assert.match(source, /dataset\.v9ExactDuplicate/);
 assert.match(source, /Email \$\{target\}/);
 assert.match(source, /Notify \$\{target\}/);
+assert.match(source, /v5 rebuilds its ordered sequence three animation frames after editor changes/);
+assert.match(source, /requestAnimationFrame\(\(\) => requestAnimationFrame\(\(\) => requestAnimationFrame\(\(\) => requestAnimationFrame\(patch\)\)\)\)/);
 assert.match(source, /dataset\.labAutomationsDuplicateGuard = "v9"/);
 assert.match(source, /CMXAutomationDuplicateGuardV9 = Object\.freeze/);
 
