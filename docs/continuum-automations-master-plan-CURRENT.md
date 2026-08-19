@@ -1,29 +1,15 @@
 # Continuum Automations Master Plan — CURRENT
 
 Date: 2026-08-18
-Status: Canonical Automation product/UX direction; Lab v4.3 implemented, protected Runtime/provider execution still later
+Status: Canonical Automation product/UX direction; Lab v4.4 implemented, protected Runtime/provider execution still later
 
 # Purpose
 
 Continuum Automations is the workflow-definition layer for Continuum.
 
-Product goal:
+The product should combine IFTTT-level first-glance simplicity, Zapier whole-flow awareness, Make composition, n8n-style data inspection, Shortcuts-quality mobile authoring and Pipedream-style testing without turning into a developer IDE.
 
-- simple flows should feel obvious;
-- complex flows should remain understandable;
-- new capabilities should plug into the same builder without redesigning it;
-- users and AI should compose the same typed building blocks;
-- Runtime should eventually explain exactly what ran, under which published version, with which frozen inputs and authority.
-
-Design lessons deliberately combined:
-
-- IFTTT — immediate Trigger/Action comprehension;
-- Zapier — whole-flow visibility beside configuration;
-- Make — composable scenarios;
-- n8n — data flow and execution inspection;
-- Apple Shortcuts — mobile action discovery and linear composition;
-- Pipedream — test-event/per-step debugging discipline;
-- Continuum — Directory, Library, Connections, version history, authority, AI and future Runtime inside one private environment.
+Continuum's advantage is that Directory, Library, Connections, AI, authority, immutable version history and future Runtime all belong to the same private environment.
 
 Core principle:
 
@@ -31,390 +17,311 @@ Core principle:
 
 # Product boundaries
 
-- `/doc/` explains Continuum and remains under its clarity freeze.
-- `/lab/` is the broader experiment workspace.
+- `/doc/` explains Continuum and remains under its separate clarity freeze.
+- `/lab/` is the broader experiment workspace and owns Directory v2.
 - `/lab/automations/` is the focused Automation operating/testing surface.
-- future protected Automations use server Drafts, typed services and the generated frontend client.
-- future Runtime executes published definitions server-side and records actual Runs.
+- protected product implementation later uses React, server Drafts, typed services and the generated client.
+- Runtime later executes immutable published definitions and records authoritative Runs.
 
-**Automation = the plan. Runtime = the execution layer.**
+**Automation = the plan. Runtime = execution/history.**
 
-# Current Lab v4.3 stack
+# Current Lab v4.4 stack
 
-The focused route keeps the proven v3 Draft/persistence engine and layers current product behavior on top.
+The focused route deliberately keeps the proven v3 Draft/autosave engine while testing richer product semantics through additive Lab layers.
 
 Current responsibilities:
 
-- `lab-automations-experience-v3.js` — local Draft model, normalization, autosave, five-stage editor;
-- `lab-automations-progressive-preview.js` — truthful blank-Draft/pending-state behavior;
-- `lab-automations-platform-v4.js` — command center, Capability Catalog, interactive flow, Planner preview and Runs preview;
-- `lab-automations-scenarios-v4.js` — additional editable scenarios;
-- `lab-automations-directory-v4.js` — Directory counts/readiness integration;
-- `lab-automations-audience-v4.js` — typed multi-selector Audience Lab adapter;
-- `lab-automations-intelligence-v4.js` — contextual recommendations, typed data-reference UX and richer local step testing;
-- `lab-automations-input-routing-v4.js` — field-level mapping from a typed source to a specific receiving Action input;
-- matching v4 CSS/QA layers — current desktop/mobile presentation.
+- `lab-automations-experience-v3.js` — local Draft normalization/autosave and five-stage compatibility editor;
+- `lab-automations-progressive-preview.js` — truthful blank/pending states;
+- `lab-automations-platform-v4.js` — command center, Capability Catalog, interactive flow, Planner/Run previews;
+- `lab-automations-scenarios-v4.js` — 13 editable starting scenarios total;
+- `lab-automations-directory-v4.js` — Directory readiness integration;
+- `lab-automations-audience-v4.js` — Audience v4.1;
+- `lab-automations-intelligence-v4.js` — v4.2 contextual recommendations, typed data references and richer tests;
+- `lab-automations-input-routing-v4.js` — v4.3 receiving-field input routing;
+- `lab-automations-sequence-v4.js` — v4.4 linear inter-step IF / WAIT authoring preview;
+- matching CSS/QA layers — desktop/mobile presentation.
 
-The old focused v2 builder is history and is not loaded.
-
-Production must later rebuild accepted behavior in React/FastAPI/PostgreSQL instead of copying localStorage and DOM adapters.
+These are product-prototyping adapters. Production does not copy the DOM/localStorage architecture.
 
 # Command center
 
-Current top-level workspace views:
+Top-level views remain:
 
 - Automations;
 - Templates;
-- Runs, explicitly marked `RUNTIME OFF`.
+- Runs, explicitly `RUNTIME OFF`.
 
-The dashboard prioritizes New Automation, lifecycle state, actual Automation cards, search, system readiness and Capability Catalog access.
+Prioritize actual workflows and operating state. Do not restore a marketing billboard above the Automation list.
 
-Templates are a creation tool, not the hero of the page.
-
-When Runtime exists, the same cards can grow to show last Run, next occurrence, waiting/failure state and published version without redesigning the dashboard.
-
-# Three ways to create
-
-Normal `New automation` presents:
+Normal New Automation offers:
 
 1. Build manually;
-2. start from template/scenario;
+2. start from scenario;
 3. AI Planner preview.
 
-All three conceptually create/edit the same Automation Draft model.
+`/lab/automations/?new=1&from=lab` remains the direct-new exception and opens a blank Draft at Trigger.
 
-Planner is visual only in Lab. No model request occurs.
+# Beginner workflow model
 
-Direct integration URL:
-
-`/lab/automations/?new=1&from=lab`
-
-continues to open a blank Draft directly on Trigger.
-
-# Human workflow model
-
-Accepted stages:
+The accepted top-level rail remains:
 
 - WHEN — Trigger;
-- IF — Rules;
-- DO — Actions;
-- WAIT — start timing / recurrence presentation;
-- TEST — Review and simulation.
+- IF — pre-action Rules;
+- DO — Action sequence;
+- WAIT — sequence-start timing / recurrence presentation;
+- TEST — Review / Finish / simulation.
 
-Finish remains inside Review.
+This rail remains useful because it gives a beginner a simple mental model even as the underlying workflow becomes richer.
 
-Important backend distinctions remain separate:
+# Critical v4.4 architecture correction: two kinds of IF
 
-- Trigger eligibility;
-- action-sequence start policy;
-- future explicit inter-step WAIT;
-- recurrence;
-- retry.
+The original top-level **IF** stage occurs before the DO stack. Therefore it can only evaluate information available before Actions run.
 
-# Flow as navigator
+Use the top-level IF stage for trigger-time/pre-action rules such as:
 
-FLOW PREVIEW is an interactive representation of the Draft.
+- Check In remains in grace;
+- acknowledgement is missing before the sequence starts;
+- other future conditions whose referenced data already exists at eligibility/start time.
 
-Nodes navigate to their relevant stage:
+A condition that depends on an Action output cannot honestly live in that stage.
 
-- WHEN → Trigger;
-- IF → Rules;
-- DO → Actions;
-- WAIT → Timing;
-- FINISH → Review.
+Example:
 
-Blank Draft truth stays explicit:
+`AI task → IF AI priority equals urgent → Notify`
 
-- WHEN — Choose a trigger;
-- IF — Not set yet;
-- DO — Choose an action;
-- WAIT — Not set yet;
-- FINISH — Not set yet.
+The AI priority does not exist until the AI step finishes. That condition belongs **after that Action**.
 
-Never show compatibility defaults as user choices before confirmation.
+This is the reason v4.4 introduces inter-step flow controls instead of faking output-dependent global Rules.
 
-The current flow stays linear because real branch/subflow Runtime behavior does not exist yet.
+# Advanced Flow v4.4
 
-# Desktop model
+The DO stack now has an explicitly labeled **ADVANCED FLOW · PREVIEW** layer.
 
-Desktop should feel like operating a readable machine.
+Between two existing Action cards, the Lab can author:
 
-The whole flow remains visible while configuration happens beside it.
+- **IF / Continue if…** — a linear gate using Trigger data or outputs from Actions that have already occurred by that point;
+- **WAIT / Wait between steps** — a future persisted delay before the next Action.
 
-A giant infinite canvas is unnecessary for normal Automations. Graph complexity should arrive only when real branches/subflows justify it.
+Prototype Automation intent uses `flowControls[]` anchored by stable `afterActionId`.
 
-# Mobile model
+Compatibility store:
 
-Phone UX is first-class.
+`cmx-lab-automation-flow-controls-v1`
 
-Never shrink a desktop workflow canvas onto a phone.
+The browser marker is:
 
-Use readable vertical flow, one primary decision area at a time, large tap targets, one-column choices, bottom-sheet/full-screen configuration surfaces, safe-area-aware controls, no nested scroll traps and no horizontal overflow.
+`data-lab-automations-sequence="v4-4"`
 
-Audience, data-reference and input-routing selectors follow the same mobile rule.
+## Inter-step IF
+
+The current Lab condition is deliberately linear.
+
+It stores a typed source reference plus one bounded operator/value comparison.
+
+Current prototype operators:
+
+- equals;
+- does not equal;
+- contains;
+- greater than;
+- less than;
+- is true.
+
+The source picker only offers Trigger data and outputs from Actions at or before the selected insertion point.
+
+If false, the remaining linear path stops in the preview.
+
+**YES/NO branch graphs are not implemented.** Branching remains later because durable routing, persistence, graph validation, restart recovery and Runtime semantics need to exist first.
+
+## Inter-step WAIT
+
+Inter-step WAIT is a different domain concept from the current top-level Timing stage.
+
+Keep these separate:
+
+- Trigger = when the workflow becomes eligible;
+- start policy / current WAIT stage = when the first Action may begin;
+- inter-step WAIT = persisted due state between individual Actions;
+- recurrence = when another occurrence becomes eligible;
+- retry = response to a failed attempt.
+
+The Lab can author days/hours/minutes between two Actions, but explicitly labels the control as Runtime-required. Browser timers are never execution authority.
+
+Future Runtime must persist the due time so process/server restarts do not lose the workflow.
+
+# Flow representation and likely next consolidation
+
+The five-stage rail remains the beginner navigation model, but v4.4 demonstrates that the long-term domain model is more naturally an ordered typed sequence/graph containing Actions and workflow controls.
+
+Do not keep adding unlimited DOM patches forever.
+
+A future consolidation, likely a v5-style Lab/product model before protected Phase 2B migration, should consider representing the actual workflow as ordered typed nodes such as:
+
+`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+
+Branch nodes should be added only when durable Runtime routing semantics are designed.
+
+The goal is to migrate accepted v4.x semantics into a coherent authoring model, not preserve every v3 compatibility implementation detail.
+
+# Flow Preview
+
+Accepted name remains **FLOW PREVIEW**.
+
+Do not restore `LIVE FLOW` as the product label.
+
+The top-level Flow Preview remains a navigational summary. Detailed inter-step controls currently live in the Actions sequence because the legacy preview model does not yet represent arbitrary ordered workflow nodes.
+
+A later consolidated flow model should make those controls visible in the actual flow representation.
 
 # Capability Catalog
 
-The main scalability decision is a **Capability Catalog**.
+Capability breadth scales through a trusted catalog/registry, not by hard-coding every future option into the UI.
 
-The builder cannot be redesigned every time options grow from 4 to 40 or 400.
+Families include:
 
-Capability families include Triggers, Conditions, Actions, Workflow controls, Finish/outcome policies, Connection-provided capabilities, data sources and typed outputs.
+- Trigger;
+- Condition;
+- Action;
+- workflow control;
+- Finish/outcome;
+- Connection-provided capability;
+- typed input/output data.
 
-The Lab catalog contains current prototype-usable items labeled `LAB NOW` and future concepts labeled `LATER`.
+Lab status labels remain truthful:
 
-Future catalog visibility never means backend/Runtime/provider implementation exists.
+- `LAB NOW` = the current prototype can represent it;
+- `LATER` = deliberate future capability, not executable truth.
 
-Large option breadth is handled through contextual recommendations, categories, search, reusable user Actions, Connection-provided capabilities later and explicit readiness/availability state.
+V4.2 `RECOMMENDED NEXT` reuses the same catalog and never fabricates capabilities.
 
-## Contextual recommendations now proven in Lab
+# Directory and Audience
 
-Automations v4.2 derives a small **RECOMMENDED NEXT** set from current Trigger/flow context.
+Audience v4.1 lets communication Actions compose stable Person, Organization, Group and Label selectors.
 
-Recommendations use the same Capability Catalog. They never create hidden capability types or silently mutate the Draft.
+The browser resolves current unique People and previews channel readiness.
 
-Future ranking can use typed capability metadata, current Connections, Directory readiness and workflow context while preserving that rule.
+That is Lab UX only. Production resolution/readiness belongs to protected Directory services and future Runtime freezes exact recipients/contact endpoints.
 
-# Capability ownership
+# Typed data v4.2
 
-Keep Capability, Connection, Action preset, Scenario/template, Automation Draft, immutable Automation Version and future Run as distinct concepts.
-
-Users and AI can create compositions. They do not invent arbitrary executable code/types.
-
-# Templates / scenarios
-
-Current total: **13 editable starting patterns**.
-
-Templates create normal Drafts.
-
-Future users/AI can save their own templates and reusable Action presets.
-
-Reusable subflows come later after ordinary linear workflow + Runtime semantics are solid.
-
-# Directory and typed Audience
-
-Directory is a first-class Automation dependency.
-
-The product should target stable protected identities, not copied email/phone strings.
-
-Current Lab v4.1 proves a multi-selector audience model for communication Actions using Person, Organization, Group and Label selectors.
-
-The browser resolves current unique People and previews channel readiness. That is product-prototyping behavior only.
-
-Production direction remains:
-
-`published stable selectors → future Run eligibility → canonical server resolution → deduplicate People → readiness/authority checks → freeze exact recipients/contact endpoints → provider`
-
-Historical Runs stay unchanged when Directory membership/contact methods later change.
-
-# Actions
-
-Current simple inline Lab types remain Notify, Email, AI Task and Manual Review, plus reusable Lab Action references.
-
-Current v3 Action UX supports ordering, duplicate, pause/enable, remove and replacement.
-
-The capability labels can evolve later when matching backend types become deliberate.
-
-# Typed data between steps
-
-This is now **Lab-proven UX**, while server validation remains future work.
-
-Automations v4.2 adds **Use data** to Action cards.
-
-A user can select readable typed references from:
+Actions can choose friendly typed sources from:
 
 - Trigger outputs;
 - earlier Action outputs;
 - Directory/Audience readiness values.
 
-Examples include Trigger time/type, AI summary/priority, prior step status and resolved Audience counts.
-
-Prototype references are mirrored to Action `dataBindings[]` and protected from older v3 compatibility saves through:
+Prototype `dataBindings[]` are protected from old compatibility saves with:
 
 `cmx-lab-automation-data-bindings-v1`
 
-That extra local store is compatibility scaffolding, not production architecture.
+Durable model:
 
-The durable product model is:
+`typed source → stable source/step ID → typed output path`
 
-`typed source → stable source/step ID → typed output path → compatible receiving field`
-
-The normal-user UI should keep showing readable tokens. The backend stores/validates typed references.
-
-Do **not** make arbitrary JavaScript, Python, shell, SQL or template expressions the normal mapping model.
-
-Later data sources can include Library, normalized inbound Event/Conversation data, Connection outputs and Runtime context once those domains are real.
+No arbitrary JavaScript/Python/template-expression mapping language.
 
 # Field input routing v4.3
 
-V4.3 proves the receiving side of that model.
+V4.3 completes the receiving side:
 
-An Action can map a typed source into a named input slot such as:
+`typed source output → named Action input field`
 
-- Email subject;
-- Email body data;
-- AI task context;
-- AI task focus value;
-- notification message data;
-- manual-review context.
+Current Lab examples:
 
-Prototype intent uses `inputBindings[]` entries with:
+- Email subject/body;
+- AI Task context/focus;
+- Notify message data;
+- Manual Review context.
 
-- `targetField`;
-- typed source kind;
-- stable source/step ID;
-- typed output path;
-- readable display label.
+Prototype `inputBindings[]` include `targetField` plus typed source information.
 
-The Lab also uses `cmx-lab-automation-input-bindings-v1` as compatibility scaffolding so the older v3 Draft engine does not erase the richer field-routing prototype.
+Compatibility store:
 
-Production should not copy that local store. The server Automation Draft should carry validated typed input bindings directly.
+`cmx-lab-automation-input-bindings-v1`
 
-The important future rule is that the capability registry describes both **outputs** and **receiving input fields**, allowing human UI and AI Planner to produce only compatible mappings.
+Step tests now retain receiving-field context, for example:
 
-# Testing
+`Body data ← Step 1 · AI summary`
 
-`TEST THIS STEP` is now a richer Lab proving surface.
+Production Capability Registry metadata should describe both outputs and receiving inputs so humans and AI Planner can create only compatible mappings.
 
-V4.2 can show a local input → normalization/resolution → sample output trace for Trigger, Rules, Actions, Timing and Review/preflight.
+# Testing / preflight
 
-Action traces can show resolved Audience counts, channel readiness, mapped-data sample values and simulated output text.
+`TEST THIS STEP` remains local and side-effect-free.
 
-Every trace explicitly states that no provider, AI model, Runtime, real event source or connected account was used.
+Current traces can show input, normalization/resolution, Audience/readiness, mapped values, receiving-field routes and sample output.
 
-Future protected testing should evolve toward typed sample events, real server definition validation, fake-provider Runtime tests and only later explicitly authorized real-provider tests.
+Review can show Audience readiness, input-routing summary and v4.4 inter-step control count with `RUNTIME REQUIRED` where applicable.
 
-Simulation/test history stays separate from authoritative Runs.
+Never convert Lab simulation into fake Run history.
 
-# Review / preflight
+Future server preflight returns deterministic blockers/readiness rather than cosmetic percentages.
 
-Review should be one of Continuum's strongest product surfaces.
+# AI authoring
 
-Never use cosmetic health percentages.
+Automation Planner eventually creates/edits the same typed Draft humans use.
 
-Show deterministic readiness such as Trigger configured, Audience resolves, required channel readiness, typed input references resolve, ContentVersion available, Connection ready, timing valid, authority sufficient and Runtime/capability availability.
+It can choose known capabilities, Directory audiences, typed input/output mappings and supported flow controls only when their typed backend definitions exist.
 
-Current Lab includes Directory/Audience readiness, input-routing summary and richer local structural blockers.
+The broader Continuum Planner may propose a cross-domain Change Plan spanning Directory, Automations and Library:
 
-Production readiness belongs to backend services.
+`natural-language intent → typed Change Plan → preflight/conflicts → review/approval → normal protected domain services`
 
-# Connections
-
-A Connection is not itself an Action.
-
-One Connection can make several typed capabilities available.
-
-Provider secrets never belong in Automation Draft JSON.
-
-# AI
-
-AI has distinct Continuum roles, but all of them use the same typed domain services as human UI.
-
-## Automation Planner
-
-Natural language → the same typed Automation Draft humans edit.
-
-The Planner can eventually choose known capabilities, create/reorder Actions, choose stable Directory audiences, wire typed input/output references and propose timing/rules.
-
-AI changes to a published Automation become the next mutable Draft/version proposal, never silent mutation of immutable history.
-
-## Cross-domain Continuum Planner
-
-The broader product should also support requests that span Automations plus Directory/Library, for example:
-
-“Organize my emergency contacts, create a Family group, and build a missed Check In escalation using them.”
-
-That becomes a structured **Change Plan** containing typed operations against the owning domains.
-
-The flow is:
-
-`natural-language intent → Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain mutations`
-
-The Planner may author Automation Draft state, Directory records/relationships/Groups and supported Library structures, but it does not get a hidden database/admin path.
-
-Prompt text never grants authority. The Planner cannot publish consequential work, merge identities, broaden standing authority or invent executable capabilities unless the relevant protected service and authority path permit it.
+No shadow workflow format, direct database path or prompt-granted authority.
 
 Backend companion:
 
 `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
 
-## AI Task
+# Runtime and branching order
 
-A bounded Action inside future Runtime with explicit context/tools/output/limits.
+Runtime remains server-side and later owns Runs, occurrences, step state, persisted waits, retries, provider attempts and frozen execution inputs.
 
-Prompt text is intent, never authority.
+Recommended order remains:
 
-## Agent
+1. Phase 2A production migration/deployment + separate `continuity.md` proof;
+2. mature typed Automation/Directory definitions and protected human authoring;
+3. typed Audience and source/output/input validation;
+4. durable **linear** Runtime + fake provider;
+5. persisted inter-step WAIT / retries / acknowledgements / approvals;
+6. typed routing/branching only after linear Runtime is reliable;
+7. one real low-risk provider in the approved phase order;
+8. AI Task, then Planner;
+9. cross-domain Change Plan apply after mature domain mutation services;
+10. bounded Agent later.
 
-Agent behavior comes last, after deterministic Runtime, permissions, tool boundaries and observability are mature.
+Exact phase labels in backend canonical plans remain authoritative where they are more specific.
 
-# Runtime
+# Security / production rules
 
-Future Runtime owns Run, Occurrence, step state, ExecutionAttempt, persisted waits, retries, provider results, later acknowledgements/approvals/routes and frozen execution snapshots.
+Preserve:
 
-No browser-owned sleeping/scheduling.
-
-# Capability versioning
-
-Published Automations must remain interpretable when capabilities evolve.
-
-Future registry needs stable identifier + version/schema semantics so old immutable AutomationVersions can still be understood and deliberately migrated.
-
-# Safe long-tail extensibility
-
-Later generic HTTP/API or MCP capabilities can unlock long-tail integration only with approved Connections, resource/host scope, secret separation, SSRF defenses, bounds, Audit and authority rules.
-
-No unrestricted code/webhook escape hatch.
-
-# Backend order
-
-Do not widen backend scope simply because the Lab is visually capable.
-
-Current order remains:
-
-1. safely migrate/deploy the validated Phase 2A Library + Automation source;
-2. prove the separate protected `continuity.md` acceptance path;
-3. widen Automation definitions in bounded typed families;
-4. add protected Directory foundation in bounded slices;
-5. add canonical audience resolution/readiness and typed Automation Audience;
-6. add typed data-reference + receiving-input validation as Action/Trigger schemas become real;
-7. Phase 2B protected human builder;
-8. Phase 3 durable Runtime + fake provider;
-9. Phase 4 one real low-risk provider;
-10. Phase 5 waits/routes/retries/acknowledgements/approvals/escalation;
-11. Phase 6 AI Task execution then Automation Planner;
-12. cross-domain Change Plan execution after the relevant domain mutation services are mature;
-13. Phase 7 bounded Agent.
-
-Planner UX/contracts can be designed before execution exists, but AI must not become the implementation path for domain capabilities that normal human/API services do not support.
-
-Exact cross-domain sequencing can overlap safely after the Phase 2A production release boundary, but no new work should destabilize that reviewed migration.
-
-# Security
-
-Preserve protected sessions, Origin/CSRF, owner/scope checks, stable IDs, immutable history, secret separation, typed references, explicit authority and the prohibition on arbitrary workflow code.
-
-Browser audience resolution and data mapping never become production authority.
-
-AI Planner must never treat natural-language instructions as authority or gain a shadow mutation path.
-
-No broad document MutationObserver loops in accepted frontend paths.
+- server-owned authorization and timing;
+- stable IDs;
+- immutable published history;
+- no raw provider secrets in definitions/prompts;
+- no arbitrary executable workflow/mapping code;
+- browser Audience/data/flow-control resolution never becomes production authority;
+- unknown capability/operation types rejected;
+- human and AI use the same typed services;
+- prompt text never grants authority;
+- no broad document MutationObserver loops in accepted frontend paths.
 
 # Validation target
 
-A mature Automation product should answer clearly:
+A mature Automation should clearly answer:
 
 - What starts this?
-- Under what rules?
-- What approved steps follow?
-- Who/what does each step reference?
-- When may it start/wait/repeat?
-- Which typed data flows between steps?
+- Which pre-action rules apply?
+- Which Actions and inter-step controls occur in order?
+- Which data exists at each point in the sequence?
 - Which receiving field gets each mapped value?
-- Is every required Connection/resource/recipient ready?
+- Which Audience/resources/Connections are referenced?
+- What timing/wait/retry semantics apply?
 - Which authority permits consequential work?
 - Which immutable definition was published?
-- What exact changes did AI propose if it helped build the workflow?
-- What exactly happened when Runtime ran it?
+- What did AI propose if it helped author it?
+- What exactly happened when Runtime executed it?
 
-If complexity forces the user to mentally reconstruct the workflow from unrelated forms, the product architecture is wrong.
+If users must mentally reconstruct that sequence from unrelated forms, the product model needs consolidation.
