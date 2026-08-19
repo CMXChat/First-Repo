@@ -39,8 +39,11 @@ assert.match(finalJs, /dataset\.continuumGoals = 'ready'/);
 assert.match(finalJs, /dataset\.continuumControlCenter = 'ready'/);
 assert.match(finalJs, /dataset\.continuumCheckInRoute = 'ready'/);
 assert.match(finalJs, /dataset\.continuumKnowledgeQuality = 'ready'/);
+assert.match(finalJs, /dataset\.continuumAuthorizedContinuity = 'ready'/);
+assert.match(finalJs, /dataset\.continuumArchitectureEvolution = 'ready'/);
 assert.match(finalJs, /Continuum brings your information, people, files, messages, services, automations and AI into one private environment/);
 assert.match(finalJs, /remember useful history and understand what is true right now/);
+assert.match(finalJs, /carry approved work on your behalf across hours, days and changing conditions/);
 assert.match(finalJs, /As more services, APIs, MCP servers and devices connect/);
 assert.match(finalJs, /AI provides reasoning\. Continuum gives that reasoning memory, live State, senses, tools, rules and continuity\./);
 assert.match(finalJs, /Start with what is live\. Explore what Continuum is becoming\./);
@@ -102,11 +105,12 @@ for (const boundary of ['Model', 'Provider', 'Capability', 'Policy']) {
 }
 assert.match(finalJs, /Authority stays fixed unless policy changes\./);
 
-// Goals/Missions sit above ordinary Automations and preserve explicit success/stop boundaries.
+// Goals/Missions sit above ordinary Automations and can use a prepared continuity path.
 assert.match(finalJs, /continuum-goal-note/);
 assert.match(finalJs, /LATER · GOALS \/ MISSIONS/);
 assert.match(finalJs, /Automations handle repeatable rules\. Goals keep an outcome alive\./);
 assert.match(finalJs, /GOAL<\/span><i>→<\/i><span>PLAN<\/span><i>→<\/i><span>ACT<\/span><i>→<\/i><span>OBSERVE<\/span><i>→<\/i><span>REPLAN/);
+assert.match(finalJs, /A Goal can keep moving during your unavailability when its published continuity policy allows it/);
 assert.match(finalJs, /Help an authorized person pursue a suitable job within 60 days/);
 assert.match(finalJs, /Replanning can change strategy\. It cannot silently change hard constraints, success criteria or authority\./);
 
@@ -119,12 +123,35 @@ assert.match(finalJs, /A workflow keeps stopping because deployment access is mi
 assert.match(finalJs, /Capability growth and permission growth stay separate\./);
 assert.match(finalJs, /Software, APIs, MCP servers, infrastructure, financial systems, operating systems, vehicles, wearables, smart devices and future technology/);
 
-// Continuity explains ordinary unavailability and links directly to the working Check In surface.
-assert.match(finalJs, /asleep, on a flight, in a meeting, offline, unreachable before a deadline or in a serious continuity event/);
-assert.match(finalJs, /The applicable fallback path still comes from authority established beforehand\./);
+// Continuity explains ordinary unavailability, long-term continuity and prepared agency.
+assert.match(finalJs, /Keep your context, rules and approved intent available across time\./);
+assert.match(finalJs, /Carry approved intent forward/);
+assert.match(finalJs, /Future Runtime can use the people, information, instructions and authority you prepared to carry specific work forward on your behalf\./);
+assert.match(finalJs, /CONTINUITY OF AUTHORIZED INTENT/);
+assert.match(finalJs, /Prepare what should continue before you need it\./);
+assert.match(finalJs, /continuum-authorized-continuity-note/);
+assert.match(finalJs, /Specific work can continue on your behalf when you cannot take part directly\./);
+assert.match(finalJs, /PREPARED INTENT/);
+assert.match(finalJs, /CURRENT STATE/);
+assert.match(finalJs, /CONTINUITY POLICY/);
+assert.match(finalJs, /AUTHORIZED ACTION/);
+assert.match(finalJs, /long-term continuity after death/);
+assert.match(finalJs, /Your absence never expands the authority already published\./);
 assert.match(finalJs, /The idea started with the Dead Man Switch/);
 assert.match(finalJs, /Open the live Check In app/);
 assert.match(finalJs, /link\.href = '\/checkin\/'/);
+
+// Goal-driven architecture evolution is explicit but remains a governed future capability.
+assert.match(finalJs, /continuum-architecture-evolution-note/);
+assert.match(finalJs, /LATER · ARCHITECTURE EVOLUTION/);
+assert.match(finalJs, /A Goal can expose a limitation in Continuum itself\./);
+assert.match(finalJs, /GOAL BLOCKED/);
+assert.match(finalJs, /CODE \+ TESTS/);
+assert.match(finalJs, /AUTHORIZE/);
+assert.match(finalJs, /RELEASE/);
+assert.match(finalJs, /MEASURE/);
+assert.match(finalJs, /typed interview-stage model, migration, service changes and tests/);
+assert.match(finalJs, /Permission stays governed separately\./);
 
 // Planner remains typed, reviewable and separate from executable authority.
 assert.match(finalJs, /LATER · PLANNER/);
@@ -200,4 +227,4 @@ for (const forbidden of ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(
   assert.doesNotMatch(finalJs, new RegExp(forbidden.replace('(', '\\(')));
 }
 
-console.log('Continuum /doc intro, Check In routes, information quality, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
+console.log('Continuum /doc intro, Check In routes, information quality, authorized continuity, architecture evolution, adaptability, Goals, State, Signals, Runtime, Control Center and authority clarity smoke passed.');
