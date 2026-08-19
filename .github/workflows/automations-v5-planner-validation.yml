@@ -1,0 +1,89 @@
+name: Continuum Automations v5 Planner Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-v5.css'
+      - '.github/workflows/automations-v5-planner-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'assets/lab/lab-automations-planner-v5.css'
+      - '.github/workflows/automations-v5-planner-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-planner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate deterministic Planner boundary
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-planner-v5.js
+
+          grep -q 'TYPED PLAN PREVIEW · LOCAL' assets/lab/lab-automations-planner-v5.js
+          grep -q 'NO AI CALL' assets/lab/lab-automations-planner-v5.js
+          grep -q 'CHANGE PLAN' assets/lab/lab-automations-planner-v5.js
+          grep -q 'Use this draft' assets/lab/lab-automations-planner-v5.js
+          grep -q 'local-deterministic-v5' assets/lab/lab-automations-planner-v5.js
+          grep -q 'CMXAutomationModelV5?.syncStore?.()' assets/lab/lab-automations-planner-v5.js
+          grep -q 'automation.create_draft' assets/lab/lab-automations-planner-v5.js
+          grep -q 'automation.add_condition' assets/lab/lab-automations-planner-v5.js
+          grep -q 'automation.add_wait' assets/lab/lab-automations-planner-v5.js
+          grep -q 'Notification audience still needs a protected Directory selection' assets/lab/lab-automations-planner-v5.js
+
+          grep -q '.v5-planner-result' assets/lab/lab-automations-planner-v5.css
+          grep -q '.v5-planner-sequence' assets/lab/lab-automations-planner-v5.css
+          grep -q '.v5-planner-ops' assets/lab/lab-automations-planner-v5.css
+          grep -q '@media (max-width:760px)' assets/lab/lab-automations-planner-v5.css
+
+          grep -q 'lab-automations-planner-v5.js' lab/automations/index.html
+          grep -q 'lab-automations-planner-v5.css' lab/automations/index.html
+
+          python - <<'PY'
+          from pathlib import Path
+
+          source = Path('assets/lab/lab-automations-planner-v5.js').read_text(encoding='utf-8')
+          forbidden = [
+              'fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(',
+              'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver'
+          ]
+          for term in forbidden:
+              if term in source:
+                  raise SystemExit(f'forbidden Planner boundary pattern: {term}')
+
+          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          if "connect-src 'self'" not in html:
+              raise SystemExit('focused Lab must keep self-only connect-src')
+
+          print('Automations v5 deterministic Planner boundary passed.')
+          PY
+
+      - name: Focused route asset smoke
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-v5-planner-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 \
+            --dump-dom 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-v5-planner.html
+          grep -q 'New automation' /tmp/continuum-v5-planner.html
+          grep -q 'AI PLANNER' /tmp/continuum-v5-planner.html || true
+          ! grep -qi 'Loading Automations' /tmp/continuum-v5-planner.html
+          echo 'Focused Automations route loaded with v5 Planner assets.'
