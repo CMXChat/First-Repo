@@ -6,6 +6,8 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-model-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.css'
       - 'assets/lab/lab-automations-sequence-v4.js'
       - 'assets/lab/lab-automations-scenarios-v4.js'
       - '.github/workflows/automations-v5-model-validation.yml'
@@ -14,6 +16,8 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-model-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.js'
+      - 'assets/lab/lab-automations-flow-v5.css'
       - 'assets/lab/lab-automations-sequence-v4.js'
       - 'assets/lab/lab-automations-scenarios-v4.js'
       - '.github/workflows/automations-v5-model-validation.yml'
@@ -32,6 +36,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-model-v5.js
+          node --check assets/lab/lab-automations-flow-v5.js
           node --check assets/lab/lab-automations-sequence-v4.js
           node --check assets/lab/lab-automations-scenarios-v4.js
 
@@ -44,6 +49,15 @@ jobs:
           grep -q 'getFlowControls' assets/lab/lab-automations-sequence-v4.js
           grep -q 'setFlowControls' assets/lab/lab-automations-sequence-v4.js
           grep -q 'labAutomationsSequenceModel' assets/lab/lab-automations-sequence-v4.js
+
+          grep -q 'ORDERED SEQUENCE' assets/lab/lab-automations-flow-v5.js
+          grep -q 'is-pending' assets/lab/lab-automations-flow-v5.js
+          grep -q 'data-v5-flow-stage' assets/lab/lab-automations-flow-v5.js
+          grep -q 'labAutomationsFlow = "v5"' assets/lab/lab-automations-flow-v5.js
+          grep -q '.v5-ordered-flow' assets/lab/lab-automations-flow-v5.css
+          grep -q '.v3-mobile-flow .v5-ordered-flow' assets/lab/lab-automations-flow-v5.css
+          grep -q 'lab-automations-flow-v5.js' lab/automations/index.html
+          grep -q 'lab-automations-flow-v5.css' lab/automations/index.html
 
           node <<'NODE'
           const fs = require('fs');
@@ -186,7 +200,11 @@ jobs:
           grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5-mobile.html
           grep -q 'data-lab-automations-sequence="v4-4"' /tmp/continuum-v5-mobile.html
           grep -q 'data-lab-automations-sequence-model="v5"' /tmp/continuum-v5-mobile.html
+          grep -q 'data-lab-automations-flow="v5"' /tmp/continuum-v5-mobile.html
+          grep -q 'ORDERED SEQUENCE' /tmp/continuum-v5-mobile.html
+          grep -q 'Choose a trigger' /tmp/continuum-v5-mobile.html
+          grep -q 'Choose an action' /tmp/continuum-v5-mobile.html
           grep -q 'What should start this' /tmp/continuum-v5-mobile.html
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-mobile.html
 
-          echo 'Automations v5 model, v5-owned sequence mutation and 15-scenario browser smoke passed.'
+          echo 'Automations v5 model, ordered Flow Preview, v5-owned sequence mutation and 15-scenario browser smoke passed.'
