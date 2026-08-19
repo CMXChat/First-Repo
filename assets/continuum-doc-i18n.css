@@ -43,7 +43,7 @@ body.translated-rtl{
 
 body:dir(rtl) .reading-progress span,
 html.translated-rtl .reading-progress span{
-  margin-inline-start:auto;
+  margin-inline-end:auto;
 }
 
 body:dir(rtl) .skip-link,
@@ -229,7 +229,11 @@ html.translated-rtl .skip-link{
   right:-47px;
 }
 
-.document-paper:dir(rtl) .roadmap-phase::before,
+.document-paper:dir(rtl) .roadmap-phase::before{
+  left:auto;
+  right:16px;
+}
+
 .document-paper:dir(rtl) .roadmap-icon{
   left:auto;
   right:18px;
@@ -457,13 +461,5 @@ html.translated-rtl .skip-link{
   .document-paper:dir(rtl) .person-three{
     left:14px;
     right:14px;
-  }
-}
-
-@media print{
-  body,
-  .document-shell,
-  .document-paper{
-    direction:ltr;
   }
 }
