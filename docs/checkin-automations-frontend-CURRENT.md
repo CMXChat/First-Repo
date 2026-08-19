@@ -1,7 +1,7 @@
 # Check In Automations Frontend — CURRENT
 
 Date: 2026-08-18
-Status: Active Continuum Lab Automations v5 model + ordered Flow Preview foundation with v4.4 authoring UX, Directory v2, Audience and typed data/input routing
+Status: Active Continuum Lab Automations v5 model, ordered Flow Preview and deterministic typed Planner proving surface with v4.4 authoring UX, Directory v2, Audience and typed data/input routing
 
 # Focused route
 
@@ -23,7 +23,7 @@ Strategic direction: `docs/continuum-automations-master-plan-CURRENT.md`.
 
 # Current loaded stack
 
-The route keeps the proven v3 behavior core, loads the canonical v5 model immediately after it, then loads the accepted product layers and v5 ordered-flow presentation:
+The route keeps the proven v3 behavior core, loads the canonical v5 model immediately after it, then loads the accepted product layers and v5 presentation/Planner layers:
 
 - `lab-automations-experience-v3.js/.css`;
 - `lab-automations-model-v5.js`;
@@ -39,7 +39,8 @@ The route keeps the proven v3 behavior core, loads the canonical v5 model immedi
 - `lab-automations-intelligence-v4.js/.css`;
 - `lab-automations-input-routing-v4.js/.css`;
 - `lab-automations-sequence-v4.js/.css`;
-- `lab-automations-flow-v5.js/.css`.
+- `lab-automations-flow-v5.js/.css`;
+- `lab-automations-planner-v5.js/.css`.
 
 Older focused v2 files remain history.
 
@@ -93,7 +94,7 @@ Browser marker:
 
 `data-lab-automations-model="v5"`
 
-Production does not copy this browser persistence mechanism. It migrates accepted semantics into protected typed Draft services.
+Production does not copy this browser persistence mechanism. It migrates the accepted semantics into protected typed Draft services.
 
 ## Progressive truth layer
 
@@ -103,7 +104,7 @@ The v5 presentation reads the already-patched pending state instead of raw compa
 
 # Platform and scenarios
 
-The v4 command center owns Automations / Templates / Runs, search, Capability Catalog, creation chooser, Planner preview and future Runs preview.
+The v4 command center owns Automations / Templates / Runs, search, Capability Catalog, creation chooser and future Runs preview.
 
 Current scenario total: **15 editable starting patterns**.
 
@@ -122,11 +123,7 @@ Production Audience resolution remains server-owned.
 
 # Intelligence v4.2
 
-Adds:
-
-- contextual `RECOMMENDED NEXT` suggestions from the same Capability Catalog;
-- friendly `Use data` typed references from Trigger / earlier Actions / Directory-Audience;
-- richer local `TEST THIS STEP` traces.
+Adds contextual `RECOMMENDED NEXT`, friendly typed `Use data` references from Trigger / earlier Actions / Directory-Audience and richer local `TEST THIS STEP` traces.
 
 Compatibility store: `cmx-lab-automation-data-bindings-v1`.
 
@@ -164,35 +161,16 @@ The v4.4 UI now reads inter-step controls from `CMXAutomationModelV5.getFlowCont
 
 `flowControls[]`, `afterActionId` and `cmx-lab-automation-flow-controls-v1` remain compatibility projection/fallback only.
 
-V5 owns the normalized sequence mutation when available and projects the temporary compatibility shape for the older UI.
-
 Browser markers:
 
 - `data-lab-automations-sequence="v4-4"`;
 - `data-lab-automations-sequence-model="v5"` when the canonical model owns the path.
 
-## Inter-step IF source rule
+The IF picker exposes only Trigger values and outputs from Actions already available at that insertion point. Current operators are equals, does not equal, contains, greater than, less than and is true.
 
-The picker exposes only Trigger values and outputs from Actions already available at that insertion point.
+False stops the remaining linear path. There is **no YES/NO branching graph yet**.
 
-This prevents impossible flows such as reading output from a future Action.
-
-Current operators are equals, does not equal, contains, greater than, less than and is true.
-
-If false, the remaining linear path stops in the preview.
-
-There is **no YES/NO branching graph yet**.
-
-## Inter-step WAIT rule
-
-This is distinct from the existing top-level Timing stage.
-
-- top-level Timing = when the first Action may start / recurrence presentation;
-- inter-step WAIT = future persisted delay between Actions.
-
-Review marks these controls `RUNTIME REQUIRED`.
-
-Future Runtime must persist due state. Browser timers are never authoritative execution.
+Inter-step WAIT remains separate from top-level start Timing and future Runtime must persist its due state.
 
 # Human navigation model
 
@@ -206,7 +184,73 @@ Keep the simple rail:
 
 The rail is a beginner navigation model over the richer v5 sequence.
 
-Top-level IF is for data available before Actions begin. Output-dependent Conditions belong after their source Action.
+# Flow Preview v5
+
+`FLOW PREVIEW` remains the accepted product label.
+
+The existing compact flow remains the stage navigator and keeps truthful progressive state. The DO summary exposes inter-step IF/WAIT counts when present.
+
+`lab-automations-flow-v5.js/.css` adds **ORDERED SEQUENCE** beneath the compact preview using the canonical v5 model.
+
+The ordered view can show:
+
+`WHEN → IF → DO → IF → WAIT → DO → FINISH`
+
+with exact current Action/Condition/WAIT labels.
+
+Behavior:
+
+- genuinely complex flows open by default;
+- simple flows remain collapsed by default;
+- Show/Hide is local presentation only;
+- rows navigate to the relevant builder stage;
+- start timing/recurrence appears as a separate `START` policy row;
+- blank/new Drafts inherit progressive pending truth;
+- mobile uses the same vertical sequence with larger tap targets.
+
+Browser marker:
+
+`data-lab-automations-flow="v5"`
+
+# Planner v5 proving surface
+
+`lab-automations-planner-v5.js/.css` upgrades the existing AI Planner modal without connecting an AI model.
+
+The user can still describe an outcome in natural-language-like text. In Lab, a small deterministic matcher recognizes a few supported proving patterns only.
+
+Current examples include:
+
+- daily AI briefing;
+- Check In continuity escalation;
+- delayed reminder;
+- AI report with review;
+- urgent AI follow-up.
+
+The Planner result is explicitly labeled:
+
+- `TYPED PLAN PREVIEW · LOCAL`;
+- `NO AI CALL`.
+
+It shows three things together:
+
+1. **ORDERED V5 FLOW** — the proposed Trigger / Rules / Actions / inter-step controls / Finish;
+2. **CHANGE PLAN** — typed conceptual mutations such as `automation.create_draft`, `automation.set_trigger`, `automation.add_action`, `automation.add_condition`, `automation.add_wait` and `automation.set_finish`;
+3. **PREFLIGHT** — unresolved requirements such as missing Directory audiences, Runtime-required WAIT or unconfirmed schedule timing.
+
+`Use this draft` creates a normal browser-local Automation Draft, records `plannerPreview.source = "local-deterministic-v5"`, then calls `CMXAutomationModelV5.syncStore()` so the result becomes the same canonical v5 Draft a human edits.
+
+Important boundary:
+
+- no model request;
+- no network/provider call;
+- no production API;
+- no Publish;
+- no execution;
+- no attempt to make blockers disappear automatically.
+
+This proves the desired future interaction pattern without pretending the actual Continuum Planner is implemented.
+
+The real Planner later replaces the local matcher with protected server planning/tools while preserving the same typed Draft/Change Plan/preflight concepts.
 
 # Command center and direct-new behavior
 
@@ -216,46 +260,9 @@ Normal New Automation offers Build manually / Scenario / Planner preview.
 
 Runs remains `RUNTIME OFF`.
 
-# Flow Preview v5
-
-`FLOW PREVIEW` remains the accepted product label.
-
-The existing compact flow remains the stage navigator and keeps the truthful progressive state. The DO summary continues to expose inter-step IF/WAIT counts when present.
-
-`lab-automations-flow-v5.js/.css` now adds **ORDERED SEQUENCE** directly under the compact Flow Preview using the canonical v5 model.
-
-The ordered view can show:
-
-`WHEN → IF → DO → IF → WAIT → DO → FINISH`
-
-with the exact current Action/Condition/WAIT labels in sequence order.
-
-Behavior:
-
-- genuinely complex flows open the ordered sequence by default;
-- simple flows remain collapsed by default;
-- Show/Hide is local presentation state only;
-- each ordered row navigates to the appropriate builder stage;
-- start timing/recurrence appears as a separate `START` policy row instead of pretending it is an inter-step WAIT node;
-- blank/new Drafts use the progressive pending-state DOM, so the ordered view still says `Choose a trigger`, `Choose an action` and `Not set yet` until those choices are confirmed;
-- mobile uses the same vertical sequence with larger tap targets instead of a scaled desktop canvas.
-
-Browser marker:
-
-`data-lab-automations-flow="v5"`
-
-This is the first v5 presentation layer and begins replacing mental reconstruction of the flow without deleting the beginner navigation model.
-
 # Review / simulation
 
-Review may show:
-
-- workflow structure;
-- Directory/Audience readiness;
-- input-routing summary;
-- advanced-flow control count;
-- Runtime-required state;
-- local simulation/log.
+Review may show workflow structure, Directory/Audience readiness, input-routing summary, advanced-flow count, Runtime-required state and local simulation/log.
 
 Local tests/simulation never become authoritative Runs.
 
@@ -278,9 +285,9 @@ Future Automation Planner and broader Continuum Planner use the same typed Draft
 
 The v5 ordered model is intentionally closer to that target because Planner can reason about explicit typed nodes and valid data availability at each position.
 
-Planner may author inter-step controls only when matching backend capability/schema exists. The Lab model never becomes execution authority merely because it can represent the flow.
+The current local Planner is only a proving adapter. It cannot author a capability the local pattern does not know, resolve protected Directory state authoritatively, publish, execute or grant itself authority.
 
-Published Automation edits become the next Draft/version proposal.
+Published Automation edits later become the next Draft/version proposal.
 
 Cross-domain Planner contract: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`.
 
@@ -288,13 +295,13 @@ Cross-domain Planner contract: `CMXChat/jay-app/specs/003-server-checkin/CONTINU
 
 Preserve one primary work area, large tap targets, readable 16px inputs where needed, one-column selectors, bottom-sheet/full-screen modals, safe-area-aware actions, no nested scroll traps and no horizontal overflow.
 
-Advanced Flow and the ordered v5 sequence stay linear/readable on phone. Do not squeeze a desktop graph canvas onto mobile.
+Advanced Flow, ordered v5 sequence and Planner typed-plan output remain vertical/readable on phone.
 
 # Production migration rule
 
 Migrate accepted semantics into protected React + server Drafts + typed domain services/generated client.
 
-Do not copy localStorage, DOM patching, browser Audience/data resolution as authority, compatibility target summaries, browser `workflowV5` JSON or browser flow-control timing into production.
+Do not copy localStorage, DOM patching, browser Audience/data resolution as authority, compatibility target summaries, browser `workflowV5` JSON, local deterministic Planner matching or browser flow-control timing into production.
 
 Production needs typed input/output schemas, stable references, optimistic concurrency, deterministic preflight, immutable AutomationVersions and later durable Runtime.
 
@@ -309,11 +316,10 @@ Current validated Phase 2A backend remains much smaller:
 - no real Conditions;
 - no production Audience/data/input-routing/inter-step control service;
 - no server v5-equivalent ordered workflow model;
+- no Planner execution;
 - no Runtime/provider/AI execution.
 
 The prepared Phase 2A production migration remains the immediate backend boundary.
-
-V5 is a Lab authoring-model/presentation consolidation and does not widen production backend truth.
 
 # Regression protection
 
@@ -321,9 +327,11 @@ CI should protect:
 
 - v3 autosave/compatibility;
 - v5 ordered-model normalization and structural validation;
-- v5-owned inter-step mutation through `getFlowControls` / `setFlowControls`;
+- v5-owned inter-step mutation;
 - progressive blank-Draft truth;
 - ordered v5 Flow Preview and mobile presentation;
+- deterministic v5 Planner labels/typed plan/normal Draft handoff;
+- Planner network/model/API prohibition;
 - v4.1 Audience;
 - v4.2 recommendations/data/tests;
 - v4.3 input routing;
