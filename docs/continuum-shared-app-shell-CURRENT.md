@@ -52,8 +52,9 @@ Examples today:
 
 ```text
 /lab/control/       Control Center flagship prototype
+/lab/directory/     standalone Directory prototype
 /lab/automations/   Automation authoring prototype
-/lab/               broader legacy Lab / Directory prototype
+/lab/               broad legacy compatibility workspace
 /checkin/           current LIVE protected Check In surface
 /spaces/            current Spaces route, still product-development territory
 ```
@@ -85,7 +86,7 @@ Wide-screen direction:
 - environment truth remains visible without dominating the workspace;
 - domain-specific secondary navigation stays inside the domain.
 
-The current Control Center rail is the strongest reference for the global-navigation role, but it is not automatically copied pixel-for-pixel into every existing Lab route.
+The current Control Center and standalone Directory rails are Lab references for the global-navigation role, but neither is automatically copied pixel-for-pixel into every existing route.
 
 An editor such as Automations may use a thinner global-home/app-switching treatment so the editor canvas remains primary.
 
@@ -93,9 +94,7 @@ An editor such as Automations may use a thinner global-home/app-switching treatm
 
 Mobile must remain an app experience, not a compressed desktop rail.
 
-Current Control Center Lab bottom navigation remains a useful reference because real-device review showed that the pattern works.
-
-Near-term Lab core slots may remain:
+The Control Center and standalone Directory bottom navigation use the same near-term Lab destination model:
 
 ```text
 Control
@@ -136,7 +135,7 @@ Signals and State are underlying product capabilities and may later have dedicat
 
 # Global command
 
-The Control Center Lab command palette is the reference direction for global jump behavior:
+The Control Center and standalone Directory Lab command palettes are reference directions for global jump behavior:
 
 ```text
 Cmd/Ctrl + K
@@ -157,7 +156,7 @@ Rules:
 
 - a Lab shell never makes a sample feature look production-live;
 - one live domain does not make every card in Control Center live;
-- `LIVE Check In` may coexist with `LAB Control Center`;
+- `LIVE Check In` may coexist with `LAB Control Center` and `LAB Directory`;
 - future production app chrome must distinguish degraded/partial states when necessary instead of presenting one misleading global green state.
 
 # Theme and appearance
@@ -178,7 +177,7 @@ Until then:
 
 Global overlays and app-switching surfaces must behave as real modal/interactive UI:
 
-- background becomes inert while a modal surface is open;
+- background becomes inert while a modal surface is open where the implementation supports it;
 - keyboard focus stays inside the active modal/dialog;
 - Escape closes where appropriate;
 - focus returns to the invoking control after close when possible;
@@ -186,17 +185,20 @@ Global overlays and app-switching surfaces must behave as real modal/interactive
 - mobile sheets respect safe-area insets;
 - reduced-motion preferences remain respected.
 
-The Control Center v4 focus layer is the current Lab reference implementation of this behavior.
+The Control Center v4 focus layer is the strongest current Lab reference implementation of this behavior. Directory uses native dialog semantics for its local edit/Planner surfaces and should receive the same hardening where needed during later QA.
 
 # Current implementation changes
 
 As of this document:
 
 1. `/lab/control/` remains the flagship Control Center prototype and proposed Continuum Lab home.
-2. The Automation Lab Continuum brand/home link now returns to `/lab/control/` instead of the old broad `/lab/` destination.
-3. No shared-shell chrome has been injected into the LIVE `/checkin/` route.
-4. No broad refactor of the legacy `/lab/` snapshot-loader stack has been attempted.
-5. Control Center overlays receive a dedicated v4 focus-containment/accessibility layer.
+2. `/lab/directory/` is now implemented as a standalone Directory product surface with People, Organizations and Groups.
+3. The standalone Directory uses the shared Lab app-switching destination model while retaining its own identity/relationship workspace.
+4. The Automation Lab Continuum brand/home link returns to `/lab/control/` instead of the old broad `/lab/` destination.
+5. Control Center visible Directory navigation is converging on `/lab/directory/`; a temporary static Lab bootstrap bridges old `/lab/` Directory affordances until the real router owns this.
+6. No shared-shell chrome has been injected into the LIVE `/checkin/` route.
+7. No broad refactor of the legacy `/lab/` snapshot-loader stack has been attempted.
+8. Control Center overlays retain the dedicated v4 focus-containment/accessibility layer.
 
 # Check In protection
 
@@ -214,19 +216,25 @@ Until a proper production shell exists, linking *to* Check In from Lab is safer 
 
 # Directory migration
 
-The Directory prototype currently lives inside the broad `/lab/` compatibility stack.
+The Directory prototype no longer depends on the broad `/lab/` compatibility route for its preferred product surface.
 
-Do not keep expanding that coupling forever.
+Current preferred Lab destination:
 
-Recommended direction when Directory is next actively developed:
+`/lab/directory/`
 
-```text
-/lab/directory/
-```
+The broad `/lab/` Directory v2 remains compatibility scaffolding because other experiments still rely on the Check In snapshot-loader stack and the shared local sample store.
 
-as an isolated product prototype or as the first real app-backed Directory route, depending on backend/frontend readiness.
+The standalone Directory deliberately keeps compatible browser sample data during migration while establishing a clean product boundary.
 
-That migration should happen because Directory deserves a clean domain boundary, not simply to make route names prettier.
+See:
+
+`docs/continuum-directory-standalone-CURRENT.md`
+
+Long-term production graduation remains:
+
+`/directory/`
+
+inside the real application shell after protected backend/frontend services are ready.
 
 # Production shell migration
 
@@ -244,6 +252,8 @@ Suggested migration sequence:
 7. graduate clean routes individually
 ```
 
+The first isolated Lab proofs now include both Control Center and Directory.
+
 # Non-goals
 
 This shell work must not:
@@ -251,6 +261,7 @@ This shell work must not:
 - delay the backend Phase 2A deployment / continuity.md proof;
 - invent Library, Connections, Goals or Signals production services;
 - turn Control Center into a configuration dump;
+- turn Directory into a generic sales CRM;
 - turn Automations into a generic dashboard;
 - force Check In into experimental chrome;
 - create a second source of product authority in frontend navigation state;
