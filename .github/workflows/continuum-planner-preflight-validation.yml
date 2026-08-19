@@ -1,0 +1,156 @@
+name: Continuum Planner Preflight Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lab/**'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.css'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'tests/continuum-planner-preflight-probe.js'
+      - '.github/workflows/continuum-planner-preflight-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/**'
+      - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.js'
+      - 'assets/lab/lab-continuum-planner-preflight-v1.css'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-directory-planner-preview.js'
+      - 'assets/lab/lab-automations-planner-v5.js'
+      - 'tests/continuum-planner-preflight-probe.js'
+      - '.github/workflows/continuum-planner-preflight-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate preflight source safety
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-continuum-planner-contract-v1.js
+          node --check assets/lab/lab-continuum-planner-preflight-v1.js
+          node --check assets/lab/lab-continuum-planner-review-v1.js
+          node --check tests/continuum-planner-preflight-probe.js
+
+          python - <<'PY'
+          from pathlib import Path
+          contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
+          preflight = Path('assets/lab/lab-continuum-planner-preflight-v1.js').read_text(encoding='utf-8')
+          review = Path('assets/lab/lab-continuum-planner-review-v1.js').read_text(encoding='utf-8')
+          probe = Path('tests/continuum-planner-preflight-probe.js').read_text(encoding='utf-8')
+
+          for term in [
+              'directory.ambiguous_match', 'directory.audience_required', 'automation.schedule_unconfirmed',
+              'runtime.required', 'library.service_required', 'connections.required',
+              'authority.approval_required', 'planner.dependency_invalid', 'classifyIssue', 'validateIssues'
+          ]:
+              if term not in contract:
+                  raise SystemExit(f'missing typed preflight contract: {term}')
+
+          for term in ['PREFLIGHT · TYPED REVIEW', 'data-preflight-choice', 'data-preflight-defer', 'BLOCKED FOR APPLY']:
+              if term not in preflight:
+                  raise SystemExit(f'missing interactive preflight behavior: {term}')
+          if 'cmx:lab-planner-preflight-updated' not in review:
+              raise SystemExit('Change Review is not wired to preflight updates')
+
+          for source in [contract, preflight, review, probe]:
+              for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'eval(', 'new Function(', 'MutationObserver']:
+                  if forbidden in source:
+                      raise SystemExit(f'forbidden preflight boundary pattern: {forbidden}')
+          PY
+
+      - name: Build isolated preflight pages
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+          const probe = '<script src="/tests/continuum-planner-preflight-probe.js"></script>';
+
+          const directory = transformSnapshot(fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8'))
+            .replace('upgrade-insecure-requests', '')
+            .replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('planner-preflight-directory.html', directory, 'utf8');
+
+          const automation = fs.readFileSync('lab/automations/index.html', 'utf8')
+            .replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('lab/automations/planner-preflight-automation.html', automation, 'utf8');
+          NODE
+
+      - name: Exercise 360px and 390px preflight decisions
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-preflight-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f planner-preflight-directory.html lab/automations/planner-preflight-automation.html' EXIT
+          sleep 1
+
+          check_width() {
+            local width="$1"
+            local height="$2"
+            local dirout="/tmp/preflight-directory-${width}.html"
+            local autoout="/tmp/preflight-automation-${width}.html"
+
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --window-size="${width},${height}" --virtual-time-budget=18000 --dump-dom \
+              'http://127.0.0.1:8000/planner-preflight-directory.html' > "$dirout"
+
+            grep -q 'data-qa-preflight-complete="true"' "$dirout"
+            grep -q "data-qa-preflight-viewport=\"${width}\"" "$dirout"
+            grep -q 'data-qa-preflight-contract="true"' "$dirout"
+            grep -q 'data-qa-preflight-layer="true"' "$dirout"
+            grep -q 'data-qa-preflight-review="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-panel="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-code="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-open-before="1"' "$dirout"
+            grep -q 'data-qa-preflight-directory-blocked-before="0"' "$dirout"
+            grep -q 'data-qa-preflight-directory-choice-tap="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-open-after="0"' "$dirout"
+            grep -q 'data-qa-preflight-directory-reviewed-after="1"' "$dirout"
+            grep -q 'data-qa-preflight-directory-decision="true"' "$dirout"
+            grep -q 'data-qa-preflight-directory-fit="true"' "$dirout"
+
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --window-size="${width},${height}" --virtual-time-budget=18000 --dump-dom \
+              'http://127.0.0.1:8000/lab/automations/planner-preflight-automation.html' > "$autoout"
+
+            grep -q 'data-qa-preflight-complete="true"' "$autoout"
+            grep -q "data-qa-preflight-viewport=\"${width}\"" "$autoout"
+            grep -q 'data-qa-preflight-contract="true"' "$autoout"
+            grep -q 'data-qa-preflight-layer="true"' "$autoout"
+            grep -q 'data-qa-preflight-review="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-panel="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-audience="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-runtime="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-open-before="1"' "$autoout"
+            grep -q 'data-qa-preflight-automation-blocked-before="1"' "$autoout"
+            grep -q 'data-qa-preflight-automation-defer-tap="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-open-after="0"' "$autoout"
+            grep -q 'data-qa-preflight-automation-deferred-after="1"' "$autoout"
+            grep -q 'data-qa-preflight-automation-blocked-after="1"' "$autoout"
+            grep -q 'data-qa-preflight-automation-runtime-still-blocked="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-status="true"' "$autoout"
+            grep -q 'data-qa-preflight-automation-fit="true"' "$autoout"
+          }
+
+          check_width 360 800
+          check_width 390 844
+          echo 'Continuum Planner typed preflight decisions and persistent blockers passed at 360px and 390px.'
