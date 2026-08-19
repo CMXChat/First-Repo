@@ -1,41 +1,35 @@
 # Continuum Control Center Lab - CURRENT
 
 Date: 2026-08-19
-Status: Standalone flagship product prototype. Lab/sample state only. No production Runtime, Signals, Connection health, continuity-health service, Goal orchestration, simulation backend or autonomous execution is claimed.
+Status: Standalone flagship Lab prototype. Sample/prototype state only. No production Runtime, Signals, general Connection health, continuity-health service, Goals Runtime, simulation backend or autonomous execution is claimed.
 
-Route:
+Route: `https://db.cmxchat.com/lab/control/`
 
-`https://db.cmxchat.com/lab/control/`
+Backend companion: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md`
 
-# Purpose
+Shared shell companion: `docs/continuum-shared-app-shell-CURRENT.md`
 
-The Control Center is the proposed operational home for Continuum.
+# Role
 
-It should answer quickly:
+Control Center is the proposed operational home for Continuum. It should answer:
 
-- what is happening now;
-- what needs owner attention;
-- what is running or waiting;
-- what is upcoming;
-- what changed recently;
-- whether continuity needs attention;
-- whether Connections/Sources have meaningful health issues;
-- why a consequential item happened;
-- what a hypothetical continuity scenario would do later.
+```text
+what is happening now
+what needs me
+what is running / waiting
+what is next
+what changed
+whether continuity needs attention
+whether important sources/connections need attention
+why something happened
+what a hypothetical continuity scenario would do
+```
 
-It does not replace Check In, Directory, Library, Automations, Spaces, Connections or later Goals. It ties those domains together through one operational surface.
+It ties domains together without replacing Check In, Directory, Library, Automations, Spaces, Connections or later Goals.
 
-Backend architecture companion:
+# Implementation boundary
 
-`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md`
-
-Shared product-shell companion:
-
-`docs/continuum-shared-app-shell-CURRENT.md`
-
-# Standalone implementation decision
-
-The Control Center prototype deliberately does not inherit the main `/lab/` Check In snapshot-loader stack.
+The route is intentionally standalone. It does not inherit the broad `/lab/` Check In snapshot-loader stack.
 
 Current files:
 
@@ -52,299 +46,155 @@ Current files:
 - `tests/continuum-shared-app-shell.test.js`
 - `.github/workflows/control-center-lab-validation.yml`
 
-Reason:
-
-The main `/lab/` route is useful compatibility/prototyping scaffolding built by transforming a Check In snapshot and layering many local product scripts over it. The Control Center needs a clean flagship interaction model that can later be rebuilt in the real React/FastAPI application without inheriting that compatibility architecture.
+Production should later rebuild accepted behavior in the real frontend/router/API-client architecture instead of porting static Lab scaffolding wholesale.
 
 # Product structure
 
 Primary views:
 
-```text
-Now
-Upcoming
-History
-All activity
-```
+`Now | Upcoming | History | All activity`
 
-The `Now` view contains:
+Now contains the current operational summary, Attention, Running & waiting, recent Activity, continuity-health sample, upcoming rail, connection/source sample, and safe Simulation entry.
 
-```text
-current operational summary
-attention queue
-running + waiting work
-continuity health sample
-upcoming chronological rail
-connection/source health sample
-recent activity
-simulation entry
-```
+The hierarchy deliberately avoids equal-card dashboard soup. Current state is primary, owner attention is second, supporting health/activity is quieter.
 
-The hierarchy deliberately avoids a generic equal-card dashboard. The current-state summary is visually dominant, attention is second, and supporting health/activity views sit underneath.
+# Real-device QA decisions
 
-# Direct mobile screenshot QA - 2026-08-19
+The first Samsung/Android screenshots led to the v2 mobile pass:
 
-The first real Samsung/Android screenshots showed that the structure worked, but the narrow layout still read too much like a sequence of separate rounded dashboard cards. The simulation bottom sheet also used a fixed mobile height that left a large empty white region beneath its content.
+- tighter state header;
+- `Stable. 2 things need review.` and `2 need you` copy;
+- Attention + Running & waiting + Activity grouped as one operational surface;
+- sticky view tabs;
+- better narrow-screen type sizing;
+- content-hugging Simulation/Why bottom sheets instead of fixed empty height;
+- compact scenario/result presentation;
+- working View activity / All activity navigation;
+- retained five-item bottom nav.
 
-The device-review v2 polish therefore:
+No later screenshot was required to continue development, so post-v2 visual acceptance remains source/device-informed rather than freshly screenshot-confirmed.
 
-- compresses the primary state surface without weakening its hierarchy;
-- changes the summary copy to `Stable. 2 things need review.` so attention and overall health do not sound contradictory;
-- changes the first status chip to `2 need you`;
-- groups Attention, Running & waiting and Recent Activity into one continuous operational surface on mobile instead of three visually unrelated cards;
-- makes the Now/Upcoming/History/All activity tabs sticky below the mobile top bar;
-- increases practical mobile text legibility while preserving dense operator presentation;
-- keeps Continuity, Upcoming and Connections as secondary supporting surfaces;
-- reduces the visual weight of repeated rounded containers;
-- keeps the bottom navigation intact because the real-device layout proved it works well;
-- changes the mobile Why/Simulation drawer from fixed height to content-hugging `height:auto` with a bounded `max-height`;
-- tightens simulation scenario spacing and result presentation;
-- scrolls a newly generated simulation result into the nearest visible area;
-- makes View activity / All activity switch to the actual Activity view;
-- keeps keyboard activation for non-button attention rows;
-- preserves the strict same-origin Lab CSP and zero production API calls.
+# Flagship interaction state
 
-# Flagship refinement pass
+## Command
 
-After the direct device review, the next pass continues without requiring new screenshots.
+The top search control / `Cmd/Ctrl + K` opens a local command palette that can jump between Control Center views, open Simulation, navigate to current Continuum surfaces, toggle theme, and filter commands.
 
-Desktop receives stronger hierarchy instead of merely inheriting the original card layout:
+It performs no API request and grants no authority.
 
-- a larger and more deliberate primary state surface;
-- stronger visual separation between owner attention and supporting state;
-- a unified primary operational column for Attention, Running & waiting and Activity;
-- a narrower supporting rail for continuity, upcoming work and infrastructure health;
-- restrained attention accents instead of adding more cards or dashboard chrome;
-- richer spacing and scale at large desktop widths while keeping the mobile layout independent.
+## Detail / Why
 
-The top command surface is functional in Lab instead of being a placeholder.
-
-`Cmd/Ctrl + K` or the search button opens a local command palette that can:
-
-- jump to Now, Upcoming, History or All activity;
-- open the safe Simulation drawer;
-- open Check In, Directory, Automations, Spaces or the Continuum document;
-- toggle the current theme;
-- filter commands locally by typed text.
-
-The palette performs no API request and creates no new authority or product truth. It is navigation and Lab interaction only.
-
-# Interaction-depth v3
-
-The next pass makes the Control Center more operable without widening production claims.
-
-## Item detail
-
-Attention rows, Recent/All Activity items and the three sample Running & waiting rows can open one consistent detail drawer.
-
-The drawer now separates:
+Attention rows, Activity rows and the three sample Running & waiting rows open one detail surface containing:
 
 ```text
-current sample status
+sample status
 + domain
 + time/context
 + what happens next
 + optional safe navigation
-+ why this state exists
++ causal explanation
 ```
 
-The final causal section still teaches the protected direction through State, policy, authority, capability and result. Production would replace the sample fields with authoritative refs/versions and Runtime/Audit truth.
+The causal direction remains:
 
-The work rows are keyboard-accessible as well as tappable/clickable.
+`Trigger/evidence → State → policy → authority → capability → result`
 
-The Autonomy `Why` control now has its own correct explanation. It no longer reuses the Simulation causal story. Its detail explicitly states that the Lab is observe-only and cannot activate production autonomy.
+Production must use protected refs, exact versions, Runtime records and Audit/Why provenance.
 
-## All Activity filtering
+Autonomy has its own correct `Why` explanation: the Lab is observe-only and cannot activate production autonomy.
 
-The All Activity view creates local filters for:
+## Activity filters
 
-- All;
-- Needs you;
-- Continuity;
-- Automations;
-- Check In.
-
-Filtering only hides/shows the fixed sample rows already present on the page. It does not query a backend, alter Audit, or imply that a production activity event stream exists.
+All Activity has local sample filters for All, Needs you, Continuity, Automations and Check In. Filtering only hides/shows existing sample rows.
 
 ## Quiet-state preview
 
-The command palette includes `Toggle quiet-state preview`.
+The command palette can toggle a local quiet preview:
 
-This is a local presentation test for the important state where nothing requires owner attention. It:
+`Quiet. Nothing needs you right now.`
 
-- changes the primary summary to `Quiet. Nothing needs you right now.`;
-- changes the attention count to zero;
-- replaces the Attention sample panel with a calm quiet-state message;
-- leaves waiting work visible;
-- uses a green healthy treatment;
-- resets on page reload and never mutates backend truth.
+It sets the visible attention count to zero, swaps the alert panel for a healthy quiet state and leaves waiting work visible. Reload resets it. It never mutates backend truth.
 
-This prevents the Control Center design from depending on fake alerts to remain visually interesting.
+## Simulation
 
-## CSS loading
+Fixed safe sample scenarios cover owner unavailable for 7 days, primary email unavailable, and trusted approver non-response. Results are deterministic explanatory text only.
 
-`control-center-interaction-v3.css` is same-origin and is loaded by the Control Center JS under the existing CSP. It adds presentation only for the v3 detail/filter/quiet interactions.
-
-# Focus and overlay hardening v4
-
-The Control Center now has a dedicated focus-containment layer for command/detail/simulation surfaces.
-
-`control-center-theme-init.js` loads the same-origin v4 focus CSS and JS early under the existing strict CSP. The focus JS waits for DOM readiness before attaching behavior.
-
-The v4 contract includes:
-
-- drawers receive dialog semantics and `aria-modal`;
-- the background shell and mobile navigation become inert while an overlay/dialog is open;
-- keyboard `Tab` / `Shift+Tab` stay inside the active modal surface;
-- focus is restored to the invoking control after the modal closes when that control still exists;
-- command and simulation triggers expose dialog intent through `aria-haspopup`;
-- focus-visible rings remain clear in both themes;
-- mobile drawers/palette account for safe-area bottom insets;
-- sticky mobile drawer/palette headers keep the close/search affordance available during scroll;
-- reduced-motion preference suppresses the focus-return pulse.
-
-This layer changes interaction containment only. It does not change sample State, authority, simulation behavior or backend truth.
-
-# Shared Continuum shell direction
-
-The accepted shell rule is:
-
-```text
-shared shell owns app switching / environment / global command / appearance
-current domain owns its own workspace
-protected backend owns truth / authority / actual effects
-```
-
-This keeps Control Center, Automations, Check In, Directory, Library, Spaces and Connections visually coherent without forcing them into one identical layout.
-
-Current concrete convergence change:
-
-- the Automation Lab Continuum brand/home affordance now returns to `/lab/control/`;
-- the LIVE `/checkin/` route has not been wrapped in experimental shell chrome;
-- the broad legacy `/lab/` snapshot-loader stack has not been refactored simply to make navigation look uniform.
-
-See `docs/continuum-shared-app-shell-CURRENT.md` for the canonical shell direction and future route-graduation rules.
-
-# Explainability
-
-Activity and attention rows can expose an inspectable causal direction:
-
-```text
-Trigger / evidence
-→ State
-→ Policy
-→ Authority
-→ Capability
-→ Result
-```
-
-This is presentation only. Production would use protected backend references, exact versions, Runtime records and Audit/Why provenance as authoritative truth.
-
-# Simulation
-
-The drawer includes fixed safe sample scenarios:
-
-- owner unavailable for 7 days;
-- primary email unavailable;
-- trusted approver does not respond.
-
-The interaction is intentionally deterministic local sample text. It performs no API call and no side effect.
-
-Future real simulation remains governed by the backend Control Center contract:
+Future real simulation remains:
 
 `real State snapshot → isolated hypothetical overlay → simulated policy/authority evaluation → simulated Runtime path → predicted result`
 
-Simulation must never activate real authority, change real State or call real consequential providers.
+Simulation must never activate real authority or call consequential providers.
+
+# Focus / overlay v4
+
+The v4 assets are loaded explicitly by `lab/control/index.html` under the existing same-origin CSP.
+
+They provide:
+
+- dialog / `aria-modal` semantics;
+- inert background shell/mobile navigation while a modal is open;
+- Tab and Shift+Tab containment;
+- focus restoration when close would otherwise strand focus;
+- preservation of meaningful focus when a command already moved the user to another view;
+- clear focus-visible treatment in light and dark modes;
+- mobile safe-area handling and sticky sheet headers;
+- reduced-motion-safe focus feedback.
+
+This layer changes interaction containment only.
+
+# Shared Continuum shell
+
+Accepted rule:
+
+```text
+shared shell owns app switching / environment / global command / appearance
+current domain owns its workspace
+protected backend owns truth / authority / real effects
+```
+
+Concrete convergence now:
+
+- Control Center is the proposed Lab home at `/lab/control/`;
+- the Automation Lab Continuum brand returns to `/lab/control/`;
+- LIVE `/checkin/` has not been wrapped in experimental shell chrome;
+- broad `/lab/` compatibility scaffolding has not been refactored merely for visual uniformity.
+
+See `docs/continuum-shared-app-shell-CURRENT.md` for route graduation, desktop/mobile shell direction, Directory migration and production-shell rules.
 
 # Truth boundary
 
-The route explicitly labels itself as Lab and sample/prototype state.
+Do not claim the following until protected backend services exist and are verified:
 
-Do not make any of these claims until protected backend services actually exist and are verified:
-
-- production Control Center activity stream;
-- production Runtime execution;
-- live general Connection health;
-- live general Source health;
-- production continuity-health scoring;
-- owner-intent revalidation service in production;
+- production Control Center activity stream or Runtime;
+- live general Connection/Source health;
+- production continuity-health scoring/revalidation service;
 - Goals/Missions Runtime;
-- live Signals/Observations;
+- live general Signals/Observations;
 - saved simulation backend;
 - autonomous AI/provider execution.
 
-The existing `/checkin/` route remains the current LIVE protected Continuum product surface.
+`/checkin/` remains the current LIVE protected Continuum surface.
 
-# Theme and visual direction
+# Theme / responsive direction
 
-The prototype defaults light and remembers an explicit user theme choice under:
+The prototype defaults light and stores an explicit route-local theme under `continuum-control-center-theme-v1`. Dark mode stays rich black/near-black.
 
-`continuum-control-center-theme-v1`
+Mobile preserves the same operational power with a dedicated bottom navigation, one-column flow, horizontally usable view/filter controls, bottom-sheet modal behavior, safe-area support and reduced-motion handling.
 
-Dark mode is intentionally rich black/near-black instead of blue/navy.
+Long-term theme/navigation state should migrate into the real shared frontend shell, not be hacked across independent static prototypes now.
 
-Visual principles:
+# Next product work
 
-- serious operational app, not landing page;
-- strong hierarchy without dashboard-card soup;
-- restrained Continuum blue;
-- calm status motion/lighting;
-- clear attention tones;
-- high information density with breathing room;
-- meaningful quiet/empty/sample states;
-- mobile designed independently instead of shrinking the desktop grid.
+Do not keep adding random Control Center features merely because there is room.
 
-# Mobile contract
+Next useful product direction is to let the current interaction/shell model settle, then move the next real domain toward a clean boundary. Directory is the strongest candidate when frontend product work resumes, likely through an isolated `/lab/directory/` direction or the real app depending on backend readiness.
 
-At narrow widths:
-
-- desktop rail is replaced by a five-item bottom navigation;
-- primary status stays first;
-- autonomy/simulation controls stay compact and immediately accessible;
-- the primary Now sections read as one operational surface;
-- dashboard columns become one flow;
-- attention and work rows preserve readable labels;
-- Why/Simulation use content-hugging bottom sheets with bounded scrolling;
-- detail facts stack cleanly inside the mobile drawer;
-- activity filters become a horizontally scrollable chip row;
-- the command palette becomes a bottom-sheet style surface;
-- modal backgrounds become inert and keyboard focus remains contained;
-- view tabs remain horizontally usable and sticky below the top bar;
-- touch targets remain appropriately large;
-- safe-area insets and reduced-motion preferences are respected.
-
-# Navigation
-
-Current prototype destinations:
-
-- Control Center → `/lab/control/`
-- Check In → `/checkin/`
-- Directory → `/lab/`
-- Automations → `/lab/automations/`
-- Spaces → `/spaces/`
-- Continuum document → `/doc/`
-
-Directory still lives inside the broader Lab experience. Library and Connections are represented conceptually in Control Center state but are not given invented standalone routes.
-
-# Next product passes
-
-Do not widen the page into every future Continuum feature simply because the Control Center can eventually display them.
-
-Recommended next product work:
-
-1. let the v4 focus/shell behavior settle without reworking the Control Center layout again immediately;
-2. migrate Directory toward a cleaner isolated domain boundary when Directory becomes the next active surface;
-3. use the shared-shell contract when adding Library and Connections rather than inventing different navigation patterns independently;
-4. keep `/lab/control/` as the flagship prototype while production `/control/` waits for real server-backed activity/Runtime projections;
-5. replace sample sections incrementally with protected typed data as backend domains mature;
-6. preserve the Control Center as an operational surface instead of turning it into a configuration dump.
+Library and Connections should follow the shared-shell contract when they become real surfaces.
 
 # Backend boundary
 
-The prototype does not change the current backend order of work.
+This frontend work does not change backend execution order.
 
-The canonical backend execution-order overlay remains:
+Canonical backend overlay: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-BACKEND-ORDER-OF-WORK-CURRENT.md`
 
-`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-BACKEND-ORDER-OF-WORK-CURRENT.md`
-
-Phase 2A production migration/deployment and the protected `continuity.md` acceptance proof remain the immediate backend boundary.
+Phase 2A production deployment and the protected `continuity.md` proof remain the immediate backend boundary.
