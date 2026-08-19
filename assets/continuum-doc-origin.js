@@ -41,7 +41,7 @@
     setText('.hero-kicker', 'Your information, people, tools and AI in one private operating layer');
     const heroLead = qs('.continuum-hero .hero-lead');
     if (heroLead) {
-      heroLead.innerHTML = '<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and understand what is true right now.</span><span class="hero-lead-second">It can brief you, follow rules you set, use approved tools and eventually keep important work moving across hours, days and changing conditions. As more services, APIs, MCP servers and devices connect, Continuum can gain new ways to see what is happening, reason about it and act while keeping authority, policy and history coherent.</span>';
+      heroLead.innerHTML = '<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, automations and AI into one private environment that can keep track of what is happening, remember useful history and understand what is true right now.</span><span class="hero-lead-second">It can brief you, follow rules you set, use approved tools and eventually keep important work moving across hours, days and changing conditions. As more services, APIs, MCP servers and devices connect, Continuum can see more of what is happening and take on more work while keeping authority, policy and history coherent.</span>';
     }
 
     const heroTruth = qs('.hero-truth-row');
@@ -79,7 +79,7 @@
 
     const mapIntro = qs('.clarity-product-map-section .section-intro');
     if (mapIntro) {
-      mapIntro.textContent = 'Directory keeps durable identity. Library keeps saved knowledge. Spaces focus current context. Signals can later turn approved observations into evidence and State changes. Automations define policy-driven work. Connections add outside Sources and capabilities. Runtime executes published work. AI reasons across the parts it is allowed to use.';
+      mapIntro.textContent = 'Directory identifies people and organizations. Library holds what should persist. Spaces focus the context that matters now. Signals can later update State from approved observations. Automations define work. Connections bring in outside data and tools. Runtime carries published work forward. AI reasons across whatever it is allowed to use.';
     }
 
     const nodeCopy = {
@@ -95,36 +95,36 @@
 
     setText('.presence-heading > div > span', 'ACROSS TIME');
     setText('.presence-heading strong', 'Keep the context and rules that should survive the moment.');
-    setText('.presence-heading > p', 'Continuum can help while you are using it, keep Automation definitions ready for execution and support a continuity policy when direct approval cannot be obtained.');
+    setText('.presence-heading > p', 'Continuum can help while you are using it, keep defined work ready and later follow continuity rules when direct approval is unavailable.');
 
     setText('#difference .section-kicker', 'AI, capability and authority');
     setText('#difference h2', 'The intelligence can change while the control layer stays durable');
-    setText('#difference .section-intro', 'An AI model can reason with the context and tools it receives. Continuum keeps the durable knowledge, current state, authority, policy and history that determine how that intelligence may operate.');
+    setText('#difference .section-intro', 'An AI model works with the context and tools it receives. Continuum keeps the durable knowledge, current State, authority, policy and history around it.');
     setText('#difference .ai-answer strong', 'What Continuum adds to AI');
-    setText('#difference .ai-answer p', 'AI provides reasoning. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity.');
+    setText('#difference .ai-answer p', 'AI provides reasoning. Continuum gives that reasoning memory, live State, senses, tools, rules and continuity.');
     setText('#difference .model-swap-note > div:first-child span', 'MODEL CHOICE CAN CHANGE');
     setText('#difference .model-swap-note > div:first-child strong', 'Continuum keeps the approved context, authority, policy and history around the model.');
-    setText('#difference .capability-layer-head p', 'Continuum can add new capabilities over time and evaluate each one under the same durable rules.');
+    setText('#difference .capability-layer-head p', 'New tools can be added without rewriting the rules around them.');
     setText('#difference .rule-callout strong', 'Server-side policy remains the enforcement point.');
-    setText('#difference .rule-callout span', 'AI can interpret objectives and choose among allowed capabilities, while protected server rules decide whether the action may actually run.');
+    setText('#difference .rule-callout span', 'AI can interpret objectives and choose among allowed capabilities. Protected server rules still decide whether an action may run.');
 
     setText('#spaces .section-kicker', 'Knowledge, state and focused views');
     setText('#spaces h2', 'Keep people, saved information and current context connected');
-    setText('#spaces .section-intro', 'Continuum can keep track of identities, relationships, records and recent changes. Spaces can turn that durable context into focused Personal, Family, Business or Afterlife views.');
+    setText('#spaces .section-intro', 'Continuum keeps identities, relationships, records and recent changes connected. Spaces turn the relevant pieces into focused Personal, Family, Business or Afterlife views.');
     setText('#spaces .ingestion-map .visual-label', 'THINGS YOU ALREADY USE');
 
     setText('#action .section-kicker', 'Automations and Runtime');
     setText('#action h2', 'Natural language can express intent. Structured policy controls execution.');
-    setText('#action .section-intro', 'A person should be able to describe the outcome and boundaries naturally. Continuum can turn that into structured triggers, authority and execution rules that the server can enforce.');
+    setText('#action .section-intro', 'You can describe the outcome and boundaries in normal language. Continuum can turn the important parts into structured triggers, authority and execution rules the server can enforce.');
 
     const primer = qs('#action .clarity-automation-copy');
     if (primer) {
-      primer.innerHTML = '<strong>Automations define durable intent.</strong> Natural language can help express the objective, while typed triggers, conditions, authority, policy and Actions give the server something deterministic to validate. Runtime later executes published work and records what happened.';
+      primer.innerHTML = '<strong>Automations define durable work.</strong> Natural language can describe the objective. Typed triggers, conditions, authority, policy and Actions give the server something exact to validate. Runtime later executes published work and records what happened.';
     }
 
     setText('#action .connections-panel .panel-head strong', 'Each connection adds specific abilities');
     setText('#action .ceiling-note span', 'CAPABILITY CAN KEEP EXPANDING');
-    setText('#action .ceiling-note strong', 'New models, services, tools and devices can add new abilities over time.');
+    setText('#action .ceiling-note strong', 'New tools and models can be added as they become useful.');
     setText('#action .ceiling-note p', 'Software, APIs, MCP servers, infrastructure, financial systems, operating systems, vehicles, wearables, smart devices and future technology can become Sources or capabilities when suitable interfaces exist. Adding capability expands what Continuum can potentially do. Permission remains separate.');
 
     setText('#afterlife .section-kicker', 'Continuity');
@@ -144,14 +144,14 @@
 
     setText('#build .section-kicker', 'Build process');
     setText('#build h2', 'Design quickly, then make the authority and state real');
-    setText('#build .section-intro', 'The Lab lets us test an experience quickly. Once it feels right, we define durable data, authority and policy, build the backend behavior, then connect the accepted interface to protected APIs.');
+    setText('#build .section-intro', 'The Lab lets us test an experience quickly. Once it feels right, we define the durable data and rules, build the backend behavior, then connect the accepted interface to protected APIs.');
 
     setText('#status .section-kicker', 'Roadmap');
     setText('#status h2', 'Build the durable foundation, then keep expanding capability');
     setText('#status .section-intro', 'New apps, communication channels, data sources, models and future tools can use the same knowledge, policy, authority and audit model as each stage becomes real.');
     setText('#status .roadmap-later strong', 'Expandable capability');
     setText('#status .roadmap-later p', 'Continuum can work with more outside services, models, tools and future devices through the same control layer.');
-    setText('#status .closing-note', 'Continuum is a durable operating layer around changing intelligence. As models gain new abilities and new tools become available, it can gain new ways to perceive and act while keeping knowledge, State, authority, policy and history coherent.');
+    setText('#status .closing-note', 'Continuum is a durable operating layer around changing intelligence. Better models and new tools can expand what it can see and do while knowledge, State, authority, policy and history stay coherent.');
 
     setText('.document-footer h2', 'Start with what is live. Explore what Continuum is becoming.');
 
@@ -224,8 +224,8 @@
     const copy = qs('.clarity-story-copy', story);
     if (!copy) return;
     copy.innerHTML = `
-      <p>A website migration is due Friday and server access is still missing. Continuum can see the missing-access state from approved project sources, resolve the person who owns the access, check whether follow-up is permitted and contact them when policy allows.</p>
-      <p>Runtime can later wait on the server after the app is closed, see the reply when it arrives, update the project state, continue the next approved step and bring you in only when the policy requires your decision.</p>
+      <p>A website migration is due Friday and server access is still missing. Continuum can see that from approved project sources, resolve who owns the access, check whether follow-up is permitted and contact them when policy allows.</p>
+      <p>Runtime can later wait on the server after the app is closed, pick up the reply when it arrives, update the project State and continue the next approved step. You only need to come back in when the policy requires your decision.</p>
       <div class="clarity-story-path" aria-label="Example long-running Continuum workflow"><span>Access missing</span><i>→</i><span>State updated</span><i>→</i><span>Policy checked</span><i>→</i><span>Contact</span><i>→</i><span>Wait</span><i>→</i><span>Reply</span><i>→</i><span>Continue</span></div>
       <div class="continuum-why-receipt" aria-label="Example Continuum action explanation">
         <div class="continuum-receipt-head"><span>WHY DID CONTINUUM DO THAT?</span><strong>Every consequential step should be explainable.</strong></div>
@@ -252,11 +252,34 @@
     strip.innerHTML = `
       <div class="continuum-senses-copy">
         <span>LATER · SENSES</span>
-        <strong>Signals are how Continuum can notice that the world changed.</strong>
-        <p>Approved Sources produce evidence with timestamps and provenance. Observations become typed Signals when something meaningful changes, then State records what matters now.</p>
+        <strong>Signals let Continuum notice when something changes.</strong>
+        <p>Approved Sources keep timestamps and provenance. An Observation becomes a typed Signal when something meaningful changes, and State records what matters now.</p>
       </div>
       <div class="continuum-senses-flow" aria-label="Source to State flow"><b>Source</b><i>→</i><b>Observation</b><i>→</i><b>Signal</b><i>→</i><b>State</b></div>`;
     anchor.after(strip);
+  }
+
+  function addKnowledgeQualityNote() {
+    const spaces = document.getElementById('spaces');
+    const anchor = qs('.continuum-senses-strip', spaces) || qs('.source-proof', spaces);
+    if (!spaces || !anchor || qs('.continuum-knowledge-quality-note', spaces)) return;
+
+    const note = document.createElement('aside');
+    note.className = 'continuum-forward-note continuum-knowledge-quality-note';
+    note.setAttribute('aria-label', 'How Continuum distinguishes information quality');
+    note.innerHTML = `
+      <span class="continuum-forward-kicker">HOW CONTINUUM TREATS INFORMATION</span>
+      <strong>Different kinds of information carry different weight.</strong>
+      <p>Continuum should keep the difference between something it observed, something a person said, a conclusion AI derived and the Current State it is willing to rely on. Source, time, freshness and conflicts stay attached.</p>
+      <div class="continuum-boundary-grid" aria-label="Continuum information classes">
+        <span><b>Observation</b><small>What an approved source showed at a specific time.</small></span>
+        <span><b>Claim</b><small>What a person or source says is true.</small></span>
+        <span><b>Derived conclusion</b><small>What reasoning inferred from supporting evidence.</small></span>
+        <span><b>Current State</b><small>What the protected system currently treats as operational truth.</small></span>
+      </div>
+      <div class="continuum-capability-example"><b>Example</b><span>“Client says payment will arrive Friday” stays a claim. A verified account event showing the payment posted can update Current State.</span></div>
+      <small>Old or conflicting information stays traceable instead of being silently rewritten.</small>`;
+    anchor.after(note);
   }
 
   function addModelRouting() {
@@ -270,7 +293,7 @@
     routing.innerHTML = `
       <div class="continuum-routing-copy">
         <span>MODEL ROUTING</span>
-        <strong>Different approved intelligence can fit different jobs.</strong>
+        <strong>Different approved models can handle different jobs.</strong>
         <p>Coding, research, vision, sensitive local work and future tasks can use different models when privacy, cost, availability and policy allow. Authority stays fixed unless policy changes.</p>
       </div>
       <div class="continuum-boundary-grid">
@@ -295,10 +318,10 @@
     if (planner) {
       planner.innerHTML = `
         <span class="continuum-forward-kicker">LATER · PLANNER</span>
-        <strong>Natural language can configure the control layer without becoming authority.</strong>
-        <p>You can eventually describe the setup you want in normal language. Continuum can turn that into a typed Change Plan across mature domains such as People, Library content, Sources, Watches, Automations, capability mappings and policy, then show what would change before protected services apply anything.</p>
+        <strong>Describe the setup in normal language. The result still has to pass the same server rules.</strong>
+        <p>Continuum can eventually turn that description into a typed Change Plan across mature areas such as People, Library content, Sources, Watches, Automations, capability mappings and policy, then show exactly what would change before protected services apply it.</p>
         <div class="continuum-forward-flow" aria-label="Future Planner change flow"><span>INTENT</span><i>→</i><span>CHANGE PLAN</span><i>→</i><span>PREFLIGHT</span><i>→</i><span>REVIEW</span><i>→</i><span>APPLY</span></div>
-        <small>Planner can propose new configuration and policy. Executable capability and authority remain protected server decisions.</small>`;
+        <small>Planner can propose configuration and policy. Executable capability and authority remain protected server decisions.</small>`;
     }
 
     const actionSection = document.getElementById('action');
@@ -313,10 +336,10 @@
     if (signals) {
       signals.innerHTML = `
         <span class="continuum-forward-kicker">LATER · SIGNALS + STATE</span>
-        <strong>Observed change can alter what Continuum understands about the current situation.</strong>
+        <strong>A new observation can change what Continuum believes is happening now.</strong>
         <p>A Signal can update State, satisfy a condition, change priority, wake a waiting Runtime or make a published policy eligible. Policy and authority still decide whether consequential work may proceed.</p>
         <div class="continuum-forward-flow continuum-signal-flow" aria-label="Future Signal to execution flow"><span>SIGNAL</span><i>→</i><span>STATE</span><i>→</i><span>POLICY</span><i>→</i><span>AUTHORITY</span><i>→</i><span>RUNTIME</span><i>→</i><span>RESULT</span></div>
-        <small>Evidence changes understanding. Published authority controls execution.</small>`;
+        <small>Evidence can change the situation Continuum understands. Published authority still controls execution.</small>`;
     }
   }
 
@@ -330,8 +353,8 @@
     goal.setAttribute('aria-label', 'Future Continuum Goals and Missions');
     goal.innerHTML = `
       <span class="continuum-forward-kicker">LATER · GOALS / MISSIONS</span>
-      <strong>Automations handle rules. Goals let Continuum pursue an outcome.</strong>
-      <p>A Goal can define what success means, what must never happen, which approvals are required, how long the effort may continue and when to stop. Planner can prepare or revise the strategy while Runtime carries approved work across waits, replies and changing State.</p>
+      <strong>Automations handle repeatable rules. Goals keep an outcome alive.</strong>
+      <p>A Goal can define what success means, what must never happen, which approvals are required, how long the effort may continue and when to stop. Planner can revise the strategy while Runtime carries approved work across waits, replies and changing State.</p>
       <div class="continuum-forward-flow" aria-label="Future Goal orchestration flow"><span>GOAL</span><i>→</i><span>PLAN</span><i>→</i><span>ACT</span><i>→</i><span>OBSERVE</span><i>→</i><span>REPLAN</span><i>→</i><span>SUCCESS / STOP</span></div>
       <div class="continuum-capability-example"><b>Example</b><span>Help an authorized person pursue a suitable job within 60 days. Never misrepresent qualifications, respect the allowed locations and require approval before anything is sent in that person's name.</span></div>
       <small>Replanning can change strategy. It cannot silently change hard constraints, success criteria or authority.</small>`;
@@ -350,10 +373,10 @@
     }
     note.innerHTML = `
       <span class="continuum-forward-kicker">LATER · LIVE CAPABILITY</span>
-      <strong>Continuum can notice how its environment could become more capable.</strong>
-      <p>A new API, MCP server, service or device can expose useful data or tools. Continuum can eventually discover that metadata, classify what the capability reads or changes, map it into a typed operation, test it, simulate the effect and prepare the setup that your policy allows.</p>
+      <strong>When work keeps getting blocked by a missing tool, Continuum can eventually identify the gap.</strong>
+      <p>A new API, MCP server, service or device may provide what is missing. Continuum can inspect the available interface, map it into a typed operation, test it, simulate the effect and prepare the setup allowed by policy.</p>
       <div class="continuum-forward-flow" aria-label="Future capability adoption flow"><span>DISCOVER</span><i>→</i><span>MAP</span><i>→</i><span>TEST</span><i>→</i><span>SIMULATE</span><i>→</i><span>POLICY</span><i>→</i><span>ENABLE</span></div>
-      <div class="continuum-capability-example"><b>Example</b><span>A workflow keeps stopping because deployment access is missing. Continuum could identify a compatible GitHub or deployment capability, prepare the integration mapping and tests, simulate what would change and surface the setup for approval or an already-authorized adoption policy.</span></div>
+      <div class="continuum-capability-example"><b>Example</b><span>A workflow keeps stopping because deployment access is missing. Continuum could identify a compatible GitHub or deployment capability, prepare the mapping and tests, simulate what would change and surface the setup for approval or an already-authorized adoption policy.</span></div>
       <small>Capability growth and permission growth stay separate.</small>`;
   }
 
@@ -367,12 +390,12 @@
     note.setAttribute('aria-label', 'Future Continuum Control Center');
     note.innerHTML = `
       <span class="continuum-forward-kicker">LATER · CONTROL CENTER</span>
-      <strong>Continuum should stay inspectable even when work keeps moving in the background.</strong>
+      <strong>Background work should never become invisible.</strong>
       <p>One protected control surface can show what is active now, what is waiting, what is coming next and what already happened. You should be able to inspect why an action happened, manage supported work and see which policy and authority are in effect.</p>
       <div class="continuum-forward-flow" aria-label="Future Control Center views"><span>NOW</span><i>·</i><span>WAITING</span><i>·</i><span>UPCOMING</span><i>·</i><span>HISTORY</span></div>
       <div class="continuum-capability-example"><b>Pause Autonomy</b><span>Block new autonomous consequential Actions while approved observation, State maintenance, drafting and briefings can continue.</span></div>
       <div class="continuum-capability-example"><b>Simulation</b><span>Test what a policy, Goal or continuity situation would do using current or hypothetical State without performing real side effects.</span></div>
-      <small>The activity view can be simplified for people. Consequential Audit remains durable server truth.</small>`;
+      <small>The activity view can stay simple while consequential Audit remains durable server truth.</small>`;
     anchor.after(note);
   }
 
@@ -422,6 +445,7 @@
   strengthenRuntimeStory();
   neutralizeExampleNames();
   addSensesStrip();
+  addKnowledgeQualityNote();
   addModelRouting();
   addPlannerAndSignalsNotes();
   addGoalMissionNote();
@@ -436,4 +460,5 @@
   document.documentElement.dataset.continuumGoals = 'ready';
   document.documentElement.dataset.continuumControlCenter = 'ready';
   document.documentElement.dataset.continuumCheckInRoute = 'ready';
+  document.documentElement.dataset.continuumKnowledgeQuality = 'ready';
 })();
