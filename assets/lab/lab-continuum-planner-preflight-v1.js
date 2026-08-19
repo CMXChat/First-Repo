@@ -4,6 +4,18 @@
   const decisions = new Map();
   let queued = false;
 
+  const ISSUE_OPERATION_TYPES = Object.freeze({
+    "directory.ambiguous_match": ["directory.match_people", "directory.match_organizations", "directory.match_or_create_people"],
+    "directory.identity_check_required": ["directory.match_or_create_people", "directory.match_people", "directory.match_organizations"],
+    "directory.audience_required": ["automation.reference_audience", "automation.add_action"],
+    "runtime.required": ["automation.add_wait"],
+    "library.service_required": ["library.create_document", "library.create_folder", "automation.reference_content"],
+    "connections.required": ["automation.add_action"],
+    "authority.approval_required": ["automation.add_action"],
+    "planner.dependency_invalid": ["automation.create_draft", "directory.match_or_create_people"],
+    "planner.review_required": ["automation.create_draft"]
+  });
+
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
   }[ch]));
@@ -36,6 +48,52 @@
       .filter(card => /PREFLIGHT|BLOCKED|CONFLICT|REQUIRED/i.test(card.querySelector("b")?.textContent || ""))
       .map(card => card.querySelector("span")?.textContent?.trim() || "")
       .filter(message => message && !/No fixed-example blocker/i.test(message));
+  }
+
+  function operationArticles(root) {
+    return [...root.querySelectorAll(".v5-planner-ops article,.dir2-ai-ops article")];
+  }
+
+  function operationType(article) {
+    return article.querySelector(":scope > span > small")?.textContent?.trim() || "";
+  }
+
+  function affectedOperation(root, issue) {
+    const articles = operationArticles(root);
+    const candidates = ISSUE_OPERATION_TYPES[issue.code] || [];
+    for (const type of candidates) {
+      const match = articles.find(article => operationType(article) === type);
+      if (match) return match;
+    }
+    return null;
+  }
+
+  function clearOperationLinks(root) {
+    operationArticles(root).forEach(article => {
+      delete article.dataset.preflightOpState;
+      article.querySelector(":scope > span > .continuum-preflight-operation-link")?.remove();
+    });
+  }
+
+  function operationStateText(state) {
+    if (state.state === "reviewed") return `DECISION · ${state.decision}`;
+    return ({ open: "CHECK", deferred: "DEFERRED", blocked: "BLOCKED", approval: "APPROVAL" }[state.state] || "REVIEW");
+  }
+
+  function linkOperation(article, issue, state) {
+    if (!article) return null;
+    const body = article.querySelector(":scope > span");
+    if (!body) return null;
+    article.dataset.preflightOpState = state.state;
+    let chip = body.querySelector(":scope > .continuum-preflight-operation-link");
+    if (!chip) {
+      chip = document.createElement("span");
+      chip.className = "continuum-preflight-operation-link";
+      body.append(chip);
+    }
+    chip.dataset.preflightOpState = state.state;
+    chip.innerHTML = `<b>${esc(operationStateText(state))}</b><span>${esc(issue.label)}</span>`;
+    return article.querySelector(":scope > b")?.textContent?.trim() || null;
   }
 
   function issueState(issue, key) {
@@ -84,9 +142,10 @@
     return "";
   }
 
-  function issueMarkup(issue, state, issueKey, index) {
-    return `<article class="continuum-preflight-issue is-${esc(state.state)}" data-preflight-code="${esc(issue.code)}" data-preflight-state="${esc(state.state)}">
-      <header><b>${String(index + 1).padStart(2, "0")}</b><span><small>${esc(issue.domain)} · ${esc(issue.code)}</small><strong>${esc(issue.label)}</strong></span><em>${esc(stateLabel(state.state))}</em></header>
+  function issueMarkup(issue, state, issueKey, index, changeNumber) {
+    const affects = changeNumber ? ` · AFFECTS CHANGE ${changeNumber}` : " · PLAN-LEVEL";
+    return `<article class="continuum-preflight-issue is-${esc(state.state)}" data-preflight-code="${esc(issue.code)}" data-preflight-state="${esc(state.state)}" ${changeNumber ? `data-preflight-change="${esc(changeNumber)}"` : ""}>
+      <header><b>${String(index + 1).padStart(2, "0")}</b><span><small>${esc(issue.domain)} · ${esc(issue.code)}${esc(affects)}</small><strong>${esc(issue.label)}</strong></span><em>${esc(stateLabel(state.state))}</em></header>
       <p>${esc(issue.message)}</p>
       <footer><span>${esc(resolutionText(issue, state))}</span>${actionMarkup(issue, state, issueKey)}</footer>
     </article>`;
@@ -114,12 +173,16 @@
     host.hidden = true;
 
     const states = issues.map(issue => issueState(issue, issue.issueKey));
+    clearOperationLinks(root);
+    const changeNumbers = issues.map((issue, index) => linkOperation(affectedOperation(root, issue), issue, states[index]));
+
     const count = state => states.filter(item => item.state === state).length;
     const open = count("open");
     const deferred = count("deferred");
     const reviewed = count("reviewed");
     const blocked = count("blocked");
     const approval = count("approval");
+    const linkedIssues = changeNumbers.filter(Boolean).length;
     const status = blocked ? "BLOCKED FOR APPLY" : approval ? "APPROVAL REQUIRED" : open ? "NEEDS REVIEW" : issues.length ? "REVIEWED FOR DRAFT" : "NO LOCAL ISSUES";
 
     panel.dataset.preflightOpenCount = String(open);
@@ -128,6 +191,7 @@
     panel.dataset.preflightBlockedCount = String(blocked);
     panel.dataset.preflightApprovalCount = String(approval);
     panel.dataset.preflightIssueCount = String(issues.length);
+    panel.dataset.preflightLinkedIssueCount = String(linkedIssues);
     panel.classList.toggle("has-blocked", blocked > 0);
     panel.classList.toggle("has-open", open > 0);
 
@@ -141,11 +205,11 @@
         <article><small>BLOCKED</small><strong>${blocked}</strong><span>capability/server gap</span></article>
         <article><small>APPROVAL</small><strong>${approval}</strong><span>authority path</span></article>
       </div>
-      ${issues.length ? `<div class="continuum-preflight-list">${issues.map((issue, index) => issueMarkup(issue, states[index], issue.issueKey, index)).join("")}</div>` : `<div class="continuum-preflight-clear"><b>✓</b><span><strong>No issue is represented by this local pattern.</strong><small>Production preflight still validates current references, permissions, capabilities, Connections and revisions.</small></span></div>`}
-      <footer><b>LAB PREVIEW</b><span>Decisions here change this review surface only. They do not mutate Directory, Library, Automations, authority or Runtime.</span></footer>`;
+      ${issues.length ? `<div class="continuum-preflight-list">${issues.map((issue, index) => issueMarkup(issue, states[index], issue.issueKey, index, changeNumbers[index])).join("")}</div>` : `<div class="continuum-preflight-clear"><b>✓</b><span><strong>No issue is represented by this local pattern.</strong><small>Production preflight still validates current references, permissions, capabilities, Connections and revisions.</small></span></div>`}
+      <footer><b>LAB PREVIEW</b><span>${linkedIssues} issue${linkedIssues === 1 ? "" : "s"} linked to Change Plan rows. Decisions here change this review surface only and never mutate protected domains.</span></footer>`;
 
     document.documentElement.dataset.labPlannerPreflight = "v1";
-    document.dispatchEvent(new CustomEvent("cmx:lab-planner-preflight-updated", { detail: { issues: issues.length, open, deferred, reviewed, blocked, approval } }));
+    document.dispatchEvent(new CustomEvent("cmx:lab-planner-preflight-updated", { detail: { issues: issues.length, linkedIssues, open, deferred, reviewed, blocked, approval } }));
   }
 
   function patch() {
