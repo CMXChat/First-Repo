@@ -9,15 +9,20 @@ const html = fs.readFileSync(path.join(root, 'doc/index.html'), 'utf8');
 const qaCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-qa.css'), 'utf8');
 const humanCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-human.css'), 'utf8');
 const originCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-origin.css'), 'utf8');
+const i18nCss = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.css'), 'utf8');
 
 const promiseIndex = html.indexOf('/assets/continuum-doc-promise.css?v=20260818-2');
 const qaIndex = html.indexOf('/assets/continuum-doc-qa.css?v=20260818-1');
 const humanIndex = html.indexOf('/assets/continuum-doc-human.css?v=20260818-2');
-const originIndex = html.indexOf('/assets/continuum-doc-origin.css?v=20260819-2');
+const originIndex = html.indexOf('/assets/continuum-doc-origin.css?v=20260819-3');
+const capabilityIndex = html.indexOf('/assets/continuum-doc-capability.css?v=20260819-1');
+const i18nIndex = html.indexOf('/assets/continuum-doc-i18n.css?v=20260819-1');
 assert.ok(promiseIndex >= 0, 'Promise stylesheet must remain loaded.');
 assert.ok(qaIndex > promiseIndex, 'Visual QA stylesheet must load after the main Continuum styles.');
 assert.ok(humanIndex > qaIndex, 'Human-scale typography must load after the broad QA layer.');
 assert.ok(originIndex > humanIndex, 'The scoped final prose/route layer must load after the general typography layer.');
+assert.ok(capabilityIndex > originIndex, 'Capability styling must remain after the final prose/route layer.');
+assert.ok(i18nIndex > capabilityIndex, 'RTL compatibility must load last without reopening the frozen visual system.');
 
 // Light mode must own a complete Afterlife palette at every viewport.
 assert.match(qaCss, /html\[data-theme="light"\] \.afterlife-section\{/);
@@ -71,10 +76,18 @@ assert.match(originCss, /@media\(max-width:680px\)/);
 assert.match(originCss, /@media\(max-width:420px\)/);
 assert.match(originCss, /@media print/);
 
+// RTL remains a compatibility layer over the frozen composition.
+assert.match(i18nCss, /body:dir\(rtl\)/);
+assert.match(i18nCss, /\.document-toc:dir\(rtl\) a/);
+assert.match(i18nCss, /\.mobile-contents-drawer/);
+assert.match(i18nCss, /content:"←"/);
+assert.match(i18nCss, /margin-inline-end:auto/);
+assert.doesNotMatch(i18nCss, /@media print\{[\s\S]*direction:ltr/);
+
 // Light-mode supporting text should not regress to washed-out inherited colors.
 assert.match(qaCss, /--muted:#4b6278/);
 assert.match(qaCss, /--muted-strong:#263f56/);
 assert.match(qaCss, /html\[data-theme="light"\] \.status-live/);
 assert.match(qaCss, /html\[data-theme="light"\] \.status-later/);
 
-console.log('Continuum visual QA, human-first intro, Check In routes, heading scale and prose-balance smoke test passed.');
+console.log('Continuum visual QA, human-first intro, Check In routes, heading scale, RTL compatibility and prose-balance smoke test passed.');
