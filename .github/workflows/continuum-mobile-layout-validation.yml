@@ -94,7 +94,7 @@ jobs:
           fs.writeFileSync('lab/automations/mobile-geometry.html', automationRendered, 'utf8');
           NODE
 
-      - name: Validate 390px Directory and Planner geometry
+      - name: Validate 390px Directory and Automations geometry
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
@@ -120,11 +120,6 @@ jobs:
           grep -q 'data-qa-directory-buttons-fit="true"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-directory-planner-open="true"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-directory-planner-fit="true"' /tmp/directory-mobile-geometry.html
-
-      - name: Validate 390px Automations Planner geometry
-        run: |
-          set -euo pipefail
-          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
 
           "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --window-size=390,844 --virtual-time-budget=15000 --dump-dom \
