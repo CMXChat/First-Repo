@@ -1,5 +1,5 @@
 {
-  "version": 31,
+  "version": 32,
   "updated": "2026-08-18",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
@@ -22,8 +22,6 @@
     {"path":"/brief/","name":"Legacy Spaces Demo Route","description":"Compatibility route that redirects old Brief links and bookmarks to /spaces/ while preserving query strings and section hashes.","category":"Legacy","status":"Legacy","visibility":"Legacy","directory":false,"gated":false},
     {"path":"/brief-next/","name":"Spaces Brief Rollback Snapshot","description":"Noindex pre-migration staging and rollback snapshot retained for comparison while /spaces/ is the active product route.","category":"Product Concept","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/internal/","name":"CMX + Ovaro Vision Map","description":"Internal planning and strategy reference that remains direct-link-only until real server authorization exists.","category":"Internal","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
-    {"path":"/project/","name":"Callmax SEO Master Plan","description":"Client project planning resource.","category":"Client","status":"Active","visibility":"Build-only","directory":false,"gated":true},
-    {"path":"/callmax/","name":"Callmax Workspace","description":"Callmax project workspace requiring review.","category":"Client","status":"Needs Review","visibility":"Build-only","directory":false,"gated":true},
     {"path":"/ovaro/","name":"Ovaro Workspace","description":"Internal Ovaro planning resource.","category":"Internal","status":"Needs Review","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/collab1/","name":"CMX Agency Concept 1","description":"Experimental CMX agency concept page.","category":"Experimental","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
     {"path":"/collab2/","name":"CMX Agency Concept 2","description":"Experimental CMX agency concept page.","category":"Experimental","status":"Experimental","visibility":"Direct-link-only","directory":false,"gated":false},
