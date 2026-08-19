@@ -147,8 +147,8 @@
         }).join("") || `<p>No saved Groups yet.</p>`}
       </div>
       <div class="v4-audience-boundary">
-        <strong>Audience selector boundary</strong>
-        <span>People and Organizations are directly selectable in the current Lab editor. Group and Label selectors are modeled in Directory and are the next typed Automation integration step.</span>
+        <strong>Typed Audience available</strong>
+        <span>Communication Actions now use the v4.1 Audience manager for People, Organizations, Groups and Labels. This legacy picker remains available only where an older non-communication target field still needs it.</span>
         <a href="/lab/#lab=view%3Arecords">Manage Directory →</a>
       </div>`;
     results.append(section);
