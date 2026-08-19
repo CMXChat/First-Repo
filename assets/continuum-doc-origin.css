@@ -1,5 +1,12 @@
 /* Continuum origin, live-state and capability notes. Prose first, with compact visuals where they clarify the architecture. */
 
+/* Final theme aliases. Keep the last /doc layer on the same theme tokens as the document itself. */
+:root{
+  --surface:var(--paper-raised,#ffffff);
+  --text:var(--ink-strong,#0d1b2d);
+  --accent:var(--blue,#2563eb);
+}
+
 .continuum-origin-note{
   margin:clamp(2rem,4vw,3.5rem) 0 0;
   padding:clamp(1.5rem,3vw,2.35rem) 0 0;
@@ -104,6 +111,8 @@
   font-size:max(.7rem,11px);
   font-weight:800;
   letter-spacing:.04em;
+  text-align:center;
+  overflow-wrap:anywhere;
 }
 
 .continuum-forward-flow i,
@@ -443,8 +452,15 @@ html[data-theme="dark"] .continuum-receipt-grid>span,
 html[data-theme="dark"] .continuum-boundary-grid>span,
 html[data-theme="dark"] .continuum-capability-example,
 html[data-theme="dark"] .continuum-senses-flow b,
+html[data-theme="dark"] .continuum-forward-flow span,
 html[data-theme="dark"] .continuum-route-status{
   background:color-mix(in srgb,var(--surface,#0b1119) 96%,var(--accent,#4d8fff) 4%);
+  border-color:color-mix(in srgb,var(--line-strong,rgba(178,202,225,.25)) 82%,var(--accent,#4d8fff) 18%);
+}
+
+html[data-theme="dark"] .continuum-forward-flow i,
+html[data-theme="dark"] .continuum-senses-flow i{
+  color:var(--blue,#5ab2ff);
 }
 
 @media(max-width:900px){
@@ -510,6 +526,7 @@ html[data-theme="dark"] .continuum-route-status{
     width:100%;
     justify-content:center;
     min-height:36px;
+    padding:.48rem .72rem;
   }
 
   .continuum-forward-flow i,
