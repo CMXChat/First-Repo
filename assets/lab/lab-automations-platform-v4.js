@@ -293,11 +293,11 @@
     if (liveHead) {
       const title = liveHead.querySelector("span");
       const hint = liveHead.querySelector("small");
-      if (title) title.textContent = "FLOW";
+      if (title) title.textContent = "FLOW PREVIEW";
       if (hint) hint.textContent = "Tap a block to edit it";
     }
     const mobile = page.querySelector(".v3-mobile-flow-toggle small");
-    if (mobile) mobile.textContent = "FLOW";
+    if (mobile) mobile.textContent = "FLOW PREVIEW";
     document.documentElement.dataset.labAutomationsPlatform = "v4";
     return true;
   }
@@ -461,7 +461,7 @@
     const target = event.target.closest("button,[role='button'],a");
     if (!target) return;
 
-    if (target.matches("[data-new]") && !bypassNewIntercept) {
+    if (target.matches("[data-new]") && !bypassNewIntercept && new URLSearchParams(location.search).get("new") !== "1") {
       event.preventDefault();
       event.stopImmediatePropagation();
       openNewAutomation();
