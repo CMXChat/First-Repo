@@ -1,209 +1,246 @@
 'use strict';
 
 (() => {
-  function restoreFullHeroIntroduction() {
-    const heroLead = document.querySelector('.continuum-hero .hero-lead');
-    if (!heroLead) return;
+  const qs = (selector, scope = document) => scope?.querySelector(selector) || null;
+  const qsa = (selector, scope = document) => Array.from(scope?.querySelectorAll(selector) || []);
 
-    heroLead.innerHTML = `<span class="hero-lead-first">Continuum brings your information, people, files, messages, services, Automations and AI into one private environment that can understand what is happening, remember useful history, build briefings from connected sources, follow rules you set, use approved tools and keep important work moving over time.</span> As more outside services connect, including APIs and MCP tools, Continuum can coordinate people, follow up on projects, watch important changes, analyze financial information, communicate through email, messaging and future voice, and work with whichever AI models are most useful over time. Your context, priorities and instructions stay in one place, so Continuum can still be useful while you are busy, offline or unavailable. Afterlife, the Dead Man Switch, uses the same setup if you stop responding: Continuum can record the trigger and begin the continuity steps you prepared in advance, including contacting trusted people, releasing approved information and continuing bounded work you authorized beforehand.`;
+  function setText(selector, text, scope = document) {
+    const node = qs(selector, scope);
+    if (node) node.textContent = text;
+    return node;
+  }
+
+  function restoreArchitectureCopy() {
+    const tocLabels = {
+      overview: '01 · Overview',
+      difference: '02 · AI + Authority',
+      spaces: '03 · Information',
+      action: '04 · Automations',
+      afterlife: '05 · Continuity',
+      engineering: '06 · Architecture',
+      build: '07 · Build',
+      status: '08 · Roadmap'
+    };
+
+    qsa('.document-toc a').forEach((link) => {
+      const id = link.getAttribute('href')?.replace('#', '');
+      if (tocLabels[id]) link.textContent = tocLabels[id];
+    });
+
+    const toolbar = qs('.toolbar-links');
+    if (toolbar) {
+      toolbar.innerHTML = '<a href="#overview">Overview</a><a href="#difference">AI + Authority</a><a href="#action">Automations</a><a href="#afterlife">Continuity</a>';
+    }
+
+    setText('.hero-kicker', 'Knowledge, authority, rules and AI in one private layer');
+    const heroLead = qs('.continuum-hero .hero-lead');
+    if (heroLead) {
+      heroLead.innerHTML = '<span class="hero-lead-first">Continuum keeps useful context, current state, authority and policy connected over time.</span> It can brief you while you are here, carry approved work forward when you leave, and follow a continuity plan if you cannot respond.';
+    }
+
+    const heroTruth = qs('.hero-truth-row');
+    if (heroTruth) {
+      heroTruth.innerHTML = '<span><i></i>Keeps durable context</span><span><i></i>Expands with new capabilities</span><span><i></i>Acts inside published authority</span>';
+    }
+
+    setText('#overview .section-kicker', 'Continuum in one minute');
+    setText('#overview h2', 'A continuous loop from change to useful action');
+    setText('#overview .section-intro', 'Continuum sees approved changes, remembers what matters, applies authority and policy, carries out allowed work and keeps the result for the next decision.');
+
+    const processCopy = [
+      ['See what is happening', 'Messages, files, calendars, money data, APIs, MCP and direct updates can arrive from approved sources.', 'INPUT'],
+      ['Maintain knowledge + state', 'People, files, dates, history, relationships and current conditions remain available later.', 'STATE'],
+      ['Apply authority + policy', 'What may be read, prepared, approved, executed, escalated or prohibited is checked before action.', 'POLICY'],
+      ['Use available capability', 'AI and Runtime can use the tools enabled for that job as connections expand over time.', 'ACTION'],
+      ['Keep the result', 'Continuum records what happened, why it happened and what changed so future work starts current.', 'AUDIT']
+    ];
+    qsa('#overview .process-step').forEach((step, index) => {
+      const copy = processCopy[index];
+      if (!copy) return;
+      setText('h3', copy[0], step);
+      setText('p', copy[1], step);
+      setText('.process-tag', copy[2], step);
+    });
+
+    const statusCopy = 'Check In is LIVE. Spaces and Automations are LAB. Validated private information and Automation definition source is NEXT for production migration. Runtime, live Signals monitoring, provider execution and autonomous AI remain LATER.';
+    setText('.rail-status p', statusCopy);
+    setText('.clarity-status-frame .clarity-mini-heading p', statusCopy);
+
+    const mapIntro = qs('.clarity-product-map-section .section-intro');
+    if (mapIntro) {
+      mapIntro.textContent = 'Directory keeps durable identity. Library keeps saved knowledge. Spaces focus current context. Signals can later turn approved observations into evidence and State changes. Automations define policy-driven work. Connections add outside Sources and capabilities. Runtime executes published work. AI reasons across the parts it is allowed to use.';
+    }
+
+    const nodeCopy = {
+      '.node-directory small': 'Who people and organizations are',
+      '.node-library small': 'What you want to keep',
+      '.node-spaces small': 'What matters right now',
+      '.node-ai small': 'Reasons with approved context and tools',
+      '.node-connections small': 'How outside apps, tools and devices connect',
+      '.node-automations small': 'Objectives, conditions and authority',
+      '.node-runtime small': 'Keeps work moving and records results'
+    };
+    Object.entries(nodeCopy).forEach(([selector, copy]) => setText(selector, copy));
+
+    setText('.presence-heading > div > span', 'ACROSS TIME');
+    setText('.presence-heading strong', 'Keep the context and rules that should survive the moment.');
+    setText('.presence-heading > p', 'Continuum can help while you are using it, keep Automation definitions ready for execution and support a continuity policy when direct approval cannot be obtained.');
+
+    setText('#difference .section-kicker', 'AI, capability and authority');
+    setText('#difference h2', 'The intelligence can change while the control layer stays durable');
+    setText('#difference .section-intro', 'An AI model can reason with the context and tools it receives. Continuum keeps the durable knowledge, current state, authority, policy and history that determine how that intelligence may operate.');
+    setText('#difference .ai-answer strong', 'What Continuum adds to AI');
+    setText('#difference .ai-answer p', 'It gives changing intelligence a stable operational environment: remembered context, real state, connected capabilities, explicit authority and an audit trail.');
+    setText('#difference .model-swap-note > div:first-child span', 'MODEL CHOICE CAN CHANGE');
+    setText('#difference .model-swap-note > div:first-child strong', 'Continuum keeps the approved context, authority, policy and history around the model.');
+    setText('#difference .rule-callout strong', 'Server-side policy remains the enforcement point.');
+    setText('#difference .rule-callout span', 'AI can interpret objectives and choose among allowed capabilities, while protected server rules decide whether the action may actually run.');
+
+    setText('#spaces .section-kicker', 'Knowledge, state and focused views');
+    setText('#spaces h2', 'Keep people, saved information and current context connected');
+    setText('#spaces .section-intro', 'Continuum can keep track of identities, relationships, records and recent changes. Spaces can turn that durable context into focused Personal, Family, Business or Afterlife views.');
+    setText('#spaces .ingestion-map .visual-label', 'THINGS YOU ALREADY USE');
+
+    setText('#action .section-kicker', 'Automations and Runtime');
+    setText('#action h2', 'Natural language can express intent. Structured policy controls execution.');
+    setText('#action .section-intro', 'A person should be able to describe the outcome and boundaries naturally. Continuum can turn that into structured triggers, authority and execution rules that the server can enforce.');
+
+    const primer = qs('#action .clarity-automation-copy');
+    if (primer) {
+      primer.innerHTML = '<strong>Automations define durable intent.</strong> Natural language can help express the objective, while typed triggers, conditions, authority, policy and Actions give the server something deterministic to validate. Runtime later executes published work and records what happened.';
+    }
+
+    setText('#action .connections-panel .panel-head strong', 'Each connection adds specific abilities');
+    setText('#action .ceiling-note span', 'EXAMPLES, NOT A CAPABILITY CEILING');
+    setText('#action .ceiling-note strong', "Continuum's useful abilities can expand as new models, services, tools and devices become available.");
+    setText('#action .ceiling-note p', 'The examples below show directions the same control layer can support. They do not define the final boundary of the product.');
+
+    setText('#afterlife .section-kicker', 'Continuity');
+    setText('#afterlife .section-intro', 'Afterlife uses Continuum for continuity. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can follow the authority and steps prepared in advance.');
+
+    const laterTruth = qs('#afterlife .afterlife-truth div:last-child');
+    if (laterTruth) {
+      laterTruth.innerHTML = '<b>LATER:</b> outside-provider delivery, server-side waits, retries, replies, acknowledgements, fallback authority, live multi-source availability evidence and approved AI coordination through Runtime.';
+    }
+
+    setText('#engineering .section-kicker', 'Architecture');
+    setText('#build .section-kicker', 'Build process');
+    setText('#build h2', 'Design quickly, then make the authority and state real');
+    setText('#build .section-intro', 'The Lab lets us test an experience quickly. Once it feels right, we define durable data, authority and policy, build the backend behavior, then connect the accepted interface to protected APIs.');
+
+    setText('#status .section-kicker', 'Roadmap');
+    setText('#status h2', 'Build the durable foundation, then keep expanding capability');
+    setText('#status .section-intro', 'New apps, communication channels, data sources, models and future tools can use the same knowledge, policy, authority and audit model as each stage becomes real.');
+    setText('#status .roadmap-later strong', 'Expandable capability');
+    setText('#status .roadmap-later p', 'Continuum can work with more outside services, models, tools and future devices through the same control layer.');
+    setText('#status .closing-note', 'Continuum is designed to outlive any individual AI model, tool or interface. Its knowledge, state, authority, policy and history remain durable while the intelligence and capabilities around them continue to evolve.');
+
+    setText('.document-footer h2', 'A durable control layer for changing intelligence and expanding capability.');
   }
 
   function addPlannerAndSignalsNotes() {
     const aiSection = document.getElementById('difference');
-    const aiAnswer = aiSection?.querySelector('.ai-answer');
-    if (aiAnswer && !aiSection.querySelector('.continuum-planner-note')) {
-      const planner = document.createElement('aside');
+    const aiAnswer = qs('.ai-answer', aiSection);
+    let planner = qs('.continuum-planner-note', aiSection);
+    if (aiAnswer && !planner) {
+      planner = document.createElement('aside');
       planner.className = 'continuum-forward-note continuum-planner-note';
       planner.setAttribute('aria-label', 'Future Continuum Planner');
+      aiAnswer.after(planner);
+    }
+    if (planner) {
       planner.innerHTML = `
         <span class="continuum-forward-kicker">LATER · PLANNER</span>
-        <strong>AI can help configure Continuum too.</strong>
-        <p>You can eventually describe the setup you want in normal language. Continuum can turn that request into a typed Change Plan for things such as People, Groups, Library content and Automation Drafts, show exactly what would change, run preflight checks and keep protected changes behind the same permissions used by the normal product.</p>
+        <strong>Natural language can configure the control layer without becoming authority.</strong>
+        <p>You can eventually describe the setup you want in normal language. Continuum can turn that into a typed Change Plan across mature domains such as People, Library content, Sources, Watches, Automations, capability mappings and policy, then show what would change before protected services apply anything.</p>
         <div class="continuum-forward-flow" aria-label="Future Planner change flow"><span>INTENT</span><i>→</i><span>CHANGE PLAN</span><i>→</i><span>PREFLIGHT</span><i>→</i><span>REVIEW</span><i>→</i><span>APPLY</span></div>
-        <small>AI proposes typed changes. Protected domain services remain the authority.</small>`;
-      aiAnswer.after(planner);
+        <small>Planner can propose new configuration and policy. It cannot create executable capability or broaden its own authority.</small>`;
     }
 
     const actionSection = document.getElementById('action');
-    const everyday = actionSection?.querySelector('.everyday-workflow');
-    if (everyday && !actionSection.querySelector('.continuum-signals-note')) {
-      const signals = document.createElement('aside');
+    const everyday = qs('.everyday-workflow', actionSection);
+    let signals = qs('.continuum-signals-note', actionSection);
+    if (everyday && !signals) {
+      signals = document.createElement('aside');
       signals.className = 'continuum-forward-note continuum-signals-note';
-      signals.setAttribute('aria-label', 'Future Signals and observed changes');
-      signals.innerHTML = `
-        <span class="continuum-forward-kicker">LATER · SIGNALS</span>
-        <strong>Something Continuum observes can start real work.</strong>
-        <p>Continuum can later watch approved sources, keep each observation with its source, turn a meaningful change into a typed Signal and let an Automation decide what should happen next. Your rules can keep a Signal observe-only, require approval, or allow specific Actions inside published limits.</p>
-        <div class="continuum-forward-flow continuum-signal-flow" aria-label="Future Signal to Action flow"><span>APPROVED SOURCE</span><i>→</i><span>OBSERVATION</span><i>→</i><span>SIGNAL</span><i>→</i><span>AUTOMATION</span><i>→</i><span>RUNTIME</span><i>→</i><span>ACTION</span></div>
-        <small>Outside information provides evidence. It never grants permission by itself.</small>`;
+      signals.setAttribute('aria-label', 'Future Signals, State and observed changes');
       everyday.after(signals);
+    }
+    if (signals) {
+      signals.innerHTML = `
+        <span class="continuum-forward-kicker">LATER · SIGNALS + STATE</span>
+        <strong>Continuum can turn approved live information into evidence about what is happening now.</strong>
+        <p>APIs, webhooks, feeds, constrained webpages, search/news providers, MCP resources and future connected devices can later produce provenance-backed Observations. Meaningful changes become typed Signals that can update State or eligibility before policy and authority decide whether anything may happen.</p>
+        <div class="continuum-forward-flow continuum-signal-flow" aria-label="Future Source to State flow"><span>SOURCE</span><i>→</i><span>OBSERVATION</span><i>→</i><span>SIGNAL</span><i>→</i><span>STATE</span><i>→</i><span>POLICY</span><i>→</i><span>RUNTIME</span></div>
+        <small>Evidence can change State or eligibility. Authority still comes from published policy.</small>`;
     }
   }
 
-  function clarifyFirstTimeReaderCopy() {
-    const earlyStatusCopy = 'Check In (the live Dead Man Switch trigger) is LIVE. Spaces (focused briefings) and Automations (saved rules and steps) are LAB. Private information and Automation definitions are NEXT. Runtime, Signals monitoring and outside-service delivery are LATER.';
+  function addCapabilityExtensionNote() {
+    const capabilityLayer = qs('#difference .capability-layer');
+    if (!capabilityLayer) return;
+    let note = qs('.continuum-capability-extension-note', capabilityLayer.parentElement);
+    if (!note) {
+      note = document.createElement('aside');
+      note.className = 'continuum-forward-note continuum-capability-extension-note';
+      note.setAttribute('aria-label', 'Future live capability extension');
+      capabilityLayer.after(note);
+    }
+    note.innerHTML = `
+      <span class="continuum-forward-kicker">LATER · LIVE CAPABILITY</span>
+      <strong>New APIs and MCP tools can enter through a typed discovery and testing path.</strong>
+      <p>Continuum can eventually discover that a connected provider exposes something new, classify what it reads or changes, map it to a typed capability, test and simulate it, then apply the policy you chose for enabling that class of capability.</p>
+      <div class="continuum-forward-flow" aria-label="Future capability adoption flow"><span>DISCOVER</span><i>→</i><span>MAP</span><i>→</i><span>TEST</span><i>→</i><span>SIMULATE</span><i>→</i><span>POLICY</span><i>→</i><span>ENABLE</span></div>
+      <small>New technical capability can expand what Continuum could do. It never enters active authority merely because a provider advertises it.</small>`;
+  }
 
-    const railStatus = document.querySelector('.rail-status p');
-    if (railStatus) railStatus.textContent = earlyStatusCopy;
+  function addOriginNote() {
+    const mapSection = qs('.clarity-product-map-section');
+    const presence = qs('.continuum-presence', mapSection);
+    if (!mapSection || !presence) return;
 
-    const statusSnapshot = document.querySelector('.clarity-status-frame .clarity-mini-heading p');
-    if (statusSnapshot) statusSnapshot.textContent = earlyStatusCopy;
-
-    document.querySelectorAll('a[href="/spaces/"]').forEach((link) => {
-      const label = link.querySelector('span:first-child');
-      if (label) label.textContent = 'Explore Spaces briefings';
-      else link.textContent = 'Explore Spaces briefings';
-    });
-
-    const overviewIntro = document.querySelector('#overview .section-intro');
-    if (overviewIntro) {
-      overviewIntro.textContent = 'The flow is simple: information comes in from approved sources, Continuum keeps the useful context, your rules decide what may happen, approved work goes back out, and the result becomes part of the context for next time.';
+    let origin = qs('.continuum-origin-note', mapSection);
+    if (!origin) {
+      origin = document.createElement('section');
+      origin.className = 'continuum-origin-note';
+      origin.setAttribute('aria-labelledby', 'continuumOriginTitle');
+      presence.before(origin);
     }
 
-    const processSteps = document.querySelectorAll('#overview .process-step');
-    const processCopy = [
-      ['See what is happening', 'Email, calendars, messages, files, money data, APIs, MCP and direct updates can come in from approved outside sources. Signals can later watch selected sources for meaningful changes.'],
-      ['Remember the useful part', 'Continuum keeps the people, content, files, dates, source history and saved versions that matter later.'],
-      ['Check your rules', 'Continuum checks who may use the information, which tools are allowed, whether approval is needed and whether a trigger or condition has been reached.'],
-      ['Produce or carry out approved work', 'Spaces can produce focused briefings, AI can help reason and write, and future Runtime can send messages, call APIs or use other approved tools.'],
-      ['Bring the result back', 'Continuum records what happened so the next briefing, decision or workflow begins with current information instead of starting over.']
-    ];
-    processSteps.forEach((step, index) => {
-      const [title, copy] = processCopy[index] || [];
-      if (!title) return;
-      const heading = step.querySelector('h3');
-      const paragraph = step.querySelector('p');
-      if (heading) heading.textContent = title;
-      if (paragraph) paragraph.textContent = copy;
-    });
-
-    const mapIntro = document.querySelector('.clarity-product-map-section .section-intro');
-    if (mapIntro) {
-      mapIntro.textContent = 'Connections are the bridges to outside services: they can bring approved information in and later carry approved actions back out. Directory keeps track of people and organizations. Library keeps saved content and files. Spaces turn approved information into focused briefings. Signals can later turn meaningful changes from approved sources into typed inputs. AI can reason with the context allowed for a task. Automations define what should happen. Runtime will later execute published work on the server and save the result back into Continuum.';
-    }
-
-    const nodeCopy = {
-      '.node-directory small': 'People, organizations and contact details',
-      '.node-library small': 'Saved content, files and versions',
-      '.node-spaces small': 'Focused briefings from approved information',
-      '.node-ai small': 'Uses approved context to reason, write and plan',
-      '.node-connections small': 'Bring outside information in and carry approved actions out',
-      '.node-automations small': 'Rules for what should happen and when',
-      '.node-runtime small': 'Later executes published work and records results'
-    };
-    Object.entries(nodeCopy).forEach(([selector, copy]) => {
-      const node = document.querySelector(selector);
-      if (node) node.textContent = copy;
-    });
-
-    const presenceTitle = document.querySelector('.presence-heading strong');
-    if (presenceTitle) presenceTitle.textContent = 'What Continuum can do over time';
-
-    const presenceCopy = document.querySelector('.presence-heading > p');
-    if (presenceCopy) {
-      presenceCopy.textContent = 'While you are using it, Continuum can help you understand current information. It can also keep saved rules ready for later work and support the Check In trigger if you stop responding.';
-    }
-
-    const spacesTitle = document.querySelector('#spaces h2');
-    if (spacesTitle) spacesTitle.textContent = 'How people, saved information and Spaces connect';
-
-    const spacesIntro = document.querySelector('#spaces .section-intro');
-    if (spacesIntro) {
-      spacesIntro.textContent = 'A Space is a focused brief built from approved information already connected to Continuum. Directory keeps track of the people and organizations involved. Library keeps saved content and files. Personal, Family, Business and Afterlife Spaces can each show the part that matters in that context.';
-    }
-
-    const ingestionLabel = document.querySelector('#spaces .ingestion-map .visual-label');
-    if (ingestionLabel) ingestionLabel.textContent = 'INFORMATION COMING IN FROM THINGS YOU ALREADY USE';
-
-    const actionIntro = document.querySelector('#action .section-intro');
-    if (actionIntro) {
-      actionIntro.textContent = 'Automations define the trigger, rules, approved actions and timing. A trigger can come from information already in Continuum, an approved Connection or later a typed Signal. Future Runtime will run published workflows on the server, use approved Connections for allowed actions and record the result back in Continuum.';
-    }
-
-    const primer = document.querySelector('#action .clarity-automation-copy');
-    if (primer) {
-      primer.innerHTML = '<strong>Automations define what should happen.</strong> They can use information already in Continuum, events coming through approved Connections and later typed Signals from approved observations. The builder saves the trigger, rules, actions, timing and finish behavior. Runtime is the future server layer that will carry out a published Automation and record what happened.';
-    }
-
-    const connectionsHead = document.querySelector('#action .connections-panel .panel-head strong');
-    if (connectionsHead) connectionsHead.textContent = 'Connections can bring information in and carry approved actions out';
-
-    const afterlifeIntro = document.querySelector('#afterlife .section-intro');
-    if (afterlifeIntro) {
-      afterlifeIntro.textContent = 'Afterlife is the Dead Man Switch part of Continuum. You choose the timer. If you stop checking in long enough, the live Check In core records the trigger. Future Runtime can run the approved steps that follow.';
-    }
-
-    const laterTruth = document.querySelector('#afterlife .afterlife-truth div:last-child');
-    if (laterTruth) {
-      laterTruth.innerHTML = '<b>LATER:</b> sending through outside services, server-side waits, retries, replies, acknowledgements and approved AI tasks through Runtime.';
-    }
-
-    const buildTitle = document.querySelector('#build h2');
-    if (buildTitle) buildTitle.textContent = 'How a Lab idea becomes a real feature';
-
-    const statusTitle = document.querySelector('#status h2');
-    if (statusTitle) statusTitle.textContent = 'What gets built next';
-
-    const statusIntro = document.querySelector('#status .section-intro');
-    if (statusIntro) {
-      statusIntro.textContent = 'The plan is to add private information first, then server-run workflows, then more outside services, Signals and AI tools.';
-    }
-
-    const laterRoadmapTitle = document.querySelector('#status .roadmap-later strong');
-    if (laterRoadmapTitle) laterRoadmapTitle.textContent = 'More connected services';
-
-    const closingNote = document.querySelector('#status .closing-note');
-    if (closingNote) {
-      closingNote.textContent = 'The result is one connected flow: information comes in, Continuum keeps the useful context, Signals can later identify meaningful changes, Spaces and AI help make sense of what matters, Automations define what should happen, Runtime can carry approved actions out, and the result is saved for next time.';
-    }
-
-    const footerTitle = document.querySelector('.document-footer h2');
-    if (footerTitle) footerTitle.textContent = 'Each part of Continuum uses the same saved people, information, rules and history.';
+    origin.innerHTML = `
+      <div class="continuum-origin-copy">
+        <p class="continuum-origin-kicker">WHERE CONTINUUM CAME FROM</p>
+        <h2 id="continuumOriginTitle">The idea started with the Dead Man Switch</h2>
+        <p>Afterlife began with a practical problem: if you stop responding, the people, information and instructions you prepared still need somewhere reliable to live. The Check In timer gives that problem a trigger.</p>
+        <p>The same foundation matters before an emergency. You can be asleep, traveling, working, waiting on someone or simply away from the screen. Continuum keeps the context, State and policy you chose available so approved work can continue over time.</p>
+        <p>Spaces and AI help while you are here. Signals can later keep selected outside changes current. Automations define work and policy. Runtime can later keep that work moving on the server. Afterlife uses the same durable control layer when normal approval cannot be obtained.</p>
+      </div>`;
   }
 
   function neutralizeExampleNames() {
-    const firstJourneyCopy = document.querySelector('#difference .journey-step small');
+    const firstJourneyCopy = qs('#difference .journey-step small');
     if (firstJourneyCopy && /Directory knows who/i.test(firstJourneyCopy.textContent || '')) {
-      firstJourneyCopy.textContent = 'Directory knows which people belong to the project.';
+      firstJourneyCopy.textContent = 'Directory gives people and organizations stable identities.';
     }
 
-    const people = document.querySelectorAll('#spaces .person-node');
+    const people = qsa('#spaces .person-node');
     if (people[0]) {
-      const name = people[0].querySelector('strong');
-      const role = people[0].querySelector('small');
-      if (name) name.textContent = 'Project lead';
-      if (role) role.textContent = 'Primary contact';
+      setText('strong', 'Project lead', people[0]);
+      setText('small', 'Operational contact', people[0]);
     }
     if (people[1]) {
-      const name = people[1].querySelector('strong');
-      const role = people[1].querySelector('small');
-      if (name) name.textContent = 'Technical lead';
-      if (role) role.textContent = 'Technical contact';
+      setText('strong', 'Advisor', people[1]);
+      setText('small', 'Trusted contact', people[1]);
     }
   }
 
-  restoreFullHeroIntroduction();
-  clarifyFirstTimeReaderCopy();
+  restoreArchitectureCopy();
   neutralizeExampleNames();
   addPlannerAndSignalsNotes();
+  addCapabilityExtensionNote();
+  addOriginNote();
 
-  const mapSection = document.querySelector('.clarity-product-map-section');
-  const presence = mapSection?.querySelector('.continuum-presence');
-  if (!mapSection || !presence || mapSection.querySelector('.continuum-origin-note')) return;
-
-  const origin = document.createElement('section');
-  origin.className = 'continuum-origin-note';
-  origin.setAttribute('aria-labelledby', 'continuumOriginTitle');
-  origin.innerHTML = `
-    <div class="continuum-origin-copy">
-      <p class="continuum-origin-kicker">WHERE CONTINUUM CAME FROM</p>
-      <h2 id="continuumOriginTitle">The idea started with the Dead Man Switch</h2>
-      <p>Afterlife began with a practical problem: if you stop responding, the people, information and instructions you prepared still need somewhere reliable to live. The Check In timer gives that problem a trigger.</p>
-      <p>The same setup is useful before an emergency. You can be asleep, traveling, working, waiting on someone or simply away from the screen. Continuum keeps the context and rules you chose available so approved work can continue over time.</p>
-      <p>Spaces turn current information into focused briefs while you are here, and AI can use the context you allow. Automations define work that should happen. Runtime can later keep that work moving on the server and use Connections for approved outside actions. Signals can later make selected outside changes part of that same flow. Afterlife uses the same pieces when you cannot respond.</p>
-    </div>`;
-
-  presence.before(origin);
   document.documentElement.dataset.continuumOrigin = 'ready';
   document.documentElement.dataset.continuumSignalsPlanner = 'ready';
+  document.documentElement.dataset.continuumArchitectureAligned = '20260819';
 })();
