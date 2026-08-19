@@ -17,8 +17,8 @@
   function patchChrome() {
     const brand = document.querySelector(".v3-brand");
     if (brand) {
-      brand.href = "/lab/";
-      brand.setAttribute("aria-label", "Back to Continuum Lab");
+      brand.href = "/lab/control/";
+      brand.setAttribute("aria-label", "Back to Continuum Control Center");
       const strong = brand.querySelector(".brand-copy strong");
       const small = brand.querySelector(".brand-copy small");
       if (strong) strong.textContent = "Continuum";
