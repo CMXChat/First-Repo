@@ -63,6 +63,8 @@ jobs:
           for term in [
               'CMXContinuumPlannerContractV1', 'validateOperations', 'validatePlan', 'classifyIssue', 'validateIssues',
               'directory.ambiguous_match', 'directory.audience_required', 'automation.schedule_unconfirmed',
+              'signals.create_watch', 'signals.attach_source', 'signals.set_filter', 'signals.set_interpretation',
+              'signals.pause_watch', 'automation.reference_signal', 'signals.source_required', 'signals.service_required',
               'runtime.required', 'connections.required', 'authority.approval_required'
           ]:
               if term not in contract:
@@ -104,14 +106,14 @@ jobs:
               if forbidden in source + contract + preflight + review:
                   raise SystemExit(f'forbidden Planner boundary pattern: {forbidden}')
 
-          planner_ops = set(re.findall(r'type:\s*"((?:directory|library|automation)\.[a-z0-9_]+)"', source))
-          registry_ops = set(re.findall(r'"((?:directory|library|automation)\.[a-z0-9_]+)":\s*Object\.freeze', contract))
+          planner_ops = set(re.findall(r'type:\s*"((?:directory|library|automation|signals)\.[a-z0-9_]+)"', source))
+          registry_ops = set(re.findall(r'"((?:directory|library|automation|signals)\.[a-z0-9_]+)":\s*Object\.freeze', contract))
           unknown = sorted(planner_ops - registry_ops)
           if unknown:
               raise SystemExit(f'Automation Planner uses unregistered operations: {unknown}')
 
           required_assets = [
-              'lab-continuum-planner-contract-v1.js?v=20260819-v1preflight1',
+              'lab-continuum-planner-contract-v1.js?v=20260819-v1signals1',
               'lab-automations-planner-v5.js?v=20260819-v5edit1',
               'lab-automations-planner-edit-v5.css?v=20260819-v5edit1',
               'lab-continuum-planner-preflight-v1.css?v=20260819-v1r2',
@@ -135,7 +137,7 @@ jobs:
           if html.index('lab-continuum-planner-review-v1.css') > html.index('lab-automations-v5-mobile-qa.css'):
               raise SystemExit('final mobile QA must remain after shared Planner CSS')
 
-          print('Automations v5 editable Planner, dependencies, typed preflight/change links and Change Review contracts passed.')
+          print('Automations v5 editable Planner, Signals-ready vocabulary, dependencies, typed preflight/change links and Change Review contracts passed.')
           PY
 
       - name: Focused route asset smoke
@@ -157,4 +159,4 @@ jobs:
           grep -q 'data-lab-planner-review="v1"' /tmp/continuum-v5-planner.html
           grep -q 'New automation' /tmp/continuum-v5-planner.html
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-planner.html
-          echo 'Focused Automations route loaded with editable typed Planner preflight/review assets.'
+          echo 'Focused Automations route loaded with editable Signals-ready typed Planner preflight/review assets.'
