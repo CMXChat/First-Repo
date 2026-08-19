@@ -35,7 +35,7 @@ Current `*-CURRENT.md` contracts, source, tests and workflows beat older dated n
 
 ## `/doc/`
 
-Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab UX work alone does not authorize edits to `/doc/`.
+Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab UX/model work alone does not authorize edits to `/doc/`.
 
 ## `/lab/`
 
@@ -51,36 +51,41 @@ The preview performs no model call and no mutation.
 
 ## `/lab/automations/`
 
-Focused Automation operating/testing surface, currently **v4.4**.
+Focused Automation operating/testing surface with a **v5 canonical Lab workflow model foundation** under the current v4.4 authoring experience.
 
-It keeps the proven v3 Draft/autosave core and adds:
+It currently includes:
 
+- v3 Draft/autosave compatibility editor;
+- **v5 ordered workflow normalization/validation**;
 - Automations / Templates / Runs command center;
 - searchable Capability Catalog;
 - interactive FLOW PREVIEW;
-- 13 editable scenarios;
+- **15 editable scenarios**;
 - Directory readiness;
 - Audience v4.1 Person/Organization/Group/Label selectors;
 - Intelligence v4.2 contextual recommendations + typed `Use data`;
 - richer local `TEST THIS STEP` traces;
 - Input Routing v4.3 from typed source outputs into named Action fields;
-- **Advanced Flow v4.4** with linear inter-step `IF / Continue if…` and `WAIT / Wait between steps` authoring preview;
+- Advanced Flow v4.4 with linear inter-step `IF / Continue if…` and `WAIT / Wait between steps` authoring preview;
 - manual / template / Planner-preview creation paths;
 - mobile-specific selectors/modals.
 
-The v4.4 correction matters: top-level IF is pre-action, so a condition that depends on an Action output belongs after that Action. The current inter-step IF is a linear gate only. YES/NO branching remains later. Inter-step WAIT is distinct from start timing and needs future persisted Runtime state.
-
-The route stays isolated: `connect-src 'self'`, no production API/provider execution, no real scheduling/Publish, no secrets and no external AI model call.
-
-## Automation consolidation direction
-
-V4.4 demonstrates that the long-term workflow domain should become a coherent ordered typed sequence/graph while preserving the simple WHEN / IF / DO / WAIT / TEST rail for beginner navigation.
-
-Likely semantic shape:
+V5 normalizes the accepted workflow as:
 
 `Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
 
-Do not treat the current DOM/localStorage layers as production architecture. Branch nodes come only after durable Runtime routing semantics are designed.
+while the simple `WHEN → IF → DO → WAIT → TEST` rail remains the beginner navigation model.
+
+Top-level IF is pre-action, so a condition depending on an Action output belongs after that Action. The current inter-step IF is a linear gate only. YES/NO branching remains later. Inter-step WAIT is distinct from start timing and needs future persisted Runtime state.
+
+Newest scenarios demonstrate those semantics directly:
+
+- **Urgent AI follow-up** — AI output → IF urgent → notification;
+- **Delayed backup escalation** — primary Action → WAIT → backup Action.
+
+The route stays isolated: `connect-src 'self'`, no production API/provider execution, no real scheduling/Publish, no secrets and no external AI model call.
+
+Browser `workflowV5`, localStorage and v4 compatibility fields remain Lab scaffolding. They do not define production backend schema.
 
 ## AI environment-authoring direction
 
@@ -90,7 +95,7 @@ Canonical flow:
 
 `natural-language intent → typed Change Plan → deterministic preflight/conflicts → review/approval → normal protected domain services`
 
-A future Change Plan may coordinate supported Directory, Automation and Library operations. AI never gets a shadow database/workflow format, prompt-granted authority or arbitrary executable code path.
+A future Change Plan may coordinate supported Directory, Automation and Library operations. V5 gives Automation Planner a clearer ordered typed target, but AI never gets a shadow database/workflow format, prompt-granted authority or arbitrary executable code path.
 
 Backend contract:
 
@@ -128,7 +133,7 @@ The first Phase 2A Library + typed Automation source is validated on `jay-app/ma
 
 Before broad backend capability/Directory/Planner/flow-control expansion, use the canonical Phase 2A production runbook in `jay-app`.
 
-Lab visuals do not redefine production truth.
+Lab visuals or model completeness do not redefine production truth.
 
 ## Architecture rules
 
@@ -148,7 +153,7 @@ Preserve:
 - no unrestricted webhook/API escape hatch;
 - no broad document-wide MutationObserver loops in accepted Check In/Lab paths;
 - Lab simulation/future capability must be labeled truthfully;
-- visual completeness never proves backend execution exists.
+- browser model completeness never proves backend execution exists.
 
 ## Development / learning stack
 
