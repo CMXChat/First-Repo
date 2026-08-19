@@ -1,7 +1,7 @@
 # Continuum Automations Master Plan — CURRENT
 
 Date: 2026-08-18
-Status: Canonical Automation product/UX direction; Lab v5 canonical workflow model foundation active over the v4.4 authoring surface, protected Runtime/provider execution still later
+Status: Canonical Automation product/UX direction; Lab v5 canonical workflow model + ordered Flow Preview active over the v4.4 authoring surface, protected Runtime/provider execution still later
 
 # Purpose
 
@@ -27,20 +27,21 @@ Core principle:
 
 # Current Lab stack
 
-The focused route now separates the **underlying workflow model** from the still-proven v3/v4.x authoring surface.
+The focused route separates the **underlying workflow model** from the still-proven v3/v4.x authoring surface.
 
 Current responsibilities:
 
 - `lab-automations-experience-v3.js` — local Draft normalization/autosave and five-stage compatibility editor;
 - `lab-automations-model-v5.js` — canonical Lab workflow normalization, ordered typed-node model, validation and compatibility projection;
 - `lab-automations-progressive-preview.js` — truthful blank/pending states;
-- `lab-automations-platform-v4.js` — command center, Capability Catalog, interactive flow, Planner/Run previews;
+- `lab-automations-platform-v4.js` — command center, Capability Catalog, compact interactive flow, Planner/Run previews;
 - `lab-automations-scenarios-v4.js` — **15 editable starting patterns total**, including output-dependent IF and inter-step WAIT examples;
 - `lab-automations-directory-v4.js` — Directory readiness integration;
 - `lab-automations-audience-v4.js` — Audience v4.1;
 - `lab-automations-intelligence-v4.js` — v4.2 contextual recommendations, typed data references and richer tests;
 - `lab-automations-input-routing-v4.js` — v4.3 receiving-field input routing;
-- `lab-automations-sequence-v4.js` — v4.4 linear inter-step IF / WAIT authoring preview;
+- `lab-automations-sequence-v4.js` — v4.4 linear inter-step IF / WAIT authoring UX, now reading/writing through v5 first;
+- `lab-automations-flow-v5.js/.css` — ordered v5 Flow Preview presentation;
 - matching CSS/QA layers — desktop/mobile presentation.
 
 The v3/v4 files remain compatibility/product-proving layers. They are no longer the conceptual destination for the workflow domain model.
@@ -49,9 +50,9 @@ Production still does not copy the DOM/localStorage architecture.
 
 # Canonical Lab workflow model v5
 
-V5 is the first consolidation step after the v4.x proving work.
+V5 is the consolidation step after the v4.x proving work.
 
-Each browser Automation can now carry `workflowV5`, a normalized ordered definition with:
+Each browser Automation can carry `workflowV5`, a normalized ordered definition with:
 
 - exactly one Trigger node;
 - zero or more pre-action Condition nodes;
@@ -91,7 +92,7 @@ Compatibility state must not be mistaken for two permanent workflow engines.
 
 ## V5 validation rules
 
-The Lab model validator already enforces structural rules including:
+The Lab model validator enforces structural rules including:
 
 - one Trigger and one Finish;
 - Trigger first;
@@ -173,23 +174,29 @@ Example:
 
 The AI priority does not exist until the AI step finishes.
 
-# Advanced Flow v4.4
+# Advanced Flow v4.4 on v5
 
-The DO stack exposes **ADVANCED FLOW · PREVIEW** for current authoring.
+The DO stack exposes **ADVANCED FLOW · PREVIEW** for current inter-step authoring.
 
 Between two Action cards, the Lab can author:
 
 - **IF / Continue if…** — a linear gate using Trigger data or outputs from Actions already available by that point;
 - **WAIT / Wait between steps** — a future persisted delay before the next Action.
 
-Current compatibility projection uses `flowControls[]` anchored by `afterActionId` and the store `cmx-lab-automation-flow-controls-v1`.
+The v4.4 UI now prefers the canonical v5 model API:
 
-V5 converts those controls into ordered sequence nodes under `workflowV5`.
+- read through `CMXAutomationModelV5.getFlowControls()`;
+- write through `CMXAutomationModelV5.setFlowControls()`.
+
+`flowControls[]`, `afterActionId` and `cmx-lab-automation-flow-controls-v1` are compatibility projection/fallback for the older editor, not the intended second source of workflow truth.
+
+V5 owns the normalized sequence mutation and projects compatibility state while needed.
 
 Browser markers:
 
 - `data-lab-automations-model="v5"`;
-- `data-lab-automations-sequence="v4-4"`.
+- `data-lab-automations-sequence="v4-4"`;
+- `data-lab-automations-sequence-model="v5"` when v5 owns the inter-step path.
 
 ## Inter-step IF
 
@@ -220,7 +227,7 @@ Browser timers are never execution authority.
 
 Current total: **15 editable starting patterns**.
 
-Two advanced scenarios now deliberately teach the richer sequence through user intent:
+Two advanced scenarios deliberately teach the richer sequence through user intent:
 
 - **Urgent AI follow-up** — AI assessment → IF priority is urgent → notification;
 - **Delayed backup escalation** — primary escalation → WAIT two hours → backup escalation.
@@ -229,15 +236,37 @@ They create ordinary editable Drafts. They do not create a second execution engi
 
 Future user-created and AI-created scenarios should remain compositions of known typed capabilities.
 
-# Flow Preview
+# Flow Preview v5
 
-Accepted name remains **FLOW PREVIEW**.
+Accepted product name remains **FLOW PREVIEW**.
 
 Do not restore `LIVE FLOW` as the product label.
 
-The top-level Flow Preview remains a navigational summary and already surfaces inter-step IF/WAIT counts on the DO node when present.
+The compact Flow Preview remains the beginner stage navigator and continues to surface inter-step IF/WAIT counts on the DO node when present.
 
-A later UI consolidation can render v5 nodes directly while preserving a compact beginner view.
+The v5 presentation now adds **ORDERED SEQUENCE** directly beneath that compact preview.
+
+It reads the canonical `workflowV5` model and can visibly show a sequence such as:
+
+`WHEN → DO AI task → IF AI priority = urgent → WAIT 2h → DO Notify → FINISH`
+
+without forcing the user to reconstruct that order from separate forms.
+
+Rules:
+
+- genuinely complex flows open the ordered sequence by default;
+- simple flows stay collapsed by default;
+- Show/Hide is presentation-only;
+- rows navigate to the relevant builder stage;
+- start timing/recurrence is shown separately as a `START` policy row instead of pretending it is an inter-step WAIT node;
+- the ordered renderer uses the progressive pending-state DOM as truth, so a new Draft still shows `Choose a trigger`, `Choose an action` and `Not set yet` instead of leaking compatibility defaults;
+- mobile renders a readable vertical sequence with tap-sized rows instead of a scaled graph canvas.
+
+Browser marker:
+
+`data-lab-automations-flow="v5"`
+
+This is the first direct v5 presentation layer and a meaningful step toward Zapier/n8n-style whole-flow awareness while preserving IFTTT-level beginner simplicity.
 
 # Capability Catalog
 
@@ -298,7 +327,15 @@ Current traces can show input, normalization/resolution, Audience/readiness, map
 
 Review can show Audience readiness, input-routing summary and inter-step control count with `RUNTIME REQUIRED` where applicable.
 
-Dedicated v5 model CI also validates the ordered model independently of the browser presentation.
+Dedicated v5 CI validates:
+
+- ordered model normalization;
+- structural/future-step reference rejection;
+- v5-owned flow-control mutation plus compatibility projection;
+- ordered Flow Preview source/style contracts;
+- progressive blank-Draft truth;
+- mobile/direct-new markers;
+- 15 scenarios including the advanced IF/WAIT examples.
 
 Never convert Lab simulation into fake Run history.
 
@@ -337,7 +374,7 @@ Recommended order remains:
 9. cross-domain Change Plan apply after mature domain mutation services;
 10. bounded Agent later.
 
-V5 Lab modeling does not move those backend execution phases earlier.
+V5 Lab modeling/presentation does not move those backend execution phases earlier.
 
 # Security / production rules
 
