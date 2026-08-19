@@ -63,6 +63,18 @@
     const onlyAction = result?.querySelector("[data-v5-planner-remove-action]");
     root.dataset.qaPlannerEditOnlyActionDisabled = onlyAction?.disabled ? "true" : "false";
     root.dataset.qaPlannerEditOnlyActionLabel = onlyAction?.textContent?.trim() === "Only action" ? "true" : "false";
+
+    const reset = result?.querySelector("[data-v5-planner-reset-proposal]");
+    root.dataset.qaPlannerEditResetTap = tap(reset) ? "true" : "false";
+    reset?.click();
+    await settle(180);
+
+    result = modal?.querySelector(".v5-planner-result:not([hidden])");
+    root.dataset.qaPlannerEditActionsReset = String(result?.querySelectorAll("[data-v5-plan-action]").length || 0);
+    root.dataset.qaPlannerEditWaitReset = String(result?.querySelectorAll("[data-v5-plan-row='wait']").length || 0);
+    root.dataset.qaPlannerEditWaitOperationReset = operationExists(result, "automation.add_wait") ? "true" : "false";
+    root.dataset.qaPlannerEditRuntimeReset = result?.querySelector("[data-preflight-code='runtime.required'][data-preflight-state='blocked']") ? "true" : "false";
+    root.dataset.qaPlannerEditResetGone = result?.querySelector("[data-v5-planner-reset-proposal]") ? "false" : "true";
     root.dataset.qaPlannerEditFit = fitsHorizontally() ? "true" : "false";
     root.dataset.qaPlannerEditComplete = "true";
   })();
