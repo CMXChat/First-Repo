@@ -164,7 +164,6 @@
     closeWarning({ restore: false });
     pendingChoice = button;
     returnFocus = button;
-    setPickerHidden(true);
     const kind = button.dataset.chooseInline;
     const meta = INLINE[kind] || { label: button.querySelector("strong")?.textContent || "this action" };
     const backdrop = document.createElement("div");
@@ -181,7 +180,9 @@
         </div>
       </section>`;
     document.body.append(backdrop);
-    requestAnimationFrame(() => backdrop.querySelector(".v9-duplicate-dialog")?.focus({ preventScroll: true }));
+    const dialog = backdrop.querySelector(".v9-duplicate-dialog");
+    dialog?.focus({ preventScroll: true });
+    setPickerHidden(true);
   }
 
   function confirmWarning() {
