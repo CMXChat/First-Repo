@@ -13,6 +13,8 @@ on:
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-directory-planner-preview.css'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-platform-v4.js'
       - 'assets/lab/lab-automations-platform-v4.css'
       - 'assets/lab/lab-automations-model-v5.js'
@@ -35,6 +37,8 @@ on:
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-directory-planner-preview.css'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.js'
+      - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-automations-platform-v4.js'
       - 'assets/lab/lab-automations-platform-v4.css'
       - 'assets/lab/lab-automations-model-v5.js'
@@ -68,8 +72,9 @@ jobs:
                   raise SystemExit(f'forbidden mobile probe pattern: {forbidden}')
           for required in [
               'qaDirectoryCommandOverlap', 'qaDirectoryPlannerFit', 'qaDirectoryTapTargets',
-              'qaDirectoryPlannerTapTargets', 'qaAutomationsPlannerFit', 'qaAutomationsPlannerResult',
-              'qaAutomationsPlannerTapTargets', 'qaHorizontalOverflowAfter', 'qaLayoutProbe'
+              'qaDirectoryPlannerTapTargets', 'qaDirectoryPlannerReview', 'qaDirectoryPlannerFitAfterReview',
+              'qaAutomationsPlannerFit', 'qaAutomationsPlannerResult', 'qaAutomationsPlannerTapTargets',
+              'qaAutomationsPlannerReview', 'qaHorizontalOverflowAfter', 'qaLayoutProbe'
           ]:
               if required not in source:
                   raise SystemExit(f'mobile probe missing marker: {required}')
@@ -113,6 +118,7 @@ jobs:
             --window-size=390,844 --virtual-time-budget=15000 --dump-dom \
             'http://127.0.0.1:8000/directory-mobile-geometry.html' > /tmp/directory-mobile-geometry.html
 
+          grep -q 'data-lab-planner-review="v1"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-layout-probe="complete"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-viewport-width="390"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-horizontal-overflow="false"' /tmp/directory-mobile-geometry.html
@@ -123,18 +129,22 @@ jobs:
           grep -q 'data-qa-directory-planner-open="true"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-directory-planner-fit="true"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-directory-planner-tap-targets="true"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-directory-planner-review="true"' /tmp/directory-mobile-geometry.html
+          grep -q 'data-qa-directory-planner-fit-after-review="true"' /tmp/directory-mobile-geometry.html
 
           "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --window-size=390,844 --virtual-time-budget=15000 --dump-dom \
             'http://127.0.0.1:8000/lab/automations/mobile-geometry.html' > /tmp/automations-mobile-geometry.html
 
+          grep -q 'data-lab-planner-review="v1"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-layout-probe="complete"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-viewport-width="390"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-horizontal-overflow="false"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-horizontal-overflow-after="false"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-automations-planner-open="true"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-automations-planner-result="true"' /tmp/automations-mobile-geometry.html
+          grep -q 'data-qa-automations-planner-review="true"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-automations-planner-fit="true"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-automations-planner-tap-targets="true"' /tmp/automations-mobile-geometry.html
 
-          echo 'Continuum 390px Directory and Automations Planner geometry and tap targets passed.'
+          echo 'Continuum 390px Directory and Automations Planner geometry, Change Review and tap targets passed.'
