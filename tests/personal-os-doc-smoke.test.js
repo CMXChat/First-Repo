@@ -45,8 +45,9 @@ assert.match(html, /<h1 id="pageTitle">Continuum<\/h1>/);
 assert.doesNotMatch(html, /data-cmx-gate=|data-cmx-gated-content|cmx-black-prompt-locked/);
 assert.doesNotMatch(html, /style=/i, 'Strict /doc CSP should not depend on inline style attributes.');
 
-// The static fallback already carries the current durable architecture.
-assert.match(html, /Knowledge, authority, rules and AI in one private layer/);
+// The static fallback carries the current human-first opening and durable architecture.
+assert.match(html, /Your information, people, tools and AI in one private operating layer/);
+assert.match(html, /Continuum brings your information, people, files, messages, services, automations and AI into one private environment/);
 assert.match(html, /BUILT TO OUTLIVE THE MODEL/);
 assert.match(html, /A continuous loop from change to useful action/);
 assert.match(html, /Maintain knowledge \+ state/);
@@ -57,6 +58,16 @@ assert.match(html, /The capability ceiling can move as technology moves\. Author
 assert.match(html, /Natural language can express intent\. Structured policy controls execution\./);
 assert.match(html, /AUTHORITY CAN HAVE A CONTINUITY PLAN TOO/);
 assert.match(html, /72 \+ 24 is today's configuration\. You choose these periods\./);
+
+// Check In is the LIVE first-class route, with Spaces and Automations retained as LAB destinations.
+assert.match(html, /document-action-primary" href="\/checkin\/"/);
+assert.match(html, /href="\/checkin\/"[^>]*><span>Open Check In/);
+assert.match(html, /continuum-route-link continuum-route-live" href="\/checkin\/"/);
+assert.match(html, /Protected proof of life, timing and activity/);
+assert.match(html, /href="\/spaces\/"/);
+assert.match(html, /href="\/lab\/automations\/"/);
+assert.match(html, /continuum-doc-origin\.css\?v=20260819-2/);
+assert.match(html, /continuum-doc-origin\.js\?v=20260819-2/);
 
 // Stable navigation and teaching anchors remain unchanged.
 for (const id of ['overview', 'difference', 'spaces', 'action', 'afterlife', 'engineering', 'build', 'status']) {
@@ -97,18 +108,21 @@ assert.match(baseJs, /clarity-deep-dive/);
 assert.doesNotMatch(baseJs, /MutationObserver/);
 assert.doesNotMatch(baseJs, /setInterval\(/);
 
-// Final alignment layer owns the current architecture and power-clarity additions.
+// Final alignment layer owns the current architecture, routes and power-clarity additions.
 assert.match(finalJs, /dataset\.continuumArchitectureAligned = '20260819'/);
 assert.match(finalJs, /dataset\.continuumPowerClarity = '20260819'/);
+assert.match(finalJs, /dataset\.continuumCheckInRoute = 'ready'/);
 assert.match(finalJs, /continuum-state-strip/);
 assert.match(finalJs, /continuum-why-receipt/);
 assert.match(finalJs, /continuum-senses-strip/);
 assert.match(finalJs, /continuum-model-routing/);
 assert.match(finalJs, /continuum-capability-example/);
+assert.match(finalJs, /Open the live Check In app/);
+assert.match(finalJs, /Start with what is live\. Explore what Continuum is becoming\./);
 assert.doesNotMatch(finalJs, /MutationObserver/);
 assert.doesNotMatch(finalJs, /setInterval\(/);
 
-// CSS layers preserve light/dark, responsive and print behavior.
+// CSS layers preserve light/dark, responsive, route-card and print behavior.
 assert.match(baseCss, /html\[data-theme="light"\]/);
 assert.match(finalCss, /\.hero-network/);
 assert.match(qaCss, /@media\(max-width:680px\)/);
@@ -116,6 +130,8 @@ assert.match(qaCss, /@media print/);
 assert.match(originCss, /\.continuum-state-strip/);
 assert.match(originCss, /\.continuum-senses-strip/);
 assert.match(originCss, /\.continuum-model-routing/);
+assert.match(originCss, /\.continuum-route-link/);
+assert.match(originCss, /\.continuum-checkin-context-link/);
 assert.match(originCss, /@media\(max-width:420px\)/);
 assert.match(originCss, /@media print/);
 
@@ -134,4 +150,7 @@ assert.equal(docRoute.visibility, 'Direct-link-only');
 assert.equal(docRoute.gated, false);
 assert.equal(docRoute.name, 'Continuum Product & Architecture Overview');
 
-console.log('Continuum base document, architecture, safety and responsive-layer smoke test passed.');
+const checkInRoute = routes.routes.find((route) => route.path === '/checkin/');
+assert.ok(checkInRoute, '/checkin/ must remain registered as the LIVE product destination linked from /doc/.');
+
+console.log('Continuum base document, Check In routing, architecture, safety and responsive-layer smoke test passed.');
