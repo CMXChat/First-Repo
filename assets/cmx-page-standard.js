@@ -5,7 +5,7 @@
   const currentPath = normalizePath(window.location.pathname);
   const directoryVisible = new Set(['/', '/directory', '/osint', '/phone', '/metadata', '/search', '/missing', '/resources']);
   const removedRoutes = new Set(['/manual', '/menu', '/workspace', '/collab6', '/collab7', '/pythontest', '/test.html', '/report']);
-  const sensitiveRoutes = new Set(['/build', '/callmax', '/project']);
+  const sensitiveRoutes = new Set(['/build']);
   const blockedNavigationDestinations = new Set(['/', '/directory']);
 
   root.dataset.cmxVisibility ||= directoryVisible.has(currentPath) ? 'Directory-visible' : 'Direct-link-only';
