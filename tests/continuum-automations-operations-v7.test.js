@@ -7,13 +7,16 @@ const vm = require('node:vm');
 const index = fs.readFileSync('lab/automations/index.html', 'utf8');
 const modelSource = fs.readFileSync('assets/lab/lab-automations-model-v5.js', 'utf8');
 const source = fs.readFileSync('assets/lab/lab-automations-operations-v7.js', 'utf8');
+const polish = fs.readFileSync('assets/lab/lab-automations-operations-v7-polish.js', 'utf8');
 const css = fs.readFileSync('assets/lab/lab-automations-operations-v7.css', 'utf8');
 const futureCss = fs.readFileSync('assets/lab/lab-automations-operations-v7-future.css', 'utf8');
 
 assert.match(index, /lab-automations-operations-v7\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7-future\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7\.js\?v=20260819-v7ops2/);
+assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops1/);
 assert.ok(index.indexOf('lab-automations-operations-v7.js') > index.indexOf('lab-automations-action-stack-v6.js'), 'v7 must load after accepted authoring layers');
+assert.ok(index.indexOf('lab-automations-operations-v7-polish.js') > index.indexOf('lab-automations-operations-v7.js'), 'v7 chrome polish must load last');
 
 for (const copy of [
   'Automation workspace',
@@ -42,12 +45,24 @@ assert.match(source, /CMXAutomationOperationsV7 = Object\.freeze/);
 assert.match(source, /location\.reload\(\)/);
 assert.match(source, /idMap\.get\(control\.afterActionId\)/);
 assert.match(source, /sourceId: idMap\.get\(control\.source\.sourceId\)/);
-assert.doesNotMatch(source, /fetch\s*\(/);
-assert.doesNotMatch(source, /XMLHttpRequest/);
-assert.doesNotMatch(source, /WebSocket\s*\(/);
-assert.doesNotMatch(source, /EventSource\s*\(/);
-assert.doesNotMatch(source, /eval\s*\(/);
-assert.doesNotMatch(source, /new Function\s*\(/);
+
+assert.match(polish, /CONTINUUM/);
+assert.match(polish, /LAB · AUTOMATIONS/);
+assert.match(polish, /LAB · EXECUTION OFF/);
+assert.match(polish, /PLANNER · LOCAL PREVIEW/);
+assert.match(polish, /Create a local typed proposal before opening the Draft/);
+assert.match(polish, /No model call or provider action occurs/);
+assert.match(polish, /dataset\.labAutomationsOperationsPolish = "v7"/);
+
+for (const checkedSource of [source, polish]) {
+  assert.doesNotMatch(checkedSource, /fetch\s*\(/);
+  assert.doesNotMatch(checkedSource, /XMLHttpRequest/);
+  assert.doesNotMatch(checkedSource, /WebSocket\s*\(/);
+  assert.doesNotMatch(checkedSource, /EventSource\s*\(/);
+  assert.doesNotMatch(checkedSource, /eval\s*\(/);
+  assert.doesNotMatch(checkedSource, /new Function\s*\(/);
+  assert.doesNotMatch(checkedSource, /MutationObserver/);
+}
 
 for (const selector of [
   '.v7-workspace-head',
@@ -85,12 +100,12 @@ global.window = {
 global.CustomEvent = function CustomEvent(type, init) { this.type = type; this.detail = init?.detail; };
 global.requestAnimationFrame = function requestAnimationFrame() {};
 global.location = { reload() {}, search: '' };
-
 global.setTimeout = function setTimeoutStub() { return 1; };
 global.clearTimeout = function clearTimeoutStub() {};
 
 vm.runInThisContext(modelSource);
 vm.runInThisContext(source);
+vm.runInThisContext(polish);
 
 const ops = window.CMXAutomationOperationsV7;
 assert.ok(ops, 'v7 operations API should be exposed');
@@ -130,4 +145,4 @@ const runtimeLater = ops.assess({
 assert.equal(runtimeLater.runtimeLater, true);
 assert.equal(runtimeLater.waits, 1);
 
-console.log('Continuum Automations operations v7 readiness, management, capability and responsive contracts passed.');
+console.log('Continuum Automations operations v7 readiness, management, capability, chrome and responsive contracts passed.');
