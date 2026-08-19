@@ -1,11 +1,11 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-19
-Status: FROZEN after final product, continuity, architecture, dark-mode QA and RTL accessibility pass
+Status: FROZEN after owner-authorized knowledge ingestion, memory governance and temporal-awareness update plus prior product, continuity, architecture, dark-mode and RTL QA
 
 ## Freeze decision
 
-`/doc/` is now frozen as the current Continuum product and architecture overview.
+`/doc/` is frozen as the current Continuum product and architecture overview.
 
 Do not reopen copy, structure, product positioning or visual design as routine cleanup.
 
@@ -20,6 +20,34 @@ Future changes are allowed only for:
 - an explicit request from the owner to reopen the document.
 
 If none of those conditions applies, leave `/doc/` alone.
+
+## Owner-authorized August 19 reopening
+
+The owner explicitly reopened `/doc/` on 2026-08-19 after the earlier freeze to add two product concepts that had become important backend architecture decisions:
+
+1. general knowledge ingestion and memory governance;
+2. real temporal awareness.
+
+This reopening did not authorize a new top-level section or a redesign.
+
+The eight-section reading path remains intact.
+
+The human-facing additions are compact post-render teaching panels:
+
+- **Information** now explains that Continuum knowledge ingestion is broader than document upload and can eventually accept direct/bulk text, Markdown, JSON, AI handoffs, files, OCR/vision and approved connected Sources through one provenance-backed path;
+- **Overview** now explains that Continuum should use real backend timestamps and server-owned time instead of allowing AI to infer elapsed time from conversation turns.
+
+Canonical product companion:
+
+`docs/continuum-knowledge-time-CURRENT.md`
+
+Canonical backend contracts:
+
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-KNOWLEDGE-IMPORT-INGESTION-BACKEND-CONTRACT.md`;
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-KNOWLEDGE-GOVERNANCE-AND-MEMORY-CONTRACT.md`;
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-TEMPORAL-AWARENESS-BACKEND-CONTRACT.md`.
+
+The document is refrozen after this explicit owner-authorized update.
 
 ## Final product teaching that is protected
 
@@ -41,6 +69,13 @@ It also preserves:
 - explainability / Audit receipt;
 - Sources, Observations, Signals and information quality;
 - Observation / Claim / Derived conclusion / Current State distinctions;
+- general knowledge ingestion beyond file upload;
+- provenance-backed review before durable mapping;
+- private-by-default knowledge direction;
+- direct text, bulk input, Markdown, JSON and AI handoff direction;
+- file and OCR/vision ingestion direction;
+- real elapsed-time awareness from backend timestamps;
+- time-aware deadlines, freshness, waits, history and timezone context;
 - model routing;
 - typed Planner / Change Plan direction;
 - Goals / Missions;
@@ -52,7 +87,43 @@ It also preserves:
 - Dead Man Switch / Afterlife origin;
 - the closing Check In / Spaces / Automation Lab route choices.
 
-## Final visual bug fixed before freeze
+## Knowledge/time presentation layer
+
+The accepted additions are isolated from the older frozen visual system:
+
+- `assets/continuum-doc-knowledge-time.js` performs a one-time DOM augmentation after the main document content has been assembled;
+- `assets/continuum-doc-knowledge-time.css` owns the dedicated responsive/light/dark/print presentation;
+- `assets/continuum-doc-i18n.js` still prepares `dir="auto"` and now loads the dedicated knowledge/time layer;
+- no MutationObserver, polling loop, API request or provider call was added;
+- the new layer does not alter LIVE backend truth.
+
+The knowledge panel teaches:
+
+```text
+CAPTURE → UNDERSTAND → REVIEW → INTEGRATE
+```
+
+with examples including:
+
+```text
+Paste + bulk text
+Markdown + JSON
+AI handoffs
+Files + OCR / vision
+Connected Sources
+```
+
+It explicitly says new knowledge is private by default, permanent mappings are conservative and AI receives only authorized context needed for the job.
+
+The temporal panel teaches that backend timestamps distinguish actual elapsed time.
+
+Its concrete example is the owner leaving for two minutes and returning two seconds later. Continuum should understand that roughly two seconds passed.
+
+The panel also connects time to State transitions, deadlines, waits, freshness, history and local-time context.
+
+It truthfully states that Check In already proves server-owned elapsed timing while general time-aware conversations, knowledge, Goals, Signals and Runtime remain architecture being built out over time.
+
+## Final visual bug fixed before the earlier freeze
 
 The August 19 mobile screenshots exposed a dark-mode contrast defect in the compact flow pills used by Signals, Goals and authorized continuity.
 
@@ -82,14 +153,14 @@ This protects the same component wherever it appears, including:
 
 The mobile flow layout keeps full-width readable steps and supports long labels without overflow.
 
-## Internationalization / RTL compatibility after freeze
+## Internationalization / RTL compatibility
 
-The owner explicitly requested better phone translation behavior for Hebrew and other right-to-left languages. This was treated as accessibility/internationalization maintenance under the freeze. It did not reopen the English copy, product positioning, section order or visual design.
+The owner explicitly requested better phone translation behavior for Hebrew and other right-to-left languages. This remains an accessibility/internationalization layer and does not change the English source language.
 
-The final compatibility layer is separated from the frozen visual system:
+The final compatibility layer remains:
 
-- `assets/continuum-doc-i18n.css` loads last;
-- `assets/continuum-doc-i18n.js` performs a one-time direction preparation only;
+- `assets/continuum-doc-i18n.css` loads last among static stylesheet links;
+- `assets/continuum-doc-i18n.js` performs one-time direction preparation and loads the knowledge/time augmentation;
 - English remains the source language and keeps the existing LTR presentation;
 - the page does not ship a built-in translator or hard-coded Hebrew copy;
 - the user's browser/phone translation feature still performs the translation itself.
@@ -112,38 +183,41 @@ Mobile flows that become vertical continue to point downward instead of being ho
 
 Technical tokens, code, status chips and fixed identifiers use bidi isolation where appropriate so mixed Hebrew/English content stays readable.
 
-This work makes browser-translated RTL output substantially more natural. It is still translation compatibility, not a separately authored Hebrew localization, so translation wording remains controlled by the browser/translation provider.
+This work makes browser-translated RTL output substantially more natural. It remains translation compatibility, not a separately authored Hebrew localization, so translation wording stays controlled by the browser/translation provider.
 
 ## Regression guard
 
-`tests/continuum-doc-clarity-smoke.test.js` now checks:
+`tests/continuum-doc-clarity-smoke.test.js` continues to check the frozen architecture, dark-mode and RTL contract.
 
-- final theme aliases exist;
-- the dark `.continuum-forward-flow span` guard exists;
-- dark flow arrows are explicitly styled;
-- strong dark border treatment exists;
-- long labels can wrap safely;
-- the RTL stylesheet loads after the frozen visual layers;
-- the i18n script applies local `dir="auto"` preparation;
-- Hebrew/Arabic RTL fallbacks exist;
-- desktop horizontal arrows reverse in RTL;
-- mobile contents opens from the RTL edge;
-- colored workflow borders move to the RTL reading edge;
-- mobile vertical flows continue downward;
-- bidi isolation exists for fixed-direction technical tokens;
-- existing desktop/mobile/dark/print coverage remains present.
+`tests/continuum-doc-knowledge-time-smoke.test.js` now additionally checks:
 
-The existing browser workflow continues to validate the rendered teaching order and the major desktop/390×844 mobile content markers.
+- the knowledge/time layer is loaded by the final one-time script;
+- direct/bulk text, Markdown/JSON, AI handoff and OCR/vision teaching exists;
+- the `CAPTURE → UNDERSTAND → REVIEW → INTEGRATE` direction remains present;
+- private-by-default wording remains present;
+- temporal-awareness teaching remains present;
+- the two-second elapsed-time example remains present;
+- due/overdue/stale time transitions remain present;
+- dark/mobile styles exist for the new panels;
+- the CURRENT knowledge/time companion records the AI privacy tiers and real clock direction.
 
-A workflow file existing is not proof that CI passed. Do not report a green run unless an actual run/status is observed.
+A workflow file or test file existing is not proof that CI passed. Do not report a green run unless an actual run/status is observed.
 
 ## Cache note
 
-The static HTML now references the accepted final origin assets with the `20260819-3` query token and the dedicated RTL compatibility assets with `20260819-1`.
+The static HTML still references the accepted final origin assets with the `20260819-3` query token and the RTL compatibility assets with `20260819-1`.
 
-The cache bump was made under the freeze's delivery exception so browsers receive the already-accepted final dark-mode/copy layer together with the RTL accessibility layer. It does not reopen product design.
+The knowledge/time augmentation is loaded from:
 
-Future cache-token changes remain allowed when needed to deliver an accepted bug/accessibility fix. Do not use cache delivery as a reason to reopen the document wording or layout.
+`/assets/continuum-doc-knowledge-time.js?v=20260819-1`
+
+which in turn loads:
+
+`/assets/continuum-doc-knowledge-time.css?v=20260819-1`
+
+The static i18n loader path itself was updated in place. GitHub Pages/browser caching may briefly retain an older copy until normal cache revalidation. A future explicit cache-token bump remains allowed as a delivery-only correction if a device proves stale delivery.
+
+Do not use cache delivery as a reason to reopen product wording or layout.
 
 ## Backend boundary unchanged
 
@@ -153,6 +227,9 @@ It does not authorize or perform:
 
 - Phase 2A production migration;
 - backend deployment;
+- production general ingestion;
+- production OCR/vision extraction;
+- general temporal Runtime deployment;
 - provider execution;
 - Runtime deployment;
 - Signals monitoring;
@@ -162,6 +239,14 @@ It does not authorize or perform:
 - architecture self-deployment.
 
 Production migration/deployment still requires explicit authorization.
+
+Immediate backend sequence remains:
+
+```text
+prepared Phase 2A migration/deployment
+→ protected continuity.md acceptance proof
+→ following knowledge/storage implementation slices
+```
 
 ## Reopen rule
 
