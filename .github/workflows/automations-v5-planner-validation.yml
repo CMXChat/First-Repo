@@ -96,6 +96,8 @@ jobs:
               'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
               'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset',
               'continuum-preflight-operation-link', 'data.preflightOpState', 'AFFECTS CHANGE',
+              '"signals.service_required": ["signals.create_watch"]',
+              '"connections.required": ["signals.attach_source", "automation.add_action"]',
               'labPlannerPreflight = "v1"'
           ]:
               if term not in preflight:
@@ -126,9 +128,9 @@ jobs:
               'lab-automations-planner-v5.js?v=20260819-v5edit1',
               'lab-automations-planner-reset-v5.js?v=20260819-v5edit2',
               'lab-automations-planner-edit-v5.css?v=20260819-v5edit2',
-              'lab-continuum-planner-preflight-v1.css?v=20260819-v1r2',
+              'lab-continuum-planner-preflight-v1.css?v=20260819-v1r3',
               'lab-continuum-planner-review-v1.css?v=20260819-v1preflight1',
-              'lab-continuum-planner-preflight-v1.js?v=20260819-v1r2',
+              'lab-continuum-planner-preflight-v1.js?v=20260819-v1r3',
               'lab-continuum-planner-review-v1.js?v=20260819-v1preflight1',
               'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2'
           ]
@@ -149,7 +151,7 @@ jobs:
           if html.index('lab-continuum-planner-review-v1.css') > html.index('lab-automations-v5-mobile-qa.css'):
               raise SystemExit('final mobile QA must remain after shared Planner CSS')
 
-          print('Automations v5 editable/resettable Planner, Signals-ready vocabulary, dependencies, typed preflight/change links and Change Review contracts passed.')
+          print('Automations v5 editable/resettable Planner, Signals-ready vocabulary/preflight mapping, dependencies and Change Review contracts passed.')
           PY
 
       - name: Focused route asset smoke
