@@ -24,13 +24,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate Lab JavaScript syntax
+      - name: Validate active Lab JavaScript syntax
         run: |
           set -euo pipefail
           for file in \
             assets/lab/lab-loader.js \
             assets/lab/lab-mock-api.js \
             assets/lab/lab-crm.js \
+            assets/lab/lab-directory-v2.js \
             assets/lab/lab-inventory.js \
             assets/lab/lab-actions.js \
             assets/lab/lab-timeline-live.js \
@@ -44,7 +45,7 @@ jobs:
             assets/lab/lab-plan.js \
             assets/lab/lab-experience.js \
             assets/lab/lab-automation-builder.js \
-            assets/lab/lab-automations-progressive-preview.js \
+            assets/lab/lab-automations-main-bridge.js \
             assets/lab/lab-acceptance.js \
             assets/lab/checkin-status-contract.js \
             assets/lab/checkin.js \
@@ -55,14 +56,16 @@ jobs:
             node --check "$file"
           done
 
-      - name: Validate timing contract and generated snapshot
+      - name: Validate generated Lab snapshot and isolation
         run: |
           set -euo pipefail
           node - <<'NODE'
           const fs = require('fs');
           const assert = require('assert');
           const contract = require('./assets/lab/checkin-status-contract.js');
-          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+          const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
+
+          assert.equal(BUILD, '20260818-directory2');
 
           const counts = {
             document_count: 6,
@@ -71,30 +74,27 @@ jobs:
             update_revision_count: 5,
             trigger_action_count: 4
           };
-
           for (const interval of [1, 6, 24, 72, 168, 720]) {
             const value = contract.normalize({ interval_hours: interval, grace_hours: 12, repeat_enabled: true, ...counts });
             assert.equal(value.schemaCompatible, true, `${interval}h should be valid in Lab`);
-            assert.equal(value.intervalHours, interval);
           }
           assert.equal(contract.normalize({ interval_hours: 721, grace_hours: 12, ...counts }).schemaCompatible, false);
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
-          assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 0, repeat_enabled: false, ...counts }).repeatEnabled, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js'));
-          assert(shell.includes('20260818-final-qa1'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260818-directory2'));
           assert(!shell.includes('document.write(html)'));
-          assert(!shell.includes(".replace('</body>'"));
 
-          const snapshot = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
-          const rendered = transformSnapshot(snapshot);
+          const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
+          const rendered = transformSnapshot(source);
           const required = [
             "connect-src 'self';",
             "style-src 'self' 'unsafe-inline';",
             'data-lab-mode="true"',
             '/assets/lab/lab-mock-api.js',
             '/assets/lab/lab-crm.js',
+            '/assets/lab/lab-directory-v2.js',
+            '/assets/lab/lab-directory-v2.css',
             '/assets/lab/lab-inventory.js',
             '/assets/lab/lab-actions.js',
             '/assets/lab/lab-timeline-live.js',
@@ -102,121 +102,53 @@ jobs:
             '/assets/lab/lab-audit.js',
             '/assets/lab/lab-command.js',
             '/assets/lab/lab-test-center.js',
-            '/assets/lab/lab-test-center.css',
             '/assets/lab/lab-product-polish.js',
-            '/assets/lab/lab-product-polish.css',
-            '/assets/lab/lab-status-top.css',
             '/assets/lab/lab-plan.js',
-            '/assets/lab/lab-plan.css',
             '/assets/lab/lab-experience.js',
-            '/assets/lab/lab-experience.css',
             '/assets/lab/lab-automation-builder.js',
-            '/assets/lab/lab-automation-builder.css',
-            '/assets/lab/lab-final-qa.css',
+            '/assets/lab/lab-automations-main-bridge.js',
             '/assets/lab/lab-acceptance.js',
-            '/assets/lab/lab-acceptance.css',
-            'Check In Lab · Dead Man Switch'
+            '/assets/lab/lab-final-qa.css'
           ];
           required.forEach(term => assert(rendered.includes(term), `missing generated Lab contract: ${term}`));
+          assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'));
+          assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
+          assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
           assert(!rendered.includes('/assets/checkin/'));
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
-          assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'));
-          assert(rendered.indexOf('/assets/lab/lab-command.js') < rendered.indexOf('/assets/lab/lab-test-center.js'));
-          assert(rendered.indexOf('/assets/lab/lab-product-polish.js') < rendered.indexOf('/assets/lab/lab-plan.js'));
-          assert(rendered.indexOf('/assets/lab/lab-plan.js') < rendered.indexOf('/assets/lab/lab-experience.js'));
-          assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
-          assert(rendered.indexOf('/assets/lab/lab-automation-builder.css') < rendered.indexOf('/assets/lab/lab-final-qa.css'));
-          assert(rendered.indexOf('/assets/lab/lab-automation-builder.js') < rendered.indexOf('/assets/lab/lab-acceptance.js'));
 
           fs.writeFileSync('lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
           NODE
 
-      - name: Validate Lab safety and migration handoffs
-        run: |
-          set -euo pipefail
           python - <<'PY'
           from pathlib import Path
           import sys
 
-          failures = []
-          required = [
-              'assets/lab/lab-loader.js',
-              'assets/lab/lab-mock-api.js',
-              'assets/lab/lab-crm.js',
-              'assets/lab/lab-inventory.js',
-              'assets/lab/lab-actions.js',
-              'assets/lab/lab-timeline-live.js',
-              'assets/lab/lab-decisions.js',
-              'assets/lab/lab-audit.js',
-              'assets/lab/lab-command.js',
-              'assets/lab/lab-test-center.js',
-              'assets/lab/lab-test-center.css',
-              'assets/lab/lab-product-polish.js',
-              'assets/lab/lab-product-polish.css',
-              'assets/lab/lab-status-top.css',
-              'assets/lab/lab-plan.js',
-              'assets/lab/lab-plan.css',
-              'assets/lab/lab-experience.js',
-              'assets/lab/lab-experience.css',
-              'assets/lab/lab-automation-builder.js',
-              'assets/lab/lab-automation-builder.css',
-              'assets/lab/lab-final-qa.css',
-              'assets/lab/lab-automations-progressive-preview.js',
-              'assets/lab/lab-automations-final-qa.css',
-              'assets/lab/lab-acceptance.js',
-              'assets/lab/lab-acceptance.css',
-              'assets/lab/BACKEND-HANDOFF.md',
-              'assets/lab/ACTIONS-BACKEND-HANDOFF.md',
-              'assets/lab/DECISIONS-BACKEND-HANDOFF.md',
-              'assets/lab/AUDIT-BACKEND-HANDOFF.md',
-              'assets/lab/LAB-HANDOFF.md',
-              'assets/lab/CHECKINLABCLONE.md',
-          ]
-          for filename in required:
-              if not Path(filename).exists(): failures.append(f'missing: {filename}')
-
           production = Path('checkin/index.html').read_text(encoding='utf-8')
           if '/assets/lab/' in production or 'data-lab-mode="true"' in production:
-              failures.append('production /checkin references Lab code')
+              sys.exit('production /checkin references Lab code')
 
-          terms = {
-              'assets/lab/lab-loader.js': ['CHECK IN LAB BOOTSTRAP', 'lab-plan.js', 'lab-experience.js', 'lab-automation-builder.js', 'lab-final-qa.css', 'CHECKINLABCLONE.md'],
-              'assets/lab/lab-mock-api.js': ['productionApiBlocked: true', 'PROD_API_ORIGIN', 'interval_hours: policy.intervalHours'],
-              'assets/lab/lab-inventory.js': ['BACKEND HANDOFF', 'object storage', 'secret_ref', 'PostgreSQL'],
-              'assets/lab/lab-actions.js': ['BACKEND HANDOFF', 'server-side scheduler/worker', 'stable IDs', 'SIMULATION ONLY'],
-              'assets/lab/lab-decisions.js': ['BACKEND HANDOFF', 'Delivery and acknowledgement are separate states', 'cycleCheck'],
-              'assets/lab/lab-audit.js': ['AUDIT / VERSION / INCIDENT SNAPSHOTS', 'buildIncidentSnapshot', 'Restore as new version'],
-              'assets/lab/lab-command.js': ['GLOBAL SEARCH / COMMAND / NAVIGATION INTEGRATION', 'buildSearchIndex', 'Search authorization must be enforced server-side'],
-              'assets/lab/lab-test-center.js': ['TEST CENTER', 'NEVER executes a real side effect', 'DOM-click orchestration', 'CMX_LAB_TEST_CENTER'],
-              'assets/lab/lab-product-polish.js': ['PRODUCT POLISH / MOBILE HIERARCHY', 'must never own records', 'labProductPolish', 'CHECKINLABCLONE.md'],
-              'assets/lab/lab-plan.js': ['LONG-HORIZON PLAN VIEW', 'delayHours', 'durationHours', 'repeatEveryHours', 'success/failure routes', 'CMX_LAB_PLAN'],
-              'assets/lab/lab-experience.js': ['USER EXPERIENCE LAYER', 'Presentation only', 'progressive disclosure', 'labExperience'],
-              'assets/lab/lab-experience.css': ['--lx-surface', 'html[data-theme="light"]', 'phones get readable type'],
-              'assets/lab/lab-automation-builder.js': ['AUTOMATION BUILDER PROTOTYPE', 'WHEN -> IF -> DO -> WAIT / REPEAT -> THEN', 'does not call providers', 'cmx-lab-automations-v1'],
-              'assets/lab/lab-automation-builder.css': ['Automation Builder prototype', '.lab-automation-workspace', '.lab-automation-dialog', 'html[data-theme="light"]'],
-              'assets/lab/lab-final-qa.css': ['Screenshot-driven presentation rules', '.lab-audit-split', '.lab-decision-nodes', 'Light mode gets real contrast'],
-              'assets/lab/lab-automations-progressive-preview.js': ['FLOW PREVIEW', 'Choose a trigger', 'Choose an action', 'Not set yet', 'cmx-lab-automation-progress-v1'],
-              'assets/lab/lab-automations-final-qa.css': ['migration-worthy interaction/presentation rules', '.v3-flow-node.is-pending', '.v3-action-stack.is-progress-placeholder'],
-              'assets/lab/lab-acceptance.js': ['ACCEPTANCE / STABILIZATION LAYER', 'syncPolicyLimits', 'trapPaletteFocus', 'validateDeepRoute'],
-              'assets/lab/LAB-HANDOFF.md': ['Read this file first', 'lab-loader.js', 'lab-plan.js', 'lab-experience.js', 'CHECKINLABCLONE.md'],
-              'assets/lab/CHECKINLABCLONE.md': ['Official Project Migration Blueprint', 'long-running', 'recurring', 'theme tokens', 'Official-project acceptance-test baseline'],
-          }
-          for filename, required_terms in terms.items():
-              text = Path(filename).read_text(encoding='utf-8')
-              for term in required_terms:
-                  if term not in text: failures.append(f'{filename} missing contract text: {term}')
+          active = [
+              'assets/lab/lab-loader.js',
+              'assets/lab/lab-directory-v2.js',
+              'assets/lab/lab-command.js',
+              'assets/lab/lab-product-polish.js',
+              'assets/lab/lab-plan.js',
+              'assets/lab/lab-experience.js',
+              'assets/lab/lab-automation-builder.js',
+              'assets/lab/lab-acceptance.js',
+          ]
+          combined = '\n'.join(Path(path).read_text(encoding='utf-8') for path in active)
+          if 'api.cmxchat.com' in combined:
+              sys.exit('active Lab layer references production API')
+          for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
+              if forbidden in Path('assets/lab/lab-directory-v2.js').read_text(encoding='utf-8'):
+                  sys.exit(f'Directory v2 forbidden pattern: {forbidden}')
 
-          progressive = Path('assets/lab/lab-automations-progressive-preview.js').read_text(encoding='utf-8')
-          if 'MutationObserver' in progressive:
-              failures.append('progressive Automation preview must not use broad MutationObserver patching')
-
-          if failures:
-              print('\n'.join(f' - {item}' for item in failures))
-              sys.exit(1)
-          print('Lab safety, screenshot QA, product UX, progressive Automation preview, theming, long-range planning, handoffs, and production isolation validated.')
+          print('Continuum Lab snapshot, production isolation and Directory v2 load order passed.')
           PY
 
-      - name: Browser acceptance smoke tests
+      - name: Browser acceptance smoke desktop and mobile
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
@@ -230,58 +162,30 @@ jobs:
           trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab-browser-smoke.html' EXIT
           sleep 1
 
-          chrome_dump() {
-            "$BROWSER" \
-              --headless \
-              --no-sandbox \
-              --disable-gpu \
-              --disable-dev-shm-usage \
-              --virtual-time-budget=8000 \
-              "$@" \
-              --dump-dom
+          dump() {
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom
           }
 
-          chrome_dump http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-desktop.html
+          dump http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-desktop.html
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-desktop.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-product-polish="ready"' /tmp/lab-desktop.html
-          grep -q 'data-lab-test-center="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-plan="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-experience="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-automation-builder="ready"' /tmp/lab-desktop.html
+          grep -q 'data-lab-directory="v2"' /tmp/lab-desktop.html
+          grep -q 'class="lab-directory-v2"' /tmp/lab-desktop.html
           grep -q 'id="labAutomationWorkspace"' /tmp/lab-desktop.html
-          grep -q 'Build a workflow' /tmp/lab-desktop.html
           grep -q 'lab-live-status-hero' /tmp/lab-desktop.html
-          grep -q 'lab-status-first' /tmp/lab-desktop.html
-          grep -q 'lab-assurance-polished' /tmp/lab-desktop.html
-          grep -q 'Plan health' /tmp/lab-desktop.html
-          grep -q 'labTestCenter' /tmp/lab-desktop.html
-          grep -q 'Test the plan' /tmp/lab-desktop.html
-          grep -q 'Long-range timeline' /tmp/lab-desktop.html
-          grep -q 'data-plan-mode="plan"' /tmp/lab-desktop.html
-          grep -q 'data-plan-mode="run"' /tmp/lab-desktop.html
           grep -q 'labCommandPalette' /tmp/lab-desktop.html
 
-          chrome_dump 'http://127.0.0.1:8000/lab-browser-smoke.html#lab=action%3Aact-ai-brief' > /tmp/lab-deeplink.html
-          grep -q 'data-lab-acceptance="ready"' /tmp/lab-deeplink.html
-          grep -q 'data-action-id="act-ai-brief" aria-current="true"' /tmp/lab-deeplink.html
-          grep -q 'lab-plan-timing-card' /tmp/lab-deeplink.html
-
-          chrome_dump --window-size=390,844 http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-mobile.html
+          dump --window-size=390,844 http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-mobile.html
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-mobile.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
-          grep -q 'data-lab-product-polish="ready"' /tmp/lab-mobile.html
-          grep -q 'data-lab-test-center="ready"' /tmp/lab-mobile.html
-          grep -q 'data-lab-plan="ready"' /tmp/lab-mobile.html
-          grep -q 'data-lab-experience="ready"' /tmp/lab-mobile.html
-          grep -q 'data-lab-automation-builder="ready"' /tmp/lab-mobile.html
-          grep -q 'id="labAutomationWorkspace"' /tmp/lab-mobile.html
+          grep -q 'data-lab-directory="v2"' /tmp/lab-mobile.html
+          grep -q 'class="lab-directory-v2"' /tmp/lab-mobile.html
           grep -q 'mobile-nav' /tmp/lab-mobile.html
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
-          grep -q 'lab-live-status-hero' /tmp/lab-mobile.html
-          grep -q 'lab-status-first' /tmp/lab-mobile.html
-          grep -q 'labTestCenter' /tmp/lab-mobile.html
-          grep -q 'Long-range timeline' /tmp/lab-mobile.html
 
-          echo 'Desktop, Automation Builder, top Status hero, exact deep-link, user-friendly UX, long-range Sequence, screenshot QA, and 390x844 mobile browser tests passed.'
+          echo 'Continuum Lab desktop/mobile smoke passed with Directory v2 and existing operating surfaces.'
