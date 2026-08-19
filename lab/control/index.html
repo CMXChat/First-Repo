@@ -12,6 +12,7 @@
   <title>Continuum · Control Center</title>
   <script src="/assets/lab/control-center-theme-init.js?v=20260819-1"></script>
   <link rel="stylesheet" href="/assets/lab/control-center-v1.css?v=20260819-1" />
+  <link rel="stylesheet" href="/assets/lab/control-center-mobile-polish-v2.css?v=20260819-2" />
 </head>
 <body>
   <div class="cc-shell">
@@ -66,10 +67,10 @@
             <div class="cc-orbit" aria-hidden="true"></div>
             <div class="cc-now-copy">
               <span class="cc-now-label">Now · Sample state</span>
-              <h2 id="nowHeading">Quiet, with 2 things to review.</h2>
+              <h2 id="nowHeading">Stable. 2 things need review.</h2>
               <p>Nothing in this Lab is executing. The Control Center is showing how Continuum can surface attention, waiting work and continuity health from one operational view.</p>
               <div class="cc-now-meta">
-                <span class="cc-chip" data-tone="attention"><i></i> 2 attention</span>
+                <span class="cc-chip" data-tone="attention"><i></i> 2 need you</span>
                 <span class="cc-chip" data-tone="blue"><i></i> 3 waiting</span>
                 <span class="cc-chip"><i></i> continuity healthy</span>
               </div>
@@ -117,7 +118,7 @@
               </section>
 
               <section class="cc-panel" aria-labelledby="workHeading">
-                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Active state</span><h3 id="workHeading">Running &amp; waiting</h3></div><button class="cc-panel-link" type="button">Manage</button></header>
+                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Active state</span><h3 id="workHeading">Running &amp; waiting</h3></div><a class="cc-panel-link" href="/lab/automations/">Manage</a></header>
                 <div class="cc-work-list">
                   <div class="cc-work-row">
                     <div class="cc-work-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5v14"/></svg></div>
@@ -135,7 +136,7 @@
               </section>
 
               <section class="cc-panel" aria-labelledby="activityHeading">
-                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Recent</span><h3 id="activityHeading">Activity</h3></div><button class="cc-panel-link" type="button">All activity</button></header>
+                <header class="cc-panel-head"><div class="cc-panel-head-copy"><span class="cc-panel-kicker">Recent</span><h3 id="activityHeading">Activity</h3></div><button class="cc-panel-link" type="button" data-cc-tab-link="activity">All activity</button></header>
                 <div class="cc-activity">
                   <button class="cc-event" type="button" data-why="event-checkin"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 12 3 3 7-7"/></svg></span><span class="cc-event-copy"><strong>Check In state refreshed</strong><span>Sample projection from the live protected Check In domain.</span></span><span class="cc-event-time">4:48 PM</span></button>
                   <button class="cc-event" type="button" data-why="event-draft"><span class="cc-event-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19h14M7 15l8-8 2 2-8 8H7v-2Z"/></svg></span><span class="cc-event-copy"><strong>Automation draft changed</strong><span>Definition updated in Lab. No provider execution occurred.</span></span><span class="cc-event-time">3:31 PM</span></button>
@@ -258,6 +259,6 @@
     </div>
   </aside>
 
-  <script src="/assets/lab/control-center-v1.js?v=20260819-1"></script>
+  <script src="/assets/lab/control-center-v1.js?v=20260819-2"></script>
 </body>
 </html>
