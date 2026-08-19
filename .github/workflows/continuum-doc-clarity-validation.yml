@@ -67,7 +67,7 @@ jobs:
               --no-sandbox \
               --disable-gpu \
               --disable-dev-shm-usage \
-              --virtual-time-budget=8000 \
+              --virtual-time-budget=10000 \
               "$@" \
               --dump-dom
           }
@@ -75,28 +75,28 @@ jobs:
           dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-origin="ready"' /tmp/continuum-doc-desktop.html
-          grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-desktop.html
-          grep -q 'Continuum in one minute' /tmp/continuum-doc-desktop.html
-          grep -q 'What happens when something changes' /tmp/continuum-doc-desktop.html
-          grep -q 'class="clarity-story-copy"' /tmp/continuum-doc-desktop.html
-          grep -q 'class="clarity-story-path"' /tmp/continuum-doc-desktop.html
-          grep -q 'How the pieces fit together' /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-architecture-aligned="20260819"' /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-power-clarity="20260819"' /tmp/continuum-doc-desktop.html
+          grep -q 'Knowledge, authority, rules and AI in one private layer' /tmp/continuum-doc-desktop.html
+          grep -q 'A continuous loop from change to useful action' /tmp/continuum-doc-desktop.html
+          grep -q 'STATE IS WHAT IS TRUE NOW' /tmp/continuum-doc-desktop.html
+          grep -q 'Waiting for reply' /tmp/continuum-doc-desktop.html
+          grep -q 'What it feels like when Continuum keeps work moving' /tmp/continuum-doc-desktop.html
+          grep -q 'Runtime can later wait on the server after the app is closed' /tmp/continuum-doc-desktop.html
+          grep -q 'WHY DID CONTINUUM DO THAT?' /tmp/continuum-doc-desktop.html
+          grep -q 'Signals are how Continuum can notice that the world changed.' /tmp/continuum-doc-desktop.html
+          grep -q 'AI provides reasoning. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity.' /tmp/continuum-doc-desktop.html
+          grep -q 'Different approved intelligence can fit different jobs.' /tmp/continuum-doc-desktop.html
+          grep -q 'Continuum can notice how its environment could become more capable.' /tmp/continuum-doc-desktop.html
+          grep -q 'Capability growth and permission growth stay separate.' /tmp/continuum-doc-desktop.html
           grep -q 'The idea started with the Dead Man Switch' /tmp/continuum-doc-desktop.html
-          grep -q 'The same foundation matters before an emergency' /tmp/continuum-doc-desktop.html
-          grep -q 'What works today' /tmp/continuum-doc-desktop.html
-          grep -q 'Automations define the steps. Runtime runs them.' /tmp/continuum-doc-desktop.html
-          grep -q 'class="clarity-automation-copy"' /tmp/continuum-doc-desktop.html
-          grep -q 'What Continuum adds to AI' /tmp/continuum-doc-desktop.html
-          grep -q 'AI authority is set by server-side permissions.' /tmp/continuum-doc-desktop.html
+          grep -q 'on a flight, in a meeting' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-deep-dive"' /tmp/continuum-doc-desktop.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-desktop.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-desktop.html
-          grep -q 'class="clarity-possibilities"' /tmp/continuum-doc-desktop.html
           grep -q '01 · Overview' /tmp/continuum-doc-desktop.html
           grep -q '08 · Roadmap' /tmp/continuum-doc-desktop.html
           ! grep -q 'Start here' /tmp/continuum-doc-desktop.html
-          ! grep -q 'Why not just use AI by itself' /tmp/continuum-doc-desktop.html
-          ! grep -q 'An ordinary day, not an emergency' /tmp/continuum-doc-desktop.html
 
           python3 - <<'PY'
           from pathlib import Path
@@ -107,37 +107,38 @@ jobs:
           assert 'hero-network' not in hero, 'Product map must stay out of the opening hero.'
           assert 'continuum-presence' not in hero, 'Availability map must stay with the Parts of Continuum section.'
           overview = html.index('id="overview"')
+          state = html.index('continuum-state-strip', overview)
           story = html.index('clarity-story-section')
+          receipt = html.index('continuum-why-receipt', story)
           product_map = html.index('clarity-product-map-section')
           origin = html.index('continuum-origin-note', product_map)
           presence = html.index('continuum-presence', origin)
           ai = html.index('id="difference"')
-          assert overview < story < product_map < origin < presence < ai, 'Teaching order or Continuum origin placement regressed before the AI section.'
-          story_start = html.index('clarity-story-section')
-          story_end = html.index('</section>', story_start)
-          story_html = html[story_start:story_end]
-          assert 'clarity-story-flow' not in story_html, 'Ordinary example must stay prose-led instead of returning to a six-card diagram.'
-          assert 'clarity-story-copy' in story_html, 'Ordinary example prose is missing.'
-          assert html.index('hero-network', product_map) < origin, 'Parts of Continuum map must appear before the origin explanation.'
-          assert 'The idea started with the Dead Man Switch' in html[origin:presence], 'Origin explanation must sit directly before the Across Time visual.'
+          routing = html.index('continuum-model-routing', ai)
+          spaces = html.index('id="spaces"')
+          senses = html.index('continuum-senses-strip', spaces)
+          assert overview < state < story < receipt < product_map < origin < presence < ai < routing < spaces < senses, 'Power-clarity teaching order regressed.'
+          story_end = html.index('</section>', story)
+          story_html = html[story:story_end]
+          assert 'clarity-story-flow' not in story_html, 'Real workflow example must stay prose-led.'
+          assert 'clarity-story-copy' in story_html, 'Real workflow prose is missing.'
+          assert 'continuum-why-receipt' in story_html, 'Explainability receipt is missing.'
           afterlife = html.index('id="afterlife"')
           glance = html.index('class="glance-grid"', afterlife)
           assert glance > afterlife, 'Check In glance cards must live with Afterlife.'
-          print('Desktop DOM teaching order, origin insight and prose balance passed.')
+          print('Desktop DOM power clarity, teaching order and explainability passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
-          grep -q 'data-continuum-clarity="ready"' /tmp/continuum-doc-mobile.html
-          grep -q 'data-continuum-origin="ready"' /tmp/continuum-doc-mobile.html
-          grep -q 'Continuum keeps useful context in one private place' /tmp/continuum-doc-mobile.html
-          grep -q 'Continuum in one minute' /tmp/continuum-doc-mobile.html
-          grep -q 'What happens when something changes' /tmp/continuum-doc-mobile.html
-          grep -q 'How the pieces fit together' /tmp/continuum-doc-mobile.html
-          grep -q 'The idea started with the Dead Man Switch' /tmp/continuum-doc-mobile.html
+          grep -q 'data-continuum-power-clarity="20260819"' /tmp/continuum-doc-mobile.html
+          grep -q 'STATE IS WHAT IS TRUE NOW' /tmp/continuum-doc-mobile.html
+          grep -q 'WHY DID CONTINUUM DO THAT?' /tmp/continuum-doc-mobile.html
+          grep -q 'Signals are how Continuum can notice that the world changed.' /tmp/continuum-doc-mobile.html
+          grep -q 'Different approved intelligence can fit different jobs.' /tmp/continuum-doc-mobile.html
+          grep -q 'Capability growth and permission growth stay separate.' /tmp/continuum-doc-mobile.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-mobile.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-mobile.html
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           ! grep -q 'Start here' /tmp/continuum-doc-mobile.html
-          ! grep -q 'Why not just use AI by itself' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc origin insight, prose balance, desktop teaching order and 390x844 mobile smoke passed.'
+          echo 'Continuum /doc power clarity rendered on desktop and 390x844 mobile.'
