@@ -66,7 +66,7 @@ jobs:
           const contract = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260818-directory2ai');
+          assert.equal(BUILD, '20260819-directory-planner-v2');
 
           const counts = {
             document_count: 6,
@@ -83,7 +83,7 @@ jobs:
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260818-directory2ai'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-directory-planner-v2'));
           assert(!shell.includes('document.write(html)'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
@@ -155,15 +155,24 @@ jobs:
                   if forbidden in source:
                       sys.exit(f'{path} forbidden pattern: {forbidden}')
 
+          planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
+          for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket']:
+              if forbidden in planner:
+                  sys.exit(f'Directory Planner must remain local/no-network: {forbidden}')
+
           polish = Path('assets/lab/lab-directory-v2-polish.css').read_text(encoding='utf-8')
           for term in ['position:sticky', '@media (max-width:760px)', 'prefers-reduced-motion']:
               if term not in polish: sys.exit(f'Directory polish missing contract: {term}')
 
-          planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
-          for term in ['AI SETUP · PREVIEW', 'CHANGE PLAN CONTRACT', 'No model call', 'no data mutation', 'no hidden AI authority', 'labDirectoryPlanner = "preview-v1"']:
-              if term not in planner: sys.exit(f'Directory Planner preview missing contract: {term}')
+          for term in [
+              'CONTINUUM PLANNER · PREVIEW', 'TYPED CHANGE PLAN · PREVIEW',
+              'directory.upsert_group', 'automation.create_draft', 'library.create_folder',
+              'NO AI CALL', 'NO DATA MUTATION', 'NO HIDDEN AUTHORITY',
+              'labDirectoryPlanner = "typed-v2"'
+          ]:
+              if term not in planner: sys.exit(f'Directory Planner typed-v2 missing contract: {term}')
 
-          print('Continuum Lab snapshot, production isolation, Directory v2 polish and AI setup preview passed.')
+          print('Continuum Lab snapshot, production isolation, Directory v2 polish and typed Planner v2 passed.')
           PY
 
       - name: Browser acceptance smoke desktop and mobile
@@ -192,7 +201,7 @@ jobs:
           grep -q 'data-lab-experience="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-automation-builder="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-desktop.html
-          grep -q 'data-lab-directory-planner="preview-v1"' /tmp/lab-desktop.html
+          grep -q 'data-lab-directory-planner="typed-v2"' /tmp/lab-desktop.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-desktop.html
           grep -q 'AI setup' /tmp/lab-desktop.html
           grep -q 'id="labAutomationWorkspace"' /tmp/lab-desktop.html
@@ -203,11 +212,11 @@ jobs:
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-mobile.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-mobile.html
-          grep -q 'data-lab-directory-planner="preview-v1"' /tmp/lab-mobile.html
+          grep -q 'data-lab-directory-planner="typed-v2"' /tmp/lab-mobile.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-mobile.html
           grep -q 'AI setup' /tmp/lab-mobile.html
           grep -q 'mobile-nav' /tmp/lab-mobile.html
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
 
-          echo 'Continuum Lab desktop/mobile smoke passed with Directory AI setup preview and existing operating surfaces.'
+          echo 'Continuum Lab desktop/mobile smoke passed with Directory typed Planner v2 and existing operating surfaces.'
