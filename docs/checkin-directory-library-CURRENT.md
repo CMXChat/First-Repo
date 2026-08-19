@@ -1,375 +1,350 @@
-# Check In Directory, Audiences & Library — Current Frontend Handoff
+# Check In / Continuum Directory, Audiences & Library — CURRENT
 
-Date: 2026-08-17
-Status: Active focused Lab prototype
+Date: 2026-08-18
+Status: Current cross-domain frontend handoff; Directory v2 active in Lab, advanced Library contracts remain separate, production backend expansion pending
 
-## Focused route
+## Read this with
 
-`https://db.cmxchat.com/lab/automations/`
+- `continuum-directory-master-plan-CURRENT.md` — canonical Directory product/UX direction;
+- `continuum-automations-master-plan-CURRENT.md` — current focused Automation direction;
+- `checkin-library-premium-CURRENT.md` — current advanced Library projection/product direction;
+- `checkin-content-editor-CURRENT.md` — native content/editor direction;
+- `checkin-files-CURRENT.md` — binary File direction;
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-DIRECTORY-PLATFORM-PLAN.md` — backend Directory plan;
+- `CMXChat/jay-app/specs/003-server-checkin/DIRECTORY-AUDIENCE-LIBRARY-BACKEND-HANDOFF.md` — durable relationship/audience semantics.
 
-This work remains Lab-only and does not call the production API.
+When an older Directory/Audience prototype file conflicts with this handoff, this file plus the Continuum Directory master plan win.
 
-## Locked product concepts
+# Product model
 
-The frontend now treats these as distinct concepts:
+Keep these concepts distinct:
 
 ```text
-Person ↔ Organization
-Person + Labels
-Groups = saved audiences
+Person
+↔ Organization memberships
++ Contact methods
++ Labels
++ explicit relationships
++ Groups / saved audiences
 
 Library
-├── Folders
-├── Native content
-│   ├── Rich Document
-│   ├── Markdown
-│   ├── Plain text
-│   └── Templates
-└── Files = uploaded binary assets
+├── native ContentAssets
+└── binary FileAssets
 
-Automation Action = Audience + Content + optional Documents/Files
+Automation
+→ typed audience selectors
+→ content/version references
+→ future Runtime resolution + frozen execution snapshot
 ```
 
-## Person and Organization relationships
+Directory answers **who**. Library answers **what information**. Automations define **what should happen**.
 
-A Person may belong to more than one Organization.
+# Current Directory v2 Lab surface
 
-The Lab compatibility adapter keeps the older `orgId` field for old screens, while the new audience layer uses `organizationIds` as the many-membership prototype shape.
+The main `/lab/` Records area now renders **Directory v2**.
 
-The long-term backend contract is many-to-many and is documented in:
+Active files:
 
-`CMXChat/jay-app/specs/003-server-checkin/DIRECTORY-AUDIENCE-LIBRARY-BACKEND-HANDOFF.md`
+```text
+assets/lab/lab-crm.js
+assets/lab/lab-crm.css
+assets/lab/lab-directory-v2.js
+assets/lab/lab-directory-v2.css
+```
 
-## Labels
+`lab-crm.js` remains compatibility scaffolding and seeds the shared local store. Directory v2 then enriches that store and owns the visible Directory product surface.
 
-Suggested labels are available as starting points:
+The older `.lab-crm` remains in the DOM for compatibility but is hidden when Directory v2 loads successfully.
 
-- Family
-- Friend
-- Work
-- Colleague
-- Client
-- Legal
-- Emergency
-- Trusted
-- Vendor
-- Technical
-- Financial
-- Personal
+Shared prototype store:
 
-Users may create custom labels.
+```text
+cmx-lab-crm-v1
+```
 
-Suggested labels are not a closed list.
+Directory-only navigation preference:
 
-## Groups
+```text
+cmx-lab-directory-ui-v2
+```
 
-Groups are saved audiences and are separate from Labels.
+All data remains browser-local synthetic Lab state.
 
-A custom Group may include:
+## Current object views
 
-- People;
-- Organizations;
-- Labels.
-
-The resolver deduplicates People by stable Person ID.
-
-The Lab includes a few suggested groups only to make the UX testable. Users can create their own.
-
-## Automation audience picker
-
-The old single Target dropdown is visually superseded in the focused Lab by the new **Audience** card.
-
-The Audience manager can select one or more:
+Directory v2 exposes:
 
 - People;
 - Organizations;
-- Groups;
-- Labels.
+- Groups.
 
-The UI previews:
+The interface includes:
 
-- unique resolved People count;
+- fast search;
+- useful views/filters;
+- three-column desktop layout;
+- mobile list → profile navigation;
+- Overview / Activity / Relationships / Automation tabs;
+- notes;
+- contact readiness;
+- many-Organization membership editing;
+- Labels;
+- explicit Person relationship prototype data;
+- Group/saved-audience editing;
+- Group resolution previews;
+- direct Automation usage for People/Organizations;
+- exact-email / normalized-phone duplicate warning prototype.
+
+# Person ↔ Organization
+
+A Person may belong to zero, one or many Organizations.
+
+Directory v2 adds the prototype field:
+
+```text
+organizationIds[]
+```
+
+The older scalar:
+
+```text
+orgId
+```
+
+is mirrored for compatibility with existing Lab surfaces only.
+
+Production remains many-to-many through a dedicated membership model.
+
+# Contact methods
+
+Directory v2 introduces a prototype `contactMethods[]` shape while preserving the older preferred `email` and `phone` scalar values for compatibility.
+
+The long-term model treats email/phone as mutable ContactMethod records with properties such as:
+
+- type;
+- value;
+- label;
+- preferred;
+- active/inactive;
+- verification/readiness;
+- provenance.
+
+A Person's identity must not depend on one email address or phone number.
+
+# Labels
+
+Labels are descriptive metadata.
+
+They may be used for search, grouping and audience selection.
+
+Labels do not grant permission or authority by themselves.
+
+Users may create arbitrary useful labels. Suggested labels are only starting points.
+
+# Groups / saved audiences
+
+Groups are now visible and editable in Directory v2.
+
+A Group may contain typed selectors for:
+
+- Person;
+- Organization;
+- Label.
+
+The Lab resolver expands selectors into current People and deduplicates by stable Person ID.
+
+Current seeded examples include:
+
+- Family;
+- Emergency Tier 1;
+- Business Operations.
+
+These are sample patterns, not reserved system Groups.
+
+Nested Groups remain deferred.
+
+# Contact readiness
+
+Audience identity and channel readiness are separate concepts.
+
+Directory v2 can preview:
+
+- People resolved;
 - email-ready count;
 - phone-ready count.
 
-Organization membership and Group/Label targeting use live directory membership in the Lab prototype.
+A future production audience resolver must return deterministic per-Person readiness and skipped/unready reasons.
 
-Production rule:
+# Current focused Automations integration
 
-```text
-Automation stores protected audience selector IDs
-→ runtime resolves current authorized membership
-→ deduplicates recipients
-→ checks channel readiness
-→ freezes exact recipient snapshot into Run history
-→ provider delivery uses that frozen snapshot
-```
+The focused route remains:
 
-The browser is not the authoritative audience resolver in production.
+`/lab/automations/`
 
-## Person relationship manager
-
-From the Audience manager, a Person can be opened in **Manage** mode.
-
-The Lab can edit:
-
-- multiple Organization memberships;
-- multiple Labels.
-
-This extends `cmx-lab-crm-v1` without removing the older fields used by the larger Lab.
-
-# Advanced Private Library
-
-The focused route now uses an advanced Library layer on top of the earlier Documents + Files prototype.
-
-The Lab Library supports:
-
-- logical nested folders;
-- breadcrumbs;
-- create folder;
-- rename folder;
-- move folder;
-- archive folder prototype;
-- rename/move/archive Library items;
-- duplicate native content;
-- search within the current folder;
-- filters for All / Documents / Files / Templates / Archived;
-- content/file details;
-- immutable Lab content version snapshots.
-
-Lab folder metadata uses:
-
-`cmx-lab-library-meta-v1`
-
-This is browser-only prototype state.
-
-Production folders are logical database records. They are not literal object-storage paths and they are not permission boundaries.
-
-Canonical backend companion:
-
-`CMXChat/jay-app/specs/003-server-checkin/LIBRARY-FOLDERS-TEMPLATES-MARKDOWN-BACKEND-HANDOFF.md`
-
-## Native Documents
-
-A Document is native editable Check In content.
-
-Rich Documents use a Docs-style editor and the ContentAsset / mutable Draft / immutable ContentVersion direction.
-
-Native Document remains the editable source.
-
-Derived exports may later include:
-
-- PDF;
-- DOCX;
-- Markdown;
-- HTML;
-- plain text.
-
-Retained exports become derived FileAssets/FileVersions in production instead of replacing the editable native source.
-
-## Native Markdown
-
-Markdown is now a first-class native Library item.
-
-The focused Lab can create an editable `.md` item with:
-
-- human title;
-- filename such as `ai-context-notes.md`;
-- Markdown source editor;
-- formatting helpers;
-- safe side-by-side/stacked preview;
-- autosaved mutable draft;
-- explicit immutable **Save version** snapshots;
-- content details/version IDs;
-- folder placement;
-- rename/move/duplicate/archive UX.
-
-Product rule:
+Current Directory integration files:
 
 ```text
-Native Markdown source
-→ ContentAsset / ContentDraft in PostgreSQL later
-→ immutable ContentVersion snapshots
-→ human editor / safe renderer / authorized AI retrieval
+assets/lab/lab-automations-directory-v4.js
+assets/lab/lab-automations-directory-v4.css
 ```
 
-Ordinary native Markdown should not require object storage merely because the UI calls it a file.
+Current truthful behavior:
 
-If a user uploads an existing `.md`, production should be able to preserve the original FileVersion and offer **Import as editable Markdown**.
+- direct Person targets remain selectable through the existing v3 target field;
+- direct Organization targets remain selectable through the existing v3 target field;
+- Person target rows show email/phone readiness;
+- Organization rows show current resolved People and channel-readiness counts;
+- the Actions stage shows Directory People/Organization/Group counts;
+- Review shows Directory readiness counts;
+- saved Groups are visible in the target picker as audience previews;
+- Groups/Labels are **not** silently forced into the old scalar target field.
 
-## Native plain text
-
-The Library can also create `.txt` native content with the same ContentAsset/ContentVersion direction and a dedicated plain-text editor.
-
-## Binary Files
-
-Files continue to use the separate protected FileAsset/FileVersion prototype and viewer layer.
-
-Examples:
-
-- PDF;
-- image;
-- video;
-- audio;
-- DOCX;
-- XLSX;
-- archives.
-
-Binary upload remains backend pending and must use private object storage later.
-
-The advanced Library can rename the FileAsset display name and move/archive the logical Library item in Lab metadata. Production FileVersions retain immutable original filename/checksum provenance.
-
-## Templates
-
-Templates are now a first-class Library type.
-
-The focused Lab can create:
-
-- Email template;
-- Message template;
-- Document template.
-
-Templates use the same private content direction as Documents instead of Gmail/Discord/provider drafts.
-
-Template drafts can have immutable saved versions.
-
-The prototype exposes a few safe variable placeholders such as:
-
-- `{{recipient_name}}`
-- `{{organization_name}}`
-- `{{current_date}}`
-
-These are presentation placeholders only. Production variables must be typed and allowlisted server-side.
-
-## Use template inside an Automation
-
-The private content editor now receives a **Reusable Templates** shortcut.
-
-The user can choose a saved Template and instantiate its content into the current email/message draft.
-
-Lab records a `templateSource` reference when applying a Template.
-
-Production rule:
+The next real audience milestone is a typed multi-selector Audience editor that can represent:
 
 ```text
-Template ContentVersion
-→ instantiate new mutable ContentDraft
-→ user edits independently
-→ Automation Publish freezes the final ContentVersion
+Person | Organization | Group | Label
 ```
 
-Editing a Template later must not rewrite an already-created message or published Automation.
+without corrupting the current compatibility model.
 
-## AI-readable native content
-
-Native Document / Markdown / Text / Template content is designed to be usable by humans and later authorized AI.
-
-The production AI contract is not raw database access.
-
-Preferred direction:
+Production rule remains:
 
 ```text
-AI capability
-→ approved protected content_id
-→ exact content_version_id or explicit current Draft permission
-→ backend authorization
-→ allowed representation returned
-→ audited use where required
+AutomationVersion stores stable selector IDs
+→ future Run becomes eligible
+→ backend resolves current authorized membership
+→ deduplicates People
+→ evaluates contact/channel readiness
+→ freezes exact Person + contact endpoint snapshot
+→ provider uses the frozen execution inputs
 ```
 
-AI must not receive database credentials, SQL access, object-storage keys, or blanket folder access.
+# Relationship model
 
-Folder placement does not grant AI permission.
+Continuum should support explicit Person-to-Person relationships in addition to Organization membership.
 
-For reproducible Automation behavior, exact immutable ContentVersion IDs are preferred.
+Examples include family, partner, lawyer, doctor, accountant, trusted contact, business partner and other owner-defined relationships.
 
-## Linking Documents / Files into authored content
+A relationship is descriptive context. It does not automatically grant authority.
 
-When Library is opened from a private content editor, native Documents and protected FileVersions can be reused by the content draft.
+# Activity and history
 
-Production Publish must freeze exact immutable ContentVersion/FileVersion dependencies before an AutomationVersion becomes immutable.
+Directory profile Activity is a user-facing timeline.
 
-## Rich editor toolbar
+Potential projected events include:
 
-The private rich editor toolbar no longer depends on horizontal sideways scrolling on mobile.
+- profile updates;
+- notes;
+- Organization membership changes;
+- Label changes;
+- contact method changes;
+- Library associations;
+- Automation usage;
+- future communication and Runtime events.
 
-Formatting controls wrap into visible rows.
+Activity and immutable security Audit remain separate concepts.
 
-When a formatting control is tapped, a short learning hint appears near the button, for example:
+# Duplicate direction
 
-- `Bold`
-- `Heading 2`
-- `Bulleted list`
-- `Insert link`
-- `Align center`
+The current Lab only warns on exact email or normalized phone collisions.
 
-This is intentionally small and temporary so a new user learns the symbols without interrupting writing.
+Production duplicate detection may become more sophisticated, but merge must remain explicit and auditable.
 
-Native rich Documents/Templates use the same visual language.
+Do not auto-merge People because names look similar.
 
-## Deliberate non-goals right now
+# Library boundary
 
-Do not turn this phase into clones of:
+The advanced Library remains a separate protected projection over native content and binary files.
 
-- Google Docs multiplayer collaboration;
-- Microsoft Word;
-- Excel;
-- Photoshop;
-- Acrobat editing;
-- Premiere/video editing.
+Canonical native content direction:
 
-The product should provide excellent native editors for Check In-owned text/content and excellent protected viewers for uploaded binary formats first.
+```text
+ContentAsset
+→ mutable ContentDraft
+→ immutable ContentVersion
+```
 
-## Safety / truthfulness
+Canonical binary direction:
 
-The focused route still must not pretend these exist in production yet:
+```text
+FileAsset
+→ immutable FileVersion
+→ private object storage
+```
 
-- server directory mutations;
-- real Groups/Labels backend;
+Directory may project linked Library information later through stable associations. Do not collapse Person/Organization and Library records into one polymorphic table.
+
+For current Library UX and implementation details, use:
+
+- `checkin-library-premium-CURRENT.md`;
+- `checkin-content-editor-CURRENT.md`;
+- `checkin-files-CURRENT.md`.
+
+# AI boundary
+
+Future AI may use Directory only through typed protected tools and minimum-necessary authorized context.
+
+Useful future operations can include:
+
+- search Directory;
+- read an authorized Person/Organization profile;
+- preview an audience;
+- suggest duplicates;
+- propose a Group;
+- summarize recent authorized Activity.
+
+AI cannot silently widen Groups, change trusted relationships, merge People, expose hidden contact methods or gain authority from labels/relationships.
+
+# Production migration boundary
+
+Do not port Directory v2 by copying localStorage or DOM adapters into the protected application.
+
+The production path is:
+
+```text
+accepted Lab semantics
+→ backend models/migrations/services/tests
+→ protected API + generated client
+→ protected React Directory surface
+→ Automation Audience integration
+→ future Runtime recipient freezing
+```
+
+The already validated Phase 2A Library + Automation production migration remains the immediate release boundary. Directory schema expansion comes after that boundary in deliberate increments.
+
+# Backend companion order
+
+Canonical backend plan:
+
+`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-DIRECTORY-PLATFORM-PLAN.md`
+
+Recommended broad sequence after the current Phase 2A release boundary:
+
+1. Person + Organization;
+2. PersonOrganizationMembership;
+3. ContactMethod;
+4. Label + PersonLabel;
+5. Group + typed selectors;
+6. canonical audience resolution/readiness service;
+7. protected search/list/detail;
+8. notes/activity;
+9. PersonRelationship;
+10. duplicate suggestion + explicit merge;
+11. custom fields/saved views/import/export only as needed.
+
+# Safety / truthfulness
+
+Do not claim current Lab Directory features are durable production capabilities.
+
+The Lab still has no production:
+
+- Directory mutations;
+- Group/Label persistence;
 - authoritative audience resolution;
-- server native Document/Markdown/Text/Template persistence;
-- real object-storage upload;
-- provider delivery;
-- production immutable publish;
-- durable Run recipient snapshots;
-- real AI Library access.
+- contact-method verification service;
+- duplicate merge engine;
+- CRM import/export;
+- Runtime recipient freezing;
+- provider delivery.
 
-Lab localStorage is only a product prototype adapter.
-
-## Active frontend files
-
-- `assets/lab/lab-automations-audience-runtime.js`
-- `assets/lab/lab-automations-audience-review.js`
-- `assets/lab/lab-automations-audience.css`
-- `assets/lab/lab-automations-library-runtime.js`
-- `assets/lab/lab-automations-library.css`
-- `assets/lab/lab-automations-library-pro.js`
-- `assets/lab/lab-automations-library-pro.css`
-- `assets/lab/lab-automations-editor-learning.js`
-- `assets/lab/lab-automations-editor-learning.css`
-- `assets/lab/lab-automations-document-security.js`
-
-Existing related files remain:
-
-- `assets/lab/lab-automations-content-runtime.js`
-- `assets/lab/lab-automations-content.css`
-- `assets/lab/lab-automations-files-runtime.js`
-- `assets/lab/lab-automations-files.css`
-
-## Immediate review path
-
-1. Open `/lab/automations/` and open Library.
-2. Create a Folder and move between folder breadcrumbs.
-3. Create a native Markdown file and edit both its filename and source.
-4. Check the safe Markdown Preview.
-5. Save an immutable version and inspect Details/version ID.
-6. Create a plain-text item.
-7. Create an Email or Message Template.
-8. Add formatting/variables and Save version.
-9. Rename/move/duplicate native content.
-10. Inspect an existing binary File and rename/move its Library item.
-11. Open a private Automation content editor.
-12. Use **Reusable Templates** and apply a Template.
-13. Open Library from the content editor and inspect existing Document/File reuse.
-
-Do not treat any Lab-only state as durable production data.
+The browser prototype proves UX and semantics only.
