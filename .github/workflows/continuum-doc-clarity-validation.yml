@@ -10,6 +10,8 @@ on:
       - 'assets/continuum-doc-*.css'
       - 'assets/continuum-doc-*.js'
       - 'docs/continuum-product-CURRENT.md'
+      - 'docs/continuum-doc-authorized-continuity-CURRENT.md'
+      - 'docs/README.md'
       - 'tests/personal-os-doc-smoke.test.js'
       - 'tests/doc-visual-qa-smoke.test.js'
       - 'tests/continuum-doc-clarity-smoke.test.js'
@@ -23,6 +25,8 @@ on:
       - 'assets/continuum-doc-*.css'
       - 'assets/continuum-doc-*.js'
       - 'docs/continuum-product-CURRENT.md'
+      - 'docs/continuum-doc-authorized-continuity-CURRENT.md'
+      - 'docs/README.md'
       - 'tests/personal-os-doc-smoke.test.js'
       - 'tests/doc-visual-qa-smoke.test.js'
       - 'tests/continuum-doc-clarity-smoke.test.js'
@@ -78,8 +82,12 @@ jobs:
           grep -q 'data-continuum-architecture-aligned="20260819"' /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-power-clarity="20260819"' /tmp/continuum-doc-desktop.html
           grep -q 'data-continuum-check-in-route="ready"' /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-knowledge-quality="ready"' /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-authorized-continuity="ready"' /tmp/continuum-doc-desktop.html
+          grep -q 'data-continuum-architecture-evolution="ready"' /tmp/continuum-doc-desktop.html
           grep -q 'Your information, people, tools and AI in one private operating layer' /tmp/continuum-doc-desktop.html
           grep -q 'remember useful history and understand what is true right now' /tmp/continuum-doc-desktop.html
+          grep -q 'carry approved work on your behalf across hours, days and changing conditions' /tmp/continuum-doc-desktop.html
           grep -q 'As more services, APIs, MCP servers and devices connect' /tmp/continuum-doc-desktop.html
           grep -q 'Open Check In' /tmp/continuum-doc-desktop.html
           grep -q 'href="/checkin/"' /tmp/continuum-doc-desktop.html
@@ -92,14 +100,25 @@ jobs:
           grep -q 'What it feels like when Continuum keeps work moving' /tmp/continuum-doc-desktop.html
           grep -q 'Runtime can later wait on the server after the app is closed' /tmp/continuum-doc-desktop.html
           grep -q 'WHY DID CONTINUUM DO THAT?' /tmp/continuum-doc-desktop.html
-          grep -q 'Signals are how Continuum can notice that the world changed.' /tmp/continuum-doc-desktop.html
-          grep -q 'AI provides reasoning. Continuum gives that reasoning memory, live state, senses, tools, rules and continuity.' /tmp/continuum-doc-desktop.html
-          grep -q 'Different approved intelligence can fit different jobs.' /tmp/continuum-doc-desktop.html
-          grep -q 'Continuum can notice how its environment could become more capable.' /tmp/continuum-doc-desktop.html
+          grep -q 'Signals let Continuum notice when something changes.' /tmp/continuum-doc-desktop.html
+          grep -q 'HOW CONTINUUM TREATS INFORMATION' /tmp/continuum-doc-desktop.html
+          grep -q 'Different kinds of information carry different weight.' /tmp/continuum-doc-desktop.html
+          grep -q 'AI provides reasoning. Continuum gives that reasoning memory, live State, senses, tools, rules and continuity.' /tmp/continuum-doc-desktop.html
+          grep -q 'Different approved models can handle different jobs.' /tmp/continuum-doc-desktop.html
+          grep -q 'When work keeps getting blocked by a missing tool' /tmp/continuum-doc-desktop.html
           grep -q 'Capability growth and permission growth stay separate.' /tmp/continuum-doc-desktop.html
           grep -q 'The idea started with the Dead Man Switch' /tmp/continuum-doc-desktop.html
-          grep -q 'on a flight, in a meeting' /tmp/continuum-doc-desktop.html
+          grep -q 'Carry approved intent forward' /tmp/continuum-doc-desktop.html
+          grep -q 'CONTINUITY OF AUTHORIZED INTENT' /tmp/continuum-doc-desktop.html
+          grep -q 'Specific work can continue on your behalf when you cannot take part directly.' /tmp/continuum-doc-desktop.html
+          grep -q 'long-term continuity after death' /tmp/continuum-doc-desktop.html
+          grep -q 'Your absence never expands the authority already published.' /tmp/continuum-doc-desktop.html
           grep -q 'Open the live Check In app' /tmp/continuum-doc-desktop.html
+          grep -q 'A Goal can keep moving during your unavailability when its published continuity policy allows it' /tmp/continuum-doc-desktop.html
+          grep -q 'LATER · ARCHITECTURE EVOLUTION' /tmp/continuum-doc-desktop.html
+          grep -q 'A Goal can expose a limitation in Continuum itself.' /tmp/continuum-doc-desktop.html
+          grep -q 'typed interview-stage model, migration, service changes and tests' /tmp/continuum-doc-desktop.html
+          grep -q 'Permission stays governed separately.' /tmp/continuum-doc-desktop.html
           grep -q 'class="clarity-deep-dive"' /tmp/continuum-doc-desktop.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-desktop.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-desktop.html
@@ -127,34 +146,47 @@ jobs:
           routing = html.index('continuum-model-routing', ai)
           spaces = html.index('id="spaces"')
           senses = html.index('continuum-senses-strip', spaces)
-          assert overview < state < story < receipt < product_map < origin < presence < ai < routing < spaces < senses, 'Power-clarity teaching order regressed.'
+          knowledge_quality = html.index('continuum-knowledge-quality-note', senses)
+          action = html.index('id="action"')
+          goal = html.index('continuum-goal-note', action)
+          afterlife = html.index('id="afterlife"')
+          authorized_continuity = html.index('continuum-authorized-continuity-note', afterlife)
+          build = html.index('id="build"')
+          architecture_evolution = html.index('continuum-architecture-evolution-note', build)
+          assert overview < state < story < receipt < product_map < origin < presence < ai < routing < spaces < senses < knowledge_quality < action < goal < afterlife < authorized_continuity < build < architecture_evolution, 'Power-clarity teaching order regressed.'
           story_end = html.index('</section>', story)
           story_html = html[story:story_end]
           assert 'clarity-story-flow' not in story_html, 'Real workflow example must stay prose-led.'
           assert 'clarity-story-copy' in story_html, 'Real workflow prose is missing.'
           assert 'continuum-why-receipt' in story_html, 'Explainability receipt is missing.'
-          afterlife = html.index('id="afterlife"')
           glance = html.index('class="glance-grid"', afterlife)
           assert glance > afterlife, 'Check In glance cards must live with Afterlife.'
           assert html.count('href="/checkin/"') >= 3, 'Check In should be reachable from multiple meaningful /doc locations.'
           footer = html.index('class="document-footer"')
           assert html.index('continuum-route-live', footer) > footer, 'Footer must present Check In as the LIVE route.'
-          print('Desktop DOM intro, Check In routing, power clarity, teaching order and explainability passed.')
+          print('Desktop DOM intro, Check In routing, information quality, authorized continuity, architecture evolution and explainability passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
           grep -q 'data-continuum-power-clarity="20260819"' /tmp/continuum-doc-mobile.html
           grep -q 'data-continuum-check-in-route="ready"' /tmp/continuum-doc-mobile.html
+          grep -q 'data-continuum-knowledge-quality="ready"' /tmp/continuum-doc-mobile.html
+          grep -q 'data-continuum-authorized-continuity="ready"' /tmp/continuum-doc-mobile.html
+          grep -q 'data-continuum-architecture-evolution="ready"' /tmp/continuum-doc-mobile.html
           grep -q 'Open Check In' /tmp/continuum-doc-mobile.html
           grep -q 'Protected proof of life, timing and activity' /tmp/continuum-doc-mobile.html
           grep -q 'STATE IS WHAT IS TRUE NOW' /tmp/continuum-doc-mobile.html
           grep -q 'WHY DID CONTINUUM DO THAT?' /tmp/continuum-doc-mobile.html
-          grep -q 'Signals are how Continuum can notice that the world changed.' /tmp/continuum-doc-mobile.html
-          grep -q 'Different approved intelligence can fit different jobs.' /tmp/continuum-doc-mobile.html
+          grep -q 'Signals let Continuum notice when something changes.' /tmp/continuum-doc-mobile.html
+          grep -q 'HOW CONTINUUM TREATS INFORMATION' /tmp/continuum-doc-mobile.html
+          grep -q 'Different approved models can handle different jobs.' /tmp/continuum-doc-mobile.html
+          grep -q 'Carry approved intent forward' /tmp/continuum-doc-mobile.html
+          grep -q 'Specific work can continue on your behalf when you cannot take part directly.' /tmp/continuum-doc-mobile.html
+          grep -q 'A Goal can expose a limitation in Continuum itself.' /tmp/continuum-doc-mobile.html
           grep -q 'Capability growth and permission growth stay separate.' /tmp/continuum-doc-mobile.html
           grep -q 'Open the architecture walkthrough' /tmp/continuum-doc-mobile.html
           grep -q 'Open the build workflow' /tmp/continuum-doc-mobile.html
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           ! grep -q 'Start here' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc intro, Check In routing and power clarity rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc final clarity rendered on desktop and 390x844 mobile.'
