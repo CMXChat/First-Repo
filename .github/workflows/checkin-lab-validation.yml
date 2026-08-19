@@ -32,6 +32,7 @@ jobs:
             assets/lab/lab-mock-api.js \
             assets/lab/lab-crm.js \
             assets/lab/lab-directory-v2.js \
+            assets/lab/lab-directory-planner-preview.js \
             assets/lab/lab-inventory.js \
             assets/lab/lab-actions.js \
             assets/lab/lab-timeline-live.js \
@@ -65,7 +66,7 @@ jobs:
           const contract = require('./assets/lab/checkin-status-contract.js');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
-          assert.equal(BUILD, '20260818-directory2p');
+          assert.equal(BUILD, '20260818-directory2ai');
 
           const counts = {
             document_count: 6,
@@ -82,7 +83,7 @@ jobs:
           assert.equal(contract.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
 
           const shell = fs.readFileSync('lab/index.html', 'utf8');
-          assert(shell.includes('/assets/lab/lab-loader.js?v=20260818-directory2p'));
+          assert(shell.includes('/assets/lab/lab-loader.js?v=20260818-directory2ai'));
           assert(!shell.includes('document.write(html)'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
@@ -96,6 +97,8 @@ jobs:
             '/assets/lab/lab-directory-v2.js',
             '/assets/lab/lab-directory-v2.css',
             '/assets/lab/lab-directory-v2-polish.css',
+            '/assets/lab/lab-directory-planner-preview.js',
+            '/assets/lab/lab-directory-planner-preview.css',
             '/assets/lab/lab-inventory.js',
             '/assets/lab/lab-actions.js',
             '/assets/lab/lab-timeline-live.js',
@@ -114,7 +117,9 @@ jobs:
           required.forEach(term => assert(rendered.includes(term), `missing generated Lab contract: ${term}`));
           assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'));
           assert(rendered.indexOf('/assets/lab/lab-crm.js') < rendered.indexOf('/assets/lab/lab-directory-v2.js'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-v2.js') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.js'));
           assert(rendered.indexOf('/assets/lab/lab-directory-v2.css') < rendered.indexOf('/assets/lab/lab-directory-v2-polish.css'));
+          assert(rendered.indexOf('/assets/lab/lab-directory-v2-polish.css') < rendered.indexOf('/assets/lab/lab-directory-planner-preview.css'));
           assert(rendered.indexOf('/assets/lab/lab-experience.js') < rendered.indexOf('/assets/lab/lab-automation-builder.js'));
           assert(!rendered.includes('/assets/checkin/'));
           assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
@@ -133,6 +138,7 @@ jobs:
           active = [
               'assets/lab/lab-loader.js',
               'assets/lab/lab-directory-v2.js',
+              'assets/lab/lab-directory-planner-preview.js',
               'assets/lab/lab-command.js',
               'assets/lab/lab-product-polish.js',
               'assets/lab/lab-plan.js',
@@ -143,15 +149,21 @@ jobs:
           combined = '\n'.join(Path(path).read_text(encoding='utf-8') for path in active)
           if 'api.cmxchat.com' in combined:
               sys.exit('active Lab layer references production API')
-          for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
-              if forbidden in Path('assets/lab/lab-directory-v2.js').read_text(encoding='utf-8'):
-                  sys.exit(f'Directory v2 forbidden pattern: {forbidden}')
+          for path in ['assets/lab/lab-directory-v2.js', 'assets/lab/lab-directory-planner-preview.js']:
+              source = Path(path).read_text(encoding='utf-8')
+              for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
+                  if forbidden in source:
+                      sys.exit(f'{path} forbidden pattern: {forbidden}')
 
           polish = Path('assets/lab/lab-directory-v2-polish.css').read_text(encoding='utf-8')
           for term in ['position:sticky', '@media (max-width:760px)', 'prefers-reduced-motion']:
               if term not in polish: sys.exit(f'Directory polish missing contract: {term}')
 
-          print('Continuum Lab snapshot, production isolation and Directory v2 polish load order passed.')
+          planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
+          for term in ['AI SETUP · PREVIEW', 'CHANGE PLAN CONTRACT', 'No model call', 'no data mutation', 'no hidden AI authority', 'labDirectoryPlanner = "preview-v1"']:
+              if term not in planner: sys.exit(f'Directory Planner preview missing contract: {term}')
+
+          print('Continuum Lab snapshot, production isolation, Directory v2 polish and AI setup preview passed.')
           PY
 
       - name: Browser acceptance smoke desktop and mobile
@@ -180,7 +192,9 @@ jobs:
           grep -q 'data-lab-experience="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-automation-builder="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-desktop.html
+          grep -q 'data-lab-directory-planner="preview-v1"' /tmp/lab-desktop.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-desktop.html
+          grep -q 'AI setup' /tmp/lab-desktop.html
           grep -q 'id="labAutomationWorkspace"' /tmp/lab-desktop.html
           grep -q 'lab-live-status-hero' /tmp/lab-desktop.html
           grep -q 'labCommandPalette' /tmp/lab-desktop.html
@@ -189,9 +203,11 @@ jobs:
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-mobile.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-mobile.html
+          grep -q 'data-lab-directory-planner="preview-v1"' /tmp/lab-mobile.html
           grep -q 'class="lab-directory-v2"' /tmp/lab-mobile.html
+          grep -q 'AI setup' /tmp/lab-mobile.html
           grep -q 'mobile-nav' /tmp/lab-mobile.html
           grep -q 'labGlobalSearch' /tmp/lab-mobile.html
           grep -q 'labGlobalCreate' /tmp/lab-mobile.html
 
-          echo 'Continuum Lab desktop/mobile smoke passed with Directory v2 polish and existing operating surfaces.'
+          echo 'Continuum Lab desktop/mobile smoke passed with Directory AI setup preview and existing operating surfaces.'
