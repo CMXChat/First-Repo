@@ -1,0 +1,12 @@
+/* Continuum Automations v4 QA safeguards.
+   Keep workspace surfaces truly hidden even when earlier author CSS sets display. */
+
+.v3-system-deck[hidden],
+.v3-system-section-head[hidden],
+.v3-dashboard-bar[hidden],
+.v3-drafts[hidden],
+.v3-template-section[hidden],
+.v4-runs-panel[hidden],
+.v4-search[hidden]{
+  display:none!important;
+}
