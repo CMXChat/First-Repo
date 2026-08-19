@@ -36,6 +36,14 @@
     }
   }, true);
 
+  if (!document.querySelector('script[data-library-shell-convergence]')) {
+    const script = document.createElement('script');
+    script.src = '/assets/lab/continuum-library-shell-convergence-v1.js?v=20260819-1';
+    script.async = false;
+    script.dataset.libraryShellConvergence = 'true';
+    document.head.appendChild(script);
+  }
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', patchDirectoryRoutes, { once: true });
   else patchDirectoryRoutes();
 })();
