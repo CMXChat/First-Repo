@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-20
-Status: FROZEN after owner-authorized one-minute explanation and natural-voice pass
+Status: FROZEN after owner-authorized one-minute explanation and final natural-voice polish
 
 ## Freeze decision
 
@@ -19,11 +19,9 @@ Future changes are allowed for:
 
 Routine cleanup should leave the page alone.
 
-## August 20 final reader test
+## August 20 reader test
 
-A real first-reader reaction showed that the page was still too hard to understand in about one minute. The product names were no longer overwhelming, but the opening had become so broad that it did not quickly explain why Continuum exists around AI.
-
-The accepted fix uses this mental model:
+A real first-reader reaction showed that the page was still too hard to understand in about one minute. The accepted fix uses this mental model:
 
 `Think of AI as the brain and Continuum as the nervous system around it`
 
@@ -44,9 +42,9 @@ Think of AI as the brain and Continuum as the nervous system around it
 Hero lead:
 
 ```text
-An AI model can reason, write and help make decisions. What it still needs around it is a reliable way to carry your life and work context across time, know what changed while you were away, remember the people and documents that matter, enforce your permission rules, and keep a process going after the chat closes. Continuum is that private layer.
+AI can reason, write and help make decisions, but by itself it doesn't reliably remember your life and work, know what changed while you were away, keep track of the people and documents that matter, respect the permission rules you set or keep a process going after the chat closes. Continuum is the private layer around the AI that keeps those things connected over time.
 
-It keeps the information, people, documents, current situation and history around the AI so a change can update what Continuum knows and the rules you set can decide what should happen next. That might mean acting, waiting, asking you, contacting someone or doing nothing. The Dead Man Switch is one example, and the same foundation can help with everyday work when you're asleep, busy or offline and later with bigger goals that take several steps. If you switch to a better AI later, the memory, context, permissions and history stay with Continuum.
+When something changes, Continuum can update what it knows and use the rules you already set to decide what should happen next. That might mean acting, waiting, asking you, contacting someone or doing nothing. The Dead Man Switch is one example of that, and the same setup is useful every day when you're asleep, busy, offline, waiting on someone or working toward something that takes several steps. If you switch to a better AI later, the memory, context, permissions and history stay with Continuum.
 ```
 
 The opening lead must stay free of internal surface and architecture names such as Library, Directory, Spaces, Automation, Runtime and Planner. Lowercase ordinary English such as `goals` is fine when it helps explain the whole idea.
@@ -73,9 +71,9 @@ Heading:
 
 `From something changing to the next allowed step`
 
-The first Overview paragraph explains the loop in normal language before architecture terms appear. A deadline, reply, check-in condition or approved outside change can update what Continuum knows. It checks the rules and permissions already set, and the next step may be to act, wait, ask or do nothing.
+The first Overview paragraph now begins with `From there the flow is simple.` It explains a deadline, reply, check-in condition or approved outside change in normal language, then shows that Continuum updates what it knows, checks the rules and decides whether the next step is to act, wait, ask or do nothing.
 
-The paragraph then tells the reader that the pieces below give those jobs their technical names.
+The technical names come after the behavior is already understandable.
 
 ## Teaching order
 
@@ -116,6 +114,8 @@ Do not mechanically ban a normal word just because it can be overused. One natur
 
 Use connected plain-English paragraphs, varied sentence length, natural contractions and concrete situations.
 
+The final voice pass also removed phrases that sounded too composed or teacher-like, including `That basic idea becomes a loop`, `By this point the parts have names`, and abstract future wording about the product needing to grow. The replacement copy should sound like a person explaining the idea without losing the real technical meaning.
+
 ## Product truth
 
 The page still covers the complete Continuum direction:
@@ -137,7 +137,7 @@ Future capability remains future capability. Goals, long-running Runtime, provid
 
 ## Translation and RTL
 
-The new hero remains compatible with the existing translation layer. The brain/nervous-system analogy is followed by literal language so machine translation does not have to infer the product from an idiom alone.
+The hero remains compatible with the existing translation layer. The brain/nervous-system analogy is followed by literal language so machine translation does not have to infer the product from an idiom alone.
 
 Keep the existing Hebrew, Arabic, Persian, Urdu and Yiddish RTL rules, `dir="auto"` setup, mirrored navigation, directional arrows and mobile drawer behavior.
 
@@ -166,26 +166,32 @@ Keep:
 - `assets/continuum-doc-knowledge-time.css`
 - `assets/continuum-doc-human-cadence.js`
 - `assets/continuum-doc-reader-first.js`
+- `assets/continuum-doc-final-voice.js`
 
-`assets/continuum-doc-i18n.js` loads the final reader layer as:
+`assets/continuum-doc-i18n.js` loads the final voice layer after the reader-first layer.
 
-`/assets/continuum-doc-reader-first.js?v=20260820-4`
-
-Current markers:
+Current loader targets include:
 
 ```text
-data-continuum-clarity="plain-english-v1"
-data-continuum-human-cadence="ready"
-data-continuum-voice="natural-v3"
+/assets/continuum-doc-reader-first.js?v=20260820-4
+/assets/continuum-doc-final-voice.js?v=20260820-1
+```
+
+Current final markers:
+
+```text
 data-continuum-reader-first="ready"
-data-continuum-product-story="balanced-v2"
+data-continuum-final-voice="ready"
+data-continuum-voice="natural-v4"
 ```
 
 ## Regression guard
 
-`tests/continuum-doc-continuity-positioning.test.js` protects the one-minute explanation, natural contractions, reader-first technical terminology and cache version.
+`tests/continuum-doc-continuity-positioning.test.js` protects the one-minute explanation and reader-first terminology.
 
-`.github/workflows/continuum-doc-clarity-validation.yml` validates the final rendered desktop and 390x844 mobile page. It also rejects the previous broad hero and verifies that the new lead does not become a product glossary.
+`tests/continuum-doc-final-voice.test.js` protects the last visible voice layer and rejects the specific AI-like wording removed in the final polish.
+
+`.github/workflows/continuum-doc-clarity-validation.yml` validates the final rendered desktop and 390x844 mobile page, including the final voice marker and current hero wording.
 
 A workflow file existing does not prove a green run. Report CI as green only after an actual run or status confirms it.
 
