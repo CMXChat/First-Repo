@@ -56,20 +56,23 @@ for (const required of [
 ]) assert.match(cadence, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const required of [
-  'Your saved information lives in Library',
-  'a Space brings the relevant context together',
-  "Check In is the live timer you use to show you're still responding",
-  'Afterlife is the longer-term continuity area',
-  'That picture is called State',
-  'Runtime is the server-side part that can keep approved work moving even after you close the app.',
-  "Signals are the meaningful changes Continuum notices from sources you've approved.",
-  'An Automation is a saved definition of work and the rules around it.',
+  'Your information, workflows and goals across time',
+  'workflows that react to changes and longer goals that may take several steps',
+  'Built for workflows + longer goals',
+  '02 · AI + Permissions',
+  'A deadline can arrive, a reply can come in, Check In can reach a condition',
+  'Runtime is the part that can later keep it alive in the background on the server.',
+  'Signals are the meaningful changes Continuum notices from sources you\'ve approved.',
+  'An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do.',
+  'Runtime keeps published work alive in the background after you close the app.',
+  'Changes can make the next step ready.',
   'Afterlife is for continuity plans that may need to outlast a long period',
   'Planner is the part that turns that request into a proposed set of changes, called a Change Plan.',
-  'A Goal is for an outcome that may take several steps and change along the way.',
-  'Connections link outside apps and tools',
+  'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.',
+  'Goals can hold a larger outcome when the route may change.',
   'important timing can live on the server instead of depending on an open browser',
-  "dataset.continuumReaderFirst = 'ready'"
+  "dataset.continuumReaderFirst = 'ready'",
+  "dataset.continuumProductStory = 'complete-v1'"
 ]) assert.match(reader, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const staleCadence of [
@@ -89,8 +92,17 @@ for (const staleCadence of [
   'when you cannot take part directly'
 ]) assert.doesNotMatch(cadence, new RegExp(staleCadence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
+for (const staleReader of [
+  'Your information, plans and permissions across time',
+  'An Automation is a saved definition of work and the rules around it.',
+  'Runtime is the server-side part that can keep approved work moving even after you close the app.',
+  'A Goal is for an outcome that may take several steps and change along the way.'
+]) assert.doesNotMatch(reader, new RegExp(staleReader.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+
 assert.doesNotMatch(cadence, /\bcan eventually\b/i);
 assert.doesNotMatch(cadence, /\bwhile\b/i);
+assert.doesNotMatch(reader, /\bcan eventually\b/i);
+assert.doesNotMatch(reader, /\bwhile\b/i);
 
 for (const required of [
   '.continuum-continuity-line',
@@ -104,7 +116,7 @@ for (const required of [
 
 assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
 assert.match(loader, /continuum-doc-human-cadence\.js\?v=20260820-3/);
-assert.match(loader, /continuum-doc-reader-first\.js\?v=20260820-1/);
+assert.match(loader, /continuum-doc-reader-first\.js\?v=20260820-2/);
 assert.match(loader, /loadHumanCadence/);
 assert.match(loader, /loadReaderFirst/);
 assert.match(loader, /script\.async = false/);
@@ -118,4 +130,4 @@ for (const checkedSource of [source, cadence, reader]) {
   ]) assert.doesNotMatch(checkedSource, pattern);
 }
 
-console.log('Continuum plain-English, natural voice and reader-first terminology contract passed.');
+console.log('Continuum plain-English, natural voice, reader-first terminology and product completeness contract passed.');
