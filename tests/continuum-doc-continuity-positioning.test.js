@@ -33,23 +33,33 @@ for (const required of [
 ]) assert.match(source, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const required of [
-  'Continuum keeps those pieces connected:',
+  'Continuum keeps all of this connected.',
   'The rules stay with Continuum when the AI changes',
-  'Continuum keeps documents, people and current context connected across Library, Directory and Spaces.',
-  'An Automation can continue using version 3 while you are already editing version 4.',
-  'Afterlife extends the same Continuum foundation into long-term continuity:',
+  'Library, Directory and Spaces handle different parts of the same context.',
+  'An Automation can keep using version 3 even after you start editing version 4.',
+  'Afterlife carries the same Continuum foundation into long-term continuity.',
   'Signals help Continuum notice meaningful changes from approved sources.',
-  'Goals can keep an outcome moving across multiple steps and changing conditions.',
-  'The Control Center keeps background work visible and inspectable.',
-  "dataset.continuumHumanCadence = 'ready'"
+  'A Goal can keep an outcome moving across several steps and changing conditions.',
+  'If the same problem keeps coming up, Continuum may need a new data model or backend feature.',
+  'The Control Center keeps background work visible.',
+  'Afterlife started with a practical question.',
+  "dataset.continuumHumanCadence = 'ready'",
+  "dataset.continuumVoice = 'natural-v2'"
 ]) assert.match(cadence, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const staleCadence of [
   'Library holds your information. Directory keeps track of people and relationships.',
   'AI can change. Continuum keeps the rules around it.',
   'Automations handle repeatable rules. Goals keep an outcome alive.',
-  'Knowledge keeps useful history. State keeps the current condition.'
+  'Knowledge keeps useful history. State keeps the current condition.',
+  'Continuum keeps those pieces connected:',
+  'long-term continuity:',
+  'Afterlife began with a practical problem:',
+  'durable information and focused context; Automations'
 ]) assert.doesNotMatch(cadence, new RegExp(staleCadence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+
+assert.doesNotMatch(cadence, /\bcan eventually\b/i);
+assert.doesNotMatch(cadence, /\bwhile\b/i);
 
 for (const required of [
   '.continuum-continuity-line',
@@ -62,7 +72,7 @@ for (const required of [
 ]) assert.ok(css.includes(required), `Missing continuity positioning style: ${required}`);
 
 assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
-assert.match(loader, /continuum-doc-human-cadence\.js\?v=20260820-1/);
+assert.match(loader, /continuum-doc-human-cadence\.js\?v=20260820-2/);
 assert.match(loader, /loadHumanCadence/);
 assert.match(loader, /script\.async = false/);
 
@@ -75,4 +85,4 @@ for (const checkedSource of [source, cadence]) {
   ]) assert.doesNotMatch(checkedSource, pattern);
 }
 
-console.log('Continuum plain-English positioning and human cadence contract passed.');
+console.log('Continuum plain-English positioning and natural voice contract passed.');
