@@ -17,6 +17,23 @@
     if (meta) meta.content = next === "dark" ? "#05080d" : "#f5f8fb";
   }
 
+  function installThemeControl() {
+    if (!document.querySelector('link[data-continuum-theme-toggle]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/assets/continuum-theme-toggle.css?v=20260820-1';
+      link.dataset.continuumThemeToggle = 'true';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-continuum-theme-toggle]')) {
+      const script = document.createElement('script');
+      script.src = '/assets/continuum-theme-toggle.js?v=20260820-1';
+      script.defer = true;
+      script.dataset.continuumThemeToggle = 'true';
+      document.head.appendChild(script);
+    }
+  }
+
   syncChrome(theme);
 
   document.addEventListener("click", event => {
@@ -32,4 +49,7 @@
       syncChrome(next);
     }, 0);
   });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installThemeControl, { once: true });
+  else installThemeControl();
 })();
