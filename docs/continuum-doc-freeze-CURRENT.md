@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-20
-Status: FROZEN after owner-authorized plain-English, natural-voice, contraction and reader-first terminology passes
+Status: FROZEN after owner-authorized plain-English, natural-voice, reader-first and product-completeness passes
 
 ## Freeze decision
 
@@ -21,56 +21,32 @@ Routine cleanup should leave the page alone.
 
 ## August 20 owner-authorized reopening
 
-The owner asked for the page to become easier to understand and less AI-like while preserving the existing design and architecture.
+The completed work now includes plain-English first explanations, natural contractions, removal of common AI-writing cadence, reader-first technical terminology and a final product-completeness pass.
 
-The work completed in this reopening now includes:
-
-- plain-English explanations before dense architecture wording;
-- removal of stacked short AI-like sentence cadence;
-- fewer unnecessary colons, semicolons and overly balanced sentences;
-- natural contractions where a person would normally use them;
-- a reader-first terminology pass so product names and technical terms are explained when they first matter.
+That last pass corrects an important risk from the earlier simplification work. Clarity must not make Continuum sound like storage or continuity alone. The public story now includes current context, triggered workflows, longer Goals, explicit permission and continuity across time without pretending future Runtime or Goal execution is live today.
 
 Canonical positioning companion
 
 `docs/continuum-doc-positioning-CURRENT.md`
 
-## Reader-first freeze rule
-
-A new reader should not need prior Continuum knowledge to understand the first meaningful sentence that uses an important term.
-
-Explain the human job first and introduce the real name in the same sentence or the next one. Once the term has been explained, later copy can use it normally and can become more technical.
-
-This rule is deliberately narrow. Do not turn `/doc/` into a beginner tutorial and do not remove real architecture terms simply because they are technical.
-
-Preferred teaching order
-
-```text
-plain behavior
-→ real Continuum term
-→ deeper architecture later
-```
-
-The page should stay useful to both nontechnical and technical readers.
-
-## Current opening identity
+## Product-complete opening
 
 Hero direction
 
 ```text
-Your information, plans and permissions across time
+Your information, workflows and goals across time
 ```
 
-The opening explains that Continuum can keep information, people, instructions and permissions over time, use that context today, continue approved work when the owner is away, and follow plans prepared for a time when the owner can't respond.
+The opening says that Continuum keeps information, people, instructions and permissions over time and that the same foundation is being built for workflows that react to changes and longer goals that may take several steps.
 
-The next paragraph now explains the major names as they appear. Saved information lives in Library. Directory keeps track of people and organizations. A Space brings together the context for one part of life or work. Automations describe work already approved to continue under set rules. Check In is the live timer used to show the owner is still responding. Afterlife is the longer-term continuity area for plans that may be needed when the owner can't respond, including after death.
+An Automation is introduced as a saved workflow with something that starts it, conditions to check and rules for what it may do next. Check In remains the live timer used to show the owner is still responding. Afterlife holds continuity plans for times when the owner can't respond, including after death.
 
 Compact hero labels remain intentionally concise.
 
 ```text
-Knows what changed and when
-Can continue work you approved
-Keeps track of what is allowed and why
+Keeps the right context current
+Built for workflows + longer goals
+Acts inside rules you set
 ```
 
 Hero principle
@@ -86,51 +62,59 @@ WITH YOU
 → IF YOU CANNOT RESPOND
 ```
 
+## Product completeness rule
+
+The opening and early sections should make the whole product understandable without listing every component.
+
+Continuum should read as a foundation for current context, triggered workflows, longer outcomes, permissions and continuity. Goals, long-running Runtime, provider actions and autonomous AI work remain future capabilities until their status changes truthfully.
+
+Do not let a future clarity pass narrow the story back to information, plans and continuity alone.
+
+## Reader-first rule
+
+A new reader should not need prior Continuum knowledge to understand the first meaningful sentence that uses an important term.
+
+Explain the human job first and introduce the real name in the same sentence or the next one. Once the term has been explained, later copy can use it normally and become more technical.
+
+Preferred teaching order
+
+```text
+plain behavior
+→ real Continuum term
+→ deeper architecture later
+```
+
+Do not turn `/doc/` into a beginner tutorial and do not remove real architecture terms simply because they are technical.
+
+## Triggered work rule
+
+Triggered behavior should be understandable through normal examples before the architecture flow is expected to carry the explanation.
+
+A deadline can arrive, a reply can come in, Check In can reach a condition or an approved outside source can change. Any of those can make the next step ready. The server still checks the relevant rules and permissions before anything runs.
+
+The deeper flow through Signals, State, policy, authority and Runtime remains intact.
+
 ## First-use architecture explanations
 
-The final visible copy now establishes these concepts before relying on the names:
+The final visible copy establishes these concepts before relying on their names:
 
 - State is the current picture of what is true now.
-- Runtime is the server-side part that can keep approved work moving after the app closes.
+- Runtime is what can later keep published work alive in the background after the app closes, with the deeper copy explaining that it runs on the server.
 - Signals are meaningful changes noticed from approved sources.
 - an Observation is what a source showed at a particular moment.
 - Authority means permission to act.
-- an Automation is a saved definition of work and the rules around it.
+- an Automation is a saved workflow with a start, conditions, limits and allowed actions.
 - Planner turns a normal-language setup request into proposed changes.
 - a Change Plan is the proposed set of changes prepared for review.
-- a Goal keeps an outcome, limits and approvals together across work that may take several steps.
+- a Goal keeps a longer outcome, limits and approvals together across work that may take several steps and change route.
 - Connections link outside apps and tools.
 - Control Center is the place where the owner can see what Continuum is doing in the background.
 
 After those explanations, technical sections may use the real terms without repeating beginner definitions.
 
-## Information direction
+## Navigation direction
 
-Library, Directory and Spaces remain distinct parts of the same information layer.
-
-Knowledge intake can include:
-
-```text
-Paste + bulk text
-Markdown + JSON
-AI handoffs
-Files + OCR / vision
-Connected Sources
-```
-
-Review flow remains:
-
-```text
-CAPTURE → UNDERSTAND → REVIEW → INTEGRATE
-```
-
-The original source stays traceable and important findings remain reviewable before they become accepted long-term knowledge.
-
-## AI and authority direction
-
-An AI model can reason, write and use tools. Continuum keeps the information, current State, permissions and history around it, and the server decides what the model can actually see and do.
-
-Authority is introduced as permission to act. Improved reasoning never creates extra permission by itself.
+The reader-facing navigation uses `AI + Permissions` because permission is immediately understandable. The section still introduces and preserves `Authority` as the exact architecture term.
 
 ## Automations and Runtime direction
 
@@ -138,17 +122,23 @@ The Automation section keeps human intent first.
 
 `Describe what should happen, then make the rules clear.`
 
-An Automation is explained as a saved definition of work and its rules. Runtime is explained as the server-side part that can carry published work forward, including waits and retries when the app isn't open.
+An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do. Runtime is explained from the user's point of view first as background work that can later continue after the app closes. The technical explanation then makes clear that it runs on the server and can handle waits, allowed retries, replies, tools and recorded results.
 
 Current Lab workflow definitions still do not imply provider execution.
+
+## Goals direction
+
+Goals are part of the product story and should not disappear from the opening or product map simply because they are later architecture.
+
+A Goal is introduced as something Continuum can later work toward over several steps even when the route changes. It keeps the outcome, limits and approvals together and may use multiple Automations or tasks.
+
+Goals remain LATER until the implementation status changes.
 
 ## Afterlife direction
 
 Afterlife is for continuity plans that may need to outlast a long period when the owner can't respond, including plans for after death.
 
 The owner chooses the people, information, instructions and permissions ahead of time. Check In supplies the trigger. Future Runtime can follow only the parts already authorized.
-
-The LIVE and LATER copy should describe understandable user behavior and should not read like an engineering release note.
 
 Visible guardrail
 
@@ -183,18 +173,17 @@ Do not remove technical depth after a term has been explained.
 
 Diagrams, architecture sections, flows and technical callouts may continue to use State, Runtime, Signals, Authority, policy, provenance, Audit, Planner, Change Plan and other exact terms where they improve precision.
 
-Accessibility should come from the first explanation, not from flattening the whole document.
+Accessibility comes from the first explanation, not from flattening the whole document.
 
 ## Protected structure and visuals
 
-The clarity and reader-first passes keep:
+The final pass keeps:
 
 - the eight stable sections;
 - the existing visual system;
 - Check In as the first-class LIVE route;
 - current Lab/future truth labels;
-- current State teaching;
-- Sources, Observations, Signals and information quality;
+- State, Sources, Observations, Signals and information quality;
 - model routing;
 - Planner and Change Plan direction;
 - Goals / Missions;
@@ -217,7 +206,7 @@ The natural-voice layer remains:
 
 - `assets/continuum-doc-human-cadence.js`.
 
-The final reader-first layer is:
+The final reader and product-story layer is:
 
 - `assets/continuum-doc-reader-first.js`.
 
@@ -228,7 +217,7 @@ Current loader targets
 ```text
 /assets/continuum-doc-knowledge-time.js?v=20260820-1
 /assets/continuum-doc-human-cadence.js?v=20260820-3
-/assets/continuum-doc-reader-first.js?v=20260820-1
+/assets/continuum-doc-reader-first.js?v=20260820-2
 ```
 
 Current markers
@@ -238,19 +227,20 @@ data-continuum-clarity="plain-english-v1"
 data-continuum-human-cadence="ready"
 data-continuum-voice="natural-v3"
 data-continuum-reader-first="ready"
+data-continuum-product-story="complete-v1"
 ```
 
 ## Regression guard
 
-`tests/continuum-doc-continuity-positioning.test.js` validates plain-English positioning, natural voice and first-use explanations.
+`tests/continuum-doc-continuity-positioning.test.js` validates plain-English positioning, natural voice, reader-first explanations and product completeness.
 
-`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and rejects known stale technical-first or AI-like wording after final rendering.
+`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and rejects known stale narrow, technical-first or AI-like wording after final rendering.
 
 A workflow file existing does not prove a green run. Report CI as green only after an actual run/status confirms it.
 
 ## Backend boundary unchanged
 
-This `/doc/` work changes no production backend claim and authorizes no migration, deployment, provider execution, general ingestion, Runtime activation, autonomous AI execution or new authority.
+This `/doc/` work changes no production backend claim and authorizes no migration, deployment, provider execution, general ingestion, Runtime activation, Goal execution, autonomous AI execution or new authority.
 
 ## Reopen rule
 
