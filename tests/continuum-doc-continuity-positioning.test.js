@@ -56,23 +56,30 @@ for (const required of [
 ]) assert.match(cadence, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const required of [
-  'Your information, workflows and goals across time',
-  'workflows that react to changes and longer goals that may take several steps',
-  'Built for workflows + longer goals',
+  'A private system for what matters now and what should happen next',
+  'Continuum is a private system for keeping the parts of your life and work that matter connected over time.',
+  'keeps track of what has changed and helps you decide what should happen next',
+  'carry approved work forward when you are away',
+  'Remembers what matters',
+  'Keeps up with changes',
+  'Carries approved work forward',
   '02 · AI + Permissions',
-  'A deadline can arrive, a reply can come in, Check In can reach a condition',
-  'Runtime is the part that can later keep it alive in the background on the server.',
-  'Signals are the meaningful changes Continuum notices from sources you\'ve approved.',
-  'An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do.',
-  'Runtime keeps published work alive in the background after you close the app.',
-  'Changes can make the next step ready.',
-  'Afterlife is for continuity plans that may need to outlast a long period',
-  'Planner is the part that turns that request into a proposed set of changes, called a Change Plan.',
-  'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.',
-  'Goals can hold a larger outcome when the route may change.',
-  'important timing can live on the server instead of depending on an open browser',
+  'How Continuum moves from change to action',
+  'That picture is called State',
+  'AI works inside the context and permissions Continuum keeps',
+  'Keep information connected to the people and situations it belongs to',
+  'Continuum can notice when an approved source changes.',
+  'Describe the work normally, then make the important rules clear',
+  'An Automation is how Continuum remembers a repeatable or triggered piece of work.',
+  'Runtime lets approved work continue after you leave.',
+  'Changes can move the work forward.',
+  'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.',
+  'Continuum grew out of a simple continuity problem.',
+  'How Continuum is put together',
+  'Start in the Lab, then connect the real backend',
+  'Make private information durable, then let approved work keep going',
   "dataset.continuumReaderFirst = 'ready'",
-  "dataset.continuumProductStory = 'complete-v1'"
+  "dataset.continuumProductStory = 'balanced-v2'"
 ]) assert.match(reader, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const staleCadence of [
@@ -93,10 +100,12 @@ for (const staleCadence of [
 ]) assert.doesNotMatch(cadence, new RegExp(staleCadence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const staleReader of [
-  'Your information, plans and permissions across time',
-  'An Automation is a saved definition of work and the rules around it.',
-  'Runtime is the server-side part that can keep approved work moving even after you close the app.',
-  'A Goal is for an outcome that may take several steps and change along the way.'
+  'Your information, workflows and goals across time',
+  'workflows that react to changes and longer goals that may take several steps',
+  'Built for workflows + longer goals',
+  'An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do.',
+  'Runtime keeps published work alive in the background after you close the app.',
+  'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.'
 ]) assert.doesNotMatch(reader, new RegExp(staleReader.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 assert.doesNotMatch(cadence, /\bcan eventually\b/i);
@@ -116,7 +125,7 @@ for (const required of [
 
 assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
 assert.match(loader, /continuum-doc-human-cadence\.js\?v=20260820-3/);
-assert.match(loader, /continuum-doc-reader-first\.js\?v=20260820-2/);
+assert.match(loader, /continuum-doc-reader-first\.js\?v=20260820-3/);
 assert.match(loader, /loadHumanCadence/);
 assert.match(loader, /loadReaderFirst/);
 assert.match(loader, /script\.async = false/);
@@ -130,4 +139,4 @@ for (const checkedSource of [source, cadence, reader]) {
   ]) assert.doesNotMatch(checkedSource, pattern);
 }
 
-console.log('Continuum plain-English, natural voice, reader-first terminology and product completeness contract passed.');
+console.log('Continuum whole-product story, natural voice and reader-first terminology contract passed.');
