@@ -37,7 +37,7 @@
   syncChrome(theme);
 
   document.addEventListener("click", event => {
-    const toggle = event.target.closest?.("[data-theme-toggle]");
+    const toggle = event.target.closest?.("[data-theme-toggle], [data-v3-theme]");
     if (!toggle) return;
 
     setTimeout(() => {
