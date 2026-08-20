@@ -91,17 +91,30 @@ jobs:
             grep -q 'data-continuum-human-cadence="ready"' "$file"
             grep -q 'data-continuum-voice="natural-v3"' "$file"
             grep -q 'data-continuum-reader-first="ready"' "$file"
-            grep -q 'data-continuum-product-story="complete-v1"' "$file"
-            grep -q 'Your information, workflows and goals across time' "$file"
-            grep -q 'workflows that react to changes and longer goals that may take several steps' "$file"
-            grep -q 'Built for workflows + longer goals' "$file"
+            grep -q 'data-continuum-product-story="balanced-v2"' "$file"
+            grep -q 'A private system for what matters now and what should happen next' "$file"
+            grep -q 'Continuum is a private system for keeping the parts of your life and work that matter connected over time.' "$file"
+            grep -q 'carry approved work forward when you are away' "$file"
+            grep -q 'Remembers what matters' "$file"
+            grep -q 'Keeps up with changes' "$file"
+            grep -q 'Carries approved work forward' "$file"
             grep -q '02 · AI + Permissions' "$file"
             grep -q 'BUILT TO CARRY YOUR PLAN FORWARD' "$file"
-            grep -q "One place for what matters now, work that continues later, and plans for when you can't respond." "$file"
+            grep -q 'Useful now, built to keep going later.' "$file"
+            grep -q 'How Continuum moves from change to action' "$file"
             grep -q 'That picture is called State' "$file"
-            grep -q 'Runtime is the part that can later keep it alive in the background on the server.' "$file"
-            grep -q 'The rules stay with Continuum when the AI changes' "$file"
-            grep -q 'Afterlife is for continuity plans that may need to outlast a long period' "$file"
+            grep -q 'AI works inside the context and permissions Continuum keeps' "$file"
+            grep -q 'Keep information connected to the people and situations it belongs to' "$file"
+            grep -q 'Continuum can notice when an approved source changes.' "$file"
+            grep -q 'Describe the work normally, then make the important rules clear' "$file"
+            grep -q 'An Automation is how Continuum remembers a repeatable or triggered piece of work.' "$file"
+            grep -q 'Runtime lets approved work continue after you leave.' "$file"
+            grep -q 'Changes can move the work forward.' "$file"
+            grep -q 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.' "$file"
+            grep -q 'Continuum grew out of a simple continuity problem.' "$file"
+            grep -q 'How Continuum is put together' "$file"
+            grep -q 'Start in the Lab, then connect the real backend' "$file"
+            grep -q 'Make private information durable, then let approved work keep going' "$file"
             grep -q 'Silence and urgency never create permission.' "$file"
             grep -q 'Files + OCR / vision' "$file"
             grep -q 'You say you are leaving for two minutes and return two seconds later.' "$file"
@@ -109,19 +122,6 @@ jobs:
             grep -q 'Protected proof of life, timing and activity' "$file"
             grep -q 'STATE IS WHAT IS TRUE NOW' "$file"
             grep -q 'WHY DID CONTINUUM DO THAT?' "$file"
-            grep -q "Signals are the meaningful changes Continuum notices from sources you've approved." "$file"
-            grep -q 'Continuum keeps different kinds of information separate.' "$file"
-            grep -q 'Different jobs can use different approved models.' "$file"
-            grep -q 'An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do.' "$file"
-            grep -q 'Runtime keeps published work alive in the background after you close the app.' "$file"
-            grep -q 'Changes can make the next step ready.' "$file"
-            grep -q 'Planner is the part that turns that request into a proposed set of changes, called a Change Plan.' "$file"
-            grep -q 'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.' "$file"
-            grep -q 'Goals can hold a larger outcome when the route may change.' "$file"
-            grep -q "Work you prepared in advance can continue when you can't take part directly." "$file"
-            grep -q 'If the same problem keeps coming up, Continuum may need a new data model or backend feature.' "$file"
-            grep -q 'The Control Center gives you one place to see what Continuum is doing in the background.' "$file"
-            grep -q 'Afterlife started with a practical question.' "$file"
             grep -q 'Open the architecture walkthrough' "$file"
             grep -q 'Open the build workflow' "$file"
           }
@@ -139,6 +139,12 @@ jobs:
           assert 'hero-network' not in hero, 'Product map must stay out of the opening hero.'
           assert 'continuum-presence' not in hero, 'Detailed presence map must stay below the opening hero.'
           assert 'href="/checkin/"' in hero, 'The opening hero must link to the LIVE Check In surface.'
+
+          lead_start = hero.index('class="hero-lead')
+          lead_end = hero.index('hero-truth-row', lead_start)
+          lead = hero[lead_start:lead_end]
+          for internal_name in ['Library', 'Directory', 'Spaces', 'Automation', 'Runtime', 'Planner', 'Goal']:
+              assert internal_name not in lead, f'Opening explanation became a component glossary: {internal_name}'
 
           overview = html.index('id="overview"')
           time_panel = html.index('continuum-kt-time', overview)
@@ -176,14 +182,16 @@ jobs:
               'Runtime can later keep work moving on the server through waits, replies and retries.',
               'A Goal can keep an outcome moving across several steps and changing conditions.',
               'Signals help Continuum notice meaningful changes from approved sources.',
-              'Your information, plans and permissions across time',
-              'An Automation is a saved definition of work and the rules around it.',
-              'Runtime is the server-side part that can keep approved work moving even after you close the app.',
-              'A Goal is for an outcome that may take several steps and change along the way.'
+              'Your information, workflows and goals across time',
+              'workflows that react to changes and longer goals that may take several steps',
+              'Built for workflows + longer goals',
+              'An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do.',
+              'Runtime keeps published work alive in the background after you close the app.',
+              'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.'
           ]
           for phrase in stale:
               assert phrase not in html, f'Stale narrow, technical-first or AI-like copy is still visible: {phrase}'
-          print('Desktop Continuum product story, natural voice, reader-first terminology, knowledge, time and architecture order passed.')
+          print('Desktop Continuum whole-product story, natural voice, reader-first terminology, knowledge, time and architecture order passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
@@ -191,4 +199,4 @@ jobs:
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc complete product story rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc balanced whole-product story rendered on desktop and 390x844 mobile.'
