@@ -46,6 +46,7 @@ jobs:
           node --check assets/continuum-doc-i18n.js
           node --check assets/continuum-doc-knowledge-time.js
           node --check assets/continuum-doc-human-cadence.js
+          node --check assets/continuum-doc-reader-first.js
           node tests/personal-os-doc-smoke.test.js
           node tests/doc-visual-qa-smoke.test.js
           node tests/continuum-doc-clarity-smoke.test.js
@@ -89,14 +90,18 @@ jobs:
             grep -q 'data-continuum-positioning="continuity-first"' "$file"
             grep -q 'data-continuum-human-cadence="ready"' "$file"
             grep -q 'data-continuum-voice="natural-v3"' "$file"
+            grep -q 'data-continuum-reader-first="ready"' "$file"
             grep -q 'Your information, plans and permissions across time' "$file"
-            grep -q 'Continuum keeps all of this connected.' "$file"
-            grep -q "when you can't respond" "$file"
-            grep -q "doesn't take the underlying records" "$file"
+            grep -q 'Your saved information lives in Library' "$file"
+            grep -q "a Space brings the relevant context together" "$file"
+            grep -q "Check In is the live timer you use to show you're still responding" "$file"
+            grep -q 'Afterlife is the longer-term continuity area' "$file"
             grep -q 'BUILT TO CARRY YOUR PLAN FORWARD' "$file"
-            grep -q 'One place for what matters now, later, and when you cannot respond.' "$file"
+            grep -q "One place for what matters now, later, and when you can't respond." "$file"
+            grep -q 'That picture is called State' "$file"
+            grep -q 'Runtime is the server-side part that can keep approved work moving even after you close the app.' "$file"
             grep -q 'The rules stay with Continuum when the AI changes' "$file"
-            grep -q 'Afterlife carries the same Continuum foundation into long-term continuity.' "$file"
+            grep -q 'Afterlife is for continuity plans that may need to outlast a long period' "$file"
             grep -q 'Silence and urgency never create permission.' "$file"
             grep -q 'Files + OCR / vision' "$file"
             grep -q 'You say you are leaving for two minutes and return two seconds later.' "$file"
@@ -104,9 +109,12 @@ jobs:
             grep -q 'Protected proof of life, timing and activity' "$file"
             grep -q 'STATE IS WHAT IS TRUE NOW' "$file"
             grep -q 'WHY DID CONTINUUM DO THAT?' "$file"
-            grep -q 'Signals help Continuum notice meaningful changes from approved sources.' "$file"
+            grep -q "Signals are the meaningful changes Continuum notices from sources you've approved." "$file"
             grep -q 'Continuum keeps different kinds of information separate.' "$file"
             grep -q 'Different jobs can use different approved models.' "$file"
+            grep -q 'An Automation is a saved definition of work and the rules around it.' "$file"
+            grep -q 'Planner is the part that turns that request into a proposed set of changes, called a Change Plan.' "$file"
+            grep -q 'A Goal is for an outcome that may take several steps and change along the way.' "$file"
             grep -q "Work you prepared in advance can continue when you can't take part directly." "$file"
             grep -q 'If the same problem keeps coming up, Continuum may need a new data model or backend feature.' "$file"
             grep -q 'The Control Center gives you one place to see what Continuum is doing in the background.' "$file"
@@ -161,11 +169,14 @@ jobs:
               'Changing the model does not change the authority',
               'It cannot quietly change the limits',
               'Adding a tool does not add permission',
-              'when you cannot take part directly'
+              'when you cannot take part directly',
+              'Runtime can later keep work moving on the server through waits, replies and retries.',
+              'A Goal can keep an outcome moving across several steps and changing conditions.',
+              'Signals help Continuum notice meaningful changes from approved sources.'
           ]
           for phrase in stale:
-              assert phrase not in html, f'Stale AI-like cadence is still visible: {phrase}'
-          print('Desktop continuity positioning, contractions, natural voice, knowledge, time and architecture order passed.')
+              assert phrase not in html, f'Stale technical-first or AI-like copy is still visible: {phrase}'
+          print('Desktop continuity positioning, natural voice, reader-first terminology, knowledge, time and architecture order passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
@@ -173,4 +184,4 @@ jobs:
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc natural voice rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc reader-first natural voice rendered on desktop and 390x844 mobile.'
