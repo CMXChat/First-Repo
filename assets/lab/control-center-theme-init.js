@@ -11,6 +11,23 @@
     // Storage is optional. The HTML light default remains truthful and usable.
   }
 
+  function installThemeControl() {
+    if (!document.querySelector('link[data-continuum-theme-toggle]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/assets/continuum-theme-toggle.css?v=20260820-1';
+      link.dataset.continuumThemeToggle = 'true';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-continuum-theme-toggle]')) {
+      const script = document.createElement('script');
+      script.src = '/assets/continuum-theme-toggle.js?v=20260820-1';
+      script.defer = true;
+      script.dataset.continuumThemeToggle = 'true';
+      document.head.appendChild(script);
+    }
+  }
+
   // Temporary Lab route convergence. The real shared app shell should own this
   // through the router once these surfaces move into the application frontend.
   function patchDirectoryRoutes() {
@@ -44,6 +61,11 @@
     document.head.appendChild(script);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', patchDirectoryRoutes, { once: true });
-  else patchDirectoryRoutes();
+  function ready() {
+    installThemeControl();
+    patchDirectoryRoutes();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
+  else ready();
 })();
