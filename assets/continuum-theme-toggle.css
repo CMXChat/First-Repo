@@ -6,7 +6,7 @@
  * changing each surface's actual palette or theme persistence logic.
  */
 
-:is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle){
+:is(.continuum-theme-toggle,#themeToggle,[data-v3-theme]){
   position:relative!important;
   display:inline-block!important;
   flex:0 0 auto!important;
@@ -27,11 +27,11 @@
   vertical-align:middle;
 }
 
-:is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)>*{
+:is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])>*{
   display:none!important;
 }
 
-:is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::before{
+:is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::before{
   content:"";
   position:absolute;
   z-index:1;
@@ -46,7 +46,7 @@
   transition:transform 200ms ease,background 200ms ease,box-shadow 200ms ease;
 }
 
-:is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::after{
+:is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::after{
   content:"Dark  Light";
   position:absolute;
   z-index:2;
@@ -65,56 +65,56 @@
   transition:background 180ms ease;
 }
 
-html[data-theme="light"] :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle){
+html[data-theme="light"] :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme]){
   border-color:rgba(52,94,140,.22)!important;
   background:rgba(244,249,253,.96)!important;
   box-shadow:0 7px 20px rgba(45,80,117,.12),inset 0 1px 0 rgba(255,255,255,.9)!important;
 }
 
-html[data-theme="light"] :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::before{
+html[data-theme="light"] :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::before{
   background:linear-gradient(135deg,#ffffff,#dbe9f5);
   box-shadow:0 4px 14px rgba(41,71,99,.18),inset 0 1px 0 rgba(255,255,255,.95);
   transform:translateX(100%);
 }
 
-html[data-theme="light"] :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::after{
+html[data-theme="light"] :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::after{
   background:linear-gradient(90deg,#738398 0 50%,#16283c 50% 100%);
   -webkit-background-clip:text;
   background-clip:text;
 }
 
-:is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle):hover,
-:is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle):focus-visible{
+:is(.continuum-theme-toggle,#themeToggle,[data-v3-theme]):hover,
+:is(.continuum-theme-toggle,#themeToggle,[data-v3-theme]):focus-visible{
   border-color:rgba(99,166,255,.62)!important;
   outline:none!important;
   box-shadow:0 0 0 3px rgba(99,166,255,.10),0 8px 22px rgba(0,0,0,.20)!important;
 }
 
 @media(max-width:700px){
-  :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle){
+  :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme]){
     width:92px!important;
     min-width:92px!important;
   }
-  :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::after{
+  :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::after{
     font-size:9px;
     word-spacing:12px;
   }
 }
 
 @media(max-width:380px){
-  :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle){
+  :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme]){
     width:84px!important;
     min-width:84px!important;
   }
-  :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::after{
+  :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::after{
     font-size:8px;
     word-spacing:9px;
   }
 }
 
 @media(prefers-reduced-motion:reduce){
-  :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::before,
-  :is(.continuum-theme-toggle,body[data-lab-mode="true"] #themeToggle.theme-toggle)::after{
+  :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::before,
+  :is(.continuum-theme-toggle,#themeToggle,[data-v3-theme])::after{
     transition:none!important;
   }
 }
