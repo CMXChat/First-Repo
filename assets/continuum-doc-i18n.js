@@ -19,7 +19,7 @@
   function loadHumanCadence() {
     if (document.querySelector('script[data-continuum-human-cadence]')) return;
     const script = document.createElement('script');
-    script.src = '/assets/continuum-doc-human-cadence.js?v=20260820-2';
+    script.src = '/assets/continuum-doc-human-cadence.js?v=20260820-3';
     script.async = false;
     script.dataset.continuumHumanCadence = 'loader';
     document.body.append(script);
