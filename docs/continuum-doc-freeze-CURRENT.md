@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-20
-Status: FROZEN after owner-authorized whole-product balance and final natural-voice pass
+Status: FROZEN after owner-authorized one-minute explanation and natural-voice pass
 
 ## Freeze decision
 
@@ -19,72 +19,67 @@ Future changes are allowed for:
 
 Routine cleanup should leave the page alone.
 
-## August 20 final reopening
+## August 20 final reader test
 
-The owner asked for one final balance pass after the prior clarity work started explaining internal product names too early.
+A real first-reader reaction showed that the page was still too hard to understand in about one minute. The product names were no longer overwhelming, but the opening had become so broad that it did not quickly explain why Continuum exists around AI.
 
-The resulting rule is now frozen: explain Continuum as one coherent product first, then introduce the parts only after the reader understands the larger idea.
+The accepted fix uses this mental model:
 
-The final pass also rechecked the visible copy for the AI-like patterns already rejected in earlier rounds, including repetitive short declarative cadence, disguised glossary paragraphs, excessive symmetry, generic transitions, canned contrast phrasing and unnecessary architecture vocabulary before its meaning is clear.
+`Think of AI as the brain and Continuum as the nervous system around it`
 
-Canonical positioning companion:
+The analogy is followed immediately by literal explanation. AI can reason and help make decisions. Continuum is the durable private layer around it that carries life and work context across time, keeps track of change, remembers people and documents, enforces permission rules and is being built to keep approved processes going after the chat closes.
 
-`docs/continuum-doc-positioning-CURRENT.md`
+The opening then explains that a change can update what Continuum knows and the owner's existing rules can determine whether the next step is to act, wait, ask, contact someone or do nothing.
+
+The Dead Man Switch is one example of the wider product. Everyday work, offline periods and later multi-step goals use the same foundation.
 
 ## Frozen opening
 
 Hero kicker:
 
 ```text
-A private system for what matters now and what should happen next
+Think of AI as the brain and Continuum as the nervous system around it
 ```
 
 Hero lead:
 
 ```text
-Continuum is a private system for keeping the parts of your life and work that matter connected over time. It remembers useful context, keeps track of what has changed and helps you decide what should happen next without starting from scratch every time.
+An AI model can reason, write and help make decisions. What it still needs around it is a reliable way to carry your life and work context across time, know what changed while you were away, remember the people and documents that matter, enforce your permission rules, and keep a process going after the chat closes. Continuum is that private layer.
 
-The same system is being built to carry approved work forward when you are away, whether the next step depends on a deadline, a reply, a change somewhere else or a longer goal. It can also hold plans for times when you cannot respond. AI can help with the reasoning, but the information, permissions, rules and history remain with Continuum as models and tools change.
+It keeps the information, people, documents, current situation and history around the AI so a change can update what Continuum knows and the rules you set can decide what should happen next. That might mean acting, waiting, asking you, contacting someone or doing nothing. The Dead Man Switch is one example, and the same foundation can help with everyday work when you're asleep, busy or offline and later with bigger goals that take several steps. If you switch to a better AI later, the memory, context, permissions and history stay with Continuum.
 ```
 
-The opening lead must not become a list of internal product names. In particular, Library, Directory, Spaces, Automation, Runtime, Planner and Goal terminology should stay out of the hero explanation.
+The opening lead must stay free of internal surface and architecture names such as Library, Directory, Spaces, Automation, Runtime and Planner. Lowercase ordinary English such as `goals` is fine when it helps explain the whole idea.
 
-Compact labels remain:
+Compact labels:
 
 ```text
-Remembers what matters
-Keeps up with changes
-Carries approved work forward
+Carries context across time
+Keeps up with real changes
+Works inside rules you set
 ```
 
-Hero principle remains:
+Hero principle:
 
 `BUILT TO CARRY YOUR PLAN FORWARD`
 
 Supporting line:
 
-`Your context, permissions and history stay together even as the tools around them change.`
+`You can change the AI without losing the memory, permissions and history Continuum keeps.`
 
-Continuity path remains:
+## Frozen Overview transition
 
-```text
-WITH YOU
-→ FOR YOU
-→ WHEN AWAY
-→ IF YOU CANNOT RESPOND
-```
+Heading:
 
-## Whole-product rule
+`From something changing to the next allowed step`
 
-Continuum should read as one durable private system for context, change, decisions, approved work, permissions and continuity across time.
+The first Overview paragraph explains the loop in normal language before architecture terms appear. A deadline, reply, check-in condition or approved outside change can update what Continuum knows. It checks the rules and permissions already set, and the next step may be to act, wait, ask or do nothing.
 
-Do not let a future clarity pass narrow it into storage, a briefing app, a workflow builder or an Afterlife product alone. Also do not solve that problem by listing every component in the opening.
+The paragraph then tells the reader that the pieces below give those jobs their technical names.
 
-The reader should understand the product before learning the product map.
+## Teaching order
 
-## Reader-first rule
-
-Use this order:
+Use:
 
 ```text
 whole product
@@ -93,17 +88,7 @@ whole product
 → deeper technical detail
 ```
 
-Examples:
-
-- current situation first, then `State`;
-- meaningful change first, then `Signal`;
-- repeatable or triggered work first, then `Automation`;
-- work continuing after the app closes first, then `Runtime`;
-- permission to act first, then `Authority`;
-- proposed product changes first, then `Planner` and `Change Plan`;
-- a larger outcome across several steps first, then `Goal`.
-
-After the first explanation, technical sections may use the real terms normally.
+Once a term has been clearly explained, later sections may use State, Signal, Automation, Runtime, Authority, Planner, Change Plan, Goal and other architecture terms normally.
 
 ## Natural writing contract
 
@@ -115,50 +100,56 @@ Visible `/doc/` paragraph copy should avoid:
 - `not X but Y` phrasing;
 - `rather than` constructions;
 - generic AI-style scene setting;
-- stacked `X does this. Y does that. Z does this.` cadence;
-- glossary-like paragraphs that make the reader assemble the product;
+- stacked short declarative cadence;
+- glossary-like component lists;
 - excessive symmetry and mirrored sentence construction;
-- repeated short sentences with the same rhythm;
 - unnecessary colons and semicolons in ordinary prose;
-- repeated `while` constructions;
-- repeated `can eventually` future framing;
-- stiff uncontracted negatives when normal speech would contract them;
-- unexplained product or architecture names at first meaningful use;
+- repetitive `while` constructions;
+- repetitive `can eventually` future framing;
+- stiff uncontracted negatives when a contraction sounds natural;
+- unexplained architecture terms at first meaningful use;
 - abstract nouns piled together before their practical meaning is clear;
 - repeated explanations that add length without adding meaning;
 - fragment-heavy sales copy outside intentional labels and UI microcopy.
 
-Use connected plain-English paragraphs, varied sentence length, calm technical language, natural contractions and concrete examples. The prose should feel written by someone explaining the product to another person, not generated from a component inventory.
+Do not mechanically ban a normal word just because it can be overused. One natural `while`, `but` or short sentence is fine. The problem is repetitive patterning.
 
-## Product and implementation truth
+Use connected plain-English paragraphs, varied sentence length, natural contractions and concrete situations.
 
-The final story still preserves the full product direction:
+## Product truth
 
-- current context and durable information;
+The page still covers the complete Continuum direction:
+
+- durable information and context;
 - people and relationships;
+- current State and meaningful change;
 - triggered work;
-- longer Goals;
+- larger Goals;
 - permissions and authority;
 - Runtime across time;
 - outside Connections and capabilities;
 - AI inside server-enforced limits;
 - Check In and continuity;
-- Afterlife as a long-term continuity path;
+- Afterlife as one long-term continuity path;
 - Control Center and causal history.
 
 Future capability remains future capability. Goals, long-running Runtime, provider actions and autonomous AI execution are not production claims today.
 
+## Translation and RTL
+
+The new hero remains compatible with the existing translation layer. The brain/nervous-system analogy is followed by literal language so machine translation does not have to infer the product from an idiom alone.
+
+Keep the existing Hebrew, Arabic, Persian, Urdu and Yiddish RTL rules, `dir="auto"` setup, mirrored navigation, directional arrows and mobile drawer behavior.
+
 ## Protected structure and visuals
 
-The final pass keeps:
+Keep:
 
-- the eight stable sections;
-- the existing visual system;
+- eight stable sections;
+- existing visual system;
 - Check In as the first-class LIVE route;
 - truthful Lab and future status labels;
-- current State teaching;
-- Sources, Observations, Signals and information quality;
-- model routing;
+- State, Sources, Observations, Signals and information-quality teaching;
 - Planner and Change Plan direction;
 - Goals / Missions;
 - capability discovery and architecture evolution;
@@ -171,28 +162,14 @@ The final pass keeps:
 
 ## Final visible-copy layers
 
-The continuity, knowledge and time layer remains:
+- `assets/continuum-doc-knowledge-time.js`
+- `assets/continuum-doc-knowledge-time.css`
+- `assets/continuum-doc-human-cadence.js`
+- `assets/continuum-doc-reader-first.js`
 
-- `assets/continuum-doc-knowledge-time.js`;
-- `assets/continuum-doc-knowledge-time.css`.
+`assets/continuum-doc-i18n.js` loads the final reader layer as:
 
-The natural-voice layer remains:
-
-- `assets/continuum-doc-human-cadence.js`.
-
-The final reader and whole-product story layer is:
-
-- `assets/continuum-doc-reader-first.js`.
-
-`assets/continuum-doc-i18n.js` loads those layers in that order.
-
-Current loader targets:
-
-```text
-/assets/continuum-doc-knowledge-time.js?v=20260820-1
-/assets/continuum-doc-human-cadence.js?v=20260820-3
-/assets/continuum-doc-reader-first.js?v=20260820-3
-```
+`/assets/continuum-doc-reader-first.js?v=20260820-4`
 
 Current markers:
 
@@ -206,9 +183,9 @@ data-continuum-product-story="balanced-v2"
 
 ## Regression guard
 
-`tests/continuum-doc-continuity-positioning.test.js` validates the final whole-product story and writing rules.
+`tests/continuum-doc-continuity-positioning.test.js` protects the one-minute explanation, natural contractions, reader-first technical terminology and cache version.
 
-`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and rejects stale narrow, technical-first or AI-like copy. It also checks that the rendered hero lead does not turn back into a component glossary.
+`.github/workflows/continuum-doc-clarity-validation.yml` validates the final rendered desktop and 390x844 mobile page. It also rejects the previous broad hero and verifies that the new lead does not become a product glossary.
 
 A workflow file existing does not prove a green run. Report CI as green only after an actual run or status confirms it.
 
