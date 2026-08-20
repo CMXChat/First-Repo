@@ -34,17 +34,24 @@ for (const required of [
 
 for (const required of [
   'Continuum keeps all of this connected.',
+  "when you can't respond",
+  "doesn't take the underlying records",
   'The rules stay with Continuum when the AI changes',
-  'Library, Directory and Spaces handle different parts of the same context.',
+  'Library, Directory and Spaces each handle a different part of the same context.',
   'An Automation can keep using version 3 even after you start editing version 4.',
   'Afterlife carries the same Continuum foundation into long-term continuity.',
+  "the AI doesn't have to stay open",
+  "Changing the model doesn't change the authority",
   'Signals help Continuum notice meaningful changes from approved sources.',
   'A Goal can keep an outcome moving across several steps and changing conditions.',
+  "It can't quietly change the limits",
+  "Adding a tool doesn't add permission",
+  "when you can't take part directly",
   'If the same problem keeps coming up, Continuum may need a new data model or backend feature.',
-  'The Control Center keeps background work visible.',
+  'The Control Center gives you one place to see what Continuum is doing in the background.',
   'Afterlife started with a practical question.',
   "dataset.continuumHumanCadence = 'ready'",
-  "dataset.continuumVoice = 'natural-v2'"
+  "dataset.continuumVoice = 'natural-v3'"
 ]) assert.match(cadence, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const staleCadence of [
@@ -55,7 +62,13 @@ for (const staleCadence of [
   'Continuum keeps those pieces connected:',
   'long-term continuity:',
   'Afterlife began with a practical problem:',
-  'durable information and focused context; Automations'
+  'durable information and focused context; Automations',
+  'does not take the underlying records',
+  'AI does not have to stay open',
+  'Changing the model does not change the authority',
+  'It cannot quietly change the limits',
+  'Adding a tool does not add permission',
+  'when you cannot take part directly'
 ]) assert.doesNotMatch(cadence, new RegExp(staleCadence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 assert.doesNotMatch(cadence, /\bcan eventually\b/i);
@@ -72,7 +85,7 @@ for (const required of [
 ]) assert.ok(css.includes(required), `Missing continuity positioning style: ${required}`);
 
 assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
-assert.match(loader, /continuum-doc-human-cadence\.js\?v=20260820-2/);
+assert.match(loader, /continuum-doc-human-cadence\.js\?v=20260820-3/);
 assert.match(loader, /loadHumanCadence/);
 assert.match(loader, /script\.async = false/);
 
