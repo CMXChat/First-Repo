@@ -45,6 +45,7 @@ jobs:
           node --check assets/continuum-doc-origin.js
           node --check assets/continuum-doc-i18n.js
           node --check assets/continuum-doc-knowledge-time.js
+          node --check assets/continuum-doc-human-cadence.js
           node tests/personal-os-doc-smoke.test.js
           node tests/doc-visual-qa-smoke.test.js
           node tests/continuum-doc-clarity-smoke.test.js
@@ -86,24 +87,25 @@ jobs:
             grep -q 'data-continuum-authorized-continuity="ready"' "$file"
             grep -q 'data-continuum-architecture-evolution="ready"' "$file"
             grep -q 'data-continuum-positioning="continuity-first"' "$file"
-            grep -q 'Your information, intent and authority across time' "$file"
-            grep -q 'preserve the continuity plan you prepared for a time when you can no longer respond' "$file"
-            grep -q 'Spaces, Automations, AI, Check In and Afterlife use that same durable foundation' "$file"
-            grep -q 'BUILT TO CARRY INTENT FORWARD' "$file"
-            grep -q 'One operating layer across presence, absence and continuity.' "$file"
-            grep -q 'Afterlife is the continuity edge of Continuum.' "$file"
-            grep -q 'Silence and urgency never create authority.' "$file"
+            grep -q 'data-continuum-human-cadence="ready"' "$file"
+            grep -q 'Your information, plans and permissions across time' "$file"
+            grep -q 'Continuum keeps those pieces connected:' "$file"
+            grep -q 'BUILT TO CARRY YOUR PLAN FORWARD' "$file"
+            grep -q 'One place for what matters now, later, and when you cannot respond.' "$file"
+            grep -q 'The rules stay with Continuum when the AI changes' "$file"
+            grep -q 'Afterlife extends the same Continuum foundation into long-term continuity:' "$file"
+            grep -q 'Silence and urgency never create permission.' "$file"
             grep -q 'Files + OCR / vision' "$file"
-            grep -q 'You leave for two minutes and return two seconds later.' "$file"
+            grep -q 'You say you are leaving for two minutes and return two seconds later.' "$file"
             grep -q 'Open Check In' "$file"
             grep -q 'Protected proof of life, timing and activity' "$file"
             grep -q 'STATE IS WHAT IS TRUE NOW' "$file"
             grep -q 'WHY DID CONTINUUM DO THAT?' "$file"
-            grep -q 'Signals let Continuum notice when something changes.' "$file"
-            grep -q 'HOW CONTINUUM TREATS INFORMATION' "$file"
-            grep -q 'Different approved models can handle different jobs.' "$file"
-            grep -q 'Specific work can continue on your behalf when you cannot take part directly.' "$file"
-            grep -q 'A Goal can expose a limitation in Continuum itself.' "$file"
+            grep -q 'Signals help Continuum notice meaningful changes from approved sources.' "$file"
+            grep -q 'Continuum keeps different kinds of information distinct.' "$file"
+            grep -q 'Different approved models can be used where they fit best.' "$file"
+            grep -q 'Work you prepared in advance can continue when you cannot take part directly.' "$file"
+            grep -q 'A recurring problem can eventually show where Continuum itself needs to change.' "$file"
             grep -q 'Capability growth and permission growth stay separate.' "$file"
             grep -q 'Open the architecture walkthrough' "$file"
             grep -q 'Open the build workflow' "$file"
@@ -141,7 +143,15 @@ jobs:
           assert html.count('href="/checkin/"') >= 3, 'Check In should stay reachable from multiple meaningful locations.'
           footer = html.index('class="document-footer"')
           assert html.index('continuum-route-live', footer) > footer, 'Footer must present Check In as the LIVE route.'
-          print('Desktop continuity positioning, knowledge, time and architecture order passed.')
+
+          stale = [
+              'Library holds your information. Directory keeps track of people and relationships.',
+              'AI can change. Continuum keeps the rules around it.',
+              'Automations handle repeatable rules. Goals keep an outcome alive.'
+          ]
+          for phrase in stale:
+              assert phrase not in html, f'Stale punchy cadence is still visible: {phrase}'
+          print('Desktop continuity positioning, human cadence, knowledge, time and architecture order passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
@@ -149,4 +159,4 @@ jobs:
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc continuity-first refinement rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc human cadence rendered on desktop and 390x844 mobile.'
