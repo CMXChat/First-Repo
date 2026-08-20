@@ -1,3 +1,5 @@
+@import url("/assets/continuum-theme-toggle.css?v=20260820-1");
+
 /* /lab only: visible reminder that this page is using synthetic data. */
 body[data-lab-mode="true"]::after{
   content:"LAB · MOCK DATA · PROD API BLOCKED";
