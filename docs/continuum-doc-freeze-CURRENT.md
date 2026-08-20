@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-20
-Status: FROZEN after owner-authorized plain-English clarity pass over the continuity-first product overview
+Status: FROZEN after owner-authorized plain-English and human-cadence passes
 
 ## Freeze decision
 
@@ -19,19 +19,13 @@ Future changes are allowed for:
 
 Routine cleanup should leave the page alone.
 
-## August 20 owner-authorized clarity pass
+## August 20 owner-authorized reopening
 
-The owner explicitly reopened `/doc/` after reviewing the mobile page and asked for the whole document to become easier to understand and less AI-like without ruining the existing design.
+The owner asked for the page to become easier to understand and less AI-like while preserving the existing design and architecture.
 
-The accepted scope was intentionally narrow:
+The first pass simplified terminology and established the rule that human meaning should come before architecture vocabulary.
 
-- preserve the eight-section reading path;
-- preserve the visual system;
-- preserve the existing architecture and capability truth;
-- simplify visible wording;
-- explain important terms in ordinary English before using deeper architecture language;
-- use concrete examples where they teach faster than abstract definitions;
-- keep current writing restrictions.
+The follow-up cadence audit found that some copy was individually clear but still sounded generated because several short subject-action sentences were stacked together. The final pass therefore also protects connected paragraph rhythm and varied sentence structure.
 
 Canonical positioning companion:
 
@@ -45,23 +39,11 @@ Hero direction:
 Your information, plans and permissions across time
 ```
 
-The first screen now explains that Continuum can:
+The opening explains that Continuum can keep information, people, instructions and permissions over time, help use that context today, continue work already approved while the owner is away, and follow continuity plans prepared for a time when the owner cannot respond.
 
-- keep information, people, instructions and permissions over time;
-- help use that context today;
-- continue work already approved while the owner is away;
-- follow continuity plans prepared for a time when the owner cannot respond.
+The next paragraph now connects the product pieces in one flowing explanation. Library preserves information, Directory ties it to people and relationships, Spaces brings the relevant context into focus, and Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the continuity plan when the owner is away or unable to respond, while AI models and tools can change without taking the underlying records, permissions and history with them.
 
-The second hero paragraph explains the product pieces directly:
-
-- Library holds information;
-- Directory keeps people and relationships;
-- Spaces brings relevant context into focus;
-- Automations define approved work;
-- Check In and Afterlife support prepared continuity;
-- AI models and tools can change while Continuum keeps the lasting records and rules.
-
-Compact hero ideas:
+Compact hero labels remain intentionally concise:
 
 ```text
 Knows what changed and when
@@ -73,7 +55,7 @@ Hero principle:
 
 `BUILT TO CARRY YOUR PLAN FORWARD`
 
-The continuity path remains:
+Continuity path:
 
 ```text
 WITH YOU
@@ -84,24 +66,28 @@ WITH YOU
 
 ## Plain-English teaching rule
 
-The document should explain the human idea first and the architecture term second.
+Explain the human idea first and the architecture term second.
 
-Examples now include:
+Examples include:
 
 - State = Continuum's current picture of what is true now;
 - authority = permission to act;
-- a Directory relationship adds context and does not create permission by itself;
+- Directory relationship labels add context without granting permission by themselves;
 - an Automation can keep using version 3 while version 4 is being edited;
 - Runtime can later keep waits, replies and retries on the server after the browser closes;
-- elapsed time comes from server timestamps, so the AI does not need to stay open between events.
+- elapsed time comes from server timestamps, so AI does not need to stay open between events.
+
+## Human cadence rule
+
+Related ideas should read as connected prose. Avoid repeatedly resetting a paragraph with the same short pattern, especially sequences such as `Library does X. Directory does Y. Spaces does Z.`
+
+Short wording remains appropriate for labels, cards, flow diagrams, status pills and deliberate UI microcopy.
+
+Visible paragraph copy should use varied sentence length and make the relationship between ideas clear.
 
 ## Information direction
 
-Library, Directory and Spaces remain distinct:
-
-- Library keeps documents, files, knowledge and version history;
-- Directory keeps people, organizations and relationships;
-- Spaces brings relevant pieces together for a focused view.
+Library, Directory and Spaces remain distinct while being explained as connected parts of the same information layer.
 
 Knowledge intake can include:
 
@@ -119,21 +105,17 @@ Review flow remains:
 CAPTURE → UNDERSTAND → REVIEW → INTEGRATE
 ```
 
-The original source stays traceable. Important findings stay reviewable before they become accepted long-term knowledge.
+The original source stays traceable and important findings remain reviewable before they become accepted long-term knowledge.
 
 ## AI and authority direction
 
-The AI section now leads with:
+When the AI changes, Continuum keeps the information, current State, permissions and server-side rules around it.
 
-`AI can change. Continuum keeps the rules around it.`
-
-A model can reason, write and use tools. Continuum keeps the information, current State, permissions, rules and history that decide what the model can see and what it can do.
-
-The server remains the final permission check.
+The server remains the final permission check, and improved reasoning never creates extra authority by itself.
 
 ## Automations and Runtime direction
 
-The Automation section now leads with:
+The Automation section keeps the human interaction first:
 
 `Describe what should happen, then make the rules clear.`
 
@@ -143,7 +125,7 @@ Current Lab workflow definitions still do not imply provider execution.
 
 ## Temporal-awareness direction
 
-The concrete example remains:
+Concrete example:
 
 ```text
 User says they are leaving for two minutes
@@ -151,15 +133,11 @@ User says they are leaving for two minutes
 → Continuum knows roughly two seconds elapsed
 ```
 
-Consequential elapsed time comes from backend/server timestamps.
-
-Check In already proves server-owned timing today.
+Consequential elapsed time comes from backend/server timestamps. Check In already proves server-owned timing today.
 
 ## Afterlife positioning
 
-Afterlife is introduced as Continuum's long-term continuity path.
-
-The owner prepares people, information, instructions and permissions in advance. Check In records the trigger if the owner stops responding long enough. Future Runtime can follow the prepared plan.
+Afterlife extends the same Continuum foundation into long-term continuity. The owner prepares people, information, instructions and permissions in advance, Check In records the trigger if the owner stops responding long enough, and future Runtime can follow the plan already prepared.
 
 Visible guardrail:
 
@@ -175,16 +153,17 @@ Visible `/doc/` copy should avoid:
 - `not X but Y` phrasing;
 - `rather than` constructions;
 - generic AI-style intros;
-- fragment-heavy sales copy;
-- excessive symmetry;
+- stacked `X does this. Y does that. Z does this.` paragraph cadence;
+- excessive symmetry and mirrored sentence construction;
+- fragment-heavy sales copy outside intentional UI labels;
 - repeated abstract nouns when a simpler word works;
 - repeated explanations that add length without adding meaning.
 
-Use connected plain-English paragraphs, calm technical language, concrete examples and restrained emphasis.
+Use connected plain-English paragraphs, varied sentence length, calm technical language, concrete examples and restrained emphasis.
 
 ## Protected structure and visuals
 
-The clarity pass keeps:
+The clarity and cadence passes keep:
 
 - the eight stable sections;
 - the existing visual system;
@@ -203,40 +182,46 @@ The clarity pass keeps:
 - RTL translation compatibility;
 - print coverage.
 
-## Final visible-copy layer
+## Final visible-copy layers
 
-The final continuity/knowledge/time/clarity copy lives in:
+The continuity/knowledge/time clarity layer remains:
 
 - `assets/continuum-doc-knowledge-time.js`;
 - `assets/continuum-doc-knowledge-time.css`.
 
-`assets/continuum-doc-i18n.js` performs direction preparation and loads the final copy layer.
+The final human-voice layer is:
 
-Current loader target:
+- `assets/continuum-doc-human-cadence.js`.
 
-`/assets/continuum-doc-knowledge-time.js?v=20260820-1`
+`assets/continuum-doc-i18n.js` loads the knowledge/time layer first and the human-cadence layer after it.
 
-Current visible clarity marker:
+Current loader targets:
 
-`data-continuum-clarity="plain-english-v1"`
+```text
+/assets/continuum-doc-knowledge-time.js?v=20260820-1
+/assets/continuum-doc-human-cadence.js?v=20260820-1
+```
+
+Current markers:
+
+```text
+data-continuum-clarity="plain-english-v1"
+data-continuum-human-cadence="ready"
+```
 
 The static `doc/index.html` still loads the i18n bootstrap using its existing query token. Normal browser revalidation should pick up the updated bootstrap. A future query-token bump remains allowed if a device proves stale.
 
 ## Regression guard
 
-Current dedicated positioning test:
+`tests/continuum-doc-continuity-positioning.test.js` now validates both the plain-English layer and final human-cadence layer.
 
-`tests/continuum-doc-continuity-positioning.test.js`
-
-It checks the plain-English hero, term definitions, Library/Directory/Spaces explanation, versioning example, Automations/Runtime wording, Afterlife permission rule, temporal example, writing restrictions, responsive styles and final loader target.
-
-`.github/workflows/continuum-doc-clarity-validation.yml` remains the validation workflow.
+`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and explicitly rejects known stale punchy phrases after final rendering.
 
 A workflow file existing does not prove a green run. Report CI as green only after an actual run/status confirms it.
 
 ## Backend boundary unchanged
 
-This `/doc/` pass changes no production backend claim and authorizes no production migration, deployment, provider execution, general ingestion, Runtime activation, autonomous AI execution or new authority.
+This `/doc/` work changes no production backend claim and authorizes no migration, deployment, provider execution, general ingestion, Runtime activation, autonomous AI execution or new authority.
 
 ## Reopen rule
 
