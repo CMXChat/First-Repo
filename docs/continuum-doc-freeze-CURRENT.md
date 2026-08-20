@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-20
-Status: FROZEN after owner-authorized plain-English, cadence and natural-voice passes
+Status: FROZEN after owner-authorized plain-English, cadence, natural-voice and contraction passes
 
 ## Freeze decision
 
@@ -27,7 +27,9 @@ The first pass simplified terminology and established the rule that human meanin
 
 The second pass removed stacked short subject-action sentences and protected connected paragraph rhythm.
 
-The final pass went after smaller writing habits that still made some copy feel generated. Normal prose now avoids unnecessary colons and semicolons, repeated `while`, repeated `can eventually`, overly balanced component lists and technical wording that can be explained more naturally.
+The third pass went after smaller writing habits that still made some copy feel generated. Normal prose now avoids unnecessary colons and semicolons, repeated `while`, repeated `can eventually`, overly balanced component lists and technical wording that can be explained more naturally.
+
+The latest pass adds a conversational contraction rule. Normal explanatory prose should prefer forms such as `doesn't`, `isn't`, `can't`, `won't` and similar contractions when that is how a person would naturally say the sentence. Full forms remain appropriate when deliberate emphasis or technical clarity genuinely benefits from them.
 
 Canonical positioning companion
 
@@ -41,9 +43,9 @@ Hero direction
 Your information, plans and permissions across time
 ```
 
-The opening explains that Continuum can keep information, people, instructions and permissions over time, help use that context today, continue work already approved when the owner is away, and follow continuity plans prepared for a time when the owner cannot respond.
+The opening explains that Continuum can keep information, people, instructions and permissions over time, help use that context today, continue work already approved when the owner is away, and follow continuity plans prepared for a time when the owner can't respond.
 
-The next paragraph connects the product pieces naturally. Library preserves information and Directory ties it to people and relationships, giving Spaces the context it needs for a focused view. Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the plan when the owner is away or unable to respond, and changing the AI model or tool does not take the underlying records, permissions or history with it.
+The next paragraph connects the product pieces naturally. Library preserves information and Directory ties it to people and relationships, giving Spaces the context it needs for a focused view. Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the plan when the owner is away or unable to respond, and changing the AI model or tool doesn't take the underlying records, permissions or history with it.
 
 Compact hero labels remain intentionally concise.
 
@@ -77,15 +79,17 @@ Examples include:
 - Directory relationship labels add context without granting permission by themselves;
 - an Automation can keep using version 3 after version 4 starts being edited;
 - Runtime can later keep waits, replies and retries on the server after the browser closes;
-- elapsed time comes from server timestamps, so AI does not need to stay open between events.
+- elapsed time comes from server timestamps, so AI doesn't need to stay open between events.
 
 ## Human voice rule
 
 Related ideas should read as connected prose. Avoid repeatedly resetting a paragraph with the same short pattern.
 
-Normal paragraphs should also avoid punctuation or sentence shapes that make the copy feel overly composed. Colons and semicolons are fine when code, data, technical notation, labels or diagrams genuinely need them. They should not be the default way normal explanatory prose is joined together.
+Normal paragraphs should also avoid punctuation or sentence shapes that make the copy feel overly composed. Colons and semicolons are fine when code, data, technical notation, labels or diagrams genuinely need them. They shouldn't be the default way normal explanatory prose is joined together.
 
 Repeated `while` constructions, repeated `can eventually`, perfectly balanced component lists and unnecessary architecture vocabulary should be rewritten when a simpler sentence sounds more natural.
+
+Prefer natural contractions in ordinary prose. `Doesn't`, `isn't`, `can't`, `won't`, `you're` and similar forms usually sound more human than their full versions. Don't force a contraction where the full form adds useful emphasis or precision.
 
 Short wording remains appropriate for labels, cards, flow diagrams, status pills and deliberate UI microcopy.
 
@@ -162,11 +166,12 @@ Visible `/doc/` paragraph copy should avoid:
 - unnecessary colons and semicolons in normal prose;
 - repeated `while` constructions;
 - repeated `can eventually` future framing;
+- stiff uncontracted negatives when a normal contraction sounds better;
 - dense architecture vocabulary when a simpler phrase works;
 - fragment-heavy sales copy outside intentional UI labels;
 - repeated explanations that add length without adding meaning.
 
-Use connected plain-English paragraphs, varied sentence length, calm technical language, concrete examples and restrained emphasis.
+Use connected plain-English paragraphs, varied sentence length, calm technical language, natural contractions, concrete examples and restrained emphasis.
 
 ## Protected structure and visuals
 
@@ -206,7 +211,7 @@ Current loader targets
 
 ```text
 /assets/continuum-doc-knowledge-time.js?v=20260820-1
-/assets/continuum-doc-human-cadence.js?v=20260820-2
+/assets/continuum-doc-human-cadence.js?v=20260820-3
 ```
 
 Current markers
@@ -214,7 +219,7 @@ Current markers
 ```text
 data-continuum-clarity="plain-english-v1"
 data-continuum-human-cadence="ready"
-data-continuum-voice="natural-v2"
+data-continuum-voice="natural-v3"
 ```
 
 The static `doc/index.html` still loads the i18n bootstrap using its existing query token. Normal browser revalidation should pick up the updated bootstrap. A future query-token bump remains allowed if a device proves stale.
@@ -223,7 +228,7 @@ The static `doc/index.html` still loads the i18n bootstrap using its existing qu
 
 `tests/continuum-doc-continuity-positioning.test.js` validates the plain-English layer and final natural-voice layer.
 
-`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and explicitly rejects known stale punchy and punctuation-heavy phrases after final rendering.
+`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and explicitly rejects known stale punchy, punctuation-heavy and stiff uncontracted phrases after final rendering.
 
 A workflow file existing does not prove a green run. Report CI as green only after an actual run/status confirms it.
 
