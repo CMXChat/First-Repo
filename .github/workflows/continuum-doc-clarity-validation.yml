@@ -47,10 +47,12 @@ jobs:
           node --check assets/continuum-doc-knowledge-time.js
           node --check assets/continuum-doc-human-cadence.js
           node --check assets/continuum-doc-reader-first.js
+          node --check assets/continuum-doc-final-voice.js
           node tests/personal-os-doc-smoke.test.js
           node tests/doc-visual-qa-smoke.test.js
           node tests/continuum-doc-clarity-smoke.test.js
           node tests/continuum-doc-continuity-positioning.test.js
+          node tests/continuum-doc-final-voice.test.js
 
       - name: Browser clarity smoke desktop and mobile
         run: |
@@ -74,24 +76,26 @@ jobs:
             local file="$1"
             grep -q 'data-continuum-clarity="ready"' "$file"
             grep -q 'data-continuum-human-cadence="ready"' "$file"
-            grep -q 'data-continuum-voice="natural-v3"' "$file"
             grep -q 'data-continuum-reader-first="ready"' "$file"
-            grep -q 'data-continuum-product-story="balanced-v2"' "$file"
+            grep -q 'data-continuum-final-voice="ready"' "$file"
+            grep -q 'data-continuum-voice="natural-v4"' "$file"
             grep -q 'Think of AI as the brain and Continuum as the nervous system around it' "$file"
-            grep -q 'Continuum is that private layer.' "$file"
+            grep -q 'Continuum is the private layer around the AI that keeps those things connected over time.' "$file"
             grep -q 'That might mean acting, waiting, asking you, contacting someone or doing nothing.' "$file"
-            grep -q 'The Dead Man Switch is one example' "$file"
+            grep -q 'The Dead Man Switch is one example of that' "$file"
             grep -q 'If you switch to a better AI later' "$file"
             grep -q 'Carries context across time' "$file"
             grep -q 'Keeps up with real changes' "$file"
             grep -q 'Works inside rules you set' "$file"
             grep -q 'From something changing to the next allowed step' "$file"
-            grep -q 'The pieces below give those jobs their technical names.' "$file"
+            grep -q 'From there the flow is simple.' "$file"
+            grep -q 'The sections below put the technical names on each part of that flow.' "$file"
             grep -q 'That picture is called State' "$file"
             grep -q '02 · AI + Permissions' "$file"
-            grep -q 'An Automation is how Continuum remembers a repeatable or triggered piece of work.' "$file"
+            grep -q 'An Automation is a saved piece of work that can run again or start when something happens.' "$file"
             grep -q 'Runtime lets approved work continue after you leave.' "$file"
             grep -q 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.' "$file"
+            grep -q 'That same setup is useful long before anything goes wrong.' "$file"
             grep -q 'Silence and urgency never create permission.' "$file"
             grep -q 'Files + OCR / vision' "$file"
             grep -q 'Open Check In' "$file"
@@ -117,10 +121,23 @@ jobs:
           for internal_name in ['Library', 'Directory', 'Spaces', 'Automation', 'Runtime', 'Planner', 'Goal']:
               assert internal_name not in lead, f'Opening explanation became a component glossary: {internal_name}'
 
-          assert 'A private system for what matters now and what should happen next' not in html
-          assert 'Continuum is a private system for keeping the parts of your life and work that matter connected over time.' not in html
-          assert 'does not gain extra permission' not in html
-          assert 'when you cannot respond' not in lead
+          stale = [
+              'A private system for what matters now and what should happen next',
+              'Continuum is a private system for keeping the parts of your life and work that matter connected over time.',
+              'What it still needs around it is a reliable way to carry your life and work context across time',
+              'That basic idea becomes a loop.',
+              'An Automation is how Continuum remembers a repeatable or triggered piece of work.',
+              'When Continuum keeps reaching the edge of what a connected tool can do, that gap should be visible.',
+              'If the same limitation keeps blocking useful work, the product itself may need to grow.',
+              'By this point the parts have names.',
+              'Once that problem is solved, the same foundation becomes useful every day.',
+              'That is the broader Continuum idea.',
+              'The browser, backend and database explain how the app runs.',
+              'does not gain extra permission',
+              'when you cannot respond'
+          ]
+          for phrase in stale:
+              assert phrase not in html, f'Stale AI-like or superseded copy is still visible: {phrase}'
 
           overview = html.index('id="overview"')
           ai = html.index('id="difference"')
@@ -133,7 +150,7 @@ jobs:
           assert overview < ai < spaces < action < afterlife < engineering < build < status
 
           assert html.count('href="/checkin/"') >= 3
-          print('Desktop Continuum one-minute explanation and teaching order passed.')
+          print('Desktop Continuum one-minute explanation and final natural voice passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
@@ -141,4 +158,4 @@ jobs:
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc one-minute explanation rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc final natural voice rendered on desktop and 390x844 mobile.'
