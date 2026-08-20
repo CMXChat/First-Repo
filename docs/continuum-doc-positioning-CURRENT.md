@@ -1,7 +1,7 @@
 # Continuum `/doc/` Positioning - CURRENT
 
 Date: 2026-08-20
-Status: Canonical product-complete positioning with plain-English, natural-voice and reader-first terminology passes
+Status: Canonical balanced whole-product positioning with plain-English, natural-voice and reader-first passes
 
 Read with:
 
@@ -13,9 +13,11 @@ Read with:
 
 ## Current positioning
 
-Continuum is a durable private operating layer for information, people, workflows, goals, permissions, current State and history across time.
+Continuum is a durable private system that keeps useful context, current conditions, decisions, permissions, approved work and history connected across time.
 
-The opening should make four conditions understandable early.
+It should make sense first as one product. Internal names are introduced only after the reader understands the larger idea.
+
+The four continuity conditions remain:
 
 ```text
 WITH YOU
@@ -24,97 +26,101 @@ WITH YOU
 → IF YOU CANNOT RESPOND
 ```
 
-Afterlife remains one long-term continuity path inside the wider product. Spaces remains a focused context and briefing experience inside Continuum.
+Afterlife remains one long-term continuity path inside Continuum. Spaces remains one focused context and briefing experience inside Continuum.
 
-## Product completeness rule
+## Whole-product rule
 
-Clarity must never make Continuum sound like storage, a briefing app or a continuity product alone.
+The opening must explain Continuum before it explains its parts.
 
-The opening should naturally show that the same foundation supports current context, triggered workflows, longer Goals, explicit permission and continuity across time. Goals and long-running Runtime are still future architecture and must not be written as production capabilities today.
+Do not open by walking through Library, Directory, Spaces, Automations, Runtime, Planner or Goals. That turns the introduction into a glossary and makes the reader assemble the product themselves.
 
-A reader should understand that Continuum can be useful for what is happening now and is being built to keep approved work moving when something changes, pursue longer outcomes through multiple steps and carry prepared plans through periods when the owner is unavailable.
+The opening should instead establish the human idea:
 
-## Core teaching rule
+- useful context should survive across time;
+- changes should update what the system understands about the current situation;
+- the owner should be able to decide what may happen next;
+- approved work should be able to continue later without losing its limits or history;
+- prepared continuity plans should remain usable when the owner cannot respond;
+- AI models and tools may change without taking the durable context, permissions or history with them.
 
-A reader shouldn't need prior Continuum knowledge to understand a sentence.
-
-At the first meaningful use of an important product or architecture term, explain the human job first and introduce the real name in the same sentence or the next one. Once the term has been earned, later sections can use it normally and become more technical.
-
-This keeps the page useful to nontechnical readers without turning it into a beginner tutorial or removing the architecture technical readers care about.
-
-The preferred pattern is
-
-```text
-plain behavior
-→ real Continuum term
-→ deeper architecture later
-```
-
-Do not add a glossary dump to the opening and do not keep re-explaining a term after the reader already knows it.
+Only after that foundation is clear should the page introduce the product surfaces and architecture names.
 
 ## Current hero direction
 
-Kicker
+Kicker:
 
-`Your information, workflows and goals across time`
+`A private system for what matters now and what should happen next`
 
-Opening lead
+Opening lead:
 
-> Continuum keeps the information, people, instructions and permissions you want to carry with you over time. It can help with what you're doing now, and the same foundation is being built for workflows that react to changes and longer goals that may take several steps.
+> Continuum is a private system for keeping the parts of your life and work that matter connected over time. It remembers useful context, keeps track of what has changed and helps you decide what should happen next without starting from scratch every time.
 
-The next paragraph introduces one important workflow idea instead of listing the whole product map. An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do next. Check In is the live timer used to show the owner is still responding. Afterlife holds continuity plans for times when the owner can't respond, including after death.
+Second paragraph:
 
-AI models and tools may change without taking the underlying records, permissions or history with them.
+> The same system is being built to carry approved work forward when you are away, whether the next step depends on a deadline, a reply, a change somewhere else or a longer goal. It can also hold plans for times when you cannot respond. AI can help with the reasoning, but the information, permissions, rules and history remain with Continuum as models and tools change.
 
-Compact hero labels remain intentionally brief because they are labels.
+The hero lead intentionally contains no Library, Directory, Spaces, Automation, Runtime, Planner or Goal terminology.
+
+Compact labels remain concise because they are UI labels:
 
 ```text
-Keeps the right context current
-Built for workflows + longer goals
-Acts inside rules you set
+Remembers what matters
+Keeps up with changes
+Carries approved work forward
 ```
 
-Hero principle
+Hero principle:
 
 `BUILT TO CARRY YOUR PLAN FORWARD`
 
+Supporting line:
+
+`Your context, permissions and history stay together even as the tools around them change.`
+
+## Reader-first architecture rule
+
+A reader should understand the job before being asked to remember the architecture name.
+
+Preferred teaching order:
+
+```text
+whole product
+→ human behavior
+→ real Continuum term
+→ deeper architecture
+```
+
+Examples:
+
+- Continuum keeps a current picture of the situation. That picture is `State`.
+- A meaningful approved-source change can become a `Signal`.
+- A saved piece of repeatable or triggered work is an `Automation`.
+- The later server-side layer that can keep published work going after the app closes is `Runtime`.
+- `Authority` is permission to act.
+- `Planner` prepares proposed product changes as a `Change Plan`.
+- A `Goal` holds a larger outcome, limits and required approvals when the route may change.
+- `Connections` bring outside apps and tools into Continuum.
+- `Control Center` is where the owner can inspect what Continuum is doing across time.
+
+After a term has been explained once, the technical sections can use it normally.
+
 ## Triggered work direction
 
-The page should make triggered work understandable without making a reader decode an event system.
+Triggered work should be explained through ordinary situations before architecture diagrams take over.
 
-Ordinary examples include a deadline arriving, a reply coming in, Check In reaching a condition or an approved outside source changing.
+A deadline may arrive, someone may reply, Check In may reach a condition or an approved outside source may change. Any of those can make the next step ready. The server still checks the relevant rules and permissions before that step runs.
 
-Any of those can make the next step ready. Continuum still checks the relevant rules and permissions before anything runs.
+The deeper flow remains available through Sources, Observations, Signals, State, policy, authority and Runtime.
 
-The deeper architecture remains available through Signals, State, policy, authority and Runtime.
+## Information direction
 
-## Reader-first architecture examples
+The Information section is where the named information surfaces become useful to introduce.
 
-Important architecture terms stay visible because they matter. Their first meaningful use explains them in ordinary language.
+Library keeps documents, files, knowledge and versions. Directory keeps stable records for people and organizations. A Space can bring the relevant pieces into focus for one part of life or work.
 
-- `State` is Continuum's current picture of what is true now.
-- `Runtime` is the background execution layer that can later keep approved work alive on the server after the app closes.
-- `Signals` are meaningful changes noticed from approved sources.
-- an `Observation` is what an approved source showed at a particular moment.
-- `Authority` means permission to act.
-- an `Automation` is a saved workflow with a start, conditions, limits and allowed actions.
-- `Planner` can turn a normal-language setup request into proposed changes.
-- a `Change Plan` is the proposed set of changes Planner prepares for review.
-- a `Goal` keeps a longer outcome, limits and approvals together when the work may take several steps and the route can change.
-- `Connections` link outside apps and tools into Continuum.
-- `Control Center` is the owner-facing place for seeing what Continuum is doing in the background.
+Knowledge intake can accept pasted text, bulk input, Markdown, JSON, AI handoffs, files, OCR or vision and approved connected Sources.
 
-The page can use those terms more directly after they have been explained once.
-
-## Information / Library / Directory / Spaces direction
-
-Library, Directory and Spaces remain separate product surfaces working from connected context.
-
-Library keeps documents, files, knowledge and version history. Directory gives people and organizations stable records. A Space pulls the relevant pieces together for one focused part of life or work.
-
-Knowledge intake can accept pasted text, bulk input, Markdown, JSON, AI handoffs, files, OCR/vision and approved connected Sources.
-
-Canonical visible flow remains
+Canonical review flow remains:
 
 ```text
 CAPTURE → UNDERSTAND → REVIEW → INTEGRATE
@@ -124,95 +130,64 @@ The original source stays traceable and important findings remain reviewable bef
 
 ## AI and permissions direction
 
-The visible navigation uses `AI + Permissions` so a first-time reader understands the section before learning the architecture term `Authority`.
+Navigation uses `AI + Permissions` for first-read clarity. The section still teaches `Authority` as the exact architecture term.
 
-An AI model can reason, write and use tools. Continuum keeps the information, current State, permissions and history around it, and the server decides what the model is actually allowed to see and do.
+AI may reason, write and use tools. Continuum keeps the context, current situation, permissions and history around that work. The model gets only the context and capabilities allowed for the job, and the server remains the final permission check.
 
-`Authority` is introduced as permission to act. Improved reasoning never creates extra permission by itself.
-
-The server remains the final permission check.
+A stronger model never gains more authority merely because its reasoning improved.
 
 ## Automations and Runtime direction
 
-The Automation section still begins from normal human intent.
+The section begins from work a person understands.
 
-`Describe what should happen, then make the rules clear.`
+`Describe the work normally, then make the important rules clear.`
 
-An Automation is explained as a saved workflow with something that starts it, conditions to check and rules for what it may do. Runtime is explained from the user's point of view first. It is what can later keep published work alive in the background after the app closes. The deeper copy then explains that it runs on the server and can handle waits, allowed retries, replies, approved tools and recorded results.
+An Automation is introduced as the way Continuum remembers repeatable or triggered work. It may start from time, a reply, a Check In condition or another approved change, then follow the limits and steps already set.
 
-Current Lab workflow definitions still do not imply provider execution.
+Runtime is explained from the user's point of view first. It is the later server-side layer that lets approved published work continue after the app closes and can handle time, replies, allowed retries, approved tools and recorded results.
 
-## Signals and current State direction
+Current Lab workflow definitions still do not imply real provider execution.
 
-The page should not assume a reader understands `Source → Observation → Signal → State` just because the diagram is accurate.
+## Goals direction
 
-The prose explains that Continuum can save what an approved source showed at a particular moment as an Observation. A meaningful change can become a Signal and update the part of State that matters now.
+Goals stay part of the whole product story without becoming hero terminology.
 
-The Automation section then connects this to action in ordinary language. A change can make the next step ready, but rules and permissions still decide whether the next action can run.
+A Goal is introduced later as the larger outcome Continuum may work toward when success can require several approved steps and the route may change. It keeps the outcome, limits and required approvals together and can eventually coordinate work through Automations, Planner and Runtime once those capabilities are real.
 
-The exact technical flow remains visible for readers who want the architecture.
+Goals remain LATER until implementation status changes truthfully.
 
-## Planner and Goals direction
+## Afterlife direction
 
-Planner should first be understood as the part that can prepare proposed changes from a normal-language setup request. The proposed set is called a Change Plan.
+Afterlife is for continuity plans that may need to last through a long period when the owner cannot respond, including plans for after death.
 
-A Goal should first be understood as something Continuum can later work toward over several steps even when the route changes. It keeps the outcome, limits and required approvals together and may use multiple Automations or tasks as conditions change.
+The owner chooses the people, information, instructions and permissions ahead of time. Check In provides the trigger. Future Runtime may follow only the parts already authorized.
 
-After those first explanations, Planner, Change Plan and Goal can be used as normal architecture terms.
-
-Goals remain LATER. The page must keep that implementation boundary clear.
-
-## Product map direction
-
-The product-map paragraph should show more than information storage and continuity without forcing another node into the visual.
-
-Directory and Library provide people and information. Spaces focus relevant context. Automations handle saved workflows. Goals can hold a larger outcome when the route may change. Connections link outside tools. Runtime can later keep published work moving. Signals update what Continuum knows is happening now. AI works only with the context and tools it is allowed to use.
-
-The existing visual structure remains unchanged.
-
-## Afterlife positioning
-
-Afterlife is for continuity plans that may need to outlast a long period when the owner can't respond, including plans for after death.
-
-The owner chooses the people, information, instructions and permissions ahead of time. Check In supplies the trigger. Future Runtime can follow only the parts of the plan already authorized.
-
-Visible guardrail
+Visible guardrail:
 
 `Silence and urgency never create permission.`
 
-The LIVE and LATER copy should describe what a person can understand today instead of reading like an engineering changelog.
+## Natural writing rule
 
-## Technical depth balance
+Visible `/doc/` paragraph copy should avoid the patterns the owner has repeatedly identified as AI-like:
 
-Do not remove real terms such as State, Runtime, Signals, Authority, Planner, Change Plan, Audit, policy or provenance just to make the page easier.
-
-Explain the job once in normal language, keep the real term visible and let diagrams and architecture sections carry the deeper vocabulary. Avoid repeating beginner explanations after a term is established and preserve exact technical claims where precision matters.
-
-A technical reader should still be able to see the real architecture. A nontechnical reader should not have to decode that architecture before understanding the product.
-
-## Writing rules
-
-Visible `/doc/` paragraph copy should avoid:
-
-- ellipses;
-- em dashes;
-- formulaic `it's not X, it's Y` phrasing;
-- `not X but Y` phrasing;
+- ellipses and em dashes;
+- formulaic `it's not X, it's Y` wording;
+- `not X but Y` wording;
 - `rather than` constructions;
-- generic AI-style intros;
-- stacked `X does this. Y does that. Z does this.` cadence;
+- generic scene-setting intros;
+- stacked `X does this. Y does that. Z does this.` sentence sequences;
+- paragraphs that read like a disguised glossary;
 - excessive symmetry or perfectly mirrored sentence structures;
-- unnecessary colons and semicolons in normal prose;
-- repeated `while` sentence construction;
+- repeated short declarative sentences with the same rhythm;
+- unnecessary colons or semicolons in normal prose;
+- repeated `while` constructions;
 - repeated `can eventually` future framing;
-- stiff uncontracted negatives when a natural contraction sounds better;
-- dense architecture vocabulary before the reader has been given its meaning;
-- fragment-heavy sales copy outside labels, diagrams and intentional UI microcopy;
-- repeated explanations that add length without adding meaning.
+- stiff uncontracted negatives where normal speech would contract them;
+- abstract nouns piled together before the reader knows why they matter;
+- repeated explanations that add length without adding meaning;
+- sales-copy fragments outside intentional labels and interface microcopy.
 
-Colons, semicolons and compact fragments remain fine in code, data, technical notation, labels and diagrams when they genuinely help.
-
-Use connected plain-English paragraphs, varied sentence length, direct technical language, natural contractions, concrete examples and restrained emphasis.
+Use connected plain-English paragraphs, varied sentence length, calm technical language, natural contractions and concrete situations. Let one thought lead into the next instead of resetting the sentence pattern for every concept.
 
 ## Protected structure and visuals
 
@@ -221,7 +196,7 @@ This pass keeps:
 - the eight-section reading path;
 - the existing visual language;
 - Check In as the first-class LIVE route;
-- Lab and future capability truth labels;
+- truthful LIVE / LAB / NEXT / LATER labels;
 - State, Signals, information-quality and provenance teaching;
 - Planner, Goals and Runtime architecture;
 - capability discovery and architecture evolution;
@@ -234,7 +209,7 @@ This pass keeps:
 
 ## Implementation layers
 
-The continuity/knowledge/time clarity layer remains:
+The continuity, knowledge and time layer remains:
 
 - `assets/continuum-doc-knowledge-time.js`;
 - `assets/continuum-doc-knowledge-time.css`.
@@ -243,20 +218,20 @@ The natural-voice layer remains:
 
 - `assets/continuum-doc-human-cadence.js`.
 
-The final reader and product-story layer is:
+The final reader and whole-product story layer is:
 
 - `assets/continuum-doc-reader-first.js`.
 
-`assets/continuum-doc-i18n.js` loads the knowledge/time layer, then the natural-voice layer, then the reader-first layer so the final pass sees the fully rendered document.
+`assets/continuum-doc-i18n.js` loads those layers in that order.
 
-Current markers
+Current markers:
 
 ```text
 data-continuum-clarity="plain-english-v1"
 data-continuum-human-cadence="ready"
 data-continuum-voice="natural-v3"
 data-continuum-reader-first="ready"
-data-continuum-product-story="complete-v1"
+data-continuum-product-story="balanced-v2"
 ```
 
 Regression coverage:
@@ -264,6 +239,8 @@ Regression coverage:
 - `tests/continuum-doc-continuity-positioning.test.js`;
 - `tests/continuum-doc-clarity-smoke.test.js`;
 - `.github/workflows/continuum-doc-clarity-validation.yml`.
+
+The browser validation explicitly guards the final hero lead against becoming a Library, Directory, Spaces, Automation, Runtime, Planner or Goal glossary again.
 
 ## Backend boundary
 
