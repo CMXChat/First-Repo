@@ -1,0 +1,49 @@
+name: Continuum theme toggle validation
+
+on:
+  push:
+    paths:
+      - 'assets/continuum-theme-toggle.css'
+      - 'assets/continuum-theme-toggle.js'
+      - 'assets/lab/directory-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/lab-automations-theme-init.js'
+      - 'assets/lab/lab-safety.css'
+      - 'environment/index.html'
+      - 'doc/index.html'
+      - 'spaces/index.html'
+      - 'assets/checkin/checkin-ring-hero.css'
+      - 'tests/continuum-theme-toggle-standard.test.js'
+      - '.github/workflows/continuum-theme-toggle-validation.yml'
+  pull_request:
+    paths:
+      - 'assets/continuum-theme-toggle.css'
+      - 'assets/continuum-theme-toggle.js'
+      - 'assets/lab/directory-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/lab-automations-theme-init.js'
+      - 'assets/lab/lab-safety.css'
+      - 'environment/index.html'
+      - 'doc/index.html'
+      - 'spaces/index.html'
+      - 'assets/checkin/checkin-ring-hero.css'
+      - 'tests/continuum-theme-toggle-standard.test.js'
+      - '.github/workflows/continuum-theme-toggle-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check shared theme script syntax
+        run: node --check assets/continuum-theme-toggle.js
+      - name: Run theme toggle regression
+        run: node tests/continuum-theme-toggle-standard.test.js
