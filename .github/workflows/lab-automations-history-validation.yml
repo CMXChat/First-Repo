@@ -1,0 +1,73 @@
+name: Lab Automations History Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-history-v1.js'
+      - 'assets/lab/lab-automations-route-integration.js'
+      - 'tests/lab-automations-history-smoke.test.js'
+      - 'tests/lab-automations-history-probe.js'
+      - '.github/workflows/lab-automations-history-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-history-v1.js'
+      - 'assets/lab/lab-automations-route-integration.js'
+      - 'tests/lab-automations-history-smoke.test.js'
+      - 'tests/lab-automations-history-probe.js'
+      - '.github/workflows/lab-automations-history-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate source isolation
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-history-v1.js
+          node --check tests/lab-automations-history-probe.js
+          node tests/lab-automations-history-smoke.test.js
+
+      - name: Exercise browser Back through editor history
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const probe = '<script src="/tests/lab-automations-history-probe.js"></script>';
+          const page = fs.readFileSync('lab/automations/index.html', 'utf8').replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('lab/automations/history-test.html', page, 'utf8');
+          NODE
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/lab-automations-history-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab/automations/history-test.html' EXIT
+          sleep 1
+
+          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --window-size=390,844 --virtual-time-budget=18000 --dump-dom \
+            'http://127.0.0.1:8000/lab/automations/history-test.html' > /tmp/lab-automations-history.html
+
+          grep -q 'data-qa-history-dashboard-start="true"' /tmp/lab-automations-history.html
+          grep -q 'data-qa-history-editor-opened="true"' /tmp/lab-automations-history.html
+          grep -q 'data-qa-history-stage-advanced="true"' /tmp/lab-automations-history.html
+          grep -q 'data-qa-history-back-stage="true"' /tmp/lab-automations-history.html
+          grep -q 'data-qa-history-back-dashboard="true"' /tmp/lab-automations-history.html
+          grep -q 'data-qa-history-complete="true"' /tmp/lab-automations-history.html
+          ! grep -q 'data-qa-history-failure=' /tmp/lab-automations-history.html
+
+          echo 'Browser Back returned through Automations stage history and dashboard successfully.'
