@@ -67,63 +67,34 @@ jobs:
           sleep 1
 
           dump() {
-            "$BROWSER" \
-              --headless \
-              --no-sandbox \
-              --disable-gpu \
-              --disable-dev-shm-usage \
-              --virtual-time-budget=12000 \
-              "$@" \
-              --dump-dom
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom
           }
 
           validate_render() {
             local file="$1"
             grep -q 'data-continuum-clarity="ready"' "$file"
-            grep -q 'data-continuum-origin="ready"' "$file"
-            grep -q 'data-continuum-architecture-aligned="20260819"' "$file"
-            grep -q 'data-continuum-power-clarity="20260819"' "$file"
-            grep -q 'data-continuum-check-in-route="ready"' "$file"
-            grep -q 'data-continuum-knowledge-quality="ready"' "$file"
-            grep -q 'data-continuum-authorized-continuity="ready"' "$file"
-            grep -q 'data-continuum-architecture-evolution="ready"' "$file"
-            grep -q 'data-continuum-positioning="continuity-first"' "$file"
             grep -q 'data-continuum-human-cadence="ready"' "$file"
             grep -q 'data-continuum-voice="natural-v3"' "$file"
             grep -q 'data-continuum-reader-first="ready"' "$file"
             grep -q 'data-continuum-product-story="balanced-v2"' "$file"
-            grep -q 'A private system for what matters now and what should happen next' "$file"
-            grep -q 'Continuum is a private system for keeping the parts of your life and work that matter connected over time.' "$file"
-            grep -q 'carry approved work forward when you are away' "$file"
-            grep -q 'Remembers what matters' "$file"
-            grep -q 'Keeps up with changes' "$file"
-            grep -q 'Carries approved work forward' "$file"
-            grep -q '02 · AI + Permissions' "$file"
-            grep -q 'BUILT TO CARRY YOUR PLAN FORWARD' "$file"
-            grep -q 'Useful now, built to keep going later.' "$file"
-            grep -q 'How Continuum moves from change to action' "$file"
+            grep -q 'Think of AI as the brain and Continuum as the nervous system around it' "$file"
+            grep -q 'Continuum is that private layer.' "$file"
+            grep -q 'That might mean acting, waiting, asking you, contacting someone or doing nothing.' "$file"
+            grep -q 'The Dead Man Switch is one example' "$file"
+            grep -q 'If you switch to a better AI later' "$file"
+            grep -q 'Carries context across time' "$file"
+            grep -q 'Keeps up with real changes' "$file"
+            grep -q 'Works inside rules you set' "$file"
+            grep -q 'From something changing to the next allowed step' "$file"
+            grep -q 'The pieces below give those jobs their technical names.' "$file"
             grep -q 'That picture is called State' "$file"
-            grep -q 'AI works inside the context and permissions Continuum keeps' "$file"
-            grep -q 'Keep information connected to the people and situations it belongs to' "$file"
-            grep -q 'Continuum can notice when an approved source changes.' "$file"
-            grep -q 'Describe the work normally, then make the important rules clear' "$file"
+            grep -q '02 · AI + Permissions' "$file"
             grep -q 'An Automation is how Continuum remembers a repeatable or triggered piece of work.' "$file"
             grep -q 'Runtime lets approved work continue after you leave.' "$file"
-            grep -q 'Changes can move the work forward.' "$file"
             grep -q 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.' "$file"
-            grep -q 'Continuum grew out of a simple continuity problem.' "$file"
-            grep -q 'How Continuum is put together' "$file"
-            grep -q 'Start in the Lab, then connect the real backend' "$file"
-            grep -q 'Make private information durable, then let approved work keep going' "$file"
             grep -q 'Silence and urgency never create permission.' "$file"
             grep -q 'Files + OCR / vision' "$file"
-            grep -q 'You say you are leaving for two minutes and return two seconds later.' "$file"
             grep -q 'Open Check In' "$file"
-            grep -q 'Protected proof of life, timing and activity' "$file"
-            grep -q 'STATE IS WHAT IS TRUE NOW' "$file"
-            grep -q 'WHY DID CONTINUUM DO THAT?' "$file"
-            grep -q 'Open the architecture walkthrough' "$file"
-            grep -q 'Open the build workflow' "$file"
           }
 
           dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
@@ -135,10 +106,10 @@ jobs:
           hero_start = html.index('<header class="hero continuum-hero clarity-hero"')
           hero_end = html.index('</header>', hero_start)
           hero = html[hero_start:hero_end]
-          assert 'continuum-continuity-line' in hero, 'Continuity identity must appear in the opening hero.'
-          assert 'hero-network' not in hero, 'Product map must stay out of the opening hero.'
-          assert 'continuum-presence' not in hero, 'Detailed presence map must stay below the opening hero.'
-          assert 'href="/checkin/"' in hero, 'The opening hero must link to the LIVE Check In surface.'
+          assert 'continuum-continuity-line' in hero
+          assert 'hero-network' not in hero
+          assert 'continuum-presence' not in hero
+          assert 'href="/checkin/"' in hero
 
           lead_start = hero.index('class="hero-lead')
           lead_end = hero.index('hero-truth-row', lead_start)
@@ -146,52 +117,23 @@ jobs:
           for internal_name in ['Library', 'Directory', 'Spaces', 'Automation', 'Runtime', 'Planner', 'Goal']:
               assert internal_name not in lead, f'Opening explanation became a component glossary: {internal_name}'
 
+          assert 'A private system for what matters now and what should happen next' not in html
+          assert 'Continuum is a private system for keeping the parts of your life and work that matter connected over time.' not in html
+          assert 'does not gain extra permission' not in html
+          assert 'when you cannot respond' not in lead
+
           overview = html.index('id="overview"')
-          time_panel = html.index('continuum-kt-time', overview)
-          state = html.index('continuum-state-strip', overview)
-          story = html.index('clarity-story-section')
-          product_map = html.index('clarity-product-map-section')
-          presence = html.index('continuum-presence', product_map)
           ai = html.index('id="difference"')
           spaces = html.index('id="spaces"')
-          knowledge_panel = html.index('continuum-kt-knowledge', spaces)
-          senses = html.index('continuum-senses-strip', spaces)
           action = html.index('id="action"')
           afterlife = html.index('id="afterlife"')
+          engineering = html.index('id="engineering"')
           build = html.index('id="build"')
-          assert overview < state < time_panel < story < product_map < presence < ai < spaces < knowledge_panel < senses < action < afterlife < build, 'Continuum teaching order regressed.'
+          status = html.index('id="status"')
+          assert overview < ai < spaces < action < afterlife < engineering < build < status
 
-          assert html.count('href="/checkin/"') >= 3, 'Check In should stay reachable from multiple meaningful locations.'
-          footer = html.index('class="document-footer"')
-          assert html.index('continuum-route-live', footer) > footer, 'Footer must present Check In as the LIVE route.'
-
-          stale = [
-              'Library holds your information. Directory keeps track of people and relationships.',
-              'AI can change. Continuum keeps the rules around it.',
-              'Automations handle repeatable rules. Goals keep an outcome alive.',
-              'Continuum keeps those pieces connected:',
-              'Afterlife extends the same Continuum foundation into long-term continuity:',
-              'Afterlife began with a practical problem:',
-              'durable information and focused context; Automations',
-              'does not take the underlying records',
-              'AI does not have to stay open',
-              'Changing the model does not change the authority',
-              'It cannot quietly change the limits',
-              'Adding a tool does not add permission',
-              'when you cannot take part directly',
-              'Runtime can later keep work moving on the server through waits, replies and retries.',
-              'A Goal can keep an outcome moving across several steps and changing conditions.',
-              'Signals help Continuum notice meaningful changes from approved sources.',
-              'Your information, workflows and goals across time',
-              'workflows that react to changes and longer goals that may take several steps',
-              'Built for workflows + longer goals',
-              'An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do.',
-              'Runtime keeps published work alive in the background after you close the app.',
-              'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.'
-          ]
-          for phrase in stale:
-              assert phrase not in html, f'Stale narrow, technical-first or AI-like copy is still visible: {phrase}'
-          print('Desktop Continuum whole-product story, natural voice, reader-first terminology, knowledge, time and architecture order passed.')
+          assert html.count('href="/checkin/"') >= 3
+          print('Desktop Continuum one-minute explanation and teaching order passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
@@ -199,4 +141,4 @@ jobs:
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc balanced whole-product story rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc one-minute explanation rendered on desktop and 390x844 mobile.'
