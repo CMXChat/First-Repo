@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-20
-Status: FROZEN after owner-authorized plain-English and human-cadence passes
+Status: FROZEN after owner-authorized plain-English, cadence and natural-voice passes
 
 ## Freeze decision
 
@@ -25,25 +25,27 @@ The owner asked for the page to become easier to understand and less AI-like whi
 
 The first pass simplified terminology and established the rule that human meaning should come before architecture vocabulary.
 
-The follow-up cadence audit found that some copy was individually clear but still sounded generated because several short subject-action sentences were stacked together. The final pass therefore also protects connected paragraph rhythm and varied sentence structure.
+The second pass removed stacked short subject-action sentences and protected connected paragraph rhythm.
 
-Canonical positioning companion:
+The final pass went after smaller writing habits that still made some copy feel generated. Normal prose now avoids unnecessary colons and semicolons, repeated `while`, repeated `can eventually`, overly balanced component lists and technical wording that can be explained more naturally.
+
+Canonical positioning companion
 
 `docs/continuum-doc-positioning-CURRENT.md`
 
 ## Current opening identity
 
-Hero direction:
+Hero direction
 
 ```text
 Your information, plans and permissions across time
 ```
 
-The opening explains that Continuum can keep information, people, instructions and permissions over time, help use that context today, continue work already approved while the owner is away, and follow continuity plans prepared for a time when the owner cannot respond.
+The opening explains that Continuum can keep information, people, instructions and permissions over time, help use that context today, continue work already approved when the owner is away, and follow continuity plans prepared for a time when the owner cannot respond.
 
-The next paragraph now connects the product pieces in one flowing explanation. Library preserves information, Directory ties it to people and relationships, Spaces brings the relevant context into focus, and Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the continuity plan when the owner is away or unable to respond, while AI models and tools can change without taking the underlying records, permissions and history with them.
+The next paragraph connects the product pieces naturally. Library preserves information and Directory ties it to people and relationships, giving Spaces the context it needs for a focused view. Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the plan when the owner is away or unable to respond, and changing the AI model or tool does not take the underlying records, permissions or history with it.
 
-Compact hero labels remain intentionally concise:
+Compact hero labels remain intentionally concise.
 
 ```text
 Knows what changed and when
@@ -51,11 +53,11 @@ Can continue work you approved
 Keeps track of what is allowed and why
 ```
 
-Hero principle:
+Hero principle
 
 `BUILT TO CARRY YOUR PLAN FORWARD`
 
-Continuity path:
+Continuity path
 
 ```text
 WITH YOU
@@ -66,28 +68,30 @@ WITH YOU
 
 ## Plain-English teaching rule
 
-Explain the human idea first and the architecture term second.
+Explain the human idea first and introduce the architecture term when it helps.
 
 Examples include:
 
 - State = Continuum's current picture of what is true now;
 - authority = permission to act;
 - Directory relationship labels add context without granting permission by themselves;
-- an Automation can keep using version 3 while version 4 is being edited;
+- an Automation can keep using version 3 after version 4 starts being edited;
 - Runtime can later keep waits, replies and retries on the server after the browser closes;
 - elapsed time comes from server timestamps, so AI does not need to stay open between events.
 
-## Human cadence rule
+## Human voice rule
 
-Related ideas should read as connected prose. Avoid repeatedly resetting a paragraph with the same short pattern, especially sequences such as `Library does X. Directory does Y. Spaces does Z.`
+Related ideas should read as connected prose. Avoid repeatedly resetting a paragraph with the same short pattern.
+
+Normal paragraphs should also avoid punctuation or sentence shapes that make the copy feel overly composed. Colons and semicolons are fine when code, data, technical notation, labels or diagrams genuinely need them. They should not be the default way normal explanatory prose is joined together.
+
+Repeated `while` constructions, repeated `can eventually`, perfectly balanced component lists and unnecessary architecture vocabulary should be rewritten when a simpler sentence sounds more natural.
 
 Short wording remains appropriate for labels, cards, flow diagrams, status pills and deliberate UI microcopy.
 
-Visible paragraph copy should use varied sentence length and make the relationship between ideas clear.
-
 ## Information direction
 
-Library, Directory and Spaces remain distinct while being explained as connected parts of the same information layer.
+Library, Directory and Spaces remain distinct parts of the same information layer.
 
 Knowledge intake can include:
 
@@ -115,7 +119,7 @@ The server remains the final permission check, and improved reasoning never crea
 
 ## Automations and Runtime direction
 
-The Automation section keeps the human interaction first:
+The Automation section keeps the human interaction first.
 
 `Describe what should happen, then make the rules clear.`
 
@@ -125,7 +129,7 @@ Current Lab workflow definitions still do not imply provider execution.
 
 ## Temporal-awareness direction
 
-Concrete example:
+Concrete example
 
 ```text
 User says they are leaving for two minutes
@@ -137,15 +141,15 @@ Consequential elapsed time comes from backend/server timestamps. Check In alread
 
 ## Afterlife positioning
 
-Afterlife extends the same Continuum foundation into long-term continuity. The owner prepares people, information, instructions and permissions in advance, Check In records the trigger if the owner stops responding long enough, and future Runtime can follow the plan already prepared.
+Afterlife carries the same Continuum foundation into long-term continuity. The owner prepares people, information, instructions and permissions in advance. Check In records the trigger if the owner stops responding long enough, and future Runtime can follow the plan already prepared.
 
-Visible guardrail:
+Visible guardrail
 
 `Silence and urgency never create permission.`
 
 ## Writing contract
 
-Visible `/doc/` copy should avoid:
+Visible `/doc/` paragraph copy should avoid:
 
 - ellipses;
 - em dashes;
@@ -153,17 +157,20 @@ Visible `/doc/` copy should avoid:
 - `not X but Y` phrasing;
 - `rather than` constructions;
 - generic AI-style intros;
-- stacked `X does this. Y does that. Z does this.` paragraph cadence;
+- stacked `X does this. Y does that. Z does this.` cadence;
 - excessive symmetry and mirrored sentence construction;
+- unnecessary colons and semicolons in normal prose;
+- repeated `while` constructions;
+- repeated `can eventually` future framing;
+- dense architecture vocabulary when a simpler phrase works;
 - fragment-heavy sales copy outside intentional UI labels;
-- repeated abstract nouns when a simpler word works;
 - repeated explanations that add length without adding meaning.
 
 Use connected plain-English paragraphs, varied sentence length, calm technical language, concrete examples and restrained emphasis.
 
 ## Protected structure and visuals
 
-The clarity and cadence passes keep:
+The clarity and voice passes keep:
 
 - the eight stable sections;
 - the existing visual system;
@@ -193,29 +200,30 @@ The final human-voice layer is:
 
 - `assets/continuum-doc-human-cadence.js`.
 
-`assets/continuum-doc-i18n.js` loads the knowledge/time layer first and the human-cadence layer after it.
+`assets/continuum-doc-i18n.js` loads the knowledge/time layer first and the human-voice layer after it.
 
-Current loader targets:
+Current loader targets
 
 ```text
 /assets/continuum-doc-knowledge-time.js?v=20260820-1
-/assets/continuum-doc-human-cadence.js?v=20260820-1
+/assets/continuum-doc-human-cadence.js?v=20260820-2
 ```
 
-Current markers:
+Current markers
 
 ```text
 data-continuum-clarity="plain-english-v1"
 data-continuum-human-cadence="ready"
+data-continuum-voice="natural-v2"
 ```
 
 The static `doc/index.html` still loads the i18n bootstrap using its existing query token. Normal browser revalidation should pick up the updated bootstrap. A future query-token bump remains allowed if a device proves stale.
 
 ## Regression guard
 
-`tests/continuum-doc-continuity-positioning.test.js` now validates both the plain-English layer and final human-cadence layer.
+`tests/continuum-doc-continuity-positioning.test.js` validates the plain-English layer and final natural-voice layer.
 
-`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and explicitly rejects known stale punchy phrases after final rendering.
+`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and explicitly rejects known stale punchy and punctuation-heavy phrases after final rendering.
 
 A workflow file existing does not prove a green run. Report CI as green only after an actual run/status confirms it.
 
