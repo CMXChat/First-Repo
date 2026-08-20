@@ -7,23 +7,28 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const index = read('lab/automations/index.html');
-const integration = read('assets/lab/lab-automations-route-integration.js');
+const historyLayer = read('assets/lab/lab-automations-history-v1.js');
+const routeIntegration = read('assets/lab/lab-automations-route-integration.js');
 
-new vm.Script(integration, { filename: 'lab-automations-route-integration.js' });
+new vm.Script(historyLayer, { filename: 'lab-automations-history-v1.js' });
+new vm.Script(routeIntegration, { filename: 'lab-automations-route-integration.js' });
 
-assert.match(integration, /cmxLabAutomationsNavigation/);
-assert.match(integration, /history\[method\]/);
-assert.match(integration, /pushState/);
-assert.match(integration, /replaceState/);
-assert.match(integration, /popstate/);
-assert.match(integration, /readNavigationSnapshot/);
-assert.match(integration, /restoreNavigationSnapshot/);
-assert.match(integration, /data-v4-surface/);
-assert.match(integration, /data-stage/);
-assert.match(integration, /data-v4-modal-close/);
-assert.match(integration, /data-v7-manage-close/);
-assert.match(integration, /history\.back\(\)/);
-assert.match(integration, /history\.go\(/);
-assert.match(index, /lab-automations-route-integration\.js\?v=20260820-history1/);
+assert.match(historyLayer, /cmxLabAutomationsNavigation/);
+assert.match(historyLayer, /pushState/);
+assert.match(historyLayer, /replaceState/);
+assert.match(historyLayer, /popstate/);
+assert.match(historyLayer, /snapshot\(\)/);
+assert.match(historyLayer, /restore\(target\)/);
+assert.match(historyLayer, /data-v4-surface/);
+assert.match(historyLayer, /data-stage/);
+assert.match(historyLayer, /data-v7-manage/);
+assert.doesNotMatch(historyLayer, /preventDefault\(/);
+assert.doesNotMatch(historyLayer, /stopImmediatePropagation\(/);
+assert.doesNotMatch(historyLayer, /history\.back\(/);
+assert.doesNotMatch(historyLayer, /history\.go\(/);
+assert.match(routeIntegration, /labAutomationsRouteIntegration/);
+assert.match(index, /lab-automations-route-integration\.js\?v=20260818-1/);
+assert.match(index, /lab-automations-history-v1\.js\?v=20260820-history1/);
+assert.ok(index.indexOf('lab-automations-history-v1.js') > index.indexOf('lab-automations-duplicate-guard-v9.js'));
 
-console.log('Lab Automations browser-history smoke test passed.');
+console.log('Lab Automations browser-history isolation smoke test passed.');
