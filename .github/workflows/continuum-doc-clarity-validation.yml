@@ -88,9 +88,11 @@ jobs:
             grep -q 'data-continuum-architecture-evolution="ready"' "$file"
             grep -q 'data-continuum-positioning="continuity-first"' "$file"
             grep -q 'data-continuum-human-cadence="ready"' "$file"
-            grep -q 'data-continuum-voice="natural-v2"' "$file"
+            grep -q 'data-continuum-voice="natural-v3"' "$file"
             grep -q 'Your information, plans and permissions across time' "$file"
             grep -q 'Continuum keeps all of this connected.' "$file"
+            grep -q "when you can't respond" "$file"
+            grep -q "doesn't take the underlying records" "$file"
             grep -q 'BUILT TO CARRY YOUR PLAN FORWARD' "$file"
             grep -q 'One place for what matters now, later, and when you cannot respond.' "$file"
             grep -q 'The rules stay with Continuum when the AI changes' "$file"
@@ -104,10 +106,10 @@ jobs:
             grep -q 'WHY DID CONTINUUM DO THAT?' "$file"
             grep -q 'Signals help Continuum notice meaningful changes from approved sources.' "$file"
             grep -q 'Continuum keeps different kinds of information separate.' "$file"
-            grep -q 'Different approved models can be used where they fit best.' "$file"
-            grep -q 'Work you prepared in advance can continue when you cannot take part directly.' "$file"
+            grep -q 'Different jobs can use different approved models.' "$file"
+            grep -q "Work you prepared in advance can continue when you can't take part directly." "$file"
             grep -q 'If the same problem keeps coming up, Continuum may need a new data model or backend feature.' "$file"
-            grep -q 'The Control Center keeps background work visible.' "$file"
+            grep -q 'The Control Center gives you one place to see what Continuum is doing in the background.' "$file"
             grep -q 'Afterlife started with a practical question.' "$file"
             grep -q 'Open the architecture walkthrough' "$file"
             grep -q 'Open the build workflow' "$file"
@@ -153,11 +155,17 @@ jobs:
               'Continuum keeps those pieces connected:',
               'Afterlife extends the same Continuum foundation into long-term continuity:',
               'Afterlife began with a practical problem:',
-              'durable information and focused context; Automations'
+              'durable information and focused context; Automations',
+              'does not take the underlying records',
+              'AI does not have to stay open',
+              'Changing the model does not change the authority',
+              'It cannot quietly change the limits',
+              'Adding a tool does not add permission',
+              'when you cannot take part directly'
           ]
           for phrase in stale:
               assert phrase not in html, f'Stale AI-like cadence is still visible: {phrase}'
-          print('Desktop continuity positioning, natural voice, knowledge, time and architecture order passed.')
+          print('Desktop continuity positioning, contractions, natural voice, knowledge, time and architecture order passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
