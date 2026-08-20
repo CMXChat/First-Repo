@@ -15,7 +15,7 @@
   function refineHero() {
     const lead = qs('.continuum-hero .hero-lead');
     if (lead) {
-      lead.innerHTML = '<span class="hero-lead-first">Continuum keeps the information, people, instructions and permissions you want to carry with you over time. It can help you use that context today, continue work you have approved when you are away, and follow plans you prepared for a time when you cannot respond.</span><span class="hero-lead-second">Continuum keeps all of this connected. Library preserves the information and Directory ties it to people and relationships, which gives Spaces the context it needs to focus on one part of your life or work. Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the plan when you are away or unable to respond, and changing the AI model or tool does not take the underlying records, permissions or history with it.</span>';
+      lead.innerHTML = '<span class="hero-lead-first">Continuum keeps the information, people, instructions and permissions you want to carry with you over time. It can help you use that context today, continue work you have approved when you are away, and follow plans you prepared for a time when you can\'t respond.</span><span class="hero-lead-second">Continuum keeps all of this connected. Library preserves the information and Directory ties it to people and relationships, which gives Spaces the context it needs to focus on one part of your life or work. Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the plan when you are away or unable to respond, and changing the AI model or tool doesn\'t take the underlying records, permissions or history with it.</span>';
     }
   }
 
@@ -28,13 +28,13 @@
       const answer = qs('.ai-answer', difference);
       if (answer) {
         setText('strong', 'What Continuum gives the model', answer);
-        setText('p', 'The model gets the context and tools allowed for the job. Continuum keeps the lasting records and the server rules that decide what happens next.', answer);
+        setText('p', 'The model gets only the context and tools allowed for the job, and Continuum keeps the records and server rules that decide what happens next.', answer);
       }
 
       const capabilityHead = qs('.capability-layer-head', difference);
       if (capabilityHead) {
         setText('strong', 'New models and tools can be added under the rules already in place.', capabilityHead);
-        setText('p', 'That gives Continuum room to gain useful abilities over time without changing who or what is allowed to act.', capabilityHead);
+        setText('p', 'That lets Continuum add useful abilities over time without changing who or what is allowed to act.', capabilityHead);
       }
 
       setText('.capability-layer-note', 'As technology improves, permission to use it still comes from the rules you set.', difference);
@@ -54,7 +54,7 @@
 
     const spaces = document.getElementById('spaces');
     if (spaces) {
-      setText('.section-intro', 'Library, Directory and Spaces handle different parts of the same context. Library preserves documents, files, knowledge and version history, and Directory connects that information to stable records for people and organizations. Spaces can then bring the pieces you need into one focused view.', spaces);
+      setText('.section-intro', 'Library, Directory and Spaces each handle a different part of the same context. Library preserves documents, files, knowledge and version history, and Directory connects that information to stable records for people and organizations. Spaces can then bring the pieces you need into one focused view.', spaces);
 
       const directoryCard = qs('.people-map-card', spaces);
       if (directoryCard) setText('p', 'Directory keeps stable records of people and groups, so a label such as lawyer, family member or trusted contact can add useful context without granting permission by itself.', directoryCard);
@@ -68,7 +68,7 @@
       setText('.section-intro', 'You can describe the job normally. Continuum pulls out the people, timing, approvals, limits and actions that matter so the server has clear rules to check before anything runs.', action);
 
       const policyHead = qs('.policy-translation-head', action);
-      if (policyHead) setText('p', 'Natural language makes setup easier. Structured fields give Runtime exact rules for what it may do once execution exists.', policyHead);
+      if (policyHead) setText('p', 'Natural language makes setup easier, then structured fields give Runtime the exact rules it needs once execution exists.', policyHead);
 
       const primer = qs('.clarity-automation-copy', action);
       if (primer) {
@@ -118,14 +118,14 @@
   function refineInformationPanels() {
     const knowledge = qs('.continuum-kt-knowledge');
     if (knowledge) {
-      setText('.continuum-kt-head strong', 'Give Continuum text, Markdown, JSON, an AI handoff, a document or an image and it will preserve the original source. It can then show you what it found before anything is accepted as long-term knowledge.', knowledge);
+      setText('.continuum-kt-head strong', 'Give Continuum text, Markdown, JSON, an AI handoff, a document or an image and it keeps the original source. It can then show you what it found before anything is accepted as long-term knowledge.', knowledge);
       setText('.continuum-kt-copy', 'The same intake path can handle pasted text, batches, files and approved connected sources and still keep a clear record of where each piece came from.', knowledge);
       setText('.continuum-kt-foot span', 'New information starts private. Its source stays attached, important findings remain reviewable and AI only receives the information allowed for the job.', knowledge);
     }
 
     const time = qs('.continuum-kt-time');
     if (time) {
-      setText('.continuum-kt-copy', 'Elapsed time comes from server timestamps, so the AI does not have to stay open for Continuum to know how much time passed.', time);
+      setText('.continuum-kt-copy', 'Elapsed time comes from server timestamps, so the AI doesn\'t have to stay open for Continuum to know how much time passed.', time);
     }
 
     const state = qs('.continuum-state-strip');
@@ -145,8 +145,8 @@
 
     const routing = qs('.continuum-model-routing');
     if (routing) {
-      setText('.continuum-routing-copy strong', 'Different approved models can be used where they fit best.', routing);
-      setText('.continuum-routing-copy p', 'Coding, research, vision, sensitive local work and future tasks may use different models depending on privacy, cost, availability and policy. Changing the model does not change the authority already set for the task.', routing);
+      setText('.continuum-routing-copy strong', 'Different jobs can use different approved models.', routing);
+      setText('.continuum-routing-copy p', 'Coding, research, vision, sensitive local work and future tasks may use different models depending on privacy, cost, availability and policy. Changing the model doesn\'t change the authority already set for the task.', routing);
     }
   }
 
@@ -156,7 +156,7 @@
       setText('strong', 'You can describe a setup in normal language and still get a Change Plan the server can check.', planner);
       setText('p', 'Later, Continuum can turn that description into proposed changes across mature parts of the product, show you what would change and send approved changes through the same protected services used by the rest of the app.', planner);
       const small = qs('small', planner);
-      if (small) small.textContent = 'Planner can propose changes. The server still decides what can be applied and what can execute.';
+      if (small) small.textContent = 'Planner can propose changes, and the server still decides what gets applied and what can execute.';
     }
 
     const signals = qs('.continuum-signals-note');
@@ -170,7 +170,7 @@
       setText('strong', 'A Goal can keep an outcome moving across several steps and changing conditions.', goal);
       setText('p', 'A Goal can define what success looks like, the limits that must hold, which approvals are needed, how long the effort may continue and when to stop. Planner can adjust the strategy as conditions change, and Runtime can carry the approved work across waits and replies under the same continuity rules.', goal);
       const small = qs('small', goal);
-      if (small) small.textContent = 'A new plan can change the strategy. It cannot quietly change the limits, success criteria or authority you already set.';
+      if (small) small.textContent = 'A new plan can change the strategy. It can\'t quietly change the limits, success criteria or authority you already set.';
     }
 
     const capability = qs('.continuum-capability-extension-note');
@@ -178,26 +178,26 @@
       setText('strong', 'If work keeps getting blocked by a missing tool, Continuum can identify the gap.', capability);
       setText('p', 'A compatible API, MCP server, service or device may fill that gap. Continuum can inspect the interface, map the useful operation, test it and simulate the effect before the new capability is enabled.', capability);
       const small = qs('small', capability);
-      if (small) small.textContent = 'Adding a tool does not add permission. The existing rules still apply.';
+      if (small) small.textContent = 'Adding a tool doesn\'t add permission because the existing rules still apply.';
     }
 
     const continuity = qs('.continuum-authorized-continuity-note');
     if (continuity) {
-      setText('strong', 'Work you prepared in advance can continue when you cannot take part directly.', continuity);
+      setText('strong', 'Work you prepared in advance can continue when you can\'t take part directly.', continuity);
       setText('p', 'You can set the people, information, priorities, limits and authority ahead of time. Future Runtime can use that plan to check the current State, contact the right people, release approved information, wait for replies and carry the next allowed step forward.', continuity);
     }
 
     const evolution = qs('.continuum-architecture-evolution-note');
     if (evolution) {
       setText('strong', 'If the same problem keeps coming up, Continuum may need a new data model or backend feature.', evolution);
-      setText('p', 'A future architecture workflow could prepare a small change with the migration, tests and release checks needed to see whether it actually solves the recurring problem.', evolution);
+      setText('p', 'Later, Continuum could prepare the smallest backend change needed and include the migration, tests and release checks required to see whether it actually solves the recurring problem.', evolution);
       const small = qs('small', evolution);
       if (small) small.textContent = 'Architecture changes still go through versioning, migration checks, tests, release controls and rollback.';
     }
 
     const control = qs('.continuum-control-center-note');
     if (control) {
-      setText('strong', 'The Control Center keeps background work visible.', control);
+      setText('strong', 'The Control Center gives you one place to see what Continuum is doing in the background.', control);
       setText('p', 'It can show what is active, what is waiting, what comes next and what already happened. You can also inspect why an action occurred and which policy and authority were in effect at the time.', control);
       const small = qs('small', control);
       if (small) small.textContent = 'The activity view can stay simple even though the server keeps a deeper Audit record for important actions.';
@@ -226,5 +226,5 @@
   refineProductMapAndOrigin();
 
   document.documentElement.dataset.continuumHumanCadence = 'ready';
-  document.documentElement.dataset.continuumVoice = 'natural-v2';
+  document.documentElement.dataset.continuumVoice = 'natural-v3';
 })();
