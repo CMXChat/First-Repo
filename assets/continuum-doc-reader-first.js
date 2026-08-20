@@ -36,22 +36,22 @@
   }
 
   function refineHero() {
-    setText('.hero-kicker', 'A private system for what matters now and what should happen next');
+    setText('.hero-kicker', 'Think of AI as the brain and Continuum as the nervous system around it');
 
     const lead = qs('.continuum-hero .hero-lead');
     if (lead) {
-      lead.innerHTML = '<span class="hero-lead-first">Continuum is a private system for keeping the parts of your life and work that matter connected over time. It remembers useful context, keeps track of what has changed and helps you decide what should happen next without starting from scratch every time.</span><span class="hero-lead-second">The same system is being built to carry approved work forward when you are away, whether the next step depends on a deadline, a reply, a change somewhere else or a longer goal. It can also hold plans for times when you cannot respond. AI can help with the reasoning, but the information, permissions, rules and history remain with Continuum as models and tools change.</span>';
+      lead.innerHTML = '<span class="hero-lead-first">An AI model can reason, write and help make decisions. What it still needs around it is a reliable way to carry your life and work context across time, know what changed while you were away, remember the people and documents that matter, enforce your permission rules, and keep a process going after the chat closes. Continuum is that private layer.</span><span class="hero-lead-second">It keeps the information, people, documents, current situation and history around the AI so a change can update what Continuum knows and the rules you set can decide what should happen next. That might mean acting, waiting, asking you, contacting someone or doing nothing. The Dead Man Switch is one example, and the same foundation can help with everyday work when you\'re asleep, busy or offline and later with bigger goals that take several steps. If you switch to a better AI later, the memory, context, permissions and history stay with Continuum.</span>';
     }
 
     const truths = qs('.hero-truth-row');
     if (truths) {
-      truths.innerHTML = '<span><i></i>Remembers what matters</span><span><i></i>Keeps up with changes</span><span><i></i>Carries approved work forward</span>';
+      truths.innerHTML = '<span><i></i>Carries context across time</span><span><i></i>Keeps up with real changes</span><span><i></i>Works inside rules you set</span>';
     }
 
     const principle = qs('.capability-principle');
     if (principle) {
       setText('span', 'BUILT TO CARRY YOUR PLAN FORWARD', principle);
-      setText('strong', 'Your context, permissions and history stay together even as the tools around them change.', principle);
+      setText('strong', 'You can change the AI without losing the memory, permissions and history Continuum keeps.', principle);
     }
   }
 
@@ -59,8 +59,8 @@
     const section = document.getElementById('overview');
     if (!section) return;
 
-    setText('h2', 'How Continuum moves from change to action', section);
-    setText('.section-intro', 'Continuum keeps an eye on the sources you allow, remembers what matters and updates its picture of what is happening as things change. A deadline can arrive, someone can reply, Check In can reach a condition or an outside source can change. Any of those may make the next step ready, and the server checks the rules before anything happens.', section);
+    setText('h2', 'From something changing to the next allowed step', section);
+    setText('.section-intro', 'That basic idea becomes a loop. A deadline can arrive, someone can reply, a check-in timer can reach a condition or an approved source can change. Continuum updates what it knows about the situation, checks the rules and permissions you set, and then the next step may be to act, wait, ask you or do nothing. The pieces below give those jobs their technical names.', section);
 
     const steps = qsa('.process-step', section);
     const copy = [
@@ -83,7 +83,7 @@
     if (!presence) return;
 
     setText('.presence-heading strong', 'Useful now, built to keep going later.', presence);
-    setText('.presence-heading > p', 'Continuum can help you understand what needs attention when you are present, keep approved work moving when you are away, and follow plans you prepared for times when you cannot respond.', presence);
+    setText('.presence-heading > p', 'Continuum can help you understand what needs attention when you are present, keep approved work moving when you are away, and follow plans you prepared for times when you can\'t respond.', presence);
 
     const stages = qsa('.presence-stage', presence);
     const copy = [
@@ -112,7 +112,7 @@
     const principle = qs('.authority-principle', section);
     if (principle) {
       setText('b', 'Authority is the permission to act.', principle);
-      setText('span', 'A stronger model may make a better decision, but it does not gain extra permission on its own.', principle);
+      setText('span', 'A stronger model may make a better decision, but it doesn\'t gain extra permission on its own.', principle);
     }
 
     const callout = qs('.rule-callout', section);
@@ -171,7 +171,7 @@
     const section = document.getElementById('afterlife');
     if (!section) return;
 
-    setText('.section-intro', 'Afterlife is for continuity plans that may need to last through a long period when you cannot respond, including plans for after death. You choose the people, information, instructions and permissions ahead of time. Check In provides the trigger, and future Runtime can follow only the parts of the plan you already authorized.', section);
+    setText('.section-intro', 'Afterlife is for continuity plans that may need to last through a long period when you can\'t respond, including plans for after death. You choose the people, information, instructions and permissions ahead of time. Check In provides the trigger, and future Runtime can follow only the parts of the plan you already authorized.', section);
 
     const truth = qsa('.afterlife-truth > div', section);
     if (truth[0]) truth[0].innerHTML = '<b>LIVE</b> Check In keeps its timing on the server, lets you pause or resume, supports allowed deadline changes and records an Incident if the timer reaches its trigger.';
@@ -205,7 +205,7 @@
 
     const continuity = qs('.continuum-authorized-continuity-note');
     if (continuity) {
-      setText('strong', 'A plan you prepared can still matter when you cannot take part directly.', continuity);
+      setText('strong', 'A plan you prepared can still matter when you can\'t take part directly.', continuity);
       setText('p', 'You can choose the people, information, priorities, limits and permissions ahead of time. Future Runtime can use that plan to check the current situation, contact the right people, release approved information, wait for replies and carry the next allowed step forward.', continuity);
     }
 
@@ -237,7 +237,7 @@
       const paragraphs = qsa('.continuum-origin-copy > p:not(.continuum-origin-kicker)', origin);
       if (paragraphs[0]) paragraphs[0].textContent = 'Continuum grew out of a simple continuity problem. If you stop responding, the people, information and instructions you prepared still need somewhere durable to live, and the system needs a reliable way to know when that plan matters. Check In gives that situation a clear trigger.';
       if (paragraphs[1]) paragraphs[1].textContent = 'Once that problem is solved, the same foundation becomes useful every day. You might be asleep, traveling, offline, waiting on someone or moving through a longer project, and the context and rules still need to survive until the next step becomes possible.';
-      if (paragraphs[2]) paragraphs[2].textContent = 'That is the broader Continuum idea. It keeps context, current State, permissions and history together so AI and connected tools can help when you are present, approved work can continue when you are away, and continuity plans can still be followed when you cannot respond.';
+      if (paragraphs[2]) paragraphs[2].textContent = 'That is the broader Continuum idea. It keeps context, current State, permissions and history together so AI and connected tools can help when you are present, approved work can continue when you are away, and continuity plans can still be followed when you can\'t respond.';
     }
   }
 
