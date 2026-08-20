@@ -7,6 +7,7 @@ const path = require('node:path');
 const root = process.cwd();
 const source = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time.js'), 'utf8');
 const cadence = fs.readFileSync(path.join(root, 'assets/continuum-doc-human-cadence.js'), 'utf8');
+const reader = fs.readFileSync(path.join(root, 'assets/continuum-doc-reader-first.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time.css'), 'utf8');
 const loader = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.js'), 'utf8');
 
@@ -54,6 +55,23 @@ for (const required of [
   "dataset.continuumVoice = 'natural-v3'"
 ]) assert.match(cadence, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
+for (const required of [
+  'Your saved information lives in Library',
+  'a Space brings the relevant context together',
+  "Check In is the live timer you use to show you're still responding",
+  'Afterlife is the longer-term continuity area',
+  'That picture is called State',
+  'Runtime is the server-side part that can keep approved work moving even after you close the app.',
+  "Signals are the meaningful changes Continuum notices from sources you've approved.",
+  'An Automation is a saved definition of work and the rules around it.',
+  'Afterlife is for continuity plans that may need to outlast a long period',
+  'Planner is the part that turns that request into a proposed set of changes, called a Change Plan.',
+  'A Goal is for an outcome that may take several steps and change along the way.',
+  'Connections link outside apps and tools',
+  'important timing can live on the server instead of depending on an open browser',
+  "dataset.continuumReaderFirst = 'ready'"
+]) assert.match(reader, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+
 for (const staleCadence of [
   'Library holds your information. Directory keeps track of people and relationships.',
   'AI can change. Continuum keeps the rules around it.',
@@ -86,10 +104,12 @@ for (const required of [
 
 assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
 assert.match(loader, /continuum-doc-human-cadence\.js\?v=20260820-3/);
+assert.match(loader, /continuum-doc-reader-first\.js\?v=20260820-1/);
 assert.match(loader, /loadHumanCadence/);
+assert.match(loader, /loadReaderFirst/);
 assert.match(loader, /script\.async = false/);
 
-for (const checkedSource of [source, cadence]) {
+for (const checkedSource of [source, cadence, reader]) {
   for (const pattern of [
     /\.\.\.|…|—/,
     /\bit(?:'|’)s not\b/i,
@@ -98,4 +118,4 @@ for (const checkedSource of [source, cadence]) {
   ]) assert.doesNotMatch(checkedSource, pattern);
 }
 
-console.log('Continuum plain-English positioning and natural voice contract passed.');
+console.log('Continuum plain-English, natural voice and reader-first terminology contract passed.');
