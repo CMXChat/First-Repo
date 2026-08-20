@@ -19,7 +19,7 @@
   function loadReaderFirst() {
     if (document.querySelector('script[data-continuum-reader-first]')) return;
     const script = document.createElement('script');
-    script.src = '/assets/continuum-doc-reader-first.js?v=20260820-1';
+    script.src = '/assets/continuum-doc-reader-first.js?v=20260820-2';
     script.async = false;
     script.dataset.continuumReaderFirst = 'loader';
     document.body.append(script);
