@@ -10,21 +10,30 @@ const css = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time
 const loader = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.js'), 'utf8');
 
 for (const required of [
-  'Your information, intent and authority across time',
-  'preserve the continuity plan you prepared for a time when you can no longer respond',
-  'Spaces, Automations, AI, Check In and Afterlife use that same durable foundation',
-  'Understands what changed + when',
-  'Carries approved intent forward',
-  'BUILT TO CARRY INTENT FORWARD',
-  'One operating layer across presence, absence and continuity.',
-  'Afterlife is the continuity edge of Continuum.',
-  'Decide the fallback path while you can still decide it.',
-  'Silence and urgency never create authority.',
-  'Paste text, hand Continuum an AI export, drop in files or share an image.',
+  'Your information, plans and permissions across time',
+  'continue work you have approved while you are away',
+  'Library holds your information. Directory keeps track of people and relationships.',
+  'Knows what changed and when',
+  'Can continue work you approved',
+  'BUILT TO CARRY YOUR PLAN FORWARD',
+  'One place for what matters now, later, and when you cannot respond.',
+  "State is Continuum's current picture of what is true now.",
+  'AI can change. Continuum keeps the rules around it.',
+  'Authority means permission to act.',
+  'Library keeps documents, files, knowledge and version history.',
+  'An Automation can keep using version 3 even while you are editing version 4.',
+  'Describe what should happen, then make the rules clear',
+  "Afterlife is Continuum's long-term continuity path.",
+  'Silence and urgency never create permission.',
+  'AI is one part of a larger system.',
+  'Prototype the experience, then connect it to real server data',
+  'Make the information layer real, then add long-running execution',
+  'Give Continuum text, Markdown, JSON, an AI handoff, a document or an image.',
   'Files + OCR / vision',
-  'Continuum uses a real clock, so time comes from backend state and timestamps.',
-  'You leave for two minutes and return two seconds later.',
-  "dataset.continuumPositioning = 'continuity-first'"
+  'Continuum uses server time and timestamps, so elapsed time comes from a real clock.',
+  'You say you are leaving for two minutes and return two seconds later.',
+  "dataset.continuumPositioning = 'continuity-first'",
+  "dataset.continuumClarity = 'plain-english-v1'"
 ]) assert.match(source, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 
 for (const required of [
@@ -37,7 +46,7 @@ for (const required of [
   '@media print'
 ]) assert.ok(css.includes(required), `Missing continuity positioning style: ${required}`);
 
-assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260819-2/);
+assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
 assert.match(loader, /script\.async = false/);
 
 for (const pattern of [
@@ -47,4 +56,4 @@ for (const pattern of [
   /\brather than\b/i
 ]) assert.doesNotMatch(source, pattern);
 
-console.log('Continuum continuity-first positioning contract passed.');
+console.log('Continuum plain-English continuity positioning contract passed.');
