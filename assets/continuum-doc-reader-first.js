@@ -16,7 +16,7 @@
     setText('.document-toc a[href="#difference"]', '02 · AI + Permissions');
     setText('.toolbar-links a[href="#difference"]', 'AI + Permissions');
 
-    const statusCopy = 'Check In is LIVE. Spaces and Automations are LAB. Durable private information and saved Automation definitions are NEXT. Long-running Runtime, outside actions and autonomous AI work are LATER.';
+    const statusCopy = 'Check In is LIVE. Spaces and Automations are LAB. Durable private information and saved Automation definitions are NEXT. Long-running Runtime, outside actions, Goals and autonomous AI work are LATER.';
     setText('.rail-status p', statusCopy);
     setText('.clarity-status-frame .clarity-mini-heading p', statusCopy);
 
@@ -36,16 +36,22 @@
   }
 
   function refineHero() {
-    setText('.hero-kicker', 'Your information, workflows and goals across time');
+    setText('.hero-kicker', 'A private system for what matters now and what should happen next');
 
     const lead = qs('.continuum-hero .hero-lead');
     if (lead) {
-      lead.innerHTML = '<span class="hero-lead-first">Continuum keeps the information, people, instructions and permissions you want to carry with you over time. It can help with what you\'re doing now, and the same foundation is being built for workflows that react to changes and longer goals that may take several steps.</span><span class="hero-lead-second">An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do next. Check In is the live timer you use to show you\'re still responding, and Afterlife holds continuity plans for times when you can\'t respond, including after death. The AI model or tool can change without taking the underlying records, permissions or history with it.</span>';
+      lead.innerHTML = '<span class="hero-lead-first">Continuum is a private system for keeping the parts of your life and work that matter connected over time. It remembers useful context, keeps track of what has changed and helps you decide what should happen next without starting from scratch every time.</span><span class="hero-lead-second">The same system is being built to carry approved work forward when you are away, whether the next step depends on a deadline, a reply, a change somewhere else or a longer goal. It can also hold plans for times when you cannot respond. AI can help with the reasoning, but the information, permissions, rules and history remain with Continuum as models and tools change.</span>';
     }
 
     const truths = qs('.hero-truth-row');
     if (truths) {
-      truths.innerHTML = '<span><i></i>Keeps the right context current</span><span><i></i>Built for workflows + longer goals</span><span><i></i>Acts inside rules you set</span>';
+      truths.innerHTML = '<span><i></i>Remembers what matters</span><span><i></i>Keeps up with changes</span><span><i></i>Carries approved work forward</span>';
+    }
+
+    const principle = qs('.capability-principle');
+    if (principle) {
+      setText('span', 'BUILT TO CARRY YOUR PLAN FORWARD', principle);
+      setText('strong', 'Your context, permissions and history stay together even as the tools around them change.', principle);
     }
   }
 
@@ -53,15 +59,16 @@
     const section = document.getElementById('overview');
     if (!section) return;
 
-    setText('.section-intro', 'Continuum takes in information and changes from sources you\'ve approved, keeps track of what matters now, checks what it\'s allowed to do, uses the right tools and records the result. A deadline can arrive, a reply can come in, Check In can reach a condition or an outside source can change. Any of those can make the next step ready, but the server still checks the rules before anything runs.', section);
+    setText('h2', 'How Continuum moves from change to action', section);
+    setText('.section-intro', 'Continuum keeps an eye on the sources you allow, remembers what matters and updates its picture of what is happening as things change. A deadline can arrive, someone can reply, Check In can reach a condition or an outside source can change. Any of those may make the next step ready, and the server checks the rules before anything happens.', section);
 
     const steps = qsa('.process-step', section);
     const copy = [
-      ['Receive information', 'Messages, files, calendars, account data, APIs and direct updates can arrive from sources you approved.'],
-      ['Keep knowledge + current State', 'Continuum keeps a current picture of what is true now. That picture is called State, and it sits alongside saved people, files, dates, relationships and history.'],
-      ['Check what is allowed', 'Before anything runs, the server checks the permissions, approvals, timing rules and limits that apply.'],
-      ['Use the right capability', 'AI and connected services can use only the tools allowed for the job. If a workflow needs to keep going after you close the app, Runtime is the part that can later keep it alive in the background on the server.'],
-      ['Record what happened', 'The result, timing and reason are kept so the next decision can start with current information.']
+      ['Take in what changed', 'Messages, files, calendars, account data, APIs and direct updates can arrive from sources you approved.'],
+      ['Understand what is true now', 'Continuum keeps a current picture of the situation. That picture is called State, and it sits alongside saved people, files, dates, relationships and history.'],
+      ['Check the rules', 'Before anything runs, the server checks the permissions, approvals, timing rules and limits that apply.'],
+      ['Use an allowed tool', 'AI and connected services use only the capabilities allowed for the job. Later, Runtime can keep approved work moving after you close the app.'],
+      ['Keep the result', 'Continuum keeps the result, timing and reason so the next decision can start from the latest information.']
     ];
 
     steps.forEach((step, index) => {
@@ -75,19 +82,22 @@
     const presence = qs('.continuum-presence');
     if (!presence) return;
 
-    setText('.presence-heading strong', 'One place for what matters now, work that continues later, and plans for when you can\'t respond.', presence);
-    setText('.presence-heading > p', 'The same information and rules can help you understand what matters now, support workflows and longer goals over time, and carry continuity plans you prepared in advance.', presence);
+    setText('.presence-heading strong', 'Useful now, built to keep going later.', presence);
+    setText('.presence-heading > p', 'Continuum can help you understand what needs attention when you are present, keep approved work moving when you are away, and follow plans you prepared for times when you cannot respond.', presence);
 
     const stages = qsa('.presence-stage', presence);
-    if (stages[1]) {
-      setText('p', 'Use saved workflows and approved tools to follow up or carry the next step forward.', stages[1]);
-    }
-    if (stages[2]) {
-      setText('p', 'Later, Runtime can keep work alive on the server even when the app isn\'t open, including waits, replies and retries.', stages[2]);
-    }
-    if (stages[3]) {
-      setText('p', 'Use the instructions, people and permissions you set up ahead of time.', stages[3]);
-    }
+    const copy = [
+      ['Understand what needs attention', 'Bring together the context for the decision in front of you.'],
+      ['Carry the next step forward', 'Use saved rules and approved tools to keep work moving.'],
+      ['Keep going after you leave', 'Later, Runtime can wait for time, replies and other changes on the server.'],
+      ['Follow a plan you prepared', 'Use the people, information and permissions you chose ahead of time.']
+    ];
+
+    stages.forEach((stage, index) => {
+      if (!copy[index]) return;
+      setText('h3', copy[index][0], stage);
+      setText('p', copy[index][1], stage);
+    });
 
     setText('.presence-truth span', 'Check In timing is live today. Outside actions, long-running Runtime, Goals and automatic fallback based on your rules are later work.', presence);
   }
@@ -96,12 +106,19 @@
     const section = document.getElementById('difference');
     if (!section) return;
 
-    setText('.section-intro', 'An AI model can reason, write and use tools. Continuum keeps the information, current State, permissions and history around it, and the server decides what the model is actually allowed to see and do.', section);
+    setText('h2', 'AI works inside the context and permissions Continuum keeps', section);
+    setText('.section-intro', 'AI can help with reasoning, writing and tool use, but Continuum keeps the context, current situation, permissions and history around the work. The model only gets the information and abilities the job allows, and the server checks whether an action is actually permitted.', section);
 
     const principle = qs('.authority-principle', section);
     if (principle) {
-      setText('b', 'Authority simply means permission to act.', principle);
-      setText('span', 'A better model can improve the quality of a decision without gaining extra permission on its own.', principle);
+      setText('b', 'Authority is the permission to act.', principle);
+      setText('span', 'A stronger model may make a better decision, but it does not gain extra permission on its own.', principle);
+    }
+
+    const callout = qs('.rule-callout', section);
+    if (callout) {
+      setText('strong', 'The server makes the final permission check.', callout);
+      setText('span', 'AI can understand the goal and choose among allowed options. Protected server rules decide whether the action can run.', callout);
     }
   }
 
@@ -109,17 +126,19 @@
     const section = document.getElementById('spaces');
     if (!section) return;
 
-    setText('.section-intro', 'Library is where Continuum keeps documents, files, knowledge and version history, and Directory gives people and organizations stable records that can be connected to that information. A Space pulls the relevant pieces together when you want to focus on one part of your life or work.', section);
+    setText('h2', 'Keep information connected to the people and situations it belongs to', section);
+    setText('.section-intro', 'Continuum needs a stable way to remember information and connect it to the people and situations it belongs to. Library keeps the documents, files, knowledge and versions you want to preserve. Directory keeps stable records for people and organizations, and a Space can pull the relevant pieces together when you want to focus on one part of your life or work.', section);
 
     const senses = qs('.continuum-senses-strip', section);
     if (senses) {
-      setText('.continuum-senses-copy strong', 'Signals are the meaningful changes Continuum notices from sources you\'ve approved.', senses);
-      setText('.continuum-senses-copy p', 'Continuum saves what a source showed at that moment as an Observation. If it shows a meaningful change, that can become a Signal and update the part of State that matters now.', senses);
+      setText('.continuum-senses-copy strong', 'Continuum can notice when an approved source changes.', senses);
+      setText('.continuum-senses-copy p', 'It can save what the source showed at that moment and compare it with what came before. A meaningful change becomes a Signal, which can update its current State and make later work aware of the new situation.', senses);
     }
 
     const quality = qs('.continuum-knowledge-quality-note', section);
     if (quality) {
-      setText('p', 'Something observed directly, something a person said, a conclusion drawn by AI and Continuum\'s current State can carry different weight. The source, time, freshness and conflicts stay attached so later decisions can see the difference.', quality);
+      setText('strong', 'The source and level of certainty stay attached.', quality);
+      setText('p', 'A direct observation, something a person said, an AI conclusion and Continuum\'s current State may carry different weight. Time, freshness and conflicts stay with the record so later decisions can judge the difference.', quality);
     }
   }
 
@@ -127,23 +146,24 @@
     const section = document.getElementById('action');
     if (!section) return;
 
-    setText('.section-intro', 'You can describe the job normally, then Continuum turns the parts that matter into an Automation with a clear start, conditions, limits and actions for the server to check.', section);
+    setText('h2', 'Describe the work normally, then make the important rules clear', section);
+    setText('.section-intro', 'You can describe what should start the work and what should happen next in normal language. Continuum turns the important parts into a saved Automation with clear conditions, limits, permissions and actions that the server can check.', section);
 
     const primer = qs('.clarity-automation-copy', section);
     if (primer) {
-      primer.innerHTML = '<strong>An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do.</strong> You can begin with the job in normal language, then make the important permissions, limits and actions clear. Runtime comes later and keeps published work moving after the app closes.';
+      primer.innerHTML = '<strong>An Automation is how Continuum remembers a repeatable or triggered piece of work.</strong> It can start from a time, a reply, a Check In condition or another approved change, then follow the steps and limits you set. Runtime is the later server-side part that keeps published work going after you close the app.';
     }
 
     const runtime = qs('.policy-runtime', section);
     if (runtime) {
-      setText('strong', 'Runtime keeps published work alive in the background after you close the app.', runtime);
-      setText('small', 'It runs on the server, where it can wait, retry when allowed, handle replies, use approved tools and record the result.', runtime);
+      setText('strong', 'Runtime lets approved work continue after you leave.', runtime);
+      setText('small', 'It runs on the server, so it can wait, handle replies, retry when allowed, use approved tools and keep a record of what happened.', runtime);
     }
 
     const signals = qs('.continuum-signals-note', section);
     if (signals) {
-      setText('strong', 'Changes can make the next step ready.', signals);
-      setText('p', 'A deadline can arrive, a reply can come in, Check In can reach a condition or an approved source can change. That can update State or make a saved workflow ready to continue. The rules and permissions still decide whether the next action can run.', signals);
+      setText('strong', 'Changes can move the work forward.', signals);
+      setText('p', 'A deadline, reply, Check In condition or approved outside change can make the next step ready. Continuum still checks the rules and permissions before that step can run.', signals);
     }
   }
 
@@ -151,46 +171,97 @@
     const section = document.getElementById('afterlife');
     if (!section) return;
 
-    setText('.section-intro', 'Afterlife is for continuity plans that may need to outlast a long period when you can\'t respond, including plans for after death. You choose the people, information, instructions and permissions ahead of time. Check In supplies the trigger, and future Runtime can follow the parts of the plan you already authorized.', section);
+    setText('.section-intro', 'Afterlife is for continuity plans that may need to last through a long period when you cannot respond, including plans for after death. You choose the people, information, instructions and permissions ahead of time. Check In provides the trigger, and future Runtime can follow only the parts of the plan you already authorized.', section);
 
     const truth = qsa('.afterlife-truth > div', section);
-    if (truth[0]) truth[0].innerHTML = '<b>LIVE</b> Check In already keeps its timing on the server, lets you pause or resume, supports allowed deadline changes and records an Incident if the timer reaches its trigger.';
+    if (truth[0]) truth[0].innerHTML = '<b>LIVE</b> Check In keeps its timing on the server, lets you pause or resume, supports allowed deadline changes and records an Incident if the timer reaches its trigger.';
     if (truth[1]) truth[1].innerHTML = '<b>LATER</b> Continuum can use prepared continuity rules to contact approved people, wait for replies, retry when allowed and carry the next approved step forward through Runtime.';
   }
 
   function refineFutureConcepts() {
     const planner = qs('.continuum-planner-note');
     if (planner) {
-      setText('strong', 'Later, you\'ll be able to describe a setup in normal language and have Continuum prepare the changes for review.', planner);
-      setText('p', 'Planner is the part that turns that request into a proposed set of changes, called a Change Plan. You can see what would change before the server applies anything.', planner);
+      setText('strong', 'You will be able to describe a setup or change normally and review what Continuum proposes before anything is applied.', planner);
+      setText('p', 'Planner turns the request into a Change Plan, which is the proposed set of edits across the product. You can inspect it before the server applies anything.', planner);
       const small = qs('small', planner);
-      if (small) small.textContent = 'Planner can propose changes. The server still decides what gets applied and what can execute.';
+      if (small) small.textContent = 'Planner proposes changes. The server still controls what gets applied and what may execute.';
     }
 
     const goal = qs('.continuum-goal-note');
     if (goal) {
-      setText('strong', 'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.', goal);
-      setText('p', 'It keeps the outcome, limits and required approvals in one place. A Goal can use more than one Automation or task as the situation changes, Planner can adjust the route, and Runtime can carry approved steps across waits and replies.', goal);
+      setText('strong', 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.', goal);
+      setText('p', 'It keeps the outcome, limits and required approvals together even if the route changes. Planner can later suggest a new route, and Runtime can carry approved steps across waits, replies and other changes.', goal);
+      const small = qs('small', goal);
+      if (small) small.textContent = 'A new route still has to stay inside the limits and authority you set.';
+    }
+
+    const capability = qs('.continuum-capability-extension-note');
+    if (capability) {
+      setText('strong', 'When Continuum keeps reaching the edge of what a connected tool can do, that gap should be visible.', capability);
+      setText('p', 'A compatible API, MCP server, service or device could fill it. Before a new capability is enabled, Continuum can inspect what it exposes, map the useful operation and test the expected effect.', capability);
+      const small = qs('small', capability);
+      if (small) small.textContent = 'The new capability still works under the permissions already in place.';
     }
 
     const continuity = qs('.continuum-authorized-continuity-note');
     if (continuity) {
-      setText('p', 'You can choose the people, information, priorities, limits and permissions ahead of time. Future Runtime can use that prepared plan to check what is happening now, contact the right people, release approved information, wait for replies and carry the next allowed step forward.', continuity);
+      setText('strong', 'A plan you prepared can still matter when you cannot take part directly.', continuity);
+      setText('p', 'You can choose the people, information, priorities, limits and permissions ahead of time. Future Runtime can use that plan to check the current situation, contact the right people, release approved information, wait for replies and carry the next allowed step forward.', continuity);
+    }
+
+    const evolution = qs('.continuum-architecture-evolution-note');
+    if (evolution) {
+      setText('strong', 'If the same limitation keeps blocking useful work, the product itself may need to grow.', evolution);
+      setText('p', 'A future development loop could prepare the smallest backend change needed, along with the migration, tests and release checks required to prove it works.', evolution);
+      const small = qs('small', evolution);
+      if (small) small.textContent = 'Architecture changes still go through versioning, migration checks, tests, release controls and rollback.';
+    }
+
+    const control = qs('.continuum-control-center-note');
+    if (control) {
+      setText('strong', 'Control Center is where you see what Continuum is doing across time.', control);
+      setText('p', 'It can show what is active, waiting, coming next and already finished, with enough detail to understand why an important action happened and which rules were in effect.', control);
+      const small = qs('small', control);
+      if (small) small.textContent = 'The main activity view can stay simple even when the server keeps a deeper Audit record.';
     }
   }
 
-  function refineProductMap() {
+  function refineProductMapAndOrigin() {
     const intro = qs('.clarity-product-map-section .section-intro');
-    if (!intro) return;
+    if (intro) {
+      intro.textContent = 'By this point the parts have names. Directory and Library keep stable people and information, Spaces focus the context you need, Automations hold repeatable work, and Goals can hold a larger outcome when the route changes. Connections bring in outside tools and data, Runtime can later keep approved work alive on the server, and Signals update Continuum\'s picture of what is happening now. AI only gets the context and capabilities the job allows.';
+    }
 
-    intro.textContent = 'Directory and Library keep the people and information Continuum can work from, and Spaces bring the relevant context into focus. Automations handle saved workflows, and Goals can hold a larger outcome when the route may change. Connections link outside apps and tools. Runtime can later keep published work moving on the server. Signals can update what Continuum knows is happening now, and AI only gets the context and tools it\'s allowed to use.';
+    const origin = qs('.continuum-origin-note');
+    if (origin) {
+      const paragraphs = qsa('.continuum-origin-copy > p:not(.continuum-origin-kicker)', origin);
+      if (paragraphs[0]) paragraphs[0].textContent = 'Continuum grew out of a simple continuity problem. If you stop responding, the people, information and instructions you prepared still need somewhere durable to live, and the system needs a reliable way to know when that plan matters. Check In gives that situation a clear trigger.';
+      if (paragraphs[1]) paragraphs[1].textContent = 'Once that problem is solved, the same foundation becomes useful every day. You might be asleep, traveling, offline, waiting on someone or moving through a longer project, and the context and rules still need to survive until the next step becomes possible.';
+      if (paragraphs[2]) paragraphs[2].textContent = 'That is the broader Continuum idea. It keeps context, current State, permissions and history together so AI and connected tools can help when you are present, approved work can continue when you are away, and continuity plans can still be followed when you cannot respond.';
+    }
+  }
+
+  function refineEngineeringAndBuild() {
+    const engineering = document.getElementById('engineering');
+    if (engineering) {
+      setText('h2', 'How Continuum is put together', engineering);
+      setText('.section-intro', 'The browser, backend and database explain how the app runs. The Continuum architecture explains how information, current State, permissions, AI, tools and results stay connected as the product grows.', engineering);
+    }
+
+    const build = document.getElementById('build');
+    if (build) {
+      setText('h2', 'Start in the Lab, then connect the real backend', build);
+      setText('.section-intro', 'The Lab is where an idea can be tried quickly enough to understand how it should feel. Once the behavior makes sense, we define the durable data and permission rules, build and test the backend, then connect the accepted interface to protected APIs.', build);
+    }
   }
 
   function refineRoadmap() {
     const section = document.getElementById('status');
     if (!section) return;
 
-    setText('.section-intro', 'Check In already proves that important timing can live on the server instead of depending on an open browser. The next milestone is private information that survives across sessions and devices. From there, Runtime can keep approved work moving on the server, Goals can coordinate longer outcomes and more outside tools can connect as those parts become real.', section);
+    setText('h2', 'Make private information durable, then let approved work keep going', section);
+    setText('.section-intro', 'Check In already proves that important timing can live on the server without an open browser. The next milestone is private information that survives across sessions and devices. Once that foundation is real, Runtime can start carrying approved work across time, and later pieces such as Goals and outside actions can build on the same model.', section);
+    setText('.closing-note', 'Continuum is meant to keep the context, current situation, permissions and history that matter as AI models, tools and interfaces change around it.', section);
   }
 
   refineNavigationAndStatus();
@@ -202,9 +273,10 @@
   refineAutomations();
   refineAfterlife();
   refineFutureConcepts();
-  refineProductMap();
+  refineProductMapAndOrigin();
+  refineEngineeringAndBuild();
   refineRoadmap();
 
   document.documentElement.dataset.continuumReaderFirst = 'ready';
-  document.documentElement.dataset.continuumProductStory = 'complete-v1';
+  document.documentElement.dataset.continuumProductStory = 'balanced-v2';
 })();
