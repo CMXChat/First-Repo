@@ -1,7 +1,7 @@
 # Continuum `/doc/` Freeze - CURRENT
 
 Date: 2026-08-20
-Status: FROZEN after owner-authorized plain-English, cadence, natural-voice and contraction passes
+Status: FROZEN after owner-authorized plain-English, natural-voice, contraction and reader-first terminology passes
 
 ## Freeze decision
 
@@ -23,17 +23,35 @@ Routine cleanup should leave the page alone.
 
 The owner asked for the page to become easier to understand and less AI-like while preserving the existing design and architecture.
 
-The first pass simplified terminology and established the rule that human meaning should come before architecture vocabulary.
+The work completed in this reopening now includes:
 
-The second pass removed stacked short subject-action sentences and protected connected paragraph rhythm.
-
-The third pass went after smaller writing habits that still made some copy feel generated. Normal prose now avoids unnecessary colons and semicolons, repeated `while`, repeated `can eventually`, overly balanced component lists and technical wording that can be explained more naturally.
-
-The latest pass adds a conversational contraction rule. Normal explanatory prose should prefer forms such as `doesn't`, `isn't`, `can't`, `won't` and similar contractions when that is how a person would naturally say the sentence. Full forms remain appropriate when deliberate emphasis or technical clarity genuinely benefits from them.
+- plain-English explanations before dense architecture wording;
+- removal of stacked short AI-like sentence cadence;
+- fewer unnecessary colons, semicolons and overly balanced sentences;
+- natural contractions where a person would normally use them;
+- a reader-first terminology pass so product names and technical terms are explained when they first matter.
 
 Canonical positioning companion
 
 `docs/continuum-doc-positioning-CURRENT.md`
+
+## Reader-first freeze rule
+
+A new reader should not need prior Continuum knowledge to understand the first meaningful sentence that uses an important term.
+
+Explain the human job first and introduce the real name in the same sentence or the next one. Once the term has been explained, later copy can use it normally and can become more technical.
+
+This rule is deliberately narrow. Do not turn `/doc/` into a beginner tutorial and do not remove real architecture terms simply because they are technical.
+
+Preferred teaching order
+
+```text
+plain behavior
+→ real Continuum term
+→ deeper architecture later
+```
+
+The page should stay useful to both nontechnical and technical readers.
 
 ## Current opening identity
 
@@ -43,9 +61,9 @@ Hero direction
 Your information, plans and permissions across time
 ```
 
-The opening explains that Continuum can keep information, people, instructions and permissions over time, help use that context today, continue work already approved when the owner is away, and follow continuity plans prepared for a time when the owner can't respond.
+The opening explains that Continuum can keep information, people, instructions and permissions over time, use that context today, continue approved work when the owner is away, and follow plans prepared for a time when the owner can't respond.
 
-The next paragraph connects the product pieces naturally. Library preserves information and Directory ties it to people and relationships, giving Spaces the context it needs for a focused view. Automations can use those same records and rules to carry approved work forward. Check In and Afterlife extend the plan when the owner is away or unable to respond, and changing the AI model or tool doesn't take the underlying records, permissions or history with it.
+The next paragraph now explains the major names as they appear. Saved information lives in Library. Directory keeps track of people and organizations. A Space brings together the context for one part of life or work. Automations describe work already approved to continue under set rules. Check In is the live timer used to show the owner is still responding. Afterlife is the longer-term continuity area for plans that may be needed when the owner can't respond, including after death.
 
 Compact hero labels remain intentionally concise.
 
@@ -68,30 +86,23 @@ WITH YOU
 → IF YOU CANNOT RESPOND
 ```
 
-## Plain-English teaching rule
+## First-use architecture explanations
 
-Explain the human idea first and introduce the architecture term when it helps.
+The final visible copy now establishes these concepts before relying on the names:
 
-Examples include:
+- State is the current picture of what is true now.
+- Runtime is the server-side part that can keep approved work moving after the app closes.
+- Signals are meaningful changes noticed from approved sources.
+- an Observation is what a source showed at a particular moment.
+- Authority means permission to act.
+- an Automation is a saved definition of work and the rules around it.
+- Planner turns a normal-language setup request into proposed changes.
+- a Change Plan is the proposed set of changes prepared for review.
+- a Goal keeps an outcome, limits and approvals together across work that may take several steps.
+- Connections link outside apps and tools.
+- Control Center is the place where the owner can see what Continuum is doing in the background.
 
-- State = Continuum's current picture of what is true now;
-- authority = permission to act;
-- Directory relationship labels add context without granting permission by themselves;
-- an Automation can keep using version 3 after version 4 starts being edited;
-- Runtime can later keep waits, replies and retries on the server after the browser closes;
-- elapsed time comes from server timestamps, so AI doesn't need to stay open between events.
-
-## Human voice rule
-
-Related ideas should read as connected prose. Avoid repeatedly resetting a paragraph with the same short pattern.
-
-Normal paragraphs should also avoid punctuation or sentence shapes that make the copy feel overly composed. Colons and semicolons are fine when code, data, technical notation, labels or diagrams genuinely need them. They shouldn't be the default way normal explanatory prose is joined together.
-
-Repeated `while` constructions, repeated `can eventually`, perfectly balanced component lists and unnecessary architecture vocabulary should be rewritten when a simpler sentence sounds more natural.
-
-Prefer natural contractions in ordinary prose. `Doesn't`, `isn't`, `can't`, `won't`, `you're` and similar forms usually sound more human than their full versions. Don't force a contraction where the full form adds useful emphasis or precision.
-
-Short wording remains appropriate for labels, cards, flow diagrams, status pills and deliberate UI microcopy.
+After those explanations, technical sections may use the real terms without repeating beginner definitions.
 
 ## Information direction
 
@@ -117,35 +128,27 @@ The original source stays traceable and important findings remain reviewable bef
 
 ## AI and authority direction
 
-When the AI changes, Continuum keeps the information, current State, permissions and server-side rules around it.
+An AI model can reason, write and use tools. Continuum keeps the information, current State, permissions and history around it, and the server decides what the model can actually see and do.
 
-The server remains the final permission check, and improved reasoning never creates extra authority by itself.
+Authority is introduced as permission to act. Improved reasoning never creates extra permission by itself.
 
 ## Automations and Runtime direction
 
-The Automation section keeps the human interaction first.
+The Automation section keeps human intent first.
 
 `Describe what should happen, then make the rules clear.`
 
-Natural language remains the intended setup experience. Structured people, timing, approvals, limits, actions and fallback fields are what future Runtime can enforce.
+An Automation is explained as a saved definition of work and its rules. Runtime is explained as the server-side part that can carry published work forward, including waits and retries when the app isn't open.
 
 Current Lab workflow definitions still do not imply provider execution.
 
-## Temporal-awareness direction
+## Afterlife direction
 
-Concrete example
+Afterlife is for continuity plans that may need to outlast a long period when the owner can't respond, including plans for after death.
 
-```text
-User says they are leaving for two minutes
-→ user returns two seconds later
-→ Continuum knows roughly two seconds elapsed
-```
+The owner chooses the people, information, instructions and permissions ahead of time. Check In supplies the trigger. Future Runtime can follow only the parts already authorized.
 
-Consequential elapsed time comes from backend/server timestamps. Check In already proves server-owned timing today.
-
-## Afterlife positioning
-
-Afterlife carries the same Continuum foundation into long-term continuity. The owner prepares people, information, instructions and permissions in advance. Check In records the trigger if the owner stops responding long enough, and future Runtime can follow the plan already prepared.
+The LIVE and LATER copy should describe understandable user behavior and should not read like an engineering release note.
 
 Visible guardrail
 
@@ -167,15 +170,24 @@ Visible `/doc/` paragraph copy should avoid:
 - repeated `while` constructions;
 - repeated `can eventually` future framing;
 - stiff uncontracted negatives when a normal contraction sounds better;
-- dense architecture vocabulary when a simpler phrase works;
+- unexplained product names or architecture terms at first meaningful use;
+- dense architecture vocabulary when a simpler first explanation works;
 - fragment-heavy sales copy outside intentional UI labels;
 - repeated explanations that add length without adding meaning.
 
 Use connected plain-English paragraphs, varied sentence length, calm technical language, natural contractions, concrete examples and restrained emphasis.
 
+## Technical-depth rule
+
+Do not remove technical depth after a term has been explained.
+
+Diagrams, architecture sections, flows and technical callouts may continue to use State, Runtime, Signals, Authority, policy, provenance, Audit, Planner, Change Plan and other exact terms where they improve precision.
+
+Accessibility should come from the first explanation, not from flattening the whole document.
+
 ## Protected structure and visuals
 
-The clarity and voice passes keep:
+The clarity and reader-first passes keep:
 
 - the eight stable sections;
 - the existing visual system;
@@ -201,17 +213,22 @@ The continuity/knowledge/time clarity layer remains:
 - `assets/continuum-doc-knowledge-time.js`;
 - `assets/continuum-doc-knowledge-time.css`.
 
-The final human-voice layer is:
+The natural-voice layer remains:
 
 - `assets/continuum-doc-human-cadence.js`.
 
-`assets/continuum-doc-i18n.js` loads the knowledge/time layer first and the human-voice layer after it.
+The final reader-first layer is:
+
+- `assets/continuum-doc-reader-first.js`.
+
+`assets/continuum-doc-i18n.js` loads those layers in that order.
 
 Current loader targets
 
 ```text
 /assets/continuum-doc-knowledge-time.js?v=20260820-1
 /assets/continuum-doc-human-cadence.js?v=20260820-3
+/assets/continuum-doc-reader-first.js?v=20260820-1
 ```
 
 Current markers
@@ -220,15 +237,14 @@ Current markers
 data-continuum-clarity="plain-english-v1"
 data-continuum-human-cadence="ready"
 data-continuum-voice="natural-v3"
+data-continuum-reader-first="ready"
 ```
-
-The static `doc/index.html` still loads the i18n bootstrap using its existing query token. Normal browser revalidation should pick up the updated bootstrap. A future query-token bump remains allowed if a device proves stale.
 
 ## Regression guard
 
-`tests/continuum-doc-continuity-positioning.test.js` validates the plain-English layer and final natural-voice layer.
+`tests/continuum-doc-continuity-positioning.test.js` validates plain-English positioning, natural voice and first-use explanations.
 
-`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and explicitly rejects known stale punchy, punctuation-heavy and stiff uncontracted phrases after final rendering.
+`.github/workflows/continuum-doc-clarity-validation.yml` validates desktop and 390×844 mobile rendering and rejects known stale technical-first or AI-like wording after final rendering.
 
 A workflow file existing does not prove a green run. Report CI as green only after an actual run/status confirms it.
 
