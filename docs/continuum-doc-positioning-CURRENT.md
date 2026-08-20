@@ -1,7 +1,7 @@
 # Continuum `/doc/` Positioning - CURRENT
 
 Date: 2026-08-20
-Status: Canonical continuity-first positioning with plain-English, natural-voice and reader-first terminology passes
+Status: Canonical product-complete positioning with plain-English, natural-voice and reader-first terminology passes
 
 Read with:
 
@@ -13,7 +13,7 @@ Read with:
 
 ## Current positioning
 
-Continuum is a durable private operating layer for information, people, plans, permissions, current State and history across time.
+Continuum is a durable private operating layer for information, people, workflows, goals, permissions, current State and history across time.
 
 The opening should make four conditions understandable early.
 
@@ -26,15 +26,23 @@ WITH YOU
 
 Afterlife remains one long-term continuity path inside the wider product. Spaces remains a focused context and briefing experience inside Continuum.
 
+## Product completeness rule
+
+Clarity must never make Continuum sound like storage, a briefing app or a continuity product alone.
+
+The opening should naturally show that the same foundation supports current context, triggered workflows, longer Goals, explicit permission and continuity across time. Goals and long-running Runtime are still future architecture and must not be written as production capabilities today.
+
+A reader should understand that Continuum can be useful for what is happening now and is being built to keep approved work moving when something changes, pursue longer outcomes through multiple steps and carry prepared plans through periods when the owner is unavailable.
+
 ## Core teaching rule
 
 A reader shouldn't need prior Continuum knowledge to understand a sentence.
 
-At the first meaningful use of an important product or architecture term, explain the human job first and introduce the real name in the same sentence or the next one. Once the term has been earned, later sections can use it normally and can become more technical.
+At the first meaningful use of an important product or architecture term, explain the human job first and introduce the real name in the same sentence or the next one. Once the term has been earned, later sections can use it normally and become more technical.
 
-This keeps the page useful to nontechnical readers without turning it into a beginner tutorial or stripping out the architecture that technical readers care about.
+This keeps the page useful to nontechnical readers without turning it into a beginner tutorial or removing the architecture technical readers care about.
 
-The preferred pattern is:
+The preferred pattern is
 
 ```text
 plain behavior
@@ -48,41 +56,51 @@ Do not add a glossary dump to the opening and do not keep re-explaining a term a
 
 Kicker
 
-`Your information, plans and permissions across time`
+`Your information, workflows and goals across time`
 
 Opening lead
 
-> Continuum keeps the information, people, instructions and permissions you want to carry with you over time. It can help you use that context today, continue work you have approved when you are away, and follow plans you prepared for a time when you can't respond.
+> Continuum keeps the information, people, instructions and permissions you want to carry with you over time. It can help with what you're doing now, and the same foundation is being built for workflows that react to changes and longer goals that may take several steps.
 
-The next paragraph introduces the major product names through what they do. Library is where saved information lives. Directory keeps track of the people and organizations around it. A Space brings together the context needed for one part of life or work. Automations describe work already approved to continue under set rules. Check In is the live timer used to show the owner is still responding. Afterlife is the longer-term continuity area for plans that may be needed when the owner can't respond, including after death.
+The next paragraph introduces one important workflow idea instead of listing the whole product map. An Automation is a saved workflow with something that starts it, conditions to check and rules for what it may do next. Check In is the live timer used to show the owner is still responding. Afterlife holds continuity plans for times when the owner can't respond, including after death.
 
 AI models and tools may change without taking the underlying records, permissions or history with them.
 
 Compact hero labels remain intentionally brief because they are labels.
 
 ```text
-Knows what changed and when
-Can continue work you approved
-Keeps track of what is allowed and why
+Keeps the right context current
+Built for workflows + longer goals
+Acts inside rules you set
 ```
 
 Hero principle
 
 `BUILT TO CARRY YOUR PLAN FORWARD`
 
+## Triggered work direction
+
+The page should make triggered work understandable without making a reader decode an event system.
+
+Ordinary examples include a deadline arriving, a reply coming in, Check In reaching a condition or an approved outside source changing.
+
+Any of those can make the next step ready. Continuum still checks the relevant rules and permissions before anything runs.
+
+The deeper architecture remains available through Signals, State, policy, authority and Runtime.
+
 ## Reader-first architecture examples
 
-Important architecture terms stay visible because they matter. Their first meaningful use now explains them in ordinary language.
+Important architecture terms stay visible because they matter. Their first meaningful use explains them in ordinary language.
 
 - `State` is Continuum's current picture of what is true now.
-- `Runtime` is the server-side part that can keep approved work moving after the app closes.
+- `Runtime` is the background execution layer that can later keep approved work alive on the server after the app closes.
 - `Signals` are meaningful changes noticed from approved sources.
 - an `Observation` is what an approved source showed at a particular moment.
 - `Authority` means permission to act.
-- an `Automation` is a saved definition of work and the rules around it.
+- an `Automation` is a saved workflow with a start, conditions, limits and allowed actions.
 - `Planner` can turn a normal-language setup request into proposed changes.
 - a `Change Plan` is the proposed set of changes Planner prepares for review.
-- a `Goal` keeps an outcome, limits and approvals coherent when the work may take several steps and the route can change.
+- a `Goal` keeps a longer outcome, limits and approvals together when the work may take several steps and the route can change.
 - `Connections` link outside apps and tools into Continuum.
 - `Control Center` is the owner-facing place for seeing what Continuum is doing in the background.
 
@@ -104,7 +122,9 @@ CAPTURE → UNDERSTAND → REVIEW → INTEGRATE
 
 The original source stays traceable and important findings remain reviewable before they become accepted long-term knowledge.
 
-## AI and authority direction
+## AI and permissions direction
+
+The visible navigation uses `AI + Permissions` so a first-time reader understands the section before learning the architecture term `Authority`.
 
 An AI model can reason, write and use tools. Continuum keeps the information, current State, permissions and history around it, and the server decides what the model is actually allowed to see and do.
 
@@ -118,7 +138,7 @@ The Automation section still begins from normal human intent.
 
 `Describe what should happen, then make the rules clear.`
 
-An Automation is explained as a saved definition of work and its rules. Runtime is then explained as the server-side part that can carry published work forward, including waits and retries when the app isn't open.
+An Automation is explained as a saved workflow with something that starts it, conditions to check and rules for what it may do. Runtime is explained from the user's point of view first. It is what can later keep published work alive in the background after the app closes. The deeper copy then explains that it runs on the server and can handle waits, allowed retries, replies, approved tools and recorded results.
 
 Current Lab workflow definitions still do not imply provider execution.
 
@@ -126,7 +146,9 @@ Current Lab workflow definitions still do not imply provider execution.
 
 The page should not assume a reader understands `Source → Observation → Signal → State` just because the diagram is accurate.
 
-The prose should explain that Continuum can save what an approved source showed at a particular moment as an Observation. A meaningful change can become a Signal and update the part of State that matters now.
+The prose explains that Continuum can save what an approved source showed at a particular moment as an Observation. A meaningful change can become a Signal and update the part of State that matters now.
+
+The Automation section then connects this to action in ordinary language. A change can make the next step ready, but rules and permissions still decide whether the next action can run.
 
 The exact technical flow remains visible for readers who want the architecture.
 
@@ -134,9 +156,19 @@ The exact technical flow remains visible for readers who want the architecture.
 
 Planner should first be understood as the part that can prepare proposed changes from a normal-language setup request. The proposed set is called a Change Plan.
 
-A Goal should first be understood as a way to keep an outcome, limits and required approvals in place when the work may take several steps and conditions can change.
+A Goal should first be understood as something Continuum can later work toward over several steps even when the route changes. It keeps the outcome, limits and required approvals together and may use multiple Automations or tasks as conditions change.
 
 After those first explanations, Planner, Change Plan and Goal can be used as normal architecture terms.
+
+Goals remain LATER. The page must keep that implementation boundary clear.
+
+## Product map direction
+
+The product-map paragraph should show more than information storage and continuity without forcing another node into the visual.
+
+Directory and Library provide people and information. Spaces focus relevant context. Automations handle saved workflows. Goals can hold a larger outcome when the route may change. Connections link outside tools. Runtime can later keep published work moving. Signals update what Continuum knows is happening now. AI works only with the context and tools it is allowed to use.
+
+The existing visual structure remains unchanged.
 
 ## Afterlife positioning
 
@@ -154,13 +186,7 @@ The LIVE and LATER copy should describe what a person can understand today inste
 
 Do not remove real terms such as State, Runtime, Signals, Authority, Planner, Change Plan, Audit, policy or provenance just to make the page easier.
 
-Instead:
-
-- explain the job once in normal language;
-- keep the real term visible;
-- let diagrams and architecture sections carry the deeper vocabulary;
-- avoid repeating beginner explanations after the term is established;
-- preserve exact technical claims where precision matters.
+Explain the job once in normal language, keep the real term visible and let diagrams and architecture sections carry the deeper vocabulary. Avoid repeating beginner explanations after a term is established and preserve exact technical claims where precision matters.
 
 A technical reader should still be able to see the real architecture. A nontechnical reader should not have to decode that architecture before understanding the product.
 
@@ -217,7 +243,7 @@ The natural-voice layer remains:
 
 - `assets/continuum-doc-human-cadence.js`.
 
-The final reader-comprehension layer is:
+The final reader and product-story layer is:
 
 - `assets/continuum-doc-reader-first.js`.
 
@@ -230,6 +256,7 @@ data-continuum-clarity="plain-english-v1"
 data-continuum-human-cadence="ready"
 data-continuum-voice="natural-v3"
 data-continuum-reader-first="ready"
+data-continuum-product-story="complete-v1"
 ```
 
 Regression coverage:
@@ -240,6 +267,6 @@ Regression coverage:
 
 ## Backend boundary
 
-This copy pass changes no production backend claim and authorizes no migration, deployment, provider execution, Runtime activation, AI execution or new authority.
+This copy pass changes no production backend claim and authorizes no migration, deployment, provider execution, Runtime activation, Goal execution, AI execution or new authority.
 
 The current backend release sequence remains separate from `/doc/` presentation work.
