@@ -21,6 +21,7 @@ on:
       - 'assets/lab/lab-automations-audience-v4.css'
       - 'assets/lab/lab-automations-intelligence-v4.js'
       - 'assets/lab/lab-automations-input-routing-v4.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - 'docs/continuum-directory-master-plan-CURRENT.md'
       - 'docs/checkin-directory-library-CURRENT.md'
       - '.github/workflows/continuum-directory-validation.yml'
@@ -44,6 +45,7 @@ on:
       - 'assets/lab/lab-automations-audience-v4.css'
       - 'assets/lab/lab-automations-intelligence-v4.js'
       - 'assets/lab/lab-automations-input-routing-v4.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - 'docs/continuum-directory-master-plan-CURRENT.md'
       - 'docs/checkin-directory-library-CURRENT.md'
       - '.github/workflows/continuum-directory-validation.yml'
@@ -58,6 +60,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+
       - name: Validate Directory, typed Planner, Audience and data integration
         run: |
           set -euo pipefail
@@ -68,6 +78,7 @@ jobs:
           node --check assets/lab/lab-automations-audience-v4.js
           node --check assets/lab/lab-automations-intelligence-v4.js
           node --check assets/lab/lab-automations-input-routing-v4.js
+          node --check tests/playwright-mobile-dump.cjs
 
           python - <<'PY'
           from pathlib import Path
@@ -94,7 +105,7 @@ jobs:
           required_directory = [
               'cmx-lab-crm-v1', 'cmx-lab-directory-ui-v2', 'organizationIds', 'contactMethods',
               'relationshipLinks', 'STARTER_GROUPS', 'resolveGroup', 'CONTACT READINESS',
-              'Duplicate', 'Automation usage', 'document.documentElement.dataset.labDirectory = "v2"'
+              'duplicateCountFor', 'Automation usage', 'document.documentElement.dataset.labDirectory = "v2"'
           ]
           required_planner_contract = [
               'CMXContinuumPlannerContractV1', 'validateOperations',
@@ -107,7 +118,7 @@ jobs:
               'directory.match_or_create_people', 'directory.upsert_group', 'library.create_folder',
               'library.create_document', 'automation.create_draft', 'automation.reference_audience',
               'automation.reference_content', 'automation.add_wait', 'Full Continuum setup',
-              'NO AI CALL · NO DATA MUTATION · NO HIDDEN AUTHORITY',
+              'NO AI CALL · NO DATA MUTATION · NO ONLINE OBSERVATION · NO HIDDEN AUTHORITY',
               'labDirectoryPlanner = "typed-v2"'
           ]
           required_audience = [
@@ -232,9 +243,12 @@ jobs:
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f directory-browser-smoke.html' EXIT
           sleep 1
-          dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom; }
 
-          dump http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-desktop.html
+          node tests/playwright-mobile-dump.cjs \
+            "$BROWSER" 1280 900 \
+            'http://127.0.0.1:8000/directory-browser-smoke.html' /tmp/directory-desktop.html \
+            labDirectoryPlanner typed-v2 18000
+
           grep -q 'data-lab-directory="v2"' /tmp/directory-desktop.html
           grep -q 'data-lab-planner-contract="v1"' /tmp/directory-desktop.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/directory-desktop.html
@@ -248,7 +262,11 @@ jobs:
           grep -q 'Relationships' /tmp/directory-desktop.html
           grep -q 'Automation' /tmp/directory-desktop.html
 
-          dump --window-size=390,844 http://127.0.0.1:8000/directory-browser-smoke.html > /tmp/directory-mobile.html
+          node tests/playwright-mobile-dump.cjs \
+            "$BROWSER" 390 844 \
+            'http://127.0.0.1:8000/directory-browser-smoke.html' /tmp/directory-mobile.html \
+            labDirectoryPlanner typed-v2 18000
+
           grep -q 'data-lab-directory="v2"' /tmp/directory-mobile.html
           grep -q 'data-lab-planner-contract="v1"' /tmp/directory-mobile.html
           grep -q 'data-lab-directory-planner="typed-v2"' /tmp/directory-mobile.html
@@ -256,7 +274,11 @@ jobs:
           grep -q 'Search Directory' /tmp/directory-mobile.html
           grep -q 'AI setup' /tmp/directory-mobile.html
 
-          dump http://127.0.0.1:8000/lab/automations/ > /tmp/automations-directory.html
+          node tests/playwright-mobile-dump.cjs \
+            "$BROWSER" 1280 900 \
+            'http://127.0.0.1:8000/lab/automations/' /tmp/automations-directory.html \
+            labAutomationsDirectory v4 18000
+
           grep -q 'data-lab-planner-contract="v1"' /tmp/automations-directory.html
           grep -q 'data-lab-automations-directory="v4"' /tmp/automations-directory.html
           grep -q 'data-lab-automations-audience="v4-1"' /tmp/automations-directory.html

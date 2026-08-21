@@ -10,6 +10,16 @@
     await wait(ms);
   }
 
+  async function waitFor(selector, timeout = 2500) {
+    const started = performance.now();
+    while (performance.now() - started < timeout) {
+      const node = document.querySelector(selector);
+      if (node) return node;
+      await settle(40);
+    }
+    return null;
+  }
+
   function fitsHorizontally() {
     return Math.max(document.documentElement.scrollWidth, document.body?.scrollWidth || 0) <= window.innerWidth + 1;
   }
@@ -22,12 +32,19 @@
   (async () => {
     await settle(120);
     root.dataset.qaSignalsViewport = String(window.innerWidth);
+    root.dataset.qaSignalsPlannerScript = document.querySelector('script[src*="lab-directory-planner-preview.js"]') ? "true" : "false";
 
-    const open = document.querySelector("[data-dir2-ai-setup]");
+    const directory = await waitFor(".lab-directory-v2");
+    const command = await waitFor(".lab-directory-v2 .dir2-command");
+    const open = await waitFor("[data-dir2-ai-setup]");
+    root.dataset.qaSignalsDirectory = directory ? "true" : "false";
+    root.dataset.qaSignalsCommand = command ? "true" : "false";
+    root.dataset.qaSignalsLauncher = open ? "true" : "false";
+    root.dataset.qaSignalsPlannerState = root.dataset.labDirectoryPlanner || "missing";
+
     open?.click();
-    await settle(80);
-
-    const modal = document.querySelector(".dir2-ai-modal");
+    const modal = await waitFor(".dir2-ai-modal", 1200);
+    root.dataset.qaSignalsModal = modal ? "true" : "false";
     const example = modal?.querySelector("[data-dir2-ai-example='signals']");
     root.dataset.qaSignalsExampleAvailable = example ? "true" : "false";
     example?.click();

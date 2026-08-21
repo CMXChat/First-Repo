@@ -12,6 +12,7 @@ on:
       - 'assets/lab/lab-continuum-planner-preflight-v1.css'
       - 'assets/lab/lab-continuum-planner-review-v1.js'
       - 'tests/continuum-signals-planner-probe.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - 'docs/continuum-signals-observations-master-plan-CURRENT.md'
       - '.github/workflows/continuum-signals-planner-validation.yml'
   pull_request:
@@ -25,6 +26,7 @@ on:
       - 'assets/lab/lab-continuum-planner-preflight-v1.css'
       - 'assets/lab/lab-continuum-planner-review-v1.js'
       - 'tests/continuum-signals-planner-probe.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - 'docs/continuum-signals-observations-master-plan-CURRENT.md'
       - '.github/workflows/continuum-signals-planner-validation.yml'
 
@@ -38,6 +40,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+
       - name: Validate Signals contract and safety
         run: |
           set -euo pipefail
@@ -45,6 +55,7 @@ jobs:
           node --check assets/lab/lab-directory-planner-preview.js
           node --check assets/lab/lab-continuum-planner-preflight-v1.js
           node --check tests/continuum-signals-planner-probe.js
+          node --check tests/playwright-mobile-dump.cjs
 
           python - <<'PY'
           from pathlib import Path
@@ -79,7 +90,7 @@ jobs:
               if term not in preflight:
                   raise SystemExit(f'missing Signals issue-to-change mapping: {term}')
 
-          for term in ['Source → Observation → Signal', 'External content is untrusted', 'Current Continuum Lab does **not**']:
+          for term in ['SOURCE → OBSERVATION → SIGNAL', 'External content is untrusted', 'Current Continuum Lab does **not**']:
               if term not in plan:
                   raise SystemExit(f'missing Signals architecture boundary: {term}')
 
@@ -130,28 +141,40 @@ jobs:
             local height="$2"
             local out="/tmp/signals-planner-${width}.html"
 
-            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-              --window-size="${width},${height}" --virtual-time-budget=20000 --dump-dom \
-              'http://127.0.0.1:8000/signals-planner-test.html' > "$out"
+            node tests/playwright-mobile-dump.cjs \
+              "$BROWSER" "$width" "$height" \
+              'http://127.0.0.1:8000/signals-planner-test.html' "$out" \
+              qaSignalsComplete true 15000
 
-            grep -q 'data-qa-signals-complete="true"' "$out"
-            grep -q "data-qa-signals-viewport=\"${width}\"" "$out"
-            grep -q 'data-qa-signals-example-available="true"' "$out"
-            grep -q 'data-qa-signals-plan-rendered="true"' "$out"
-            grep -q 'data-qa-signals-create-watch="true"' "$out"
-            grep -q 'data-qa-signals-attach-source="true"' "$out"
-            grep -q 'data-qa-signals-filter="true"' "$out"
-            grep -q 'data-qa-signals-interpretation="true"' "$out"
-            grep -q 'data-qa-signals-automation-reference="true"' "$out"
-            grep -q 'data-qa-signals-preflight="true"' "$out"
-            grep -q 'data-qa-signals-service-blocked="true"' "$out"
-            grep -q 'data-qa-signals-connection-blocked="true"' "$out"
-            grep -q 'data-qa-signals-blocked-count="2"' "$out"
-            grep -q 'data-qa-signals-linked-count="2"' "$out"
-            grep -q 'data-qa-signals-watch-row-blocked="true"' "$out"
-            grep -q 'data-qa-signals-source-row-blocked="true"' "$out"
-            grep -q 'data-qa-signals-no-observation-label="true"' "$out"
-            grep -q 'data-qa-signals-fit="true"' "$out"
+            assert_marker() {
+              local marker="$1"
+              if ! grep -q "$marker" "$out"; then
+                echo "Missing Signals marker at ${width}px: ${marker}" >&2
+                grep -o 'data-qa-signals-[^ >]*' "$out" | sort -u >&2 || true
+                echo '--- local HTTP requests ---' >&2
+                cat /tmp/continuum-signals-http.log >&2 || true
+                exit 1
+              fi
+            }
+
+            assert_marker 'data-qa-signals-complete="true"'
+            assert_marker "data-qa-signals-viewport=\"${width}\""
+            assert_marker 'data-qa-signals-example-available="true"'
+            assert_marker 'data-qa-signals-plan-rendered="true"'
+            assert_marker 'data-qa-signals-create-watch="true"'
+            assert_marker 'data-qa-signals-attach-source="true"'
+            assert_marker 'data-qa-signals-filter="true"'
+            assert_marker 'data-qa-signals-interpretation="true"'
+            assert_marker 'data-qa-signals-automation-reference="true"'
+            assert_marker 'data-qa-signals-preflight="true"'
+            assert_marker 'data-qa-signals-service-blocked="true"'
+            assert_marker 'data-qa-signals-connection-blocked="true"'
+            assert_marker 'data-qa-signals-blocked-count="2"'
+            assert_marker 'data-qa-signals-linked-count="2"'
+            assert_marker 'data-qa-signals-watch-row-blocked="true"'
+            assert_marker 'data-qa-signals-source-row-blocked="true"'
+            assert_marker 'data-qa-signals-no-observation-label="true"'
+            assert_marker 'data-qa-signals-fit="true"'
           }
 
           check_width 360 800

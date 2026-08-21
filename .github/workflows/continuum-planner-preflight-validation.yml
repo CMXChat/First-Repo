@@ -12,6 +12,7 @@ on:
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'tests/continuum-planner-preflight-probe.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/continuum-planner-preflight-validation.yml'
   pull_request:
     branches: [main]
@@ -24,6 +25,7 @@ on:
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'tests/continuum-planner-preflight-probe.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/continuum-planner-preflight-validation.yml'
 
 permissions:
@@ -36,6 +38,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+
       - name: Validate preflight source safety
         run: |
           set -euo pipefail
@@ -43,6 +53,7 @@ jobs:
           node --check assets/lab/lab-continuum-planner-preflight-v1.js
           node --check assets/lab/lab-continuum-planner-review-v1.js
           node --check tests/continuum-planner-preflight-probe.js
+          node --check tests/playwright-mobile-dump.cjs
 
           python - <<'PY'
           from pathlib import Path
@@ -120,9 +131,10 @@ jobs:
             local dirout="/tmp/preflight-directory-${width}.html"
             local autoout="/tmp/preflight-automation-${width}.html"
 
-            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-              --window-size="${width},${height}" --virtual-time-budget=18000 --dump-dom \
-              'http://127.0.0.1:8000/planner-preflight-directory.html' > "$dirout"
+            node tests/playwright-mobile-dump.cjs \
+              "$BROWSER" "$width" "$height" \
+              'http://127.0.0.1:8000/planner-preflight-directory.html' "$dirout" \
+              qaPreflightComplete true 22000
 
             grep -q 'data-qa-preflight-complete="true"' "$dirout"
             grep -q "data-qa-preflight-viewport=\"${width}\"" "$dirout"
@@ -144,9 +156,10 @@ jobs:
             grep -q 'data-qa-preflight-directory-review-sync="true"' "$dirout"
             grep -q 'data-qa-preflight-directory-fit="true"' "$dirout"
 
-            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-              --window-size="${width},${height}" --virtual-time-budget=18000 --dump-dom \
-              'http://127.0.0.1:8000/lab/automations/planner-preflight-automation.html' > "$autoout"
+            node tests/playwright-mobile-dump.cjs \
+              "$BROWSER" "$width" "$height" \
+              'http://127.0.0.1:8000/lab/automations/planner-preflight-automation.html' "$autoout" \
+              qaPreflightComplete true 22000
 
             grep -q 'data-qa-preflight-complete="true"' "$autoout"
             grep -q "data-qa-preflight-viewport=\"${width}\"" "$autoout"
