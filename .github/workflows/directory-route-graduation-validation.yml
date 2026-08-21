@@ -3,6 +3,7 @@ name: Continuum Directory Route Graduation Validation
 on:
   pull_request:
     paths:
+      - 'index.html'
       - 'menu/**'
       - 'directory/**'
       - 'assets/cmx-routes.json'
