@@ -8,6 +8,7 @@ on:
       - 'assets/cmx-routes.json'
       - 'assets/cmx-ops-core.js'
       - 'assets/cmx-ops-runtime.js'
+      - 'scripts/apply_site_standards.py'
       - 'tests/continuum-directory-route-graduation.test.js'
       - 'docs/continuum-directory-route-graduation-CURRENT.md'
       - '.github/workflows/directory-route-graduation-validation.yml'
