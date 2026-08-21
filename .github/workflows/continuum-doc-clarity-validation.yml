@@ -69,7 +69,7 @@ jobs:
             local pattern="$1" file="$2" label="$3"
             if ! grep -q "$pattern" "$file"; then
               echo "MISSING: $label :: $pattern" >&2
-              grep -E 'data-continuum|durable-identity|AI identity|compatible model|hero-lead|AI \+ Permissions|AI \+ Authority' "$file" | head -120 >&2 || true
+              grep -E 'data-continuum|AI CONTINUITY|AI identity|compatible model|corrections|waiting|hero-lead|AI \+ Permissions' "$file" | head -140 >&2 || true
               exit 1
             fi
             echo "OK: $label"
@@ -81,8 +81,9 @@ jobs:
             require 'data-continuum-human-cadence="ready"' "$file" 'human cadence marker'
             require 'data-continuum-reader-first="ready"' "$file" 'reader marker'
             require 'data-continuum-final-voice="ready"' "$file" 'final voice marker'
-            require 'data-continuum-durable-identity="ready"' "$file" 'durable identity marker'
+            require 'data-continuum-durable-identity="ready"' "$file" 'AI continuity layer marker'
             require 'data-continuum-identity-portability="model-agnostic-v1"' "$file" 'identity portability marker'
+            require 'data-continuum-ai-continuity="grounded-v2"' "$file" 'grounded AI continuity marker'
             require 'data-continuum-voice="natural-v4"' "$file" 'voice marker'
             require 'Think of AI as the brain and Continuum as the nervous system around it' "$file" 'hero analogy'
             require 'Continuum is the private layer around the AI that keeps those things connected over time.' "$file" 'hero explanation'
@@ -99,10 +100,13 @@ jobs:
             require 'Runtime lets approved work continue after you leave.' "$file" 'Runtime explanation'
             require 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.' "$file" 'Goal explanation'
             require 'Silence and urgency never create permission.' "$file" 'authority guardrail'
-            require 'Keep a recognizable AI identity even when the model changes.' "$file" 'durable identity heading'
-            require 'A compatible model can load that identity in a new context instead of starting from zero.' "$file" 'durable identity portability copy'
+            require 'AI CONTINUITY · LATER' "$file" 'grounded AI continuity label'
+            require 'Keep a consistent AI identity and way of working even when the model changes.' "$file" 'AI continuity heading'
+            require 'A compatible model can load that identity in a new context instead of starting from zero.' "$file" 'identity portability copy'
+            require 'learn from corrections and real outcomes so recommendations improve over time' "$file" 'grounded learning copy'
+            require 'what changed, what it is waiting on and what needs attention next' "$file" 'operational awareness copy'
             require 'Identity can shape judgment, strategy and communication.' "$file" 'identity influence boundary'
-            require 'The server still controls facts, permissions and authority.' "$file" 'identity authority boundary'
+            require 'The server still controls facts, AI participation, permissions and authority.' "$file" 'participation/authority boundary'
             require 'Files + OCR / vision' "$file" 'information intake'
             require 'Open Check In' "$file" 'live Check In route'
           }
@@ -128,17 +132,20 @@ jobs:
           for private_name in ['Lorraine', 'Echo', 'Shapes']:
               assert private_name.lower() not in html.lower(), f'private identity history leaked: {private_name}'
 
+          for sci_fi in ['self-aware ai', 'recursive self-improvement', 'digital consciousness', 'evolution engine']:
+              assert sci_fi not in html.lower(), f'/doc drifted into internal sci-fi wording: {sci_fi}'
+
           positions = [html.index(f'id="{name}"') for name in ['overview','difference','spaces','action','afterlife','engineering','build','status']]
           assert positions == sorted(positions)
           identity = html.index('continuum-durable-identity-note')
           assert positions[1] < identity < positions[2]
           assert html.count('href="/checkin/"') >= 3
-          print('Desktop structure and identity placement passed.')
+          print('Desktop structure and AI continuity placement passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/doc-mobile.html
           validate_render /tmp/doc-mobile.html
           require 'mobileContentsTrigger' /tmp/doc-mobile.html 'mobile contents trigger'
           require 'continuum-continuity-line' /tmp/doc-mobile.html 'mobile continuity line'
-          require 'continuum-durable-identity-note' /tmp/doc-mobile.html 'mobile durable identity note'
-          echo 'Continuum /doc final voice and durable identity rendered on desktop and mobile.'
+          require 'continuum-durable-identity-note' /tmp/doc-mobile.html 'mobile AI continuity note'
+          echo 'Continuum /doc final voice and grounded AI continuity rendered on desktop and mobile.'
