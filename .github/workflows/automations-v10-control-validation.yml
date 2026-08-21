@@ -56,37 +56,54 @@ jobs:
           dump() {
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=16000 "$@" --dump-dom
           }
+          require() {
+            local pattern="$1" file="$2" label="$3"
+            if ! grep -q "$pattern" "$file"; then
+              echo "MISSING: $label ($pattern) in $file" >&2
+              grep -E 'data-lab-automations|data-control-v10|data-v10-|v10-|Automation|Manage|Loading' "$file" | head -80 >&2 || true
+              exit 1
+            fi
+            echo "OK: $label"
+          }
+          forbid() {
+            local pattern="$1" file="$2" label="$3"
+            if grep -qi "$pattern" "$file"; then
+              echo "UNEXPECTED: $label ($pattern) in $file" >&2
+              exit 1
+            fi
+            echo "OK: $label absent"
+          }
 
           dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/' > /tmp/v10-dashboard.html
-          grep -q 'data-lab-automations-control="v10"' /tmp/v10-dashboard.html
-          grep -q 'data-control-v10="ready"' /tmp/v10-dashboard.html
-          grep -q 'v10-card-menu-button' /tmp/v10-dashboard.html
-          grep -q 'Manage all' /tmp/v10-dashboard.html
-          ! grep -qi 'Loading Automations' /tmp/v10-dashboard.html
+          require 'data-lab-automations-control="v10"' /tmp/v10-dashboard.html 'desktop v10 marker'
+          require 'data-control-v10="ready"' /tmp/v10-dashboard.html 'desktop dashboard patched'
+          require 'v10-card-menu-button' /tmp/v10-dashboard.html 'desktop object menu'
+          require 'Manage all' /tmp/v10-dashboard.html 'desktop manage-all wording'
+          forbid 'Loading Automations' /tmp/v10-dashboard.html 'desktop loading placeholder'
 
           dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/v10-editor.html
-          grep -q 'data-lab-automations-control="v10"' /tmp/v10-editor.html
-          grep -q 'data-control-v10="ready"' /tmp/v10-editor.html
-          grep -q 'data-v10-view="definition"' /tmp/v10-editor.html
-          grep -q 'v10-object-bar' /tmp/v10-editor.html
-          grep -q 'data-v10-tab="overview"' /tmp/v10-editor.html
-          grep -q 'data-v10-tab="definition"' /tmp/v10-editor.html
-          grep -q 'data-v10-tab="runs"' /tmp/v10-editor.html
-          grep -q 'data-v10-tab="permissions"' /tmp/v10-editor.html
-          grep -q 'data-v10-tab="related"' /tmp/v10-editor.html
-          grep -q 'data-v10-tab="history"' /tmp/v10-editor.html
-          grep -q 'data-v10-tab="settings"' /tmp/v10-editor.html
-          grep -q '>Automations<' /tmp/v10-editor.html
-          ! grep -qi 'Loading Automations' /tmp/v10-editor.html
+          require 'data-lab-automations-control="v10"' /tmp/v10-editor.html 'desktop editor v10 marker'
+          require 'data-control-v10="ready"' /tmp/v10-editor.html 'desktop editor patched'
+          require 'data-v10-view="definition"' /tmp/v10-editor.html 'desktop definition view'
+          require 'v10-object-bar' /tmp/v10-editor.html 'desktop object bar'
+          require 'data-v10-tab="overview"' /tmp/v10-editor.html 'overview tab'
+          require 'data-v10-tab="definition"' /tmp/v10-editor.html 'definition tab'
+          require 'data-v10-tab="runs"' /tmp/v10-editor.html 'runs tab'
+          require 'data-v10-tab="permissions"' /tmp/v10-editor.html 'permissions tab'
+          require 'data-v10-tab="related"' /tmp/v10-editor.html 'related tab'
+          require 'data-v10-tab="history"' /tmp/v10-editor.html 'history tab'
+          require 'data-v10-tab="settings"' /tmp/v10-editor.html 'settings tab'
+          require 'data-v10-exit' /tmp/v10-editor.html 'explicit editor exit'
+          forbid 'Loading Automations' /tmp/v10-editor.html 'desktop editor loading placeholder'
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/v10-mobile-dashboard.html
-          grep -q 'data-lab-automations-control="v10"' /tmp/v10-mobile-dashboard.html
-          grep -q 'v10-card-menu-button' /tmp/v10-mobile-dashboard.html
+          require 'data-lab-automations-control="v10"' /tmp/v10-mobile-dashboard.html 'mobile v10 marker'
+          require 'v10-card-menu-button' /tmp/v10-mobile-dashboard.html 'mobile object menu'
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/v10-mobile-editor.html
-          grep -q 'data-lab-automations-control="v10"' /tmp/v10-mobile-editor.html
-          grep -q 'v10-object-bar' /tmp/v10-mobile-editor.html
-          grep -q 'data-v10-tab="settings"' /tmp/v10-mobile-editor.html
-          ! grep -qi 'Loading Automations' /tmp/v10-mobile-editor.html
+          require 'data-lab-automations-control="v10"' /tmp/v10-mobile-editor.html 'mobile editor v10 marker'
+          require 'v10-object-bar' /tmp/v10-mobile-editor.html 'mobile object bar'
+          require 'data-v10-tab="settings"' /tmp/v10-mobile-editor.html 'mobile settings tab'
+          forbid 'Loading Automations' /tmp/v10-mobile-editor.html 'mobile editor loading placeholder'
 
           echo 'Automations v10 control surface rendered on desktop and mobile.'
