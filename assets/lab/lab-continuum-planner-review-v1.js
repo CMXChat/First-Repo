@@ -169,7 +169,7 @@
         <article class="${approvals ? "is-approval" : ""}"><small>APPROVAL</small><b>${approvals}</b><span>${approvals ? "explicit approval" : checks ? `${checks} operation checks` : "standard review"}</span></article>
         <article><small>LINKED STEPS</small><b>${linked}</b><span>${domains} domain${domains === 1 ? "" : "s"} · plan dependencies</span></article>
       </div>
-      <footer><b>CREATE</b><b>UPDATE</b><b>LINK</b><b>RESOLVE</b><span>Temporary `temp:` results exist only inside this plan. Production preflight/apply resolves them to authoritative stable IDs.</span></footer>`;
+      <footer><b>CREATE</b><b>UPDATE</b><b>LINK</b><b>RESOLVE</b><span>Temporary temp: results exist only inside this plan. Production preflight/apply resolves them to authoritative stable IDs.</span></footer>`;
   }
 
   function patch() {
