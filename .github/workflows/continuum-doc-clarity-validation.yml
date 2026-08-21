@@ -77,7 +77,7 @@ jobs:
 
           validate_render() {
             local file="$1"
-            require 'data-continuum-clarity="ready"' "$file" 'clarity marker'
+            require 'data-continuum-clarity="plain-english-v1"' "$file" 'clarity marker'
             require 'data-continuum-human-cadence="ready"' "$file" 'human cadence marker'
             require 'data-continuum-reader-first="ready"' "$file" 'reader marker'
             require 'data-continuum-final-voice="ready"' "$file" 'final voice marker'
