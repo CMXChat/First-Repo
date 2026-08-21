@@ -5,6 +5,8 @@
 
   let modal = null;
   let queued = false;
+  let startupAttempts = 0;
+  const MAX_STARTUP_ATTEMPTS = 40;
 
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
@@ -97,7 +99,14 @@
   function patch() {
     queued = false;
     const command = document.querySelector(".lab-directory-v2 .dir2-command");
-    if (!command) return;
+    if (!command) {
+      if (startupAttempts < MAX_STARTUP_ATTEMPTS) {
+        startupAttempts += 1;
+        setTimeout(schedule, 50);
+      }
+      return;
+    }
+    startupAttempts = 0;
     if (!command.querySelector("[data-dir2-ai-setup]")) {
       const button = document.createElement("button");
       button.type = "button";
@@ -203,5 +212,5 @@
   window.addEventListener("cmx:lab-directory-updated", schedule);
   window.addEventListener("pageshow", schedule);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", schedule, { once: true });
-  else schedule();
+  schedule();
 })();
