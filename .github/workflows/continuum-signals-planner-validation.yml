@@ -79,7 +79,7 @@ jobs:
               if term not in preflight:
                   raise SystemExit(f'missing Signals issue-to-change mapping: {term}')
 
-          for term in ['Source → Observation → Signal', 'External content is untrusted', 'Current Continuum Lab does **not**']:
+          for term in ['SOURCE → OBSERVATION → SIGNAL', 'External content is untrusted', 'Current Continuum Lab does **not**']:
               if term not in plan:
                   raise SystemExit(f'missing Signals architecture boundary: {term}')
 
