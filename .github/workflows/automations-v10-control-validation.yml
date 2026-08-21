@@ -6,6 +6,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-control-v10.js'
+      - 'assets/lab/lab-automations-control-v10-editor-bootstrap.js'
       - 'assets/lab/lab-automations-control-v10.css'
       - 'assets/lab/lab-automations-history-v1.js'
       - 'tests/continuum-automations-control-v10.test.js'
@@ -16,6 +17,7 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-control-v10.js'
+      - 'assets/lab/lab-automations-control-v10-editor-bootstrap.js'
       - 'assets/lab/lab-automations-control-v10.css'
       - 'assets/lab/lab-automations-history-v1.js'
       - 'tests/continuum-automations-control-v10.test.js'
@@ -36,6 +38,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-control-v10.js
+          node --check assets/lab/lab-automations-control-v10-editor-bootstrap.js
           node --check assets/lab/lab-automations-history-v1.js
           node tests/continuum-automations-control-v10.test.js
 
