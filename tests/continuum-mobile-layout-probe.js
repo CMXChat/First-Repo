@@ -16,6 +16,18 @@
     return null;
   }
 
+  async function waitForVisible(selector, timeout = 2500) {
+    const started = performance.now();
+    while (performance.now() - started < timeout) {
+      const nodes = [...document.querySelectorAll(selector)];
+      const node = nodes.find(candidate => candidate.getClientRects().length && candidate.getBoundingClientRect().height > 0);
+      if (node) return node;
+      await sleepFrame();
+      await wait(30);
+    }
+    return null;
+  }
+
   function overlaps(a, b) {
     if (!a || !b) return false;
     const x = a.getBoundingClientRect();
@@ -52,19 +64,36 @@
     );
   }
 
+  async function openDirectoryView() {
+    const panel = await waitFor('[data-view-panel="records"]');
+    if (!panel) return false;
+    if (panel.hidden || !panel.classList.contains("is-active")) {
+      const nav = await waitFor('[data-view="records"]');
+      nav?.click();
+      const started = performance.now();
+      while (performance.now() - started < 2500) {
+        if (!panel.hidden && panel.classList.contains("is-active")) return true;
+        await sleepFrame();
+        await wait(30);
+      }
+      return false;
+    }
+    return true;
+  }
+
   async function probeDirectory() {
-    const ai = await waitFor("[data-dir2-ai-setup]");
-    const create = await waitFor('.lab-directory-v2 [data-dir2-action="new"]');
+    const opened = await openDirectoryView();
+    root.dataset.qaDirectoryViewOpen = opened ? "true" : "false";
+    if (!opened) return false;
+
+    const ai = await waitForVisible("[data-dir2-ai-setup]");
+    const create = await waitForVisible('.lab-directory-v2 [data-dir2-action="new"]');
     if (!ai || !create) {
       root.dataset.qaDirectoryReady = "false";
       return false;
     }
     root.dataset.qaDirectoryReady = "true";
 
-    const aiRect = ai.getBoundingClientRect();
-    const createRect = create.getBoundingClientRect();
-    root.dataset.qaDirectoryAiHeight = aiRect.height.toFixed(2);
-    root.dataset.qaDirectoryCreateHeight = createRect.height.toFixed(2);
     root.dataset.qaDirectoryCommandOverlap = overlaps(ai, create) ? "true" : "false";
     root.dataset.qaDirectoryButtonsFit = rectFitsViewport(ai) && rectFitsViewport(create) ? "true" : "false";
     root.dataset.qaDirectoryTapTargets = tapHeightAtLeast(ai) && tapHeightAtLeast(create) ? "true" : "false";
@@ -88,7 +117,7 @@
   }
 
   async function probeAutomations() {
-    const newButton = await waitFor("[data-new]");
+    const newButton = await waitForVisible("[data-new]");
     if (!newButton) {
       root.dataset.qaAutomationsReady = "false";
       return false;
@@ -97,7 +126,7 @@
 
     newButton.click();
     await sleepFrame();
-    const plannerStart = await waitFor("[data-v4-start='planner']");
+    const plannerStart = await waitForVisible("[data-v4-start='planner']");
     if (!plannerStart) return false;
     plannerStart.click();
     await sleepFrame();
