@@ -3,12 +3,16 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
+const root = fs.readFileSync('index.html', 'utf8');
 const menu = fs.readFileSync('menu/index.html', 'utf8');
 const directory = fs.readFileSync('directory/index.html', 'utf8');
 const routes = JSON.parse(fs.readFileSync('assets/cmx-routes.json', 'utf8'));
 const opsCore = fs.readFileSync('assets/cmx-ops-core.js', 'utf8');
 const opsRuntime = fs.readFileSync('assets/cmx-ops-runtime.js', 'utf8');
 const standards = fs.readFileSync('scripts/apply_site_standards.py', 'utf8');
+
+assert.match(root, /cmx-ops-core\.js\?v=20260821-1/);
+assert.match(root, /cmx-ops-runtime\.js\?v=20260821-1/);
 
 assert.match(menu, /<title>CMX Operations Menu<\/title>/);
 assert.match(menu, /https:\/\/db\.cmxchat\.com\/menu\//);
