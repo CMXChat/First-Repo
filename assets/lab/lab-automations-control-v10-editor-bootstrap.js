@@ -3,6 +3,7 @@
 
   const SECTIONS = ["overview", "definition", "runs", "permissions", "related", "history", "settings"];
   let queued = false;
+  let dashboardNudgeSent = false;
 
   function lifecycleLabel() {
     return document.querySelector(".v3-editor-page .v3-title-button")?.closest(".v3-editor-title-row")?.querySelector(".v3-draft-badge")?.textContent?.trim() || "Draft";
@@ -12,7 +13,13 @@
     queued = false;
     const page = document.querySelector(".v3-editor-page");
     const head = page?.querySelector(".v3-editor-head");
-    if (!page || !head) return false;
+    if (!page || !head) {
+      if (!dashboardNudgeSent && document.querySelector(".v3-dashboard")) {
+        dashboardNudgeSent = true;
+        document.dispatchEvent(new CustomEvent("cmx:lab-automations-updated", { detail: { reason: "control-v10-late-dashboard" } }));
+      }
+      return false;
+    }
 
     const view = page.dataset.v10View || "definition";
     page.dataset.controlV10 = "ready";
