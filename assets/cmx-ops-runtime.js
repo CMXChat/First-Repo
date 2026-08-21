@@ -54,7 +54,8 @@ function examples() {
     ['Open a tool', 'open metadata'],
     ['Search a username', 'search username example123'],
     ['Search documents on a domain', 'search documents example.com'],
-    ['Open Operations Directory', 'directory']
+    ['Open Operations Menu', 'menu'],
+    ['Open Continuum Directory', 'directory']
   ], ['GOAL', 'COMMAND']);
 }
 
@@ -70,7 +71,7 @@ function statusCommand() {
 function osintCommand(args) {
   const action = (args[0] || 'list').toLowerCase();
   if (action === 'list') return toolsCommand(['list']);
-  if (action === 'open') return openRoute('directory');
+  if (action === 'open') return openRoute('menu');
   return openRoute(action);
 }
 
