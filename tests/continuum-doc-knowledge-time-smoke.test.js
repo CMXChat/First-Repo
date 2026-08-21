@@ -11,7 +11,7 @@ const topRoutes = fs.readFileSync(path.join(root, 'assets/continuum-doc-top-rout
 const css = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time.css'), 'utf8');
 const contract = fs.readFileSync(path.join(root, 'docs/continuum-knowledge-time-CURRENT.md'), 'utf8');
 
-assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260819-2/);
+assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
 assert.match(loader, /continuum-doc-top-routes\.js\?v=20260819-1/);
 assert.match(layer, /BRING KNOWLEDGE IN/);
 assert.match(layer, /Paste \+ bulk text/);
