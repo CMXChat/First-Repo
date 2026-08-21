@@ -230,6 +230,11 @@
     requestAnimationFrame(() => requestAnimationFrame(patch));
   }
 
+  window.CMXAutomationControlV101 = {
+    modes: MODES.map(([value, label]) => ({ value, label })),
+    dependenciesFor,
+  };
+
   document.addEventListener("click", event => {
     const mode = event.target.closest?.("[data-v101-ai-mode]");
     if (mode) {
