@@ -151,6 +151,8 @@ jobs:
               if ! grep -q "$marker" "$out"; then
                 echo "Missing Signals marker at ${width}px: ${marker}" >&2
                 grep -o 'data-qa-signals-[^ >]*' "$out" | sort -u >&2 || true
+                echo '--- local HTTP requests ---' >&2
+                cat /tmp/continuum-signals-http.log >&2 || true
                 exit 1
               fi
             }
