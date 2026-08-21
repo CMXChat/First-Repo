@@ -9,7 +9,7 @@ assert(index.includes('/assets/lab/directory-app-v1.js'), 'existing Directory ap
 assert(index.includes('/assets/lab/directory-api-v1.js'), 'thin Directory transport must load');
 assert(index.includes('/assets/lab/directory-server-proof-v1.js'), 'server proof bridge must load');
 assert(index.indexOf('/assets/lab/directory-app-v1.js') < index.indexOf('/assets/lab/directory-server-proof-v1.js'), 'server proof must enhance the existing Directory app');
-assert(index.includes("connect-src 'self' https://api.cmxchat.com http://localhost:8000"), 'Directory CSP must allow the existing protected API origin');
+assert(index.includes("connect-src 'self' https://*.cmxchat.com http://localhost:8000"), 'Directory CSP must allow the existing protected CMX API origin without hardcoding a second client endpoint into the page contract');
 
 assert(transport.includes("credentials: 'include'"), 'transport must use protected cookies');
 assert(transport.includes('/checkin/operator/session'), 'mutations must retrieve the operator CSRF session');
