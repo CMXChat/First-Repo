@@ -49,15 +49,21 @@
   }
 
   async function load(id) {
-    const [details, preflight] = await Promise.all([
+    const [details, preflightResult] = await Promise.all([
       API.getAutomation(id),
-      API.preflight(id).catch((error) => ({
-        ready: false,
-        issues: [{ code: "frontend.preflight_unavailable", description: error?.message || "Preflight unavailable" }],
-      })),
+      API.preflight(id).then(
+        (value) => ({ value, error: null }),
+        (error) => ({ value: null, error }),
+      ),
     ]);
     const resources = await resourceContext(details);
-    cache = { id, details, preflight, resources };
+    cache = {
+      id,
+      details,
+      preflight: preflightResult.value,
+      preflightError: preflightResult.error,
+      resources,
+    };
     return cache;
   }
 
@@ -95,19 +101,28 @@
 
   function patchHeader(ctx) {
     const root = currentRoot();
-    if (!root) return;
+    if (!root || root.dataset.serverEditor !== ctx.id) return;
     const lifecycle = ctx.details.automation.lifecycle;
     const stateStrong = root.querySelector(".v10-object-state strong");
     const stateSmall = root.querySelector(".v10-object-state small");
     if (stateStrong) stateStrong.textContent = String(lifecycle).toUpperCase();
-    if (stateSmall) stateSmall.textContent = `Draft revision ${ctx.details.draft.revision} · backend ${ctx.preflight.ready ? "ready" : `${ctx.preflight.issues.length} blocker${ctx.preflight.issues.length === 1 ? "" : "s"}`}`;
+    if (stateSmall) {
+      const readiness = ctx.preflight
+        ? (ctx.preflight.ready ? "ready" : `${ctx.preflight.issues.length} blocker${ctx.preflight.issues.length === 1 ? "" : "s"}`)
+        : "preflight unavailable";
+      stateSmall.textContent = `Draft revision ${ctx.details.draft.revision} · backend ${readiness}`;
+    }
   }
 
   function testMarkup(ctx) {
-    const issues = ctx.preflight.issues || [];
+    const preflightAvailable = Boolean(ctx.preflight);
+    const issues = ctx.preflight?.issues || [];
     const lifecycle = ctx.details.automation.lifecycle;
     const contentIssue = issues.find((issue) => ["content.version_missing", "content.version_stale"].includes(issue.code));
-    return `<div class="server-lifecycle-test" data-server-lifecycle-test><section class="server-preflight ${ctx.preflight.ready ? "is-ready" : "has-blockers"}"><header><span>BACKEND PREFLIGHT · AUTHORITATIVE</span><strong>${ctx.preflight.ready ? "Ready" : `${issues.length} blocker${issues.length === 1 ? "" : "s"}`}</strong></header>${ctx.preflight.ready ? `<p>Every currently required protected reference resolves and the backend considers this Draft publishable.</p>` : `<div class="server-preflight-list">${issues.map(issueMarkup).join("")}</div>`}</section><div class="server-test-actions"><button class="server-small-button" type="button" data-lifecycle-preflight>Refresh preflight</button>${contentIssue?.resource_id ? `<button class="server-small-button" type="button" data-lifecycle-save-content="${esc(contentIssue.resource_id)}">Save current ContentVersion</button>` : ""}<button class="v3-footer-primary" type="button" data-lifecycle-review ${!ctx.preflight.ready || lifecycle === "review" ? "disabled" : ""}>${lifecycle === "review" ? "In Review" : "Move to Review"}</button><button class="v3-footer-primary" type="button" data-lifecycle-publish ${lifecycle !== "review" ? "disabled" : ""}>Publish immutable Version</button></div>${versionReceipt(ctx, ctx.details.current_published_version)}</div>`;
+    const preflightMarkup = preflightAvailable
+      ? `<section class="server-preflight ${ctx.preflight.ready ? "is-ready" : "has-blockers"}"><header><span>BACKEND PREFLIGHT · AUTHORITATIVE</span><strong>${ctx.preflight.ready ? "Ready" : `${issues.length} blocker${issues.length === 1 ? "" : "s"}`}</strong></header>${ctx.preflight.ready ? `<p>Every currently required protected reference resolves and the backend considers this Draft publishable.</p>` : `<div class="server-preflight-list">${issues.map(issueMarkup).join("")}</div>`}</section>`
+      : `<section class="server-preflight has-blockers"><header><span>BACKEND PREFLIGHT · UNAVAILABLE</span><strong>Unavailable</strong></header><p>${esc(ctx.preflightError?.message || "No backend readiness result was received.")} Review and Publish stay disabled until preflight can be read.</p></section>`;
+    return `<div class="server-lifecycle-test" data-server-lifecycle-test>${preflightMarkup}<div class="server-test-actions"><button class="server-small-button" type="button" data-lifecycle-preflight>Refresh preflight</button>${contentIssue?.resource_id ? `<button class="server-small-button" type="button" data-lifecycle-save-content="${esc(contentIssue.resource_id)}">Save current ContentVersion</button>` : ""}<button class="v3-footer-primary" type="button" data-lifecycle-review ${!preflightAvailable || !ctx.preflight.ready || lifecycle === "review" ? "disabled" : ""}>${lifecycle === "review" ? "In Review" : "Move to Review"}</button><button class="v3-footer-primary" type="button" data-lifecycle-publish ${!preflightAvailable || lifecycle !== "review" ? "disabled" : ""}>Publish immutable Version</button></div>${versionReceipt(ctx, ctx.details.current_published_version)}</div>`;
   }
 
   function relatedMarkup(ctx) {
@@ -140,7 +155,7 @@
   }
 
   function permissionsMarkup(ctx) {
-    return `<header class="v10-panel-head"><div><span>PERMISSIONS · CURRENT TRUTH</span><h2>${esc(ctx.details.automation.name)}</h2><p>Presentation does not create authority.</p></div><b>MANUAL OWNER</b></header><div class="v10-grid"><section class="v10-section"><header><span>EXECUTION</span><h3>Manual owner-triggered</h3></header><p>The current Runtime request is an explicit protected owner mutation.</p></section><section class="v10-section"><header><span>AI PARTICIPATION</span><h3>None</h3></header><p>No AI execution path is involved in this Email proof.</p></section><section class="v10-section"><header><span>STANDING AUTHORITY</span><h3>Not implemented</h3></header><p>No AuthorityGrant behavior is invented.</p></section><section class="v10-section"><header><span>PROVIDER</span><h3>Fake email only</h3></header><p>Current Runtime records fake logical delivery with no external side effect. Real SMTP remains fail-closed.</p></section></div>`;
+    return `<header class="v10-panel-head"><div><span>PERMISSIONS · CURRENT TRUTH</span><h2>${esc(ctx.details.automation.name)}</h2><p>Presentation does not create authority.</p></div><b>MANUAL OWNER</b></header><div class="v10-grid"><section class="v10-section"><header><span>EXECUTION</span><h3>Manual owner-triggered</h3></header><p>The current Runtime request is an explicit protected owner mutation.</p></section><section class="v10-section"><header><span>AI PARTICIPATION</span><h3>None</h3></header><p>No AI execution path is involved in this Email proof.</p></section><section class="v10-section"><header><span>STANDING AUTHORITY</span><h3>Not implemented</h3></header><p>No AuthorityGrant behavior is invented.</p></section><section class="v10-section"><header><span>PROVIDER</span><h3>Fake-provider UI only</h3></header><p>This PR exposes only the manual fake-provider Runtime controls. Real-provider capability is outside this frontend slice.</p></section></div>`;
   }
 
   function settingsMarkup(ctx) {
@@ -150,7 +165,9 @@
 
   function overviewMarkup(ctx) {
     const version = ctx.details.current_published_version;
-    return `<header class="v10-panel-head"><div><span>OVERVIEW · SERVER</span><h2>${esc(ctx.details.automation.name)}</h2><p>Protected Automation identity, Draft and publication truth.</p></div><b>${esc(String(ctx.details.automation.lifecycle).toUpperCase())}</b></header><div class="v10-stat-grid"><article class="v10-stat"><span>Automation ID</span><strong>${esc(ctx.id.slice(0, 8))}…</strong><small>Stable backend UUID</small></article><article class="v10-stat"><span>Draft</span><strong>Revision ${ctx.details.draft.revision}</strong><small>Mutable</small></article><article class="v10-stat"><span>Preflight</span><strong>${ctx.preflight.ready ? "Ready" : `${ctx.preflight.issues.length} blockers`}</strong><small>Backend authoritative</small></article><article class="v10-stat"><span>Published</span><strong>${version ? `v${version.version_number}` : "None"}</strong><small>${version ? "Immutable" : "Draft only"}</small></article></div>${versionReceipt(ctx, version)}<section class="v10-section"><header><span>LOCAL STORAGE BOUNDARY</span><h3>Server object stays server canonical</h3></header><p><code>cmx-lab-automations-v1</code> is still used only by the separate local Lab prototype. This Automation is never mirrored into that store.</p></section>`;
+    const preflightLabel = !ctx.preflight ? "Unavailable" : (ctx.preflight.ready ? "Ready" : `${ctx.preflight.issues.length} blockers`);
+    const preflightNote = ctx.preflight ? "Backend authoritative" : "No readiness result received";
+    return `<header class="v10-panel-head"><div><span>OVERVIEW · SERVER</span><h2>${esc(ctx.details.automation.name)}</h2><p>Protected Automation identity, Draft and publication truth.</p></div><b>${esc(String(ctx.details.automation.lifecycle).toUpperCase())}</b></header><div class="v10-stat-grid"><article class="v10-stat"><span>Automation ID</span><strong>${esc(ctx.id.slice(0, 8))}…</strong><small>Stable backend UUID</small></article><article class="v10-stat"><span>Draft</span><strong>Revision ${ctx.details.draft.revision}</strong><small>Mutable</small></article><article class="v10-stat"><span>Preflight</span><strong>${esc(preflightLabel)}</strong><small>${esc(preflightNote)}</small></article><article class="v10-stat"><span>Published</span><strong>${version ? `v${version.version_number}` : "None"}</strong><small>${version ? "Immutable" : "Draft only"}</small></article></div>${versionReceipt(ctx, version)}<section class="v10-section"><header><span>LOCAL STORAGE BOUNDARY</span><h3>Server object stays server canonical</h3></header><p><code>cmx-lab-automations-v1</code> is still used only by the separate local Lab prototype. This Automation is never mirrored into that store.</p></section>`;
   }
 
   async function patch() {
@@ -169,21 +186,27 @@
     loading = true;
     try {
       const ctx = await load(id);
+      if (currentId() !== id) return;
       patchHeader(ctx);
       if (needsTest) {
-        const stage = root.querySelector(".v3-editor-main .v3-stage-section");
+        const stage = currentRoot()?.querySelector(".v3-editor-main .v3-stage-section");
+        const copy = stage?.querySelector("header p");
+        if (copy) copy.textContent = "The Draft is server-backed. The lifecycle panel below reads authoritative backend preflight before Review or Publish.";
         stage?.insertAdjacentHTML("beforeend", testMarkup(ctx));
       }
-      if (needsPanel && panel) {
-        panel.dataset.lifecyclePatched = activeSection;
-        if (activeSection === "overview") panel.innerHTML = overviewMarkup(ctx);
-        if (activeSection === "permissions") panel.innerHTML = permissionsMarkup(ctx);
-        if (activeSection === "related") panel.innerHTML = relatedMarkup(ctx);
-        if (activeSection === "history") panel.innerHTML = historyMarkup(ctx);
-        if (activeSection === "settings") panel.innerHTML = settingsMarkup(ctx);
+      if (needsPanel) {
+        const currentPanel = currentRoot()?.querySelector(".v10-control-panel");
+        if (!currentPanel) return;
+        currentPanel.dataset.lifecyclePatched = activeSection;
+        if (activeSection === "overview") currentPanel.innerHTML = overviewMarkup(ctx);
+        if (activeSection === "permissions") currentPanel.innerHTML = permissionsMarkup(ctx);
+        if (activeSection === "related") currentPanel.innerHTML = relatedMarkup(ctx);
+        if (activeSection === "history") currentPanel.innerHTML = historyMarkup(ctx);
+        if (activeSection === "settings") currentPanel.innerHTML = settingsMarkup(ctx);
       }
     } finally {
       loading = false;
+      if (currentId() && currentId() !== id) schedule();
     }
   }
 
@@ -192,6 +215,7 @@
     const id = currentId();
     if (!id) return;
     await load(id);
+    if (currentId() !== id) return;
     document.querySelector("[data-server-lifecycle-test]")?.remove();
     const panel = document.querySelector(".server-automation-editor .v10-control-panel");
     if (panel) delete panel.dataset.lifecyclePatched;
@@ -214,8 +238,10 @@
         return;
       }
       if (type === "save-content") await API.saveContentVersion(target);
+      if (currentId() !== id) return;
       await refreshAndPatch();
     } catch (error) {
+      if (currentId() !== id) return;
       const node = document.querySelector("[data-server-lifecycle-test]") || document.querySelector(".server-automation-editor .v10-control-panel");
       if (node) node.insertAdjacentHTML("afterbegin", `<div class="server-lifecycle-error"><strong>Protected operation failed</strong><span>${esc(error?.message || "Request failed")}</span></div>`);
     }

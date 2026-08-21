@@ -11,8 +11,17 @@
     catch { return null; }
   }
 
+  function detailMessage(body, status) {
+    const detail = body?.detail;
+    if (typeof detail === 'string') return detail;
+    if (Array.isArray(detail)) {
+      return detail.map((item) => item?.msg || JSON.stringify(item)).join('; ');
+    }
+    return body?.message || `Request failed with ${status}`;
+  }
+
   function toError(response, body) {
-    const error = new Error(body?.detail || `Request failed with ${response.status}`);
+    const error = new Error(detailMessage(body, response.status));
     error.status = response.status;
     error.body = body;
     return error;

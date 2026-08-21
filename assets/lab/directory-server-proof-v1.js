@@ -5,7 +5,7 @@
   if (!API) return;
 
   const $ = (selector, root = document) => root.querySelector(selector);
-  const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (ch) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' }[ch]));
+  const esc = (value) => String(value ?? '').replace(/[&<>\'\"]/g, (ch) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' }[ch]));
   const initials = (name) => String(name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map((x) => x[0]).join('').toUpperCase();
   const relative = (iso) => {
     const value = Date.parse(iso || '');
@@ -21,6 +21,7 @@
   const state = {
     people: [],
     contacts: new Map(),
+    contactErrors: new Map(),
     selectedId: null,
     query: '',
     view: 'all',
@@ -62,12 +63,15 @@
   async function loadContacts(personId) {
     if (!personId) return;
     state.contactsLoading = true;
+    state.contactErrors.delete(personId);
     if (peopleMode()) renderPeopleProjection();
     try {
       const contacts = await API.listContactMethods(personId);
       state.contacts.set(personId, Array.isArray(contacts) ? contacts : []);
+      state.contactErrors.delete(personId);
     } catch (error) {
-      state.contacts.set(personId, []);
+      state.contacts.delete(personId);
+      state.contactErrors.set(personId, error);
       toast(errorMessage(error));
     } finally {
       state.contactsLoading = false;
@@ -169,6 +173,10 @@
 
   function renderContacts(person) {
     if (state.contactsLoading) return '<p>Loading contact methods…</p>';
+    const contactError = state.contactErrors.get(person.id);
+    if (contactError) {
+      return `<p><strong>Protected email ContactMethods unavailable.</strong><br>${esc(errorMessage(contactError))}<br>No empty server result is being inferred from this failed request.</p>`;
+    }
     const contacts = contactsFor(person.id);
     const rows = contacts.map((contact) => {
       const nextLifecycle = contact.lifecycle === 'active' ? 'disabled' : 'active';
@@ -178,16 +186,19 @@
   }
 
   function renderOverview(person) {
-    const contacts = contactsFor(person.id);
+    const contactError = state.contactErrors.get(person.id);
+    const contacts = contactError ? [] : contactsFor(person.id);
     const preferred = contacts.find((contact) => contact.lifecycle === 'active') || contacts[0] || null;
-    return `<div class="dir-facts"><div class="dir-fact"><span>Display name</span><strong>${esc(person.display_name)}</strong></div><div class="dir-fact"><span>Email</span><strong>${esc(preferred?.address || 'Not set')}</strong></div><div class="dir-fact"><span>Person state</span><strong>${esc(person.lifecycle)}</strong></div><div class="dir-fact"><span>Source</span><strong>Protected server</strong></div></div><section class="dir-panel"><header><strong>Contact methods</strong><small>SERVER EMAIL · ${contacts.length}</small></header><div class="dir-methods">${renderContacts(person)}</div><div class="dir-head-actions"><button class="dir-secondary" type="button" data-add-server-email>＋ Add email</button></div></section><section class="dir-panel"><header><strong>Persistence boundary</strong><small>REAL IDS</small></header><p>This Person and these email ContactMethods are loaded from the protected backend on every page load. Display names and addresses may change; their backend IDs remain canonical identity.</p></section>`;
+    const emailValue = contactError ? 'Unavailable' : (preferred?.address || 'Not set');
+    const contactCount = contactError ? 'UNAVAILABLE' : String(contacts.length);
+    return `<div class="dir-facts"><div class="dir-fact"><span>Display name</span><strong>${esc(person.display_name)}</strong></div><div class="dir-fact"><span>Email</span><strong>${esc(emailValue)}</strong></div><div class="dir-fact"><span>Person state</span><strong>${esc(person.lifecycle)}</strong></div><div class="dir-fact"><span>Source</span><strong>Protected server</strong></div></div><section class="dir-panel"><header><strong>Contact methods</strong><small>SERVER EMAIL · ${esc(contactCount)}</small></header><div class="dir-methods">${renderContacts(person)}</div><div class="dir-head-actions"><button class="dir-secondary" type="button" data-add-server-email>＋ Add email</button></div></section><section class="dir-panel"><header><strong>Persistence boundary</strong><small>REAL IDS</small></header><p>This Person and these email ContactMethods are loaded from the protected backend on every page load. Display names and addresses may change; their backend IDs remain canonical identity.</p></section>`;
   }
 
   function renderPersonBody(person) {
     if (state.tab === 'overview') return renderOverview(person);
     if (state.tab === 'relationships') return '<section class="dir-panel"><header><strong>Relationships</strong><small>LOCAL CONCEPTS NOT ATTACHED</small></header><p>Organizations, Groups and relationship labels remain browser-local Lab concepts in this slice. They are not attached to this server Person.</p></section>';
     if (state.tab === 'activity') return `<section class="dir-panel"><header><strong>Server record timestamps</strong><small>NOT AUDIT HISTORY</small></header><div class="dir-activity-list"><div class="dir-activity-item"><span class="dir-activity-icon">•</span><span class="dir-activity-copy"><strong>Created</strong><span>${esc(new Date(person.created_at).toLocaleString())}</span></span></div><div class="dir-activity-item"><span class="dir-activity-icon">•</span><span class="dir-activity-copy"><strong>Updated</strong><span>${esc(new Date(person.updated_at).toLocaleString())}</span></span></div></div></section><section class="dir-panel"><header><strong>Audit boundary</strong><small>SEPARATE</small></header><p>This proof does not fabricate user-facing history from local events. Consequential Audit remains backend-owned.</p></section>`;
-    return '<section class="dir-panel"><header><strong>Automation usage</strong><small>NEXT FRONTEND SLICE</small></header><p>This real Person is intentionally not wired into Automations yet. That integration starts only after this Directory proof is reviewed.</p></section>';
+    return '<section class="dir-panel"><header><strong>Automation usage</strong><small>SERVER-BACKED REFERENCES</small></header><p>This Person and its email ContactMethods can be selected by stable backend ID in the SERVER-BACKED Automations lane. This Directory page does not fabricate reverse usage history or dependencies.</p></section>';
   }
 
   function renderDetail() {
@@ -217,16 +228,17 @@
       pane.innerHTML = state.error ? '<header class="dir-context-head"><span>Context</span><b>SERVER</b></header><div class="dir-context-body"><section class="dir-context-card" data-tone="amber"><span>Data source</span><strong>Unavailable</strong><p>No browser-local Person fallback is being presented as canonical.</p></section></div>' : '';
       return;
     }
-    const contacts = contactsFor(person.id);
+    const contactError = state.contactErrors.get(person.id);
+    const contacts = contactError ? [] : contactsFor(person.id);
     const active = contacts.filter((contact) => contact.lifecycle === 'active').length;
-    pane.innerHTML = `<header class="dir-context-head"><span>Context</span><b>SERVER PERSON</b></header><div class="dir-context-body"><div class="dir-context-grid"><div class="dir-context-stat"><strong>${contacts.length}</strong><span>Email methods</span></div><div class="dir-context-stat"><strong>${active}</strong><span>Active</span></div></div><section class="dir-context-card" data-tone="green"><span>Durable identity</span><strong>Backend UUID</strong><p>${esc(person.id)}</p></section><section class="dir-context-card"><span>Duplicate policy</span><strong>Backend enforced</strong><p>The Lab does not pre-normalize or auto-merge email addresses. Backend 409/422 responses are shown directly.</p></section><section class="dir-context-card"><span>Canonical storage</span><strong>Server</strong><p>localStorage is not read or written by the protected Person/ContactMethod integration.</p></section></div>`;
+    pane.innerHTML = `<header class="dir-context-head"><span>Context</span><b>SERVER PERSON</b></header><div class="dir-context-body"><div class="dir-context-grid"><div class="dir-context-stat"><strong>${contactError ? '—' : contacts.length}</strong><span>Email methods</span></div><div class="dir-context-stat"><strong>${contactError ? '—' : active}</strong><span>Active</span></div></div><section class="dir-context-card" data-tone="green"><span>Durable identity</span><strong>Backend UUID</strong><p>${esc(person.id)}</p></section>${contactError ? `<section class="dir-context-card" data-tone="amber"><span>Contact methods</span><strong>Unavailable</strong><p>${esc(errorMessage(contactError))}</p></section>` : ''}<section class="dir-context-card"><span>Duplicate policy</span><strong>Backend enforced</strong><p>The Lab does not pre-normalize or auto-merge email addresses. Backend 409/422 responses are shown directly.</p></section><section class="dir-context-card"><span>Canonical storage</span><strong>Server</strong><p>localStorage is not read or written by the protected Person/ContactMethod integration.</p></section></div>`;
   }
 
   function renderBoundary() {
     const boundary = $('.dir-boundary');
     const kicker = $('.dir-kicker');
     if (peopleMode()) {
-      if (boundary) boundary.innerHTML = '<b>DIRECTORY · LAB</b> — People and email ContactMethods use the protected Directory API in this proof. Organizations, Groups, relationships, audiences and Automations remain local or unintegrated.';
+      if (boundary) boundary.innerHTML = '<b>DIRECTORY · LAB</b> — People and email ContactMethods use the protected Directory API. SERVER-BACKED Automations may reference those stable IDs. Organizations, Groups, relationships and audiences remain local or unintegrated.';
       if (kicker) kicker.textContent = 'People · protected persistence proof';
     } else {
       if (boundary) boundary.innerHTML = '<b>DIRECTORY · LAB</b> — Organizations, Groups, relationships and saved audiences remain browser-local sample concepts. No protected backend support is claimed for them in this slice.';
@@ -307,20 +319,20 @@
         state.selectedId = created.id;
         state.tab = 'overview';
         await refreshPeople({ keepSelection:true });
-        toast('Person saved to server');
+        toast(state.error ? `Person saved · ${created.id}. People list refresh failed.` : 'Person saved to server');
       } else if (mode === 'person-edit') {
         const personId = String(form.get('serverPersonId') || '');
         await API.updatePerson(personId, { display_name:String(form.get('displayName') || '').trim() });
         state.selectedId = personId;
         await refreshPeople({ keepSelection:true });
-        toast('Person name updated on server');
+        toast(state.error ? 'Person name updated on server. People list refresh failed.' : 'Person name updated on server');
       } else if (mode === 'contact-create') {
         const personId = String(form.get('serverPersonId') || '');
         const created = await API.createEmailContactMethod(personId, String(form.get('email') || '').trim());
         state.selectedId = personId;
         await loadContacts(personId);
         renderPeopleProjection();
-        toast(`Email saved · ${created.id}`);
+        toast(state.contactErrors.has(personId) ? `Email saved · ${created.id}. Contact list refresh failed.` : `Email saved · ${created.id}`);
       }
       dialog.dataset.serverMode = '';
       dialog.close();
@@ -337,10 +349,13 @@
 
   async function changeContactLifecycle(contactId, lifecycle) {
     try {
+      const personId = state.selectedId;
       await API.setContactMethodLifecycle(contactId, lifecycle);
-      await loadContacts(state.selectedId);
+      await loadContacts(personId);
       renderPeopleProjection();
-      toast(`Email ${lifecycle === 'active' ? 'reactivated' : 'disabled'} on server`);
+      toast(state.contactErrors.has(personId)
+        ? `Email ${lifecycle === 'active' ? 'reactivated' : 'disabled'} on server. Contact list refresh failed.`
+        : `Email ${lifecycle === 'active' ? 'reactivated' : 'disabled'} on server`);
     } catch (error) {
       toast(errorMessage(error));
     }

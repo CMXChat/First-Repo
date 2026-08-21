@@ -60,25 +60,39 @@ has(server, 'data-field="connection_id"', 'Draft must store connection_id');
 has(server, 'data-field="sender_identity_id"', 'Draft must store sender_identity_id');
 has(server, 'data-field="content_asset_id"', 'Draft must store content_asset_id');
 has(server, 'valueKey = "id"', 'selector canonical values must default to stable IDs');
+has(server, 'state.resources.contacts = new Map()', 'resource reload must clear prior ContactMethod projection before protected reads');
+has(server, 'await API.listContacts(person.id)', 'ContactMethod selector reads must stay protected and explicit');
+has(server, 'await API.listSenders(connection.id)', 'SenderIdentity selector reads must stay protected and explicit');
+lacks(server, 'API.listContacts(person.id).catch(() => [])', 'ContactMethod request failure must not become a false empty selector');
+lacks(server, 'API.listSenders(connection.id).catch(() => [])', 'SenderIdentity request failure must not become a false empty selector');
+has(server, 'No empty selector result is being treated as confirmed server absence.', 'selector failure must be explained truthfully');
 
-// Progressive Draft, optimistic concurrency and truthful stale-write behavior.
+// Progressive Draft, optimistic concurrency and truthful stale/write failure behavior.
 has(server, 'An incomplete Draft is still editable and saveable.', 'incomplete Draft must remain editable/saveable');
 has(server, 'expected_revision: revision', 'Draft save must send expected_revision');
 has(server, 'error?.status === 409', 'stale-write HTTP 409 must be handled explicitly');
 has(server, 'state.pendingDefinition = nextDefinition', 'conflicting local edit must be retained for truthful conflict state');
 has(server, 'Draft changed elsewhere.', 'stale-write message must be visible');
 has(server, 'Reload server Draft', 'stale conflict must require explicit server reload');
+has(server, 'Draft save failed.', 'non-409 save failures must never render as Saved');
+has(server, 'state.saveStatus === "error"', 'save-error state must have explicit presentation');
+has(server, 'inert aria-busy="true"', 'definition mutations must be blocked while one Draft save is in flight');
 has(server, 'definition.conditions = []', 'unsupported Conditions must remain empty instead of inventing backend support');
 has(server, 'unattended Runtime is not enabled by this Lab', 'unattended execution must not be presented as available');
+lacks(server, 'Backend preflight, Review and Publish are added in the next checkpoint.', 'TEST copy must describe current integration instead of stale checkpoint plans');
 
-// Backend preflight is authoritative and typed issue metadata survives presentation.
+// Backend preflight is authoritative only when a backend result exists.
 has(lifecycle, 'API.preflight(id)', 'backend preflight endpoint must be called');
-has(lifecycle, 'BACKEND PREFLIGHT · AUTHORITATIVE', 'backend preflight must be labeled authoritative');
+has(lifecycle, 'preflightError: preflightResult.error', 'preflight transport failure must remain distinct from typed backend blockers');
+has(lifecycle, 'BACKEND PREFLIGHT · AUTHORITATIVE', 'real backend preflight must be labeled authoritative');
+has(lifecycle, 'BACKEND PREFLIGHT · UNAVAILABLE', 'failed preflight reads must render unavailable instead of synthetic backend blocker');
+has(lifecycle, 'Review and Publish stay disabled until preflight can be read.', 'unavailable preflight must fail closed in the UI');
 has(lifecycle, 'issue.code', 'typed issue code must be retained');
 has(lifecycle, 'issue.description', 'typed issue description must be rendered');
 has(lifecycle, 'issue.step_id', 'typed issue step metadata must be retained');
 has(lifecycle, 'issue.resource_type', 'typed issue resource type must be retained');
 has(lifecycle, 'issue.resource_id', 'typed issue resource ID must be retained');
+has(lifecycle, 'if (currentId() !== id) return;', 'late lifecycle responses must not patch a different Automation');
 lacks(lifecycle, 'CMXAutomationOperationsV7', 'local readiness engine must not override server preflight');
 
 // Review, publication and immutable Version presentation are real backend operations.
@@ -89,13 +103,14 @@ has(lifecycle, 'Later Draft changes do not mutate this Version.', 'immutable Ver
 has(lifecycle, 'AutomationVersion ID', 'AutomationVersion stable ID must be visible');
 has(lifecycle, 'ContentVersion', 'frozen ContentVersion must be visible');
 has(lifecycle, 'content_version_id', 'exact frozen content_version_id must be presented');
+has(lifecycle, 'Fake-provider UI only', 'provider presentation must stay scoped to the current frontend instead of racing later backend work');
 
 // Runtime request/list/read/process/cancel are all real protected API paths.
 has(runtime, 'API.listRuns(id)', 'Run history must come from backend');
-has(runtime, 'API.getRun(id, state.selectedRunId)', 'Run detail must come from backend');
-has(runtime, 'API.requestRun(state.automationId', 'manual Run must use backend request');
-has(runtime, 'API.processRun(state.automationId', 'fake work processing must use backend operation');
-has(runtime, 'API.cancelRun(state.automationId', 'pending Run cancellation must use backend operation');
+has(runtime, 'API.getRun(id, selectedRunId)', 'Run detail must come from backend');
+has(runtime, 'API.requestRun(automationId', 'manual Run must use backend request');
+has(runtime, 'API.processRun(automationId, runId', 'fake work processing must use backend operation');
+has(runtime, 'API.cancelRun(automationId, runId)', 'pending Run cancellation must use backend operation');
 
 // Current supported fake-provider scenarios remain visible and truthful.
 ['accepted', 'transient_once', 'permanent_failure'].forEach((behavior) => has(runtime, `value="${behavior}"`, `fake behavior ${behavior} must remain selectable`));
@@ -108,6 +123,10 @@ has(runtime, 'run.events', 'Why/RuntimeEvent history must render');
 has(runtime, 'run.status === "pending"', 'pending state must gate process/cancel controls');
 has(runtime, 'Cancel pending Run', 'cancellation state/control must remain visible');
 has(runtime, 'FROZEN EXECUTION SNAPSHOT', 'Run must expose frozen execution references');
+has(runtime, 'state.dataUnavailable = true', 'failed Runtime reload must explicitly mark server history unavailable');
+has(runtime, 'state.runs = []', 'failed Runtime reload must clear stale Run list state');
+has(runtime, 'No cached Runtime history is being presented as current.', 'Runtime failure must not display stale history as current');
+has(runtime, 'root()?.dataset.serverEditor !== id', 'late Runtime loads must not patch a different Automation');
 
 // Unsupported Runtime controls must remain disabled until endpoints exist.
 has(runtime, '<button disabled>Pause · no endpoint</button>', 'Pause must stay disabled');

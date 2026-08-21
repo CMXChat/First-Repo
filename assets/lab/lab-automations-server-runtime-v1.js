@@ -18,6 +18,7 @@
     selectedRun: null,
     loading: false,
     error: "",
+    dataUnavailable: false,
     behavior: "accepted",
   };
 
@@ -74,7 +75,13 @@
   function panelMarkup() {
     const published = state.details?.current_published_version;
     const selected = state.selectedRun;
-    return `<header class="v10-panel-head"><div><span>RUNS · REAL RUNTIME</span><h2>${esc(state.details?.automation?.name || "Server Automation")}</h2><p>Manual owner-triggered fake Email Runtime. Attempts and Why come from durable backend records.</p></div><b>${state.runs.length} RUN${state.runs.length === 1 ? "" : "S"}</b></header>${state.error ? `<div class="server-runtime-failure"><strong>Runtime request failed</strong><span>${esc(state.error)}</span></div>` : ""}<section class="server-runtime-request"><div><span>NEW MANUAL RUN</span><strong>${published ? `Published v${published.version_number}` : "Publish first"}</strong><small>Current Runtime contract executes exactly one published Email action.</small></div><label><span>Fake behavior</span><select data-runtime-behavior><option value="accepted" ${state.behavior === "accepted" ? "selected" : ""}>SUCCESS · accepted</option><option value="transient_once" ${state.behavior === "transient_once" ? "selected" : ""}>FAIL ONCE · transient then success</option><option value="permanent_failure" ${state.behavior === "permanent_failure" ? "selected" : ""}>PERMANENT FAILURE</option></select></label><button class="v3-footer-primary" type="button" data-runtime-request ${published ? "" : "disabled"}>Request manual Run</button></section><div class="server-runtime-layout"><section class="server-run-list"><header><span>RUN HISTORY</span><button class="server-link-button" type="button" data-runtime-refresh>Refresh</button></header>${state.runs.map(runCard).join("") || `<div class="v10-empty-state"><strong>No authoritative Runs yet</strong><span>Local simulations are not promoted into Runtime history.</span></div>`}</section>${detailMarkup(selected)}</div><section class="server-disabled-runtime-controls"><button disabled>Pause · no endpoint</button><button disabled>Resume · no endpoint</button><button disabled>Retry failed step · no endpoint</button><span>Truthful disabled controls stay disabled until matching protected operations exist.</span></section>`;
+    const listBody = state.dataUnavailable
+      ? `<div class="v10-empty-state"><strong>Run history unavailable</strong><span>No cached Runtime history is being presented as current.</span></div>`
+      : (state.runs.map(runCard).join("") || `<div class="v10-empty-state"><strong>No authoritative Runs yet</strong><span>Local simulations are not promoted into Runtime history.</span></div>`);
+    const detailBody = state.dataUnavailable
+      ? `<div class="v10-empty-state"><strong>Run detail unavailable</strong><span>Refresh after protected Runtime access is restored.</span></div>`
+      : detailMarkup(selected);
+    return `<header class="v10-panel-head"><div><span>RUNS · REAL RUNTIME</span><h2>${esc(state.details?.automation?.name || "Server Automation")}</h2><p>Manual owner-triggered fake Email Runtime. Attempts and Why come from durable backend records.</p></div><b>${state.runs.length} RUN${state.runs.length === 1 ? "" : "S"}</b></header>${state.error ? `<div class="server-runtime-failure"><strong>Runtime request failed</strong><span>${esc(state.error)}</span></div>` : ""}<section class="server-runtime-request"><div><span>NEW MANUAL RUN</span><strong>${published ? `Published v${published.version_number}` : "Publish first"}</strong><small>Current Runtime contract executes exactly one published Email action.</small></div><label><span>Fake behavior</span><select data-runtime-behavior ${state.dataUnavailable ? "disabled" : ""}><option value="accepted" ${state.behavior === "accepted" ? "selected" : ""}>SUCCESS · accepted</option><option value="transient_once" ${state.behavior === "transient_once" ? "selected" : ""}>FAIL ONCE · transient then success</option><option value="permanent_failure" ${state.behavior === "permanent_failure" ? "selected" : ""}>PERMANENT FAILURE</option></select></label><button class="v3-footer-primary" type="button" data-runtime-request ${published && !state.dataUnavailable ? "" : "disabled"}>Request manual Run</button></section><div class="server-runtime-layout"><section class="server-run-list"><header><span>RUN HISTORY</span><button class="server-link-button" type="button" data-runtime-refresh>Refresh</button></header>${listBody}</section>${detailBody}</div><section class="server-disabled-runtime-controls"><button disabled>Pause · no endpoint</button><button disabled>Resume · no endpoint</button><button disabled>Retry failed step · no endpoint</button><span>Truthful disabled controls stay disabled until matching protected operations exist.</span></section>`;
   }
 
   async function loadAll({ keepSelection = true } = {}) {
@@ -85,33 +92,51 @@
     state.loading = true;
     state.error = "";
     try {
-      const [details, runs] = await Promise.all([
+      const [details, runsResult] = await Promise.all([
         API.getAutomation(id),
         API.listRuns(id),
       ]);
+      const runs = Array.isArray(runsResult) ? runsResult : [];
+      let selectedRunId = keepSelection && runs.some((run) => run.id === state.selectedRunId)
+        ? state.selectedRunId
+        : (runs[0]?.id || null);
+      const selectedRun = selectedRunId ? await API.getRun(id, selectedRunId) : null;
+      if (root()?.dataset.serverEditor !== id || !activeRunsPanel()) return;
       state.automationId = id;
       state.details = details;
-      state.runs = Array.isArray(runs) ? runs : [];
-      if (!keepSelection || !state.runs.some((run) => run.id === state.selectedRunId)) {
-        state.selectedRunId = state.runs[0]?.id || null;
-      }
-      state.selectedRun = state.selectedRunId ? await API.getRun(id, state.selectedRunId) : null;
+      state.runs = runs;
+      state.selectedRunId = selectedRunId;
+      state.selectedRun = selectedRun;
+      state.dataUnavailable = false;
       renderPanel();
     } catch (error) {
+      if (root()?.dataset.serverEditor !== id || !activeRunsPanel()) return;
+      state.automationId = id;
+      state.details = null;
+      state.runs = [];
+      state.selectedRunId = null;
+      state.selectedRun = null;
+      state.dataUnavailable = true;
       state.error = error?.message || "Runtime unavailable";
       renderPanel();
     } finally {
       state.loading = false;
+      if (root()?.dataset.serverEditor && root()?.dataset.serverEditor !== id) schedule();
     }
   }
 
   async function selectRun(runId) {
     if (!state.automationId) return;
+    const automationId = state.automationId;
     state.selectedRunId = runId;
     try {
-      state.selectedRun = await API.getRun(state.automationId, runId);
+      const selectedRun = await API.getRun(automationId, runId);
+      if (root()?.dataset.serverEditor !== automationId || state.selectedRunId !== runId) return;
+      state.selectedRun = selectedRun;
       state.error = "";
     } catch (error) {
+      if (root()?.dataset.serverEditor !== automationId || state.selectedRunId !== runId) return;
+      state.selectedRun = null;
       state.error = error?.message || "Run unavailable";
     }
     renderPanel();
@@ -119,11 +144,14 @@
 
   async function requestRun() {
     if (!state.automationId) return;
+    const automationId = state.automationId;
     try {
-      const run = await API.requestRun(state.automationId, { fake_behavior: state.behavior });
+      const run = await API.requestRun(automationId, { fake_behavior: state.behavior });
+      if (root()?.dataset.serverEditor !== automationId) return;
       state.selectedRunId = run.id;
       await loadAll({ keepSelection: true });
     } catch (error) {
+      if (root()?.dataset.serverEditor !== automationId) return;
       state.error = error?.message || "Run request failed";
       renderPanel();
     }
@@ -131,10 +159,14 @@
 
   async function processRun() {
     if (!state.automationId || !state.selectedRunId) return;
+    const automationId = state.automationId;
+    const runId = state.selectedRunId;
     try {
-      state.selectedRun = await API.processRun(state.automationId, state.selectedRunId, { worker_id: "continuum-lab-browser" });
+      await API.processRun(automationId, runId, { worker_id: "continuum-lab-browser" });
+      if (root()?.dataset.serverEditor !== automationId || state.selectedRunId !== runId) return;
       await loadAll({ keepSelection: true });
     } catch (error) {
+      if (root()?.dataset.serverEditor !== automationId || state.selectedRunId !== runId) return;
       state.error = error?.message || "Run processing failed";
       renderPanel();
     }
@@ -142,10 +174,14 @@
 
   async function cancelRun() {
     if (!state.automationId || !state.selectedRunId) return;
+    const automationId = state.automationId;
+    const runId = state.selectedRunId;
     try {
-      state.selectedRun = await API.cancelRun(state.automationId, state.selectedRunId);
+      await API.cancelRun(automationId, runId);
+      if (root()?.dataset.serverEditor !== automationId || state.selectedRunId !== runId) return;
       await loadAll({ keepSelection: true });
     } catch (error) {
+      if (root()?.dataset.serverEditor !== automationId || state.selectedRunId !== runId) return;
       state.error = error?.message || "Run cancellation failed";
       renderPanel();
     }

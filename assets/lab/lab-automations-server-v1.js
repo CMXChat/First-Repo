@@ -68,6 +68,13 @@
     return error?.message || "Protected Automation request failed.";
   }
 
+  function saveStateLabel(long = false) {
+    if (state.saveStatus === "conflict") return "Draft changed elsewhere";
+    if (state.saveStatus === "saving") return long ? "Saving…" : "Saving";
+    if (state.saveStatus === "error") return "Save failed";
+    return long ? "Server saved" : "Saved";
+  }
+
   function shell(content) {
     return `<header class="v3-topbar"><a class="brand v3-brand" href="/lab/#lab=view%3Aactions" aria-label="Back to Check In Lab Actions"><span class="brand-mark"></span><span class="brand-copy"><strong>CHECK IN</strong><small>LAB · AUTOMATIONS</small></span></a><div class="v3-top-actions"><span class="v3-lab-pill server-contract-pill"><i></i> LAB · REAL CONTRACT</span><button class="v3-theme" type="button" data-server-theme><span>${document.documentElement.dataset.theme === "dark" ? "Light" : "Dark"}</span></button></div></header>${content}`;
   }
@@ -154,6 +161,11 @@
   async function loadResources() {
     state.resourceLoading = true;
     state.resourceError = null;
+    state.resources.people = [];
+    state.resources.contacts = new Map();
+    state.resources.connections = [];
+    state.resources.senders = new Map();
+    state.resources.content = [];
     try {
       const [people, connections, library] = await Promise.all([
         API.listPeople(),
@@ -164,16 +176,16 @@
       state.resources.connections = Array.isArray(connections) ? connections : [];
       state.resources.content = (library?.items || []).filter((item) => item.item_type === "content" && item.lifecycle === "active");
 
-      const contacts = await Promise.all(state.resources.people.map(async (person) => {
-        try { return [person.id, await API.listContacts(person.id)]; }
-        catch { return [person.id, []]; }
-      }));
+      const contacts = await Promise.all(state.resources.people.map(async (person) => [
+        person.id,
+        await API.listContacts(person.id),
+      ]));
       state.resources.contacts = new Map(contacts);
 
-      const senders = await Promise.all(state.resources.connections.map(async (connection) => {
-        try { return [connection.id, await API.listSenders(connection.id)]; }
-        catch { return [connection.id, []]; }
-      }));
+      const senders = await Promise.all(state.resources.connections.map(async (connection) => [
+        connection.id,
+        await API.listSenders(connection.id),
+      ]));
       state.resources.senders = new Map(senders);
     } catch (error) {
       state.resourceError = error;
@@ -262,14 +274,14 @@
   function renderObjectHeader() {
     const automation = state.current.automation;
     const draft = state.current.draft;
-    return `<header class="v3-editor-head server-editor-head"><div class="v10-object-bar"><button class="v10-exit" type="button" data-server-exit><span>←</span><strong>Automations</strong></button><div class="v10-object-state"><span>SERVER AUTOMATION</span><strong>${esc(String(lifecycle()).toUpperCase())}</strong><small>Draft revision ${esc(draft.revision)} · ${esc(state.saveStatus === "conflict" ? "Changed elsewhere" : state.saveStatus === "saving" ? "Saving…" : "Server saved")}</small></div><button class="v10-object-menu" type="button" data-server-menu aria-label="Automation actions">•••</button><button class="v10-object-close" type="button" data-server-exit aria-label="Close Automation">×</button></div><div class="v3-editor-title-row"><button class="v3-title-button server-title-button" type="button" disabled><span>AUTOMATION · SERVER-BACKED</span><strong>${esc(automation.name)}</strong><small><b data-state="${esc(state.saveStatus)}">${esc(state.saveStatus === "conflict" ? "Draft changed elsewhere" : state.saveStatus === "saving" ? "Saving" : "Saved")}</b> · ${esc(automation.id)}</small></button></div><nav class="v10-control-nav" aria-label="Automation sections">${SECTIONS.map((section) => `<button type="button" data-server-section="${section}" class="${state.view === section ? "is-active" : ""}" aria-selected="${state.view === section}">${section[0].toUpperCase() + section.slice(1)}</button>`).join("")}</nav>${state.view === "definition" ? `<nav class="v3-stage-rail">${STAGES.map((entry, index) => `<button type="button" class="${index === state.stage ? "is-current" : ""}" data-server-stage="${index}"><b>${String(index + 1).padStart(2, "0")}</b><span><small>${entry.short}</small><strong>${entry.label}</strong></span></button>`).join("")}</nav>` : ""}</header>`;
+    return `<header class="v3-editor-head server-editor-head"><div class="v10-object-bar"><button class="v10-exit" type="button" data-server-exit><span>←</span><strong>Automations</strong></button><div class="v10-object-state"><span>SERVER AUTOMATION</span><strong>${esc(String(lifecycle()).toUpperCase())}</strong><small>Draft revision ${esc(draft.revision)} · ${esc(saveStateLabel(true))}</small></div><button class="v10-object-menu" type="button" data-server-menu aria-label="Automation actions">•••</button><button class="v10-object-close" type="button" data-server-exit aria-label="Close Automation">×</button></div><div class="v3-editor-title-row"><button class="v3-title-button server-title-button" type="button" disabled><span>AUTOMATION · SERVER-BACKED</span><strong>${esc(automation.name)}</strong><small><b data-state="${esc(state.saveStatus)}">${esc(saveStateLabel())}</b> · ${esc(automation.id)}</small></button></div><nav class="v10-control-nav" aria-label="Automation sections">${SECTIONS.map((section) => `<button type="button" data-server-section="${section}" class="${state.view === section ? "is-active" : ""}" aria-selected="${state.view === section}">${section[0].toUpperCase() + section.slice(1)}</button>`).join("")}</nav>${state.view === "definition" ? `<nav class="v3-stage-rail">${STAGES.map((entry, index) => `<button type="button" class="${index === state.stage ? "is-current" : ""}" data-server-stage="${index}"><b>${String(index + 1).padStart(2, "0")}</b><span><small>${entry.short}</small><strong>${entry.label}</strong></span></button>`).join("")}</nav>` : ""}</header>`;
   }
 
   function renderOverview() {
     const automation = state.current.automation;
     const draft = state.current.draft;
     const published = state.current.current_published_version;
-    return `<section class="v10-control-panel server-control-panel"><header class="v10-panel-head"><div><span>OVERVIEW · SERVER</span><h2>${esc(automation.name)}</h2><p>Protected Automation identity and mutable Draft state from the backend.</p></div><b>${esc(String(automation.lifecycle).toUpperCase())}</b></header><div class="v10-stat-grid"><article class="v10-stat"><span>Automation ID</span><strong>${esc(automation.id.slice(0, 8))}…</strong><small>Stable backend UUID</small></article><article class="v10-stat"><span>Draft</span><strong>Revision ${draft.revision}</strong><small>${esc(relative(draft.updated_at))}</small></article><article class="v10-stat"><span>Published</span><strong>${published ? `v${published.version_number}` : "None"}</strong><small>${published ? "Immutable version exists" : "Draft only"}</small></article><article class="v10-stat"><span>Readiness</span><strong>${state.preflight ? (state.preflight.ready ? "Ready" : `${state.preflight.issues.length} blocker${state.preflight.issues.length === 1 ? "" : "s"}`) : "Backend preflight"}</strong><small>Backend decides</small></article></div><section class="v10-section"><header><span>SOURCE OF TRUTH</span><h3>Server-backed object</h3></header><p>The Automation, Draft revision, published versions and future Runtime history are server canonical. <code>cmx-lab-automations-v1</code> remains only for the separate local Lab cards.</p></section></section>`;
+    return `<section class="v10-control-panel server-control-panel"><header class="v10-panel-head"><div><span>OVERVIEW · SERVER</span><h2>${esc(automation.name)}</h2><p>Protected Automation identity and mutable Draft state from the backend.</p></div><b>${esc(String(automation.lifecycle).toUpperCase())}</b></header><div class="v10-stat-grid"><article class="v10-stat"><span>Automation ID</span><strong>${esc(automation.id.slice(0, 8))}…</strong><small>Stable backend UUID</small></article><article class="v10-stat"><span>Draft</span><strong>Revision ${draft.revision}</strong><small>${esc(relative(draft.updated_at))}</small></article><article class="v10-stat"><span>Published</span><strong>${published ? `v${published.version_number}` : "None"}</strong><small>${published ? "Immutable version exists" : "Draft only"}</small></article><article class="v10-stat"><span>Readiness</span><strong>${state.preflight ? (state.preflight.ready ? "Ready" : `${state.preflight.issues.length} blocker${state.preflight.issues.length === 1 ? "" : "s"}`) : "Backend preflight"}</strong><small>Backend decides</small></article></div><section class="v10-section"><header><span>SOURCE OF TRUTH</span><h3>Server-backed object</h3></header><p>The Automation, Draft revision, published versions and Runtime history are server canonical. <code>cmx-lab-automations-v1</code> remains only for the separate local Lab cards.</p></section></section>`;
   }
 
   function renderTriggerStage(definition) {
@@ -295,7 +307,7 @@
 
   function renderActionsStage(definition) {
     if (state.resourceLoading) return `<section class="v3-stage-section"><header><span>DO</span><h2>Loading protected resources…</h2></header></section>`;
-    const resourceWarning = state.resourceError ? `<div class="v10-callout"><strong>Some protected selectors are unavailable.</strong><span>${esc(errorText(state.resourceError))}</span></div>` : "";
+    const resourceWarning = state.resourceError ? `<div class="v10-callout"><strong>Some protected selectors are unavailable.</strong><span>${esc(errorText(state.resourceError))} No empty selector result is being treated as confirmed server absence.</span></div>` : "";
     return `<section class="v3-stage-section v3-actions-stage"><header><span>DO</span><h2>Build the real Email action stack.</h2><p>REUSED action-card interaction. Protected UUIDs stay canonical; names and addresses are live display data.</p></header>${resourceWarning}<div class="v3-action-stack">${(definition.actions || []).map((action, index) => renderEmailAction(action, index, definition.actions.length)).join("") || `<div class="v3-empty"><strong>No server Actions yet</strong><span>An incomplete Draft is still editable and saveable.</span></div>`}</div><button class="v3-add-action" type="button" data-server-add-email><b>＋</b><span><strong>Add Email action</strong><small>Real backend EmailActionDraft</small></span></button><p class="server-stage-note">Drafts may contain multiple Actions and retain reorder/duplicate/remove UX. Current fake Runtime later accepts exactly one published Email action per Run.</p></section>`;
   }
 
@@ -304,7 +316,7 @@
   }
 
   function renderReviewStage(definition) {
-    return `<section class="v3-stage-section"><header><span>TEST</span><h2>Review the mutable Draft.</h2><p>Checkpoint 1 wires durable Draft persistence. Backend preflight, Review and Publish are added in the next checkpoint.</p></header><div class="server-review-flow"><div><span>WHEN</span><strong>${esc(triggerLabel(definition))}</strong></div><div><span>IF</span><strong>No server conditions</strong></div><div><span>DO</span><strong>${definition.actions.length} Email action${definition.actions.length === 1 ? "" : "s"}</strong></div><div><span>WAIT</span><strong>${definition.start_policy?.type || "Not set"}</strong></div><div><span>FINISH</span><strong>${definition.finish?.type || "Not set"}</strong></div></div><button class="server-small-button" type="button" data-server-set-finish>${definition.finish ? "Finish set ✓" : "Set Finish"}</button><button class="server-link-button" type="button" data-server-clear-finish>Clear finish</button></section>`;
+    return `<section class="v3-stage-section"><header><span>TEST</span><h2>Review the mutable Draft.</h2><p>The Draft is server-backed. The lifecycle panel below reads authoritative backend preflight before Review or Publish.</p></header><div class="server-review-flow"><div><span>WHEN</span><strong>${esc(triggerLabel(definition))}</strong></div><div><span>IF</span><strong>No server conditions</strong></div><div><span>DO</span><strong>${definition.actions.length} Email action${definition.actions.length === 1 ? "" : "s"}</strong></div><div><span>WAIT</span><strong>${definition.start_policy?.type || "Not set"}</strong></div><div><span>FINISH</span><strong>${definition.finish?.type || "Not set"}</strong></div></div><button class="server-small-button" type="button" data-server-set-finish>${definition.finish ? "Finish set ✓" : "Set Finish"}</button><button class="server-link-button" type="button" data-server-clear-finish>Clear finish</button></section>`;
   }
 
   function renderDefinitionStage() {
@@ -316,19 +328,21 @@
       : state.stage === 3 ? renderStartStage(definition)
       : renderReviewStage(definition);
     const conflict = state.saveStatus === "conflict" ? `<div class="server-conflict-banner"><strong>Draft changed elsewhere.</strong><span>${esc(state.saveMessage)}</span><button type="button" data-server-reload-draft>Reload server Draft</button></div>` : "";
-    return `<div class="v3-editor-shell server-definition-shell"><section class="v3-editor-main">${conflict}<button class="v3-mobile-flow-toggle" type="button" disabled><span><small>LIVE FLOW · SERVER</small><strong>${esc(readableFlow(definition))}</strong></span></button><div class="v3-step-context"><span>${stage.short}</span><small>Step ${state.stage + 1} of ${STAGES.length}</small></div>${body}</section><aside class="v3-live-panel"><div class="v3-live-head"><span>LIVE FLOW</span><small>Backend Draft revision ${state.current.draft.revision}</small></div><div class="server-live-flow">${STAGES.map((item, index) => `<div class="${index === state.stage ? "is-current" : ""}"><small>${item.short}</small><strong>${index === 0 ? triggerLabel(definition) : index === 1 ? "No server conditions" : index === 2 ? `${definition.actions.length} action${definition.actions.length === 1 ? "" : "s"}` : index === 3 ? (definition.start_policy?.type || "Not set") : (definition.finish?.type || "Not set")}</strong></div>`).join("")}</div><div class="v3-live-summary"><span>READABLE VERSION</span><p>${esc(readableFlow(definition))}</p></div></aside></div><footer class="v3-editor-footer"><div><button class="v3-footer-secondary" type="button" data-server-stage-back ${state.stage === 0 ? "disabled" : ""}>Back</button><button class="v3-footer-primary" type="button" data-server-stage-next>${state.stage === 4 ? "Stay in TEST" : "Continue"}</button></div></footer>`;
+    const saveFailure = state.saveStatus === "error" ? `<div class="server-conflict-banner"><strong>Draft save failed.</strong><span>${esc(state.saveMessage)}</span><button type="button" data-server-reload-draft>Reload server Draft</button></div>` : "";
+    const busy = state.saveStatus === "saving";
+    return `<div class="v3-editor-shell server-definition-shell" ${busy ? 'inert aria-busy="true"' : ''}><section class="v3-editor-main">${conflict}${saveFailure}<button class="v3-mobile-flow-toggle" type="button" disabled><span><small>LIVE FLOW · SERVER</small><strong>${esc(readableFlow(definition))}</strong></span></button><div class="v3-step-context"><span>${stage.short}</span><small>Step ${state.stage + 1} of ${STAGES.length}</small></div>${body}</section><aside class="v3-live-panel"><div class="v3-live-head"><span>LIVE FLOW</span><small>Backend Draft revision ${state.current.draft.revision}</small></div><div class="server-live-flow">${STAGES.map((item, index) => `<div class="${index === state.stage ? "is-current" : ""}"><small>${item.short}</small><strong>${index === 0 ? triggerLabel(definition) : index === 1 ? "No server conditions" : index === 2 ? `${definition.actions.length} action${definition.actions.length === 1 ? "" : "s"}` : index === 3 ? (definition.start_policy?.type || "Not set") : (definition.finish?.type || "Not set")}</strong></div>`).join("")}</div><div class="v3-live-summary"><span>READABLE VERSION</span><p>${esc(readableFlow(definition))}</p></div></aside></div><footer class="v3-editor-footer"><div><button class="v3-footer-secondary" type="button" data-server-stage-back ${state.stage === 0 ? "disabled" : ""}>Back</button><button class="v3-footer-primary" type="button" data-server-stage-next>${state.stage === 4 ? "Stay in TEST" : "Continue"}</button></div></footer>`;
   }
 
   function placeholderPanel(section) {
     const labels = {
-      runs: ["RUNS", "Runtime integration is checkpoint 3."],
-      permissions: ["PERMISSIONS", "Existing permission language remains truthful; no AuthorityGrant is invented."],
-      related: ["RELATED", "Protected reference projection is added with preflight/publish."],
-      history: ["HISTORY", "Draft revision is server-backed now; immutable version and Runtime history follow."],
-      settings: ["SETTINGS", "Archive will use the real endpoint. No fake server delete/duplicate endpoint is created."],
+      runs: ["RUNS", "Loading durable Runtime records from the protected backend."],
+      permissions: ["PERMISSIONS", "Loading current execution and authority truth for this Automation."],
+      related: ["RELATED", "Loading protected references from the current Draft."],
+      history: ["HISTORY", "Loading the current Draft revision and immutable published Versions."],
+      settings: ["SETTINGS", "Loading only the protected operations supported by this frontend contract."],
     };
-    const [title, copy] = labels[section] || [section.toUpperCase(), "Server-backed section."];
-    return `<section class="v10-control-panel server-control-panel"><header class="v10-panel-head"><div><span>${esc(title)} · SERVER</span><h2>${esc(state.current.automation.name)}</h2><p>${esc(copy)}</p></div><b>WIRED IN SLICES</b></header><div class="v10-callout"><strong>No browser-only substitute</strong><span>This section stays truthful until its matching backend operation is connected.</span></div></section>`;
+    const [title, copy] = labels[section] || [section.toUpperCase(), "Loading server-backed state."];
+    return `<section class="v10-control-panel server-control-panel"><header class="v10-panel-head"><div><span>${esc(title)} · SERVER</span><h2>${esc(state.current.automation.name)}</h2><p>${esc(copy)}</p></div><b>SERVER</b></header><div class="v10-callout"><strong>No browser-only substitute</strong><span>This panel remains server-backed while its current data loads.</span></div></section>`;
   }
 
   function renderServerEditor() {
