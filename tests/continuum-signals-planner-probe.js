@@ -23,11 +23,18 @@
     await settle(120);
     root.dataset.qaSignalsViewport = String(window.innerWidth);
 
+    const directory = document.querySelector(".lab-directory-v2");
+    const command = document.querySelector(".lab-directory-v2 .dir2-command");
     const open = document.querySelector("[data-dir2-ai-setup]");
+    root.dataset.qaSignalsDirectory = directory ? "true" : "false";
+    root.dataset.qaSignalsCommand = command ? "true" : "false";
+    root.dataset.qaSignalsLauncher = open ? "true" : "false";
+
     open?.click();
     await settle(80);
 
     const modal = document.querySelector(".dir2-ai-modal");
+    root.dataset.qaSignalsModal = modal ? "true" : "false";
     const example = modal?.querySelector("[data-dir2-ai-example='signals']");
     root.dataset.qaSignalsExampleAvailable = example ? "true" : "false";
     example?.click();
