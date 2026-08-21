@@ -1,6 +1,6 @@
 # Continuum `/doc/` Positioning - CURRENT
 
-Date: 2026-08-20
+Date: 2026-08-21
 Status: Canonical one-minute product explanation with reader-first technical depth
 
 Read with:
@@ -8,14 +8,19 @@ Read with:
 - `continuum-product-CURRENT.md`
 - `continuum-doc-freeze-CURRENT.md`
 - `continuum-knowledge-governance-time-CURRENT.md`
+- `continuum-durable-identity-CURRENT.md`
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-KNOWLEDGE-GOVERNANCE-AND-MEMORY-CONTRACT.md`
 - `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-TEMPORAL-AWARENESS-BACKEND-CONTRACT.md`
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-DURABLE-IDENTITY-AND-PERSONA-FRAMEWORK-CONTRACT.md`
+- `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-IDENTITY-PORTABILITY-IMPORT-AND-MODEL-COMPATIBILITY-CONTRACT.md`
 
 ## Current positioning
 
 Continuum is the durable private system around changing AI models and tools. It keeps the context, current situation, permissions, approved work and history that should survive across time.
 
 A first-time reader should be able to understand that idea in roughly one minute without knowing any Continuum product names or technical architecture terms.
+
+For configured AI identities, the same durability direction can later preserve an identity's principles, communication character, selected long-term memories and learned ways of working across compatible model changes. That idea belongs after the basic product model is understood, not in the opening hero glossary.
 
 ## One-minute explanation rule
 
@@ -32,6 +37,8 @@ The opening then explains the operating idea in ordinary language. A change can 
 The Dead Man Switch is introduced as one example of that larger idea. The same foundation also applies to ordinary work while the owner is asleep, busy or offline and later to larger Goals that need several steps.
 
 The opening closes the model-portability idea clearly. A future AI model can replace the current one without taking Continuum's durable memory, context, permissions or history with it.
+
+Durable AI identity is a deeper consequence of that same model-portability principle. It should be explained later in the AI section so the opening remains simple.
 
 ## Current hero
 
@@ -63,7 +70,7 @@ Supporting line:
 
 `You can change the AI without losing the memory, permissions and history Continuum keeps.`
 
-The hero lead must not contain Library, Directory, Spaces, Automation, Runtime, Planner or Goal terminology. The one exception is normal lowercase `goals` used as ordinary English, not as the architecture term.
+The hero lead must not contain Library, Directory, Spaces, Automation, Runtime, Planner, Goal or Identity terminology. The one exception is normal lowercase `goals` used as ordinary English, not as the architecture term.
 
 ## Overview transition
 
@@ -96,7 +103,8 @@ Examples:
 - work continuing after the app closes first, then `Runtime`;
 - permission to act first, then `Authority`;
 - proposed product changes first, then `Planner` and `Change Plan`;
-- a larger outcome across several steps first, then `Goal`.
+- a larger outcome across several steps first, then `Goal`;
+- recognizable AI continuity across model changes first, then `durable Identity`.
 
 After the first explanation, technical sections can use the real terms normally. Accessibility comes from the first explanation, not from flattening the whole document.
 
@@ -115,11 +123,27 @@ The page must preserve the wider product story:
 - server-side Runtime across time;
 - outside Connections and capabilities;
 - AI inside server-enforced limits;
+- durable AI identity/persona portability across compatible models;
 - Check In and continuity;
 - Afterlife as one long-term continuity path;
 - Control Center and causal history.
 
-Future capability remains future capability. Goals, long-running Runtime, provider actions and autonomous AI execution are not production claims today.
+Future capability remains future capability. Goals, long-running Runtime, provider actions, durable AI identity loading and autonomous AI execution are not production claims today.
+
+## Durable identity placement
+
+The durable identity explanation belongs inside **AI + Permissions** after the authority model is already visible.
+
+The reader should learn four things quickly:
+
+1. a configured identity can later preserve principles, communication character, selected memories and learned ways of working;
+2. a compatible model can load that identity in a new context instead of starting from zero;
+3. identity can affect judgment, strategy and communication;
+4. identity still cannot create facts, permissions or authority.
+
+Keep the visible label `LATER` until the real backend IdentityProfile/IdentityVersion and loader exist.
+
+Do not put private project-history examples or external personality-system names on the public `/doc/` page.
 
 ## Natural writing rule
 
@@ -163,6 +187,7 @@ Keep:
 - Planner, Goals and Runtime architecture;
 - capability discovery and architecture evolution;
 - continuity authority rules;
+- durable identity model portability without personhood claims;
 - Control Center direction;
 - dark mode;
 - mobile layout;
@@ -180,27 +205,43 @@ The natural-voice layer remains:
 
 - `assets/continuum-doc-human-cadence.js`.
 
-The final reader and product-story layer is:
+The reader and product-story layer remains:
 
 - `assets/continuum-doc-reader-first.js`.
 
-`assets/continuum-doc-i18n.js` loads those layers in that order. The reader layer currently loads as `v=20260820-4`.
+The final natural-voice layer remains:
 
-Current markers:
+- `assets/continuum-doc-final-voice.js`.
+
+The durable identity addition is:
+
+- `assets/continuum-doc-durable-identity.js`;
+- `assets/continuum-doc-durable-identity.css`.
+
+`assets/continuum-doc-i18n.js` loads the existing sequence, then loads the durable identity layer after the final voice so the current hero and reader-first copy remain undisturbed.
+
+Current identity loader version:
+
+`v=20260821-1`
+
+Current markers include:
 
 ```text
 data-continuum-clarity="plain-english-v1"
 data-continuum-human-cadence="ready"
-data-continuum-voice="natural-v3"
+data-continuum-voice="natural-v4"
 data-continuum-reader-first="ready"
-data-continuum-product-story="balanced-v2"
+data-continuum-final-voice="ready"
+data-continuum-durable-identity="ready"
+data-continuum-identity-portability="model-agnostic-v1"
 ```
 
 ## Regression coverage
 
 - `tests/continuum-doc-continuity-positioning.test.js` checks the one-minute explanation, natural voice, loader version and reader-first terminology.
-- `.github/workflows/continuum-doc-clarity-validation.yml` renders desktop and 390x844 mobile views and confirms the final hero does not regress into a component glossary.
+- `tests/continuum-doc-durable-identity.test.js` checks the durable identity copy, model-portability boundary, authority boundary and loader wiring.
+- `.github/workflows/continuum-doc-clarity-validation.yml` renders desktop and 390x844 mobile views and confirms both the final hero and durable identity callout render without regressing the page into a component glossary.
 
 ## Backend boundary
 
-This copy work changes no production backend claim and authorizes no migration, deployment, provider execution, Runtime activation, Goal execution, AI execution or new authority.
+This copy work changes no production backend claim and authorizes no migration, deployment, provider execution, Runtime activation, Goal execution, durable Identity service, AI execution or new authority.
