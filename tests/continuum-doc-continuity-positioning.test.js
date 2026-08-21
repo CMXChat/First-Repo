@@ -7,6 +7,7 @@ const path = require('node:path');
 const root = process.cwd();
 const source = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time.js'), 'utf8');
 const cadence = fs.readFileSync(path.join(root, 'assets/continuum-doc-human-cadence.js'), 'utf8');
+const cadenceReadable = cadence.replace(/\\'/g, "'");
 const reader = fs.readFileSync(path.join(root, 'assets/continuum-doc-reader-first.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time.css'), 'utf8');
 const loader = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.js'), 'utf8');
@@ -31,7 +32,7 @@ mustContain(source, [
   "dataset.continuumClarity = 'plain-english-v1'"
 ]);
 
-mustContain(cadence, [
+mustContain(cadenceReadable, [
   'Continuum keeps all of this connected.',
   "when you can't respond",
   "doesn't take the underlying records",
@@ -114,10 +115,10 @@ for (const staleCadence of [
   'Adding a tool does not add permission',
   'when you cannot take part directly'
 ]) {
-  assert.doesNotMatch(cadence, new RegExp(staleCadence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.doesNotMatch(cadenceReadable, new RegExp(staleCadence.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 }
 
-assert.doesNotMatch(cadence, /\bcan eventually\b/i);
+assert.doesNotMatch(cadenceReadable, /\bcan eventually\b/i);
 assert.doesNotMatch(reader, /\bcan eventually\b/i);
 assert.doesNotMatch(reader, /\bdoes not\b|\bcannot\b/i);
 assert.ok((reader.match(/\bwhile\b/gi) || []).length <= 2, 'Reader layer is overusing while constructions.');
@@ -139,7 +140,7 @@ assert.match(loader, /loadHumanCadence/);
 assert.match(loader, /loadReaderFirst/);
 assert.match(loader, /script\.async = false/);
 
-for (const checkedSource of [source, cadence, reader]) {
+for (const checkedSource of [source, cadenceReadable, reader]) {
   for (const pattern of [
     /\.\.\.|…|—/,
     /\bit(?:'|’)s not\b/i,
