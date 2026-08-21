@@ -6,12 +6,14 @@ on:
     paths:
       - 'lab/**'
       - 'assets/lab/**'
+      - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/checkin-lab-validation.yml'
   pull_request:
     branches: [main]
     paths:
       - 'lab/**'
       - 'assets/lab/**'
+      - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/checkin-lab-validation.yml'
 
 permissions:
@@ -23,6 +25,14 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
 
       - name: Validate active Lab JavaScript syntax
         run: |
@@ -55,7 +65,8 @@ jobs:
             assets/lab/checkin.js \
             assets/lab/checkin-refine.js \
             assets/lab/checkin-vault-panels.js \
-            assets/lab/checkin-actions-official.js
+            assets/lab/checkin-actions-official.js \
+            tests/playwright-mobile-dump.cjs
           do
             node --check "$file"
           done
@@ -212,11 +223,11 @@ jobs:
           trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab-browser-smoke.html' EXIT
           sleep 1
 
-          dump() {
-            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=14000 "$@" --dump-dom
-          }
+          node tests/playwright-mobile-dump.cjs \
+            "$BROWSER" 1280 900 \
+            'http://127.0.0.1:8000/lab-browser-smoke.html' /tmp/lab-desktop.html \
+            labDirectoryPlanner typed-v2 18000
 
-          dump http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-desktop.html
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-desktop.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-desktop.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-desktop.html
@@ -227,7 +238,11 @@ jobs:
           grep -q 'AI setup' /tmp/lab-desktop.html
           grep -q 'id="labAutomationWorkspace"' /tmp/lab-desktop.html
 
-          dump --window-size=390,844 http://127.0.0.1:8000/lab-browser-smoke.html > /tmp/lab-mobile.html
+          node tests/playwright-mobile-dump.cjs \
+            "$BROWSER" 390 844 \
+            'http://127.0.0.1:8000/lab-browser-smoke.html' /tmp/lab-mobile.html \
+            labDirectoryPlanner typed-v2 18000
+
           ! grep -qi 'lab snapshot unavailable' /tmp/lab-mobile.html
           grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
           grep -q 'data-lab-directory="v2"' /tmp/lab-mobile.html
