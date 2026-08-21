@@ -61,6 +61,10 @@
     }
     root.dataset.qaDirectoryReady = "true";
 
+    const aiRect = ai.getBoundingClientRect();
+    const createRect = create.getBoundingClientRect();
+    root.dataset.qaDirectoryAiHeight = aiRect.height.toFixed(2);
+    root.dataset.qaDirectoryCreateHeight = createRect.height.toFixed(2);
     root.dataset.qaDirectoryCommandOverlap = overlaps(ai, create) ? "true" : "false";
     root.dataset.qaDirectoryButtonsFit = rectFitsViewport(ai) && rectFitsViewport(create) ? "true" : "false";
     root.dataset.qaDirectoryTapTargets = tapHeightAtLeast(ai) && tapHeightAtLeast(create) ? "true" : "false";
