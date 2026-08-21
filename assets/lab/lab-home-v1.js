@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  if (location.hash.startsWith('#lab=')) {
+    location.replace(`/lab/snapshot/${location.hash}`);
+    return;
+  }
+
   const rows = [...document.querySelectorAll('[data-route-row]')];
   const output = document.getElementById('terminalOutput');
   const form = document.getElementById('labCommandForm');
