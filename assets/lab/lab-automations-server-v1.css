@@ -1,0 +1,56 @@
+.server-automations-section{margin:28px 0;padding:22px;border:1px solid var(--line,#dce3eb);border-radius:24px;background:var(--surface,#fff)}
+[data-theme="dark"] .server-automations-section{background:#080b0f;border-color:#1d2630}
+.server-section-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.server-section-copy{margin:0 0 16px;color:var(--muted,#667085);font-size:14px;line-height:1.55}
+.server-drafts{margin-top:12px}
+.server-automation-card{position:relative}
+.server-automation-card:after{content:"SERVER";position:absolute;top:14px;right:14px;font:700 9px/1 system-ui;letter-spacing:.13em;padding:5px 7px;border-radius:999px;border:1px solid currentColor;opacity:.55}
+.server-error small{display:block;margin-top:8px}
+.server-small-button,.server-link-button{border:1px solid var(--line,#d9e1ea);background:transparent;color:inherit;border-radius:10px;padding:9px 12px;font:700 12px/1 system-ui;cursor:pointer}
+.server-link-button{border-color:transparent;text-decoration:underline;text-underline-offset:3px}
+.server-new-button{white-space:nowrap}
+.server-form-layer{z-index:10040}
+.server-create-dialog{max-width:560px}
+.server-field{display:grid;gap:7px;margin:14px 0;text-align:left}
+.server-field>span{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#667085)}
+.server-field input,.server-field textarea,.server-action-fields select{width:100%;box-sizing:border-box;border:1px solid var(--line,#d9e1ea);background:var(--paper,#fff);color:inherit;border-radius:11px;padding:11px 12px;font:500 14px/1.35 system-ui}
+[data-theme="dark"] .server-field input,[data-theme="dark"] .server-field textarea,[data-theme="dark"] .server-action-fields select{background:#0b0f14;border-color:#24303c}
+.server-form-error{min-height:20px;color:#b42318;font-size:13px}
+.server-editor-loading{min-height:56vh;display:grid;place-content:center;gap:8px;text-align:center}
+.server-automation-editor{min-height:calc(100vh - 64px)}
+.server-editor-head{position:relative}
+.server-contract-pill{border-color:rgba(36,117,255,.35)!important}
+.server-contract-pill i{background:#2475ff!important}
+.server-title-button[disabled]{opacity:1;cursor:default}
+.server-control-panel{max-width:1180px;margin:0 auto;padding-bottom:48px}
+.server-definition-shell{max-width:1320px;margin:0 auto}
+.server-action-fields{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.server-action-fields label{display:grid;gap:6px}
+.server-action-fields label>span,.server-action-identity small{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--muted,#667085)}
+.server-field-span{grid-column:1/-1}
+.server-action-identity{display:grid;gap:5px;padding:10px 12px;border:1px dashed var(--line,#d9e1ea);border-radius:10px}
+.server-action-identity code{font-size:11px;overflow-wrap:anywhere}
+.server-stage-note{margin:14px 0 0;color:var(--muted,#667085);font-size:12px;line-height:1.55}
+.server-review-flow{display:grid;gap:8px;margin:18px 0}
+.server-review-flow>div{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;border:1px solid var(--line,#d9e1ea);border-radius:12px;padding:11px 13px}
+.server-review-flow span{font-size:10px;font-weight:900;letter-spacing:.1em;color:var(--muted,#667085)}
+.server-live-flow{display:grid;gap:8px}
+.server-live-flow>div{border:1px solid var(--line,#d9e1ea);border-radius:10px;padding:10px;display:grid;gap:3px}
+.server-live-flow>div.is-current{border-color:#2475ff}
+.server-live-flow small{font-weight:800;letter-spacing:.08em}
+.server-live-flow strong{font-size:12px}
+.server-conflict-banner{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 16px;padding:12px 14px;border:1px solid #d97706;border-radius:12px;background:rgba(217,119,6,.08)}
+.server-conflict-banner strong{color:#b45309}
+.server-conflict-banner span{flex:1;min-width:180px;font-size:12px}
+.server-conflict-banner button{border:0;border-radius:9px;padding:8px 10px;font-weight:800;cursor:pointer}
+.server-section-actions .v3-primary{padding:10px 14px}
+.server-control-panel code{overflow-wrap:anywhere}
+@media(max-width:880px){
+  .server-automations-section{margin:18px 12px;padding:16px;border-radius:18px}
+  .server-section-actions{width:100%}
+  .server-section-actions>*{flex:1}
+  .server-action-fields{grid-template-columns:1fr}
+  .server-field-span{grid-column:auto}
+  .server-automation-editor .v10-object-state small{max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+@media(prefers-reduced-motion:reduce){.server-automations-section *{scroll-behavior:auto!important;transition:none!important}}
