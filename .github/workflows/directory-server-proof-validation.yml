@@ -1,0 +1,34 @@
+name: Continuum Directory Server Proof Validation
+
+on:
+  pull_request:
+    branches: [agent/automations-control-surface-v10, main]
+    paths:
+      - 'lab/directory/**'
+      - 'assets/lab/directory-api-v1.js'
+      - 'assets/lab/directory-server-proof-v1.js'
+      - 'tests/continuum-directory-server-proof-v1.test.js'
+      - 'docs/continuum-directory-server-proof-CURRENT.md'
+      - '.github/workflows/directory-server-proof-validation.yml'
+  push:
+    paths:
+      - 'lab/directory/**'
+      - 'assets/lab/directory-api-v1.js'
+      - 'assets/lab/directory-server-proof-v1.js'
+      - 'tests/continuum-directory-server-proof-v1.test.js'
+      - 'docs/continuum-directory-server-proof-CURRENT.md'
+      - '.github/workflows/directory-server-proof-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-directory-server-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JavaScript and source contract
+        run: |
+          node --check assets/lab/directory-api-v1.js
+          node --check assets/lab/directory-server-proof-v1.js
+          node tests/continuum-directory-server-proof-v1.test.js

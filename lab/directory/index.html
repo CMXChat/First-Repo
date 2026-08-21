@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex" />
   <meta name="description" content="Continuum Directory Lab prototype for people, organizations, relationships and saved audiences." />
   <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.cmxchat.com http://localhost:8000; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
   <title>Continuum · Directory</title>
   <script src="/assets/lab/directory-theme-init.js?v=20260819-1"></script>
   <link rel="stylesheet" href="/assets/lab/directory-app-v1.css?v=20260819-1" />
@@ -83,7 +83,7 @@
           <aside class="dir-list-pane" aria-label="Directory records">
             <header><span id="listTitle">People</span><b id="visibleCount">0</b></header>
             <div class="dir-list" id="recordList"></div>
-            <footer><span>Browser-local Lab data</span><button id="resetSample" type="button">Reset sample</button></footer>
+            <footer><span>Protected People · local Organizations/Groups</span><button id="resetSample" type="button">Reload server</button></footer>
           </aside>
 
           <section class="dir-detail-pane" id="detailPane" aria-live="polite"></section>
@@ -108,7 +108,7 @@
     <form method="dialog" id="recordForm">
       <header><div><span>Directory · Lab</span><h2 id="recordDialogTitle">New person</h2></div><button type="button" data-close-dialog aria-label="Close">×</button></header>
       <div class="dir-form-body" id="recordFormBody"></div>
-      <footer><button type="button" class="dir-secondary" data-close-dialog>Cancel</button><button type="submit" class="dir-primary">Save locally</button></footer>
+      <footer><button type="button" class="dir-secondary" data-close-dialog>Cancel</button><button type="submit" class="dir-primary">Save</button></footer>
     </form>
   </dialog>
 
@@ -127,5 +127,7 @@
   <div class="dir-toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="/assets/lab/directory-app-v1.js?v=20260819-1"></script>
+  <script src="/assets/lab/directory-api-v1.js?v=20260821-serverproof3"></script>
+  <script src="/assets/lab/directory-server-proof-v1.js?v=20260821-serverproof3"></script>
 </body>
 </html>
