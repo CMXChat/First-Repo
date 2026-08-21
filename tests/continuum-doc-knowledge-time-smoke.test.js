@@ -42,7 +42,8 @@ assert.match(css, /@media\(max-width:680px\)/);
 assert.match(css, /@media\(max-width:420px\)/);
 assert.match(css, /overflow-wrap:anywhere/);
 
-assert.match(contract, /review-first/i);
+assert.match(contract, /owner reviews/i);
+assert.match(contract, /No silent autonomous memory mutation is the starting point/);
 assert.match(contract, /Standard/);
 assert.match(contract, /Sensitive/);
 assert.match(contract, /Local-only/);
