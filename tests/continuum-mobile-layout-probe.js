@@ -5,6 +5,17 @@
   const sleepFrame = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+  async function waitFor(selector, timeout = 2500) {
+    const started = performance.now();
+    while (performance.now() - started < timeout) {
+      const node = document.querySelector(selector);
+      if (node) return node;
+      await sleepFrame();
+      await wait(30);
+    }
+    return null;
+  }
+
   function overlaps(a, b) {
     if (!a || !b) return false;
     const x = a.getBoundingClientRect();
@@ -42,10 +53,13 @@
   }
 
   async function probeDirectory() {
-    await sleepFrame();
-    const ai = document.querySelector("[data-dir2-ai-setup]");
-    const create = document.querySelector('.lab-directory-v2 [data-dir2-action="new"]');
-    if (!ai || !create) return false;
+    const ai = await waitFor("[data-dir2-ai-setup]");
+    const create = await waitFor('.lab-directory-v2 [data-dir2-action="new"]');
+    if (!ai || !create) {
+      root.dataset.qaDirectoryReady = "false";
+      return false;
+    }
+    root.dataset.qaDirectoryReady = "true";
 
     root.dataset.qaDirectoryCommandOverlap = overlaps(ai, create) ? "true" : "false";
     root.dataset.qaDirectoryButtonsFit = rectFitsViewport(ai) && rectFitsViewport(create) ? "true" : "false";
@@ -70,13 +84,16 @@
   }
 
   async function probeAutomations() {
-    await sleepFrame();
-    const newButton = document.querySelector("[data-new]");
-    if (!newButton) return false;
+    const newButton = await waitFor("[data-new]");
+    if (!newButton) {
+      root.dataset.qaAutomationsReady = "false";
+      return false;
+    }
+    root.dataset.qaAutomationsReady = "true";
 
     newButton.click();
     await sleepFrame();
-    const plannerStart = document.querySelector("[data-v4-start='planner']");
+    const plannerStart = await waitFor("[data-v4-start='planner']");
     if (!plannerStart) return false;
     plannerStart.click();
     await sleepFrame();
@@ -108,8 +125,9 @@
     root.dataset.qaViewportHeight = String(window.innerHeight);
     root.dataset.qaHorizontalOverflow = pageFitsHorizontally() ? "false" : "true";
 
-    const isDirectory = Boolean(document.querySelector(".lab-directory-v2"));
-    const isAutomations = Boolean(document.querySelector("#automationApp")) && !isDirectory;
+    const directory = await waitFor(".lab-directory-v2", 2500);
+    const isDirectory = Boolean(directory);
+    const isAutomations = !isDirectory && Boolean(await waitFor("#automationApp", 2500));
 
     if (isDirectory) await probeDirectory();
     if (isAutomations) await probeAutomations();
