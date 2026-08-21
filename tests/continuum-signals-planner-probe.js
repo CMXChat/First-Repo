@@ -32,6 +32,7 @@
   (async () => {
     await settle(120);
     root.dataset.qaSignalsViewport = String(window.innerWidth);
+    root.dataset.qaSignalsPlannerScript = document.querySelector('script[src*="lab-directory-planner-preview.js"]') ? "true" : "false";
 
     const directory = await waitFor(".lab-directory-v2");
     const command = await waitFor(".lab-directory-v2 .dir2-command");
@@ -39,6 +40,7 @@
     root.dataset.qaSignalsDirectory = directory ? "true" : "false";
     root.dataset.qaSignalsCommand = command ? "true" : "false";
     root.dataset.qaSignalsLauncher = open ? "true" : "false";
+    root.dataset.qaSignalsPlannerState = root.dataset.labDirectoryPlanner || "missing";
 
     open?.click();
     const modal = await waitFor(".dir2-ai-modal", 1200);
