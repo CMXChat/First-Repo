@@ -48,12 +48,12 @@ body[data-lab-mode="true"] .dir2-primary:hover{transform:translateY(-1px)}
 @media (max-width:760px){
   body[data-lab-mode="true"] .dir2-command,
   body[data-lab-mode="true"] .dir2-viewbar{position:relative;top:auto;backdrop-filter:none}
-  body[data-lab-mode="true"] .dir2-command{grid-template-columns:1fr auto;gap:9px;padding:11px}
-  body[data-lab-mode="true"] .dir2-command-title{min-width:0}.dir2-command-title small{font-size:7.5px}
-  body[data-lab-mode="true"] .dir2-types{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);width:100%}
+  body[data-lab-mode="true"] .dir2-command{grid-template-columns:minmax(0,1fr) auto auto;gap:9px;padding:11px;align-items:center}
+  body[data-lab-mode="true"] .dir2-command-title{grid-column:1;grid-row:1;min-width:0}.dir2-command-title small{font-size:7.5px}
+  body[data-lab-mode="true"] .dir2-types{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,1fr);width:100%}
   body[data-lab-mode="true"] .dir2-types button{min-height:40px}
-  body[data-lab-mode="true"] .dir2-search{grid-column:1/-1}.dir2-search input{height:44px;font-size:16px}
-  body[data-lab-mode="true"] .dir2-primary{position:absolute;right:11px;top:11px;min-height:38px}
+  body[data-lab-mode="true"] .dir2-search{grid-column:1/-1;grid-row:3}.dir2-search input{height:44px;font-size:16px}
+  body[data-lab-mode="true"] .dir2-primary{position:static;right:auto;top:auto;grid-column:3;grid-row:1;min-height:44px}
   body[data-lab-mode="true"] .dir2-viewbar{padding:7px 10px}
   body[data-lab-mode="true"] .dir2-layout{display:block;min-height:0}
   body[data-lab-mode="true"] .dir2-list{max-height:none;min-height:0;overflow:visible;padding:6px}
