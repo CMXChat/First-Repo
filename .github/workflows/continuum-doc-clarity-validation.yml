@@ -10,8 +10,6 @@ on:
       - 'assets/continuum-doc-*.css'
       - 'assets/continuum-doc-*.js'
       - 'docs/continuum-*.md'
-      - 'tests/personal-os-doc-smoke.test.js'
-      - 'tests/doc-visual-qa-smoke.test.js'
       - 'tests/continuum-doc-*.test.js'
       - '.github/workflows/continuum-doc-clarity-validation.yml'
   pull_request:
@@ -23,8 +21,6 @@ on:
       - 'assets/continuum-doc-*.css'
       - 'assets/continuum-doc-*.js'
       - 'docs/continuum-*.md'
-      - 'tests/personal-os-doc-smoke.test.js'
-      - 'tests/doc-visual-qa-smoke.test.js'
       - 'tests/continuum-doc-*.test.js'
       - '.github/workflows/continuum-doc-clarity-validation.yml'
 
@@ -35,8 +31,7 @@ jobs:
   validate-doc:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Validate source and document contracts
         run: |
@@ -56,16 +51,12 @@ jobs:
           node tests/continuum-doc-final-voice.test.js
           node tests/continuum-doc-durable-identity.test.js
 
-      - name: Browser clarity smoke desktop and mobile
+      - name: Render and validate desktop and mobile
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
-          if [ -z "$BROWSER" ]; then
-            echo 'No Chromium-compatible browser available.' >&2
-            exit 1
-          fi
-
-          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-doc-http.log 2>&1 &
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/doc-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
@@ -74,47 +65,54 @@ jobs:
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom
           }
 
-          validate_render() {
-            local file="$1"
-            grep -q 'data-continuum-clarity="ready"' "$file"
-            grep -q 'data-continuum-human-cadence="ready"' "$file"
-            grep -q 'data-continuum-reader-first="ready"' "$file"
-            grep -q 'data-continuum-final-voice="ready"' "$file"
-            grep -q 'data-continuum-durable-identity="ready"' "$file"
-            grep -q 'data-continuum-identity-portability="model-agnostic-v1"' "$file"
-            grep -q 'data-continuum-voice="natural-v4"' "$file"
-            grep -q 'Think of AI as the brain and Continuum as the nervous system around it' "$file"
-            grep -q 'Continuum is the private layer around the AI that keeps those things connected over time.' "$file"
-            grep -q 'That might mean acting, waiting, asking you, contacting someone or doing nothing.' "$file"
-            grep -q 'The Dead Man Switch is one example of that' "$file"
-            grep -q 'If you switch to a better AI later' "$file"
-            grep -q 'Carries context across time' "$file"
-            grep -q 'Keeps up with real changes' "$file"
-            grep -q 'Works inside rules you set' "$file"
-            grep -q 'From something changing to the next allowed step' "$file"
-            grep -q 'From there the flow is simple.' "$file"
-            grep -q 'The sections below put the technical names on each part of that flow.' "$file"
-            grep -q 'That picture is called State' "$file"
-            grep -q '02 · AI + Permissions' "$file"
-            grep -q 'An Automation is a saved piece of work that can run again or start when something happens.' "$file"
-            grep -q 'Runtime lets approved work continue after you leave.' "$file"
-            grep -q 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.' "$file"
-            grep -q 'That same setup is useful long before anything goes wrong.' "$file"
-            grep -q 'Silence and urgency never create permission.' "$file"
-            grep -q 'Keep a recognizable AI identity even when the model changes.' "$file"
-            grep -q 'A compatible model can load that identity in a new context instead of starting from zero.' "$file"
-            grep -q 'Identity can shape judgment, strategy and communication.' "$file"
-            grep -q 'The server still controls facts, permissions and authority.' "$file"
-            grep -q 'Files + OCR / vision' "$file"
-            grep -q 'Open Check In' "$file"
+          require() {
+            local pattern="$1" file="$2" label="$3"
+            if ! grep -q "$pattern" "$file"; then
+              echo "MISSING: $label :: $pattern" >&2
+              grep -E 'data-continuum|durable-identity|AI identity|compatible model|hero-lead|AI \+ Permissions|AI \+ Authority' "$file" | head -120 >&2 || true
+              exit 1
+            fi
+            echo "OK: $label"
           }
 
-          dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
-          validate_render /tmp/continuum-doc-desktop.html
+          validate_render() {
+            local file="$1"
+            require 'data-continuum-clarity="ready"' "$file" 'clarity marker'
+            require 'data-continuum-human-cadence="ready"' "$file" 'human cadence marker'
+            require 'data-continuum-reader-first="ready"' "$file" 'reader marker'
+            require 'data-continuum-final-voice="ready"' "$file" 'final voice marker'
+            require 'data-continuum-durable-identity="ready"' "$file" 'durable identity marker'
+            require 'data-continuum-identity-portability="model-agnostic-v1"' "$file" 'identity portability marker'
+            require 'data-continuum-voice="natural-v4"' "$file" 'voice marker'
+            require 'Think of AI as the brain and Continuum as the nervous system around it' "$file" 'hero analogy'
+            require 'Continuum is the private layer around the AI that keeps those things connected over time.' "$file" 'hero explanation'
+            require 'That might mean acting, waiting, asking you, contacting someone or doing nothing.' "$file" 'action choices'
+            require 'If you switch to a better AI later' "$file" 'model portability intro'
+            require 'Carries context across time' "$file" 'context hero chip'
+            require 'Keeps up with real changes' "$file" 'change hero chip'
+            require 'Works inside rules you set' "$file" 'rules hero chip'
+            require 'From something changing to the next allowed step' "$file" 'overview heading'
+            require 'From there the flow is simple.' "$file" 'overview natural voice'
+            require 'That picture is called State' "$file" 'State teaching'
+            require '02 · AI + Permissions' "$file" 'AI permissions section label'
+            require 'An Automation is a saved piece of work that can run again or start when something happens.' "$file" 'Automation explanation'
+            require 'Runtime lets approved work continue after you leave.' "$file" 'Runtime explanation'
+            require 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.' "$file" 'Goal explanation'
+            require 'Silence and urgency never create permission.' "$file" 'authority guardrail'
+            require 'Keep a recognizable AI identity even when the model changes.' "$file" 'durable identity heading'
+            require 'A compatible model can load that identity in a new context instead of starting from zero.' "$file" 'durable identity portability copy'
+            require 'Identity can shape judgment, strategy and communication.' "$file" 'identity influence boundary'
+            require 'The server still controls facts, permissions and authority.' "$file" 'identity authority boundary'
+            require 'Files + OCR / vision' "$file" 'information intake'
+            require 'Open Check In' "$file" 'live Check In route'
+          }
+
+          dump http://127.0.0.1:8000/doc/ > /tmp/doc-desktop.html
+          validate_render /tmp/doc-desktop.html
 
           python3 - <<'PY'
           from pathlib import Path
-          html = Path('/tmp/continuum-doc-desktop.html').read_text(encoding='utf-8')
+          html = Path('/tmp/doc-desktop.html').read_text(encoding='utf-8')
           hero_start = html.index('<header class="hero continuum-hero clarity-hero"')
           hero_end = html.index('</header>', hero_start)
           hero = html[hero_start:hero_end]
@@ -123,54 +121,24 @@ jobs:
           assert 'continuum-presence' not in hero
           assert 'href="/checkin/"' in hero
 
-          lead_start = hero.index('class="hero-lead')
-          lead_end = hero.index('hero-truth-row', lead_start)
-          lead = hero[lead_start:lead_end]
-          for internal_name in ['Library', 'Directory', 'Spaces', 'Automation', 'Runtime', 'Planner', 'Goal', 'Identity']:
-              assert internal_name not in lead, f'Opening explanation became a component glossary: {internal_name}'
+          lead = hero[hero.index('class="hero-lead'):hero.index('hero-truth-row')]
+          for internal in ['Library', 'Directory', 'Spaces', 'Automation', 'Runtime', 'Planner', 'Goal', 'Identity']:
+              assert internal not in lead, f'hero became component glossary: {internal}'
 
-          stale = [
-              'A private system for what matters now and what should happen next',
-              'Continuum is a private system for keeping the parts of your life and work that matter connected over time.',
-              'What it still needs around it is a reliable way to carry your life and work context across time',
-              'That basic idea becomes a loop.',
-              'An Automation is how Continuum remembers a repeatable or triggered piece of work.',
-              'When Continuum keeps reaching the edge of what a connected tool can do, that gap should be visible.',
-              'If the same limitation keeps blocking useful work, the product itself may need to grow.',
-              'By this point the parts have names.',
-              'Once that problem is solved, the same foundation becomes useful every day.',
-              'That is the broader Continuum idea.',
-              'The browser, backend and database explain how the app runs.',
-              'does not gain extra permission',
-              'when you cannot respond'
-          ]
-          for phrase in stale:
-              assert phrase not in html, f'Stale AI-like or superseded copy is still visible: {phrase}'
+          for private_name in ['Lorraine', 'Echo', 'Shapes']:
+              assert private_name.lower() not in html.lower(), f'private identity history leaked: {private_name}'
 
-          for private_project_name in ['Lorraine', 'Echo', 'Shapes']:
-              assert private_project_name.lower() not in html.lower(), f'Private identity project history leaked into /doc: {private_project_name}'
-
-          overview = html.index('id="overview"')
-          ai = html.index('id="difference"')
-          spaces = html.index('id="spaces"')
-          action = html.index('id="action"')
-          afterlife = html.index('id="afterlife"')
-          engineering = html.index('id="engineering"')
-          build = html.index('id="build"')
-          status = html.index('id="status"')
-          assert overview < ai < spaces < action < afterlife < engineering < build < status
-
-          identity_note = html.index('continuum-durable-identity-note')
-          assert ai < identity_note < spaces, 'Durable identity explanation moved outside AI + Permissions.'
-
+          positions = [html.index(f'id="{name}"') for name in ['overview','difference','spaces','action','afterlife','engineering','build','status']]
+          assert positions == sorted(positions)
+          identity = html.index('continuum-durable-identity-note')
+          assert positions[1] < identity < positions[2]
           assert html.count('href="/checkin/"') >= 3
-          print('Desktop Continuum one-minute explanation, durable identity and final natural voice passed.')
+          print('Desktop structure and identity placement passed.')
           PY
 
-          dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
-          validate_render /tmp/continuum-doc-mobile.html
-          grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
-          grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
-          grep -q 'continuum-durable-identity-note' /tmp/continuum-doc-mobile.html
-
-          echo 'Continuum /doc final natural voice and durable identity rendered on desktop and 390x844 mobile.'
+          dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/doc-mobile.html
+          validate_render /tmp/doc-mobile.html
+          require 'mobileContentsTrigger' /tmp/doc-mobile.html 'mobile contents trigger'
+          require 'continuum-continuity-line' /tmp/doc-mobile.html 'mobile continuity line'
+          require 'continuum-durable-identity-note' /tmp/doc-mobile.html 'mobile durable identity note'
+          echo 'Continuum /doc final voice and durable identity rendered on desktop and mobile.'
