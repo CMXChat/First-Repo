@@ -107,7 +107,7 @@ jobs:
               'directory.match_or_create_people', 'directory.upsert_group', 'library.create_folder',
               'library.create_document', 'automation.create_draft', 'automation.reference_audience',
               'automation.reference_content', 'automation.add_wait', 'Full Continuum setup',
-              'NO AI CALL · NO DATA MUTATION · NO HIDDEN AUTHORITY',
+              'NO AI CALL · NO DATA MUTATION · NO ONLINE OBSERVATION · NO HIDDEN AUTHORITY',
               'labDirectoryPlanner = "typed-v2"'
           ]
           required_audience = [
