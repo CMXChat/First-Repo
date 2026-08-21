@@ -18,10 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Validate route split and JS parse contracts
         run: node tests/continuum-directory-route-graduation.test.js
-      - name: Check whitespace
-        run: git diff --check HEAD^ HEAD
+      - name: Check PR whitespace
+        if: github.event_name == 'pull_request'
+        run: git diff --check "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"
+      - name: Check workspace whitespace
+        if: github.event_name != 'pull_request'
+        run: git diff --check
