@@ -24,6 +24,7 @@ on:
       - 'assets/lab/lab-automations-planner-v5.css'
       - 'assets/lab/lab-automations-v5-mobile-qa.css'
       - 'tests/continuum-mobile-layout-probe.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/continuum-mobile-layout-validation.yml'
   pull_request:
     branches: [main]
@@ -48,6 +49,7 @@ on:
       - 'assets/lab/lab-automations-planner-v5.css'
       - 'assets/lab/lab-automations-v5-mobile-qa.css'
       - 'tests/continuum-mobile-layout-probe.js'
+      - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/continuum-mobile-layout-validation.yml'
 
 permissions:
@@ -60,10 +62,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+
       - name: Validate probe syntax and safety
         run: |
           set -euo pipefail
           node --check tests/continuum-mobile-layout-probe.js
+          node --check tests/playwright-mobile-dump.cjs
           python - <<'PY'
           from pathlib import Path
           source = Path('tests/continuum-mobile-layout-probe.js').read_text(encoding='utf-8')
@@ -114,9 +125,10 @@ jobs:
           trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f directory-mobile-geometry.html lab/automations/mobile-geometry.html' EXIT
           sleep 1
 
-          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-            --window-size=390,844 --virtual-time-budget=15000 --dump-dom \
-            'http://127.0.0.1:8000/directory-mobile-geometry.html' > /tmp/directory-mobile-geometry.html
+          node tests/playwright-mobile-dump.cjs \
+            "$BROWSER" 390 844 \
+            'http://127.0.0.1:8000/directory-mobile-geometry.html' /tmp/directory-mobile-geometry.html \
+            qaLayoutProbe complete 18000
 
           grep -q 'data-lab-planner-review="v1"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-layout-probe="complete"' /tmp/directory-mobile-geometry.html
@@ -132,9 +144,10 @@ jobs:
           grep -q 'data-qa-directory-planner-review="true"' /tmp/directory-mobile-geometry.html
           grep -q 'data-qa-directory-planner-fit-after-review="true"' /tmp/directory-mobile-geometry.html
 
-          "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-            --window-size=390,844 --virtual-time-budget=15000 --dump-dom \
-            'http://127.0.0.1:8000/lab/automations/mobile-geometry.html' > /tmp/automations-mobile-geometry.html
+          node tests/playwright-mobile-dump.cjs \
+            "$BROWSER" 390 844 \
+            'http://127.0.0.1:8000/lab/automations/mobile-geometry.html' /tmp/automations-mobile-geometry.html \
+            qaLayoutProbe complete 18000
 
           grep -q 'data-lab-planner-review="v1"' /tmp/automations-mobile-geometry.html
           grep -q 'data-qa-layout-probe="complete"' /tmp/automations-mobile-geometry.html
