@@ -28,7 +28,20 @@ if (!browserPath || !Number.isFinite(width) || !Number.isFinite(height) || !url 
     });
     const page = await context.newPage();
     const pageErrors = [];
+    const consoleErrors = [];
+    const failedRequests = [];
+    const badResponses = [];
+
     page.on('pageerror', error => pageErrors.push(error?.stack || error?.message || String(error)));
+    page.on('console', message => {
+      if (message.type() === 'error') consoleErrors.push(message.text());
+    });
+    page.on('requestfailed', request => {
+      failedRequests.push(`${request.method()} ${request.url()} :: ${request.failure()?.errorText || 'failed'}`);
+    });
+    page.on('response', response => {
+      if (response.status() >= 400) badResponses.push(`${response.status()} ${response.url()}`);
+    });
 
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout });
     await page.waitForFunction(
@@ -45,10 +58,17 @@ if (!browserPath || !Number.isFinite(width) || !Number.isFinite(height) || !url 
 
     fs.writeFileSync(outputPath, await page.content(), 'utf8');
     console.log(`Mobile browser dump passed at ${viewport.width}x${viewport.height}.`);
-    if (pageErrors.length) {
-      console.error('Browser page errors:');
-      pageErrors.forEach(error => console.error(error));
-    }
+
+    const report = (label, rows) => {
+      if (!rows.length) return;
+      console.error(`${label}:`);
+      rows.forEach(row => console.error(row));
+    };
+    report('Browser page errors', pageErrors);
+    report('Browser console errors', consoleErrors);
+    report('Failed browser requests', failedRequests);
+    report('HTTP error responses', badResponses);
+
     await context.close();
   } finally {
     await browser.close();
