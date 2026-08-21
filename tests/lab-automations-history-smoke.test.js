@@ -39,6 +39,8 @@ assert.doesNotMatch(routeIntegration, /if \(automationId \|\| wantsNew\) cleanOn
 
 assert.match(editorBootstrap, /document\.getElementById\("automationApp"\)/);
 assert.match(editorBootstrap, /new MutationObserver\(schedule\)\.observe\(app, \{ childList: true, subtree: true \}\)/);
+assert.match(editorBootstrap, /queueMicrotask\(patch\)/);
+assert.doesNotMatch(editorBootstrap, /requestAnimationFrame\(\(\) => requestAnimationFrame/);
 assert.match(editorBootstrap, /patchEditorChrome/);
 assert.match(editorBootstrap, /data-v10-tab/);
 

@@ -117,7 +117,7 @@
   function schedule() {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(patch)));
+    queueMicrotask(patch);
   }
 
   document.addEventListener("click", schedule, true);
