@@ -19,7 +19,7 @@
   function loadDurableIdentity() {
     if (document.querySelector('script[data-continuum-durable-identity]')) return;
     const script = document.createElement('script');
-    script.src = '/assets/continuum-doc-durable-identity.js?v=20260821-1';
+    script.src = '/assets/continuum-doc-durable-identity.js?v=20260821-2';
     script.async = false;
     script.dataset.continuumDurableIdentity = 'loader';
     document.body.append(script);
