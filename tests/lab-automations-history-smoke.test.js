@@ -22,13 +22,15 @@ assert.match(historyLayer, /restore\(target\)/);
 assert.match(historyLayer, /data-v4-surface/);
 assert.match(historyLayer, /data-stage/);
 assert.match(historyLayer, /data-v7-manage/);
+assert.match(historyLayer, /controlView/);
+assert.match(historyLayer, /data-v10-tab/);
 assert.doesNotMatch(historyLayer, /preventDefault\(/);
 assert.doesNotMatch(historyLayer, /stopImmediatePropagation\(/);
 assert.doesNotMatch(historyLayer, /history\.back\(/);
 assert.doesNotMatch(historyLayer, /history\.go\(/);
 assert.match(routeIntegration, /labAutomationsRouteIntegration/);
 assert.match(index, /lab-automations-route-integration\.js\?v=20260818-1/);
-assert.match(index, /lab-automations-history-v1\.js\?v=20260820-history1/);
-assert.ok(index.indexOf('lab-automations-history-v1.js') > index.indexOf('lab-automations-duplicate-guard-v9.js'));
+assert.match(index, /lab-automations-history-v1\.js\?v=20260821-history2/);
+assert.ok(index.indexOf('lab-automations-history-v1.js') > index.indexOf('lab-automations-control-v10.js'));
 
 console.log('Lab Automations browser-history isolation smoke test passed.');

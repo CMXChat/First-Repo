@@ -62,6 +62,7 @@
       view: editor ? "editor" : "dashboard",
       automationId: editor ? inferAutomationId() : null,
       stage: editor && Number.isInteger(stage) ? stage : 0,
+      controlView: editor ? editor.dataset.v10View || "definition" : null,
       surface: dashboard ? document.querySelector("[data-v4-surface].is-active")?.dataset.v4Surface || "automations" : null,
       tab: dashboard ? document.querySelector("[data-tab].is-active")?.dataset.tab || null : null,
       dialog: dialogKind(dialog),
@@ -168,6 +169,10 @@
       if (target.view === "editor") {
         const stage = document.querySelector(`[data-stage="${Number(target.stage) || 0}"]`);
         if (stage && !stage.classList.contains("is-current")) stage.click();
+        const controlView = target.controlView || "definition";
+        const controlTab = document.querySelector(`[data-v10-tab="${cssEscape(controlView)}"]`);
+        const editor = document.querySelector(".v3-editor-page");
+        if (controlTab && editor?.dataset.v10View !== controlView) controlTab.click();
         const flow = document.querySelector("[data-flow-toggle]");
         const open = flow?.getAttribute("aria-expanded") === "true";
         if (flow && open !== Boolean(target.flowOpen)) flow.click();
