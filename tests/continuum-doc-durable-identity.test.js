@@ -12,32 +12,35 @@ const positioning = fs.readFileSync(path.join(root, 'docs/continuum-doc-position
 const product = fs.readFileSync(path.join(root, 'docs/continuum-durable-identity-CURRENT.md'), 'utf8');
 
 const mustContain = (text, phrases) => {
-  for (const phrase of phrases) assert.ok(text.includes(phrase), `Missing durable identity contract phrase: ${phrase}`);
+  for (const phrase of phrases) assert.ok(text.includes(phrase), `Missing AI continuity contract phrase: ${phrase}`);
 };
 
 mustContain(source, [
-  'DURABLE IDENTITY · LATER',
-  'Keep a recognizable AI identity even when the model changes.',
+  'AI CONTINUITY · LATER',
+  'Keep a consistent AI identity and way of working even when the model changes.',
   'versioned identity for an AI',
   'selected long-term memories and learned ways of working',
   'A compatible model can load that identity in a new context instead of starting from zero.',
+  'learn from corrections and real outcomes so recommendations improve over time',
+  'what changed, what it is waiting on and what needs attention next',
   'Identity can shape judgment, strategy and communication.',
-  'The server still controls facts, permissions and authority.',
+  'The server still controls facts, AI participation, permissions and authority.',
   "dataset.continuumDurableIdentity = 'ready'",
-  "dataset.continuumIdentityPortability = 'model-agnostic-v1'"
+  "dataset.continuumIdentityPortability = 'model-agnostic-v1'",
+  "dataset.continuumAiContinuity = 'grounded-v2'"
 ]);
 
 mustContain(loader, [
   'loadDurableIdentity',
-  '/assets/continuum-doc-durable-identity.js?v=20260821-1',
+  '/assets/continuum-doc-durable-identity.js?v=20260821-2',
   "dataset.continuumDurableIdentity = 'loader'",
   "dataset.continuumFinalVoice === 'ready'"
 ]);
 
 mustContain(positioning, [
-  'durable AI identity/persona portability across compatible models',
-  'The durable identity explanation belongs inside **AI + Permissions**',
-  'identity still cannot create facts, permissions or authority',
+  'AI continuity across compatible model changes',
+  'The AI continuity explanation belongs inside **AI + Permissions**',
+  'identity still cannot create facts, AI participation, permissions or authority',
   'data-continuum-durable-identity="ready"'
 ]);
 
@@ -46,7 +49,8 @@ mustContain(product, [
   'A compatible model can then load that identity in a new context rather than starting from zero.',
   'That makes identity more meaningful than a cosmetic voice preset.',
   'The protected backend still decides what is actually allowed.',
-  'It should still be described accurately as a durable, versioned identity framework rather than evidence that the software is conscious.'
+  'AI continuity',
+  'learn from corrections and real outcomes'
 ]);
 
 for (const privateProjectName of ['Lorraine', 'Echo', 'Shapes']) {
@@ -56,10 +60,11 @@ for (const privateProjectName of ['Lorraine', 'Echo', 'Shapes']) {
 for (const requiredStyle of [
   '.continuum-durable-identity-note',
   '.continuum-durable-identity-kicker',
+  '.continuum-ai-continuity-grounding',
   '@media (max-width: 680px)',
   '@media print'
-]) assert.ok(css.includes(requiredStyle), `Missing durable identity style: ${requiredStyle}`);
+]) assert.ok(css.includes(requiredStyle), `Missing AI continuity style: ${requiredStyle}`);
 
-assert.doesNotMatch(source, /sentient|consciousness|soul/i);
+assert.doesNotMatch(source, /sentient|consciousness|soul|self-aware|recursive self/i);
 
-console.log('Continuum durable AI identity product and loader contract passed.');
+console.log('Continuum grounded AI continuity product and loader contract passed.');
