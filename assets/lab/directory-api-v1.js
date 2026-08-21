@@ -67,7 +67,6 @@
     baseUrl: API_BASE,
     operatorSession,
     listPeople: () => request('/checkin/operator/directory/people'),
-    getPerson: (personId) => request(`/checkin/operator/directory/people/${encodeURIComponent(personId)}`),
     createPerson: (displayName) => jsonMutation('/checkin/operator/directory/people', 'POST', { display_name: displayName }),
     updatePerson: (personId, patch) => jsonMutation(`/checkin/operator/directory/people/${encodeURIComponent(personId)}`, 'PATCH', patch),
     listContactMethods: (personId) => request(`/checkin/operator/directory/people/${encodeURIComponent(personId)}/contact-methods`),
