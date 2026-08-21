@@ -2,30 +2,38 @@ name: Continuum Automations Real Backend Integration Validation
 
 on:
   push:
-    branches: [agent/lab-automations-real-backend-integration]
+    branches:
+      - agent/lab-automations-real-backend-integration
+      - agent/lab-automations-mobile-acceptance-fix
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
       - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-operations-v7*.css'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'tests/continuum-automations-mobile-layout-browser.mjs'
       - 'tests/lab-automations-history-smoke.test.js'
       - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
       - 'docs/continuum-live-frontend-acceptance-CURRENT.md'
+      - 'docs/continuum-automations-mobile-acceptance-CURRENT.md'
       - '.github/workflows/automations-real-backend-validation.yml'
   pull_request:
-    branches: [agent/directory-server-proof-v1, main]
+    branches: [main]
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
       - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-operations-v7*.css'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'tests/continuum-automations-mobile-layout-browser.mjs'
       - 'tests/lab-automations-history-smoke.test.js'
       - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
       - 'docs/continuum-live-frontend-acceptance-CURRENT.md'
+      - 'docs/continuum-automations-mobile-acceptance-CURRENT.md'
       - '.github/workflows/automations-real-backend-validation.yml'
   workflow_dispatch:
 
@@ -51,6 +59,7 @@ jobs:
           node --check assets/lab/lab-automations-server-v1.js
           node --check assets/lab/lab-automations-server-lifecycle-v1.js
           node --check assets/lab/lab-automations-server-runtime-v1.js
+          node --check tests/continuum-automations-mobile-layout-browser.mjs
           node tests/continuum-automations-real-backend-integration.test.js
           node tests/lab-automations-history-smoke.test.js
 
@@ -77,9 +86,12 @@ jobs:
 
   desktop-mobile-preservation:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Render accepted Automations surface on desktop and mobile
         run: |
           set -euo pipefail
@@ -152,4 +164,6 @@ jobs:
           require 'TEST' /tmp/automations-mobile-editor.html 'mobile TEST stage survives'
           forbid 'Loading Automations' /tmp/automations-mobile-editor.html 'mobile editor loading placeholder'
 
-          echo 'Automations desktop/mobile preservation passed with server-backed lane present.'
+          BROWSER="$BROWSER" node tests/continuum-automations-mobile-layout-browser.mjs
+
+          echo 'Automations desktop/mobile preservation and mobile acceptance geometry passed.'
