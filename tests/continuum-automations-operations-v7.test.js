@@ -14,7 +14,7 @@ const polishCss = fs.readFileSync('assets/lab/lab-automations-operations-v7-poli
 
 assert.match(index, /lab-automations-operations-v7\.css\?v=20260819-v7ops1/);
 assert.match(index, /lab-automations-operations-v7-future\.css\?v=20260819-v7ops1/);
-assert.match(index, /lab-automations-operations-v7-polish\.css\?v=20260819-v7ops2/);
+assert.match(index, /lab-automations-operations-v7-polish\.css\?v=20260821-mobileaccept1/);
 assert.match(index, /lab-automations-operations-v7\.js\?v=20260819-v7ops2/);
 assert.match(index, /lab-automations-operations-v7-polish\.js\?v=20260819-v7ops4/);
 assert.ok(index.indexOf('lab-automations-operations-v7.js') > index.indexOf('lab-automations-action-stack-v6.js'), 'v7 must load after accepted authoring layers');
@@ -94,7 +94,14 @@ assert.match(futureCss, /@media\(max-width:680px\)/);
 assert.match(polishCss, /\.v7-planner-button/);
 assert.match(polishCss, /grid-template-columns:minmax\(0,1fr\) auto auto/);
 assert.match(polishCss, /@media\(max-width:760px\)/);
-assert.match(polishCss, /@media\(max-width:420px\)/);
+assert.match(polishCss, /@media\(max-width:520px\)/);
+assert.match(polishCss, /@media\(max-width:380px\)/);
+assert.match(polishCss, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+assert.match(polishCss, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+assert.match(polishCss, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+assert.match(polishCss, /grid-template-areas:\s*"filters filters"\s*"planner manage"/);
+assert.match(polishCss, /\.v7-workspace-head \[data-new\]::after\{\s*content:none/);
+assert.doesNotMatch(polishCss, /\.v7-planner-button span\{display:none\}/);
 
 const memory = new Map();
 global.localStorage = {
