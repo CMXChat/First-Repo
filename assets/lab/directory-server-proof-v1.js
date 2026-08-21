@@ -150,7 +150,12 @@
     list.innerHTML = rows.map((person) => `<button class="dir-record" type="button" data-server-person="${person.id}" aria-current="${person.id === state.selectedId}"><span class="dir-avatar">${esc(initials(person.display_name))}</span><span class="dir-record-copy"><strong>${esc(person.display_name)}</strong><span>Server-backed Person</span></span><span class="dir-record-meta"><small class="${person.lifecycle === 'disabled' ? 'warn' : ''}">${esc(person.lifecycle.toUpperCase())}</small><span>${esc(relative(person.updated_at))}</span></span></button>`).join('') || '<div class="dir-empty-list">No protected People match this view.</div>';
 
     const footer = list.closest('.dir-list-pane')?.querySelector('footer');
-    if (footer) footer.innerHTML = '<span>Protected server People</span><button id="resetSample" type="button">Reload server</button>';
+    if (footer) {
+      const label = footer.querySelector('span');
+      const button = footer.querySelector('#resetSample');
+      if (label) label.textContent = 'Protected server People';
+      if (button) button.textContent = 'Reload server';
+    }
   }
 
   function profileHeader(person) {
@@ -226,6 +231,13 @@
     } else {
       if (boundary) boundary.innerHTML = '<b>DIRECTORY · LAB</b> — Organizations, Groups, relationships and saved audiences remain browser-local sample concepts. No protected backend support is claimed for them in this slice.';
       if (kicker) kicker.textContent = 'Organizations & groups · browser-local sample data';
+      const footer = $('#recordList')?.closest('.dir-list-pane')?.querySelector('footer');
+      if (footer) {
+        const label = footer.querySelector('span');
+        const button = footer.querySelector('#resetSample');
+        if (label) label.textContent = 'Browser-local Lab data';
+        if (button) button.textContent = 'Reset sample';
+      }
     }
   }
 
@@ -343,6 +355,12 @@
       }, 0);
       return;
     }
+
+    const resetButton = event.target.closest('#resetSample');
+    if (resetButton && !peopleMode()) {
+      setTimeout(() => { if (peopleMode()) renderPeopleProjection(); }, 0);
+      return;
+    }
     if (!peopleMode()) return;
 
     const newButton = event.target.closest('#newRecord');
@@ -353,7 +371,7 @@
       return;
     }
 
-    const reload = event.target.closest('#resetSample');
+    const reload = resetButton;
     if (reload) {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -425,8 +443,15 @@
     if (dialog) dialog.dataset.serverMode = '';
   });
 
-  window.addEventListener('pageshow', () => {
-    if (peopleMode()) refreshPeople({ keepSelection:true });
+  const modeObserver = new MutationObserver(() => {
+    if (peopleMode()) renderPeopleProjection();
+    else renderBoundary();
+  });
+  const modeTabs = $('.dir-types');
+  if (modeTabs) modeObserver.observe(modeTabs, { subtree:true, attributes:true, attributeFilter:['aria-selected'] });
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted && peopleMode()) refreshPeople({ keepSelection:true });
   });
 
   refreshPeople({ keepSelection:false });
