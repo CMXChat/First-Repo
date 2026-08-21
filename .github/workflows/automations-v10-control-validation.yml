@@ -8,8 +8,11 @@ on:
       - 'assets/lab/lab-automations-control-v10.js'
       - 'assets/lab/lab-automations-control-v10-editor-bootstrap.js'
       - 'assets/lab/lab-automations-control-v10.css'
+      - 'assets/lab/lab-automations-control-v10-1.js'
+      - 'assets/lab/lab-automations-control-v10-1.css'
       - 'assets/lab/lab-automations-history-v1.js'
       - 'tests/continuum-automations-control-v10.test.js'
+      - 'tests/continuum-automations-control-v10-1.test.js'
       - 'docs/continuum-automations-control-surface-v10-CURRENT.md'
       - '.github/workflows/automations-v10-control-validation.yml'
   pull_request:
@@ -19,8 +22,11 @@ on:
       - 'assets/lab/lab-automations-control-v10.js'
       - 'assets/lab/lab-automations-control-v10-editor-bootstrap.js'
       - 'assets/lab/lab-automations-control-v10.css'
+      - 'assets/lab/lab-automations-control-v10-1.js'
+      - 'assets/lab/lab-automations-control-v10-1.css'
       - 'assets/lab/lab-automations-history-v1.js'
       - 'tests/continuum-automations-control-v10.test.js'
+      - 'tests/continuum-automations-control-v10-1.test.js'
       - 'docs/continuum-automations-control-surface-v10-CURRENT.md'
       - '.github/workflows/automations-v10-control-validation.yml'
 
@@ -39,8 +45,10 @@ jobs:
           set -euo pipefail
           node --check assets/lab/lab-automations-control-v10.js
           node --check assets/lab/lab-automations-control-v10-editor-bootstrap.js
+          node --check assets/lab/lab-automations-control-v10-1.js
           node --check assets/lab/lab-automations-history-v1.js
           node tests/continuum-automations-control-v10.test.js
+          node tests/continuum-automations-control-v10-1.test.js
 
       - name: Render desktop and mobile control surfaces
         run: |
@@ -63,7 +71,7 @@ jobs:
             local pattern="$1" file="$2" label="$3"
             if ! grep -q "$pattern" "$file"; then
               echo "MISSING: $label ($pattern) in $file" >&2
-              grep -E 'data-lab-automations|data-control-v10|data-v10-|v10-|Automation|Manage|Loading' "$file" | head -80 >&2 || true
+              grep -E 'data-lab-automations|data-control-v10|data-v10-|v10-|v101-|Automation|Manage|Loading|Trigger is structural' "$file" | head -100 >&2 || true
               exit 1
             fi
             echo "OK: $label"
@@ -97,6 +105,7 @@ jobs:
           require 'data-v10-tab="history"' /tmp/v10-editor.html 'history tab'
           require 'data-v10-tab="settings"' /tmp/v10-editor.html 'settings tab'
           require 'data-v10-exit' /tmp/v10-editor.html 'explicit editor exit'
+          require 'Trigger is structural' /tmp/v10-editor.html 'structural trigger guidance'
           forbid 'Loading Automations' /tmp/v10-editor.html 'desktop editor loading placeholder'
 
           dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/v10-mobile-dashboard.html
@@ -107,6 +116,7 @@ jobs:
           require 'data-lab-automations-control="v10"' /tmp/v10-mobile-editor.html 'mobile editor v10 marker'
           require 'v10-object-bar' /tmp/v10-mobile-editor.html 'mobile object bar'
           require 'data-v10-tab="settings"' /tmp/v10-mobile-editor.html 'mobile settings tab'
+          require 'Trigger is structural' /tmp/v10-mobile-editor.html 'mobile structural trigger guidance'
           forbid 'Loading Automations' /tmp/v10-mobile-editor.html 'mobile editor loading placeholder'
 
-          echo 'Automations v10 control surface rendered on desktop and mobile.'
+          echo 'Automations v10/v10.1 control surface rendered on desktop and mobile.'
