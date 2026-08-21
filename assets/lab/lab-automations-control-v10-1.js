@@ -15,6 +15,7 @@
 
   let queued = false;
   let dependencyDialog = null;
+  let settleFrames = 0;
 
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
@@ -70,6 +71,25 @@
       detail: { automationId, mode }
     }));
     schedule();
+  }
+
+  function patchDashboardTruth() {
+    const dashboard = document.querySelector(".v3-dashboard");
+    if (!dashboard) return;
+    const manage = dashboard.querySelector("[data-v7-manage] span");
+    if (manage) manage.textContent = "Manage all";
+    const heroCopy = dashboard.querySelector(".v3-hero p");
+    if (heroCopy) heroCopy.textContent = "Build, inspect and control Automation definitions. Execution remains off in Lab.";
+    dashboard.dataset.controlV10 = "ready";
+    document.documentElement.dataset.labAutomationsControl = "v10";
+  }
+
+  function settleLegacyRenders() {
+    patchDashboardTruth();
+    patchPermissions();
+    patchTriggerSemantics();
+    settleFrames += 1;
+    if (settleFrames < 12) requestAnimationFrame(settleLegacyRenders);
   }
 
   function patchPermissions() {
@@ -221,6 +241,7 @@
 
   function patch() {
     queued = false;
+    patchDashboardTruth();
     patchPermissions();
     patchTriggerSemantics();
   }
@@ -269,7 +290,9 @@
       return;
     }
 
+    settleFrames = 0;
     schedule();
+    requestAnimationFrame(settleLegacyRenders);
   }, true);
 
   document.addEventListener("keydown", event => {
@@ -280,9 +303,18 @@
     }
   }, true);
 
-  document.addEventListener("cmx:lab-automations-updated", schedule);
+  document.addEventListener("cmx:lab-automations-updated", () => {
+    settleFrames = 0;
+    schedule();
+    requestAnimationFrame(settleLegacyRenders);
+  });
   document.addEventListener("cmx:lab-automations-ai-participation-updated", schedule);
-  window.addEventListener("pageshow", schedule);
+  window.addEventListener("pageshow", () => {
+    settleFrames = 0;
+    schedule();
+    requestAnimationFrame(settleLegacyRenders);
+  });
   window.addEventListener("popstate", schedule);
   schedule();
+  requestAnimationFrame(settleLegacyRenders);
 })();
