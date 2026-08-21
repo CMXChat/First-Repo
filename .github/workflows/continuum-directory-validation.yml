@@ -94,7 +94,7 @@ jobs:
           required_directory = [
               'cmx-lab-crm-v1', 'cmx-lab-directory-ui-v2', 'organizationIds', 'contactMethods',
               'relationshipLinks', 'STARTER_GROUPS', 'resolveGroup', 'CONTACT READINESS',
-              'Duplicate', 'Automation usage', 'document.documentElement.dataset.labDirectory = "v2"'
+              'duplicateCountFor', 'Automation usage', 'document.documentElement.dataset.labDirectory = "v2"'
           ]
           required_planner_contract = [
               'CMXContinuumPlannerContractV1', 'validateOperations',
