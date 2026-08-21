@@ -125,5 +125,9 @@
   window.addEventListener("cmx:lab-automations-updated", schedule);
   window.addEventListener("pageshow", schedule);
   window.addEventListener("popstate", schedule);
+
+  const app = document.getElementById("automationApp");
+  if (app) new MutationObserver(schedule).observe(app, { childList: true, subtree: true });
+
   schedule();
 })();
