@@ -15,7 +15,8 @@ const LEGACY_KEYS = [
 LEGACY_KEYS.forEach((key) => { localStorage.removeItem(key); sessionStorage.removeItem(key); });
 
 const ROUTES = {
-  directory: { path: '/directory', label: 'Operations Directory' },
+  menu: { path: '/menu', label: 'Operations Menu' },
+  directory: { path: '/directory', label: 'Continuum Directory' },
   osint: { path: '/osint', label: 'OSINT console' },
   phone: { path: '/phone', label: 'Phone intelligence' },
   metadata: { path: '/metadata', label: 'Metadata extractor' },

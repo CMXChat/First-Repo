@@ -10,7 +10,8 @@ SOCIAL = f"{BASE}/assets/cmx-restricted-node-social.png"
 
 PAGES = {
     "index.html": ("CMX Restricted Node", "Private private access to CMX research and operational tools.", "User", "Active", False),
-    "directory/index.html": ("CMX Operations Directory", "Private directory for CMX research, operational, project and internal tools.", "Operations", "Active", True),
+    "menu/index.html": ("CMX Operations Menu", "Private menu for CMX research and operational tools.", "Operations", "Active", True),
+    "directory/index.html": ("Continuum Directory", "Protected Continuum Directory preview for durable People and email ContactMethods.", "Product Preview", "Active", False),
     "build/index.html": ("CMX Build Lab", "Private project control dashboard for db.cmxchat.com routes, standards and planned infrastructure.", "Operations", "Active", False),
     "entry/index.html": ("CMX Workspace", "Private legacy workspace entry for CMX internal pages and operational resources.", "Legacy", "Review", True),
     "osint/index.html": ("CMX OSINT Console", "Private CMX workspace for approved open-source intelligence research and public-source pivots.", "OSINT", "Active", True),
@@ -107,10 +108,6 @@ def add_html_data(text: str, title: str, category: str, status: str, standard_ui
 
 def normalize_links(text: str) -> str:
     replacements = {
-        'href="/menu"': 'href="/directory/"',
-        "href='/menu'": "href='/directory/'",
-        'href="/menu/"': 'href="/directory/"',
-        "href='/menu/'": "href='/directory/'",
         'href="/collab6"': 'href="/collab2/"',
         "href='/collab6'": "href='/collab2/'",
         'href="/collab7"': 'href="/collab3/"',
@@ -121,19 +118,15 @@ def normalize_links(text: str) -> str:
     return text
 
 
-
-def unlink_root_directory_anchors(text: str) -> str:
+def unlink_root_anchors(text: str) -> str:
     replacements = {
         'href="/"': 'data-cmx-unlinked="/"',
         "href='/'": "data-cmx-unlinked='/'",
-        'href="/directory"': 'data-cmx-unlinked="/directory"',
-        "href='/directory'": "data-cmx-unlinked='/directory'",
-        'href="/directory/"': 'data-cmx-unlinked="/directory/"',
-        "href='/directory/'": "data-cmx-unlinked='/directory/'",
     }
     for old, new in replacements.items():
         text = text.replace(old, new)
     return text
+
 
 def improve_404(text: str) -> str:
     if "requested resource is unavailable" not in text.lower():
@@ -162,7 +155,7 @@ def process(path: str, config: tuple[str, str, str, str, bool]) -> bool:
     original = file.read_text(encoding="utf-8")
     text = strip_old_standard(original)
     text = normalize_links(text)
-    text = unlink_root_directory_anchors(text)
+    text = unlink_root_anchors(text)
     text = add_html_data(text, title, category, status, standard_ui)
 
     block = metadata_block(path, title, description)
