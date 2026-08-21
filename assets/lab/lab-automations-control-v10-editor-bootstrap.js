@@ -1,11 +1,32 @@
 (() => {
   "use strict";
 
+  const STORE_KEY = "cmx-lab-automations-v1";
+  const HISTORY_KEY = "cmxLabAutomationsNavigation";
   const SECTIONS = ["overview", "definition", "runs", "permissions", "related", "history", "settings"];
   let queued = false;
   let dashboardNudgeSent = false;
 
-  function lifecycleLabel() {
+  function currentAutomationId() {
+    const fromHistory = history.state?.[HISTORY_KEY]?.snapshot?.automationId;
+    if (fromHistory && fromHistory !== "__new__") return fromHistory;
+    const title = document.querySelector(".v3-editor-page .v3-title-button strong")?.textContent?.trim();
+    if (!title) return "";
+    try {
+      const data = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      const matches = (data?.automations || []).filter(item => String(item?.name || "").trim() === title);
+      return matches.length === 1 ? matches[0].id || "" : "";
+    } catch {
+      return "";
+    }
+  }
+
+  function lifecycleLabel(automationId) {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      const record = (data?.automations || []).find(item => item?.id === automationId);
+      if (record?.status) return record.status;
+    } catch {}
     return document.querySelector(".v3-editor-page .v3-title-button")?.closest(".v3-editor-title-row")?.querySelector(".v3-draft-badge")?.textContent?.trim() || "Draft";
   }
 
@@ -21,6 +42,7 @@
       return false;
     }
 
+    const automationId = currentAutomationId();
     const view = page.dataset.v10View || "definition";
     page.dataset.controlV10 = "ready";
     page.dataset.v10View = view;
@@ -30,10 +52,13 @@
       bar = document.createElement("div");
       bar.className = "v10-object-bar";
       bar.innerHTML = `<button class="v10-exit" type="button" data-v10-exit><span>←</span><strong>Automations</strong></button>
-        <div class="v10-object-state"><span>AUTOMATION CONTROL</span><strong>${lifecycleLabel()}</strong><small>Definition control</small></div>
-        <button class="v10-object-menu" type="button" data-v10-editor-menu="" aria-label="Automation actions">•••</button>
+        <div class="v10-object-state"><span>AUTOMATION CONTROL</span><strong>${lifecycleLabel(automationId)}</strong><small>Definition control</small></div>
+        <button class="v10-object-menu" type="button" data-v10-editor-menu="${automationId}" aria-label="Automation actions">•••</button>
         <button class="v10-object-close" type="button" data-v10-exit aria-label="Close Automation">×</button>`;
       head.insertAdjacentElement("afterbegin", bar);
+    } else {
+      const menu = bar.querySelector("[data-v10-editor-menu]");
+      if (menu && automationId) menu.dataset.v10EditorMenu = automationId;
     }
 
     let nav = head.querySelector(".v10-control-nav");
@@ -48,7 +73,7 @@
     }
 
     document.documentElement.dataset.labAutomationsControl = "v10";
-    document.dispatchEvent(new CustomEvent("cmx:v10-editor-bootstrap", { detail: { view } }));
+    document.dispatchEvent(new CustomEvent("cmx:v10-editor-bootstrap", { detail: { view, automationId } }));
     return true;
   }
 
