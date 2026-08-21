@@ -8,6 +8,7 @@ const directory = fs.readFileSync('directory/index.html', 'utf8');
 const routes = JSON.parse(fs.readFileSync('assets/cmx-routes.json', 'utf8'));
 const opsCore = fs.readFileSync('assets/cmx-ops-core.js', 'utf8');
 const opsRuntime = fs.readFileSync('assets/cmx-ops-runtime.js', 'utf8');
+const standards = fs.readFileSync('scripts/apply_site_standards.py', 'utf8');
 
 assert.match(menu, /<title>CMX Operations Menu<\/title>/);
 assert.match(menu, /https:\/\/db\.cmxchat\.com\/menu\//);
@@ -46,6 +47,12 @@ assert.match(opsCore, /directory:\s*\{ path: '\/directory', label: 'Continuum Di
 assert.match(opsRuntime, /\['Open Operations Menu', 'menu'\]/);
 assert.match(opsRuntime, /\['Open Continuum Directory', 'directory'\]/);
 assert.match(opsRuntime, /if \(action === 'open'\) return openRoute\('menu'\)/);
+
+assert.match(standards, /"menu\/index\.html": \("CMX Operations Menu"/);
+assert.match(standards, /"directory\/index\.html": \("Continuum Directory"/);
+assert.doesNotMatch(standards, /href=\\"\/menu\\".*href=\\"\/directory\//s);
+assert.doesNotMatch(standards, /unlink_root_directory_anchors/);
+assert.match(standards, /def unlink_root_anchors/);
 
 assert.doesNotThrow(() => new Function(opsCore), 'CMX operations core must parse');
 assert.doesNotThrow(() => new Function(opsRuntime), 'CMX operations runtime must parse');
