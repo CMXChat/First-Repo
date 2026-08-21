@@ -52,7 +52,8 @@ Copying the generated SDK into `First-Repo` would create a second permanent clie
 
 The Lab transport is intentionally small and hand-written because it serves one development-only bridge:
 
-- six Directory calls;
+- six Directory domain calls;
+- one operator-session read used to authorize mutations;
 - one shared JSON request helper;
 - the already-established protected Check In session/CSRF pattern;
 - no domain cache;
@@ -66,8 +67,9 @@ When this UX moves into the canonical React frontend, use the generated OpenAPI 
 
 - `lab/directory/index.html`
   - existing UI retained;
-  - loads the thin transport and server projection after the existing Directory app;
-  - truth boundary updated to distinguish server-backed People/email from local Organizations/Groups.
+  - existing standalone product copy/contracts retained;
+  - CSP permits the protected CMX API connection plus local backend development;
+  - loads the thin transport and server projection after the existing Directory app.
 - `assets/lab/directory-api-v1.js`
   - development transport only;
   - no localStorage;
@@ -76,23 +78,29 @@ When this UX moves into the canonical React frontend, use the generated OpenAPI 
 - `assets/lab/directory-server-proof-v1.js`
   - server-backed People projection;
   - keeps stable backend IDs in memory as canonical identity;
-  - fetches People again on reload/pageshow;
+  - fetches People on page load and again after mutations/reload;
   - fetches ContactMethods for the selected Person;
-  - reuses existing Directory containers/dialogs/CSS classes.
+  - reuses existing Directory containers/dialogs/CSS classes;
+  - switches runtime truth labels between protected People and local Organizations/Groups.
 - `tests/continuum-directory-server-proof-v1.test.js`
   - prevents accidental local canonical storage or API-surface widening.
+- `.github/workflows/directory-server-proof-validation.yml`
+  - parses the new JS and runs the focused source contract.
 
 ## Protected API contract used
 
-Current backend development contract from `jay-app` Directory slice:
+Current backend development contract from `jay-app` Directory slice. The proof uses these six domain calls:
 
 - `GET /api/v1/checkin/operator/directory/people`
 - `POST /api/v1/checkin/operator/directory/people`
-- `GET /api/v1/checkin/operator/directory/people/{person_id}`
 - `PATCH /api/v1/checkin/operator/directory/people/{person_id}`
 - `GET /api/v1/checkin/operator/directory/people/{person_id}/contact-methods`
 - `POST /api/v1/checkin/operator/directory/people/{person_id}/contact-methods`
 - `PATCH /api/v1/checkin/operator/directory/contact-methods/{contact_method_id}`
+
+Mutations additionally read:
+
+- `GET /api/v1/checkin/operator/session`
 
 The proof only uses supported fields:
 
@@ -193,6 +201,16 @@ For the eventual production frontend:
 - use TanStack Query/server state instead of this DOM bridge;
 - retire the two Lab proof files after the product behavior has migrated.
 
+## Validation
+
+Current frontend validation on PR #120:
+
+- focused Directory server-proof JS/source contract: passing;
+- existing standalone Directory contract: passing;
+- existing shared Continuum shell contract: passing.
+
+These checks prove the frontend transport boundary, parseability and preservation of the accepted Directory shell. They do not fabricate a live backend persistence result.
+
 ## Acceptance boundary
 
 This slice is complete when a protected environment containing the Directory backend can demonstrate:
@@ -209,7 +227,7 @@ This slice is complete when a protected environment containing the Directory bac
 10. reactivate email;
 11. see backend duplicate/conflict errors truthfully.
 
-This frontend branch does not deploy or modify the backend. Until the Directory backend branch is merged/deployed to the environment being tested, the Lab should truthfully show the API as unavailable.
+The frontend implementation for that flow is present. Full live acceptance cannot be claimed from this branch alone because the required Directory backend remains an open `jay-app` development PR and this frontend task does not deploy or modify it. Until that backend is available in the environment being tested, the Lab should truthfully show the protected API as unavailable.
 
 ## Stop point
 
