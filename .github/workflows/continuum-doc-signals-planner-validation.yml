@@ -54,7 +54,7 @@ jobs:
               'Evidence can change the situation Continuum understands. Published authority still controls execution.',
               'Signals let Continuum notice when something changes.',
               'Source to State flow',
-              'data.continuumSignalsPlanner'
+              'dataset.continuumSignalsPlanner'
           ]
           for term in required_source:
               if term not in source:
