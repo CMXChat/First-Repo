@@ -90,7 +90,6 @@
     listSenders: (connectionId) => request(`${directory}/connections/${encodeURIComponent(connectionId)}/sender-identities`),
 
     listLibrary: () => request(library),
-    getContent: (contentId) => request(`${library}/content/${encodeURIComponent(contentId)}`),
     saveContentVersion: (contentId) => request(`${library}/content/${encodeURIComponent(contentId)}/versions`, mutation()),
 
     listRuns: (automationId) => request(`${auto}/${encodeURIComponent(automationId)}/runs`),

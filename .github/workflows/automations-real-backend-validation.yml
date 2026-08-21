@@ -1,0 +1,147 @@
+name: Continuum Automations Real Backend Integration Validation
+
+on:
+  push:
+    branches: [agent/lab-automations-real-backend-integration]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-api-v1.js'
+      - 'assets/lab/lab-automations-server-*.js'
+      - 'assets/lab/lab-automations-server-*.css'
+      - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
+      - '.github/workflows/automations-real-backend-validation.yml'
+  pull_request:
+    branches: [agent/directory-server-proof-v1, main]
+    paths:
+      - 'lab/automations/**'
+      - 'assets/lab/lab-automations-api-v1.js'
+      - 'assets/lab/lab-automations-server-*.js'
+      - 'assets/lab/lab-automations-server-*.css'
+      - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
+      - '.github/workflows/automations-real-backend-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate real Automations integration and preserved contracts
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-api-v1.js
+          node --check assets/lab/lab-automations-server-v1.js
+          node --check assets/lab/lab-automations-server-lifecycle-v1.js
+          node --check assets/lab/lab-automations-server-runtime-v1.js
+          node tests/continuum-automations-real-backend-integration.test.js
+
+          # Existing accepted Automations contracts. Do not weaken these to satisfy integration work.
+          node --check assets/lab/lab-automations-model-v5.js
+          node --check assets/lab/lab-automations-flow-v5.js
+          node --check assets/lab/lab-automations-sequence-v4.js
+          node --check assets/lab/lab-automations-scenarios-v4.js
+          node tests/continuum-automations-control-v10.test.js
+          node tests/continuum-automations-control-v10-1.test.js
+
+          # PR #120 and the original Directory/shell preservation contracts.
+          node --check assets/lab/directory-api-v1.js
+          node --check assets/lab/directory-server-proof-v1.js
+          node tests/continuum-directory-server-proof-v1.test.js
+          node tests/continuum-directory-standalone-v1.test.js
+          node tests/continuum-shared-app-shell.test.js
+
+          if [ -n "${GITHUB_BASE_REF:-}" ]; then
+            git diff --check "origin/${GITHUB_BASE_REF}...HEAD"
+          else
+            git diff --check HEAD^
+          fi
+
+  desktop-mobile-preservation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render accepted Automations surface on desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-automations-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          dump() {
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=16000 "$@" --dump-dom
+          }
+          require() {
+            local pattern="$1" file="$2" label="$3"
+            if ! grep -q "$pattern" "$file"; then
+              echo "MISSING: $label ($pattern) in $file" >&2
+              grep -E 'SERVER-BACKED|data-lab-automations|data-control-v10|data-v10-|v10-|WHEN|IF|DO|WAIT|TEST|Loading|Automation' "$file" | head -120 >&2 || true
+              exit 1
+            fi
+            echo "OK: $label"
+          }
+          forbid() {
+            local pattern="$1" file="$2" label="$3"
+            if grep -qi "$pattern" "$file"; then
+              echo "UNEXPECTED: $label ($pattern) in $file" >&2
+              exit 1
+            fi
+            echo "OK: $label absent"
+          }
+
+          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/' > /tmp/automations-dashboard.html
+          require 'data-lab-automations-control="v10"' /tmp/automations-dashboard.html 'desktop v10 control marker'
+          require 'v10-card-menu-button' /tmp/automations-dashboard.html 'desktop local object controls'
+          require 'SERVER-BACKED' /tmp/automations-dashboard.html 'desktop separate server-backed lane'
+          require 'Real Automations' /tmp/automations-dashboard.html 'desktop server lane heading'
+          forbid 'Loading Automations' /tmp/automations-dashboard.html 'desktop loading placeholder'
+
+          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/automations-editor.html
+          require 'data-control-v10="ready"' /tmp/automations-editor.html 'desktop accepted editor patched'
+          require 'data-v10-view="definition"' /tmp/automations-editor.html 'desktop Definition view'
+          require 'v10-object-bar' /tmp/automations-editor.html 'desktop object/navigation controls'
+          require 'data-v10-tab="overview"' /tmp/automations-editor.html 'Overview section'
+          require 'data-v10-tab="definition"' /tmp/automations-editor.html 'Definition section'
+          require 'data-v10-tab="runs"' /tmp/automations-editor.html 'Runs section'
+          require 'data-v10-tab="permissions"' /tmp/automations-editor.html 'Permissions section'
+          require 'data-v10-tab="related"' /tmp/automations-editor.html 'Related section'
+          require 'data-v10-tab="history"' /tmp/automations-editor.html 'History section'
+          require 'data-v10-tab="settings"' /tmp/automations-editor.html 'Settings section'
+          require 'WHEN' /tmp/automations-editor.html 'WHEN stage'
+          require 'IF' /tmp/automations-editor.html 'IF stage'
+          require 'DO' /tmp/automations-editor.html 'DO stage'
+          require 'WAIT' /tmp/automations-editor.html 'WAIT stage'
+          require 'TEST' /tmp/automations-editor.html 'TEST stage'
+          forbid 'Loading Automations' /tmp/automations-editor.html 'desktop editor loading placeholder'
+
+          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/automations-mobile-dashboard.html
+          require 'data-lab-automations-control="v10"' /tmp/automations-mobile-dashboard.html 'mobile v10 control marker'
+          require 'v10-card-menu-button' /tmp/automations-mobile-dashboard.html 'mobile local object controls'
+          require 'SERVER-BACKED' /tmp/automations-mobile-dashboard.html 'mobile separate server-backed lane'
+
+          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/automations-mobile-editor.html
+          require 'v10-object-bar' /tmp/automations-mobile-editor.html 'mobile object/navigation controls'
+          require 'data-v10-tab="settings"' /tmp/automations-mobile-editor.html 'mobile seven-section navigation survives'
+          require 'WAIT' /tmp/automations-mobile-editor.html 'mobile WAIT stage survives'
+          require 'TEST' /tmp/automations-mobile-editor.html 'mobile TEST stage survives'
+          forbid 'Loading Automations' /tmp/automations-mobile-editor.html 'mobile editor loading placeholder'
+
+          echo 'Automations desktop/mobile preservation passed with server-backed lane present.'
