@@ -208,13 +208,14 @@
   }
 
   function patchTriggerSemantics() {
-    const stage = document.querySelector(".v3-trigger-stage");
+    const triggerControl = document.querySelector(".v3-editor-page [data-trigger]");
+    const stage = triggerControl?.closest(".v3-stage-section");
     if (!stage || stage.querySelector(".v101-structural-note")) return;
     const note = document.createElement("div");
     note.className = "v101-structural-note";
     note.innerHTML = `<strong>Trigger is structural</strong><span>A valid workflow keeps one Trigger. Change it by editing or replacing it rather than leaving the definition without one.</span>`;
-    const first = stage.querySelector("h2, h3, header");
-    if (first) first.insertAdjacentElement("afterend", note);
+    const header = stage.querySelector(":scope > header");
+    if (header) header.insertAdjacentElement("afterend", note);
     else stage.prepend(note);
   }
 
