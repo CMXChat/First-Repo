@@ -202,5 +202,6 @@
   document.addEventListener("cmx:lab-crm-updated", schedule);
   window.addEventListener("cmx:lab-directory-updated", schedule);
   window.addEventListener("pageshow", schedule);
-  schedule();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", schedule, { once: true });
+  else schedule();
 })();
