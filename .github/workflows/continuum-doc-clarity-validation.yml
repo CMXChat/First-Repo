@@ -48,11 +48,13 @@ jobs:
           node --check assets/continuum-doc-human-cadence.js
           node --check assets/continuum-doc-reader-first.js
           node --check assets/continuum-doc-final-voice.js
+          node --check assets/continuum-doc-durable-identity.js
           node tests/personal-os-doc-smoke.test.js
           node tests/doc-visual-qa-smoke.test.js
           node tests/continuum-doc-clarity-smoke.test.js
           node tests/continuum-doc-continuity-positioning.test.js
           node tests/continuum-doc-final-voice.test.js
+          node tests/continuum-doc-durable-identity.test.js
 
       - name: Browser clarity smoke desktop and mobile
         run: |
@@ -78,6 +80,8 @@ jobs:
             grep -q 'data-continuum-human-cadence="ready"' "$file"
             grep -q 'data-continuum-reader-first="ready"' "$file"
             grep -q 'data-continuum-final-voice="ready"' "$file"
+            grep -q 'data-continuum-durable-identity="ready"' "$file"
+            grep -q 'data-continuum-identity-portability="model-agnostic-v1"' "$file"
             grep -q 'data-continuum-voice="natural-v4"' "$file"
             grep -q 'Think of AI as the brain and Continuum as the nervous system around it' "$file"
             grep -q 'Continuum is the private layer around the AI that keeps those things connected over time.' "$file"
@@ -97,6 +101,10 @@ jobs:
             grep -q 'When one outcome takes several steps, a Goal gives Continuum something larger to work toward.' "$file"
             grep -q 'That same setup is useful long before anything goes wrong.' "$file"
             grep -q 'Silence and urgency never create permission.' "$file"
+            grep -q 'Keep a recognizable AI identity even when the model changes.' "$file"
+            grep -q 'A compatible model can load that identity in a new context instead of starting from zero.' "$file"
+            grep -q 'Identity can shape judgment, strategy and communication.' "$file"
+            grep -q 'The server still controls facts, permissions and authority.' "$file"
             grep -q 'Files + OCR / vision' "$file"
             grep -q 'Open Check In' "$file"
           }
@@ -118,7 +126,7 @@ jobs:
           lead_start = hero.index('class="hero-lead')
           lead_end = hero.index('hero-truth-row', lead_start)
           lead = hero[lead_start:lead_end]
-          for internal_name in ['Library', 'Directory', 'Spaces', 'Automation', 'Runtime', 'Planner', 'Goal']:
+          for internal_name in ['Library', 'Directory', 'Spaces', 'Automation', 'Runtime', 'Planner', 'Goal', 'Identity']:
               assert internal_name not in lead, f'Opening explanation became a component glossary: {internal_name}'
 
           stale = [
@@ -139,6 +147,9 @@ jobs:
           for phrase in stale:
               assert phrase not in html, f'Stale AI-like or superseded copy is still visible: {phrase}'
 
+          for private_project_name in ['Lorraine', 'Echo', 'Shapes']:
+              assert private_project_name.lower() not in html.lower(), f'Private identity project history leaked into /doc: {private_project_name}'
+
           overview = html.index('id="overview"')
           ai = html.index('id="difference"')
           spaces = html.index('id="spaces"')
@@ -149,13 +160,17 @@ jobs:
           status = html.index('id="status"')
           assert overview < ai < spaces < action < afterlife < engineering < build < status
 
+          identity_note = html.index('continuum-durable-identity-note')
+          assert ai < identity_note < spaces, 'Durable identity explanation moved outside AI + Permissions.'
+
           assert html.count('href="/checkin/"') >= 3
-          print('Desktop Continuum one-minute explanation and final natural voice passed.')
+          print('Desktop Continuum one-minute explanation, durable identity and final natural voice passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
           validate_render /tmp/continuum-doc-mobile.html
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
+          grep -q 'continuum-durable-identity-note' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc final natural voice rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc final natural voice and durable identity rendered on desktop and 390x844 mobile.'
