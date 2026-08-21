@@ -5,7 +5,6 @@
   const HISTORY_KEY = "cmxLabAutomationsNavigation";
   const SECTIONS = ["overview", "definition", "runs", "permissions", "related", "history", "settings"];
   let queued = false;
-  let dashboardNudgeSent = false;
 
   function currentAutomationId() {
     const fromHistory = history.state?.[HISTORY_KEY]?.snapshot?.automationId;
@@ -30,17 +29,48 @@
     return document.querySelector(".v3-editor-page .v3-title-button")?.closest(".v3-editor-title-row")?.querySelector(".v3-draft-badge")?.textContent?.trim() || "Draft";
   }
 
+  function ensureDashboardCard(card) {
+    const automationId = card?.dataset?.open;
+    if (!automationId) return;
+    let shell = card.parentElement?.classList.contains("v10-card-shell") ? card.parentElement : null;
+    if (!shell) {
+      shell = document.createElement("div");
+      shell.className = "v10-card-shell";
+      card.before(shell);
+      shell.append(card);
+    }
+    shell.hidden = card.hidden;
+    if (!shell.querySelector(":scope > [data-v10-card-menu]")) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "v10-card-menu-button";
+      button.dataset.v10CardMenu = automationId;
+      button.setAttribute("aria-label", "Automation actions");
+      button.setAttribute("aria-haspopup", "menu");
+      button.textContent = "•••";
+      shell.append(button);
+    }
+  }
+
+  function patchDashboardFallback() {
+    const dashboard = document.querySelector(".v3-dashboard");
+    if (!dashboard) return false;
+
+    dashboard.querySelectorAll(".v3-automation-card[data-open]").forEach(ensureDashboardCard);
+    const manage = dashboard.querySelector("[data-v7-manage] span");
+    if (manage) manage.textContent = "Manage all";
+    const heroCopy = dashboard.querySelector(".v3-hero p");
+    if (heroCopy) heroCopy.textContent = "Build, inspect and control Automation definitions. Execution remains off in Lab.";
+
+    dashboard.dataset.controlV10 = "ready";
+    document.documentElement.dataset.labAutomationsControl = "v10";
+    return true;
+  }
+
   function patchEditorChrome() {
-    queued = false;
     const page = document.querySelector(".v3-editor-page");
     const head = page?.querySelector(".v3-editor-head");
-    if (!page || !head) {
-      if (!dashboardNudgeSent && document.querySelector(".v3-dashboard")) {
-        dashboardNudgeSent = true;
-        document.dispatchEvent(new CustomEvent("cmx:lab-automations-updated", { detail: { reason: "control-v10-late-dashboard" } }));
-      }
-      return false;
-    }
+    if (!page || !head) return false;
 
     const automationId = currentAutomationId();
     const view = page.dataset.v10View || "definition";
@@ -77,10 +107,17 @@
     return true;
   }
 
+  function patch() {
+    queued = false;
+    const dashboard = patchDashboardFallback();
+    const editor = patchEditorChrome();
+    if (dashboard || editor) document.documentElement.dataset.labAutomationsControl = "v10";
+  }
+
   function schedule() {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(patchEditorChrome)));
+    requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(patch)));
   }
 
   document.addEventListener("click", schedule, true);
