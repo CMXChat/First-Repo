@@ -87,8 +87,8 @@ jobs:
                   raise SystemExit(f'missing /doc Planner/Signals style contract: {term}')
 
           for term in [
-              'BRING KNOWLEDGE IN', 'Paste + bulk text', 'AI handoffs', 'Files + OCR / vision',
-              'CAPTURE', 'UNDERSTAND', 'REVIEW', 'INTEGRATE', 'REAL TEMPORAL AWARENESS',
+              'BRING INFORMATION IN', 'Paste + bulk text', 'AI handoffs', 'Files + OCR / vision',
+              'CAPTURE', 'UNDERSTAND', 'REVIEW', 'INTEGRATE', 'REAL CLOCK',
               'roughly two seconds passed', "dataset.continuumKnowledgeTime = 'ready'"
           ]:
               if term not in knowledge_time:
@@ -145,9 +145,9 @@ jobs:
             grep -q 'Observed change can alter what Continuum understands about the current situation.' "$out"
             grep -q 'Evidence changes understanding. Published authority controls execution.' "$out"
             grep -q 'Signals are how Continuum can notice that the world changed.' "$out"
-            grep -q 'BRING KNOWLEDGE IN' "$out"
+            grep -q 'BRING INFORMATION IN' "$out"
             grep -q 'Files + OCR / vision' "$out"
-            grep -q 'REAL TEMPORAL AWARENESS' "$out"
+            grep -q 'REAL CLOCK' "$out"
             grep -q 'roughly two seconds passed' "$out"
             grep -q 'The idea started with the Dead Man Switch' "$out"
           }
