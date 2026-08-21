@@ -27,6 +27,9 @@ if (!browserPath || !Number.isFinite(width) || !Number.isFinite(height) || !url 
       hasTouch: true
     });
     const page = await context.newPage();
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error?.stack || error?.message || String(error)));
+
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout });
     await page.waitForFunction(
       ({ key, expected }) => document.documentElement.dataset[key] === expected,
@@ -42,6 +45,10 @@ if (!browserPath || !Number.isFinite(width) || !Number.isFinite(height) || !url 
 
     fs.writeFileSync(outputPath, await page.content(), 'utf8');
     console.log(`Mobile browser dump passed at ${viewport.width}x${viewport.height}.`);
+    if (pageErrors.length) {
+      console.error('Browser page errors:');
+      pageErrors.forEach(error => console.error(error));
+    }
     await context.close();
   } finally {
     await browser.close();
