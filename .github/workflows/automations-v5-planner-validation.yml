@@ -95,7 +95,7 @@ jobs:
           for term in [
               'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
               'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset',
-              'continuum-preflight-operation-link', 'data.preflightOpState', 'AFFECTS CHANGE',
+              'continuum-preflight-operation-link', 'dataset.preflightOpState', 'AFFECTS CHANGE',
               '"signals.service_required": ["signals.create_watch"]',
               '"connections.required": ["signals.attach_source", "automation.add_action"]',
               'labPlannerPreflight = "v1"'
