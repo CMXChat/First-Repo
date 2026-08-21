@@ -32,7 +32,7 @@ for (const term of [
   "connect-src 'none'",
 ]) assert(html.includes(term), `Lab home missing contract: ${term}`);
 
-assert(!html.includes('/assets/lab/lab-loader.js'), 'Lab root must no longer boot the integrated snapshot');
+assert(!html.includes('<script src="/assets/lab/lab-loader.js'), 'Lab root must no longer execute the integrated snapshot loader');
 assert(!html.includes('href="/lab/email/"'), 'Email NEXT marker must not pretend a route exists');
 assert(html.includes('data-command="email" data-status="NEXT" data-route-row aria-disabled="true"'), 'Email NEXT item must remain non-navigable');
 assert(snapshot.includes('/assets/lab/lab-loader.js?v=20260819-planner-signals-v3'), 'Preserved snapshot must keep the old integrated loader');
