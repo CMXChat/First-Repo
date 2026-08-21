@@ -9,6 +9,7 @@ const source = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-t
 const cadence = fs.readFileSync(path.join(root, 'assets/continuum-doc-human-cadence.js'), 'utf8');
 const cadenceReadable = cadence.replace(/\\'/g, "'");
 const reader = fs.readFileSync(path.join(root, 'assets/continuum-doc-reader-first.js'), 'utf8');
+const readerReadable = reader.replace(/\\'/g, "'");
 const css = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time.css'), 'utf8');
 const loader = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.js'), 'utf8');
 
@@ -52,7 +53,7 @@ mustContain(cadenceReadable, [
   "dataset.continuumVoice = 'natural-v3'"
 ]);
 
-mustContain(reader, [
+mustContain(readerReadable, [
   'Think of AI as the brain and Continuum as the nervous system around it',
   'An AI model can reason, write and help make decisions.',
   'carry your life and work context across time',
@@ -96,7 +97,7 @@ for (const stale of [
   'Runtime keeps published work alive in the background after you close the app.',
   'A Goal is for something you want Continuum to work toward over several steps, even when the route changes.'
 ]) {
-  assert.doesNotMatch(reader, new RegExp(stale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.doesNotMatch(readerReadable, new RegExp(stale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 }
 
 for (const staleCadence of [
@@ -119,9 +120,9 @@ for (const staleCadence of [
 }
 
 assert.doesNotMatch(cadenceReadable, /\bcan eventually\b/i);
-assert.doesNotMatch(reader, /\bcan eventually\b/i);
-assert.doesNotMatch(reader, /\bdoes not\b|\bcannot\b/i);
-assert.ok((reader.match(/\bwhile\b/gi) || []).length <= 2, 'Reader layer is overusing while constructions.');
+assert.doesNotMatch(readerReadable, /\bcan eventually\b/i);
+assert.doesNotMatch(readerReadable, /\bdoes not\b|\bcannot\b/i);
+assert.ok((readerReadable.match(/\bwhile\b/gi) || []).length <= 2, 'Reader layer is overusing while constructions.');
 
 for (const required of [
   '.continuum-continuity-line',
@@ -140,7 +141,7 @@ assert.match(loader, /loadHumanCadence/);
 assert.match(loader, /loadReaderFirst/);
 assert.match(loader, /script\.async = false/);
 
-for (const checkedSource of [source, cadenceReadable, reader]) {
+for (const checkedSource of [source, cadenceReadable, readerReadable]) {
   for (const pattern of [
     /\.\.\.|…|—/,
     /\bit(?:'|’)s not\b/i,
