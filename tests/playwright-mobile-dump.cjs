@@ -56,8 +56,15 @@ if (!browserPath || !Number.isFinite(width) || !Number.isFinite(height) || !url 
       throw new Error(`Expected ${width}px CSS viewport, received ${viewport.width}px.`);
     }
 
+    const qaDataset = await page.evaluate(() => Object.fromEntries(
+      Object.entries(document.documentElement.dataset)
+        .filter(([key]) => key.startsWith('qa'))
+        .sort(([a], [b]) => a.localeCompare(b))
+    ));
+
     fs.writeFileSync(outputPath, await page.content(), 'utf8');
     console.log(`Mobile browser dump passed at ${viewport.width}x${viewport.height}.`);
+    console.log(`QA dataset: ${JSON.stringify(qaDataset)}`);
 
     const report = (label, rows) => {
       if (!rows.length) return;
