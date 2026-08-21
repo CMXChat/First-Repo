@@ -2,6 +2,7 @@
   "use strict";
 
   const RETURN_TO_LAB = "/lab/#lab=view%3Aactions";
+  let targetObserver = null;
 
   function configureReturnNavigation() {
     document.querySelectorAll("a.brand").forEach(link => {
@@ -23,28 +24,47 @@
     if (changed) history.replaceState(history.state, "", `${url.pathname}${url.search}${url.hash}`);
   }
 
-  function openRequestedTarget() {
+  function requestedTarget() {
     const params = new URLSearchParams(location.search);
-    const automationId = params.get("automation");
-    const wantsNew = params.get("new") === "1";
-    let opened = false;
+    return {
+      automationId: params.get("automation"),
+      wantsNew: params.get("new") === "1",
+    };
+  }
+
+  function openRequestedTarget() {
+    const { automationId, wantsNew } = requestedTarget();
+    let target = null;
 
     if (automationId) {
-      const target = document.querySelector(`[data-open="${CSS.escape(automationId)}"]`);
-      if (target) {
-        target.click();
-        opened = true;
-      }
+      target = document.querySelector(`[data-open="${CSS.escape(automationId)}"]`);
     } else if (wantsNew) {
-      const target = document.querySelector("[data-new]");
-      if (target) {
-        target.click();
-        opened = true;
-      }
+      target = document.querySelector("[data-new]");
+    } else {
+      return true;
     }
 
-    if (automationId || wantsNew) cleanOneShotQuery();
-    return opened;
+    if (!target) return false;
+    target.click();
+    cleanOneShotQuery();
+    return true;
+  }
+
+  function watchRequestedTarget() {
+    const { automationId, wantsNew } = requestedTarget();
+    if (!automationId && !wantsNew) return;
+    if (openRequestedTarget()) return;
+
+    const root = document.getElementById("automationApp") || document.body;
+    if (!root || targetObserver) return;
+
+    targetObserver = new MutationObserver(() => {
+      if (!openRequestedTarget()) return;
+      targetObserver?.disconnect();
+      targetObserver = null;
+      refreshIntegration();
+    });
+    targetObserver.observe(root, { childList: true, subtree: true });
   }
 
   function refreshIntegration() {
@@ -53,7 +73,7 @@
 
   function boot() {
     configureReturnNavigation();
-    openRequestedTarget();
+    watchRequestedTarget();
     refreshIntegration();
     document.documentElement.dataset.labAutomationsRouteIntegration = "ready";
   }

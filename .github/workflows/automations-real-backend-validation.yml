@@ -6,20 +6,26 @@ on:
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
+      - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'tests/lab-automations-history-smoke.test.js'
       - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
+      - 'docs/continuum-live-frontend-acceptance-CURRENT.md'
       - '.github/workflows/automations-real-backend-validation.yml'
   pull_request:
     branches: [agent/directory-server-proof-v1, main]
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
+      - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'tests/lab-automations-history-smoke.test.js'
       - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
+      - 'docs/continuum-live-frontend-acceptance-CURRENT.md'
       - '.github/workflows/automations-real-backend-validation.yml'
   workflow_dispatch:
 
@@ -41,10 +47,12 @@ jobs:
         run: |
           set -euo pipefail
           node --check assets/lab/lab-automations-api-v1.js
+          node --check assets/lab/lab-automations-route-integration.js
           node --check assets/lab/lab-automations-server-v1.js
           node --check assets/lab/lab-automations-server-lifecycle-v1.js
           node --check assets/lab/lab-automations-server-runtime-v1.js
           node tests/continuum-automations-real-backend-integration.test.js
+          node tests/lab-automations-history-smoke.test.js
 
           # Existing accepted Automations contracts. Do not weaken these to satisfy integration work.
           node --check assets/lab/lab-automations-model-v5.js
