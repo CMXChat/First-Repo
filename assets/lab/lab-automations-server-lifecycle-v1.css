@@ -1,0 +1,31 @@
+.server-lifecycle-test{margin-top:18px;padding-top:18px;border-top:1px solid var(--line,#d9e1ea)}
+.server-test-actions,.server-publish-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.server-preflight{margin:16px 0;padding:15px;border:1px solid var(--line,#d9e1ea);border-radius:14px}
+.server-preflight.is-ready{border-color:#15803d;background:rgba(21,128,61,.06)}
+.server-preflight.has-blockers{border-color:#d97706;background:rgba(217,119,6,.05)}
+.server-preflight>header{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}
+.server-preflight>header span{font-size:10px;font-weight:900;letter-spacing:.1em}
+.server-preflight-list{display:grid;gap:8px}
+.server-preflight-issue{display:grid;grid-template-columns:minmax(150px,.8fr) 1.7fr;gap:8px 14px;align-items:start;padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.06)}
+.server-preflight-issue code{font-size:10px;font-weight:800}
+.server-preflight-issue strong{font-size:13px}
+.server-preflight-issue small{grid-column:1/-1;color:var(--muted,#667085);font-size:10px}
+.server-version-receipt{margin:18px 0;padding:18px;border:1px solid #2475ff;border-radius:16px;background:rgba(36,117,255,.05)}
+.server-version-receipt>header>span{font-size:10px;font-weight:900;letter-spacing:.11em;color:#2475ff}
+.server-version-receipt h3{margin:5px 0}
+.server-version-receipt p{color:var(--muted,#667085);line-height:1.55}
+.server-version-meta,.server-frozen-action dl{display:grid;grid-template-columns:minmax(130px,.55fr) 1.45fr;gap:8px 14px}
+.server-version-meta dt,.server-frozen-action dt{font-size:10px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--muted,#667085)}
+.server-version-meta dd,.server-frozen-action dd{margin:0;display:grid;gap:3px;font-size:13px}
+.server-version-meta code,.server-frozen-action code{font-size:10px;overflow-wrap:anywhere}
+.server-frozen-action{margin-top:16px;padding-top:15px;border-top:1px solid var(--line,#d9e1ea)}
+.server-frozen-action>header{display:grid;gap:3px;margin-bottom:12px}
+.server-frozen-action>header span{font-size:10px;font-weight:900;letter-spacing:.1em}
+.server-frozen-action>header small{color:var(--muted,#667085)}
+.server-lifecycle-error{display:flex;gap:10px;align-items:center;margin-bottom:12px;padding:11px 13px;border:1px solid #b42318;border-radius:10px;background:rgba(180,35,24,.06)}
+.server-lifecycle-error span{font-size:12px}
+@media(max-width:640px){
+ .server-preflight-issue{grid-template-columns:1fr}
+ .server-preflight-issue small{grid-column:auto}
+ .server-version-meta,.server-frozen-action dl{grid-template-columns:1fr}
+}
