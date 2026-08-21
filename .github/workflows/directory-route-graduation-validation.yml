@@ -1,0 +1,27 @@
+name: Continuum Directory Route Graduation Validation
+
+on:
+  pull_request:
+    paths:
+      - 'menu/**'
+      - 'directory/**'
+      - 'assets/cmx-routes.json'
+      - 'assets/cmx-ops-core.js'
+      - 'assets/cmx-ops-runtime.js'
+      - 'tests/continuum-directory-route-graduation.test.js'
+      - 'docs/continuum-directory-route-graduation-CURRENT.md'
+      - '.github/workflows/directory-route-graduation-validation.yml'
+  workflow_dispatch:
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate route split and JS parse contracts
+        run: node tests/continuum-directory-route-graduation.test.js
+      - name: Check whitespace
+        run: git diff --check HEAD^ HEAD
