@@ -13,7 +13,7 @@ const contract = fs.readFileSync(path.join(root, 'docs/continuum-knowledge-time-
 
 assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
 assert.match(loader, /continuum-doc-top-routes\.js\?v=20260819-1/);
-assert.match(layer, /BRING KNOWLEDGE IN/);
+assert.match(layer, /BRING INFORMATION IN/);
 assert.match(layer, /Paste \+ bulk text/);
 assert.match(layer, /Markdown \+ JSON/);
 assert.match(layer, /AI handoffs/);
@@ -22,11 +22,11 @@ assert.match(layer, /CAPTURE/);
 assert.match(layer, /UNDERSTAND/);
 assert.match(layer, /REVIEW/);
 assert.match(layer, /INTEGRATE/);
-assert.match(layer, /private by default/);
-assert.match(layer, /REAL TEMPORAL AWARENESS/);
+assert.match(layer, /New information starts private/);
+assert.match(layer, /REAL CLOCK/);
 assert.match(layer, /roughly two seconds passed/);
-assert.match(layer, /Upcoming can become due, overdue or stale/);
-assert.match(layer, /Check In already proves server-owned elapsed timing/);
+assert.match(layer, /Something can become due, overdue or stale/);
+assert.match(layer, /Check In already uses server-owned elapsed timing/);
 assert.match(layer, /dataset\.continuumKnowledgeTime = 'ready'/);
 
 assert.match(topRoutes, /href = '\/lab\/automations\/'/);
