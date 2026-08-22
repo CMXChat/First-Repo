@@ -140,6 +140,28 @@
   const mutation = (method = "POST") => ({ method, mutation: true });
   const id = (value) => encodeURIComponent(value);
 
+  async function getReceipt(automationId, runId) {
+    const receipt = await request(`${OP}/automations/${id(automationId)}/runs/${id(runId)}/receipt`);
+    window.dispatchEvent(new CustomEvent("cmx:runtime-receipt-read", {
+      detail: {
+        automationId: String(automationId || ""),
+        runId: String(runId || ""),
+      },
+    }));
+    return receipt;
+  }
+
+  function installReceiptControlLink() {
+    const route = location.pathname.endsWith("/") ? location.pathname : `${location.pathname}/`;
+    if (!["/email/", "/requests/"].includes(route)) return;
+    if (document.querySelector("script[data-runtime-receipt-control-link]")) return;
+    const script = document.createElement("script");
+    script.src = "/assets/continuum-runtime-receipt-link-v1.js?v=20260822-1";
+    script.defer = true;
+    script.dataset.runtimeReceiptControlLink = "true";
+    document.head.appendChild(script);
+  }
+
   const api = {
     apiBase: API_BASE,
     operatorBase: OP,
@@ -178,8 +200,9 @@
     requestRun: (automationId, payload) => request(`${OP}/automations/${id(automationId)}/runs`, json("POST", payload)),
     processRun: (automationId, runId, payload) => request(`${OP}/automations/${id(automationId)}/runs/${id(runId)}/process`, json("POST", payload)),
     getRun: (automationId, runId) => request(`${OP}/automations/${id(automationId)}/runs/${id(runId)}`),
-    getReceipt: (automationId, runId) => request(`${OP}/automations/${id(automationId)}/runs/${id(runId)}/receipt`),
+    getReceipt,
   };
 
   window.CMXOperatorApi = Object.freeze(api);
+  installReceiptControlLink();
 })();

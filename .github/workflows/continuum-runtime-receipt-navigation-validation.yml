@@ -1,0 +1,85 @@
+name: Continuum Runtime Receipt Navigation Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/continuum-runtime-receipt-link-v1.js'
+      - 'assets/lab/lab-email-api-v1.js'
+      - 'tests/continuum-email-lab-v1.test.js'
+      - 'tests/continuum-email-runtime-v3-browser.js'
+      - 'tests/continuum-requests-v1.test.js'
+      - 'tests/continuum-runtime-receipt-control-link-v1-browser.js'
+      - '.github/workflows/continuum-runtime-receipt-navigation-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/continuum-runtime-receipt-link-v1.js'
+      - 'assets/lab/lab-email-api-v1.js'
+      - 'tests/continuum-email-lab-v1.test.js'
+      - 'tests/continuum-email-runtime-v3-browser.js'
+      - 'tests/continuum-requests-v1.test.js'
+      - 'tests/continuum-runtime-receipt-control-link-v1-browser.js'
+      - '.github/workflows/continuum-runtime-receipt-navigation-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Validate receipt navigation source contracts
+        run: |
+          set -euo pipefail
+          node --check assets/continuum-operator-api-v1.js
+          node --check assets/continuum-runtime-receipt-link-v1.js
+          node --check assets/lab/lab-email-api-v1.js
+          node --check tests/continuum-email-runtime-v3-browser.js
+          node tests/continuum-email-lab-v1.test.js
+          node tests/continuum-requests-v1.test.js
+          git diff --check
+
+  receipt-link-browser-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Prove Email and Requests receipts hand off exact Run IDs to Control
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/runtime-receipt-nav-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node tests/continuum-runtime-receipt-control-link-v1-browser.js
+
+  email-safe-simulation-browser-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Prove complete Email safe-simulation workflow and exact Control handoff
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/email-runtime-proof-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node tests/continuum-email-runtime-v3-browser.js
