@@ -85,12 +85,12 @@
             <span class="lab-status">LAB</span>
           </a>
 
-          <div class="lab-tree__row lab-tree__row--future" data-command="email" data-status="NEXT" data-route-row aria-disabled="true" tabindex="0">
+          <a class="lab-tree__row" href="/lab/email/" data-command="email" data-status="PROVING" data-route-row>
             <span class="lab-tree__branch">├──</span>
             <span class="lab-tree__path">email/</span>
             <span class="lab-tree__desc">manual Email action playground</span>
-            <span class="lab-status lab-status--next">NEXT</span>
-          </div>
+            <span class="lab-status lab-status--blue">PROVING</span>
+          </a>
 
           <a class="lab-tree__row" href="/lab/snapshot/" data-command="snapshot" data-status="ARCHIVE" data-route-row>
             <span class="lab-tree__branch">├──</span>
@@ -130,7 +130,7 @@
 
         <div class="lab-terminal__output" id="terminalOutput" aria-live="polite">
           <div><span class="lab-output__ok">10 branches indexed.</span> Focused routes own their own state; this page owns navigation only.</div>
-          <div>Try <code>help</code>, <code>status</code>, <code>tree</code>, or <code>open automations</code>.</div>
+          <div>Try <code>help</code>, <code>status</code>, <code>tree</code>, or <code>open email</code>.</div>
         </div>
 
         <form class="lab-commandline" id="labCommandForm" autocomplete="off">
@@ -151,7 +151,7 @@
         <article><i class="lab-dot lab-dot--live"></i><div><strong>LIVE</strong><p>Existing production-facing surface. This label does not imply every future Continuum capability is deployed.</p></div></article>
         <article><i class="lab-dot lab-dot--blue"></i><div><strong>WIRED / PROVING</strong><p>Frontend uses or models real protected contracts, but live acceptance or deployment may still be pending.</p></div></article>
         <article><i class="lab-dot"></i><div><strong>LAB</strong><p>Experiment or product prototype. Useful for learning and interaction design; not production execution truth.</p></div></article>
-        <article><i class="lab-dot lab-dot--next"></i><div><strong>NEXT</strong><p>Planned proving surface. Visible here so the Lab map shows where today's work is heading without pretending it exists.</p></div></article>
+        <article><i class="lab-dot lab-dot--next"></i><div><strong>NEXT</strong><p>Planned proving surface. Visible here so the Lab map shows where future work is heading without pretending it exists.</p></div></article>
       </div>
     </section>
 
@@ -161,6 +161,6 @@
       <a href="/menu/">CMX operations →</a>
     </footer>
   </main>
-  <script src="/assets/lab/lab-home-v1.js?v=20260821-1"></script>
+  <script src="/assets/lab/lab-home-v1.js?v=20260821-2"></script>
 </body>
 </html>
