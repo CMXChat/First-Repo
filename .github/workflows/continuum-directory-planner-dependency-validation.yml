@@ -9,7 +9,7 @@ on:
       - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-loader.js'
-      - 'lab/index.html'
+      - 'archive/continuum-lab/**'
       - 'tests/continuum-mobile-layout-probe.js'
       - '.github/workflows/continuum-directory-planner-dependency-validation.yml'
   pull_request:
@@ -20,7 +20,7 @@ on:
       - 'assets/lab/lab-continuum-planner-review-v1.css'
       - 'assets/lab/lab-directory-planner-preview.js'
       - 'assets/lab/lab-loader.js'
-      - 'lab/index.html'
+      - 'archive/continuum-lab/**'
       - 'tests/continuum-mobile-layout-probe.js'
       - '.github/workflows/continuum-directory-planner-dependency-validation.yml'
 
@@ -93,14 +93,10 @@ jobs:
           ];
           assert(api.validatePlan(badFuture).errors.some(error => error.code === 'dependency_not_earlier'));
 
-          const badRef = [
-            { id: 'audience', type: 'automation.reference_audience', uses: ['temp:group:missing'] }
-          ];
+          const badRef = [{ id: 'audience', type: 'automation.reference_audience', uses: ['temp:group:missing'] }];
           assert(api.validatePlan(badRef).errors.some(error => error.code === 'temp_ref_not_available'));
 
-          const badProduce = [
-            { id: 'people', type: 'directory.match_people', produces: 'person-real-id' }
-          ];
+          const badProduce = [{ id: 'people', type: 'directory.match_people', produces: 'person-real-id' }];
           assert(api.validatePlan(badProduce).errors.some(error => error.code === 'plan_ref_must_be_temporary'));
 
           console.log('Directory cross-domain Planner dependency contract passed.');
