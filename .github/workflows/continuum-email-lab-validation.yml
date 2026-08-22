@@ -1,0 +1,73 @@
+name: Continuum Email Lab Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/email/**'
+      - 'assets/lab/lab-email-*.js'
+      - 'assets/lab/lab-email-*.css'
+      - 'tests/continuum-email-lab-v1.test.js'
+      - 'docs/continuum-email-lab-CURRENT.md'
+      - '.github/workflows/continuum-email-lab-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'lab/email/**'
+      - 'assets/lab/lab-email-*.js'
+      - 'assets/lab/lab-email-*.css'
+      - 'tests/continuum-email-lab-v1.test.js'
+      - 'docs/continuum-email-lab-CURRENT.md'
+      - '.github/workflows/continuum-email-lab-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Parse and validate Email Lab
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-email-api-v1.js
+          node --check assets/lab/lab-email-v1.js
+          node tests/continuum-email-lab-v1.test.js
+          git diff --check
+
+  browser-geometry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Render Email Lab desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/email-lab-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node - <<'NODE'
+          const { chromium } = require('playwright-core');
+          async function inspect(width,height){
+            const browser=await chromium.launch({executablePath:process.env.BROWSER,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage({viewport:{width,height}});
+            await page.route('**/api/v1/**',route=>route.fulfill({status:401,contentType:'application/json',body:JSON.stringify({detail:'acceptance: protected backend unavailable'})}));
+            await page.goto('http://127.0.0.1:8000/lab/email/',{waitUntil:'networkidle'});
+            await page.evaluate(()=>{const g=document.querySelector('[data-cmx-gated-content]');if(g)g.hidden=false;document.body.classList.remove('cmx-black-prompt-locked')});
+            const r=await page.evaluate(()=>({marker:document.querySelector('[data-email-lab="v1"]')!==null,overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,panels:[...document.querySelectorAll('.panel')].every(el=>{const x=el.getBoundingClientRect();return x.left>=-1&&x.right<=document.documentElement.clientWidth+1}),real:document.body.innerText.includes('Real manual SMTP'),authority:document.body.innerText.includes('No unattended authority lives here')}));
+            console.log(width,height,r);
+            if(!r.marker||r.overflow||!r.panels||!r.real||!r.authority)throw new Error(`Email Lab geometry/contract failed at ${width}`);
+            await browser.close();
+          }
+          (async()=>{for(const v of [[1280,900],[430,900],[390,844],[360,800]])await inspect(...v)})().catch(e=>{console.error(e);process.exit(1)});
+          NODE
