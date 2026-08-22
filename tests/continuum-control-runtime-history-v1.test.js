@@ -20,7 +20,8 @@ assert.doesNotMatch(html, /href="\/lab\/(?:control\/|automations\/|\")/);
 
 assert.match(api, /listAutomations:/);
 assert.match(api, /listRuns:/);
-assert.match(api, /getReceipt:/);
+assert.match(api, /async function getReceipt\(/);
+assert.match(api, /\n\s*getReceipt,\n/);
 assert.match(js, /Runtime history & receipts/);
 assert.match(js, /listAutomations\(\)/);
 assert.match(js, /listRuns\(/);
