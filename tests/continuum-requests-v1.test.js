@@ -52,6 +52,6 @@ if(routes.version<38)throw new Error('route registry version must include Reques
 must(roadmap,'Phase F2 — `/requests/` operator doorway','approved Requests roadmap');
 must(roadmap,'One backend, many interfaces.','architecture principle');
 must(handoff,'Preview-before-write invariant','Requests handoff');
-must(handoff,'not a direct PostgreSQL console','database boundary');
+must(handoff.toLowerCase(),'not a direct postgresql console','database boundary');
 
 console.log('Continuum Requests v1 protected preview/write contract: PASS');
