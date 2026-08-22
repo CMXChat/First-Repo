@@ -58,9 +58,10 @@
 
     dashboard.querySelectorAll(".v3-automation-card[data-open]").forEach(ensureDashboardCard);
     const manage = dashboard.querySelector("[data-v7-manage] span");
-    if (manage) manage.textContent = "Manage all";
+    if (manage && manage.textContent !== "Manage all") manage.textContent = "Manage all";
     const heroCopy = dashboard.querySelector(".v3-hero p");
-    if (heroCopy) heroCopy.textContent = "Build, inspect and control Automation definitions. Execution remains off in Lab.";
+    const heroText = "Build, inspect and control Automation definitions. Execution remains off in Lab.";
+    if (heroCopy && heroCopy.textContent !== heroText) heroCopy.textContent = heroText;
 
     dashboard.dataset.controlV10 = "ready";
     document.documentElement.dataset.labAutomationsControl = "v10";
