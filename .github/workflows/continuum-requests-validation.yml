@@ -83,7 +83,7 @@ jobs:
               const g=document.querySelector('[data-cmx-gated-content]');
               if(g)g.hidden=false;
               document.body.classList.remove('cmx-black-prompt-locked');
-              document.querySelectorAll('[data-cmx-gate-overlay]').forEach(el=>el.remove());
+              document.querySelectorAll('[data-cmx-gate-overlay],#cmx-black-prompt-gate').forEach(el=>el.remove());
             });
             await page.locator('#requestInput').fill('Ada Lovelace <ada@example.com>\nGrace Hopper, grace@example.com');
             await page.locator('#parseRequest').click();
@@ -93,8 +93,7 @@ jobs:
               backend:document.querySelector('#backendBadge')?.dataset.state,
               rows:document.querySelectorAll('#previewBody tr').length,
               approveDisabled:document.querySelector('#approveRequest')?.disabled,
-              summary:document.querySelector('#previewSummary')?.textContent,
-              writeCount:window.__neverUsed
+              summary:document.querySelector('#previewSummary')?.textContent
             }));
             console.log(width,height,facts,{writeCount});
             if(!facts.marker||facts.overflow||facts.backend!=='connected'||facts.rows!==2||facts.approveDisabled)throw new Error(`Requests preview contract failed at ${width}`);
