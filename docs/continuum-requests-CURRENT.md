@@ -2,15 +2,15 @@
 
 Last updated: 2026-08-22
 Route: `/requests/`
-Status: **V2 FRONTEND SLICE — protected Directory writes + Email safe simulation**
+Status: **V2 FRONTEND SLICE — protected Directory writes + typed Email safe simulation + exact Runtime history handoff**
 
 ## Purpose
 
-`/requests/` is the operator doorway over Continuum's existing authenticated backend APIs.
+`/requests/` is a bounded operator doorway over Continuum's existing authenticated backend APIs.
 
-It is **not** a direct PostgreSQL console, a second Email engine, or arbitrary AI execution.
+It is **not** a direct PostgreSQL console, a second Email engine, arbitrary HTTP proxy or general AI execution bridge.
 
-Requests v2 has two bounded operation modes:
+Requests v2 currently has two useful operation modes:
 
 1. batch Person + email ContactMethod creation;
 2. typed Email request resolution and approved **safe simulation** through the existing Library → Automation → Runtime contract.
@@ -19,53 +19,57 @@ The backend remains authoritative for durable identity, readiness, validation, i
 
 ## Protected session
 
-Requests uses the shared protected operator transport in `assets/continuum-operator-api-v1.js`.
+Requests uses `assets/continuum-operator-api-v1.js`.
 
-- `POST /api/v1/checkin/operator/unlock` submits the operator key directly to the backend.
-- `GET /api/v1/checkin/operator/session` restores/validates the HttpOnly protected session.
-- Mutations require the protected cookie, exact allowed Origin and `X-CSRF-Token`.
-- The operator key is immediately cleared and is never written to localStorage/sessionStorage.
-- Requests never stores canonical private backend records as browser-owned truth.
+- unlock sends the operator key directly to the backend;
+- session state is carried by the backend cookie;
+- mutations require exact Origin + CSRF;
+- operator key is immediately cleared;
+- operator key, CSRF and canonical private backend records are not stored in localStorage/sessionStorage.
 
 ## Production boundary
 
-The operator session / Check In foundation is production-live.
+The Check In/operator-session foundation is production-live.
 
-The Directory, Connection/SenderIdentity, Library, Automation, Runtime, provider and receipt contracts used by Requests remain part of the stacked `jay-app` implementation until deliberately reviewed, merged, migrated and deployed.
+The Directory, Connection/SenderIdentity, Library, Automation, Runtime, provider and receipt contracts used by Requests remain stacked backend implementation until deliberately merged, migrated and deployed.
 
-Therefore the live page may successfully unlock and then truthfully report that a required capability is not deployed. That is a backend deployment boundary, not permission to create a browser-local substitute.
+A live page may therefore:
+
+`unlock successfully → required newer capability returns 404 → Requests reports NOT DEPLOYED`
+
+That is a deployment boundary, not permission for browser-local substitute success.
 
 ## Mode 1 — batch contacts
 
-Supported deterministic input formats:
+Supported deterministic formats include:
 
 - `Name <email@example.com>`
 - `Name, email@example.com`
 - `Name | email@example.com`
-- tab-separated `Name<TAB>email@example.com`
+- tab-separated name/email
 - `Name email@example.com`
 
-Preview is local and read-only. Duplicate normalized emails inside the pasted batch are rejected before approval.
+Preview is local/read-only. Duplicate normalized emails inside the pasted batch are blocked before approval.
 
 ### Preview-before-write invariant
 
-No backend mutation happens when the user types or presses **Preview request**.
+Typing and **Preview request** perform no backend mutation.
 
-The user must explicitly press **Approve & write to backend**.
+Only **Approve & write to backend** starts writes.
 
-For each approved row:
+For each approved row Requests:
 
-1. create the Person;
-2. create that Person's email ContactMethod;
-3. show exact durable IDs on success;
-4. show a truthful partial result if Person creation succeeds but ContactMethod creation fails;
-5. never silently retry a conflict, expired session or failed mutation.
+1. creates a Person;
+2. creates that Person's email ContactMethod;
+3. reports exact durable IDs;
+4. reports partial state if Person succeeds and ContactMethod fails;
+5. never silently retries conflicts, expired sessions or failed writes.
 
-The two calls are sequential and are not one database transaction.
+These calls are sequential, not one database transaction.
 
-## Mode 2 — Email request
+## Mode 2 — typed Email request
 
-Requests v2 adds a typed Email request form with:
+Requests v2 accepts bounded typed fields:
 
 - From email;
 - To email;
@@ -73,102 +77,128 @@ Requests v2 adds a typed Email request form with:
 - message;
 - simulated provider behavior (`accepted`, `transient_once`, `permanent_failure`).
 
-This is deliberately not an arbitrary natural-language parser yet. A future authenticated assistant bridge may translate normal language into these typed fields.
+This is deliberately not a general natural-language AI parser yet.
 
 ### Email preview is read-only
 
-Pressing **Preview Email request** performs protected reads only.
+**Preview Email request** performs protected reads only.
 
-The page resolves:
+It resolves:
 
-- exactly one active Directory Person + active email ContactMethod matching the requested recipient address;
-- exactly one active SenderIdentity on a Connection matching the requested sender address;
-- authoritative Connection/Sender readiness facts;
+- exactly one active Person + active email ContactMethod for the recipient;
+- exactly one active SenderIdentity on a Connection for the sender;
+- authoritative Connection/Sender readiness;
 - safe-simulation availability.
 
-Preview shows the exact backend UUIDs and message before any Email mutation or Runtime Run is requested.
+The preview shows exact UUIDs and the proposed message before Email mutations occur. Missing/ambiguous identities keep approval blocked.
 
-If the sender or recipient is missing or ambiguous, approval stays blocked.
+A string such as `team@cmxchat.com` is not authority by itself. The backend SenderIdentity/Connection/readiness facts must resolve correctly.
 
-### Email approval and execution
+### Explicit approval and canonical execution
 
-Pressing **Approve & run safe simulation** authorizes a bounded multi-step backend operation:
+**Approve & run safe simulation** performs the existing backend chain:
 
-1. create action-scoped `ContentAsset` + Draft;
-2. update Draft with `expected_revision` and the requested source text;
-3. freeze immutable `ContentVersion`;
-4. create a manual Email Automation Draft;
+1. create action-scoped ContentAsset + Draft;
+2. update Draft using `expected_revision`;
+3. freeze immutable ContentVersion;
+4. create manual Email Automation Draft;
 5. update the Draft with exact Connection, SenderIdentity, Person, ContactMethod and ContentAsset UUIDs;
-6. call authoritative server preflight;
-7. if ready, Review and Publish immutable `AutomationVersion`;
-8. request a manual Runtime Run with `provider_mode:"fake"` and a unique idempotency key;
-9. where the development process API exists, explicitly process through canonical Runtime;
-10. read and render the typed Runtime receipt.
+6. call backend preflight;
+7. Review and Publish immutable AutomationVersion if ready;
+8. request Runtime Run with `provider_mode: "fake"` and unique idempotency key;
+9. explicitly process where the development route exists;
+10. read the typed Runtime receipt.
 
-The Automation definition is the same manual Email shape used by `/email/`. Requests does not create an alternate sending path.
+Requests does not implement another sender or another Runtime.
 
-If preflight blocks, Requests stops before Review/Publish/Run and reports the server issues. If a later API is not deployed, it reports the exact stopping boundary.
+If preflight blocks, execution stops before Review/Publish/Run. If a later API is unavailable, Requests reports the exact stopping boundary. Earlier successful writes may remain durable; Requests does not hide that partial state.
 
-Because the operation is multi-step, earlier successful writes may remain durable if a later step fails. Requests says this before approval and never hides that state.
+## Safe simulation
 
-## What safe simulation means
+Safe simulation means real internal Continuum workflow with only the final external provider effect simulated.
 
-Safe simulation is real internal backend work with the final provider side effect simulated.
+Where the backend routes are deployed, durable facts can include:
 
-Real backend facts may include:
-
-- Person/ContactMethod;
-- ContentAsset/Draft/ContentVersion;
-- Automation/AutomationVersion;
-- Runtime Run and Attempts;
+- Person / ContactMethod;
+- ContentAsset / Draft / ContentVersion;
+- Automation / AutomationVersion;
+- Runtime Run / Attempts;
 - Why/provenance;
 - typed receipt.
 
-The external email provider is not contacted. **No external email is sent.**
+No external email is sent.
 
-Requests v2 never offers `real_smtp` and never talks directly to SMTP.
+Requests v2 never offers `real_smtp` and never connects directly to SMTP.
 
-The current stacked provider proof contract names `team@cmxchat.com` as the exact configured proof sender and `cmxchat@gmail.com` as the bounded proof recipient, but Requests still resolves live backend identities/readiness rather than trusting those strings as authority. Production provider use remains a separate later acceptance decision.
+The stacked proof contract currently names `team@cmxchat.com` as the exact configured proof sender and `cmxchat@gmail.com` as the bounded proof recipient, but Requests still resolves backend identity/readiness rather than treating those strings as permission.
 
-## Failure / retry rules
+## Receipt continuity — Open in Control
 
-- `401`: protected session expired; stop and require re-unlock.
-- `403`: Origin/access rejected; stop.
-- `404`: a required route/resource may be unavailable on the current API; stop and report the boundary.
-- `409`: conflict/revision/idempotency semantics are backend-owned; do not overwrite blindly.
-- `422`: show backend validation failure.
-- provider ambiguity: never automatically retry.
+After Requests reads a typed Runtime receipt, the frontend exposes:
 
-Requests does not automatically replay a partially completed Email operation after an error.
+`Open this Run in Control`
 
-## Security and storage
+with:
 
-Never persist in browser storage:
+`/control/?automation_id=<exact Automation UUID>&run_id=<exact Run UUID>`
+
+This closes the product-history loop. Control receives only opaque navigation IDs, then uses the normal protected backend session to read the canonical frozen receipt/Why history.
+
+The link does **not** contain:
 
 - operator key;
 - CSRF token;
-- canonical People/ContactMethods;
-- message content as server truth;
-- provider credentials;
-- Runtime receipts as an alternate canonical history.
+- recipient/sender addresses;
+- message subject/body;
+- provider credentials.
 
-No direct database credentials or database connection exist in this page.
+The query parameters do not grant authority and do not mutate Runtime state.
+
+## Failure / retry rules
+
+- `401`: stop and require re-unlock;
+- `403`: stop on Origin/access rejection;
+- `404`: report unavailable/not-deployed route/resource;
+- `409`: backend owns conflict/revision/idempotency semantics; do not overwrite blindly;
+- `422`: show validation failure;
+- provider ambiguity: never automatically retry.
+
+Requests never automatically replays a partially completed Email operation after an error.
+
+## Security / storage
+
+Never persist as browser-owned canonical truth:
+
+- operator key;
+- CSRF token;
+- People/ContactMethods;
+- message content;
+- provider credentials;
+- Runtime receipts.
+
+No direct database credential or database connection exists in Requests.
+
+## Current browser proof
+
+Focused validation now proves both:
+
+- contact + Email previews make zero writes before approval;
+- approved Email safe simulation follows the canonical Library → Automation → Runtime sequence;
+- safe simulation uses `provider_mode: "fake"`;
+- protected mutations carry CSRF;
+- no `real_smtp` payload appears;
+- typed receipt reads work;
+- the exact Automation/Run receipt can be handed to `/control/` without leaking private fields into the URL.
+
+These tests use a mocked backend boundary. They prove frontend orchestration, not production deployment.
 
 ## Future direction
 
-Continue adding typed adapters only for backend capabilities that have a verified contract.
+Continue adding typed adapters only where a verified protected backend contract exists.
 
-Possible future Requests operations include:
+Broad natural-language interpretation belongs to a later authenticated assistant/AI bridge. AI may translate intent into typed proposed operations; it is not permission and must not bypass preview, backend policy or Runtime.
 
-- Library creation/update;
-- Automation lifecycle operations;
-- protected lookups/reporting;
-- reconciliation inspection;
-- other bounded administrative work.
-
-Broad normal-language interpretation belongs to a later authenticated assistant/AI bridge. AI may translate intent into typed operations; it is not permission and must not bypass preview, backend policy or Runtime.
-
-Durable scheduling still requires a real server-side scheduling layer. Requests v2 does not simulate one.
+Durable scheduling requires a server-side scheduler. Requests does not simulate one in an open browser tab.
 
 ## Canonical files
 
@@ -177,8 +207,11 @@ Durable scheduling still requires a real server-side scheduling layer. Requests 
 - `assets/requests/requests-v2.css`
 - `assets/requests/requests-v1.js`
 - `assets/continuum-operator-api-v1.js`
+- `assets/continuum-runtime-receipt-link-v1.js`
 - `tests/continuum-requests-v1.test.js`
+- `tests/continuum-runtime-receipt-control-link-v1-browser.js`
 - `.github/workflows/continuum-requests-validation.yml`
+- `.github/workflows/continuum-runtime-receipt-navigation-validation.yml`
 
 ## Recovery
 
@@ -188,7 +221,9 @@ Durable scheduling still requires a real server-side scheduling layer. Requests 
 4. `requests/index.html`
 5. `assets/requests/requests-v1.js`
 6. `assets/continuum-operator-api-v1.js`
-7. `docs/continuum-email-lab-CURRENT.md`
-8. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`
+7. `assets/continuum-runtime-receipt-link-v1.js`
+8. `docs/continuum-email-lab-CURRENT.md`
+9. `docs/continuum-control-center-lab-CURRENT.md`
+10. current backend integration handbook in `CMXChat/jay-app`
 
-Do not add direct PostgreSQL writes, browser SMTP, real-provider shortcuts or an alternate Runtime as a frontend workaround.
+Do not add direct PostgreSQL, browser SMTP, real-provider shortcuts, an alternate Runtime or a secret AI permission bypass as frontend workarounds.
