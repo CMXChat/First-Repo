@@ -150,8 +150,10 @@
 
     listPeople: () => request(`${OP}/directory/people`),
     createPerson: (payload) => request(`${OP}/directory/people`, json("POST", payload)),
+    updatePerson: (personId, payload) => request(`${OP}/directory/people/${encodeURIComponent(personId)}`, json("PATCH", payload)),
     listContacts: (personId) => request(`${OP}/directory/people/${encodeURIComponent(personId)}/contact-methods`),
     createContact: (personId, payload) => request(`${OP}/directory/people/${encodeURIComponent(personId)}/contact-methods`, json("POST", payload)),
+    setContactLifecycle: (contactId, lifecycle) => request(`${OP}/directory/contact-methods/${encodeURIComponent(contactId)}`, json("PATCH", { lifecycle })),
 
     listConnections: () => request(`${OP}/connections`),
     listSenders: (connectionId) => request(`${OP}/connections/${encodeURIComponent(connectionId)}/sender-identities`),
