@@ -159,7 +159,7 @@
   opacity: .7;
 }
 
-.continuum-product-actions {
+.document-footer .continuum-product-actions {
   grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
 }
 
