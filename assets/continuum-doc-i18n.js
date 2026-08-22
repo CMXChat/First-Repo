@@ -16,12 +16,28 @@
 
   document.documentElement.dataset.continuumI18n = 'rtl-ready';
 
+  function loadVisionRefresh() {
+    if (document.querySelector('script[data-continuum-vision-refresh]')) return;
+    const script = document.createElement('script');
+    script.src = '/assets/continuum-doc-vision-refresh.js?v=20260822-1';
+    script.async = false;
+    script.dataset.continuumVisionRefresh = 'loader';
+    document.body.append(script);
+  }
+
   function loadFinalVoice() {
-    if (document.querySelector('script[data-continuum-final-voice]')) return;
+    const existing = document.querySelector('script[data-continuum-final-voice]');
+    if (existing) {
+      if (document.documentElement.dataset.continuumFinalVoice === 'ready') loadVisionRefresh();
+      else existing.addEventListener('load', loadVisionRefresh, { once: true });
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = '/assets/continuum-doc-final-voice.js?v=20260820-1';
     script.async = false;
     script.dataset.continuumFinalVoice = 'loader';
+    script.addEventListener('load', loadVisionRefresh, { once: true });
     document.body.append(script);
   }
 

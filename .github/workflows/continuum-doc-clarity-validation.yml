@@ -48,11 +48,13 @@ jobs:
           node --check assets/continuum-doc-human-cadence.js
           node --check assets/continuum-doc-reader-first.js
           node --check assets/continuum-doc-final-voice.js
+          node --check assets/continuum-doc-vision-refresh.js
           node tests/personal-os-doc-smoke.test.js
           node tests/doc-visual-qa-smoke.test.js
           node tests/continuum-doc-clarity-smoke.test.js
           node tests/continuum-doc-continuity-positioning.test.js
           node tests/continuum-doc-final-voice.test.js
+          node tests/continuum-doc-vision-refresh.test.js
 
       - name: Browser clarity smoke desktop and mobile
         run: |
@@ -78,6 +80,7 @@ jobs:
             grep -q 'data-continuum-human-cadence="ready"' "$file"
             grep -q 'data-continuum-reader-first="ready"' "$file"
             grep -q 'data-continuum-final-voice="ready"' "$file"
+            grep -q 'data-continuum-vision-refresh="ready"' "$file"
             grep -q 'data-continuum-voice="natural-v4"' "$file"
             grep -q 'Think of AI as the brain and Continuum as the nervous system around it' "$file"
             grep -q 'Continuum is the private layer around the AI that keeps those things connected over time.' "$file"
@@ -99,6 +102,15 @@ jobs:
             grep -q 'Silence and urgency never create permission.' "$file"
             grep -q 'Files + OCR / vision' "$file"
             grep -q 'Open Check In' "$file"
+            grep -q 'Think of Continuum as a private map of the people, information, rules, tools and ongoing work that matter to you.' "$file"
+            grep -q 'KNOWLEDGE IS NOT PERMISSION' "$file"
+            grep -q 'ONE CONNECTED BACKEND PROOF' "$file"
+            grep -q 'NOT PRODUCTION-LIVE' "$file"
+            grep -q 'href="/automations/"' "$file"
+            grep -q 'href="/directory/"' "$file"
+            grep -q 'href="/library/"' "$file"
+            grep -q 'href="/email/"' "$file"
+            grep -q 'href="/control/"' "$file"
           }
 
           dump http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-desktop.html
@@ -150,7 +162,12 @@ jobs:
           assert overview < ai < spaces < action < afterlife < engineering < build < status
 
           assert html.count('href="/checkin/"') >= 3
-          print('Desktop Continuum one-minute explanation and final natural voice passed.')
+          assert '/lab/automations/' not in html[html.index('<footer class="document-footer"'):]
+          assert html.index('KNOWLEDGE IS NOT PERMISSION') > ai
+          assert html.index('KNOWLEDGE IS NOT PERMISSION') < spaces
+          assert html.index('ONE CONNECTED BACKEND PROOF') > action
+          assert html.index('ONE CONNECTED BACKEND PROOF') < afterlife
+          print('Desktop Continuum one-minute explanation, vision refresh and final natural voice passed.')
           PY
 
           dump --window-size=390,844 http://127.0.0.1:8000/doc/ > /tmp/continuum-doc-mobile.html
@@ -158,4 +175,4 @@ jobs:
           grep -q 'mobileContentsTrigger' /tmp/continuum-doc-mobile.html
           grep -q 'continuum-continuity-line' /tmp/continuum-doc-mobile.html
 
-          echo 'Continuum /doc final natural voice rendered on desktop and 390x844 mobile.'
+          echo 'Continuum /doc final natural voice and vision refresh rendered on desktop and 390x844 mobile.'
