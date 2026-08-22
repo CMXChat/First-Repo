@@ -2,30 +2,40 @@ name: Continuum Automations Real Backend Integration Validation
 
 on:
   push:
-    branches: [agent/lab-automations-real-backend-integration]
+    branches:
+      - agent/lab-automations-real-backend-integration
+      - agent/lab-automations-mobile-acceptance-fix
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
       - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-operations-v7*.css'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'tests/continuum-automations-mobile-acceptance-probe.js'
+      - 'tests/continuum-automations-operations-v7.test.js'
       - 'tests/lab-automations-history-smoke.test.js'
       - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
       - 'docs/continuum-live-frontend-acceptance-CURRENT.md'
+      - 'docs/continuum-automations-mobile-acceptance-CURRENT.md'
       - '.github/workflows/automations-real-backend-validation.yml'
   pull_request:
-    branches: [agent/directory-server-proof-v1, main]
+    branches: [main]
     paths:
       - 'lab/automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
       - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-operations-v7*.css'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
+      - 'tests/continuum-automations-mobile-acceptance-probe.js'
+      - 'tests/continuum-automations-operations-v7.test.js'
       - 'tests/lab-automations-history-smoke.test.js'
       - 'docs/continuum-automations-real-backend-integration-CURRENT.md'
       - 'docs/continuum-live-frontend-acceptance-CURRENT.md'
+      - 'docs/continuum-automations-mobile-acceptance-CURRENT.md'
       - '.github/workflows/automations-real-backend-validation.yml'
   workflow_dispatch:
 
@@ -51,8 +61,10 @@ jobs:
           node --check assets/lab/lab-automations-server-v1.js
           node --check assets/lab/lab-automations-server-lifecycle-v1.js
           node --check assets/lab/lab-automations-server-runtime-v1.js
+          node --check tests/continuum-automations-mobile-acceptance-probe.js
           node tests/continuum-automations-real-backend-integration.test.js
           node tests/lab-automations-history-smoke.test.js
+          node tests/continuum-automations-operations-v7.test.js
 
           # Existing accepted Automations contracts. Do not weaken these to satisfy integration work.
           node --check assets/lab/lab-automations-model-v5.js
@@ -77,7 +89,7 @@ jobs:
 
   desktop-mobile-preservation:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Render accepted Automations surface on desktop and mobile
@@ -89,9 +101,16 @@ jobs:
             exit 1
           fi
 
+          node - <<'NODE'
+          const fs = require('fs');
+          const source = fs.readFileSync('lab/automations/index.html', 'utf8');
+          const probe = '<script src="/tests/continuum-automations-mobile-acceptance-probe.js"></script>';
+          fs.writeFileSync('lab/automations/mobile-acceptance.html', source.replace('</body>', `${probe}\n</body>`), 'utf8');
+          NODE
+
           python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-automations-http.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab/automations/mobile-acceptance.html' EXIT
           sleep 1
 
           dump() {
@@ -101,7 +120,7 @@ jobs:
             local pattern="$1" file="$2" label="$3"
             if ! grep -q "$pattern" "$file"; then
               echo "MISSING: $label ($pattern) in $file" >&2
-              grep -E 'SERVER-BACKED|data-lab-automations|data-control-v10|data-v10-|v10-|WHEN|IF|DO|WAIT|TEST|Loading|Automation' "$file" | head -120 >&2 || true
+              grep -E 'SERVER-BACKED|data-lab-automations|data-control-v10|data-v10-|v10-|WHEN|IF|DO|WAIT|TEST|Loading|Automation|mobile-acceptance' "$file" | head -160 >&2 || true
               exit 1
             fi
             echo "OK: $label"
@@ -113,6 +132,13 @@ jobs:
               exit 1
             fi
             echo "OK: $label absent"
+          }
+          acceptance() {
+            local width="$1" height="$2" label="$3" file="/tmp/automations-acceptance-${width}.html"
+            dump --window-size="${width},${height}" 'http://127.0.0.1:8000/lab/automations/mobile-acceptance.html' > "$file"
+            require 'data-mobile-acceptance="pass"' "$file" "$label geometry pass"
+            require "data-mobile-acceptance-width=\"${width}\"" "$file" "$label viewport width"
+            require 'data-mobile-acceptance-heading-create-overlap="false"' "$file" "$label heading/create separation"
           }
 
           dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/' > /tmp/automations-dashboard.html
@@ -152,4 +178,10 @@ jobs:
           require 'TEST' /tmp/automations-mobile-editor.html 'mobile TEST stage survives'
           forbid 'Loading Automations' /tmp/automations-mobile-editor.html 'mobile editor loading placeholder'
 
-          echo 'Automations desktop/mobile preservation passed with server-backed lane present.'
+          acceptance 1440 900 'desktop'
+          acceptance 360 800 'mobile 360x800'
+          acceptance 390 844 'mobile 390x844'
+          acceptance 412 915 'mobile 412x915'
+          acceptance 430 900 'mobile 430x900'
+
+          echo 'Automations desktop/mobile preservation and mobile acceptance geometry passed.'
