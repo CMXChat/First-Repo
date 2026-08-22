@@ -15,6 +15,8 @@ async function proveDirectory(browser) {
   const wanted = '22222222-2222-4222-8222-222222222222';
   const first = '11111111-1111-4111-8111-111111111111';
   const requests = [];
+  const pageErrors = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
 
   await page.route('**/api/v1/**', async (route) => {
     const req = route.request();
@@ -43,6 +45,18 @@ async function proveDirectory(browser) {
     document.body.classList.remove('cmx-black-prompt-locked');
     document.querySelectorAll('[data-cmx-gate-overlay],#cmx-black-prompt-gate').forEach((node) => node.remove());
   });
+
+  await page.waitForTimeout(1200);
+  const diagnostic = await page.evaluate(() => ({
+    readyState: document.readyState,
+    script: document.querySelector('script[data-continuum-exact-reference]')?.src || null,
+    exactState: document.documentElement.dataset.continuumExactReference || null,
+    exactType: document.documentElement.dataset.continuumExactReferenceType || null,
+    peopleSource: document.documentElement.dataset.directoryPeopleSource || null,
+    rows: [...document.querySelectorAll('[data-server-person]')].map((node) => ({ id: node.getAttribute('data-server-person'), current: node.getAttribute('aria-current'), exact: node.dataset.exactReference || null })),
+    detail: document.querySelector('#detailPane')?.innerText || '',
+  }));
+  console.log('Directory exact-reference diagnostic', JSON.stringify({ diagnostic, pageErrors, requests }));
 
   await page.waitForFunction((id) => document.documentElement.dataset.continuumExactReference === 'focused' && document.querySelector(`[data-server-person="${id}"]`)?.dataset.exactReference === 'true', wanted);
   await page.waitForFunction(() => document.querySelector('#detailPane')?.innerText.includes('Exact Person'));
