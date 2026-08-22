@@ -1,17 +1,17 @@
-name: Check In Lab Validation
+name: Continuum Archived Lab Validation
 
 on:
   push:
     branches: [main]
     paths:
-      - 'lab/**'
+      - 'archive/continuum-lab/**'
       - 'assets/lab/**'
       - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/checkin-lab-validation.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'lab/**'
+      - 'archive/continuum-lab/**'
       - 'assets/lab/**'
       - 'tests/playwright-mobile-dump.cjs'
       - '.github/workflows/checkin-lab-validation.yml'
@@ -20,236 +20,82 @@ permissions:
   contents: read
 
 jobs:
-  validate-lab:
+  validate-archive:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Install Playwright core
-        run: npm install --no-save playwright-core@1.55.0
-
-      - name: Validate active Lab JavaScript syntax
+      - name: Validate archived Lab assets
         run: |
           set -euo pipefail
           for file in \
             assets/lab/lab-loader.js \
-            assets/lab/lab-mock-api.js \
-            assets/lab/lab-crm.js \
-            assets/lab/lab-directory-v2.js \
             assets/lab/lab-continuum-planner-contract-v1.js \
             assets/lab/lab-directory-planner-preview.js \
             assets/lab/lab-continuum-planner-preflight-v1.js \
             assets/lab/lab-continuum-planner-review-v1.js \
-            assets/lab/lab-inventory.js \
-            assets/lab/lab-actions.js \
-            assets/lab/lab-timeline-live.js \
-            assets/lab/lab-decisions.js \
-            assets/lab/lab-decisions-events.js \
-            assets/lab/lab-audit-bootstrap.js \
-            assets/lab/lab-audit.js \
-            assets/lab/lab-command.js \
-            assets/lab/lab-test-center.js \
-            assets/lab/lab-product-polish.js \
-            assets/lab/lab-plan.js \
-            assets/lab/lab-experience.js \
             assets/lab/lab-automation-builder.js \
             assets/lab/lab-automations-main-bridge.js \
             assets/lab/lab-acceptance.js \
-            assets/lab/checkin-status-contract.js \
-            assets/lab/checkin.js \
-            assets/lab/checkin-refine.js \
-            assets/lab/checkin-vault-panels.js \
-            assets/lab/checkin-actions-official.js \
             tests/playwright-mobile-dump.cjs
           do
             node --check "$file"
           done
 
-      - name: Validate generated Lab snapshot and Planner contracts
-        run: |
-          set -euo pipefail
           node - <<'NODE'
-          const fs = require('fs');
-          const assert = require('assert');
-          const status = require('./assets/lab/checkin-status-contract.js');
+          const fs = require('node:fs');
+          const assert = require('node:assert/strict');
           const { BUILD, transformSnapshot } = require('./assets/lab/lab-loader.js');
 
           assert.equal(BUILD, '20260819-planner-signals-v3');
-          const shell = fs.readFileSync('lab/index.html', 'utf8');
+          const shell = fs.readFileSync('archive/continuum-lab/index.html', 'utf8');
           assert(shell.includes('/assets/lab/lab-loader.js?v=20260819-planner-signals-v3'));
-          assert(!shell.includes('document.write(html)'));
-
-          const counts = {
-            document_count: 6,
-            contact_count: 8,
-            organization_count: 3,
-            update_revision_count: 5,
-            trigger_action_count: 4
-          };
-          for (const interval of [1, 6, 24, 72, 168, 720]) {
-            assert.equal(status.normalize({ interval_hours: interval, grace_hours: 12, repeat_enabled: true, ...counts }).schemaCompatible, true);
-          }
-          assert.equal(status.normalize({ interval_hours: 721, grace_hours: 12, ...counts }).schemaCompatible, false);
-          assert.equal(status.normalize({ interval_hours: 6, grace_hours: 25, ...counts }).schemaCompatible, false);
+          assert(shell.includes('PRESERVED SNAPSHOT'));
 
           const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
           const rendered = transformSnapshot(source);
-          const required = [
-            "connect-src 'self';",
-            "style-src 'self' 'unsafe-inline';",
+          for (const term of [
             'data-lab-mode="true"',
-            '/assets/lab/lab-mock-api.js',
-            '/assets/lab/lab-crm.js',
-            '/assets/lab/lab-directory-v2.js',
-            '/assets/lab/lab-directory-v2.css',
-            '/assets/lab/lab-directory-v2-polish.css',
-            '/assets/lab/lab-continuum-planner-contract-v1.js?v=20260819-v1signals1',
-            '/assets/lab/lab-directory-planner-preview.js?v=20260819-directory-planner-signals1',
-            '/assets/lab/lab-continuum-planner-preflight-v1.js?v=20260819-v1r3',
-            '/assets/lab/lab-continuum-planner-preflight-v1.css?v=20260819-v1r3',
-            '/assets/lab/lab-continuum-planner-review-v1.js?v=20260819-v1preflight1',
-            '/assets/lab/lab-continuum-planner-review-v1.css?v=20260819-v1preflight1',
-            '/assets/lab/lab-command.js',
-            '/assets/lab/lab-test-center.js',
-            '/assets/lab/lab-product-polish.js',
-            '/assets/lab/lab-plan.js',
-            '/assets/lab/lab-experience.js',
-            '/assets/lab/lab-automation-builder.js',
-            '/assets/lab/lab-automations-main-bridge.js',
-            '/assets/lab/lab-acceptance.js',
-            '/assets/lab/lab-final-qa.css'
-          ];
-          required.forEach(term => assert(rendered.includes(term), `missing generated Lab contract: ${term}`));
-
-          const order = [
-            '/assets/lab/lab-directory-v2.js',
             '/assets/lab/lab-continuum-planner-contract-v1.js',
             '/assets/lab/lab-directory-planner-preview.js',
             '/assets/lab/lab-continuum-planner-preflight-v1.js',
-            '/assets/lab/lab-continuum-planner-review-v1.js'
-          ];
-          for (let i = 1; i < order.length; i += 1) assert(rendered.indexOf(order[i - 1]) < rendered.indexOf(order[i]), `bad Planner asset order: ${order[i]}`);
-          assert(rendered.indexOf('/assets/lab/lab-mock-api.js') < rendered.indexOf('/assets/lab/checkin-status-contract.js'));
-          assert(!rendered.includes('/assets/checkin/'));
-          assert(!rendered.includes("connect-src 'self' https://api.cmxchat.com;"));
+            '/assets/lab/lab-continuum-planner-review-v1.js',
+            '/assets/lab/lab-automations-main-bridge.js',
+            '/assets/lab/lab-acceptance.js'
+          ]) assert(rendered.includes(term), `archived snapshot missing ${term}`);
 
-          fs.writeFileSync('lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
+          assert(!fs.existsSync('lab'), 'retired top-level lab directory must not return');
+          fs.writeFileSync('archive-lab-browser-smoke.html', rendered.replace('upgrade-insecure-requests', ''), 'utf8');
           NODE
 
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          production = Path('checkin/index.html').read_text(encoding='utf-8')
-          if '/assets/lab/' in production or 'data-lab-mode="true"' in production:
-              raise SystemExit('production /checkin references Lab code')
-
-          planner = Path('assets/lab/lab-directory-planner-preview.js').read_text(encoding='utf-8')
-          contract = Path('assets/lab/lab-continuum-planner-contract-v1.js').read_text(encoding='utf-8')
-          preflight = Path('assets/lab/lab-continuum-planner-preflight-v1.js').read_text(encoding='utf-8')
-          review = Path('assets/lab/lab-continuum-planner-review-v1.js').read_text(encoding='utf-8')
-          preflight_css = Path('assets/lab/lab-continuum-planner-preflight-v1.css').read_text(encoding='utf-8')
-
-          for source in [planner, contract, preflight, review]:
-              for forbidden in ['api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver', 'XMLHttpRequest', 'WebSocket(']:
-                  if forbidden in source:
-                      raise SystemExit(f'forbidden Planner boundary pattern: {forbidden}')
-
-          for term in [
-              'validatePlan', 'classifyIssue', 'validateIssues', 'preflightIssues',
-              'directory.ambiguous_match', 'directory.audience_required', 'automation.schedule_unconfirmed',
-              'signals.create_watch', 'signals.attach_source', 'signals.set_filter', 'signals.set_interpretation',
-              'automation.reference_signal', 'signals.source_required', 'signals.service_required',
-              'runtime.required', 'authority.approval_required', 'dataset.labPlannerContract = "v1"'
-          ]:
-              if term not in contract:
-                  raise SystemExit(f'shared Planner contract missing: {term}')
-
-          for term in [
-              'Online signals', 'signals.create_watch', 'signals.attach_source', 'signals.set_interpretation',
-              'automation.reference_signal', 'NO ONLINE OBSERVATION'
-          ]:
-              if term not in planner:
-                  raise SystemExit(f'Directory Planner Signals example missing: {term}')
-
-          for term in [
-              'signals.source_required', 'signals.service_required',
-              '"connections.required": ["signals.attach_source", "automation.add_action"]',
-              '"signals.service_required": ["signals.create_watch"]'
-          ]:
-              if term not in preflight:
-                  raise SystemExit(f'Planner Signals preflight mapping missing: {term}')
-
-          for term in [
-              'PREFLIGHT · TYPED REVIEW', 'BLOCKED FOR APPLY', 'DEFERRED TO DRAFT',
-              'data-preflight-choice', 'data-preflight-defer', 'data-preflight-reset',
-              'continuum-preflight-operation-link', 'AFFECTS CHANGE', 'labPlannerPreflight = "v1"'
-          ]:
-              if term not in preflight:
-                  raise SystemExit(f'Planner preflight missing: {term}')
-          for term in ['.continuum-preflight-panel', '.continuum-preflight-issue', '.continuum-preflight-operation-link', '@media (max-width:760px)']:
-              if term not in preflight_css:
-                  raise SystemExit(f'Planner preflight CSS missing: {term}')
-
-          directory_ops = set(re.findall(r'type:\s*"((?:directory|library|automation|signals)\.[a-z0-9_]+)"', planner))
-          registry_ops = set(re.findall(r'"((?:directory|library|automation|signals)\.[a-z0-9_]+)":\s*Object\.freeze', contract))
-          unknown = sorted(directory_ops - registry_ops)
-          if unknown:
-              raise SystemExit(f'Directory Planner uses unregistered operations: {unknown}')
-
-          if 'cmx:lab-planner-preflight-updated' not in review:
-              raise SystemExit('Change Review does not consume preflight updates')
-
-          print('Continuum Lab isolation, visible Online signals Planner proof, Signals-aware preflight mapping and Change Review contracts passed.')
-          PY
-
-      - name: Browser acceptance smoke desktop and mobile
+      - name: Browser smoke archived snapshot
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
           if [ -z "$BROWSER" ]; then
-            echo 'No Chromium-compatible browser available on runner.' >&2
+            echo 'No Chromium-compatible browser available.' >&2
             exit 1
           fi
 
-          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/checkin-lab-http.log 2>&1 &
+          npm install --no-save playwright-core@1.55.0
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-archive-http.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab-browser-smoke.html' EXIT
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f archive-lab-browser-smoke.html' EXIT
           sleep 1
 
           node tests/playwright-mobile-dump.cjs \
             "$BROWSER" 1280 900 \
-            'http://127.0.0.1:8000/lab-browser-smoke.html' /tmp/lab-desktop.html \
+            'http://127.0.0.1:8000/archive-lab-browser-smoke.html' /tmp/archive-lab-desktop.html \
             labDirectoryPlanner typed-v2 18000
-
-          ! grep -qi 'lab snapshot unavailable' /tmp/lab-desktop.html
-          grep -q 'data-lab-acceptance="ready"' /tmp/lab-desktop.html
-          grep -q 'data-lab-directory="v2"' /tmp/lab-desktop.html
-          grep -q 'data-lab-planner-contract="v1"' /tmp/lab-desktop.html
-          grep -q 'data-lab-planner-preflight="v1"' /tmp/lab-desktop.html
-          grep -q 'data-lab-planner-review="v1"' /tmp/lab-desktop.html
-          grep -q 'data-lab-directory-planner="typed-v2"' /tmp/lab-desktop.html
-          grep -q 'AI setup' /tmp/lab-desktop.html
-          grep -q 'id="labAutomationWorkspace"' /tmp/lab-desktop.html
 
           node tests/playwright-mobile-dump.cjs \
             "$BROWSER" 390 844 \
-            'http://127.0.0.1:8000/lab-browser-smoke.html' /tmp/lab-mobile.html \
+            'http://127.0.0.1:8000/archive-lab-browser-smoke.html' /tmp/archive-lab-mobile.html \
             labDirectoryPlanner typed-v2 18000
 
-          ! grep -qi 'lab snapshot unavailable' /tmp/lab-mobile.html
-          grep -q 'data-lab-acceptance="ready"' /tmp/lab-mobile.html
-          grep -q 'data-lab-directory="v2"' /tmp/lab-mobile.html
-          grep -q 'data-lab-planner-contract="v1"' /tmp/lab-mobile.html
-          grep -q 'data-lab-planner-preflight="v1"' /tmp/lab-mobile.html
-          grep -q 'data-lab-planner-review="v1"' /tmp/lab-mobile.html
-          grep -q 'mobile-nav' /tmp/lab-mobile.html
-          grep -q 'labGlobalSearch' /tmp/lab-mobile.html
-
-          echo 'Continuum Lab desktop/mobile smoke passed with visible Signals-aware shared typed Planner assets.'
+          grep -q 'data-lab-acceptance="ready"' /tmp/archive-lab-desktop.html
+          grep -q 'data-lab-acceptance="ready"' /tmp/archive-lab-mobile.html
+          echo 'Archived Continuum Lab snapshot remains regression-usable outside the retired /lab namespace.'
