@@ -2,6 +2,7 @@ const fs=require('fs');
 const html=fs.readFileSync('email/index.html','utf8');
 const legacyRedirect=fs.readFileSync('assets/continuum-legacy-route-redirect.js','utf8');
 const operatorApi=fs.readFileSync('assets/continuum-operator-api-v1.js','utf8');
+const receiptLink=fs.readFileSync('assets/continuum-runtime-receipt-link-v1.js','utf8');
 const api=fs.readFileSync('assets/lab/lab-email-api-v1.js','utf8');
 const app=fs.readFileSync('assets/lab/lab-email-v3.js','utf8');
 const workspace=fs.readFileSync('assets/lab/lab-email-workspace-v2.js','utf8');
@@ -39,13 +40,26 @@ must(operatorApi,'operator_key','operator key request');
 must(operatorApi,'X-CSRF-Token','shared CSRF contract');
 must(operatorApi,'credentials: "include"','protected cookie');
 must(operatorApi,'createPerson','Directory mutation adapter');
+must(operatorApi,'continuum-runtime-receipt-link-v1.js','shared receipt navigation loader');
 forbid(operatorApi,'localStorage','operator local storage');
 forbid(operatorApi,'sessionStorage','operator session storage');
 
 must(api,'${op}/connections/${encodeURIComponent(connectionId)}/readiness','connection readiness');
 must(api,'/receipt`','typed Run receipt');
+must(api,'cmx:runtime-receipt-read','receipt navigation event');
+must(api,'automationId:String(automationId||"")','exact Automation ID handoff');
+must(api,'runId:String(runId||"")','exact Run ID handoff');
 must(api,'X-CSRF-Token','Email API CSRF mutation contract');
 must(api,'credentials:"include"','Email API protected cookie');
+
+must(receiptLink,"['/email/', '/requests/']",'Email/Requests receipt surfaces');
+must(receiptLink,"url.searchParams.set('automation_id', automationId)",'Control Automation reference');
+must(receiptLink,"url.searchParams.set('run_id', runId)",'Control Run reference');
+must(receiptLink,'Open this Run in Control','human-readable Control link');
+forbid(receiptLink,'operator_key','no operator key in receipt navigation');
+forbid(receiptLink,'csrf','no CSRF in receipt navigation');
+forbid(receiptLink,'subject','no message subject in receipt navigation');
+forbid(receiptLink,'body','no message body in receipt navigation');
 
 must(app,'operator.session({ refresh: true })','existing protected session check');
 must(app,'operator.unlock(key)','backend unlock');
@@ -87,4 +101,4 @@ forbid(html,'id="cc','unsupported CC control');
 forbid(html,'id="bcc','unsupported BCC control');
 forbid(html,'type="file"','unsupported attachment control');
 
-console.log('Continuum Email v3 protected backend + rich composer contract: PASS');
+console.log('Continuum Email v3 protected backend + rich composer + Control receipt navigation contract: PASS');
