@@ -34,6 +34,16 @@ async function insideViewport(locator) {
   expect(bounds.bottom).toBeLessThanOrEqual(bounds.height + 3);
 }
 
+test('Normal entry remains at the true document top after delayed navigation restoration', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await enter(page);
+  await page.waitForTimeout(1450);
+  await expect.poll(() => page.evaluate(() => (
+    window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
+  ))).toBeLessThanOrEqual(1);
+  await expect(page.locator('.topbar')).toBeInViewport();
+});
+
 test('Full workspace opens directly and leaves Map optional', async ({ page }) => {
   await enter(page);
   await expect(page.locator('#briefMapButton')).toBeVisible();

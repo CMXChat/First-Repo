@@ -3,20 +3,70 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const initialUrl = new URL(window.location.href);
+  const initialHash = decodeURIComponent(initialUrl.hash || '');
+  const initialTab = initialUrl.searchParams.get('tab');
+  const initialDepth = initialUrl.searchParams.get('depth');
+  const initialDeepRoute = initialDepth === 'full'
+    || Boolean(initialTab && initialTab !== 'overview')
+    || Boolean(initialHash && initialHash !== '#today');
+  const secondaryQuickSelectors = [
+    '#scenarioExplorer',
+    '#dailyRhythm',
+    '#learning',
+    '#possibilities',
+    '.brief-vision-entry-card',
+    '.brief-terminal-panel'
+  ];
+
   let attempts = 0;
   let timer = 0;
   let openingVision = false;
+  let entryTopUntil = 0;
+  let entryTopFrame = 0;
 
   const COPY = new Map([
+    ['Your day, already organized.', 'Choose your briefing.'],
+    ['Choose a fictional example. Each version demonstrates different users, private profiles, approved shared spaces, structured memory, connected services and actions.', 'Pick a demo briefing. Each one shows a different daily view, private space and shared context.'],
+    ['Here is the shape of your day.', 'Today at a glance.'],
+    ['Your schedule, weather, money, messages, goals and preferred briefing style are organized around what matters next.', 'Schedule, weather, money, messages and priorities for today.'],
     ['Open full workspace map', 'Open full workspace'],
     ['Open the relevant view', 'Take me there'],
-    ['The full day without the full scroll.', 'See the shape of the day at a glance.'],
-    ['Five signals, one recommended move, and the deeper workspace only when it is useful.', 'The few things worth your attention right now. Everything else stays one tap away.'],
+    ['The full day without the full scroll.', 'Today at a glance.'],
+    ['Five signals, one recommended move, and the deeper workspace only when it is useful.', 'The few things that need attention now.'],
     ['Move through the briefing without hunting.', 'Jump to what you need.']
   ]);
 
   function reducedMotion() {
     return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+  }
+
+  function clock() {
+    return window.performance?.now?.() || Date.now();
+  }
+
+  function forceDocumentTop() {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }
+
+  function guardEntryTop() {
+    if (clock() >= entryTopUntil) return;
+    if ((window.scrollY || document.documentElement.scrollTop || document.body.scrollTop) <= 1) return;
+    window.cancelAnimationFrame(entryTopFrame);
+    entryTopFrame = window.requestAnimationFrame(forceDocumentTop);
+  }
+
+  function keepNormalEntryAtTop() {
+    if (initialDeepRoute) return;
+    entryTopUntil = clock() + 1250;
+    forceDocumentTop();
+    [0, 80, 320, 620, 900, 1180].forEach(delay => {
+      window.setTimeout(() => {
+        if (clock() <= entryTopUntil + 30) forceDocumentTop();
+      }, delay);
+    });
   }
 
   function closeMap() {
@@ -49,6 +99,13 @@
     }, reducedMotion() ? 0 : 190);
   }
 
+  function markSecondaryQuickContent() {
+    document.body.classList.add('brief-streamlined-primary');
+    secondaryQuickSelectors.forEach(selector => {
+      $$(selector).forEach(node => node.classList.add('brief-secondary-section'));
+    });
+  }
+
   function simplifyNavigator() {
     const bar = $('#briefNavigatorBar');
     if (bar) {
@@ -73,7 +130,7 @@
   }
 
   function polishVisibleCopy(root = document) {
-    const nodes = $$('button, h2, h3, h4, p, small, strong, span', root);
+    const nodes = $$('button, h1, h2, h3, h4, p, small, strong, span', root);
     nodes.forEach(node => {
       const current = node.textContent?.trim();
       const replacement = COPY.get(current);
@@ -85,6 +142,7 @@
   }
 
   function apply() {
+    markSecondaryQuickContent();
     simplifyNavigator();
     polishVisibleCopy();
     document.documentElement.dataset.briefFinalized = 'true';
@@ -126,13 +184,22 @@
       }
     }, true);
 
+    window.addEventListener('scroll', guardEntryTop, { passive: true });
     window.addEventListener('brief:preset-change', () => window.setTimeout(apply, 260));
-    window.addEventListener('brief:device-fallback-open', () => window.setTimeout(apply, 220));
+    window.addEventListener('brief:device-fallback-open', () => {
+      keepNormalEntryAtTop();
+      window.setTimeout(apply, 220);
+    });
     window.addEventListener('brief:ready', () => schedule(120), { once: true });
     schedule(80);
   }
 
-  window.BRIEF_FINALIZE = { apply, openFullWorkspace, openVisionAfterHelp };
+  window.BRIEF_FINALIZE = {
+    apply,
+    openFullWorkspace,
+    openVisionAfterHelp,
+    keepNormalEntryAtTop
+  };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
   else install();

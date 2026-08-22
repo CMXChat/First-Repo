@@ -17,7 +17,7 @@ for (const [name, source] of Object.entries({ bridge, finalize, vision })) {
   new vm.Script(source, { filename: `${name}.js` });
 }
 
-assert.match(index, /brief-terminal-bridge\.js\?v=20260803-\d+/);
+assert.match(index, /brief-terminal-bridge\.js\?v=20260804-\d+/);
 assert.match(bridge, /briefFinalizeStyle/);
 assert.match(bridge, /briefVisionStyle/);
 assert.match(bridge, /briefFinalizeScript/);
@@ -32,11 +32,19 @@ assert.match(finalize, /#briefStartVision/);
 assert.match(finalize, /openVisionAfterHelp/);
 assert.match(finalize, /BRIEF_ONBOARDING\?\.closeHelp/);
 assert.match(finalize, /BRIEF_VISION_TOUR\?\.open/);
+assert.match(finalize, /initialDeepRoute/);
+assert.match(finalize, /keepNormalEntryAtTop/);
+assert.match(finalize, /brief:device-fallback-open/);
+assert.match(finalize, /brief-streamlined-primary/);
+assert.match(finalize, /brief-secondary-section/);
 assert.doesNotMatch(finalize, /new MutationObserver/);
 
 assert.match(finalizeCss, /brief-help-actions/);
 assert.match(finalizeCss, /browsers that do not support :has/);
+assert.match(finalizeCss, /brief-streamlined-primary/);
+assert.match(finalizeCss, /brief-secondary-section/);
 assert.match(finalizeCss, /prefers-reduced-motion/);
+assert.doesNotMatch(finalizeCss, /briefFullWorkspacePulse/);
 
 assert.match(vision, /const STEPS = \[/);
 assert.match(vision, /You wake up\. The day is already sorted/);
@@ -60,4 +68,4 @@ assert.match(visionCss, /orientation: landscape/);
 assert.match(visionCss, /prefers-reduced-motion: reduce/);
 assert.match(visionCss, /forced-colors: active/);
 
-console.log('Brief final navigation and vision smoke test passed.');
+console.log('Brief final navigation, entry position and vision smoke test passed.');
