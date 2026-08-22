@@ -23,6 +23,7 @@ jobs:
           node --check assets/cmx-ai-platform-extension.js
           node --check assets/cmx-backend-blueprint.js
           node --check assets/cmx-build-lab.js
+          node --check assets/continuum-legacy-route-redirect.js
           node --check assets/updates-data.js
           node --check assets/updates-notes.js
           node --check assets/updates.js
@@ -59,24 +60,34 @@ jobs:
           if len(paths) != len(set(paths)):
               failures.append('route paths must be unique')
 
-          required = {'/', '/directory/', '/email/', '/build/', '/backend/', '/ai/', '/updates/', '/404.html'}
+          required = {
+              '/', '/directory/', '/email/', '/automations/', '/control/', '/library/',
+              '/archive/continuum-lab/', '/build/', '/backend/', '/ai/', '/updates/', '/404.html'
+          }
           missing = sorted(required - set(paths))
           if missing:
               failures.append(f'missing required routes: {missing}')
+
+          retired = sorted(path for path in paths if isinstance(path, str) and path.startswith('/lab/'))
+          if retired:
+              failures.append(f'retired /lab/ routes remain registered: {retired}')
+
+          if Path('lab').exists():
+              failures.append('top-level lab directory must be retired; preserve historical work under /archive/ instead')
 
           for route in routes:
               for field in ('path', 'name', 'description', 'category', 'status', 'visibility', 'directory', 'gated'):
                   if field not in route:
                       failures.append(f"{route.get('path', '<unknown>')}: missing {field}")
 
-          if registry.get('version', 0) < 7:
-              failures.append('route registry version must be at least 7')
+          if registry.get('version', 0) < 37:
+              failures.append('route registry version must be at least 37 after Continuum route graduation')
 
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print(f'Route registry valid: version {registry.get("version")} with {len(routes)} routes.')
+          print(f'Route registry valid: version {registry.get("version")} with {len(routes)} routes and no /lab/ namespace.')
           PY
 
       - name: Validate HTML structure and local assets
@@ -89,6 +100,10 @@ jobs:
 
           targets = [
               Path('email/index.html'),
+              Path('automations/index.html'),
+              Path('control/index.html'),
+              Path('library/index.html'),
+              Path('archive/continuum-lab/index.html'),
               Path('backend/index.html'),
               Path('ai/index.html'),
               Path('assets/cmx-build-lab.html'),
