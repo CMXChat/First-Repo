@@ -1,14 +1,14 @@
 (() => {
   "use strict";
 
-  const RETURN_TO_LAB = "/lab/#lab=view%3Aactions";
+  const RETURN_TO_CONTROL = "/control/";
   let targetObserver = null;
 
   function configureReturnNavigation() {
     document.querySelectorAll("a.brand").forEach(link => {
-      link.href = RETURN_TO_LAB;
-      link.setAttribute("aria-label", "Back to Check In Lab Actions");
-      link.title = "Back to Lab · Actions";
+      link.href = RETURN_TO_CONTROL;
+      link.setAttribute("aria-label", "Back to Continuum Control Center");
+      link.title = "Back to Control Center";
     });
   }
 
@@ -82,7 +82,7 @@
     const brand = event.target.closest?.("a.brand");
     if (brand) {
       event.preventDefault();
-      location.assign(RETURN_TO_LAB);
+      location.assign(RETURN_TO_CONTROL);
       return;
     }
     refreshIntegration();
