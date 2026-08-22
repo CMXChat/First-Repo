@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
       - 'assets/lab/lab-continuum-planner-preflight-v1.js'
       - 'assets/lab/lab-continuum-planner-preflight-v1.css'
@@ -19,7 +19,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
       - 'assets/lab/lab-continuum-planner-preflight-v1.js'
       - 'assets/lab/lab-continuum-planner-preflight-v1.css'
@@ -62,7 +62,7 @@ jobs:
           preflight = Path('assets/lab/lab-continuum-planner-preflight-v1.js').read_text(encoding='utf-8')
           preflight_css = Path('assets/lab/lab-continuum-planner-preflight-v1.css').read_text(encoding='utf-8')
           review = Path('assets/lab/lab-continuum-planner-review-v1.js').read_text(encoding='utf-8')
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          html = Path('automations/index.html').read_text(encoding='utf-8')
 
           for term in [
               'CMXContinuumPlannerContractV1', 'validateOperations', 'validatePlan', 'classifyIssue', 'validateIssues',
@@ -139,7 +139,7 @@ jobs:
                   raise SystemExit(f'focused route missing current Planner asset: {term}')
 
           if "connect-src 'self'" not in html:
-              raise SystemExit('focused Lab must keep self-only connect-src')
+              raise SystemExit('focused Automations must keep self-only connect-src')
           if html.index('lab-continuum-planner-contract-v1.js') > html.index('lab-automations-planner-v5.js'):
               raise SystemExit('Planner contract must load before Automation Planner')
           if html.index('lab-automations-planner-v5.js') > html.index('lab-automations-planner-reset-v5.js'):
@@ -167,7 +167,7 @@ jobs:
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
           "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=14000 \
-            --dump-dom 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-v5-planner.html
+            --dump-dom 'http://127.0.0.1:8000/automations/' > /tmp/continuum-v5-planner.html
           grep -q 'data-lab-planner-contract="v1"' /tmp/continuum-v5-planner.html
           grep -q 'data-lab-planner-preflight="v1"' /tmp/continuum-v5-planner.html
           grep -q 'data-lab-planner-review="v1"' /tmp/continuum-v5-planner.html
