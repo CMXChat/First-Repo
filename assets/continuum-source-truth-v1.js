@@ -1,84 +1,70 @@
 (() => {
   'use strict';
 
-  const VERSION = '2026-08-22.2';
+  const VERSION = '2026-08-22.3';
   const ROUTE = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
   const SUPPORTED = new Set(['/control/', '/directory/', '/library/', '/automations/', '/email/']);
   if (!SUPPORTED.has(ROUTE)) return;
 
-  const SNAPSHOT = Object.freeze({
-    asOf: 'Aug 22, 2026',
-    backendPr: '#24',
-    backendHead: '753e55e',
-    migration: 'c0d1e2f3a4b5',
-    validation: '170 backend tests · 89% coverage · mypy / ty / Ruff / OpenAPI client green',
-    production: 'Production still runs the older Phase 1 boundary. The stacked backend source below is not merged, migrated or deployed.',
-  });
-
   const DOMAIN = Object.freeze({
     '/control/': {
-      label: 'BUILD STATE',
+      label: 'FRONTEND STATUS',
       tone: 'blue',
-      title: 'Source stack validated. Production deployment still pending.',
-      summary: 'Check In is live today. Directory, Library, Automations, Runtime, Email, reconciliation, exact Authority and durable Check In trigger consumption are implemented and validated in stacked backend source. PR #24 T001–T006 is complete, but that stack is not production-deployed.',
+      title: 'Control is a mixed protected-history and preview interface.',
+      summary: 'The frontend has a read-only protected history/receipt lane where the backend contract is available, while Now, Upcoming, attention and simulation panels remain sample product UI.',
       facts: [
-        ['LIVE', 'Check In + protected operator foundation'],
-        ['SOURCE BUILT', 'Directory · Library · Automations · Runtime · Email'],
-        ['SOURCE BUILT', 'Reconciliation · Authority · durable trigger consumption'],
-        ['FAKE ONLY', 'Unattended triggered execution through exact Authority'],
-        ['PENDING', 'Merge · production migration · backend deployment'],
+        ['WIRED', 'Protected execution-history / receipt projection'],
+        ['WIRED', 'Exact links to Directory and Library objects'],
+        ['PREVIEW', 'Now · Upcoming · attention · simulation panels'],
+        ['BACKEND', 'Implementation and deployment truth lives in jay-app'],
       ],
     },
     '/directory/': {
-      label: 'DIRECTORY SOURCE',
+      label: 'FRONTEND STATUS',
       tone: 'blue',
-      title: 'Protected People persistence is built in source.',
-      summary: 'Stable Person and email ContactMethod APIs, lifecycle rules, protected session handling and frontend wiring are implemented. Organizations, Groups and richer relationship concepts remain preview concepts. The stacked Directory backend is not production-deployed yet.',
+      title: 'Directory has a protected identity lane plus richer preview concepts.',
+      summary: 'The frontend can use protected Person and email-contact operations where available. Organizations, Groups and richer relationship concepts remain browser/product previews until matching server contracts are available.',
       facts: [
-        ['BUILT', 'Person stable IDs + lifecycle'],
-        ['BUILT', 'Email ContactMethod + normalization/conflict rules'],
-        ['WIRED', 'Canonical /directory/ protected frontend lane'],
+        ['WIRED', 'Protected Person / email-contact frontend lane'],
+        ['WIRED', 'Stable-ID navigation with ?person_id='],
         ['PREVIEW', 'Organizations · Groups · richer relationships'],
-        ['PENDING', 'Production backend deployment'],
+        ['BACKEND', 'Availability and implementation truth lives in jay-app'],
       ],
     },
     '/library/': {
-      label: 'LIBRARY SOURCE',
+      label: 'FRONTEND STATUS',
       tone: 'blue',
-      title: 'Durable content versions are built and the canonical frontend lane is wired.',
-      summary: 'The backend owns ContentAsset → mutable ContentDraft → immutable ContentVersion with revision conflicts and exact historical snapshots. Canonical /library/ now has a protected server lane using that contract where deployed, while folders, mixed media and file concepts remain explicit browser previews. The stacked Library backend is not production-deployed yet.',
+      title: 'Library separates protected content from local preview workspace concepts.',
+      summary: 'The frontend has a protected content/version lane where the backend contract is available. Mixed-media, files, folders and import experiences remain explicitly separate preview behavior unless backed by a protected contract.',
       facts: [
-        ['BUILT', 'ContentAsset + mutable ContentDraft'],
-        ['BUILT', 'Immutable ContentVersion + exact references'],
-        ['WIRED', 'Canonical /library/ protected content lane'],
-        ['PROVING', '409 conflict + immutable-version browser proof'],
-        ['PENDING', 'Production backend deployment + binary object storage'],
+        ['WIRED', 'Protected content / draft / version frontend lane'],
+        ['WIRED', 'Revision-conflict and immutable-version presentation'],
+        ['PREVIEW', 'Mixed media · files · folders · imports'],
+        ['BACKEND', 'Schema and deployment truth lives in jay-app'],
       ],
     },
     '/automations/': {
-      label: 'AUTOMATIONS SOURCE',
+      label: 'FRONTEND STATUS',
       tone: 'blue',
-      title: 'Definition, Runtime and triggered fake execution are built in source.',
-      summary: 'Protected Automation Drafts, typed preflight, Review, immutable Publish, Runtime Runs, Attempts, Why and cancellation are implemented. PR #24 now adds durable occurrence/consumption history plus a separately invoked fake-only consumer that rechecks exact Authority before using the same frozen Runtime. Production execution remains off.',
+      title: 'Automations has a server-backed lane and a richer preview builder.',
+      summary: 'The frontend can call protected Automation lifecycle/history contracts while retaining richer workflow-builder concepts as explicit preview behavior. Missing backend availability must be shown honestly rather than replaced with local server truth.',
       facts: [
-        ['BUILT', 'Draft → preflight → Review → immutable AutomationVersion'],
-        ['BUILT', 'Runtime Runs · Attempts · Why · cancellation'],
-        ['BUILT', 'TriggerOccurrence · Consumption · leases · recovery'],
-        ['FAKE ONLY', 'Exact Authority → existing Runtime unattended proof'],
-        ['PENDING', 'Production backend deployment'],
+        ['WIRED', 'Protected Automation lifecycle frontend lane'],
+        ['WIRED', 'Protected execution-history projection where available'],
+        ['PREVIEW', 'Richer workflow / Planner / advanced-flow concepts'],
+        ['BACKEND', 'Runtime and Authority implementation truth lives in jay-app'],
       ],
     },
     '/email/': {
-      label: 'EMAIL SOURCE',
+      label: 'FRONTEND STATUS',
       tone: 'blue',
-      title: 'The exact manual Email path is implemented in stacked source.',
-      summary: 'Recipient identity, sender readiness, frozen content, Automation publication, Runtime, receipts and provider reconciliation are all defined behind the protected backend boundary. Fake mode is the preferred proof. Real SMTP remains tightly bounded to direct manual owner initiation only and is not part of unattended Authority.',
+      title: 'Email is a protected manual proving interface.',
+      summary: 'The frontend coordinates protected recipient, sender, content, Automation and receipt requests through backend APIs where available. Provider implementation and release truth are intentionally not duplicated in this repository.',
       facts: [
-        ['BUILT', 'Person → ContactMethod → Connection → SenderIdentity'],
-        ['BUILT', 'ContentVersion → AutomationVersion → Runtime receipt'],
-        ['BUILT', 'Provider reconciliation without resend'],
-        ['MANUAL ONLY', 'Bounded real SMTP'],
-        ['PENDING', 'Production backend deployment'],
+        ['WIRED', 'Protected manual Email frontend orchestration'],
+        ['WIRED', 'Typed receipt handoff to Control'],
+        ['FRONTEND', 'Browser never speaks SMTP directly'],
+        ['BACKEND', 'Provider and deployment truth lives in jay-app'],
       ],
     },
   });
@@ -118,7 +104,7 @@
     button.dataset.cstOpen = 'true';
     button.dataset.tone = data.tone;
     button.setAttribute('aria-haspopup', 'dialog');
-    button.innerHTML = `<span class="cst-dot"></span><span>${data.label}</span><b>NOT DEPLOYED</b>`;
+    button.innerHTML = `<span class="cst-dot"></span><span>${data.label}</span><b>FRONTEND</b>`;
     return button;
   }
 
@@ -144,19 +130,19 @@
     const eyebrow = document.querySelector('.cc-eyebrow');
     if (eyebrow) eyebrow.innerHTML = '<span class="cc-lab-dot"></span> Continuum · Proving';
     const label = document.querySelector('.cc-now-label');
-    if (label) label.textContent = 'Current build state';
+    if (label) label.textContent = 'Frontend workspace';
     const heading = document.getElementById('nowHeading');
-    if (heading) heading.textContent = 'Validated source. Deployment is the next boundary.';
+    if (heading) heading.textContent = 'Protected history where available. Sample operations remain preview.';
     const copy = document.querySelector('.cc-now-copy > p');
-    if (copy) copy.textContent = 'Check In is live. The broader Continuum backend stack now includes durable Directory, Library, Automations, Runtime, Email, reconciliation, exact Authority and crash-safe trigger consumption in validated source. Those stacked services are not production-deployed yet.';
+    if (copy) copy.textContent = 'Control combines a protected read-only execution-history lane with sample operational panels. Backend release and implementation status are owned by jay-app, not this page.';
     const chips = document.querySelectorAll('.cc-now-meta .cc-chip');
-    if (chips[0]) chips[0].innerHTML = '<i></i> Check In live';
-    if (chips[1]) chips[1].innerHTML = '<i></i> backend stack validated';
-    if (chips[2]) chips[2].innerHTML = '<i></i> deployment pending';
+    if (chips[0]) chips[0].innerHTML = '<i></i> history lane wired';
+    if (chips[1]) chips[1].innerHTML = '<i></i> sample panels preview';
+    if (chips[2]) chips[2].innerHTML = '<i></i> backend truth in jay-app';
     const autonomySmall = document.querySelector('.cc-autonomy-copy small');
     const autonomyStrong = document.querySelector('.cc-autonomy-copy strong');
-    if (autonomySmall) autonomySmall.textContent = 'Authority · source proof';
-    if (autonomyStrong) autonomyStrong.textContent = 'Exact fake-only trigger path proven';
+    if (autonomySmall) autonomySmall.textContent = 'Authority · backend-owned';
+    if (autonomyStrong) autonomyStrong.textContent = 'Frontend never decides permission';
 
     document.querySelectorAll('.cc-rail-link span').forEach(node => {
       if (node.textContent.includes('Directory · LAB')) node.textContent = 'Directory · PROVING';
@@ -171,9 +157,9 @@
     const eyebrow = document.querySelector('.dir-eyebrow');
     if (eyebrow) eyebrow.innerHTML = '<span></span> Continuum · Proving';
     const kicker = document.querySelector('.dir-workspace-head .dir-kicker');
-    if (kicker) kicker.textContent = 'Protected People · backend source built';
+    if (kicker) kicker.textContent = 'Protected People · frontend wired';
     const copy = document.querySelector('.dir-workspace-head p');
-    if (copy) copy.textContent = 'People and email ContactMethods are wired to protected backend contracts. Organizations, Groups and richer relationship concepts remain local previews. The stacked backend is validated but not production-deployed yet.';
+    if (copy) copy.textContent = 'People and email-contact UI is wired to protected backend contracts where available. Organizations, Groups and richer relationship concepts remain local previews. Backend status lives in jay-app.';
     document.querySelectorAll('.dir-rail-link span').forEach(node => {
       if (node.textContent.includes('Automations · LAB')) node.textContent = 'Automations · PROVING';
       if (node.textContent.includes('Library · PREVIEW')) node.textContent = 'Library · PROVING';
@@ -184,13 +170,13 @@
     const eyebrow = document.querySelector('.lib-eyebrow');
     if (eyebrow) eyebrow.innerHTML = '<span></span> Continuum · Proving';
     const kicker = document.getElementById('contextKicker');
-    if (kicker && /browser-local|sample data/i.test(kicker.textContent)) kicker.textContent = 'Browser-local future concepts below protected durable content';
+    if (kicker && /browser-local|sample data/i.test(kicker.textContent)) kicker.textContent = 'Browser-local future concepts below the protected content lane';
     const storageTitle = document.querySelector('.lib-storage-note strong');
     const storageCopy = document.querySelector('.lib-storage-note small');
     if (storageTitle) storageTitle.textContent = 'LOCAL PREVIEW STORAGE';
-    if (storageCopy) storageCopy.textContent = 'Only the preview workspace uses browser storage. The protected ContentAsset → Draft → immutable Version lane above uses the backend contract where deployed and never writes protected content into this local store.';
+    if (storageCopy) storageCopy.textContent = 'Only the preview workspace uses browser storage. Protected content requests use the backend contract where available and must never fall back to this local store.';
     const boundary = document.querySelector('.lib-boundary');
-    if (boundary) boundary.innerHTML = '<b>LIBRARY · PROVING</b> — Canonical /library/ now has a protected ContentAsset / ContentDraft / ContentVersion lane with explicit revision-conflict and immutable-version behavior. The stacked backend is still not production-deployed; mixed-media/file/folder concepts remain local preview.';
+    if (boundary) boundary.innerHTML = '<b>LIBRARY · PROVING</b> — Canonical /library/ has a protected content/version frontend lane plus explicitly local preview concepts. Backend schema and deployment truth live in jay-app.';
     document.querySelectorAll('.lib-rail-link span').forEach(node => {
       if (node.textContent.includes('Directory · LAB')) node.textContent = 'Directory · PROVING';
       if (node.textContent.includes('Library · LAB')) node.textContent = 'Library · PROVING';
@@ -200,18 +186,18 @@
 
   function patchAutomations() {
     const boundary = document.querySelector('.v3-lab-pill');
-    if (boundary) boundary.innerHTML = '<i></i> PROVING · BACKEND SOURCE BUILT · PROD OFF';
+    if (boundary) boundary.innerHTML = '<i></i> PROVING · SERVER LANE WIRED · LOCAL PREVIEW';
     const hero = document.querySelector('.v7-workspace-head p, .v3-dashboard .v3-hero p');
-    if (hero) hero.textContent = 'Build and inspect Automation definitions. Protected Draft/Publish/Runtime and fake-only triggered execution are validated in stacked backend source; production deployment remains off.';
+    if (hero) hero.textContent = 'Build and inspect Automation definitions. The protected server lane is wired where available; richer workflow concepts remain preview. Backend implementation and deployment truth live in jay-app.';
   }
 
   function patchEmail() {
     const eyebrow = document.querySelector('.email-title .eyebrow');
     if (eyebrow) eyebrow.textContent = 'CONTINUUM · PROVING · MANUAL EMAIL';
     const summary = document.querySelector('.email-title p');
-    if (summary) summary.textContent = 'Compose, freeze, review and run one exact message through the protected backend contract. The full stacked backend is validated in source but not production-deployed yet.';
+    if (summary) summary.textContent = 'Compose, review and request one exact message through the protected backend contract where available. Provider implementation and deployment truth live in jay-app.';
     const small = document.querySelector('.backend-summary small');
-    if (small) small.textContent = 'Protected session · Origin · CSRF · stacked source validated';
+    if (small) small.textContent = 'Protected frontend transport · session · Origin · CSRF';
   }
 
   function patchRoute() {
@@ -229,19 +215,15 @@
     const facts = data.facts.map(([status, text]) => `<li><span>${status}</span><strong>${text}</strong></li>`).join('');
     return `<div class="cst-backdrop" data-cst-close="true" hidden>
       <section class="cst-dialog" role="dialog" aria-modal="true" aria-labelledby="cstTitle" tabindex="-1">
-        <header><div><span>CONTINUUM · SOURCE TRUTH</span><h2 id="cstTitle">${data.title}</h2></div><button type="button" data-cst-close="true" aria-label="Close build status">×</button></header>
+        <header><div><span>CONTINUUM · FRONTEND STATUS</span><h2 id="cstTitle">${data.title}</h2></div><button type="button" data-cst-close="true" aria-label="Close frontend status">×</button></header>
         <p>${data.summary}</p>
         <ul class="cst-facts">${facts}</ul>
         <section class="cst-checkpoint">
-          <div><span>BACKEND CHECKPOINT</span><strong>jay-app PR ${SNAPSHOT.backendPr} · T001–T006 complete</strong></div>
-          <dl>
-            <div><dt>Head</dt><dd>${SNAPSHOT.backendHead}</dd></div>
-            <div><dt>Migration</dt><dd>${SNAPSHOT.migration}</dd></div>
-            <div><dt>Validation</dt><dd>${SNAPSHOT.validation}</dd></div>
-          </dl>
+          <div><span>BACKEND AUTHORITY</span><strong>CMXChat/jay-app</strong></div>
+          <p>Backend releases, migrations, PR/task state, Runtime/Authority internals, provider behavior and deployment status are intentionally not duplicated in First-Repo.</p>
         </section>
-        <div class="cst-boundary"><b>Production boundary</b><span>${SNAPSHOT.production}</span></div>
-        <footer><span>Source snapshot · ${SNAPSHOT.asOf}</span><a href="/doc/">Read Continuum overview</a></footer>
+        <div class="cst-boundary"><b>Frontend boundary</b><span>This dialog describes browser wiring and preview behavior only. Actual API responses and jay-app documentation are authoritative for backend availability.</span></div>
+        <footer><span>Frontend snapshot · Aug 22, 2026</span><a href="/doc/">Read Continuum overview</a></footer>
       </section>
     </div>`;
   }
