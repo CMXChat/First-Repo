@@ -537,10 +537,20 @@
   let syncQueued = false;
   function scheduleDashboardSync() {
     if (syncQueued || state.current) return;
+
+    const dashboard = $(".v3-dashboard");
+    if (!dashboard || $("[data-server-automations-section]", dashboard)) return;
+
     syncQueued = true;
     requestAnimationFrame(() => {
       syncQueued = false;
-      if ($(".v3-dashboard")) renderServerDashboardSection();
+      const currentDashboard = $(".v3-dashboard");
+      if (
+        currentDashboard &&
+        !$("[data-server-automations-section]", currentDashboard)
+      ) {
+        renderServerDashboardSection();
+      }
     });
   }
 
