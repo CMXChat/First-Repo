@@ -1,357 +1,379 @@
 # Continuum Frontend Week — CURRENT
 
 Last updated: 2026-08-22
-Status: **APPROVED OPERATING CHECKPOINT — EMAIL + REQUESTS V2 + DIRECTORY + LIBRARY DURABLE MEMORY LANDED**
+Status: **APPROVED OPERATING CHECKPOINT — DURABLE IDENTITY + MEMORY + ACTION + RECEIPT NAVIGATION LANDED**
 
 ## Purpose
 
-This file preserves the practical operating state for the current proof-driven frontend week. It is a companion to `docs/continuum-frontend-roadmap-CURRENT.md`, not a replacement for backend contracts or product architecture planning.
+This is the source-specific recovery handoff for the current proof-driven frontend week in `CMXChat/First-Repo`.
 
-Use it when recovering the frontend week so decisions and boundaries do not have to be reconstructed from chat history.
+It complements `docs/continuum-frontend-roadmap-CURRENT.md`; it does not replace backend contracts or the canonical living product roadmap in `CMXChat/jay-app`.
 
-New architecture/roadmap planning belongs in `CMXChat/jay-app`. This First-Repo file remains a source-specific CURRENT handoff for frontend execution and recovery.
+New product/architecture planning belongs in `jay-app`. This file records what the frontend has actually landed, what was proven, what remains stacked/not deployed, and the next low-risk execution order.
 
 ## Landed checkpoints
 
-The coordinated frontend program has now landed these slices:
+The coordinated frontend program has landed:
 
-- First-Repo PR #133 / merge `5babbb2b9c7fd11a8f7f3b527e1517b4147cb396`: `/email/` v3 protected-backend workspace, `/requests/` v1 contact-import doorway, and frontend roadmap work.
-- PR #134 / merge `2272bdee9cdc2140b5ddc92d7121517ce1a0dd42`: durable frontend-week checkpoint.
-- PR #135 / merge `da98f22072adbc15471ac919463dd1ae8ede2eb8`: `/requests/` v2 Email safe-simulation operation and shared protected API adapters.
-- PR #136 / merge `f864e15ad85b60076fc3db2f3340ec76d3c0de4c`: Requests v2 recovery checkpoint.
-- PR #137 / merge `5c5a6d4ed281b47639d62fc442dd4a972ef50302`: Directory shared protected-session transport, inline unlock/session recovery, canonical Directory navigation, and desktop/mobile session proof.
-- PR #138 / merge `d0e32726335a0b6a2a3555dcdaa4d6bc033e6076`: Directory/shared-session recovery checkpoint.
-- PR #139 / merge `f93edd4912f98370d503df741ed5fb18db4fa172`: canonical `/library/` protected ContentAsset/Draft/Version lane, real revision-conflict handling, immutable-version proof, explicit local-preview split, and canonical Library navigation.
+- PR #133 / merge `5babbb2b9c7fd11a8f7f3b527e1517b4147cb396` — `/email/` v3 protected-backend workspace, `/requests/` v1 contacts and master frontend roadmap work.
+- PR #134 / merge `2272bdee9cdc2140b5ddc92d7121517ce1a0dd42` — frontend-week recovery checkpoint.
+- PR #135 / merge `da98f22072adbc15471ac919463dd1ae8ede2eb8` — `/requests/` v2 typed Email safe simulation through Library → Automation → Runtime.
+- PR #136 / merge `f864e15ad85b60076fc3db2f3340ec76d3c0de4c` — Requests v2 recovery checkpoint.
+- PR #137 / merge `5c5a6d4ed281b47639d62fc442dd4a972ef50302` — shared protected-session Directory integration and canonical navigation.
+- PR #138 / merge `d0e32726335a0b6a2a3555dcdaa4d6bc033e6076` — Directory/shared-session recovery checkpoint.
+- PR #139 / merge `f93edd4912f98370d503df741ed5fb18db4fa172` — canonical protected Library ContentAsset/Draft/immutable Version lane, revision conflicts and durable-memory proof.
+- PR #140 — Library recovery checkpoint.
+- PR #141 / merge `e36108b73b2088d4997131e86edecca3b88129ba` — canonical `/control/` protected read-only Runtime history / typed receipt / Why projection.
+- PR #142 / merge `fefcb2a797825c2239cdae831845ee02820f6c13` — exact cross-surface reference focus: Control receipt → exact Directory Person and exact Library ContentAsset.
+- PR #143 / merge `e362a0e56d1d5bfce09fdb92ded78899567a14b5` — complete Email safe-simulation frontend proof plus Email/Requests receipt → exact Control Runtime handoff.
 
-The stacked `CMXChat/jay-app` backend remains separate from these frontend merges. Backend PR #24 on `dev/durable-trigger-consumption` remains stacked development truth and is not made production-live by frontend validation.
+These are frontend/source checkpoints. They do not deploy the stacked backend.
+
+## Current backend boundary
+
+Canonical backend handbook:
+
+`CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`
+
+Current stacked development path remains backend PR #24 on `dev/durable-trigger-consumption`.
+
+Production remains on the older documented Check In / operator-session foundation until a deliberate backend merge, migration and deployment occurs.
+
+Always distinguish:
+
+- **LIVE** — actually deployed behavior;
+- **SOURCE BUILT / STACKED** — implemented and validated backend/source work not production-deployed;
+- **PROVING / PREVIEW** — frontend/product proof of intended behavior;
+- **PENDING** — merge, migration, deployment, configuration or later implementation required.
+
+Never turn SOURCE BUILT into a LIVE claim.
 
 ## Current product proof
 
-The week is being executed as a proof-driven integration week, not a page-polishing checklist.
+The frontend week is no longer merely a sequence of isolated pages.
 
-The visible chain is becoming:
+The visible durable-world chain is now:
 
-`Requests → Directory identity → Library durable memory → Email/Automations define work → Runtime executes → Receipt proves what happened`
+`Requests / Email → durable identity + content → Automation/Runtime → typed Receipt → Control → exact Directory Person / exact Library Content`
 
-The objective is to show several interfaces operating over the same protected durable world rather than behaving like unrelated mini-apps.
+And in the other direction:
 
-## Current practical frontend truth
+`Directory Person + Library Content → Email/Automation action → Runtime → Control history`
 
-### Email
+This is the strongest current proof of:
 
-`/email/` is the dedicated manual Email workspace. Where the required backend routes are deployed it follows:
+**one backend, many interfaces.**
 
-`Directory recipient → Connection/SenderIdentity → Library ContentVersion → manual Automation → preflight/Review/Publish → Runtime → receipt`
+Stable IDs let different surfaces point at the same durable object instead of copying or re-inventing it.
 
-The current acceptance path uses safe simulated delivery first. Real SMTP remains deliberately disabled for this frontend phase.
+## Durable identity — Directory
 
-### Requests
+Canonical `/directory/` uses the shared protected operator transport for real People and email ContactMethods where those routes are deployed.
 
-`/requests/` currently has two bounded useful operations:
+Proof:
 
-1. batch Person + email ContactMethod preview/approval;
-2. typed Email request preview and approved safe simulation through the same Library → Automation → Runtime architecture as `/email/`.
+`protected session → Person list/create/update → email ContactMethod list/create/lifecycle → stable backend UUIDs → reload from backend`
 
-Requests does not create a second Email engine, write directly to PostgreSQL, or contain a general AI action bridge.
+Important rules:
 
-### Directory — durable identity
+- display name/address can change while stable IDs preserve identity;
+- duplicate/normalization rules remain backend-owned;
+- protected Person/ContactMethod truth is not localStorage/sessionStorage truth;
+- Organizations, Groups and richer relationships remain explicit preview concepts;
+- exact `?person_id=<UUID>` navigation focuses the requested protected Person after normal Directory loading;
+- a query ID is a pointer, not permission.
 
-`/directory/` uses the shared protected operator transport.
+## Durable memory — Library
 
-Its protected loop is:
-
-`operator session → Person list/create/update → email ContactMethod list/create/lifecycle → stable backend UUIDs → reload from backend`
-
-Directory has inline protected-session status/unlock/logout controls and canonical active navigation. Protected Person/ContactMethod truth remains backend-owned.
-
-Organizations, Groups and richer relationship/planner concepts remain explicitly local previews.
-
-### Library — durable memory
-
-`/library/` now has two visibly separate lanes.
-
-The first is a **protected server lane** using the shared operator API and the existing stacked backend contracts:
+Canonical `/library/` has a protected server lane:
 
 `ContentAsset → mutable ContentDraft → immutable ContentVersion`
 
-Where the routes are deployed, the lane can:
+Where deployed it can:
 
-- list protected content;
-- create a typed ContentAsset plus initial Draft;
-- load stable backend IDs;
-- edit the Draft using exact `expected_revision`;
-- freeze an immutable ContentVersion;
-- display the Version ID, source Draft revision, checksum and frozen source;
-- show backend dependency counts;
-- reload protected state from the server.
+- list/create protected content;
+- edit Draft with exact `expected_revision`;
+- receive `409` on stale revision;
+- preserve unsaved browser text instead of overwriting newer server state;
+- deliberately reload/reconcile the newer Draft;
+- freeze immutable ContentVersion;
+- show exact Version ID, Draft revision and checksum;
+- reload protected state from backend.
 
-The second lane preserves the existing folders/files/media/import UI as **browser-local preview** only. Those concepts are not silently relabeled as protected backend truth.
+The Library browser proof established:
 
-Binary object storage is not claimed.
+`Draft r1 → freeze V1 → edit Draft → V1 remains unchanged → concurrent server advance → stale save 409 → deliberate reconciliation → later V2`
 
-## The Library concurrency proof
+So Continuum can later say which exact information was used at a specific moment.
 
-Draft edits are optimistic-concurrency protected.
+Existing mixed-media/folder/file concepts remain explicitly browser-local preview until there is a real backend contract. Binary object storage is not claimed.
 
-The frontend remembers which Draft revision was loaded and sends:
+Exact `?content_id=<UUID>` navigation now focuses the requested protected ContentAsset after normal Library loading.
 
-`{ expected_revision, source_text }`
+## Durable action — Email
 
-If the backend has already advanced, it returns `409`.
+Canonical `/email/` is the flagship manual action proof.
 
-The frontend then deliberately does **not** auto-retry with the newer revision. Instead it:
+Current frontend chain:
 
-1. keeps the user's unsaved editor text;
-2. fetches the latest server Draft;
-3. explains the editor revision versus the current server revision;
-4. requires an explicit server-Draft reload;
-5. lets the user re-apply/reconcile the change deliberately.
+`protected session → Person/ContactMethod → Connection/SenderIdentity/readiness → ContentAsset/Draft → immutable ContentVersion → Automation Draft → preflight → Review → Publish → Runtime Run(provider_mode=fake) → explicit development processing where available → typed receipt`
 
-This is an important Continuum trust rule:
+PR #143 added a focused browser proof for that entire frontend sequence against a mocked backend boundary.
 
-**newer server state is not permission for a stale browser to overwrite it.**
+The proof verifies:
 
-## The Library immutability proof
+- nine protected workflow mutations in the expected sequence;
+- CSRF on every protected mutation;
+- exact Person, ContactMethod, Connection, SenderIdentity, ContentAsset and Automation references;
+- optimistic Draft revision use;
+- immutable ContentVersion creation;
+- preflight before Review/Publish;
+- unique Run idempotency key;
+- `provider_mode: "fake"`;
+- no mutation contains `real_smtp`;
+- explicit dev processing through the canonical Runtime process route;
+- typed frozen receipt;
+- protected values do not become browser-storage canonical truth;
+- no external email is sent.
 
-A ContentVersion is a frozen historical snapshot, not merely the current Draft with a version label.
+This proves frontend orchestration and safety semantics, not production deployment.
 
-PR #139 browser validation proved:
+## Requests — bounded useful operations
 
-`Draft r1 → freeze Version 1 → edit/save Draft r2 → Version 1 source remains unchanged`
+Canonical `/requests/` currently has two useful operation families:
 
-It then deliberately introduced a concurrent server edit:
-
-`editor based on r2 → server becomes r3 → save gets 409 → unsaved text preserved → reload r3 → reconcile/save r4 → freeze Version 2`
-
-After the full sequence:
-
-- Version 1 still contained the original r1 source;
-- Version 2 contained the reconciled r4 source;
-- the mutable Draft could continue changing without rewriting either historical snapshot.
-
-That is the core **durable memory** proof.
-
-## Why immutable content matters to Email and Automations
-
-An Automation should not mean “use whatever this note says later.”
-
-It should be able to preserve:
-
-`ContentAsset ID → exact ContentVersion ID → AutomationVersion ID → Runtime receipt`
-
-That lets Continuum answer which exact information was approved or used at a particular moment even after the working Draft changes later.
-
-The next cross-surface work should make those exact references increasingly visible through Email/Automations/Runtime history rather than creating a new execution path.
-
-## Shared protected transport
-
-Email, Requests, Directory and Library increasingly share one protected browser transport through `assets/continuum-operator-api-v1.js`.
-
-A protected page relies on three related checks:
-
-1. the backend-issued secure cookie says the browser has a valid unlocked session;
-2. the backend validates the exact browser Origin;
-3. protected writes carry the expected CSRF proof.
-
-The CSRF proof prevents another website from using an already-unlocked browser to mutate Continuum.
-
-The shared API keeps those rules consistent while each surface owns its own product/domain behavior.
-
-The operator key is sent directly to the backend, cleared immediately, and not written into localStorage/sessionStorage.
-
-## Browser-storage boundary
-
-Browser storage can still contain harmless UI state or explicitly local preview data.
-
-It must not become canonical protected storage.
-
-Current focused browser tests verify that protected values such as operator keys, CSRF values, protected IDs and protected source content do not leak into localStorage/sessionStorage during the server-backed proofs.
-
-The invariant is:
-
-**local UI state can be local; canonical protected truth stays backend-owned.**
-
-## Requests safe simulation
+1. batch Person + email ContactMethod preview/approval;
+2. typed Email request preview/approval using the same protected Library → Automation → Runtime path as `/email/`.
 
 ### Contacts
 
-`pasted contact lines → local preview → explicit approval → protected Person create → protected email ContactMethod create → durable backend IDs/results`
+`paste → deterministic parse → preview → explicit approval → Person create → ContactMethod create → exact IDs/result`
 
-Contact writes are sequential. If Person creation succeeds and ContactMethod creation fails, the Person remains durable and Requests reports the partial result rather than pretending the batch was atomic.
+If Person succeeds and ContactMethod fails, Person remains durable and Requests reports a partial result. There is no silent auto-retry.
 
 ### Email
 
-Preview performs protected reads only:
+Preview performs reads only:
 
-`From/To/message → resolve Person + ContactMethod → resolve Connection + SenderIdentity + readiness → show exact IDs/message → explicit approval`
+`From/To/message → resolve Person/ContactMethod → resolve Connection/SenderIdentity/readiness → display exact proposal → explicit approval`
 
-Approved safe simulation performs:
+Approval then uses the canonical action chain and safe simulation. Requests does not become a second Email engine, arbitrary HTTP proxy, direct PostgreSQL console or general AI action bridge.
 
-`ContentAsset/Draft → immutable ContentVersion → manual Email Automation Draft → preflight → Review → Publish → Runtime Run(provider_mode=fake) → explicit development processing where available → typed receipt`
+## Safe simulation
 
-The browser execution proof observes the real frontend orchestration against a mocked backend boundary and verifies that no request uses `real_smtp`.
+Safe simulation means the Continuum internal workflow can be real durable backend state while only the outside provider effect is simulated.
 
-## What safe simulation means
-
-Safe simulation is real internal backend workflow with only the final outside provider effect simulated.
-
-When the backend stack is available, durable internal facts can include:
+Where the stacked routes are available, durable facts can include:
 
 - Person / ContactMethod;
 - ContentAsset / Draft / ContentVersion;
 - Automation / AutomationVersion;
 - Runtime Run / Attempts;
-- Why/provenance;
+- Why/events;
 - typed receipt.
 
-Only the final external delivery effect is simulated.
+No external email is sent.
 
-Product-facing language should prefer **safe simulation** or **simulated delivery** rather than describing it as fake frontend data.
+Product-facing language should prefer **safe simulation** / **simulated delivery**, not “fake frontend data.” The backend field remains `provider_mode: "fake"`.
 
-## Validation evidence for PR #139
+## Durable explanation — Control
 
-Current-head focused checks passed before merge:
+Canonical `/control/` has a read-only protected Runtime history/receipt lane.
 
-- Library validation source contracts;
-- Library shared-shell convergence;
-- Library desktop/mobile durable-memory Playwright proof;
-- Continuum Source Truth Validation;
-- Continuum Email Validation after the shared API extension;
-- Continuum Requests Validation after the shared API extension;
-- Continuum Directory Server Proof Validation after the shared API extension;
-- Continuum Route Graduation Validation;
-- Continuum theme-toggle validation;
-- CMX Static Validation;
-- Navigation Link Guard;
-- Archived Lab Validation;
-- Secret Scan.
+It reads canonical records; it does not request, process, cancel, retry, reconcile or resend work.
 
-The existing repo-wide Terminal Theme Guard, Privacy Audit and Doc Clarity failures remained the same unrelated baseline failures.
+A receipt can explain:
 
-These browser proofs mock the backend boundary. They prove frontend orchestration and safety semantics; they do not make the stacked backend production-live.
+- Run;
+- immutable AutomationVersion;
+- exact Person + ContactMethod;
+- exact Connection + SenderIdentity;
+- exact ContentAsset + ContentVersion + checksum;
+- manual-owner vs exact authority mode;
+- optional AuthorityGrant / Incident / TriggerOccurrence;
+- Attempts;
+- Why/events;
+- provider-operation reconciliation evidence.
 
-## Production boundary
+Historical execution is rendered from frozen receipt data rather than reconstructed from current mutable Directory/Library state.
 
-The protected Check In/operator-session foundation is production-live.
+## Bidirectional exact-reference navigation
 
-The newer Directory, Connection/SenderIdentity, Library, Automation, Runtime, provider and receipt contracts used by these proving surfaces remain stacked backend implementation until deliberately reviewed, merged, migrated and deployed.
+PRs #142 and #143 close the navigation loop.
 
-Therefore a canonical page may correctly show:
+Control → durable objects:
 
-`protected session connected → requested domain capability unavailable/not deployed`
+- `/directory/?person_id=<exact Person UUID>`
+- `/library/?content_id=<exact ContentAsset UUID>`
 
-That is a deployment boundary, not permission to manufacture browser-local fake server success.
+Email/Requests → exact Runtime history:
 
-No backend merge, production migration or deployment was performed by PR #139.
+- `/control/?automation_id=<exact Automation UUID>&run_id=<exact Run UUID>`
 
-## What can still be done this frontend-focused week without new backend coding
+The receipt handoff UI says **Open this Run in Control**.
 
-Useful next work includes:
+Security boundary:
 
-1. make exact ContentAsset/ContentVersion and Automation/Runtime references easier to follow across surfaces;
-2. improve `/control/` as a human-readable projection of real Runtime/receipt/history truth without replacing its clearly labeled future/sample areas;
-3. improve `/checkin/` only where shared status/deployment language can be added without blurring its different LIVE boundary;
-4. continue `/automations/` Runtime/history/receipt projection without colliding with the open focused workspace PR;
-5. add more typed `/requests/` operations only when they map cleanly to existing protected backend contracts;
-6. continue canonical-route cleanup when stale active-source links are found;
-7. keep desktop/mobile/accessibility validation and source-specific handoffs current;
-8. verify canonical Pages live behavior whenever direct browser/DNS access is available;
-9. record exact production-vs-stacked gaps for the later backend queue.
+- only opaque navigation IDs appear in these URLs;
+- operator key, CSRF, sender/recipient addresses, subject/body and provider secrets do not;
+- query parameters do not grant access or authority;
+- destination surfaces still require the normal protected backend session;
+- these handoffs are read-only and do not mutate Runtime state.
 
-The frontend-week goal remains:
+This is what turns stable IDs into a user-visible system property: the same object can be followed between views.
 
-**make the frontend completely ready for the backend foundation already built without inventing browser substitutes for missing server capability.**
+## Shared protected transport
 
-## Next execution order
+Email, Requests, Directory, Library and Control increasingly share `assets/continuum-operator-api-v1.js` for the protected browser contract.
 
-Default sequence after Library PR #139:
+The model is:
 
-1. **Cross-surface exact-reference pass** — make the existing Person/Content/Automation/Run identities and frozen-version relationships easier to follow, starting with low-collision surfaces.
-2. **Control / Runtime history** — make receipts and Why more human-readable projections of canonical backend records, not a second Runtime.
-3. **Check In consistency** — only where useful and without flattening its distinct production-live status.
-4. **Automations coordination** — inspect current open Automations work before touching the builder; prefer Runtime/history integration that does not collide with the layout PR.
-5. **Additional Requests adapters** only for already-supported backend operations.
-6. Keep recovery handoffs current after each coherent merge.
+1. backend secure cookie = valid protected operator session;
+2. exact Origin = page is an allowed browser origin;
+3. CSRF = extra write proof on protected mutations.
 
-The useful visible product loop is now:
+The operator key is submitted directly to the backend and cleared immediately.
 
-`Requests → Directory durable identity → Library durable memory → Email/Automations durable action → Runtime → Receipt`
+Browser storage may hold harmless UI preferences/local preview concepts, but it must not become canonical protected storage.
 
-## What cannot be completed purely from frontend work
+## Validation checkpoint after PR #143
 
-These require later deliberate backend/configuration/deployment work if they are not already production-live:
+Focused validation on the final PR #143 head was green for:
 
-- merging the stacked `jay-app` backend work;
-- applying its production database migration;
-- deploying the newer Directory/Connection/Library/Automation/Runtime endpoints to `api.cmxchat.com`;
-- confirming/configuring the provider Connection and SenderIdentity for real delivery;
-- confirming SMTP credential rotation/readiness;
-- enabling a bounded real SMTP acceptance path;
-- building a generic durable scheduler;
-- building a general authenticated assistant/AI action bridge.
+- **Continuum Runtime Receipt Navigation Validation**
+  - source contract;
+  - Email/Requests exact receipt-link browser proof;
+  - complete Email safe-simulation browser proof;
+- **Continuum Email Validation**;
+- **Continuum Requests Validation**
+  - read-only preview;
+  - canonical safe-simulation execution;
+- **Control Center validation**
+  - source contract;
+  - desktop/mobile protected Runtime receipt proof;
+- **Directory Server Proof Validation**;
+- **Library validation**;
+- **Continuum Source Truth Validation**;
+- **CMX Static Validation**;
+- **CMX Navigation Link Guard**;
+- **Continuum Archived Lab Validation**;
+- **CMX Secret Scan**.
 
-Do not confuse frontend readiness with production deployment.
+Known repo-wide baseline failures remain:
 
-## Real Email acceptance sequence
+- Terminal Theme Guard — existing Directory terminal-theme expectation;
+- Privacy Audit — existing unrelated repo baseline;
+- Doc Clarity — existing `/doc` test/source mismatch around escaped `can\'t`; PR #143 did not edit `/doc`.
 
-Do not jump directly from frontend wiring to unrestricted real mail.
+Do not treat those inherited failures as proof that this Email/Requests/Control slice failed.
 
-Preferred later sequence:
+## Production deployment truth
 
-1. prove complete simulated delivery;
-2. inspect the receipt and ambiguity/failure behavior;
-3. verify exact real SenderIdentity and Connection readiness;
-4. verify exact Directory recipient;
-5. confirm server-side provider credentials/readiness;
-6. make one explicit bounded real-email acceptance decision;
-7. send one deliberate test through canonical Runtime only;
-8. inspect the real receipt/provider outcome before expanding use.
+The frontend is now increasingly ready for the already-built protected backend contracts.
 
-The stacked proof contract currently names `team@cmxchat.com` as the proof sender and `cmxchat@gmail.com` as the bounded proof recipient. Those strings are not permission by themselves; real backend IDs/readiness remain authoritative.
+That does **not** mean those contracts are reachable on production today.
+
+A canonical surface may truthfully show:
+
+`protected session connected → newer domain route 404 → NOT DEPLOYED`
+
+Do not replace that state with browser-local fake server success.
+
+No backend merge, production migration, backend deployment, SMTP configuration or real email was performed by PRs #141–#143.
+
+## Real Email boundary
+
+The stacked backend contains a deliberately bounded direct manual-owner SMTP path, but frontend acceptance remains safe simulation.
+
+Current backend proof contract identifies `team@cmxchat.com` as the proof sender and `cmxchat@gmail.com` as the bounded proof recipient. Those strings do not create authority; exact backend SenderIdentity/Connection/readiness remain authoritative.
+
+Preferred later real-email acceptance sequence:
+
+1. prove safe simulation;
+2. inspect exact receipt/failure/ambiguity behavior;
+3. deploy the reviewed backend stack deliberately;
+4. verify exact real Connection + SenderIdentity readiness and credential rotation;
+5. verify exact Directory recipient;
+6. explicitly authorize one bounded real acceptance;
+7. run it through canonical Runtime only;
+8. inspect receipt/provider outcome before expanding anything.
+
+Current real-send acceptance remains zero until that deliberate decision occurs.
+
+## What can still be done before new backend/Codex work
+
+Useful frontend work remains, but the week has crossed an important threshold: identity, memory, action and explanation are now visibly connected.
+
+Next low-risk work should be convergence and gap reconciliation rather than adding a large new product area:
+
+1. verify canonical `/email/`, `/requests/`, `/directory/`, `/library/` and `/control/` behavior on public Pages when direct network/DNS access allows;
+2. continue shared protected-session/deployment-state wording where inconsistent;
+3. improve Check In integration only without blurring its distinct LIVE boundary;
+4. inspect open Automations PR #131 before touching the Automation workspace; avoid collisions;
+5. make Runtime/receipt/history relationships easier to understand without building a second Runtime;
+6. add only a small number of additional Requests adapters that map to already-verified protected contracts;
+7. run desktop/mobile/accessibility/nav consistency sweeps;
+8. finish with a classified production-vs-stacked gap list for the later backend queue.
+
+## What requires later backend/config/deployment work
+
+Frontend cannot manufacture:
+
+- merge/review of stacked `jay-app` backend work;
+- production database migration;
+- deployment of newer Directory/Connection/Library/Automation/Runtime routes;
+- provider Connection/SenderIdentity configuration/readiness;
+- SMTP credential verification/rotation;
+- a bounded real SMTP acceptance decision;
+- a generic durable scheduler;
+- a general authenticated assistant/AI execution bridge.
+
+Do not work around missing server capability in the browser.
 
 ## Assistant-control boundary
 
-The eventual direction is for an authenticated assistant to become another interface over Continuum.
+A future authenticated assistant can become another interface over the same backend world.
 
-That does not exist merely because `/requests/` exists. Direct assistant execution needs a deliberate authenticated bridge into Continuum APIs. Time-based actions additionally need a durable server-side scheduling layer.
+Desired pattern:
 
-Principle:
+`human intent → typed proposed operation → preview → approval/Authority → protected backend APIs → durable truth → canonical Runtime → receipt`
 
-**One backend, many interfaces.** Browser pages, `/requests/`, and a future assistant interface must all use the same backend identity, permissions, immutable versions, Runtime and receipts.
+AI interpretation is not permission. A better model, new tool, source, Connection or relationship does not automatically gain authority.
 
-No secret AI bypass is part of the plan.
+Durable future timers require server-side scheduling; they must not depend on an open browser tab.
 
-## Explicit no-go shortcuts
+## No-go shortcuts
 
-Do not use frontend work to fake or bypass:
+Do not introduce:
 
-- undeployed backend endpoints;
-- direct PostgreSQL writes;
-- provider credentials in browser code;
-- direct browser SMTP;
-- real-email success without a backend receipt;
-- browser-local records presented as durable server truth;
-- stale Draft auto-overwrite after a revision conflict;
-- mutable Draft changes rewriting immutable historical Versions;
-- generic scheduling that depends on an open tab;
-- assistant authority that bypasses backend rules;
-- alternate execution paths around canonical Runtime.
+- direct PostgreSQL from frontend;
+- browser provider credentials/direct SMTP;
+- undeployed-endpoint fakery;
+- real-email success without canonical Runtime receipt;
+- protected records stored as browser-owned truth;
+- stale Draft auto-overwrite after `409`;
+- mutation of immutable published history;
+- generic tab-dependent scheduling;
+- AI/relationship/readiness treated as authority;
+- alternate Runtime/execution path;
+- broad future-roadmap feature inflation during this integration week.
 
 ## Recovery order
 
-When resuming this frontend week, read:
+When resuming:
 
 1. `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-LIVING-PRODUCT-ROADMAP-CURRENT.md`
-2. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` on the active PR #24 stack
+2. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` from the active backend stack
 3. `docs/continuum-frontend-roadmap-CURRENT.md`
 4. this file
 5. `docs/continuum-source-truth-CURRENT.md`
-6. `docs/continuum-directory-server-proof-CURRENT.md`
-7. `docs/continuum-library-lab-CURRENT.md`
-8. `docs/continuum-email-lab-CURRENT.md`
-9. `docs/continuum-requests-CURRENT.md`
-10. current First-Repo main and open PRs
+6. `docs/continuum-email-lab-CURRENT.md`
+7. `docs/continuum-requests-CURRENT.md`
+8. `docs/continuum-directory-server-proof-CURRENT.md`
+9. `docs/continuum-library-lab-CURRENT.md`
+10. `docs/continuum-control-center-lab-CURRENT.md`
+11. current First-Repo main and open PRs
 
 Do not make architecture or product-status assumptions from chat history when current GitHub source can answer them.
 
-Never infer that a backend capability is production-live merely because the frontend supports it or stacked backend tests prove it.
+Never infer production deployment from frontend support or mocked browser proof.
