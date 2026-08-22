@@ -13,14 +13,15 @@
   <link rel="stylesheet" href="/assets/gates/cmx-gate-black-prompt.css" />
   <script src="/assets/lab/directory-theme-init.js?v=20260819-1"></script>
   <link rel="stylesheet" href="/assets/lab/directory-app-v1.css?v=20260819-1" />
+  <link rel="stylesheet" href="/assets/lab/directory-session-v2.css?v=20260822-1" />
 </head>
 <body class="cmx-black-prompt-locked">
   <div data-cmx-gated-content hidden>
   <div class="dir-shell">
     <aside class="dir-rail" aria-label="Continuum">
-      <a class="dir-mark" href="/lab/control/" aria-label="Continuum Control Center">C</a>
+      <a class="dir-mark" href="/control/" aria-label="Continuum Control Center">C</a>
       <nav class="dir-rail-nav" aria-label="Primary">
-        <a class="dir-rail-link" href="/lab/control/">
+        <a class="dir-rail-link" href="/control/">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg><span>Control Center</span>
         </a>
         <a class="dir-rail-link" href="/checkin/">
@@ -29,8 +30,8 @@
         <a class="dir-rail-link" href="/directory/" aria-current="page">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20c.7-4.2 3-6.3 6.5-6.3s5.8 2.1 6.5 6.3"/></svg><span>Directory · PREVIEW</span>
         </a>
-        <a class="dir-rail-link" href="/lab/automations/">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h8M5 17h14M16 4v6M8 14v6"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>Automations · LAB</span>
+        <a class="dir-rail-link" href="/automations/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h8M5 17h14M16 4v6M8 14v6"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>Automations</span>
         </a>
         <a class="dir-rail-link" href="/spaces/">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span>Spaces · LAB</span>
@@ -56,6 +57,22 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/><circle cx="12" cy="12" r="4"/></svg>
         </button>
       </header>
+
+      <section class="dir-server-access" id="directoryServerAccess" data-state="checking" aria-label="Protected backend session">
+        <div class="dir-server-copy">
+          <div class="dir-server-title"><strong id="directoryServerState">Checking protected session…</strong><span class="dir-server-badge" id="directoryServerBadge" data-state="checking">CHECKING</span></div>
+          <p class="dir-server-detail" id="directoryServerDetail">Directory uses the same protected backend session as Email and Requests.</p>
+        </div>
+        <div class="dir-server-controls">
+          <form class="dir-unlock-form" id="directoryUnlockForm" hidden>
+            <input id="directoryOperatorKey" type="password" autocomplete="off" spellcheck="false" aria-label="Operator key" placeholder="Operator key" />
+            <button id="directoryUnlockSubmit" type="submit">Unlock backend</button>
+            <span class="dir-unlock-error" id="directoryUnlockError" aria-live="polite"></span>
+          </form>
+          <button id="directorySessionRetry" type="button" hidden>Retry session</button>
+          <button id="directorySessionLogout" type="button" hidden>End session</button>
+        </div>
+      </section>
 
       <section class="dir-workspace" aria-label="Directory workspace">
         <header class="dir-workspace-head">
@@ -100,10 +117,10 @@
   </div>
 
   <nav class="dir-mobile-nav" aria-label="Mobile primary">
-    <a href="/lab/control/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>Control</a>
+    <a href="/control/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>Control</a>
     <a href="/checkin/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>Check In</a>
     <a href="/directory/" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3"/><path d="M6 20c.7-4 2.7-6 6-6s5.3 2 6 6"/></svg>Directory</a>
-    <a href="/lab/automations/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h8M5 17h14M16 4v6M8 14v6"/></svg>Automation</a>
+    <a href="/automations/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h8M5 17h14M16 4v6M8 14v6"/></svg>Automation</a>
     <a href="/spaces/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Spaces</a>
   </nav>
 
@@ -131,7 +148,9 @@
   </div>
 
   <script src="/assets/lab/directory-app-v1.js?v=20260819-1"></script>
-  <script src="/assets/lab/directory-api-v1.js?v=20260821-serverproof3"></script>
+  <script src="/assets/continuum-operator-api-v1.js?v=20260822-3"></script>
+  <script src="/assets/lab/directory-api-v1.js?v=20260822-2"></script>
+  <script src="/assets/lab/directory-session-v2.js?v=20260822-1"></script>
   <script src="/assets/lab/directory-server-proof-v1.js?v=20260821-serverproof3"></script>
   <script src="/assets/gates/cmx-gate-black-prompt.js" defer></script>
 </body>
