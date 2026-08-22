@@ -1,0 +1,86 @@
+name: Continuum Source Truth Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/continuum-source-truth-v1.js'
+      - 'assets/continuum-source-truth-v1.css'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/directory-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'assets/lab/lab-automations-theme-init.js'
+      - 'assets/lab/lab-email-api-v1.js'
+      - 'tests/continuum-source-truth-v1.test.js'
+      - 'docs/continuum-source-truth-CURRENT.md'
+      - '.github/workflows/continuum-source-truth-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'assets/continuum-source-truth-v1.js'
+      - 'assets/continuum-source-truth-v1.css'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/directory-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'assets/lab/lab-automations-theme-init.js'
+      - 'assets/lab/lab-email-api-v1.js'
+      - 'tests/continuum-source-truth-v1.test.js'
+      - 'docs/continuum-source-truth-CURRENT.md'
+      - '.github/workflows/continuum-source-truth-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-source-truth:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate source contracts
+        run: |
+          set -euo pipefail
+          node --check assets/continuum-source-truth-v1.js
+          node --check assets/lab/control-center-theme-init.js
+          node --check assets/lab/directory-theme-init.js
+          node --check assets/lab/library-theme-init.js
+          node --check assets/lab/lab-automations-theme-init.js
+          node --check assets/lab/lab-email-api-v1.js
+          node tests/continuum-source-truth-v1.test.js
+          git diff --check HEAD^ HEAD || true
+
+      - name: Render current-truth surfaces
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-truth-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          dump() {
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=18000 "$@" --dump-dom
+          }
+
+          for route in control directory library automations email; do
+            dump "http://127.0.0.1:8000/$route/" > "/tmp/continuum-$route.html"
+            grep -q 'data-continuum-source-truth="v1"' "/tmp/continuum-$route.html"
+            grep -q 'CONTINUUM · SOURCE TRUTH' "/tmp/continuum-$route.html"
+            grep -q 'T001–T006 complete' "/tmp/continuum-$route.html"
+            grep -q 'NOT DEPLOYED' "/tmp/continuum-$route.html"
+          done
+
+          grep -q 'Validated source. Deployment is the next boundary.' /tmp/continuum-control.html
+          grep -q 'Sample operational preview' /tmp/continuum-control.html
+          grep -q 'Protected People · backend source built' /tmp/continuum-directory.html
+          grep -q 'LOCAL PREVIEW STORAGE' /tmp/continuum-library.html
+          grep -q 'BACKEND SOURCE BUILT · PROD OFF' /tmp/continuum-automations.html
+          grep -q 'CONTINUUM · PROVING · MANUAL EMAIL' /tmp/continuum-email.html
+
+          echo 'Continuum source truth rendered across canonical proving surfaces.'
