@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 const read = (path) => fs.readFileSync(path, 'utf8');
-const index = read('lab/automations/index.html');
+const index = read('automations/index.html');
 const api = read('assets/lab/lab-automations-api-v1.js');
 const server = read('assets/lab/lab-automations-server-v1.js');
 const lifecycle = read('assets/lab/lab-automations-server-lifecycle-v1.js');
@@ -13,7 +13,7 @@ const runtime = read('assets/lab/lab-automations-server-runtime-v1.js');
 const has = (source, needle, message) => assert.ok(source.includes(needle), message);
 const lacks = (source, needle, message) => assert.ok(!source.includes(needle), message);
 
-// Existing route and load order remain the integration surface.
+// Existing surface and load order remain the integration contract after route graduation.
 has(index, '/assets/lab/lab-automations-control-v10.js', 'accepted v10 control surface must remain loaded');
 has(index, '/assets/lab/lab-automations-api-v1.js', 'thin server transport must load');
 has(index, '/assets/lab/lab-automations-server-v1.js', 'server state controller must load');
