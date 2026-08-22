@@ -1,0 +1,107 @@
+name: Continuum Lab Home Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'lab/snapshot/**'
+      - 'assets/lab/lab-home-v1.css'
+      - 'assets/lab/lab-home-v1.js'
+      - 'tests/continuum-lab-home.test.js'
+      - 'docs/continuum-lab-home-CURRENT.md'
+      - '.github/workflows/continuum-lab-home-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'lab/index.html'
+      - 'lab/snapshot/**'
+      - 'assets/lab/lab-home-v1.css'
+      - 'assets/lab/lab-home-v1.js'
+      - 'tests/continuum-lab-home.test.js'
+      - 'docs/continuum-lab-home-CURRENT.md'
+      - '.github/workflows/continuum-lab-home-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Parse launcher and validate source contract
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-home-v1.js
+          node tests/continuum-lab-home.test.js
+          git diff --check
+
+  browser-geometry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Render desktop and mobile Lab home
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-lab-home-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          BROWSER="$BROWSER" node - <<'NODE'
+          const { chromium } = require('playwright-core');
+
+          async function inspect(width, height) {
+            const browser = await chromium.launch({ executablePath: process.env.BROWSER, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+            const page = await browser.newPage({ viewport: { width, height } });
+            await page.goto('http://127.0.0.1:8000/lab/', { waitUntil: 'networkidle' });
+            await page.waitForFunction(() => document.documentElement.dataset.labHome === 'terminal-tree-v1');
+            const result = await page.evaluate(() => {
+              const rows = [...document.querySelectorAll('[data-route-row]')];
+              const viewport = document.documentElement.clientWidth;
+              const bodyWidth = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth);
+              const rectsFit = rows.every((row) => {
+                const rect = row.getBoundingClientRect();
+                return rect.left >= -1 && rect.right <= viewport + 1;
+              });
+              return {
+                marker: document.documentElement.dataset.labHome,
+                rows: rows.length,
+                overflow: bodyWidth > viewport + 1,
+                rectsFit,
+                emailDisabled: document.querySelector('[data-command="email"]')?.getAttribute('aria-disabled') === 'true',
+                snapshotHref: document.querySelector('[data-command="snapshot"]')?.getAttribute('href'),
+              };
+            });
+            console.log(`${width}x${height}`, result);
+            if (result.marker !== 'terminal-tree-v1') throw new Error('Lab home marker missing');
+            if (result.rows < 10) throw new Error('Lab route tree incomplete');
+            if (result.overflow) throw new Error(`Horizontal overflow at ${width}px`);
+            if (!result.rectsFit) throw new Error(`Route row outside viewport at ${width}px`);
+            if (!result.emailDisabled) throw new Error('Email NEXT row became navigable');
+            if (result.snapshotHref !== '/lab/snapshot/') throw new Error('Snapshot preservation route missing');
+            await browser.close();
+          }
+
+          (async () => {
+            for (const viewport of [[1280, 900], [430, 900], [390, 844], [360, 800]]) {
+              await inspect(...viewport);
+            }
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE

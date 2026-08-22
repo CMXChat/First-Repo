@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#050608" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet,noimageindex" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet,noimageindex" />
+  <meta name="description" content="Preserved Continuum Lab integrated snapshot for regression and reference." />
+  <title>Continuum Lab · Integrated Snapshot</title>
+  <style>
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark;background:#050608;color:#e8f4fc}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100dvh;background:radial-gradient(circle at 50% 10%,#0c2032 0,#05090e 34%,#050608 68%);color:#e8f4fc}
+    .lab-boot{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .lab-boot-card{width:min(440px,100%);padding:28px;border:1px solid rgba(117,190,247,.18);border-radius:16px;background:rgba(4,11,18,.9);box-shadow:0 24px 80px rgba(0,0,0,.35)}
+    .lab-boot-kicker{display:block;margin-bottom:13px;color:#73c8ff;font:800 10px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em}
+    .lab-boot-card strong{display:block;font-size:22px;letter-spacing:-.02em}
+    .lab-boot-card p{margin:8px 0 0;color:#8299ab;font-size:13px;line-height:1.55}
+    .lab-boot-card small{display:block;margin-top:12px;color:#5e768a;font:600 10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+    .lab-boot-card i{display:block;width:100%;height:2px;margin-top:20px;overflow:hidden;border-radius:999px;background:#0d1d2b}
+    .lab-boot-card i::after{content:"";display:block;width:38%;height:100%;background:#55bfff;box-shadow:0 0 14px rgba(85,191,255,.6);animation:labboot 1.25s ease-in-out infinite}
+    .lab-boot-card button{margin-top:18px;min-height:38px;border:1px solid rgba(97,192,255,.32);border-radius:8px;padding:0 14px;background:#0d4f7c;color:#eaf8ff;font-weight:750;cursor:pointer}
+    .lab-boot[data-state="error"] .lab-boot-card{border-color:rgba(224,129,92,.24)}
+    .lab-boot[data-state="error"] .lab-boot-kicker{color:#f4a36f}
+    @keyframes labboot{0%{transform:translateX(-110%)}100%{transform:translateX(300%)}}
+    @media(prefers-reduced-motion:reduce){.lab-boot-card i::after{animation:none;width:100%}}
+  </style>
+</head>
+<body>
+  <main class="lab-boot" id="labBootShell" aria-live="polite">
+    <div class="lab-boot-card">
+      <span class="lab-boot-kicker">CONTINUUM LAB · PRESERVED SNAPSHOT</span>
+      <strong>Loading integrated workspace</strong>
+      <p>Preserved Check In-derived Lab workspace for regression and reference. Prefer the focused Lab routes for current work.</p>
+      <i aria-hidden="true"></i>
+    </div>
+  </main>
+  <script src="/assets/lab/lab-loader.js?v=20260819-planner-signals-v3"></script>
+</body>
+</html>
