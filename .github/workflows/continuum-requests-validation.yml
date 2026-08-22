@@ -70,24 +70,12 @@ jobs:
               const req=route.request();
               const url=new URL(req.url());
               const p=url.pathname;
-              if(req.method()==='GET' && p.endsWith('/checkin/operator/session')){
-                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,expires_at:'2026-08-22T20:00:00Z',csrf_token:'test-csrf'})});
-              }
-              if(req.method()==='GET' && p.endsWith('/checkin/operator/directory/people')){
-                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'person-1',display_name:'CMX Test Recipient',lifecycle:'active'}])});
-              }
-              if(req.method()==='GET' && p.endsWith('/checkin/operator/directory/people/person-1/contact-methods')){
-                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'contact-1',person_id:'person-1',channel:'email',address:'cmxchat@gmail.com',normalized_address:'cmxchat@gmail.com',lifecycle:'active'}])});
-              }
-              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections')){
-                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'connection-1',display_name:'CMX Email',lifecycle:'active'}])});
-              }
-              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections/connection-1/sender-identities')){
-                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'sender-1',connection_id:'connection-1',address:'team@cmxchat.com',normalized_address:'team@cmxchat.com',lifecycle:'active'}])});
-              }
-              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections/connection-1/readiness')){
-                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({connection_id:'connection-1',fake_provider_available:true,real_smtp_available:false,issue_codes:[],sender_identities:[{sender_identity_id:'sender-1',compatible_with_connection:true,issue_codes:[]}]})});
-              }
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/session')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,expires_at:'2026-08-22T20:00:00Z',csrf_token:'test-csrf'})});
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/directory/people')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'person-1',display_name:'CMX Test Recipient',lifecycle:'active'}])});
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/directory/people/person-1/contact-methods')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'contact-1',person_id:'person-1',channel:'email',address:'cmxchat@gmail.com',normalized_address:'cmxchat@gmail.com',lifecycle:'active'}])});
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'connection-1',display_name:'CMX Email',lifecycle:'active'}])});
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections/connection-1/sender-identities')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'sender-1',connection_id:'connection-1',address:'team@cmxchat.com',normalized_address:'team@cmxchat.com',lifecycle:'active'}])});
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections/connection-1/readiness')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({connection_id:'connection-1',fake_provider_available:true,real_smtp_available:false,issue_codes:[],sender_identities:[{sender_identity_id:'sender-1',compatible_with_connection:true,issue_codes:[]}]})});
               if(req.method()!=='GET') writeCount+=1;
               return route.fulfill({status:500,contentType:'application/json',body:JSON.stringify({detail:'preview test must not write'})});
             });
@@ -101,13 +89,7 @@ jobs:
 
             await page.locator('#requestInput').fill('Ada Lovelace <ada@example.com>\nGrace Hopper, grace@example.com');
             await page.locator('#parseRequest').click();
-            const contacts=await page.evaluate(()=>({
-              marker:document.querySelector('[data-requests-version="v2"]')!==null,
-              overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,
-              backend:document.querySelector('#backendBadge')?.dataset.state,
-              rows:document.querySelectorAll('#previewBody tr').length,
-              approveDisabled:document.querySelector('#approveRequest')?.disabled
-            }));
+            const contacts=await page.evaluate(()=>({marker:document.querySelector('[data-requests-version="v2"]')!==null,overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,backend:document.querySelector('#backendBadge')?.dataset.state,rows:document.querySelectorAll('#previewBody tr').length,approveDisabled:document.querySelector('#approveRequest')?.disabled}));
             if(!contacts.marker||contacts.overflow||contacts.backend!=='connected'||contacts.rows!==2||contacts.approveDisabled)throw new Error(`Requests contacts preview failed at ${width}`);
             if(writeCount!==0)throw new Error(`Contact preview unexpectedly issued ${writeCount} writes`);
 
@@ -118,12 +100,7 @@ jobs:
             await page.locator('#emailBody').fill('Hello from Requests v2.');
             await page.locator('#previewEmailRequest').click();
             await page.waitForFunction(()=>document.querySelector('#approveEmailRequest')?.disabled===false);
-            const email=await page.evaluate(()=>({
-              overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,
-              approveDisabled:document.querySelector('#approveEmailRequest')?.disabled,
-              plan:document.querySelector('#emailPlan')?.innerText||'',
-              summary:document.querySelector('#emailPlanSummary')?.textContent||''
-            }));
+            const email=await page.evaluate(()=>({overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,approveDisabled:document.querySelector('#approveEmailRequest')?.disabled,plan:document.querySelector('#emailPlan')?.innerText||'',summary:document.querySelector('#emailPlanSummary')?.textContent||''}));
             console.log(width,height,{contacts,email,writeCount});
             if(email.overflow||email.approveDisabled||!email.plan.includes('sender-1')||!email.plan.includes('person-1'))throw new Error(`Requests Email preview failed at ${width}`);
             if(!email.summary.includes('no Email mutation has happened yet'))throw new Error(`Email preview did not preserve preview-before-write at ${width}`);
@@ -131,4 +108,101 @@ jobs:
             await browser.close();
           }
           (async()=>{for(const v of [[1280,900],[430,900],[390,844]])await inspect(...v)})().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+
+  browser-safe-simulation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Execute mocked Email safe simulation through canonical API sequence
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/requests-exec-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node - <<'NODE'
+          const { chromium } = require('playwright-core');
+          const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
+          (async()=>{
+            const browser=await chromium.launch({executablePath:process.env.BROWSER,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage({viewport:{width:1280,height:900}});
+            let writes=0;
+            const seen=[];
+            await page.route('**/api/v1/**',async route=>{
+              const req=route.request();
+              const p=new URL(req.url()).pathname;
+              const method=req.method();
+              const body=req.postDataJSON?.()||null;
+              seen.push(`${method} ${p}`);
+              if(method!=='GET'){
+                writes+=1;
+                assert(req.headers()['x-csrf-token']==='test-csrf',`missing CSRF on ${method} ${p}`);
+                assert(!JSON.stringify(body||{}).includes('real_smtp'),`real SMTP appeared in ${method} ${p}`);
+              }
+              if(method==='GET' && p.endsWith('/checkin/operator/session')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,expires_at:'2026-08-22T21:00:00Z',csrf_token:'test-csrf'})});
+              if(method==='GET' && p.endsWith('/checkin/operator/directory/people')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'person-1',display_name:'CMX Test Recipient',lifecycle:'active'}])});
+              if(method==='GET' && p.endsWith('/directory/people/person-1/contact-methods')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'contact-1',person_id:'person-1',channel:'email',address:'cmxchat@gmail.com',normalized_address:'cmxchat@gmail.com',lifecycle:'active'}])});
+              if(method==='GET' && p.endsWith('/checkin/operator/connections')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'connection-1',display_name:'CMX Email',lifecycle:'active'}])});
+              if(method==='GET' && p.endsWith('/connections/connection-1/sender-identities')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'sender-1',connection_id:'connection-1',address:'team@cmxchat.com',normalized_address:'team@cmxchat.com',lifecycle:'active'}])});
+              if(method==='GET' && p.endsWith('/connections/connection-1/readiness')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({connection_id:'connection-1',fake_provider_available:true,real_smtp_available:false,issue_codes:[],sender_identities:[{sender_identity_id:'sender-1',compatible_with_connection:true,issue_codes:[]}]})});
+              if(method==='POST' && p.endsWith('/library/content')){
+                assert(body?.kind==='text'&&body?.title==='Continuum safe simulation'&&body?.visibility==='action_scoped','unexpected ContentAsset create payload');
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({asset:{id:'content-1',title:body.title},draft:{revision:1}})});
+              }
+              if(method==='PUT' && p.endsWith('/library/content/content-1/draft')){
+                assert(body?.expected_revision===1&&body?.source_text==='Hello from Requests v2.','unexpected ContentDraft update payload');
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({revision:2})});
+              }
+              if(method==='POST' && p.endsWith('/library/content/content-1/versions')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({id:'content-version-1',version_number:1})});
+              if(method==='POST' && p.endsWith('/automations')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({automation:{id:'automation-1'},draft:{revision:1}})});
+              if(method==='PUT' && p.endsWith('/automations/automation-1/draft')){
+                const action=body?.definition?.actions?.[0];
+                assert(body?.expected_revision===1,'unexpected Automation draft revision');
+                assert(action?.type==='email'&&action?.connection_id==='connection-1'&&action?.sender_identity_id==='sender-1'&&action?.recipient_person_id==='person-1'&&action?.recipient_contact_method_id==='contact-1'&&action?.content_asset_id==='content-1','unexpected Email Automation definition');
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({revision:2,definition:body.definition})});
+              }
+              if(method==='GET' && p.endsWith('/automations/automation-1/preflight')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ready:true,issues:[]})});
+              if(method==='POST' && p.endsWith('/automations/automation-1/review')) return route.fulfill({status:200,contentType:'application/json',body:'{}'});
+              if(method==='POST' && p.endsWith('/automations/automation-1/publish')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({id:'automation-version-1',version_number:1})});
+              if(method==='POST' && p.endsWith('/automations/automation-1/runs')){
+                assert(body?.provider_mode==='fake'&&body?.fake_behavior==='accepted'&&body?.request_idempotency_key,'Run must be fake with unique idempotency key');
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({id:'run-1',status:'pending'})});
+              }
+              if(method==='POST' && p.endsWith('/automations/automation-1/runs/run-1/process')){
+                assert(body?.worker_id==='requests-v2','unexpected worker id');
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({id:'run-1',status:'succeeded'})});
+              }
+              if(method==='GET' && p.endsWith('/automations/automation-1/runs/run-1/receipt')) return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({run_id:'run-1',run_status:'succeeded',sender_identity_address:'team@cmxchat.com',recipient_contact_method_address:'cmxchat@gmail.com',subject:'Continuum safe simulation',content_version_id:'content-version-1',provider_mode:'fake',attempts:[{outcome:'succeeded'}],why_events:[{event:'simulated'}]})});
+              return route.fulfill({status:500,contentType:'application/json',body:JSON.stringify({detail:`unhandled test route ${method} ${p}`})});
+            });
+
+            await page.goto('http://127.0.0.1:8000/requests/',{waitUntil:'networkidle'});
+            await page.evaluate(()=>{
+              const g=document.querySelector('[data-cmx-gated-content]'); if(g)g.hidden=false;
+              document.body.classList.remove('cmx-black-prompt-locked');
+              document.querySelectorAll('[data-cmx-gate-overlay],#cmx-black-prompt-gate').forEach(el=>el.remove());
+            });
+            await page.locator('#modeEmail').click();
+            await page.locator('#emailFrom').fill('team@cmxchat.com');
+            await page.locator('#emailTo').fill('cmxchat@gmail.com');
+            await page.locator('#emailSubject').fill('Continuum safe simulation');
+            await page.locator('#emailBody').fill('Hello from Requests v2.');
+            await page.locator('#previewEmailRequest').click();
+            await page.waitForFunction(()=>document.querySelector('#approveEmailRequest')?.disabled===false);
+            assert(writes===0,`preview issued ${writes} writes`);
+            await page.locator('#approveEmailRequest').click();
+            await page.waitForFunction(()=>document.querySelector('#emailResult')?.textContent?.includes('Safe simulation completed through canonical Runtime'));
+            const facts=await page.evaluate(()=>({result:document.querySelector('#emailResult')?.textContent||'',receipt:document.querySelector('#emailReceipt')?.innerText||'',receiptHidden:document.querySelector('#emailReceipt')?.hidden}));
+            console.log({writes,seen,facts});
+            assert(writes===9,`expected 9 approved mutations, saw ${writes}`);
+            assert(!facts.receiptHidden&&facts.receipt.includes('run-1')&&facts.receipt.includes('team@cmxchat.com')&&facts.receipt.includes('cmxchat@gmail.com')&&facts.receipt.includes('fake'),'typed receipt was not rendered');
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
           NODE
