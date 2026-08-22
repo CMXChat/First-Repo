@@ -1,117 +1,77 @@
-# Continuum Documentation Authority
+# Continuum Frontend Documentation Authority
 
-Authority: **DOCUMENT GOVERNANCE**
+Authority: **FIRST-REPO FRONTEND DOCUMENT GOVERNANCE**
 Last verified: **2026-08-22**
 
-This file defines how to decide which document is allowed to answer which question.
+This repository is not allowed to become a second backend/project-status handbook.
 
-The goal is to preserve useful history without letting old checkpoints impersonate current truth.
+## Core boundary
 
-## Core rule
+`CMXChat/First-Repo` owns frontend/static/product-surface documentation.
+
+`CMXChat/jay-app` owns project-wide and backend truth.
+
+If a question is about any of the following, stop reading First-Repo as authority and switch to `jay-app`:
+
+- production backend release;
+- backend deployment status;
+- migrations/Alembic heads;
+- database models/schema;
+- backend PR/task progression;
+- Runtime internals;
+- Authority/trigger-consumption internals;
+- provider/reconciliation implementation;
+- backend validation counts;
+- backend release/deployment runbooks.
+
+Canonical backend entrypoint:
+
+`CMXChat/jay-app/PROJECT-STATUS-CURRENT.md`
+
+## What First-Repo may answer
+
+First-Repo current docs may authoritatively answer:
+
+- which static routes exist;
+- which route is canonical vs legacy;
+- which frontend assets/controllers a page loads;
+- whether a page is wired to a protected backend contract;
+- which UI behavior is browser-preview/sample behavior;
+- how pages navigate between one another;
+- desktop/mobile/frontend interaction contracts;
+- browser/static test evidence;
+- product-facing copy and design direction.
+
+## Frontend authority order
+
+For current frontend questions use:
+
+1. executable frontend source and tests;
+2. `docs/continuum-frontend-CURRENT.md`;
+3. `assets/cmx-routes.json` for route existence/metadata;
+4. the relevant surface-specific frontend CURRENT document;
+5. older checkpoints/history only when needed for rationale or regression evidence.
 
 A filename containing `CURRENT` is not automatically global authority.
 
-Documents have scopes. When two files disagree, use the highest-authority file for the question being asked, then use domain files for detail.
+## Frontend status vocabulary
 
-## Authority tiers
+Use:
 
-### Tier 0 — executable truth
+- **LIVE UI** — route is deployed and reachable.
+- **WIRED** — frontend code calls a real protected backend contract.
+- **PREVIEW** — browser/sample behavior, not durable server truth.
+- **LEGACY** — compatibility/history only.
 
-For implemented behavior, source/schema/tests beat prose.
+Do not maintain a First-Repo inventory of backend `STACKED` implementation state. That belongs in `jay-app`.
 
-Examples:
+A frontend can be WIRED even when the backend dependency is unavailable in the current environment. The UI must show the actual API result; First-Repo must not guess why the backend is unavailable.
 
-- FastAPI routes/services/models;
-- Alembic migrations;
-- generated OpenAPI/client;
-- current frontend route source;
-- browser/static tests;
-- current GitHub branch/PR metadata.
+## Canonical route authority
 
-Executable truth still does **not** prove production deployment. Deployment/release evidence is a separate fact.
+Canonical route existence comes from `assets/cmx-routes.json` plus the actual static route.
 
-### Tier 1 — current status authority
-
-Use these first for current-state questions:
-
-- `docs/PROJECT-STATUS-CURRENT.md` — cross-repository LIVE/WIRED/STACKED/PREVIEW/PLANNED status.
-- `docs/continuum-frontend-CURRENT.md` — current First-Repo route/wiring truth.
-- `assets/cmx-routes.json` — canonical route registry only.
-- `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md` — backend production/main/stack truth.
-- active stacked branch `specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` — exact protected API contract for the current backend stack.
-
-### Tier 2 — domain CURRENT contracts
-
-These explain one surface/domain in depth.
-
-Examples:
-
-- `continuum-requests-CURRENT.md`
-- `continuum-email-lab-CURRENT.md`
-- `continuum-control-center-lab-CURRENT.md`
-- `continuum-library-lab-CURRENT.md`
-- Directory server-proof/current docs
-- `continuum-automations-real-backend-integration-CURRENT.md`
-- product/architecture CURRENT plans
-
-A domain file may contain historical implementation names such as `assets/lab/*`. That does not make `/lab/*` the canonical route.
-
-### Tier 3 — plans, design contracts and roadmap material
-
-These describe intended architecture or future behavior.
-
-They are authoritative for design constraints **within their intended future scope**, but not for implementation/deployment status.
-
-Examples:
-
-- Automations master plan;
-- Signals/Observations plan;
-- Goals/Missions;
-- AI/Planner architecture;
-- live-world capability plans;
-- Files/binary storage direction.
-
-### Tier 4 — checkpoints/history
-
-Dated notes, old acceptance reports, old route-migration documents, superseded CURRENT snapshots and archived prototypes remain useful evidence.
-
-They do not override Tier 1 current status.
-
-Do not delete them merely because they are old.
-
-## Standard status vocabulary
-
-Use these across status documents and visible status explanations:
-
-- **LIVE** — deployed and verified in the target production environment.
-- **WIRED** — frontend code actually calls the typed/protected backend contract.
-- **STACKED** — implementation exists/validated in GitHub source but is not production-deployed.
-- **PREVIEW** — browser/product/sample behavior, not durable backend truth.
-- **PLANNED** — documented direction without implemented current contract.
-
-Avoid creating synonyms such as `basically live`, `kind of wired`, `source complete`, `almost production` unless the exact meaning is defined.
-
-Domain lifecycle states such as Draft/Review/Published, pending/running/succeeded, claimed/revoked etc. remain separate from these deployment/integration terms.
-
-## Production vs source vs frontend
-
-Always distinguish these three questions:
-
-1. **Does the frontend call it?** → WIRED.
-2. **Does backend source implement it?** → STACKED or main-source implemented.
-3. **Can production serve it now?** → LIVE only with deployment evidence.
-
-A production page can legitimately show:
-
-`session connected → newer endpoint 404 → NOT DEPLOYED`
-
-That is not a frontend failure if the route is intentionally still stacked.
-
-## Route authority
-
-Canonical route existence/metadata comes from `assets/cmx-routes.json` plus the actual filesystem/static route.
-
-As of this consolidation, canonical Continuum product routes include:
+Current Continuum routes include:
 
 - `/checkin/`
 - `/spaces/`
@@ -123,68 +83,65 @@ As of this consolidation, canonical Continuum product routes include:
 - `/control/`
 - `/doc/`
 
-`/lab/` is retired as a user-facing product namespace.
+`/lab/` is retired as a user-facing namespace.
 
-Historical `assets/lab/*`, CSS class names, storage keys or old documentation may remain for compatibility/history. They are implementation identifiers, not canonical URLs.
+Historical asset names such as `assets/lab/*` may remain as implementation identifiers.
 
-## How to handle stale documents
+## Historical documents
 
-Do not mass-delete useful files.
+Older First-Repo documents can preserve useful frontend/product decisions and acceptance evidence.
 
-Instead:
+However, historical files that contain old backend details are **history, not backend authority**.
 
-1. identify the unique information in the old file;
-2. make sure Tier 1 or the relevant domain document links to it if still useful;
-3. classify it as checkpoint/history in `docs/README.md`;
-4. preserve git history;
-5. only rename/move/delete when links and unique information have been intentionally reconciled.
+Do not copy new backend implementation details into them.
 
-If a widely linked stale file must remain at its old path, add a short supersession banner only when the whole file can be safely updated without losing its content.
+If unique backend knowledge is discovered only in an old First-Repo document, move/reconcile that knowledge into `jay-app` before deleting or heavily rewriting the old file.
 
-## What cleanup must never do
+Git history remains a preservation layer.
 
-Do not:
+## What must never be duplicated here
 
-- erase acceptance evidence just to reduce file count;
-- rewrite history to make the project look more complete than it was;
-- promote a preview capability to LIVE;
-- copy private secrets into docs;
-- replace exact commit/PR/migration evidence with vague prose;
-- collapse backend architecture plans into frontend claims;
-- treat a branch test as production acceptance;
-- treat an old route name as current because an asset filename still contains `lab`.
+Do not add or maintain current tables/lists of:
 
-## Required update pattern
+- backend release SHAs;
+- migration revision IDs;
+- backend PR chains;
+- backend task completion inventories;
+- backend test/coverage counts;
+- provider-operation state machines;
+- internal Authority/Runtime persistence details.
 
-When a meaningful frontend/backend status boundary changes:
+Frontend docs may name the typed objects/endpoints they consume when necessary to explain UI behavior, but implementation authority remains in `jay-app`.
 
-1. update executable source/tests first;
-2. update the relevant domain CURRENT file;
-3. update `PROJECT-STATUS-CURRENT.md` if cross-project status changed;
-4. update `continuum-frontend-CURRENT.md` if route/wiring truth changed;
-5. update `assets/cmx-routes.json` only if route metadata changed;
-6. update `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md` when backend production/main/stack truth changed;
-7. only then change visible LIVE/WIRED/STACKED/PREVIEW labels.
+## Update discipline
+
+For a frontend change:
+
+1. update frontend source/tests;
+2. update the relevant frontend domain handoff;
+3. update `continuum-frontend-CURRENT.md` only if cross-surface wiring changed;
+4. update `assets/cmx-routes.json` only if route metadata changed.
+
+For a backend/project change:
+
+1. update `jay-app` source/tests/docs;
+2. update `jay-app/PROJECT-STATUS-CURRENT.md` or the appropriate backend handoff;
+3. only adjust First-Repo if the frontend itself changes because of that backend contract.
+
+Never copy backend status into First-Repo simply so both repos say the same thing.
 
 ## AI handoff rule
 
-A new AI should be able to get oriented without reading every historical Markdown file.
-
-Minimum recovery path:
+A new AI in First-Repo should normally need only:
 
 1. `docs/AI-START-HERE.md`
-2. `docs/PROJECT-STATUS-CURRENT.md`
-3. `docs/continuum-frontend-CURRENT.md`
-4. `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md`
-5. relevant domain contract
-6. active code/spec/tasks
+2. `docs/continuum-frontend-CURRENT.md`
+3. `docs/README.md`
+4. the relevant route-specific frontend file
+5. frontend source/tests
 
-Only search older history when the current files point to it or a specific decision/acceptance detail is needed.
+If the task crosses into backend truth, switch repositories and read `jay-app/PROJECT-STATUS-CURRENT.md`.
 
-## Preservation record
+## Preservation
 
-The pre-consolidation First-Repo documentation/index state remains recoverable from git at commit:
-
-`311e8c2feac73e6ea7d7f99b6a7895d2a973ad25`
-
-This cleanup changes discoverability and authority. It does not intentionally discard project knowledge.
+The earlier cross-repository First-Repo status document remains recoverable in Git history. It is intentionally being removed from the current tree because backend/project authority belongs in `jay-app`, not because that information is being discarded.
