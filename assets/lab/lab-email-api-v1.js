@@ -8,6 +8,11 @@
   const json=(method,body)=>({method,mutation:true,headers:{"Content-Type":"application/json"},body:JSON.stringify(body??{})});
   const mutation=(method="POST")=>({method,mutation:true});
   const op="/checkin/operator";
+  async function getReceipt(automationId,runId){
+    const receipt=await request(`${op}/automations/${encodeURIComponent(automationId)}/runs/${encodeURIComponent(runId)}/receipt`);
+    window.dispatchEvent(new CustomEvent("cmx:runtime-receipt-read",{detail:{automationId:String(automationId||""),runId:String(runId||"")}}));
+    return receipt;
+  }
   window.CMXEmailLabApi=Object.freeze({
     apiBase:API_BASE,
     session:()=>request(`${op}/session`),
@@ -29,7 +34,7 @@
     requestRun:(id,payload)=>request(`${op}/automations/${encodeURIComponent(id)}/runs`,json("POST",payload)),
     processRun:(id,runId,payload)=>request(`${op}/automations/${encodeURIComponent(id)}/runs/${encodeURIComponent(runId)}/process`,json("POST",payload)),
     getRun:(id,runId)=>request(`${op}/automations/${encodeURIComponent(id)}/runs/${encodeURIComponent(runId)}`),
-    getReceipt:(id,runId)=>request(`${op}/automations/${encodeURIComponent(id)}/runs/${encodeURIComponent(runId)}/receipt`),
+    getReceipt,
   });
 
   if (!document.querySelector('script[data-continuum-source-truth]')) {
