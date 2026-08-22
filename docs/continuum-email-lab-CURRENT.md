@@ -1,202 +1,208 @@
 # Continuum Email — CURRENT
 
 Last updated: 2026-08-22
-
-## Route ownership
-
-`/email/` is the only canonical Continuum Email page.
-
-The earlier physical `/lab/email/` compatibility page and `/lab/` launcher are retired. A stale request for `/lab/email/` may be compatibility-forwarded by the global `404.html` + `assets/continuum-legacy-route-redirect.js` layer to `/email/`, but `/lab/email/` owns no file, state or implementation.
-
-PUBLIC ROUTE OBSERVED WORKING: **YES** on 2026-08-22 after the GitHub Pages deployment queue was recovered and current `main` published.
-
-BACKEND LIVE ACCEPTANCE PROVEN: **NO**. The frontend route being live does not mean the stacked backend contracts are production-deployed.
+Canonical route: `/email/`
+Frontend generation: **v3 backend-session integration**
 
 ## Purpose
 
-`/email/` is a protected development/proving surface for one exact manual Email action.
+`/email/` is the protected manual Email workspace. It is now intentionally wired to the current backend contract instead of treating a missing protected session or undeployed stacked capability as one generic failure.
 
-It is designed to prove this connected path:
+The connected model remains:
 
-Person
-→ email ContactMethod
-→ Connection
-→ SenderIdentity
-→ action-scoped ContentAsset Draft
-→ immutable ContentVersion
-→ Automation Draft
-→ preflight
-→ Review
-→ immutable AutomationVersion
-→ manual Runtime Run
-→ typed receipt / Why
+`Person → email ContactMethod → Connection → SenderIdentity/readiness → ContentAsset/Draft → immutable ContentVersion → Automation Draft/preflight/Review/Publish → manual Runtime Run → typed receipt/Why`
 
-Authority scope on this surface is manual owner only. Unattended Authority, schedules, AI initiation, bulk delivery and generic provider execution remain unavailable here.
+The backend remains authoritative. The frontend never writes directly to PostgreSQL, invents readiness, reconstructs historical truth from mutable objects or substitutes browser fake records for unavailable APIs.
 
-## Current frontend presentation
+## Approved roadmap relationship
 
-The 2026-08-22 workspace refresh deliberately removed the earlier green/black terminal-like presentation.
+Master frontend plan: `docs/continuum-frontend-roadmap-CURRENT.md`.
 
-Current visual rules:
+Current execution order starts with real `/email/` integration, then `/requests/`, then systematic backend projection/polish across the other Continuum surfaces.
 
-- light theme is the default;
-- dark theme uses rich neutral black/charcoal surfaces with blue Continuum accents;
-- green is reserved for narrow success/readiness semantics;
-- the page uses an application workspace layout instead of a large landing-page hero;
-- recipient, sender, message, review, Run and receipt remain the same functional sequence;
-- navigation uses the canonical `/control/`, `/directory/`, `/automations/` and `/library/` routes.
+## Operator unlock/session UX
 
-The Message step now reuses the established Continuum rich-composer behavior:
+Email v3 adds a real backend unlock flow.
 
-- Write / Preview modes;
-- paragraph, H2 and H3 blocks;
-- bold, italic, underline and strikethrough;
-- unordered and ordered lists;
-- block quote;
-- safe links;
-- divider;
-- undo / redo;
-- formatting cleanup;
-- paste sanitization.
+On load:
 
-The rich editor does **not** create a second canonical content store. It projects the current composed message into the existing hidden `bodyInput`, and the established Email orchestration still sends normalized text into the real ContentDraft/ContentVersion backend contract. No private message content is persisted into localStorage or sessionStorage by the rich-composer layer.
+1. `GET /api/v1/checkin/operator/session` checks for an existing protected session.
+2. If the session is valid, Email loads backend capabilities immediately.
+3. If the session is missing/expired, the page exposes **Unlock backend**.
+4. The operator key is sent directly to `POST /api/v1/checkin/operator/unlock` and immediately cleared from the input.
+5. The key is never saved in localStorage, sessionStorage, IndexedDB or page-owned canonical state.
+6. The server-owned HttpOnly cookie carries authentication. Mutations use the backend CSRF contract.
+7. **End protected session** calls the protected session DELETE and returns the workspace to the locked state.
 
-This preserves the existing backend proof while giving the user a real document-style composer.
+Shared transport for protected operator/session behavior lives in `assets/continuum-operator-api-v1.js` so `/email/` and `/requests/` can follow the same rules.
 
-## Canonical backend source
+## Backend-state classification
 
-The implementation follows `jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`.
+Email now distinguishes at least these states:
 
-Backend OpenAPI/generated-client contracts remain executable truth. Stacked development proof is not production deployment.
+- **LOCKED** — no valid protected session; unlock is required.
+- **CONNECTED** — protected session and probed Email dependencies are available.
+- **PARTIAL** — session works but one or more Email dependencies are unavailable.
+- **NOT DEPLOYED** — session works while newer stacked Email dependency routes return 404/unsupported on the deployed API.
+- **DENIED** — protected access/Origin was rejected.
+- **OFFLINE / UNAVAILABLE** — network/server failure.
 
-## Product flow
+This matters because current production and current stacked source are not the same thing.
 
-1. Read protected People and choose a stable `person_id`.
-2. Read that Person's active email ContactMethods and choose a stable `contact_method_id`.
-3. Read Connections and SenderIdentities and consume authoritative backend readiness.
-4. Create an action-scoped text ContentAsset and ContentDraft.
-5. Save the Draft with `expected_revision` and freeze an immutable ContentVersion.
-6. Create an Automation Draft containing one manual trigger, one Email action, immediate start and finish, using exact stable object IDs.
-7. Run authoritative preflight, then Review and Publish an immutable AutomationVersion only when allowed.
-8. Request a manual Runtime Run with `provider_mode=fake` or tightly bounded `provider_mode=real_smtp`.
-9. Processing remains an explicit second user action through the existing DEVELOPMENT ONLY process control.
-10. Read the typed Runtime receipt with frozen inputs, Attempts, Why/events, provider ambiguity and reconciliation facts.
+## Production vs stacked truth
 
-## Exact backend calls consumed
+Canonical backend handbook: `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` on draft PR #24.
 
-All under `/api/v1`:
+Current source truth when Email v3 was started:
 
-- `GET /checkin/operator/session`
-- `GET /checkin/operator/directory/people`
-- `GET /checkin/operator/directory/people/{person_id}/contact-methods`
-- `GET /checkin/operator/connections`
-- `GET /checkin/operator/connections/{connection_id}/sender-identities`
-- `GET /checkin/operator/connections/{connection_id}/readiness`
-- `POST /checkin/operator/library/content`
-- `PUT /checkin/operator/library/content/{content_id}/draft`
-- `POST /checkin/operator/library/content/{content_id}/versions`
-- `POST /checkin/operator/automations`
-- `PUT /checkin/operator/automations/{automation_id}/draft`
-- `GET /checkin/operator/automations/{automation_id}/preflight`
-- `POST /checkin/operator/automations/{automation_id}/review`
-- `POST /checkin/operator/automations/{automation_id}/publish`
-- `POST /checkin/operator/automations/{automation_id}/runs`
-- `POST /checkin/operator/automations/{automation_id}/runs/{run_id}/process` — DEVELOPMENT ONLY
-- `GET /checkin/operator/automations/{automation_id}/runs/{run_id}/receipt`
+- T001–T006 complete;
+- migration head `c0d1e2f3a4b5`;
+- full backend regression 170 passed, 89% coverage;
+- PR #24 remains draft/unmerged;
+- production remains on the older documented Phase 1 boundary.
 
-Protected mutations fetch the current CSRF token from the protected operator session and send `X-CSRF-Token`. Calls use protected cookies with `credentials: include`.
+Therefore the live `/email/` page may legitimately:
 
-Provider credentials, operator keys, CSRF tokens, private content and canonical server objects are not persisted into localStorage/sessionStorage.
+`unlock successfully → report Directory/Connection/Library/Automation/Runtime capability as not deployed`
+
+That is not treated as a frontend success or as missing canonical data. It is a deployment boundary.
+
+## Directory recipient
+
+After a valid protected session:
+
+- list real People;
+- show active People only;
+- when a Person is selected, list that Person's ContactMethods;
+- show active `channel=email` methods only;
+- preserve exact Person and ContactMethod UUIDs for the Automation definition.
+
+Email address is not Person identity.
+
+## Connection and SenderIdentity
+
+The sender path loads real Connections, real SenderIdentities and authoritative backend readiness.
+
+The page consumes server facts for fake-provider availability, real SMTP availability, configuration binding/availability and typed readiness issues. The browser never reads provider credentials or decides SMTP permission itself.
+
+## Message / Library
+
+The rich composer remains presentation-only.
+
+`assets/lab/lab-email-workspace-v2.js` sanitizes the rich editor and projects normalized message text into the hidden backend text field. No private message content is stored in browser storage.
+
+**Freeze message version** performs the real backend chain:
+
+`create ContentAsset+Draft → PUT Draft with expected_revision → POST immutable ContentVersion`
+
+A stale Draft revision is a backend `409`; the UI reports the conflict rather than blindly overwriting.
+
+No HTML-email backend contract is invented here.
+
+## Automation
+
+When recipient, sender and frozen content are ready, Email v3 creates a manual Email Automation Draft with exact backend IDs, then calls authoritative preflight.
+
+The current definition remains:
+
+- `schema_version: 1`
+- `trigger: { type: "manual" }`
+- no conditions
+- one typed Email action
+- exact Connection/SenderIdentity/Person/ContactMethod/ContentAsset IDs
+- immediate start
+- finish
+
+Review and Publish create immutable AutomationVersion truth. Publishing is not provider delivery.
+
+## Runtime acceptance mode
+
+The current frontend acceptance pass intentionally enables **safe simulation only**.
+
+"Safe simulation" means:
+
+- the Person, ContentVersion, Automation, Run, Attempt, Why and receipt records are real backend/runtime data;
+- the final provider boundary is simulated;
+- zero external email is sent.
+
+Current supported simulated behaviors remain `accepted`, `transient_once` and `permanent_failure`.
+
+The explicit development Process control remains visible where the backend exposes it. If that development-only route is not deployed, Email says so directly.
 
 ## Real SMTP boundary
 
-The browser never speaks SMTP directly and never reads provider credentials.
+Real SMTP is intentionally disabled in this frontend acceptance pass even though the stacked backend has a narrowly bounded manual-owner SMTP contract.
 
-Real SMTP remains backend-restricted to the server-managed binding, compatible sender and authorized proof recipient. The frontend provides no arbitrary-recipient bypass.
+A later explicit acceptance decision is required before enabling a real-send control.
 
-The real flow remains deliberately two-stage:
+Browser invariants remain:
 
-Request Run
-→ explicit Process now
+- never talk directly to SMTP;
+- never receive provider credentials;
+- never bypass backend sender/recipient/readiness restrictions;
+- never automatically retry an ambiguous external outcome.
 
-SMTP `accepted` means provider/server acceptance. It is not independent inbox-delivery proof.
+## Receipt
 
-Ambiguous external outcomes stay visible as ambiguity and must never be automatically retried.
+After a Run exists, Email reads the typed Runtime receipt and renders frozen execution facts instead of reconstructing history from mutable Directory state.
 
-## Unsupported by design
+The receipt presentation includes current backend facts such as:
 
-This surface does not add:
+- Run and AutomationVersion identity/state;
+- manual-owner authority mode;
+- provider mode;
+- frozen recipient/sender/content references;
+- Attempts;
+- Why/events;
+- ambiguity and reconciliation state.
 
-- CC/BCC
-- attachments
-- bulk send
-- arbitrary recipients
-- sender substitution
-- schedules
-- recurring sends
-- AI initiation
-- Planner initiation
-- unattended sends
-- generic Authority controls
-- automatic retry of ambiguous external effects
+Direct manual Email Runs do not invent TriggerOccurrence/Authority provenance when it is absent.
 
-## Failure truth
+## Unsupported by design in this pass
 
-- Protected backend unavailable/session expired: show unavailable and never substitute browser fake data.
-- Directory or selector read failure: never reinterpret failure as confirmed empty canonical data.
-- `409` Draft conflict: surface it and reload current truth.
-- Preflight unavailable/failing: Review/Publish stay blocked.
-- Backend readiness unavailable: do not guess SMTP capability.
-- Ambiguous provider outcome: expose receipt/reconciliation truth and never auto-resend.
+- real SMTP execution from the browser UI;
+- CC/BCC;
+- attachments;
+- bulk delivery;
+- arbitrary-recipient bypass;
+- schedules;
+- recurring sends;
+- AI initiation;
+- generic Authority controls;
+- automatic retry of ambiguous provider effects.
 
-## Files
+## Canonical files
 
-- `email/index.html` — canonical protected Email workspace.
-- `assets/lab/lab-email-api-v1.js` — disposable static transport for the proving surface; eventual React should use the generated `jay-app` client.
-- `assets/lab/lab-email-v1.js` — canonical Email backend orchestration.
-- `assets/lab/lab-email-workspace-v2.js` — presentation-only rich composer, sanitization, Write/Preview modes, theme toggle and freeze-state lock.
-- `assets/lab/lab-email-v1.css` — neutral Continuum application presentation and responsive layout.
-- `tests/continuum-email-lab-v1.test.js` — canonical route/backend/rich-composer contract checks.
-- `.github/workflows/continuum-email-lab-validation.yml` — source plus desktop/mobile interaction validation.
-- `assets/continuum-legacy-route-redirect.js` — stale `/lab/email/` compatibility forwarding.
+- `email/index.html`
+- `assets/continuum-operator-api-v1.js`
+- `assets/lab/lab-email-api-v1.js`
+- `assets/lab/lab-email-v3.js`
+- `assets/lab/lab-email-workspace-v2.js`
+- `assets/lab/lab-email-v1.css`
+- `assets/lab/lab-email-desktop-scale-v1.css`
+- `assets/lab/lab-email-backend-v3.css`
+- `tests/continuum-email-lab-v1.test.js`
+- `.github/workflows/continuum-email-lab-validation.yml`
 
-## Current acceptance state
+`assets/lab/lab-email-v1.js` remains historical implementation source but is no longer the canonical orchestrator once v3 is merged.
 
-FRONTEND SOURCE: implemented at `/email/`.
+## Acceptance target
 
-PUBLIC ROUTE OBSERVED WORKING: YES.
+Safe frontend/backend proof target:
 
-CANONICAL LEGACY REDIRECT OBSERVED WORKING: YES for the broader `/lab/...` compatibility layer during the 2026-08-22 Pages recovery.
+`unlock → load backend Directory/Connections → freeze ContentVersion → create/preflight/review/publish AutomationVersion → request fake Runtime Run → explicitly process where development endpoint exists → read typed receipt`
 
-BACKEND LIVE ACCEPTANCE PROVEN: NO.
-
-## Live backend acceptance checklist for later
-
-- protected session works from `db.cmxchat.com` to the API origin
-- active Person + active email ContactMethod are available
-- usable Connection + SenderIdentity exist
-- authoritative Connection readiness is available
-- ContentVersion freeze succeeds
-- Automation Draft/preflight/Review/Publish succeeds
-- fake accepted/transient/permanent Runs produce truthful receipts
-- any controlled real Run uses only authorized recipient/sender/configuration with explicit owner confirmation
-- inbox delivery is recorded separately if independently observed
-- ambiguous provider outcome never auto-retries
+If current production stops before that because the newer stacked backend is not deployed, record the exact boundary. Do not fake the remainder.
 
 ## Recovery
 
-Frontend-only recovery starts with:
+1. `docs/continuum-frontend-roadmap-CURRENT.md`
+2. this file
+3. `email/index.html`
+4. `assets/lab/lab-email-v3.js`
+5. `assets/continuum-operator-api-v1.js`
+6. `assets/lab/lab-email-workspace-v2.js`
+7. `assets/lab/lab-email-api-v1.js`
+8. current backend integration handbook in `CMXChat/jay-app`
 
-1. `email/index.html`
-2. `assets/lab/lab-email-v1.css`
-3. `assets/lab/lab-email-workspace-v2.js`
-4. `assets/lab/lab-email-v1.js`
-5. `assets/lab/lab-email-api-v1.js`
-6. this file
-7. the current backend integration handbook in `CMXChat/jay-app`
-
-Do not recreate `/lab/email/`.
-
-Do not move Email canonical truth into browser storage.
-
-Do not turn rich-editor HTML into a new independent backend contract. The current proof intentionally continues to freeze normalized text through the established ContentDraft/ContentVersion path.
+Do not recreate `/lab/email/` and do not move Email canonical truth into browser storage.
