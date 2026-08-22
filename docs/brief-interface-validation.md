@@ -222,6 +222,22 @@ A future production claim should still use a fresh full workflow run against the
 - dependency inventory for legacy Brief assets
 - automated documentation freshness checks
 
+## Visual refinement contract recorded August 9
+
+The active `/spaces/` briefing can become richer through the presentation of the information already on the page. Visual polish should improve hierarchy and interaction without adding more product concepts, extra panels, or duplicate controls.
+
+For the current refinement pass:
+
+- Today, Explore, Spaces, How, and Everything may use restrained Space-colored depth, gradients, edge accents, and clearer section pacing while keeping their existing content and navigation.
+- Hover feedback belongs only on hover-capable devices. Touch layouts should remain calm, readable, and free of horizontal page movement.
+- Motion should be brief and optional. Reduced-motion preferences must remove decorative transitions or entry animation.
+- Dialog close controls must keep equal width and height, zero horizontal padding, and a circular radius on desktop and mobile.
+- Visual changes must preserve light and dark themes, permission boundaries, focused mobile composition, and the complete Everything view.
+- The visual layer lives in `assets/brief/brief-demo-visual-refinement.css` and is loaded through the final Explore stylesheet. Active cache versions must advance when that stylesheet changes.
+- New browser coverage checks close-button geometry, refined surface rendering, and mobile containment. The regular accessibility, Spotify, device, release, privacy, and five-engine browser checks remain required.
+
+The design goal is a finished briefing with stronger visual hierarchy and useful interaction feedback, while keeping the product understandable and uncluttered.
+
 ## Result format for future updates
 
 Record:
