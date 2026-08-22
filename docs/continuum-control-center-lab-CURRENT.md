@@ -1,200 +1,256 @@
-# Continuum Control Center Lab - CURRENT
+# Continuum Control Center — CURRENT
 
-Date: 2026-08-19
-Status: Standalone flagship Lab prototype. Sample/prototype state only. No production Runtime, Signals, general Connection health, continuity-health service, Goals Runtime, simulation backend or autonomous execution is claimed.
+Date: 2026-08-22
+Route: `/control/`
+Status: **MIXED TRUTH SURFACE — protected Runtime history frontend proof + explicit sample operational preview**
 
-Route: `https://db.cmxchat.com/lab/control/`
+## Role
 
-Backend companion: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-CONTROL-CENTER-SIMULATION-AND-AUTONOMY-CONTRACT.md`
+Control is where Continuum should make durable action history understandable.
 
-Shared shell companion: `docs/continuum-shared-app-shell-CURRENT.md`
+The useful question is no longer only “what does the dashboard look like?” It is:
 
-# Role
+> What happened, why did it happen, and which exact durable objects were involved?
 
-Control Center is the proposed operational home for Continuum. It should answer:
+The current proof-driven frontend week now has three strong primitives:
 
-```text
-what is happening now
-what needs me
-what is running / waiting
-what is next
-what changed
-whether continuity needs attention
-whether important sources/connections need attention
-why something happened
-what a hypothetical continuity scenario would do
-```
+`Directory = durable identity`
 
-It ties domains together without replacing Check In, Directory, Library, Automations, Spaces, Connections or later Goals.
+`Library = durable memory`
 
-# Implementation boundary
+`Email / Requests = durable action orchestration`
 
-The route is intentionally standalone. It does not inherit the broad `/lab/` Check In snapshot-loader stack.
+Control’s next job is to make the resulting action history legible across those primitives.
 
-Current files:
+## Current truth split
 
-- `lab/control/index.html`
-- `assets/lab/control-center-theme-init.js`
+Canonical `/control/` deliberately contains two different truth lanes.
+
+### 1. Protected Runtime history lane
+
+The **History** view now injects a read-only protected Runtime/receipt lane using the shared operator session and existing stacked backend contracts.
+
+When those backend routes are deployed, the lane reads:
+
+`Automation list → Runtime Runs → exact frozen Runtime receipt`
+
+It does not start or process Runs.
+
+It does not cancel work.
+
+It does not retry Attempts.
+
+It does not reconcile provider ambiguity.
+
+It does not resend an external effect.
+
+It does not create a second Runtime.
+
+### 2. Operational preview lane
+
+The existing Now, Upcoming, sample connection/source health, quiet-state preview, continuity-health examples and local simulation remain **sample/proving UI**.
+
+Those panels do not become production truth merely because the protected Runtime history lane exists beside them.
+
+The page must keep that distinction visible.
+
+## Backend contract used
+
+The current canonical backend handbook is:
+
+`CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`
+
+on the active stacked backend ref `dev/durable-trigger-consumption` / draft PR #24.
+
+Relevant protected reads:
+
+- `GET /api/v1/checkin/operator/automations`
+- `GET /api/v1/checkin/operator/automations/{automation_id}/runs`
+- `GET /api/v1/checkin/operator/automations/{automation_id}/runs/{run_id}/receipt`
+
+The frontend uses `assets/continuum-operator-api-v1.js` for the protected cookie-session contract and error classification.
+
+## Production boundary
+
+The operator session / Check In foundation is production-live.
+
+The newer Automation, Runtime and receipt contracts used by the protected History lane remain **stacked implementation**, not production deployment.
+
+Therefore this is a valid production state:
+
+`protected session connected → Automation/Runtime route returns 404 → Control says NOT DEPLOYED`
+
+That is a deployment boundary.
+
+It must not cause Control to invent local Runtime records.
+
+Frontend readiness is not a claim that production currently exposes Runtime history.
+
+## What the Runtime receipt proves
+
+The stacked backend `RuntimeExecutionReceiptPublic` freezes the exact execution references needed for a trustworthy explanation.
+
+The Control history lane renders, when present:
+
+- Run ID;
+- Automation ID;
+- immutable AutomationVersion ID;
+- Person ID and frozen display name;
+- ContactMethod ID and frozen recipient address;
+- Connection ID and frozen display name;
+- SenderIdentity ID and frozen sender address/display name;
+- ContentAsset ID;
+- immutable ContentVersion ID;
+- Content checksum;
+- content subject;
+- provider mode;
+- Run/action status;
+- manual-owner vs exact Check In authority mode;
+- optional AuthorityGrant / AuthorityGrantVersion;
+- optional Check In Incident;
+- optional TriggerOccurrence;
+- Attempts;
+- Runtime events / Why timeline;
+- provider-operation reconciliation state where relevant.
+
+The important rule is:
+
+**historical execution is rendered from the frozen receipt, not from whatever Directory or Library happens to say today.**
+
+A Person can later be renamed and a Draft can later change. The receipt still explains the identity/content snapshot used for that exact Run.
+
+## Cross-surface reference direction
+
+Control now exposes exact-reference navigation where the corresponding canonical surface exists.
+
+Examples:
+
+`Person ID → /directory/?person_id=<exact UUID>`
+
+`ContentAsset ID → /library/?content_id=<exact UUID>`
+
+`Automation → /automations/`
+
+The query parameters are a frontend navigation hint only. They do not grant access or authority. The destination must still load the protected object from the backend and handle missing/not-deployed state normally.
+
+A follow-up slice can make Directory and Library actively focus the requested exact ID after their protected data loads.
+
+## Protected session behavior
+
+Control uses the same protected session model as Email, Requests, Directory and Library:
+
+1. backend-issued secure cookie establishes the operator session;
+2. exact allowed Origin is enforced by the backend;
+3. mutations elsewhere require CSRF;
+4. this Runtime history lane performs reads only.
+
+If locked, Control shows an inline operator unlock form.
+
+The operator key is sent directly to the backend and cleared immediately.
+
+No operator key, CSRF token, frozen receipt, protected IDs or private addresses are intentionally persisted to localStorage/sessionStorage by this lane.
+
+Control may still retain its old route-local theme preference. A visual preference is not canonical protected Runtime truth.
+
+## Files
+
+Current protected Runtime history slice:
+
+- `control/index.html`
+- `assets/continuum-operator-api-v1.js`
+- `assets/control/control-runtime-history-v1.js`
+- `assets/control/control-runtime-history-v1.css`
+- `tests/continuum-control-runtime-history-v1.test.js`
+- `tests/continuum-control-runtime-history-v1-browser.js`
+- `.github/workflows/control-center-lab-validation.yml`
+
+Existing Control sample/proving implementation remains in:
+
+- `assets/lab/control-center-v1.js`
 - `assets/lab/control-center-v1.css`
 - `assets/lab/control-center-mobile-polish-v2.css`
 - `assets/lab/control-center-interaction-v3.css`
-- `assets/lab/control-center-focus-v4.css`
-- `assets/lab/control-center-v1.js`
 - `assets/lab/control-center-focus-v4.js`
-- `tests/continuum-control-center-v1.test.js`
-- `tests/continuum-control-center-focus-v4.test.js`
-- `tests/continuum-shared-app-shell.test.js`
-- `.github/workflows/control-center-lab-validation.yml`
+- `assets/lab/control-center-focus-v4.css`
 
-Production should later rebuild accepted behavior in the real frontend/router/API-client architecture instead of porting static Lab scaffolding wholesale.
+The `assets/lab/` filename is implementation history. The active route is `/control/`.
 
-# Product structure
+## Validation target
 
-Primary views:
+Focused validation should prove:
 
-`Now | Upcoming | History | All activity`
+- canonical active navigation uses `/control/`, `/directory/`, `/library/` and `/automations/`;
+- desktop and mobile can go locked → unlock → protected Automation/Run listing;
+- selecting a Run fetches the typed frozen receipt;
+- exact Person/ContactMethod/Connection/Sender/Content/Automation/Run IDs render;
+- Attempts and Why events render;
+- exact Person and ContentAsset navigation hints are preserved;
+- the operator key is cleared;
+- protected values do not enter localStorage/sessionStorage;
+- no Runtime mutation occurs from the history lane;
+- a 404 is shown as a truthful not-deployed boundary rather than fake history;
+- the existing local simulation remains isolated from protected Runtime truth.
 
-Now contains the current operational summary, Attention, Running & waiting, recent Activity, continuity-health sample, upcoming rail, connection/source sample, and safe Simulation entry.
+Browser proof uses a mocked API boundary. It proves frontend orchestration and rendering semantics, not production deployment.
 
-The hierarchy deliberately avoids equal-card dashboard soup. Current state is primary, owner attention is second, supporting health/activity is quieter.
+## Why this matters
 
-# Real-device QA decisions
+Without a receipt surface, a user sees “Email succeeded” and has to trust a vague sentence.
 
-The first Samsung/Android screenshots led to the v2 mobile pass:
+With the durable chain, Continuum can explain:
 
-- tighter state header;
-- `Stable. 2 things need review.` and `2 need you` copy;
-- Attention + Running & waiting + Activity grouped as one operational surface;
-- sticky view tabs;
-- better narrow-screen type sizing;
-- content-hugging Simulation/Why bottom sheets instead of fixed empty height;
-- compact scenario/result presentation;
-- working View activity / All activity navigation;
-- retained five-item bottom nav.
+`Person 444… → ContactMethod 555… → ContentVersion 999… → AutomationVersion 222… → Run 333… → Attempt → receipt`
 
-No later screenshot was required to continue development, so post-v2 visual acceptance remains source/device-informed rather than freshly screenshot-confirmed.
+That is much more than a log line. It means the system can answer:
 
-# Flagship interaction state
+- who was involved;
+- which address was used;
+- which exact frozen content was used;
+- which immutable Automation definition ran;
+- who/what initiated it;
+- whether authority was manual or delegated;
+- what the provider boundary reported;
+- whether retries happened;
+- whether ambiguity/reconciliation exists;
+- what the Runtime recorded and why.
 
-## Command
+That is the beginning of explainable durable action.
 
-The top search control / `Cmd/Ctrl + K` opens a local command palette that can jump between Control Center views, open Simulation, navigate to current Continuum surfaces, toggle theme, and filter commands.
+## Current product loop
 
-It performs no API request and grants no authority.
+The proof-driven frontend loop is now:
 
-## Detail / Why
+`Requests → Directory identity → Library durable memory → Email/Automations define work → Runtime → Control receipt / Why`
 
-Attention rows, Activity rows and the three sample Running & waiting rows open one detail surface containing:
+The next high-value frontend step is to make the exact Person/Content links actively focus those same protected objects on Directory and Library, then add an “Open in Control” handoff from Email/Requests receipts where a Run exists.
 
-```text
-sample status
-+ domain
-+ time/context
-+ what happens next
-+ optional safe navigation
-+ causal explanation
-```
+Avoid changing the active Automation editor while First-Repo PR #131 remains open unless that work is deliberately reconciled first.
 
-The causal direction remains:
+## No-go shortcuts
 
-`Trigger/evidence → State → policy → authority → capability → result`
+Do not use Control to:
 
-Production must use protected refs, exact versions, Runtime records and Audit/Why provenance.
+- create browser-local fake Runtime history;
+- execute or process Runs as a hidden side effect of viewing history;
+- automatically retry ambiguous provider work;
+- manufacture Authority from receipt context;
+- mutate PostgreSQL directly;
+- store protected receipt truth in browser persistence;
+- claim stacked backend routes are production-live;
+- collapse the local simulation preview into canonical Runtime execution.
 
-Autonomy has its own correct `Why` explanation: the Lab is observe-only and cannot activate production autonomy.
+## Recovery order
 
-## Activity filters
+When resuming Control work:
 
-All Activity has local sample filters for All, Needs you, Continuity, Automations and Check In. Filtering only hides/shows existing sample rows.
+1. `docs/continuum-frontend-roadmap-CURRENT.md`
+2. `docs/continuum-frontend-week-CURRENT.md`
+3. `docs/continuum-source-truth-CURRENT.md`
+4. this file
+5. `control/index.html`
+6. `assets/continuum-operator-api-v1.js`
+7. `assets/control/control-runtime-history-v1.js`
+8. current First-Repo main / open PRs
+9. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` on the active stacked backend ref
 
-## Quiet-state preview
-
-The command palette can toggle a local quiet preview:
-
-`Quiet. Nothing needs you right now.`
-
-It sets the visible attention count to zero, swaps the alert panel for a healthy quiet state and leaves waiting work visible. Reload resets it. It never mutates backend truth.
-
-## Simulation
-
-Fixed safe sample scenarios cover owner unavailable for 7 days, primary email unavailable, and trusted approver non-response. Results are deterministic explanatory text only.
-
-Future real simulation remains:
-
-`real State snapshot → isolated hypothetical overlay → simulated policy/authority evaluation → simulated Runtime path → predicted result`
-
-Simulation must never activate real authority or call consequential providers.
-
-# Focus / overlay v4
-
-The v4 assets are loaded explicitly by `lab/control/index.html` under the existing same-origin CSP.
-
-They provide:
-
-- dialog / `aria-modal` semantics;
-- inert background shell/mobile navigation while a modal is open;
-- Tab and Shift+Tab containment;
-- focus restoration when close would otherwise strand focus;
-- preservation of meaningful focus when a command already moved the user to another view;
-- clear focus-visible treatment in light and dark modes;
-- mobile safe-area handling and sticky sheet headers;
-- reduced-motion-safe focus feedback.
-
-This layer changes interaction containment only.
-
-# Shared Continuum shell
-
-Accepted rule:
-
-```text
-shared shell owns app switching / environment / global command / appearance
-current domain owns its workspace
-protected backend owns truth / authority / real effects
-```
-
-Concrete convergence now:
-
-- Control Center is the proposed Lab home at `/lab/control/`;
-- the Automation Lab Continuum brand returns to `/lab/control/`;
-- LIVE `/checkin/` has not been wrapped in experimental shell chrome;
-- broad `/lab/` compatibility scaffolding has not been refactored merely for visual uniformity.
-
-See `docs/continuum-shared-app-shell-CURRENT.md` for route graduation, desktop/mobile shell direction, Directory migration and production-shell rules.
-
-# Truth boundary
-
-Do not claim the following until protected backend services exist and are verified:
-
-- production Control Center activity stream or Runtime;
-- live general Connection/Source health;
-- production continuity-health scoring/revalidation service;
-- Goals/Missions Runtime;
-- live general Signals/Observations;
-- saved simulation backend;
-- autonomous AI/provider execution.
-
-`/checkin/` remains the current LIVE protected Continuum surface.
-
-# Theme / responsive direction
-
-The prototype defaults light and stores an explicit route-local theme under `continuum-control-center-theme-v1`. Dark mode stays rich black/near-black.
-
-Mobile preserves the same operational power with a dedicated bottom navigation, one-column flow, horizontally usable view/filter controls, bottom-sheet modal behavior, safe-area support and reduced-motion handling.
-
-Long-term theme/navigation state should migrate into the real shared frontend shell, not be hacked across independent static prototypes now.
-
-# Next product work
-
-Do not keep adding random Control Center features merely because there is room.
-
-Next useful product direction is to let the current interaction/shell model settle, then move the next real domain toward a clean boundary. Directory is the strongest candidate when frontend product work resumes, likely through an isolated `/lab/directory/` direction or the real app depending on backend readiness.
-
-Library and Connections should follow the shared-shell contract when they become real surfaces.
-
-# Backend boundary
-
-This frontend work does not change backend execution order.
-
-Canonical backend overlay: `CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-BACKEND-ORDER-OF-WORK-CURRENT.md`
-
-Phase 2A production deployment and the protected `continuity.md` proof remain the immediate backend boundary.
+Never infer production deployment from frontend support or mocked browser proof.
