@@ -48,7 +48,7 @@
     if (document.querySelector('script[data-continuum-exact-reference]')) return;
     const script = document.createElement('script');
     script.src = '/assets/continuum-exact-reference-v1.js?v=20260822-1';
-    script.defer = true;
+    script.async = false;
     script.dataset.continuumExactReference = 'loader';
     document.head.appendChild(script);
   }
@@ -78,10 +78,11 @@
     document.head.appendChild(script);
   }
 
+  installExactReferenceFocus();
+
   function ready() {
     installThemeControl();
     installSourceTruth();
-    installExactReferenceFocus();
     patchCanonicalRoutes();
   }
 
