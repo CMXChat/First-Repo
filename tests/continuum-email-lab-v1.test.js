@@ -17,7 +17,7 @@ must(html,'href="/automations/"','canonical Automations navigation');
 must(html,'href="/library/"','canonical Library navigation');
 must(legacyRedirect,"['/lab/email/', '/email/']",'retired Lab Email compatibility mapping');
 if(fs.existsSync('lab/email/index.html'))throw new Error('retired /lab/email/ page must not exist');
-must(api,'/checkin/operator/connections/${encodeURIComponent(connectionId)}/readiness','connection readiness');
+must(api,'${op}/connections/${encodeURIComponent(connectionId)}/readiness','connection readiness');
 must(api,'/receipt`','typed Run receipt');
 must(api,'X-CSRF-Token','CSRF mutation contract');
 must(api,'credentials:"include"','protected cookie');
