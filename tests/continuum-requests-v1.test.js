@@ -22,7 +22,7 @@ must(html,'id="emailTo"','Email recipient input');
 must(html,'id="previewEmailRequest"','Email preview action');
 must(html,'id="approveEmailRequest"','Email approval action');
 must(html,'Safe simulation only.','safe simulation boundary');
-must(html,'No external email is sent','external side-effect boundary');
+must(html,'no external email is sent','external side-effect boundary');
 must(html,'not a direct database console','database boundary');
 must(html,'not a second Email engine','single execution path');
 must(html,'href="/email/"','Email navigation');
