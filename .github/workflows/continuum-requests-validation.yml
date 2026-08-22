@@ -126,7 +126,7 @@ jobs:
             }));
             console.log(width,height,{contacts,email,writeCount});
             if(email.overflow||email.approveDisabled||!email.plan.includes('sender-1')||!email.plan.includes('person-1'))throw new Error(`Requests Email preview failed at ${width}`);
-            if(!email.summary.includes('No Email mutation has happened yet'))throw new Error(`Email preview did not preserve preview-before-write at ${width}`);
+            if(!email.summary.includes('no Email mutation has happened yet'))throw new Error(`Email preview did not preserve preview-before-write at ${width}`);
             if(writeCount!==0)throw new Error(`Email preview unexpectedly issued ${writeCount} writes`);
             await browser.close();
           }
