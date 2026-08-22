@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-const index = read('lab/automations/index.html');
+const index = read('automations/index.html');
 const historyLayer = read('assets/lab/lab-automations-history-v1.js');
 const routeIntegration = read('assets/lab/lab-automations-route-integration.js');
 const editorBootstrap = read('assets/lab/lab-automations-control-v10-editor-bootstrap.js');
