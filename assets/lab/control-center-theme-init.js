@@ -28,11 +28,17 @@
     }
   }
 
-  // Temporary Lab route convergence. The real shared app shell should own this
-  // through the router once these surfaces move into the application frontend.
-  function patchDirectoryRoutes() {
-    document.querySelectorAll('a[href="/lab/"]').forEach((link) => {
-      if (/directory/i.test(link.textContent || '')) link.href = '/lab/directory/';
+  function patchCanonicalRoutes() {
+    const routes = new Map([
+      ['/lab/', '/directory/'],
+      ['/lab/control/', '/control/'],
+      ['/lab/automations/', '/automations/'],
+      ['/lab/directory/', '/directory/'],
+      ['/lab/library/', '/library/'],
+    ]);
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const target = routes.get(link.getAttribute('href'));
+      if (target) link.href = target;
     });
   }
 
@@ -41,7 +47,7 @@
     if (command?.querySelector('strong')?.textContent?.trim() === 'Directory') {
       event.preventDefault();
       event.stopImmediatePropagation();
-      window.location.href = '/lab/directory/';
+      window.location.href = '/directory/';
       return;
     }
 
@@ -49,7 +55,7 @@
     if (detailAction && /directory/i.test(detailAction.textContent || '')) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      window.location.href = '/lab/directory/';
+      window.location.href = '/directory/';
     }
   }, true);
 
@@ -63,7 +69,7 @@
 
   function ready() {
     installThemeControl();
-    patchDirectoryRoutes();
+    patchCanonicalRoutes();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
