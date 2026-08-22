@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'assets/lab/lab-automations-planner-reset-v5.js'
       - 'assets/lab/lab-automations-planner-edit-v5.css'
@@ -15,7 +15,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-planner-v5.js'
       - 'assets/lab/lab-automations-planner-reset-v5.js'
       - 'assets/lab/lab-automations-planner-edit-v5.css'
@@ -46,7 +46,7 @@ jobs:
           source = Path('assets/lab/lab-automations-planner-v5.js').read_text(encoding='utf-8')
           reset = Path('assets/lab/lab-automations-planner-reset-v5.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-planner-edit-v5.css').read_text(encoding='utf-8')
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          html = Path('automations/index.html').read_text(encoding='utf-8')
 
           for term in [
               'EDIT PLAN BEFORE DRAFT', 'data-v5-planner-remove-action', 'data-v5-planner-remove-control',
@@ -82,8 +82,8 @@ jobs:
           node - <<'NODE'
           const fs = require('fs');
           const probe = '<script src="/tests/continuum-automations-planner-edit-probe.js"></script>';
-          const page = fs.readFileSync('lab/automations/index.html', 'utf8').replace('</body>', `${probe}\n</body>`);
-          fs.writeFileSync('lab/automations/planner-edit-test.html', page, 'utf8');
+          const page = fs.readFileSync('automations/index.html', 'utf8').replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('automations/planner-edit-test.html', page, 'utf8');
           NODE
 
       - name: Exercise plan editing and reset at 360px and 390px
@@ -97,7 +97,7 @@ jobs:
 
           python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-planner-edit-http.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab/automations/planner-edit-test.html' EXIT
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f automations/planner-edit-test.html' EXIT
           sleep 1
 
           check_width() {
@@ -107,7 +107,7 @@ jobs:
 
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
               --window-size="${width},${height}" --virtual-time-budget=22000 --dump-dom \
-              'http://127.0.0.1:8000/lab/automations/planner-edit-test.html' > "$out"
+              'http://127.0.0.1:8000/automations/planner-edit-test.html' > "$out"
 
             grep -q 'data-qa-planner-edit-complete="true"' "$out"
             grep -q "data-qa-planner-edit-viewport=\"${width}\"" "$out"

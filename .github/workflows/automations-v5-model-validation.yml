@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-model-v5.js'
       - 'assets/lab/lab-automations-flow-v5.js'
       - 'assets/lab/lab-automations-flow-v5.css'
@@ -15,7 +15,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-model-v5.js'
       - 'assets/lab/lab-automations-flow-v5.js'
       - 'assets/lab/lab-automations-flow-v5.css'
@@ -62,9 +62,9 @@ jobs:
           grep -q '.v3-mobile-flow .v5-sequence-node strong{font-size:12px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v4-planner-examples button{min-height:44px' assets/lab/lab-automations-v5-mobile-qa.css
           grep -q '.v5-planner-result>footer>button{min-height:46px' assets/lab/lab-automations-v5-mobile-qa.css
-          grep -q 'lab-automations-flow-v5.js' lab/automations/index.html
-          grep -q 'lab-automations-flow-v5.css' lab/automations/index.html
-          grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2' lab/automations/index.html
+          grep -q 'lab-automations-flow-v5.js' automations/index.html
+          grep -q 'lab-automations-flow-v5.css' automations/index.html
+          grep -q 'lab-automations-v5-mobile-qa.css?v=20260819-v5mobile2' automations/index.html
 
           node <<'NODE'
           const fs = require('fs');
@@ -196,14 +196,14 @@ jobs:
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom
           }
 
-          dump 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-v5-dashboard.html
+          dump 'http://127.0.0.1:8000/automations/' > /tmp/continuum-v5-dashboard.html
           grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5-dashboard.html
           grep -q '15 editable starting patterns' /tmp/continuum-v5-dashboard.html
           grep -q 'Urgent AI follow-up' /tmp/continuum-v5-dashboard.html
           grep -q 'Delayed backup escalation' /tmp/continuum-v5-dashboard.html
           ! grep -qi 'Loading Automations' /tmp/continuum-v5-dashboard.html
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-v5-mobile.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/continuum-v5-mobile.html
           grep -q 'data-lab-automations-model="v5"' /tmp/continuum-v5-mobile.html
           grep -q 'data-lab-automations-sequence="v4-4"' /tmp/continuum-v5-mobile.html
           grep -q 'data-lab-automations-sequence-model="v5"' /tmp/continuum-v5-mobile.html

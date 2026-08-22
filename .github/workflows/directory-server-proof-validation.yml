@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [agent/automations-control-surface-v10, main]
     paths:
-      - 'lab/directory/**'
+      - 'directory/**'
       - 'assets/lab/directory-api-v1.js'
       - 'assets/lab/directory-server-proof-v1.js'
       - 'tests/continuum-directory-server-proof-v1.test.js'
@@ -12,7 +12,7 @@ on:
       - '.github/workflows/directory-server-proof-validation.yml'
   push:
     paths:
-      - 'lab/directory/**'
+      - 'directory/**'
       - 'assets/lab/directory-api-v1.js'
       - 'assets/lab/directory-server-proof-v1.js'
       - 'tests/continuum-directory-server-proof-v1.test.js'

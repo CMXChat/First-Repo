@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const html = fs.readFileSync('lab/control/index.html', 'utf8');
+const html = fs.readFileSync('control/index.html', 'utf8');
 const init = fs.readFileSync('assets/lab/control-center-theme-init.js', 'utf8');
 const focus = fs.readFileSync('assets/lab/control-center-focus-v4.js', 'utf8');
 const css = fs.readFileSync('assets/lab/control-center-focus-v4.css', 'utf8');
@@ -15,6 +15,7 @@ assert.ok(
   'focus containment must load after the Control Center interaction layer'
 );
 assert.match(init, /continuum-control-center-theme-v1/);
+assert.match(init, /patchCanonicalRoutes/);
 assert.doesNotMatch(init, /control-center-focus-v4/);
 
 assert.match(focus, /function bootFocusLayer\(\)/);
@@ -40,4 +41,4 @@ assert.match(css, /safe-area-inset-bottom/);
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css, /url\(https?:/i);
 
-console.log('Continuum Control Center v4 explicit focus containment contract passed.');
+console.log('Continuum Control Center v4 explicit focus containment contract passed at /control/.');

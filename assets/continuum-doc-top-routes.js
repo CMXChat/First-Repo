@@ -6,9 +6,9 @@
 
   const link = document.createElement('a');
   link.className = 'button button-secondary continuum-automation-lab-top';
-  link.href = '/lab/automations/';
-  link.innerHTML = '<span>Automation Lab</span><small class="continuum-inline-status">LAB</small>';
-  link.setAttribute('aria-label', 'Open Automation Lab, LAB');
+  link.href = '/automations/';
+  link.innerHTML = '<span>Automations</span><small class="continuum-inline-status">PROVING</small>';
+  link.setAttribute('aria-label', 'Open Continuum Automations, proving');
   actions.append(link);
 
   document.documentElement.dataset.continuumTopRoutes = 'ready';

@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'email/**'
-      - 'lab/email/**'
+      - 'assets/continuum-legacy-route-redirect.js'
       - 'assets/lab/lab-email-*.js'
       - 'assets/lab/lab-email-*.css'
       - 'tests/continuum-email-lab-v1.test.js'
@@ -15,7 +15,7 @@ on:
     branches: [main]
     paths:
       - 'email/**'
-      - 'lab/email/**'
+      - 'assets/continuum-legacy-route-redirect.js'
       - 'assets/lab/lab-email-*.js'
       - 'assets/lab/lab-email-*.css'
       - 'tests/continuum-email-lab-v1.test.js'

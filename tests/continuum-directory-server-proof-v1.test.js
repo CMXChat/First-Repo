@@ -1,7 +1,7 @@
 const fs = require('fs');
 const assert = require('assert');
 
-const index = fs.readFileSync('lab/directory/index.html', 'utf8');
+const index = fs.readFileSync('directory/index.html', 'utf8');
 const transport = fs.readFileSync('assets/lab/directory-api-v1.js', 'utf8');
 const bridge = fs.readFileSync('assets/lab/directory-server-proof-v1.js', 'utf8');
 
@@ -35,7 +35,7 @@ assert(!bridge.includes('state.contacts.set(personId, []);'), 'ContactMethod req
 assert(!bridge.includes('localStorage.setItem'), 'server-backed Person/ContactMethod bridge must not write canonical domain state to localStorage');
 assert(!bridge.includes('cmx-lab-crm-v1'), 'server-backed bridge must not read the legacy Directory store');
 assert(bridge.includes('Organizations, Groups'), 'unsupported Directory concepts must remain explicitly local/unintegrated');
-assert(bridge.includes('SERVER-BACKED Automations may reference those stable IDs'), 'PR #121 head must truthfully acknowledge stable Directory IDs are consumed by server-backed Automations');
+assert(bridge.includes('SERVER-BACKED Automations may reference those stable IDs'), 'server-backed Automations may truthfully consume stable Directory IDs');
 assert(bridge.includes('does not fabricate reverse usage history or dependencies'), 'Directory Automations tab must avoid invented dependency data');
 
-console.log('Continuum Directory server persistence source contract passed.');
+console.log('Continuum Directory server persistence source contract passed at /directory/.');

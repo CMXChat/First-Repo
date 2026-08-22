@@ -4,7 +4,7 @@
   if (document.body?.dataset.labMode !== "true") return;
 
   const STORAGE_KEY = "cmx-lab-automations-v1";
-  const FOCUSED_PATH = "/lab/automations/";
+  const FOCUSED_PATH = "/automations/";
   const $ = (selector, root = document) => root?.querySelector(selector) || null;
   const esc = value => String(value ?? "").replace(/[&<>'\"]/g, char => ({
     "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
@@ -59,7 +59,7 @@
         <div>
           <small>AUTOMATIONS</small>
           <h2>Automation workspace</h2>
-          <p>Automations are part of Lab. This panel shows the same drafts; the dedicated workspace is the single editor.</p>
+          <p>This archived prototype can still show its local drafts, while the canonical Automation workspace now lives outside the retired Lab namespace.</p>
         </div>
         <button class="lab-auto-new" type="button" data-open-focused-automations><span>⌁</span> Open Automations</button>
       </header>
@@ -67,21 +67,21 @@
       <div class="lab-auto-state-row" aria-label="Automation integration status">
         <span><small>DRAFTS</small><strong>${drafts.length}</strong></span>
         <span><small>WORKSPACE</small><strong>CONNECTED</strong></span>
-        <span class="is-safe"><small>EXECUTION</small><strong>OFF IN LAB</strong></span>
+        <span class="is-safe"><small>EXECUTION</small><strong>OFF IN ARCHIVE</strong></span>
       </div>
 
       <div class="lab-auto-intro">
         <span class="lab-auto-intro-mark" aria-hidden="true">↔</span>
-        <div><strong>One Automation editor</strong><p><b>/lab</b> is the overall workspace. <b>/lab/automations</b> is its dedicated Automation editor. Both use the same Lab records, draft store and reusable Action library.</p></div>
+        <div><strong>One Automation editor</strong><p>The historical integrated prototype is archived. <b>/automations/</b> is the canonical Automation workspace and remains the single focused editor.</p></div>
       </div>
 
-      <div class="lab-auto-list-head"><strong>Automation drafts</strong><small>Shared with /lab/automations</small></div>
+      <div class="lab-auto-list-head"><strong>Automation drafts</strong><small>Open in /automations/</small></div>
       <div class="lab-auto-grid">
         ${drafts.length ? drafts.map(draftCard).join("") : `<div class="lab-auto-empty"><strong>No automation drafts yet</strong><p>Create the first one in the focused Automation workspace.</p><button class="lab-auto-new" type="button" data-new-focused-automation><span>＋</span> New automation</button></div>`}
       </div>
 
       <footer class="lab-auto-library-link">
-        <div><small>REUSABLE ACTION DEFINITIONS</small><strong>Action library</strong><p>Saved Lab Actions can now be selected inside Automations as explicit reusable references. Their original Action type, risk and status stay intact instead of being silently remapped.</p></div>
+        <div><small>REUSABLE ACTION DEFINITIONS</small><strong>Action library</strong><p>Saved prototype Actions can still be selected as explicit reusable references. Their original Action type, risk and status stay intact instead of being silently remapped.</p></div>
         <button type="button" data-main-action-library>Open action library ↓</button>
       </footer>`;
 
@@ -102,19 +102,19 @@
     const card = event.target.closest?.("[data-focused-automation]");
     if (card) {
       event.preventDefault();
-      location.assign(focusedUrl({ automation: card.dataset.focusedAutomation, from: "lab" }));
+      location.assign(focusedUrl({ automation: card.dataset.focusedAutomation, from: "archive" }));
       return;
     }
 
     if (event.target.closest?.("[data-open-focused-automations]")) {
       event.preventDefault();
-      location.assign(focusedUrl({ from: "lab" }));
+      location.assign(focusedUrl({ from: "archive" }));
       return;
     }
 
     if (event.target.closest?.("[data-new-focused-automation]")) {
       event.preventDefault();
-      location.assign(focusedUrl({ new: "1", from: "lab" }));
+      location.assign(focusedUrl({ new: "1", from: "archive" }));
       return;
     }
 

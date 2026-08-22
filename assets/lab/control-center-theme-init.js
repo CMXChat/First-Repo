@@ -3,6 +3,18 @@
 
   const KEY = 'continuum-control-center-theme-v1';
   const root = document.documentElement;
+  const canonicalRoutes = new Map([
+    ['/lab/', '/directory/'],
+    ['/lab/control/', '/control/'],
+    ['/lab/automations/', '/automations/'],
+    ['/lab/directory/', '/directory/'],
+    ['/lab/library/', '/library/'],
+  ]);
+  const commandRoutes = new Map([
+    ['Directory', '/directory/'],
+    ['Automations', '/automations/'],
+    ['Library', '/library/'],
+  ]);
 
   try {
     const saved = localStorage.getItem(KEY);
@@ -28,28 +40,37 @@
     }
   }
 
-  // Temporary Lab route convergence. The real shared app shell should own this
-  // through the router once these surfaces move into the application frontend.
-  function patchDirectoryRoutes() {
-    document.querySelectorAll('a[href="/lab/"]').forEach((link) => {
-      if (/directory/i.test(link.textContent || '')) link.href = '/lab/directory/';
+  function patchCanonicalRoutes() {
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const target = canonicalRoutes.get(link.getAttribute('href'));
+      if (target) link.href = target;
     });
+  }
+
+  function canonicalDetailTarget(label) {
+    if (/automations?/i.test(label)) return '/automations/';
+    if (/directory/i.test(label)) return '/directory/';
+    if (/library/i.test(label)) return '/library/';
+    return null;
   }
 
   document.addEventListener('click', (event) => {
     const command = event.target.closest?.('.cc-command-item');
-    if (command?.querySelector('strong')?.textContent?.trim() === 'Directory') {
+    const commandTitle = command?.querySelector('strong')?.textContent?.trim();
+    const commandTarget = commandRoutes.get(commandTitle);
+    if (commandTarget) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      window.location.href = '/lab/directory/';
+      window.location.href = commandTarget;
       return;
     }
 
     const detailAction = event.target.closest?.('#detailActionButton');
-    if (detailAction && /directory/i.test(detailAction.textContent || '')) {
+    const detailTarget = detailAction ? canonicalDetailTarget(detailAction.textContent || '') : null;
+    if (detailTarget) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      window.location.href = '/lab/directory/';
+      window.location.href = detailTarget;
     }
   }, true);
 
@@ -63,7 +84,7 @@
 
   function ready() {
     installThemeControl();
-    patchDirectoryRoutes();
+    patchCanonicalRoutes();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });

@@ -1,10 +1,10 @@
-name: Check In Automations Validation
+name: Continuum Automations Validation
 
 on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-*.js'
       - 'assets/lab/lab-automations-*.css'
       - 'assets/lab/lab-actions.js'
@@ -17,7 +17,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-*.js'
       - 'assets/lab/lab-automations-*.css'
       - 'assets/lab/lab-actions.js'
@@ -61,7 +61,7 @@ jobs:
           from pathlib import Path
           import sys
 
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          html = Path('automations/index.html').read_text(encoding='utf-8')
           v3 = Path('assets/lab/lab-automations-experience-v3.js').read_text(encoding='utf-8')
           route = Path('assets/lab/lab-automations-route-integration.js').read_text(encoding='utf-8')
           system = Path('assets/lab/lab-automations-system-surface.js').read_text(encoding='utf-8')
@@ -170,7 +170,7 @@ jobs:
 
           combined = html + v3 + route + system + progressive + platform + scenarios + directory + audience + intelligence + inputs + sequence
           if 'api.cmxchat.com' in combined:
-              sys.exit('focused Lab must not call the production API')
+              sys.exit('local preview layers must not directly call the production API')
           for name, source in [('system', system), ('progressive', progressive), ('platform', platform), ('directory', directory), ('audience', audience), ('intelligence', intelligence), ('inputs', inputs), ('sequence', sequence)]:
               for forbidden in ['eval(', 'new Function(', 'MutationObserver']:
                   if forbidden in source: sys.exit(f'forbidden {name} pattern: {forbidden}')
@@ -192,7 +192,7 @@ jobs:
           sleep 1
           dump() { "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=12000 "$@" --dump-dom; }
 
-          dump http://127.0.0.1:8000/lab/automations/ > /tmp/auto-desktop.html
+          dump http://127.0.0.1:8000/automations/ > /tmp/auto-desktop.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-desktop.html
           grep -q 'data-lab-automations-system-surface="ready"' /tmp/auto-desktop.html
           grep -q 'data-lab-automations-platform="v4"' /tmp/auto-desktop.html
@@ -206,7 +206,7 @@ jobs:
           grep -q 'LAB · SIMULATION ONLY' /tmp/auto-desktop.html
           ! grep -qi 'Loading Automations' /tmp/auto-desktop.html
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/auto-mobile.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/auto-mobile.html
           grep -q 'data-lab-automations-experience="v3"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-platform="v4"' /tmp/auto-mobile.html
           grep -q 'data-lab-automations-audience="v4-1"' /tmp/auto-mobile.html

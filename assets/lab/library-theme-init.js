@@ -1,6 +1,18 @@
 (() => {
   'use strict';
   const KEY = 'continuum-library-theme-v1';
+  const canonicalRoutes = new Map([
+    ['/lab/control/', '/control/'],
+    ['/lab/automations/', '/automations/'],
+    ['/lab/directory/', '/directory/'],
+    ['/lab/library/', '/library/'],
+  ]);
+  const commandRoutes = new Map([
+    ['Control Center', '/control/'],
+    ['Directory', '/directory/'],
+    ['Automations', '/automations/'],
+  ]);
+
   try {
     const saved = localStorage.getItem(KEY);
     if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved;
@@ -23,6 +35,23 @@
     }
   }
 
+  function patchCanonicalRoutes() {
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const target = canonicalRoutes.get(link.getAttribute('href'));
+      if (target) link.href = target;
+    });
+  }
+
+  document.addEventListener('click', (event) => {
+    const command = event.target.closest?.('.lib-command-result');
+    const title = command?.querySelector('strong')?.textContent?.trim();
+    const target = commandRoutes.get(title);
+    if (!target) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    window.location.href = target;
+  }, true);
+
   if (!document.querySelector('script[data-library-qa-v1]')) {
     const script = document.createElement('script');
     script.src = '/assets/lab/library-app-v1-qa.js?v=20260819-1';
@@ -31,6 +60,11 @@
     document.head.appendChild(script);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installThemeControl, { once: true });
-  else installThemeControl();
+  function ready() {
+    installThemeControl();
+    patchCanonicalRoutes();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
+  else ready();
 })();

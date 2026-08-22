@@ -1,28 +1,26 @@
 (() => {
   'use strict';
 
+  const LIBRARY_PATH = '/library/';
+
   function makeLink(kind) {
     const link = document.createElement('a');
-    link.href = '/lab/library/';
+    link.href = LIBRARY_PATH;
     link.className = kind === 'control' ? 'cc-rail-link' : 'dir-rail-link';
     link.dataset.libraryShellLink = 'true';
-    if (kind === 'control') {
-      link.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Library · LAB</span>';
-    } else {
-      link.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Library · LAB</span>';
-    }
+    link.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Library · PREVIEW</span>';
     return link;
   }
 
   function patchRail() {
     const control = document.querySelector('.cc-rail-nav');
-    if (control && !control.querySelector('a[href="/lab/library/"]')) {
-      const automation = control.querySelector('a[href="/lab/automations/"]');
+    if (control && !control.querySelector('a[href="/library/"]')) {
+      const automation = control.querySelector('a[href="/automations/"], a[href="/lab/automations/"]');
       control.insertBefore(makeLink('control'), automation || null);
     }
     const directory = document.querySelector('.dir-rail-nav');
-    if (directory && !directory.querySelector('a[href="/lab/library/"]')) {
-      const automation = directory.querySelector('a[href="/lab/automations/"]');
+    if (directory && !directory.querySelector('a[href="/library/"]')) {
+      const automation = directory.querySelector('a[href="/automations/"], a[href="/lab/automations/"]');
       directory.insertBefore(makeLink('directory'), automation || null);
     }
   }
@@ -45,7 +43,7 @@
     button.type = 'button';
     button.dataset.libraryCommand = 'control';
     button.innerHTML = '<span class="cc-command-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span><strong>Library</strong><span>Open documents, files, media and imported knowledge</span></span><span class="cc-command-key">↗</span>';
-    button.addEventListener('click', () => { window.location.href = '/lab/library/'; });
+    button.addEventListener('click', () => { window.location.href = LIBRARY_PATH; });
     results.append(group, button);
   }
 
@@ -63,7 +61,7 @@
     button.type = 'button';
     button.dataset.libraryCommand = 'directory';
     button.innerHTML = '<i>›</i><span><strong>Library</strong><span>Open documents, files, media and imported knowledge</span></span><kbd>↗</kbd>';
-    button.addEventListener('click', () => { window.location.href = '/lab/library/'; });
+    button.addEventListener('click', () => { window.location.href = LIBRARY_PATH; });
     results.append(group, button);
   }
 
@@ -89,7 +87,7 @@
       if (value === 'library' || value === 'open library') {
         event.preventDefault();
         event.stopImmediatePropagation();
-        window.location.href = '/lab/library/';
+        window.location.href = LIBRARY_PATH;
       }
     }
   }, true);

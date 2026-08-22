@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-control-v10.js'
       - 'assets/lab/lab-automations-control-v10-editor-bootstrap.js'
       - 'assets/lab/lab-automations-control-v10.css'
@@ -18,7 +18,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-control-v10.js'
       - 'assets/lab/lab-automations-control-v10-editor-bootstrap.js'
       - 'assets/lab/lab-automations-control-v10.css'
@@ -85,14 +85,14 @@ jobs:
             echo "OK: $label absent"
           }
 
-          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/' > /tmp/v10-dashboard.html
+          dump --window-size=1440,900 'http://127.0.0.1:8000/automations/' > /tmp/v10-dashboard.html
           require 'data-lab-automations-control="v10"' /tmp/v10-dashboard.html 'desktop v10 marker'
           require 'data-control-v10="ready"' /tmp/v10-dashboard.html 'desktop dashboard patched'
           require 'v10-card-menu-button' /tmp/v10-dashboard.html 'desktop object menu'
           require 'Manage all' /tmp/v10-dashboard.html 'desktop manage-all wording'
           forbid 'Loading Automations' /tmp/v10-dashboard.html 'desktop loading placeholder'
 
-          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/v10-editor.html
+          dump --window-size=1440,900 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/v10-editor.html
           require 'data-lab-automations-control="v10"' /tmp/v10-editor.html 'desktop editor v10 marker'
           require 'data-control-v10="ready"' /tmp/v10-editor.html 'desktop editor patched'
           require 'data-v10-view="definition"' /tmp/v10-editor.html 'desktop definition view'
@@ -108,11 +108,11 @@ jobs:
           require 'Trigger is structural' /tmp/v10-editor.html 'structural trigger guidance'
           forbid 'Loading Automations' /tmp/v10-editor.html 'desktop editor loading placeholder'
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/v10-mobile-dashboard.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/' > /tmp/v10-mobile-dashboard.html
           require 'data-lab-automations-control="v10"' /tmp/v10-mobile-dashboard.html 'mobile v10 marker'
           require 'v10-card-menu-button' /tmp/v10-mobile-dashboard.html 'mobile object menu'
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/v10-mobile-editor.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/v10-mobile-editor.html
           require 'data-lab-automations-control="v10"' /tmp/v10-mobile-editor.html 'mobile editor v10 marker'
           require 'v10-object-bar' /tmp/v10-mobile-editor.html 'mobile object bar'
           require 'data-v10-tab="settings"' /tmp/v10-mobile-editor.html 'mobile settings tab'

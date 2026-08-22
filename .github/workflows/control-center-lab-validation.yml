@@ -1,12 +1,14 @@
-name: Control Center Lab validation
+name: Control Center validation
 
 on:
   push:
     paths:
-      - 'lab/control/**'
-      - 'lab/automations/index.html'
+      - 'control/**'
+      - 'automations/index.html'
+      - 'directory/index.html'
       - 'assets/lab/control-center-*.js'
       - 'assets/lab/control-center-*.css'
+      - 'assets/lab/directory-theme-init.js'
       - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'docs/continuum-control-center-lab-CURRENT.md'
       - 'docs/continuum-shared-app-shell-CURRENT.md'
@@ -16,10 +18,12 @@ on:
       - '.github/workflows/control-center-lab-validation.yml'
   pull_request:
     paths:
-      - 'lab/control/**'
-      - 'lab/automations/index.html'
+      - 'control/**'
+      - 'automations/index.html'
+      - 'directory/index.html'
       - 'assets/lab/control-center-*.js'
       - 'assets/lab/control-center-*.css'
+      - 'assets/lab/directory-theme-init.js'
       - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'docs/continuum-control-center-lab-CURRENT.md'
       - 'docs/continuum-shared-app-shell-CURRENT.md'

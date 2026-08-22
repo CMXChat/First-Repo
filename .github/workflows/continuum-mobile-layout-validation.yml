@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/index.html'
-      - 'lab/automations/**'
+      - 'archive/continuum-lab/**'
+      - 'automations/**'
       - 'assets/lab/lab-loader.js'
       - 'assets/lab/lab-directory-v2.js'
       - 'assets/lab/lab-directory-v2.css'
@@ -29,8 +29,8 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/index.html'
-      - 'lab/automations/**'
+      - 'archive/continuum-lab/**'
+      - 'automations/**'
       - 'assets/lab/lab-loader.js'
       - 'assets/lab/lab-directory-v2.js'
       - 'assets/lab/lab-directory-v2.css'
@@ -106,9 +106,9 @@ jobs:
             .replace('</body>', `${probe}\n</body>`);
           fs.writeFileSync('directory-mobile-geometry.html', labRendered, 'utf8');
 
-          const automationSource = fs.readFileSync('lab/automations/index.html', 'utf8');
+          const automationSource = fs.readFileSync('automations/index.html', 'utf8');
           const automationRendered = automationSource.replace('</body>', `${probe}\n</body>`);
-          fs.writeFileSync('lab/automations/mobile-geometry.html', automationRendered, 'utf8');
+          fs.writeFileSync('automations/mobile-geometry.html', automationRendered, 'utf8');
           NODE
 
       - name: Validate 390px Directory and Automations geometry
@@ -122,7 +122,7 @@ jobs:
 
           python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-mobile-layout-http.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f directory-mobile-geometry.html lab/automations/mobile-geometry.html' EXIT
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f directory-mobile-geometry.html automations/mobile-geometry.html' EXIT
           sleep 1
 
           node tests/playwright-mobile-dump.cjs \
@@ -146,7 +146,7 @@ jobs:
 
           node tests/playwright-mobile-dump.cjs \
             "$BROWSER" 390 844 \
-            'http://127.0.0.1:8000/lab/automations/mobile-geometry.html' /tmp/automations-mobile-geometry.html \
+            'http://127.0.0.1:8000/automations/mobile-geometry.html' /tmp/automations-mobile-geometry.html \
             qaLayoutProbe complete 18000
 
           grep -q 'data-lab-planner-review="v1"' /tmp/automations-mobile-geometry.html

@@ -1,0 +1,62 @@
+name: Continuum Route Graduation Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'automations/**'
+      - 'control/**'
+      - 'library/**'
+      - 'archive/continuum-lab/**'
+      - 'lab/**'
+      - '404.html'
+      - 'assets/cmx-routes.json'
+      - 'assets/continuum-legacy-route-redirect.js'
+      - 'assets/continuum-doc-top-routes.js'
+      - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'tests/continuum-route-graduation.test.js'
+      - '.github/workflows/continuum-route-graduation-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'automations/**'
+      - 'control/**'
+      - 'library/**'
+      - 'archive/continuum-lab/**'
+      - 'lab/**'
+      - '404.html'
+      - 'assets/cmx-routes.json'
+      - 'assets/continuum-legacy-route-redirect.js'
+      - 'assets/continuum-doc-top-routes.js'
+      - 'assets/lab/lab-automations-route-integration.js'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
+      - 'assets/lab/control-center-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'tests/continuum-route-graduation.test.js'
+      - '.github/workflows/continuum-route-graduation-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  route-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate graduated routes
+        run: |
+          set -euo pipefail
+          node --check assets/continuum-legacy-route-redirect.js
+          node --check assets/lab/lab-automations-route-integration.js
+          node --check assets/lab/lab-automations-operations-v7-polish.js
+          node --check assets/lab/control-center-theme-init.js
+          node --check assets/lab/library-theme-init.js
+          node tests/continuum-route-graduation.test.js
+          git diff --check

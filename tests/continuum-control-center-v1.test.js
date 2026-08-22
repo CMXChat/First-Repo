@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const html = fs.readFileSync('lab/control/index.html', 'utf8');
+const html = fs.readFileSync('control/index.html', 'utf8');
 const css = fs.readFileSync('assets/lab/control-center-v1.css', 'utf8');
 const polish = fs.readFileSync('assets/lab/control-center-mobile-polish-v2.css', 'utf8');
 const interaction = fs.readFileSync('assets/lab/control-center-interaction-v3.css', 'utf8');
@@ -31,7 +31,8 @@ assert.match(html, /data-cc-tab="history"/);
 assert.match(html, /data-cc-tab="activity"/);
 assert.match(html, /data-cc-tab-link="activity"/);
 assert.match(html, /href="\/checkin\/"/);
-assert.match(html, /href="\/lab\/automations\/"/);
+assert.match(theme, /\['\/lab\/automations\/', '\/automations\/'\]/);
+assert.match(theme, /\['\/lab\/control\/', '\/control\/'\]/);
 assert.match(html, /control-center-theme-init\.js\?v=20260819-2/);
 assert.match(html, /control-center-v1\.css\?v=20260819-1/);
 assert.match(html, /control-center-mobile-polish-v2\.css\?v=20260819-3/);
@@ -84,6 +85,7 @@ assert.match(interaction, /@media\(max-width:580px\)/);
 assert.doesNotMatch(interaction, /url\(https?:/i);
 
 assert.match(theme, /continuum-control-center-theme-v1/);
+assert.match(theme, /patchCanonicalRoutes/);
 assert.doesNotMatch(theme, /control-center-focus-v4/);
 assert.match(js, /continuum-control-center-theme-v1/);
 assert.match(js, /control-center-interaction-v3\.css\?v=20260819-1/);
@@ -110,4 +112,4 @@ assert.match(js, /AI availability is irrelevant to essential steps/i);
 assert.doesNotMatch(js, /fetch\s*\(/);
 assert.doesNotMatch(js, /XMLHttpRequest/);
 
-console.log('Continuum Control Center v1 + device v2 + interaction v3 + explicit focus v4 asset contract passed.');
+console.log('Continuum Control Center v1 + device v2 + interaction v3 + explicit focus v4 asset contract passed at /control/.');

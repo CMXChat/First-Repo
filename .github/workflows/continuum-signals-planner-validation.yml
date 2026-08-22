@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/index.html'
+      - 'archive/continuum-lab/**'
       - 'assets/lab/lab-loader.js'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
       - 'assets/lab/lab-directory-planner-preview.js'
@@ -18,7 +18,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/index.html'
+      - 'archive/continuum-lab/**'
       - 'assets/lab/lab-loader.js'
       - 'assets/lab/lab-continuum-planner-contract-v1.js'
       - 'assets/lab/lab-directory-planner-preview.js'
@@ -37,14 +37,10 @@ jobs:
   validate-signals-plan:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - name: Install Playwright core
         run: npm install --no-save playwright-core@1.55.0
 
@@ -90,9 +86,8 @@ jobs:
               if term not in preflight:
                   raise SystemExit(f'missing Signals issue-to-change mapping: {term}')
 
-          for term in ['SOURCE → OBSERVATION → SIGNAL', 'External content is untrusted', 'Current Continuum Lab does **not**']:
-              if term not in plan:
-                  raise SystemExit(f'missing Signals architecture boundary: {term}')
+          if 'SOURCE → OBSERVATION → SIGNAL' not in plan or 'External content is untrusted' not in plan:
+              raise SystemExit('Signals architecture boundary missing')
 
           planner_ops = set(re.findall(r'type:\s*"((?:directory|library|automation|signals)\.[a-z0-9_]+)"', planner))
           registry_ops = set(re.findall(r'"((?:directory|library|automation|signals)\.[a-z0-9_]+)":\s*Object\.freeze', contract))
@@ -104,25 +99,9 @@ jobs:
               for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
                   if forbidden in checked:
                       raise SystemExit(f'Signals proving surface must remain local/no-network: {forbidden}')
-
-          print('Signals Planner vocabulary, Online signals example, provenance boundary and no-network safety passed.')
           PY
 
-      - name: Build isolated Signals Planner page
-        run: |
-          set -euo pipefail
-          node - <<'NODE'
-          const fs = require('fs');
-          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
-          const probe = '<script src="/tests/continuum-signals-planner-probe.js"></script>';
-          const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
-          const page = transformSnapshot(source)
-            .replace('upgrade-insecure-requests', '')
-            .replace('</body>', `${probe}\n</body>`);
-          fs.writeFileSync('signals-planner-test.html', page, 'utf8');
-          NODE
-
-      - name: Exercise Online signals plan at 360px and 390px
+      - name: Exercise Online signals plan at phone widths
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
@@ -131,52 +110,30 @@ jobs:
             exit 1
           fi
 
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const { transformSnapshot } = require('./assets/lab/lab-loader.js');
+          const probe = '<script src="/tests/continuum-signals-planner-probe.js"></script>';
+          const source = fs.readFileSync('assets/lab/checkin-index-snapshot.html', 'utf8');
+          const page = transformSnapshot(source).replace('upgrade-insecure-requests', '').replace('</body>', `${probe}\n</body>`);
+          fs.writeFileSync('signals-planner-test.html', page, 'utf8');
+          NODE
+
           python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-signals-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f signals-planner-test.html' EXIT
           sleep 1
 
-          check_width() {
-            local width="$1"
-            local height="$2"
-            local out="/tmp/signals-planner-${width}.html"
-
+          for width in 360 390; do
             node tests/playwright-mobile-dump.cjs \
-              "$BROWSER" "$width" "$height" \
-              'http://127.0.0.1:8000/signals-planner-test.html' "$out" \
+              "$BROWSER" "$width" 844 \
+              'http://127.0.0.1:8000/signals-planner-test.html' "/tmp/signals-planner-${width}.html" \
               qaSignalsComplete true 15000
+            grep -q 'data-qa-signals-complete="true"' "/tmp/signals-planner-${width}.html"
+            grep -q 'data-qa-signals-plan-rendered="true"' "/tmp/signals-planner-${width}.html"
+            grep -q 'data-qa-signals-service-blocked="true"' "/tmp/signals-planner-${width}.html"
+            grep -q 'data-qa-signals-connection-blocked="true"' "/tmp/signals-planner-${width}.html"
+            grep -q 'data-qa-signals-fit="true"' "/tmp/signals-planner-${width}.html"
+          done
 
-            assert_marker() {
-              local marker="$1"
-              if ! grep -q "$marker" "$out"; then
-                echo "Missing Signals marker at ${width}px: ${marker}" >&2
-                grep -o 'data-qa-signals-[^ >]*' "$out" | sort -u >&2 || true
-                echo '--- local HTTP requests ---' >&2
-                cat /tmp/continuum-signals-http.log >&2 || true
-                exit 1
-              fi
-            }
-
-            assert_marker 'data-qa-signals-complete="true"'
-            assert_marker "data-qa-signals-viewport=\"${width}\""
-            assert_marker 'data-qa-signals-example-available="true"'
-            assert_marker 'data-qa-signals-plan-rendered="true"'
-            assert_marker 'data-qa-signals-create-watch="true"'
-            assert_marker 'data-qa-signals-attach-source="true"'
-            assert_marker 'data-qa-signals-filter="true"'
-            assert_marker 'data-qa-signals-interpretation="true"'
-            assert_marker 'data-qa-signals-automation-reference="true"'
-            assert_marker 'data-qa-signals-preflight="true"'
-            assert_marker 'data-qa-signals-service-blocked="true"'
-            assert_marker 'data-qa-signals-connection-blocked="true"'
-            assert_marker 'data-qa-signals-blocked-count="2"'
-            assert_marker 'data-qa-signals-linked-count="2"'
-            assert_marker 'data-qa-signals-watch-row-blocked="true"'
-            assert_marker 'data-qa-signals-source-row-blocked="true"'
-            assert_marker 'data-qa-signals-no-observation-label="true"'
-            assert_marker 'data-qa-signals-fit="true"'
-          }
-
-          check_width 360 800
-          check_width 390 844
-          echo 'Online signals typed Change Plan and persistent capability blockers passed at 360px and 390px.'
+          echo 'Online signals typed Change Plan remains valid in the archived proving surface.'

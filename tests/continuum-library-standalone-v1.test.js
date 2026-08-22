@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const html = fs.readFileSync('lab/library/index.html','utf8');
+const html = fs.readFileSync('library/index.html','utf8');
 const css = fs.readFileSync('assets/lab/library-app-v1.css','utf8');
 const js = fs.readFileSync('assets/lab/library-app-v1.js','utf8');
 const qa = fs.readFileSync('assets/lab/library-app-v1-qa.js','utf8');
@@ -21,11 +21,12 @@ assert.match(html, /KNOWLEDGE INGESTION · LAB PREVIEW/);
 assert.match(html, /STORE → UNDERSTAND → INTEGRATE/);
 assert.match(html, /Upload file/);
 assert.match(html, /Video, audio, images, PDFs, Office files/);
-assert.match(html, /href="\/lab\/control\/"/);
-assert.match(html, /href="\/lab\/directory\/"/);
-assert.match(html, /href="\/lab\/library\/" aria-current="page"/);
-assert.match(html, /href="\/lab\/automations\/"/);
 assert.match(html, /href="\/checkin\/"/);
+assert.match(theme, /patchCanonicalRoutes/);
+assert.match(theme, /\['\/lab\/control\/', '\/control\/'\]/);
+assert.match(theme, /\['\/lab\/directory\/', '\/directory\/'\]/);
+assert.match(theme, /\['\/lab\/library\/', '\/library\/'\]/);
+assert.match(theme, /\['\/lab\/automations\/', '\/automations\/'\]/);
 assert.doesNotMatch(html, /https:\/\/api\.cmxchat\.com/);
 assert.doesNotMatch(html, /<script(?![^>]*src=)[^>]*>/i);
 assert.doesNotMatch(html, /<style[\s>]/i);
@@ -59,7 +60,7 @@ assert.match(js, /Source stays separate/);
 assert.match(js, /Authority stays separate/);
 assert.match(js, /Exact-version rule/);
 assert.match(js, /Transcript representation preview/);
-assert.match(js, /No audio bytes stored in Lab/);
+assert.match(js, /no audio bytes stored in Lab/);
 assert.match(qa, /data-save-version/);
 assert.match(qa, /Saved from standalone Library detail rail/);
 assert.match(theme, /library-app-v1-qa\.js\?v=20260819-1/);
@@ -71,4 +72,4 @@ for (const source of [js,qa]) {
   assert.doesNotMatch(source, /EventSource\s*\(/);
 }
 
-console.log('Continuum standalone Library v1 structure, storage-boundary, media, ingestion and version contracts passed.');
+console.log('Continuum standalone Library v1 structure, storage-boundary, media, ingestion and version contracts passed at /library/.');

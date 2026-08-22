@@ -1,111 +1,54 @@
 # Continuum Directory Route Graduation — CURRENT
 
-Last updated: 2026-08-21
+Last updated: 2026-08-22
 
-## Purpose
+## Current decision
 
-The root route name `Directory` was overloaded.
+`/directory/` is the single canonical Continuum Directory route.
 
-Historically, `/directory/` was the **CMX Operations Directory**: a card menu for OSINT/research and operational tools. Continuum now also has a genuine product concept named **Directory** for durable People, ContactMethods and later relationships.
+The earlier checkpoint that retained `/lab/directory/` as a separate proof route has been superseded by the broader Continuum route graduation recorded in `docs/continuum-route-graduation-CURRENT.md`.
 
-This checkpoint separates those two jobs instead of renaming the product concept.
+There is no canonical or physical `/lab/directory/` product page after PR #129.
 
-## Current route ownership
+## Route ownership
 
 ### `/menu/`
 
-`/menu/` now owns the former Operations Directory card experience.
-
-It remains a route-registry-driven launcher for OSINT/research tools such as:
-
-- OSINT Console
-- Phone Intelligence
-- Metadata Extractor
-- Resource Library
-- Missing Person Workflow
-- Advanced Search
-
-The visible name is **Operations Menu**.
+`/menu/` owns the CMX Operations Menu for OSINT/research and operational tools.
 
 ### `/directory/`
 
-`/directory/` now owns the **Continuum Directory protected preview**.
+`/directory/` owns the protected Continuum Directory preview for durable People and email ContactMethods.
 
-It reuses the accepted Directory UI and server-proof adapters from the current stacked frontend work rather than creating a second People interface.
-
-Current truth:
+Current truth remains:
 
 - protected backend `Person` identity is the intended canonical source for People;
 - protected email `ContactMethod` is the intended canonical source for supported email contacts;
-- Organizations, Groups/audiences and richer relationship concepts remain local Lab/future behavior;
-- the route does not claim the stacked backend is deployed or that live acceptance has occurred;
-- `/lab/directory/` remains available as the development/proof route until later acceptance/consolidation.
+- Organizations, Groups/audiences and richer relationship concepts remain local/proving behavior until typed backend contracts exist;
+- route graduation does not claim the stacked backend is production-deployed or that live acceptance has occurred;
+- Black Prompt remains only a client-side deterrent; backend session, owner scope, Origin and CSRF are authoritative.
 
-### `/lab/directory/`
+## Retired proof route
 
-Retained deliberately.
+`/lab/directory/` is retired.
 
-Do not delete or redirect it yet. Existing frontend validation and the Directory integration proof still use it. Route cleanup should follow live acceptance rather than precede it.
+Do not recreate it for frontend validation. Current tests and workflows must target `/directory/` directly or use the archived integrated proving snapshot at `/archive/continuum-lab/` when they intentionally need historical Lab behavior.
 
-## Frontend gate
+A stale request for `/lab/directory/` may be compatibility-forwarded by the global 404 redirect layer to `/directory/`, but it is not a registered product route and has no page of its own.
 
-`/menu/` and `/directory/` use the existing **Black Prompt Gate** with shared scope:
+## Validation
 
-`continuum-private-pages`
+`tests/continuum-directory-route-graduation.test.js` now locks down:
 
-This is a temporary frontend deterrent only.
+- `/menu/` owns the Operations Menu;
+- `/directory/` owns the protected Continuum Directory preview;
+- `/lab/directory/` is absent from the route registry and filesystem;
+- root terminal commands continue to distinguish Operations Menu from Continuum Directory.
 
-It is **not** a server-side secrecy boundary because static HTML/CSS/JavaScript assets are still delivered to the browser. Protected Directory reads/writes remain governed by the real backend operator session, owner scope, exact Origin and CSRF controls.
+The broader `tests/continuum-route-graduation.test.js` additionally requires the entire canonical Continuum route set to remain outside the `/lab/` namespace.
 
-Do not weaken backend security because the page has a visual gate.
+## Backend boundary
 
-## Root terminal behavior
+This route decision changes URL ownership only. Do not infer deployment, persistence, provider execution, Runtime authority, Organizations/Groups backend support, or live acceptance from the route name.
 
-The restricted root terminal now distinguishes:
-
-- `menu` → Operations Menu (`/menu`)
-- `directory` → Continuum Directory (`/directory`)
-
-`osint open` routes to the Operations Menu rather than the People Directory.
-
-## Why this is a preview, not a production graduation claim
-
-This frontend branch is stacked on the current PR #121 frontend integration proof. The full Directory/Automation/Runtime backend stack is not yet claimed as production-deployed.
-
-Therefore:
-
-- URL ownership has been clarified;
-- the protected preview can be reviewed and developed;
-- `/lab/directory/` remains the validated proof route;
-- live browser acceptance against a deployed backend is still required before calling `/directory/` a fully live product surface.
-
-## Validation contract
-
-`tests/continuum-directory-route-graduation.test.js` locks down:
-
-- `/menu/` owns the Operations Menu card page;
-- `/directory/` owns the Continuum Directory preview;
-- both new private preview surfaces declare the Black Prompt Gate;
-- route registry ownership is unambiguous;
-- `/lab/directory/` remains registered;
-- root terminal commands distinguish `menu` and `directory`;
-- `osint open` continues to lead to the OSINT operations menu rather than People/Contacts.
-
-## Next frontend steps
-
-Do not immediately graduate every Lab route.
-
-After the current backend API/reconciliation work settles and the stacked backend becomes reachable, perform the documented live Directory and Automations acceptance flows first.
-
-The next likely product-preview surface is Email because real owner-triggered SMTP has already been proven through Continuum Runtime. That future page must use the normal protected Person → ContactMethod → Connection → SenderIdentity → Content → Automation/Version → Runtime path. It must not introduce a generic browser-only send-email bypass.
-
-CC/BCC and attachments remain future backend-contract work; the frontend must not pretend those features exist before the typed backend supports them.
-
-## Open route architecture question
-
-No decision is forced here between:
-
-- direct stable routes such as `/directory/`, `/email/`, `/automations/`, `/library/`; or
-- a future `/console/...` namespace.
-
-Avoid route churn. Let proven product behavior earn each graduation.
+For the complete current URL decision, use `docs/continuum-route-graduation-CURRENT.md` as the higher-level source of truth.

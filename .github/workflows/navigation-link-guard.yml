@@ -16,7 +16,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Reject root and Directory navigation links
+      - name: Reject root navigation links and preserve explicit Directory policy
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -24,8 +24,8 @@ jobs:
           import sys
 
           failures = []
-          forbidden_anchor = re.compile(
-              r'<a\b[^>]*\bhref\s*=\s*(["\'])(?:/|/directory/?)\1',
+          forbidden_root_anchor = re.compile(
+              r'<a\b[^>]*\bhref\s*=\s*(["\'])/\1',
               re.IGNORECASE,
           )
 
@@ -33,27 +33,31 @@ jobs:
               if '.git' in path.parts:
                   continue
               text = path.read_text(encoding='utf-8', errors='ignore')
-              if forbidden_anchor.search(text):
-                  failures.append(f'{path}: links to / or /directory are not allowed')
+              if forbidden_root_anchor.search(text):
+                  failures.append(f'{path}: links to the restricted root / are not allowed')
 
+          # The generic site-standard layer still must not auto-inject root or
+          # Continuum Directory links onto unrelated CMX pages. Explicit links
+          # authored inside Continuum surfaces are allowed now that /directory/
+          # is the canonical protected product route.
           standard = Path('assets/cmx-page-standard.js').read_text(encoding='utf-8')
-          if re.search(r'<a href=["\']/(?:directory/?)?["\']', standard, re.IGNORECASE):
-              failures.append('assets/cmx-page-standard.js: generated root or Directory link found')
+          if re.search(r'<a href=["\']/["\']', standard, re.IGNORECASE):
+              failures.append('assets/cmx-page-standard.js: generated root link found')
           if "blockedNavigationDestinations = new Set(['/', '/directory'])" not in standard:
-              failures.append('assets/cmx-page-standard.js: navigation block policy missing')
+              failures.append('assets/cmx-page-standard.js: generic root/Directory injection block policy missing')
 
           build = Path('assets/cmx-build-lab.js').read_text(encoding='utf-8')
           for route in ('"/"', '"/directory/"'):
               if route not in build.split('BUILD_EXCLUDED_ROUTES', 1)[1].split(';', 1)[0]:
-                  failures.append(f'assets/cmx-build-lab.js: {route} missing from Build exclusions')
+                  failures.append(f'assets/cmx-build-lab.js: {route} missing from generic Build exclusions')
 
           updates = Path('assets/updates.js').read_text(encoding='utf-8')
           if "!['/', '/directory/', '/directory'].includes(page.route)" not in updates:
-              failures.append('assets/updates.js: root and Directory page-index filter missing')
+              failures.append('assets/updates.js: root and Directory generic page-index filter missing')
 
           if failures:
               print('\n'.join(f' - {failure}' for failure in failures))
               sys.exit(1)
 
-          print('Root and Directory navigation links are blocked.')
+          print('Restricted-root links are blocked; explicit canonical Continuum Directory links are allowed.')
           PY
