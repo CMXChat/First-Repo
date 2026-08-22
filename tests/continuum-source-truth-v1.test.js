@@ -20,7 +20,7 @@ for (const route of ['/control/', '/directory/', '/library/', '/automations/', '
 
 for (const loader of [control, directory, library, automations, email]) {
   requireText(loader, '/assets/continuum-source-truth-v1.js?v=20260822-1', 'shared source-truth loader');
-  requireText(loader, 'data-continuum-source-truth', 'shared source-truth marker');
+  requireText(loader, 'dataset.continuumSourceTruth', 'shared source-truth marker');
 }
 
 requireText(truth, 'PR ${SNAPSHOT.backendPr} · T001–T006 complete', 'completed trigger-consumption checkpoint');
