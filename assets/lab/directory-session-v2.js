@@ -26,10 +26,9 @@
     els.badge.textContent = kind.replaceAll('_', ' ').toUpperCase();
     els.state.textContent = headline;
     els.detail.textContent = detail || '';
-    const locked = kind === 'locked' || kind === 'denied' || kind === 'offline' || kind === 'unavailable';
-    els.form.hidden = !locked;
+    els.form.hidden = kind !== 'locked';
     els.logout.hidden = kind !== 'connected';
-    els.retry.hidden = kind === 'connected';
+    els.retry.hidden = kind === 'connected' || kind === 'checking' || kind === 'locked';
     window.dispatchEvent(new CustomEvent('cmx:operator-session-state', { detail: { state: kind } }));
   }
 
