@@ -3,6 +3,18 @@
 
   const KEY = 'continuum-control-center-theme-v1';
   const root = document.documentElement;
+  const canonicalRoutes = new Map([
+    ['/lab/', '/directory/'],
+    ['/lab/control/', '/control/'],
+    ['/lab/automations/', '/automations/'],
+    ['/lab/directory/', '/directory/'],
+    ['/lab/library/', '/library/'],
+  ]);
+  const commandRoutes = new Map([
+    ['Directory', '/directory/'],
+    ['Automations', '/automations/'],
+    ['Library', '/library/'],
+  ]);
 
   try {
     const saved = localStorage.getItem(KEY);
@@ -29,33 +41,36 @@
   }
 
   function patchCanonicalRoutes() {
-    const routes = new Map([
-      ['/lab/', '/directory/'],
-      ['/lab/control/', '/control/'],
-      ['/lab/automations/', '/automations/'],
-      ['/lab/directory/', '/directory/'],
-      ['/lab/library/', '/library/'],
-    ]);
     document.querySelectorAll('a[href]').forEach((link) => {
-      const target = routes.get(link.getAttribute('href'));
+      const target = canonicalRoutes.get(link.getAttribute('href'));
       if (target) link.href = target;
     });
   }
 
+  function canonicalDetailTarget(label) {
+    if (/automations?/i.test(label)) return '/automations/';
+    if (/directory/i.test(label)) return '/directory/';
+    if (/library/i.test(label)) return '/library/';
+    return null;
+  }
+
   document.addEventListener('click', (event) => {
     const command = event.target.closest?.('.cc-command-item');
-    if (command?.querySelector('strong')?.textContent?.trim() === 'Directory') {
+    const commandTitle = command?.querySelector('strong')?.textContent?.trim();
+    const commandTarget = commandRoutes.get(commandTitle);
+    if (commandTarget) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      window.location.href = '/directory/';
+      window.location.href = commandTarget;
       return;
     }
 
     const detailAction = event.target.closest?.('#detailActionButton');
-    if (detailAction && /directory/i.test(detailAction.textContent || '')) {
+    const detailTarget = detailAction ? canonicalDetailTarget(detailAction.textContent || '') : null;
+    if (detailTarget) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      window.location.href = '/directory/';
+      window.location.href = detailTarget;
     }
   }, true);
 
