@@ -20,7 +20,7 @@
     directory: '/directory/',
     'directory-lab': '/lab/directory/',
     library: '/lab/library/',
-    email: '/lab/email/',
+    email: '/email/',
     snapshot: '/lab/snapshot/',
     checkin: '/checkin/',
     'check-in': '/checkin/',
