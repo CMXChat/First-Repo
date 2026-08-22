@@ -1,0 +1,244 @@
+/* Continuum Automations workspace v11
+   Desktop definition editing gets the viewport. Management chrome stays available on demand. */
+
+.v11-manage-toggle{box-sizing:border-box}
+
+@media (min-width:1100px){
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"]{
+    --v11-stage-width:150px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-editor-head{
+    position:relative;
+    z-index:30;
+    background:var(--v3-bg);
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v10-object-bar{
+    width:100%;
+    max-width:none;
+    grid-template-columns:auto minmax(0,1fr) auto 38px 38px;
+    gap:7px;
+    padding:6px 18px 4px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v10-object-state{
+    grid-template-columns:auto minmax(0,1fr);
+    gap:7px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v10-object-state>span{
+    display:none;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v10-object-state>small{
+    grid-column:auto;
+    font-size:8px;
+  }
+
+  .v11-manage-toggle{
+    min-height:38px;
+    padding:0 11px;
+    border:1px solid var(--v3-line);
+    border-radius:11px;
+    background:var(--v3-panel);
+    color:var(--v3-muted);
+    font-size:8px;
+    font-weight:850;
+    cursor:pointer;
+  }
+
+  .v11-manage-toggle:hover,
+  .v11-manage-toggle:focus-visible{
+    color:var(--v3-text);
+    border-color:var(--v3-line-strong);
+    background:var(--v3-panel-3);
+    outline:none;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-editor-title-row{
+    width:100%;
+    max-width:none;
+    min-height:52px;
+    margin:0;
+    padding:4px 18px 7px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-title-button strong{
+    font-size:18px;
+    line-height:1.08;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-title-button small,
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-editor-title-row .v3-eyebrow{
+    font-size:8px;
+    line-height:1.25;
+  }
+
+  /* The four-cell readiness strip is useful information but expensive permanent chrome.
+     Its summary is carried into the compact object bar by workspace-v11.js. */
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v7-editor-status{
+    display:none!important;
+  }
+
+  /* Automation-level sections stay available through Manage instead of occupying a row forever. */
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v10-control-nav{
+    display:none!important;
+    width:auto;
+    max-width:calc(100% - 36px);
+    margin:0 18px 7px;
+    padding:5px;
+    border:1px solid var(--v3-line);
+    border-radius:11px;
+    background:var(--v3-panel);
+    box-shadow:0 12px 32px rgba(0,0,0,.12);
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"][data-v11-manage-open="true"] .v10-control-nav{
+    display:flex!important;
+  }
+
+  .v11-builder-layout{
+    width:100%;
+    display:grid;
+    grid-template-columns:var(--v11-stage-width) minmax(0,1fr);
+    align-items:start;
+    border-top:1px solid var(--v3-line);
+  }
+
+  .v11-stage-shell{
+    position:sticky;
+    top:0;
+    align-self:start;
+    min-height:calc(100vh - 112px);
+    padding:15px 10px 90px;
+    border-right:1px solid var(--v3-line);
+    background:color-mix(in srgb,var(--v3-panel) 72%,var(--v3-bg));
+  }
+
+  .v11-stage-heading{
+    display:grid;
+    gap:3px;
+    padding:2px 7px 12px;
+  }
+
+  .v11-stage-heading span{
+    color:var(--v3-blue);
+    font-size:7px;
+    font-weight:950;
+    letter-spacing:.11em;
+  }
+
+  .v11-stage-heading strong{
+    font-size:11px;
+    line-height:1.2;
+  }
+
+  .v11-stage-heading small{
+    color:var(--v3-muted);
+    font-size:8px;
+    line-height:1.35;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"] .v11-stage-shell .v3-stage-rail{
+    width:100%;
+    max-width:none;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:5px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"] .v11-stage-shell .v3-stage-rail [data-stage]{
+    width:100%;
+    min-width:0;
+    min-height:49px;
+    display:grid;
+    grid-template-columns:29px minmax(0,1fr);
+    align-items:center;
+    gap:8px;
+    padding:7px 8px;
+    text-align:left;
+    border-radius:11px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"] .v11-stage-shell .v3-stage-rail [data-stage]::before{
+    content:attr(data-v11-step);
+    width:27px;
+    height:27px;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--v3-line-strong);
+    border-radius:8px;
+    color:var(--v3-muted);
+    background:var(--v3-panel);
+    font-size:8px;
+    font-weight:900;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"] .v11-stage-shell .v3-stage-rail [data-stage].is-current::before{
+    color:var(--v3-blue);
+    border-color:color-mix(in srgb,var(--v3-blue) 46%,var(--v3-line-strong));
+    background:color-mix(in srgb,var(--v3-blue) 8%,var(--v3-panel));
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"] .v11-stage-shell .v3-stage-rail [data-stage]>*{
+    min-width:0;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-editor-shell{
+    width:100%;
+    max-width:none;
+    margin:0;
+    padding:10px 18px 88px;
+    grid-template-columns:minmax(0,1fr) 268px;
+    gap:16px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-stage-section{
+    padding-top:4px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-stage-section>header,
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-stage-section>.v3-stage-head{
+    margin-bottom:12px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-stage-section h1,
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-stage-section h2{
+    font-size:clamp(27px,3vw,40px);
+    line-height:1;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-live-panel{
+    top:18px;
+    max-height:calc(100vh - 150px);
+    overflow:auto;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"][data-flow-preview-collapsed="true"] .v3-editor-shell{
+    grid-template-columns:minmax(0,1fr) 42px;
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-editor-footer{
+    left:var(--v11-stage-width);
+    min-height:58px;
+    padding:8px 18px;
+    border-top:1px solid var(--v3-line);
+    background:color-mix(in srgb,var(--v3-bg) 94%,transparent);
+    backdrop-filter:blur(12px);
+  }
+
+  .v3-editor-page[data-workspace-v11="ready"][data-v11-definition="true"] .v3-editor-footer button{
+    min-height:42px;
+  }
+}
+
+@media (max-width:1099px){
+  .v11-builder-layout{display:contents}
+  .v11-stage-shell{display:contents}
+  .v11-stage-heading,.v11-manage-toggle{display:none!important}
+}

@@ -1,0 +1,72 @@
+name: Continuum Automations Workspace v11 Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'automations/**'
+      - 'assets/lab/lab-automations-workspace-v11.js'
+      - 'assets/lab/lab-automations-workspace-v11.css'
+      - 'tests/continuum-automations-workspace-v11.test.js'
+      - '.github/workflows/automations-v11-workspace-validation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'automations/**'
+      - 'assets/lab/lab-automations-workspace-v11.js'
+      - 'assets/lab/lab-automations-workspace-v11.css'
+      - 'tests/continuum-automations-workspace-v11.test.js'
+      - '.github/workflows/automations-v11-workspace-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate workspace source contract
+        run: |
+          set -euo pipefail
+          node --check assets/lab/lab-automations-workspace-v11.js
+          node tests/continuum-automations-workspace-v11.test.js
+
+      - name: Render focused desktop builder and preserved phone layout
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo 'No Chromium-compatible browser available.' >&2
+            exit 1
+          fi
+
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-auto-v11-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+
+          dump() {
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=16000 "$@" --dump-dom
+          }
+
+          dump --window-size=1536,960 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/continuum-auto-v11-desktop.html
+          grep -q 'data-automations-workspace="v11"' /tmp/continuum-auto-v11-desktop.html
+          grep -q 'data-workspace-v11="ready"' /tmp/continuum-auto-v11-desktop.html
+          grep -q 'data-v11-definition="true"' /tmp/continuum-auto-v11-desktop.html
+          grep -q 'v11-builder-layout' /tmp/continuum-auto-v11-desktop.html
+          grep -q 'v11-stage-shell' /tmp/continuum-auto-v11-desktop.html
+          grep -q 'data-v11-manage' /tmp/continuum-auto-v11-desktop.html
+          grep -q 'FLOW PREVIEW' /tmp/continuum-auto-v11-desktop.html
+          grep -q 'What should start this?' /tmp/continuum-auto-v11-desktop.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v11-desktop.html
+
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/continuum-auto-v11-mobile.html
+          grep -q 'data-workspace-v11="ready"' /tmp/continuum-auto-v11-mobile.html
+          grep -q 'What should start this?' /tmp/continuum-auto-v11-mobile.html
+          grep -q 'FLOW PREVIEW' /tmp/continuum-auto-v11-mobile.html
+          ! grep -qi 'Loading Automations' /tmp/continuum-auto-v11-mobile.html
+
+          echo 'Automations workspace v11 rendered on desktop and preserved the existing mobile editor.'
