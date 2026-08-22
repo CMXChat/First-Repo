@@ -112,8 +112,8 @@ jobs:
               badge: document.querySelector('#directoryServerBadge')?.dataset.state,
               person: document.querySelector('#recordList')?.innerText || '',
               keyValue: document.querySelector('#directoryOperatorKey')?.value || '',
-              localKeys: Object.keys(localStorage),
-              sessionKeys: Object.keys(sessionStorage),
+              localDump: JSON.stringify(Object.fromEntries(Object.entries(localStorage))),
+              sessionDump: JSON.stringify(Object.fromEntries(Object.entries(sessionStorage))),
               transport: document.documentElement.dataset.directoryTransport,
             }));
             console.log(width, height, facts, { unlockCount });
@@ -121,7 +121,9 @@ jobs:
             assert(facts.badge === 'connected', 'Directory must report connected after unlock');
             assert(facts.person.includes('Directory Test Person'), 'Directory must reload protected People after unlock');
             assert(facts.keyValue === '', 'operator key input must be cleared');
-            assert(facts.localKeys.length === 0 && facts.sessionKeys.length === 0, 'Directory must not persist protected session state in browser storage');
+            for (const secret of ['directory-test-key', 'directory-csrf', 'person-directory-1', 'contact-directory-1', 'directory@example.com']) {
+              assert(!facts.localDump.includes(secret) && !facts.sessionDump.includes(secret), `protected value leaked to browser storage: ${secret}`);
+            }
             assert(facts.transport === 'shared-operator-api-v2', 'Directory must use the shared operator transport');
             assert(unlockCount === 1, 'Directory must submit exactly one unlock request');
             await browser.close();
