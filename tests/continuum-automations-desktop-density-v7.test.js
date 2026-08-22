@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const index = fs.readFileSync('lab/automations/index.html', 'utf8');
+const index = fs.readFileSync('automations/index.html', 'utf8');
 const css = fs.readFileSync('assets/lab/lab-automations-operations-v7-desktop-density.css', 'utf8');
 
 assert.match(index, /lab-automations-operations-v7-desktop-density\.css\?v=20260819-v7density1/);
