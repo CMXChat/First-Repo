@@ -31,12 +31,14 @@
     if (focused || candidate() || !readyForMissing()) return;
     document.documentElement.dataset.continuumExactReference = 'missing';
     document.documentElement.dataset.continuumExactReferenceType = target.param;
+    document.documentElement.dataset.continuumExactReferenceId = wanted;
   }
 
   function finalize(node) {
     focused = true;
     document.documentElement.dataset.continuumExactReference = 'focused';
     document.documentElement.dataset.continuumExactReferenceType = target.param;
+    document.documentElement.dataset.continuumExactReferenceId = wanted;
     node.dataset.exactReference = 'true';
     requestAnimationFrame(() => {
       node.scrollIntoView({ block: 'nearest', inline: 'nearest' });
