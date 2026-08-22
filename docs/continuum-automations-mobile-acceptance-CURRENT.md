@@ -1,6 +1,7 @@
 # Continuum Automations Mobile Acceptance — CURRENT
 
 Date: 2026-08-21
+Updated: 2026-08-22
 
 ## Scope
 
@@ -15,6 +16,8 @@ Branch: `agent/lab-automations-mobile-acceptance-fix`
 PR: #123
 
 Final implementation/acceptance-code SHA before this documentation-only handoff commit: `712381f0781e24b12c0295fef9feda0b7112ea18`
+
+PR #123 was merged outside this acceptance-monitoring task at merge commit `f4a9c46e53cd1bdb2fe4e7e70fca3cee09e45071`. This handoff does not treat that merge itself as hosted-browser acceptance evidence.
 
 ## Real-device defect
 
@@ -152,45 +155,46 @@ On an earlier PR #123 implementation head, the `Continuum Automations Real Backe
 
 No accepted source assertion was removed to make this responsive pass succeed.
 
-## Hosted CI infrastructure block
+## Hosted CI infrastructure closure
 
-As of final handoff recording on 2026-08-21, GitHub-hosted browser CI has **not completed**.
+The focused hosted CI did not produce a browser-layout failure and did not produce a browser-layout pass. It ended as infrastructure/cancellation state.
 
-Important distinction: this is not a reported layout assertion failure.
+Exact final run results observed on 2026-08-22:
 
-Observed state:
-
-- older `Continuum Automations Operations Validation` run `32530155711`, head `f528cca7b5e32a13893116468b9cd084c2100797`, remains `in_progress` inside `Render desktop and mobile operating surfaces` after its source-contract step passed;
-- its workflow had no job-level timeout on that older run, so the Chromium render became long-lived;
-- current-head `Continuum Automations Real Backend Integration Validation` run `32530404654`, head `712381f0781e24b12c0295fef9feda0b7112ea18`, remains queued;
-- current-head source and browser jobs are therefore not available as completed acceptance evidence yet;
-- the focused current workflow now has bounded job timeouts, but queued jobs cannot prove geometry until a runner actually starts them.
+- `Continuum Automations Operations Validation` run `32530155711`, head `f528cca7b5e32a13893116468b9cd084c2100797`: workflow status **completed**, conclusion **cancelled**. Before cancellation, its source-contract step had passed and the run had become long-lived inside `Render desktop and mobile operating surfaces`.
+- `Continuum Automations Real Backend Integration Validation` run `32530404654`, head `712381f0781e24b12c0295fef9feda0b7112ea18`: workflow status **completed**, conclusion **cancelled**. It had previously remained queued behind runner availability and never became completed hosted geometry evidence.
+- Neither cancellation reported a reproducible Automations rectangle/overflow assertion failure.
+- Therefore no product or responsive code change is justified from these final CI results.
 
 A separate older `Continuum Mobile Layout Validation` attempt previously completed Directory geometry at `390 × 844` successfully, then timed out navigating to the Automations temporary page before Automations geometry assertions executed. That timeout was not an Automations overlap assertion failure.
 
 ## Current acceptance truth
 
-Implementation correction: **DONE**
+Implementation ready: **YES**
 
 Heading/create structural overlap fix: **DONE IN CSS**
 
 Focused rendered geometry assertions: **ADDED**
 
-Completed hosted 360/390/412/430 geometry evidence: **NOT YET AVAILABLE — CI INFRASTRUCTURE BLOCKED**
+Hosted browser acceptance passed: **NO**
 
-Horizontal overflow acceptance on all required hosted viewports: **NOT YET PROVEN BY COMPLETED CURRENT-HEAD CI**
+Hosted 360/390/412/430 geometry evidence: **NOT COMPLETED — FINAL FOCUSED RUNS WERE CANCELLED/INFRASTRUCTURE-BLOCKED**
 
-Ready to merge based on hosted acceptance evidence: **NO — wait for current-head browser CI to complete**
+Horizontal overflow acceptance on all required hosted viewports: **NOT PROVEN BY A COMPLETED PASS**
 
-Ready for another real Samsung/Chrome acceptance pass: **NOT STAMPED YET**. The implementation is prepared for the pass, but the requested hosted browser acceptance evidence must complete first.
+Samsung/real-device acceptance passed: **NO**
+
+Ready for another real Samsung/Chrome acceptance pass under the requested gate: **NO — hosted browser acceptance did not pass**
+
+PR #123 merge state: **MERGED OUTSIDE THIS ACCEPTANCE-MONITORING TASK**. The merge does not upgrade the acceptance classification above.
 
 ## Known remaining issues
 
-No additional product/mobile defect has been proven after the responsive correction.
+No additional product/mobile geometry defect was proven after the responsive correction.
 
-The remaining blocker is CI execution state, not a known Automation UI defect.
+The unresolved item is acceptance evidence, specifically the lack of a completed successful hosted browser geometry run. The focused CI ended cancelled due runner/browser execution state, so correct product code was left unchanged.
 
-If current-head browser CI later reports a real rectangle/overflow failure, fix that implementation defect in this same PR. Do not weaken the geometry assertions.
+If a future rerun reports a real rectangle/overflow failure, fix only that reproducible implementation defect and do not weaken the geometry assertions.
 
 ## Backend boundary
 
