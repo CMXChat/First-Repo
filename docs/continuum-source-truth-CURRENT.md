@@ -1,176 +1,122 @@
-# Continuum cross-surface source truth — CURRENT
+# Continuum cross-surface frontend truth — CURRENT
 
 Date: 2026-08-22
+Authority: **FRONTEND STATUS ONLY**
+Repository: `CMXChat/First-Repo`
 
-Status: frontend proving-layer snapshot. This document and the shared source-truth UI describe current validated source; they do not deploy the backend and are not an operational health monitor.
+This document exists only to explain the shared browser status layer used by several Continuum routes.
 
-## Why this exists
+It is **not** a backend checkpoint, release record, migration log, PR tracker, or deployment authority.
 
-The canonical Continuum surfaces had drifted behind the actual GitHub/backend work. `/control/` still presented an old sample-only story, `/library/` still said no protected Library API existed, and several product surfaces still used Lab-era wording even though the backend stack now contains validated implementations for those domains.
+All backend/project truth belongs in `CMXChat/jay-app`.
 
-The correction is to distinguish four different facts instead of flattening them:
+## What this layer may say
 
-- **LIVE** — actually deployed production behavior;
-- **SOURCE BUILT / STACKED** — implemented and validated in GitHub source but not production-deployed;
-- **PROVING / PREVIEW** — current static/browser-facing product surface;
-- **PENDING** — merge, migration, deployment or later capability still required.
+It may describe:
 
-A page must never turn SOURCE BUILT into a production-live claim.
+- whether a frontend lane is wired to a protected backend contract;
+- which UI is still local/sample preview behavior;
+- canonical route names;
+- frontend navigation between surfaces;
+- that browser code must show unavailable backend responses truthfully.
 
-## Backend checkpoint represented by this snapshot
+It must not duplicate:
 
-Repository: `CMXChat/jay-app`
+- backend release SHAs;
+- migration revision IDs;
+- backend PR/task status;
+- backend test/coverage counts;
+- provider implementation details;
+- Runtime/Authority persistence internals;
+- deployment plans.
 
-Draft PR: `#24` — Durable Check In trigger consumption foundation
+For those facts, read `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md` and the relevant backend handoff/spec.
 
-Head: `753e55ebf7ef00d3814c5474552d88b90b3adc8c`
+## Shared UI
 
-Migration head: `c0d1e2f3a4b5`
+`assets/continuum-source-truth-v1.js` owns the compact frontend-status badge/dialog and a few compatibility copy patches.
 
-PR #24 T001–T006 are complete. Current documented validation includes:
+Despite the historical filename, its job is now **frontend status**, not backend source truth.
 
-- 170 backend tests passing;
-- 89% coverage;
-- focused trigger-consumption regression coverage;
-- migration round-trip/current validation;
-- mypy and ty passing;
-- PR-owned Python files Ruff/format clean;
-- OpenAPI/generated-client and frontend TypeScript consistency passing;
-- explicit zero-SMTP / zero non-fake-provider assertions for unattended trigger consumption.
+`assets/continuum-source-truth-v1.css` owns its visual treatment.
 
-The unattended trigger path remains **fake only**. It rechecks exact current Authority and Incident truth and delegates through the existing frozen Runtime. It is separately invokable backend work, not a scheduler, cron service or generic trigger platform.
+The dialog explicitly points backend authority to `CMXChat/jay-app`.
 
-Real SMTP remains a separate **direct manual-owner-only** capability.
-
-## Production boundary
-
-Production remains on the older documented Phase 1 boundary.
-
-The stacked Directory, Library, Automation, Runtime, Email, reconciliation, Authority and trigger-consumption work is **not** made production-live by tests, this frontend projection, or the existence of PR #24.
-
-No production migration or backend deployment is performed by this frontend work.
-
-## Surface truth
+## Supported surfaces
 
 ### `/control/`
 
-Control becomes the best high-level build-state surface while retaining its sample future operational rows.
+Frontend truth:
 
-Its top status now communicates:
-
-- Check In is live;
-- the broader backend source stack is validated;
-- deployment is the next boundary;
-- exact Authority + fake-only triggered Runtime has been proven in source.
-
-Sample attention/waiting/activity content remains clearly a sample operational preview rather than being relabeled as real production activity.
+- protected read-only execution-history/receipt projection is wired where available;
+- exact links to Directory/Library objects are supported;
+- Now/Upcoming/attention/simulation panels remain sample preview UI.
 
 ### `/directory/`
 
-Truth shown:
+Frontend truth:
 
-- stable Person IDs/lifecycle are implemented;
-- email ContactMethod normalization/lifecycle/conflict behavior is implemented;
-- the canonical frontend has a protected backend lane;
-- Organizations, Groups and richer relationship concepts remain preview concepts;
-- the stacked backend is not production-deployed.
+- protected Person/email-contact lane is wired where available;
+- stable-ID focus through `?person_id=` is supported;
+- Organizations/Groups/richer relationships remain preview concepts.
 
 ### `/library/`
 
-Truth shown:
+Frontend truth:
 
-- the backend ContentAsset → mutable ContentDraft → immutable ContentVersion model exists in stacked source;
-- exact version references and `expected_revision` conflict semantics exist;
-- canonical `/library/` now has a protected server lane for Content create/read, Draft updates and immutable Version creation where those routes are deployed;
-- the protected lane shares the same operator session/CSRF transport as Email, Requests and Directory;
-- the frontend preserves unsaved editor text on a backend `409` and requires an explicit server-Draft reload rather than blind overwrite;
-- a frozen ContentVersion remains unchanged after later Draft edits and is rendered as an exact historical snapshot;
-- folders, mixed-media cards, imports and file viewers remain explicitly browser-local preview concepts in this slice;
-- binary object storage remains future deployment/platform work;
-- the stacked Library backend is still not production-deployed.
-
-The page must distinguish a **wired protected frontend lane** from a **LIVE deployed backend**. Mocked browser proof validates frontend orchestration; it does not cross the deployment boundary.
+- protected content/draft/version lane is wired where available;
+- conflict and immutable-version presentation is part of the frontend proof;
+- mixed media/files/folders/import concepts remain separate preview behavior unless backed by a protected contract.
 
 ### `/automations/`
 
-Truth shown:
+Frontend truth:
 
-- protected Automation Draft, typed preflight, Review and immutable Publish exist;
-- Runtime Runs, Attempts, Why and cancellation exist;
-- durable TriggerOccurrence / TriggerConsumption / append-only attempts, leases, recovery and replay hardening exist in PR #24;
-- unattended exact-Authority execution is fake only;
-- production execution remains off.
-
-This source-truth layer is intentionally independent of the open Automation workspace-layout PR. It should survive that visual redesign without becoming the builder itself.
+- protected Automation lifecycle/history lane is wired where available;
+- richer workflow/Planner/advanced-flow concepts remain preview behavior;
+- server-backed state must never silently fall back to browser-local Automation truth.
 
 ### `/email/`
 
-Truth shown:
+Frontend truth:
 
-- Person/ContactMethod → Connection/SenderIdentity → ContentVersion → AutomationVersion → Runtime receipt is implemented in stacked source;
-- provider reconciliation exists and never resends merely because evidence is recorded;
-- fake mode is the preferred proof path;
-- bounded real SMTP remains direct manual owner only;
-- unattended Authority does not gain real SMTP;
-- the full stack is not yet production-deployed.
+- protected manual Email orchestration is wired where available;
+- receipt navigation to Control is supported;
+- browser code never directly performs SMTP/provider work.
 
-## Shared UI behavior
+## Canonicalization
 
-`assets/continuum-source-truth-v1.js` owns the common source-truth snapshot and per-domain copy.
-
-`assets/continuum-source-truth-v1.css` owns the compact header badge and detail dialog.
-
-The badge says `NOT DEPLOYED` deliberately. Opening it shows domain facts plus the exact backend checkpoint and production boundary.
-
-The shared script also converges stale `/lab/*` links to current canonical routes on the supported surfaces.
-
-This is a static source snapshot, not a live GitHub API reader. Update it deliberately when the backend checkpoint or production boundary changes.
-
-## Supported canonical surfaces
+The shared script also converges stale `/lab/*` links to canonical routes such as:
 
 - `/control/`
+- `/automations/`
 - `/directory/`
 - `/library/`
-- `/automations/`
 - `/email/`
 
-Do not add this layer to `/checkin/` merely to make the shell visually uniform. Check In has a different production-live truth boundary.
+Historical `assets/lab/*` names may remain in code.
 
-Do not add it to `/spaces/` until Spaces needs the same backend-source projection.
+## Backend availability
 
-## Safety / authority rule
+A WIRED frontend does not guarantee that its backend dependency is available in the current environment.
 
-This UI is explanatory only.
+The browser must surface the actual protected API response.
 
-It cannot:
+First-Repo does not maintain the explanation for backend availability. Engineers and AI should consult `jay-app` for that truth.
 
-- grant Authority;
-- determine eligibility;
-- claim trigger consumption;
-- create a Runtime Run;
-- invoke a provider;
-- infer that a branch is deployed;
-- turn a source-level proof into production truth.
+## Safety boundary
 
-Protected backend services remain authoritative for real state and effects.
+The shared frontend layer cannot:
 
-## Related open frontend work
-
-At the time of this snapshot:
-
-- the `/doc/` vision refresh is separate frontend work;
-- the `/automations/` focused workspace redesign is separate frontend work.
-
-Keep this cross-surface truth projection narrow so those visual/product changes can merge independently.
+- grant permission/Authority;
+- create a second backend state model;
+- infer deployment from frontend source;
+- turn local preview state into durable server truth;
+- perform provider work directly;
+- maintain backend release/migration status.
 
 ## Update rule
 
-Whenever the backend crosses a real release boundary, update these together:
+Update this file only when the **shared frontend status behavior** changes.
 
-1. the backend CURRENT integration handbook;
-2. this CURRENT source-truth document;
-3. the `SNAPSHOT` and relevant domain facts in `assets/continuum-source-truth-v1.js`;
-4. focused/browser validation;
-5. only then the visible production/proving labels.
-
-Never update the visible status first and hope deployment catches up later.
+If a backend release, migration, implementation milestone, provider rule or backend test result changes, update `jay-app`, not this document.
