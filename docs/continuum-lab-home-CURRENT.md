@@ -4,7 +4,7 @@ Status: focused frontend route/navigation contract
 
 ## Purpose
 
-`/lab/` is the front door to Continuum's experimental and proving surfaces. It is a navigation/index surface, not a second implementation of Directory, Automations, Library, Runtime, Check In or any future Email feature.
+`/lab/` is the front door to Continuum's experimental and proving surfaces. It is a navigation/index surface, not a second implementation of Directory, Automations, Library, Runtime, Check In or Email.
 
 Product rule:
 
@@ -18,7 +18,7 @@ The page intentionally uses a terminal/tree presentation because it is a develop
 - `/lab/automations/` — Automations proving surface; server-backed lane remains distinct from LOCAL LAB state
 - `/lab/directory/` — Directory development/proving route
 - `/lab/library/` — Library prototype
-- `email/` — visible as `NEXT` only; there is deliberately no `/lab/email/` link until that product slice exists
+- `/lab/email/` — protected manual Email action playground; marked `PROVING` because the frontend exists while its stacked backend remains undeployed/live-acceptance pending
 - `/lab/snapshot/` — preserved integrated Check In-derived Lab snapshot for regression/reference
 - `/checkin/` — live protected Check In surface outside Lab
 - `/directory/` — graduated protected Directory preview outside Lab
@@ -26,6 +26,14 @@ The page intentionally uses a terminal/tree presentation because it is a develop
 - `/doc/` — Continuum explanation
 
 `/menu/` remains the separate CMX Operations/OSINT menu. Do not overload it with Continuum Lab navigation.
+
+## Email route integration
+
+The Email Lab slice now exists at `/lab/email/`, so the former `NEXT` placeholder has been replaced with a real link marked `PROVING`.
+
+This label is intentionally frontend-scoped. It does not claim that the stacked Directory/Connection/Library/Automation/Runtime/SMTP backend is deployed to production. The Email route owns its protected API behavior and safety boundaries; the Lab home still owns navigation only.
+
+Terminal commands `email` and `open email` resolve to `/lab/email/`.
 
 ## Old `/lab/` preservation
 
@@ -44,7 +52,7 @@ Backward compatibility: old links shaped like `/lab/#lab=...` are redirected by 
 - `LIVE` — an existing production-facing surface; does not mean every planned Continuum capability is deployed.
 - `WIRED` / `PROVING` — frontend uses or models real protected contracts, but deployment/live acceptance may still be pending.
 - `LAB` — experiment/prototype; not production execution truth.
-- `NEXT` — planned proving surface only. It must not be a live link or imply backend support that does not exist.
+- `NEXT` — planned proving surface only. A NEXT item must not be a live link or imply backend support that does not exist.
 - `ARCHIVE` — preserved older integrated surface kept for regression/reference.
 
 The Lab home must never infer authority or backend readiness from frontend labels.
@@ -74,12 +82,12 @@ The workflow checks:
 - launcher JS parses;
 - root no longer loads `lab-loader.js`;
 - focused routes and truthful status labels exist;
-- Email stays non-navigable while marked `NEXT`;
+- Email resolves to `/lab/email/` and is marked `PROVING`;
 - the preserved snapshot still loads the old Lab loader;
 - the launcher remains navigation-only (no fetch/WebSocket/browser-storage/eval path);
 - old `#lab=` links redirect to `/lab/snapshot/`;
 - desktop/mobile geometry does not horizontally overflow.
 
-## Next product slice
+## Next work
 
-The next planned product feature after current mobile/readiness cleanup remains `/lab/email/`. When it is actually implemented and reviewed, replace the `NEXT` non-link in the Lab tree with the real route and update this document/test in the same change.
+`/lab/email/` now owns its own feature handoff at `docs/continuum-email-lab-CURRENT.md`. Further Email capability expansion must follow the canonical backend contract rather than expanding the Lab launcher.
