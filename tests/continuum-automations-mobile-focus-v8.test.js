@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const index = fs.readFileSync('lab/automations/index.html', 'utf8');
+const index = fs.readFileSync('automations/index.html', 'utf8');
 const mobile = fs.readFileSync('assets/lab/lab-automations-mobile-focus-v8.css', 'utf8');
 const desktop = fs.readFileSync('assets/lab/lab-automations-editor-focus-v8.css', 'utf8');
 
