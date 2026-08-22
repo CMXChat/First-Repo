@@ -1,48 +1,165 @@
 <!doctype html>
-<html lang="en" data-cmx-gate="black-prompt" data-cmx-gate-id="continuum-private-pages">
+<html lang="en" data-theme="light" data-cmx-gate="black-prompt" data-cmx-gate-id="continuum-private-pages">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#f5f7fa" />
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.cmxchat.com http://localhost:8000; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
   <title>Continuum · Email</title>
   <link rel="stylesheet" href="/assets/gates/cmx-gate-black-prompt.css" />
-  <link rel="stylesheet" href="/assets/lab/lab-email-v1.css?v=20260821-1" />
+  <link rel="stylesheet" href="/assets/lab/lab-email-v1.css?v=20260822-workspace2" />
 </head>
 <body class="cmx-black-prompt-locked">
   <div data-cmx-gated-content hidden>
     <main class="email-shell" data-email-lab="v1">
       <header class="email-topbar">
-        <a href="/control/" class="brand">C <span>Continuum</span></a>
-        <nav><a href="/directory/">Directory</a><a href="/automations/">Automations</a><a href="/library/">Library</a></nav>
+        <div class="email-topbar-left">
+          <a href="/control/" class="brand" aria-label="Continuum Control Center">
+            <span class="brand-mark">C</span>
+            <span class="brand-name">Continuum</span>
+          </a>
+          <span class="brand-section">Email</span>
+        </div>
+        <div class="email-topbar-right">
+          <nav aria-label="Continuum">
+            <a href="/directory/">Directory</a>
+            <a href="/automations/">Automations</a>
+            <a href="/library/">Library</a>
+          </nav>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">Dark</button>
+        </div>
       </header>
 
-      <section class="email-hero">
-        <div><span class="eyebrow">EMAIL · MANUAL ACTION PLAYGROUND</span><h1>Send one exact message, with proof.</h1><p>Choose durable backend objects, freeze the exact content, preflight and publish one Email Automation, then request a fake or explicitly manual real Run. No unattended authority lives here.</p></div>
-        <div class="boundary"><b>STACKED BACKEND</b><span id="backendState">Checking protected backend…</span><small>Black Prompt is only a client-side deterrent. Backend session, Origin and CSRF remain authoritative.</small></div>
+      <section class="email-pagehead">
+        <div class="email-title">
+          <span class="eyebrow">CONTINUUM · MANUAL EMAIL</span>
+          <h1>Email</h1>
+          <p>Compose, freeze, review and run one exact message through the protected backend.</p>
+        </div>
+        <aside class="backend-summary" aria-label="Backend status">
+          <div class="backend-summary-head"><span class="status-dot"></span><b>Backend</b></div>
+          <span id="backendState">Checking protected backend…</span>
+          <small>Protected session · Origin · CSRF</small>
+        </aside>
       </section>
 
       <section class="steps" aria-label="Email workflow">
-        <article class="panel" data-step="recipient"><header><span>01</span><div><b>Recipient</b><small>Person → email ContactMethod</small></div></header><label>Person<select id="personSelect"><option value="">Choose a Person</option></select></label><label>Email<select id="contactSelect" disabled><option value="">Choose an email</option></select></label><p class="fact" id="recipientFact">Load Directory to begin.</p></article>
+        <article class="panel" data-step="recipient">
+          <header><span>01</span><div><b>Recipient</b><small>Person → email ContactMethod</small></div></header>
+          <label>Person<select id="personSelect"><option value="">Choose a Person</option></select></label>
+          <label>Email<select id="contactSelect" disabled><option value="">Choose an email</option></select></label>
+          <p class="fact" id="recipientFact">Load Directory to begin.</p>
+        </article>
 
-        <article class="panel" data-step="sender"><header><span>02</span><div><b>Sender</b><small>Connection → SenderIdentity</small></div></header><label>Connection<select id="connectionSelect"><option value="">Choose a Connection</option></select></label><label>Sender<select id="senderSelect" disabled><option value="">Choose a sender</option></select></label><div class="readiness" id="connectionReadiness">Backend readiness has not been checked.</div></article>
+        <article class="panel" data-step="sender">
+          <header><span>02</span><div><b>Sender</b><small>Connection → SenderIdentity</small></div></header>
+          <label>Connection<select id="connectionSelect"><option value="">Choose a Connection</option></select></label>
+          <label>Sender<select id="senderSelect" disabled><option value="">Choose a sender</option></select></label>
+          <div class="readiness" id="connectionReadiness">Backend readiness has not been checked.</div>
+        </article>
 
-        <article class="panel panel-wide" data-step="message"><header><span>03</span><div><b>Message</b><small>ContentAsset Draft → immutable ContentVersion</small></div></header><div class="message-grid"><label>Subject<input id="subjectInput" maxlength="255" placeholder="Test message from Continuum" /></label><label class="body-label">Body<textarea id="bodyInput" rows="9" maxlength="1000000" placeholder="Write the exact message body…"></textarea></label></div><div class="actions"><button id="freezeContent" type="button">Freeze message version</button><span id="contentState">Nothing frozen yet.</span></div></article>
+        <article class="panel panel-wide composer-panel" data-step="message">
+          <header><span>03</span><div><b>Message</b><small>ContentAsset Draft → immutable ContentVersion</small></div></header>
+          <div class="message-grid">
+            <label class="subject-field">Subject<input id="subjectInput" maxlength="255" placeholder="Subject" /></label>
 
-        <article class="panel panel-wide" data-step="review"><header><span>04</span><div><b>Review & publish</b><small>Automation Draft → preflight → Review → immutable AutomationVersion</small></div></header><div id="reviewSummary" class="review-summary">Choose recipient, sender and freeze content first.</div><div class="actions"><button id="prepareAutomation" type="button">Prepare & preflight</button><button id="publishAutomation" type="button" disabled>Review & publish</button><span id="automationState">No Automation prepared.</span></div></article>
+            <div class="composer-shell">
+              <div class="composer-head">
+                <div class="composer-tabs" role="tablist" aria-label="Message view">
+                  <button type="button" class="is-active" data-email-mode="write" role="tab" aria-selected="true">Write</button>
+                  <button type="button" data-email-mode="preview" role="tab" aria-selected="false">Preview</button>
+                </div>
+                <span id="bodyCount">0 characters</span>
+              </div>
 
-        <article class="panel panel-wide consequential" data-step="run"><header><span>05</span><div><b>Run</b><small>Manual owner request only</small></div></header><div class="run-modes"><label><input type="radio" name="provider" value="fake" checked /> <span><b>Simulation</b><small>Fake provider · no external message</small></span></label><label><input type="radio" name="provider" value="real_smtp" /> <span><b>Real manual SMTP</b><small>External side effect · backend restrictions apply</small></span></label></div><label class="behavior">Fake behavior<select id="fakeBehavior"><option value="accepted">Accepted</option><option value="transient_once">Transient once</option><option value="permanent_failure">Permanent failure</option></select></label><label class="confirm"><input id="realConfirm" type="checkbox" /> I understand real mode may send exactly one external email through the protected Runtime.</label><div class="actions"><button id="requestRun" type="button" disabled>Request Run</button><button id="processRun" type="button" disabled>Process now · development control</button><span id="runState">Publish first.</span></div></article>
+              <div class="email-toolbar" role="toolbar" aria-label="Message formatting">
+                <div class="tool-group">
+                  <button type="button" data-email-command="undo" title="Undo" aria-label="Undo">↶</button>
+                  <button type="button" data-email-command="redo" title="Redo" aria-label="Redo">↷</button>
+                </div>
+                <div class="tool-group">
+                  <button type="button" data-email-command="formatBlock" data-email-value="P" title="Paragraph">P</button>
+                  <button type="button" data-email-command="formatBlock" data-email-value="H2" title="Heading">H2</button>
+                  <button type="button" data-email-command="formatBlock" data-email-value="H3" title="Small heading">H3</button>
+                </div>
+                <div class="tool-group">
+                  <button type="button" data-email-command="bold" title="Bold" aria-label="Bold"><b>B</b></button>
+                  <button type="button" data-email-command="italic" title="Italic" aria-label="Italic"><i>I</i></button>
+                  <button type="button" data-email-command="underline" title="Underline" aria-label="Underline"><u>U</u></button>
+                  <button type="button" data-email-command="strikeThrough" title="Strikethrough" aria-label="Strikethrough"><s>S</s></button>
+                </div>
+                <div class="tool-group">
+                  <button type="button" data-email-command="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list">•≡</button>
+                  <button type="button" data-email-command="insertOrderedList" title="Numbered list" aria-label="Numbered list">1≡</button>
+                  <button type="button" data-email-command="formatBlock" data-email-value="BLOCKQUOTE" title="Quote" aria-label="Quote">❞</button>
+                </div>
+                <div class="tool-group">
+                  <button type="button" data-email-link title="Insert link" aria-label="Insert link">Link</button>
+                  <button type="button" data-email-command="insertHorizontalRule" title="Divider" aria-label="Divider">—</button>
+                  <button type="button" data-email-command="removeFormat" title="Clear formatting" aria-label="Clear formatting">Tx</button>
+                </div>
+              </div>
 
-        <article class="panel panel-wide receipt" data-step="receipt"><header><span>06</span><div><b>Receipt</b><small>Frozen execution facts, Attempts and Why</small></div></header><div id="receiptEmpty" class="empty">No Run yet.</div><div id="receiptView" hidden></div></article>
+              <div class="email-link-panel" data-email-link-panel hidden>
+                <label>Link URL<input type="url" inputmode="url" placeholder="https://example.com" data-email-link-url /></label>
+                <div>
+                  <button type="button" data-email-link-apply>Apply</button>
+                  <button type="button" data-email-link-remove>Remove</button>
+                  <button type="button" data-email-link-cancel>Cancel</button>
+                </div>
+              </div>
+
+              <div class="composer-body" data-email-write-view>
+                <div id="richBodyInput" class="email-rich-body" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Message body" data-email-editor></div>
+              </div>
+              <div class="composer-body email-preview" id="bodyPreview" data-email-preview-view hidden aria-label="Message preview"></div>
+              <textarea id="bodyInput" hidden rows="9" maxlength="1000000" aria-hidden="true"></textarea>
+            </div>
+          </div>
+          <div class="composer-footer">
+            <span>Formatting stays in the composer preview. The current backend proof freezes normalized message text.</span>
+            <div class="actions"><button id="freezeContent" type="button">Freeze message version</button><span id="contentState">Nothing frozen yet.</span></div>
+          </div>
+        </article>
+
+        <article class="panel" data-step="review">
+          <header><span>04</span><div><b>Review & publish</b><small>Draft → preflight → immutable AutomationVersion</small></div></header>
+          <div id="reviewSummary" class="review-summary">Choose recipient, sender and freeze content first.</div>
+          <div class="actions"><button id="prepareAutomation" type="button">Prepare & preflight</button><button id="publishAutomation" type="button" disabled>Review & publish</button><span id="automationState">No Automation prepared.</span></div>
+        </article>
+
+        <article class="panel consequential" data-step="run">
+          <header><span>05</span><div><b>Run</b><small>Manual owner only</small></div></header>
+          <div class="run-modes">
+            <label><input type="radio" name="provider" value="fake" checked /> <span><b>Simulation</b><small>Fake provider · no external message</small></span></label>
+            <label><input type="radio" name="provider" value="real_smtp" /> <span><b>Real manual SMTP</b><small>External side effect · backend restrictions apply</small></span></label>
+          </div>
+          <label class="behavior">Fake behavior<select id="fakeBehavior"><option value="accepted">Accepted</option><option value="transient_once">Transient once</option><option value="permanent_failure">Permanent failure</option></select></label>
+          <label class="confirm"><input id="realConfirm" type="checkbox" /> I understand real mode may send exactly one external email through the protected Runtime.</label>
+          <div class="actions"><button id="requestRun" type="button" disabled>Request Run</button><button id="processRun" type="button" disabled>Process now · development control</button><span id="runState">Publish first.</span></div>
+        </article>
+
+        <article class="panel panel-wide receipt" data-step="receipt">
+          <header><span>06</span><div><b>Receipt</b><small>Frozen execution facts, Attempts and Why</small></div></header>
+          <div id="receiptEmpty" class="empty">No Run yet.</div>
+          <div id="receiptView" hidden></div>
+        </article>
       </section>
 
-      <footer class="email-footer">Not implemented here: CC/BCC, attachments, bulk delivery, arbitrary recipients, sender substitution, schedules, AI initiation, recurring sends or unattended Authority.</footer>
+      <footer class="email-footer">
+        <b>Scope: manual owner only.</b>
+        CC/BCC, attachments, bulk delivery, arbitrary recipients, schedules, AI initiation, recurring sends and unattended Authority remain unavailable on this surface.
+      </footer>
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </main>
   </div>
+
   <script src="/assets/lab/lab-email-api-v1.js?v=20260821-1"></script>
   <script src="/assets/lab/lab-email-v1.js?v=20260821-1"></script>
+  <script src="/assets/lab/lab-email-workspace-v2.js?v=20260822-workspace2"></script>
   <script src="/assets/gates/cmx-gate-black-prompt.js" defer></script>
 </body>
 </html>
