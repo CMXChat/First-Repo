@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-const index = fs.readFileSync('lab/automations/index.html', 'utf8');
+const index = fs.readFileSync('automations/index.html', 'utf8');
 const source = fs.readFileSync('assets/lab/lab-automations-control-v10.js', 'utf8');
 const css = fs.readFileSync('assets/lab/lab-automations-control-v10.css', 'utf8');
 const history = fs.readFileSync('assets/lab/lab-automations-history-v1.js', 'utf8');
