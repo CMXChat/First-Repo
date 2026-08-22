@@ -2,6 +2,7 @@ const fs=require('fs');
 const html=fs.readFileSync('requests/index.html','utf8');
 const app=fs.readFileSync('assets/requests/requests-v1.js','utf8');
 const api=fs.readFileSync('assets/continuum-operator-api-v1.js','utf8');
+const receiptLink=fs.readFileSync('assets/continuum-runtime-receipt-link-v1.js','utf8');
 const css=fs.readFileSync('assets/requests/requests-v1.css','utf8')+fs.readFileSync('assets/requests/requests-v2.css','utf8');
 const routes=JSON.parse(fs.readFileSync('assets/cmx-routes.json','utf8'));
 const roadmap=fs.readFileSync('docs/continuum-frontend-roadmap-CURRENT.md','utf8');
@@ -40,8 +41,19 @@ must(api,'createAutomation','Automation adapter');
 must(api,'requestRun','Runtime adapter');
 must(api,'processRun','development process adapter');
 must(api,'getReceipt','receipt adapter');
+must(api,'cmx:runtime-receipt-read','receipt navigation event');
+must(api,'continuum-runtime-receipt-link-v1.js','shared receipt navigation loader');
 forbid(api,'localStorage','operator local storage');
 forbid(api,'sessionStorage','operator session storage');
+
+must(receiptLink,"['/email/', '/requests/']",'Email/Requests receipt surfaces');
+must(receiptLink,"url.searchParams.set('automation_id', automationId)",'Control Automation reference');
+must(receiptLink,"url.searchParams.set('run_id', runId)",'Control Run reference');
+must(receiptLink,'Open this Run in Control','human-readable Control link');
+forbid(receiptLink,'operator_key','no operator key in receipt URL');
+forbid(receiptLink,'csrf','no CSRF in receipt URL');
+forbid(receiptLink,'subject','no subject in receipt URL');
+forbid(receiptLink,'body','no body in receipt URL');
 
 must(app,'api.session({ refresh: true })','session check');
 must(app,'api.unlock(key)','protected unlock');
@@ -83,4 +95,4 @@ must(handoff,'Approve & run safe simulation','Requests Email execution contract'
 must(handoff,'No external email is sent','safe provider boundary');
 must(handoff,'direct PostgreSQL console','database boundary');
 
-console.log('Continuum Requests v2 contacts + Email safe-simulation contract: PASS');
+console.log('Continuum Requests v2 contacts + Email safe-simulation + Control receipt navigation contract: PASS');
