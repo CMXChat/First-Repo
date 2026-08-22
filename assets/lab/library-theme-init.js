@@ -78,12 +78,11 @@
     document.head.appendChild(script);
   }
 
-  installExactReferenceFocus();
-
   function ready() {
     installThemeControl();
     installSourceTruth();
     patchCanonicalRoutes();
+    installExactReferenceFocus();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
