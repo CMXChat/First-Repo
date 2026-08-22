@@ -51,7 +51,7 @@ jobs:
         with: { node-version: '22' }
       - name: Install Playwright core
         run: npm install --no-save playwright-core@1.55.0
-      - name: Render Requests preview without backend writes
+      - name: Render contact and Email previews without backend writes
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
@@ -69,14 +69,27 @@ jobs:
             await page.route('**/api/v1/**',async route=>{
               const req=route.request();
               const url=new URL(req.url());
-              if(req.method()==='GET' && url.pathname.endsWith('/checkin/operator/session')){
+              const p=url.pathname;
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/session')){
                 return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,expires_at:'2026-08-22T20:00:00Z',csrf_token:'test-csrf'})});
               }
-              if(req.method()==='GET' && url.pathname.endsWith('/checkin/operator/directory/people')){
-                return route.fulfill({status:200,contentType:'application/json',body:'[]'});
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/directory/people')){
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'person-1',display_name:'CMX Test Recipient',lifecycle:'active'}])});
+              }
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/directory/people/person-1/contact-methods')){
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'contact-1',person_id:'person-1',channel:'email',address:'cmxchat@gmail.com',normalized_address:'cmxchat@gmail.com',lifecycle:'active'}])});
+              }
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections')){
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'connection-1',display_name:'CMX Email',lifecycle:'active'}])});
+              }
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections/connection-1/sender-identities')){
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'sender-1',connection_id:'connection-1',address:'team@cmxchat.com',normalized_address:'team@cmxchat.com',lifecycle:'active'}])});
+              }
+              if(req.method()==='GET' && p.endsWith('/checkin/operator/connections/connection-1/readiness')){
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({connection_id:'connection-1',fake_provider_available:true,real_smtp_available:false,issue_codes:[],sender_identities:[{sender_identity_id:'sender-1',compatible_with_connection:true,issue_codes:[]}]})});
               }
               if(req.method()!=='GET') writeCount+=1;
-              return route.fulfill({status:500,contentType:'application/json',body:JSON.stringify({detail:'test must not write during preview'})});
+              return route.fulfill({status:500,contentType:'application/json',body:JSON.stringify({detail:'preview test must not write'})});
             });
             await page.goto('http://127.0.0.1:8000/requests/',{waitUntil:'networkidle'});
             await page.evaluate(()=>{
@@ -85,19 +98,36 @@ jobs:
               document.body.classList.remove('cmx-black-prompt-locked');
               document.querySelectorAll('[data-cmx-gate-overlay],#cmx-black-prompt-gate').forEach(el=>el.remove());
             });
+
             await page.locator('#requestInput').fill('Ada Lovelace <ada@example.com>\nGrace Hopper, grace@example.com');
             await page.locator('#parseRequest').click();
-            const facts=await page.evaluate(()=>({
-              marker:document.querySelector('[data-requests-version="v1"]')!==null,
+            const contacts=await page.evaluate(()=>({
+              marker:document.querySelector('[data-requests-version="v2"]')!==null,
               overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,
               backend:document.querySelector('#backendBadge')?.dataset.state,
               rows:document.querySelectorAll('#previewBody tr').length,
-              approveDisabled:document.querySelector('#approveRequest')?.disabled,
-              summary:document.querySelector('#previewSummary')?.textContent
+              approveDisabled:document.querySelector('#approveRequest')?.disabled
             }));
-            console.log(width,height,facts,{writeCount});
-            if(!facts.marker||facts.overflow||facts.backend!=='connected'||facts.rows!==2||facts.approveDisabled)throw new Error(`Requests preview contract failed at ${width}`);
-            if(writeCount!==0)throw new Error(`Requests preview unexpectedly issued ${writeCount} writes`);
+            if(!contacts.marker||contacts.overflow||contacts.backend!=='connected'||contacts.rows!==2||contacts.approveDisabled)throw new Error(`Requests contacts preview failed at ${width}`);
+            if(writeCount!==0)throw new Error(`Contact preview unexpectedly issued ${writeCount} writes`);
+
+            await page.locator('#modeEmail').click();
+            await page.locator('#emailFrom').fill('team@cmxchat.com');
+            await page.locator('#emailTo').fill('cmxchat@gmail.com');
+            await page.locator('#emailSubject').fill('Continuum safe simulation');
+            await page.locator('#emailBody').fill('Hello from Requests v2.');
+            await page.locator('#previewEmailRequest').click();
+            await page.waitForFunction(()=>document.querySelector('#approveEmailRequest')?.disabled===false);
+            const email=await page.evaluate(()=>({
+              overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,
+              approveDisabled:document.querySelector('#approveEmailRequest')?.disabled,
+              plan:document.querySelector('#emailPlan')?.innerText||'',
+              summary:document.querySelector('#emailPlanSummary')?.textContent||''
+            }));
+            console.log(width,height,{contacts,email,writeCount});
+            if(email.overflow||email.approveDisabled||!email.plan.includes('sender-1')||!email.plan.includes('person-1'))throw new Error(`Requests Email preview failed at ${width}`);
+            if(!email.summary.includes('No Email mutation has happened yet'))throw new Error(`Email preview did not preserve preview-before-write at ${width}`);
+            if(writeCount!==0)throw new Error(`Email preview unexpectedly issued ${writeCount} writes`);
             await browser.close();
           }
           (async()=>{for(const v of [[1280,900],[430,900],[390,844]])await inspect(...v)})().catch(e=>{console.error(e);process.exit(1)});
