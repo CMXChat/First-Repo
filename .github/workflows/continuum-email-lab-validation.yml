@@ -5,21 +5,25 @@ on:
     branches: [main]
     paths:
       - 'email/**'
+      - 'assets/continuum-operator-api-v1.js'
       - 'assets/continuum-legacy-route-redirect.js'
       - 'assets/lab/lab-email-*.js'
       - 'assets/lab/lab-email-*.css'
       - 'tests/continuum-email-lab-v1.test.js'
       - 'docs/continuum-email-lab-CURRENT.md'
+      - 'docs/continuum-frontend-roadmap-CURRENT.md'
       - '.github/workflows/continuum-email-lab-validation.yml'
   push:
     branches: [main]
     paths:
       - 'email/**'
+      - 'assets/continuum-operator-api-v1.js'
       - 'assets/continuum-legacy-route-redirect.js'
       - 'assets/lab/lab-email-*.js'
       - 'assets/lab/lab-email-*.css'
       - 'tests/continuum-email-lab-v1.test.js'
       - 'docs/continuum-email-lab-CURRENT.md'
+      - 'docs/continuum-frontend-roadmap-CURRENT.md'
       - '.github/workflows/continuum-email-lab-validation.yml'
   workflow_dispatch:
 
@@ -36,8 +40,9 @@ jobs:
       - name: Parse and validate Email
         run: |
           set -euo pipefail
+          node --check assets/continuum-operator-api-v1.js
           node --check assets/lab/lab-email-api-v1.js
-          node --check assets/lab/lab-email-v1.js
+          node --check assets/lab/lab-email-v3.js
           node --check assets/lab/lab-email-workspace-v2.js
           node tests/continuum-email-lab-v1.test.js
           git diff --check
@@ -64,7 +69,7 @@ jobs:
           async function inspect(width,height){
             const browser=await chromium.launch({executablePath:process.env.BROWSER,args:['--no-sandbox','--disable-dev-shm-usage']});
             const page=await browser.newPage({viewport:{width,height}});
-            await page.route('**/api/v1/**',route=>route.fulfill({status:401,contentType:'application/json',body:JSON.stringify({detail:'acceptance: protected backend unavailable'})}));
+            await page.route('**/api/v1/**',route=>route.fulfill({status:401,contentType:'application/json',body:JSON.stringify({detail:'acceptance: operator session required'})}));
             await page.goto('http://127.0.0.1:8000/email/',{waitUntil:'networkidle'});
             await page.evaluate(()=>{
               const g=document.querySelector('[data-cmx-gated-content]');
@@ -74,12 +79,15 @@ jobs:
             });
 
             const base=await page.evaluate(()=>({
-              marker:document.querySelector('[data-email-lab="v1"]')!==null,
+              marker:document.querySelector('[data-email-lab="v3"]')!==null,
               overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,
               panels:[...document.querySelectorAll('.panel')].every(el=>{const x=el.getBoundingClientRect();return x.left>=-1&&x.right<=document.documentElement.clientWidth+1}),
               real:document.body.innerText.includes('Real manual SMTP'),
+              realDisabled:document.querySelector('input[value="real_smtp"]')?.disabled===true,
               authority:document.body.innerText.includes('Scope: manual owner only.'),
-              editor:document.querySelector('[data-email-editor]')?.getAttribute('contenteditable')==='true'
+              editor:document.querySelector('[data-email-editor]')?.getAttribute('contenteditable')==='true',
+              unlockVisible:document.querySelector('#backendAccess')?.hidden===false,
+              locked:document.querySelector('#backendBadge')?.dataset.state==='locked'
             }));
 
             await page.locator('#richBodyInput').fill('Hello from Continuum');
@@ -88,7 +96,7 @@ jobs:
             const theme=await page.evaluate(()=>document.documentElement.dataset.theme);
 
             console.log(width,height,{...base,bodyProjection,theme});
-            if(!base.marker||base.overflow||!base.panels||!base.real||!base.authority||!base.editor)throw new Error(`Email geometry/contract failed at ${width}`);
+            if(!base.marker||base.overflow||!base.panels||!base.real||!base.realDisabled||!base.authority||!base.editor||!base.unlockVisible||!base.locked)throw new Error(`Email geometry/session contract failed at ${width}`);
             if(bodyProjection!=='Hello from Continuum')throw new Error(`Rich composer projection failed at ${width}`);
             if(theme!=='dark')throw new Error(`Theme toggle failed at ${width}`);
             await browser.close();
