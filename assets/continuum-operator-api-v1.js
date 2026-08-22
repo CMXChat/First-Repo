@@ -137,6 +137,7 @@
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body ?? {}),
   });
+  const mutation = (method = "POST") => ({ method, mutation: true });
 
   const api = {
     apiBase: API_BASE,
@@ -146,10 +147,32 @@
     unlock,
     logout,
     request,
+
     listPeople: () => request(`${OP}/directory/people`),
     createPerson: (payload) => request(`${OP}/directory/people`, json("POST", payload)),
     listContacts: (personId) => request(`${OP}/directory/people/${encodeURIComponent(personId)}/contact-methods`),
     createContact: (personId, payload) => request(`${OP}/directory/people/${encodeURIComponent(personId)}/contact-methods`, json("POST", payload)),
+
+    listConnections: () => request(`${OP}/connections`),
+    listSenders: (connectionId) => request(`${OP}/connections/${encodeURIComponent(connectionId)}/sender-identities`),
+    connectionReadiness: (connectionId) => request(`${OP}/connections/${encodeURIComponent(connectionId)}/readiness`),
+
+    createContent: (payload) => request(`${OP}/library/content`, json("POST", payload)),
+    getContent: (contentId) => request(`${OP}/library/content/${encodeURIComponent(contentId)}`),
+    updateContentDraft: (contentId, payload) => request(`${OP}/library/content/${encodeURIComponent(contentId)}/draft`, json("PUT", payload)),
+    saveContentVersion: (contentId) => request(`${OP}/library/content/${encodeURIComponent(contentId)}/versions`, mutation()),
+
+    createAutomation: (payload) => request(`${OP}/automations`, json("POST", payload)),
+    getAutomation: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}`),
+    updateAutomationDraft: (automationId, payload) => request(`${OP}/automations/${encodeURIComponent(automationId)}/draft`, json("PUT", payload)),
+    preflight: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/preflight`),
+    review: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/review`, mutation()),
+    publish: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/publish`, mutation()),
+
+    requestRun: (automationId, payload) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs`, json("POST", payload)),
+    processRun: (automationId, runId, payload) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs/${encodeURIComponent(runId)}/process`, json("POST", payload)),
+    getRun: (automationId, runId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs/${encodeURIComponent(runId)}`),
+    getReceipt: (automationId, runId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs/${encodeURIComponent(runId)}/receipt`),
   };
 
   window.CMXOperatorApi = Object.freeze(api);

@@ -2,46 +2,42 @@
 
 Last updated: 2026-08-22
 Route: `/requests/`
-Status: **FIRST FRONTEND SLICE — protected batch Directory writes**
+Status: **V2 FRONTEND SLICE — protected Directory writes + Email safe simulation**
 
 ## Purpose
 
-`/requests/` is the beginning of a general operator doorway over Continuum's existing authenticated backend APIs.
+`/requests/` is the operator doorway over Continuum's existing authenticated backend APIs.
 
-It is **not** a direct PostgreSQL console and it is **not** arbitrary AI execution.
+It is **not** a direct PostgreSQL console, a second Email engine, or arbitrary AI execution.
 
-Version 1 proves a narrow, useful operation:
+Requests v2 has two bounded operation modes:
 
-`reviewed contact lines → protected Person creation → protected email ContactMethod creation → durable backend IDs/results`
+1. batch Person + email ContactMethod creation;
+2. typed Email request resolution and approved **safe simulation** through the existing Library → Automation → Runtime contract.
 
-## Current backend dependency
+The backend remains authoritative for durable identity, readiness, validation, immutable publication, Runtime execution and receipts.
 
-The page consumes existing `jay-app` Directory contracts:
+## Protected session
 
-- `POST /api/v1/checkin/operator/unlock`
-- `GET /api/v1/checkin/operator/session`
-- `DELETE /api/v1/checkin/operator/session`
-- `GET /api/v1/checkin/operator/directory/people`
-- `POST /api/v1/checkin/operator/directory/people`
-- `POST /api/v1/checkin/operator/directory/people/{person_id}/contact-methods`
+Requests uses the shared protected operator transport in `assets/continuum-operator-api-v1.js`.
 
-Protected reads require the operator session cookie. Mutations require the cookie, exact allowed Origin and `X-CSRF-Token`.
-
-The operator key is submitted directly to the backend and immediately cleared. It is never stored in localStorage, sessionStorage or canonical browser state.
+- `POST /api/v1/checkin/operator/unlock` submits the operator key directly to the backend.
+- `GET /api/v1/checkin/operator/session` restores/validates the HttpOnly protected session.
+- Mutations require the protected cookie, exact allowed Origin and `X-CSRF-Token`.
+- The operator key is immediately cleared and is never written to localStorage/sessionStorage.
+- Requests never stores canonical private backend records as browser-owned truth.
 
 ## Production boundary
 
-The protected Check In/operator session foundation is the production-live foundation.
+The operator session / Check In foundation is production-live.
 
-Person/ContactMethod Directory APIs remain part of the stacked backend source until that stack is deliberately reviewed, merged, migrated and deployed.
+The Directory, Connection/SenderIdentity, Library, Automation, Runtime, provider and receipt contracts used by Requests remain part of the stacked `jay-app` implementation until deliberately reviewed, merged, migrated and deployed.
 
-Therefore `/requests/` may successfully unlock against `api.cmxchat.com` and then correctly report that Directory create capability is not deployed yet.
+Therefore the live page may successfully unlock and then truthfully report that a required capability is not deployed. That is a backend deployment boundary, not permission to create a browser-local substitute.
 
-The frontend must not replace that gap with browser fake records.
+## Mode 1 — batch contacts
 
-## Version 1 input contract
-
-The static page contains no AI model. It supports deterministic contact-entry formats only:
+Supported deterministic input formats:
 
 - `Name <email@example.com>`
 - `Name, email@example.com`
@@ -49,79 +45,150 @@ The static page contains no AI model. It supports deterministic contact-entry fo
 - tab-separated `Name<TAB>email@example.com`
 - `Name email@example.com`
 
-The page validates syntax for preview and rejects duplicate normalized email addresses inside the same pasted batch.
+Preview is local and read-only. Duplicate normalized emails inside the pasted batch are rejected before approval.
 
-Parsing is presentation logic only. The backend remains authoritative for Person identity, email normalization/collisions, lifecycle and durable IDs.
-
-## Preview-before-write invariant
+### Preview-before-write invariant
 
 No backend mutation happens when the user types or presses **Preview request**.
 
-The user must explicitly press **Approve & write to backend** after every row parses cleanly and the protected Directory API is available.
+The user must explicitly press **Approve & write to backend**.
 
-This is the core Requests invariant:
+For each approved row:
 
-`human intent → typed preview → explicit approval → authenticated backend API`
+1. create the Person;
+2. create that Person's email ContactMethod;
+3. show exact durable IDs on success;
+4. show a truthful partial result if Person creation succeeds but ContactMethod creation fails;
+5. never silently retry a conflict, expired session or failed mutation.
 
-## Write behavior
+The two calls are sequential and are not one database transaction.
 
-For each approved row, v1 performs:
+## Mode 2 — Email request
 
-1. `POST /directory/people` with `{ display_name }`.
-2. If Person creation succeeds, `POST /directory/people/{person_id}/contact-methods` with `{ channel:"email", address }`.
-3. Show exact durable Person/ContactMethod IDs on success.
-4. Show a truthful partial result if Person succeeds but ContactMethod creation fails.
-5. Do not automatically retry session failures, conflicts or other mutation errors.
+Requests v2 adds a typed Email request form with:
 
-The two calls are sequential and are not one database transaction. A successfully created Person remains durable even if its following ContactMethod write fails. The UI says this before approval and reports the partial result afterward.
+- From email;
+- To email;
+- subject;
+- message;
+- simulated provider behavior (`accepted`, `transient_once`, `permanent_failure`).
 
-The frontend never treats display-name equality as Person identity and never silently merges People.
+This is deliberately not an arbitrary natural-language parser yet. A future authenticated assistant bridge may translate normal language into these typed fields.
+
+### Email preview is read-only
+
+Pressing **Preview Email request** performs protected reads only.
+
+The page resolves:
+
+- exactly one active Directory Person + active email ContactMethod matching the requested recipient address;
+- exactly one active SenderIdentity on a Connection matching the requested sender address;
+- authoritative Connection/Sender readiness facts;
+- safe-simulation availability.
+
+Preview shows the exact backend UUIDs and message before any Email mutation or Runtime Run is requested.
+
+If the sender or recipient is missing or ambiguous, approval stays blocked.
+
+### Email approval and execution
+
+Pressing **Approve & run safe simulation** authorizes a bounded multi-step backend operation:
+
+1. create action-scoped `ContentAsset` + Draft;
+2. update Draft with `expected_revision` and the requested source text;
+3. freeze immutable `ContentVersion`;
+4. create a manual Email Automation Draft;
+5. update the Draft with exact Connection, SenderIdentity, Person, ContactMethod and ContentAsset UUIDs;
+6. call authoritative server preflight;
+7. if ready, Review and Publish immutable `AutomationVersion`;
+8. request a manual Runtime Run with `provider_mode:"fake"` and a unique idempotency key;
+9. where the development process API exists, explicitly process through canonical Runtime;
+10. read and render the typed Runtime receipt.
+
+The Automation definition is the same manual Email shape used by `/email/`. Requests does not create an alternate sending path.
+
+If preflight blocks, Requests stops before Review/Publish/Run and reports the server issues. If a later API is not deployed, it reports the exact stopping boundary.
+
+Because the operation is multi-step, earlier successful writes may remain durable if a later step fails. Requests says this before approval and never hides that state.
+
+## What safe simulation means
+
+Safe simulation is real internal backend work with the final provider side effect simulated.
+
+Real backend facts may include:
+
+- Person/ContactMethod;
+- ContentAsset/Draft/ContentVersion;
+- Automation/AutomationVersion;
+- Runtime Run and Attempts;
+- Why/provenance;
+- typed receipt.
+
+The external email provider is not contacted. **No external email is sent.**
+
+Requests v2 never offers `real_smtp` and never talks directly to SMTP.
+
+The current stacked provider proof contract names `team@cmxchat.com` as the exact configured proof sender and `cmxchat@gmail.com` as the bounded proof recipient, but Requests still resolves live backend identities/readiness rather than trusting those strings as authority. Production provider use remains a separate later acceptance decision.
+
+## Failure / retry rules
+
+- `401`: protected session expired; stop and require re-unlock.
+- `403`: Origin/access rejected; stop.
+- `404`: a required route/resource may be unavailable on the current API; stop and report the boundary.
+- `409`: conflict/revision/idempotency semantics are backend-owned; do not overwrite blindly.
+- `422`: show backend validation failure.
+- provider ambiguity: never automatically retry.
+
+Requests does not automatically replay a partially completed Email operation after an error.
 
 ## Security and storage
 
-Never persist:
+Never persist in browser storage:
 
 - operator key;
 - CSRF token;
-- canonical private People/ContactMethods;
-- batch write results as browser-owned server truth.
+- canonical People/ContactMethods;
+- message content as server truth;
+- provider credentials;
+- Runtime receipts as an alternate canonical history.
 
 No direct database credentials or database connection exist in this page.
 
 ## Future direction
 
-`/requests/` is intended to grow by adding **typed adapters for backend capabilities that already exist**.
+Continue adding typed adapters only for backend capabilities that have a verified contract.
 
-Possible future adapters, only after their API contracts are verified:
+Possible future Requests operations include:
 
-- create/update Library objects;
-- prepare Automation Drafts;
-- lifecycle operations;
-- protected lookup/reporting;
+- Library creation/update;
+- Automation lifecycle operations;
+- protected lookups/reporting;
+- reconciliation inspection;
 - other bounded administrative work.
 
-Broad natural-language interpretation belongs to a later authenticated assistant/AI bridge. That bridge must propose typed operations and pass the same preview/approval/backend rules; AI is not permission.
+Broad normal-language interpretation belongs to a later authenticated assistant/AI bridge. AI may translate intent into typed operations; it is not permission and must not bypass preview, backend policy or Runtime.
 
-A future scheduling request also requires a real durable server-side scheduling layer. Requests v1 does not pretend that capability exists.
+Durable scheduling still requires a real server-side scheduling layer. Requests v2 does not simulate one.
 
-## Files
+## Canonical files
 
 - `requests/index.html`
 - `assets/requests/requests-v1.css`
+- `assets/requests/requests-v2.css`
 - `assets/requests/requests-v1.js`
 - `assets/continuum-operator-api-v1.js`
 - `tests/continuum-requests-v1.test.js`
-- `docs/continuum-frontend-roadmap-CURRENT.md`
+- `.github/workflows/continuum-requests-validation.yml`
 
 ## Recovery
 
-Frontend recovery order:
-
 1. `docs/continuum-frontend-roadmap-CURRENT.md`
-2. this file
-3. `requests/index.html`
-4. `assets/requests/requests-v1.js`
-5. `assets/continuum-operator-api-v1.js`
-6. current `jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`
+2. `docs/continuum-frontend-week-CURRENT.md`
+3. this file
+4. `requests/index.html`
+5. `assets/requests/requests-v1.js`
+6. `assets/continuum-operator-api-v1.js`
+7. `docs/continuum-email-lab-CURRENT.md`
+8. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`
 
-Do not add direct PostgreSQL writes as a frontend workaround.
+Do not add direct PostgreSQL writes, browser SMTP, real-provider shortcuts or an alternate Runtime as a frontend workaround.
