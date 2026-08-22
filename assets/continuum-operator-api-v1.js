@@ -138,6 +138,7 @@
     body: JSON.stringify(body ?? {}),
   });
   const mutation = (method = "POST") => ({ method, mutation: true });
+  const id = (value) => encodeURIComponent(value);
 
   const api = {
     apiBase: API_BASE,
@@ -150,32 +151,34 @@
 
     listPeople: () => request(`${OP}/directory/people`),
     createPerson: (payload) => request(`${OP}/directory/people`, json("POST", payload)),
-    updatePerson: (personId, payload) => request(`${OP}/directory/people/${encodeURIComponent(personId)}`, json("PATCH", payload)),
-    listContacts: (personId) => request(`${OP}/directory/people/${encodeURIComponent(personId)}/contact-methods`),
-    createContact: (personId, payload) => request(`${OP}/directory/people/${encodeURIComponent(personId)}/contact-methods`, json("POST", payload)),
-    setContactLifecycle: (contactId, lifecycle) => request(`${OP}/directory/contact-methods/${encodeURIComponent(contactId)}`, json("PATCH", { lifecycle })),
+    updatePerson: (personId, payload) => request(`${OP}/directory/people/${id(personId)}`, json("PATCH", payload)),
+    listContacts: (personId) => request(`${OP}/directory/people/${id(personId)}/contact-methods`),
+    createContact: (personId, payload) => request(`${OP}/directory/people/${id(personId)}/contact-methods`, json("POST", payload)),
+    setContactLifecycle: (contactId, lifecycle) => request(`${OP}/directory/contact-methods/${id(contactId)}`, json("PATCH", { lifecycle })),
 
     listConnections: () => request(`${OP}/connections`),
-    listSenders: (connectionId) => request(`${OP}/connections/${encodeURIComponent(connectionId)}/sender-identities`),
-    connectionReadiness: (connectionId) => request(`${OP}/connections/${encodeURIComponent(connectionId)}/readiness`),
+    listSenders: (connectionId) => request(`${OP}/connections/${id(connectionId)}/sender-identities`),
+    connectionReadiness: (connectionId) => request(`${OP}/connections/${id(connectionId)}/readiness`),
 
     listLibrary: () => request(`${OP}/library`),
     createContent: (payload) => request(`${OP}/library/content`, json("POST", payload)),
-    getContent: (contentId) => request(`${OP}/library/content/${encodeURIComponent(contentId)}`),
-    updateContentDraft: (contentId, payload) => request(`${OP}/library/content/${encodeURIComponent(contentId)}/draft`, json("PUT", payload)),
-    saveContentVersion: (contentId) => request(`${OP}/library/content/${encodeURIComponent(contentId)}/versions`, mutation()),
+    getContent: (contentId) => request(`${OP}/library/content/${id(contentId)}`),
+    updateContentDraft: (contentId, payload) => request(`${OP}/library/content/${id(contentId)}/draft`, json("PUT", payload)),
+    saveContentVersion: (contentId) => request(`${OP}/library/content/${id(contentId)}/versions`, mutation()),
 
+    listAutomations: () => request(`${OP}/automations`),
     createAutomation: (payload) => request(`${OP}/automations`, json("POST", payload)),
-    getAutomation: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}`),
-    updateAutomationDraft: (automationId, payload) => request(`${OP}/automations/${encodeURIComponent(automationId)}/draft`, json("PUT", payload)),
-    preflight: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/preflight`),
-    review: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/review`, mutation()),
-    publish: (automationId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/publish`, mutation()),
+    getAutomation: (automationId) => request(`${OP}/automations/${id(automationId)}`),
+    updateAutomationDraft: (automationId, payload) => request(`${OP}/automations/${id(automationId)}/draft`, json("PUT", payload)),
+    preflight: (automationId) => request(`${OP}/automations/${id(automationId)}/preflight`),
+    review: (automationId) => request(`${OP}/automations/${id(automationId)}/review`, mutation()),
+    publish: (automationId) => request(`${OP}/automations/${id(automationId)}/publish`, mutation()),
 
-    requestRun: (automationId, payload) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs`, json("POST", payload)),
-    processRun: (automationId, runId, payload) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs/${encodeURIComponent(runId)}/process`, json("POST", payload)),
-    getRun: (automationId, runId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs/${encodeURIComponent(runId)}`),
-    getReceipt: (automationId, runId) => request(`${OP}/automations/${encodeURIComponent(automationId)}/runs/${encodeURIComponent(runId)}/receipt`),
+    listRuns: (automationId) => request(`${OP}/automations/${id(automationId)}/runs`),
+    requestRun: (automationId, payload) => request(`${OP}/automations/${id(automationId)}/runs`, json("POST", payload)),
+    processRun: (automationId, runId, payload) => request(`${OP}/automations/${id(automationId)}/runs/${id(runId)}/process`, json("POST", payload)),
+    getRun: (automationId, runId) => request(`${OP}/automations/${id(automationId)}/runs/${id(runId)}`),
+    getReceipt: (automationId, runId) => request(`${OP}/automations/${id(automationId)}/runs/${id(runId)}/receipt`),
   };
 
   window.CMXOperatorApi = Object.freeze(api);

@@ -6,6 +6,9 @@ on:
       - 'control/**'
       - 'automations/index.html'
       - 'directory/index.html'
+      - 'library/index.html'
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/control/**'
       - 'assets/lab/control-center-*.js'
       - 'assets/lab/control-center-*.css'
       - 'assets/lab/directory-theme-init.js'
@@ -14,6 +17,8 @@ on:
       - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-control-center-v1.test.js'
       - 'tests/continuum-control-center-focus-v4.test.js'
+      - 'tests/continuum-control-runtime-history-v1.test.js'
+      - 'tests/continuum-control-runtime-history-v1-browser.js'
       - 'tests/continuum-shared-app-shell.test.js'
       - '.github/workflows/control-center-lab-validation.yml'
   pull_request:
@@ -21,6 +26,9 @@ on:
       - 'control/**'
       - 'automations/index.html'
       - 'directory/index.html'
+      - 'library/index.html'
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/control/**'
       - 'assets/lab/control-center-*.js'
       - 'assets/lab/control-center-*.css'
       - 'assets/lab/directory-theme-init.js'
@@ -29,6 +37,8 @@ on:
       - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-control-center-v1.test.js'
       - 'tests/continuum-control-center-focus-v4.test.js'
+      - 'tests/continuum-control-runtime-history-v1.test.js'
+      - 'tests/continuum-control-runtime-history-v1-browser.js'
       - 'tests/continuum-shared-app-shell.test.js'
       - '.github/workflows/control-center-lab-validation.yml'
 
@@ -44,9 +54,35 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate standalone Control Center contract
-        run: node tests/continuum-control-center-v1.test.js
+      - name: Validate Control Center JavaScript and source contracts
+        run: |
+          node --check assets/continuum-operator-api-v1.js
+          node --check assets/control/control-runtime-history-v1.js
+          node --check assets/lab/control-center-v1.js
+          node tests/continuum-control-center-v1.test.js
+          node tests/continuum-control-runtime-history-v1.test.js
       - name: Validate Control Center focus containment
         run: node tests/continuum-control-center-focus-v4.test.js
       - name: Validate shared Continuum shell contract
         run: node tests/continuum-shared-app-shell.test.js
+
+  control-runtime-browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Prove protected Runtime history and frozen receipt references
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/control-runtime-proof-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node tests/continuum-control-runtime-history-v1-browser.js
