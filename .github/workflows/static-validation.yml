@@ -59,7 +59,7 @@ jobs:
           if len(paths) != len(set(paths)):
               failures.append('route paths must be unique')
 
-          required = {'/', '/directory/', '/build/', '/backend/', '/ai/', '/updates/', '/404.html'}
+          required = {'/', '/directory/', '/email/', '/build/', '/backend/', '/ai/', '/updates/', '/404.html'}
           missing = sorted(required - set(paths))
           if missing:
               failures.append(f'missing required routes: {missing}')
@@ -88,6 +88,7 @@ jobs:
           import sys
 
           targets = [
+              Path('email/index.html'),
               Path('backend/index.html'),
               Path('ai/index.html'),
               Path('assets/cmx-build-lab.html'),
