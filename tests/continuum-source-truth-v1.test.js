@@ -18,10 +18,12 @@ for (const route of ['/control/', '/directory/', '/library/', '/automations/', '
   requireText(truth, `'${route}'`, `${route} source-truth registration`);
 }
 
-for (const loader of [control, directory, library, automations, email]) {
+for (const loader of [control, directory, automations, email]) {
   requireText(loader, '/assets/continuum-source-truth-v1.js?v=20260822-1', 'shared source-truth loader');
   requireText(loader, 'dataset.continuumSourceTruth', 'shared source-truth marker');
 }
+requireText(library, '/assets/continuum-source-truth-v1.js?v=20260822-2', 'Library source-truth cache revision');
+requireText(library, 'dataset.continuumSourceTruth', 'Library source-truth marker');
 
 requireText(truth, 'PR ${SNAPSHOT.backendPr} · T001–T006 complete', 'completed trigger-consumption checkpoint');
 requireText(truth, '170 backend tests · 89% coverage', 'backend validation truth');
@@ -35,6 +37,7 @@ requireText(truth, "['/lab/directory/', '/directory/']", 'Directory canonical ro
 requireText(truth, "['/lab/library/', '/library/']", 'Library canonical route');
 requireText(truth, 'Sample operational preview', 'Control sample-state separation');
 requireText(truth, 'LOCAL PREVIEW STORAGE', 'Library local-preview separation');
+requireText(truth, 'protected ContentAsset / ContentDraft / ContentVersion lane', 'Library protected-lane truth');
 requireText(css, '.cst-badge', 'source-truth badge styling');
 requireText(css, '.cst-dialog', 'source-truth dialog styling');
 requireText(css, '.cst-boundary', 'production-boundary styling');
