@@ -2,17 +2,17 @@
 
 Date: 2026-08-22
 Route: `/control/`
-Status: **MIXED TRUTH SURFACE — protected Runtime history frontend proof + explicit sample operational preview**
+Status: **MIXED TRUTH SURFACE — protected Runtime history proof + explicit sample operational preview**
 
 ## Role
 
-Control is where Continuum should make durable action history understandable.
+Control is the human-readable history and explanation surface for durable Continuum actions.
 
-The useful question is no longer only “what does the dashboard look like?” It is:
+The core question is:
 
 > What happened, why did it happen, and which exact durable objects were involved?
 
-The current proof-driven frontend week now has three strong primitives:
+The current proof-driven frontend week now has:
 
 `Directory = durable identity`
 
@@ -20,77 +20,59 @@ The current proof-driven frontend week now has three strong primitives:
 
 `Email / Requests = durable action orchestration`
 
-Control’s next job is to make the resulting action history legible across those primitives.
+`Control = durable action explanation / receipt navigation`
 
 ## Current truth split
 
-Canonical `/control/` deliberately contains two different truth lanes.
+Canonical `/control/` deliberately contains two truth lanes.
 
-### 1. Protected Runtime history lane
+### Protected Runtime history lane
 
-The **History** view now injects a read-only protected Runtime/receipt lane using the shared operator session and existing stacked backend contracts.
+History injects a read-only protected Runtime/receipt lane using the shared operator session and the existing stacked backend contracts.
 
-When those backend routes are deployed, the lane reads:
+When those backend routes are deployed, Control reads:
 
 `Automation list → Runtime Runs → exact frozen Runtime receipt`
 
-It does not start or process Runs.
+It does not start/process Runs, cancel work, retry Attempts, reconcile ambiguity, resend effects or create another Runtime.
 
-It does not cancel work.
+### Operational preview lane
 
-It does not retry Attempts.
+The existing Now, Upcoming, sample connection/source health, quiet-state preview, continuity examples and local simulation remain explicit **sample/proving UI**.
 
-It does not reconcile provider ambiguity.
+Those panels do not become production truth merely because protected Runtime history exists beside them.
 
-It does not resend an external effect.
+## Backend contract
 
-It does not create a second Runtime.
-
-### 2. Operational preview lane
-
-The existing Now, Upcoming, sample connection/source health, quiet-state preview, continuity-health examples and local simulation remain **sample/proving UI**.
-
-Those panels do not become production truth merely because the protected Runtime history lane exists beside them.
-
-The page must keep that distinction visible.
-
-## Backend contract used
-
-The current canonical backend handbook is:
+Canonical backend handbook:
 
 `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`
 
-on the active stacked backend ref `dev/durable-trigger-consumption` / draft PR #24.
+Current stacked ref remains `dev/durable-trigger-consumption` / draft backend PR #24.
 
-Relevant protected reads:
+Protected reads used by Control include:
 
-- `GET /api/v1/checkin/operator/automations`
-- `GET /api/v1/checkin/operator/automations/{automation_id}/runs`
-- `GET /api/v1/checkin/operator/automations/{automation_id}/runs/{run_id}/receipt`
+- `GET /api/v1/checkin/operator/automations`;
+- `GET /api/v1/checkin/operator/automations/{automation_id}/runs`;
+- `GET /api/v1/checkin/operator/automations/{automation_id}/runs/{run_id}/receipt`.
 
-The frontend uses `assets/continuum-operator-api-v1.js` for the protected cookie-session contract and error classification.
+The shared protected transport is `assets/continuum-operator-api-v1.js`.
 
 ## Production boundary
 
-The operator session / Check In foundation is production-live.
+The operator-session / Check In foundation is production-live.
 
-The newer Automation, Runtime and receipt contracts used by the protected History lane remain **stacked implementation**, not production deployment.
+The newer Automation, Runtime and receipt routes are stacked implementation until deliberately merged/migrated/deployed.
 
-Therefore this is a valid production state:
+This is therefore a valid production state:
 
-`protected session connected → Automation/Runtime route returns 404 → Control says NOT DEPLOYED`
+`protected session connected → Runtime route returns 404 → Control reports NOT DEPLOYED`
 
-That is a deployment boundary.
+Frontend readiness does not turn a stacked route into a live route.
 
-It must not cause Control to invent local Runtime records.
+## What a frozen Runtime receipt explains
 
-Frontend readiness is not a claim that production currently exposes Runtime history.
-
-## What the Runtime receipt proves
-
-The stacked backend `RuntimeExecutionReceiptPublic` freezes the exact execution references needed for a trustworthy explanation.
-
-The Control history lane renders, when present:
+When present, Control renders exact execution facts including:
 
 - Run ID;
 - Automation ID;
@@ -98,32 +80,26 @@ The Control history lane renders, when present:
 - Person ID and frozen display name;
 - ContactMethod ID and frozen recipient address;
 - Connection ID and frozen display name;
-- SenderIdentity ID and frozen sender address/display name;
+- SenderIdentity ID and frozen sender identity/address;
 - ContentAsset ID;
 - immutable ContentVersion ID;
-- Content checksum;
-- content subject;
+- Content checksum / content subject;
 - provider mode;
-- Run/action status;
-- manual-owner vs exact Check In authority mode;
+- Run/action state;
+- manual-owner vs exact authority mode;
 - optional AuthorityGrant / AuthorityGrantVersion;
-- optional Check In Incident;
-- optional TriggerOccurrence;
+- optional Check In Incident / TriggerOccurrence;
 - Attempts;
-- Runtime events / Why timeline;
-- provider-operation reconciliation state where relevant.
+- Why/events;
+- provider-operation reconciliation evidence where relevant.
 
-The important rule is:
+Historical execution is rendered from the frozen receipt, **not** from mutable current Directory/Library state.
 
-**historical execution is rendered from the frozen receipt, not from whatever Directory or Library happens to say today.**
+## Cross-surface exact references — landed
 
-A Person can later be renamed and a Draft can later change. The receipt still explains the identity/content snapshot used for that exact Run.
+Control no longer merely prints IDs.
 
-## Cross-surface reference direction
-
-Control now exposes exact-reference navigation where the corresponding canonical surface exists.
-
-Examples:
+Exact receipt references navigate to canonical surfaces:
 
 `Person ID → /directory/?person_id=<exact UUID>`
 
@@ -131,117 +107,127 @@ Examples:
 
 `Automation → /automations/`
 
-The query parameters are a frontend navigation hint only. They do not grant access or authority. The destination must still load the protected object from the backend and handle missing/not-deployed state normally.
+The Directory/Library exact-reference frontend now waits for their normal protected data to load and focuses the exact requested backend object. The handoff uses the existing protected page; it performs no mutation and does not create a local substitute object.
 
-A follow-up slice can make Directory and Library actively focus the requested exact ID after their protected data loads.
+If the exact object does not exist in the protected response, the destination reports that reference as missing rather than fabricating it.
+
+## Reverse receipt handoff — Email / Requests → Control
+
+Email and Requests now expose the reverse direction after a typed receipt is read:
+
+`Open this Run in Control`
+
+using only:
+
+`/control/?automation_id=<exact Automation UUID>&run_id=<exact Run UUID>`
+
+Control already understands these IDs and loads that exact receipt through the protected backend session.
+
+Important security rule: the URL is a **pointer, not permission**.
+
+It contains opaque Automation/Run IDs only. It does not contain operator keys, CSRF values, message content, recipient/sender addresses or provider credentials. Control still requires normal backend authentication and remains read-only for this history lane.
 
 ## Protected session behavior
 
-Control uses the same protected session model as Email, Requests, Directory and Library:
+Control follows the same protected session model as Email, Requests, Directory and Library:
 
 1. backend-issued secure cookie establishes the operator session;
-2. exact allowed Origin is enforced by the backend;
-3. mutations elsewhere require CSRF;
-4. this Runtime history lane performs reads only.
+2. backend validates the exact allowed Origin;
+3. protected mutations elsewhere require CSRF;
+4. Runtime history here performs reads only.
 
-If locked, Control shows an inline operator unlock form.
+If locked, Control shows inline unlock. The operator key is sent directly to the backend and cleared immediately.
 
-The operator key is sent directly to the backend and cleared immediately.
+No operator key, CSRF token, frozen receipt or protected IDs are intentionally persisted as browser-owned canonical state by the history lane.
 
-No operator key, CSRF token, frozen receipt, protected IDs or private addresses are intentionally persisted to localStorage/sessionStorage by this lane.
+## Validation evidence
 
-Control may still retain its old route-local theme preference. A visual preference is not canonical protected Runtime truth.
+Focused browser/source validation proves:
+
+- canonical active navigation;
+- desktop/mobile locked → unlock → protected Run history;
+- selecting a Run reads the typed frozen receipt;
+- exact Person/ContactMethod/Connection/Sender/Content/Automation/Run references render;
+- Attempts and Why render;
+- Control → exact Directory Person handoff;
+- Control → exact Library ContentAsset handoff;
+- Email/Requests receipt → exact Control Run handoff;
+- protected query links do not mutate backend state;
+- operator keys/protected receipt truth do not become browser-storage canonical state;
+- 404 remains truthful NOT DEPLOYED;
+- local Control simulation stays isolated from protected Runtime history.
+
+Browser proofs mock the backend boundary. They prove frontend integration behavior, not production deployment.
+
+## Why this matters
+
+Without a receipt chain, “Email succeeded” is vague.
+
+With durable references Continuum can explain:
+
+`Person → ContactMethod → exact ContentVersion → AutomationVersion → Run → Attempt → receipt`
+
+That answers:
+
+- who was involved;
+- which address was used;
+- which exact frozen content was used;
+- which immutable Automation ran;
+- who/what initiated it;
+- whether authority was manual/delegated;
+- what provider boundary reported;
+- whether retries occurred;
+- whether ambiguity/reconciliation exists;
+- what Runtime recorded and why.
+
+The stable IDs also let the user move between interfaces while staying on the **same object**.
+
+## Current product loop
+
+The proof loop is now navigable in both directions:
+
+`Requests / Email → Runtime receipt → Control → exact Directory Person / exact Library Content`
+
+and:
+
+`Directory / Library durable objects → Email/Automation action → Runtime → Control history`
+
+This is the strongest current frontend demonstration of **one durable Continuum with multiple interfaces** rather than unrelated mini-apps.
 
 ## Files
 
-Current protected Runtime history slice:
+Protected Runtime history:
 
 - `control/index.html`
 - `assets/continuum-operator-api-v1.js`
 - `assets/control/control-runtime-history-v1.js`
 - `assets/control/control-runtime-history-v1.css`
+- `assets/continuum-exact-reference-v1.js`
+- `assets/continuum-runtime-receipt-link-v1.js`
 - `tests/continuum-control-runtime-history-v1.test.js`
 - `tests/continuum-control-runtime-history-v1-browser.js`
+- `tests/continuum-exact-reference-v1-browser.js`
+- `tests/continuum-runtime-receipt-control-link-v1-browser.js`
 - `.github/workflows/control-center-lab-validation.yml`
 
-Existing Control sample/proving implementation remains in:
+Existing sample/proving Control implementation remains under `assets/lab/control-center-*`.
 
-- `assets/lab/control-center-v1.js`
-- `assets/lab/control-center-v1.css`
-- `assets/lab/control-center-mobile-polish-v2.css`
-- `assets/lab/control-center-interaction-v3.css`
-- `assets/lab/control-center-focus-v4.js`
-- `assets/lab/control-center-focus-v4.css`
-
-The `assets/lab/` filename is implementation history. The active route is `/control/`.
-
-## Validation target
-
-Focused validation should prove:
-
-- canonical active navigation uses `/control/`, `/directory/`, `/library/` and `/automations/`;
-- desktop and mobile can go locked → unlock → protected Automation/Run listing;
-- selecting a Run fetches the typed frozen receipt;
-- exact Person/ContactMethod/Connection/Sender/Content/Automation/Run IDs render;
-- Attempts and Why events render;
-- exact Person and ContentAsset navigation hints are preserved;
-- the operator key is cleared;
-- protected values do not enter localStorage/sessionStorage;
-- no Runtime mutation occurs from the history lane;
-- a 404 is shown as a truthful not-deployed boundary rather than fake history;
-- the existing local simulation remains isolated from protected Runtime truth.
-
-Browser proof uses a mocked API boundary. It proves frontend orchestration and rendering semantics, not production deployment.
-
-## Why this matters
-
-Without a receipt surface, a user sees “Email succeeded” and has to trust a vague sentence.
-
-With the durable chain, Continuum can explain:
-
-`Person 444… → ContactMethod 555… → ContentVersion 999… → AutomationVersion 222… → Run 333… → Attempt → receipt`
-
-That is much more than a log line. It means the system can answer:
-
-- who was involved;
-- which address was used;
-- which exact frozen content was used;
-- which immutable Automation definition ran;
-- who/what initiated it;
-- whether authority was manual or delegated;
-- what the provider boundary reported;
-- whether retries happened;
-- whether ambiguity/reconciliation exists;
-- what the Runtime recorded and why.
-
-That is the beginning of explainable durable action.
-
-## Current product loop
-
-The proof-driven frontend loop is now:
-
-`Requests → Directory identity → Library durable memory → Email/Automations define work → Runtime → Control receipt / Why`
-
-The next high-value frontend step is to make the exact Person/Content links actively focus those same protected objects on Directory and Library, then add an “Open in Control” handoff from Email/Requests receipts where a Run exists.
-
-Avoid changing the active Automation editor while First-Repo PR #131 remains open unless that work is deliberately reconciled first.
+`assets/lab/` is implementation history. The active route is `/control/`.
 
 ## No-go shortcuts
 
 Do not use Control to:
 
-- create browser-local fake Runtime history;
-- execute or process Runs as a hidden side effect of viewing history;
+- invent local Runtime history;
+- execute/process Runs as a side effect of reading history;
 - automatically retry ambiguous provider work;
 - manufacture Authority from receipt context;
 - mutate PostgreSQL directly;
 - store protected receipt truth in browser persistence;
 - claim stacked backend routes are production-live;
-- collapse the local simulation preview into canonical Runtime execution.
+- collapse sample simulation into canonical Runtime execution.
 
 ## Recovery order
-
-When resuming Control work:
 
 1. `docs/continuum-frontend-roadmap-CURRENT.md`
 2. `docs/continuum-frontend-week-CURRENT.md`
@@ -250,7 +236,9 @@ When resuming Control work:
 5. `control/index.html`
 6. `assets/continuum-operator-api-v1.js`
 7. `assets/control/control-runtime-history-v1.js`
-8. current First-Repo main / open PRs
-9. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` on the active stacked backend ref
+8. `assets/continuum-exact-reference-v1.js`
+9. `assets/continuum-runtime-receipt-link-v1.js`
+10. current First-Repo main / open PRs
+11. current `jay-app` frontend/backend integration handbook
 
 Never infer production deployment from frontend support or mocked browser proof.
