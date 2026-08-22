@@ -1,181 +1,120 @@
-# CMX Restricted Node / Continuum Lab
+# CMX Restricted Node / Continuum frontend
 
-`db.cmxchat.com` is the CMX private operational, research, learning and product-prototyping subdomain.
+`CMXChat/First-Repo` owns the static GitHub Pages proving surfaces served from `db.cmxchat.com`.
 
-`CMXChat/First-Repo` owns static GitHub Pages surfaces used to prototype and explain parts of **Continuum**. The protected FastAPI/PostgreSQL application lives in `CMXChat/jay-app`.
+The protected FastAPI/PostgreSQL application, durable domain models, migrations, generated API client and canonical backend services live in `CMXChat/jay-app`.
 
-## Current Continuum model
+## Start here
 
-- **Directory** = people, organizations, relationships, contact methods and saved audiences.
-- **Library** = protected content, files and saved knowledge.
-- **Automations** = typed workflow definitions.
-- **Connections** = approved paths to outside capability.
-- **Runtime** = future server execution/history.
-- **AI / Planner** = bounded intelligence and natural-language authoring through the same typed services humans use.
-- **Spaces** = briefing/context experience.
-- **Afterlife: The Dead Man Switch** = continuity experience.
-- **Check In** = current protected backend/application program name.
+For a human or AI taking over the project, read in this order:
 
-Core principle:
+1. `docs/AI-START-HERE.md`
+2. `docs/PROJECT-STATUS-CURRENT.md`
+3. `docs/continuum-frontend-CURRENT.md`
+4. `docs/DOCUMENTATION-AUTHORITY.md`
+5. the relevant surface-specific `docs/*-CURRENT.md`
+6. `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md`
+7. the active backend branch handbook/spec when working on stacked backend code
 
-> Build the control plane. Rent the capabilities.
+Do **not** infer current truth from an older chat, an older `*-CURRENT.md` filename, or a historical `/lab/*` route. The authority index above wins when documents disagree.
 
-## Read current docs first
+## Product model
 
-1. `docs/checkin-context-handoff-CURRENT.md`
-2. `docs/continuum-product-CURRENT.md`
-3. `docs/continuum-automations-master-plan-CURRENT.md`
-4. `docs/checkin-automations-frontend-CURRENT.md`
-5. `docs/continuum-directory-master-plan-CURRENT.md`
-6. `docs/checkin-directory-library-CURRENT.md`
-7. `docs/README.md`
-8. `CMXChat/jay-app/specs/003-server-checkin/ARCHITECTURE-INDEX.md`
+Continuum is the umbrella product and a navigable map of a person's connected digital world.
 
-Current `*-CURRENT.md` contracts, source, tests and workflows beat older dated notes.
+- **Directory** = who: People, ContactMethods and later richer relationships.
+- **Library** = protected information/content and immutable versions.
+- **Automations** = what should happen.
+- **Connections / SenderIdentity** = approved external capability and identity definitions.
+- **Authority** = whether exact unattended work may happen now.
+- **Trigger Consumption** = durable event claim/recovery before execution.
+- **Runtime** = what actually happened, with Attempts, receipts and Why/provenance.
+- **Check In** = the currently production-live protected continuity/timing application foundation.
+- **Spaces** = context/briefing experience.
+- **Requests** = bounded human-friendly doorway over typed protected operations.
+- **AI / Planner** = future bounded intelligence using the same typed services and authority rules, never a bypass.
 
-## `/doc/`
+Core rule:
 
-Noindex master explanation of Continuum. It remains under a separate clarity freeze. Lab UX/model/Planner work alone does not authorize edits to `/doc/`.
+> One backend, many interfaces.
 
-## `/lab/`
+## Canonical Continuum routes
 
-Broader Continuum experiment workspace.
+User-facing Continuum routes are outside the retired `/lab/` namespace:
 
-Records runs **Directory v2** with People, Organizations, Groups, membership concepts, ContactMethods/readiness, Labels, Person relationships, Activity/notes, duplicate warnings, Automation usage and polished desktop/mobile treatment.
+- `/checkin/`
+- `/spaces/`
+- `/directory/`
+- `/library/`
+- `/automations/`
+- `/email/`
+- `/requests/`
+- `/control/`
+- `/doc/`
 
-Directory `AI setup` is now a **CONTINUUM PLANNER · PREVIEW** using typed Change Plan examples across Directory, Library and Automations.
+`/archive/continuum-lab/` preserves the older integrated prototype. Internal files under `assets/lab/` may remain because those are implementation-history identifiers, not canonical route names.
 
-The strongest fixed example is **Full Continuum setup**:
+## Status vocabulary
 
-`resolve People → create Groups → create Library folder/document → create Automation Draft → reference Audiences/content → add inter-step WAIT`
+Use these terms consistently:
 
-It performs no model call, no free-text interpretation and no mutation.
+- **LIVE** — deployed and verified in the target production environment.
+- **WIRED** — frontend code really calls the typed/protected backend contract.
+- **STACKED** — backend implementation exists and is validated in GitHub source but is not production-deployed.
+- **PREVIEW** — browser/product concept that is not durable backend truth.
+- **PLANNED** — documented direction with no implemented contract yet.
 
-## `/lab/automations/`
+`WIRED + STACKED` is a normal state: the page can be ready while production still returns `404 / NOT DEPLOYED` for the newer API.
 
-Focused Automation operating/testing surface with:
+## Current production boundary
 
-- v3 Draft/autosave compatibility editor;
-- **v5 canonical ordered workflow model**;
-- compact FLOW PREVIEW + **ORDERED SEQUENCE** v5 view;
-- Automations / Templates / Runs command center;
-- searchable Capability Catalog;
-- **15 editable scenarios**;
-- Directory readiness;
-- Audience v4.1 Person/Organization/Group/Label selectors;
-- typed data/recommendations/tests v4.2;
-- Input Routing v4.3;
-- Advanced Flow v4.4 with linear inter-step IF / WAIT authoring;
-- **deterministic typed Planner v5 proving surface**;
-- mobile-specific selectors/modals/ordered flow.
+Production remains on the reviewed Check In Phase 1 boundary:
 
-V5 normalizes the accepted workflow as:
+- production backend release: `de55627926316581808337f8e9c10d26e7d64588`
+- production Alembic revision: `c41f9b8d2e70`
+- protected Check In switch/policy/Incident/operator-session behavior is LIVE
+- production does **not** yet contain the full stacked Directory, Connection, Library, Email Automation Runtime, Authority or trigger-consumption stack
 
-`Trigger → pre-action Conditions → Action → Condition/Wait → Action → Finish`
+The broader backend work exists in validated source and stacked draft PRs. Tests and frontend wiring do not make that work production-live.
 
-while `WHEN → IF → DO → WAIT → TEST` remains the beginner navigation model.
+## Frontend truth
 
-Top-level IF is pre-action. Output-dependent IF belongs after the Action producing the output. Current inter-step IF is a linear gate only. YES/NO branching remains later. Inter-step WAIT is distinct from start timing and requires future persisted Runtime state.
+The current frontend has meaningful protected/backend-aware lanes rather than isolated mock pages:
 
-The focused Planner is explicitly local/non-AI:
+- Directory: protected Person + email ContactMethod lane where deployed.
+- Library: protected `ContentAsset → ContentDraft → ContentVersion` lane plus separate local preview concepts.
+- Automations: a SERVER-BACKED lane for durable Draft/preflight/Review/Publish/Runtime alongside richer LOCAL PREVIEW workflow concepts.
+- Email: protected manual Email orchestration through Directory → Connection → Library → Automation → Runtime → receipt.
+- Requests: preview-before-write contact operations and typed Email safe simulation through the same canonical backend chain.
+- Control: read-only protected Runtime receipt/history lane plus explicitly sample operational preview panels.
 
-- `TYPED PLAN PREVIEW · LOCAL`;
-- `NO AI CALL`;
-- ordered v5 flow;
-- typed Automation Change Plan operations;
-- preflight blockers;
-- `Use this draft` creates a normal editable Lab Draft and normalizes it through v5.
+Exact IDs now connect surfaces: Email/Requests can open a specific Run in Control, and Control can point to the exact Directory Person or Library ContentAsset involved.
 
-The route stays isolated: `connect-src 'self'`, no production API/provider execution, no real scheduling/Publish, no secrets and no external AI model call.
+See `docs/continuum-frontend-CURRENT.md` for the route-by-route wiring matrix.
 
-Browser `workflowV5`, localStorage, deterministic Planner matching and v4 compatibility fields remain Lab scaffolding. They do not define production backend schema or execution truth.
+## Backend truth
 
-## One Planner language
+`CMXChat/jay-app/main` contains validated Check In plus Phase 2A Library/typed Automation source, but Phase 2A is not production-migrated.
 
-Current Lab proving surfaces converge on:
+The later implementation is intentionally stacked through draft backend PRs, culminating in draft PR #24 (`dev/durable-trigger-consumption`), where durable trigger consumption and the separately invoked fake-only Check In consumer are implemented and validated. Real SMTP remains direct-manual-owner-only in the stacked proof; unattended execution remains fake-only.
 
-`INTENT → TYPED CHANGE PLAN → PREFLIGHT → REVIEW → APPLY through normal protected services`
+Read `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md` and the active stacked branch's `specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` before changing backend-facing frontend behavior.
 
-- Directory Planner typed-v2 proves fixed cross-domain Change Plans.
-- Automations Planner v5 proves local intent → typed Automation plan → normal editable v5 Draft.
-- neither is the real protected Continuum AI Planner.
+## Safety invariants
 
-The long-term goal is that a user can describe how they want Continuum organized and a protected Planner prepares the setup through the same typed domain services human UI uses.
+- frontend never receives database credentials;
+- browser code never talks directly to PostgreSQL or SMTP;
+- protected mutations use the server session, exact Origin and CSRF;
+- stable IDs are identity; display names/emails are presentation data;
+- immutable published/version/receipt history is never reconstructed from current mutable state;
+- prompt text, urgency, AI confidence, readiness or capability never grant Authority;
+- human UI, future AI and future MCP adapters use the same typed services;
+- no arbitrary Python/JavaScript/shell/SQL/eval execution path;
+- durable time/waits belong server-side, never in a browser tab;
+- browser preview state must never silently impersonate missing server truth.
 
-AI never gets a shadow database/workflow format, prompt-granted authority or arbitrary executable code path.
+## Documentation rule
 
-Backend contract:
+Useful historical material is preserved. Cleanup means **changing authority, not erasing knowledge**.
 
-`CMXChat/jay-app/specs/003-server-checkin/CONTINUUM-AI-PLANNER-PLATFORM-PLAN.md`
-
-## `/checkin/`
-
-Protected Check In frontend.
-
-Production remains Phase 1 until the separate validated Phase 2A production migration/deployment sequence succeeds.
-
-Current reviewed backend release: `de55627926316581808337f8e9c10d26e7d64588`
-
-Current production Alembic revision: `c41f9b8d2e70`
-
-Current timer: 72 elapsed hours + 24 elapsed hours grace, server/PostgreSQL authoritative.
-
-Production currently performs no general Automation/provider/AI execution.
-
-## First-Repo vs jay-app
-
-### `CMXChat/First-Repo`
-
-Contains static HTML/CSS/JavaScript routes, Lab/product proving surfaces, current frontend/product contracts and browser/static validation workflows.
-
-### `CMXChat/jay-app`
-
-Owns FastAPI/Python, PostgreSQL/SQLModel, Alembic, protected services/APIs, tests, generated OpenAPI client, official React/TypeScript path, current Check In backend and validated Phase 2A Library + typed Automation source.
-
-Browser/frontend code reaches protected data through backend services. It never connects directly to PostgreSQL.
-
-## Current Phase 2A boundary
-
-The first Phase 2A Library + typed Automation source is validated on `jay-app/main` but is **not production-migrated/deployed**.
-
-Before broad backend capability/Directory/Planner/flow-control expansion, use the canonical Phase 2A production runbook in `jay-app`.
-
-Lab visuals, browser models or Planner previews do not redefine production truth.
-
-## Current validation
-
-Relevant source workflows include:
-
-- `automations-v5-model-validation.yml`;
-- `automations-v5-planner-validation.yml`;
-- `continuum-directory-validation.yml`.
-
-The available connector cannot independently expose push-triggered workflow-run results in this context, so do not claim an observed green run or Pages pickup until later verification is available.
-
-## Architecture rules
-
-Preserve:
-
-- frontend has no DB credentials;
-- provider secrets stay server-side;
-- protected mutations use server authorization and Origin/CSRF controls;
-- stable IDs beat copied mutable names/contact strings;
-- published/version history stays immutable;
-- human UI and AI use the same typed services;
-- prompt text never grants authority;
-- no arbitrary Python/JavaScript/shell/SQL/eval workflow logic;
-- typed Automation data flow uses validated source/output/input references;
-- inter-step WAIT is durable server state when real, never a browser sleep;
-- branching is typed routing, not arbitrary expression/code execution;
-- no unrestricted webhook/API escape hatch;
-- no broad document-wide MutationObserver loops in accepted Check In/Lab paths;
-- Lab simulation/future capability must be labeled truthfully;
-- browser model/Planner completeness never proves backend execution exists.
-
-## Development / learning stack
-
-The protected learning/application stack in `jay-app` uses FastAPI, Python, SQLModel, PostgreSQL, Alembic, React, TypeScript, Vite, TanStack Router/Query, generated OpenAPI client, Docker, Pytest and Playwright.
-
-Basic path:
-
-`Browser → HTTPS/JSON → FastAPI domain services → PostgreSQL → JSON response → frontend`
+The documentation policy is in `docs/DOCUMENTATION-AUTHORITY.md`. Git history preserves the pre-consolidation README and index at First-Repo commit `311e8c2feac73e6ea7d7f99b6a7895d2a973ad25`.
