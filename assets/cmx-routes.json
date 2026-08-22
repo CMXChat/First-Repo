@@ -1,10 +1,11 @@
 {
-  "version": 35,
-  "updated": "2026-08-21",
+  "version": 36,
+  "updated": "2026-08-22",
   "routes": [
     {"path":"/","name":"Restricted Node","description":"Private user entry point and controlled launcher for CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":false},
     {"path":"/menu/","name":"Operations Menu","description":"Approved card menu for current CMX research and operational tools.","category":"Operational","status":"Active","visibility":"Directory-visible","directory":false,"gated":true},
     {"path":"/directory/","name":"Continuum Directory","description":"Protected preview for durable People and email ContactMethods; Organizations and Groups remain local Lab concepts.","category":"Product Preview","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
+    {"path":"/email/","name":"Continuum Email","description":"Protected manual Email action playground for durable recipient, sender, immutable content, Automation publication, Runtime Run and execution receipt proof.","category":"Product Preview","status":"Active","visibility":"Direct-link-only","directory":false,"gated":true},
     {"path":"/osint/","name":"OSINT Console","description":"Research workflows, pivot maps and investigation resources.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"1","gated":false},
     {"path":"/phone/","name":"Phone Intelligence","description":"Phone-number parsing, enrichment and investigation pivots.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"2","gated":false},
     {"path":"/metadata/","name":"Metadata Extractor","description":"Inspect media, document and file metadata in the browser.","category":"OSINT","status":"Active","visibility":"Directory-visible","directory":true,"hotkey":"3","gated":false},
