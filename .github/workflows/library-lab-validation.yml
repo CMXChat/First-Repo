@@ -1,9 +1,9 @@
-name: Library Lab validation
+name: Library validation
 
 on:
   push:
     paths:
-      - 'lab/library/**'
+      - 'library/**'
       - 'assets/lab/library-*.js'
       - 'assets/lab/library-*.css'
       - 'assets/lab/continuum-library-shell-convergence-v1.js'
@@ -16,7 +16,7 @@ on:
       - '.github/workflows/library-lab-validation.yml'
   pull_request:
     paths:
-      - 'lab/library/**'
+      - 'library/**'
       - 'assets/lab/library-*.js'
       - 'assets/lab/library-*.css'
       - 'assets/lab/continuum-library-shell-convergence-v1.js'
