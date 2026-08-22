@@ -1,0 +1,104 @@
+name: Continuum Requests Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'requests/**'
+      - 'assets/requests/**'
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/cmx-routes.json'
+      - 'tests/continuum-requests-v1.test.js'
+      - 'docs/continuum-requests-CURRENT.md'
+      - 'docs/continuum-frontend-roadmap-CURRENT.md'
+      - '.github/workflows/continuum-requests-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'requests/**'
+      - 'assets/requests/**'
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/cmx-routes.json'
+      - 'tests/continuum-requests-v1.test.js'
+      - 'docs/continuum-requests-CURRENT.md'
+      - 'docs/continuum-frontend-roadmap-CURRENT.md'
+      - '.github/workflows/continuum-requests-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Validate Requests source contract
+        run: |
+          set -euo pipefail
+          node --check assets/continuum-operator-api-v1.js
+          node --check assets/requests/requests-v1.js
+          node tests/continuum-requests-v1.test.js
+          git diff --check
+
+  browser-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Render Requests preview without backend writes
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/requests-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node - <<'NODE'
+          const { chromium } = require('playwright-core');
+          async function inspect(width,height){
+            const browser=await chromium.launch({executablePath:process.env.BROWSER,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage({viewport:{width,height}});
+            let writeCount=0;
+            await page.route('**/api/v1/**',async route=>{
+              const req=route.request();
+              const url=new URL(req.url());
+              if(req.method()==='GET' && url.pathname.endsWith('/checkin/operator/session')){
+                return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,expires_at:'2026-08-22T20:00:00Z',csrf_token:'test-csrf'})});
+              }
+              if(req.method()==='GET' && url.pathname.endsWith('/checkin/operator/directory/people')){
+                return route.fulfill({status:200,contentType:'application/json',body:'[]'});
+              }
+              if(req.method()!=='GET') writeCount+=1;
+              return route.fulfill({status:500,contentType:'application/json',body:JSON.stringify({detail:'test must not write during preview'})});
+            });
+            await page.goto('http://127.0.0.1:8000/requests/',{waitUntil:'networkidle'});
+            await page.evaluate(()=>{
+              const g=document.querySelector('[data-cmx-gated-content]');
+              if(g)g.hidden=false;
+              document.body.classList.remove('cmx-black-prompt-locked');
+              document.querySelectorAll('[data-cmx-gate-overlay],#cmx-black-prompt-gate').forEach(el=>el.remove());
+            });
+            await page.locator('#requestInput').fill('Ada Lovelace <ada@example.com>\nGrace Hopper, grace@example.com');
+            await page.locator('#parseRequest').click();
+            const facts=await page.evaluate(()=>({
+              marker:document.querySelector('[data-requests-version="v1"]')!==null,
+              overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,
+              backend:document.querySelector('#backendBadge')?.dataset.state,
+              rows:document.querySelectorAll('#previewBody tr').length,
+              approveDisabled:document.querySelector('#approveRequest')?.disabled,
+              summary:document.querySelector('#previewSummary')?.textContent
+            }));
+            console.log(width,height,facts,{writeCount});
+            if(!facts.marker||facts.overflow||facts.backend!=='connected'||facts.rows!==2||facts.approveDisabled)throw new Error(`Requests preview contract failed at ${width}`);
+            if(writeCount!==0)throw new Error(`Requests preview unexpectedly issued ${writeCount} writes`);
+            await browser.close();
+          }
+          (async()=>{for(const v of [[1280,900],[430,900],[390,844]])await inspect(...v)})().catch(e=>{console.error(e);process.exit(1)});
+          NODE

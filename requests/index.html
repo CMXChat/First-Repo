@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" data-cmx-gate="black-prompt" data-cmx-gate-id="continuum-private-pages">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#f5f7fa" />
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.cmxchat.com http://localhost:8000; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
+  <title>Continuum · Requests</title>
+  <link rel="stylesheet" href="/assets/gates/cmx-gate-black-prompt.css" />
+  <link rel="stylesheet" href="/assets/requests/requests-v1.css?v=20260822-1" />
+</head>
+<body class="cmx-black-prompt-locked">
+  <div data-cmx-gated-content hidden>
+    <main class="requests-shell" data-requests-version="v1">
+      <header class="requests-topbar">
+        <div class="requests-topbar-left">
+          <a href="/control/" class="brand" aria-label="Continuum Control Center">
+            <span class="brand-mark">C</span>
+            <span class="brand-name">Continuum</span>
+          </a>
+          <span class="brand-section">Requests</span>
+        </div>
+        <nav aria-label="Continuum">
+          <a href="/email/">Email</a>
+          <a href="/directory/">Directory</a>
+          <a href="/library/">Library</a>
+          <a href="/automations/">Automations</a>
+        </nav>
+      </header>
+
+      <section class="pagehead">
+        <div>
+          <span class="eyebrow">CONTINUUM · OPERATOR DOORWAY</span>
+          <h1>Requests</h1>
+          <p>Turn a reviewed request into existing protected backend operations. Version 1 starts with batch People + email ContactMethod creation.</p>
+        </div>
+        <aside class="backend-card" aria-label="Backend status">
+          <div class="backend-card-head"><b>Protected backend</b><span class="state-pill" id="backendBadge" data-state="checking">CHECKING</span></div>
+          <span id="backendState">Checking protected backend…</span>
+          <div class="backend-actions"><button id="backendDisconnect" type="button" hidden>End protected session</button></div>
+        </aside>
+      </section>
+
+      <section class="unlock-panel" id="backendAccess" hidden aria-label="Unlock protected backend">
+        <div class="unlock-copy">
+          <b>Unlock before approving writes</b>
+          <p>Your operator key goes directly to the API and is cleared immediately. This page never stores it, a CSRF token, or canonical private records in browser storage.</p>
+          <code>POST /api/v1/checkin/operator/unlock</code>
+        </div>
+        <form class="unlock-form" id="backendUnlockForm" autocomplete="off">
+          <label>Operator key<input id="operatorKeyInput" type="password" autocomplete="off" spellcheck="false" /></label>
+          <button id="backendUnlockSubmit" type="submit">Unlock backend</button>
+          <span class="unlock-error" id="backendUnlockError" role="alert"></span>
+        </form>
+      </section>
+
+      <section class="workspace">
+        <article class="panel">
+          <header class="panel-head">
+            <div><h2>Describe the batch</h2><p>Deterministic contact parsing now; broader AI interpretation belongs to a future authenticated assistant bridge.</p></div>
+            <span class="step">01</span>
+          </header>
+          <textarea class="request-input" id="requestInput" spellcheck="false" placeholder="Ada Lovelace <ada@example.com>&#10;Grace Hopper, grace@example.com&#10;Katherine Johnson | katherine@example.com"></textarea>
+          <div class="hint">
+            Supported now: <code>Name &lt;email&gt;</code>, <code>Name, email</code>, <code>Name | email</code>, tab-separated values, or <code>Name email</code>. Parsing is local preview only; nothing is written until approval.
+          </div>
+          <div class="actions">
+            <button class="primary" id="parseRequest" type="button">Preview request</button>
+            <button id="clearRequest" type="button">Clear</button>
+          </div>
+          <div class="warning">Writes are sequential, not one database transaction. If a Person is created and ContactMethod creation then fails, the Person remains durable and the row is reported as partial. No automatic retry or silent merge.</div>
+        </article>
+
+        <article class="panel">
+          <header class="panel-head">
+            <div><h2>Review before write</h2><p>Every row must parse cleanly. The backend remains authoritative for identity, collisions and lifecycle.</p></div>
+            <span class="step">02</span>
+          </header>
+          <div class="preview-wrap">
+            <div class="empty" id="previewEmpty">Nothing parsed yet.</div>
+            <table id="previewTable" hidden>
+              <thead><tr><th>#</th><th>Person</th><th>Email</th><th>Status</th><th>Backend result</th></tr></thead>
+              <tbody id="previewBody"></tbody>
+            </table>
+          </div>
+          <div class="actions">
+            <button class="primary" id="approveRequest" type="button" disabled>Approve & write to backend</button>
+            <span id="previewSummary">Nothing parsed yet.</span>
+          </div>
+          <p class="hint" id="writeSummary">Paste contacts, then preview them before any write.</p>
+        </article>
+      </section>
+
+      <footer class="footer">
+        <b>Requests v1 is not a direct database console.</b> It can only call backend APIs that already exist and pass the same protected session, Origin and CSRF rules as the rest of Continuum. Arbitrary natural-language planning, scheduling and AI execution are future capabilities, not simulated here.
+      </footer>
+    </main>
+  </div>
+
+  <script src="/assets/continuum-operator-api-v1.js?v=20260822-1"></script>
+  <script src="/assets/requests/requests-v1.js?v=20260822-1"></script>
+  <script src="/assets/gates/cmx-gate-black-prompt.js" defer></script>
+</body>
+</html>

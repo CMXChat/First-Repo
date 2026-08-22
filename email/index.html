@@ -12,10 +12,11 @@
   <link rel="stylesheet" href="/assets/gates/cmx-gate-black-prompt.css" />
   <link rel="stylesheet" href="/assets/lab/lab-email-v1.css?v=20260822-workspace2" />
   <link rel="stylesheet" href="/assets/lab/lab-email-desktop-scale-v1.css?v=20260822-scale1" />
+  <link rel="stylesheet" href="/assets/lab/lab-email-backend-v3.css?v=20260822-1" />
 </head>
 <body class="cmx-black-prompt-locked">
   <div data-cmx-gated-content hidden>
-    <main class="email-shell" data-email-lab="v1">
+    <main class="email-shell" data-email-lab="v3">
       <header class="email-topbar">
         <div class="email-topbar-left">
           <a href="/control/" class="brand" aria-label="Continuum Control Center">
@@ -29,6 +30,7 @@
             <a href="/directory/">Directory</a>
             <a href="/automations/">Automations</a>
             <a href="/library/">Library</a>
+            <a href="/requests/">Requests</a>
           </nav>
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">Dark</button>
         </div>
@@ -41,25 +43,44 @@
           <p>Compose, freeze, review and run one exact message through the protected backend.</p>
         </div>
         <aside class="backend-summary" aria-label="Backend status">
-          <div class="backend-summary-head"><span class="status-dot"></span><b>Backend</b></div>
+          <div class="backend-summary-head">
+            <span><span class="status-dot"></span><b>Backend</b></span>
+            <span class="backend-state-badge" id="backendBadge" data-state="checking">CHECKING</span>
+          </div>
           <span id="backendState">Checking protected backend…</span>
-          <small>Protected session · Origin · CSRF</small>
+          <small>Protected session · Origin · CSRF · no browser-owned canonical data</small>
+          <div class="backend-summary-actions">
+            <button id="backendDisconnect" type="button" hidden>End protected session</button>
+          </div>
         </aside>
+      </section>
+
+      <section class="backend-access" id="backendAccess" hidden aria-label="Unlock protected backend">
+        <div class="backend-access-copy">
+          <b>Unlock the protected backend</b>
+          <p>The operator key goes directly to the API and is cleared immediately. It is never stored in localStorage, sessionStorage or Continuum page state.</p>
+          <code>POST /api/v1/checkin/operator/unlock</code>
+        </div>
+        <form class="backend-unlock-form" id="backendUnlockForm" autocomplete="off">
+          <label>Operator key<input id="operatorKeyInput" type="password" autocomplete="off" spellcheck="false" /></label>
+          <button id="backendUnlockSubmit" type="submit">Unlock backend</button>
+          <span class="backend-unlock-error" id="backendUnlockError" role="alert"></span>
+        </form>
       </section>
 
       <section class="steps" aria-label="Email workflow">
         <article class="panel" data-step="recipient">
           <header><span>01</span><div><b>Recipient</b><small>Person → email ContactMethod</small></div></header>
-          <label>Person<select id="personSelect"><option value="">Choose a Person</option></select></label>
+          <label>Person<select id="personSelect" disabled><option value="">Choose a Person</option></select></label>
           <label>Email<select id="contactSelect" disabled><option value="">Choose an email</option></select></label>
-          <p class="fact" id="recipientFact">Load Directory to begin.</p>
+          <p class="fact" id="recipientFact">Unlock the protected backend to begin.</p>
         </article>
 
         <article class="panel" data-step="sender">
           <header><span>02</span><div><b>Sender</b><small>Connection → SenderIdentity</small></div></header>
-          <label>Connection<select id="connectionSelect"><option value="">Choose a Connection</option></select></label>
+          <label>Connection<select id="connectionSelect" disabled><option value="">Choose a Connection</option></select></label>
           <label>Sender<select id="senderSelect" disabled><option value="">Choose a sender</option></select></label>
-          <div class="readiness" id="connectionReadiness">Backend readiness has not been checked.</div>
+          <div class="readiness" id="connectionReadiness">Unlock the protected backend to check readiness.</div>
         </article>
 
         <article class="panel panel-wide composer-panel" data-step="message">
@@ -122,25 +143,25 @@
           </div>
           <div class="composer-footer">
             <span>Formatting stays in the composer preview. The current backend proof freezes normalized message text.</span>
-            <div class="actions"><button id="freezeContent" type="button">Freeze message version</button><span id="contentState">Nothing frozen yet.</span></div>
+            <div class="actions"><button id="freezeContent" type="button" disabled>Freeze message version</button><span id="contentState">Nothing frozen yet.</span></div>
           </div>
         </article>
 
         <article class="panel" data-step="review">
           <header><span>04</span><div><b>Review & publish</b><small>Draft → preflight → immutable AutomationVersion</small></div></header>
           <div id="reviewSummary" class="review-summary">Choose recipient, sender and freeze content first.</div>
-          <div class="actions"><button id="prepareAutomation" type="button">Prepare & preflight</button><button id="publishAutomation" type="button" disabled>Review & publish</button><span id="automationState">No Automation prepared.</span></div>
+          <div class="actions"><button id="prepareAutomation" type="button" disabled>Prepare & preflight</button><button id="publishAutomation" type="button" disabled>Review & publish</button><span id="automationState">No Automation prepared.</span></div>
         </article>
 
         <article class="panel consequential" data-step="run">
           <header><span>05</span><div><b>Run</b><small>Manual owner only</small></div></header>
           <div class="run-modes">
-            <label><input type="radio" name="provider" value="fake" checked /> <span><b>Simulation</b><small>Fake provider · no external message</small></span></label>
-            <label><input type="radio" name="provider" value="real_smtp" /> <span><b>Real manual SMTP</b><small>External side effect · backend restrictions apply</small></span></label>
+            <label><input type="radio" name="provider" value="fake" checked /> <span><b>Safe simulation</b><small>Real Runtime history · no external email</small></span></label>
+            <label><input type="radio" name="provider" value="real_smtp" disabled /> <span><b>Real manual SMTP</b><small>Reserved for a separate explicit acceptance pass</small></span></label>
           </div>
-          <label class="behavior">Fake behavior<select id="fakeBehavior"><option value="accepted">Accepted</option><option value="transient_once">Transient once</option><option value="permanent_failure">Permanent failure</option></select></label>
-          <label class="confirm"><input id="realConfirm" type="checkbox" /> I understand real mode may send exactly one external email through the protected Runtime.</label>
-          <div class="actions"><button id="requestRun" type="button" disabled>Request Run</button><button id="processRun" type="button" disabled>Process now · development control</button><span id="runState">Publish first.</span></div>
+          <label class="behavior">Simulation behavior<select id="fakeBehavior"><option value="accepted">Accepted</option><option value="transient_once">Transient once</option><option value="permanent_failure">Permanent failure</option></select></label>
+          <label class="confirm"><input id="realConfirm" type="checkbox" disabled /> Real external sending is intentionally disabled in this acceptance pass.</label>
+          <div class="actions"><button id="requestRun" type="button" disabled>Request Run</button><button id="processRun" type="button" disabled>Process now · development control</button><span id="runState">Publish first. Safe simulation only.</span></div>
         </article>
 
         <article class="panel panel-wide receipt" data-step="receipt">
@@ -152,14 +173,15 @@
 
       <footer class="email-footer">
         <b>Scope: manual owner only.</b>
-        CC/BCC, attachments, bulk delivery, arbitrary recipients, schedules, AI initiation, recurring sends and unattended Authority remain unavailable on this surface.
+        Safe simulation is the current acceptance mode. CC/BCC, attachments, bulk delivery, arbitrary recipients, schedules, AI initiation, recurring sends and unattended Authority remain unavailable on this surface.
       </footer>
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </main>
   </div>
 
-  <script src="/assets/lab/lab-email-api-v1.js?v=20260821-1"></script>
-  <script src="/assets/lab/lab-email-v1.js?v=20260821-1"></script>
+  <script src="/assets/continuum-operator-api-v1.js?v=20260822-1"></script>
+  <script src="/assets/lab/lab-email-api-v1.js?v=20260822-2"></script>
+  <script src="/assets/lab/lab-email-v3.js?v=20260822-1"></script>
   <script src="/assets/lab/lab-email-workspace-v2.js?v=20260822-workspace2"></script>
   <script src="/assets/gates/cmx-gate-black-prompt.js" defer></script>
 </body>
