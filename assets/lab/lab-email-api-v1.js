@@ -31,4 +31,12 @@
     getRun:(id,runId)=>request(`${op}/automations/${encodeURIComponent(id)}/runs/${encodeURIComponent(runId)}`),
     getReceipt:(id,runId)=>request(`${op}/automations/${encodeURIComponent(id)}/runs/${encodeURIComponent(runId)}/receipt`),
   });
+
+  if (!document.querySelector('script[data-continuum-source-truth]')) {
+    const script = document.createElement('script');
+    script.src = '/assets/continuum-source-truth-v1.js?v=20260822-1';
+    script.defer = true;
+    script.dataset.continuumSourceTruth = 'loader';
+    document.head.appendChild(script);
+  }
 })();

@@ -34,6 +34,15 @@
     }
   }
 
+  function installSourceTruth() {
+    if (document.querySelector('script[data-continuum-source-truth]')) return;
+    const script = document.createElement('script');
+    script.src = '/assets/continuum-source-truth-v1.js?v=20260822-1';
+    script.defer = true;
+    script.dataset.continuumSourceTruth = 'loader';
+    document.head.appendChild(script);
+  }
+
   syncChrome(theme);
 
   document.addEventListener("click", event => {
@@ -50,6 +59,11 @@
     }, 0);
   });
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installThemeControl, { once: true });
-  else installThemeControl();
+  function ready() {
+    installThemeControl();
+    installSourceTruth();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
+  else ready();
 })();
