@@ -80,12 +80,14 @@ jobs:
                 const rect = row.getBoundingClientRect();
                 return rect.left >= -1 && rect.right <= viewport + 1;
               });
+              const email = document.querySelector('[data-command="email"]');
               return {
                 marker: document.documentElement.dataset.labHome,
                 rows: rows.length,
                 overflow: bodyWidth > viewport + 1,
                 rectsFit,
-                emailDisabled: document.querySelector('[data-command="email"]')?.getAttribute('aria-disabled') === 'true',
+                emailHref: email?.getAttribute('href'),
+                emailStatus: email?.dataset.status,
                 snapshotHref: document.querySelector('[data-command="snapshot"]')?.getAttribute('href'),
               };
             });
@@ -94,7 +96,7 @@ jobs:
             if (result.rows < 10) throw new Error('Lab route tree incomplete');
             if (result.overflow) throw new Error(`Horizontal overflow at ${width}px`);
             if (!result.rectsFit) throw new Error(`Route row outside viewport at ${width}px`);
-            if (!result.emailDisabled) throw new Error('Email NEXT row became navigable');
+            if (result.emailHref !== '/lab/email/' || result.emailStatus !== 'PROVING') throw new Error('Email Lab route/status missing');
             if (result.snapshotHref !== '/lab/snapshot/') throw new Error('Snapshot preservation route missing');
             await browser.close();
           }

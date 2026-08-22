@@ -20,6 +20,7 @@
     directory: '/directory/',
     'directory-lab': '/lab/directory/',
     library: '/lab/library/',
+    email: '/lab/email/',
     snapshot: '/lab/snapshot/',
     checkin: '/checkin/',
     'check-in': '/checkin/',
@@ -55,9 +56,10 @@
   function openRow(row) {
     if (!row) return;
     if (row.getAttribute('aria-disabled') === 'true') {
+      const name = esc(routeName(row));
       setOutput([
-        '<span class="lab-output__warn">email/ is NEXT, not a live route yet.</span>',
-        'The planned surface is a controlled manual Email action playground built on the protected Runtime path.'
+        `<span class="lab-output__warn">${name}/ is visible planning, not a navigable route yet.</span>`,
+        'A future marker never implies backend capability or authority.'
       ]);
       return;
     }
@@ -85,7 +87,7 @@
         '<span class="lab-output__ok">Available commands</span>',
         '<code>tree</code> — list Lab branches and labels',
         '<code>status</code> — explain current Lab boundary',
-        '<code>open &lt;name&gt;</code> — open a route, e.g. <code>open automations</code>',
+        '<code>open &lt;name&gt;</code> — open a route, e.g. <code>open email</code>',
         '<code>ls</code> — same idea, fewer words',
         '<code>clear</code> — clear terminal output'
       ]);
@@ -102,7 +104,7 @@
         '<span class="lab-output__ok">Lab boundary intact.</span>',
         'Focused routes own product state. This launcher owns navigation only.',
         'LIVE means an existing production-facing surface; WIRED/PROVING does not mean the full stacked backend is deployed.',
-        'NEXT is visible planning, not fake capability.'
+        'NEXT means visible planning, not fake capability.'
       ]);
       return;
     }
@@ -114,11 +116,7 @@
 
     if (verb === 'open' || verb === 'cd') {
       if (!arg) {
-        setOutput('<span class="lab-output__warn">Choose a route: open automations, open directory, open library…</span>');
-        return;
-      }
-      if (arg === 'email') {
-        openRow(rows.find((row) => routeName(row) === 'email'));
+        setOutput('<span class="lab-output__warn">Choose a route: open automations, open directory, open email…</span>');
         return;
       }
       const target = aliases[arg];
@@ -132,11 +130,6 @@
 
     if (aliases[verb]) {
       window.location.assign(aliases[verb]);
-      return;
-    }
-
-    if (verb === 'email') {
-      openRow(rows.find((row) => routeName(row) === 'email'));
       return;
     }
 
