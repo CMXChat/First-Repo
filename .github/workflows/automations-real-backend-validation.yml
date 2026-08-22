@@ -5,11 +5,13 @@ on:
     branches:
       - agent/lab-automations-real-backend-integration
       - agent/lab-automations-mobile-acceptance-fix
+      - agent/graduate-continuum-routes
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-operations-v7*.css'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
@@ -23,10 +25,11 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-api-v1.js'
       - 'assets/lab/lab-automations-route-integration.js'
       - 'assets/lab/lab-automations-operations-v7*.css'
+      - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-server-*.js'
       - 'assets/lab/lab-automations-server-*.css'
       - 'tests/continuum-automations-real-backend-integration.test.js'
@@ -103,14 +106,14 @@ jobs:
 
           node - <<'NODE'
           const fs = require('fs');
-          const source = fs.readFileSync('lab/automations/index.html', 'utf8');
+          const source = fs.readFileSync('automations/index.html', 'utf8');
           const probe = '<script src="/tests/continuum-automations-mobile-acceptance-probe.js"></script>';
-          fs.writeFileSync('lab/automations/mobile-acceptance.html', source.replace('</body>', `${probe}\n</body>`), 'utf8');
+          fs.writeFileSync('automations/mobile-acceptance.html', source.replace('</body>', `${probe}\n</body>`), 'utf8');
           NODE
 
           python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-automations-http.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab/automations/mobile-acceptance.html' EXIT
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f automations/mobile-acceptance.html' EXIT
           sleep 1
 
           dump() {
@@ -135,20 +138,20 @@ jobs:
           }
           acceptance() {
             local width="$1" height="$2" label="$3" file="/tmp/automations-acceptance-${width}.html"
-            dump --window-size="${width},${height}" 'http://127.0.0.1:8000/lab/automations/mobile-acceptance.html' > "$file"
+            dump --window-size="${width},${height}" 'http://127.0.0.1:8000/automations/mobile-acceptance.html' > "$file"
             require 'data-mobile-acceptance="pass"' "$file" "$label geometry pass"
             require "data-mobile-acceptance-width=\"${width}\"" "$file" "$label viewport width"
             require 'data-mobile-acceptance-heading-create-overlap="false"' "$file" "$label heading/create separation"
           }
 
-          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/' > /tmp/automations-dashboard.html
+          dump --window-size=1440,900 'http://127.0.0.1:8000/automations/' > /tmp/automations-dashboard.html
           require 'data-lab-automations-control="v10"' /tmp/automations-dashboard.html 'desktop v10 control marker'
           require 'v10-card-menu-button' /tmp/automations-dashboard.html 'desktop local object controls'
           require 'SERVER-BACKED' /tmp/automations-dashboard.html 'desktop separate server-backed lane'
           require 'Real Automations' /tmp/automations-dashboard.html 'desktop server lane heading'
           forbid 'Loading Automations' /tmp/automations-dashboard.html 'desktop loading placeholder'
 
-          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/automations-editor.html
+          dump --window-size=1440,900 'http://127.0.0.1:8000/automations/?new=1&from=product' > /tmp/automations-editor.html
           require 'data-control-v10="ready"' /tmp/automations-editor.html 'desktop accepted editor patched'
           require 'data-v10-view="definition"' /tmp/automations-editor.html 'desktop Definition view'
           require 'v10-object-bar' /tmp/automations-editor.html 'desktop object/navigation controls'
@@ -166,12 +169,12 @@ jobs:
           require 'TEST' /tmp/automations-editor.html 'TEST stage'
           forbid 'Loading Automations' /tmp/automations-editor.html 'desktop editor loading placeholder'
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/automations-mobile-dashboard.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/' > /tmp/automations-mobile-dashboard.html
           require 'data-lab-automations-control="v10"' /tmp/automations-mobile-dashboard.html 'mobile v10 control marker'
           require 'v10-card-menu-button' /tmp/automations-mobile-dashboard.html 'mobile local object controls'
           require 'SERVER-BACKED' /tmp/automations-mobile-dashboard.html 'mobile separate server-backed lane'
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/automations-mobile-editor.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/?new=1&from=product' > /tmp/automations-mobile-editor.html
           require 'v10-object-bar' /tmp/automations-mobile-editor.html 'mobile object/navigation controls'
           require 'data-v10-tab="settings"' /tmp/automations-mobile-editor.html 'mobile seven-section navigation survives'
           require 'WAIT' /tmp/automations-mobile-editor.html 'mobile WAIT stage survives'
