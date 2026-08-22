@@ -6,6 +6,7 @@ const path = require('node:path');
 
 const root = process.cwd();
 const voice = fs.readFileSync(path.join(root, 'assets/continuum-doc-final-voice.js'), 'utf8');
+const voiceReadable = voice.replace(/\\'/g, "'");
 const loader = fs.readFileSync(path.join(root, 'assets/continuum-doc-i18n.js'), 'utf8');
 
 for (const phrase of [
@@ -27,7 +28,7 @@ for (const phrase of [
   "dataset.continuumFinalVoice = 'ready'",
   "dataset.continuumVoice = 'natural-v4'"
 ]) {
-  assert.ok(voice.includes(phrase), `Missing final voice phrase: ${phrase}`);
+  assert.ok(voiceReadable.includes(phrase), `Missing final voice phrase: ${phrase}`);
 }
 
 for (const stale of [
@@ -41,7 +42,7 @@ for (const stale of [
   'That is the broader Continuum idea.',
   'The browser, backend and database explain how the app runs.'
 ]) {
-  assert.ok(!voice.includes(stale), `Stale AI-like phrase returned in final voice layer: ${stale}`);
+  assert.ok(!voiceReadable.includes(stale), `Stale AI-like phrase returned in final voice layer: ${stale}`);
 }
 
 for (const pattern of [
@@ -51,7 +52,7 @@ for (const pattern of [
   /\brather than\b/i,
   /\bdoes not\b|\bcannot\b/i
 ]) {
-  assert.doesNotMatch(voice, pattern);
+  assert.doesNotMatch(voiceReadable, pattern);
 }
 
 assert.match(loader, /continuum-doc-final-voice\.js\?v=20260820-1/);

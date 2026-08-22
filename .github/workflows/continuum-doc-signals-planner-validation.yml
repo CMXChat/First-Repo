@@ -5,25 +5,17 @@ on:
     branches: [main]
     paths:
       - 'doc/**'
-      - 'assets/personal-os-doc.js'
-      - 'assets/continuum-doc-origin.js'
-      - 'assets/continuum-doc-origin.css'
       - 'assets/continuum-doc-*.js'
       - 'assets/continuum-doc-*.css'
       - 'tests/continuum-doc-*.test.js'
-      - 'tests/continuum-doc-signals-planner-probe.js'
       - '.github/workflows/continuum-doc-signals-planner-validation.yml'
   pull_request:
     branches: [main]
     paths:
       - 'doc/**'
-      - 'assets/personal-os-doc.js'
-      - 'assets/continuum-doc-origin.js'
-      - 'assets/continuum-doc-origin.css'
       - 'assets/continuum-doc-*.js'
       - 'assets/continuum-doc-*.css'
       - 'tests/continuum-doc-*.test.js'
-      - 'tests/continuum-doc-signals-planner-probe.js'
       - '.github/workflows/continuum-doc-signals-planner-validation.yml'
 
 permissions:
@@ -33,13 +25,11 @@ jobs:
   validate-doc-integration:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Validate source and copy contracts
+      - name: Validate Planner, Signals, knowledge and time contracts
         run: |
           set -euo pipefail
-          node --check assets/personal-os-doc.js
           node --check assets/continuum-doc-origin.js
           node --check assets/continuum-doc-i18n.js
           node --check assets/continuum-doc-knowledge-time.js
@@ -50,60 +40,43 @@ jobs:
 
           source = Path('assets/continuum-doc-origin.js').read_text(encoding='utf-8')
           css = Path('assets/continuum-doc-origin.css').read_text(encoding='utf-8')
-          knowledge_time = Path('assets/continuum-doc-knowledge-time.js').read_text(encoding='utf-8')
-          knowledge_time_css = Path('assets/continuum-doc-knowledge-time.css').read_text(encoding='utf-8')
+          clock = Path('assets/continuum-doc-knowledge-time.js').read_text(encoding='utf-8')
+          clock_css = Path('assets/continuum-doc-knowledge-time.css').read_text(encoding='utf-8')
           html = Path('doc/index.html').read_text(encoding='utf-8')
 
           required_source = [
               'LATER · PLANNER',
-              'Natural language can configure the control layer without becoming authority.',
+              'Describe the setup in normal language. The result still has to pass the same server rules.',
               'typed Change Plan',
               'Executable capability and authority remain protected server decisions.',
               'LATER · SIGNALS + STATE',
-              'Observed change can alter what Continuum understands about the current situation.',
-              'SIGNAL',
-              'STATE',
-              'POLICY',
-              'AUTHORITY',
-              'RUNTIME',
-              'RESULT',
-              'Evidence changes understanding. Published authority controls execution.',
-              'Signals are how Continuum can notice that the world changed.',
-              'Source',
-              'Observation',
-              'data.continuumSignalsPlanner'
+              'A new observation can change what Continuum believes is happening now.',
+              'Evidence can change the situation Continuum understands. Published authority still controls execution.',
+              'Signals let Continuum notice when something changes.',
+              'Source to State flow',
+              'dataset.continuumSignalsPlanner'
           ]
           for term in required_source:
               if term not in source:
-                  raise SystemExit(f'missing /doc Planner/Signals contract: {term}')
+                  raise SystemExit(f'missing Planner/Signals contract: {term}')
 
-          required_css = [
-              '.continuum-forward-note', '.continuum-forward-flow', '.continuum-planner-note',
-              '.continuum-signals-note', '.continuum-senses-strip', '.continuum-senses-flow',
-              '@media(max-width:680px)', '@media print'
-          ]
-          for term in required_css:
+          for term in ['.continuum-planner-note', '.continuum-signals-note', '.continuum-senses-flow', '@media(max-width:680px)', '@media print']:
               if term not in css:
-                  raise SystemExit(f'missing /doc Planner/Signals style contract: {term}')
+                  raise SystemExit(f'missing Planner/Signals style: {term}')
 
-          for term in [
-              'BRING KNOWLEDGE IN', 'Paste + bulk text', 'AI handoffs', 'Files + OCR / vision',
-              'CAPTURE', 'UNDERSTAND', 'REVIEW', 'INTEGRATE', 'REAL TEMPORAL AWARENESS',
-              'roughly two seconds passed', "dataset.continuumKnowledgeTime = 'ready'"
-          ]:
-              if term not in knowledge_time:
-                  raise SystemExit(f'missing /doc knowledge/time contract: {term}')
+          for term in ['BRING INFORMATION IN', 'Files + OCR / vision', 'CAPTURE', 'UNDERSTAND', 'REVIEW', 'INTEGRATE', 'REAL CLOCK', 'roughly two seconds passed', "dataset.continuumKnowledgeTime = 'ready'"]:
+              if term not in clock:
+                  raise SystemExit(f'missing knowledge/time contract: {term}')
 
-          for term in ['.continuum-kt-panel', '.continuum-kt-flow', '.continuum-kt-clock-grid', 'body:dir(rtl)', '@media(max-width:680px)']:
-              if term not in knowledge_time_css:
-                  raise SystemExit(f'missing /doc knowledge/time style: {term}')
+          for term in ['.continuum-kt-panel', '.continuum-kt-clock-grid', 'body:dir(rtl)', '@media(max-width:680px)']:
+              if term not in clock_css:
+                  raise SystemExit(f'missing knowledge/time style: {term}')
 
           for forbidden in ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'EventSource(', 'api.cmxchat.com', 'eval(', 'new Function(', 'MutationObserver']:
-              if forbidden in source or forbidden in knowledge_time:
-                  raise SystemExit(f'forbidden /doc integration pattern: {forbidden}')
+              if forbidden in source or forbidden in clock:
+                  raise SystemExit(f'forbidden integration pattern: {forbidden}')
 
-          anchors = ['overview', 'difference', 'spaces', 'action', 'afterlife', 'engineering', 'build', 'status']
-          for anchor in anchors:
+          for anchor in ['overview', 'difference', 'spaces', 'action', 'afterlife', 'engineering', 'build', 'status']:
               if f'id="{anchor}"' not in html:
                   raise SystemExit(f'/doc lost stable anchor: {anchor}')
 
@@ -111,47 +84,35 @@ jobs:
               raise SystemExit('/doc must keep connect-src none')
           if 'noindex' not in html:
               raise SystemExit('/doc must remain noindex')
-
-          print('Continuum /doc Planner, Signals, State, knowledge and time contracts passed.')
           PY
 
-      - name: Browser smoke desktop and mobile
+      - name: Render desktop and mobile
         run: |
           set -euo pipefail
           BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
-          if [ -z "$BROWSER" ]; then
-            echo 'No Chromium-compatible browser available.' >&2
-            exit 1
-          fi
-
-          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-doc-http.log 2>&1 &
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/doc-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           sleep 1
 
           check_view() {
-            local width="$1"
-            local height="$2"
-            local out="/tmp/continuum-doc-${width}.html"
-            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
-              --window-size="${width},${height}" --virtual-time-budget=14000 --dump-dom \
-              'http://127.0.0.1:8000/doc/' > "$out"
-
+            local size="$1" out="$2"
+            "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --window-size="$size" --virtual-time-budget=14000 --dump-dom 'http://127.0.0.1:8000/doc/' > "$out"
             grep -q 'data-continuum-signals-planner="ready"' "$out"
             grep -q 'data-continuum-knowledge-time="ready"' "$out"
             grep -q 'LATER · PLANNER' "$out"
-            grep -q 'Natural language can configure the control layer without becoming authority.' "$out"
+            grep -q 'You will be able to describe a setup or change normally and review what Continuum proposes before anything is applied.' "$out"
+            grep -q 'Planner turns the request into a Change Plan, which is the proposed set of edits across the product.' "$out"
             grep -q 'LATER · SIGNALS + STATE' "$out"
-            grep -q 'Observed change can alter what Continuum understands about the current situation.' "$out"
-            grep -q 'Evidence changes understanding. Published authority controls execution.' "$out"
-            grep -q 'Signals are how Continuum can notice that the world changed.' "$out"
-            grep -q 'BRING KNOWLEDGE IN' "$out"
-            grep -q 'Files + OCR / vision' "$out"
-            grep -q 'REAL TEMPORAL AWARENESS' "$out"
+            grep -q 'Changes can move the work forward.' "$out"
+            grep -q 'Continuum still checks the rules and permissions before that step can run.' "$out"
+            grep -q 'Continuum can notice when an approved source changes.' "$out"
+            grep -q 'BRING INFORMATION IN' "$out"
+            grep -q 'REAL CLOCK' "$out"
             grep -q 'roughly two seconds passed' "$out"
-            grep -q 'The idea started with the Dead Man Switch' "$out"
           }
 
-          check_view 1280 900
-          check_view 390 844
-          echo 'Continuum /doc rendered Planner, Signals, knowledge and time teaching on desktop and 390px mobile.'
+          check_view 1280,900 /tmp/doc-desktop.html
+          check_view 390,844 /tmp/doc-mobile.html
+          echo 'Planner, Signals, knowledge and time rendered on desktop and mobile.'

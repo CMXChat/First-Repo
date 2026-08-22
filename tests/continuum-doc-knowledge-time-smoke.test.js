@@ -11,9 +11,9 @@ const topRoutes = fs.readFileSync(path.join(root, 'assets/continuum-doc-top-rout
 const css = fs.readFileSync(path.join(root, 'assets/continuum-doc-knowledge-time.css'), 'utf8');
 const contract = fs.readFileSync(path.join(root, 'docs/continuum-knowledge-time-CURRENT.md'), 'utf8');
 
-assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260819-2/);
+assert.match(loader, /continuum-doc-knowledge-time\.js\?v=20260820-1/);
 assert.match(loader, /continuum-doc-top-routes\.js\?v=20260819-1/);
-assert.match(layer, /BRING KNOWLEDGE IN/);
+assert.match(layer, /BRING INFORMATION IN/);
 assert.match(layer, /Paste \+ bulk text/);
 assert.match(layer, /Markdown \+ JSON/);
 assert.match(layer, /AI handoffs/);
@@ -22,11 +22,11 @@ assert.match(layer, /CAPTURE/);
 assert.match(layer, /UNDERSTAND/);
 assert.match(layer, /REVIEW/);
 assert.match(layer, /INTEGRATE/);
-assert.match(layer, /private by default/);
-assert.match(layer, /REAL TEMPORAL AWARENESS/);
+assert.match(layer, /New information starts private/);
+assert.match(layer, /REAL CLOCK/);
 assert.match(layer, /roughly two seconds passed/);
-assert.match(layer, /Upcoming can become due, overdue or stale/);
-assert.match(layer, /Check In already proves server-owned elapsed timing/);
+assert.match(layer, /Something can become due, overdue or stale/);
+assert.match(layer, /Check In already uses server-owned elapsed timing/);
 assert.match(layer, /dataset\.continuumKnowledgeTime = 'ready'/);
 
 assert.match(topRoutes, /href = '\/lab\/automations\/'/);
@@ -42,7 +42,8 @@ assert.match(css, /@media\(max-width:680px\)/);
 assert.match(css, /@media\(max-width:420px\)/);
 assert.match(css, /overflow-wrap:anywhere/);
 
-assert.match(contract, /review-first/i);
+assert.match(contract, /owner reviews/i);
+assert.match(contract, /No silent autonomous memory mutation is the starting point/);
 assert.match(contract, /Standard/);
 assert.match(contract, /Sensitive/);
 assert.match(contract, /Local-only/);
