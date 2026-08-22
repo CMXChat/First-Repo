@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-const index = fs.readFileSync('lab/automations/index.html', 'utf8');
+const index = fs.readFileSync('automations/index.html', 'utf8');
 const modelSource = fs.readFileSync('assets/lab/lab-automations-model-v5.js', 'utf8');
 const source = fs.readFileSync('assets/lab/lab-automations-operations-v7.js', 'utf8');
 const polish = fs.readFileSync('assets/lab/lab-automations-operations-v7-polish.js', 'utf8');
@@ -48,12 +48,12 @@ assert.match(source, /location\.reload\(\)/);
 assert.match(source, /idMap\.get\(control\.afterActionId\)/);
 assert.match(source, /sourceId: idMap\.get\(control\.source\.sourceId\)/);
 
-assert.match(polish, /LAB · AUTOMATIONS/);
-assert.match(polish, /LAB · EXECUTION OFF/);
+assert.match(polish, /PROVING · AUTOMATIONS/);
+assert.match(polish, /PROVING · EXECUTION OFF/);
 assert.match(polish, /PLANNER · LOCAL PREVIEW/);
 assert.match(polish, /Create a local typed proposal before opening the Draft/);
 assert.match(polish, /No model call or provider action occurs/);
-assert.match(polish, /brand\.href = "\/lab\/control\/"/);
+assert.match(polish, /brand\.href = "\/control\/"/);
 assert.match(polish, /Back to Continuum Control Center/);
 assert.match(polish, /dataset\.v7OpenPlanner/);
 assert.match(polish, /function openPlanner\(\)/);
