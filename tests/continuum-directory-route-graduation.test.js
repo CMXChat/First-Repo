@@ -44,7 +44,8 @@ assert.equal(menuRoute.gated, true);
 assert.ok(directoryRoute, '/directory/ must be registered');
 assert.equal(directoryRoute.name, 'Continuum Directory');
 assert.equal(directoryRoute.gated, true);
-assert.ok(labDirectoryRoute, '/lab/directory/ must remain registered as the proof route');
+assert.equal(labDirectoryRoute, undefined, '/lab/directory/ must stay retired after route graduation');
+assert.equal(fs.existsSync('lab/directory/index.html'), false, 'duplicate Lab Directory file must not return');
 
 assert.match(opsCore, /menu:\s*\{ path: '\/menu', label: 'Operations Menu' \}/);
 assert.match(opsCore, /directory:\s*\{ path: '\/directory', label: 'Continuum Directory' \}/);
@@ -61,4 +62,4 @@ assert.match(standards, /def unlink_root_anchors/);
 assert.doesNotThrow(() => new Function(opsCore), 'CMX operations core must parse');
 assert.doesNotThrow(() => new Function(opsRuntime), 'CMX operations runtime must parse');
 
-console.log('Continuum route graduation contract passed: /menu owns operations cards and /directory owns the protected Directory preview.');
+console.log('Continuum Directory route contract passed: /directory is the sole protected Directory product route.');
