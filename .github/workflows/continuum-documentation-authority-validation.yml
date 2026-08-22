@@ -1,0 +1,32 @@
+name: Continuum Documentation Authority Validation
+
+on:
+  pull_request:
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "assets/cmx-routes.json"
+      - "tests/continuum-documentation-authority.test.js"
+      - ".github/workflows/continuum-documentation-authority-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - "docs/**"
+      - "assets/cmx-routes.json"
+      - "tests/continuum-documentation-authority.test.js"
+      - ".github/workflows/continuum-documentation-authority-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  authority-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate current documentation authority
+        run: node tests/continuum-documentation-authority.test.js
