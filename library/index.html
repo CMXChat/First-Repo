@@ -6,23 +6,24 @@
   <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#f5f7fa" />
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex" />
-  <meta name="description" content="Continuum Library Lab prototype for protected documents, files, media, versions and knowledge ingestion." />
+  <meta name="description" content="Continuum Library proving surface for protected ContentAssets, mutable Drafts, immutable Versions, and local future file concepts." />
   <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self' https://*.cmxchat.com http://localhost:8000; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
   <title>Continuum · Library</title>
   <script src="/assets/lab/library-theme-init.js?v=20260819-1"></script>
   <link rel="stylesheet" href="/assets/lab/library-app-v1.css?v=20260819-1" />
+  <link rel="stylesheet" href="/assets/library/library-server-v2.css?v=20260822-1" />
 </head>
 <body>
   <div class="lib-shell">
     <aside class="lib-rail" aria-label="Continuum">
-      <a class="lib-mark" href="/lab/control/" aria-label="Continuum Control Center">C</a>
+      <a class="lib-mark" href="/control/" aria-label="Continuum Control Center">C</a>
       <nav class="lib-rail-nav" aria-label="Primary">
-        <a class="lib-rail-link" href="/lab/control/"><span class="lib-rail-icon">⌂</span><span>Control Center</span></a>
+        <a class="lib-rail-link" href="/control/"><span class="lib-rail-icon">⌂</span><span>Control Center</span></a>
         <a class="lib-rail-link" href="/checkin/"><span class="lib-rail-icon">✓</span><span>Check In · LIVE</span></a>
-        <a class="lib-rail-link" href="/lab/directory/"><span class="lib-rail-icon">◎</span><span>Directory · LAB</span></a>
-        <a class="lib-rail-link" href="/lab/library/" aria-current="page"><span class="lib-rail-icon">▤</span><span>Library · LAB</span></a>
-        <a class="lib-rail-link" href="/lab/automations/"><span class="lib-rail-icon">⌁</span><span>Automations · LAB</span></a>
+        <a class="lib-rail-link" href="/directory/"><span class="lib-rail-icon">◎</span><span>Directory · PROVING</span></a>
+        <a class="lib-rail-link" href="/library/" aria-current="page"><span class="lib-rail-icon">▤</span><span>Library · PROVING</span></a>
+        <a class="lib-rail-link" href="/automations/"><span class="lib-rail-icon">⌁</span><span>Automations · PROVING</span></a>
         <a class="lib-rail-link" href="/spaces/"><span class="lib-rail-icon">◇</span><span>Spaces · LAB</span></a>
       </nav>
       <div class="lib-rail-bottom"><a class="lib-rail-link" href="/doc/"><span class="lib-rail-icon">i</span><span>Continuum doc</span></a></div>
@@ -30,39 +31,87 @@
 
     <main class="lib-main">
       <header class="lib-topbar">
-        <div class="lib-heading"><div class="lib-eyebrow"><span></span> Continuum · Lab</div><h1>Library</h1></div>
+        <div class="lib-heading"><div class="lib-eyebrow"><span></span> Continuum · Proving</div><h1>Library</h1></div>
         <button class="lib-command" id="commandButton" type="button" aria-label="Open Continuum command palette"><span>Search, jump or open</span><kbd>⌘ K</kbd></button>
         <button class="lib-theme" id="themeToggle" type="button" aria-label="Toggle theme">☼</button>
       </header>
 
-      <section class="lib-workspace" aria-label="Continuum Library workspace">
+      <section class="lib-server-proof" id="libraryServerProof" data-state="checking" aria-label="Protected Library durable memory proof">
+        <header class="lib-server-head">
+          <div class="lib-server-head-copy">
+            <span class="lib-server-kicker">DURABLE MEMORY · PROTECTED CONTENT</span>
+            <div class="lib-server-title-row"><strong id="libraryServerState">Checking protected session…</strong><span class="lib-server-badge" id="libraryServerBadge" data-state="checking">CHECKING</span></div>
+            <p class="lib-server-detail" id="libraryServerDetail">This lane uses the same protected backend session as Email, Requests and Directory. It does not store protected content in browser storage.</p>
+          </div>
+          <div class="lib-server-actions">
+            <form class="lib-server-unlock" id="libraryUnlockForm" hidden>
+              <input id="libraryOperatorKey" type="password" autocomplete="off" spellcheck="false" aria-label="Operator key" placeholder="Operator key" />
+              <button id="libraryUnlockSubmit" type="submit">Unlock backend</button>
+              <span class="lib-server-unlock-error" id="libraryUnlockError" aria-live="polite"></span>
+            </form>
+            <button id="librarySessionRetry" type="button" hidden>Retry backend</button>
+            <button id="librarySessionLogout" type="button" hidden>End session</button>
+          </div>
+        </header>
+
+        <div class="lib-server-unavailable" id="libraryServerUnavailable" hidden></div>
+
+        <div class="lib-server-workspace" id="libraryServerWorkspace" hidden>
+          <aside class="lib-server-list-pane" aria-label="Protected Library content">
+            <header class="lib-server-pane-head"><span>Protected content</span><div><button id="libraryServerRefresh" type="button" class="lib-server-refresh">Reload</button> <b id="libraryServerCount">0</b></div></header>
+            <div class="lib-server-list" id="libraryServerList"></div>
+            <form class="lib-server-create" id="libraryServerCreateForm">
+              <strong>Create durable content</strong>
+              <div class="lib-server-create-row"><input id="libraryServerCreateTitle" type="text" autocomplete="off" maxlength="255" placeholder="Title" required /><select id="libraryServerCreateKind" aria-label="Content kind"><option value="markdown">Markdown</option><option value="text">Plain text</option><option value="document">Document</option><option value="template">Template</option></select></div>
+              <textarea id="libraryServerCreateSource" rows="3" maxlength="1000000" placeholder="Initial source text" required></textarea>
+              <button id="libraryServerCreateSubmit" type="submit" data-primary>Create ContentAsset + Draft</button>
+            </form>
+          </aside>
+
+          <section class="lib-server-detail-pane" id="libraryServerDetailPane" aria-live="polite" hidden>
+            <header class="lib-server-object-head"><h3 id="libraryServerSelectedTitle">Select protected content</h3><div class="lib-server-object-meta" id="libraryServerSelectedMeta"></div></header>
+            <section class="lib-server-editor">
+              <div class="lib-server-editor-head"><strong>Mutable Draft</strong><span id="libraryServerEditorRevision">Editing from Draft —</span></div>
+              <textarea id="libraryServerEditor" aria-label="Protected Library Draft source"></textarea>
+              <div class="lib-server-editor-foot"><span id="libraryServerEditorStatus">Server Draft</span><div class="lib-server-editor-actions"><button id="libraryServerSaveDraft" type="button" data-primary>Save Draft</button><button id="libraryServerFreezeVersion" type="button">Freeze immutable Version</button></div></div>
+            </section>
+            <section class="lib-server-conflict" id="libraryServerConflict" hidden><strong>Revision conflict — server wins until you reconcile</strong><p id="libraryServerConflictCopy"></p><button id="libraryServerReloadDraft" type="button">Reload server Draft</button></section>
+            <div class="lib-immutable-proof" id="libraryImmutableProof" hidden></div>
+            <section class="lib-server-versions"><header><strong>Immutable Versions</strong><span>Historical snapshots never change when the Draft changes.</span></header><div id="libraryServerVersions"></div></section>
+          </section>
+        </div>
+      </section>
+
+      <div class="lib-local-lane-heading"><div><strong>Local preview lane</strong><span>Folders, mixed-media cards, imports and file viewers below remain browser-local product concepts until matching protected services exist.</span></div><b>LOCAL PREVIEW</b></div>
+
+      <section class="lib-workspace" aria-label="Continuum Library local preview workspace">
         <aside class="lib-folder-pane">
-          <header><div><span>Library</span><strong id="rootItemCount">0 items</strong></div><button id="newFolderQuick" type="button" aria-label="New folder">＋</button></header>
-          <nav class="lib-smart-nav" aria-label="Library views">
+          <header><div><span>Library preview</span><strong id="rootItemCount">0 items</strong></div><button id="newFolderQuick" type="button" aria-label="New local folder">＋</button></header>
+          <nav class="lib-smart-nav" aria-label="Local Library views">
             <button type="button" data-scope="all" class="is-active"><span>▤</span>All items <b id="allCount">0</b></button>
             <button type="button" data-scope="recent"><span>◷</span>Recent</button>
             <button type="button" data-scope="favorites"><span>★</span>Favorites</button>
             <button type="button" data-scope="templates"><span>◇</span>Templates</button>
             <button type="button" data-scope="imports"><span>⇣</span>Imports</button>
           </nav>
-          <div class="lib-folder-label"><span>Folders</span><button type="button" id="collapseFolders">Collapse</button></div>
+          <div class="lib-folder-label"><span>Local folders</span><button type="button" id="collapseFolders">Collapse</button></div>
           <div class="lib-folder-tree" id="folderTree"></div>
-          <div class="lib-storage-note"><span class="lib-lock">⌁</span><div><strong>LAB STORAGE</strong><small>Metadata and native sample content stay in this browser. Binary bytes are not uploaded.</small></div></div>
+          <div class="lib-storage-note"><span class="lib-lock">⌁</span><div><strong>LOCAL PREVIEW STORAGE</strong><small>Only this preview lane uses browser storage. Protected ContentAsset/Draft/Version records above stay server-owned.</small></div></div>
         </aside>
 
         <section class="lib-content-pane">
           <header class="lib-content-head">
             <div class="lib-breadcrumb-row"><button class="lib-up" id="folderUp" type="button" aria-label="Go up one folder">←</button><nav class="lib-breadcrumb" id="breadcrumb" aria-label="Folder path"></nav></div>
-            <div class="lib-head-actions"><button class="lib-secondary" id="importButton" type="button">⇣ Import</button><button class="lib-primary" id="newButton" type="button">＋ New</button></div>
+            <div class="lib-head-actions"><button class="lib-secondary" id="importButton" type="button">⇣ Import local</button><button class="lib-primary" id="newButton" type="button">＋ New local</button></div>
           </header>
 
           <section class="lib-context-strip">
-            <div><span id="contextKicker">Protected information · sample data</span><h2 id="contextTitle">Everything</h2><p id="contextDescription">Documents, files, media, templates and imported knowledge in one private information layer.</p></div>
+            <div><span id="contextKicker">Browser-local information preview</span><h2 id="contextTitle">Everything</h2><p id="contextDescription">Explore documents, files, media, templates and imported knowledge without presenting this preview data as canonical backend truth.</p></div>
             <div class="lib-context-stats"><span><strong id="documentStat">0</strong>native</span><span><strong id="fileStat">0</strong>files</span><span><strong id="versionStat">0</strong>versions</span></div>
           </section>
 
           <div class="lib-toolbar">
-            <label class="lib-search"><span>⌕</span><input id="librarySearch" type="search" autocomplete="off" placeholder="Search this Library" /></label>
+            <label class="lib-search"><span>⌕</span><input id="librarySearch" type="search" autocomplete="off" placeholder="Search local preview" /></label>
             <button class="lib-filter" id="filterButton" type="button" aria-expanded="false">Filter <b id="filterLabel">All types</b></button>
             <select class="lib-sort" id="sortSelect" aria-label="Sort Library"><option value="updated">Updated</option><option value="name">Name</option><option value="type">Type</option></select>
             <div class="lib-view-toggle" aria-label="Library layout"><button type="button" data-view="list" class="is-active" aria-label="List view">☰</button><button type="button" data-view="grid" aria-label="Grid view">▦</button></div>
@@ -73,51 +122,53 @@
           <div class="lib-empty" id="emptyState" hidden><span>⌕</span><strong>Nothing here yet.</strong><p>Change the current view or create something new.</p></div>
         </section>
 
-        <aside class="lib-inspector" id="inspector" aria-label="Library item details">
-          <header class="lib-inspector-head"><div><span id="inspectorKind">LIBRARY ITEM</span><strong id="inspectorTitle">Select something</strong></div><button id="closeInspector" type="button" aria-label="Close details">×</button></header>
-          <div class="lib-inspector-body" id="inspectorBody"><div class="lib-inspector-empty"><span>▤</span><strong>Open an item</strong><p>Preview content, inspect versions, see where it is used, and review related knowledge.</p></div></div>
+        <aside class="lib-inspector" id="inspector" aria-label="Local Library item details">
+          <header class="lib-inspector-head"><div><span id="inspectorKind">LOCAL PREVIEW ITEM</span><strong id="inspectorTitle">Select something</strong></div><button id="closeInspector" type="button" aria-label="Close details">×</button></header>
+          <div class="lib-inspector-body" id="inspectorBody"><div class="lib-inspector-empty"><span>▤</span><strong>Open a local preview item</strong><p>Preview content, versions, dependencies and future knowledge concepts without changing protected server records.</p></div></div>
         </aside>
       </section>
 
-      <p class="lib-boundary"><b>LIBRARY · LAB</b> — Browser-local native content, file metadata and preview data only. No protected Library API, database persistence, object-storage upload, production extraction, AI retrieval or provider execution is claimed.</p>
+      <p class="lib-boundary"><b>LIBRARY · PROVING</b> — Protected ContentAsset → mutable ContentDraft → immutable ContentVersion is wired through the shared operator API where deployed. The mixed-media/file/folder workspace remains explicitly browser-local preview. Binary object storage, production extraction and AI retrieval are not claimed.</p>
     </main>
   </div>
 
   <nav class="lib-mobile-nav" aria-label="Mobile primary">
-    <a href="/lab/control/"><span>⌂</span>Control</a>
+    <a href="/control/"><span>⌂</span>Control</a>
     <a href="/checkin/"><span>✓</span>Check In</a>
-    <a href="/lab/directory/"><span>◎</span>Directory</a>
-    <a href="/lab/library/" aria-current="page"><span>▤</span>Library</a>
+    <a href="/directory/"><span>◎</span>Directory</a>
+    <a href="/library/" aria-current="page"><span>▤</span>Library</a>
     <button id="mobileMore" type="button"><span>•••</span>More</button>
   </nav>
 
   <dialog class="lib-dialog" id="newDialog" aria-labelledby="newDialogTitle">
-    <div class="lib-dialog-shell"><header><div><span>Library · Lab</span><h2 id="newDialogTitle">Create something</h2></div><button type="button" data-dialog-close="newDialog">×</button></header><div class="lib-create-grid">
-      <button type="button" data-create="document"><span>DOC</span><strong>Document</strong><small>Editable native content</small></button>
-      <button type="button" data-create="markdown"><span>MD</span><strong>Markdown</strong><small>Source-first document</small></button>
-      <button type="button" data-create="text"><span>TXT</span><strong>Plain text</strong><small>Simple durable notes</small></button>
-      <button type="button" data-create="template"><span>TPL</span><strong>Template</strong><small>Reusable starting content</small></button>
-      <button type="button" data-create="folder"><span>DIR</span><strong>Folder</strong><small>Organize Library items</small></button>
+    <div class="lib-dialog-shell"><header><div><span>Library · Local preview</span><h2 id="newDialogTitle">Create something local</h2></div><button type="button" data-dialog-close="newDialog">×</button></header><div class="lib-create-grid">
+      <button type="button" data-create="document"><span>DOC</span><strong>Document</strong><small>Editable local preview content</small></button>
+      <button type="button" data-create="markdown"><span>MD</span><strong>Markdown</strong><small>Source-first local document</small></button>
+      <button type="button" data-create="text"><span>TXT</span><strong>Plain text</strong><small>Simple local notes</small></button>
+      <button type="button" data-create="template"><span>TPL</span><strong>Template</strong><small>Reusable local starting content</small></button>
+      <button type="button" data-create="folder"><span>DIR</span><strong>Folder</strong><small>Organize local preview items</small></button>
       <button type="button" data-create="upload"><span>↑</span><strong>Upload file</strong><small>Production storage preview</small></button>
     </div></div>
   </dialog>
 
   <dialog class="lib-dialog lib-editor-dialog" id="editorDialog" aria-labelledby="editorTitle">
-    <form method="dialog" id="editorForm"><header><div><span id="editorKicker">NATIVE CONTENT · LAB</span><h2 id="editorTitle">Untitled</h2></div><button type="button" data-dialog-close="editorDialog">×</button></header><div class="lib-editor-meta"><label>Name<input id="editorName" type="text" autocomplete="off" /></label><div class="lib-editor-actions"><button type="button" id="editorPreviewToggle">Preview</button><button type="button" id="saveVersionButton">Save version</button></div></div><div class="lib-editor-body"><textarea id="editorSource" aria-label="Document content"></textarea><div class="lib-editor-preview" id="editorPreview" hidden></div></div><footer><span id="editorStatus">Browser-local Draft</span><div><button type="button" class="lib-secondary" data-dialog-close="editorDialog">Done</button><button type="submit" class="lib-primary">Save draft</button></div></footer></form>
+    <form method="dialog" id="editorForm"><header><div><span id="editorKicker">NATIVE CONTENT · LOCAL PREVIEW</span><h2 id="editorTitle">Untitled</h2></div><button type="button" data-dialog-close="editorDialog">×</button></header><div class="lib-editor-meta"><label>Name<input id="editorName" type="text" autocomplete="off" /></label><div class="lib-editor-actions"><button type="button" id="editorPreviewToggle">Preview</button><button type="button" id="saveVersionButton">Save local version</button></div></div><div class="lib-editor-body"><textarea id="editorSource" aria-label="Document content"></textarea><div class="lib-editor-preview" id="editorPreview" hidden></div></div><footer><span id="editorStatus">Browser-local Draft</span><div><button type="button" class="lib-secondary" data-dialog-close="editorDialog">Done</button><button type="submit" class="lib-primary">Save local draft</button></div></footer></form>
   </dialog>
 
   <dialog class="lib-dialog" id="importDialog" aria-labelledby="importTitle">
-    <div class="lib-dialog-shell"><header><div><span>KNOWLEDGE INGESTION · LAB PREVIEW</span><h2 id="importTitle">Give Continuum information</h2></div><button type="button" data-dialog-close="importDialog">×</button></header><div class="lib-import-body"><div class="lib-import-tabs"><button type="button" data-import-mode="text" class="is-active">Paste text</button><button type="button" data-import-mode="markdown">Markdown</button><button type="button" data-import-mode="json">JSON</button><button type="button" data-import-mode="files">Files</button></div><label class="lib-import-label">Source label<input id="importName" type="text" placeholder="Project notes, AI handoff, meeting context" /></label><textarea id="importSource" rows="10" placeholder="Paste information here. The exact source is preserved locally in this Lab preview."></textarea><div class="lib-import-file-preview" id="importFilesPreview" hidden><span>＋</span><strong>Multiple-file ingestion belongs here.</strong><p>Production will capture exact immutable FileVersions, process each item independently, and preserve provenance. This Lab does not upload file bytes.</p></div><div class="lib-import-rule"><strong>STORE → UNDERSTAND → INTEGRATE</strong><span>This prototype can store pasted source text locally and show deterministic metadata. It does not run AI extraction or mutate Directory/State.</span></div><button class="lib-primary lib-import-save" id="storeImport" type="button">Store local source</button></div></div>
+    <div class="lib-dialog-shell"><header><div><span>KNOWLEDGE INGESTION · LOCAL PREVIEW</span><h2 id="importTitle">Give the preview information</h2></div><button type="button" data-dialog-close="importDialog">×</button></header><div class="lib-import-body"><div class="lib-import-tabs"><button type="button" data-import-mode="text" class="is-active">Paste text</button><button type="button" data-import-mode="markdown">Markdown</button><button type="button" data-import-mode="json">JSON</button><button type="button" data-import-mode="files">Files</button></div><label class="lib-import-label">Source label<input id="importName" type="text" placeholder="Project notes, AI handoff, meeting context" /></label><textarea id="importSource" rows="10" placeholder="Paste information here. The exact source is preserved locally in this preview."></textarea><div class="lib-import-file-preview" id="importFilesPreview" hidden><span>＋</span><strong>Multiple-file ingestion belongs here later.</strong><p>Production will capture exact immutable FileVersions, process each item independently, and preserve provenance. This preview does not upload file bytes.</p></div><div class="lib-import-rule"><strong>STORE → UNDERSTAND → INTEGRATE</strong><span>This local preview can preserve pasted source text and show deterministic metadata. It does not run AI extraction or mutate Directory/State.</span></div><button class="lib-primary lib-import-save" id="storeImport" type="button">Store local source</button></div></div>
   </dialog>
 
   <dialog class="lib-dialog" id="uploadDialog" aria-labelledby="uploadTitle">
-    <div class="lib-dialog-shell"><header><div><span>PROTECTED FILES · FUTURE BACKEND</span><h2 id="uploadTitle">Private file upload</h2></div><button type="button" data-dialog-close="uploadDialog">×</button></header><div class="lib-upload-explainer"><div class="lib-upload-flow"><span>Choose file</span><b>→</b><span>Authorized upload</span><b>→</b><span>Private storage</span><b>→</b><span>Scan + checksum</span><b>→</b><span>Immutable FileVersion</span></div><p>The Lab intentionally does not fake binary persistence. Video, audio, images, PDFs, Office files and other approved formats will use private object storage with protected exact-version viewers.</p><button class="lib-primary" type="button" data-dialog-close="uploadDialog">Got it</button></div></div>
+    <div class="lib-dialog-shell"><header><div><span>PROTECTED FILES · FUTURE BACKEND</span><h2 id="uploadTitle">Private file upload</h2></div><button type="button" data-dialog-close="uploadDialog">×</button></header><div class="lib-upload-explainer"><div class="lib-upload-flow"><span>Choose file</span><b>→</b><span>Authorized upload</span><b>→</b><span>Private storage</span><b>→</b><span>Scan + checksum</span><b>→</b><span>Immutable FileVersion</span></div><p>The preview intentionally does not fake binary persistence. Video, audio, images, PDFs, Office files and other approved formats require private object storage with protected exact-version viewers.</p><button class="lib-primary" type="button" data-dialog-close="uploadDialog">Got it</button></div></div>
   </dialog>
 
   <dialog class="lib-dialog lib-more-dialog" id="moreDialog" aria-labelledby="moreTitle">
-    <div class="lib-dialog-shell"><header><div><span>Continuum</span><h2 id="moreTitle">More</h2></div><button type="button" data-dialog-close="moreDialog">×</button></header><nav class="lib-more-links"><a href="/lab/automations/">Automations · LAB</a><a href="/spaces/">Spaces · LAB</a><a href="/doc/">Continuum doc</a></nav></div>
+    <div class="lib-dialog-shell"><header><div><span>Continuum</span><h2 id="moreTitle">More</h2></div><button type="button" data-dialog-close="moreDialog">×</button></header><nav class="lib-more-links"><a href="/automations/">Automations · PROVING</a><a href="/spaces/">Spaces · LAB</a><a href="/doc/">Continuum doc</a></nav></div>
   </dialog>
 
   <script src="/assets/lab/library-app-v1.js?v=20260819-1"></script>
+  <script src="/assets/continuum-operator-api-v1.js?v=20260822-4"></script>
+  <script src="/assets/library/library-server-v2.js?v=20260822-1"></script>
 </body>
 </html>
