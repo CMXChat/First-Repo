@@ -3,26 +3,29 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-const html = fs.readFileSync('lab/directory/index.html', 'utf8');
+const html = fs.readFileSync('directory/index.html', 'utf8');
 const css = fs.readFileSync('assets/lab/directory-app-v1.css', 'utf8');
 const js = fs.readFileSync('assets/lab/directory-app-v1.js', 'utf8');
 const theme = fs.readFileSync('assets/lab/directory-theme-init.js', 'utf8');
 
 assert.match(html, /<title>Continuum · Directory<\/title>/);
-assert.match(html, /Identity & relationships · sample data/);
+assert.match(html, /Protected Continuum Directory preview/);
 assert.match(html, /People/);
 assert.match(html, /Organizations/);
 assert.match(html, /Groups/);
 assert.match(html, /Plan changes/);
 assert.match(html, /AI setup · Preview only/);
-assert.match(html, /Browser-local sample identity data only/);
-assert.match(html, /href="\/lab\/control\/"/);
-assert.match(html, /href="\/lab\/directory\/" aria-current="page"/);
-assert.match(html, /href="\/lab\/automations\/"/);
+assert.match(html, /DIRECTORY · PROTECTED PREVIEW/);
+assert.match(html, /href="\/directory\/" aria-current="page"/);
 assert.match(html, /href="\/checkin\/"/);
 assert.match(html, /directory-theme-init\.js\?v=20260819-1/);
 assert.match(html, /directory-app-v1\.css\?v=20260819-1/);
 assert.match(html, /directory-app-v1\.js\?v=20260819-1/);
+assert.match(html, /directory-api-v1\.js/);
+assert.match(html, /directory-server-proof-v1\.js/);
+assert.match(theme, /patchCanonicalRoutes/);
+assert.match(theme, /\['\/lab\/control\/', '\/control\/'\]/);
+assert.match(theme, /\['\/lab\/automations\/', '\/automations\/'\]/);
 assert.doesNotMatch(html, /https:\/\/api\.cmxchat\.com/);
 assert.doesNotMatch(html, /<script(?![^>]*src=)[^>]*>/i);
 assert.doesNotMatch(html, /<style[\s>]/i);
@@ -57,4 +60,4 @@ assert.doesNotMatch(js, /WebSocket\s*\(/);
 assert.doesNotMatch(js, /EventSource\s*\(/);
 assert.match(theme, /continuum-directory-theme-v1/);
 
-console.log('Continuum standalone Directory v1 structure, safety, parse and responsive contracts passed.');
+console.log('Continuum canonical Directory structure, safety, parse and responsive contracts passed.');
