@@ -75,7 +75,7 @@ jobs:
               const g=document.querySelector('[data-cmx-gated-content]');
               if(g)g.hidden=false;
               document.body.classList.remove('cmx-black-prompt-locked');
-              document.querySelectorAll('[data-cmx-gate-overlay]').forEach(el=>el.remove());
+              document.querySelectorAll('[data-cmx-gate-overlay],#cmx-black-prompt-gate').forEach(el=>el.remove());
             });
 
             const base=await page.evaluate(()=>({
