@@ -60,7 +60,7 @@ assert.match(js, /Source stays separate/);
 assert.match(js, /Authority stays separate/);
 assert.match(js, /Exact-version rule/);
 assert.match(js, /Transcript representation preview/);
-assert.match(js, /No audio bytes stored in Lab/);
+assert.match(js, /no audio bytes stored in Lab/);
 assert.match(qa, /data-save-version/);
 assert.match(qa, /Saved from standalone Library detail rail/);
 assert.match(theme, /library-app-v1-qa\.js\?v=20260819-1/);
