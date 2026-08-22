@@ -159,6 +159,7 @@
     listSenders: (connectionId) => request(`${OP}/connections/${encodeURIComponent(connectionId)}/sender-identities`),
     connectionReadiness: (connectionId) => request(`${OP}/connections/${encodeURIComponent(connectionId)}/readiness`),
 
+    listLibrary: () => request(`${OP}/library`),
     createContent: (payload) => request(`${OP}/library/content`, json("POST", payload)),
     getContent: (contentId) => request(`${OP}/library/content/${encodeURIComponent(contentId)}`),
     updateContentDraft: (contentId, payload) => request(`${OP}/library/content/${encodeURIComponent(contentId)}/draft`, json("PUT", payload)),
