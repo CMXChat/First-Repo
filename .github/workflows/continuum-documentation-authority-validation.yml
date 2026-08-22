@@ -30,5 +30,3 @@ jobs:
           node-version: 22
       - name: Validate current documentation authority
         run: node tests/continuum-documentation-authority.test.js
-      - name: Reject whitespace errors
-        run: git diff --check HEAD^ HEAD || true
