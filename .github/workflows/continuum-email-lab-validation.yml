@@ -38,6 +38,7 @@ jobs:
           set -euo pipefail
           node --check assets/lab/lab-email-api-v1.js
           node --check assets/lab/lab-email-v1.js
+          node --check assets/lab/lab-email-workspace-v2.js
           node tests/continuum-email-lab-v1.test.js
           git diff --check
 
@@ -65,10 +66,31 @@ jobs:
             const page=await browser.newPage({viewport:{width,height}});
             await page.route('**/api/v1/**',route=>route.fulfill({status:401,contentType:'application/json',body:JSON.stringify({detail:'acceptance: protected backend unavailable'})}));
             await page.goto('http://127.0.0.1:8000/email/',{waitUntil:'networkidle'});
-            await page.evaluate(()=>{const g=document.querySelector('[data-cmx-gated-content]');if(g)g.hidden=false;document.body.classList.remove('cmx-black-prompt-locked')});
-            const r=await page.evaluate(()=>({marker:document.querySelector('[data-email-lab="v1"]')!==null,overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,panels:[...document.querySelectorAll('.panel')].every(el=>{const x=el.getBoundingClientRect();return x.left>=-1&&x.right<=document.documentElement.clientWidth+1}),real:document.body.innerText.includes('Real manual SMTP'),authority:document.body.innerText.includes('No unattended authority lives here')}));
-            console.log(width,height,r);
-            if(!r.marker||r.overflow||!r.panels||!r.real||!r.authority)throw new Error(`Email geometry/contract failed at ${width}`);
+            await page.evaluate(()=>{
+              const g=document.querySelector('[data-cmx-gated-content]');
+              if(g)g.hidden=false;
+              document.body.classList.remove('cmx-black-prompt-locked');
+              document.querySelectorAll('[data-cmx-gate-overlay]').forEach(el=>el.remove());
+            });
+
+            const base=await page.evaluate(()=>({
+              marker:document.querySelector('[data-email-lab="v1"]')!==null,
+              overflow:Math.max(document.body.scrollWidth,document.documentElement.scrollWidth)>document.documentElement.clientWidth+1,
+              panels:[...document.querySelectorAll('.panel')].every(el=>{const x=el.getBoundingClientRect();return x.left>=-1&&x.right<=document.documentElement.clientWidth+1}),
+              real:document.body.innerText.includes('Real manual SMTP'),
+              authority:document.body.innerText.includes('Scope: manual owner only.'),
+              editor:document.querySelector('[data-email-editor]')?.getAttribute('contenteditable')==='true'
+            }));
+
+            await page.locator('#richBodyInput').fill('Hello from Continuum');
+            const bodyProjection=await page.locator('#bodyInput').inputValue();
+            await page.locator('#themeToggle').click();
+            const theme=await page.evaluate(()=>document.documentElement.dataset.theme);
+
+            console.log(width,height,{...base,bodyProjection,theme});
+            if(!base.marker||base.overflow||!base.panels||!base.real||!base.authority||!base.editor)throw new Error(`Email geometry/contract failed at ${width}`);
+            if(bodyProjection!=='Hello from Continuum')throw new Error(`Rich composer projection failed at ${width}`);
+            if(theme!=='dark')throw new Error(`Theme toggle failed at ${width}`);
             await browser.close();
           }
           (async()=>{for(const v of [[1280,900],[430,900],[390,844],[360,800]])await inspect(...v)})().catch(e=>{console.error(e);process.exit(1)});
