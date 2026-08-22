@@ -402,16 +402,62 @@ Browser proofs that mock the backend validate browser orchestration and safety b
 
 Known unrelated repository-wide baseline checks may still fail and should be investigated on their own merits rather than used to rewrite a passing domain contract blindly.
 
+## Frontend hardening before production/provider acceptance
+
+The connected frontend proving loop is already sufficient to begin production safe-simulation acceptance once the stacked backend is deliberately reviewed, merged, migrated and deployed. Another frontend architecture layer is not the primary release blocker.
+
+The remaining frontend work is a smaller hardening/polish queue:
+
+### Requests incomplete-resolution handling
+
+Requests Email preview currently performs multiple protected per-record lookups while resolving the exact recipient and sender. The implementation uses settled concurrent lookups and can ignore one rejected sublookup if another path still produces an exact candidate.
+
+Backend uniqueness and authoritative server preflight still protect the real mutation/publication boundary, so this does not create alternate authority. Before a bounded real-provider acceptance, the browser should nevertheless fail closed:
+
+- if a lookup needed to establish complete resolution fails unexpectedly, mark the preview incomplete;
+- block approval;
+- explain the failed protected lookup;
+- require an explicit re-preview/retry;
+- never treat partial visibility as proof of uniqueness.
+
+This is the highest-value small frontend hardening item before real Email acceptance.
+
+### CSP defense in depth
+
+Control and Check In already restrict browser connections to the exact API host. Some proving surfaces still use a broader `https://*.cmxchat.com` `connect-src` rule.
+
+The backend exact-Origin/session/CSRF boundary remains authoritative, so this is not a permission bypass or production deployment blocker. A later hardening pass can narrow those proving-page CSP rules to the exact API host for defense in depth.
+
+### Navigation convergence
+
+Canonical routes are now used instead of user-facing `/lab/*` links, but the shells are intentionally not identical. Control/Directory/Library use rails; Email/Requests use task-focused top navigation; Check In has its own LIVE application shell; Spaces remains a separate PREVIEW experience.
+
+Some rails do not expose every action surface directly. Treat that as discoverability polish, not a reason to add a new shared execution or persistence layer.
+
+### Live custom-domain verification
+
+GitHub merge/CI evidence is not the same thing as direct observation of the custom-domain Pages build. The current execution environment has not been able to resolve/open `db.cmxchat.com` and `api.cmxchat.com` directly.
+
+Do not claim public live verification until it is actually observed from an environment with working custom-domain access. Lack of access from the current tool environment is not itself evidence of a product outage.
+
+### Development processing is not the production worker model
+
+The Email/Requests browser proof can call the explicit development Run process route where available. That proves the canonical Runtime sequence; it is not the final production worker topology.
+
+After backend deployment, normal processing must run as the backend worker/service chosen by `jay-app`. Do not compensate by adding browser polling/execution that becomes a second Runtime.
+
 ## What frontend work should do next
 
 Prefer convergence over new disconnected surfaces:
 
-1. keep shared protected-session/deployment-state language consistent;
-2. reconcile PR #131 with current main and visually validate the Automation builder layout;
-3. reconcile `/doc/` vision work without losing current accepted explanation;
-4. improve understandability of Runtime/receipt/history relationships;
-5. add Requests adapters only for already-verified typed backend contracts;
-6. connect Check In to newer domains only when the backend production/release boundary permits it;
-7. maintain a classified production-vs-stacked gap list for backend deployment work.
+1. harden Requests to fail closed on incomplete protected resolution before any real-provider acceptance;
+2. keep shared protected-session/deployment-state language consistent;
+3. reconcile PR #131 with current main and visually validate the Automation builder layout;
+4. reconcile `/doc/` vision work without losing current accepted explanation;
+5. improve understandability of Runtime/receipt/history relationships;
+6. tighten proving-page CSP/navigation only as bounded hardening/polish;
+7. add Requests adapters only for already-verified typed backend contracts;
+8. connect Check In to newer domains only when the backend production/release boundary permits it;
+9. after backend deployment, run direct production safe-simulation acceptance and custom-domain browser verification before changing STACKED/NOT DEPLOYED labels.
 
 Do not compensate for a missing backend endpoint by inventing browser authority, execution, persistence or scheduling.
