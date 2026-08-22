@@ -10,24 +10,31 @@ const qa = fs.readFileSync('assets/lab/library-app-v1-qa.js','utf8');
 const theme = fs.readFileSync('assets/lab/library-theme-init.js','utf8');
 
 assert.match(html, /<title>Continuum · Library<\/title>/);
-assert.match(html, /LIBRARY · LAB/);
-assert.match(html, /Browser-local native content, file metadata and preview data only/);
-assert.match(html, /No protected Library API, database persistence, object-storage upload/);
+assert.match(html, /LIBRARY · PROVING/);
+assert.match(html, /Local preview lane/);
+assert.match(html, /Only this preview lane uses browser storage/);
+assert.match(html, /mixed-media\/file\/folder workspace remains explicitly browser-local preview/);
 assert.match(html, /Recent/);
 assert.match(html, /Favorites/);
 assert.match(html, /Templates/);
 assert.match(html, /Imports/);
-assert.match(html, /KNOWLEDGE INGESTION · LAB PREVIEW/);
+assert.match(html, /KNOWLEDGE INGESTION · LOCAL PREVIEW/);
 assert.match(html, /STORE → UNDERSTAND → INTEGRATE/);
 assert.match(html, /Upload file/);
 assert.match(html, /Video, audio, images, PDFs, Office files/);
 assert.match(html, /href="\/checkin\/"/);
+assert.match(html, /href="\/control\/"/);
+assert.match(html, /href="\/directory\/"/);
+assert.match(html, /href="\/library\/"/);
+assert.match(html, /href="\/automations\/"/);
+assert.doesNotMatch(html, /href="\/lab\//);
 assert.match(theme, /patchCanonicalRoutes/);
 assert.match(theme, /\['\/lab\/control\/', '\/control\/'\]/);
 assert.match(theme, /\['\/lab\/directory\/', '\/directory\/'\]/);
 assert.match(theme, /\['\/lab\/library\/', '\/library\/'\]/);
 assert.match(theme, /\['\/lab\/automations\/', '\/automations\/'\]/);
 assert.doesNotMatch(html, /https:\/\/api\.cmxchat\.com/);
+assert.match(html, /connect-src 'self' https:\/\/\*\.cmxchat\.com http:\/\/localhost:8000/);
 assert.doesNotMatch(html, /<script(?![^>]*src=)[^>]*>/i);
 assert.doesNotMatch(html, /<style[\s>]/i);
 
@@ -42,7 +49,7 @@ assert.match(css, /@media\(max-width:880px\)/);
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css, /url\(https?:/i);
 
-assert.doesNotThrow(() => new Function(js), 'Library app JS must parse');
+assert.doesNotThrow(() => new Function(js), 'Library local preview JS must parse');
 assert.doesNotThrow(() => new Function(qa), 'Library QA JS must parse');
 assert.match(js, /cmx-lab-content-assets-v1/);
 assert.match(js, /cmx-lab-file-assets-v1/);
@@ -72,4 +79,4 @@ for (const source of [js,qa]) {
   assert.doesNotMatch(source, /EventSource\s*\(/);
 }
 
-console.log('Continuum standalone Library v1 structure, storage-boundary, media, ingestion and version contracts passed at /library/.');
+console.log('Continuum local Library preview remains explicit and isolated beside the protected server lane.');
