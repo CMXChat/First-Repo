@@ -2,10 +2,13 @@ name: Continuum Directory Server Proof Validation
 
 on:
   pull_request:
-    branches: [agent/automations-control-surface-v10, main]
+    branches: [main]
     paths:
       - 'directory/**'
+      - 'assets/continuum-operator-api-v1.js'
       - 'assets/lab/directory-api-v1.js'
+      - 'assets/lab/directory-session-v2.js'
+      - 'assets/lab/directory-session-v2.css'
       - 'assets/lab/directory-server-proof-v1.js'
       - 'tests/continuum-directory-server-proof-v1.test.js'
       - 'docs/continuum-directory-server-proof-CURRENT.md'
@@ -13,7 +16,10 @@ on:
   push:
     paths:
       - 'directory/**'
+      - 'assets/continuum-operator-api-v1.js'
       - 'assets/lab/directory-api-v1.js'
+      - 'assets/lab/directory-session-v2.js'
+      - 'assets/lab/directory-session-v2.css'
       - 'assets/lab/directory-server-proof-v1.js'
       - 'tests/continuum-directory-server-proof-v1.test.js'
       - 'docs/continuum-directory-server-proof-CURRENT.md'
@@ -23,12 +29,106 @@ permissions:
   contents: read
 
 jobs:
-  validate-directory-server-proof:
+  source-contract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Validate JavaScript and source contract
         run: |
+          node --check assets/continuum-operator-api-v1.js
           node --check assets/lab/directory-api-v1.js
+          node --check assets/lab/directory-session-v2.js
           node --check assets/lab/directory-server-proof-v1.js
           node tests/continuum-directory-server-proof-v1.test.js
+
+  browser-session:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Prove locked to unlocked Directory session on desktop and mobile
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/directory-session-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node - <<'NODE'
+          const { chromium } = require('playwright-core');
+          const assert = (ok, message) => { if (!ok) throw new Error(message); };
+
+          async function inspect(width, height) {
+            const browser = await chromium.launch({ executablePath: process.env.BROWSER, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
+            const page = await browser.newPage({ viewport: { width, height } });
+            let unlocked = false;
+            let unlockCount = 0;
+
+            await page.route('**/api/v1/**', async route => {
+              const req = route.request();
+              const path = new URL(req.url()).pathname;
+              const method = req.method();
+
+              if (method === 'GET' && path.endsWith('/checkin/operator/session')) {
+                if (!unlocked) return route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ detail: 'operator session required' }) });
+                return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ authenticated: true, expires_at: '2026-08-22T22:00:00Z', csrf_token: 'directory-csrf' }) });
+              }
+              if (method === 'POST' && path.endsWith('/checkin/operator/unlock')) {
+                unlockCount += 1;
+                assert(req.postDataJSON()?.operator_key === 'directory-test-key', 'unlock body must contain the entered operator key');
+                unlocked = true;
+                return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ authenticated: true, expires_at: '2026-08-22T22:00:00Z', csrf_token: 'directory-csrf' }) });
+              }
+              if (method === 'GET' && path.endsWith('/checkin/operator/directory/people')) {
+                if (!unlocked) return route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ detail: 'operator session required' }) });
+                return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id: 'person-directory-1', display_name: 'Directory Test Person', lifecycle: 'active', created_at: '2026-08-22T19:00:00Z', updated_at: '2026-08-22T19:00:00Z' }]) });
+              }
+              if (method === 'GET' && path.endsWith('/checkin/operator/directory/people/person-directory-1/contact-methods')) {
+                return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id: 'contact-directory-1', person_id: 'person-directory-1', channel: 'email', address: 'directory@example.com', normalized_address: 'directory@example.com', lifecycle: 'active', created_at: '2026-08-22T19:00:00Z', updated_at: '2026-08-22T19:00:00Z' }]) });
+              }
+              return route.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ detail: `unhandled ${method} ${path}` }) });
+            });
+
+            await page.goto('http://127.0.0.1:8000/directory/', { waitUntil: 'networkidle' });
+            await page.evaluate(() => {
+              const gated = document.querySelector('[data-cmx-gated-content]');
+              if (gated) gated.hidden = false;
+              document.body.classList.remove('cmx-black-prompt-locked');
+              document.querySelectorAll('[data-cmx-gate-overlay],#cmx-black-prompt-gate').forEach(el => el.remove());
+            });
+            await page.waitForFunction(() => document.querySelector('#directoryServerBadge')?.dataset.state === 'locked');
+            assert(await page.locator('#directoryUnlockForm').isVisible(), `unlock form must be visible at ${width}`);
+            await page.locator('#directoryOperatorKey').fill('directory-test-key');
+            await page.locator('#directoryUnlockSubmit').click();
+            await page.waitForFunction(() => document.querySelector('#directoryServerBadge')?.dataset.state === 'connected');
+            await page.waitForFunction(() => document.querySelector('#recordList')?.innerText.includes('Directory Test Person'));
+
+            const facts = await page.evaluate(() => ({
+              overflow: Math.max(document.body.scrollWidth, document.documentElement.scrollWidth) > document.documentElement.clientWidth + 1,
+              badge: document.querySelector('#directoryServerBadge')?.dataset.state,
+              person: document.querySelector('#recordList')?.innerText || '',
+              keyValue: document.querySelector('#directoryOperatorKey')?.value || '',
+              localKeys: Object.keys(localStorage),
+              sessionKeys: Object.keys(sessionStorage),
+              transport: document.documentElement.dataset.directoryTransport,
+            }));
+            console.log(width, height, facts, { unlockCount });
+            assert(!facts.overflow, `Directory session UI overflow at ${width}`);
+            assert(facts.badge === 'connected', 'Directory must report connected after unlock');
+            assert(facts.person.includes('Directory Test Person'), 'Directory must reload protected People after unlock');
+            assert(facts.keyValue === '', 'operator key input must be cleared');
+            assert(facts.localKeys.length === 0 && facts.sessionKeys.length === 0, 'Directory must not persist protected session state in browser storage');
+            assert(facts.transport === 'shared-operator-api-v2', 'Directory must use the shared operator transport');
+            assert(unlockCount === 1, 'Directory must submit exactly one unlock request');
+            await browser.close();
+          }
+
+          (async () => {
+            await inspect(1280, 900);
+            await inspect(390, 844);
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
