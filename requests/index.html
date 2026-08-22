@@ -10,11 +10,11 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.cmxchat.com http://localhost:8000; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
   <title>Continuum · Requests</title>
   <link rel="stylesheet" href="/assets/gates/cmx-gate-black-prompt.css" />
-  <link rel="stylesheet" href="/assets/requests/requests-v1.css?v=20260822-1" />
+  <link rel="stylesheet" href="/assets/requests/requests-v1.css?v=20260822-2" />
 </head>
 <body class="cmx-black-prompt-locked">
   <div data-cmx-gated-content hidden>
-    <main class="requests-shell" data-requests-version="v1">
+    <main class="requests-shell" data-requests-version="v2">
       <header class="requests-topbar">
         <div class="requests-topbar-left">
           <a href="/control/" class="brand" aria-label="Continuum Control Center">
@@ -35,7 +35,7 @@
         <div>
           <span class="eyebrow">CONTINUUM · OPERATOR DOORWAY</span>
           <h1>Requests</h1>
-          <p>Turn a reviewed request into existing protected backend operations. Version 1 starts with batch People + email ContactMethod creation.</p>
+          <p>Turn a reviewed request into existing protected backend operations. Contacts can be written now where Directory is deployed; Email requests can resolve exact backend identities and run a safe simulated delivery through the same Library → Automation → Runtime path as the Email workspace.</p>
         </div>
         <aside class="backend-card" aria-label="Backend status">
           <div class="backend-card-head"><b>Protected backend</b><span class="state-pill" id="backendBadge" data-state="checking">CHECKING</span></div>
@@ -46,7 +46,7 @@
 
       <section class="unlock-panel" id="backendAccess" hidden aria-label="Unlock protected backend">
         <div class="unlock-copy">
-          <b>Unlock before approving writes</b>
+          <b>Unlock before approving writes or Runs</b>
           <p>Your operator key goes directly to the API and is cleared immediately. This page never stores it, a CSRF token, or canonical private records in browser storage.</p>
           <code>POST /api/v1/checkin/operator/unlock</code>
         </div>
@@ -57,51 +57,109 @@
         </form>
       </section>
 
-      <section class="workspace">
-        <article class="panel">
-          <header class="panel-head">
-            <div><h2>Describe the batch</h2><p>Deterministic contact parsing now; broader AI interpretation belongs to a future authenticated assistant bridge.</p></div>
-            <span class="step">01</span>
-          </header>
-          <textarea class="request-input" id="requestInput" spellcheck="false" placeholder="Ada Lovelace <ada@example.com>&#10;Grace Hopper, grace@example.com&#10;Katherine Johnson | katherine@example.com"></textarea>
-          <div class="hint">
-            Supported now: <code>Name &lt;email&gt;</code>, <code>Name, email</code>, <code>Name | email</code>, tab-separated values, or <code>Name email</code>. Parsing is local preview only; nothing is written until approval.
-          </div>
-          <div class="actions">
-            <button class="primary" id="parseRequest" type="button">Preview request</button>
-            <button id="clearRequest" type="button">Clear</button>
-          </div>
-          <div class="warning">Writes are sequential, not one database transaction. If a Person is created and ContactMethod creation then fails, the Person remains durable and the row is reported as partial. No automatic retry or silent merge.</div>
-        </article>
+      <nav class="request-modes" aria-label="Request type">
+        <button id="modeContacts" type="button" aria-pressed="true">Add contacts</button>
+        <button id="modeEmail" type="button" aria-pressed="false">Email request</button>
+      </nav>
 
-        <article class="panel">
+      <section id="contactsMode" class="request-mode">
+        <div class="workspace">
+          <article class="panel">
+            <header class="panel-head">
+              <div><h2>Describe the batch</h2><p>Deterministic contact parsing now; broader AI interpretation belongs to a future authenticated assistant bridge.</p></div>
+              <span class="step">01</span>
+            </header>
+            <textarea class="request-input" id="requestInput" spellcheck="false" placeholder="Ada Lovelace <ada@example.com>&#10;Grace Hopper, grace@example.com&#10;Katherine Johnson | katherine@example.com"></textarea>
+            <div class="hint">
+              Supported now: <code>Name &lt;email&gt;</code>, <code>Name, email</code>, <code>Name | email</code>, tab-separated values, or <code>Name email</code>. Parsing is local preview only; nothing is written until approval.
+            </div>
+            <div class="actions">
+              <button class="primary" id="parseRequest" type="button">Preview request</button>
+              <button id="clearRequest" type="button">Clear</button>
+            </div>
+            <div class="warning">Writes are sequential, not one database transaction. If a Person is created and ContactMethod creation then fails, the Person remains durable and the row is reported as partial. No automatic retry or silent merge.</div>
+          </article>
+
+          <article class="panel">
+            <header class="panel-head">
+              <div><h2>Review before write</h2><p>Every row must parse cleanly. The backend remains authoritative for identity, collisions and lifecycle.</p></div>
+              <span class="step">02</span>
+            </header>
+            <div class="preview-wrap">
+              <div class="empty" id="previewEmpty">Nothing parsed yet.</div>
+              <table id="previewTable" hidden>
+                <thead><tr><th>#</th><th>Person</th><th>Email</th><th>Status</th><th>Backend result</th></tr></thead>
+                <tbody id="previewBody"></tbody>
+              </table>
+            </div>
+            <div class="actions">
+              <button class="primary" id="approveRequest" type="button" disabled>Approve & write to backend</button>
+              <span id="previewSummary">Nothing parsed yet.</span>
+            </div>
+            <p class="hint" id="writeSummary">Paste contacts, then preview them before any write.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="emailMode" class="request-mode" hidden>
+        <div class="email-grid">
+          <article class="panel">
+            <header class="panel-head">
+              <div><h2>Describe the Email request</h2><p>This mode resolves exact Directory and SenderIdentity records before it allows any mutation.</p></div>
+              <span class="step">01</span>
+            </header>
+            <div class="email-form">
+              <label>From email<input id="emailFrom" type="email" autocomplete="off" spellcheck="false" placeholder="team@cmxchat.com" /></label>
+              <label>To email<input id="emailTo" type="email" autocomplete="off" spellcheck="false" placeholder="cmxchat@gmail.com" /></label>
+              <label class="full">Subject<input id="emailSubject" type="text" autocomplete="off" placeholder="Continuum test" /></label>
+              <label class="full">Message<textarea id="emailBody" rows="8" placeholder="Hello from Continuum."></textarea></label>
+              <label>Safe simulation result
+                <select id="emailBehavior">
+                  <option value="accepted">Accepted</option>
+                  <option value="transient_once">Transient once, then succeed</option>
+                  <option value="permanent_failure">Permanent failure</option>
+                </select>
+              </label>
+            </div>
+            <div class="actions">
+              <button class="primary" id="previewEmailRequest" type="button">Preview Email request</button>
+              <button id="clearEmailRequest" type="button">Clear</button>
+            </div>
+            <div class="safe-note"><b>Safe simulation only.</b> Approval may create real Content, Automation and Runtime records, but the provider effect is simulated and no external email is sent. Real SMTP is not available from Requests v2.</div>
+          </article>
+
+          <article class="panel">
+            <header class="panel-head">
+              <div><h2>Resolve and review</h2><p>Preview uses protected reads only. Exact backend UUIDs and server readiness must resolve before approval.</p></div>
+              <span class="step">02</span>
+            </header>
+            <div id="emailPlan" class="email-plan empty">Nothing resolved yet.</div>
+            <div class="actions">
+              <button class="primary" id="approveEmailRequest" type="button" disabled>Approve & run safe simulation</button>
+              <span id="emailPlanSummary">Preview first. No Email writes have happened.</span>
+            </div>
+            <div class="warning">The execution is multi-step. If approval creates durable Content or an Automation and a later step fails, those earlier records remain real. Requests reports the exact stopping point and never silently retries an ambiguous or failed mutation.</div>
+          </article>
+        </div>
+
+        <article class="panel result-panel">
           <header class="panel-head">
-            <div><h2>Review before write</h2><p>Every row must parse cleanly. The backend remains authoritative for identity, collisions and lifecycle.</p></div>
-            <span class="step">02</span>
+            <div><h2>Runtime result</h2><p>When available, this is backend truth from the same canonical Runtime used by the Email workspace.</p></div>
+            <span class="step">03</span>
           </header>
-          <div class="preview-wrap">
-            <div class="empty" id="previewEmpty">Nothing parsed yet.</div>
-            <table id="previewTable" hidden>
-              <thead><tr><th>#</th><th>Person</th><th>Email</th><th>Status</th><th>Backend result</th></tr></thead>
-              <tbody id="previewBody"></tbody>
-            </table>
-          </div>
-          <div class="actions">
-            <button class="primary" id="approveRequest" type="button" disabled>Approve & write to backend</button>
-            <span id="previewSummary">Nothing parsed yet.</span>
-          </div>
-          <p class="hint" id="writeSummary">Paste contacts, then preview them before any write.</p>
+          <div id="emailResult" class="result-state">No safe simulation has been requested.</div>
+          <div id="emailReceipt" class="receipt-view" hidden></div>
         </article>
       </section>
 
       <footer class="footer">
-        <b>Requests v1 is not a direct database console.</b> It can only call backend APIs that already exist and pass the same protected session, Origin and CSRF rules as the rest of Continuum. Arbitrary natural-language planning, scheduling and AI execution are future capabilities, not simulated here.
+        <b>Requests v2 is not a direct database console and not a second Email engine.</b> It only calls existing protected APIs. Contact writes use Directory; Email uses the existing Library → Automation → Runtime contract. Arbitrary natural-language planning, scheduling, real SMTP and AI execution are not simulated here.
       </footer>
     </main>
   </div>
 
-  <script src="/assets/continuum-operator-api-v1.js?v=20260822-1"></script>
-  <script src="/assets/requests/requests-v1.js?v=20260822-1"></script>
+  <script src="/assets/continuum-operator-api-v1.js?v=20260822-2"></script>
+  <script src="/assets/requests/requests-v1.js?v=20260822-2"></script>
   <script src="/assets/gates/cmx-gate-black-prompt.js" defer></script>
 </body>
 </html>
