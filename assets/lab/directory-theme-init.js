@@ -23,6 +23,19 @@
     }
   }
 
+  function patchCanonicalRoutes() {
+    const routes = new Map([
+      ['/lab/control/', '/control/'],
+      ['/lab/automations/', '/automations/'],
+      ['/lab/directory/', '/directory/'],
+      ['/lab/library/', '/library/'],
+    ]);
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const target = routes.get(link.getAttribute('href'));
+      if (target) link.href = target;
+    });
+  }
+
   if (!document.querySelector('script[data-library-shell-convergence]')) {
     const script = document.createElement('script');
     script.src = '/assets/lab/continuum-library-shell-convergence-v1.js?v=20260819-1';
@@ -31,6 +44,11 @@
     document.head.appendChild(script);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installThemeControl, { once: true });
-  else installThemeControl();
+  function ready() {
+    installThemeControl();
+    patchCanonicalRoutes();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
+  else ready();
 })();
