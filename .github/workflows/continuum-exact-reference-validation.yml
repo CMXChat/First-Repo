@@ -1,0 +1,58 @@
+name: Continuum Exact Reference Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'assets/continuum-exact-reference-v1.js'
+      - 'assets/lab/directory-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'assets/control/control-runtime-history-v1.js'
+      - 'tests/continuum-exact-reference-v1.test.js'
+      - 'tests/continuum-exact-reference-v1-browser.js'
+      - '.github/workflows/continuum-exact-reference-validation.yml'
+  push:
+    paths:
+      - 'assets/continuum-exact-reference-v1.js'
+      - 'assets/lab/directory-theme-init.js'
+      - 'assets/lab/library-theme-init.js'
+      - 'assets/control/control-runtime-history-v1.js'
+      - 'tests/continuum-exact-reference-v1.test.js'
+      - 'tests/continuum-exact-reference-v1-browser.js'
+      - '.github/workflows/continuum-exact-reference-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-reference-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Validate exact-reference source contract
+        run: |
+          node --check assets/continuum-exact-reference-v1.js
+          node tests/continuum-exact-reference-v1.test.js
+
+  exact-reference-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Prove exact Person and Content landing without writes
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/exact-reference-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node tests/continuum-exact-reference-v1-browser.js
