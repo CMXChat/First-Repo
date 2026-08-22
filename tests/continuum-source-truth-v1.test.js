@@ -15,35 +15,34 @@ function requireText(haystack, needle, label) {
 }
 
 for (const route of ['/control/', '/directory/', '/library/', '/automations/', '/email/']) {
-  requireText(truth, `'${route}'`, `${route} source-truth registration`);
+  requireText(truth, `'${route}'`, `${route} frontend-status registration`);
 }
 
 for (const loader of [control, directory, automations, email]) {
-  requireText(loader, '/assets/continuum-source-truth-v1.js?v=20260822-1', 'shared source-truth loader');
-  requireText(loader, 'dataset.continuumSourceTruth', 'shared source-truth marker');
+  requireText(loader, '/assets/continuum-source-truth-v1.js?v=20260822-1', 'shared frontend-status loader');
+  requireText(loader, 'dataset.continuumSourceTruth', 'shared frontend-status marker');
 }
-requireText(library, '/assets/continuum-source-truth-v1.js?v=20260822-2', 'Library source-truth cache revision');
-requireText(library, 'dataset.continuumSourceTruth', 'Library source-truth marker');
+requireText(library, '/assets/continuum-source-truth-v1.js?v=20260822-2', 'Library frontend-status cache revision');
+requireText(library, 'dataset.continuumSourceTruth', 'Library frontend-status marker');
 
-requireText(truth, 'PR ${SNAPSHOT.backendPr} · T001–T006 complete', 'completed trigger-consumption checkpoint');
-requireText(truth, '170 backend tests · 89% coverage', 'backend validation truth');
-requireText(truth, 'c0d1e2f3a4b5', 'migration truth');
-requireText(truth, 'not merged, migrated or deployed', 'production boundary');
-requireText(truth, 'FAKE ONLY', 'unattended fake-only boundary');
-requireText(truth, 'MANUAL ONLY', 'manual SMTP boundary');
+requireText(truth, 'CONTINUUM · FRONTEND STATUS', 'frontend-only status dialog');
+requireText(truth, 'CMXChat/jay-app', 'backend authority pointer');
+requireText(truth, 'Backend releases, migrations, PR/task state', 'backend duplication boundary');
+requireText(truth, 'WIRED', 'wired frontend status');
+requireText(truth, 'PREVIEW', 'preview frontend status');
 requireText(truth, "['/lab/control/', '/control/']", 'Control canonical route');
 requireText(truth, "['/lab/automations/', '/automations/']", 'Automations canonical route');
 requireText(truth, "['/lab/directory/', '/directory/']", 'Directory canonical route');
 requireText(truth, "['/lab/library/', '/library/']", 'Library canonical route');
 requireText(truth, 'Sample operational preview', 'Control sample-state separation');
 requireText(truth, 'LOCAL PREVIEW STORAGE', 'Library local-preview separation');
-requireText(truth, 'protected ContentAsset / ContentDraft / ContentVersion lane', 'Library protected-lane truth');
-requireText(css, '.cst-badge', 'source-truth badge styling');
-requireText(css, '.cst-dialog', 'source-truth dialog styling');
-requireText(css, '.cst-boundary', 'production-boundary styling');
+requireText(truth, 'protected content/version frontend lane', 'Library protected-lane truth');
+requireText(css, '.cst-badge', 'frontend-status badge styling');
+requireText(css, '.cst-dialog', 'frontend-status dialog styling');
+requireText(css, '.cst-boundary', 'frontend-boundary styling');
 
-if (/Directory[^\n]{0,80}PRODUCTION LIVE/i.test(truth)) throw new Error('Directory source truth must not claim production live.');
-if (/Library[^\n]{0,80}PRODUCTION LIVE/i.test(truth)) throw new Error('Library source truth must not claim production live.');
-if (/Automations[^\n]{0,80}PRODUCTION LIVE/i.test(truth)) throw new Error('Automations source truth must not claim production live.');
+for (const forbidden of ['c0d1e2f3a4b5', '170 backend tests', '89% coverage', 'PR ${SNAPSHOT.backendPr}', 'T001–T006 complete']) {
+  if (truth.includes(forbidden)) throw new Error(`Frontend status must not duplicate backend checkpoint detail: ${forbidden}`);
+}
 
-console.log('Continuum cross-surface source-truth contract passed.');
+console.log('Continuum cross-surface frontend-status contract passed.');
