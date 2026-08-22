@@ -17,17 +17,17 @@
   function patchChrome() {
     const brand = document.querySelector(".v3-brand");
     if (brand) {
-      brand.href = "/lab/control/";
+      brand.href = "/control/";
       brand.setAttribute("aria-label", "Back to Continuum Control Center");
       const strong = brand.querySelector(".brand-copy strong");
       const small = brand.querySelector(".brand-copy small");
       if (strong) strong.textContent = "Continuum";
-      if (small) small.textContent = "LAB · AUTOMATIONS";
+      if (small) small.textContent = "PROVING · AUTOMATIONS";
     }
 
     const boundary = document.querySelector(".v3-lab-pill");
     if (boundary && boundary.dataset.v7Boundary !== "ready") {
-      boundary.innerHTML = "<i></i> LAB · EXECUTION OFF";
+      boundary.innerHTML = "<i></i> PROVING · EXECUTION OFF";
       boundary.dataset.v7Boundary = "ready";
     }
   }
