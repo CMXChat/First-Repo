@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-operations-v7.js'
       - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-operations-v7.css'
@@ -24,7 +24,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-operations-v7.js'
       - 'assets/lab/lab-automations-operations-v7-polish.js'
       - 'assets/lab/lab-automations-operations-v7.css'
@@ -82,7 +82,7 @@ jobs:
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=14000 "$@" --dump-dom
           }
 
-          dump 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-desktop.html
+          dump 'http://127.0.0.1:8000/automations/' > /tmp/continuum-auto-desktop.html
           grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-desktop.html
           grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-desktop.html
           grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-desktop.html
@@ -99,7 +99,7 @@ jobs:
           grep -q 'v7-automation-row' /tmp/continuum-auto-desktop.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-desktop.html
 
-          dump --window-size=1440,900 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-desktop-editor.html
+          dump --window-size=1440,900 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/continuum-auto-desktop-editor.html
           grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-desktop-editor.html
           grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-desktop-editor.html
           grep -q 'v7-editor-status' /tmp/continuum-auto-desktop-editor.html
@@ -107,7 +107,7 @@ jobs:
           grep -q 'v8-flow-toggle' /tmp/continuum-auto-desktop-editor.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-desktop-editor.html
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/' > /tmp/continuum-auto-mobile-dashboard.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/' > /tmp/continuum-auto-mobile-dashboard.html
           grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-mobile-dashboard.html
           grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-mobile-dashboard.html
           grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-mobile-dashboard.html
@@ -116,7 +116,7 @@ jobs:
           grep -q 'data-v7-open-planner' /tmp/continuum-auto-mobile-dashboard.html
           grep -q 'data-v7-manage' /tmp/continuum-auto-mobile-dashboard.html
 
-          dump --window-size=390,844 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-mobile-editor.html
+          dump --window-size=390,844 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/continuum-auto-mobile-editor.html
           grep -q 'data-lab-automations-operations="v7"' /tmp/continuum-auto-mobile-editor.html
           grep -q 'data-lab-automations-operations-polish="v7"' /tmp/continuum-auto-mobile-editor.html
           grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-mobile-editor.html
@@ -126,7 +126,7 @@ jobs:
           grep -q 'FLOW PREVIEW' /tmp/continuum-auto-mobile-editor.html
           ! grep -qi 'Loading Automations' /tmp/continuum-auto-mobile-editor.html
 
-          dump --window-size=360,800 'http://127.0.0.1:8000/lab/automations/?new=1&from=lab' > /tmp/continuum-auto-phone-editor.html
+          dump --window-size=360,800 'http://127.0.0.1:8000/automations/?new=1&from=control' > /tmp/continuum-auto-phone-editor.html
           grep -q 'data-operations-v7="ready"' /tmp/continuum-auto-phone-editor.html
           grep -q 'data-lab-automations-duplicate-guard="v9"' /tmp/continuum-auto-phone-editor.html
           grep -q 'v7-editor-status' /tmp/continuum-auto-phone-editor.html
