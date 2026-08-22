@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-action-stack-v6.js'
       - 'assets/lab/lab-automations-action-stack-v6.css'
       - 'assets/lab/lab-automations-experience-v3.js'
@@ -16,7 +16,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'lab/automations/**'
+      - 'automations/**'
       - 'assets/lab/lab-automations-action-stack-v6.js'
       - 'assets/lab/lab-automations-action-stack-v6.css'
       - 'assets/lab/lab-automations-experience-v3.js'
@@ -47,7 +47,7 @@ jobs:
 
           js = Path('assets/lab/lab-automations-action-stack-v6.js').read_text(encoding='utf-8')
           css = Path('assets/lab/lab-automations-action-stack-v6.css').read_text(encoding='utf-8')
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          html = Path('automations/index.html').read_text(encoding='utf-8')
 
           for term in [
               'data-v6-action-toggle', 'data-v6-remove-step', 'data-v6-collapse-all',
@@ -85,9 +85,9 @@ jobs:
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
-          html = Path('lab/automations/index.html').read_text(encoding='utf-8')
+          html = Path('automations/index.html').read_text(encoding='utf-8')
           probe = '<script src="/tests/automations-v6-action-stack-probe.js"></script>'
-          Path('lab/automations/action-stack-mobile-qa.html').write_text(html.replace('</body>', f'{probe}\n</body>'), encoding='utf-8')
+          Path('automations/action-stack-mobile-qa.html').write_text(html.replace('</body>', f'{probe}\n</body>'), encoding='utf-8')
           PY
 
       - name: Exercise 360px and 390px action stack
@@ -101,7 +101,7 @@ jobs:
 
           python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/continuum-v6-action-stack-http.log 2>&1 &
           SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f lab/automations/action-stack-mobile-qa.html' EXIT
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; rm -f automations/action-stack-mobile-qa.html' EXIT
           sleep 1
 
           check_width() {
@@ -110,7 +110,7 @@ jobs:
             local out="/tmp/action-stack-${width}.html"
             "$BROWSER" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
               --window-size="${width},${height}" --virtual-time-budget=18000 --dump-dom \
-              'http://127.0.0.1:8000/lab/automations/action-stack-mobile-qa.html' > "$out"
+              'http://127.0.0.1:8000/automations/action-stack-mobile-qa.html' > "$out"
 
             grep -q 'data-qa-v6-action-stack="complete"' "$out"
             grep -q "data-qa-v6-viewport=\"${width}\"" "$out"
