@@ -14,7 +14,7 @@ requireText(html, '/assets/lab/lab-automations-workspace-v11.js?v=20260822-works
 requireText(js, 'v11-builder-layout', 'builder layout');
 requireText(js, 'v11-stage-shell', 'vertical stage shell');
 requireText(js, 'data-v11-manage', 'on-demand management navigation');
-requireText(js, 'data.workspaceV11', 'workspace-ready marker');
+requireText(js, 'dataset.workspaceV11', 'workspace-ready marker');
 requireText(js, 'cmx:v10-editor-bootstrap', 'v10 integration hook');
 
 requireText(css, 'grid-template-columns:var(--v11-stage-width) minmax(0,1fr)', 'desktop stage/content split');
