@@ -1,9 +1,9 @@
-name: Directory Lab validation
+name: Directory validation
 
 on:
   push:
     paths:
-      - 'lab/directory/**'
+      - 'directory/**'
       - 'assets/lab/directory-*.js'
       - 'assets/lab/directory-*.css'
       - 'assets/lab/control-center-theme-init.js'
@@ -14,7 +14,7 @@ on:
       - '.github/workflows/directory-lab-validation.yml'
   pull_request:
     paths:
-      - 'lab/directory/**'
+      - 'directory/**'
       - 'assets/lab/directory-*.js'
       - 'assets/lab/directory-*.css'
       - 'assets/lab/control-center-theme-init.js'
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate standalone Directory contract
+      - name: Validate canonical Directory contract
         run: node tests/continuum-directory-standalone-v1.test.js
       - name: Validate shared Continuum shell contract
         run: node tests/continuum-shared-app-shell.test.js
