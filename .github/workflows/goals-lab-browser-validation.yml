@@ -1,0 +1,44 @@
+name: Goal Intelligence Browser Validation
+
+on:
+  pull_request:
+    paths:
+      - 'goals-lab/**'
+      - 'tests/goals-lab-browser-e2e.spec.cjs'
+      - 'tests/goals-lab.playwright.config.cjs'
+      - '.github/workflows/goals-lab-browser-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright test runner
+        run: npm install --no-save @playwright/test@1.55.0
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run desktop and Android browser tests
+        run: npx playwright test --config=tests/goals-lab.playwright.config.cjs
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goals-lab-browser-test-results
+          path: test-results
+          if-no-files-found: ignore
+          retention-days: 7

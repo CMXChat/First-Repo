@@ -1,0 +1,237 @@
+/* Step 3, Part 3: product simplification layer. */
+
+.masthead.product-reviewed {
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+}
+
+.masthead.product-reviewed .boundary-card {
+  min-height: 0;
+  justify-content: center;
+}
+
+.main-flow-layout {
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+}
+
+.main-flow-layout > .stacked-column {
+  grid-column: 1;
+}
+
+.main-flow-layout > #goalSetup {
+  grid-column: 2;
+}
+
+.form-intro {
+  margin: -2px 0 2px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.editor-drawer,
+.progressive-details,
+.records-drawer {
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: color-mix(in srgb, var(--surface-2) 88%, transparent);
+}
+
+.editor-drawer > summary,
+.progressive-details > summary,
+.records-drawer > summary {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  padding: 15px 48px 15px 16px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+  font-weight: 850;
+}
+
+.editor-drawer > summary::-webkit-details-marker,
+.progressive-details > summary::-webkit-details-marker,
+.records-drawer > summary::-webkit-details-marker {
+  display: none;
+}
+
+.editor-drawer > summary::after,
+.progressive-details > summary::after,
+.records-drawer > summary::after {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--blue);
+  transform: translateY(-50%);
+}
+
+.editor-drawer[open] > summary::after,
+.progressive-details[open] > summary::after,
+.records-drawer[open] > summary::after {
+  content: '−';
+}
+
+.editor-drawer > summary:hover,
+.editor-drawer > summary:focus-visible,
+.progressive-details > summary:hover,
+.progressive-details > summary:focus-visible,
+.records-drawer > summary:hover,
+.records-drawer > summary:focus-visible {
+  outline: none;
+  background: rgba(107, 186, 255, 0.08);
+}
+
+.drawer-summary-title {
+  font-size: 0.86rem;
+}
+
+.drawer-summary-hint {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.drawer-body {
+  padding: 4px 16px 16px;
+  border-top: 1px solid var(--line);
+}
+
+.progressive-details {
+  margin: 2px 0;
+}
+
+.progressive-details > .drawer-body {
+  display: grid;
+  gap: 14px;
+}
+
+#goalSetup.product-secondary {
+  background:
+    radial-gradient(circle at 100% 0, rgba(105, 183, 255, 0.06), transparent 30%),
+    linear-gradient(145deg, var(--surface), var(--bg));
+}
+
+#goalSetup.product-secondary .panel-heading h2 {
+  font-size: clamp(26px, 3.5vw, 36px);
+}
+
+.sprint-date-field {
+  padding: 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 15px;
+  background: rgba(107, 186, 255, 0.06);
+}
+
+.sprint-date-field[hidden] {
+  display: none;
+}
+
+.sprint-date-field small {
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.sprint-date-error {
+  min-height: 1.1em;
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.records-drawer {
+  margin-top: 14px;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 100% 0, rgba(105, 183, 255, 0.07), transparent 30%),
+    linear-gradient(145deg, var(--surface), var(--bg));
+  box-shadow: var(--shadow);
+}
+
+.records-drawer > summary {
+  min-height: 76px;
+  align-content: center;
+  padding: 18px 58px 18px 24px;
+}
+
+.records-drawer > .lower-layout {
+  margin: 0;
+  padding: 0 14px 14px;
+}
+
+.records-drawer .panel {
+  box-shadow: none;
+}
+
+.section-nav.product-nav button {
+  min-width: 72px;
+}
+
+.daily-priority-note {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--blue);
+  border-radius: 0 12px 12px 0;
+  color: var(--muted);
+  background: rgba(107, 186, 255, 0.06);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 920px) {
+  .masthead.product-reviewed,
+  .main-flow-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .main-flow-layout > .stacked-column,
+  .main-flow-layout > #goalSetup {
+    grid-column: 1;
+  }
+
+  .main-flow-layout > .stacked-column {
+    order: 1;
+  }
+
+  .main-flow-layout > #goalSetup {
+    order: 2;
+  }
+}
+
+@media (max-width: 680px) {
+  .records-drawer > summary {
+    min-height: 68px;
+    padding-left: 18px;
+  }
+
+  .records-drawer > .lower-layout {
+    padding: 0 8px 8px;
+  }
+
+  .editor-drawer > summary,
+  .progressive-details > summary {
+    padding-left: 14px;
+  }
+}
+
+@media (forced-colors: active) {
+  .editor-drawer,
+  .progressive-details,
+  .records-drawer,
+  .sprint-date-field,
+  .daily-priority-note {
+    border: 2px solid CanvasText !important;
+    color: CanvasText !important;
+    background: Canvas !important;
+    box-shadow: none !important;
+  }
+}
