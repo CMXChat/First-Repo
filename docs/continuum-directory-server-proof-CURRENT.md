@@ -1,238 +1,230 @@
-# Continuum Directory protected Person persistence proof — CURRENT
+# Continuum Directory protected persistence — CURRENT
 
-Date: 2026-08-21
-Status: Frontend Lab integration proof. Frontend-only. No backend changes.
+Last updated: 2026-08-22
+Route: `/directory/`
+Status: **FRONTEND-READY PROTECTED DIRECTORY — production data routes still depend on stacked backend deployment**
 
-## Goal
+## Purpose
 
-Keep the accepted `/lab/directory` product surface and prove one durable backend loop:
+`/directory/` is the canonical Continuum surface for durable People and email ContactMethods.
 
-`Directory Person UI → protected Person → protected email ContactMethod → reload → same stable backend identities`
+The current frontend loop is:
 
-This slice stops before Automations integration.
+`shared operator session → protected Person list/create/update → protected email ContactMethod list/create/lifecycle → stable backend IDs → reload from backend`
 
-## Change classification
+Organizations, Groups, relationship labels and the planner preview remain local/unintegrated concepts. The frontend must never present them as protected backend truth.
 
-### REUSED
+## Current checkpoint
 
-- `/lab/directory/` shell, navigation, toolbar, list/detail/context layout, dialogs, mobile layout and Continuum styling.
-- existing `directory-app-v1.js` for Organizations, Groups, command palette, theme and unsupported Lab concepts.
-- existing Check In static-frontend protected request pattern: `api.cmxchat.com/api/v1`, `credentials: include`, operator-session CSRF retrieval and `X-CSRF-Token` on mutations.
-- backend-owned Person and ContactMethod IDs and lifecycle values.
+This slice keeps the accepted Directory product layout while removing one important frontend inconsistency: Directory now uses the same protected operator session transport and inline unlock pattern as `/email/` and `/requests/`.
 
-### CONSOLIDATED
+Directory no longer owns a second fetch/CSRF implementation.
 
-- People rendering now projects protected Person records into the existing Directory list/detail/context containers.
-- email ContactMethods live under the selected protected Person instead of being copied into the legacy local Person object.
-- error presentation uses backend HTTP/detail responses instead of local duplicate/readiness guesses.
+The page loads:
 
-### REPLACED
+1. `assets/continuum-operator-api-v1.js` — shared protected cookie/session/CSRF transport;
+2. `assets/lab/directory-api-v1.js` — a very small Directory compatibility adapter over that shared transport;
+3. `assets/lab/directory-session-v2.js` — inline session state/unlock/logout UX;
+4. `assets/lab/directory-server-proof-v1.js` — projection of real Person/ContactMethod records into the accepted Directory UI.
 
-For the People surface only:
+The shared transport is also used by Requests and is compatible with the Email protected-session contract.
 
-- browser-local Person creation is replaced by `POST /checkin/operator/directory/people`.
-- browser-local Person display-name edits are replaced by `PATCH /checkin/operator/directory/people/{person_id}`.
-- browser-local email creation is replaced by `POST /checkin/operator/directory/people/{person_id}/contact-methods`.
-- browser-local email active state is replaced by `PATCH /checkin/operator/directory/contact-methods/{contact_method_id}`.
-- reload hydration comes from backend list/contact endpoints, not `cmx-lab-crm-v1`.
-- local exact-email duplicate checks are not used for protected email creation; backend `409`/`422` responses are authoritative.
+## Protected session behavior
 
-### GENUINELY NEW
+Directory now shows explicit backend session state near the top of the canonical page.
 
-- `assets/lab/directory-api-v1.js`: a deliberately tiny development transport adapter for the existing static Lab.
-- `assets/lab/directory-server-proof-v1.js`: a product bridge that projects real Person/ContactMethod records into the existing Directory DOM without changing production frontend architecture.
-- protected-data loading/error states and email lifecycle controls inside the existing Directory UI.
-- source-contract validation for the transport boundary.
+Possible states include:
 
-## Why this transport exists
+- checking;
+- connected;
+- locked;
+- browser Origin denied;
+- backend unreachable;
+- operator session service unavailable.
 
-`First-Repo` `/lab` is static HTML/JS. `jay-app/frontend` is the canonical React/TypeScript application and already owns the generated OpenAPI client.
+When locked, the user can enter the operator key directly on `/directory/`.
 
-Copying the generated SDK into `First-Repo` would create a second permanent client architecture. This proof does not do that.
+The operator key:
 
-The Lab transport is intentionally small and hand-written because it serves one development-only bridge:
+- is sent directly to `POST /api/v1/checkin/operator/unlock`;
+- is cleared from the input immediately;
+- is never written to localStorage, sessionStorage, IndexedDB or canonical page state.
 
-- six Directory domain calls;
-- one operator-session read used to authorize mutations;
-- one shared JSON request helper;
-- the already-established protected Check In session/CSRF pattern;
-- no domain cache;
-- no schema registry;
-- no generated types;
-- no production claim.
+Successful unlock reloads the Directory projection so People are fetched using the new protected cookie session. Ending the session uses the protected `DELETE /api/v1/checkin/operator/session` contract and reloads the page so already-rendered private data is not treated as current after logout.
 
-When this UX moves into the canonical React frontend, use the generated OpenAPI client there and retire this Lab transport.
+## Backend authentication contract
 
-## Files
+The current `jay-app` integration handbook is authoritative.
 
-- `lab/directory/index.html`
-  - existing UI retained;
-  - existing standalone product copy/contracts retained;
-  - CSP permits the protected CMX API connection plus local backend development;
-  - loads the thin transport and server projection after the existing Directory app.
-- `assets/lab/directory-api-v1.js`
-  - development transport only;
-  - no localStorage;
-  - no Organizations/Groups endpoints;
-  - fetches operator session for CSRF before every mutation.
-- `assets/lab/directory-server-proof-v1.js`
-  - server-backed People projection;
-  - keeps stable backend IDs in memory as canonical identity;
-  - fetches People on page load and again after mutations/reload;
-  - fetches ContactMethods for the selected Person;
-  - reuses existing Directory containers/dialogs/CSS classes;
-  - switches runtime truth labels between protected People and local Organizations/Groups.
-- `tests/continuum-directory-server-proof-v1.test.js`
-  - prevents accidental local canonical storage or API-surface widening.
-- `.github/workflows/directory-server-proof-validation.yml`
-  - parses the new JS and runs the focused source contract.
+Session foundation:
 
-## Protected API contract used
+- `POST /api/v1/checkin/operator/unlock` — exact allowed Origin + operator key;
+- `GET /api/v1/checkin/operator/session` — protected cookie read;
+- `DELETE /api/v1/checkin/operator/session` — cookie + exact Origin + `X-CSRF-Token`.
 
-Current backend development contract from `jay-app` Directory slice. The proof uses these six domain calls:
+The backend sets the protected operator cookie under `/api/v1/checkin`, which includes all `/api/v1/checkin/operator/...` Directory, Connection, Library, Automation and Runtime routes.
 
-- `GET /api/v1/checkin/operator/directory/people`
-- `POST /api/v1/checkin/operator/directory/people`
-- `PATCH /api/v1/checkin/operator/directory/people/{person_id}`
-- `GET /api/v1/checkin/operator/directory/people/{person_id}/contact-methods`
-- `POST /api/v1/checkin/operator/directory/people/{person_id}/contact-methods`
+Protected mutations use the same CSRF rule as Email and Requests. The browser does not invent an alternate authentication mechanism.
+
+## Directory API contract used
+
+The frontend consumes these existing protected routes:
+
+- `GET/POST /api/v1/checkin/operator/directory/people`
+- `GET/PATCH /api/v1/checkin/operator/directory/people/{person_id}`
+- `GET/POST /api/v1/checkin/operator/directory/people/{person_id}/contact-methods`
 - `PATCH /api/v1/checkin/operator/directory/contact-methods/{contact_method_id}`
 
-Mutations additionally read:
+Supported Person facts:
 
-- `GET /api/v1/checkin/operator/session`
+- stable `id`;
+- `display_name`;
+- lifecycle;
+- timestamps.
 
-The proof only uses supported fields:
+Supported email ContactMethod facts:
 
-- Person: `id`, `display_name`, `lifecycle`, timestamps.
-- ContactMethod: `id`, `person_id`, `channel=email`, `address`, `normalized_address`, `lifecycle`, timestamps.
+- stable `id`;
+- stable `person_id`;
+- channel;
+- address / normalized address;
+- lifecycle;
+- timestamps.
 
-Role, title, phone, location, timezone, labels, notes, Organizations, Groups, relationship links and saved audiences are not written to the protected Person API in this slice.
+Email address is presentation/contact data, not Person identity. Backend UUIDs are canonical identity.
 
-## Auth / session / CSRF requirements
+## Shared transport consolidation
 
-Protected reads require an active `cmx_checkin_operator` operator cookie.
+`assets/continuum-operator-api-v1.js` now exposes the Directory mutations required by this surface:
 
-Protected mutations also require:
+- `listPeople`;
+- `createPerson`;
+- `updatePerson`;
+- `listContacts`;
+- `createContact`;
+- `setContactLifecycle`.
 
-1. exact allowed Origin;
-2. active operator cookie;
-3. `cmx_checkin_csrf` cookie;
-4. matching `X-CSRF-Token` header.
+`directory-api-v1.js` delegates to those helpers. It contains no direct `fetch()`, no second session cache and no second CSRF implementation.
 
-The Lab obtains the header value from:
-
-`GET /api/v1/checkin/operator/session`
-
-On `db.cmxchat.com`, the transport calls `https://api.cmxchat.com/api/v1` with `credentials: include`.
-
-For local frontend/backend development it targets `http://localhost:8000/api/v1`. The backend `CHECKIN_PUBLIC_ORIGIN` must match the frontend origin for local mutation testing; the production default is `https://db.cmxchat.com`.
-
-The Directory page does not create a new authentication mechanism. If operator access is missing or expired, it shows that protected People are unavailable and does not silently fall back to local People as canonical truth.
+This matters because protected pages should not slowly grow separate interpretations of authentication, errors and mutation safety.
 
 ## Persistence behavior
 
 Create Person:
 
 1. submit display name;
-2. backend returns `PersonPublic` with UUID;
-3. UUID becomes selected identity;
-4. People list is re-read from backend.
+2. backend returns a Person UUID;
+3. UUID becomes the selected identity;
+4. People are re-read from backend.
 
 Edit Person:
 
-1. PATCH the stable UUID;
+1. PATCH the stable Person UUID;
 2. re-read People;
-3. name changes while identity remains the same.
+3. display name may change while identity remains stable.
 
 Add email:
 
 1. POST under the stable Person UUID;
-2. backend returns ContactMethod UUID;
+2. backend returns a ContactMethod UUID;
 3. contact list is re-read;
-4. email address is presentation data, ContactMethod UUID is identity.
+4. address is presentation data while ContactMethod UUID remains canonical identity.
 
-Disable/reactivate:
+Disable/reactivate email:
 
-1. PATCH ContactMethod lifecycle to `disabled` or `active`;
-2. re-read contacts;
-3. lifecycle survives reload because it is server state.
+1. PATCH lifecycle to `disabled` or `active`;
+2. re-read ContactMethods;
+3. lifecycle remains durable across reload.
 
-Reload:
-
-- People are fetched from the backend again.
-- selected Person contacts are fetched from the backend again.
-- the bridge does not read/write `cmx-lab-crm-v1` for protected Person/contact truth.
+Failed ContactMethod reads remain **unavailable**, not an inferred empty list. The UI does not keep stale contacts and pretend they are current.
 
 ## Duplicate/conflict behavior
 
 The frontend does not duplicate backend normalization or uniqueness rules.
 
-If email creation conflicts with an existing normalized address, the backend decides the result. `409`, `422`, auth and CSRF errors are surfaced using the backend detail text where supplied.
+Backend errors remain authoritative:
+
+- `401` — unlock again;
+- `403` — protected Origin/access denied;
+- `404` — resource or capability unavailable on the current API;
+- `409` — collision/conflict;
+- `422` — typed validation failure.
+
+No collision silently merges People.
+
+## Production boundary
+
+The protected operator-session foundation is production-live.
+
+The Person/ContactMethod backend implementation remains part of the stacked `jay-app` development stack until that backend is deliberately reviewed, merged, migrated and deployed.
+
+Therefore production `/directory/` may correctly show:
+
+`protected session connected → Directory capability unavailable/not deployed`
+
+That is a deployment boundary, not permission to fall back to browser-local People as canonical truth.
+
+## Canonical navigation
+
+The Directory source now links directly to canonical routes such as:
+
+- `/control/`;
+- `/checkin/`;
+- `/directory/`;
+- `/automations/`;
+- `/spaces/`.
+
+Do not recreate `/lab/directory/` or `/lab/automations/` as active product navigation. Legacy route redirects exist only for compatibility.
 
 ## What remains local-only
 
-Unchanged browser-local Lab concepts:
+Unchanged local preview concepts:
 
 - Organizations;
 - Groups / saved audiences;
-- relationship labels and membership previews;
-- local Planner preview;
-- local Automation references;
-- unsupported Person profile fields in the legacy sample model.
+- relationship labels and memberships;
+- Planner preview;
+- unsupported rich Person profile fields.
 
-When viewing a real server Person, those local concepts are not attached to the protected Person and are labeled accordingly.
-
-## How to continue frontend editing
-
-For this proof:
-
-- UI/product work stays in `First-Repo`.
-- keep `directory-app-v1.js` as the accepted local prototype layer for unsupported concepts.
-- change protected People behavior in `directory-server-proof-v1.js`.
-- change only HTTP transport details in `directory-api-v1.js` when the backend contract changes.
-- do not add Organization/Group calls until matching backend APIs exist.
-- do not copy the `jay-app/frontend/src/client` generated SDK into this repo.
-
-For the eventual production frontend:
-
-- implement the accepted Directory interaction in `jay-app/frontend` React components;
-- consume the generated OpenAPI client;
-- use TanStack Query/server state instead of this DOM bridge;
-- retire the two Lab proof files after the product behavior has migrated.
+When a real backend Person is selected, those concepts are not silently attached to it.
 
 ## Validation
 
-Current frontend validation on PR #120:
+Focused Directory validation now checks:
 
-- focused Directory server-proof JS/source contract: passing;
-- existing standalone Directory contract: passing;
-- existing shared Continuum shell contract: passing.
+- shared operator API parseability;
+- Directory adapter parseability;
+- session UX parseability;
+- server projection parseability;
+- no local/session storage for protected session/domain truth;
+- canonical Directory navigation;
+- no second direct HTTP transport in the Directory adapter;
+- stable backend ID usage;
+- contact-read failure vs real empty-list distinction;
+- desktop and mobile browser flow from locked → inline unlock → reload → protected Person projection.
 
-These checks prove the frontend transport boundary, parseability and preservation of the accepted Directory shell. They do not fabricate a live backend persistence result.
+The browser proof mocks the backend boundary. It verifies frontend orchestration and session behavior; it does not make the stacked Directory backend production-live.
 
-## Acceptance boundary
+## Product loop
 
-This slice is complete when a protected environment containing the Directory backend can demonstrate:
+Directory is one part of the visible Continuum chain:
 
-1. create Person;
-2. retain backend `person_id`;
-3. rename Person;
-4. reload and observe the same Person;
-5. add email ContactMethod;
-6. retain backend `contact_method_id`;
-7. reload and observe the same email;
-8. disable email;
-9. reload and observe disabled lifecycle;
-10. reactivate email;
-11. see backend duplicate/conflict errors truthfully.
+`Requests → Directory identity → Library content → Email/Automation definition → Runtime → Receipt`
 
-The frontend implementation for that flow is present. Full live acceptance cannot be claimed from this branch alone because the required Directory backend remains an open `jay-app` development PR and this frontend task does not deploy or modify it. Until that backend is available in the environment being tested, the Lab should truthfully show the protected API as unavailable.
+A Person created through `/requests/` and a Person shown in `/directory/` are intended to be the same backend Person UUID, not copies owned by each page.
 
-## Stop point
+## Recovery order
 
-Do not start Automations integration from this branch.
+When resuming Directory work:
 
-Next review slice, only after this proof is accepted:
+1. `docs/continuum-frontend-roadmap-CURRENT.md`
+2. `docs/continuum-frontend-week-CURRENT.md`
+3. this file
+4. `directory/index.html`
+5. `assets/continuum-operator-api-v1.js`
+6. `assets/lab/directory-api-v1.js`
+7. `assets/lab/directory-session-v2.js`
+8. `assets/lab/directory-server-proof-v1.js`
+9. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md`
 
-`existing /lab/automations → same real Person/ContactMethod → AutomationDraft persistence → backend preflight → Review/Publish → Runtime Runs/Attempts/Why as actually implemented`
+Never infer that Person/ContactMethod routes are production-live simply because this frontend and its mocked browser proof are complete.
