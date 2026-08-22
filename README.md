@@ -1,46 +1,52 @@
-# CMX Restricted Node / Continuum frontend
+# Continuum frontend proving repository
 
-`CMXChat/First-Repo` owns the static GitHub Pages proving surfaces served from `db.cmxchat.com`.
+`CMXChat/First-Repo` owns the static/browser-facing Continuum proving surfaces served from `db.cmxchat.com`.
 
-The protected FastAPI/PostgreSQL application, durable domain models, migrations, generated API client and canonical backend services live in `CMXChat/jay-app`.
+**Project-wide truth and all backend authority live in `CMXChat/jay-app`.** First-Repo must not become a second backend handbook, migration log, release record, or architecture authority.
 
 ## Start here
 
-For a human or AI taking over the project, read in this order:
+For frontend work, read:
 
 1. `docs/AI-START-HERE.md`
-2. `docs/PROJECT-STATUS-CURRENT.md`
-3. `docs/continuum-frontend-CURRENT.md`
-4. `docs/DOCUMENTATION-AUTHORITY.md`
-5. the relevant surface-specific `docs/*-CURRENT.md`
-6. `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md`
-7. the active backend branch handbook/spec when working on stacked backend code
+2. `docs/continuum-frontend-CURRENT.md`
+3. `docs/DOCUMENTATION-AUTHORITY.md`
+4. `docs/README.md`
+5. `assets/cmx-routes.json`
+6. the surface-specific frontend document for the route you are changing
 
-Do **not** infer current truth from an older chat, an older `*-CURRENT.md` filename, or a historical `/lab/*` route. The authority index above wins when documents disagree.
+For any question about backend implementation, production release, migrations, database models, Runtime internals, Authority, provider behavior, backend PR stacks, or deployment, switch to `CMXChat/jay-app` and begin with:
 
-## Product model
+- `PROJECT-STATUS-CURRENT.md`
+- `AI-START-HERE.md`
+- `AGENTS.md`
 
-Continuum is the umbrella product and a navigable map of a person's connected digital world.
+## What belongs here
 
-- **Directory** = who: People, ContactMethods and later richer relationships.
-- **Library** = protected information/content and immutable versions.
-- **Automations** = what should happen.
-- **Connections / SenderIdentity** = approved external capability and identity definitions.
-- **Authority** = whether exact unattended work may happen now.
-- **Trigger Consumption** = durable event claim/recovery before execution.
-- **Runtime** = what actually happened, with Attempts, receipts and Why/provenance.
-- **Check In** = the currently production-live protected continuity/timing application foundation.
-- **Spaces** = context/briefing experience.
-- **Requests** = bounded human-friendly doorway over typed protected operations.
-- **AI / Planner** = future bounded intelligence using the same typed services and authority rules, never a bypass.
+First-Repo may own:
 
-Core rule:
+- canonical static product routes;
+- HTML/CSS/browser JavaScript;
+- frontend interaction and visual contracts;
+- frontend-to-API adapters used by the proving surfaces;
+- route registry and route compatibility behavior;
+- browser/static validation;
+- frontend handoffs;
+- product-facing copy and prototypes.
 
-> One backend, many interfaces.
+First-Repo does **not** own:
+
+- backend release truth;
+- Alembic/migration history as current authority;
+- PostgreSQL/domain-model truth;
+- backend PR/task status;
+- provider credentials or provider implementation details;
+- Runtime/Authority implementation handbooks;
+- project-wide engineering status.
+
+Those belong in `CMXChat/jay-app`.
 
 ## Canonical Continuum routes
-
-User-facing Continuum routes are outside the retired `/lab/` namespace:
 
 - `/checkin/`
 - `/spaces/`
@@ -52,69 +58,27 @@ User-facing Continuum routes are outside the retired `/lab/` namespace:
 - `/control/`
 - `/doc/`
 
-`/archive/continuum-lab/` preserves the older integrated prototype. Internal files under `assets/lab/` may remain because those are implementation-history identifiers, not canonical route names.
+`/lab/` is retired as a canonical user-facing namespace. Historical `assets/lab/*` filenames may remain as implementation identifiers.
 
-## Status vocabulary
+## Frontend status language
 
-Use these terms consistently:
+Use frontend-scoped language here:
 
-- **LIVE** — deployed and verified in the target production environment.
-- **WIRED** — frontend code really calls the typed/protected backend contract.
-- **STACKED** — backend implementation exists and is validated in GitHub source but is not production-deployed.
-- **PREVIEW** — browser/product concept that is not durable backend truth.
-- **PLANNED** — documented direction with no implemented contract yet.
+- **LIVE UI** — the route is deployed and reachable.
+- **WIRED** — the frontend calls a real protected backend contract.
+- **PREVIEW** — browser/sample behavior that is not durable server truth.
+- **LEGACY** — retained only for compatibility/history.
 
-`WIRED + STACKED` is a normal state: the page can be ready while production still returns `404 / NOT DEPLOYED` for the newer API.
+Whether a backend dependency is deployed is **not maintained as duplicated static truth in this repository**. The page should handle the API response truthfully, and engineers should consult `jay-app` for backend status.
 
-## Current production boundary
+## Core frontend rule
 
-Production remains on the reviewed Check In Phase 1 boundary:
+> One backend, many interfaces.
 
-- production backend release: `de55627926316581808337f8e9c10d26e7d64588`
-- production Alembic revision: `c41f9b8d2e70`
-- protected Check In switch/policy/Incident/operator-session behavior is LIVE
-- production does **not** yet contain the full stacked Directory, Connection, Library, Email Automation Runtime, Authority or trigger-consumption stack
-
-The broader backend work exists in validated source and stacked draft PRs. Tests and frontend wiring do not make that work production-live.
-
-## Frontend truth
-
-The current frontend has meaningful protected/backend-aware lanes rather than isolated mock pages:
-
-- Directory: protected Person + email ContactMethod lane where deployed.
-- Library: protected `ContentAsset → ContentDraft → ContentVersion` lane plus separate local preview concepts.
-- Automations: a SERVER-BACKED lane for durable Draft/preflight/Review/Publish/Runtime alongside richer LOCAL PREVIEW workflow concepts.
-- Email: protected manual Email orchestration through Directory → Connection → Library → Automation → Runtime → receipt.
-- Requests: preview-before-write contact operations and typed Email safe simulation through the same canonical backend chain.
-- Control: read-only protected Runtime receipt/history lane plus explicitly sample operational preview panels.
-
-Exact IDs now connect surfaces: Email/Requests can open a specific Run in Control, and Control can point to the exact Directory Person or Library ContentAsset involved.
-
-See `docs/continuum-frontend-CURRENT.md` for the route-by-route wiring matrix.
-
-## Backend truth
-
-`CMXChat/jay-app/main` contains validated Check In plus Phase 2A Library/typed Automation source, but Phase 2A is not production-migrated.
-
-The later implementation is intentionally stacked through draft backend PRs, culminating in draft PR #24 (`dev/durable-trigger-consumption`), where durable trigger consumption and the separately invoked fake-only Check In consumer are implemented and validated. Real SMTP remains direct-manual-owner-only in the stacked proof; unattended execution remains fake-only.
-
-Read `CMXChat/jay-app/PROJECT-STATUS-CURRENT.md` and the active stacked branch's `specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` before changing backend-facing frontend behavior.
-
-## Safety invariants
-
-- frontend never receives database credentials;
-- browser code never talks directly to PostgreSQL or SMTP;
-- protected mutations use the server session, exact Origin and CSRF;
-- stable IDs are identity; display names/emails are presentation data;
-- immutable published/version/receipt history is never reconstructed from current mutable state;
-- prompt text, urgency, AI confidence, readiness or capability never grant Authority;
-- human UI, future AI and future MCP adapters use the same typed services;
-- no arbitrary Python/JavaScript/shell/SQL/eval execution path;
-- durable time/waits belong server-side, never in a browser tab;
-- browser preview state must never silently impersonate missing server truth.
+The browser may project and navigate durable server objects, but it must not invent a second database, execution engine, permission system, or deployment record.
 
 ## Documentation rule
 
-Useful historical material is preserved. Cleanup means **changing authority, not erasing knowledge**.
+Useful old frontend/product history can remain, but new backend implementation truth belongs only in `jay-app`.
 
-The documentation policy is in `docs/DOCUMENTATION-AUTHORITY.md`. Git history preserves the pre-consolidation README and index at First-Repo commit `311e8c2feac73e6ea7d7f99b6a7895d2a973ad25`.
+The pre-correction documentation state remains recoverable through Git history. Removing duplicated backend status from First-Repo does not erase it from the project; the canonical backend copy remains in `jay-app`.
