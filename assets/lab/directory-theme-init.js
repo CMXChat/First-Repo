@@ -1,6 +1,18 @@
 (() => {
   'use strict';
   const KEY = 'continuum-directory-theme-v1';
+  const canonicalRoutes = new Map([
+    ['/lab/control/', '/control/'],
+    ['/lab/automations/', '/automations/'],
+    ['/lab/directory/', '/directory/'],
+    ['/lab/library/', '/library/'],
+  ]);
+  const commandRoutes = new Map([
+    ['Control Center', '/control/'],
+    ['Automations', '/automations/'],
+    ['Library', '/library/'],
+  ]);
+
   try {
     const saved = localStorage.getItem(KEY);
     if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved;
@@ -24,17 +36,21 @@
   }
 
   function patchCanonicalRoutes() {
-    const routes = new Map([
-      ['/lab/control/', '/control/'],
-      ['/lab/automations/', '/automations/'],
-      ['/lab/directory/', '/directory/'],
-      ['/lab/library/', '/library/'],
-    ]);
     document.querySelectorAll('a[href]').forEach((link) => {
-      const target = routes.get(link.getAttribute('href'));
+      const target = canonicalRoutes.get(link.getAttribute('href'));
       if (target) link.href = target;
     });
   }
+
+  document.addEventListener('click', (event) => {
+    const command = event.target.closest?.('.dir-command-item');
+    const title = command?.querySelector('strong')?.textContent?.trim();
+    const target = commandRoutes.get(title);
+    if (!target) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    window.location.href = target;
+  }, true);
 
   if (!document.querySelector('script[data-library-shell-convergence]')) {
     const script = document.createElement('script');
