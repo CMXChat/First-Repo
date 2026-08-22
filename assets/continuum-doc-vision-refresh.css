@@ -1,0 +1,221 @@
+.continuum-knowledge-authority,
+.continuum-proof-chain {
+  margin: 28px 0 0;
+  padding: 22px;
+  border: 1px solid rgba(77, 118, 169, .22);
+  border-radius: 20px;
+  background: rgba(232, 240, 248, .52);
+}
+
+.continuum-knowledge-authority-head,
+.continuum-proof-chain-head {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.continuum-knowledge-authority-head > div,
+.continuum-proof-chain-head > div {
+  max-width: 720px;
+}
+
+.continuum-knowledge-authority-head span,
+.continuum-proof-chain-head span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .66;
+}
+
+.continuum-knowledge-authority-head strong,
+.continuum-proof-chain-head strong {
+  display: block;
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.continuum-knowledge-authority-head p,
+.continuum-proof-chain-head p {
+  margin: 7px 0 0;
+  line-height: 1.55;
+  opacity: .78;
+}
+
+.continuum-proof-badge {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid rgba(34, 124, 92, .25);
+  border-radius: 999px;
+  background: rgba(57, 173, 126, .1);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.continuum-knowledge-authority-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.continuum-knowledge-authority-card {
+  padding: 18px;
+  border: 1px solid rgba(77, 118, 169, .18);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .72);
+}
+
+.continuum-knowledge-authority-card > span {
+  display: block;
+  margin-bottom: 5px;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: .6;
+}
+
+.continuum-knowledge-authority-card > strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.02rem;
+}
+
+.continuum-knowledge-authority-card ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.continuum-knowledge-authority-card li {
+  position: relative;
+  padding-left: 16px;
+  line-height: 1.45;
+  opacity: .82;
+}
+
+.continuum-knowledge-authority-card li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: .55;
+}
+
+.continuum-proof-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.continuum-proof-step {
+  position: relative;
+  min-height: 122px;
+  padding: 15px;
+  border: 1px solid rgba(77, 118, 169, .18);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .72);
+}
+
+.continuum-proof-step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  top: 50%;
+  right: -9px;
+  z-index: 2;
+  transform: translate(50%, -50%);
+  font-weight: 800;
+  opacity: .45;
+}
+
+.continuum-proof-step b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: .62;
+}
+
+.continuum-proof-step strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: .94rem;
+  line-height: 1.25;
+}
+
+.continuum-proof-step small {
+  display: block;
+  line-height: 1.45;
+  opacity: .7;
+}
+
+.continuum-product-actions {
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+}
+
+.continuum-route-link.continuum-route-building .continuum-route-status {
+  border-color: rgba(76, 105, 201, .24);
+  background: rgba(76, 105, 201, .09);
+}
+
+html[data-theme='dark'] .continuum-knowledge-authority,
+html[data-theme='dark'] .continuum-proof-chain {
+  border-color: rgba(139, 175, 222, .2);
+  background: rgba(18, 31, 48, .72);
+}
+
+html[data-theme='dark'] .continuum-knowledge-authority-card,
+html[data-theme='dark'] .continuum-proof-step {
+  border-color: rgba(139, 175, 222, .18);
+  background: rgba(14, 24, 38, .7);
+}
+
+@media (max-width: 900px) {
+  .continuum-proof-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .continuum-proof-step {
+    min-height: 0;
+  }
+
+  .continuum-proof-step:not(:last-child)::after {
+    content: '↓';
+    top: auto;
+    right: 50%;
+    bottom: -10px;
+    transform: translate(50%, 50%);
+  }
+}
+
+@media (max-width: 680px) {
+  .continuum-knowledge-authority,
+  .continuum-proof-chain {
+    padding: 17px;
+    border-radius: 17px;
+  }
+
+  .continuum-knowledge-authority-head,
+  .continuum-proof-chain-head {
+    display: block;
+  }
+
+  .continuum-proof-badge {
+    display: inline-block;
+    margin-top: 12px;
+  }
+
+  .continuum-knowledge-authority-grid {
+    grid-template-columns: 1fr;
+  }
+}
