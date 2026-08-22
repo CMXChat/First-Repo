@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '2026-08-22.1';
+  const VERSION = '2026-08-22.2';
   const ROUTE = location.pathname.endsWith('/') ? location.pathname : `${location.pathname}/`;
   const SUPPORTED = new Set(['/control/', '/directory/', '/library/', '/automations/', '/email/']);
   if (!SUPPORTED.has(ROUTE)) return;
@@ -45,14 +45,14 @@
     '/library/': {
       label: 'LIBRARY SOURCE',
       tone: 'blue',
-      title: 'Durable content versions are built in source.',
-      summary: 'The backend model already owns ContentAsset → mutable ContentDraft → immutable ContentVersion, protected revision conflicts and Library references used by published Automations. This static Library surface is still a browser preview until the stacked backend is deployed and connected here.',
+      title: 'Durable content versions are built and the canonical frontend lane is wired.',
+      summary: 'The backend owns ContentAsset → mutable ContentDraft → immutable ContentVersion with revision conflicts and exact historical snapshots. Canonical /library/ now has a protected server lane using that contract where deployed, while folders, mixed media and file concepts remain explicit browser previews. The stacked Library backend is not production-deployed yet.',
       facts: [
         ['BUILT', 'ContentAsset + mutable ContentDraft'],
         ['BUILT', 'Immutable ContentVersion + exact references'],
-        ['BUILT', 'Protected revision / conflict semantics'],
-        ['PREVIEW', 'Current browser Library workspace'],
-        ['PENDING', 'Production persistence + binary object storage'],
+        ['WIRED', 'Canonical /library/ protected content lane'],
+        ['PROVING', '409 conflict + immutable-version browser proof'],
+        ['PENDING', 'Production backend deployment + binary object storage'],
       ],
     },
     '/automations/': {
@@ -184,13 +184,13 @@
     const eyebrow = document.querySelector('.lib-eyebrow');
     if (eyebrow) eyebrow.innerHTML = '<span></span> Continuum · Proving';
     const kicker = document.getElementById('contextKicker');
-    if (kicker && /sample data/i.test(kicker.textContent)) kicker.textContent = 'Protected information · browser preview over built backend model';
+    if (kicker && /browser-local|sample data/i.test(kicker.textContent)) kicker.textContent = 'Browser-local future concepts below protected durable content';
     const storageTitle = document.querySelector('.lib-storage-note strong');
     const storageCopy = document.querySelector('.lib-storage-note small');
     if (storageTitle) storageTitle.textContent = 'LOCAL PREVIEW STORAGE';
-    if (storageCopy) storageCopy.textContent = 'This page still stores preview content in this browser. The real ContentAsset → Draft → immutable Version backend model is implemented in stacked source but not deployed here yet.';
+    if (storageCopy) storageCopy.textContent = 'Only the preview workspace uses browser storage. The protected ContentAsset → Draft → immutable Version lane above uses the backend contract where deployed and never writes protected content into this local store.';
     const boundary = document.querySelector('.lib-boundary');
-    if (boundary) boundary.innerHTML = '<b>LIBRARY · PROVING</b> — The protected ContentAsset / ContentDraft / ContentVersion backend exists in stacked source. This static surface still uses browser-local preview data until the backend stack is deliberately merged, migrated and deployed.';
+    if (boundary) boundary.innerHTML = '<b>LIBRARY · PROVING</b> — Canonical /library/ now has a protected ContentAsset / ContentDraft / ContentVersion lane with explicit revision-conflict and immutable-version behavior. The stacked backend is still not production-deployed; mixed-media/file/folder concepts remain local preview.';
     document.querySelectorAll('.lib-rail-link span').forEach(node => {
       if (node.textContent.includes('Directory · LAB')) node.textContent = 'Directory · PROVING';
       if (node.textContent.includes('Library · LAB')) node.textContent = 'Library · PROVING';

@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'library/**'
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/library/**'
       - 'assets/lab/library-*.js'
       - 'assets/lab/library-*.css'
       - 'assets/lab/continuum-library-shell-convergence-v1.js'
@@ -12,11 +14,15 @@ on:
       - 'docs/continuum-library-lab-CURRENT.md'
       - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-library-standalone-v1.test.js'
+      - 'tests/continuum-library-server-v2.test.js'
+      - 'tests/continuum-library-server-v2-browser.js'
       - 'tests/continuum-library-shell-convergence-v1.test.js'
       - '.github/workflows/library-lab-validation.yml'
   pull_request:
     paths:
       - 'library/**'
+      - 'assets/continuum-operator-api-v1.js'
+      - 'assets/library/**'
       - 'assets/lab/library-*.js'
       - 'assets/lab/library-*.css'
       - 'assets/lab/continuum-library-shell-convergence-v1.js'
@@ -25,6 +31,8 @@ on:
       - 'docs/continuum-library-lab-CURRENT.md'
       - 'docs/continuum-shared-app-shell-CURRENT.md'
       - 'tests/continuum-library-standalone-v1.test.js'
+      - 'tests/continuum-library-server-v2.test.js'
+      - 'tests/continuum-library-server-v2-browser.js'
       - 'tests/continuum-library-shell-convergence-v1.test.js'
       - '.github/workflows/library-lab-validation.yml'
 
@@ -40,7 +48,32 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate standalone Library contract
-        run: node tests/continuum-library-standalone-v1.test.js
+      - name: Validate Library JavaScript and source contracts
+        run: |
+          node --check assets/continuum-operator-api-v1.js
+          node --check assets/library/library-server-v2.js
+          node tests/continuum-library-standalone-v1.test.js
+          node tests/continuum-library-server-v2.test.js
       - name: Validate Library shared-shell convergence
         run: node tests/continuum-library-shell-convergence-v1.test.js
+
+  library-browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright core
+        run: npm install --no-save playwright-core@1.55.0
+      - name: Prove durable Draft, conflict, and immutable Version behavior
+        run: |
+          set -euo pipefail
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$BROWSER"
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/library-server-proof-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          sleep 1
+          BROWSER="$BROWSER" node tests/continuum-library-server-v2-browser.js

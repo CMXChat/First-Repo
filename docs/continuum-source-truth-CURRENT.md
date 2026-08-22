@@ -80,11 +80,16 @@ Truth shown:
 Truth shown:
 
 - the backend ContentAsset → mutable ContentDraft → immutable ContentVersion model exists in stacked source;
-- exact version references and revision/conflict semantics exist;
-- the current static Library workspace still uses browser-local preview data;
-- binary object storage remains future deployment/platform work.
+- exact version references and `expected_revision` conflict semantics exist;
+- canonical `/library/` now has a protected server lane for Content create/read, Draft updates and immutable Version creation where those routes are deployed;
+- the protected lane shares the same operator session/CSRF transport as Email, Requests and Directory;
+- the frontend preserves unsaved editor text on a backend `409` and requires an explicit server-Draft reload rather than blind overwrite;
+- a frozen ContentVersion remains unchanged after later Draft edits and is rendered as an exact historical snapshot;
+- folders, mixed-media cards, imports and file viewers remain explicitly browser-local preview concepts in this slice;
+- binary object storage remains future deployment/platform work;
+- the stacked Library backend is still not production-deployed.
 
-The page must no longer imply that no protected Library backend exists at all.
+The page must distinguish a **wired protected frontend lane** from a **LIVE deployed backend**. Mocked browser proof validates frontend orchestration; it does not cross the deployment boundary.
 
 ### `/automations/`
 

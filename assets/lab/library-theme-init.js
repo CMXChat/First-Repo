@@ -38,7 +38,7 @@
   function installSourceTruth() {
     if (document.querySelector('script[data-continuum-source-truth]')) return;
     const script = document.createElement('script');
-    script.src = '/assets/continuum-source-truth-v1.js?v=20260822-1';
+    script.src = '/assets/continuum-source-truth-v1.js?v=20260822-2';
     script.defer = true;
     script.dataset.continuumSourceTruth = 'loader';
     document.head.appendChild(script);

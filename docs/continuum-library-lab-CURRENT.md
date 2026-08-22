@@ -1,15 +1,12 @@
-# Continuum Library Lab - CURRENT
+# Continuum Library — CURRENT
 
-Date: 2026-08-19
-Status: Standalone Library product prototype. Browser-local native content and file metadata only. No protected Library API, PostgreSQL persistence, object-storage upload, production extraction, AI retrieval or provider execution is claimed.
+Last updated: 2026-08-22
+Route: `/library/`
+Status: **PROTECTED CONTENT FRONTEND PROOF — stacked Library backend not production-deployed**
 
-Route:
+## Role
 
-`https://db.cmxchat.com/lab/library/`
-
-# Role
-
-Library is Continuum's protected information layer.
+Library is Continuum's durable information layer.
 
 Current product model:
 
@@ -21,185 +18,244 @@ Current product model:
 
 `Runtime = what actually happened`
 
-The standalone Library should feel like a first-class information workspace rather than a generic file browser or an administration screen.
+The important current proof is not generic file-manager polish. It is whether Continuum can preserve an exact piece of information, let the Draft change safely, freeze immutable historical Versions, and later prove which exact Version an Automation used.
 
-# Standalone migration
+## Current backend truth
 
-The earlier Library UX lived inside the focused Automation/content editor stack. The new route is isolated and does not inherit the broad `/lab/` Check In snapshot-loader compatibility stack.
+The canonical backend handbook on `CMXChat/jay-app` PR #24 stack defines:
 
-Current standalone files:
+`ContentAsset → mutable ContentDraft → immutable ContentVersion`
 
-- `lab/library/index.html`
-- `assets/lab/library-theme-init.js`
-- `assets/lab/library-app-v1.css`
-- `assets/lab/library-app-v1.js`
-- `assets/lab/library-app-v1-qa.js`
-- `tests/continuum-library-standalone-v1.test.js`
+Protected routes used by the frontend lane:
+
+- `GET /api/v1/checkin/operator/library`
+- `POST /api/v1/checkin/operator/library/content`
+- `GET /api/v1/checkin/operator/library/content/{content_id}`
+- `PUT /api/v1/checkin/operator/library/content/{content_id}/draft`
+- `POST /api/v1/checkin/operator/library/content/{content_id}/versions`
+
+The backend also has folder/search/move contracts, but this frontend slice intentionally focuses on native Content durability before widening the integration.
+
+Production boundary remains unchanged:
+
+- protected operator session foundation is production-live;
+- stacked Library Content/Draft/Version implementation is source-built and validated;
+- the stacked backend has not been merged, production-migrated or deployed by this frontend work;
+- a production session may unlock successfully while Library routes still return unavailable/not deployed.
+
+Frontend support is not a LIVE deployment claim.
+
+## Protected server lane
+
+Canonical `/library/` now contains a dedicated protected content lane above the older browser-local product preview.
+
+Files:
+
+- `library/index.html`
+- `assets/continuum-operator-api-v1.js`
+- `assets/library/library-server-v2.js`
+- `assets/library/library-server-v2.css`
+- `tests/continuum-library-server-v2.test.js`
+- `tests/continuum-library-server-v2-browser.js`
 - `.github/workflows/library-lab-validation.yml`
 
-The older premium Library/editor/file prototypes remain useful compatibility/reference implementations while migration settles. Do not delete them merely because the standalone route exists.
+The server lane uses the same shared operator transport as Email, Requests and Directory.
 
-# Shared Lab stores
+It does not create a second session, CSRF or error-classification implementation.
 
-The standalone route deliberately reuses the existing browser prototype stores so current Automation content/file examples can appear in the same Library universe:
+## Protected session behavior
+
+The server lane distinguishes:
+
+- checking;
+- connected;
+- locked;
+- Origin denied;
+- backend unreachable;
+- Library route not deployed;
+- backend unavailable/error.
+
+When the backend is genuinely locked, the operator key can be entered directly on `/library/`.
+
+The key is:
+
+- sent directly to the backend unlock route;
+- cleared from the input immediately;
+- never written to localStorage or sessionStorage.
+
+Protected reads use the backend cookie session.
+
+Protected mutations use the same cookie plus `X-CSRF-Token` contract used by the other protected surfaces.
+
+## Durable content behavior
+
+### Create
+
+Creating protected native content sends a typed `ContentAssetCreate` shape with:
+
+- `kind`;
+- `title`;
+- `source_text`;
+- `visibility: "library"`.
+
+The backend response supplies the canonical ContentAsset ID and initial ContentDraft.
+
+The browser does not manufacture a protected UUID.
+
+### Edit Draft
+
+The editor keeps the exact revision it loaded.
+
+Saving sends:
+
+`{ expected_revision, source_text }`
+
+The backend is authoritative for revision progression.
+
+### Conflict
+
+A stale revision returns `409`.
+
+The frontend does **not** retry with a newer revision and silently overwrite somebody else's change.
+
+Instead it:
+
+1. preserves the user's unsaved editor text;
+2. fetches the latest server Draft;
+3. explains the old editor revision versus current server revision;
+4. requires the user to reload the server Draft before another save;
+5. leaves reconciliation/manual re-application visible rather than hiding the conflict.
+
+Plain-language meaning:
+
+**a stale editor is evidence of competing state, not permission to overwrite newer state.**
+
+## Immutable Version behavior
+
+`Freeze immutable Version` calls the existing protected Version route only when the editor matches the current server Draft.
+
+The returned ContentVersion owns:
+
+- stable Version ID;
+- version number;
+- exact source Draft revision;
+- exact frozen source text;
+- checksum;
+- creator/timestamp.
+
+Later Draft edits do not rewrite the prior Version.
+
+The frontend renders a small immutable-proof state after a Version is frozen:
+
+- immediately after freezing, it identifies the Draft revision captured;
+- after a later Draft edit, it explicitly shows that the Draft has moved while the frozen Version still contains its original source/checksum.
+
+That is the current durable-memory proof.
+
+## Why this matters
+
+An Automation should not merely remember "the current text of this note."
+
+It should be able to reference an exact immutable ContentVersion.
+
+The trustworthy chain becomes:
+
+`ContentAsset → ContentVersion → AutomationVersion → Runtime receipt`
+
+Later edits to the current Draft can improve future work without rewriting historical intent or evidence.
+
+## Local preview lane
+
+The existing rich Library prototype remains available below the protected lane.
+
+It still demonstrates future/product concepts such as:
+
+- local folders;
+- mixed native/file/media cards;
+- local Favorites/Recent;
+- preview import flow;
+- local sample versions;
+- media viewer shells;
+- future binary upload direction;
+- sample knowledge/dependency presentation.
+
+Its stores remain:
 
 - `cmx-lab-content-assets-v1`
 - `cmx-lab-file-assets-v1`
 - `cmx-lab-library-meta-v1`
 - `cmx-lab-library-ui-v1`
 
-The route only adds missing sample records/metadata and preserves existing stored Lab records.
+Those stores are explicitly **local preview state**.
 
-These browser shapes are not the future PostgreSQL schema.
+They are not PostgreSQL truth and must not receive protected server Content IDs, Draft source, ContentVersion source, operator keys or CSRF values.
 
-# Current Library experience
+## Files and media boundary
 
-The standalone route currently provides:
+Binary object storage is not implemented by this First-Repo integration.
 
-- nested folders and folder tree;
-- direct parent/up navigation and breadcrumbs;
-- All / Recent / Favorites / Templates / Imports smart views;
-- list and grid presentation;
-- search, type filtering and sorting;
-- mixed native content and file/media records;
-- desktop three-pane workspace with item inspector;
-- mobile item detail sheet and dedicated bottom navigation;
-- light theme and rich near-black dark theme;
-- local `Cmd/Ctrl + K` command palette;
-- local folder creation;
-- local native Document / Markdown / plain-text / Template creation;
-- browser-local Draft editing;
-- explicit browser-local immutable version snapshots;
-- item Preview / Details / Versions / Used by / Knowledge tabs;
-- sample dependency/Used by projections;
-- clear sensitivity labels;
-- local Favorites and Recent navigation state.
+The local preview can still show PDF/image/video/audio/spreadsheet ideas, but it must not claim that file bytes were durably uploaded to the protected backend.
 
-# Files and media
-
-The Lab reuses the protected-file metadata examples and adds first-class Library presentation for:
-
-- PDF;
-- image;
-- video;
-- audio;
-- spreadsheet;
-- text/Markdown file;
-- generic file fallback direction.
-
-Video and audio receive product-quality viewer shells with duration/progress/waveform concepts. They do not play real bytes because the Lab has no object storage.
-
-The route explicitly preserves the future exact-version model:
+Future exact binary history remains conceptually:
 
 `FileAsset → immutable FileVersion → protected viewer / attachment / dependency`
 
-A new FileVersion must never silently rewrite historical references.
+Do not fake that with browser-local bytes or public URLs.
 
-# Native content
+## Canonical navigation
 
-Native Library content follows the accepted direction:
+Active Library source now points directly to:
 
-`ContentAsset → mutable ContentDraft → immutable ContentVersion`
+- `/control/`
+- `/checkin/`
+- `/directory/`
+- `/library/`
+- `/automations/`
+- `/spaces/`
 
-The standalone Lab can edit browser-local native content and create local version snapshots to prove the interaction model.
+`/lab/*` remains compatibility history only and must not be reintroduced into active Library navigation.
 
-Action-scoped Automation content remains hidden from the general Library unless it is explicitly reusable/Library-visible under the compatibility metadata.
+## Validation target
 
-Production must preserve the rule that editing a current Draft does not silently rewrite an already-published AutomationVersion.
+Focused validation covers:
 
-# Knowledge ingestion preview
+- existing local Library product/storage contract;
+- protected server-lane source contract;
+- shared operator API use;
+- no second direct protected transport;
+- canonical routes;
+- protected session unlock;
+- ContentAsset + Draft creation;
+- CSRF on writes;
+- immutable Version creation;
+- later Draft change without rewriting the frozen Version;
+- real `409` conflict handling with unsaved text preservation;
+- reload/reconcile after conflict;
+- desktop and mobile horizontal containment;
+- protected values absent from localStorage/sessionStorage.
 
-The standalone Import surface proves that Library is broader than file upload.
+Browser validation uses a mocked backend boundary. It proves frontend orchestration and semantics, not production deployment.
 
-Current local intake modes:
+## Product loop
 
-- direct pasted text;
-- Markdown;
-- JSON;
-- Files as an explicit future-upload explanation.
+Library now strengthens the shared Continuum proof:
 
-Pasted sources can be stored browser-locally with the exact original source retained on the sample record.
+`Requests → Directory identity → Library durable memory → Email/Automations → Runtime → Receipt`
 
-The visible product direction is:
+The next cross-surface step is to make exact protected ContentAsset/ContentVersion IDs easier to follow into Email/Automations and then into human-readable Runtime history.
 
-`STORE → UNDERSTAND → INTEGRATE`
+## Recovery order
 
-Current Lab behavior stops at local source preservation plus deterministic metadata/presentation. It does not run an AI model, extraction pipeline, Directory mutation, State mutation or production search index.
+When resuming Library work:
 
-Imported information remains distinguishable from accepted Continuum truth and authority.
+1. `docs/continuum-frontend-roadmap-CURRENT.md`
+2. `docs/continuum-frontend-week-CURRENT.md`
+3. `docs/continuum-source-truth-CURRENT.md`
+4. this file
+5. `library/index.html`
+6. `assets/continuum-operator-api-v1.js`
+7. `assets/library/library-server-v2.js`
+8. `tests/continuum-library-server-v2.test.js`
+9. current `CMXChat/jay-app/specs/003-server-checkin/FRONTEND-BACKEND-INTEGRATION-CURRENT.md` on the active PR #24 stack
 
-# Inspector contract
-
-Opening an item should feel like opening a Continuum object, not merely a filename.
-
-Current inspector tabs:
-
-- Preview;
-- Details;
-- Versions;
-- Used by;
-- Knowledge.
-
-The product direction is to answer:
-
-- What is this?
-- Which exact version is current?
-- Which versions exist?
-- Where is it used?
-- What would archive/replace affect?
-- What derived representations or extracted knowledge exist?
-- What privacy/AI policy applies?
-
-`Used by` is currently sample/local dependency presentation. Production must derive it from protected backend references.
-
-# Mobile direction
-
-The mobile Library is intentionally not a squeezed desktop file manager.
-
-Current rules:
-
-- normal mobile input typography;
-- finger-sized primary controls;
-- one-column item browsing;
-- item inspector becomes a bottom sheet;
-- creation/import/editor dialogs become mobile sheets/full-height authoring surfaces;
-- current Library remains directly visible in bottom navigation;
-- secondary Continuum destinations can move behind More as the app gains first-class surfaces;
-- obvious folder Up/Back controls remain available;
-- reduced-motion preference is respected.
-
-# Production persistence boundary
-
-The real Library is expected to use:
-
-- PostgreSQL for LibraryFolder, ContentAsset, ContentDraft, ContentVersion, FileAsset/FileVersion metadata, provenance, relationships, dependency references, ingestion metadata and protected search state;
-- private object storage for binary FileVersion bytes such as video, audio, images, PDFs, DOCX and spreadsheets;
-- protected exact-version viewers/downloads rather than permanent public URLs.
-
-Current `/lab/library/` does not claim any of those server services exist.
-
-# Backend bridge
-
-The first real backend proof remains the protected `continuity.md` vertical slice:
-
-create `continuity.md` → persist ContentAsset + Draft in PostgreSQL → reload/second-device reads the same Draft → concurrency-safe edit → Save Version creates immutable ContentVersion → protected Library search finds it → place it in a real LibraryFolder → expose parent/path metadata → Automation Draft references the exact content → no provider execution.
-
-Binary file persistence/object storage follows the protected FileAsset/FileVersion handoff and should not be faked in the browser.
-
-# Shared shell
-
-Library is now a first-class Lab destination at `/lab/library/`.
-
-Long-term graduation remains `/library/` when the protected production surface is real.
-
-Control Center remains the proposed Continuum home. Library owns its information workspace and must not be flattened into the Control Center dashboard layout.
-
-# Immediate next QA / product direction
-
-Before widening the feature set, prefer:
-
-1. real-device visual review when convenient;
-2. refine mixed-media card density and inspector hierarchy if actual rendering exposes issues;
-3. converge Control Center/Directory navigation onto the new Library destination without disrupting LIVE Check In;
-4. keep old embedded Library compatibility behavior working while the standalone route settles;
-5. replace local sample persistence incrementally with protected backend services after the current Phase 2A release boundary.
+Never infer production availability from frontend support or mocked browser proof.
