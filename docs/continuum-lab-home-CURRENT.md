@@ -18,7 +18,8 @@ The page intentionally uses a terminal/tree presentation because it is a develop
 - `/lab/automations/` — Automations proving surface; server-backed lane remains distinct from LOCAL LAB state
 - `/lab/directory/` — Directory development/proving route
 - `/lab/library/` — Library prototype
-- `/lab/email/` — protected manual Email action playground; marked `PROVING` because the frontend exists while its stacked backend remains undeployed/live-acceptance pending
+- `/email/` — canonical protected manual Email action playground; marked `PROVING` because the frontend exists while its stacked backend remains undeployed/live-acceptance pending
+- `/lab/email/` — compatibility redirect to `/email/`; owns no Email implementation
 - `/lab/snapshot/` — preserved integrated Check In-derived Lab snapshot for regression/reference
 - `/checkin/` — live protected Check In surface outside Lab
 - `/directory/` — graduated protected Directory preview outside Lab
@@ -29,11 +30,13 @@ The page intentionally uses a terminal/tree presentation because it is a develop
 
 ## Email route integration
 
-The Email Lab slice now exists at `/lab/email/`, so the former `NEXT` placeholder has been replaced with a real link marked `PROVING`.
+The canonical Email proving surface now lives at `/email/`. The Lab launcher retains an Email row marked `PROVING`, but that row points outside the nested Lab route to `/email/`.
 
 This label is intentionally frontend-scoped. It does not claim that the stacked Directory/Connection/Library/Automation/Runtime/SMTP backend is deployed to production. The Email route owns its protected API behavior and safety boundaries; the Lab home still owns navigation only.
 
-Terminal commands `email` and `open email` resolve to `/lab/email/`.
+Terminal commands `email` and `open email` resolve to `/email/`.
+
+`/lab/email/` remains only as a compatibility redirect so old bookmarks do not break. Do not recreate a second Email implementation under `/lab`.
 
 ## Old `/lab/` preservation
 
@@ -82,7 +85,7 @@ The workflow checks:
 - launcher JS parses;
 - root no longer loads `lab-loader.js`;
 - focused routes and truthful status labels exist;
-- Email resolves to `/lab/email/` and is marked `PROVING`;
+- Email resolves to `/email/` and is marked `PROVING`;
 - the preserved snapshot still loads the old Lab loader;
 - the launcher remains navigation-only (no fetch/WebSocket/browser-storage/eval path);
 - old `#lab=` links redirect to `/lab/snapshot/`;
@@ -90,4 +93,4 @@ The workflow checks:
 
 ## Next work
 
-`/lab/email/` now owns its own feature handoff at `docs/continuum-email-lab-CURRENT.md`. Further Email capability expansion must follow the canonical backend contract rather than expanding the Lab launcher.
+`/email/` owns its feature handoff at `docs/continuum-email-lab-CURRENT.md`. Further Email capability expansion must follow the canonical backend contract rather than expanding the Lab launcher.

@@ -1,8 +1,10 @@
-# Continuum Email Lab — CURRENT
+# Continuum Email — CURRENT
 
 ## Purpose
 
-`/lab/email/` is a protected development playground for one exact manual Email action. It is not an inbox, campaign manager, generic SMTP client, scheduler, or unattended-authority surface.
+`/email/` is the canonical protected development/proving route for one exact manual Email action. It is not an inbox, campaign manager, generic SMTP client, scheduler, or unattended-authority surface.
+
+`/lab/email/` is retained only as a compatibility redirect to `/email/`. Do not build a second Email implementation under `/lab`.
 
 ## Canonical backend source
 
@@ -66,25 +68,30 @@ No CC/BCC, attachments, bulk send, arbitrary recipients, sender substitution, sc
 
 ## Files
 
-- `lab/email/index.html` — protected Email Lab shell only.
-- `assets/lab/lab-email-api-v1.js` — disposable thin static transport for the current Lab. Final React should use the generated `jay-app` client.
+- `email/index.html` — canonical protected Email shell.
+- `lab/email/index.html` — compatibility redirect only.
+- `assets/lab/lab-email-api-v1.js` — disposable thin static transport for the current proving surface. Final React should use the generated `jay-app` client.
 - `assets/lab/lab-email-v1.js` — orchestration/presentation for the manual Email proof.
 - `assets/lab/lab-email-v1.css` — responsive presentation.
-- `tests/continuum-email-lab-v1.test.js` — source contract.
-- `.github/workflows/continuum-email-lab-validation.yml` — source + desktop/mobile geometry validation.
+- `tests/continuum-email-lab-v1.test.js` — source contract, now anchored to `/email/`.
+- `.github/workflows/continuum-email-lab-validation.yml` — source + desktop/mobile geometry validation for `/email/`.
 
-## Route integration note
+## Route integration
 
-PR #124 independently introduces the new terminal-tree `/lab/` launcher and currently labels Email as `NEXT`. This Email branch was intentionally created from clean `main` rather than stacked on PR #124. After both are ready, reconcile the launcher row so `/lab/email/` becomes a navigable `PROVING`/`LAB` route without duplicating the Email implementation.
+Canonical URL: `https://db.cmxchat.com/email/`.
+
+The `/lab/` terminal-tree launcher still exposes Email as a `PROVING` surface, but its row and `email` / `open email` commands navigate to `/email/`. The old `/lab/email/` path redirects to `/email/` and owns no Email state or logic.
 
 ## Acceptance state
 
-WIRED AGAINST CURRENT STACKED CONTRACT: implementation created.
+STATIC ROUTE IMPLEMENTATION: ready for Pages deployment once merged to `main`.
 
-LIVE ACCEPTANCE PROVEN: NO. The backend stack used by this page is not currently production-deployed. A real browser acceptance pass must wait for authorized backend migration/deployment and protected-session reachability.
+BACKEND LIVE ACCEPTANCE PROVEN: NO. The backend stack used by this page is not currently production-deployed. A real protected browser acceptance pass must wait for authorized backend migration/deployment and protected-session reachability.
 
 ## Live acceptance checklist
 
+- `/email/` is served by `db.cmxchat.com` after Pages deployment
+- `/lab/email/` redirects to `/email/`
 - protected session works from `db.cmxchat.com` to `api.cmxchat.com`
 - at least one active Person with active email ContactMethod exists
 - usable Connection + SenderIdentity exist
@@ -99,4 +106,4 @@ LIVE ACCEPTANCE PROVEN: NO. The backend stack used by this page is not currently
 
 ## Stop boundary
 
-Do not add Authority, unattended execution, CC/BCC, attachments, arbitrary recipients or production deployment in this frontend slice. Do not merge automatically without owner authorization.
+Do not add Authority, unattended execution, CC/BCC, attachments, arbitrary recipients or production backend deployment as part of this route relocation. Do not duplicate the Email UI under `/lab`.

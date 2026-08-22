@@ -1,49 +1,13 @@
 <!doctype html>
-<html lang="en" data-cmx-gate="black-prompt" data-cmx-gate-id="continuum-private-pages">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
-  <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.cmxchat.com http://localhost:8000; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
-  <title>Continuum · Email Lab</title>
-  <link rel="stylesheet" href="/assets/gates/cmx-gate-black-prompt.css" />
-  <link rel="stylesheet" href="/assets/lab/lab-email-v1.css?v=20260821-1" />
+  <meta http-equiv="refresh" content="0; url=/email/" />
+  <title>Continuum · Email moved</title>
 </head>
-<body class="cmx-black-prompt-locked">
-  <!-- Publication retrigger: 2026-08-21T22:32-04:00 -->
-  <div data-cmx-gated-content hidden>
-    <main class="email-shell" data-email-lab="v1">
-      <header class="email-topbar">
-        <a href="/lab/" class="brand">C <span>Continuum Lab</span></a>
-        <nav><a href="/directory/">Directory</a><a href="/lab/automations/">Automations</a><a href="/lab/library/">Library</a></nav>
-      </header>
-
-      <section class="email-hero">
-        <div><span class="eyebrow">EMAIL · MANUAL ACTION PLAYGROUND</span><h1>Send one exact message, with proof.</h1><p>Choose durable backend objects, freeze the exact content, preflight and publish one Email Automation, then request a fake or explicitly manual real Run. No unattended authority lives here.</p></div>
-        <div class="boundary"><b>STACKED BACKEND</b><span id="backendState">Checking protected backend…</span><small>Black Prompt is only a client-side deterrent. Backend session, Origin and CSRF remain authoritative.</small></div>
-      </section>
-
-      <section class="steps" aria-label="Email workflow">
-        <article class="panel" data-step="recipient"><header><span>01</span><div><b>Recipient</b><small>Person → email ContactMethod</small></div></header><label>Person<select id="personSelect"><option value="">Choose a Person</option></select></label><label>Email<select id="contactSelect" disabled><option value="">Choose an email</option></select></label><p class="fact" id="recipientFact">Load Directory to begin.</p></article>
-
-        <article class="panel" data-step="sender"><header><span>02</span><div><b>Sender</b><small>Connection → SenderIdentity</small></div></header><label>Connection<select id="connectionSelect"><option value="">Choose a Connection</option></select></label><label>Sender<select id="senderSelect" disabled><option value="">Choose a sender</option></select></label><div class="readiness" id="connectionReadiness">Backend readiness has not been checked.</div></article>
-
-        <article class="panel panel-wide" data-step="message"><header><span>03</span><div><b>Message</b><small>ContentAsset Draft → immutable ContentVersion</small></div></header><div class="message-grid"><label>Subject<input id="subjectInput" maxlength="255" placeholder="Test message from Continuum" /></label><label class="body-label">Body<textarea id="bodyInput" rows="9" maxlength="1000000" placeholder="Write the exact message body…"></textarea></label></div><div class="actions"><button id="freezeContent" type="button">Freeze message version</button><span id="contentState">Nothing frozen yet.</span></div></article>
-
-        <article class="panel panel-wide" data-step="review"><header><span>04</span><div><b>Review & publish</b><small>Automation Draft → preflight → Review → immutable AutomationVersion</small></div></header><div id="reviewSummary" class="review-summary">Choose recipient, sender and freeze content first.</div><div class="actions"><button id="prepareAutomation" type="button">Prepare & preflight</button><button id="publishAutomation" type="button" disabled>Review & publish</button><span id="automationState">No Automation prepared.</span></div></article>
-
-        <article class="panel panel-wide consequential" data-step="run"><header><span>05</span><div><b>Run</b><small>Manual owner request only</small></div></header><div class="run-modes"><label><input type="radio" name="provider" value="fake" checked /> <span><b>Simulation</b><small>Fake provider · no external message</small></span></label><label><input type="radio" name="provider" value="real_smtp" /> <span><b>Real manual SMTP</b><small>External side effect · backend restrictions apply</small></span></label></div><label class="behavior">Fake behavior<select id="fakeBehavior"><option value="accepted">Accepted</option><option value="transient_once">Transient once</option><option value="permanent_failure">Permanent failure</option></select></label><label class="confirm"><input id="realConfirm" type="checkbox" /> I understand real mode may send exactly one external email through the protected Runtime.</label><div class="actions"><button id="requestRun" type="button" disabled>Request Run</button><button id="processRun" type="button" disabled>Process now · development control</button><span id="runState">Publish first.</span></div></article>
-
-        <article class="panel panel-wide receipt" data-step="receipt"><header><span>06</span><div><b>Receipt</b><small>Frozen execution facts, Attempts and Why</small></div></header><div id="receiptEmpty" class="empty">No Run yet.</div><div id="receiptView" hidden></div></article>
-      </section>
-
-      <footer class="email-footer">Not implemented here: CC/BCC, attachments, bulk delivery, arbitrary recipients, sender substitution, schedules, AI initiation, recurring sends or unattended Authority.</footer>
-      <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    </main>
-  </div>
-  <script src="/assets/lab/lab-email-api-v1.js?v=20260821-1"></script>
-  <script src="/assets/lab/lab-email-v1.js?v=20260821-1"></script>
-  <script src="/assets/gates/cmx-gate-black-prompt.js" defer></script>
+<body>
+  <p>Email moved to <a href="/email/">/email/</a>.</p>
 </body>
 </html>

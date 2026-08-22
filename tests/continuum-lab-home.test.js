@@ -22,7 +22,7 @@ for (const term of [
   '/lab/automations/',
   '/lab/directory/',
   '/lab/library/',
-  '/lab/email/',
+  '/email/',
   '/lab/snapshot/',
   '/checkin/',
   '/directory/',
@@ -34,14 +34,14 @@ for (const term of [
 ]) assert(html.includes(term), `Lab home missing contract: ${term}`);
 
 assert(!html.includes('<script src="/assets/lab/lab-loader.js'), 'Lab root must no longer execute the integrated snapshot loader');
-assert(html.includes('href="/lab/email/" data-command="email" data-status="PROVING"'), 'Email route must be navigable and truthfully marked PROVING');
+assert(html.includes('href="/email/" data-command="email" data-status="PROVING"'), 'Email route must navigate to canonical /email/ and remain truthfully marked PROVING');
 assert(!html.includes('data-command="email" data-status="NEXT"'), 'Email must no longer be marked NEXT after implementation');
 assert(snapshot.includes('/assets/lab/lab-loader.js?v=20260819-planner-signals-v3'), 'Preserved snapshot must keep the old integrated loader');
 
 for (const term of [
   "location.hash.startsWith('#lab=')",
   'location.replace(`/lab/snapshot/${location.hash}`)',
-  "email: '/lab/email/'",
+  "email: '/email/'",
   "open email",
   "status",
   "tree",
